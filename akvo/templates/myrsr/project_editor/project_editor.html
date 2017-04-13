@@ -123,6 +123,7 @@
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
             "is_admin": {% if is_admin %}true{% else %}false{% endif %},
+            "can_create_project":  {% if user.can_create_project %}true{% else %}false{% endif %},
             "org_permissions": {{ org_permissions }},
             "save": "{% trans 'Save'|escapejs %}",
             "saving": "{% trans 'Saving'|escapejs %}",
