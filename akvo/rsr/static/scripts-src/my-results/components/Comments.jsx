@@ -5,7 +5,8 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
 import Collapse, { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 

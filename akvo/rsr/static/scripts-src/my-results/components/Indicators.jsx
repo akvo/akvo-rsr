@@ -5,7 +5,8 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
 import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
@@ -124,7 +125,7 @@ export default class Indicators extends React.Component {
         // const { ids, indicators } = findChildren(this.props.parentId, OBJECTS_INDICATORS);
         // const {ids=undefined} = this.props.indicators;
 
-        const indicatorIds = this.props.resultChildrenIds[this.props.parentId] || [];
+        const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
 

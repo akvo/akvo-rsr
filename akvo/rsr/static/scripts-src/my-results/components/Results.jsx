@@ -5,7 +5,8 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react';
+import React from 'react'
+import PropTypes from 'prop-types';
 import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
@@ -39,7 +40,7 @@ ResultHeaderIndicatorCount.propTypes = {
 };
 
 
-const ResultHeader = ({result, indicatorCount}) => {
+const ResultHeader = ({result, indicatorCount=0}) => {
     const renderResultType = (result) => {
         // Show the result type, if available
         switch (result.type) {
@@ -60,13 +61,14 @@ const ResultHeader = ({result, indicatorCount}) => {
         <span>
             {"Result: " + result.title}
             {renderResultType(result)}
-            <ResultHeaderIndicatorCount count={indicatorCount || 0} />
+            <ResultHeaderIndicatorCount count={indicatorCount} />
         </span>
     )
 };
 
 ResultHeader.propTypes = {
-    result: PropTypes.object
+    result: PropTypes.object,
+    indicatorCount: PropTypes.number,
 };
 
 
@@ -116,7 +118,7 @@ export default class Results extends React.Component {
                     this.props.resultChildrenIds[id] && this.props.resultChildrenIds[id].length || 0;
                 return (
                     <Panel header={<ResultHeader result={result}
-                                        indicatorCount={indicatorCount}/>}
+                                                 indicatorCount={indicatorCount}/>}
                            key={id}>
                         <Indicators parentId={id}/>
                     </Panel>

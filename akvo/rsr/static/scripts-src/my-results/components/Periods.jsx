@@ -218,7 +218,8 @@ export default class Periods extends React.Component {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(id);
-                const needsReporting = !period.locked && period._meta.children.ids.length == 0
+                const needsReporting =
+                    !period.locked && period._meta && period._meta.children.ids.length == 0;
 
                 return (
                     <Panel header={<PeriodHeader period={period}
@@ -244,7 +245,7 @@ export default class Periods extends React.Component {
     }
 
     render() {
-        const periodIds = this.props.indicatorChildrenIds[this.props.parentId] || [];
+        const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!periodIds) {

@@ -45,12 +45,12 @@ const set = (arr) => {
 };
 
 const initialModels = {
-    results: {fetched: false},
-    indicators: {fetched: false},
-    periods: {fetched: false},
-    updates: {fetched: false},
-    comments: {fetched: false},
-    user: {fetched: false}
+    results: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    indicators: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    periods: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    updates: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    comments: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    user: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined}
 };
 
 const assignChildren = (state, model) => {

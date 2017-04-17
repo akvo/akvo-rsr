@@ -5,7 +5,7 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react';
+import React from 'react';
 import fetch from 'isomorphic-fetch';
 
 import { onChange } from "actions/collapse-actions"

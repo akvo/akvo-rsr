@@ -124,7 +124,7 @@ function selectPeriodByDates(periodStart, periodEnd) {
         periods.objects[id].period_end === periodEnd
     ));
     checkAndShowPeriods(filteredIds);
-    openNodes(OBJECTS_PERIODS, ids, true);
+    openNodes(OBJECTS_PERIODS, filteredIds, true);
 }
 
 
