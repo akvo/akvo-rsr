@@ -4126,6 +4126,8 @@ div.iatiFilters {
           margin-right: 8px;
           color: black;
           background: url(../images/arrowUpDown.png) no-repeat top center; }
+      .results .rc-collapse .rc-collapse-item .rc-collapse-content.rc-collapse-content-inactive {
+        display: none; }
       .results .rc-collapse .rc-collapse-item.rc-collapse-item-active {
         background: rgba(242, 240, 230, 0.9);
         border: 1px solid #f2f0e6; }
