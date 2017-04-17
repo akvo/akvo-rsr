@@ -10,21 +10,79 @@ import Collapse, { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 
 import { onChange } from "../actions/collapse-actions"
-import { findChildren, createToggleKey, collapseId } from '../utils'
+import { findChildren, createToggleKey, collapseId, _, endpoints} from '../utils'
 import { OBJECTS_COMMENTS } from '../const'
 
 import { ToggleButton } from "./common"
+import {getUpdatesChildrenIds} from "../selectors";
+import {saveModelToBackend} from "../actions/model-actions";
 
 
-const CommentHeader = ({comment}) => {
+@connect((store) => {
+    return {
+        user: store.models.user.objects[store.models.user.ids[0]],
+    }
+})
+class CommentForm extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.number.isRequired,
+    };
+
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        this.addComment = this.addComment.bind(this);
+        this.resetComment = this.resetComment.bind(this);
+        this.state = {comment: ''};
+    }
+
+    onChange(e) {
+        this.setState({comment: e.target.value});
+    }
+
+    addComment() {
+        const newComment = {
+            'data': this.props.parentId,
+            'user': this.props.user.id,
+            'comment': this.state.comment
+        };
+        saveModelToBackend(OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, this.resetComment)
+    }
+
+    resetComment() {
+        this.setState({comment: ''})
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="input-group">
+                    <input className="form-control" value={this.state.comment}
+                           onChange={this.onChange}
+                           placeholder={_('add_comment_placeholder')}/>
+                    <span className="input-group-btn">
+                        <button type="submit" onClick={this.addComment} className="btn btn-default">
+                            {_('add_comment')}
+                        </button>
+                    </span>
+                </div>
+            </div>
+        )
+    }
+}
+
+const Comment = ({comment}) => {
+    const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
     return (
-        <span>
-            {"Comment: " + comment.comment}
-        </span>
+        <div>
+            {name} says:
+            <span className={'comment'}>{comment.comment}</span>
+        </div>
     )
 };
 
-CommentHeader.propTypes = {
+Comment.propTypes = {
     comment: PropTypes.object.isRequired,
 };
 
@@ -33,12 +91,13 @@ CommentHeader.propTypes = {
     return {
         comments: store.models['comments'],
         keys: store.keys,
+        updateChildrenIds: getUpdatesChildrenIds(store),
     }
 })
 export default class Comments extends React.Component {
 
     static propTypes = {
-        ids: PropTypes.array.isRequired,
+        parentId: PropTypes.number.isRequired,
     };
 
     constructor(props) {
@@ -56,38 +115,43 @@ export default class Comments extends React.Component {
         this.props.dispatch(onChange(this.state.collapseId, activeKey));
     }
 
-    renderPanels(ids) {
-        return (ids.map(
+    renderComments(commentIds) {
+        return (commentIds.map(
             (id) => {
                 const comment = this.props.comments.objects[id];
-                return (
-                    <Panel header={<CommentHeader comment={comment}/>} key={id}>
-                        <div>By: {comment.user_details.first_name}</div>
-                    </Panel>
-                )
+                return <Comment key={id} comment={comment} />
+                // return (
+                //     <Panel header={<CommentHeader comment={comment}/>} key={id}>
+                //         <div>By: {comment.user_details.first_name}</div>
+                //     </Panel>
+                // )
             }
         ))
     }
 
     render() {
-        const { ids } = this.props;
+        const commentIds = this.props.updateChildrenIds[this.props.parentId] || [];
+
         // const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!ids) {
+        if (!commentIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (ids.length > 0) {
+        } else if (commentIds.length > 0) {
             return (
-                <div className={OBJECTS_COMMENTS}>
-                    {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
-                    <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(ids)}
-                    </Collapse>
+                <div className={OBJECTS_COMMENTS + ' col-xs-5'}>
+                    <strong>Update comments:</strong>
+                    {this.renderComments(commentIds)}
+                    <CommentForm parentId={this.props.parentId}/>
                 </div>
             );
         } else {
             return (
-                <p>No comments</p>
+                <div className={OBJECTS_COMMENTS + ' col-xs-5'}>
+                    <strong>Update comments:</strong>
+                    <p>No comments</p>
+                    <CommentForm parentId={this.props.parentId}/>
+                </div>
             );
         }
     }

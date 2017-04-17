@@ -4248,3 +4248,6 @@ div.iatiFilters {
 
 div.periodSelected.rc-collapse-item {
   background: #cde7f0 !important; }
+
+.comment {
+  margin-left: 5px; }

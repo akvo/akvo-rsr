@@ -15,14 +15,10 @@ import Periods from './Periods';
 import { ToggleButton } from "./common"
 
 import { OBJECTS_INDICATORS, OBJECTS_PERIODS } from '../const.js';
-import {getIndicatorsChildrenIds, getIndicatorsAggregateActualValue} from "../selectors";
+import {getIndicatorsChildrenIds, getIndicatorsAggregateActualValue, getResultsChildrenIds} from "../selectors";
 
 
 const IndicatorHeader = ({indicator, aggregateActualValue}) => {
-    // const periods = indicator._meta && indicator._meta.children || {ids: [], objects: {}};
-    // const aggregateActualValue = childPeriods.reduce((acc, period) => {
-    //     return acc = period.actual_value
-    // }, 0);
     const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
     return (
         <span>
@@ -35,7 +31,7 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
 
 IndicatorHeader.propTypes = {
     indicator: PropTypes.object,
-    childPeriods: PropTypes.array,
+    aggregateActualValue: PropTypes.number,
 };
 
 
@@ -72,21 +68,20 @@ const childrenArray = (objects, ids) => {
         periods: store.models.periods,
         keys: store.keys,
         ui: store.ui,
-        indicatorChildrenIds: getIndicatorsChildrenIds(store),
+        resultChildrenIds: getResultsChildrenIds(store),
         aggregateActualValue: getIndicatorsAggregateActualValue(store),
     }
 })
 export default class Indicators extends React.Component {
 
     static propTypes = {
-        ids: PropTypes.array.isRequired,
+        parentId: PropTypes.number,
     };
 
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
-        this.childPeriods = this.childPeriods.bind(this);
         // concatenate this model's name with parent's ID
         this.state = {collapseId: collapseId(OBJECTS_INDICATORS, this.props.parentId)};
     }
@@ -106,17 +101,10 @@ export default class Indicators extends React.Component {
         })
     }
 
-    childPeriods(id) {
-        const periods = this.props.periods.objects;
-        const periodIds = this.props.indicatorChildrenIds[id] || [];
-        return childrenArray(periods, periodIds);
-    }
-
-    renderPanels(ids) {
-        return (ids.map(
+    renderPanels(indicatorIds) {
+        return (indicatorIds.map(
             (id) => {
                 const indicator = this.props.indicators.objects[id];
-                const ids = this.props.indicatorChildrenIds[id] || [];
                 return (
                     <Panel header={<IndicatorHeader
                                         indicator={indicator}
@@ -125,7 +113,7 @@ export default class Indicators extends React.Component {
                                         }/>}
                            key={id}>
                         <IndicatorContent indicator={indicator}/>
-                        <Periods ids={ids}/>
+                        <Periods parentId={id}/>
                     </Panel>
                 )
             }
@@ -134,22 +122,24 @@ export default class Indicators extends React.Component {
 
     render() {
         // const { ids, indicators } = findChildren(this.props.parentId, OBJECTS_INDICATORS);
-        const {ids=undefined} = this.props.indicators;
+        // const {ids=undefined} = this.props.indicators;
+
+        const indicatorIds = this.props.resultChildrenIds[this.props.parentId] || [];
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
 
-        if (!ids) {
+        if (!indicatorIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (ids.length > 0) {
+        } else if (indicatorIds.length > 0) {
             return (
                 <div className={OBJECTS_INDICATORS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(ids)}
+                        {this.renderPanels(indicatorIds)}
                     </Collapse>
                 </div>
             );

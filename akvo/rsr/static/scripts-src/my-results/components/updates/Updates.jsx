@@ -23,7 +23,7 @@ import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, UPDATE_FORMS } from '../../con
 
 import { ToggleButton } from "../common"
 import UpdateForm from "./UpdateForm"
-import {getUpdatesChildrenIds} from "../../selectors";
+import {getUpdatesChildrenIds, getPeriodsChildrenIds} from "../../selectors";
 
 
 const UpdateDisplay = ({update}) => {
@@ -78,7 +78,7 @@ class Update extends React.Component {
                                                   label={_('edit_update')}/>
         }
         return(
-            <div>
+            <div className="col-xs-7">
                 {editUpdateButton}
                 {new Set(this.props.ui[UPDATE_FORMS]).has(this.props.update.id) ?
                     <UpdateForm
@@ -128,13 +128,13 @@ UpdateHeader.propTypes = {
         updates: store.models['updates'],
         keys: store.keys,
         ui: store.ui,
-        updateChildrenIds: getUpdatesChildrenIds(store),
+        periodChildrenIds: getPeriodsChildrenIds(store),
     }
 })
 export default class Updates extends React.Component {
 
     static propTypes = {
-        ids: PropTypes.array.isRequired,
+        parentId: PropTypes.number.isRequired,
         periodLocked: PropTypes.bool.isRequired,
     };
 
@@ -160,12 +160,11 @@ export default class Updates extends React.Component {
         })
     }
 
-    renderPanels(ids) {
+    renderPanels(updateIds) {
         let actualValue = 0;
-        return (ids.map(
+        return (updateIds.map(
             (id) => {
                 const update = this.props.updates.objects[id];
-                const ids = this.props.updateChildrenIds[id] || [];
                 // Calculate running total of numeric updates data
                 const data = parseInt(update.data);
                 if (data && update.status == UPDATE_STATUS_APPROVED) {
@@ -173,11 +172,13 @@ export default class Updates extends React.Component {
                 }
                 update.actual_value = actualValue;
                 return (
-                    <Panel header={<UpdateHeader update={update}/>} key={update.id}>
-                        <Update update={update}
-                                collapseId={this.state.collapseId}
-                                periodLocked={this.props.periodLocked}/>
-                        <Comments ids={ids}/>
+                    <Panel header={<UpdateHeader update={update}/>} key={id}>
+                        <div className={'row'}>
+                            <Update update={update}
+                                    collapseId={this.state.collapseId}
+                                    periodLocked={this.props.periodLocked}/>
+                            <Comments parentId={id}/>
+                        </div>
                     </Panel>
                 )
             }
@@ -185,20 +186,20 @@ export default class Updates extends React.Component {
     }
 
     render() {
-        const { ids } = this.props;
+        const updateIds = this.props.periodChildrenIds[this.props.parentId] || [];
         // const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!ids) {
+        if (!updateIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (ids.length > 0) {
+        } else if (updateIds.length > 0) {
             return (
                 <div className={OBJECTS_UPDATES}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(ids)}
+                        {this.renderPanels(updateIds)}
                     </Collapse>
                 </div>
             );

@@ -134,6 +134,8 @@ export const endpoints = {
             `/rest/v1/indicator_period_data/?format=json&limit=${API_LIMIT}&period__indicator__result__project=${id}`,
         "comments": (id) =>
             `/rest/v1/indicator_period_data_comment/?format=json&limit=${API_LIMIT}&data__period__indicator__result__project=${id}`,
+        "post_comment": () =>
+            "/rest/v1/indicator_period_data_comment/?format=json",
         "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,
         "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
         "updates_and_comments": () =>

@@ -12,7 +12,7 @@ import {
     UPDATE_MODEL_DELETE_FULFILLED, UPDATE_MODEL_START, UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED
 } from "../reducers/modelsReducer"
 import { getCookie, endpoints } from "../utils"
-import { API_LIMIT, SELECTED_PERIODS, OBJECTS_PERIODS } from "../const"
+import { API_LIMIT, SELECTED_PERIODS, OBJECTS_PERIODS, OBJECTS_UPDATES} from "../const"
 
 import { selectablePeriods } from "./ui-actions"
 
@@ -102,25 +102,28 @@ export function fetchModel(model, id, callbacks, dataPrepCallback) {
 }
 
 
-export function updateModelToBackend(model, url, data, collapseId, callback) {
+export function modifyModelToBackend(model, method, url, data, fulfilledDispatchData, callback) {
     return store.dispatch((dispatch) => {
         dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
         const options = {
             credentials: 'same-origin',
-            method: 'PATCH',
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify(data),
         };
+        if (method != 'DELETE') {
+            options.body = JSON.stringify(data);
+        }
         fetch(url, options)
             .then(response => response.json())
             .then((data) => {
-                dispatch({
-                    type: UPDATE_MODEL_FULFILLED,
-                    payload: {model: model, object: data, collapseId}
-                });
+                // update with data from backend
+                if (method != 'DELETE') {
+                    fulfilledDispatchData.payload.object = data;
+                }
+                dispatch(fulfilledDispatchData);
             })
             .then(() => {
                 if (callback) {
@@ -132,6 +135,93 @@ export function updateModelToBackend(model, url, data, collapseId, callback) {
             })
     });
 }
+
+
+export function saveModelToBackend(model, url, data, collapseId, callback) {
+    const dispatchData = {
+        type: UPDATE_MODEL_FULFILLED,
+        payload: {model: model, object: data, collapseId}
+    };
+    modifyModelToBackend(model, 'POST', url, data, dispatchData, callback);
+}
+
+export function updateModelToBackend(model, url, data, collapseId, callback) {
+    const dispatchData = {
+        type: UPDATE_MODEL_FULFILLED,
+        payload: {model: model, object: data, collapseId}
+    };
+    modifyModelToBackend(model, 'PATCH', url, data, dispatchData, callback);
+}
+
+// export function updateModelToBackend(model, url, data, collapseId, callback) {
+//     return store.dispatch((dispatch) => {
+//         dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
+//         const options = {
+//             credentials: 'same-origin',
+//             method: 'PATCH',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': getCookie('csrftoken')
+//             },
+//             body: JSON.stringify(data),
+//         };
+//         fetch(url, options)
+//             .then(response => response.json())
+//             .then((data) => {
+//                 dispatch({
+//                     type: UPDATE_MODEL_FULFILLED,
+//                     payload: {model: model, object: data, collapseId}
+//                 });
+//             })
+//             .then(() => {
+//                 if (callback) {
+//                     callback();
+//                 }
+//             })
+//             .catch((error) => {
+//                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
+//             })
+//     });
+// }
+
+
+export function deleteUpdateFromBackend(url, data, collapseId, callback) {
+    const dispatchData = {
+        type: UPDATE_MODEL_DELETE_FULFILLED,
+        payload: {model: OBJECTS_UPDATES, id: data.id, collapseId}
+    };
+    modifyModelToBackend(OBJECTS_UPDATES, 'DELETE', url, data, dispatchData, callback);
+}
+
+// export function deleteUpdateFromBackend(url, data, collapseId, callback) {
+//     return store.dispatch((dispatch) => {
+//         dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
+//         const options = {
+//             credentials: 'same-origin',
+//             method: 'DELETE',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': getCookie('csrftoken')
+//             }
+//         };
+//         fetch(url, options)
+//             // .then(response => response.json())
+//             .then((response) => {
+//                 dispatch({
+//                     type: UPDATE_MODEL_DELETE_FULFILLED,
+//                     payload: {model: 'updates', id:data.id, collapseId}
+//                 });
+//             })
+//             .then(() => {
+//                 if (callback) {
+//                     callback();
+//                 }
+//             })
+//             .catch((error) => {
+//                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
+//             })
+//     });
+// }
 
 
 function wrappedFetchForUpdates({url, request}) {
@@ -274,37 +364,6 @@ export function saveUpdateToBackend(url, data, collapseId, callback) {
 
 export function updateUpdateToBackend(url, data, collapseId, callback) {
     return sendUpdateToBackend(url, 'PATCH', data, collapseId, callback)
-}
-
-
-export function deleteUpdateFromBackend(url, data, collapseId, callback) {
-    return store.dispatch((dispatch) => {
-        dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
-        const options = {
-            credentials: 'same-origin',
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        };
-        fetch(url, options)
-            // .then(response => response.json())
-            .then((response) => {
-                dispatch({
-                    type: UPDATE_MODEL_DELETE_FULFILLED,
-                    payload: {model: 'updates', id:data.id, collapseId}
-                });
-            })
-            .then(() => {
-                if (callback) {
-                    callback();
-                }
-            })
-            .catch((error) => {
-                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
-            })
-    });
 }
 
 

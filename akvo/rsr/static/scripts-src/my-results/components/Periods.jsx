@@ -16,7 +16,6 @@ import { periodSelectToggle, selectablePeriods } from "../actions/ui-actions"
 import {
     displayDate,
     endpoints,
-    findChildren,
     createToggleKey,
     collapseId,
     createToggleKeys
@@ -32,7 +31,7 @@ import {
 import Updates from "./updates/Updates";
 import { NewUpdateButton } from "./updates/UpdateForm";
 import { ToggleButton } from "./common"
-import { getPeriodsActualValue, getPeriodsChildrenIds} from "../selectors";
+import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
 
 
 class PeriodLockToggle extends React.Component {
@@ -63,7 +62,7 @@ class PeriodLockToggle extends React.Component {
         const toggleCallback = () => {
             this.lockingToggle(false);
             selectablePeriods();
-        }
+        };
         if (!this.state.locking) {
             this.lockingToggle(true);
             this.updatePeriodLock(
@@ -161,14 +160,14 @@ const objectsArrayToLookup = (arr, index) => {
         keys: store.keys,
         user: store.models.user.objects[store.models.user.ids[0]],
         ui: store.ui,
-        periodChildrenIds: getPeriodsChildrenIds(store),
+        indicatorChildrenIds: getIndicatorsChildrenIds(store),
         actualValue: getPeriodsActualValue(store),
     }
 })
 export default class Periods extends React.Component {
 
     static propTypes = {
-        ids: PropTypes.array.isRequired,
+        parentId: PropTypes.number.isRequired,
     };
 
     constructor(props) {
@@ -211,12 +210,12 @@ export default class Periods extends React.Component {
         periodSelectToggle(periodId);
     }
 
-    renderPanels(ids) {
+    renderPanels(periodIds) {
         const callbacks = {openNewForm: this.openNewForm};
-        return (ids.map(
+
+        return (periodIds.map(
             (id) => {
                 const period = this.props.periods.objects[id];
-                const ids = this.props.periodChildrenIds[id] || [];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(id);
 
@@ -228,7 +227,7 @@ export default class Periods extends React.Component {
                                               isChecked={isChecked}/>}
                            key={id}
                            className={isChecked ? 'periodSelected' : ''}>
-                        <Updates ids={ids} periodLocked={period.locked}/>
+                        <Updates parentId={id} periodLocked={period.locked}/>
                         {
                             !period.locked &&
                             <NewUpdateButton period={period}
@@ -242,15 +241,14 @@ export default class Periods extends React.Component {
     }
 
     render() {
-        // const { ids, periods } = findChildren(this.props.parentId, OBJECTS_PERIODS);
-        const { ids } = this.props;
+        const periodIds = this.props.indicatorChildrenIds[this.props.parentId] || [];
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!ids) {
+        if (!periodIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (ids.length > 0) {
+        } else if (periodIds.length > 0) {
             return (
                 <div className={OBJECTS_PERIODS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
@@ -258,7 +256,7 @@ export default class Periods extends React.Component {
                                   {/*label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(ids)}
+                        {this.renderPanels(periodIds)}
                     </Collapse>
                 </div>
             );

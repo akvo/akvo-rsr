@@ -108,16 +108,17 @@ export default class Results extends React.Component {
         })
     }
 
-    renderPanels({ids}) {
+    renderPanels(ids) {
         return (ids.map(
             (id) => {
                 const result = this.props.results.objects[id];
-                const indicatorIds = this.props.resultChildrenIds[id] || [];
+                const indicatorCount =
+                    this.props.resultChildrenIds[id] && this.props.resultChildrenIds[id].length || 0;
                 return (
                     <Panel header={<ResultHeader result={result}
-                                        indicatorCount={indicatorIds.length}/>}
+                                        indicatorCount={indicatorCount}/>}
                            key={id}>
-                        <Indicators ids={indicatorIds}/>
+                        <Indicators parentId={id}/>
                     </Panel>
                 )
             }
@@ -125,21 +126,22 @@ export default class Results extends React.Component {
     }
 
     render() {
-        const {ids=undefined} = this.props.results;
-        const toggleKey = createToggleKey(ids, this.activeKey());
+        // Special case, always get all Results
+        const resultIds = this.props.results.ids;
+        const toggleKey = createToggleKey(resultIds, this.activeKey());
 
-        if (!ids) {
+        if (!resultIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (ids.length > 0) {
+        } else if (resultIds.length > 0) {
             return (
                 <div className={OBJECTS_RESULTS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <ToggleButton onClick={this.toggleAll} label="++"
                                   disabled={!this.props.ui.allFetched}/>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(this.props.results)}
+                        {this.renderPanels(resultIds)}
                     </Collapse>
                 </div>
             );
@@ -149,29 +151,4 @@ export default class Results extends React.Component {
             );
         }
     }
-    // render() {
-    //     const { ids, results } = findChildren(this.props.parentId, OBJECTS_RESULTS);
-    //     const toggleKey = createToggleKey(ids, this.activeKey());
-    //
-    //     if (!results) {
-    //         return (
-    //             <p>Loading...</p>
-    //         );
-    //     } else if (results.length > 0) {
-    //         return (
-    //             <div className={OBJECTS_RESULTS}>
-    //                 <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-    //                 <ToggleButton onClick={this.toggleAll} label="++"
-    //                               disabled={!this.props.ui.allFetched}/>
-    //                 <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-    //                     {this.renderPanels(results)}
-    //                 </Collapse>
-    //             </div>
-    //         );
-    //     } else {
-    //         return (
-    //             <p>No results</p>
-    //         );
-    //     }
-    // }
 }
