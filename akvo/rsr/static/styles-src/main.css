@@ -4251,5 +4251,13 @@ div.iatiFilters {
 div.periodSelected.rc-collapse-item {
   background: #cde7f0 !important; }
 
+div.needsReporting.rc-collapse-item {
+  background: #ffb2ae !important; }
+
 .comment {
   margin-left: 5px; }
+
+.results-bar-titles {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #202024; }

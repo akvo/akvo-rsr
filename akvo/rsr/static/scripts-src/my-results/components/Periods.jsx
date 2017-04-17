@@ -218,6 +218,7 @@ export default class Periods extends React.Component {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(id);
+                const needsReporting = !period.locked && period._meta.children.ids.length == 0
 
                 return (
                     <Panel header={<PeriodHeader period={period}
@@ -226,7 +227,9 @@ export default class Periods extends React.Component {
                                               actualValue={actualValue}
                                               isChecked={isChecked}/>}
                            key={id}
-                           className={isChecked ? 'periodSelected' : ''}>
+                           className={
+                               isChecked ? 'periodSelected' : needsReporting ? 'needsReporting' : ''
+                           }>
                         <Updates parentId={id} periodLocked={period.locked}/>
                         {
                             !period.locked &&

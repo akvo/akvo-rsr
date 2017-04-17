@@ -15,7 +15,7 @@ import {
     fetchModel, fetchUser, testFetchModel, lockSelectedPeriods, unlockSelectedPeriods
 } from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
-import { activateToggleAll, updateFormOpen, selectablePeriods } from "../actions/ui-actions"
+import { activateToggleAll, updateFormOpen, selectablePeriods, periodSelectReset} from "../actions/ui-actions"
 
 import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_DRAFT, PARENT_FIELD } from "../const"
 import { openNodes } from "../utils"
@@ -81,11 +81,12 @@ export default class App extends React.Component {
         fetchModel('comments', projectId, activateToggleAll);
     }
 
-    parentOf(model, id) {
-        return this.props.models[model].objects[id][PARENT_FIELD[model]]
-    }
+    // parentOf(model, id) {
+    //     return this.props.models[model].objects[id][PARENT_FIELD[model]]
+    // }
 
     showDraft() {
+        periodSelectReset();
         const updates = this.props.models[OBJECTS_UPDATES];
         const draftUpdates = updates.ids.filter((id) =>
             updates.objects[id].status == UPDATE_STATUS_DRAFT
@@ -113,15 +114,27 @@ export default class App extends React.Component {
         const selectOptions = this.props.ui.periodDates;
         return (
             <div>
-                <div style={right}>
-                    <Select options={selectOptions} value={this.state.selectedOptions} multi={false} placeholder="Select period(s)"
-                            searchable={false} clearable={false} onChange={this.selectChange}/>
-                    <ToggleButton onClick={this.lockSelected} label="Lock selected" style={right}
-                                  disabled={!this.props.ui.allFetched}/>
-                    <ToggleButton onClick={this.unlockSelected} label="Unlock selected" style={right}
-                                  disabled={!this.props.ui.allFetched}/>
-                    <ToggleButton onClick={this.showDraft} label="Show draft updates" style={right}
-                                  disabled={!this.props.ui.allFetched}/>
+                <div className={'row results-bar-titles'}>
+                    <div className="col-xs-3">Select periods</div>
+                    <div className="col-xs-4">Period actions</div>
+                    <div className="col-xs-5">Show updates</div>
+                </div>
+                <div className={'row'}>
+                    <div  className="col-xs-3">
+                        <Select options={selectOptions} value={this.state.selectedOptions}
+                                multi={false} placeholder="Select period(s)" searchable={false}
+                                clearable={false} onChange={this.selectChange}/>
+                    </div>
+                    <div  className="col-xs-4">
+                        <ToggleButton onClick={this.lockSelected} label="Lock selected"
+                                      disabled={!this.props.ui.allFetched}/>
+                        <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
+                                      disabled={!this.props.ui.allFetched}/>
+                    </div>
+                    <div  className="col-xs-5">
+                        <ToggleButton onClick={this.showDraft} label="Pending approval"
+                                      disabled={!this.props.ui.allFetched}/>
+                    </div>
                 </div>
                 <div style={clearfix}></div>
                 <Results parentId="results"/>
