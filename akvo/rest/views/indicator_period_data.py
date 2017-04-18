@@ -43,7 +43,12 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
 class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriodDataComment.objects.all()
+    # TODO: Is there more optimization possible?
+    queryset = IndicatorPeriodDataComment.objects.select_related(
+        'user'
+    ).prefetch_related(
+        'user__employers', 'user__employers__organisation'
+    )
     serializer_class = IndicatorPeriodDataCommentSerializer
     project_relation = 'data__period__indicator__result__project__'
 
