@@ -415,8 +415,8 @@ function periodLockingParams(locked) {
     });
     // Update selected periods locked field, then call selectablePeriods to rebuild the period
     // select component
-    patchMultiple(OBJECTS_PERIODS, data, selectablePeriods);
-
+    // patchMultiple(OBJECTS_PERIODS, data, selectablePeriods);
+    patchMultiple(OBJECTS_PERIODS, data);
 }
 
 

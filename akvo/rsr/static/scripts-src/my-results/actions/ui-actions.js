@@ -128,58 +128,65 @@ function selectPeriodByDates(periodStart, periodEnd) {
 }
 
 
-export function selectablePeriods() {
+export function selectablePeriods(periodIds) {
     // Create an array with the set of Period start and end dates. Used to select all periods with
     // common dates
-    const periodIds = store.getState().models[OBJECTS_PERIODS].ids;
+    // const periodIds = store.getState().models[OBJECTS_PERIODS].ids;
     // Create a list of start/end dates as strings to be able to apply Set to the list.
     // dates = ["2016-05-01:2016-12-31", "2017-01-01:2017-06-30",...]
-    const dates = periodIds.map((id) => {
-        const period = store.getState().models[OBJECTS_PERIODS].objects[id];
-        const periodStart = period.period_start;
-        const periodEnd = period.period_end;
-        return `${periodStart}:${periodEnd}`;
-    });
-    // Calculate how many we have of each date pair.
-    // dateMap = {2016-05-01:2016-12-31: 4, 2017-01-01:2017-06-30: 3, ...}
-    var dateMap = dates.reduce(function(acc, date) {
-        acc[date] = (acc[date] || 0) + 1;
-        return acc;
-    }, {});
-    const datesSet = new Set(dates);
-    // Construct the final store data structure with a label for display in the select, and a value
-    // that's selectPeriodByDates with bound params, called when the select is used
-    // periodDates = [
-    //     {label: "1 May 2016 - 31 Dec 2016 (4)", value: selectPeriodByDates.bind(null, "2016-05-01", "2016-12-31")},
-    //     {label: "1 Jan 2017 - 20 Jun 2017 (3)", value: selectPeriodByDates.bind(null, "2017-01-01", "2017-06-30")},
-    //     ...
-    // ]
-    const periodDates = [...datesSet].map((datePair) => {
-        const [periodStart, periodEnd] = datePair.split(':');
-        const periodStartDisplay = displayDate(periodStart);
-        const periodEndDisplay = displayDate(periodEnd);
-        const dateCount = dateMap[datePair];
-        return {
-            value: selectPeriodByDates.bind(null, periodStart, periodEnd),
-            label: `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
-        };
-    });
     const optionStyle = {color: 'black'};
-    const lockedCount = filterPeriodsByLock(true).length;
-    const unlockedCount = filterPeriodsByLock(false).length;
-    const needReportingCount = periodsThatNeedReporting().length;
-    // Construct labels and values for selecting all locked or unlocked periods similarly to above,
-    // as well as "header" labels that aren't selectable
-    const periodSelectOptions = [
+    if (periodIds && periodIds.length > 0) {
+        const dates = periodIds.map((id) => {
+            const period = store.getState().models[OBJECTS_PERIODS].objects[id];
+            const periodStart = period.period_start;
+            const periodEnd = period.period_end;
+            return `${periodStart}:${periodEnd}`;
+        });
+        // Calculate how many we have of each date pair.
+        // dateMap = {2016-05-01:2016-12-31: 4, 2017-01-01:2017-06-30: 3, ...}
+        var dateMap = dates.reduce(function(acc, date) {
+            acc[date] = (acc[date] || 0) + 1;
+            return acc;
+        }, {});
+        const datesSet = new Set(dates);
+        // Construct the final data structure with a label for display in the select, and a value
+        // that's selectPeriodByDates function with bound params, called when the select is used
+        // periodDates = [
+        //     {label: "1 May 2016 - 31 Dec 2016 (4)", value: selectPeriodByDates.bind(null, "2016-05-01", "2016-12-31")},
+        //     {label: "1 Jan 2017 - 20 Jun 2017 (3)", value: selectPeriodByDates.bind(null, "2017-01-01", "2017-06-30")},
+        //     ...
+        // ]
+        const periodDates = [...datesSet].map((datePair) => {
+            const [periodStart, periodEnd] = datePair.split(':');
+            const periodStartDisplay = displayDate(periodStart);
+            const periodEndDisplay = displayDate(periodEnd);
+            const dateCount = dateMap[datePair];
+            return {
+                value: selectPeriodByDates.bind(null, periodStart, periodEnd),
+                label: `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
+            };
+        });
+        const lockedCount = filterPeriodsByLock(true).length;
+        const unlockedCount = filterPeriodsByLock(false).length;
+        const needReportingCount = periodsThatNeedReporting().length;
+        // Construct labels and values for selecting all locked or unlocked periods similarly to above,
+        // as well as "header" labels that aren't selectable
+        const periodSelectOptions = [
+            {label: <strong style={optionStyle}>{'Select by status'}</strong>, value: null, disabled: true},
+            {label: `Need reporting (${needReportingCount})`, value: selectPeriodsThatNeedReporting},
+            {label: `Locked periods (${lockedCount})`, value: selectLockedPeriods},
+            {label: `Unlocked periods (${unlockedCount})`, value: selectUnlockedPeriods},
+            {label: <strong style={optionStyle}>{'Select by period date'}</strong>, value: null, disabled: true},
+        ];
+        // Dispatch the concatenation of periodSelectOptions and periodDates to the ui store
+        // store.dispatch({
+        //     type: SET_PERIOD_DATES,
+        //     payload: periodSelectOptions.concat(periodDates),
+        // });
+        return periodSelectOptions.concat(periodDates)
+    }
+    return  [
         {label: <strong style={optionStyle}>{'Select by status'}</strong>, value: null, disabled: true},
-        {label: `Need reporting (${needReportingCount})`, value: selectPeriodsThatNeedReporting},
-        {label: `Locked periods (${lockedCount})`, value: selectLockedPeriods},
-        {label: `Unlocked periods (${unlockedCount})`, value: selectUnlockedPeriods},
         {label: <strong style={optionStyle}>{'Select by period date'}</strong>, value: null, disabled: true},
     ];
-    // Dispatch the concatenation of periodSelectOptions and periodDates to the ui store
-    store.dispatch({
-        type: SET_PERIOD_DATES,
-        payload: periodSelectOptions.concat(periodDates),
-    });
 }

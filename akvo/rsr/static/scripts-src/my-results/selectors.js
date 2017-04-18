@@ -21,32 +21,40 @@ import {
 
 
 // Input selectors for models
-const getResults = (store) => store.models.results;
-const getIndicators = (store) => store.models.indicators;
-const getPeriods = (store) => store.models.periods;
-const getUpdates = (store) => store.models.updates;
-const getComments = (store) => store.models.comments;
+const getResultIds = (store) => store.models.results.ids;
+const getResultObjects = (store) => store.models.results.objects;
+const getIndicatorIds = (store) => store.models.indicators.ids;
+const getIndicatorObjects = (store) => store.models.indicators.objects;
+const getPeriodIds = (store) => store.models.periods.ids;
+const getPeriodObjects = (store) => store.models.periods.objects;
+const getUpdateIds = (store) => store.models.updates.ids;
+const getUpdateObjects = (store) => store.models.updates.objects;
+const getCommentIds = (store) => store.models.comments.ids;
+const getCommentObjects = (store) => store.models.comments.objects;
 const getUser = (store) => store.models.user;
 
 
 
 const getChildrenFactory = model => {
-    const selectorPairs = {
+    const modelSelectors = {
         // {childModelName: [parentSelector, childrenSelector}
-        [OBJECTS_INDICATORS]: [getResults, getIndicators],
-        [OBJECTS_PERIODS]: [getIndicators, getPeriods],
-        [OBJECTS_UPDATES]: [getPeriods, getUpdates],
-        [OBJECTS_COMMENTS]: [getUpdates, getComments],
+        [OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
+        [OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
+        [OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
+        [OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
     };
     return createSelector(
-        [selectorPairs[model][0], selectorPairs[model][1]],
-        (parent, children) => {
-            if (parent.ids && parent.objects && children.ids && children.objects) {
-                return parent.ids && parent.objects && parent.ids.reduce(
+        [
+            modelSelectors[model][0], modelSelectors[model][1], modelSelectors[model][2],
+            modelSelectors[model][3]
+        ],
+        (parentIds, parentObjects, childIds, childObjects) => {
+            if (parentIds && parentObjects && childIds && childObjects) {
+                return parentIds && parentObjects && parentIds.reduce(
                     (acc, parentId) => {
                         return {...acc,
-                            [parentId]: children.ids && children.objects && children.ids.filter(
-                                id =>  children.objects[id][PARENT_FIELD[model]] === parentId
+                            [parentId]: childIds && childObjects && childIds.filter(
+                                id =>  childObjects[id][PARENT_FIELD[model]] === parentId
                             )
                         }
                     }, {}
@@ -98,15 +106,15 @@ export const getPeriodsActualValue = createSelector(
         Return an object on the form:
         {periodId1: <actualValue1>, periodId2: <actualValue2>,...}
      */
-    [getPeriods, getUpdates, getPeriodsChildrenIds],
-    (periods, updates, childUpdateIds) => {
-        return periods.ids.reduce((acc, periodId) => {
+    [getPeriodIds, getUpdateObjects, getPeriodsChildrenIds],
+    (periodIds, updateObjects, childUpdateIds) => {
+        return periodIds.reduce((acc, periodId) => {
             const actualValue = childUpdateIds[periodId].filter(
-                (updateId) => updates.objects[updateId].status == UPDATE_STATUS_APPROVED
+                (updateId) => updateObjects[updateId].status == UPDATE_STATUS_APPROVED
             ).reduce(
                 // Actual value is calculated by adding all approved updates with numerical data
                 (acc, updateId) => {
-                    const data = parseInt(updates.objects[updateId].data);
+                    const data = parseInt(updateObjects[updateId].data);
                     // If data is NaN then data !== data returns true!
                     if (!(data !== data)) {
                         return acc + data;
@@ -125,9 +133,9 @@ export const getIndicatorsAggregateActualValue = createSelector(
         Return an object on the form:
         {indicatorId1: <aggregateActualValue1>, indicatorId2: <aggregateActualValue2>,...}
      */
-    [getIndicators, getIndicatorsChildrenIds, getPeriodsActualValue],
-    (indicators, childPeriodIds, actualValue) => {
-        return indicators.ids.reduce((acc, indicatorId) => {
+    [getIndicatorIds, getIndicatorsChildrenIds, getPeriodsActualValue],
+    (indicatorIDs, childPeriodIds, actualValue) => {
+        return indicatorIDs.reduce((acc, indicatorId) => {
             const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
                 return acc + actualValue[periodId];
             }, 0);

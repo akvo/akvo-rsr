@@ -76,7 +76,8 @@ export default class App extends React.Component {
         const projectId = project.project_id;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
-        fetchModel('periods', projectId, [activateToggleAll, selectablePeriods]);
+        // fetchModel('periods', projectId, [activateToggleAll, selectablePeriods]);
+        fetchModel('periods', projectId, activateToggleAll);
         fetchModel('updates', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);
     }
@@ -111,7 +112,7 @@ export default class App extends React.Component {
     render() {
         const right = {float: 'right'};
         const clearfix = {clear: 'both'};
-        const selectOptions = this.props.ui.periodDates;
+        const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         return (
             <div>
                 <div className={'row results-bar-titles'}>
