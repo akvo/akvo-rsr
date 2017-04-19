@@ -16,7 +16,7 @@ import {
     OBJECTS_PERIODS,
     OBJECTS_UPDATES,
     OBJECTS_COMMENTS,
-    PARENT_FIELD, UPDATE_STATUS_APPROVED
+    PARENT_FIELD, UPDATE_STATUS_APPROVED, UPDATE_STATUS_DRAFT
 } from "./const";
 
 
@@ -141,5 +141,31 @@ export const getIndicatorsAggregateActualValue = createSelector(
             }, 0);
             return {...acc, [indicatorId]: aggregateValue}
         }, {});
+    }
+);
+
+
+export const getDraftUpdates = createSelector(
+    /*
+        Return an array with IDs of updates with status == UPDATE_STATUS_DRAFT
+     */
+    [getUpdateIds, getUpdateObjects],
+    (updateIds, updateObjects) => {
+        return updateIds && updateObjects && updateIds.filter((id) =>
+            updateObjects[id].status == UPDATE_STATUS_DRAFT
+        );
+    }
+);
+
+
+export const getApprovedUpdates = createSelector(
+    /*
+        Return an array with IDs of updates with status == UPDATE_STATUS_DRAFT
+     */
+    [getUpdateIds, getUpdateObjects],
+    (updateIds, updateObjects) => {
+        return updateIds && updateObjects && updateIds.filter((id) =>
+            updateObjects[id].status == UPDATE_STATUS_APPROVED
+        );
     }
 );

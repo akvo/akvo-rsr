@@ -15,13 +15,17 @@ import {
     fetchModel, fetchUser, testFetchModel, lockSelectedPeriods, unlockSelectedPeriods
 } from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
-import { activateToggleAll, updateFormOpen, selectablePeriods, periodSelectReset} from "../actions/ui-actions"
+import {
+    activateToggleAll, updateFormOpen, selectablePeriods, periodSelectReset,
+    periodsThatNeedReporting, selectPeriodsThatNeedReporting
+} from "../actions/ui-actions"
 
 import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_DRAFT, PARENT_FIELD } from "../const"
-import { openNodes } from "../utils"
+import {fieldValueOrSpinner, openNodes} from "../utils"
 
 import Results from "./Results"
 import { ToggleButton } from "./common"
+import {getApprovedUpdates, getDraftUpdates} from "../selectors";
 
 
 const dataFromElement = (elementName) => {
@@ -44,12 +48,15 @@ const modifyUser = (isMEManager) => {
         page: store.page,
         models: store.models,
         ui: store.ui,
+        draftUpdates: getDraftUpdates(store),
+        approvedUpdates: getApprovedUpdates(store),
     }
 })
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.showDraft = this.showDraft.bind(this);
+        this.showApproved = this.showApproved.bind(this);
         this.unlockSelected = this.unlockSelected.bind(this);
         this.lockSelected = this.lockSelected.bind(this);
         this.selectChange = this.selectChange.bind(this);
@@ -86,14 +93,18 @@ export default class App extends React.Component {
     //     return this.props.models[model].objects[id][PARENT_FIELD[model]]
     // }
 
-    showDraft() {
+    showUpdates(updateIds) {
         periodSelectReset();
-        const updates = this.props.models[OBJECTS_UPDATES];
-        const draftUpdates = updates.ids.filter((id) =>
-            updates.objects[id].status == UPDATE_STATUS_DRAFT
-        );
-        draftUpdates.map((id) => updateFormOpen(id));
-        openNodes(OBJECTS_UPDATES, draftUpdates, true);
+        updateIds.map((id) => updateFormOpen(id));
+        openNodes(OBJECTS_UPDATES, updateIds, true);
+    }
+
+    showDraft() {
+        this.showUpdates(this.props.draftUpdates);
+    }
+
+    showApproved() {
+        this.showUpdates(this.props.approvedUpdates);
     }
 
     unlockSelected() {
@@ -109,16 +120,29 @@ export default class App extends React.Component {
         e.value();
     }
 
+    needReporting() {
+        selectPeriodsThatNeedReporting();
+    }
+
     render() {
         const right = {float: 'right'};
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
+        const needReportingCount = fieldValueOrSpinner(periodsThatNeedReporting(), 'length');
+        const needReportingLabel = `Need reporting (${needReportingCount})`;
+        const draftUpdateCount = fieldValueOrSpinner(this.props.draftUpdates, 'length');
+        const draftUpdateLabel = `Pending approval (${draftUpdateCount})`;
+        const approvedUpdateCount = fieldValueOrSpinner(this.props.approvedUpdates, 'length');
+        const approvedUpdateLabel = `Approved (${approvedUpdateCount})`;
+
+
         return (
             <div>
                 <div className={'row results-bar-titles'}>
                     <div className="col-xs-3">Select periods</div>
-                    <div className="col-xs-4">Period actions</div>
-                    <div className="col-xs-5">Show updates</div>
+                    <div className="col-xs-3">Period actions</div>
+                    <div className="col-xs-2">Show periods</div>
+                    <div className="col-xs-4">Show updates</div>
                 </div>
                 <div className={'row'}>
                     <div  className="col-xs-3">
@@ -126,14 +150,20 @@ export default class App extends React.Component {
                                 multi={false} placeholder="Select period(s)" searchable={false}
                                 clearable={false} onChange={this.selectChange}/>
                     </div>
-                    <div  className="col-xs-4">
+                    <div  className="col-xs-3">
                         <ToggleButton onClick={this.lockSelected} label="Lock selected"
                                       disabled={!this.props.ui.allFetched}/>
                         <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
                                       disabled={!this.props.ui.allFetched}/>
                     </div>
-                    <div  className="col-xs-5">
-                        <ToggleButton onClick={this.showDraft} label="Pending approval"
+                    <div  className="col-xs-2">
+                        <ToggleButton onClick={this.needReporting} label={needReportingLabel}
+                                      disabled={!this.props.ui.allFetched}/>
+                    </div>
+                    <div  className="col-xs-4">
+                        <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
+                                      disabled={!this.props.ui.allFetched}/>
+                        <ToggleButton onClick={this.showApproved} label={approvedUpdateLabel}
                                       disabled={!this.props.ui.allFetched}/>
                     </div>
                 </div>

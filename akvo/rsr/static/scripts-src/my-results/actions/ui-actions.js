@@ -92,8 +92,12 @@ function checkAndShowPeriods(ids) {
 }
 
 function filterPeriodsByLock(locked) {
-    const periods = store.getState().models[OBJECTS_PERIODS];
-    return periods.ids.filter((id) => periods.objects[id].locked == locked);
+    const ids = store.getState().models[OBJECTS_PERIODS].ids;
+    if (ids) {
+        const periodObjects = store.getState().models[OBJECTS_PERIODS].objects;
+        return ids.filter((id) => periodObjects[id].locked == locked);
+    }
+    return [];
 }
 
 function selectLockedPeriods() {
@@ -104,14 +108,14 @@ function selectUnlockedPeriods() {
     checkAndShowPeriods(filterPeriodsByLock(false));
 }
 
-function periodsThatNeedReporting() {
+export function periodsThatNeedReporting() {
     // Returns ids of periods that are unlocked and have no updates
     const periods = store.getState().models[OBJECTS_PERIODS];
     const unlockedPeriods = filterPeriodsByLock(false);
     return unlockedPeriods.filter((id) => periods.objects[id]._meta && periods.objects[id]._meta.children.ids.length == 0);
 }
 
-function selectPeriodsThatNeedReporting() {
+export function selectPeriodsThatNeedReporting() {
     const needReporting = periodsThatNeedReporting();
     periodSelectReset();
     openNodes(OBJECTS_PERIODS, needReporting, true);
@@ -168,12 +172,10 @@ export function selectablePeriods(periodIds) {
         });
         const lockedCount = filterPeriodsByLock(true).length;
         const unlockedCount = filterPeriodsByLock(false).length;
-        const needReportingCount = periodsThatNeedReporting().length;
         // Construct labels and values for selecting all locked or unlocked periods similarly to above,
         // as well as "header" labels that aren't selectable
         const periodSelectOptions = [
             {label: <strong style={optionStyle}>{'Select by status'}</strong>, value: null, disabled: true},
-            {label: `Need reporting (${needReportingCount})`, value: selectPeriodsThatNeedReporting},
             {label: `Locked periods (${lockedCount})`, value: selectLockedPeriods},
             {label: `Unlocked periods (${unlockedCount})`, value: selectUnlockedPeriods},
             {label: <strong style={optionStyle}>{'Select by period date'}</strong>, value: null, disabled: true},

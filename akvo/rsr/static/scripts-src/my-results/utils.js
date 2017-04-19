@@ -366,3 +366,17 @@ export function openNodes(model, ids, reset) {
         store.dispatch(onChange(key, idsToActiveKey(mergedKeys[key])));
     });
 }
+
+
+export function fieldValueOrSpinner(obj, field) {
+    /*
+        If obj is defined return obj[field] otherwise return the spinner icon
+     */
+    if (obj) {
+        return obj[field];
+    } else {
+        return <i className="fa fa-spin fa-spinner" />;
+    }
+}
+
+
