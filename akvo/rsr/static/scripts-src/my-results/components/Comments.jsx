@@ -27,7 +27,10 @@ import {saveModelToBackend} from "../actions/model-actions";
 class CommentForm extends React.Component {
 
     static propTypes = {
-        parentId: PropTypes.number.isRequired,
+        parentId: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
     };
 
     constructor(props) {
@@ -98,7 +101,10 @@ Comment.propTypes = {
 export default class Comments extends React.Component {
 
     static propTypes = {
-        parentId: PropTypes.number.isRequired,
+        parentId: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
     };
 
     constructor(props) {
