@@ -59,15 +59,13 @@ class PeriodLockToggle extends React.Component {
 
     lockToggle(e) {
         const period = this.props.period;
-        // const toggleCallback = () => {
-        //     this.lockingToggle(false);
-        //     selectablePeriods();
-        // };
+        const toggleCallback = () => {
+            this.lockingToggle(false);
+        };
         if (!this.state.locking) {
             this.lockingToggle(true);
             this.updatePeriodLock(
-                // period.id, {locked: !period.locked}, toggleCallback
-                period.id, {locked: !period.locked}
+                period.id, {locked: !period.locked}, toggleCallback
             );
         }
         e.stopPropagation();
