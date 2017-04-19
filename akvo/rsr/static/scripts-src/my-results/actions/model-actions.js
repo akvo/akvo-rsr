@@ -117,7 +117,13 @@ export function modifyModelToBackend(model, method, url, data, fulfilledDispatch
             options.body = JSON.stringify(data);
         }
         fetch(url, options)
-            .then(response => response.json())
+            .then((response) => {
+                if (response.status != 204) {
+                    return response.json();
+                } else {
+                    return response;
+                }
+            })
             .then((data) => {
                 // update with data from backend
                 if (method != 'DELETE') {
