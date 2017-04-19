@@ -49,6 +49,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
+from .related_project import RelatedProject
 from .budget_item import BudgetItem
 
 
@@ -1194,68 +1195,44 @@ class Project(TimestampsMixin, models.Model):
         return self.parents() or self.children() or self.siblings()
 
     def parents(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=2
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=1
-            )
-        ).distinct().published().public()
+        return self.parents_all().published().public()
 
     def parents_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=2
+                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=1
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
             )
         ).distinct()
 
     def children(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=1
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=2
-            )
-        ).distinct().published().public()
+        return self.children_all().published().public()
 
     def children_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=1
+                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=2
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
             )
         ).distinct()
 
     def siblings(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=3
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=3
-            )
-        ).distinct().published().public()
+        return self.siblings_all().published().public()
 
     def siblings_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=3
+                related_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=3
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
             )
         ).distinct()
 
