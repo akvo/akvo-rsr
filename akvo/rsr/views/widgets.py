@@ -94,10 +94,7 @@ class ProjectListView(BaseWidgetView):
             'primary_location__country'
         ).prefetch_related(
             'last_update'
-        ).filter(
-            partnerships__organisation__id=org_id,
-            publishingstatus__status__exact='published'
-        ).order_by('-id').distinct()
+        ).of_partner(org_id).published().public().distinct()
 
         if order_by == 'status':
             projects = projects.order_by('status', 'title')
