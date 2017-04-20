@@ -278,7 +278,7 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return Project.objects.filter(partnerships__organisation__in=self).distinct()
+            return Project.objects.of_partner(self).distinct()
 
         def public_projects(self):
             """
