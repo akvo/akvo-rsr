@@ -22,10 +22,9 @@ import {getIndicatorsChildrenIds, getIndicatorsAggregateActualValue, getResultsC
 const IndicatorHeader = ({indicator, aggregateActualValue}) => {
     const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
     return (
-        <span>
-            {
-                "Indicator: " + title + " | Aggregate actual value: " + aggregateActualValue
-            }
+        <span className="indicatorTitle">
+            {title}
+            <span  class="aggrActualValue">{ " | Aggregate actual value: " + aggregateActualValue}</span>
         </span>
     )
 };
@@ -39,16 +38,15 @@ IndicatorHeader.propTypes = {
 const IndicatorContent = ({indicator}) => {
     const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
     return (
-        <div>
-            {title}
-            <div className="baseline">
-                <div className="baseline-year">
+        <div className="baseline">
+            <ul>
+                <li className="baseline-year">
                     {_('baseline_year')}: {indicator.baseline_year}
-                </div>
-                <div className="baseline-value">
+                </li>
+                <li className="baseline-value">
                     {_('baseline_value')}: {indicator.baseline_value}
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
     )
 };
@@ -145,8 +143,10 @@ export default class Indicators extends React.Component {
                 </div>
             );
         } else {
-            return (
-                <p>No indicators</p>
+            return (                
+                <div className="emptyData">
+                  <p>No indicators</p>
+                </div>
             );
         }
     }

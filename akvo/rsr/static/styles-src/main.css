@@ -55,7 +55,7 @@ body {
   height: 100%;
   color: #202024;
   text-rendering: optimizelegibility;
-  font-family: "Poppins", "Questrial", "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 75px;
   font-size: 22px;
   font-size: 1.375rem;
@@ -82,7 +82,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74;
   margin-bottom: .5rem;
@@ -513,7 +513,7 @@ nav.navbar-fixed-top {
           -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
             color: #00aaff;
-            font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             border: thin solid transparent; }
             nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
               color: #ff5500; }
@@ -2546,264 +2546,6 @@ article {
     color: red;
     margin-left: 5px; }
 
-.baseline,
-.periodValues {
-  padding: 0.5em 0 2em 0;
-  position: relative;
-  width: 100%;
-  margin-top: 15px;
-  margin-bottom: 55px; }
-  .baseline .baseline-value,
-  .baseline .baseline-year,
-  .baseline .period-target,
-  .baseline .period-actual,
-  .baseline .period-target-comment,
-  .baseline .period-actual-comment,
-  .periodValues .baseline-value,
-  .periodValues .baseline-year,
-  .periodValues .period-target,
-  .periodValues .period-actual,
-  .periodValues .period-target-comment,
-  .periodValues .period-actual-comment {
-    display: inline-block !important;
-    padding: 0 0 10px 0px; }
-    .baseline .baseline-value > span:first-child,
-    .baseline .baseline-year > span:first-child,
-    .baseline .period-target > span:first-child,
-    .baseline .period-actual > span:first-child,
-    .baseline .period-target-comment > span:first-child,
-    .baseline .period-actual-comment > span:first-child,
-    .periodValues .baseline-value > span:first-child,
-    .periodValues .baseline-year > span:first-child,
-    .periodValues .period-target > span:first-child,
-    .periodValues .period-actual > span:first-child,
-    .periodValues .period-target-comment > span:first-child,
-    .periodValues .period-actual-comment > span:first-child {
-      display: block; }
-      .baseline .baseline-value > span:first-child span,
-      .baseline .baseline-year > span:first-child span,
-      .baseline .period-target > span:first-child span,
-      .baseline .period-actual > span:first-child span,
-      .baseline .period-target-comment > span:first-child span,
-      .baseline .period-actual-comment > span:first-child span,
-      .periodValues .baseline-value > span:first-child span,
-      .periodValues .baseline-year > span:first-child span,
-      .periodValues .period-target > span:first-child span,
-      .periodValues .period-actual > span:first-child span,
-      .periodValues .period-target-comment > span:first-child span,
-      .periodValues .period-actual-comment > span:first-child span {
-        display: inline; }
-    .baseline .baseline-value span:nth-child(2n), .baseline .baseline-value .actualValueSpan,
-    .baseline .baseline-year span:nth-child(2n),
-    .baseline .baseline-year .actualValueSpan,
-    .baseline .period-target span:nth-child(2n),
-    .baseline .period-target .actualValueSpan,
-    .baseline .period-actual span:nth-child(2n),
-    .baseline .period-actual .actualValueSpan,
-    .baseline .period-target-comment span:nth-child(2n),
-    .baseline .period-target-comment .actualValueSpan,
-    .baseline .period-actual-comment span:nth-child(2n),
-    .baseline .period-actual-comment .actualValueSpan,
-    .periodValues .baseline-value span:nth-child(2n),
-    .periodValues .baseline-value .actualValueSpan,
-    .periodValues .baseline-year span:nth-child(2n),
-    .periodValues .baseline-year .actualValueSpan,
-    .periodValues .period-target span:nth-child(2n),
-    .periodValues .period-target .actualValueSpan,
-    .periodValues .period-actual span:nth-child(2n),
-    .periodValues .period-actual .actualValueSpan,
-    .periodValues .period-target-comment span:nth-child(2n),
-    .periodValues .period-target-comment .actualValueSpan,
-    .periodValues .period-actual-comment span:nth-child(2n),
-    .periodValues .period-actual-comment .actualValueSpan {
-      display: block;
-      font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif; }
-      .baseline .baseline-value span:nth-child(2n) span, .baseline .baseline-value .actualValueSpan span,
-      .baseline .baseline-year span:nth-child(2n) span,
-      .baseline .baseline-year .actualValueSpan span,
-      .baseline .period-target span:nth-child(2n) span,
-      .baseline .period-target .actualValueSpan span,
-      .baseline .period-actual span:nth-child(2n) span,
-      .baseline .period-actual .actualValueSpan span,
-      .baseline .period-target-comment span:nth-child(2n) span,
-      .baseline .period-target-comment .actualValueSpan span,
-      .baseline .period-actual-comment span:nth-child(2n) span,
-      .baseline .period-actual-comment .actualValueSpan span,
-      .periodValues .baseline-value span:nth-child(2n) span,
-      .periodValues .baseline-value .actualValueSpan span,
-      .periodValues .baseline-year span:nth-child(2n) span,
-      .periodValues .baseline-year .actualValueSpan span,
-      .periodValues .period-target span:nth-child(2n) span,
-      .periodValues .period-target .actualValueSpan span,
-      .periodValues .period-actual span:nth-child(2n) span,
-      .periodValues .period-actual .actualValueSpan span,
-      .periodValues .period-target-comment span:nth-child(2n) span,
-      .periodValues .period-target-comment .actualValueSpan span,
-      .periodValues .period-actual-comment span:nth-child(2n) span,
-      .periodValues .period-actual-comment .actualValueSpan span {
-        display: inline; }
-      .baseline .baseline-value span:nth-child(2n) span:nth-child(1), .baseline .baseline-value .actualValueSpan span:nth-child(1),
-      .baseline .baseline-year span:nth-child(2n) span:nth-child(1),
-      .baseline .baseline-year .actualValueSpan span:nth-child(1),
-      .baseline .period-target span:nth-child(2n) span:nth-child(1),
-      .baseline .period-target .actualValueSpan span:nth-child(1),
-      .baseline .period-actual span:nth-child(2n) span:nth-child(1),
-      .baseline .period-actual .actualValueSpan span:nth-child(1),
-      .baseline .period-target-comment span:nth-child(2n) span:nth-child(1),
-      .baseline .period-target-comment .actualValueSpan span:nth-child(1),
-      .baseline .period-actual-comment span:nth-child(2n) span:nth-child(1),
-      .baseline .period-actual-comment .actualValueSpan span:nth-child(1),
-      .periodValues .baseline-value span:nth-child(2n) span:nth-child(1),
-      .periodValues .baseline-value .actualValueSpan span:nth-child(1),
-      .periodValues .baseline-year span:nth-child(2n) span:nth-child(1),
-      .periodValues .baseline-year .actualValueSpan span:nth-child(1),
-      .periodValues .period-target span:nth-child(2n) span:nth-child(1),
-      .periodValues .period-target .actualValueSpan span:nth-child(1),
-      .periodValues .period-actual span:nth-child(2n) span:nth-child(1),
-      .periodValues .period-actual .actualValueSpan span:nth-child(1),
-      .periodValues .period-target-comment span:nth-child(2n) span:nth-child(1),
-      .periodValues .period-target-comment .actualValueSpan span:nth-child(1),
-      .periodValues .period-actual-comment span:nth-child(2n) span:nth-child(1),
-      .periodValues .period-actual-comment .actualValueSpan span:nth-child(1) {
-        margin-left: 10px; }
-  .baseline .baseline-value,
-  .baseline .period-target,
-  .periodValues .baseline-value,
-  .periodValues .period-target {
-    width: 50%;
-    float: left; }
-  .baseline .baseline-year,
-  .baseline .period-actual,
-  .periodValues .baseline-year,
-  .periodValues .period-actual {
-    width: 50%;
-    float: right;
-    position: relative; }
-    .baseline .baseline-year span:nth-child(1),
-    .baseline .period-actual span:nth-child(1),
-    .periodValues .baseline-year span:nth-child(1),
-    .periodValues .period-actual span:nth-child(1) {
-      display: inline-block;
-      margin-right: 10px; }
-    .baseline .baseline-year span:nth-child(4),
-    .baseline .period-actual span:nth-child(4),
-    .periodValues .baseline-year span:nth-child(4),
-    .periodValues .period-actual span:nth-child(4) {
-      display: block;
-      font-weight: 700; }
-    .baseline .baseline-year span.actualValueSpan,
-    .baseline .period-actual span.actualValueSpan,
-    .periodValues .baseline-year span.actualValueSpan,
-    .periodValues .period-actual span.actualValueSpan {
-      display: block; }
-      .baseline .baseline-year span.actualValueSpan span:nth-child(1),
-      .baseline .period-actual span.actualValueSpan span:nth-child(1),
-      .periodValues .baseline-year span.actualValueSpan span:nth-child(1),
-      .periodValues .period-actual span.actualValueSpan span:nth-child(1) {
-        margin-right: 0; }
-      .baseline .baseline-year span.actualValueSpan span,
-      .baseline .period-actual span.actualValueSpan span,
-      .periodValues .baseline-year span.actualValueSpan span,
-      .periodValues .period-actual span.actualValueSpan span {
-        display: inline; }
-    .baseline .baseline-year .badge,
-    .baseline .period-actual .badge,
-    .periodValues .baseline-year .badge,
-    .periodValues .period-actual .badge {
-      background-color: #202024;
-      -moz-transition: all 0.1s linear;
-      -o-transition: all 0.1s linear;
-      -webkit-transition: all 0.1s linear;
-      transition: all 0.1s linear;
-      margin-top: -5px;
-      padding: 5px 9px;
-      -moz-border-radius: 15px;
-      -o-border-radius: 15px;
-      -webkit-border-radius: 15px;
-      border-radius: 15px;
-      font-family: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif; }
-      .baseline .baseline-year .badge:hover,
-      .baseline .period-actual .badge:hover,
-      .periodValues .baseline-year .badge:hover,
-      .periodValues .period-actual .badge:hover {
-        background-color: #2c2a74;
-        cursor: pointer; }
-    .baseline .baseline-year .result-tooltip,
-    .baseline .period-actual .result-tooltip,
-    .periodValues .baseline-year .result-tooltip,
-    .periodValues .period-actual .result-tooltip {
-      clear: both;
-      position: absolute;
-      top: 35px;
-      left: 60px;
-      background: white;
-      border: 1px solid rgba(153, 153, 153, 0.8);
-      color: #202024;
-      -moz-border-radius: 4px;
-      -o-border-radius: 4px;
-      -webkit-border-radius: 4px;
-      border-radius: 4px; }
-      .baseline .baseline-year .result-tooltip .tooltip-inner,
-      .baseline .period-actual .result-tooltip .tooltip-inner,
-      .periodValues .baseline-year .result-tooltip .tooltip-inner,
-      .periodValues .period-actual .result-tooltip .tooltip-inner {
-        background: white;
-        color: #202024;
-        -moz-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
-        -o-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
-        -webkit-box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5);
-        box-shadow: 1px 1px 2px rgba(32, 32, 36, 0.5); }
-      .baseline .baseline-year .result-tooltip .tooltip-arrow,
-      .baseline .period-actual .result-tooltip .tooltip-arrow,
-      .periodValues .baseline-year .result-tooltip .tooltip-arrow,
-      .periodValues .period-actual .result-tooltip .tooltip-arrow {
-        position: absolute;
-        background: white;
-        border: 1px solid rgba(153, 153, 153, 0.8);
-        left: 50px;
-        top: -2px; }
-        .baseline .baseline-year .result-tooltip .tooltip-arrow:after, .baseline .baseline-year .result-tooltip .tooltip-arrow:before,
-        .baseline .period-actual .result-tooltip .tooltip-arrow:after,
-        .baseline .period-actual .result-tooltip .tooltip-arrow:before,
-        .periodValues .baseline-year .result-tooltip .tooltip-arrow:after,
-        .periodValues .baseline-year .result-tooltip .tooltip-arrow:before,
-        .periodValues .period-actual .result-tooltip .tooltip-arrow:after,
-        .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
-          bottom: 100%;
-          left: 50%;
-          border: solid transparent;
-          content: " ";
-          height: 0;
-          width: 0;
-          position: absolute;
-          pointer-events: none; }
-        .baseline .baseline-year .result-tooltip .tooltip-arrow:after,
-        .baseline .period-actual .result-tooltip .tooltip-arrow:after,
-        .periodValues .baseline-year .result-tooltip .tooltip-arrow:after,
-        .periodValues .period-actual .result-tooltip .tooltip-arrow:after {
-          border-color: rgba(136, 183, 213, 0);
-          border-bottom-color: rgba(153, 153, 153, 0.5);
-          border-width: 7px;
-          margin-left: -7px; }
-        .baseline .baseline-year .result-tooltip .tooltip-arrow:before,
-        .baseline .period-actual .result-tooltip .tooltip-arrow:before,
-        .periodValues .baseline-year .result-tooltip .tooltip-arrow:before,
-        .periodValues .period-actual .result-tooltip .tooltip-arrow:before {
-          border-color: rgba(194, 225, 245, 0);
-          border-bottom-color: rgba(153, 153, 153, 0.5);
-          border-width: 8px;
-          margin-left: -8px; }
-  .baseline .period-target-comment,
-  .periodValues .period-target-comment {
-    width: 50%;
-    float: left;
-    padding: 0 0 40px 0px; }
-  .baseline .period-actual-comment,
-  .periodValues .period-actual-comment {
-    width: 50%;
-    float: right;
-    padding: 0 0 40px 0px; }
-
 .sidebar {
   width: 50%;
   min-width: 200px;
@@ -4111,116 +3853,94 @@ div.iatiFilters {
       -webkit-transition: height 0.2s ease-out;
       transition: height 0.2s ease-out; }
     .results .rc-collapse .rc-collapse-item {
-      padding: 5px;
+      padding: 10px 5px;
       background: white;
       border: 1px solid #f2f0e6;
       margin-top: 5px;
-      margin-bottom: 5px; }
+      margin-bottom: 15px;
+      cursor: pointer; }
+      .results .rc-collapse .rc-collapse-item:last-child {
+        margin-bottom: 0; }
       .results .rc-collapse .rc-collapse-item .rc-collapse-header {
-        padding: 5px; }
+        padding: 5px 10px;
+        position: relative; }
+        .results .rc-collapse .rc-collapse-item .rc-collapse-header span.resultTitle {
+          display: inline-block;
+          width: calc(100% - 20px);
+          color: rgba(32, 32, 36, 0.5); }
+        .results .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] span.resultTitle {
+          color: #202024; }
+        .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType {
+          margin: 0px 0 0 5px;
+          font-weight: 400; }
+          .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType::before {
+            content: "| ";
+            font-weight: bold; }
+        .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count {
+          display: block;
+          margin-top: 7px;
+          color: rgba(32, 32, 36, 0.5); }
+          .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count .fa {
+            display: none; }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
           display: inline-block;
           width: 20px;
           height: 20px;
           vertical-align: middle;
-          margin-right: 8px;
+          margin-right: 4px;
           color: black;
+          position: absolute;
+          right: 0;
           background: url(../images/arrowUpDown.png) no-repeat top center; }
       .results .rc-collapse .rc-collapse-item .rc-collapse-content.rc-collapse-content-inactive {
         display: none; }
       .results .rc-collapse .rc-collapse-item.rc-collapse-item-active {
-        background: rgba(242, 240, 230, 0.9);
+        background: rgba(240, 240, 240, 0.5);
         border: 1px solid #f2f0e6; }
         .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
-          padding: 5px;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-          cursor: pointer;
-          color: #2c2a74; }
-          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span {
-            color: #2c2a74; }
+          cursor: pointer; }
           .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
             background: url(../images/arrowUpDown.png) no-repeat bottom center; }
-        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
-          vertical-align: top;
-          background-color: rgba(242, 240, 230, 0.3);
-          border: 1px solid rgba(242, 240, 230, 0.8);
-          -webkit-box-flex: 1;
-          -moz-box-flex: 1;
-          -webkit-flex: 1;
-          -ms-flex: 1;
-          flex: 1;
-          position: relative;
-          border: none; }
-          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box {
-            /*Indicators block*/ }
-            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators > button {
-              display: none; }
-            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item {
-              padding: 5px;
-              background: rgba(255, 255, 255, 0.5);
-              margin-top: 5px;
-              margin-bottom: 5px; }
-              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header {
-                background: rgba(255, 0, 0, 0); }
-                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
-                  display: inline-block;
-                  width: 20px;
-                  height: 20px;
-                  vertical-align: middle;
-                  margin-right: 8px;
-                  color: black;
-                  background: url(../images/arrowUpDown.png) no-repeat top center; }
-              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active {
-                background: white;
-                border: 1px solid #f2f0e6; }
-                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
-                  background: rgba(255, 0, 0, 0); }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
-                    background: url(../images/arrowUpDown.png) no-repeat bottom center; }
-                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
-                  vertical-align: top;
-                  -webkit-box-flex: 1;
-                  -moz-box-flex: 1;
-                  -webkit-flex: 1;
-                  -ms-flex: 1;
-                  flex: 1;
-                  position: relative;
-                  /*Periods block*/ }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline {
-                    color: #202024; }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods > button {
-                    display: none; }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header {
-                    background: rgba(255, 255, 255, 0.3); }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .arrow {
-                    display: inline-block;
-                    width: 20px;
-                    height: 20px;
-                    vertical-align: middle;
-                    margin-right: 8px;
-                    color: black;
-                    background: url(../images/arrowUpDown.png) no-repeat top center; }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
-                    background: rgba(255, 255, 255, 0.3); }
-                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
-                      background: url(../images/arrowUpDown.png) no-repeat bottom center; }
-                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
-                    padding: 5px;
-                    vertical-align: top;
-                    background-color: rgba(0, 0, 0, 0.05);
-                    -webkit-box-flex: 1;
-                    -moz-box-flex: 1;
-                    -webkit-flex: 1;
-                    -ms-flex: 1;
-                    flex: 1;
-                    position: relative; }
-                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > button {
-                      display: none; }
-                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
-                      background: rgba(255, 255, 255, 0.3); }
-                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .arrow {
+        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content {
+          padding: 5px 0; }
+          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-inactive {
+            background-color: rgba(242, 240, 230, 0.3);
+            border: 1px solid rgba(242, 240, 230, 0.5); }
+          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+            vertical-align: top;
+            background-color: rgba(242, 240, 230, 0);
+            border: 1px solid rgba(242, 240, 230, 0);
+            -webkit-box-flex: 1;
+            -moz-box-flex: 1;
+            -webkit-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            position: relative;
+            border: none; }
+            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box {
+              /*Indicators block*/ }
+              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyData {
+                padding: 10px;
+                text-indent: 30px;
+                color: rgba(32, 32, 36, 0.5); }
+              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators {
+                padding-right: 10px;
+                padding-left: 10px; }
+                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators > button {
+                  display: none; }
+                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item {
+                  padding: 5px;
+                  background: white;
+                  margin-top: 5px;
+                  border: none;
+                  margin-bottom: 5px; }
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header {
+                    background: rgba(255, 0, 0, 0);
+                    padding: 10px 5px; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
+                      display: inline-block;
+                      text-indent: 10px; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
                       display: inline-block;
                       width: 20px;
                       height: 20px;
@@ -4228,31 +3948,96 @@ div.iatiFilters {
                       margin-right: 8px;
                       color: black;
                       background: url(../images/arrowUpDown.png) no-repeat top center; }
-                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
-                      background: rgba(255, 255, 255, 0.3); }
-                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+                  .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active {
+                    background: white;
+                    border: 1px solid #f2f0e6; }
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+                      background: rgba(255, 0, 0, 0); }
+                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
                         background: url(../images/arrowUpDown.png) no-repeat bottom center; }
-                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
-                      padding: 5px;
+                    .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
                       vertical-align: top;
-                      background-color: rgba(0, 0, 0, 0.05);
                       -webkit-box-flex: 1;
                       -moz-box-flex: 1;
                       -webkit-flex: 1;
                       -ms-flex: 1;
                       flex: 1;
-                      position: relative; }
-
-.rc-collapse-header .indicatorType {
-  margin: 0px 3px;
-  font-weight: 400;
-  color: #ff5500; }
-
-div.periodSelected.rc-collapse-item {
-  background: #cde7f0 !important; }
-
-div.needsReporting.rc-collapse-item {
-  background: #ffb2ae !important; }
+                      position: relative;
+                      background: none;
+                      /*Periods block*/ }
+                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box {
+                        font-size: 90%; }
+                        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline {
+                          padding-bottom: 5px;
+                          border-bottom: 1px solid rgba(32, 32, 36, 0.1); }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul {
+                            color: #202024; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul li {
+                              display: inline; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul .baseline-value {
+                              margin-left: 55px; }
+                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods > button {
+                        display: none; }
+                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item {
+                        border: none;
+                        padding: 0; }
+                        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
+                          padding: 0 10px; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li {
+                            display: inline;
+                            margin-right: 10px; }
+                        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .arrow {
+                          display: inline-block;
+                          width: 20px;
+                          height: 20px;
+                          vertical-align: middle;
+                          margin-right: 8px;
+                          color: black;
+                          background: url(../images/arrowUpDown.png) no-repeat top center; }
+                        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+                          background: rgba(255, 255, 255, 0.3);
+                          border: none; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul {
+                            padding: 0 10px; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul li {
+                              display: inline; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+                        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+                          padding: 5px;
+                          vertical-align: top;
+                          background-color: rgba(0, 0, 0, 0.05);
+                          -webkit-box-flex: 1;
+                          -moz-box-flex: 1;
+                          -webkit-flex: 1;
+                          -ms-flex: 1;
+                          flex: 1;
+                          position: relative; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > button {
+                            display: none; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
+                            background: rgba(255, 255, 255, 0.3); }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .arrow {
+                            display: inline-block;
+                            width: 20px;
+                            height: 20px;
+                            vertical-align: middle;
+                            margin-right: 8px;
+                            color: black;
+                            background: url(../images/arrowUpDown.png) no-repeat top center; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+                            background: rgba(255, 255, 255, 0.3); }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+                              background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+                            padding: 5px;
+                            vertical-align: top;
+                            -webkit-box-flex: 1;
+                            -moz-box-flex: 1;
+                            -webkit-flex: 1;
+                            -ms-flex: 1;
+                            flex: 1;
+                            position: relative; }
 
 .comment {
   margin-left: 5px; }

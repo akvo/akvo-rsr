@@ -85,7 +85,6 @@ class PeriodLockToggle extends React.Component {
         }
         return (
             <ToggleButton onClick={this.lockToggle}
-                          style={{float: 'right'}}
                           label={label}
                           icon={icon}/>
         )
@@ -106,7 +105,7 @@ const PeriodSelect = ({id, toggleCheckbox, isChecked}) => {
     // for opening/closing the collapse panel will be triggered. However when using the onClick
     // handler React complais that the component isn't managed correctly, thus the noop onChange.
     return <input id={id} type="checkbox" checked={isChecked ? "checked" : ""}
-                  style={{float: 'right'}} onClick={toggleCheckbox} onChange={()=>{}}/>
+                  onClick={toggleCheckbox} onChange={()=>{}}/>
 };
 PeriodSelect.propTypes = {
     id: PropTypes.number.isRequired,
@@ -126,14 +125,16 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
         lockStatus = <PeriodLockStatus lockStatus={period.locked ? 'Locked' : 'Unlocked'}/>
     }
     return (
-        <span>
-            <span>
-                Period: {periodDate} |
-                Target value: {period.target_value} |
-                Actual value: {actualValue}
-            </span>
-            <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/>
-            {lockStatus}
+        <span className="periodWrap">
+            <ul className="">
+                <li><PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/></li>
+                <li>{periodDate} |</li>
+                <li> Target value: {period.target_value} |</li>
+                <li>Actual value: {actualValue}</li>
+                <li>{lockStatus}</li>           
+            </ul>
+
+            
         </span>
     )
 };
@@ -265,7 +266,9 @@ export default class Periods extends React.Component {
             );
         } else {
             return (
-                <p>No periods</p>
+                <div className="emptyData">
+                    <p>No periods</p>
+                </div>
             );
         }
     }

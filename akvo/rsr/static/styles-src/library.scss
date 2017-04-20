@@ -87,9 +87,9 @@ $progressWarning: #d9534f;
 
 $newResultColor: rgb(100, 99, 99);
 
-$bodyFont: "Poppins", "Questrial", "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$bodyFont: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $scriptFont: "Baskerville", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
-$titleFont: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$titleFont: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 @mixin flex($value) {
     -webkit-box-flex: $value;

@@ -205,7 +205,9 @@ export default class Updates extends React.Component {
             );
         } else {
             return (
-                <p>No updates</p>
+                <div className="emptyData">
+                    <p>No updates</p>
+                </div>
             );
         }
     }
