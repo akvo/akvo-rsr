@@ -3875,7 +3875,8 @@ div.iatiFilters {
           font-weight: 400; }
           .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType::before {
             content: "| ";
-            font-weight: bold; }
+            margin-right: 20px;
+            color: rgba(32, 32, 36, 0.5); }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count {
           display: block;
           margin-top: 7px;
@@ -3938,8 +3939,17 @@ div.iatiFilters {
                     background: rgba(255, 0, 0, 0);
                     padding: 10px 5px; }
                     .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
-                      display: inline-block;
-                      text-indent: 10px; }
+                      display: inline-block; }
+                      .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul {
+                        padding-left: 0; }
+                        .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li {
+                          display: inline; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
+                            margin-left: 25px; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2)::before {
+                              content: "|";
+                              margin-right: 20px;
+                              color: rgba(32, 32, 36, 0.5); }
                     .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
                       display: inline-block;
                       width: 20px;
@@ -3971,7 +3981,7 @@ div.iatiFilters {
                           padding-bottom: 5px;
                           border-bottom: 1px solid rgba(32, 32, 36, 0.1); }
                           .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul {
-                            color: #202024; }
+                            color: rgba(32, 32, 36, 0.4); }
                             .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul li {
                               display: inline; }
                             .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul .baseline-value {
@@ -3982,15 +3992,40 @@ div.iatiFilters {
                         border: none;
                         padding: 0; }
                         .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
-                          padding: 0 10px; }
+                          padding: 0 10px;
+                          cursor: pointer;
+                          background-color: white;
+                          margin-bottom: 0;
+                          -moz-transition: background-color 0.2s linear;
+                          -o-transition: background-color 0.2s linear;
+                          -webkit-transition: background-color 0.2s linear;
+                          transition: background-color 0.2s linear; }
+                          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul:hover {
+                            background-color: rgba(44, 42, 116, 0.1); }
                           .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li {
                             display: inline;
-                            margin-right: 10px; }
+                            margin-right: 10px;
+                            padding-left: 35px; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(1) {
+                              padding-left: 0px; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(2) {
+                              padding-left: 0px; }
+                            .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) {
+                              margin-right: 0px; }
+                              .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) button {
+                                margin: 0px 0 0 25px;
+                                background: #202024;
+                                color: white;
+                                border: none; }
+                                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) button:hover {
+                                  background: #2c2a74;
+                                  color: white; }
                         .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .periods .rc-collapse .rc-collapse-item .arrow {
                           display: inline-block;
                           width: 20px;
                           height: 20px;
                           vertical-align: middle;
+                          margin-top: 5px;
                           margin-right: 8px;
                           color: black;
                           background: url(../images/arrowUpDown.png) no-repeat top center; }

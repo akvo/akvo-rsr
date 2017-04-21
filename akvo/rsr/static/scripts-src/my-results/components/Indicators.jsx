@@ -23,8 +23,10 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
     const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
     return (
         <span className="indicatorTitle">
-            {title}
-            <span  class="aggrActualValue">{ " | Aggregate actual value: " + aggregateActualValue}</span>
+            <ul>
+                <li>{title}</li>
+                <li><span  class="aggrActualValue">{ "Aggregate actual value: " + aggregateActualValue}</span></li>
+            </ul>
         </span>
     )
 };

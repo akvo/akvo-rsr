@@ -86,7 +86,7 @@ class PeriodLockToggle extends React.Component {
         return (
             <ToggleButton onClick={this.lockToggle}
                           label={label}
-                          icon={icon}/>
+                          />
         )
     }
 }
@@ -128,8 +128,8 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
         <span className="periodWrap">
             <ul className="">
                 <li><PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/></li>
-                <li>{periodDate} |</li>
-                <li> Target value: {period.target_value} |</li>
+                <li>{periodDate}</li>
+                <li> Target value: {period.target_value}</li>
                 <li>Actual value: {actualValue}</li>
                 <li>{lockStatus}</li>           
             </ul>
