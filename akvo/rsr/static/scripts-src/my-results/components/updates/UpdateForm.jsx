@@ -515,16 +515,12 @@ export class NewUpdateButton extends React.Component {
 
     render() {
         return (
-            <div>
-                <div>
+                <div className="emptyUpdate">
                     <a onClick={this.newUpdate}
-                       className={'btn btn-sm btn-default'}
-                       style={{margin: '0.3em 0.5em'}}>
-                        <i className='fa fa-plus' />
+                       className={'btn btn-sm btn-default newUpdate'}>                       
                         {_('new_update')}
                     </a>
                 </div>
-            </div>
         )
     }
 }

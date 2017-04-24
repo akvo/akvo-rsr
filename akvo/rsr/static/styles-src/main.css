@@ -3871,16 +3871,18 @@ div.iatiFilters {
         .results .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] span.resultTitle {
           color: #202024; }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType {
-          margin: 0px 0 0 5px;
-          font-weight: 400; }
+          margin: 0px 0 0 10px;
+          font-weight: 400;
+          color: #ff5500; }
           .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType::before {
-            content: "| ";
-            margin-right: 20px;
+            content: "-";
+            margin-right: 10px;
             color: rgba(32, 32, 36, 0.5); }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count {
           display: block;
           margin-top: 7px;
-          color: rgba(32, 32, 36, 0.5); }
+          color: rgba(44, 42, 116, 0.5);
+          font-size: 0.9em; }
           .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count .fa {
             display: none; }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
@@ -3900,8 +3902,8 @@ div.iatiFilters {
         border: 1px solid #f2f0e6; }
         .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
           cursor: pointer; }
-          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
-            background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+          .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
+            background: url(../images/arrowUpDown.png) no-repeat bottom center !important; }
         .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content {
           padding: 5px 0; }
           .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-inactive {
@@ -3922,8 +3924,9 @@ div.iatiFilters {
               /*Indicators block*/ }
               .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyData {
                 padding: 10px;
-                text-indent: 30px;
                 color: rgba(32, 32, 36, 0.5); }
+                .results .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyData p {
+                  text-align: center; }
 
 .indicators {
   padding-right: 10px;
@@ -3934,11 +3937,14 @@ div.iatiFilters {
     padding: 5px;
     background: white;
     margin-top: 5px;
-    border: none;
+    border: 1px solid rgba(32, 32, 36, 0.1);
     margin-bottom: 5px; }
     .indicators .rc-collapse .rc-collapse-item .rc-collapse-header {
       background: rgba(255, 0, 0, 0);
-      padding: 10px 5px; }
+      padding: 10px 5px;
+      opacity: 0.5; }
+      .indicators .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] {
+        opacity: 1; }
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
         display: inline-block; }
         .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul {
@@ -3946,26 +3952,29 @@ div.iatiFilters {
           .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li {
             display: inline; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
-              margin-left: 25px; }
+              margin-left: 10px;
+              color: rgba(32, 32, 36, 0.5); }
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2)::before {
-                content: "|";
-                margin-right: 20px;
+                content: "-";
+                margin-right: 10px;
                 color: rgba(32, 32, 36, 0.5); }
-      .indicators .rc-collapse .rc-collapse-item .rc-collapse-header .arrow {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
-        margin-right: 8px;
-        color: black;
-        background: url(../images/arrowUpDown.png) no-repeat top center; }
+    .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-inactive .rc-collapse-header .arrow {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 8px;
+      color: black;
+      background: url(../images/arrowUpDown.png) no-repeat top center !important; }
     .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active {
       background: white;
       border: 1px solid #f2f0e6; }
       .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
-        background: rgba(255, 0, 0, 0); }
-        .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
-          background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+        opacity: 1; }
+        .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] {
+          opacity: 1; }
+          .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
+            background: url(../images/arrowUpDown.png) no-repeat bottom center !important; }
       .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
         vertical-align: top;
         -webkit-box-flex: 1;
@@ -3979,7 +3988,7 @@ div.iatiFilters {
         .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box {
           font-size: 90%; }
           .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline {
-            padding-bottom: 5px;
+            padding-bottom: 15px;
             border-bottom: 1px solid rgba(32, 32, 36, 0.1); }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul {
               color: rgba(32, 32, 36, 0.4); }
@@ -4014,24 +4023,23 @@ div.iatiFilters {
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(2) {
         padding-left: 0px; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) {
-        margin-right: 0px; }
+        margin-right: 0px;
+        padding-left: 75px; }
         .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) button {
           margin: 0px 0 0 25px;
-          background: #202024;
-          color: white;
+          background: transparent;
           border: none; }
           .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) button:hover {
             background: #2c2a74;
             color: white; }
-  .periods .rc-collapse .rc-collapse-item .arrow {
+  .periods .rc-collapse .rc-collapse-item.rc-collapse-item-inactive .rc-collapse-header .arrow {
     display: inline-block;
     width: 20px;
     height: 20px;
     vertical-align: middle;
-    margin-top: 5px;
     margin-right: 8px;
     color: black;
-    background: url(../images/arrowUpDown.png) no-repeat top center; }
+    background: url(../images/arrowUpDown.png) no-repeat top center !important; }
   .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
     background: rgba(255, 255, 255, 0.3);
     border: none; }
@@ -4039,8 +4047,8 @@ div.iatiFilters {
       padding: 0 10px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul li {
         display: inline; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
-      background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
+      background: url(../images/arrowUpDown.png) no-repeat bottom center !important; }
   .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
     padding: 5px;
     vertical-align: top;
@@ -4051,8 +4059,17 @@ div.iatiFilters {
     -ms-flex: 1;
     flex: 1;
     position: relative; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > button {
-      display: none; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate {
+      display: flex; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate {
+        display: inline-block;
+        margin: 0px auto;
+        background: #202024;
+        color: white;
+        border: none; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate:hover {
+          background: #2c2a74;
+          color: white; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
       background: rgba(255, 255, 255, 0.3); }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .arrow {

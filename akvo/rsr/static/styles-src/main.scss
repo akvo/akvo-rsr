@@ -5791,12 +5791,13 @@ div.iatiFilters {
                 }
 
                 .indicatorType {
-                    margin: 0px 0 0 5px;
+                    margin: 0px 0 0 10px;
                     font-weight: 400;
+                    color: $anchorLinkHover;
 
                     &::before {
-                        content: "| ";
-                        margin-right: 20px;
+                        content: "-";
+                        margin-right: 10px;
                         color: rgba($akvoBlack, 0.5);
                     }
                 }
@@ -5804,7 +5805,8 @@ div.iatiFilters {
                 .result-indicator-count {
                     display: block;
                     margin-top: 7px;
-                    color: rgba($akvoBlack, 0.5);
+                    color: rgba($akvoPurple, 0.5);
+                    font-size: 0.9em;
 
                     .fa {
                         display: none;
@@ -5837,8 +5839,10 @@ div.iatiFilters {
 
                     span {}
 
-                    .arrow {
-                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                    &[aria-expanded="true"] {
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
                     }
                 }
 
@@ -5866,8 +5870,11 @@ div.iatiFilters {
                             /*Indicators block*/
                             .emptyData {
                                 padding: 10px;
-                                text-indent: 30px;
                                 color: rgba($akvoBlack, 0.5);
+
+                                p {
+                                    text-align: center;
+                                }
                             }
                         }
                     }
@@ -5890,12 +5897,17 @@ div.iatiFilters {
             padding: 5px;
             background: rgba(white, 1);
             margin-top: 5px;
-            border: none;
+            border: 1px solid rgba(32, 32, 36, 0.1);
             margin-bottom: 5px;
 
             .rc-collapse-header {
                 background: rgba(red, 0);
                 padding: 10px 5px;
+                opacity: 0.5;
+
+                &[aria-expanded="true"] {
+                    opacity: 1;
+                }
 
                 span {
                     &.indicatorTitle {
@@ -5908,11 +5920,12 @@ div.iatiFilters {
                                 display: inline;
 
                                 &:nth-child(2) {
-                                    margin-left: 25px;
+                                    margin-left: 10px;
+                                    color: rgba($akvoBlack, 0.5);
 
                                     &::before {
-                                        content: "|";
-                                        margin-right: 20px;
+                                        content: "-";
+                                        margin-right: 10px;
                                         color: rgba($akvoBlack, 0.5);
                                     }
                                 }
@@ -5920,15 +5933,19 @@ div.iatiFilters {
                         }
                     }
                 }
+            }
 
-                .arrow {
-                    display: inline-block;
-                    width: 20px;
-                    height: 20px;
-                    vertical-align: middle;
-                    margin-right: 8px;
-                    color: black;
-                    background: url(../images/arrowUpDown.png) no-repeat top center;
+            &.rc-collapse-item-inactive {
+                .rc-collapse-header {
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
                 }
             }
 
@@ -5937,10 +5954,14 @@ div.iatiFilters {
                 border: 1px solid #f2f0e6;
 
                 .rc-collapse-header {
-                    background: rgba(red, 0);
+                    opacity: 1;
 
-                    .arrow {
-                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                    &[aria-expanded="true"] {
+                        opacity: 1;
+
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
                     }
                 }
 
@@ -5959,7 +5980,7 @@ div.iatiFilters {
                             font-size: 90%;
 
                             .baseline {
-                                padding-bottom: 5px;
+                                padding-bottom: 15px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
 
                                 ul {
@@ -6034,11 +6055,11 @@ div.iatiFilters {
 
                                 &:nth-child(5) {
                                     margin-right: 0px;
+                                    padding-left: 75px;
 
                                     button {
                                         margin: 0px 0 0 25px;
-                                        background: $akvoBlack;
-                                        color: white;
+                                        background: transparent;
                                         border: none;
 
                                         &:hover {
@@ -6053,15 +6074,18 @@ div.iatiFilters {
                 }
             }
 
-            .arrow {
-                display: inline-block;
-                width: 20px;
-                height: 20px;
-                vertical-align: middle;
-                margin-top: 5px;
-                margin-right: 8px;
-                color: black;
-                background: url(../images/arrowUpDown.png) no-repeat top center;
+            &.rc-collapse-item-inactive {
+                .rc-collapse-header {
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
+                }
             }
 
             &.rc-collapse-item-active {
@@ -6081,8 +6105,10 @@ div.iatiFilters {
                         }
                     }
 
-                    .arrow {
-                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                    &[aria-expanded="true"] {
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
                     }
                 }
 
@@ -6099,11 +6125,26 @@ div.iatiFilters {
                         position: relative;
 
                         .rc-collapse-content-box {
-                            .updates {
-                                > button {
-                                    display: none;
-                                }
+                            .emptyData {}
 
+                            .emptyUpdate {
+                                display: flex;
+
+                                .newUpdate {
+                                    display: inline-block;
+                                    margin: 0px auto;
+                                    background: $akvoBlack;
+                                    color: white;
+                                    border: none;
+
+                                    &:hover {
+                                        background: $rsrBlue;
+                                        color: white;
+                                    }
+                                }
+                            }
+
+                            .updates {
                                 .rc-collapse {
                                     .rc-collapse-item {
                                         .rc-collapse-header {
