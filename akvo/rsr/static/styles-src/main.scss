@@ -5869,68 +5869,260 @@ div.iatiFilters {
                                 text-indent: 30px;
                                 color: rgba($akvoBlack, 0.5);
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
-                            .indicators {
-                                padding-right: 10px;
-                                padding-left: 10px;
+.indicators {
+    padding-right: 10px;
+    padding-left: 10px;
 
+    > button {
+        display: none;
+    }
+
+    .rc-collapse {
+        .rc-collapse-item {
+            padding: 5px;
+            background: rgba(white, 1);
+            margin-top: 5px;
+            border: none;
+            margin-bottom: 5px;
+
+            .rc-collapse-header {
+                background: rgba(red, 0);
+                padding: 10px 5px;
+
+                span {
+                    &.indicatorTitle {
+                        display: inline-block;
+
+                        ul {
+                            padding-left: 0;
+
+                            li {
+                                display: inline;
+
+                                &:nth-child(2) {
+                                    margin-left: 25px;
+
+                                    &::before {
+                                        content: "|";
+                                        margin-right: 20px;
+                                        color: rgba($akvoBlack, 0.5);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .arrow {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                    color: black;
+                    background: url(../images/arrowUpDown.png) no-repeat top center;
+                }
+            }
+
+            &.rc-collapse-item-active {
+                background: rgba(white, 1);
+                border: 1px solid #f2f0e6;
+
+                .rc-collapse-header {
+                    background: rgba(red, 0);
+
+                    .arrow {
+                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                    }
+                }
+
+                .rc-collapse-content {
+                    &.rc-collapse-content-active {
+                        vertical-align: top;
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+                        background: none;
+
+                        .rc-collapse-content-box {
+                            font-size: 90%;
+
+                            .baseline {
+                                padding-bottom: 5px;
+                                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+
+                                ul {
+                                    color: rgba($akvoBlack, 0.4);
+
+                                    li {
+                                        display: inline;
+                                    }
+
+                                    .baseline-year {}
+
+                                    .baseline-value {
+                                        margin-left: 55px;
+                                    }
+                                }
+                            }
+                        }
+
+                        /*Periods block*/
+                    }
+                }
+            }
+        }
+    }
+}
+
+.periods {
+    > button {
+        display: none;
+    }
+
+    .rc-collapse {
+        .rc-collapse-item {
+            border: none;
+            padding: 0;
+
+            &.needsReporting {}
+
+            &.periodSelected {}
+
+            .rc-collapse-header {
+                span {
+                    &.periodWrap {
+                        ul {
+                            padding: 0 10px;
+                            cursor: pointer;
+                            background-color: white;
+                            margin-bottom: 0;
+
+                            @include transition(background-color 0.2s linear);
+
+                            &:hover {
+                                background-color: rgba($akvoPurple, 0.1);
+                            }
+
+                            li {
+                                display: inline;
+                                margin-right: 10px;
+                                padding-left: 35px;
+
+                                &:nth-child(1) {
+                                    padding-left: 0px;
+                                }
+
+                                &:nth-child(2) {
+                                    padding-left: 0px;
+                                }
+
+                                &:nth-child(3) {}
+
+                                &:nth-child(4) {}
+
+                                &:nth-child(5) {
+                                    margin-right: 0px;
+
+                                    button {
+                                        margin: 0px 0 0 25px;
+                                        background: $akvoBlack;
+                                        color: white;
+                                        border: none;
+
+                                        &:hover {
+                                            background: $rsrBlue;
+                                            color: white;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .arrow {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                vertical-align: middle;
+                margin-top: 5px;
+                margin-right: 8px;
+                color: black;
+                background: url(../images/arrowUpDown.png) no-repeat top center;
+            }
+
+            &.rc-collapse-item-active {
+                .rc-collapse-header {
+                    background: rgba(white, 0.3);
+                    border: none;
+
+                    span {
+                        &.periodWrap {
+                            ul {
+                                padding: 0 10px;
+
+                                li {
+                                    display: inline;
+                                }
+                            }
+                        }
+                    }
+
+                    .arrow {
+                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                    }
+                }
+
+                .rc-collapse-content {
+                    &.rc-collapse-content-active {
+                        padding: 5px;
+                        vertical-align: top;
+                        background-color: rgba(black, 0.05);
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+
+                        .rc-collapse-content-box {
+                            .updates {
                                 > button {
                                     display: none;
                                 }
 
                                 .rc-collapse {
                                     .rc-collapse-item {
-                                        padding: 5px;
-                                        background: rgba(white, 1);
-                                        margin-top: 5px;
-                                        border: none;
-                                        margin-bottom: 5px;
-
                                         .rc-collapse-header {
-                                            background: rgba(red, 0);
-                                            padding: 10px 5px;
+                                            background: rgba(white, 0.3);
+                                        }
 
-                                            span {
-                                                &.indicatorTitle {
-                                                    display: inline-block;
-
-                                                    ul {
-                                                        padding-left: 0;
-
-                                                        li {
-                                                            display: inline;
-
-                                                            &:nth-child(2) {
-                                                                margin-left: 25px;
-
-                                                                &::before {
-                                                                    content: "|";
-                                                                    margin-right: 20px;
-                                                                    color: rgba($akvoBlack, 0.5);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            .arrow {
-                                                display: inline-block;
-                                                width: 20px;
-                                                height: 20px;
-                                                vertical-align: middle;
-                                                margin-right: 8px;
-                                                color: black;
-                                                background: url(../images/arrowUpDown.png) no-repeat top center;
-                                            }
+                                        .arrow {
+                                            display: inline-block;
+                                            width: 20px;
+                                            height: 20px;
+                                            vertical-align: middle;
+                                            margin-right: 8px;
+                                            color: black;
+                                            background: url(../images/arrowUpDown.png) no-repeat top center;
                                         }
 
                                         &.rc-collapse-item-active {
-                                            background: rgba(white, 1);
-                                            border: 1px solid #f2f0e6;
-
                                             .rc-collapse-header {
-                                                background: rgba(red, 0);
+                                                background: rgba(white, 0.3);
 
                                                 .arrow {
                                                     background: url(../images/arrowUpDown.png) no-repeat bottom center;
@@ -5939,6 +6131,7 @@ div.iatiFilters {
 
                                             .rc-collapse-content {
                                                 &.rc-collapse-content-active {
+                                                    padding: 5px;
                                                     vertical-align: top;
                                                     -webkit-box-flex: 1;
                                                     -moz-box-flex: 1;
@@ -5946,201 +6139,8 @@ div.iatiFilters {
                                                     -ms-flex: 1;
                                                     flex: 1;
                                                     position: relative;
-                                                    background: none;
 
-                                                    .rc-collapse-content-box {
-                                                        font-size: 90%;
-
-                                                        .baseline {
-                                                            padding-bottom: 5px;
-                                                            border-bottom: 1px solid rgba($akvoBlack, 0.1);
-
-                                                            ul {
-                                                                color: rgba($akvoBlack, 0.4);
-
-                                                                li {
-                                                                    display: inline;
-                                                                }
-
-                                                                .baseline-year {}
-
-                                                                .baseline-value {
-                                                                    margin-left: 55px;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    /*Periods block*/
-
-                                                    .periods {
-                                                        > button {
-                                                            display: none;
-                                                        }
-
-                                                        .rc-collapse {
-                                                            .rc-collapse-item {
-                                                                border: none;
-                                                                padding: 0;
-
-                                                                &.needsReporting {}
-
-                                                                &.periodSelected {}
-
-                                                                .rc-collapse-header {
-                                                                    span {
-                                                                        &.periodWrap {
-                                                                            ul {
-                                                                                padding: 0 10px;
-                                                                                cursor: pointer;
-                                                                                background-color: white;
-                                                                                margin-bottom: 0;
-
-                                                                                @include transition(background-color 0.2s linear);
-
-                                                                                &:hover {
-                                                                                    background-color: rgba($akvoPurple, 0.1);
-                                                                                }
-
-                                                                                li {
-                                                                                    display: inline;
-                                                                                    margin-right: 10px;
-                                                                                    padding-left: 35px;
-
-                                                                                    &:nth-child(1) {
-                                                                                        padding-left: 0px;
-                                                                                    }
-
-                                                                                    &:nth-child(2) {
-                                                                                        padding-left: 0px;
-                                                                                    }
-
-                                                                                    &:nth-child(3) {}
-
-                                                                                    &:nth-child(4) {}
-
-                                                                                    &:nth-child(5) {
-                                                                                        margin-right: 0px;
-
-                                                                                        button {
-                                                                                            margin: 0px 0 0 25px;
-                                                                                            background: $akvoBlack;
-                                                                                            color: white;
-                                                                                            border: none;
-
-                                                                                            &:hover {
-                                                                                                background: $rsrBlue;
-                                                                                                color: white;
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-
-                                                                .arrow {
-                                                                    display: inline-block;
-                                                                    width: 20px;
-                                                                    height: 20px;
-                                                                    vertical-align: middle;
-                                                                    margin-top: 5px;
-                                                                    margin-right: 8px;
-                                                                    color: black;
-                                                                    background: url(../images/arrowUpDown.png) no-repeat top center;
-                                                                }
-
-                                                                &.rc-collapse-item-active {
-                                                                    .rc-collapse-header {
-                                                                        background: rgba(white, 0.3);
-                                                                        border: none;
-
-                                                                        span {
-                                                                            &.periodWrap {
-                                                                                ul {
-                                                                                    padding: 0 10px;
-
-                                                                                    li {
-                                                                                        display: inline;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-
-                                                                        .arrow {
-                                                                            background: url(../images/arrowUpDown.png) no-repeat bottom center;
-                                                                        }
-                                                                    }
-
-                                                                    .rc-collapse-content {
-                                                                        &.rc-collapse-content-active {
-                                                                            padding: 5px;
-                                                                            vertical-align: top;
-                                                                            background-color: rgba(black, 0.05);
-                                                                            -webkit-box-flex: 1;
-                                                                            -moz-box-flex: 1;
-                                                                            -webkit-flex: 1;
-                                                                            -ms-flex: 1;
-                                                                            flex: 1;
-                                                                            position: relative;
-
-                                                                            .rc-collapse-content-box {
-                                                                                .updates {
-                                                                                    > button {
-                                                                                        display: none;
-                                                                                    }
-
-                                                                                    .rc-collapse {
-                                                                                        .rc-collapse-item {
-                                                                                            .rc-collapse-header {
-                                                                                                background: rgba(white, 0.3);
-                                                                                            }
-
-                                                                                            .arrow {
-                                                                                                display: inline-block;
-                                                                                                width: 20px;
-                                                                                                height: 20px;
-                                                                                                vertical-align: middle;
-                                                                                                margin-right: 8px;
-                                                                                                color: black;
-                                                                                                background: url(../images/arrowUpDown.png) no-repeat top center;
-                                                                                            }
-
-                                                                                            &.rc-collapse-item-active {
-                                                                                                .rc-collapse-header {
-                                                                                                    background: rgba(white, 0.3);
-
-                                                                                                    .arrow {
-                                                                                                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
-                                                                                                    }
-                                                                                                }
-
-                                                                                                .rc-collapse-content {
-                                                                                                    &.rc-collapse-content-active {
-                                                                                                        padding: 5px;
-                                                                                                        vertical-align: top;
-                                                                                                        -webkit-box-flex: 1;
-                                                                                                        -moz-box-flex: 1;
-                                                                                                        -webkit-flex: 1;
-                                                                                                        -ms-flex: 1;
-                                                                                                        flex: 1;
-                                                                                                        position: relative;
-
-                                                                                                        .rc-collapse-content-box {}
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+                                                    .rc-collapse-content-box {}
                                                 }
                                             }
                                         }
