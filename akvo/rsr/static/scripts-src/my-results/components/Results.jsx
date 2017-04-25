@@ -58,8 +58,8 @@ const ResultHeader = ({result, indicatorCount=0}) => {
     };
 
     return (
-        <span>
-            {"Result: " + result.title}
+        <span className="resultTitle">
+            {result.title}
             {renderResultType(result)}
             <ResultHeaderIndicatorCount count={indicatorCount} />
         </span>
@@ -149,7 +149,9 @@ export default class Results extends React.Component {
             );
         } else {
             return (
-                <p>No results</p>
+                <div className="emptyData">
+                     <p>No results</p>
+                </div>
             );
         }
     }

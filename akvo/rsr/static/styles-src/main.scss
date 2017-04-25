@@ -3676,179 +3676,178 @@ article {
     }
 }
 
-.baseline,
-.periodValues {
-    padding: 0.5em 0 2em 0;
-    position: relative;
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 55px;
+// .baseline,
+// .periodValues {
+//     padding: 0.5em 0 2em 0;
+//     position: relative;
+//     width: 100%;
+//     margin-top: 15px;
+//     margin-bottom: 55px;
 
-    .baseline-value,
-    .baseline-year,
-    .period-target,
-    .period-actual,
-    .period-target-comment,
-    .period-actual-comment {
-        display: inline-block !important;
-        padding: 0 0 10px 0px;
+//     .baseline-value,
+//     .baseline-year,
+//     .period-target,
+//     .period-actual,
+//     .period-target-comment,
+//     .period-actual-comment {
+//         display: inline-block !important;
+//         padding: 0 0 10px 0px;
 
-        > span:first-child {
-            display: block;
+//         > span:first-child {
+//             display: block;
 
-            span {
-                display: inline;
-            }
-        }
+//             span {
+//                 display: inline;
+//             }
+//         }
 
-        span:nth-child(2n), .actualValueSpan {
-            display: block;
-            font-family: $titleFont;
+//         span:nth-child(2n), .actualValueSpan {
+//             display: block;
+//             font-family: $titleFont;
 
-            span {
-                display: inline;
-            }
+//             span {
+//                 display: inline;
+//             }
 
-            span:nth-child(1) {
-                margin-left: 10px;
-            }
-        }
-    }
+//             span:nth-child(1) {
+//                 margin-left: 10px;
+//             }
+//         }
+//     }
+//      //.period-target-comment {
+//     //    width: 50%;
+//     //    float: left;
+//     //    span:nth-child(2n) {
+//     //        font-weight: 400;
+//     //    }
+//     //}
+//     //.period-actual-comment {
+//     //    width: 50%;
+//     //    float: right;
+//     //    span:nth-child(2n) {
+//     //        font-weight: 400;
+//     //    }
+//     //}
+//     .baseline-value,
+//     .period-target {
+//         width: 50%;
+//         float: left;
+//     }
 
-    //.period-target-comment {
-    //    width: 50%;
-    //    float: left;
-    //    span:nth-child(2n) {
-    //        font-weight: 400;
-    //    }
-    //}
-    //.period-actual-comment {
-    //    width: 50%;
-    //    float: right;
-    //    span:nth-child(2n) {
-    //        font-weight: 400;
-    //    }
-    //}
-    .baseline-value,
-    .period-target {
-        width: 50%;
-        float: left;
-    }
+//     .baseline-year,
+//     .period-actual {
+//         width: 50%;
+//         float: right;
+//         position: relative;
 
-    .baseline-year,
-    .period-actual {
-        width: 50%;
-        float: right;
-        position: relative;
+//         span {
+//             &:nth-child(1) {
+//                 display: inline-block;
+//                 margin-right: 10px;
+//             }
 
-        span {
-            &:nth-child(1) {
-                display: inline-block;
-                margin-right: 10px;
-            }
+//             &:nth-child(4) {
+//                 display: block;
+//                 font-weight: 700;
+//             }
 
-            &:nth-child(4) {
-                display: block;
-                font-weight: 700;
-            }
+//             &.actualValueSpan {
+//                 display: block;
 
-            &.actualValueSpan {
-                display: block;
+//                 span:nth-child(1) {
+//                     margin-right: 0;
+//                 }
 
-                span:nth-child(1) {
-                    margin-right: 0;
-                }
+//                 span {
+//                     display: inline;
+//                 }
+//             }
+//         }
 
-                span {
-                    display: inline;
-                }
-            }
-        }
+//         .badge {
+//             background-color: $akvoBlack;
 
-        .badge {
-            background-color: $akvoBlack;
+//             @include transition(all 0.1s linear);
 
-            @include transition(all 0.1s linear);
+//             margin-top: -5px;
+//             padding: 5px 9px;
 
-            margin-top: -5px;
-            padding: 5px 9px;
+//             @include border-radius(15px);
 
-            @include border-radius(15px);
+//             font-family: $scriptFont;
 
-            font-family: $scriptFont;
+//             &:hover {
+//                 background-color: $akvoPurple;
+//                 cursor: pointer;
+//             }
+//         }
 
-            &:hover {
-                background-color: $akvoPurple;
-                cursor: pointer;
-            }
-        }
+//         .result-tooltip {
+//             clear: both;
+//             position: absolute;
+//             top: 35px;
+//             left: 60px;
+//             background: rgba(white, 1);
+//             border: 1px solid rgba($primary4, 0.8);
+//             color: $akvoBlack;
 
-        .result-tooltip {
-            clear: both;
-            position: absolute;
-            top: 35px;
-            left: 60px;
-            background: rgba(white, 1);
-            border: 1px solid rgba($primary4, 0.8);
-            color: $akvoBlack;
+//             @include border-radius(4px);
 
-            @include border-radius(4px);
+//             .tooltip-inner {
+//                 background: rgba(white, 1);
+//                 color: $akvoBlack;
 
-            .tooltip-inner {
-                background: rgba(white, 1);
-                color: $akvoBlack;
+//                 @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
+//             }
 
-                @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
-            }
+//             .tooltip-arrow {
+//                 position: absolute;
+//                 background: rgba(white, 1);
+//                 border: 1px solid rgba($primary4, 0.8);
+//                 left: 50px;
+//                 top: -2px;
 
-            .tooltip-arrow {
-                position: absolute;
-                background: rgba(white, 1);
-                border: 1px solid rgba($primary4, 0.8);
-                left: 50px;
-                top: -2px;
+//                 &:after,
+//                 &:before {
+//                     bottom: 100%;
+//                     left: 50%;
+//                     border: solid transparent;
+//                     content: " ";
+//                     height: 0;
+//                     width: 0;
+//                     position: absolute;
+//                     pointer-events: none;
+//                 }
 
-                &:after,
-                &:before {
-                    bottom: 100%;
-                    left: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                }
+//                 &:after {
+//                     border-color: rgba(136, 183, 213, 0);
+//                     border-bottom-color: rgba($primary4, 0.5);
+//                     border-width: 7px;
+//                     margin-left: -7px;
+//                 }
 
-                &:after {
-                    border-color: rgba(136, 183, 213, 0);
-                    border-bottom-color: rgba($primary4, 0.5);
-                    border-width: 7px;
-                    margin-left: -7px;
-                }
+//                 &:before {
+//                     border-color: rgba(194, 225, 245, 0);
+//                     border-bottom-color: rgba($primary4, 0.5);
+//                     border-width: 8px;
+//                     margin-left: -8px;
+//                 }
+//             }
+//         }
+//     }
 
-                &:before {
-                    border-color: rgba(194, 225, 245, 0);
-                    border-bottom-color: rgba($primary4, 0.5);
-                    border-width: 8px;
-                    margin-left: -8px;
-                }
-            }
-        }
-    }
+//     .period-target-comment {
+//         width: 50%;
+//         float: left;
+//         padding: 0 0 40px 0px;
+//     }
 
-    .period-target-comment {
-        width: 50%;
-        float: left;
-        padding: 0 0 40px 0px;
-    }
-
-    .period-actual-comment {
-        width: 50%;
-        float: right;
-        padding: 0 0 40px 0px;
-    }
-}
+//     .period-actual-comment {
+//         width: 50%;
+//         float: right;
+//         padding: 0 0 40px 0px;
+//     }
+// }
 
 .sidebar {
     width: 50%;
@@ -5760,22 +5759,69 @@ div.iatiFilters {
         & > .rc-collapse-item:first-child {}
 
         .rc-collapse-item {
-            padding: 5px;
+            padding: 10px 5px;
             background: white;
             border: 1px solid #f2f0e6;
             margin-top: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
 
             .rc-collapse-header {
-                padding: 5px;
+                padding: 5px 10px;
+                position: relative;
+
+                span {
+                    &.resultTitle {
+                        display: inline-block;
+                        width: calc(100% - 20px);
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+
+                &[aria-expanded="true"] {
+                    span {
+                        &.resultTitle {
+                            color: $akvoBlack;
+                        }
+                    }
+                }
+
+                .indicatorType {
+                    margin: 0px 0 0 10px;
+                    font-weight: 400;
+                    color: $anchorLinkHover;
+
+                    &::before {
+                        content: "-";
+                        margin-right: 10px;
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+
+                .result-indicator-count {
+                    display: block;
+                    margin-top: 7px;
+                    color: rgba($akvoPurple, 0.5);
+                    font-size: 0.9em;
+
+                    .fa {
+                        display: none;
+                    }
+                }
 
                 .arrow {
                     display: inline-block;
                     width: 20px;
                     height: 20px;
                     vertical-align: middle;
-                    margin-right: 8px;
+                    margin-right: 4px;
                     color: black;
+                    position: absolute;
+                    right: 0;
                     background: url(../images/arrowUpDown.png) no-repeat top center;
                 }
             }
@@ -5785,31 +5831,33 @@ div.iatiFilters {
             }
 
             &.rc-collapse-item-active {
-                background: rgba(242, 240, 230, 0.9);
+                background: rgba(240, 240, 240, 0.5);
                 border: 1px solid rgba(242, 240, 230, 1);
 
                 .rc-collapse-header {
-                    padding: 5px;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
                     cursor: pointer;
-                    color: $akvoPurple;
 
-                    span {
-                        color: $akvoPurple;
-                    }
+                    span {}
 
-                    .arrow {
-                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                    &[aria-expanded="true"] {
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
                     }
                 }
 
                 .rc-collapse-content {
+                    padding: 5px 0;
+
+                    &.rc-collapse-content-inactive {
+                        background-color: rgba(242, 240, 230, 0.3);
+                        border: 1px solid rgba(242, 240, 230, 0.5);
+                    }
+
                     &.rc-collapse-content-active {
                         vertical-align: top;
-                        background-color: rgba(242, 240, 230, 0.3);
-                        border: 1px solid rgba(242, 240, 230, 0.8);
+                        background-color: rgba(242, 240, 230, 0);
+                        border: 1px solid rgba(242, 240, 230, 0);
                         -webkit-box-flex: 1;
                         -moz-box-flex: 1;
                         -webkit-flex: 1;
@@ -5820,39 +5868,302 @@ div.iatiFilters {
 
                         .rc-collapse-content-box {
                             /*Indicators block*/
+                            .emptyData {
+                                padding: 10px;
+                                color: rgba($akvoBlack, 0.5);
 
-                            .indicators {
-                                > button {
-                                    display: none;
+                                p {
+                                    text-align: center;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.indicators {
+    padding-right: 10px;
+    padding-left: 10px;
+
+    > button {
+        display: none;
+    }
+
+    .rc-collapse {
+        .rc-collapse-item {
+            padding: 5px;
+            background: rgba(white, 1);
+            margin-top: 5px;
+            border: 1px solid rgba(32, 32, 36, 0.1);
+            margin-bottom: 5px;
+
+            .rc-collapse-header {
+                background: rgba(red, 0);
+                padding: 10px 5px;
+                opacity: 0.5;
+
+                &[aria-expanded="true"] {
+                    opacity: 1;
+                }
+
+                span {
+                    &.indicatorTitle {
+                        display: inline-block;
+
+                        ul {
+                            padding-left: 0;
+
+                            li {
+                                display: inline;
+
+                                &:nth-child(2) {
+                                    margin-left: 10px;
+                                    color: rgba($akvoBlack, 0.5);
+
+                                    &::before {
+                                        content: "-";
+                                        margin-right: 10px;
+                                        color: rgba($akvoBlack, 0.5);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.rc-collapse-item-inactive {
+                .rc-collapse-header {
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
+                }
+            }
+
+            &.rc-collapse-item-active {
+                background: rgba(white, 1);
+                border: 1px solid #f2f0e6;
+
+                .rc-collapse-header {
+                    opacity: 1;
+
+                    &[aria-expanded="true"] {
+                        opacity: 1;
+
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
+                    }
+                }
+
+                .rc-collapse-content {
+                    &.rc-collapse-content-active {
+                        vertical-align: top;
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+                        background: none;
+
+                        .rc-collapse-content-box {
+                            font-size: 90%;
+
+                            .baseline {
+                                padding-bottom: 15px;
+                                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+
+                                ul {
+                                    color: rgba($akvoBlack, 0.4);
+
+                                    li {
+                                        display: inline;
+                                    }
+
+                                    .baseline-year {}
+
+                                    .baseline-value {
+                                        margin-left: 55px;
+                                    }
+                                }
+                            }
+                        }
+
+                        /*Periods block*/
+                    }
+                }
+            }
+        }
+    }
+}
+
+.periods {
+    > button {
+        display: none;
+    }
+
+    .rc-collapse {
+        .rc-collapse-item {
+            border: none;
+            padding: 0;
+
+            &.needsReporting {}
+
+            &.periodSelected {}
+
+            .rc-collapse-header {
+                span {
+                    &.periodWrap {
+                        ul {
+                            padding: 0 10px;
+                            cursor: pointer;
+                            background-color: white;
+                            margin-bottom: 0;
+
+                            @include transition(background-color 0.2s linear);
+
+                            &:hover {
+                                background-color: rgba($akvoPurple, 0.1);
+                            }
+
+                            li {
+                                display: inline;
+                                margin-right: 10px;
+                                padding-left: 35px;
+
+                                &:nth-child(1) {
+                                    padding-left: 0px;
                                 }
 
+                                &:nth-child(2) {
+                                    padding-left: 0px;
+                                }
+
+                                &:nth-child(3) {}
+
+                                &:nth-child(4) {}
+
+                                &:nth-child(5) {
+                                    margin-right: 0px;
+                                    padding-left: 75px;
+
+                                    button {
+                                        margin: 0px 0 0 25px;
+                                        background: transparent;
+                                        border: none;
+
+                                        &:hover {
+                                            background: $rsrBlue;
+                                            color: white;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.rc-collapse-item-inactive {
+                .rc-collapse-header {
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
+                }
+            }
+
+            &.rc-collapse-item-active {
+                .rc-collapse-header {
+                    background: rgba(white, 0.3);
+                    border: none;
+
+                    span {
+                        &.periodWrap {
+                            ul {
+                                padding: 0 10px;
+
+                                li {
+                                    display: inline;
+                                }
+                            }
+                        }
+                    }
+
+                    &[aria-expanded="true"] {
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
+                    }
+                }
+
+                .rc-collapse-content {
+                    &.rc-collapse-content-active {
+                        padding: 5px;
+                        vertical-align: top;
+                        background-color: rgba(black, 0.05);
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+
+                        .rc-collapse-content-box {
+                            .emptyData {}
+
+                            .emptyUpdate {
+                                display: flex;
+
+                                .newUpdate {
+                                    display: inline-block;
+                                    margin: 0px auto;
+                                    background: $akvoBlack;
+                                    color: white;
+                                    border: none;
+
+                                    &:hover {
+                                        background: $rsrBlue;
+                                        color: white;
+                                    }
+                                }
+                            }
+
+                            .updates {
                                 .rc-collapse {
                                     .rc-collapse-item {
-                                        padding: 5px;
-                                        background: rgba(white, 0.5);
-                                        margin-top: 5px;
-                                        margin-bottom: 5px;
-
                                         .rc-collapse-header {
-                                            background: rgba(red, 0);
+                                            background: rgba(white, 0.3);
+                                        }
 
-                                            .arrow {
-                                                display: inline-block;
-                                                width: 20px;
-                                                height: 20px;
-                                                vertical-align: middle;
-                                                margin-right: 8px;
-                                                color: black;
-                                                background: url(../images/arrowUpDown.png) no-repeat top center;
-                                            }
+                                        .arrow {
+                                            display: inline-block;
+                                            width: 20px;
+                                            height: 20px;
+                                            vertical-align: middle;
+                                            margin-right: 8px;
+                                            color: black;
+                                            background: url(../images/arrowUpDown.png) no-repeat top center;
                                         }
 
                                         &.rc-collapse-item-active {
-                                            background: rgba(white, 1);
-                                            border: 1px solid #f2f0e6;
-
                                             .rc-collapse-header {
-                                                background: rgba(red, 0);
+                                                background: rgba(white, 0.3);
 
                                                 .arrow {
                                                     background: url(../images/arrowUpDown.png) no-repeat bottom center;
@@ -5861,6 +6172,7 @@ div.iatiFilters {
 
                                             .rc-collapse-content {
                                                 &.rc-collapse-content-active {
+                                                    padding: 5px;
                                                     vertical-align: top;
                                                     -webkit-box-flex: 1;
                                                     -moz-box-flex: 1;
@@ -5869,119 +6181,7 @@ div.iatiFilters {
                                                     flex: 1;
                                                     position: relative;
 
-                                                    .rc-collapse-content-box {
-                                                        > div:first-child {}
-
-                                                        .baseline {
-                                                            color: $akvoBlack;
-
-                                                            .baseline-year {}
-
-                                                            .baseline-value {}
-                                                        }
-                                                    }
-
-                                                    /*Periods block*/
-
-                                                    .periods {
-                                                        > button {
-                                                            display: none;
-                                                        }
-
-                                                        .rc-collapse {
-                                                            .rc-collapse-item {
-                                                                .rc-collapse-header {
-                                                                    background: rgba(white, 0.3);
-                                                                }
-
-                                                                .arrow {
-                                                                    display: inline-block;
-                                                                    width: 20px;
-                                                                    height: 20px;
-                                                                    vertical-align: middle;
-                                                                    margin-right: 8px;
-                                                                    color: black;
-                                                                    background: url(../images/arrowUpDown.png) no-repeat top center;
-                                                                }
-
-                                                                &.rc-collapse-item-active {
-                                                                    .rc-collapse-header {
-                                                                        background: rgba(white, 0.3);
-
-                                                                        .arrow {
-                                                                            background: url(../images/arrowUpDown.png) no-repeat bottom center;
-                                                                        }
-                                                                    }
-
-                                                                    .rc-collapse-content {
-                                                                        &.rc-collapse-content-active {
-                                                                            padding: 5px;
-                                                                            vertical-align: top;
-                                                                            background-color: rgba(black, 0.05);
-                                                                            -webkit-box-flex: 1;
-                                                                            -moz-box-flex: 1;
-                                                                            -webkit-flex: 1;
-                                                                            -ms-flex: 1;
-                                                                            flex: 1;
-                                                                            position: relative;
-
-                                                                            .rc-collapse-content-box {
-                                                                                .updates {
-                                                                                    > button {
-                                                                                        display: none;
-                                                                                    }
-
-                                                                                    .rc-collapse {
-                                                                                        .rc-collapse-item {
-                                                                                            .rc-collapse-header {
-                                                                                                background: rgba(white, 0.3);
-                                                                                            }
-
-                                                                                            .arrow {
-                                                                                                display: inline-block;
-                                                                                                width: 20px;
-                                                                                                height: 20px;
-                                                                                                vertical-align: middle;
-                                                                                                margin-right: 8px;
-                                                                                                color: black;
-                                                                                                background: url(../images/arrowUpDown.png) no-repeat top center;
-                                                                                            }
-
-                                                                                            &.rc-collapse-item-active {
-                                                                                                .rc-collapse-header {
-                                                                                                    background: rgba(white, 0.3);
-
-                                                                                                    .arrow {
-                                                                                                        background: url(../images/arrowUpDown.png) no-repeat bottom center;
-                                                                                                    }
-                                                                                                }
-
-                                                                                                .rc-collapse-content {
-                                                                                                    &.rc-collapse-content-active {
-                                                                                                        padding: 5px;
-                                                                                                        vertical-align: top;
-                                                                                                        background-color: rgba(black, 0.05);
-                                                                                                        -webkit-box-flex: 1;
-                                                                                                        -moz-box-flex: 1;
-                                                                                                        -webkit-flex: 1;
-                                                                                                        -ms-flex: 1;
-                                                                                                        flex: 1;
-                                                                                                        position: relative;
-
-                                                                                                        .rc-collapse-content-box {}
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+                                                    .rc-collapse-content-box {}
                                                 }
                                             }
                                         }
@@ -5994,21 +6194,6 @@ div.iatiFilters {
             }
         }
     }
-}
-
-.rc-collapse-header  .indicatorType {
-    margin: 0px 3px;
-    font-weight: 400;
-    color: $anchorLinkHover;
-    //font-size: 0.8em;
-}
-
-div.periodSelected.rc-collapse-item {
-    background: #cde7f0!important;
-}
-
-div.needsReporting.rc-collapse-item {
-    background: #ffb2ae !important;
 }
 
 .comments {
