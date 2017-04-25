@@ -61,7 +61,7 @@ class ResultsFrameworkTestCase(TestCase):
         RelatedProject.objects.create(
             project=self.parent_project,
             related_project=self.child_project,
-            relation='2',
+            relation=RelatedProject.PROJECT_RELATION_CHILD,
         )
 
         # Create results framework
@@ -247,7 +247,7 @@ class ResultsFrameworkTestCase(TestCase):
         RelatedProject.objects.create(
             project=self.parent_project,
             related_project=child_project_2,
-            relation='2',
+            relation=RelatedProject.PROJECT_RELATION_CHILD,
         )
 
         # Import results framework into child 2

@@ -14,30 +14,32 @@ def related_activity(project):
     :param project: Project object
     :return: A list of Etree elements
     """
-    related_activity_elements = []
+    related_activities = set()
 
     for related_project in project.related_projects.all():
         if related_project.related_project and related_project.relation:
             if related_project.related_project.iati_activity_id:
-                element = etree.Element("related-activity")
-                element.attrib['ref'] = related_project.related_project.iati_activity_id
-                element.attrib['type'] = related_project.relation
-
-                related_activity_elements.append(element)
+                related_activity = (
+                    related_project.related_project.iati_activity_id,
+                    related_project.relation
+                )
+                related_activities.add(related_activity)
 
         elif related_project.related_iati_id and related_project.relation:
-            element = etree.Element("related-activity")
-            element.attrib['ref'] = related_project.related_iati_id
-            element.attrib['type'] = related_project.relation
-
-            related_activity_elements.append(element)
+            related_activity = (related_project.related_iati_id, related_project.relation)
+            related_activities.add(related_activity)
 
     for related_to_project in project.related_to_projects.all():
         if related_to_project.project.iati_activity_id and related_to_project.relation:
-            element = etree.Element("related-activity")
-            element.attrib['ref'] = related_to_project.project.iati_activity_id
-            element.attrib['type'] = related_to_project.relation
+            related_activity = (
+                related_to_project.project.iati_activity_id,
+                related_to_project.reciprocal_relation
+            )
+            related_activities.add(related_activity)
 
-            related_activity_elements.append(element)
+    related_activity_elements = [
+        etree.Element('related-activity', attrib={'ref': ref, 'type': type_})
+        for (ref, type_) in related_activities
+    ]
 
     return related_activity_elements
