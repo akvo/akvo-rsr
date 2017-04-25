@@ -1,3 +1,9 @@
+# Akvo RSR version 3.24.1 Stockholm hotfix
+
+## Bug fixes
+
+[#2638](https://github.com/akvo/akvo-rsr/issues/2638) Fix duplicate related projects in IATI XML export
+
 # Akvo RSR version 3.24 Stockholm
 
 ## General improvements
