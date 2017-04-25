@@ -32,8 +32,25 @@ import Updates from "./updates/Updates";
 import { NewUpdateButton } from "./updates/UpdateForm";
 import { ToggleButton } from "./common"
 import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
+import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
+import * as alertActions from "../actions/alert-actions"
+
+import createAlert from "./alertContainer"
+
+const Alert = ({message, close}) => (
+    <div className='myAlert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
 
 
+const ToggleAlert = createAlert({
+    alertName: 'ToggleAlert'
+})(Alert);
+
+
+@connect(null, alertActions)
 class PeriodLockToggle extends React.Component {
 
     static propTypes = {
@@ -45,28 +62,37 @@ class PeriodLockToggle extends React.Component {
         super(props);
         this.lockToggle = this.lockToggle.bind(this);
         this.updatePeriodLock = this.updatePeriodLock.bind(this);
-        this.state = {locking: false};
+        this.state = {locking: false, toggleMessage: undefined};
     }
 
-    updatePeriodLock(periodId, data, callback) {
+    updatePeriodLock(periodId, data, callbacks) {
         const url = endpoints.period(periodId);
-        updateModelToBackend(OBJECTS_PERIODS, url, data, this.props.collapseId, callback)
+        updateModelToBackend(OBJECTS_PERIODS, url, data, this.props.collapseId, callbacks);
     }
 
     lockingToggle(locking) {
         this.setState({locking: locking});
     }
 
+    setLockMessage(message) {
+        this.props.createAlert('ToggleAlert', message);
+    }
+
     lockToggle(e) {
         const period = this.props.period;
-        const toggleCallback = () => {
+        const toggleCallback = (message) => {
             this.lockingToggle(false);
+            this.setLockMessage(message);
         };
         if (!this.state.locking) {
             this.lockingToggle(true);
-            this.updatePeriodLock(
-                period.id, {locked: !period.locked}, toggleCallback
-            );
+            const callbacks = {
+                [UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this, 'Lock status updated'),
+                [UPDATE_MODEL_REJECTED]: toggleCallback.bind(
+                    this, 'Lock status change failed, plz try again'
+                )
+            };
+            this.updatePeriodLock(period.id, {locked: !period.locked}, callbacks);
         }
         e.stopPropagation();
     }
@@ -84,10 +110,10 @@ class PeriodLockToggle extends React.Component {
             label = "Lock period";
         }
         return (
-            <ToggleButton onClick={this.lockToggle}
-                          style={{float: 'right'}}
-                          label={label}
-                          icon={icon}/>
+            <div style={{float: 'right'}}>
+                <ToggleAlert />
+                <ToggleButton onClick={this.lockToggle} label={label} icon={icon}/>
+            </div>
         )
     }
 }

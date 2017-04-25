@@ -139,7 +139,13 @@ export default function modelsReducer(state=initialModels, action) {
 
         case UPDATE_MODEL_REJECTED: {
             const model = action.payload.model;
-            return {...state, [model]: {changing: false, changed: false, data: null, error: action.payload.error}};
+            const errorState = update(state[model], {
+                changing: {$set: false},
+                changed: {$set: false},
+                error: {$set: action.payload.error}
+            });
+            return {...state, [model]: errorState};
+            // return {...state, [model]: {changing: false, changed: false, data: null, error: action.payload.error}};
         }
 
         case DELETE_FROM_MODEL: {

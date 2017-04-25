@@ -23,6 +23,14 @@ const range = (start, end) => (
 );
 
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
+
+
 function wrappedFetch(url, method='GET', data) {
     // Wrap fetch with standard options and return parsed JSON
     const options = {
@@ -102,7 +110,19 @@ export function fetchModel(model, id, callbacks, dataPrepCallback) {
 }
 
 
-export function modifyModelToBackend(model, method, url, data, fulfilledDispatchData, callback) {
+function executeCallback(callbacks, callbackName) {
+    if (typeof callbacks === 'object') {
+        if (callbacks && callbacks[callbackName]) {
+            callbacks[callbackName]();
+        }
+    } else {
+        if (callbacks) {
+            callbacks();
+        }
+    }
+}
+
+export function modifyModelToBackend(model, method, url, data, fulfilledDispatchData, callbacks) {
     return store.dispatch((dispatch) => {
         dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
         const options = {
@@ -117,6 +137,7 @@ export function modifyModelToBackend(model, method, url, data, fulfilledDispatch
             options.body = JSON.stringify(data);
         }
         fetch(url, options)
+            .then(handleErrors)
             .then((response) => {
                 if (response.status != 204) {
                     return response.json();
@@ -132,31 +153,33 @@ export function modifyModelToBackend(model, method, url, data, fulfilledDispatch
                 dispatch(fulfilledDispatchData);
             })
             .then(() => {
-                if (callback) {
-                    callback();
-                }
+                executeCallback(callbacks, UPDATE_MODEL_FULFILLED);
             })
             .catch((error) => {
-                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
+                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: model, error: error}});
+                throw error;
             })
+            .catch((error) => {
+                executeCallback(callbacks, UPDATE_MODEL_REJECTED);
+            });
     });
 }
 
 
-export function saveModelToBackend(model, url, data, collapseId, callback) {
+export function saveModelToBackend(model, url, data, collapseId, callbacks) {
     const dispatchData = {
         type: UPDATE_MODEL_FULFILLED,
         payload: {model: model, object: data, collapseId}
     };
-    modifyModelToBackend(model, 'POST', url, data, dispatchData, callback);
+    modifyModelToBackend(model, 'POST', url, data, dispatchData, callbacks);
 }
 
-export function updateModelToBackend(model, url, data, collapseId, callback) {
+export function updateModelToBackend(model, url, data, collapseId, callbacks) {
     const dispatchData = {
         type: UPDATE_MODEL_FULFILLED,
         payload: {model: model, object: data, collapseId}
     };
-    modifyModelToBackend(model, 'PATCH', url, data, dispatchData, callback);
+    modifyModelToBackend(model, 'PATCH', url, data, dispatchData, callbacks);
 }
 
 // export function updateModelToBackend(model, url, data, collapseId, callback) {

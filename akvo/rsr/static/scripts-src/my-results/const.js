@@ -58,6 +58,14 @@ export const
 
     // UI state
     SELECTED_PERIODS = 'selectedPeriods',
-    UPDATE_FORMS = 'updateForms'
+    UPDATE_FORMS = 'updateForms',
+
+    // Alerts
+    INITIALIZE_ALERT = 'INITIALIZE_ALERT',
+    CREATE_ALERT = 'CREATE_ALERT',
+    DISMISS_ALERT = 'DISMISS_ALERT',
+    DISMISS_ALL_ALERTS = 'DISMISS_ALL_ALERTS',
+    DESTROY_ALL_ALERTS = 'DESTROY_ALL_ALERTS',
+    DESTROY_ALERT = 'DESTROY_ALERT'
 ;
 

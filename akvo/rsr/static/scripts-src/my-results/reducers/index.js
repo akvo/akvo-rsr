@@ -12,6 +12,7 @@ import modelsReducer from "./modelsReducer"
 import collapseReducer from "./collapseReducer"
 import pageReducer from "./pageReducer"
 import uiReducer from "./uiReducer"
+import alertReducer from "./alertReducer"
 
 /*
     The store has four top level keys, each managed by one reducer.
@@ -32,6 +33,8 @@ import uiReducer from "./uiReducer"
 
     ui: ** Experimental ** Holds data on UI state that's needed globally, currently only the
     open/closed state of update forms is held here
+
+    alerts: holds the state of alerts and error messages
  */
 
 const reducer = combineReducers({
@@ -39,6 +42,7 @@ const reducer = combineReducers({
     keys: collapseReducer,
     page: pageReducer,
     ui: uiReducer,
+    alerts: alertReducer,
 });
 
 export default reducer;

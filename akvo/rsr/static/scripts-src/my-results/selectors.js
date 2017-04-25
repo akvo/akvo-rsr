@@ -160,7 +160,7 @@ export const getDraftUpdates = createSelector(
 
 export const getApprovedUpdates = createSelector(
     /*
-        Return an array with IDs of updates with status == UPDATE_STATUS_DRAFT
+        Return an array with IDs of updates with status == UPDATE_STATUS_APPROVED
      */
     [getUpdateIds, getUpdateObjects],
     (updateIds, updateObjects) => {
