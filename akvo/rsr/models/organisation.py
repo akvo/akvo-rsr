@@ -343,9 +343,10 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of all users belonging to the organisation"
         return self.users.all()
 
-    def published_projects(self):
+    def published_projects(self, only_public=True):
         "returns a queryset with published projects that has self as any kind of partner"
-        return self.projects.published().distinct()
+        projects = self.projects.published().distinct()
+        return projects.public() if only_public else projects
 
     def all_projects(self):
         """returns a queryset with all projects that has self as any kind of partner."""
