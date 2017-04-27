@@ -19,7 +19,8 @@ import {
     displayDate, _, currentUser, findChildren, createToggleKey, collapseId, createToggleKeys
 } from '../../utils.js';
 
-import { OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, UPDATE_FORMS } from '../../const.js';
+// import { c.OBJECTS_UPDATES, c.UPDATE_STATUS_APPROVED, c.UPDATE_FORMS } from '../../const.js';
+import  * as c from '../../const.js';
 
 import { ToggleButton } from "../common"
 import UpdateForm from "./UpdateForm"
@@ -28,7 +29,7 @@ import {getUpdatesChildrenIds, getPeriodsChildrenIds} from "../../selectors";
 import * as alertActions from "../../actions/alert-actions"
 
 import AlertFactory from "../alertContainer"
-import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
+// import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
 
 
 const Alert = ({message, close}) => (
@@ -105,7 +106,7 @@ class Update extends React.Component {
             <div className="col-xs-7">
                 {editUpdateButton}
                 {updateAlert}
-                {new Set(this.props.ui[UPDATE_FORMS]).has(this.props.update.id) ?
+                {new Set(this.props.ui[c.UPDATE_FORMS]).has(this.props.update.id) ?
                     <UpdateForm
                         update={this.props.update}
                         formToggle={this.formToggle}
@@ -167,7 +168,7 @@ export default class Updates extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
-        this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.parentId)};
     }
 
     activeKey() {
@@ -179,7 +180,7 @@ export default class Updates extends React.Component {
     }
 
     toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, OBJECTS_UPDATES, this.activeKey());
+        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_UPDATES, this.activeKey());
         keys.map((collapse) => {
             this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
         })
@@ -192,7 +193,7 @@ export default class Updates extends React.Component {
                 const update = this.props.updates.objects[id];
                 // Calculate running total of numeric updates data
                 const data = parseInt(update.data);
-                if (data && update.status == UPDATE_STATUS_APPROVED) {
+                if (data && update.status == c.UPDATE_STATUS_APPROVED) {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
@@ -219,7 +220,7 @@ export default class Updates extends React.Component {
             );
         } else if (updateIds.length > 0) {
             return (
-                <div className={OBJECTS_UPDATES}>
+                <div className={c.OBJECTS_UPDATES}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}

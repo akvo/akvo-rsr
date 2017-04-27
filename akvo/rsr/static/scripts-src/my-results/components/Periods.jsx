@@ -21,18 +21,19 @@ import {
     createToggleKeys
 } from "../utils.js";
 
-import {
-    OBJECTS_PERIODS,
-    OBJECTS_UPDATES,
-    UPDATE_STATUS_APPROVED,
-    SELECTED_PERIODS
-} from '../const.js';
+// import {
+//     c.OBJECTS_PERIODS,
+//     c.OBJECTS_UPDATES,
+//     c.UPDATE_STATUS_APPROVED,
+//     c.SELECTED_PERIODS
+// } from '../const.js';
+import * as c from "../const"
 
 import Updates from "./updates/Updates";
 import { NewUpdateButton } from "./updates/UpdateForm";
 import { ToggleButton } from "./common"
 import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
-import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
+// import {c.UPDATE_MODEL_FULFILLED, c.UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
 import * as alertActions from "../actions/alert-actions"
 import * as collapseActions from "../actions/collapse-actions"
 
@@ -69,7 +70,7 @@ class PeriodLockToggle extends React.Component {
 
     updatePeriodLock(periodId, data, callbacks) {
         const url = endpoints.period(periodId);
-        updateModelToBackend(OBJECTS_PERIODS, url, data, this.props.collapseId, callbacks);
+        updateModelToBackend(c.OBJECTS_PERIODS, url, data, this.props.collapseId, callbacks);
     }
 
     lockingToggle(locking) {
@@ -89,8 +90,8 @@ class PeriodLockToggle extends React.Component {
         if (!this.state.locking) {
             this.lockingToggle(true);
             const callbacks = {
-                [UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this, 'Lock status updated'),
-                [UPDATE_MODEL_REJECTED]: toggleCallback.bind(
+                [c.UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this, 'Lock status updated'),
+                [c.UPDATE_MODEL_REJECTED]: toggleCallback.bind(
                     this, 'Lock status change failed, plz try again'
                 )
             };
@@ -214,7 +215,7 @@ export default class Periods extends React.Component {
         this.toggleAll = this.toggleAll.bind(this);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
         // concatenate this model's name with parent's ID
-        this.state = {collapseId: collapseId(OBJECTS_PERIODS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_PERIODS, this.props.parentId)};
     }
 
     openNewForm(newKey, data) {
@@ -222,7 +223,7 @@ export default class Periods extends React.Component {
         this.setState(
             {newKeys: update(this.state.newKeys, {$push: [newKey]})},
             // Only when the activeKey state is committed do we update the updates model
-            this.props.callbacks.updateModel(OBJECTS_UPDATES, data)
+            this.props.callbacks.updateModel(c.OBJECTS_UPDATES, data)
         );
     }
 
@@ -235,7 +236,7 @@ export default class Periods extends React.Component {
     }
 
     toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, OBJECTS_PERIODS, this.activeKey());
+        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_PERIODS, this.activeKey());
         keys.map((collapse) => {
             this.props.onChange(collapse.collapseId, collapse.activeKey);
         })
@@ -254,7 +255,7 @@ export default class Periods extends React.Component {
             (id) => {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
-                const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(id);
+                const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
@@ -294,7 +295,7 @@ export default class Periods extends React.Component {
             );
         } else if (periodIds.length > 0) {
             return (
-                <div className={OBJECTS_PERIODS}>
+                <div className={c.OBJECTS_PERIODS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll}*/}
                                   {/*label="++"*/}

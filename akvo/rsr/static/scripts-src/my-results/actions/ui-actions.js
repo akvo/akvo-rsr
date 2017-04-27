@@ -13,20 +13,21 @@ import {
 } from "../reducers/uiReducer"
 
 import { MODELS_LIST, OBJECTS_USER, SELECTED_PERIODS, UPDATE_FORMS, OBJECTS_PERIODS} from "../const"
+import * as c from "../const"
 import { openNodes, displayDate} from "../utils"
 
 export function periodSelectReset() {
     store.dispatch({
-        type: UI_ID_RESET,
-        payload: {element: SELECTED_PERIODS}
+        type: c.UI_ID_RESET,
+        payload: {element: c.SELECTED_PERIODS}
     })
 }
 
 
 export function periodSelectToggle(id) {
     store.dispatch({
-        type: UI_ID_TOGGLE,
-        payload: {element: SELECTED_PERIODS, id: id}
+        type: c.UI_ID_TOGGLE,
+        payload: {element: c.SELECTED_PERIODS, id: id}
     })
 }
 
@@ -34,43 +35,43 @@ export function periodSelectToggle(id) {
 export function periodSelectCheck(id) {
     store.dispatch({
         type: UI_ID_TRUE,
-        payload: {element: SELECTED_PERIODS, id: id}
+        payload: {element: c.SELECTED_PERIODS, id: id}
     })
 }
 
 
 export function updateFormToggle(id) {
     store.dispatch({
-        type: UI_ID_TOGGLE,
-        payload: {element: UPDATE_FORMS, id: id}
+        type: c.UI_ID_TOGGLE,
+        payload: {element: c.UPDATE_FORMS, id: id}
     })
 }
 
 
 export function updateFormOpen(id) {
     store.dispatch({
-        type: UI_ID_TRUE,
-        payload: {element: UPDATE_FORMS, id: id}
+        type: c.UI_ID_TRUE,
+        payload: {element: c.UPDATE_FORMS, id: id}
     })
 }
 
 
 export function updateFormClose(id) {
     store.dispatch({
-        type: UI_ID_FALSE,
-        payload: {element: UPDATE_FORMS, id: id}
+        type: c.UI_ID_FALSE,
+        payload: {element: c.UPDATE_FORMS, id: id}
     });
 }
 
 
 export function activateToggleAll() {
     // Have we fetched all models? Include current user info too.
-    const allFetched = MODELS_LIST.concat([OBJECTS_USER]).every(
+    const allFetched = c.MODELS_LIST.concat([c.OBJECTS_USER]).every(
         (model) => store.getState().models[model].fetched
     );
     if (allFetched) {
         store.dispatch({
-            type: ALL_MODELS_FETCHED,
+            type: c.ALL_MODELS_FETCHED,
             payload: true
         });
     }
@@ -79,7 +80,7 @@ export function activateToggleAll() {
 function checkSelected(element, ids) {
     ids.map((id) => {
         store.dispatch({
-            type: UI_ID_TRUE,
+            type: c.UI_ID_TRUE,
             payload: {element, id}
         })
     })
@@ -87,14 +88,14 @@ function checkSelected(element, ids) {
 
 function checkAndShowPeriods(ids) {
     periodSelectReset();
-    checkSelected(SELECTED_PERIODS, ids);
-    openNodes(OBJECTS_PERIODS, ids, true);
+    checkSelected(c.SELECTED_PERIODS, ids);
+    openNodes(c.OBJECTS_PERIODS, ids, true);
 }
 
 function filterPeriodsByLock(locked) {
-    const ids = store.getState().models[OBJECTS_PERIODS].ids;
+    const ids = store.getState().models[c.OBJECTS_PERIODS].ids;
     if (ids) {
-        const periodObjects = store.getState().models[OBJECTS_PERIODS].objects;
+        const periodObjects = store.getState().models[c.OBJECTS_PERIODS].objects;
         return ids.filter((id) => periodObjects[id].locked == locked);
     }
     return [];
@@ -110,7 +111,7 @@ function selectUnlockedPeriods() {
 
 export function periodsThatNeedReporting() {
     // Returns ids of periods that are unlocked and have no updates
-    const periods = store.getState().models[OBJECTS_PERIODS];
+    const periods = store.getState().models[c.OBJECTS_PERIODS];
     const unlockedPeriods = filterPeriodsByLock(false);
     return unlockedPeriods.filter((id) => periods.objects[id]._meta && periods.objects[id]._meta.children.ids.length == 0);
 }
@@ -118,17 +119,17 @@ export function periodsThatNeedReporting() {
 export function selectPeriodsThatNeedReporting() {
     const needReporting = periodsThatNeedReporting();
     periodSelectReset();
-    openNodes(OBJECTS_PERIODS, needReporting, true);
+    openNodes(c.OBJECTS_PERIODS, needReporting, true);
 }
 
 function selectPeriodByDates(periodStart, periodEnd) {
-    const periods = store.getState().models[OBJECTS_PERIODS];
+    const periods = store.getState().models[c.OBJECTS_PERIODS];
     const filteredIds = periods.ids.filter((id) => (
         periods.objects[id].period_start === periodStart &&
         periods.objects[id].period_end === periodEnd
     ));
     checkAndShowPeriods(filteredIds);
-    openNodes(OBJECTS_PERIODS, filteredIds, true);
+    openNodes(c.OBJECTS_PERIODS, filteredIds, true);
 }
 
 
@@ -141,7 +142,7 @@ export function selectablePeriods(periodIds) {
     const optionStyle = {color: 'black'};
     if (periodIds && periodIds.length > 0) {
         const dates = periodIds.map((id) => {
-            const period = store.getState().models[OBJECTS_PERIODS].objects[id];
+            const period = store.getState().models[c.OBJECTS_PERIODS].objects[id];
             const periodStart = period.period_start;
             const periodEnd = period.period_end;
             return `${periodStart}:${periodEnd}`;

@@ -10,14 +10,15 @@
  */
 
 import { createSelector } from "reselect"
-import {
-    OBJECTS_RESULTS,
-    OBJECTS_INDICATORS,
-    OBJECTS_PERIODS,
-    OBJECTS_UPDATES,
-    OBJECTS_COMMENTS,
-    PARENT_FIELD, UPDATE_STATUS_APPROVED, UPDATE_STATUS_DRAFT
-} from "./const";
+// import {
+//     c.OBJECTS_RESULTS,
+//     c.OBJECTS_INDICATORS,
+//     c.OBJECTS_PERIODS,
+//     c.OBJECTS_UPDATES,
+//     c.OBJECTS_COMMENTS,
+//     c.PARENT_FIELD, c.UPDATE_STATUS_APPROVED, c.UPDATE_STATUS_DRAFT
+// } from "./const";
+import * as c from "./const";
 
 
 // Input selectors for models
@@ -38,10 +39,10 @@ const getUser = (store) => store.models.user;
 const getChildrenFactory = model => {
     const modelSelectors = {
         // {childModelName: [parentSelector, childrenSelector}
-        [OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
-        [OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
-        [OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
-        [OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
+        [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
+        [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
+        [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
+        [c.OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
     };
     return createSelector(
         [
@@ -54,7 +55,7 @@ const getChildrenFactory = model => {
                     (acc, parentId) => {
                         return {...acc,
                             [parentId]: childIds && childObjects && childIds.filter(
-                                id =>  childObjects[id][PARENT_FIELD[model]] === parentId
+                                id =>  childObjects[id][c.PARENT_FIELD[model]] === parentId
                             )
                         }
                     }, {}
@@ -75,28 +76,28 @@ export const getResultsChildrenIds = createSelector(
     //      ...
     //  }
     // Used to find all children indicators to a result object
-    getChildrenFactory(OBJECTS_INDICATORS),
+    getChildrenFactory(c.OBJECTS_INDICATORS),
     children => children
 );
 
 
 export const getIndicatorsChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for indicators and period children
-    getChildrenFactory(OBJECTS_PERIODS),
+    getChildrenFactory(c.OBJECTS_PERIODS),
     children => children
 );
 
 
 export const getPeriodsChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for periods and update children
-    getChildrenFactory(OBJECTS_UPDATES),
+    getChildrenFactory(c.OBJECTS_UPDATES),
     children => children
 );
 
 
 export const getUpdatesChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for updates and comment children
-    getChildrenFactory(OBJECTS_COMMENTS),
+    getChildrenFactory(c.OBJECTS_COMMENTS),
     children => children
 );
 
@@ -110,7 +111,7 @@ export const getPeriodsActualValue = createSelector(
     (periodIds, updateObjects, childUpdateIds) => {
         return periodIds.reduce((acc, periodId) => {
             const actualValue = childUpdateIds[periodId].filter(
-                (updateId) => updateObjects[updateId].status == UPDATE_STATUS_APPROVED
+                (updateId) => updateObjects[updateId].status == c.UPDATE_STATUS_APPROVED
             ).reduce(
                 // Actual value is calculated by adding all approved updates with numerical data
                 (acc, updateId) => {
@@ -147,12 +148,12 @@ export const getIndicatorsAggregateActualValue = createSelector(
 
 export const getDraftUpdates = createSelector(
     /*
-        Return an array with IDs of updates with status == UPDATE_STATUS_DRAFT
+        Return an array with IDs of updates with status == c.UPDATE_STATUS_DRAFT
      */
     [getUpdateIds, getUpdateObjects],
     (updateIds, updateObjects) => {
         return updateIds && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status == UPDATE_STATUS_DRAFT
+            updateObjects[id].status == c.UPDATE_STATUS_DRAFT
         );
     }
 );
@@ -160,12 +161,12 @@ export const getDraftUpdates = createSelector(
 
 export const getApprovedUpdates = createSelector(
     /*
-        Return an array with IDs of updates with status == UPDATE_STATUS_APPROVED
+        Return an array with IDs of updates with status == c.UPDATE_STATUS_APPROVED
      */
     [getUpdateIds, getUpdateObjects],
     (updateIds, updateObjects) => {
         return updateIds && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status == UPDATE_STATUS_APPROVED
+            updateObjects[id].status == c.UPDATE_STATUS_APPROVED
         );
     }
 );

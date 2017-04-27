@@ -7,31 +7,31 @@
 
 
 import update from "immutability-helper"
-import { UPDATE_MODEL_FULFILLED, DELETE_FROM_MODEL } from "../reducers/modelsReducer"
+// import { c.UPDATE_MODEL_FULFILLED, c.DELETE_FROM_MODEL } from "../reducers/modelsReducer"
+import * as c from "../const"
 
-
-export const
-    KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
-    KEYS_RESET = "KEYS_RESET";
+// export const
+//     KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
+//     KEYS_RESET = "KEYS_RESET";
 
 export default function collapseReducer(keys={}, action) {
     // Reducer for managing the Collapse.activeKey states
     switch(action.type) {
 
-        case KEY_SET_ACTIVE: {
+        case c.KEY_SET_ACTIVE: {
             // Set the model to current activeKey list
             const {collapseId, activeKey} = action.payload;
             keys = {...keys, [collapseId]: activeKey};
             break;
         }
 
-        case KEYS_RESET: {
+        case c.KEYS_RESET: {
             // Reset the tree
             keys = {};
             break;
         }
 
-        case UPDATE_MODEL_FULFILLED: {
+        case c.UPDATE_MODEL_FULFILLED: {
             const {collapseId, object} = action.payload;
             // if collapseId isn't supplied we don't have to update keys
             if (collapseId) {
@@ -45,7 +45,7 @@ export default function collapseReducer(keys={}, action) {
             break;
         }
 
-        case DELETE_FROM_MODEL: {
+        case c.DELETE_FROM_MODEL: {
             const {collapseId, object} = action.payload;
             const keyToRemove = object.id.toString();
             keys = {

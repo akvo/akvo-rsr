@@ -12,7 +12,7 @@ import { connect } from "react-redux"
 
 import { onChange } from "../actions/collapse-actions"
 import { findChildren, createToggleKey, collapseId, _, endpoints} from '../utils'
-import { OBJECTS_COMMENTS } from '../const'
+// import { c.OBJECTS_COMMENTS } from '../const'
 
 import { ToggleButton } from "./common"
 import {getUpdatesChildrenIds} from "../selectors";
@@ -20,8 +20,8 @@ import {saveModelToBackend} from "../actions/model-actions";
 import * as alertActions from "../actions/alert-actions"
 
 import AlertFactory from "./alertContainer"
-import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
-
+// import {c.UPDATE_MODEL_FULFILLED, c.UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
+import * as c from "../const"
 
 const CommentAlert = ({message, close}) => (
         <div className='comment-alert'>
@@ -77,13 +77,13 @@ class CommentForm extends React.Component {
                 'comment': comment
             };
             const callbacks = {
-                [UPDATE_MODEL_FULFILLED]: this.resetComment.bind(this, 'Comment saved'),
-                [UPDATE_MODEL_REJECTED]: createAlert.bind(
+                [c.UPDATE_MODEL_FULFILLED]: this.resetComment.bind(this, 'Comment saved'),
+                [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
                     this, commentAlertName, 'Comment could not be saved, plz try again.'
                 )
             };
             saveModelToBackend(
-                OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
+                c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
             );
         } else  {
             createAlert(commentAlertName, "Please enter some comment text");
@@ -149,7 +149,7 @@ export default class Comments extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         // concatenate this model's name with parent's ID
-        this.state = {collapseId: collapseId(OBJECTS_COMMENTS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_COMMENTS, this.props.parentId)};
     }
 
     activeKey() {
@@ -184,7 +184,7 @@ export default class Comments extends React.Component {
             );
         } else if (commentIds.length > 0) {
             return (
-                <div className={OBJECTS_COMMENTS + ' col-xs-5'}>
+                <div className={c.OBJECTS_COMMENTS + ' col-xs-5'}>
                     <strong>Update comments:</strong>
                     {this.renderComments(commentIds)}
                     <CommentForm parentId={this.props.parentId}/>
@@ -192,7 +192,7 @@ export default class Comments extends React.Component {
             );
         } else {
             return (
-                <div className={OBJECTS_COMMENTS + ' col-xs-5'}>
+                <div className={c.OBJECTS_COMMENTS + ' col-xs-5'}>
                     <strong>Update comments:</strong>
                     <p>No comments</p>
                     <CommentForm parentId={this.props.parentId}/>

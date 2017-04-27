@@ -6,22 +6,23 @@
  */
 
 
-import {
-    CREATE_ALERT,
-    DESTROY_ALERT,
-    DISMISS_ALERT,
-    DISMISS_ALL_ALERTS,
-    INITIALIZE_ALERT
-} from "../const";
+// import {
+//     c.CREATE_ALERT,
+//     c.DESTROY_ALERT,
+//     c.DISMISS_ALERT,
+//     c.DISMISS_ALL_ALERTS,
+//     c.INITIALIZE_ALERT
+// } from "../const";
+import * as c from "../const"
 
 const initialState = {isVisible: false, message: ''};
 
 const behaviors = {
-    [CREATE_ALERT](state, action) {
+    [c.CREATE_ALERT](state, action) {
         const {alertMessage} = action;
         return {isVisible: true, message: alertMessage};
     },
-    [DISMISS_ALERT](state, action) {
+    [c.DISMISS_ALERT](state, action) {
         return initialState;
     }
 };
@@ -34,20 +35,20 @@ const reducer = (state, action) => {
 const alertReducer = (state = {}, action = {}) => {
     const {type, alertName} = action;
     if (state === undefined) return state;
-    if (type === INITIALIZE_ALERT) {
+    if (type === c.INITIALIZE_ALERT) {
         return {
             ...state,
             [alertName]: initialState
         };
     }
-    if (type === DISMISS_ALL_ALERTS) {
+    if (type === c.DISMISS_ALL_ALERTS) {
         return Object.keys(state).reduce((acc, alert) =>
                 Object.assign({}, acc, {[alert]: initialState}),
             {});
     }
 
     if (state[alertName] === undefined) return state;
-    if (type === DESTROY_ALERT) {
+    if (type === c.DESTROY_ALERT) {
         return Object.keys(state).reduce((acc, alert) =>
                 alert === alertName ? acc : {...acc, [alert]: state[alert]},
             {});

@@ -7,14 +7,13 @@
 
 
 import store from "../store"
-import {
-    FETCH_MODEL_START, FETCH_MODEL_FULFILLED, FETCH_MODEL_REJECTED, DELETE_FROM_MODEL,
-    UPDATE_MODEL_DELETE_FULFILLED, UPDATE_MODEL_START, UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED
-} from "../reducers/modelsReducer"
+import * as c from "../const"
+// import {
+//     FETCH_MODEL_START, c.FETCH_MODEL_FULFILLED, c.FETCH_MODEL_REJECTED, c.DELETE_FROM_MODEL,
+//     c.UPDATE_MODEL_DELETE_FULFILLED, c.UPDATE_MODEL_START, c.UPDATE_MODEL_FULFILLED, c.UPDATE_MODEL_REJECTED
+// } from "../reducers/modelsReducer"
 import { getCookie, endpoints } from "../utils"
-import { API_LIMIT, SELECTED_PERIODS, OBJECTS_PERIODS, OBJECTS_UPDATES} from "../const"
-
-import { selectablePeriods } from "./ui-actions"
+// import { c.API_LIMIT, c.SELECTED_PERIODS, c.OBJECTS_PERIODS, c.OBJECTS_UPDATES} from "../const"
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
@@ -77,7 +76,7 @@ function fetchFromAPI(baseUrl) {
             // if data.next then we have more data than fits in one go
             if (data.next) {
                 // calculate how many pages we need to get and consturct URLs
-                const pageNumbers = range(2, Math.ceil(data.count / API_LIMIT));
+                const pageNumbers = range(2, Math.ceil(data.count / c.API_LIMIT));
                 const urls = pageNumbers.map((n) => `${baseUrl}&page=${n}`);
                 // NOTE: we need to bind url to wrappedFetch or the array index will leak as a
                 // second param into the call. Nasty!
@@ -97,14 +96,14 @@ function fetchFromAPI(baseUrl) {
 
 export function fetchModel(model, id, callbacks, dataPrepCallback) {
     return store.dispatch((dispatch) => {
-        dispatch({type: FETCH_MODEL_START, payload: {model: model}});
+        dispatch({type: c.FETCH_MODEL_START, payload: {model: model}});
         const url = endpoints[model](id);
         fetchFromAPI(url)
             .then((results) => {
                 if (dataPrepCallback) {
                     results = dataPrepCallback(results);
                 }
-                dispatch({type: FETCH_MODEL_FULFILLED, payload: {model: model, data: results}});
+                dispatch({type: c.FETCH_MODEL_FULFILLED, payload: {model: model, data: results}});
             })
             .then(() => {
                 if (callbacks) {
@@ -117,7 +116,7 @@ export function fetchModel(model, id, callbacks, dataPrepCallback) {
                 }
             })
             .catch((error) => {
-                dispatch({type: FETCH_MODEL_REJECTED, payload: {model: model, error: error}});
+                dispatch({type: c.FETCH_MODEL_REJECTED, payload: {model: model, error: error}});
             });
     });
 }
@@ -125,7 +124,7 @@ export function fetchModel(model, id, callbacks, dataPrepCallback) {
 
 export function modifyModelToBackend(model, method, url, data, fulfilledDispatchData, callbacks) {
     return store.dispatch((dispatch) => {
-        dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
+        dispatch({type: c.UPDATE_MODEL_START, payload: {model: model}});
         const options = {
             credentials: 'same-origin',
             method: method,
@@ -154,14 +153,14 @@ export function modifyModelToBackend(model, method, url, data, fulfilledDispatch
                 dispatch(fulfilledDispatchData);
             })
             .then(() => {
-                executeCallback(callbacks, UPDATE_MODEL_FULFILLED);
+                executeCallback(callbacks, c.UPDATE_MODEL_FULFILLED);
             })
             .catch((error) => {
-                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: model, error: error}});
+                dispatch({type: c.UPDATE_MODEL_REJECTED, payload: {model: model, error: error}});
                 throw error;
             })
             .catch(() => {
-                executeCallback(callbacks, UPDATE_MODEL_REJECTED);
+                executeCallback(callbacks, c.UPDATE_MODEL_REJECTED);
             });
     });
 }
@@ -169,7 +168,7 @@ export function modifyModelToBackend(model, method, url, data, fulfilledDispatch
 
 export function saveModelToBackend(model, url, data, collapseId, callbacks) {
     const dispatchData = {
-        type: UPDATE_MODEL_FULFILLED,
+        type: c.UPDATE_MODEL_FULFILLED,
         payload: {model: model, object: data, collapseId}
     };
     modifyModelToBackend(model, 'POST', url, data, dispatchData, callbacks);
@@ -177,7 +176,7 @@ export function saveModelToBackend(model, url, data, collapseId, callbacks) {
 
 export function updateModelToBackend(model, url, data, collapseId, callbacks) {
     const dispatchData = {
-        type: UPDATE_MODEL_FULFILLED,
+        type: c.UPDATE_MODEL_FULFILLED,
         payload: {model: model, object: data, collapseId}
     };
     modifyModelToBackend(model, 'PATCH', url, data, dispatchData, callbacks);
@@ -186,10 +185,10 @@ export function updateModelToBackend(model, url, data, collapseId, callbacks) {
 
 export function deleteUpdateFromBackend(url, data, collapseId, callbacks) {
     const dispatchData = {
-        type: UPDATE_MODEL_DELETE_FULFILLED,
-        payload: {model: OBJECTS_UPDATES, id: data.id, collapseId}
+        type: c.UPDATE_MODEL_DELETE_FULFILLED,
+        payload: {model: c.OBJECTS_UPDATES, id: data.id, collapseId}
     };
-    modifyModelToBackend(OBJECTS_UPDATES, 'DELETE', url, data, dispatchData, callbacks);
+    modifyModelToBackend(c.OBJECTS_UPDATES, 'DELETE', url, data, dispatchData, callbacks);
 }
 
 
@@ -286,7 +285,7 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
     return store.dispatch((dispatch) => {
         // newUpdate store new or updated instance from server response
         let newUpdate;
-        dispatch({type: UPDATE_MODEL_START, payload: {model: OBJECTS_UPDATES}});
+        dispatch({type: c.UPDATE_MODEL_START, payload: {model: c.OBJECTS_UPDATES}});
         const request = options(method, JSON.stringify(data), 'application/json');
         wrappedFetchForUpdates({url, request})
             // Find attachments and create promises to post them
@@ -305,25 +304,25 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
                 // Delete existing record of the update in the store
                 if (method == 'POST') {
                     dispatch({
-                        type: DELETE_FROM_MODEL,
-                        payload: {model: OBJECTS_UPDATES, object: data, collapseId}
+                        type: c.DELETE_FROM_MODEL,
+                        payload: {model: c.OBJECTS_UPDATES, object: data, collapseId}
                     });
                 }
                 // and replace it with the data from the server
                 dispatch({
-                    type: UPDATE_MODEL_FULFILLED,
-                    payload: {model: OBJECTS_UPDATES, object: newUpdate, collapseId}
+                    type: c.UPDATE_MODEL_FULFILLED,
+                    payload: {model: c.OBJECTS_UPDATES, object: newUpdate, collapseId}
                 });
             })
             .then(() => {
-                executeCallback(callbacks, UPDATE_MODEL_FULFILLED);
+                executeCallback(callbacks, c.UPDATE_MODEL_FULFILLED);
             })
             .catch((error) => {
-                dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
+                dispatch({type: c.UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
                 throw error;
             })
             .catch(() => {
-                executeCallback(callbacks, UPDATE_MODEL_REJECTED);
+                executeCallback(callbacks, c.UPDATE_MODEL_REJECTED);
             });
 
     });
@@ -359,7 +358,7 @@ function patchMultiple(model, params, callback) {
                 // Update each object with backend data
                 responses.map((object) => {
                     dispatch({
-                        type: UPDATE_MODEL_FULFILLED,
+                        type: c.UPDATE_MODEL_FULFILLED,
                         payload: {model, object}
                     })
                 })
@@ -372,7 +371,7 @@ function patchMultiple(model, params, callback) {
             // TODO: better error handling
             .catch((error) => {
                 dispatch({
-                    type: FETCH_MODEL_REJECTED,
+                    type: c.FETCH_MODEL_REJECTED,
                     payload: {model: model, error: error}
                 })
             })
@@ -382,14 +381,11 @@ function patchMultiple(model, params, callback) {
 
 
 function periodLockingParams(locked) {
-    const selectedPeriods = store.getState().ui[SELECTED_PERIODS];
+    const selectedPeriods = store.getState().ui[c.SELECTED_PERIODS];
     const data = selectedPeriods.map((id) => {
         return {url: endpoints.period(id), data: {locked: locked}}
     });
-    // Update selected periods locked field, then call selectablePeriods to rebuild the period
-    // select component
-    // patchMultiple(OBJECTS_PERIODS, data, selectablePeriods);
-    patchMultiple(OBJECTS_PERIODS, data);
+    patchMultiple(c.OBJECTS_PERIODS, data);
 }
 
 
@@ -406,10 +402,10 @@ export function unlockSelectedPeriods() {
 // TODO: maybe extract into an actions file of their own since they trigger both the collapse and
 // the models reducers
 export function updateModel(model, object, collapseId) {
-    store.dispatch({type: UPDATE_MODEL_FULFILLED, payload: {model, object, collapseId}});
+    store.dispatch({type: c.UPDATE_MODEL_FULFILLED, payload: {model, object, collapseId}});
 }
 
 
 export function deleteFromModel(model, object, collapseId) {
-    store.dispatch({type: DELETE_FROM_MODEL, payload: {model, object, collapseId}});
+    store.dispatch({type: c.DELETE_FROM_MODEL, payload: {model, object, collapseId}});
 }

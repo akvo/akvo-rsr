@@ -7,12 +7,13 @@
 */
 
 
-import { PAGE_SET_DATA } from "../reducers/pageReducer"
+// import { PAGE_SET_DATA } from "../reducers/pageReducer"
+import * as c from "../const"
 
 
 export function setPageData(data) {
     return {
-        type: PAGE_SET_DATA,
+        type: c.PAGE_SET_DATA,
         payload: {data}
     }
 }

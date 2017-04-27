@@ -6,12 +6,13 @@
 */
 
 
-export const
-    PAGE_SET_DATA = "PAGE_SET_DATA";
+// export const
+//     PAGE_SET_DATA = "PAGE_SET_DATA";
+import * as c from "../const"
 
 export default function pageReducer(state={}, action) {
     switch(action.type) {
-        case PAGE_SET_DATA: {
+        case c.PAGE_SET_DATA: {
             const data = action.payload.data;
             state = data;
             break;

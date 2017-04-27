@@ -15,7 +15,8 @@ import { _, createToggleKey, collapseId, createToggleKeys } from '../utils';
 import Periods from './Periods';
 import { ToggleButton } from "./common"
 
-import { OBJECTS_INDICATORS, OBJECTS_PERIODS } from '../const.js';
+// import { c.OBJECTS_INDICATORS, c.OBJECTS_PERIODS } from '../const.js';
+import * as c from '../const.js';
 import {getIndicatorsChildrenIds, getIndicatorsAggregateActualValue, getResultsChildrenIds} from "../selectors";
 
 
@@ -84,7 +85,7 @@ export default class Indicators extends React.Component {
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         // concatenate this model's name with parent's ID
-        this.state = {collapseId: collapseId(OBJECTS_INDICATORS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_INDICATORS, this.props.parentId)};
     }
 
     activeKey() {
@@ -96,7 +97,7 @@ export default class Indicators extends React.Component {
     }
 
     toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, OBJECTS_INDICATORS, this.activeKey());
+        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_INDICATORS, this.activeKey());
         keys.map((collapse) => {
             this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
         })
@@ -122,7 +123,7 @@ export default class Indicators extends React.Component {
     }
 
     render() {
-        // const { ids, indicators } = findChildren(this.props.parentId, OBJECTS_INDICATORS);
+        // const { ids, indicators } = findChildren(this.props.parentId, c.OBJECTS_INDICATORS);
         // const {ids=undefined} = this.props.indicators;
 
         const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
@@ -135,7 +136,7 @@ export default class Indicators extends React.Component {
             );
         } else if (indicatorIds.length > 0) {
             return (
-                <div className={OBJECTS_INDICATORS}>
+                <div className={c.OBJECTS_INDICATORS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
                                   {/*disabled={!this.props.ui.allFetched}/>*/}

@@ -14,13 +14,15 @@ import { connect } from "react-redux"
 import {
     fetchModel, fetchUser, testFetchModel, lockSelectedPeriods, unlockSelectedPeriods
 } from "../actions/model-actions"
+// TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import { setPageData } from "../actions/page-actions"
 import {
     activateToggleAll, updateFormOpen, selectablePeriods, periodSelectReset,
     periodsThatNeedReporting, selectPeriodsThatNeedReporting
 } from "../actions/ui-actions"
 
-import { OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_DRAFT, PARENT_FIELD } from "../const"
+// import { c.OBJECTS_PERIODS, c.OBJECTS_UPDATES, c.UPDATE_STATUS_DRAFT, c.PARENT_FIELD } from "../const"
+import * as c from "../const"
 import {fieldValueOrSpinner, openNodes} from "../utils"
 
 import Results from "./Results"
@@ -89,14 +91,10 @@ export default class App extends React.Component {
         fetchModel('comments', projectId, activateToggleAll);
     }
 
-    // parentOf(model, id) {
-    //     return this.props.models[model].objects[id][PARENT_FIELD[model]]
-    // }
-
     showUpdates(updateIds) {
         periodSelectReset();
         updateIds.map((id) => updateFormOpen(id));
-        openNodes(OBJECTS_UPDATES, updateIds, true);
+        openNodes(c.OBJECTS_UPDATES, updateIds, true);
     }
 
     showDraft() {

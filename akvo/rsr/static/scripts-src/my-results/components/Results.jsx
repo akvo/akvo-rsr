@@ -13,7 +13,8 @@ import Collapse, {  Panel } from 'rc-collapse';
 import { onChange } from "../actions/collapse-actions"
 
 import { _, createToggleKey, collapseId, cascadeIds, createToggleKeys } from '../utils';
-import { OBJECTS_RESULTS, OBJECTS_INDICATORS } from '../const.js';
+// import { c.OBJECTS_RESULTS, c.OBJECTS_INDICATORS } from '../const.js';
+import * as c from '../const.js';
 
 import Indicators from './Indicators';
 import { ToggleButton } from "./common"
@@ -92,7 +93,7 @@ export default class Results extends React.Component {
         this.toggleAll = this.toggleAll.bind(this);
         // Note that there is only one Collapse component for Results, so the collapseID will always
         // be "results-results"
-        this.state = {collapseId: collapseId(OBJECTS_RESULTS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_RESULTS, this.props.parentId)};
     }
 
     activeKey() {
@@ -104,7 +105,7 @@ export default class Results extends React.Component {
     }
 
     toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, OBJECTS_RESULTS, this.activeKey());
+        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_RESULTS, this.activeKey());
         keys.map((collapse) => {
             this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
         })
@@ -138,7 +139,7 @@ export default class Results extends React.Component {
             );
         } else if (resultIds.length > 0) {
             return (
-                <div className={OBJECTS_RESULTS}>
+                <div className={c.OBJECTS_RESULTS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
                     <ToggleButton onClick={this.toggleAll} label="++"
                                   disabled={!this.props.ui.allFetched}/>

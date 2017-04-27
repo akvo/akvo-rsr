@@ -5,7 +5,7 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import { SELECTED_PERIODS, UPDATE_FORMS } from "../const"
+// import { SELECTED_PERIODS, UPDATE_FORMS } from "../const"
 
 /*
     The uiState keeps track of state of the UI that's not directly dependent on the model's current
@@ -16,15 +16,15 @@ import { SELECTED_PERIODS, UPDATE_FORMS } from "../const"
         * periods selected for bulk (un)locking
  */
 
-export const
-    UI_ID_RESET = "UI_ID_RESET",
-    UI_ID_TOGGLE = "UI_ID_TOGGLE",
-    UI_ID_TRUE = "UI_ID_TRUE",
-    UI_ID_FALSE = "UI_ID_FALSE",
-    ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
-    SET_PERIOD_DATES = "SET_PERIOD_DATES"
-;
-
+// export const
+//     c.UI_ID_RESET = "c.UI_ID_RESET",
+//     c.UI_ID_TOGGLE = "c.UI_ID_TOGGLE",
+//     UI_ID_TRUE = "UI_ID_TRUE",
+//     UI_ID_FALSE = "UI_ID_FALSE",
+//     ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
+//     SET_PERIOD_DATES = "SET_PERIOD_DATES"
+// ;
+import * as c from "../const"
 /*
     uiState top nodes:
         allFetched: boolean that is false until all models have loaded from the backend
@@ -34,20 +34,20 @@ export const
         updateForms: array of Update IDs that have open forms
  */
 const uiState = {
-    allFetched: false, selectedOption: undefined, [SELECTED_PERIODS]: [], [UPDATE_FORMS]: [],
+    allFetched: false, selectedOption: undefined, [c.SELECTED_PERIODS]: [], [c.UPDATE_FORMS]: [],
 };
 
 export default function uiReducer(state=uiState, action) {
     switch(action.type) {
 
 
-        case UI_ID_RESET: {
+        case c.UI_ID_RESET: {
             const {element} = action.payload;
             state = {...state, [element]: []};
             break;
         }
 
-        case UI_ID_TOGGLE: {
+        case c.UI_ID_TOGGLE: {
             const {element, id} = action.payload;
             // Make a set of the state[element] array
             let newState = new Set(state[element]);
@@ -61,24 +61,24 @@ export default function uiReducer(state=uiState, action) {
             break;
         }
 
-        case UI_ID_TRUE: {
+        case c.UI_ID_TRUE: {
             const {element, id} = action.payload;
             state = {...state, [element]: [...new Set(state[element]).add(id)]};
             break;
         }
 
-        case UI_ID_FALSE: {
+        case c.UI_ID_FALSE: {
             const {element, id} = action.payload;
             state = {...state, [element]: [...new Set(state[element]).delete(id)]};
             break;
         }
 
-        case ALL_MODELS_FETCHED: {
+        case c.ALL_MODELS_FETCHED: {
             state = {...state, allFetched: true};
             break;
         }
 
-        case SET_PERIOD_DATES: {
+        case c.SET_PERIOD_DATES: {
             state = {...state, periodDates: action.payload};
             break;
         }

@@ -9,10 +9,11 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 
 import { onChange } from "actions/collapse-actions"
-import { KEYS_RESET } from "reducers/collapseReducer"
+// import { c.KEYS_RESET } from "reducers/collapseReducer"
 
 import store from "./store"
-import { MODELS_LIST, PARENT_FIELD, OBJECTS_RESULTS, API_LIMIT } from "./const"
+// import { c.MODELS_LIST, c.PARENT_FIELD, c.OBJECTS_RESULTS, c.API_LIMIT } from "./const"
+import * as c from "./const"
 
 
 export function identicalArrays(array1, array2) {
@@ -125,23 +126,23 @@ export function APICall(method, url, data, callback, retries) {
 // Usage: endpoints.result(17) -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
 export const endpoints = {
         "result": (id) => `/rest/v1/result/${id}/?format=json`,
-        "results": (id) => `/rest/v1/result/?format=json&limit=${API_LIMIT}&project=${id}`,
+        "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "indicators": (id) =>
-            `/rest/v1/indicator/?format=json&limit=${API_LIMIT}&result__project=${id}`,
+            `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
         "periods": (id) =>
-            `/rest/v1/indicator_period/?format=json&limit=${API_LIMIT}&indicator__result__project=${id}`,
+            `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
         "updates": (id) =>
-            `/rest/v1/indicator_period_data/?format=json&limit=${API_LIMIT}&period__indicator__result__project=${id}`,
+            `/rest/v1/indicator_period_data/?format=json&limit=${c.API_LIMIT}&period__indicator__result__project=${id}`,
         "comments": (id) =>
-            `/rest/v1/indicator_period_data_comment/?format=json&limit=${API_LIMIT}&data__period__indicator__result__project=${id}`,
+            `/rest/v1/indicator_period_data_comment/?format=json&limit=${c.API_LIMIT}&data__period__indicator__result__project=${id}`,
         "post_comment": () =>
             "/rest/v1/indicator_period_data_comment/?format=json",
         "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,
         "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
         "updates_and_comments": () =>
-            `/rest/v1/indicator_period_data_framework/?format=json&limit=${API_LIMIT}`,
+            `/rest/v1/indicator_period_data_framework/?format=json&limit=${c.API_LIMIT}`,
         "user": (id) => `/rest/v1/user/${id}/?format=json`,
-        "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${API_LIMIT}&project=${id}`,
+        "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
 
@@ -177,7 +178,7 @@ export const findChildren = (parentId, childModel) => {
     //TODO: remove when _meta.children is fully used
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
-    const parentField = PARENT_FIELD[childModel];
+    const parentField = c.PARENT_FIELD[childModel];
     const model = store.getState().models[childModel];
     if (model && model.ids) {
         const { ids, objects } = model;
@@ -195,7 +196,7 @@ export const findChildren = (parentId, childModel) => {
 export const findChildrenFromCurrentState = (modelsState, parentId, childModel) => {
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
-    const parentField = PARENT_FIELD[childModel];
+    const parentField = c.PARENT_FIELD[childModel];
     const model = modelsState[childModel];
     if (model && model.ids) {
         const { ids, objects } = model;
@@ -239,7 +240,7 @@ export function collapseId(model, id) {
 
 function childModelName(model) {
     try {
-        return MODELS_LIST[MODELS_LIST.indexOf(model) + 1];
+        return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) + 1];
     } catch(e) {
         return undefined;
     }
@@ -247,7 +248,7 @@ function childModelName(model) {
 
 export function parentModelName(model) {
     try {
-        return MODELS_LIST[MODELS_LIST.indexOf(model) - 1];
+        return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) - 1];
     } catch(e) {
         return undefined;
     }
@@ -322,7 +323,7 @@ function lineage(model, id) {
     if (parentModel) {
         const storeModel = store.getState().models[model];
         if (storeModel.objects) {
-            const parentId = storeModel.objects[id][PARENT_FIELD[model]];
+            const parentId = storeModel.objects[id][c.PARENT_FIELD[model]];
             return [{model, id}].concat(lineage(parentModel, parentId));
         }
     }
@@ -332,7 +333,7 @@ function lineage(model, id) {
 function lineageKeys(model, id) {
     // construct collapse activeKey keys for me and all my ancestors so I will be visible
     const reversedLineage = lineage(model, id).reverse();
-    let parentId = OBJECTS_RESULTS;
+    let parentId = c.OBJECTS_RESULTS;
     return reversedLineage.reduce(
         (keys, obj) => {
             const key = keys.concat({[collapseId(obj.model, parentId)]: [obj.id]});
@@ -360,7 +361,7 @@ export function openNodes(model, ids, reset) {
         {}
     );
     if (reset) {
-        store.dispatch({type: KEYS_RESET});
+        store.dispatch({type: c.KEYS_RESET});
     }
     Object.keys(mergedKeys).map((key) => {
         store.dispatch(onChange(key, idsToActiveKey(mergedKeys[key])));

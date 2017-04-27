@@ -21,9 +21,10 @@ import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
 
 import { endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId } from '../../utils.js';
 
-import {
-    UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
-} from '../../const.js';
+// import {
+//     c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_APPROVED, c.OBJECTS_UPDATES
+// } from '../../const.js';
+import * as c from '../../const.js';
 
 import * as alertActions from "../../actions/alert-actions"
 import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
@@ -408,9 +409,9 @@ export default class UpdateForm extends React.Component {
         this.props.formToggle();
         const originalUpdate = this.state.originalUpdate;
         if (isNewUpdate(originalUpdate)) {
-            deleteFromModel(OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
         } else {
-            updateModel(OBJECTS_UPDATES, originalUpdate);
+            updateModel(c.OBJECTS_UPDATES, originalUpdate);
         }
         updateFormClose(originalUpdate.id);
     }
@@ -424,9 +425,9 @@ export default class UpdateForm extends React.Component {
         let update = Object.assign({}, this.props.update);
         // All changes to an update revert it to draft unless it is explicitly approved while saving
         if (e.target.id == 'approve') {
-            update.status = UPDATE_STATUS_APPROVED;
+            update.status = c.UPDATE_STATUS_APPROVED;
         } else {
-            update.status = UPDATE_STATUS_DRAFT;
+            update.status = c.UPDATE_STATUS_DRAFT;
         }
         const callbacksFactory = (message, errorMessage) => {
             return {
@@ -514,7 +515,7 @@ export class NewUpdateButton extends React.Component {
 
     constructor (props) {
         super(props);
-        this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.period.id)};
+        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id)};
         this.newUpdate = this.newUpdate.bind(this);
     }
 
@@ -533,7 +534,7 @@ export class NewUpdateButton extends React.Component {
             data: 0,
             text: '',
             relative_data: true,
-            status: UPDATE_STATUS_NEW,
+            status: c.UPDATE_STATUS_NEW,
             // Keep track of the open/closed state of the form
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
