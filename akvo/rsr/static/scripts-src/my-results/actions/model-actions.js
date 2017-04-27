@@ -31,6 +31,19 @@ function handleErrors(response) {
 }
 
 
+function executeCallback(callbacks, callbackName) {
+    if (typeof callbacks === 'object') {
+        if (callbacks && callbacks[callbackName]) {
+            callbacks[callbackName]();
+        }
+    } else {
+        if (callbacks) {
+            callbacks();
+        }
+    }
+}
+
+
 function wrappedFetch(url, method='GET', data) {
     // Wrap fetch with standard options and return parsed JSON
     const options = {
@@ -110,18 +123,6 @@ export function fetchModel(model, id, callbacks, dataPrepCallback) {
 }
 
 
-function executeCallback(callbacks, callbackName) {
-    if (typeof callbacks === 'object') {
-        if (callbacks && callbacks[callbackName]) {
-            callbacks[callbackName]();
-        }
-    } else {
-        if (callbacks) {
-            callbacks();
-        }
-    }
-}
-
 export function modifyModelToBackend(model, method, url, data, fulfilledDispatchData, callbacks) {
     return store.dispatch((dispatch) => {
         dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
@@ -159,7 +160,7 @@ export function modifyModelToBackend(model, method, url, data, fulfilledDispatch
                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: model, error: error}});
                 throw error;
             })
-            .catch((error) => {
+            .catch(() => {
                 executeCallback(callbacks, UPDATE_MODEL_REJECTED);
             });
     });
@@ -182,81 +183,21 @@ export function updateModelToBackend(model, url, data, collapseId, callbacks) {
     modifyModelToBackend(model, 'PATCH', url, data, dispatchData, callbacks);
 }
 
-// export function updateModelToBackend(model, url, data, collapseId, callback) {
-//     return store.dispatch((dispatch) => {
-//         dispatch({type: UPDATE_MODEL_START, payload: {model: model}});
-//         const options = {
-//             credentials: 'same-origin',
-//             method: 'PATCH',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-CSRFToken': getCookie('csrftoken')
-//             },
-//             body: JSON.stringify(data),
-//         };
-//         fetch(url, options)
-//             .then(response => response.json())
-//             .then((data) => {
-//                 dispatch({
-//                     type: UPDATE_MODEL_FULFILLED,
-//                     payload: {model: model, object: data, collapseId}
-//                 });
-//             })
-//             .then(() => {
-//                 if (callback) {
-//                     callback();
-//                 }
-//             })
-//             .catch((error) => {
-//                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
-//             })
-//     });
-// }
 
-
-export function deleteUpdateFromBackend(url, data, collapseId, callback) {
+export function deleteUpdateFromBackend(url, data, collapseId, callbacks) {
     const dispatchData = {
         type: UPDATE_MODEL_DELETE_FULFILLED,
         payload: {model: OBJECTS_UPDATES, id: data.id, collapseId}
     };
-    modifyModelToBackend(OBJECTS_UPDATES, 'DELETE', url, data, dispatchData, callback);
+    modifyModelToBackend(OBJECTS_UPDATES, 'DELETE', url, data, dispatchData, callbacks);
 }
-
-// export function deleteUpdateFromBackend(url, data, collapseId, callback) {
-//     return store.dispatch((dispatch) => {
-//         dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
-//         const options = {
-//             credentials: 'same-origin',
-//             method: 'DELETE',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-CSRFToken': getCookie('csrftoken')
-//             }
-//         };
-//         fetch(url, options)
-//             // .then(response => response.json())
-//             .then((response) => {
-//                 dispatch({
-//                     type: UPDATE_MODEL_DELETE_FULFILLED,
-//                     payload: {model: 'updates', id:data.id, collapseId}
-//                 });
-//             })
-//             .then(() => {
-//                 if (callback) {
-//                     callback();
-//                 }
-//             })
-//             .catch((error) => {
-//                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
-//             })
-//     });
-// }
 
 
 function wrappedFetchForUpdates({url, request}) {
     // Wrap fetch with standard options and return parsed JSON
     const req = new Request(url, request);
     return fetch(req)
+        .then(handleErrors)
         .then((response) => {
             if (response.status != 204) {
                 return response.json();
@@ -341,11 +282,11 @@ const assignAttachmentURLs = (responses, update, newUpdate) => {
     return newUpdate;
 };
 
-function sendUpdateToBackend(url, method, data, collapseId, callback) {
+function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
     return store.dispatch((dispatch) => {
         // newUpdate store new or updated instance from server response
         let newUpdate;
-        dispatch({type: UPDATE_MODEL_START, payload: {model: 'updates'}});
+        dispatch({type: UPDATE_MODEL_START, payload: {model: OBJECTS_UPDATES}});
         const request = options(method, JSON.stringify(data), 'application/json');
         wrappedFetchForUpdates({url, request})
             // Find attachments and create promises to post them
@@ -365,34 +306,37 @@ function sendUpdateToBackend(url, method, data, collapseId, callback) {
                 if (method == 'POST') {
                     dispatch({
                         type: DELETE_FROM_MODEL,
-                        payload: {model: 'updates', object: data, collapseId}
+                        payload: {model: OBJECTS_UPDATES, object: data, collapseId}
                     });
                 }
                 // and replace it with the data from the server
                 dispatch({
                     type: UPDATE_MODEL_FULFILLED,
-                    payload: {model: 'updates', object: newUpdate, collapseId}
+                    payload: {model: OBJECTS_UPDATES, object: newUpdate, collapseId}
                 });
             })
             .then(() => {
-                if (callback) {
-                    callback();
-                }
+                executeCallback(callbacks, UPDATE_MODEL_FULFILLED);
             })
             .catch((error) => {
                 dispatch({type: UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
+                throw error;
             })
+            .catch(() => {
+                executeCallback(callbacks, UPDATE_MODEL_REJECTED);
+            });
+
     });
 }
 
 
-export function saveUpdateToBackend(url, data, collapseId, callback) {
-    return sendUpdateToBackend(url, 'POST', data, collapseId, callback)
+export function saveUpdateToBackend(url, data, collapseId, callbacks) {
+    return sendUpdateToBackend(url, 'POST', data, collapseId, callbacks)
 }
 
 
-export function updateUpdateToBackend(url, data, collapseId, callback) {
-    return sendUpdateToBackend(url, 'PATCH', data, collapseId, callback)
+export function updateUpdateToBackend(url, data, collapseId, callbacks) {
+    return sendUpdateToBackend(url, 'PATCH', data, collapseId, callbacks)
 }
 
 

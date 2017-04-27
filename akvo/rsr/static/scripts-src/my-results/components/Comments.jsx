@@ -17,13 +17,29 @@ import { OBJECTS_COMMENTS } from '../const'
 import { ToggleButton } from "./common"
 import {getUpdatesChildrenIds} from "../selectors";
 import {saveModelToBackend} from "../actions/model-actions";
+import * as alertActions from "../actions/alert-actions"
+
+import AlertFactory from "./alertContainer"
+import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
+
+
+const CommentAlert = ({message, close}) => (
+        <div className='comment-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+CommentAlert.propTypes = {
+    message: PropTypes.string.isRequired,
+    close: PropTypes.func.isRequired,
+};
 
 
 @connect((store) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
     }
-})
+}, alertActions)
 class CommentForm extends React.Component {
 
     static propTypes = {
@@ -38,7 +54,13 @@ class CommentForm extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.addComment = this.addComment.bind(this);
         this.resetComment = this.resetComment.bind(this);
-        this.state = {comment: ''};
+        // we need a unique name for each alert
+        const alertName = 'CommentAlert-' + this.props.parentId;
+        this.state = {
+            comment: '',
+            commentAlertName: alertName,
+            CommentAlert: AlertFactory({alertName: alertName})(CommentAlert),
+        };
     }
 
     onChange(e) {
@@ -46,16 +68,31 @@ class CommentForm extends React.Component {
     }
 
     addComment() {
-        const newComment = {
-            'data': this.props.parentId,
-            'user': this.props.user.id,
-            'comment': this.state.comment
-        };
-        saveModelToBackend(OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, this.resetComment)
+        const { parentId, user, createAlert } = this.props;
+        const { comment, commentAlertName } = this.state;
+        if (comment.trim()) {
+            const newComment = {
+                'data': parentId,
+                'user': user.id,
+                'comment': comment
+            };
+            const callbacks = {
+                [UPDATE_MODEL_FULFILLED]: this.resetComment.bind(this, 'Comment saved'),
+                [UPDATE_MODEL_REJECTED]: createAlert.bind(
+                    this, commentAlertName, 'Comment could not be saved, plz try again.'
+                )
+            };
+            saveModelToBackend(
+                OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
+            );
+        } else  {
+            createAlert(commentAlertName, "Please enter some comment text");
+        }
     }
 
-    resetComment() {
-        this.setState({comment: ''})
+    resetComment(message) {
+        this.setState({comment: ''});
+        this.props.createAlert(this.state.commentAlertName, message);
     }
 
     render() {
@@ -71,6 +108,7 @@ class CommentForm extends React.Component {
                         </button>
                     </span>
                 </div>
+                {<this.state.CommentAlert />}
             </div>
         )
     }

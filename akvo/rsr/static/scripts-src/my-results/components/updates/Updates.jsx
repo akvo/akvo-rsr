@@ -25,6 +25,23 @@ import { ToggleButton } from "../common"
 import UpdateForm from "./UpdateForm"
 import {getUpdatesChildrenIds, getPeriodsChildrenIds} from "../../selectors";
 
+import * as alertActions from "../../actions/alert-actions"
+
+import AlertFactory from "../alertContainer"
+import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
+
+
+const Alert = ({message, close}) => (
+    <div className='update-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+Alert.propTypes = {
+    message: PropTypes.string.isRequired,
+    close: PropTypes.func.isRequired,
+};
+
 
 const UpdateDisplay = ({update}) => {
     const userName = update.user_details.first_name + " " + update.user_details.last_name;
@@ -42,7 +59,6 @@ const UpdateDisplay = ({update}) => {
         </div>
     )
 };
-
 UpdateDisplay.propTypes = {
     update: PropTypes.object.isRequired
 };
@@ -52,7 +68,7 @@ UpdateDisplay.propTypes = {
     return {
         ui: store.ui
     }
-})
+}, alertActions)
 class Update extends React.Component {
 
     static propTypes = {
@@ -64,6 +80,13 @@ class Update extends React.Component {
     constructor (props) {
         super(props);
         this.formToggle = this.formToggle.bind(this);
+        // we need a unique name for each alert
+        const alertName = 'UpdateAlert-' + this.props.update.id;
+        this.state = {
+            updateAlertName: alertName,
+            UpdateAlert: AlertFactory({alertName: alertName})(Alert),
+        };
+
     }
 
     formToggle() {
@@ -71,15 +94,17 @@ class Update extends React.Component {
     }
 
     render() {
-        let editUpdateButton;
+        let editUpdateButton, updateAlert;
         if (!this.props.periodLocked) {
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                                   className={'btn btn-sm btn-default'}
                                                   label={_('edit_update')}/>
+            updateAlert = <this.state.UpdateAlert />
         }
         return(
             <div className="col-xs-7">
                 {editUpdateButton}
+                {updateAlert}
                 {new Set(this.props.ui[UPDATE_FORMS]).has(this.props.update.id) ?
                     <UpdateForm
                         update={this.props.update}

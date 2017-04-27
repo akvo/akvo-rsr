@@ -25,6 +25,9 @@ import {
     UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
 } from '../../const.js';
 
+import * as alertActions from "../../actions/alert-actions"
+import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
+
 
 const Header = ({update}) => {
     return (
@@ -282,6 +285,7 @@ const pruneForPOST = (update) => {
     return updateForPOST;
 };
 
+@connect(null, alertActions)
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
@@ -295,6 +299,7 @@ export default class UpdateForm extends React.Component {
         // Save original update, used when editing is cancelled
         this.state = {
             originalUpdate: Object.assign({}, this.props.update),
+            updateAlertName: 'UpdateAlert-' + this.props.update.id,
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
@@ -302,6 +307,7 @@ export default class UpdateForm extends React.Component {
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
+        this.formClose = this.formClose.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -409,6 +415,11 @@ export default class UpdateForm extends React.Component {
         updateFormClose(originalUpdate.id);
     }
 
+    formClose(id, message) {
+        updateFormClose(id);
+        this.props.createAlert(this.state.updateAlertName, message);
+    }
+
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
         // All changes to an update revert it to draft unless it is explicitly approved while saving
@@ -417,20 +428,39 @@ export default class UpdateForm extends React.Component {
         } else {
             update.status = UPDATE_STATUS_DRAFT;
         }
-
-        const callback = updateFormClose.bind(null, update.id);
+        const callbacksFactory = (message, errorMessage) => {
+            return {
+                [UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id, message),
+                [UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                    this, this.state.updateAlertName, errorMessage
+                )
+            };
+        };
         if (isNewUpdate(update)) {
-            saveUpdateToBackend(endpoints.updates_and_comments(), pruneForPOST(update),
-                                this.props.collapseId, callback);
+            saveUpdateToBackend(
+                endpoints.updates_and_comments(), pruneForPOST(update),
+                this.props.collapseId, callbacksFactory('Update created', "Couldn't create update")
+            );
         } else {
-            updateUpdateToBackend(endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                                  this.props.collapseId, callback);
+            updateUpdateToBackend(
+                endpoints.update_and_comments(update.id), pruneForPATCH(update),
+                this.props.collapseId, callbacksFactory('Update saved', "Couldn't save update")
+            );
         }
     }
 
     deleteUpdate() {
         const url = endpoints.update_and_comments(this.props.update.id);
-        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId);
+        const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
+        const callbacks = {
+            [UPDATE_MODEL_FULFILLED]: this.props.createAlert.bind(
+                this, deleteUpdateAlertName, 'Update deleted'
+            ),
+            [UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                this, deleteUpdateAlertName, "Couldn't delete update"
+            )
+        };
+        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
     }
 
     previousActualValue() {
@@ -480,7 +510,6 @@ export class NewUpdateButton extends React.Component {
     static propTypes = {
         period: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        dispatch: PropTypes.func.isRequired,
     };
 
     constructor (props) {

@@ -34,20 +34,17 @@ import { ToggleButton } from "./common"
 import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
 import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
 import * as alertActions from "../actions/alert-actions"
+import * as collapseActions from "../actions/collapse-actions"
 
-import createAlert from "./alertContainer"
+import AlertFactory from "./alertContainer"
 
-const Alert = ({message, close}) => (
-    <div className='myAlert'>
+
+const ToggleAlert = ({message, close}) => (
+    <div className='lock-toggle-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
 );
-
-
-const ToggleAlert = createAlert({
-    alertName: 'ToggleAlert'
-})(Alert);
 
 
 @connect(null, alertActions)
@@ -62,7 +59,12 @@ class PeriodLockToggle extends React.Component {
         super(props);
         this.lockToggle = this.lockToggle.bind(this);
         this.updatePeriodLock = this.updatePeriodLock.bind(this);
-        this.state = {locking: false, toggleMessage: undefined};
+        const alertName = 'ToggleAlert-' + this.props.period.id;
+        this.state = {
+            locking: false,
+            toggleAlertName: alertName,
+            ToggleAlert: AlertFactory({alertName: alertName})(ToggleAlert),
+        };
     }
 
     updatePeriodLock(periodId, data, callbacks) {
@@ -75,7 +77,7 @@ class PeriodLockToggle extends React.Component {
     }
 
     setLockMessage(message) {
-        this.props.createAlert('ToggleAlert', message);
+        this.props.createAlert(this.state.toggleAlertName, message);
     }
 
     lockToggle(e) {
@@ -111,7 +113,7 @@ class PeriodLockToggle extends React.Component {
         }
         return (
             <div>
-                <ToggleAlert />
+                {<this.state.ToggleAlert />}
                 <ToggleButton onClick={this.lockToggle} label={label}/>
             </div>
         )
@@ -181,16 +183,24 @@ const objectsArrayToLookup = (arr, index) => {
 };
 
 
+const DeleteUpdateAlert = ({message, close}) => (
+    <div className='delete-update-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+
+
 @connect((store) => {
     return {
-        periods: store.models['periods'],
+        periods: store.models.periods,
         keys: store.keys,
         user: store.models.user.objects[store.models.user.ids[0]],
         ui: store.ui,
         indicatorChildrenIds: getIndicatorsChildrenIds(store),
         actualValue: getPeriodsActualValue(store),
     }
-})
+}, {...alertActions, ...collapseActions})
 export default class Periods extends React.Component {
 
     static propTypes = {
@@ -221,13 +231,13 @@ export default class Periods extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        this.props.onChange(this.state.collapseId, activeKey);
     }
 
     toggleAll() {
         const keys = createToggleKeys(this.props.parentId, OBJECTS_PERIODS, this.activeKey());
         keys.map((collapse) => {
-            this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
+            this.props.onChange(collapse.collapseId, collapse.activeKey);
         })
     }
 
@@ -248,6 +258,13 @@ export default class Periods extends React.Component {
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
+                let newUpdateButton, DelUpdateAlert;
+                if (!period.locked) {
+                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
+                    DelUpdateAlert = AlertFactory(
+                        {alertName: 'DeleteUpdateAlert-' + period.id}
+                    )(DeleteUpdateAlert);
+                }
                 return (
                     <Panel header={<PeriodHeader period={period}
                                               user={this.props.user}
@@ -259,12 +276,8 @@ export default class Periods extends React.Component {
                                isChecked ? 'periodSelected' : needsReporting ? 'needsReporting' : ''
                            }>
                         <Updates parentId={id} periodLocked={period.locked}/>
-                        {
-                            !period.locked &&
-                            <NewUpdateButton period={period}
-                                             user={this.props.user}
-                                             dispatch={this.props.dispatch}/>
-                        }
+                        {newUpdateButton}
+                        {<DelUpdateAlert/>}
                     </Panel>
                 )
             }

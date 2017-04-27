@@ -25,7 +25,7 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
         <span className="indicatorTitle">
             <ul>
                 <li>{title}</li>
-                <li><span  class="aggrActualValue">{ "Aggregate actual value: " + aggregateActualValue}</span></li>
+                <li><span className="aggrActualValue">{ "Aggregate actual value: " + aggregateActualValue}</span></li>
             </ul>
         </span>
     )

@@ -16,7 +16,7 @@ const defaultState = {
     message: ''
 };
 
-const createAlert = config => WrappedComponent => {
+const AlertFactory = config => WrappedComponent => {
     const {alertName} = config;
 
     class AlertContainer extends React.Component {
@@ -28,14 +28,15 @@ const createAlert = config => WrappedComponent => {
             this.props.actions.destroyAlert(alertName);
         }
 
-        close() {
+        close(e) {
             this.props.actions.dismissAlert(alertName);
+            e.stopPropagation();
         }
 
         render() {
             if (!this.props.isVisible) return false;
             return (
-                <WrappedComponent message={this.props.message} close={() => this.close()}/>
+                <WrappedComponent message={this.props.message} close={(e) => this.close(e)}/>
             );
         }
     }
@@ -47,13 +48,13 @@ const createAlert = config => WrappedComponent => {
             isVisible: alerts[alertName].isVisible,
             message: alerts[alertName].message
         };
-    };
+    }
 
     function mapDispatchToProps(dispatch) {
         return {actions: bindActionCreators(alertActions, dispatch)};
-    };
+    }
     return connect(mapStateToProps, mapDispatchToProps)(AlertContainer);
 
 };
 
-export default createAlert;
+export default AlertFactory;
