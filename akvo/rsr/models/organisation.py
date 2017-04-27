@@ -442,20 +442,6 @@ class Organisation(TimestampsMixin, models.Model):
                 countries.append(location.iati_country_value().name)
         return countries
 
-    def organisation_keywords(self, public=True, unpublished=False):
-        """Return all the keywords used by projects related to the organisation.
-
-        NOTE: By default only the keywords on the *published* and *public*
-        projects are returned.
-
-        """
-
-        projects = self.all_projects() if unpublished else self.published_projects()
-        if public:
-            projects = projects.public()
-
-        return Keyword.objects.filter(projects__in=projects).distinct()
-
     def iati_file(self):
         """
         Looks up the latest public IATI file of this organisation.
@@ -474,7 +460,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_multiple_project_currencies(self):
         "Check if organisation has projects with different currencies"
-        if self.published_projects().distinct().count() == self.org_currency_projects_count():
+        if self.active_projects().distinct().count() == self.org_currency_projects_count():
             return False
         else:
             return True
@@ -493,7 +479,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     def org_currency_projects_count(self):
         "How many projects with budget in default currency the organisation is a partner to"
-        return self.published_projects().filter(currency=self.currency).distinct().count()
+        return self.active_projects().filter(currency=self.currency).distinct().count()
 
     def _aggregate_funds_needed(self, projects):
         return sum(projects.values_list('funds_needed', flat=True))
@@ -504,7 +490,7 @@ class Organisation(TimestampsMixin, models.Model):
 
         The ORM aggregate() doesn't work here since we may have multiple partnership relations
         to the same project."""
-        return self._aggregate_funds_needed(self.published_projects().filter(currency=self.currency).distinct())
+        return self._aggregate_funds_needed(self.active_projects().filter(currency=self.currency).distinct())
 
     class Meta:
         app_label = 'rsr'
