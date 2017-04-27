@@ -21,7 +21,6 @@ from akvo.codelists.store.codelists_v202 import CURRENCY, ORGANISATION_TYPE
 from akvo.codelists.models import Currency
 
 from .country import Country
-from .keyword import Keyword
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
