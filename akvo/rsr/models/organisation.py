@@ -497,35 +497,9 @@ class Organisation(TimestampsMixin, models.Model):
             amount_pledged=Sum('partnerships__funding_amount')
         )['amount_pledged'] or 0
 
-    def euros_pledged(self):
-        "How much € the organisation has pledged to projects it is a partner to"
-        return self.active_projects().euros().filter(
-            partnerships__organisation__exact=self,
-            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
-        ).aggregate(
-            euros_pledged=Sum('partnerships__funding_amount')
-        )['euros_pledged'] or 0
-
-    def dollars_pledged(self):
-        "How much $ the organisation has pledged to projects"
-        return self.active_projects().dollars().filter(
-            partnerships__organisation__exact=self,
-            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
-        ).aggregate(
-            dollars_pledged=Sum('partnerships__funding_amount')
-        )['dollars_pledged'] or 0
-
     def org_currency_projects_count(self):
         "How many projects with budget in default currency the organisation is a partner to"
         return self.published_projects().filter(currency=self.currency).distinct().count()
-
-    def euro_projects_count(self):
-        "How many projects with budget in € the organisation is a partner to"
-        return self.published_projects().euros().distinct().count()
-
-    def dollar_projects_count(self):
-        "How many projects with budget in $ the organisation is a partner to"
-        return self.published_projects().dollars().distinct().count()
 
     def _aggregate_funds_needed(self, projects):
         return sum(projects.values_list('funds_needed', flat=True))
@@ -537,22 +511,6 @@ class Organisation(TimestampsMixin, models.Model):
         The ORM aggregate() doesn't work here since we may have multiple partnership relations
         to the same project."""
         return self._aggregate_funds_needed(self.published_projects().filter(currency=self.currency).distinct())
-
-    def euro_funds_needed(self):
-        """How much is still needed to fully fund all projects with € budget that the
-        organisation is a partner to.
-
-        The ORM aggregate() doesn't work here since we may have multiple partnership relations
-        to the same project."""
-        return self._aggregate_funds_needed(self.published_projects().euros().distinct())
-
-    def dollar_funds_needed(self):
-        """How much is still needed to fully fund all projects with $ budget that the
-        organisation is a partner to.
-
-        The ORM aggregate() doesn't work here since we may have multiple partnership relations
-        to the same project."""
-        return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
 
     class Meta:
         app_label = 'rsr'

@@ -714,16 +714,6 @@ class Project(TimestampsMixin, models.Model):
         def status_not_archived(self):
             return self.exclude(iati_status__exact='6')
 
-        def active(self):
-            """Return projects that are published and not cancelled or archived"""
-            return self.published().status_not_cancelled().status_not_archived()
-
-        def euros(self):
-            return self.filter(currency='EUR')
-
-        def dollars(self):
-            return self.filter(currency='USD')
-
         # aggregates
         def budget_sum(self):
             ''' aggregates the budgets of all the projects in the QS
