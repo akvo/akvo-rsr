@@ -6,13 +6,6 @@
  */
 
 
-// import {
-//     c.CREATE_ALERT,
-//     c.DESTROY_ALERT,
-//     c.DISMISS_ALERT,
-//     c.DISMISS_ALL_ALERTS,
-//     c.INITIALIZE_ALERT
-// } from "../const";
 import * as c from "../const"
 
 const initialState = {isVisible: false, message: ''};
@@ -27,10 +20,12 @@ const behaviors = {
     }
 };
 
+
 const reducer = (state, action) => {
     const behavior = behaviors[action.type];
     return behavior ? behavior(state, action) : state;
 };
+
 
 const alertReducer = (state = {}, action = {}) => {
     const {type, alertName} = action;

@@ -8,12 +8,7 @@
 
 import store from "../store"
 import * as c from "../const"
-// import {
-//     FETCH_MODEL_START, c.FETCH_MODEL_FULFILLED, c.FETCH_MODEL_REJECTED, c.DELETE_FROM_MODEL,
-//     c.UPDATE_MODEL_DELETE_FULFILLED, c.UPDATE_MODEL_START, c.UPDATE_MODEL_FULFILLED, c.UPDATE_MODEL_REJECTED
-// } from "../reducers/modelsReducer"
 import { getCookie, endpoints } from "../utils"
-// import { c.API_LIMIT, c.SELECTED_PERIODS, c.OBJECTS_PERIODS, c.OBJECTS_UPDATES} from "../const"
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
@@ -174,6 +169,7 @@ export function saveModelToBackend(model, url, data, collapseId, callbacks) {
     modifyModelToBackend(model, 'POST', url, data, dispatchData, callbacks);
 }
 
+
 export function updateModelToBackend(model, url, data, collapseId, callbacks) {
     const dispatchData = {
         type: c.UPDATE_MODEL_FULFILLED,
@@ -205,6 +201,7 @@ function wrappedFetchForUpdates({url, request}) {
             }});
 }
 
+
 const options = (method, body, contentType) => {
     let opts =  {
         credentials: 'same-origin',
@@ -219,6 +216,7 @@ const options = (method, body, contentType) => {
     }
     return opts;
 };
+
 
 const setupAttachmentRequests = (url, data) => {
     // Prepare parameters for calls to wrappedFetchForUpdates that upload or delete attachments
@@ -250,6 +248,7 @@ const setupAttachmentRequests = (url, data) => {
     return uploads;
 };
 
+
 const assignAttachmentURLs = (responses, update, newUpdate) => {
     // Set or delete the relevant attachment field on the update
     if (responses && responses.length == 2) {
@@ -280,6 +279,7 @@ const assignAttachmentURLs = (responses, update, newUpdate) => {
     }
     return newUpdate;
 };
+
 
 function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
     return store.dispatch((dispatch) => {

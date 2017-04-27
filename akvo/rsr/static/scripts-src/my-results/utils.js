@@ -9,11 +9,9 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 
 import { onChange } from "actions/collapse-actions"
-// import { c.KEYS_RESET } from "reducers/collapseReducer"
 
-import store from "./store"
-// import { c.MODELS_LIST, c.PARENT_FIELD, c.OBJECTS_RESULTS, c.API_LIMIT } from "./const"
-import * as c from "./const"
+import * as c from "const"
+import store from "store"
 
 
 export function identicalArrays(array1, array2) {
@@ -64,63 +62,6 @@ export function getCookie(name) {
     return cookieValue;
 }
 
-export function APICall(method, url, data, callback, retries) {
-    function modify(method, url, data){
-        return fetch(url, {
-            credentials: 'same-origin',
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                "X-CSRFToken": getCookie('csrftoken')
-            },
-            body: JSON.stringify(data),
-        })
-    }
-
-    let handler;
-    switch (method) {
-        case "GET":
-            handler = () => fetch(url, {
-                credentials: 'same-origin',
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-            });
-            break;
-
-        case "POST":
-            handler = () => modify('POST', url, data);
-            break;
-
-        case "PUT":
-            handler = () => modify('PUT', url, data);
-            break;
-
-        case "PATCH":
-            handler = () => modify('PATCH', url, data);
-            break;
-
-        case "DELETE":
-            handler = () => fetch(url, {
-                credentials: 'same-origin',
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRFToken": getCookie('csrftoken')
-                }
-            });
-            break;
-    }
-    return handler;
-    handler()
-        //TODO: error handling? See https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
-        .then(function(response) {
-            if (response.status != 204)
-                return response.json();
-            else
-                return response;
-        }).then(callback);
-}
-
 
 // Object holds callback URL functions as values, most of them called with an id parameter
 // Usage: endpoints.result(17) -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
@@ -169,6 +110,7 @@ export function _(s) {
     }
     return strings[s];
 }
+
 
 // Newly created updates get the id 'new-<N>' where N is an int starting at 1
 export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
@@ -245,6 +187,7 @@ function childModelName(model) {
         return undefined;
     }
 }
+
 
 export function parentModelName(model) {
     try {
@@ -330,6 +273,7 @@ function lineage(model, id) {
     return [{model, id}];
 }
 
+
 function lineageKeys(model, id) {
     // construct collapse activeKey keys for me and all my ancestors so I will be visible
     const reversedLineage = lineage(model, id).reverse();
@@ -343,6 +287,7 @@ function lineageKeys(model, id) {
         []
     )
 }
+
 
 export function openNodes(model, ids, reset) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model
@@ -379,5 +324,3 @@ export function fieldValueOrSpinner(obj, field) {
         return <i className="fa fa-spin fa-spinner" />;
     }
 }
-
-

@@ -10,26 +10,24 @@ import React, { PropTypes } from "react";
 import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
+import * as alertActions from "../../actions/alert-actions"
 import { onChange } from "../../actions/collapse-actions"
 import { updateFormToggle } from "../../actions/ui-actions"
 
-import Comments from "../Comments"
-
+import { ToggleButton } from "../common"
+import  * as c from '../../const.js';
+import { getPeriodsChildrenIds } from "../../selectors";
 import {
-    displayDate, _, currentUser, findChildren, createToggleKey, collapseId, createToggleKeys
+    displayDate,
+    _,
+    currentUser,
+    createToggleKeys,
+    collapseId,
 } from '../../utils.js';
 
-// import { c.OBJECTS_UPDATES, c.UPDATE_STATUS_APPROVED, c.UPDATE_FORMS } from '../../const.js';
-import  * as c from '../../const.js';
-
-import { ToggleButton } from "../common"
-import UpdateForm from "./UpdateForm"
-import {getUpdatesChildrenIds, getPeriodsChildrenIds} from "../../selectors";
-
-import * as alertActions from "../../actions/alert-actions"
-
 import AlertFactory from "../alertContainer"
-// import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
+import Comments from "../Comments"
+import UpdateForm from "./UpdateForm"
 
 
 const Alert = ({message, close}) => (
@@ -99,7 +97,7 @@ class Update extends React.Component {
         if (!this.props.periodLocked) {
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                                   className={'btn btn-sm btn-default'}
-                                                  label={_('edit_update')}/>
+                                                  label={_('edit_update')}/>;
             updateAlert = <this.state.UpdateAlert />
         }
         return(

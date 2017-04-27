@@ -5,8 +5,6 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-// import { SELECTED_PERIODS, UPDATE_FORMS } from "../const"
-
 /*
     The uiState keeps track of state of the UI that's not directly dependent on the model's current
     data.
@@ -14,18 +12,7 @@
         * if all models have loaded from the server, at which point we enable a number of buttons
         * open/closed state of update forms
         * periods selected for bulk (un)locking
- */
 
-// export const
-//     c.UI_ID_RESET = "c.UI_ID_RESET",
-//     c.UI_ID_TOGGLE = "c.UI_ID_TOGGLE",
-//     UI_ID_TRUE = "UI_ID_TRUE",
-//     UI_ID_FALSE = "UI_ID_FALSE",
-//     ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
-//     SET_PERIOD_DATES = "SET_PERIOD_DATES"
-// ;
-import * as c from "../const"
-/*
     uiState top nodes:
         allFetched: boolean that is false until all models have loaded from the backend
             TODO: allFetched is only used to disable the "global" buttons at page loading, but could
@@ -33,13 +20,16 @@ import * as c from "../const"
         selectedPeriods: array of Period IDs that are currently selected via checkbox
         updateForms: array of Update IDs that have open forms
  */
+
+import * as c from "../const"
+
+
 const uiState = {
     allFetched: false, selectedOption: undefined, [c.SELECTED_PERIODS]: [], [c.UPDATE_FORMS]: [],
 };
 
 export default function uiReducer(state=uiState, action) {
     switch(action.type) {
-
 
         case c.UI_ID_RESET: {
             const {element} = action.payload;

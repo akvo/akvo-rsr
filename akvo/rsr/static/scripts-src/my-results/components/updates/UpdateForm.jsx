@@ -10,24 +10,32 @@ import React, { PropTypes } from "react";
 import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
-import { FileReaderInput } from '../common';
-
-import { onChange, addKey } from "../../actions/collapse-actions"
-import {
-    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend,
-    deleteUpdateFromBackend
-} from "../../actions/model-actions"
-import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
-
-import { endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId } from '../../utils.js';
-
-// import {
-//     c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_APPROVED, c.OBJECTS_UPDATES
-// } from '../../const.js';
-import * as c from '../../const.js';
 
 import * as alertActions from "../../actions/alert-actions"
-import {UPDATE_MODEL_FULFILLED, UPDATE_MODEL_REJECTED} from "../../reducers/modelsReducer";
+import { addKey } from "../../actions/collapse-actions"
+import {
+    updateModel,
+    deleteFromModel,
+    updateUpdateToBackend,
+    saveUpdateToBackend,
+    deleteUpdateFromBackend
+} from "../../actions/model-actions"
+import {
+    updateFormOpen,
+    updateFormClose
+} from "../../actions/ui-actions"
+
+import * as c from '../../const.js';
+import {
+    endpoints,
+    displayNumber,
+    _,
+    currentUser,
+    isNewUpdate,
+    collapseId,
+} from '../../utils.js';
+
+import { FileReaderInput } from '../common';
 
 
 const Header = ({update}) => {
@@ -431,8 +439,8 @@ export default class UpdateForm extends React.Component {
         }
         const callbacksFactory = (message, errorMessage) => {
             return {
-                [UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id, message),
-                [UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id, message),
+                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, this.state.updateAlertName, errorMessage
                 )
             };
@@ -454,10 +462,10 @@ export default class UpdateForm extends React.Component {
         const url = endpoints.update_and_comments(this.props.update.id);
         const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
         const callbacks = {
-            [UPDATE_MODEL_FULFILLED]: this.props.createAlert.bind(
+            [c.UPDATE_MODEL_FULFILLED]: this.props.createAlert.bind(
                 this, deleteUpdateAlertName, 'Update deleted'
             ),
-            [UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                 this, deleteUpdateAlertName, "Couldn't delete update"
             )
         };

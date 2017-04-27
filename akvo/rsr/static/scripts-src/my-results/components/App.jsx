@@ -11,28 +11,36 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css';
 import { connect } from "react-redux"
 
-import {
-    fetchModel, fetchUser, testFetchModel, lockSelectedPeriods, unlockSelectedPeriods
-} from "../actions/model-actions"
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
+import {
+    fetchModel,
+    fetchUser,
+    testFetchModel,
+    lockSelectedPeriods,
+    unlockSelectedPeriods,
+} from "../actions/model-actions"
 import { setPageData } from "../actions/page-actions"
 import {
-    activateToggleAll, updateFormOpen, selectablePeriods, periodSelectReset,
-    periodsThatNeedReporting, selectPeriodsThatNeedReporting
+    activateToggleAll,
+    updateFormOpen,
+    selectablePeriods,
+    periodSelectReset,
+    periodsThatNeedReporting,
+    selectPeriodsThatNeedReporting,
 } from "../actions/ui-actions"
 
-// import { c.OBJECTS_PERIODS, c.OBJECTS_UPDATES, c.UPDATE_STATUS_DRAFT, c.PARENT_FIELD } from "../const"
 import * as c from "../const"
-import {fieldValueOrSpinner, openNodes} from "../utils"
+import { getApprovedUpdates, getDraftUpdates } from "../selectors";
+import { fieldValueOrSpinner, openNodes } from "../utils"
 
 import Results from "./Results"
 import { ToggleButton } from "./common"
-import {getApprovedUpdates, getDraftUpdates} from "../selectors";
 
 
 const dataFromElement = (elementName) => {
     return JSON.parse(document.getElementById(elementName).innerHTML);
 };
+
 
 const modifyUser = (isMEManager) => {
     return (data) => {

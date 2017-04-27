@@ -10,14 +10,19 @@ import PropTypes from 'prop-types';
 import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
-import { onChange } from "../actions/collapse-actions"
-import { _, createToggleKey, collapseId, createToggleKeys } from '../utils';
-import Periods from './Periods';
-import { ToggleButton } from "./common"
-
-// import { c.OBJECTS_INDICATORS, c.OBJECTS_PERIODS } from '../const.js';
 import * as c from '../const.js';
-import {getIndicatorsChildrenIds, getIndicatorsAggregateActualValue, getResultsChildrenIds} from "../selectors";
+import {
+    getIndicatorsAggregateActualValue,
+    getResultsChildrenIds
+} from "../selectors";
+import { onChange } from "../actions/collapse-actions"
+import {
+    _,
+    collapseId,
+    createToggleKeys
+} from '../utils';
+
+import Periods from './Periods';
 
 
 const IndicatorHeader = ({indicator, aggregateActualValue}) => {
@@ -31,7 +36,6 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
         </span>
     )
 };
-
 IndicatorHeader.propTypes = {
     indicator: PropTypes.object,
     aggregateActualValue: PropTypes.number,
@@ -53,16 +57,10 @@ const IndicatorContent = ({indicator}) => {
         </div>
     )
 };
-
 IndicatorContent.propTypes = {
     indicator: PropTypes.object
 };
 
-const childrenArray = (objects, ids) => {
-    // Turn {17: {modelObj1}, {42: {modelObj2}, ...} and [42, 17, ...] into
-    // [{modelObj2}, {modelObj1}, ...]
-    return ids.map(id => objects[id]);
-};
 
 @connect((store) => {
     return {
@@ -123,12 +121,7 @@ export default class Indicators extends React.Component {
     }
 
     render() {
-        // const { ids, indicators } = findChildren(this.props.parentId, c.OBJECTS_INDICATORS);
-        // const {ids=undefined} = this.props.indicators;
-
         const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
-
-        // const toggleKey = createToggleKey(ids, this.activeKey());
 
         if (!indicatorIds) {
             return (

@@ -9,35 +9,25 @@ import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update  from 'immutability-helper';
 
-import { onChange } from "../actions/collapse-actions"
+import * as alertActions from "../actions/alert-actions"
+import * as collapseActions from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
-import { periodSelectToggle, selectablePeriods } from "../actions/ui-actions"
+import { periodSelectToggle } from "../actions/ui-actions"
 
+import * as c from "../const"
+import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
 import {
     displayDate,
     endpoints,
-    createToggleKey,
     collapseId,
     createToggleKeys
 } from "../utils.js";
 
-// import {
-//     c.OBJECTS_PERIODS,
-//     c.OBJECTS_UPDATES,
-//     c.UPDATE_STATUS_APPROVED,
-//     c.SELECTED_PERIODS
-// } from '../const.js';
-import * as c from "../const"
-
-import Updates from "./updates/Updates";
-import { NewUpdateButton } from "./updates/UpdateForm";
-import { ToggleButton } from "./common"
-import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
-// import {c.UPDATE_MODEL_FULFILLED, c.UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
-import * as alertActions from "../actions/alert-actions"
-import * as collapseActions from "../actions/collapse-actions"
 
 import AlertFactory from "./alertContainer"
+import { ToggleButton } from "./common"
+import { NewUpdateButton } from "./updates/UpdateForm";
+import Updates from "./updates/Updates";
 
 
 const ToggleAlert = ({message, close}) => (
@@ -133,7 +123,7 @@ PeriodLockStatus.propTypes = {
 const PeriodSelect = ({id, toggleCheckbox, isChecked}) => {
     // NOTE: the onChange event handler can't be used here because it fires too late and the event
     // for opening/closing the collapse panel will be triggered. However when using the onClick
-    // handler React complais that the component isn't managed correctly, thus the noop onChange.
+    // handler React complains that the component isn't managed correctly, thus the noop onChange.
     return <input id={id} type="checkbox" checked={isChecked ? "checked" : ""}
                   onClick={toggleCheckbox} onChange={()=>{}}/>
 };
@@ -174,13 +164,6 @@ PeriodHeader.propTypes = {
     actualValue: PropTypes.number.isRequired,
     toggleCheckbox: PropTypes.func.isRequired,
     isChecked: PropTypes.bool.isRequired,
-};
-
-
-const objectsArrayToLookup = (arr, index) => {
-    return arr.reduce((lookup, obj) =>
-        Object.assign(lookup, {[obj[index]]: obj}),
-        {})
 };
 
 
@@ -249,8 +232,6 @@ export default class Periods extends React.Component {
     }
 
     renderPanels(periodIds) {
-        const callbacks = {openNewForm: this.openNewForm};
-
         return (periodIds.map(
             (id) => {
                 const period = this.props.periods.objects[id];
@@ -259,12 +240,13 @@ export default class Periods extends React.Component {
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
-                let newUpdateButton, DelUpdateAlert;
+                let newUpdateButton, delUpdateAlert;
                 if (!period.locked) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
-                    DelUpdateAlert = AlertFactory(
+                    const DelUpdateAlert = AlertFactory(
                         {alertName: 'DeleteUpdateAlert-' + period.id}
                     )(DeleteUpdateAlert);
+                    delUpdateAlert = <DelUpdateAlert />;
                 }
                 return (
                     <Panel header={<PeriodHeader period={period}
@@ -278,7 +260,7 @@ export default class Periods extends React.Component {
                            }>
                         <Updates parentId={id} periodLocked={period.locked}/>
                         {newUpdateButton}
-                        {<DelUpdateAlert/>}
+                        {delUpdateAlert}
                     </Panel>
                 )
             }
@@ -287,8 +269,6 @@ export default class Periods extends React.Component {
 
     render() {
         const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
-
-        // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!periodIds) {
             return (
                 <p>Loading...</p>

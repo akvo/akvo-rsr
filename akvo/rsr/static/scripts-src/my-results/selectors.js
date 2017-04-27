@@ -10,14 +10,7 @@
  */
 
 import { createSelector } from "reselect"
-// import {
-//     c.OBJECTS_RESULTS,
-//     c.OBJECTS_INDICATORS,
-//     c.OBJECTS_PERIODS,
-//     c.OBJECTS_UPDATES,
-//     c.OBJECTS_COMMENTS,
-//     c.PARENT_FIELD, c.UPDATE_STATUS_APPROVED, c.UPDATE_STATUS_DRAFT
-// } from "./const";
+
 import * as c from "./const";
 
 
@@ -33,7 +26,6 @@ const getUpdateObjects = (store) => store.models.updates.objects;
 const getCommentIds = (store) => store.models.comments.ids;
 const getCommentObjects = (store) => store.models.comments.objects;
 const getUser = (store) => store.models.user;
-
 
 
 const getChildrenFactory = model => {

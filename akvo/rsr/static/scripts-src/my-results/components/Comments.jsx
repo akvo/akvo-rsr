@@ -11,17 +11,20 @@ import Collapse, { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 
 import { onChange } from "../actions/collapse-actions"
-import { findChildren, createToggleKey, collapseId, _, endpoints} from '../utils'
-// import { c.OBJECTS_COMMENTS } from '../const'
+import {
+    collapseId,
+    _,
+    endpoints
+} from '../utils'
 
-import { ToggleButton } from "./common"
-import {getUpdatesChildrenIds} from "../selectors";
-import {saveModelToBackend} from "../actions/model-actions";
+import { getUpdatesChildrenIds } from "../selectors";
+import { saveModelToBackend } from "../actions/model-actions";
 import * as alertActions from "../actions/alert-actions"
 
-import AlertFactory from "./alertContainer"
-// import {c.UPDATE_MODEL_FULFILLED, c.UPDATE_MODEL_REJECTED} from "../reducers/modelsReducer";
 import * as c from "../const"
+
+import AlertFactory from "./alertContainer"
+
 
 const CommentAlert = ({message, close}) => (
         <div className='comment-alert'>
@@ -86,7 +89,7 @@ class CommentForm extends React.Component {
                 c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
             );
         } else  {
-            createAlert(commentAlertName, "Please enter some comment text");
+            creat1eAlert(commentAlertName, "Please enter some comment text");
         }
     }
 
@@ -114,6 +117,7 @@ class CommentForm extends React.Component {
     }
 }
 
+
 const Comment = ({comment}) => {
     const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
     return (
@@ -123,7 +127,6 @@ const Comment = ({comment}) => {
         </div>
     )
 };
-
 Comment.propTypes = {
     comment: PropTypes.object.isRequired,
 };
@@ -165,11 +168,6 @@ export default class Comments extends React.Component {
             (id) => {
                 const comment = this.props.comments.objects[id];
                 return <Comment key={id} comment={comment} />
-                // return (
-                //     <Panel header={<CommentHeader comment={comment}/>} key={id}>
-                //         <div>By: {comment.user_details.first_name}</div>
-                //     </Panel>
-                // )
             }
         ))
     }
@@ -177,7 +175,6 @@ export default class Comments extends React.Component {
     render() {
         const commentIds = this.props.updateChildrenIds[this.props.parentId] || [];
 
-        // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!commentIds) {
             return (
                 <p>Loading...</p>

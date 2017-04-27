@@ -7,12 +7,9 @@
 
 
 import update from "immutability-helper"
-// import { c.UPDATE_MODEL_FULFILLED, c.DELETE_FROM_MODEL } from "../reducers/modelsReducer"
+
 import * as c from "../const"
 
-// export const
-//     KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
-//     KEYS_RESET = "KEYS_RESET";
 
 export default function collapseReducer(keys={}, action) {
     // Reducer for managing the Collapse.activeKey states

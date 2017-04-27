@@ -7,43 +7,22 @@
 
 import { normalize, schema } from 'normalizr';
 import update  from 'immutability-helper';
-import * as c from "../const";
-// import { c.CHILD_OBJECTS, c.MODELS_LIST, c.MODEL_INDEX, c.OBJECTS_RESULTS} from "../const";
-// import { c.ALL_MODELS_FETCHED } from "./uiReducer";
-import { findChildren, parentModelName, findChildrenFromCurrentState} from "../utils";
 
-// export const
-//     FETCH_MODEL_START = "FETCH_MODEL_START",
-//     FETCH_MODEL_FULFILLED = "FETCH_MODEL_FULFILLED",
-//     FETCH_MODEL_REJECTED = "FETCH_MODEL_REJECTED",
-//
-//     UPDATE_MODEL_START = "UPDATE_MODEL_START",
-//     UPDATE_MODEL_FULFILLED = "UPDATE_MODEL_FULFILLED",
-//     UPDATE_MODEL_REJECTED = "UPDATE_MODEL_REJECTED",
-//
-//     DELETE_FROM_MODEL = "DELETE_FROM_MODEL",
-//     UPDATE_MODEL_DELETE_FULFILLED = "UPDATE_MODEL_DELETE_FULFILLED";
+import * as c from "../const";
+import {
+    parentModelName,
+    findChildrenFromCurrentState
+} from "../utils";
+
 
 const itemSchema = new schema.Entity('items');
 const itemArraySchema = new schema.Array(itemSchema);
+
 
 const normalizedObjects = (data) => {
     return normalize(data, itemArraySchema);
 };
 
-const set = (arr) => {
-    // return an array with unique values
-    let seen = {},
-        result=[];
-
-	for(let i = 0; i < arr.length; i++) {
-		if (!seen[arr[i]]) {
-			seen[arr[i]] = true;
-			result.push(arr[i]);
-		}
-	}
-	return result;
-};
 
 const initialModels = {
     results: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
@@ -54,8 +33,9 @@ const initialModels = {
     user: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined}
 };
 
+
 const assignChildren = (state, model) => {
-     // For model and it's children...
+    // For model and it's children...
     return c.MODELS_LIST.slice(c.MODEL_INDEX[model]).reduce(
         (acc, model) => {
             return {...acc,
@@ -79,6 +59,7 @@ const assignChildren = (state, model) => {
         }, {...state}
     );
 };
+
 
 export default function modelsReducer(state=initialModels, action) {
     switch(action.type) {
@@ -146,7 +127,6 @@ export default function modelsReducer(state=initialModels, action) {
                 error: {$set: action.payload.error}
             });
             return {...state, [model]: errorState};
-            // return {...state, [model]: {changing: false, changed: false, data: null, error: action.payload.error}};
         }
 
         case c.DELETE_FROM_MODEL: {
@@ -173,30 +153,8 @@ export default function modelsReducer(state=initialModels, action) {
         // "Link" all models to their children by adding the result of findChildren to
         // _meta.children of each object
         case c.ALL_MODELS_FETCHED: {
-            // For each model...
             return assignChildren(state, c.OBJECTS_RESULTS);
-            // return c.MODELS_LIST.reduce(
-            //     (acc, model) => {
-            //         return {...acc,
-            //             // ...update all objects in models[model].objects...
-            //             [model]: {...state[model],
-            //                 objects: state[model].ids.reduce(
-            //                     (acc, id) => {
-            //                         // ...with the result from findChildren, added as _meta.children
-            //                         const children = findChildren(id, c.CHILD_OBJECTS[model]);
-            //                         return {...acc,
-            //                             [id]: {...state[model].objects[id],
-            //                                 _meta: {children: children[c.CHILD_OBJECTS[model]]}
-            //                             }
-            //                         };
-            //                     }, {...state[model].objects}
-            //                 )
-            //             }
-            //         }
-            //     }, {...state}
-            // );
         }
     }
     return state;
 };
-

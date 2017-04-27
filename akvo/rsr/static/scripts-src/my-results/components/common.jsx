@@ -23,7 +23,6 @@ export const ToggleButton = ({onClick, label, style, disabled, icon}) => {
         </button>
     )
 };
-
 ToggleButton.propTypes = {
     onClick: PropTypes.func,
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object,]),
@@ -39,7 +38,7 @@ export class FileReaderInput extends React.Component {
     as: React.PropTypes.oneOf(['binary', 'buffer', 'text', 'url']),
     children: React.PropTypes.any,
     onChange: React.PropTypes.func,
-  }
+  };
   constructor(props) {
     // FileReader compatibility warning.
     super(props);
@@ -62,7 +61,7 @@ export class FileReaderInput extends React.Component {
     e.persist();
 
     // Build Promise List, each promise resolved by FileReader.onload.
-    Promise.all(files.map(file => new Promise((resolve, reject) => {
+    Promise.all(files.map(file => new Promise((resolve) => {
       let reader = new FileReader();
 
       reader.onload = result => {
@@ -94,10 +93,10 @@ export class FileReaderInput extends React.Component {
       // Run the callback after all files have been read.
       this.props.onChange(e, zippedResults);
     });
-  }
-  triggerInput = e => {
+  };
+  triggerInput = () => {
     ReactDOM.findDOMNode(this._reactFileReaderInput).click();
-  }
+  };
   render() {
     const hiddenInputStyle = this.props.children ? {
       // If user passes in children, display children and hide input.

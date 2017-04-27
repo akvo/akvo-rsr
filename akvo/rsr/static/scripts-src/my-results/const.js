@@ -5,6 +5,7 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+
 // TODO: several of these constants should be derived from the RSR settings
 export const
     API_LIMIT = 100,
@@ -95,5 +96,3 @@ export const
     ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
     SET_PERIOD_DATES = "SET_PERIOD_DATES"
 ;
-
-

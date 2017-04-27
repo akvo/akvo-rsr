@@ -6,15 +6,10 @@
  */
 
 
-import store from "../store"
-
-import {
-    UI_ID_RESET, UI_ID_TOGGLE, UI_ID_TRUE, UI_ID_FALSE, ALL_MODELS_FETCHED, SET_PERIOD_DATES
-} from "../reducers/uiReducer"
-
-import { MODELS_LIST, OBJECTS_USER, SELECTED_PERIODS, UPDATE_FORMS, OBJECTS_PERIODS} from "../const"
 import * as c from "../const"
+import store from "../store"
 import { openNodes, displayDate} from "../utils"
+
 
 export function periodSelectReset() {
     store.dispatch({
@@ -77,6 +72,7 @@ export function activateToggleAll() {
     }
 }
 
+
 function checkSelected(element, ids) {
     ids.map((id) => {
         store.dispatch({
@@ -86,11 +82,13 @@ function checkSelected(element, ids) {
     })
 }
 
+
 function checkAndShowPeriods(ids) {
     periodSelectReset();
     checkSelected(c.SELECTED_PERIODS, ids);
     openNodes(c.OBJECTS_PERIODS, ids, true);
 }
+
 
 function filterPeriodsByLock(locked) {
     const ids = store.getState().models[c.OBJECTS_PERIODS].ids;
@@ -101,13 +99,16 @@ function filterPeriodsByLock(locked) {
     return [];
 }
 
+
 function selectLockedPeriods() {
     checkAndShowPeriods(filterPeriodsByLock(true));
 }
 
+
 function selectUnlockedPeriods() {
     checkAndShowPeriods(filterPeriodsByLock(false));
 }
+
 
 export function periodsThatNeedReporting() {
     // Returns ids of periods that are unlocked and have no updates
@@ -116,11 +117,13 @@ export function periodsThatNeedReporting() {
     return unlockedPeriods.filter((id) => periods.objects[id]._meta && periods.objects[id]._meta.children.ids.length == 0);
 }
 
+
 export function selectPeriodsThatNeedReporting() {
     const needReporting = periodsThatNeedReporting();
     periodSelectReset();
     openNodes(c.OBJECTS_PERIODS, needReporting, true);
 }
+
 
 function selectPeriodByDates(periodStart, periodEnd) {
     const periods = store.getState().models[c.OBJECTS_PERIODS];
@@ -149,7 +152,7 @@ export function selectablePeriods(periodIds) {
         });
         // Calculate how many we have of each date pair.
         // dateMap = {2016-05-01:2016-12-31: 4, 2017-01-01:2017-06-30: 3, ...}
-        var dateMap = dates.reduce(function(acc, date) {
+        let dateMap = dates.reduce(function(acc, date) {
             acc[date] = (acc[date] || 0) + 1;
             return acc;
         }, {});

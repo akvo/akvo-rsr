@@ -12,13 +12,18 @@ import Collapse, {  Panel } from 'rc-collapse';
 
 import { onChange } from "../actions/collapse-actions"
 
-import { _, createToggleKey, collapseId, cascadeIds, createToggleKeys } from '../utils';
-// import { c.OBJECTS_RESULTS, c.OBJECTS_INDICATORS } from '../const.js';
 import * as c from '../const.js';
-
-import Indicators from './Indicators';
-import { ToggleButton } from "./common"
 import {getResultsChildrenIds} from "../selectors";
+import {
+    _,
+    createToggleKey,
+    collapseId,
+    cascadeIds,
+    createToggleKeys
+} from '../utils';
+
+import { ToggleButton } from "./common"
+import Indicators from './Indicators';
 
 
 const ResultHeaderIndicatorCount = ({count}) => {
@@ -35,7 +40,6 @@ const ResultHeaderIndicatorCount = ({count}) => {
         </span>
     )
 };
-
 ResultHeaderIndicatorCount.propTypes = {
     count: PropTypes.number
 };
@@ -66,7 +70,6 @@ const ResultHeader = ({result, indicatorCount=0}) => {
         </span>
     )
 };
-
 ResultHeader.propTypes = {
     result: PropTypes.object,
     indicatorCount: PropTypes.number,

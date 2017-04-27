@@ -9,12 +9,14 @@
 import React from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
+
 import * as alertActions from "../actions/alert-actions";
 
 const defaultState = {
     isVisible: false,
     message: ''
 };
+
 
 const AlertFactory = config => WrappedComponent => {
     const {alertName} = config;
