@@ -19396,7 +19396,7 @@ where rsr_project.id=?]]></xml-property>
                                         <property name="dataType">string</property>
                                     </structure>
                                 </list-property>
-                                <expression name="valueExpr">row["title"]</expression>
+                                <expression name="valueExpr">"MFA Framework 2016"</expression>
                                 <property name="contentType">html</property>
                             </text-data>
                         </cell>
@@ -19805,30 +19805,6 @@ where rsr_project.id=?]]></xml-property>
                 </header>
             </group>
             <detail>
-                <image name="project_image" id="483">
-                    <property name="display">block</property>
-                    <property name="pageBreakBefore">avoid</property>
-                    <property name="width">175mm</property>
-                    <property name="dataSet">Theme</property>
-                    <list-property name="paramBindings">
-                        <structure>
-                            <property name="paramName">projid</property>
-                            <simple-property-list name="expression">
-                                <value type="javascript">row["id"]</value>
-                            </simple-property-list>
-                        </structure>
-                    </list-property>
-                    <list-property name="boundDataColumns">
-                        <structure>
-                            <property name="name">current_image</property>
-                            <text-property name="displayName">current_image</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["current_image"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                    </list-property>
-                    <property name="source">url</property>
-                    <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["current_image"]</expression>
-                </image>
                 <data id="600">
                     <property name="style">Sectionheader</property>
                     <property name="pageBreakBefore">auto</property>
@@ -20489,7 +20465,7 @@ where rsr_project.id=?]]></xml-property>
                         <image id="835">
                             <property name="width">100%</property>
                             <property name="source">url</property>
-                            <expression name="uri" type="javascript">"http://rsr.akvo.org/media/"+row["photo"]</expression>
+                            <expression name="uri" type="javascript">"https://rsr.akvo.org/media/"+row["photo"]</expression>
                         </image>
                         <text-data id="780">
                             <property name="pageBreakBefore">avoid</property>
@@ -20563,6 +20539,7 @@ mmd(row["text"]);</expression>
                     <property name="marginTop">0pt</property>
                     <property name="marginLeft">0pt</property>
                     <property name="pageBreakAfter">always</property>
+                    <property name="pageBreakInside">auto</property>
                     <property name="width">179.12291666666664mm</property>
                     <property name="dataSet">Results_indicators_periods</property>
                     <list-property name="paramBindings">
@@ -20666,14 +20643,37 @@ res;</expression>
                         <structure>
                             <property name="name">progress_pct</property>
                             <text-property name="displayName">progress_pct</text-property>
-                            <expression name="expression" type="javascript">(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > -1 )&#13;
+                            <expression name="expression" type="javascript">(row["actual_value"].toLowerCase() == "gender neutral" )&#13;
 ?&#13;
- ( row["baseline_value"] ?&#13;
-  Math.round((row["actual_value_number"] - row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
- :&#13;
-  Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
- )&#13;
- :&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "gender aware" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "available" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "operational" )&#13;
+?&#13;
+100&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "not yet available" )&#13;
+?&#13;
+0&#13;
+:&#13;
+(row["actual_value_number"] > -1 &amp;&amp; row["target_value_number"] > 0 )&#13;
+?&#13;
+(row["baseline_value"] ?&#13;
+Math.round((row["actual_value_number"]-row["baseline_value"]) * 100 / (row["target_value_number"] - row["baseline_value"]))&#13;
+: Math.round(row["actual_value_number"] * 100 / row["target_value_number"])&#13;
+)&#13;
+:&#13;
 null</expression>
                             <property name="dataType">integer</property>
                             <property name="allowExport">true</property>
@@ -20689,7 +20689,8 @@ null</expression>
                     <structure name="toc"/>
                     <method name="onCreate"><![CDATA[var allan = 7;
 ]]></method>
-                    <property name="pageBreakInterval">50</property>
+                    <property name="repeatHeader">false</property>
+                    <property name="pageBreakInterval">0</property>
                     <column id="275">
                         <property name="width">32.014583333333334mm</property>
                     </column>
@@ -20711,8 +20712,9 @@ null</expression>
                                 <property name="textAlign">left</property>
                                 <label id="151">
                                     <property name="style">Sectionheader</property>
-                                    <property name="fontSize">18pt</property>
+                                    <property name="fontSize">14pt</property>
                                     <property name="fontWeight">normal</property>
+                                    <property name="marginBottom">0pt</property>
                                     <property name="paddingTop">0pt</property>
                                     <property name="paddingLeft">0pt</property>
                                     <property name="paddingBottom">0pt</property>
@@ -20738,7 +20740,7 @@ null</expression>
                                             <expression name="valueExpr" type="javascript">true</expression>
                                         </structure>
                                     </list-property>
-                                    <expression name="valueExpr">var a=1,b=1;&#13;
+                                    <expression name="valueExpr">var a=0,b=0,alphabet = " ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");&#13;
 reportContext.getGlobalVariable('debug')</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
@@ -20747,9 +20749,10 @@ reportContext.getGlobalVariable('debug')</expression>
                         </row>
                     </header>
                     <group id="18">
-                        <property name="groupName">NewTableGroup1</property>
+                        <property name="groupName">Results</property>
                         <expression name="keyExpr" type="javascript">row["title"]</expression>
                         <property name="repeatHeader">false</property>
+                        <property name="pageBreakInside">avoid</property>
                         <header>
                             <row id="19">
                                 <property name="height">21.43125mm</property>
@@ -20757,7 +20760,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="colSpan">4</property>
                                     <property name="rowSpan">1</property>
                                     <text-data id="159">
-                                        <property name="fontSize">14pt</property>
+                                        <property name="fontSize">12pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#6D8FAF</property>
                                         <property name="paddingTop">8pt</property>
@@ -20765,7 +20768,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="paddingBottom">1pt</property>
                                         <property name="paddingRight">8pt</property>
                                         <property name="pageBreakAfter">avoid</property>
-                                        <expression name="valueExpr">b=1, "Outcome " + a++;</expression>
+                                        <expression name="valueExpr">b=0, a++, "Result " + a;</expression>
                                         <property name="contentType">html</property>
                                     </text-data>
                                     <data id="145">
@@ -20790,10 +20793,11 @@ reportContext.getGlobalVariable('debug')</expression>
                         </footer>
                     </group>
                     <group id="74">
-                        <property name="groupName">NewTableGroup2</property>
+                        <property name="groupName">Indicators</property>
                         <expression name="keyExpr" type="javascript">row["indicator_title"]</expression>
                         <property name="repeatHeader">false</property>
                         <property name="hideDetail">false</property>
+                        <property name="pageBreakInside">avoid</property>
                         <header>
                             <row id="75">
                                 <property name="backgroundColor">#FFFFFF</property>
@@ -20836,7 +20840,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <cell id="280">
                                                 <property name="paddingTop">0pt</property>
                                                 <property name="paddingLeft">0pt</property>
-                                                <property name="paddingBottom">7px</property>
+                                                <property name="paddingBottom">0px</property>
                                                 <property name="paddingRight">7px</property>
                                                 <text-data id="213">
                                                     <property name="backgroundColor">#C3D6E4</property>
@@ -20844,12 +20848,12 @@ reportContext.getGlobalVariable('debug')</expression>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="color">white</property>
                                                     <property name="marginTop">0px</property>
-                                                    <property name="paddingTop">7px</property>
-                                                    <property name="paddingLeft">7px</property>
-                                                    <property name="paddingBottom">7px</property>
-                                                    <property name="paddingRight">7px</property>
+                                                    <property name="paddingTop">5pt</property>
+                                                    <property name="paddingLeft">8pt</property>
+                                                    <property name="paddingBottom">5pt</property>
+                                                    <property name="paddingRight">5pt</property>
                                                     <property name="display">inline</property>
-                                                    <expression name="valueExpr">"INDICATOR " + b++</expression>
+                                                    <expression name="valueExpr">b++, "Indicator " + a + "." + (b&lt;27 ? alphabet[b] : b)</expression>
                                                     <property name="contentType">html</property>
                                                 </text-data>
                                             </cell>
@@ -20860,14 +20864,14 @@ reportContext.getGlobalVariable('debug')</expression>
                                                 <property name="paddingBottom">5pt</property>
                                                 <text-data id="278">
                                                     <property name="marginTop">0px</property>
-                                                    <property name="paddingTop">5px</property>
-                                                    <property name="paddingLeft">1px</property>
-                                                    <property name="paddingBottom">1px</property>
-                                                    <property name="paddingRight">8px</property>
+                                                    <property name="marginBottom">1pt</property>
+                                                    <property name="paddingTop">2pt</property>
+                                                    <property name="paddingLeft">3pt</property>
+                                                    <property name="paddingBottom">5pt</property>
+                                                    <property name="paddingRight">5px</property>
                                                     <expression name="valueExpr">row["indicator_title"]</expression>
                                                     <property name="contentType">html</property>
                                                 </text-data>
-                                                <list id="884"/>
                                             </cell>
                                         </row>
                                         <row id="202">
@@ -20929,7 +20933,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="verticalAlign">middle</property>
                                 <text-data name="percentage" id="215">
                                     <property name="fontFamily">sans-serif</property>
-                                    <property name="fontSize">8pt</property>
+                                    <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">none</property>
@@ -20937,8 +20941,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="borderTopStyle">none</property>
                                     <property name="marginTop">0pt</property>
                                     <property name="marginLeft">0pt</property>
-                                    <property name="marginBottom">-35pt</property>
-                                    <property name="paddingTop">12pt</property>
+                                    <property name="marginBottom">-40pt</property>
+                                    <property name="paddingTop">25pt</property>
+                                    <property name="paddingLeft">5pt</property>
                                     <property name="paddingBottom">12pt</property>
                                     <property name="textAlign">center</property>
                                     <property name="display">block</property>
@@ -21505,8 +21510,8 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="borderRightStyle">none</property>
                                     <property name="marginTop">0pt</property>
                                     <property name="marginBottom">0pt</property>
-                                    <property name="height">38pt</property>
-                                    <property name="width">38pt</property>
+                                    <property name="height">46pt</property>
+                                    <property name="width">46pt</property>
                                     <property name="dataSet">Four_rows</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -21682,11 +21687,12 @@ Math.min(row["progress_pct"],100)&#13;
                                 <property name="paddingBottom">1pt</property>
                                 <property name="paddingRight">8pt</property>
                                 <text-data id="887">
-                                    <property name="fontSize">8pt</property>
-                                    <property name="paddingTop">7px</property>
-                                    <property name="paddingLeft">7px</property>
-                                    <property name="paddingBottom">7px</property>
-                                    <property name="paddingRight">7px</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="marginBottom">8pt</property>
+                                    <property name="paddingTop">8pt</property>
+                                    <property name="paddingLeft">14pt</property>
+                                    <property name="paddingBottom">8pt</property>
+                                    <property name="paddingRight">1pt</property>
                                     <expression name="valueExpr">row["actual_comment"]</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
