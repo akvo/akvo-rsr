@@ -246,7 +246,7 @@ Attachments.propTypes = {
 };
 
 
-const UpdateFormButtons = ({update, callbacks}) => {
+const UpdateFormButtons = ({user, update, callbacks}) => {
     return (
         <div className="menuAction">
         {!isNewUpdate(update) ?
@@ -264,10 +264,12 @@ const UpdateFormButtons = ({update, callbacks}) => {
                     <a id="save" onClick={callbacks.saveUpdate}
                        className="btn btn-default btn-xs">{_('save')}</a>
                 </li>
-                <li role="presentation" className="approveUpdate">
-                    <a id="approve" onClick={callbacks.saveUpdate}
-                       className="btn btn-default btn-xs">{_('approve')}</a>
-                </li>
+                {user.isMEManager ?
+                    <li role="presentation" className="approveUpdate">
+                        <a id="approve" onClick={callbacks.saveUpdate}
+                           className="btn btn-default btn-xs">{_('approve')}</a>
+                    </li>
+                : ''}
                 <span></span>
             </ul>
         </div>
@@ -294,7 +296,11 @@ const pruneForPOST = (update) => {
     return updateForPOST;
 };
 
-@connect(null, alertActions)
+@connect((store) => {
+    return {
+        user: store.models.user.objects[store.models.user.ids[0]],
+    }
+}, alertActions)
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
@@ -500,6 +506,7 @@ export default class UpdateForm extends React.Component {
                     <Attachments update={update} onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
+                        user={this.props.user}
                         update={update}
                         callbacks={{
                             saveUpdate: this.saveUpdate,

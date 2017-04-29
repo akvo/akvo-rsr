@@ -116,7 +116,7 @@ const PeriodLockStatus = ({lockStatus}) => {
     return <div style={{float: 'right'}}>{lockStatus}</div>
 };
 PeriodLockStatus.propTypes = {
-    lockStatus: PropTypes.object,
+    lockStatus: PropTypes.string.isRequired,
 };
 
 
@@ -243,6 +243,9 @@ export default class Periods extends React.Component {
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
+                    // TODO: fix for new updates. The alert won't render since the temp update
+                    // object gets deleted when saving.
+                    // Possible solution: add an alert action and reducer instead of using callback
                     const DelUpdateAlert = AlertFactory(
                         {alertName: 'DeleteUpdateAlert-' + period.id}
                     )(DeleteUpdateAlert);

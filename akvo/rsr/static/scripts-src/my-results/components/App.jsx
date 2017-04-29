@@ -58,6 +58,7 @@ const modifyUser = (isMEManager) => {
         page: store.page,
         models: store.models,
         ui: store.ui,
+        user: store.models.user,
         draftUpdates: getDraftUpdates(store),
         approvedUpdates: getApprovedUpdates(store),
     }
@@ -130,8 +131,14 @@ export default class App extends React.Component {
         selectPeriodsThatNeedReporting();
     }
 
+    userIsMEManager() {
+        const user = this.props.user;
+        return user.fetched ?
+            user.objects[user.ids[0]].isMEManager
+            : false;
+    }
+
     render() {
-        const right = {float: 'right'};
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         const needReportingCount = fieldValueOrSpinner(periodsThatNeedReporting(), 'length');
@@ -140,7 +147,8 @@ export default class App extends React.Component {
         const draftUpdateLabel = `Pending approval (${draftUpdateCount})`;
         const approvedUpdateCount = fieldValueOrSpinner(this.props.approvedUpdates, 'length');
         const approvedUpdateLabel = `Approved (${approvedUpdateCount})`;
-
+        const buttonDisabled = !this.props.ui.allFetched;
+        const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
 
         return (
             <div>
@@ -158,19 +166,19 @@ export default class App extends React.Component {
                     </div>
                     <div  className="col-xs-3">
                         <ToggleButton onClick={this.lockSelected} label="Lock selected"
-                                      disabled={!this.props.ui.allFetched}/>
+                                      disabled={restrictedButtonDisabled}/>
                         <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
-                                      disabled={!this.props.ui.allFetched}/>
+                                      disabled={restrictedButtonDisabled}/>
                     </div>
                     <div  className="col-xs-2">
                         <ToggleButton onClick={this.needReporting} label={needReportingLabel}
-                                      disabled={!this.props.ui.allFetched}/>
+                                      disabled={buttonDisabled}/>
                     </div>
                     <div  className="col-xs-4">
                         <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
-                                      disabled={!this.props.ui.allFetched}/>
+                                      disabled={buttonDisabled}/>
                         <ToggleButton onClick={this.showApproved} label={approvedUpdateLabel}
-                                      disabled={!this.props.ui.allFetched}/>
+                                      disabled={buttonDisabled}/>
                     </div>
                 </div>
                 <div style={clearfix}></div>
