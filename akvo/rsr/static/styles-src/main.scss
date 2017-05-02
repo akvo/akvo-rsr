@@ -4664,203 +4664,6 @@ label.fileUpload {
     }
 }
 
-.update-container {
-    background: rgba($primary4, 0.05);
-    border: 1px solid rgba($akvoBlack, 0.2);
-    padding: 0 1em;
-    margin-bottom: 50px;
-
-    .update-entry-container {
-        padding: 0 0 10px 0;
-        position: relative;
-
-        &.edit-in-progress {
-            background: rgba($rsrGreen, 0.05);
-            border: 1px solid rgba($rsrGreen, 0.3);
-            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
-
-            .update-entry-container-header {
-                background: rgba(white, 0.5);
-                margin-bottom: 10px;
-            }
-        }
-
-        .update-entry-container-header {
-            background: rgba($akvoBlack, 0);
-            border-bottom: 1px solid rgba($akvoBlack, 0.1);
-            padding: 0.75em 0;
-
-            .update-user {
-                color: $akvoPurple;
-                font-weight: bold;
-            }
-
-            .update-created-at {
-                margin-left: 15px;
-                color: rgba($akvoBlack, 0.7);
-            }
-
-            .update-status {
-                color: $primary5;
-
-                &.pending {
-                    color: $progressNot;
-                }
-
-                &.revision {
-                    color: $progressWarning;
-                }
-
-                &.approved {
-                    color: $progressSuccess;
-                }
-            }
-        }
-
-        .image-container {
-            position: relative;
-            margin-top: 5px;
-
-            @include transition(all 0.2s ease-in-out);
-
-            .image-overlay {
-                display: none;
-                position: absolute;
-                padding-top: 35%;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: calc(100%);
-                color: $progressWarning;
-                vertical-align: middle;
-                text-transform: uppercase;
-                font-weight: bold;
-            }
-
-            &:hover .image-overlay {
-                display: block;
-                background: rgba(255, 255, 255, 0.9);
-            }
-        }
-
-        .comments {
-            padding: 10px 5px 5px 5px;
-            margin-top: 20px;
-            background: rgba($primary5, 0.1);
-
-            @include border-radius(3px);
-
-            .input-group {
-                /* button {
-                           background: $akvoBlack;
-                           color:white;
-                           &:hover {
-                               background: $akvoPurple;
-                           }
-                       }*/
-            }
-
-            .comment {
-                margin-top: 0px;
-                margin-bottom: 20px;
-
-                .comment-header {
-                    font-weight: bold;
-
-                    span {
-                        color: $akvoPurple;
-
-                        &:last-child {
-                            margin-left: 15px;
-                            color: rgba($akvoBlack, 0.5);
-                        }
-                    }
-                }
-
-                .comment-text {
-                    font-size: 90%;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                }
-            }
-        }
-
-        .menuAction {
-            position: relative;
-
-            .removeUpdate {
-                position: absolute;
-                top: 30px;
-                left: 0;
-
-                .btn {
-                    background: $akvoTvRed;
-                    color: white;
-                    border-color: $akvoTvRed;
-
-                    &:hover {
-                        background: rgba($akvoTvRed, 0.5);
-                    }
-                }
-            }
-
-            .bottomRow {
-                margin-top: 20px;
-                padding: 0.75em;
-                position: relative;
-                list-style-type: none;
-
-                .btn {
-                    padding: 2px 7px;
-
-                    &.btn-default {
-                        background: $akvoBlack;
-                        color: white;
-
-                        .editUpdate & {
-                            background: initial;
-                            color: initial;
-                        }
-
-                        &:hover {
-                            background: $akvoPurple;
-                        }
-                    }
-                }
-
-                .cancelUpdate {
-                    margin-right: 25px;
-                }
-
-                .saveUpdate {}
-
-                .returnUpdate {}
-
-                .submitUpdate {}
-
-                .approveUpdate {}
-            }
-        }
-
-        .upActualValue {
-            margin: 15px 0 0 0px;
-
-            .update-actual-value-text {
-                color: rgba($primary5, 1);
-            }
-
-            .update-actual-value-data {
-                font-weight: bold;
-            }
-
-            .update-relative-value {
-                margin-left: 5px;
-                font-weight: bold;
-            }
-        }
-    }
-}
-
 .update-dialog-container {
     &.pending-new-update {
         .update-entry-container {
@@ -5738,6 +5541,8 @@ div.iatiFilters {
     margin-right: 0.3em;
 }
 
+.myAlert {}
+
 /* Results Framework */
 .results {
     background: white;
@@ -5980,11 +5785,12 @@ div.iatiFilters {
                             font-size: 90%;
 
                             .baseline {
-                                padding-bottom: 15px;
+                                margin-top: -17px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
 
                                 ul {
                                     color: rgba($akvoBlack, 0.4);
+                                    padding-left: 7px;
 
                                     li {
                                         display: inline;
@@ -6057,14 +5863,18 @@ div.iatiFilters {
                                     margin-right: 0px;
                                     padding-left: 75px;
 
-                                    button {
-                                        margin: 0px 0 0 25px;
-                                        background: transparent;
-                                        border: none;
+                                    div {
+                                        display: inline;
 
-                                        &:hover {
-                                            background: $rsrBlue;
-                                            color: white;
+                                        button {
+                                            margin: 0px 0 0 25px;
+                                            background: transparent;
+                                            border: none;
+
+                                            &:hover {
+                                                background: $rsrBlue;
+                                                color: white;
+                                            }
                                         }
                                     }
                                 }
@@ -6180,6 +5990,7 @@ div.iatiFilters {
                                                     -ms-flex: 1;
                                                     flex: 1;
                                                     position: relative;
+                                                    background: rgba($primary5, 0.05);
 
                                                     .rc-collapse-content-box {}
                                                 }
@@ -6196,12 +6007,203 @@ div.iatiFilters {
     }
 }
 
-.comments {
-    //margin-left: 20px;
-}
+.update-container {
+    // background: rgba($primary4, 0.05);
+    // border: 1px solid rgba($akvoBlack, 0.2);
+    padding: 0 1em;
+    margin-bottom: 50px;
 
-.comment {
-    margin-left: 5px;
+    .update-entry-container {
+        padding: 0 0 10px 0;
+        position: relative;
+
+        &.edit-in-progress {
+            /*             background: rgba($rsrGreen, 0.05);
+                        border: 1px solid rgba($rsrGreen, 0.3);
+                        box-shadow: 0 0 10px rgba($rsrGreen, 0.5); */
+
+            .update-entry-container-header {
+                background: rgba(white, 0.5);
+                margin-bottom: 10px;
+                display: none;
+            }
+        }
+
+        .update-entry-container-header {
+            background: rgba($akvoBlack, 0);
+            border-bottom: 1px solid rgba($akvoBlack, 0.1);
+            padding: 0.75em 0;
+
+            .update-user {
+                color: $akvoPurple;
+                font-weight: bold;
+            }
+
+            .update-created-at {
+                margin-left: 15px;
+                color: rgba($akvoBlack, 0.7);
+            }
+
+            .update-status {
+                color: $primary5;
+
+                &.pending {
+                    color: $progressNot;
+                }
+
+                &.revision {
+                    color: $progressWarning;
+                }
+
+                &.approved {
+                    color: $progressSuccess;
+                }
+            }
+        }
+
+        .image-container {
+            position: relative;
+            margin-top: 5px;
+
+            @include transition(all 0.2s ease-in-out);
+
+            .image-overlay {
+                display: none;
+                position: absolute;
+                padding-top: 35%;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: calc(100%);
+                color: $progressWarning;
+                vertical-align: middle;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+
+            &:hover .image-overlay {
+                display: block;
+                background: rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        .comments {
+            padding: 10px 5px 5px 5px;
+            margin-top: 20px;
+            background: rgba($primary5, 0.1);
+
+            @include border-radius(3px);
+
+            .input-group {
+                /* button {
+                           background: $akvoBlack;
+                           color:white;
+                           &:hover {
+                               background: $akvoPurple;
+                           }
+                       }*/
+            }
+
+            .comment {
+                margin-top: 0px;
+                margin-bottom: 20px;
+
+                .comment-header {
+                    font-weight: bold;
+
+                    span {
+                        color: $akvoPurple;
+
+                        &:last-child {
+                            margin-left: 15px;
+                            color: rgba($akvoBlack, 0.5);
+                        }
+                    }
+                }
+
+                .comment-text {
+                    font-size: 90%;
+                    padding-left: 20px;
+                    padding-right: 20px;
+                }
+            }
+        }
+
+        .menuAction {
+            position: relative;
+
+            .removeUpdate {
+                position: absolute;
+                top: 30px;
+                left: 0;
+
+                .btn {
+                    background: $akvoTvRed;
+                    color: white;
+                    border-color: $akvoTvRed;
+
+                    &:hover {
+                        background: rgba($akvoTvRed, 0.5);
+                    }
+                }
+            }
+
+            .bottomRow {
+                margin-top: 20px;
+                padding: 0.75em;
+                position: relative;
+                list-style-type: none;
+
+                .btn {
+                    padding: 2px 7px;
+
+                    &.btn-default {
+                        background: $akvoBlack;
+                        color: white;
+
+                        .editUpdate & {
+                            background: initial;
+                            color: initial;
+                        }
+
+                        &:hover {
+                            background: $akvoPurple;
+                        }
+                    }
+                }
+
+                .cancelUpdate {
+                    margin-right: 25px;
+                }
+
+                .saveUpdate {}
+
+                .returnUpdate {}
+
+                .submitUpdate {}
+
+                .approveUpdate {}
+            }
+        }
+
+        .upActualValue {
+            display: none;
+            margin: 15px 0 0 0px;
+
+            .update-actual-value-text {
+                color: rgba($primary5, 1);
+            }
+
+            .update-actual-value-data {
+                font-weight: bold;
+            }
+
+            .update-relative-value {
+                margin-left: 5px;
+                font-weight: bold;
+            }
+        }
+    }
 }
 
 .results-bar-titles {

@@ -101,7 +101,7 @@ class Update extends React.Component {
             updateAlert = <this.state.UpdateAlert />
         }
         return(
-            <div className="col-xs-7">
+            <div className="col-xs-12">
                 {editUpdateButton}
                 {updateAlert}
                 {new Set(this.props.ui[c.UPDATE_FORMS]).has(this.props.update.id) ?
