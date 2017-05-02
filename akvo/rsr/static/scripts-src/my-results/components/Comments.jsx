@@ -11,19 +11,38 @@ import Collapse, { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 
 import { onChange } from "../actions/collapse-actions"
-import { findChildren, createToggleKey, collapseId, _, endpoints} from '../utils'
-import { OBJECTS_COMMENTS } from '../const'
+import {
+    collapseId,
+    _,
+    endpoints
+} from '../utils'
 
-import { ToggleButton } from "./common"
-import {getUpdatesChildrenIds} from "../selectors";
-import {saveModelToBackend} from "../actions/model-actions";
+import { getUpdatesChildrenIds } from "../selectors";
+import { saveModelToBackend } from "../actions/model-actions";
+import * as alertActions from "../actions/alert-actions"
+
+import * as c from "../const"
+
+import AlertFactory from "./alertContainer"
+
+
+const CommentAlert = ({message, close}) => (
+        <div className='comment-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+CommentAlert.propTypes = {
+    message: PropTypes.string.isRequired,
+    close: PropTypes.func.isRequired,
+};
 
 
 @connect((store) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
     }
-})
+}, alertActions)
 class CommentForm extends React.Component {
 
     static propTypes = {
@@ -38,7 +57,13 @@ class CommentForm extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.addComment = this.addComment.bind(this);
         this.resetComment = this.resetComment.bind(this);
-        this.state = {comment: ''};
+        // we need a unique name for each alert
+        const alertName = 'CommentAlert-' + this.props.parentId;
+        this.state = {
+            comment: '',
+            commentAlertName: alertName,
+            CommentAlert: AlertFactory({alertName: alertName})(CommentAlert),
+        };
     }
 
     onChange(e) {
@@ -46,16 +71,31 @@ class CommentForm extends React.Component {
     }
 
     addComment() {
-        const newComment = {
-            'data': this.props.parentId,
-            'user': this.props.user.id,
-            'comment': this.state.comment
-        };
-        saveModelToBackend(OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, this.resetComment)
+        const { parentId, user, createAlert } = this.props;
+        const { comment, commentAlertName } = this.state;
+        if (comment.trim()) {
+            const newComment = {
+                'data': parentId,
+                'user': user.id,
+                'comment': comment
+            };
+            const callbacks = {
+                [c.UPDATE_MODEL_FULFILLED]: this.resetComment.bind(this, 'Comment saved'),
+                [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
+                    this, commentAlertName, 'Comment could not be saved, plz try again.'
+                )
+            };
+            saveModelToBackend(
+                c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
+            );
+        } else  {
+            creat1eAlert(commentAlertName, "Please enter some comment text");
+        }
     }
 
-    resetComment() {
-        this.setState({comment: ''})
+    resetComment(message) {
+        this.setState({comment: ''});
+        this.props.createAlert(this.state.commentAlertName, message);
     }
 
     render() {
@@ -71,10 +111,12 @@ class CommentForm extends React.Component {
                         </button>
                     </span>
                 </div>
+                {<this.state.CommentAlert />}
             </div>
         )
     }
 }
+
 
 const Comment = ({comment}) => {
     const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
@@ -85,7 +127,6 @@ const Comment = ({comment}) => {
         </div>
     )
 };
-
 Comment.propTypes = {
     comment: PropTypes.object.isRequired,
 };
@@ -111,7 +152,7 @@ export default class Comments extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         // concatenate this model's name with parent's ID
-        this.state = {collapseId: collapseId(OBJECTS_COMMENTS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_COMMENTS, this.props.parentId)};
     }
 
     activeKey() {
@@ -127,11 +168,6 @@ export default class Comments extends React.Component {
             (id) => {
                 const comment = this.props.comments.objects[id];
                 return <Comment key={id} comment={comment} />
-                // return (
-                //     <Panel header={<CommentHeader comment={comment}/>} key={id}>
-                //         <div>By: {comment.user_details.first_name}</div>
-                //     </Panel>
-                // )
             }
         ))
     }
@@ -139,7 +175,6 @@ export default class Comments extends React.Component {
     render() {
         const commentIds = this.props.updateChildrenIds[this.props.parentId] || [];
 
-        // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!commentIds) {
             return (
                 <p>Loading...</p>

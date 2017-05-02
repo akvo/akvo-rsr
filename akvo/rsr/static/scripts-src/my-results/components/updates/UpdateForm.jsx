@@ -10,20 +10,32 @@ import React, { PropTypes } from "react";
 import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
-import { FileReaderInput } from '../common';
 
-import { onChange, addKey } from "../../actions/collapse-actions"
+import * as alertActions from "../../actions/alert-actions"
+import { addKey } from "../../actions/collapse-actions"
 import {
-    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend,
+    updateModel,
+    deleteFromModel,
+    updateUpdateToBackend,
+    saveUpdateToBackend,
     deleteUpdateFromBackend
 } from "../../actions/model-actions"
-import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
-
-import { endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId } from '../../utils.js';
-
 import {
-    UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
-} from '../../const.js';
+    updateFormOpen,
+    updateFormClose
+} from "../../actions/ui-actions"
+
+import * as c from '../../const.js';
+import {
+    endpoints,
+    displayNumber,
+    _,
+    currentUser,
+    isNewUpdate,
+    collapseId,
+} from '../../utils.js';
+
+import { FileReaderInput } from '../common';
 
 
 const Header = ({update}) => {
@@ -234,7 +246,7 @@ Attachments.propTypes = {
 };
 
 
-const UpdateFormButtons = ({update, callbacks}) => {
+const UpdateFormButtons = ({user, update, callbacks}) => {
     return (
         <div className="menuAction">
         {!isNewUpdate(update) ?
@@ -252,10 +264,12 @@ const UpdateFormButtons = ({update, callbacks}) => {
                     <a id="save" onClick={callbacks.saveUpdate}
                        className="btn btn-default btn-xs">{_('save')}</a>
                 </li>
-                <li role="presentation" className="approveUpdate">
-                    <a id="approve" onClick={callbacks.saveUpdate}
-                       className="btn btn-default btn-xs">{_('approve')}</a>
-                </li>
+                {user.isMEManager ?
+                    <li role="presentation" className="approveUpdate">
+                        <a id="approve" onClick={callbacks.saveUpdate}
+                           className="btn btn-default btn-xs">{_('approve')}</a>
+                    </li>
+                : ''}
                 <span></span>
             </ul>
         </div>
@@ -282,6 +296,11 @@ const pruneForPOST = (update) => {
     return updateForPOST;
 };
 
+@connect((store) => {
+    return {
+        user: store.models.user.objects[store.models.user.ids[0]],
+    }
+}, alertActions)
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
@@ -295,6 +314,7 @@ export default class UpdateForm extends React.Component {
         // Save original update, used when editing is cancelled
         this.state = {
             originalUpdate: Object.assign({}, this.props.update),
+            updateAlertName: 'UpdateAlert-' + this.props.update.id,
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
@@ -302,6 +322,7 @@ export default class UpdateForm extends React.Component {
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
+        this.formClose = this.formClose.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -402,35 +423,59 @@ export default class UpdateForm extends React.Component {
         this.props.formToggle();
         const originalUpdate = this.state.originalUpdate;
         if (isNewUpdate(originalUpdate)) {
-            deleteFromModel(OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
         } else {
-            updateModel(OBJECTS_UPDATES, originalUpdate);
+            updateModel(c.OBJECTS_UPDATES, originalUpdate);
         }
         updateFormClose(originalUpdate.id);
+    }
+
+    formClose(id, message) {
+        updateFormClose(id);
+        this.props.createAlert(this.state.updateAlertName, message);
     }
 
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
         // All changes to an update revert it to draft unless it is explicitly approved while saving
         if (e.target.id == 'approve') {
-            update.status = UPDATE_STATUS_APPROVED;
+            update.status = c.UPDATE_STATUS_APPROVED;
         } else {
-            update.status = UPDATE_STATUS_DRAFT;
+            update.status = c.UPDATE_STATUS_DRAFT;
         }
-
-        const callback = updateFormClose.bind(null, update.id);
+        const callbacksFactory = (message, errorMessage) => {
+            return {
+                [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id, message),
+                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                    this, this.state.updateAlertName, errorMessage
+                )
+            };
+        };
         if (isNewUpdate(update)) {
-            saveUpdateToBackend(endpoints.updates_and_comments(), pruneForPOST(update),
-                                this.props.collapseId, callback);
+            saveUpdateToBackend(
+                endpoints.updates_and_comments(), pruneForPOST(update),
+                this.props.collapseId, callbacksFactory('Update created', "Couldn't create update")
+            );
         } else {
-            updateUpdateToBackend(endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                                  this.props.collapseId, callback);
+            updateUpdateToBackend(
+                endpoints.update_and_comments(update.id), pruneForPATCH(update),
+                this.props.collapseId, callbacksFactory('Update saved', "Couldn't save update")
+            );
         }
     }
 
     deleteUpdate() {
         const url = endpoints.update_and_comments(this.props.update.id);
-        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId);
+        const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
+        const callbacks = {
+            [c.UPDATE_MODEL_FULFILLED]: this.props.createAlert.bind(
+                this, deleteUpdateAlertName, 'Update deleted'
+            ),
+            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                this, deleteUpdateAlertName, "Couldn't delete update"
+            )
+        };
+        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
     }
 
     previousActualValue() {
@@ -461,6 +506,7 @@ export default class UpdateForm extends React.Component {
                     <Attachments update={update} onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
+                        user={this.props.user}
                         update={update}
                         callbacks={{
                             saveUpdate: this.saveUpdate,
@@ -480,12 +526,11 @@ export class NewUpdateButton extends React.Component {
     static propTypes = {
         period: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        dispatch: PropTypes.func.isRequired,
     };
 
     constructor (props) {
         super(props);
-        this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.period.id)};
+        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id)};
         this.newUpdate = this.newUpdate.bind(this);
     }
 
@@ -504,7 +549,7 @@ export class NewUpdateButton extends React.Component {
             data: 0,
             text: '',
             relative_data: true,
-            status: UPDATE_STATUS_NEW,
+            status: c.UPDATE_STATUS_NEW,
             // Keep track of the open/closed state of the form
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
