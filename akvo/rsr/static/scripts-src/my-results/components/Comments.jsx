@@ -181,7 +181,7 @@ export default class Comments extends React.Component {
             );
         } else if (commentIds.length > 0) {
             return (
-                <div className={OBJECTS_COMMENTS + ' col-xs-12'}>
+                <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
                     <strong>Internal notes:</strong>
                     {this.renderComments(commentIds)}
                     <CommentForm parentId={this.props.parentId}/>
@@ -189,7 +189,7 @@ export default class Comments extends React.Component {
             );
         } else {
             return (
-                <div className={OBJECTS_COMMENTS + ' col-xs-12'}>
+                <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
                     <strong>Internal notes</strong>
                     <CommentForm parentId={this.props.parentId}/>
                 </div>
