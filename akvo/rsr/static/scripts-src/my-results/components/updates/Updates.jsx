@@ -133,7 +133,7 @@ UserInfo.propTypes = {
 
 @connect((store) => {
     return {
-        ui: store.ui
+        updateForms: store.ui[c.UPDATE_FORMS]
     }
 }, alertActions)
 class UpdateHeader extends React.Component {
@@ -166,8 +166,14 @@ class UpdateHeader extends React.Component {
     render() {
         let editUpdateButton, updateAlert;
         if (!this.props.periodLocked) {
+            let className;
+            if (new Set(this.props.updateForms).has(this.props.update.id)) {
+                className = 'btn btn-sm btn-default editingForm';
+            } else {
+                className = 'btn btn-sm btn-default';
+            }
             editUpdateButton = <ToggleButton onClick={this.formToggle}
-                                             className={'btn btn-sm btn-default'}
+                                             className={className}
                                              label={_('edit_update')}/>;
             updateAlert = <this.state.UpdateAlert />
         }
@@ -188,7 +194,7 @@ class UpdateHeader extends React.Component {
     return {
         updates: store.models['updates'],
         keys: store.keys,
-        ui: store.ui,
+        // ui: store.ui,
         periodChildrenIds: getPeriodsChildrenIds(store),
     }
 })

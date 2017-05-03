@@ -18,14 +18,12 @@ export default function collapseReducer(keys={}, action) {
         case c.KEY_SET_ACTIVE: {
             // Set the model to current activeKey list
             const {collapseId, activeKey} = action.payload;
-            keys = {...keys, [collapseId]: activeKey};
-            break;
+            return {...keys, [collapseId]: activeKey};
         }
 
         case c.KEYS_RESET: {
             // Reset the tree
-            keys = {};
-            break;
+            return {};
         }
 
         case c.UPDATE_MODEL_FULFILLED:
@@ -35,12 +33,15 @@ export default function collapseReducer(keys={}, action) {
             if (collapseId) {
                 const key = object.id.toString();
                 if (keys[collapseId]) {
-                    keys = {...keys, [collapseId]: update(keys[collapseId], {$push: [key]})};
+                    const newKeys = update(keys[collapseId], {$push: [key]});
+                    const deduped = [...new Set(newKeys)];
+                    return {...keys, [collapseId]: deduped
+                    };
                 } else {
-                    keys = {...keys, [collapseId]: [key]};
+                    return {...keys, [collapseId]: [key]};
                 }
             }
-            break;
+            return keys;
         }
 
         case c.DELETE_FROM_MODEL: {

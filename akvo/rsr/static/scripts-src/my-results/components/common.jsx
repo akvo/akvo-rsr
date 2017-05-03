@@ -11,11 +11,12 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 
-export const ToggleButton = ({onClick, label, style, disabled, icon}) => {
+export const ToggleButton = (
+        {onClick, className='btn btn-sm btn-default', label, style, disabled, icon}) => {
     const buttonStyle = Object.assign({margin: '0.3em 0.5em'}, style ? style : {});
     return (
         <button onClick={onClick}
-            className={'btn btn-sm btn-default'}
+            className={className}
             style={buttonStyle}
             disabled={disabled}>
             {icon}
