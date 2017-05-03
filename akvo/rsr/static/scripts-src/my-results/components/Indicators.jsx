@@ -32,7 +32,7 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
             <ul>
                 <li>{title}</li>
                 <li><span className="aggrActualValue">{ "Aggregate actual value: " + aggregateActualValue}</span></li>
-            </ul>
+            </ul>   
         </span>
     )
 };

@@ -3676,1448 +3676,11 @@ article {
     }
 }
 
-// .baseline,
-// .periodValues {
-//     padding: 0.5em 0 2em 0;
-//     position: relative;
-//     width: 100%;
-//     margin-top: 15px;
-//     margin-bottom: 55px;
-
-//     .baseline-value,
-//     .baseline-year,
-//     .period-target,
-//     .period-actual,
-//     .period-target-comment,
-//     .period-actual-comment {
-//         display: inline-block !important;
-//         padding: 0 0 10px 0px;
-
-//         > span:first-child {
-//             display: block;
-
-//             span {
-//                 display: inline;
-//             }
-//         }
-
-//         span:nth-child(2n), .actualValueSpan {
-//             display: block;
-//             font-family: $titleFont;
-
-//             span {
-//                 display: inline;
-//             }
-
-//             span:nth-child(1) {
-//                 margin-left: 10px;
-//             }
-//         }
-//     }
-//      //.period-target-comment {
-//     //    width: 50%;
-//     //    float: left;
-//     //    span:nth-child(2n) {
-//     //        font-weight: 400;
-//     //    }
-//     //}
-//     //.period-actual-comment {
-//     //    width: 50%;
-//     //    float: right;
-//     //    span:nth-child(2n) {
-//     //        font-weight: 400;
-//     //    }
-//     //}
-//     .baseline-value,
-//     .period-target {
-//         width: 50%;
-//         float: left;
-//     }
-
-//     .baseline-year,
-//     .period-actual {
-//         width: 50%;
-//         float: right;
-//         position: relative;
-
-//         span {
-//             &:nth-child(1) {
-//                 display: inline-block;
-//                 margin-right: 10px;
-//             }
-
-//             &:nth-child(4) {
-//                 display: block;
-//                 font-weight: 700;
-//             }
-
-//             &.actualValueSpan {
-//                 display: block;
-
-//                 span:nth-child(1) {
-//                     margin-right: 0;
-//                 }
-
-//                 span {
-//                     display: inline;
-//                 }
-//             }
-//         }
-
-//         .badge {
-//             background-color: $akvoBlack;
-
-//             @include transition(all 0.1s linear);
-
-//             margin-top: -5px;
-//             padding: 5px 9px;
-
-//             @include border-radius(15px);
-
-//             font-family: $scriptFont;
-
-//             &:hover {
-//                 background-color: $akvoPurple;
-//                 cursor: pointer;
-//             }
-//         }
-
-//         .result-tooltip {
-//             clear: both;
-//             position: absolute;
-//             top: 35px;
-//             left: 60px;
-//             background: rgba(white, 1);
-//             border: 1px solid rgba($primary4, 0.8);
-//             color: $akvoBlack;
-
-//             @include border-radius(4px);
-
-//             .tooltip-inner {
-//                 background: rgba(white, 1);
-//                 color: $akvoBlack;
-
-//                 @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
-//             }
-
-//             .tooltip-arrow {
-//                 position: absolute;
-//                 background: rgba(white, 1);
-//                 border: 1px solid rgba($primary4, 0.8);
-//                 left: 50px;
-//                 top: -2px;
-
-//                 &:after,
-//                 &:before {
-//                     bottom: 100%;
-//                     left: 50%;
-//                     border: solid transparent;
-//                     content: " ";
-//                     height: 0;
-//                     width: 0;
-//                     position: absolute;
-//                     pointer-events: none;
-//                 }
-
-//                 &:after {
-//                     border-color: rgba(136, 183, 213, 0);
-//                     border-bottom-color: rgba($primary4, 0.5);
-//                     border-width: 7px;
-//                     margin-left: -7px;
-//                 }
-
-//                 &:before {
-//                     border-color: rgba(194, 225, 245, 0);
-//                     border-bottom-color: rgba($primary4, 0.5);
-//                     border-width: 8px;
-//                     margin-left: -8px;
-//                 }
-//             }
-//         }
-//     }
-
-//     .period-target-comment {
-//         width: 50%;
-//         float: left;
-//         padding: 0 0 40px 0px;
-//     }
-
-//     .period-actual-comment {
-//         width: 50%;
-//         float: right;
-//         padding: 0 0 40px 0px;
-//     }
-// }
-
-.sidebar {
-    width: 50%;
-    min-width: 200px;
-    overflow-y: auto;
-    vertical-align: top;
-
-    .results-list {
-        background: white;
-        border: 1px solid rgba($secondary8, 1);
-    }
-
-    .result-nav-header {
-        display: none;
-        background: rgba($akvoPurple, 0);
-
-        h3 {
-            color: rgba(white, 1);
-            display: inline-block;
-            font-size: 1em;
-            text-transform: uppercase;
-            position: relative;
-            padding: 5px 10px;
-            margin-top: 0;
-            background: rgba($akvoPurple, 1);
-            margin-bottom: 0;
-
-            @include border-radius(5px 5px 0 0);
-
-            > a {
-                position: absolute;
-                right: -5px;
-            }
-        }
-    }
-
-    .result-nav {
-        opacity: 0.8;
-        cursor: pointer;
-
-        @include transition(all 0.2s linear);
-
-        padding: 10px 0 0px 0px;
-        border-bottom: 1px solid rgba($secondary8, 1);
-        border-top: 1px solid rgba(white, 1);
-
-        &:before {
-            height: 1px;
-            background-color: rgba(224, 225, 226, 0);
-            width: 100%;
-            display: block;
-            content: '';
-            margin: 0 auto;
-
-            @include transition(background-color 0.25s ease-in-out);
-        }
-
-        &:hover {
-            opacity: 1;
-            background: rgba($rsrBlue2, 0);
-        }
-
-        .result-nav-summary {
-            padding: 15px 0 10px 10px;
-            position: relative;
-
-            .indicatorType {
-                margin-top: 0px;
-                font-weight: 400;
-                color: $anchorLinkHover;
-                font-size: 0.8em;
-            }
-
-            h3 {
-                font-size: 1em;
-                color: rgba($rsrBlue, 1);
-
-                @include transition(all 0.2s linear);
-
-                &:hover {
-                    color: $anchorLinkHover;
-                }
-
-                &.result-title {
-                    position: relative;
-                    box-sizing: border-box;
-                    font-weight: 400;
-                    max-width: 100%;
-                    margin: 0 auto 0 0;
-                    display: block;
-                    display: -webkit-box;
-                    line-height: 1.4em;
-                    -webkit-box-orient: vertical;
-
-                    .fa {
-                        position: absolute;
-                        font-size: 1.3em;
-                        right: 5px;
-                        text-shadow: 0 1px 0 rgb(255, 255, 255);
-                        color: rgba($akvoBlack, 0.7);
-                    }
-
-                    > span {
-                        display: block;
-                        width: 90%;
-                        color: $akvoBlack;
-                    }
-                }
-            }
-        }
-
-        .fa-chevron-up {
-            display: none;
-        }
-
-        .result-indicator-count {
-            color: $akvoPurple;
-            display: block;
-            margin-top: 5px;
-            font-size: 0.8em;
-
-            span {
-                margin-left: 5px;
-            }
-
-            p {
-                display: inline-block;
-                margin-left: 5px;
-            }
-        }
-
-        .result-nav-full {
-            display: none;
-        }
-
-        .indicator-text {
-            display: none;
-        }
-
-        &.expanded {
-            padding: 20px 0 0px 0px;
-            background: rgba($secondary8, 0.9);
-            border-top: 1px solid rgba(white, 0);
-            opacity: 1;
-
-            &:before {
-                background-color: transparent;
-            }
-
-            h3 {
-                color: $anchorLinkHover;
-            }
-
-            ~ .result-nav {
-                &:before {
-                    background-color: transparent;
-                }
-            }
-
-            .fa-chevron-down {
-                display: none;
-            }
-
-            .fa-chevron-up {
-                display: block;
-            }
-
-            .indicator-text {
-                display: initial;
-            }
-
-            .indicator-count {
-                display: none;
-            }
-
-            .result-nav-full {
-                display: block;
-                cursor: pointer;
-                padding: 1px 0 0 0px;
-                background-color: white;
-
-                div {
-                    &:last-child {
-                        .indicator-nav {
-                            border-bottom: none;
-                        }
-                    }
-
-                    .indicator-nav {
-                        padding: 0.5em 15px 0.5em 0em;
-                        background: rgba($akvoPurple, 0.2);
-                        border-bottom: 2px solid white;
-                        font-weight: 400;
-                        opacity: 0.8;
-
-                        h4 {
-                            color: $akvoPurple;
-                            font-size: 0.9em;
-                        }
-
-                        &:hover {
-                            background: rgba($akvoPurple, 0.6);
-                            opacity: 1;
-
-                            h4 {
-                                color: white;
-                            }
-                        }
-
-                        &.active {
-                            background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
-                            border-left: 0px solid rgba(174, 9, 34, 0);
-                            background-size: 5% auto;
-                            opacity: 1;
-
-                            h4 {
-                                color: white;
-                            }
-                        }
-
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-                    }
-
-                    a {
-                        h4 {
-                            font-size: 1em;
-                            color: $akvoPurple;
-                            margin-bottom: 1px;
-                            line-height: 150%;
-                            padding-left: 10px;
-                        }
-
-                        &:hover {
-                            color: rgba($akvoPurple, 0.5);
-                            text-decoration: none;
-                        }
-                    }
-
-                    .last-update {
-                        font-size: 0.9em;
-                        color: rgb(170, 170, 170);
-                    }
-                }
-            }
-        }
-    }
-}
-
-.indicator-container {
-    vertical-align: top;
-    padding: 20px 1em 0.25em 1em;
-    background-color: rgba($secondary8, 0.3);
-    border: 1px solid rgba($secondary8, 0.8);
-
-    @include flex(1);
-
-    position: relative;
-
-    .noIndicators {
-        position: absolute;
-        top: 45%;
-        text-align: center;
-        display: inline-block;
-        width: 100%;
-        color: rgba($primary4, 0.5);
-        text-shadow: 1px 1px 0 rgba(white, 1);
-        align-items: center;
-
-        span:first-child {
-            display: block;
-            font-size: 150%;
-        }
-
-        a {
-            display: block;
-            width: 100%;
-        }
-    }
-
-    .indicator-title {
-        font-size: 1.3em;
-        margin-bottom: 25px;
-
-        .backButton {
-            display: inline;
-            background: transparent;
-            padding: 3px 5px;
-
-            @include border-radius(3px);
-
-            font-size: 0.7em;
-            color: white $rsrBlue2;
-            margin: -5px 10px 0 0;
-
-            &:hover {
-                color: $anchorLinkHover;
-            }
-        }
-    }
-
-    .indicator-period {
-        .indicTitle {
-            position: relative;
-
-            .indicator-title {
-                i {
-                    display: none;
-                }
-            }
-
-            .new-update {
-                position: absolute;
-                display: inline-block;
-                top: -5px;
-                right: 0;
-
-                .btn {
-                    background: $akvoBlack;
-                    color: white;
-
-                    @include border-radius(5px);
-
-                    &:hover {
-                        background: $akvoPurple;
-                        color: white;
-                    }
-                }
-            }
-        }
-    }
-
-    .indicator-periods-title {
-        font-size: 1em;
-        color: $akvoBlack;
-        margin-top: 40px;
-        display: none;
-    }
-
-    .result-summary {
-        display: none;
-        opacity: 0;
-
-        h4 {
-            font-size: 0.9em;
-            color: #aaaaaa;
-            font-variant: small-caps;
-            text-transform: lowercase;
-        }
-
-        h3 {
-            font-size: 1.2em;
-            color: #424c2b;
-            margin-bottom: 4px;
-        }
-
-        .result-parent {
-            font-size: 0.8em;
-            color: #aaaaaa;
-        }
-
-        .indicator-link {
-            cursor: pointer;
-
-            &:hover {
-                opacity: 0.8;
-            }
-
-            &:active {
-                opacity: 0.6;
-            }
-        }
-
-        .result-indicators {
-            margin-top: 20px;
-
-            ul {
-                list-style-type: none;
-                padding-left: 5px;
-
-                li {
-                    color: $anchorLink;
-                }
-            }
-        }
-    }
-
-    .indicator-group {
-        padding: 0;
-        display: none;
-
-        .indicator-title {
-            font-size: 1em;
-
-            .glyphicon {
-                float: left;
-                margin-right: 4px;
-            }
-        }
-
-        .table {
-            padding: 0.5em 0.25em;
-
-            /*background-color: rgb(235,235,231);*/
-            tbody {
-                &.indicator-period {
-                    border: none;
-                    padding: 15px 0;
-                }
-
-                &.expanded {
-                    background-color: white;
-                }
-            }
-
-            thead {
-                font-weight: normal;
-                color: rgb(192, 192, 192);
-
-                tr {
-                    background-color: #ececec;
-                }
-            }
-
-            tr,
-            td {
-                border: none;
-                color: rgb(172, 172, 172);
-            }
-
-            tr {
-                min-height: 125px;
-
-                .add-button {
-                    display: none;
-                }
-
-                &.expanded ~ .add-button-tr td {
-                    text-align: right;
-
-                    .add-button {
-                        border: none;
-                        display: inline-block;
-                        margin-right: 1.4em;
-                    }
-                }
-            }
-
-            td {
-                vertical-align: middle;
-
-                &.period-td,
-                &.actual-td,
-                &.target-td,
-                &.actions-td {
-                    white-space: nowrap;
-                }
-
-                &.target-td {
-                    font-weight: 600;
-                }
-
-                &.actions-td {
-                    .tooltip {
-                        top: -170px;
-                        left: 132.703px;
-                        display: block;
-
-                        .tooltip-arrow {
-                            left: 77.4336%;
-                        }
-                    }
-                }
-
-                &.period-td {
-                    position: relative;
-
-                    .result-tooltip {
-                        position: absolute;
-                        top: 0;
-                    }
-                }
-
-                &.indicator-bar-td {
-                    width: 55%;
-                }
-            }
-
-            .expand-indicator-period {
-                .fa-chevron-up {
-                    display: none;
-                }
-
-                .fa-chevron-down {
-                    display: initial;
-                }
-
-                &.expanded {
-                    .fa-chevron-up {
-                        display: initial;
-                    }
-
-                    .fa-chevron-down {
-                        display: none;
-                    }
-                }
-            }
-        }
-
-        .indicator {
-            display: none;
-        }
-    }
-}
-
-/* Styling for the indicator period progress bar */
-
-.indicator-bar-td {
-    height: 80px;
-    padding: 0;
-}
-
-/* Insert some transparent text to space the "progress" label */
-
-.th-progress {
-    &:before {
-        content: 'spacer';
-        width: 40px;
-        height: 1px;
-        display: inline-block;
-        color: transparent;
-
-        @media only screen and (max-width: 800px) {
-            display: none;
-        }
-    }
-}
-
-.indicator-bar-display-container {
-    position: relative;
-    height: 100%;
-    margin-left: 50px;
-    margin-right: 15px;
-
-    .indicator-bar,
-    .indicator-bar-progress-amount {
-        position: absolute;
-        top: 38px;
-        bottom: 24px;
-        left: 0px;
-        height: 8px;
-
-        @include border-radius(2px);
-
-        border: 1px solid #CDDFEF;
-    }
-
-    .indicator-baseline {
-        position: absolute;
-        left: -45px;
-        top: 30px;
-        font-size: 1.1em;
-        font-weight: bold;
-        vertical-align: bottom;
-        width: 35px;
-        text-align: right;
-    }
-
-    .indicator-bar {
-        background-color: #E2EBF5;
-        right: 0px;
-    }
-
-    .indicator-bar-progress-amount {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    .indicator-bar-progress-container {
-        /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
-        position: relative;
-        height: 100%;
-
-        .indicator-bar-progress {
-            position: absolute;
-            width: 4px;
-            margin-left: -2px;
-
-            /* Offset half the width */
-            height: 23px;
-            top: 30px;
-            background-color: #A3C7E3;
-            text-align: center;
-        }
-    }
-}
-
-.target-td {
-    vertical-align: middle;
-}
-
-.update-description {
-    color: rgba($akvoBlack, 1);
-    font-size: 90%;
-
-    label {
-        color: initial;
-    }
-}
-
-.indicator-bar-progress-complete-container {
-    .indicator-bar-progress-complete {
-        padding-left: 15px;
-        font-size: 1.1em;
-        font-weight: normal;
-        color: rgb(81, 80, 80);
-        vertical-align: bottom;
-    }
-
-    .indicator-bar-progress-text {
-        padding-left: 15px;
-        font-size: 1.1em;
-        font-weight: bold;
-        color: #A3C7E3;
-        vertical-align: bottom;
-    }
-}
-
-.indicator-container .indicator-group .table tbody {
-    background-color: white;
-    border-bottom: none !important;
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-
-    .edit-button {
-        position: absolute;
-        height: 20px;
-        width: 20px;
-        top: 15px;
-        right: 10px;
-        color: $akvoBlack;
-        font-size: 1.5em;
-
-        &.activated {
-            display: none;
-        }
-    }
-
-    .delete-button {
-        position: absolute;
-        height: 20px;
-        width: 20px;
-        top: 13px;
-        right: 35px;
-        font-size: 1.5em;
-        color: $akvoBlack;
-
-        &.activated {
-            display: none;
-        }
-    }
-
-    .delete-confirm {
-        display: none;
-        position: absolute;
-        right: 10px;
-        top: 55px;
-        height: 90px;
-        background-color: white;
-        color: $akvoBlack;
-        padding: 1em;
-        z-index: 101;
-
-        > div {
-            height: 40px;
-            position: relative;
-        }
-
-        .delete-confirm-no {
-            position: absolute;
-            left: 10px;
-            top: 10px;
-        }
-
-        .delete-confirm-yes {
-            background-color: #ae0922;
-            border-color: #ae0922;
-            margin-left: auto;
-            position: absolute;
-            right: 10px;
-            top: 10px;
-
-            &:hover {
-                background-color: #ff5500;
-                border-color: #ff5500;
-            }
-        }
-    }
-
-    .update-date {
-        display: inline-block;
-        text-align: left;
-        width: 50%;
-    }
-
-    .update-name {
-        display: inline-block;
-        text-align: left;
-        width: 30%;
-        margin-right: 10%;
-        color: $akvoBlack;
-
-        &.delete-pending {
-            margin-bottom: 90px;
-        }
-    }
-
-    .update-timeline {
-        display: inline-block;
-        width: 75%;
-        height: 80px;
-        padding-top: 1em;
-        z-index: 99;
-        position: relative;
-    }
-
-    .update-target {
-        position: absolute;
-        margin-top: 48px;
-        display: inline-block;
-        width: 24%;
-        height: 80px;
-        text-align: center;
-
-        span {
-            font-size: 1.1em;
-            color: rgb(81, 80, 80);
-            vertical-align: text-top;
-
-            &.update-target-actual {
-                padding-left: 15px;
-                font-size: 1.1em;
-                font-weight: bold;
-                color: #A3C7E3;
-                vertical-align: bottom;
-            }
-        }
-    }
-
-    .update-description {
-        padding: 0.5em;
-        margin: 20px auto 30px;
-
-        &.editable {
-            background: whitesmoke;
-            border: 1px solid #A3C7E3;
-        }
-
-        .update-photo {
-            float: right;
-            width: 150px;
-            height: 100px;
-            background-size: cover;
-        }
-    }
-
-    .save-button {
-        position: absolute;
-        display: none;
-        right: 10px;
-        bottom: 10px;
-
-        &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: white;
-            background-color: rgb(0, 122, 184);
-
-            @include border-radius(2px);
-
-            text-align: center;
-        }
-    }
-
-    .cancel-button {
-        position: absolute;
-        display: none;
-        right: 60px;
-        bottom: 10px;
-        background-color: none;
-
-        &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: rgb(0, 122, 184);
-
-            @include border-radius(2px);
-
-            text-align: center;
-        }
-    }
-}
-
 label.imageUpload,
 label.fileUpload {
     input[type="file"] {
         position: fixed;
         top: -1000px;
-    }
-}
-
-.update-dialog-container {
-    &.pending-new-update {
-        .update-entry-container {
-            background-color: #D1E6D1;
-
-            &:first-child {
-                border-left: none;
-            }
-        }
-    }
-
-    td {
-        padding: 8px 2em;
-
-        .update-entry-container {
-            padding: 2em;
-            position: relative;
-            background-color: #ececec;
-
-            &:first-child {
-                border-left: 4px solid #ae0922;
-            }
-
-            &.edit-in-progress {
-                background-color: #D1E6D1;
-                border-left: none;
-            }
-
-            .update-exceed-target {
-                margin: 3em 0 1em 0;
-                text-align: right;
-
-                input.exceed-value {
-                    opacity: 0;
-                }
-
-                label {
-                    margin-right: 10px;
-                    color: rgba($akvoBlack, 0.5);
-                }
-
-                .update-exceed-target-checkbox {
-                    margin-right: 10px;
-
-                    &:checked {
-                        ~ input.exceed-value {
-                            opacity: 1;
-                        }
-                    }
-                }
-            }
-
-            .indicator-bar-display-container {
-                position: relative;
-                height: 100%;
-                margin-left: 45px;
-                margin-right: 0;
-
-                .indicator-baseline {
-                    top: 34px;
-                    left: -60px;
-                }
-
-                .indicator-bar-progress-text {
-                    position: absolute;
-                    bottom: -18px;
-                    width: 44px;
-                    margin-left: -22px;
-                    text-align: center;
-                    color: #B5B5B5;
-                    border: 1px solid #B5B5B5;
-                    background-color: #ececec;
-                    cursor: pointer;
-
-                    .progress-hover-text {
-                        content: '';
-                        opacity: 0;
-                        height: 0px;
-                        width: 0px;
-                        padding: 0;
-                        margin: 0;
-                        font-size: 0;
-                    }
-
-                    &:last-child {
-                        color: #A3C7E3;
-                        border-color: #A3C7E3;
-                    }
-
-                    &:hover {
-                        z-index: 101;
-                        background-color: white;
-
-                        .progress-hover-text {
-                            display: block;
-                            font-size: initial;
-                            opacity: 1;
-                            position: absolute;
-                            top: 26px;
-                            color: inherit;
-                            content: initial;
-                            background-color: white;
-                            width: 100px;
-                            height: auto;
-                            margin-left: -28px;
-
-                            /* Half of the width of this - half the width of the parent */
-                            padding: 5px 0;
-
-                            &:before {
-                                content: '';
-                                width: 0;
-                                height: 0;
-                                border-left: 5px solid transparent;
-                                border-right: 5px solid transparent;
-                                border-bottom: 5px solid white;
-                                position: absolute;
-                                top: -5px;
-                                left: 45px;
-                            }
-                        }
-                    }
-                }
-
-                .indicator-bar,
-                .indicator-bar-progress-amount {
-                    position: absolute;
-                    top: 38px;
-                    bottom: 24px;
-                    left: 0px;
-                    height: 14px;
-
-                    @include border-radius(2px);
-
-                    border: 1px solid #CDDFEF;
-                }
-
-                .indicator-bar {
-                    background-color: #fff;
-                    right: 0px;
-                }
-
-                .indicator-bar-progress-amount {
-                    background-color: #fff;
-                    border-right: none;
-                }
-
-                .indicator-bar-progress-container {
-                    /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
-                    position: relative;
-                    height: 100%;
-
-                    .indicator-bar-progress {
-                        position: absolute;
-                        width: 3px;
-                        height: 20px;
-                        top: 35px;
-                        background-color: #B5B5B5;
-
-                        &:nth-last-child(2) {
-                            background-color: #A3C7E3;
-                        }
-
-                        text-align: center;
-
-                        &.update-dialog-timeline-marker {
-                            border: none;
-                        }
-                    }
-                }
-            }
-
-            .target-td {
-                vertical-align: middle;
-            }
-
-            .indicator-bar-progress-complete-container {
-                .indicator-bar-progress-complete {
-                    padding-left: 15px;
-                    font-size: 1.5em;
-                    font-weight: normal;
-                    color: rgb(81, 80, 80);
-                    vertical-align: bottom;
-                }
-
-                .indicator-bar-progress-text {
-                    padding-left: 15px;
-                    font-size: 1.5em;
-                    font-weight: bold;
-                    color: #A3C7E3;
-                    vertical-align: bottom;
-                    z-index: 19999;
-                }
-            }
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-
-            .edit-button {
-                position: absolute;
-                height: 20px;
-                width: 20px;
-                top: 15px;
-                right: 10px;
-                color: $akvoBlack;
-                font-size: 1.5em;
-
-                &.activated {
-                    display: none;
-                }
-            }
-
-            .delete-button {
-                position: absolute;
-                height: 20px;
-                width: 20px;
-                top: 13px;
-                right: 35px;
-                font-size: 1.5em;
-                color: $akvoBlack;
-
-                &.activated {
-                    display: none;
-                }
-            }
-
-            .update-date {
-                display: inline-block;
-                text-align: left;
-                width: 50%;
-            }
-
-            .update-name {
-                display: inline-block;
-                text-align: left;
-                width: 30%;
-                margin-right: 10%;
-                color: $akvoBlack;
-            }
-
-            .update-timeline {
-                display: inline-block;
-                width: 84%;
-                height: 80px;
-                padding-top: 1em;
-                z-index: 99;
-                position: relative;
-            }
-
-            .update-target {
-                position: absolute;
-                margin-top: 49px;
-                display: inline-block;
-                width: 15%;
-                height: 80px;
-                text-align: right;
-
-                span {
-                    font-size: 1.1em;
-                    color: rgb(81, 80, 80);
-                    vertical-align: text-top;
-
-                    &.update-target-actual {
-                        padding-left: 15px;
-                        font-size: 1.1em;
-                        font-weight: bold;
-                        color: #A3C7E3;
-                        vertical-align: bottom;
-                    }
-                }
-            }
-
-            .update-description {
-                padding: 0.5em;
-                margin: 20px auto 30px;
-
-                .update-container & {
-                    color: red;
-                }
-
-                &.editable {
-                    background: whitesmoke;
-                    border: 1px solid #A3C7E3;
-                }
-
-                .update-photo {
-                    float: right;
-                    width: 150px;
-                    height: 100px;
-                    background-size: cover;
-                }
-            }
-
-            .save-button {
-                position: absolute;
-                display: none;
-                right: 10px;
-                bottom: 10px;
-
-                &.active {
-                    display: inline-block;
-                    padding: 3px 7px;
-                    color: white;
-                    background-color: $akvoBlack;
-
-                    @include border-radius(2px);
-
-                    text-align: center;
-                }
-            }
-
-            .cancel-button {
-                position: absolute;
-                display: none;
-                right: 60px;
-                bottom: 10px;
-
-                &.active {
-                    display: inline-block;
-                    padding: 3px 7px;
-                    color: $akvoBlack;
-
-                    @include border-radius(2px);
-
-                    text-align: center;
-                }
-            }
-
-            .edit-slider {
-                z-index: 9999;
-
-                .original-position-marker {
-                    width: 3px;
-                    margin-left: -2px;
-                    height: 20px;
-                    position: absolute;
-                    background-color: #B5B5B5;
-                    top: -3px;
-                    z-index: 102;
-                }
-
-                .change-indicator {
-                    position: absolute;
-                    background-color: green;
-                    height: 12px;
-                    top: 1px;
-                    z-index: 101;
-                    opacity: 0.5;
-
-                    &.negative {
-                        background-color: red;
-                    }
-                }
-
-                .noUi-base,
-                &.noUi-horizontal {
-                    height: 5px;
-                    border: 0;
-                    background-color: rgba(white, 0);
-                    margin-top: -28px;
-                    z-index: 99999;
-
-                    @include border-radius(4px);
-
-                    box-shadow: none;
-
-                    .noUi-origin {
-                        background-color: rgba(white, 0);
-
-                        @include border-radius(4px);
-                    }
-
-                    .noUi-handle {
-                        position: relative;
-                        width: 28px;
-                        height: 28px;
-                        z-index: 9999;
-                        background-color: rgb(0, 122, 184);
-                        cursor: pointer;
-                        left: -14px;
-                        box-shadow: none;
-                        top: -7px;
-                        color: white;
-
-                        &:after {
-                            display: block;
-                            content: '|||';
-                            color: white;
-                            width: 26px;
-                            height: 26px;
-                            line-height: 23px;
-                            text-align: center;
-                            letter-spacing: -2px;
-                            color: white;
-                            background-color: transparent;
-                            top: 0;
-                            left: -1px;
-                        }
-
-                        &:before {
-                            display: none;
-                        }
-
-                        &:hover {
-                            background-color: lighten(rgb(0, 122, 184), 10%);
-                        }
-
-                        &:active {
-                            background-color: $flowOrange;
-                        }
-
-                        .handle-label {
-                            position: absolute;
-                            top: -32px;
-                            background-color: rgb(0, 122, 184);
-                            padding: 3px;
-                            width: 44px;
-                            left: -8px;
-                            text-align: center;
-
-                            &:after {
-                                content: '';
-                                height: 0px;
-                                width: 0px;
-                                position: absolute;
-                                bottom: -5px;
-                                left: 17px;
-                                border-left: 5px solid transparent;
-                                border-right: 5px solid transparent;
-                                border-top: 5px solid rgb(0, 122, 184);
-                            }
-                        }
-
-                        .handle-change-label {
-                            position: absolute;
-                            width: 42px;
-                            text-align: center;
-                            bottom: -25px;
-                            left: -8px;
-                            background-color: white;
-                            color: rgb(0, 122, 184);
-                        }
-                    }
-                }
-
-                &.active {
-                    display: initial;
-                }
-            }
-        }
     }
 }
 
@@ -5541,8 +4104,6 @@ div.iatiFilters {
     margin-right: 0.3em;
 }
 
-.myAlert {}
-
 /* Results Framework */
 .results {
     background: white;
@@ -5551,6 +4112,10 @@ div.iatiFilters {
 
     * {
         box-sizing: border-box;
+    }
+
+    > button {
+        display: none;
     }
 
     .rc-collapse {
@@ -5566,7 +4131,7 @@ div.iatiFilters {
         .rc-collapse-item {
             padding: 10px 5px;
             background: white;
-            border: 1px solid #f2f0e6;
+            border: 1px solid rgba($secondary7, 0.2);
             margin-top: 5px;
             margin-bottom: 15px;
             cursor: pointer;
@@ -5598,10 +4163,9 @@ div.iatiFilters {
                 .indicatorType {
                     margin: 0px 0 0 10px;
                     font-weight: 400;
-                    color: $anchorLinkHover;
+                    color: $akvoPurple;
 
                     &::before {
-                        content: "-";
                         margin-right: 10px;
                         color: rgba($akvoBlack, 0.5);
                     }
@@ -5720,6 +4284,7 @@ div.iatiFilters {
 
                         ul {
                             padding-left: 0;
+                            margin-bottom: 0;
 
                             li {
                                 display: inline;
@@ -5729,7 +4294,6 @@ div.iatiFilters {
                                     color: rgba($akvoBlack, 0.5);
 
                                     &::before {
-                                        content: "-";
                                         margin-right: 10px;
                                         color: rgba($akvoBlack, 0.5);
                                     }
@@ -5818,9 +4382,14 @@ div.iatiFilters {
         display: none;
     }
 
+    .arrow {
+        top: 16px !important;
+        right: 10px !important;
+    }
+
     .rc-collapse {
         .rc-collapse-item {
-            border: none;
+            border: none !important;
             padding: 0;
 
             &.needsReporting {}
@@ -5866,10 +4435,30 @@ div.iatiFilters {
                                     div {
                                         display: inline;
 
+                                        &.lock-toggle-alert {
+                                            background: white;
+
+                                            @include border-radius(3px);
+
+                                            padding: 5px 7px;
+
+                                            button {
+                                                background: transparent;
+                                                border: none;
+                                                color: $anchorLink;
+
+                                                &:hover {
+                                                    background: $rsrBlue;
+                                                    color: white;
+                                                }
+                                            }
+                                        }
+
                                         button {
                                             margin: 0px 0 0 25px;
                                             background: transparent;
                                             border: none;
+                                            color: $anchorLink;
 
                                             &:hover {
                                                 background: $rsrBlue;
@@ -5893,6 +4482,8 @@ div.iatiFilters {
                         vertical-align: middle;
                         margin-right: 8px;
                         color: black;
+                        top: 16px !important;
+                        right: 10px !important;
                         background: url(../images/arrowUpDown.png) no-repeat top center !important;
                     }
                 }
@@ -5902,6 +4493,18 @@ div.iatiFilters {
                 .rc-collapse-header {
                     background: rgba(white, 0.3);
                     border: none;
+
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        top: 16px !important;
+                        right: 10px !important;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
 
                     span {
                         &.periodWrap {
@@ -5924,15 +4527,27 @@ div.iatiFilters {
 
                 .rc-collapse-content {
                     &.rc-collapse-content-active {
-                        padding: 5px;
+                        padding: 5px 10px 10px;
                         vertical-align: top;
-                        background-color: rgba(black, 0.05);
+                        background-color: rgba($akvoBlack, 0.1);
                         -webkit-box-flex: 1;
                         -moz-box-flex: 1;
                         -webkit-flex: 1;
                         -ms-flex: 1;
                         flex: 1;
                         position: relative;
+
+                        .arrow {
+                            display: inline-block;
+                            width: 20px;
+                            height: 20px;
+                            vertical-align: middle;
+                            margin-right: 8px;
+                            top: 16px;
+                            right: 10px;
+                            color: black;
+                            background: url(../images/arrowUpDown.png) no-repeat top center;
+                        }
 
                         .rc-collapse-content-box {
                             .emptyData {}
@@ -5942,7 +4557,7 @@ div.iatiFilters {
 
                                 .newUpdate {
                                     display: inline-block;
-                                    margin: 0px auto;
+                                    margin: 10px auto;
                                     background: $akvoBlack;
                                     color: white;
                                     border: none;
@@ -5955,20 +4570,38 @@ div.iatiFilters {
                             }
 
                             .updates {
+                                .arrow {
+                                    margin-right: 8px !important;
+                                    margin-top: -7px !important;
+                                }
+
+                                .comments {
+                                    margin-top: 20px;
+                                }
+
                                 .rc-collapse {
                                     .rc-collapse-item {
-                                        .rc-collapse-header {
-                                            background: rgba(white, 0.3);
+                                        border: 1px solid rgba($secondary7, 0.15);
+                                        background: rgba(white, 0.5);
+                                        margin-bottom: 10px;
+
+                                        &:last-child {
+                                            margin-bottom: 5px;
                                         }
 
-                                        .arrow {
-                                            display: inline-block;
-                                            width: 20px;
-                                            height: 20px;
-                                            vertical-align: middle;
-                                            margin-right: 8px;
-                                            color: black;
-                                            background: url(../images/arrowUpDown.png) no-repeat top center;
+                                        .rc-collapse-header {
+                                            background: rgba(white, 0.3);
+                                            opacity: 0.5;
+
+                                            span {
+                                                padding-left: 5px;
+                                            }
+
+                                            &[aria-expanded="true"] {
+                                                opacity: 1;
+                                            }
+
+                                            .arrow {}
                                         }
 
                                         &.rc-collapse-item-active {
@@ -5982,7 +4615,7 @@ div.iatiFilters {
 
                                             .rc-collapse-content {
                                                 &.rc-collapse-content-active {
-                                                    padding: 5px;
+                                                    padding: 5px 10px 10px 10px;
                                                     vertical-align: top;
                                                     -webkit-box-flex: 1;
                                                     -moz-box-flex: 1;
@@ -5990,7 +4623,7 @@ div.iatiFilters {
                                                     -ms-flex: 1;
                                                     flex: 1;
                                                     position: relative;
-                                                    background: rgba($primary5, 0.05);
+                                                    background: rgba($primary5, 0.1);
 
                                                     .rc-collapse-content-box {}
                                                 }
@@ -6007,11 +4640,14 @@ div.iatiFilters {
     }
 }
 
+.myAlert {}
+
+.lock-toggle-alert {}
+
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
-    padding: 0 1em;
-    margin-bottom: 50px;
+    padding: 0 10px;
 
     .update-entry-container {
         padding: 0 0 10px 0;
@@ -6206,8 +4842,24 @@ div.iatiFilters {
     }
 }
 
-.results-bar-titles {
-    text-transform: uppercase;
-    font-weight: bold;
-    color: $akvoBlack;
+.periodMenuBar {
+    .results-bar-titles {
+        padding-left: 5px;
+    }
+
+    .periodBtns {
+        padding-left: 5px;
+
+        .periodBulkAct {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background: red;
+        }
+
+        .periodFilter {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background: blue;
+        }
+    }
 }
