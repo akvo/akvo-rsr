@@ -11,7 +11,7 @@ import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
 import * as alertActions from "../../actions/alert-actions"
-import { onChange } from "../../actions/collapse-actions"
+import {onChange, openPanel} from "../../actions/collapse-actions"
 import { updateFormToggle } from "../../actions/ui-actions"
 
 import { ToggleButton } from "../common"
@@ -65,7 +65,7 @@ UpdateDisplay.propTypes = {
 
 @connect((store) => {
     return {
-        ui: store.ui
+        updateForms: store.ui[c.UPDATE_FORMS]
     }
 }, alertActions)
 class Update extends React.Component {
@@ -73,19 +73,18 @@ class Update extends React.Component {
     static propTypes = {
         update: PropTypes.object.isRequired,
         collapseId: PropTypes.string.isRequired,
-        periodLocked: PropTypes.bool.isRequired,
+        // periodLocked: PropTypes.bool.isRequired,
     };
 
     constructor (props) {
         super(props);
         this.formToggle = this.formToggle.bind(this);
-        // we need a unique name for each alert
-        const alertName = 'UpdateAlert-' + this.props.update.id;
-        this.state = {
-            updateAlertName: alertName,
-            UpdateAlert: AlertFactory({alertName: alertName})(Alert),
-        };
-
+        // // we need a unique name for each alert
+        // const alertName = 'UpdateAlert-' + this.props.update.id;
+        // this.state = {
+        //     updateAlertName: alertName,
+        //     UpdateAlert: AlertFactory({alertName: alertName})(Alert),
+        // };
     }
 
     formToggle() {
@@ -93,18 +92,18 @@ class Update extends React.Component {
     }
 
     render() {
-        let editUpdateButton, updateAlert;
-        if (!this.props.periodLocked) {
-            editUpdateButton = <ToggleButton onClick={this.formToggle}
-                                                  className={'btn btn-sm btn-default'}
-                                                  label={_('edit_update')}/>;
-            updateAlert = <this.state.UpdateAlert />
-        }
+        // let editUpdateButton, updateAlert;
+        // if (!this.props.periodLocked) {
+        //     editUpdateButton = <ToggleButton onClick={this.formToggle}
+        //                                      className={'btn btn-sm btn-default'}
+        //                                      label={_('edit_update')}/>;
+        //     updateAlert = <this.state.UpdateAlert />
+        // }
         return(
             <div className="col-xs-12">
-                {editUpdateButton}
-                {updateAlert}
-                {new Set(this.props.ui[c.UPDATE_FORMS]).has(this.props.update.id) ?
+                {/*{editUpdateButton}*/}
+                {/*{updateAlert}*/}
+                {new Set(this.props.updateForms).has(this.props.update.id) ?
                     <UpdateForm
                         update={this.props.update}
                         formToggle={this.formToggle}
@@ -127,23 +126,61 @@ const UserInfo = ({user_details}) => {
         <span>Update: {userName}{organisation ? " at " + organisation: ''}</span>
     )
 };
-
 UserInfo.propTypes = {
     user_details: PropTypes.object.isRequired,
 };
 
 
-const UpdateHeader = ({update}) => {
-    return (
-        <span>
-            <UserInfo user_details={update.user_details}/>,
-            Data: {update.data} Status: {_('update_statuses')[update.status]}
-        </span>
-    )
-};
+@connect((store) => {
+    return {
+        ui: store.ui
+    }
+}, alertActions)
+class UpdateHeader extends React.Component {
 
-UpdateHeader.propTypes = {
-    update: PropTypes.object.isRequired,
+    static propTypes = {
+        update: PropTypes.object.isRequired,
+        collapseId: PropTypes.string.isRequired,
+        periodLocked: PropTypes.bool.isRequired,
+    };
+
+    constructor (props) {
+        super(props);
+
+        this.formToggle = this.formToggle.bind(this);
+        // we need a unique name for each alert
+        const alertName = 'UpdateAlert-' + this.props.update.id;
+        this.state = {
+            updateAlertName: alertName,
+            UpdateAlert: AlertFactory({alertName: alertName})(Alert),
+        };
+    }
+
+    formToggle(e) {
+        const {collapseId, update} = this.props;
+        updateFormToggle(update.id);
+        openPanel(collapseId, update);
+        e.stopPropagation();
+    }
+
+    render() {
+        let editUpdateButton, updateAlert;
+        if (!this.props.periodLocked) {
+            editUpdateButton = <ToggleButton onClick={this.formToggle}
+                                             className={'btn btn-sm btn-default'}
+                                             label={_('edit_update')}/>;
+            updateAlert = <this.state.UpdateAlert />
+        }
+        const update = this.props.update;
+        return (
+            <span>
+                <UserInfo user_details={update.user_details}/>,
+                Data: {update.data} Status: {_('update_statuses')[update.status]}
+                {editUpdateButton}
+                {updateAlert}
+            </span>
+        )
+    }
 };
 
 
@@ -196,11 +233,12 @@ export default class Updates extends React.Component {
                 }
                 update.actual_value = actualValue;
                 return (
-                    <Panel header={<UpdateHeader update={update}/>} key={id}>
+                    <Panel header={<UpdateHeader update={update}
+                                                 periodLocked={this.props.periodLocked}
+                                                 collapseId={this.state.collapseId}/>}
+                           key={id}>
                         <div className={'row'}>
-                            <Update update={update}
-                                    collapseId={this.state.collapseId}
-                                    periodLocked={this.props.periodLocked}/>
+                            <Update update={update} collapseId={this.state.collapseId}/>
                             <Comments parentId={id}/>
                         </div>
                     </Panel>

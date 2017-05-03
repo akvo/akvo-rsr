@@ -7,11 +7,21 @@
 
 
 import * as c from '../const';
+import store from "../store"
 
 
+//TODO: decide if actions should dispatch in all cases
 export function onChange(collapseId, activeKey) {
     return {
         type: c.KEY_SET_ACTIVE,
         payload: {collapseId, activeKey}
     }
+}
+
+
+export function openPanel(collapseId, object) {
+    store.dispatch({
+        type: c.KEY_ADD_TO_ACTIVE,
+        payload: {collapseId, object}
+    });
 }

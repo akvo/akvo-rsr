@@ -83,6 +83,7 @@ export const
 
     // collapseReducer
     KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
+    KEY_ADD_TO_ACTIVE = "KEY_ADD_TO_ACTIVE",
     KEYS_RESET = "KEYS_RESET",
 
     // pageReducer

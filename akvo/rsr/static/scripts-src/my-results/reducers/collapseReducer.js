@@ -28,7 +28,8 @@ export default function collapseReducer(keys={}, action) {
             break;
         }
 
-        case c.UPDATE_MODEL_FULFILLED: {
+        case c.UPDATE_MODEL_FULFILLED:
+        case c.KEY_ADD_TO_ACTIVE: {
             const {collapseId, object} = action.payload;
             // if collapseId isn't supplied we don't have to update keys
             if (collapseId) {
