@@ -500,10 +500,7 @@ def user_management(request):
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
-    organisations_list = []
-    for organisation in organisations:
-        organisation_dict = {'id': organisation.id, 'name': organisation.name}
-        organisations_list.append(organisation_dict)
+    organisations_list = list(organisations.values('id', 'name'))
 
     roles_list = []
     for role in roles:
