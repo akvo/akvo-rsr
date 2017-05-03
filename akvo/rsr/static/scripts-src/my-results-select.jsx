@@ -48,11 +48,19 @@ function initReact() {
                         options: this.props.projects,
                         onOptionSelected: this.selectProject,
                         displayOption: 'displayOption',
-                        filterOption: 'filterOption',
+                        filterOption: this.filterOption,
                         customClasses: {input: 'form-control'}
                     })}
                 </div>
             );
+        },
+
+        filterOption: function(query, option){
+            if (option.filterOption.toLowerCase().indexOf(query.toLowerCase()) > -1) {
+                return true;
+            } else {
+                return false;
+            }
         }
     });
 
