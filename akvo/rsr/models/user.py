@@ -373,7 +373,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Return all approved employments.
         """
-        return self.employers.all().exclude(is_approved=False)
+        employments = self.employers.all().exclude(is_approved=False)
+        return employments.select_related('organisation', 'group', 'user')
 
     def can_create_project(self):
         """Check to see if the user can create a project."""

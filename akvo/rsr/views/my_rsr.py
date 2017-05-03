@@ -458,7 +458,12 @@ def user_management(request):
     # Order employments in reverse chronological order, but also group
     # employments by the user.
     employments = employments.annotate(max_id=Max('user__employers__id'))
-    employments = employments.order_by('-max_id', '-id')
+    employments = employments.order_by('-max_id', '-id').select_related(
+        'user',
+        'organisation',
+        'group',
+        'country',
+    )
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
