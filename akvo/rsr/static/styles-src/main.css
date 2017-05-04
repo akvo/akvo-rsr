@@ -1460,7 +1460,7 @@ header.projectHeader {
 #project-map {
   border: 1px solid #f9d7b9; }
   #project-map div.akvo_map {
-    width: calc(100%-2px);
+    width: calc(100% - 2px);
     height: 300px; }
 
 .orgMap .mapInfoWindow img {
@@ -2546,881 +2546,10 @@ article {
     color: red;
     margin-left: 5px; }
 
-.sidebar {
-  width: 50%;
-  min-width: 200px;
-  overflow-y: auto;
-  vertical-align: top; }
-  .sidebar .results-list {
-    background: white;
-    border: 1px solid #f2f0e6; }
-  .sidebar .result-nav-header {
-    display: none;
-    background: rgba(44, 42, 116, 0); }
-    .sidebar .result-nav-header h3 {
-      color: white;
-      display: inline-block;
-      font-size: 1em;
-      text-transform: uppercase;
-      position: relative;
-      padding: 5px 10px;
-      margin-top: 0;
-      background: #2c2a74;
-      margin-bottom: 0;
-      -moz-border-radius: 5px 5px 0 0;
-      -o-border-radius: 5px 5px 0 0;
-      -webkit-border-radius: 5px 5px 0 0;
-      border-radius: 5px 5px 0 0; }
-      .sidebar .result-nav-header h3 > a {
-        position: absolute;
-        right: -5px; }
-  .sidebar .result-nav {
-    opacity: 0.8;
-    cursor: pointer;
-    -moz-transition: all 0.2s linear;
-    -o-transition: all 0.2s linear;
-    -webkit-transition: all 0.2s linear;
-    transition: all 0.2s linear;
-    padding: 10px 0 0px 0px;
-    border-bottom: 1px solid #f2f0e6;
-    border-top: 1px solid white; }
-    .sidebar .result-nav:before {
-      height: 1px;
-      background-color: rgba(224, 225, 226, 0);
-      width: 100%;
-      display: block;
-      content: '';
-      margin: 0 auto;
-      -moz-transition: background-color 0.25s ease-in-out;
-      -o-transition: background-color 0.25s ease-in-out;
-      -webkit-transition: background-color 0.25s ease-in-out;
-      transition: background-color 0.25s ease-in-out; }
-    .sidebar .result-nav:hover {
-      opacity: 1;
-      background: rgba(114, 205, 255, 0); }
-    .sidebar .result-nav .result-nav-summary {
-      padding: 15px 0 10px 10px;
-      position: relative; }
-      .sidebar .result-nav .result-nav-summary .indicatorType {
-        margin-top: 0px;
-        font-weight: 400;
-        color: #ff5500;
-        font-size: 0.8em; }
-      .sidebar .result-nav .result-nav-summary h3 {
-        font-size: 1em;
-        color: #2c2a74;
-        -moz-transition: all 0.2s linear;
-        -o-transition: all 0.2s linear;
-        -webkit-transition: all 0.2s linear;
-        transition: all 0.2s linear; }
-        .sidebar .result-nav .result-nav-summary h3:hover {
-          color: #ff5500; }
-        .sidebar .result-nav .result-nav-summary h3.result-title {
-          position: relative;
-          box-sizing: border-box;
-          font-weight: 400;
-          max-width: 100%;
-          margin: 0 auto 0 0;
-          display: block;
-          display: -webkit-box;
-          line-height: 1.4em;
-          -webkit-box-orient: vertical; }
-          .sidebar .result-nav .result-nav-summary h3.result-title .fa {
-            position: absolute;
-            font-size: 1.3em;
-            right: 5px;
-            text-shadow: 0 1px 0 white;
-            color: rgba(32, 32, 36, 0.7); }
-          .sidebar .result-nav .result-nav-summary h3.result-title > span {
-            display: block;
-            width: 90%;
-            color: #202024; }
-    .sidebar .result-nav .fa-chevron-up {
-      display: none; }
-    .sidebar .result-nav .result-indicator-count {
-      color: #2c2a74;
-      display: block;
-      margin-top: 5px;
-      font-size: 0.8em; }
-      .sidebar .result-nav .result-indicator-count span {
-        margin-left: 5px; }
-      .sidebar .result-nav .result-indicator-count p {
-        display: inline-block;
-        margin-left: 5px; }
-    .sidebar .result-nav .result-nav-full {
-      display: none; }
-    .sidebar .result-nav .indicator-text {
-      display: none; }
-    .sidebar .result-nav.expanded {
-      padding: 20px 0 0px 0px;
-      background: rgba(242, 240, 230, 0.9);
-      border-top: 1px solid rgba(255, 255, 255, 0);
-      opacity: 1; }
-      .sidebar .result-nav.expanded:before {
-        background-color: transparent; }
-      .sidebar .result-nav.expanded h3 {
-        color: #ff5500; }
-      .sidebar .result-nav.expanded ~ .result-nav:before {
-        background-color: transparent; }
-      .sidebar .result-nav.expanded .fa-chevron-down {
-        display: none; }
-      .sidebar .result-nav.expanded .fa-chevron-up {
-        display: block; }
-      .sidebar .result-nav.expanded .indicator-text {
-        display: initial; }
-      .sidebar .result-nav.expanded .indicator-count {
-        display: none; }
-      .sidebar .result-nav.expanded .result-nav-full {
-        display: block;
-        cursor: pointer;
-        padding: 1px 0 0 0px;
-        background-color: white; }
-        .sidebar .result-nav.expanded .result-nav-full div:last-child .indicator-nav {
-          border-bottom: none; }
-        .sidebar .result-nav.expanded .result-nav-full div .indicator-nav {
-          padding: 0.5em 15px 0.5em 0em;
-          background: rgba(44, 42, 116, 0.2);
-          border-bottom: 2px solid white;
-          font-weight: 400;
-          opacity: 0.8; }
-          .sidebar .result-nav.expanded .result-nav-full div .indicator-nav h4 {
-            color: #2c2a74;
-            font-size: 0.9em; }
-          .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover {
-            background: rgba(44, 42, 116, 0.6);
-            opacity: 1; }
-            .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:hover h4 {
-              color: white; }
-          .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active {
-            background: #2c2a74 url(../images/carretWhite.svg) center right no-repeat;
-            border-left: 0px solid rgba(174, 9, 34, 0);
-            background-size: 5% auto;
-            opacity: 1; }
-            .sidebar .result-nav.expanded .result-nav-full div .indicator-nav.active h4 {
-              color: white; }
-          .sidebar .result-nav.expanded .result-nav-full div .indicator-nav:last-child {
-            margin-bottom: 0; }
-        .sidebar .result-nav.expanded .result-nav-full div a h4 {
-          font-size: 1em;
-          color: #2c2a74;
-          margin-bottom: 1px;
-          line-height: 150%;
-          padding-left: 10px; }
-        .sidebar .result-nav.expanded .result-nav-full div a:hover {
-          color: rgba(44, 42, 116, 0.5);
-          text-decoration: none; }
-        .sidebar .result-nav.expanded .result-nav-full div .last-update {
-          font-size: 0.9em;
-          color: #aaaaaa; }
-
-.indicator-container {
-  vertical-align: top;
-  padding: 20px 1em 0.25em 1em;
-  background-color: rgba(242, 240, 230, 0.3);
-  border: 1px solid rgba(242, 240, 230, 0.8);
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  position: relative; }
-  .indicator-container .noIndicators {
-    position: absolute;
-    top: 45%;
-    text-align: center;
-    display: inline-block;
-    width: 100%;
-    color: rgba(153, 153, 153, 0.5);
-    text-shadow: 1px 1px 0 white;
-    align-items: center; }
-    .indicator-container .noIndicators span:first-child {
-      display: block;
-      font-size: 150%; }
-    .indicator-container .noIndicators a {
-      display: block;
-      width: 100%; }
-  .indicator-container .indicator-title {
-    font-size: 1.3em;
-    margin-bottom: 25px; }
-    .indicator-container .indicator-title .backButton {
-      display: inline;
-      background: transparent;
-      padding: 3px 5px;
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      font-size: 0.7em;
-      color: white #72cdff;
-      margin: -5px 10px 0 0; }
-      .indicator-container .indicator-title .backButton:hover {
-        color: #ff5500; }
-  .indicator-container .indicator-period .indicTitle {
-    position: relative; }
-    .indicator-container .indicator-period .indicTitle .indicator-title i {
-      display: none; }
-    .indicator-container .indicator-period .indicTitle .new-update {
-      position: absolute;
-      display: inline-block;
-      top: -5px;
-      right: 0; }
-      .indicator-container .indicator-period .indicTitle .new-update .btn {
-        background: #202024;
-        color: white;
-        -moz-border-radius: 5px;
-        -o-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px; }
-        .indicator-container .indicator-period .indicTitle .new-update .btn:hover {
-          background: #2c2a74;
-          color: white; }
-  .indicator-container .indicator-periods-title {
-    font-size: 1em;
-    color: #202024;
-    margin-top: 40px;
-    display: none; }
-  .indicator-container .result-summary {
-    display: none;
-    opacity: 0; }
-    .indicator-container .result-summary h4 {
-      font-size: 0.9em;
-      color: #aaaaaa;
-      font-variant: small-caps;
-      text-transform: lowercase; }
-    .indicator-container .result-summary h3 {
-      font-size: 1.2em;
-      color: #424c2b;
-      margin-bottom: 4px; }
-    .indicator-container .result-summary .result-parent {
-      font-size: 0.8em;
-      color: #aaaaaa; }
-    .indicator-container .result-summary .indicator-link {
-      cursor: pointer; }
-      .indicator-container .result-summary .indicator-link:hover {
-        opacity: 0.8; }
-      .indicator-container .result-summary .indicator-link:active {
-        opacity: 0.6; }
-    .indicator-container .result-summary .result-indicators {
-      margin-top: 20px; }
-      .indicator-container .result-summary .result-indicators ul {
-        list-style-type: none;
-        padding-left: 5px; }
-        .indicator-container .result-summary .result-indicators ul li {
-          color: #00aaff; }
-  .indicator-container .indicator-group {
-    padding: 0;
-    display: none; }
-    .indicator-container .indicator-group .indicator-title {
-      font-size: 1em; }
-      .indicator-container .indicator-group .indicator-title .glyphicon {
-        float: left;
-        margin-right: 4px; }
-    .indicator-container .indicator-group .table {
-      padding: 0.5em 0.25em;
-      /*background-color: rgb(235,235,231);*/ }
-      .indicator-container .indicator-group .table tbody.indicator-period {
-        border: none;
-        padding: 15px 0; }
-      .indicator-container .indicator-group .table tbody.expanded {
-        background-color: white; }
-      .indicator-container .indicator-group .table thead {
-        font-weight: normal;
-        color: silver; }
-        .indicator-container .indicator-group .table thead tr {
-          background-color: #ececec; }
-      .indicator-container .indicator-group .table tr,
-      .indicator-container .indicator-group .table td {
-        border: none;
-        color: #acacac; }
-      .indicator-container .indicator-group .table tr {
-        min-height: 125px; }
-        .indicator-container .indicator-group .table tr .add-button {
-          display: none; }
-        .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td {
-          text-align: right; }
-          .indicator-container .indicator-group .table tr.expanded ~ .add-button-tr td .add-button {
-            border: none;
-            display: inline-block;
-            margin-right: 1.4em; }
-      .indicator-container .indicator-group .table td {
-        vertical-align: middle; }
-        .indicator-container .indicator-group .table td.period-td, .indicator-container .indicator-group .table td.actual-td, .indicator-container .indicator-group .table td.target-td, .indicator-container .indicator-group .table td.actions-td {
-          white-space: nowrap; }
-        .indicator-container .indicator-group .table td.target-td {
-          font-weight: 600; }
-        .indicator-container .indicator-group .table td.actions-td .tooltip {
-          top: -170px;
-          left: 132.703px;
-          display: block; }
-          .indicator-container .indicator-group .table td.actions-td .tooltip .tooltip-arrow {
-            left: 77.4336%; }
-        .indicator-container .indicator-group .table td.period-td {
-          position: relative; }
-          .indicator-container .indicator-group .table td.period-td .result-tooltip {
-            position: absolute;
-            top: 0; }
-        .indicator-container .indicator-group .table td.indicator-bar-td {
-          width: 55%; }
-      .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-up {
-        display: none; }
-      .indicator-container .indicator-group .table .expand-indicator-period .fa-chevron-down {
-        display: initial; }
-      .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-up {
-        display: initial; }
-      .indicator-container .indicator-group .table .expand-indicator-period.expanded .fa-chevron-down {
-        display: none; }
-    .indicator-container .indicator-group .indicator {
-      display: none; }
-
-/* Styling for the indicator period progress bar */
-.indicator-bar-td {
-  height: 80px;
-  padding: 0; }
-
-/* Insert some transparent text to space the "progress" label */
-.th-progress:before {
-  content: 'spacer';
-  width: 40px;
-  height: 1px;
-  display: inline-block;
-  color: transparent; }
-  @media only screen and (max-width: 800px) {
-    .th-progress:before {
-      display: none; } }
-
-.indicator-bar-display-container {
-  position: relative;
-  height: 100%;
-  margin-left: 50px;
-  margin-right: 15px; }
-  .indicator-bar-display-container .indicator-bar,
-  .indicator-bar-display-container .indicator-bar-progress-amount {
-    position: absolute;
-    top: 38px;
-    bottom: 24px;
-    left: 0px;
-    height: 8px;
-    -moz-border-radius: 2px;
-    -o-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    border: 1px solid #CDDFEF; }
-  .indicator-bar-display-container .indicator-baseline {
-    position: absolute;
-    left: -45px;
-    top: 30px;
-    font-size: 1.1em;
-    font-weight: bold;
-    vertical-align: bottom;
-    width: 35px;
-    text-align: right; }
-  .indicator-bar-display-container .indicator-bar {
-    background-color: #E2EBF5;
-    right: 0px; }
-  .indicator-bar-display-container .indicator-bar-progress-amount {
-    background-color: rgba(0, 0, 0, 0.2); }
-  .indicator-bar-display-container .indicator-bar-progress-container {
-    /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
-    position: relative;
-    height: 100%; }
-    .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
-      position: absolute;
-      width: 4px;
-      margin-left: -2px;
-      /* Offset half the width */
-      height: 23px;
-      top: 30px;
-      background-color: #A3C7E3;
-      text-align: center; }
-
-.target-td {
-  vertical-align: middle; }
-
-.update-description {
-  color: #202024;
-  font-size: 90%; }
-  .update-description label {
-    color: initial; }
-
-.indicator-bar-progress-complete-container .indicator-bar-progress-complete {
-  padding-left: 15px;
-  font-size: 1.1em;
-  font-weight: normal;
-  color: #515050;
-  vertical-align: bottom; }
-
-.indicator-bar-progress-complete-container .indicator-bar-progress-text {
-  padding-left: 15px;
-  font-size: 1.1em;
-  font-weight: bold;
-  color: #A3C7E3;
-  vertical-align: bottom; }
-
-.indicator-container .indicator-group .table tbody {
-  background-color: white;
-  border-bottom: none !important; }
-  .indicator-container .indicator-group .table tbody:last-child {
-    margin-bottom: 0; }
-  .indicator-container .indicator-group .table tbody .edit-button {
-    position: absolute;
-    height: 20px;
-    width: 20px;
-    top: 15px;
-    right: 10px;
-    color: #202024;
-    font-size: 1.5em; }
-    .indicator-container .indicator-group .table tbody .edit-button.activated {
-      display: none; }
-  .indicator-container .indicator-group .table tbody .delete-button {
-    position: absolute;
-    height: 20px;
-    width: 20px;
-    top: 13px;
-    right: 35px;
-    font-size: 1.5em;
-    color: #202024; }
-    .indicator-container .indicator-group .table tbody .delete-button.activated {
-      display: none; }
-  .indicator-container .indicator-group .table tbody .delete-confirm {
-    display: none;
-    position: absolute;
-    right: 10px;
-    top: 55px;
-    height: 90px;
-    background-color: white;
-    color: #202024;
-    padding: 1em;
-    z-index: 101; }
-    .indicator-container .indicator-group .table tbody .delete-confirm > div {
-      height: 40px;
-      position: relative; }
-    .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-no {
-      position: absolute;
-      left: 10px;
-      top: 10px; }
-    .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes {
-      background-color: #ae0922;
-      border-color: #ae0922;
-      margin-left: auto;
-      position: absolute;
-      right: 10px;
-      top: 10px; }
-      .indicator-container .indicator-group .table tbody .delete-confirm .delete-confirm-yes:hover {
-        background-color: #ff5500;
-        border-color: #ff5500; }
-  .indicator-container .indicator-group .table tbody .update-date {
-    display: inline-block;
-    text-align: left;
-    width: 50%; }
-  .indicator-container .indicator-group .table tbody .update-name {
-    display: inline-block;
-    text-align: left;
-    width: 30%;
-    margin-right: 10%;
-    color: #202024; }
-    .indicator-container .indicator-group .table tbody .update-name.delete-pending {
-      margin-bottom: 90px; }
-  .indicator-container .indicator-group .table tbody .update-timeline {
-    display: inline-block;
-    width: 75%;
-    height: 80px;
-    padding-top: 1em;
-    z-index: 99;
-    position: relative; }
-  .indicator-container .indicator-group .table tbody .update-target {
-    position: absolute;
-    margin-top: 48px;
-    display: inline-block;
-    width: 24%;
-    height: 80px;
-    text-align: center; }
-    .indicator-container .indicator-group .table tbody .update-target span {
-      font-size: 1.1em;
-      color: #515050;
-      vertical-align: text-top; }
-      .indicator-container .indicator-group .table tbody .update-target span.update-target-actual {
-        padding-left: 15px;
-        font-size: 1.1em;
-        font-weight: bold;
-        color: #A3C7E3;
-        vertical-align: bottom; }
-  .indicator-container .indicator-group .table tbody .update-description {
-    padding: 0.5em;
-    margin: 20px auto 30px; }
-    .indicator-container .indicator-group .table tbody .update-description.editable {
-      background: whitesmoke;
-      border: 1px solid #A3C7E3; }
-    .indicator-container .indicator-group .table tbody .update-description .update-photo {
-      float: right;
-      width: 150px;
-      height: 100px;
-      background-size: cover; }
-  .indicator-container .indicator-group .table tbody .save-button {
-    position: absolute;
-    display: none;
-    right: 10px;
-    bottom: 10px; }
-    .indicator-container .indicator-group .table tbody .save-button.active {
-      display: inline-block;
-      padding: 3px 7px;
-      color: white;
-      background-color: #007ab8;
-      -moz-border-radius: 2px;
-      -o-border-radius: 2px;
-      -webkit-border-radius: 2px;
-      border-radius: 2px;
-      text-align: center; }
-  .indicator-container .indicator-group .table tbody .cancel-button {
-    position: absolute;
-    display: none;
-    right: 60px;
-    bottom: 10px;
-    background-color: none; }
-    .indicator-container .indicator-group .table tbody .cancel-button.active {
-      display: inline-block;
-      padding: 3px 7px;
-      color: #007ab8;
-      -moz-border-radius: 2px;
-      -o-border-radius: 2px;
-      -webkit-border-radius: 2px;
-      border-radius: 2px;
-      text-align: center; }
-
 label.imageUpload input[type="file"],
 label.fileUpload input[type="file"] {
   position: fixed;
   top: -1000px; }
-
-.update-dialog-container.pending-new-update .update-entry-container {
-  background-color: #D1E6D1; }
-  .update-dialog-container.pending-new-update .update-entry-container:first-child {
-    border-left: none; }
-
-.update-dialog-container td {
-  padding: 8px 2em; }
-  .update-dialog-container td .update-entry-container {
-    padding: 2em;
-    position: relative;
-    background-color: #ececec; }
-    .update-dialog-container td .update-entry-container:first-child {
-      border-left: 4px solid #ae0922; }
-    .update-dialog-container td .update-entry-container.edit-in-progress {
-      background-color: #D1E6D1;
-      border-left: none; }
-    .update-dialog-container td .update-entry-container .update-exceed-target {
-      margin: 3em 0 1em 0;
-      text-align: right; }
-      .update-dialog-container td .update-entry-container .update-exceed-target input.exceed-value {
-        opacity: 0; }
-      .update-dialog-container td .update-entry-container .update-exceed-target label {
-        margin-right: 10px;
-        color: rgba(32, 32, 36, 0.5); }
-      .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox {
-        margin-right: 10px; }
-        .update-dialog-container td .update-entry-container .update-exceed-target .update-exceed-target-checkbox:checked ~ input.exceed-value {
-          opacity: 1; }
-    .update-dialog-container td .update-entry-container .indicator-bar-display-container {
-      position: relative;
-      height: 100%;
-      margin-left: 45px;
-      margin-right: 0; }
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-baseline {
-        top: 34px;
-        left: -60px; }
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text {
-        position: absolute;
-        bottom: -18px;
-        width: 44px;
-        margin-left: -22px;
-        text-align: center;
-        color: #B5B5B5;
-        border: 1px solid #B5B5B5;
-        background-color: #ececec;
-        cursor: pointer; }
-        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text .progress-hover-text {
-          content: '';
-          opacity: 0;
-          height: 0px;
-          width: 0px;
-          padding: 0;
-          margin: 0;
-          font-size: 0; }
-        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:last-child {
-          color: #A3C7E3;
-          border-color: #A3C7E3; }
-        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover {
-          z-index: 101;
-          background-color: white; }
-          .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text {
-            display: block;
-            font-size: initial;
-            opacity: 1;
-            position: absolute;
-            top: 26px;
-            color: inherit;
-            content: initial;
-            background-color: white;
-            width: 100px;
-            height: auto;
-            margin-left: -28px;
-            /* Half of the width of this - half the width of the parent */
-            padding: 5px 0; }
-            .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-text:hover .progress-hover-text:before {
-              content: '';
-              width: 0;
-              height: 0;
-              border-left: 5px solid transparent;
-              border-right: 5px solid transparent;
-              border-bottom: 5px solid white;
-              position: absolute;
-              top: -5px;
-              left: 45px; }
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar,
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
-        position: absolute;
-        top: 38px;
-        bottom: 24px;
-        left: 0px;
-        height: 14px;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        border: 1px solid #CDDFEF; }
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar {
-        background-color: #fff;
-        right: 0px; }
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-amount {
-        background-color: #fff;
-        border-right: none; }
-      .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container {
-        /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
-        position: relative;
-        height: 100%; }
-        .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress {
-          position: absolute;
-          width: 3px;
-          height: 20px;
-          top: 35px;
-          background-color: #B5B5B5;
-          text-align: center; }
-          .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress:nth-last-child(2) {
-            background-color: #A3C7E3; }
-          .update-dialog-container td .update-entry-container .indicator-bar-display-container .indicator-bar-progress-container .indicator-bar-progress.update-dialog-timeline-marker {
-            border: none; }
-    .update-dialog-container td .update-entry-container .target-td {
-      vertical-align: middle; }
-    .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-complete {
-      padding-left: 15px;
-      font-size: 1.5em;
-      font-weight: normal;
-      color: #515050;
-      vertical-align: bottom; }
-    .update-dialog-container td .update-entry-container .indicator-bar-progress-complete-container .indicator-bar-progress-text {
-      padding-left: 15px;
-      font-size: 1.5em;
-      font-weight: bold;
-      color: #A3C7E3;
-      vertical-align: bottom;
-      z-index: 19999; }
-    .update-dialog-container td .update-entry-container:last-child {
-      margin-bottom: 0; }
-    .update-dialog-container td .update-entry-container .edit-button {
-      position: absolute;
-      height: 20px;
-      width: 20px;
-      top: 15px;
-      right: 10px;
-      color: #202024;
-      font-size: 1.5em; }
-      .update-dialog-container td .update-entry-container .edit-button.activated {
-        display: none; }
-    .update-dialog-container td .update-entry-container .delete-button {
-      position: absolute;
-      height: 20px;
-      width: 20px;
-      top: 13px;
-      right: 35px;
-      font-size: 1.5em;
-      color: #202024; }
-      .update-dialog-container td .update-entry-container .delete-button.activated {
-        display: none; }
-    .update-dialog-container td .update-entry-container .update-date {
-      display: inline-block;
-      text-align: left;
-      width: 50%; }
-    .update-dialog-container td .update-entry-container .update-name {
-      display: inline-block;
-      text-align: left;
-      width: 30%;
-      margin-right: 10%;
-      color: #202024; }
-    .update-dialog-container td .update-entry-container .update-timeline {
-      display: inline-block;
-      width: 84%;
-      height: 80px;
-      padding-top: 1em;
-      z-index: 99;
-      position: relative; }
-    .update-dialog-container td .update-entry-container .update-target {
-      position: absolute;
-      margin-top: 49px;
-      display: inline-block;
-      width: 15%;
-      height: 80px;
-      text-align: right; }
-      .update-dialog-container td .update-entry-container .update-target span {
-        font-size: 1.1em;
-        color: #515050;
-        vertical-align: text-top; }
-        .update-dialog-container td .update-entry-container .update-target span.update-target-actual {
-          padding-left: 15px;
-          font-size: 1.1em;
-          font-weight: bold;
-          color: #A3C7E3;
-          vertical-align: bottom; }
-    .update-dialog-container td .update-entry-container .update-description {
-      padding: 0.5em;
-      margin: 20px auto 30px; }
-      .update-container .update-dialog-container td .update-entry-container .update-description {
-        color: red; }
-      .update-dialog-container td .update-entry-container .update-description.editable {
-        background: whitesmoke;
-        border: 1px solid #A3C7E3; }
-      .update-dialog-container td .update-entry-container .update-description .update-photo {
-        float: right;
-        width: 150px;
-        height: 100px;
-        background-size: cover; }
-    .update-dialog-container td .update-entry-container .save-button {
-      position: absolute;
-      display: none;
-      right: 10px;
-      bottom: 10px; }
-      .update-dialog-container td .update-entry-container .save-button.active {
-        display: inline-block;
-        padding: 3px 7px;
-        color: white;
-        background-color: #202024;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        text-align: center; }
-    .update-dialog-container td .update-entry-container .cancel-button {
-      position: absolute;
-      display: none;
-      right: 60px;
-      bottom: 10px; }
-      .update-dialog-container td .update-entry-container .cancel-button.active {
-        display: inline-block;
-        padding: 3px 7px;
-        color: #202024;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        text-align: center; }
-    .update-dialog-container td .update-entry-container .edit-slider {
-      z-index: 9999; }
-      .update-dialog-container td .update-entry-container .edit-slider .original-position-marker {
-        width: 3px;
-        margin-left: -2px;
-        height: 20px;
-        position: absolute;
-        background-color: #B5B5B5;
-        top: -3px;
-        z-index: 102; }
-      .update-dialog-container td .update-entry-container .edit-slider .change-indicator {
-        position: absolute;
-        background-color: green;
-        height: 12px;
-        top: 1px;
-        z-index: 101;
-        opacity: 0.5; }
-        .update-dialog-container td .update-entry-container .edit-slider .change-indicator.negative {
-          background-color: red; }
-      .update-dialog-container td .update-entry-container .edit-slider .noUi-base, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal {
-        height: 5px;
-        border: 0;
-        background-color: rgba(255, 255, 255, 0);
-        margin-top: -28px;
-        z-index: 99999;
-        -moz-border-radius: 4px;
-        -o-border-radius: 4px;
-        -webkit-border-radius: 4px;
-        border-radius: 4px;
-        box-shadow: none; }
-        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-origin, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-origin {
-          background-color: rgba(255, 255, 255, 0);
-          -moz-border-radius: 4px;
-          -o-border-radius: 4px;
-          -webkit-border-radius: 4px;
-          border-radius: 4px; }
-        .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle {
-          position: relative;
-          width: 28px;
-          height: 28px;
-          z-index: 9999;
-          background-color: #007ab8;
-          cursor: pointer;
-          left: -14px;
-          box-shadow: none;
-          top: -7px;
-          color: white; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:after, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:after {
-            display: block;
-            content: '|||';
-            color: white;
-            width: 26px;
-            height: 26px;
-            line-height: 23px;
-            text-align: center;
-            letter-spacing: -2px;
-            color: white;
-            background-color: transparent;
-            top: 0;
-            left: -1px; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:before, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:before {
-            display: none; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:hover, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:hover {
-            background-color: #009ceb; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle:active, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle:active {
-            background-color: #de8929; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label {
-            position: absolute;
-            top: -32px;
-            background-color: #007ab8;
-            padding: 3px;
-            width: 44px;
-            left: -8px;
-            text-align: center; }
-            .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-label:after, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-label:after {
-              content: '';
-              height: 0px;
-              width: 0px;
-              position: absolute;
-              bottom: -5px;
-              left: 17px;
-              border-left: 5px solid transparent;
-              border-right: 5px solid transparent;
-              border-top: 5px solid #007ab8; }
-          .update-dialog-container td .update-entry-container .edit-slider .noUi-base .noUi-handle .handle-change-label, .update-dialog-container td .update-entry-container .edit-slider.noUi-horizontal .noUi-handle .handle-change-label {
-            position: absolute;
-            width: 42px;
-            text-align: center;
-            bottom: -25px;
-            left: -8px;
-            background-color: white;
-            color: #007ab8; }
-      .update-dialog-container td .update-entry-container .edit-slider.active {
-        display: initial; }
 
 /* Modal dialog stuff for the Project Editor */
 div.inactive .addOrg {
@@ -3561,7 +2690,6 @@ div#my-reports {
   div#my-reports .report-description {
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
     white-space: -o-pre-wrap;
     word-wrap: break-word; }
   div#my-reports .my-reports-download-error {
@@ -3723,6 +2851,8 @@ div.iatiFilters {
   box-sizing: border-box; }
   .results * {
     box-sizing: border-box; }
+  .results > button {
+    display: none; }
   .results .rc-collapse {
     border-radius: 3px; }
     .results .rc-collapse .rc-collapse-anim-active {
@@ -3731,7 +2861,7 @@ div.iatiFilters {
     .results .rc-collapse .rc-collapse-item {
       padding: 10px 5px;
       background: white;
-      border: 1px solid #f2f0e6;
+      border: 1px solid rgba(119, 97, 0, 0.2);
       margin-top: 5px;
       margin-bottom: 15px;
       cursor: pointer; }
@@ -3749,9 +2879,8 @@ div.iatiFilters {
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType {
           margin: 0px 0 0 10px;
           font-weight: 400;
-          color: #ff5500; }
+          color: #2c2a74; }
           .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType::before {
-            content: "-";
             margin-right: 10px;
             color: rgba(32, 32, 36, 0.5); }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count {
@@ -3824,14 +2953,14 @@ div.iatiFilters {
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
         display: inline-block; }
         .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul {
-          padding-left: 0; }
+          padding-left: 0;
+          margin-bottom: 0; }
           .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li {
             display: inline; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
               margin-left: 10px;
               color: rgba(32, 32, 36, 0.5); }
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2)::before {
-                content: "-";
                 margin-right: 10px;
                 color: rgba(32, 32, 36, 0.5); }
     .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-inactive .rc-collapse-header .arrow {
@@ -3877,8 +3006,12 @@ div.iatiFilters {
 .periods > button {
   display: none; }
 
+.periods .arrow {
+  top: 16px !important;
+  right: 10px !important; }
+
 .periods .rc-collapse .rc-collapse-item {
-  border: none;
+  border: none !important;
   padding: 0; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
     padding: 0 10px;
@@ -3904,10 +3037,25 @@ div.iatiFilters {
         padding-left: 75px; }
         .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div {
           display: inline; }
+          .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div.lock-toggle-alert {
+            background: white;
+            -moz-border-radius: 3px;
+            -o-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            padding: 5px 7px; }
+            .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div.lock-toggle-alert button {
+              background: transparent;
+              border: none;
+              color: #00aaff; }
+              .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div.lock-toggle-alert button:hover {
+                background: #2c2a74;
+                color: white; }
           .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div button {
             margin: 0px 0 0 25px;
             background: transparent;
-            border: none; }
+            border: none;
+            color: #00aaff; }
             .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div button:hover {
               background: #2c2a74;
               color: white; }
@@ -3918,10 +3066,22 @@ div.iatiFilters {
     vertical-align: middle;
     margin-right: 8px;
     color: black;
+    top: 16px !important;
+    right: 10px !important;
     background: url(../images/arrowUpDown.png) no-repeat top center !important; }
   .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
     background: rgba(255, 255, 255, 0.3);
     border: none; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 8px;
+      color: black;
+      top: 16px !important;
+      right: 10px !important;
+      background: url(../images/arrowUpDown.png) no-repeat top center !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul {
       padding: 0 10px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul li {
@@ -3929,54 +3089,71 @@ div.iatiFilters {
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
       background: url(../images/arrowUpDown.png) no-repeat bottom center !important; }
   .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
-    padding: 5px;
+    padding: 5px 10px 10px;
     vertical-align: top;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(32, 32, 36, 0.1);
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1;
     position: relative; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .arrow {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 8px;
+      top: 16px;
+      right: 10px;
+      color: black;
+      background: url(../images/arrowUpDown.png) no-repeat top center; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate {
       display: flex; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate {
         display: inline-block;
-        margin: 0px auto;
+        margin: 10px auto;
         background: #202024;
         color: white;
         border: none; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate:hover {
           background: #2c2a74;
           color: white; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
-      background: rgba(255, 255, 255, 0.3); }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .arrow {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      vertical-align: middle;
-      margin-right: 8px;
-      color: black;
-      background: url(../images/arrowUpDown.png) no-repeat top center; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
-      background: rgba(255, 255, 255, 0.3); }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
-        background: url(../images/arrowUpDown.png) no-repeat bottom center; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
-      padding: 5px;
-      vertical-align: top;
-      -webkit-box-flex: 1;
-      -moz-box-flex: 1;
-      -webkit-flex: 1;
-      -ms-flex: 1;
-      flex: 1;
-      position: relative;
-      background: rgba(57, 102, 128, 0.05); }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .arrow {
+      margin-right: 8px !important;
+      margin-top: -7px !important; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .comments {
+      margin-top: 20px; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item {
+      border: 1px solid rgba(119, 97, 0, 0.15);
+      background: rgba(255, 255, 255, 0.5);
+      margin-bottom: 10px; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item:last-child {
+        margin-bottom: 5px; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
+        background: rgba(255, 255, 255, 0.3);
+        opacity: 0.5; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header span {
+          padding-left: 5px; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] {
+          opacity: 1; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
+        background: rgba(255, 255, 255, 0.3); }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
+          background: url(../images/arrowUpDown.png) no-repeat bottom center; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active {
+        padding: 5px 10px 10px 10px;
+        vertical-align: top;
+        -webkit-box-flex: 1;
+        -moz-box-flex: 1;
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        position: relative;
+        background: rgba(57, 102, 128, 0.1); }
 
 .update-container {
-  padding: 0 1em;
-  margin-bottom: 50px; }
+  padding: 0 10px; }
   .update-container .update-entry-container {
     padding: 0 0 10px 0;
     position: relative; }
@@ -4098,7 +3275,19 @@ div.iatiFilters {
         margin-left: 5px;
         font-weight: bold; }
 
-.results-bar-titles {
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #202024; }
+.periodMenuBar .results-bar-titles {
+  padding-left: 5px; }
+
+.periodMenuBar .periodBtns {
+  padding-left: 5px; }
+  .periodMenuBar .periodBtns .periodBulkAct {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: red; }
+  .periodMenuBar .periodBtns .periodFilter {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: blue; }
+
+.hidePanel {
+  display: none; }

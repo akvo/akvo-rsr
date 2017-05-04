@@ -83,6 +83,27 @@ function checkSelected(element, ids) {
 }
 
 
+function uiHideMode(mode) {
+    store.dispatch({
+        type: c.UI_HIDE,
+        payload: {mode}
+    })
+}
+
+
+export function noHide() {
+    uiHideMode(false);
+}
+
+
+export function showUpdates(updateIds) {
+    periodSelectReset();
+    uiHideMode(true);
+    updateIds.map((id) => updateFormOpen(id));
+    openNodes(c.OBJECTS_UPDATES, updateIds, true);
+}
+
+
 function checkAndShowPeriods(ids) {
     periodSelectReset();
     checkSelected(c.SELECTED_PERIODS, ids);
@@ -121,6 +142,7 @@ export function periodsThatNeedReporting() {
 export function selectPeriodsThatNeedReporting() {
     const needReporting = periodsThatNeedReporting();
     periodSelectReset();
+    uiHideMode(true);
     openNodes(c.OBJECTS_PERIODS, needReporting, true);
 }
 

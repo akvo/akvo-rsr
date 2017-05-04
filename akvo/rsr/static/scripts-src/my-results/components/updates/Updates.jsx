@@ -194,7 +194,7 @@ class UpdateHeader extends React.Component {
     return {
         updates: store.models['updates'],
         keys: store.keys,
-        // ui: store.ui,
+        ui: store.ui,
         periodChildrenIds: getPeriodsChildrenIds(store),
     }
 })
@@ -209,6 +209,7 @@ export default class Updates extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.hideMe = this.hideMe.bind(this);
         this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.parentId)};
     }
 
@@ -227,6 +228,11 @@ export default class Updates extends React.Component {
         })
     }
 
+    hideMe(id) {
+        // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
+        return !this.props.keys[collapseId(c.OBJECTS_COMMENTS, id)] && this.props.ui.hide;
+    }
+
     renderPanels(updateIds) {
         let actualValue = 0;
         return (updateIds.map(
@@ -238,10 +244,13 @@ export default class Updates extends React.Component {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
+                // const className = this.hideMe(id) ? 'hidePanel' : '';
+                const className = '';
                 return (
                     <Panel header={<UpdateHeader update={update}
                                                  periodLocked={this.props.periodLocked}
                                                  collapseId={this.state.collapseId}/>}
+                           className={className}
                            key={id}>
                         <div className={'row'}>
                             <Update update={update} collapseId={this.state.collapseId}/>

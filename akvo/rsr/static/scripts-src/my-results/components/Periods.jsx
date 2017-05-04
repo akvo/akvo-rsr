@@ -197,6 +197,7 @@ export default class Periods extends React.Component {
         this.openNewForm = this.openNewForm.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
+        this.hideMe = this.hideMe.bind(this);
         // concatenate this model's name with parent's ID
         this.state = {collapseId: collapseId(c.OBJECTS_PERIODS, this.props.parentId)};
     }
@@ -231,6 +232,11 @@ export default class Periods extends React.Component {
         periodSelectToggle(periodId);
     }
 
+    hideMe(id) {
+        // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
+        return !this.props.keys[collapseId(c.OBJECTS_UPDATES, id)] && this.props.ui.hide;
+    }
+
     renderPanels(periodIds) {
         return (periodIds.map(
             (id) => {
@@ -251,6 +257,10 @@ export default class Periods extends React.Component {
                     )(DeleteUpdateAlert);
                     delUpdateAlert = <DelUpdateAlert />;
                 }
+                // let className = this.hideMe(id) ? 'hidePanel' : '';
+                let className = '';
+                className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
+
                 return (
                     <Panel header={<PeriodHeader period={period}
                                               user={this.props.user}
@@ -258,9 +268,7 @@ export default class Periods extends React.Component {
                                               actualValue={actualValue}
                                               isChecked={isChecked}/>}
                            key={id}
-                           className={
-                               isChecked ? 'periodSelected' : needsReporting ? 'needsReporting' : ''
-                           }>
+                           className={className}>
                         <Updates parentId={id} periodLocked={period.locked}/>
                         {newUpdateButton}
                         {delUpdateAlert}

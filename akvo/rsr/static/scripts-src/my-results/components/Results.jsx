@@ -94,6 +94,7 @@ export default class Results extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.hideMe = this.hideMe.bind(this);
         // Note that there is only one Collapse component for Results, so the collapseID will always
         // be "results-results"
         this.state = {collapseId: collapseId(c.OBJECTS_RESULTS, this.props.parentId)};
@@ -114,15 +115,22 @@ export default class Results extends React.Component {
         })
     }
 
+    hideMe(id) {
+        // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
+        return !this.props.keys[collapseId(c.OBJECTS_INDICATORS, id)] && this.props.ui.hide;
+    }
+
     renderPanels(ids) {
         return (ids.map(
             (id) => {
                 const result = this.props.results.objects[id];
                 const indicatorCount =
                     this.props.resultChildrenIds[id] && this.props.resultChildrenIds[id].length || 0;
+                const className = this.hideMe(id) ? 'hidePanel' : '';
                 return (
                     <Panel header={<ResultHeader result={result}
                                                  indicatorCount={indicatorCount}/>}
+                           className={className}
                            key={id}>
                         <Indicators parentId={id}/>
                     </Panel>

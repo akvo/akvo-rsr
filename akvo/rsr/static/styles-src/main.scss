@@ -2056,7 +2056,7 @@ header {
     border: 1px solid darken($lightOrange, 10%);
 
     div.akvo_map {
-        width: calc(100%-2px);
+        width: calc(100% - 2px);
         height: 300px;
     }
 }
@@ -3881,7 +3881,7 @@ div#my-reports {
     .report-description {
         white-space: pre-wrap;
         white-space: -moz-pre-wrap;
-        white-space: -pre-wrap;
+        //white-space: -pre-wrap;
         white-space: -o-pre-wrap;
         word-wrap: break-word;
     }
@@ -4862,4 +4862,8 @@ div.iatiFilters {
             background: blue;
         }
     }
+}
+
+.hidePanel {
+    display: none;
 }

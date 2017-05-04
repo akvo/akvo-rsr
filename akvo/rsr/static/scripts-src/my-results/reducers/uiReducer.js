@@ -25,7 +25,11 @@ import * as c from "../const"
 
 
 const uiState = {
-    allFetched: false, selectedOption: undefined, [c.SELECTED_PERIODS]: [], [c.UPDATE_FORMS]: [],
+    allFetched: false,
+    selectedOption: undefined,
+    hide: false,
+    [c.SELECTED_PERIODS]: [],
+    [c.UPDATE_FORMS]: [],
 };
 
 export default function uiReducer(state=uiState, action) {
@@ -33,8 +37,7 @@ export default function uiReducer(state=uiState, action) {
 
         case c.UI_ID_RESET: {
             const {element} = action.payload;
-            state = {...state, [element]: []};
-            break;
+            return {...state, [element]: []};
         }
 
         case c.UI_ID_TOGGLE: {
@@ -47,30 +50,30 @@ export default function uiReducer(state=uiState, action) {
                 newState.add(id)
             }
             // Put back the values as an array.
-            state = {...state, [element]: [...newState]};
-            break;
+            return {...state, [element]: [...newState]};
         }
 
         case c.UI_ID_TRUE: {
             const {element, id} = action.payload;
-            state = {...state, [element]: [...new Set(state[element]).add(id)]};
-            break;
+            return {...state, [element]: [...new Set(state[element]).add(id)]};
         }
 
         case c.UI_ID_FALSE: {
             const {element, id} = action.payload;
-            state = {...state, [element]: [...new Set(state[element]).delete(id)]};
-            break;
+            return {...state, [element]: [...new Set(state[element]).delete(id)]};
+        }
+
+        case c.UI_HIDE: {
+            const {mode} = action.payload;
+            return {...state, hide: mode};
         }
 
         case c.ALL_MODELS_FETCHED: {
-            state = {...state, allFetched: true};
-            break;
+            return {...state, allFetched: true};
         }
 
         case c.SET_PERIOD_DATES: {
-            state = {...state, periodDates: action.payload};
-            break;
+            return {...state, periodDates: action.payload};
         }
     }
     return state;

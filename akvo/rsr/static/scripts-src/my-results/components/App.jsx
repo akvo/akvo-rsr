@@ -1,40 +1,37 @@
 /*
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please see
-    < http://www.gnu.org/licenses/agpl.html >.
+ Akvo RSR is covered by the GNU Affero General Public License.
+ See more details in the license.txt file located at the root folder of the
+ Akvo RSR module. For additional details on the GNU license please see
+ < http://www.gnu.org/licenses/agpl.html >.
  */
 
 
-import React from 'react'
-import Select from 'react-select'
-import 'react-select/dist/react-select.css';
-import { connect } from "react-redux"
-
+import React from "react";
+import Select from "react-select";
+import "react-select/dist/react-select.css";
+import {connect} from "react-redux";
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
     fetchModel,
     fetchUser,
-    testFetchModel,
     lockSelectedPeriods,
-    unlockSelectedPeriods,
-} from "../actions/model-actions"
-import { setPageData } from "../actions/page-actions"
+    testFetchModel,
+    unlockSelectedPeriods
+} from "../actions/model-actions";
+import {setPageData} from "../actions/page-actions";
 import {
     activateToggleAll,
-    updateFormOpen,
-    selectablePeriods,
-    periodSelectReset,
+    noHide,
     periodsThatNeedReporting,
+    selectablePeriods,
     selectPeriodsThatNeedReporting,
-} from "../actions/ui-actions"
+    showUpdates
+} from "../actions/ui-actions";
+import {getApprovedUpdates, getDraftUpdates} from "../selectors";
+import {fieldValueOrSpinner} from "../utils";
 
-import * as c from "../const"
-import { getApprovedUpdates, getDraftUpdates } from "../selectors";
-import { fieldValueOrSpinner, openNodes } from "../utils"
-
-import Results from "./Results"
-import { ToggleButton } from "./common"
+import Results from "./Results";
+import {ToggleButton} from "./common";
 
 
 const dataFromElement = (elementName) => {
@@ -100,18 +97,13 @@ export default class App extends React.Component {
         fetchModel('comments', projectId, activateToggleAll);
     }
 
-    showUpdates(updateIds) {
-        periodSelectReset();
-        updateIds.map((id) => updateFormOpen(id));
-        openNodes(c.OBJECTS_UPDATES, updateIds, true);
-    }
 
     showDraft() {
-        this.showUpdates(this.props.draftUpdates);
+        showUpdates(this.props.draftUpdates);
     }
 
     showApproved() {
-        this.showUpdates(this.props.approvedUpdates);
+        showUpdates(this.props.approvedUpdates);
     }
 
     unlockSelected() {
@@ -129,6 +121,10 @@ export default class App extends React.Component {
 
     needReporting() {
         selectPeriodsThatNeedReporting();
+    }
+
+    resetFilters() {
+        noHide();
     }
 
     userIsMEManager() {
@@ -159,33 +155,38 @@ export default class App extends React.Component {
                 <div className={'periodBtns'}>
                     <div className={'row'}>
                         <div className={'periodBulkAct col-sm-6'}>
-                         <div className={'row'}>
-                            <div  className="col-xs-6">
-                                <Select options={selectOptions} value={this.state.selectedOptions}
-                                        multi={false} placeholder="Select period(s)" searchable={false}
-                                        clearable={false} onChange={this.selectChange}/>
+                            <div className={'row'}>
+                                <div className="col-xs-6">
+                                    <Select options={selectOptions}
+                                            value={this.state.selectedOptions}
+                                            multi={false} placeholder="Select period(s)"
+                                            searchable={false}
+                                            clearable={false} onChange={this.selectChange}/>
+                                </div>
+                                <div className="col-xs-6">
+                                    <ToggleButton onClick={this.lockSelected} label="Lock selected"
+                                                  disabled={restrictedButtonDisabled}/>
+                                    <ToggleButton onClick={this.unlockSelected}
+                                                  label="Unlock selected"
+                                                  disabled={restrictedButtonDisabled}/>
+                                </div>
                             </div>
-                            <div  className="col-xs-6">
-                                <ToggleButton onClick={this.lockSelected} label="Lock selected"
-                                              disabled={restrictedButtonDisabled}/>
-                                <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
-                                              disabled={restrictedButtonDisabled}/>
-                            </div>
-                          </div>  
                         </div>
                         <div className={'periodFilter col-sm-6'}>
-                         <div className={'row pull-right'}>
-                            <div  className="col-xs-4">
-                                <ToggleButton onClick={this.needReporting} label={needReportingLabel}
-                                              disabled={buttonDisabled}/>
+                            <div className={'row pull-right'}>
+                                <div className="col-xs-4">
+                                    <ToggleButton onClick={this.needReporting}
+                                                  label={needReportingLabel}
+                                                  disabled={buttonDisabled}/>
+                                </div>
+                                <div className="col-xs-8">
+                                    <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
+                                                  disabled={buttonDisabled}/>
+                                    <ToggleButton onClick={this.showApproved}
+                                                  label={approvedUpdateLabel}
+                                                  disabled={buttonDisabled}/>
+                                </div>
                             </div>
-                            <div  className="col-xs-8">
-                                <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
-                                              disabled={buttonDisabled}/>
-                                <ToggleButton onClick={this.showApproved} label={approvedUpdateLabel}
-                                              disabled={buttonDisabled}/>
-                            </div>
-                          </div> 
                         </div>
                     </div>
                 </div>

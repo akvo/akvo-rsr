@@ -82,6 +82,7 @@ export default class Indicators extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.hideMe = this.hideMe.bind(this);
         // concatenate this model's name with parent's ID
         this.state = {collapseId: collapseId(c.OBJECTS_INDICATORS, this.props.parentId)};
     }
@@ -101,16 +102,23 @@ export default class Indicators extends React.Component {
         })
     }
 
+    hideMe(id) {
+        // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
+        return !this.props.keys[collapseId(c.OBJECTS_PERIODS, id)] && this.props.ui.hide;
+    }
+
     renderPanels(indicatorIds) {
         return (indicatorIds.map(
             (id) => {
                 const indicator = this.props.indicators.objects[id];
+                const className = this.hideMe(id) ? 'hidePanel' : '';
                 return (
                     <Panel header={<IndicatorHeader
                                         indicator={indicator}
                                         aggregateActualValue={
                                             this.props.aggregateActualValue[id]
                                         }/>}
+                           className={className}
                            key={id}>
                         <IndicatorContent indicator={indicator}/>
                         <Periods parentId={id}/>
