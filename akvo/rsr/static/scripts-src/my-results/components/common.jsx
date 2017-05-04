@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom';
 
 export const ToggleButton = (
         {onClick, className='btn btn-sm btn-default', label, style, disabled, icon}) => {
-    const buttonStyle = Object.assign({margin: '0.3em 0.5em'}, style ? style : {});
+    const buttonStyle = Object.assign({}, style ? style : {});
     return (
         <button onClick={onClick}
             className={className}

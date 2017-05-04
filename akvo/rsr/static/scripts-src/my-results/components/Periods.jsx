@@ -113,7 +113,7 @@ class PeriodLockToggle extends React.Component {
 
 
 const PeriodLockStatus = ({lockStatus}) => {
-    return <div style={{float: 'right'}}>{lockStatus}</div>
+    return <div>{lockStatus}</div>
 };
 PeriodLockStatus.propTypes = {
     lockStatus: PropTypes.string.isRequired,

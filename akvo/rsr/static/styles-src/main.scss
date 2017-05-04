@@ -3678,6 +3678,8 @@ article {
 
 label.imageUpload,
 label.fileUpload {
+    padding-left: 5px;
+
     input[type="file"] {
         position: fixed;
         top: -1000px;
@@ -3881,6 +3883,7 @@ div#my-reports {
     .report-description {
         white-space: pre-wrap;
         white-space: -moz-pre-wrap;
+
         //white-space: -pre-wrap;
         white-space: -o-pre-wrap;
         word-wrap: break-word;
@@ -4346,8 +4349,6 @@ div.iatiFilters {
                         background: none;
 
                         .rc-collapse-content-box {
-                            font-size: 90%;
-
                             .baseline {
                                 margin-top: -17px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
@@ -4572,7 +4573,6 @@ div.iatiFilters {
                             .updates {
                                 .arrow {
                                     margin-right: 8px !important;
-                                    margin-top: -7px !important;
                                 }
 
                                 .comments {
@@ -4591,20 +4591,30 @@ div.iatiFilters {
 
                                         .rc-collapse-header {
                                             background: rgba(white, 0.3);
-                                            opacity: 0.5;
 
                                             span {
                                                 padding-left: 5px;
-                                            }
 
-                                            &[aria-expanded="true"] {
-                                                opacity: 1;
+                                                button {
+                                                    opacity: 1 !important;
+                                                    margin-left: 15px !important;
+                                                    padding: 1px 5px !important;
+
+                                                    &.editingForm {
+                                                        opacity: 0.3 !important;
+                                                        cursor: not-allowed !important;
+                                                        pointer-events: none !important;
+                                                    }
+                                                }
                                             }
 
                                             .arrow {}
                                         }
 
                                         &.rc-collapse-item-active {
+                                            border: 1px solid rgba($rsrGreen, 0.5) !important;
+                                            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
+
                                             .rc-collapse-header {
                                                 background: rgba(white, 0.3);
 
@@ -4623,7 +4633,7 @@ div.iatiFilters {
                                                     -ms-flex: 1;
                                                     flex: 1;
                                                     position: relative;
-                                                    background: rgba($primary5, 0.1);
+                                                    background: rgba($secondary1, 0.1);
 
                                                     .rc-collapse-content-box {}
                                                 }
@@ -4654,9 +4664,11 @@ div.iatiFilters {
         position: relative;
 
         &.edit-in-progress {
-            /*             background: rgba($rsrGreen, 0.05);
-                        border: 1px solid rgba($rsrGreen, 0.3);
-                        box-shadow: 0 0 10px rgba($rsrGreen, 0.5); */
+            background: rgba($rsrGreen, 0.05);
+            border: 1px solid rgba($rsrGreen, 0.3);
+            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
+            padding-right: 5px;
+            padding-left: 5px;
 
             .update-entry-container-header {
                 background: rgba(white, 0.5);
@@ -4723,55 +4735,12 @@ div.iatiFilters {
             }
         }
 
-        .comments {
-            padding: 10px 5px 5px 5px;
-            margin-top: 20px;
-            background: rgba($primary5, 0.1);
-
-            @include border-radius(3px);
-
-            .input-group {
-                /* button {
-                           background: $akvoBlack;
-                           color:white;
-                           &:hover {
-                               background: $akvoPurple;
-                           }
-                       }*/
-            }
-
-            .comment {
-                margin-top: 0px;
-                margin-bottom: 20px;
-
-                .comment-header {
-                    font-weight: bold;
-
-                    span {
-                        color: $akvoPurple;
-
-                        &:last-child {
-                            margin-left: 15px;
-                            color: rgba($akvoBlack, 0.5);
-                        }
-                    }
-                }
-
-                .comment-text {
-                    font-size: 90%;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                }
-            }
-        }
-
         .menuAction {
             position: relative;
+            margin-top: 30px;
 
             .removeUpdate {
                 position: absolute;
-                top: 30px;
-                left: 0;
 
                 .btn {
                     background: $akvoTvRed;
@@ -4785,10 +4754,9 @@ div.iatiFilters {
             }
 
             .bottomRow {
-                margin-top: 20px;
-                padding: 0.75em;
                 position: relative;
                 list-style-type: none;
+                margin-right: 0;
 
                 .btn {
                     padding: 2px 7px;
@@ -4842,24 +4810,86 @@ div.iatiFilters {
     }
 }
 
+.comments {
+    padding: 10px 5px;
+    margin-top: 30px;
+    background: rgba($primary5, 0.1);
+    width: 98%;
+    margin-left: 1%;
+
+    @include border-radius(3px);
+
+    .input-group {
+        /* button {
+                   background: $akvoBlack;
+                   color:white;
+                   &:hover {
+                       background: $akvoPurple;
+                   }
+               }*/
+    }
+
+    .commentContainer {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        color: rgba($akvoBlack, 0.5);
+
+        .comment {
+            margin-left: 10px;
+            color: $akvoBlack;
+
+            .comment-header {
+                font-weight: bold;
+
+                span {
+                    color: $akvoPurple;
+
+                    &:last-child {
+                        margin-left: 15px;
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+            }
+
+            .comment-text {}
+        }
+    }
+}
+
 .periodMenuBar {
+    box-sizing: border-box;
+
+    * {
+        box-sizing: border-box;
+    }
+
     .results-bar-titles {
-        padding-left: 5px;
+        display: none;
+    }
+
+    .btn {
+        margin-right: 10px;
     }
 
     .periodBtns {
         padding-left: 5px;
 
         .periodBulkAct {
+            h5 {
+                padding-left: 15px;
+            }
+
             padding-top: 10px;
             padding-bottom: 10px;
-            background: red;
         }
 
         .periodFilter {
+            h5 {
+                padding-left: 15px;
+            }
+
             padding-top: 10px;
             padding-bottom: 10px;
-            background: blue;
         }
     }
 }

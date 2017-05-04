@@ -121,7 +121,7 @@ class CommentForm extends React.Component {
 const Comment = ({comment}) => {
     const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
     return (
-        <div>
+        <div className={'commentContainer'}>
             {name} says:
             <span className={'comment'}>{comment.comment}</span>
         </div>

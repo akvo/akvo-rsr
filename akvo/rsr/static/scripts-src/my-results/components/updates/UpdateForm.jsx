@@ -227,11 +227,11 @@ class ImageUpload extends React.Component {
 const Attachments = ({update, onChange, removeAttachment}) => {
     return (
         <div className="row">
-            <div className="col-xs-6">
+            <div className="col-xs-3">
                 <ImageUpload update={update} onChange={onChange}
                              removeAttachment={removeAttachment}/>
             </div>
-            <div className="col-xs-6">
+            <div className="col-xs-3">
                 <FileUpload update={update} onChange={onChange}
                             removeAttachment={removeAttachment}/>
             </div>
