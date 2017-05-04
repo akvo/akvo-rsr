@@ -88,16 +88,16 @@ class ProjectListView(BaseWidgetView):
         order_by = self.request.GET.get('order_by', 'title')
         org_id = self.request.GET.get('organisation_id')
         organisation = get_object_or_404(Organisation, pk=org_id)
-        projects = Project.objects.select_related(
+        projects = organisation.active_projects().select_related(
             'publishingstatus__status',
             'primary_location',
-            'primary_location__country'
+            'primary_location__country',
+            'last_update',
         ).prefetch_related(
-            'last_update'
-        ).filter(
-            partnerships__organisation__id=org_id,
-            publishingstatus__status__exact='published'
-        ).order_by('-id').distinct()
+            'recipient_countries',
+            'partnerships',
+            'partnerships__organisation',
+        )
 
         if order_by == 'status':
             projects = projects.order_by('status', 'title')
@@ -126,6 +126,6 @@ class ProjectMapView(BaseWidgetView):
         context['style'] = self.request.GET.get('style', 'dark')
         context['state'] = self.request.GET.get('state', 'dynamic')
         org_id = self.request.GET.get('organisation_id')
-        org = get_object_or_404(Organisation, pk=org_id)
-        context['projects'] = org.published_projects()
+        organisation = get_object_or_404(Organisation, pk=org_id)
+        context['projects'] = organisation.active_projects()
         return context

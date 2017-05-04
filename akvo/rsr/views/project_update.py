@@ -35,7 +35,7 @@ def _all_updates():
 
 def _all_projects():
     """Return all active projects."""
-    return Project.objects.public().published().select_related('project_updates').order_by('-id')
+    return Project.objects.public().published().select_related('project_updates')
 
 
 def _page_updates(page):
