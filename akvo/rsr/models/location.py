@@ -94,7 +94,7 @@ class OrganisationLocation(BaseLocation):
         return codelist_value(Country, self, 'iati_country')
 
     def iati_country_value_unicode(self):
-        return str(self.iati_country_value())
+        return unicode(self.iati_country_value())
 
 
 class ProjectLocation(BaseLocation):
@@ -170,10 +170,10 @@ class ProjectLocation(BaseLocation):
         return u'{0}, {1}{2}'.format(
             u'{0}: {1}'.format(
                 _(u'Latitude'),
-                str(self.latitude) if self.latitude else _(u'No latitude specified')),
+                unicode(self.latitude) if self.latitude else _(u'No latitude specified')),
             u'{0}: {1}'.format(
                 _(u'Longitude'),
-                str(self.longitude) if self.longitude else _(u'No longitude specified')),
+                unicode(self.longitude) if self.longitude else _(u'No longitude specified')),
             u' ({0})'.format(self.name) if self.name else u''
         )
 
@@ -181,37 +181,37 @@ class ProjectLocation(BaseLocation):
         return codelist_value(Country, self, 'country')
 
     def iati_country_unicode(self):
-        return str(self.iati_country())
+        return unicode(self.iati_country())
 
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
 
     def iati_vocabulary_unicode(self):
-        return str(self.iati_vocabulary())
+        return unicode(self.iati_vocabulary())
 
     def iati_exactness(self):
         return codelist_value(GeographicExactness, self, 'exactness')
 
     def iati_exactness_unicode(self):
-        return str(self.iati_exactness())
+        return unicode(self.iati_exactness())
 
     def iati_reach(self):
         return codelist_value(GeographicLocationReach, self, 'location_reach')
 
     def iati_reach_unicode(self):
-        return str(self.iati_reach())
+        return unicode(self.iati_reach())
 
     def iati_class(self):
         return codelist_value(GeographicLocationClass, self, 'location_class')
 
     def iati_class_unicode(self):
-        return str(self.iati_class())
+        return unicode(self.iati_class())
 
     def iati_designation(self):
         return codelist_value(LocationType, self, 'feature_designation')
 
     def iati_designation_unicode(self):
-        return str(self.iati_designation())
+        return unicode(self.iati_designation())
 
 # Over-riding fields doesn't work in Django < 1.10, and hence this hack.
 ProjectLocation._meta.get_field('country').help_text = _(
@@ -240,13 +240,13 @@ class AdministrativeLocation(models.Model):
     level = models.PositiveSmallIntegerField(_(u'administrative level'), blank=True, null=True)
 
     def __unicode__(self):
-        return str(self.code) if self.code else u'%s' % _(u'No code specified')
+        return unicode(self.code) if self.code else u'%s' % _(u'No code specified')
 
     def iati_vocabulary(self):
         return codelist_value(GeographicVocabulary, self, 'vocabulary')
 
     def iati_vocabulary_unicode(self):
-        return str(self.iati_vocabulary())
+        return unicode(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'

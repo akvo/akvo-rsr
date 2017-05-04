@@ -15,7 +15,10 @@ import django_perf_rec
 from django.conf import settings
 from django.test import Client, TestCase
 
-from akvo.rsr.models import Keyword, Organisation, PartnerSite, Partnership, Project
+from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
+from akvo.rsr.models import (
+    Country, Keyword, Organisation, PartnerSite, Partnership, Project, ProjectLocation, RecipientCountry
+)
 
 
 @skip('Needs Django >= 1.8')
@@ -101,8 +104,7 @@ class ProjectViewsTestCase(TestCase):
         project_title = '{} awesome project'.format(hostname)
         project = Project.objects.create(title=project_title)
         project.keywords.add(keyword)
-        project.publishingstatus.status = 'published'
-        project.publishingstatus.save()
+        project.publish()
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
 
@@ -125,13 +127,11 @@ class ProjectViewsTestCase(TestCase):
         )
         project_title1 = '{} awesome project {}'.format(hostname, 1)
         project1 = Project.objects.create(title=project_title1)
-        project1.publishingstatus.status = 'published'
-        project1.publishingstatus.save()
+        project1.publish()
         Partnership.objects.create(organisation=org, project=project1)
         project_title2 = '{} awesome project {}'.format(hostname, 2)
         project2 = Project.objects.create(title=project_title2)
-        project2.publishingstatus.status = 'published'
-        project2.publishingstatus.save()
+        project2.publish()
         Partnership.objects.create(organisation=org, project=project2)
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
@@ -159,13 +159,11 @@ class ProjectViewsTestCase(TestCase):
         project_title1 = '{} awesome project {}'.format(hostname, 1)
         project1 = Project.objects.create(title=project_title1)
         project1.keywords.add(keyword)
-        project1.publishingstatus.status = 'published'
-        project1.publishingstatus.save()
+        project1.publish()
         Partnership.objects.create(organisation=org, project=project1)
         project_title2 = '{} awesome project {}'.format(hostname, 2)
         project2 = Project.objects.create(title=project_title2)
-        project2.publishingstatus.status = 'published'
-        project2.publishingstatus.save()
+        project2.publish()
         Partnership.objects.create(organisation=org, project=project2)
         url = '/en/projects/'
         self.c = Client(HTTP_HOST='{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN))
@@ -176,3 +174,43 @@ class ProjectViewsTestCase(TestCase):
         # Then
         self.assertIn(project_title1, response.content)
         self.assertNotIn(project_title2, response.content)
+
+    def test_should_show_all_country_projects(self):
+        # Given
+        project_title1 = 'Project 1'
+        project_title2 = 'Project 2'
+        project_title3 = 'Project 3'
+        url = '/en/projects/?location=262'
+        latitude, longitude = ('11.8948112', '42.5807153')
+        country_code = 'DJ'
+        # No recipient country
+        project1 = Project.objects.create(title=project_title1)
+        project1.publish()
+        # Recipient Country - DJ
+        project2 = Project.objects.create(title=project_title2)
+        project2.publish()
+        RecipientCountry.objects.create(project=project2, country=country_code)
+        # ProjectLocation in DJ
+        self.setup_country_objects()
+        project3 = Project.objects.create(title=project_title3)
+        project3.publish()
+        project_location = ProjectLocation.objects.create(location_target=project3,
+                                                          latitude=latitude,
+                                                          longitude=longitude)
+        # ProjectLocation with no country
+        ProjectLocation.objects.create(location_target=project3,
+                                       latitude=None,
+                                       longitude=None)
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertNotIn(project_title1, response.content)
+        self.assertIn(project_title2, response.content)
+        self.assertEqual(project_location.country.iso_code, country_code.lower())
+        self.assertIn(project_title3, response.content)
+
+    def setup_country_objects(self):
+        for iso_code, name in ISO_3166_COUNTRIES:
+            Country.objects.create(name=name, iso_code=iso_code)

@@ -2019,12 +2019,15 @@ function setPageCompletionPercentage() {
     var numInputsCompleted = inputResults[1];
     var completionPercentage = renderCompletionPercentage(numInputsCompleted, numInputs, document.querySelector('.progress-and-publish'));
 
-    var publishButton = document.getElementById('publishProject');
-    if (publishButton !== null) {
-        if (completionPercentage !== 100 && publishButton.getAttribute('status') === 'unpublished') {
-            publishButton.setAttribute('disabled', '');
-        } else {
-            publishButton.removeAttribute('disabled');
+    // Don't mess with the Publish button if you're not allowed to publish!
+    if (defaultValues.can_create_projects) {
+        var publishButton = document.getElementById('publishProject');
+        if (publishButton !== null) {
+            if (completionPercentage !== 100 && publishButton.getAttribute('status') === 'unpublished') {
+                publishButton.setAttribute('disabled', '');
+            } else {
+                publishButton.removeAttribute('disabled');
+            }
         }
     }
 }

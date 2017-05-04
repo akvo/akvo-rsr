@@ -32,6 +32,20 @@ Periodically there will be a new base RSR machine available, which will have upd
 
 You may also want to clean up the old base boxes. They can be found in `$HOME/.vagrant.d/boxes` on Mac OS X, Linux and other Unix systems. You can simply remove old ones that you do not use. 
 
+## Upgrading Virtualbox on Mac OS X
+
+To run properly software that's called Guest addisions needs to be installed on the VM. One issue that may otherwise occur is that the shared folder doesn't properly mount. The documentation on how to install or upgrade guest additions is flaky at best, at least for Mac OS X. The following links helped a lot: [Blog on using Virtualbox on Mac OSX](http://www.bogotobogo.com/Linux/Ubuntu_Desktop_on_Mac_OSX_using_VirtualBox_4_3_II.php) is a good start and boils down to mounting VBoxGuestAdditions.iso, which can be found in the package contents of Virtualbox.app, in the emulated CD of the VM. When the image is mounted, run the following _in the VM_:
+
+```bash
+$ sudo apt-get install dkms -y
+$ cd /media
+$ sudo mkdir vbox
+$ sudo mount /dev/sr0 vbox/
+$ cd vbox/
+$ sudo sh ./VBoxLinuxAdditions.run
+```
+
+However when the scrip has run you get an error message related to the wrong Linux kernel version. After much head scratching a comment in [this Superuser post](https://superuser.com/questions/499059/unable-to-install-virtualbox-specify-kern-dir-directory-installing-vir) helped, the gist of the solution is to run ```sudo apt-get update && sudo apt-get -y dist-upgrade```. This can probably be done before deploying the actual guest additions.
 
 ## About the VM
 

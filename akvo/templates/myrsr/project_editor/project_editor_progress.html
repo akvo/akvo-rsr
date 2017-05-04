@@ -38,7 +38,6 @@
                                 {% trans 'This progress bar indicates the number of completed mandatory fields. It is only possible to publish a project when this progress bar is green and fully filled, meaning that all mandatory fields have been completed. A mandatory field is indicated with a ' %}<span class="mandatoryIndicator">*</span>.
                             </div>
                             <div class="col-md-12 progress-and-publish">
-                            {% if user.can_create_project %}
                                 <div class="row">
                                     <div class="col-md-9">
                                         <div class="progress overview">
@@ -48,7 +47,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 text-center">
-                                        <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published">
+                                        <button class="btn {% if project.is_published %}btn-danger{% else %}btn-success{% endif %}" id="publishProject" status="{% if not project.is_published %}un{% endif %}published"
+                                                {% if not user.can_create_project %}disabled{% endif %}>
                                             {% if project.is_published %}
                                                 <span class="glyphicon glyphicon-remove"></span> {% trans 'Unpublish' %}
                                             {% else %}
@@ -60,13 +60,6 @@
                                 <div class="row">
                                     <div class="help-block-error" id="publishErrors"></div>
                                 </div>
-                            {% else %}
-                                <div class="progress overview">
-                                    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                        <span class="sr-only"></span><span class="progress-percentage"></span>
-                                    </div>
-                                </div>
-                            {% endif %}
                             </div>
                         </div>
                     </div>

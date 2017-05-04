@@ -153,17 +153,17 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         RelatedProject.objects.create(
             project=project,
             related_project=related_project,
-            relation='1'
+            relation=RelatedProject.PROJECT_RELATION_PARENT
         )
         RelatedProject.objects.create(
             project=project,
             related_iati_id="NL-KVK-related",
-            relation='1'
+            relation=RelatedProject.PROJECT_RELATION_PARENT
         )
         RelatedProject.objects.create(
             project=related_project,
             related_project=project,
-            relation='1'
+            relation=RelatedProject.PROJECT_RELATION_CHILD
         )
 
         # Add sector
@@ -479,6 +479,15 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
                                            './iati-activity/iati-identifier',
                                            './iati-activity/reporting-org',
                                            './iati-activity/title'))
+
+        # Test related activities are listed only once
+        related_activity_id = related_project.iati_activity_id
+        attributes = {'ref': related_activity_id, 'type': RelatedProject.PROJECT_RELATION_PARENT}
+        related_activities = root_test.xpath(
+            './iati-activity/related-activity[@ref="{}"]'.format(related_activity_id)
+        )
+        self.assertEqual(1, len(related_activities))
+        self.assertEqual(attributes, related_activities[0].attrib)
 
     def test_different_complete_project_export(self):
         """

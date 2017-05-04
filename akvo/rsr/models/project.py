@@ -49,6 +49,7 @@ from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
+from .related_project import RelatedProject
 from .budget_item import BudgetItem
 
 
@@ -644,6 +645,18 @@ class Project(TimestampsMixin, models.Model):
                 iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
             )
 
+    def countries(self):
+        """Return a list of countries for the project."""
+
+        country_codes = set([c.country.lower() for c in self.recipient_countries.all()])
+        return (
+            [country for country in self.recipient_countries.all()] +
+            [
+                location.country for location in self.locations.all()
+                if location.country and location.country.iso_code not in country_codes
+            ]
+        )
+
     class QuerySet(DjangoQuerySet):
         def of_partner(self, organisation):
             "return projects that have organisation as partner"
@@ -953,6 +966,18 @@ class Project(TimestampsMixin, models.Model):
         return False
     is_published.boolean = True
 
+    def publish(self):
+        """Set the publishing status to published."""
+
+        self.publishingstatus.status = PublishingStatus.STATUS_PUBLISHED
+        self.publishingstatus.save()
+
+    def unpublish(self):
+        """Set the publishing status to unpublished."""
+
+        self.publishingstatus.status = PublishingStatus.STATUS_UNPUBLISHED
+        self.publishingstatus.save()
+
     def is_empty(self):
         exclude_fields = ['benchmarks', 'categories', 'created_at', 'crsadd', 'currency',
                           'custom_fields', 'fss', 'iati_checks', 'iati_project_exports',
@@ -1170,68 +1195,44 @@ class Project(TimestampsMixin, models.Model):
         return self.parents() or self.children() or self.siblings()
 
     def parents(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=2
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=1
-            )
-        ).distinct().published().public()
+        return self.parents_all().published().public()
 
     def parents_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=2
+                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=1
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
             )
         ).distinct()
 
     def children(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=1
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=2
-            )
-        ).distinct().published().public()
+        return self.children_all().published().public()
 
     def children_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=1
+                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=2
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
             )
         ).distinct()
 
     def siblings(self):
-        return (
-            Project.objects.filter(
-                related_projects__related_project=self,
-                related_projects__relation=3
-            ) | Project.objects.filter(
-                related_to_projects__project=self,
-                related_to_projects__relation=3
-            )
-        ).distinct().published().public()
+        return self.siblings_all().published().public()
 
     def siblings_all(self):
         return (
             Project.objects.filter(
                 related_projects__related_project=self,
-                related_projects__relation=3
+                related_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
             ) | Project.objects.filter(
                 related_to_projects__project=self,
-                related_to_projects__relation=3
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_SIBLING
             )
         ).distinct()
 

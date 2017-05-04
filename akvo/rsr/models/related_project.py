@@ -15,6 +15,13 @@ from akvo.utils import codelist_choices, codelist_value
 
 
 class RelatedProject(models.Model):
+
+    PROJECT_RELATION_PARENT = u'1'
+    PROJECT_RELATION_CHILD = u'2'
+    PROJECT_RELATION_SIBLING = u'3'
+    PROJECT_RELATION_CO_FUNDED = u'4'
+    PROJECT_RELATION_THIRD_PARTY = u'5'
+
     project = models.ForeignKey('Project', related_name='related_projects')
     related_project = models.ForeignKey(
         'Project', related_name='related_to_projects', null=True, blank=True,
@@ -40,6 +47,24 @@ class RelatedProject(models.Model):
                     u'5 - Third party: a report by another organisation on the same project '
                     u'that you are reporting on.')
     )
+
+    @property
+    def reciprocal_relation(self):
+        """Return the relation between related_project and project.
+
+        `relation` specifies the relationship between project and
+        related_project.  This returns the reciprocal relationship.
+
+        """
+
+        if self.relation == RelatedProject.PROJECT_RELATION_PARENT:
+            return RelatedProject.PROJECT_RELATION_CHILD
+
+        elif self.relation == RelatedProject.PROJECT_RELATION_CHILD:
+            return RelatedProject.PROJECT_RELATION_PARENT
+
+        else:
+            return self.relation
 
     def iati_relation(self):
         return codelist_value(RelatedActivityType, self, 'relation')
