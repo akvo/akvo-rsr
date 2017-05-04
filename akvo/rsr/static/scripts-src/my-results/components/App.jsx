@@ -147,15 +147,29 @@ export default class App extends React.Component {
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
 
         return (
-            <div className={'row periodMenuBar'}>
+            <div className={'periodMenuBar'}>
                 <div className={'row results-bar-titles'}>
                     <div className="col-sm-6"><h4>Bulk action</h4></div>
                     <div className="col-sm-6"><h4>Filter periods</h4></div>
                 </div>
                 <div className={'periodBtns'}>
-                    <div className={'row'}>
-                        <div className={'periodBulkAct col-sm-6'}>
-                            <div className={'row'}>
+                    <div className={'row'}>                        
+                        <div className={'periodFilter col-sm-12'}>
+                            <div className={'row'}><h5>Filter periods</h5>
+                                <div className="col-xs-12">
+                                    <ToggleButton onClick={this.needReporting}
+                                                  label={needReportingLabel}
+                                                  disabled={buttonDisabled}/>
+                                    <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
+                                                  disabled={buttonDisabled}/>
+                                    <ToggleButton onClick={this.showApproved}
+                                                  label={approvedUpdateLabel}
+                                                  disabled={buttonDisabled}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={'periodBulkAct col-sm-12'}>
+                            <div className={'row'}><h5>Bulk action</h5>
                                 <div className="col-xs-6">
                                     <Select options={selectOptions}
                                             value={this.state.selectedOptions}
@@ -169,22 +183,6 @@ export default class App extends React.Component {
                                     <ToggleButton onClick={this.unlockSelected}
                                                   label="Unlock selected"
                                                   disabled={restrictedButtonDisabled}/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={'periodFilter col-sm-6'}>
-                            <div className={'row pull-right'}>
-                                <div className="col-xs-4">
-                                    <ToggleButton onClick={this.needReporting}
-                                                  label={needReportingLabel}
-                                                  disabled={buttonDisabled}/>
-                                </div>
-                                <div className="col-xs-8">
-                                    <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
-                                                  disabled={buttonDisabled}/>
-                                    <ToggleButton onClick={this.showApproved}
-                                                  label={approvedUpdateLabel}
-                                                  disabled={buttonDisabled}/>
                                 </div>
                             </div>
                         </div>
