@@ -151,34 +151,42 @@ export default class App extends React.Component {
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
 
         return (
-            <div>
+            <div className={'row periodMenuBar'}>
                 <div className={'row results-bar-titles'}>
-                    <div className="col-xs-3">Select periods</div>
-                    <div className="col-xs-3">Period actions</div>
-                    <div className="col-xs-2">Show periods</div>
-                    <div className="col-xs-4">Show updates</div>
+                    <div className="col-sm-6"><h4>Bulk action</h4></div>
+                    <div className="col-sm-6"><h4>Filter periods</h4></div>
                 </div>
-                <div className={'row'}>
-                    <div  className="col-xs-3">
-                        <Select options={selectOptions} value={this.state.selectedOptions}
-                                multi={false} placeholder="Select period(s)" searchable={false}
-                                clearable={false} onChange={this.selectChange}/>
-                    </div>
-                    <div  className="col-xs-3">
-                        <ToggleButton onClick={this.lockSelected} label="Lock selected"
-                                      disabled={restrictedButtonDisabled}/>
-                        <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
-                                      disabled={restrictedButtonDisabled}/>
-                    </div>
-                    <div  className="col-xs-2">
-                        <ToggleButton onClick={this.needReporting} label={needReportingLabel}
-                                      disabled={buttonDisabled}/>
-                    </div>
-                    <div  className="col-xs-4">
-                        <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
-                                      disabled={buttonDisabled}/>
-                        <ToggleButton onClick={this.showApproved} label={approvedUpdateLabel}
-                                      disabled={buttonDisabled}/>
+                <div className={'periodBtns'}>
+                    <div className={'row'}>
+                        <div className={'periodBulkAct col-sm-6'}>
+                         <div className={'row'}>
+                            <div  className="col-xs-6">
+                                <Select options={selectOptions} value={this.state.selectedOptions}
+                                        multi={false} placeholder="Select period(s)" searchable={false}
+                                        clearable={false} onChange={this.selectChange}/>
+                            </div>
+                            <div  className="col-xs-6">
+                                <ToggleButton onClick={this.lockSelected} label="Lock selected"
+                                              disabled={restrictedButtonDisabled}/>
+                                <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
+                                              disabled={restrictedButtonDisabled}/>
+                            </div>
+                          </div>  
+                        </div>
+                        <div className={'periodFilter col-sm-6'}>
+                         <div className={'row pull-right'}>
+                            <div  className="col-xs-4">
+                                <ToggleButton onClick={this.needReporting} label={needReportingLabel}
+                                              disabled={buttonDisabled}/>
+                            </div>
+                            <div  className="col-xs-8">
+                                <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
+                                              disabled={buttonDisabled}/>
+                                <ToggleButton onClick={this.showApproved} label={approvedUpdateLabel}
+                                              disabled={buttonDisabled}/>
+                            </div>
+                          </div> 
+                        </div>
                     </div>
                 </div>
                 <div style={clearfix}></div>
