@@ -25,7 +25,7 @@ from lxml import etree
 
 def _public_projects():
     """Return all public projects."""
-    return Project.objects.public().published().select_related('partners').order_by('-id')
+    return Project.objects.public().published().select_related('partners')
 
 
 def _page_organisations(page):

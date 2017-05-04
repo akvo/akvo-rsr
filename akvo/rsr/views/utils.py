@@ -24,7 +24,7 @@ def apply_keywords(page, project_qs):
 
 def org_projects(organisation):
     """."""
-    return organisation.published_projects().public().select_related(
+    return organisation.published_projects().select_related(
         'partners',
         'categories',
         'primary_location',

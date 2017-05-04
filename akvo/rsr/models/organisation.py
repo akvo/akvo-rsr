@@ -21,7 +21,6 @@ from akvo.codelists.store.codelists_v202 import CURRENCY, ORGANISATION_TYPE
 from akvo.codelists.models import Currency
 
 from .country import Country
-from .keyword import Keyword
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
@@ -278,13 +277,7 @@ class Organisation(TimestampsMixin, models.Model):
         def all_projects(self):
             "returns a queryset with all projects that has self as any kind of partner"
             from .project import Project
-            return Project.objects.filter(partnerships__organisation__in=self).distinct()
-
-        def public_projects(self):
-            """
-            Returns a queryset with all public projects that has self as any kind of partner.
-            """
-            return self.all_projects().public()
+            return Project.objects.of_partner(self).distinct()
 
         def users(self):
             "returns a queryset of all users belonging to the organisation(s)"
@@ -349,9 +342,10 @@ class Organisation(TimestampsMixin, models.Model):
         "returns a queryset of all users belonging to the organisation"
         return self.users.all()
 
-    def published_projects(self):
+    def published_projects(self, only_public=True):
         "returns a queryset with published projects that has self as any kind of partner"
-        return self.projects.published().distinct()
+        projects = self.projects.published().distinct()
+        return projects.public() if only_public else projects
 
     def all_projects(self):
         """returns a queryset with all projects that has self as any kind of partner."""
@@ -448,20 +442,6 @@ class Organisation(TimestampsMixin, models.Model):
                 countries.append(location.iati_country_value().name)
         return countries
 
-    def organisation_keywords(self, public=True, unpublished=False):
-        """Return all the keywords used by projects related to the organisation.
-
-        NOTE: By default only the keywords on the *published* and *public*
-        projects are returned.
-
-        """
-
-        projects = self.all_projects() if unpublished else self.published_projects()
-        if public:
-            projects = projects.public()
-
-        return Keyword.objects.filter(projects__in=projects).distinct()
-
     def iati_file(self):
         """
         Looks up the latest public IATI file of this organisation.
@@ -480,7 +460,7 @@ class Organisation(TimestampsMixin, models.Model):
 
     def has_multiple_project_currencies(self):
         "Check if organisation has projects with different currencies"
-        if self.published_projects().distinct().count() == self.org_currency_projects_count():
+        if self.active_projects().distinct().count() == self.org_currency_projects_count():
             return False
         else:
             return True
@@ -497,35 +477,9 @@ class Organisation(TimestampsMixin, models.Model):
             amount_pledged=Sum('partnerships__funding_amount')
         )['amount_pledged'] or 0
 
-    def euros_pledged(self):
-        "How much € the organisation has pledged to projects it is a partner to"
-        return self.active_projects().euros().filter(
-            partnerships__organisation__exact=self,
-            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
-        ).aggregate(
-            euros_pledged=Sum('partnerships__funding_amount')
-        )['euros_pledged'] or 0
-
-    def dollars_pledged(self):
-        "How much $ the organisation has pledged to projects"
-        return self.active_projects().dollars().filter(
-            partnerships__organisation__exact=self,
-            partnerships__iati_organisation_role__exact=Partnership.IATI_FUNDING_PARTNER
-        ).aggregate(
-            dollars_pledged=Sum('partnerships__funding_amount')
-        )['dollars_pledged'] or 0
-
     def org_currency_projects_count(self):
         "How many projects with budget in default currency the organisation is a partner to"
-        return self.published_projects().filter(currency=self.currency).distinct().count()
-
-    def euro_projects_count(self):
-        "How many projects with budget in € the organisation is a partner to"
-        return self.published_projects().euros().distinct().count()
-
-    def dollar_projects_count(self):
-        "How many projects with budget in $ the organisation is a partner to"
-        return self.published_projects().dollars().distinct().count()
+        return self.active_projects().filter(currency=self.currency).distinct().count()
 
     def _aggregate_funds_needed(self, projects):
         return sum(projects.values_list('funds_needed', flat=True))
@@ -536,23 +490,7 @@ class Organisation(TimestampsMixin, models.Model):
 
         The ORM aggregate() doesn't work here since we may have multiple partnership relations
         to the same project."""
-        return self._aggregate_funds_needed(self.published_projects().filter(currency=self.currency).distinct())
-
-    def euro_funds_needed(self):
-        """How much is still needed to fully fund all projects with € budget that the
-        organisation is a partner to.
-
-        The ORM aggregate() doesn't work here since we may have multiple partnership relations
-        to the same project."""
-        return self._aggregate_funds_needed(self.published_projects().euros().distinct())
-
-    def dollar_funds_needed(self):
-        """How much is still needed to fully fund all projects with $ budget that the
-        organisation is a partner to.
-
-        The ORM aggregate() doesn't work here since we may have multiple partnership relations
-        to the same project."""
-        return self._aggregate_funds_needed(self.published_projects().dollars().distinct())
+        return self._aggregate_funds_needed(self.active_projects().filter(currency=self.currency).distinct())
 
     class Meta:
         app_label = 'rsr'
