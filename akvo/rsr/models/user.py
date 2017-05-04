@@ -376,16 +376,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.employers.all().exclude(is_approved=False)
 
     def can_create_project(self):
-        """
-        Check to see if the user can create a project, or is a superuser.
-
-        :return: Boolean to indicate whether the user has a reportable organisation
-        """
-        if self.is_superuser or self.is_admin:
-            return True
+        """Check to see if the user can create a project."""
 
         for employment in self.approved_employments():
-            if employment.organisation.can_create_projects:
+            org = employment.organisation
+            if org.can_create_projects and self.has_perm('rsr.add_project', org):
                 return True
 
         return False
@@ -469,7 +464,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             user=self, is_approved=True, group__name='M&E Managers'
         )
         orgs = employments.organisations()
-        return project in Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+        return project in Project.objects.of_partners(orgs).distinct()
 
     def project_editor_of(self, org):
         """
@@ -499,19 +494,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return all projects of orgs where user is an admin."""
 
         orgs = self.get_admin_employment_orgs()
-        return Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+        return Project.objects.of_partners(orgs).distinct()
 
     def project_editor_me_manager_projects(self):
         """Return all projects of orgs where user is project editor or m&e manager."""
 
         orgs = self.get_project_editor_me_manager_employment_orgs()
-        return Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+        return Project.objects.of_partners(orgs).distinct()
 
     def user_manager_projects(self):
         """Return all projects where user is a user manager."""
 
         orgs = self.get_user_manager_employment_orgs()
-        return Project.objects.filter(partnerships__organisation__in=orgs).distinct()
+        return Project.objects.of_partners(orgs).distinct()
 
     def get_permission_filter(self, permission, project_relation):
         """Convert a rules permission predicate into a queryset filter using Q objects.

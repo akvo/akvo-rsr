@@ -30,7 +30,7 @@ class TypeaheadProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title')
+        fields = ('id', 'title', 'subtitle')
 
 
 class TypeaheadProjectUpdateSerializer(serializers.ModelSerializer):

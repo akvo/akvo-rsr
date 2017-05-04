@@ -24,10 +24,10 @@ function createDiv() {
     var bodytag = document.getElementsByTagName('body')[0];
     var div = document.createElement('div');
     div.setAttribute('id','cookie-law');
-    div.innerHTML = '<p>' + cookie_text + '<a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy" target="_blank">' + policy_text + '</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="removeMe();"><span>' + button_text + '</span></a></p>';
+    div.innerHTML = '<p>' + cookie_text + '<a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy" target="_blank">' + policy_text + '</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="window.removeMe();"><span>' + button_text + '</span></a></p>';
     bodytag.insertBefore(div,bodytag.firstChild); // Adds the Cookie Law Banner just after the opening <body> tag
     document.getElementsByTagName('body')[0].className+=' cookiebanner'; //Adds a class to the <body> tag when the banner is visible
-    createCookie(window.cookieName,window.cookieValue, window.cookieDuration); // Create the cookie
+    createCookie(cookieName, cookieValue, cookieDuration); // Create the cookie
 }
 
 
@@ -56,7 +56,7 @@ function createModal(){
 
         checkPassword: function() {
             this.setState({showError: false});
-            
+
             if (this.state.passwordField === protectPassword) {
                 this.createProtectionCookie();
                 this.close();
@@ -162,7 +162,7 @@ function createCookie(name,value,days) {
         date.setTime(date.getTime()+(days*24*60*60*1000));
         expires = "; expires="+date.toGMTString();
     }
-    if(window.dropCookie) {
+    if(dropCookie) {
         document.cookie = name+"="+value+expires+"; path=/";
     }
 }
@@ -182,6 +182,7 @@ function removeMe(){
 	var element = document.getElementById('cookie-law');
 	element.parentNode.removeChild(element);
 }
+window.removeMe = removeMe;
 
 var loadJS = function(url, implementationCode, location){
     // url is URL of external file, implementationCode is the code to be called from the file,
