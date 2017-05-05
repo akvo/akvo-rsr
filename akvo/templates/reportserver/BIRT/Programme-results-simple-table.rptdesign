@@ -673,7 +673,7 @@
  rsr_recipientcountry.country,
  codelists_resulttype.name as type_name
 from rsr_project 
-left join rsr_relatedproject on rsr_relatedproject.related_project_id = rsr_project.id
+--left join rsr_relatedproject on rsr_relatedproject.related_project_id = rsr_project.id
 left join rsr_result on rsr_project.id=rsr_result.project_id
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
@@ -684,23 +684,6 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -8963,6 +8946,793 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="test" id="1697">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">title</text-property>
+                    <text-property name="heading">title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subtitle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">subtitle</text-property>
+                    <text-property name="heading">subtitle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iati_activity_id</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">iati_activity_id</text-property>
+                    <text-property name="heading">iati_activity_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_start_planned</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_start_planned</text-property>
+                    <text-property name="heading">date_start_planned</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_end_planned</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_end_planned</text-property>
+                    <text-property name="heading">date_end_planned</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_start_actual</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_start_actual</text-property>
+                    <text-property name="heading">date_start_actual</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_end_actual</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_end_actual</text-property>
+                    <text-property name="heading">date_end_actual</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result_title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">result_title</text-property>
+                    <text-property name="heading">result_title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result_pk</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">result_pk</text-property>
+                    <text-property name="heading">result_pk</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">type</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">type</text-property>
+                    <text-property name="heading">type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result_description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">result_description</text-property>
+                    <text-property name="heading">result_description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">aggregation_status</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">aggregation_status</text-property>
+                    <text-property name="heading">aggregation_status</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indicator_title</text-property>
+                    <text-property name="heading">indicator_title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_pk</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indicator_pk</text-property>
+                    <text-property name="heading">indicator_pk</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">measure</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">measure</text-property>
+                    <text-property name="heading">measure</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicator_description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indicator_description</text-property>
+                    <text-property name="heading">indicator_description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ascending</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ascending</text-property>
+                    <text-property name="heading">ascending</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">baseline_year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">baseline_year</text-property>
+                    <text-property name="heading">baseline_year</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">baseline_value</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">baseline_value</text-property>
+                    <text-property name="heading">baseline_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">baseline_comment</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">baseline_comment</text-property>
+                    <text-property name="heading">baseline_comment</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indicatorperiod_pk</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indicatorperiod_pk</text-property>
+                    <text-property name="heading">indicatorperiod_pk</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period_start</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period_start</text-property>
+                    <text-property name="heading">period_start</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period_end</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period_end</text-property>
+                    <text-property name="heading">period_end</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">target_value</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">target_value</text-property>
+                    <text-property name="heading">target_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">target_comment</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">target_comment</text-property>
+                    <text-property name="heading">target_comment</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">actual_value</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">actual_value</text-property>
+                    <text-property name="heading">actual_value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">actual_comment</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">actual_comment</text-property>
+                    <text-property name="heading">actual_comment</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">country</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">country</text-property>
+                    <text-property name="heading">country</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">type_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">type_name</text-property>
+                    <text-property name="heading">type_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">related_partners</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">related_partners</text-property>
+                    <text-property name="heading">related_partners</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">subtitle</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">iati_activity_id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">date_start_planned</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">date_end_planned</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">date_start_actual</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">date_end_actual</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">result_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">result_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">type</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">result_description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">aggregation_status</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">indicator_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">indicator_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">measure</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">indicator_description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">ascending</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">baseline_year</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">baseline_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">baseline_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">indicatorperiod_pk</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">period_start</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">period_end</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">target_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">target_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">actual_value</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">actual_comment</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">country</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">type_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">related_partners</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">RSR-test</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">title</property>
+                    <property name="nativeName">title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">subtitle</property>
+                    <property name="nativeName">subtitle</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">iati_activity_id</property>
+                    <property name="nativeName">iati_activity_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">date_start_planned</property>
+                    <property name="nativeName">date_start_planned</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">date_end_planned</property>
+                    <property name="nativeName">date_end_planned</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">date_start_actual</property>
+                    <property name="nativeName">date_start_actual</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">date_end_actual</property>
+                    <property name="nativeName">date_end_actual</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">result_title</property>
+                    <property name="nativeName">result_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">result_pk</property>
+                    <property name="nativeName">result_pk</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">type</property>
+                    <property name="nativeName">type</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">result_description</property>
+                    <property name="nativeName">result_description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">aggregation_status</property>
+                    <property name="nativeName">aggregation_status</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">indicator_title</property>
+                    <property name="nativeName">indicator_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">indicator_pk</property>
+                    <property name="nativeName">indicator_pk</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">measure</property>
+                    <property name="nativeName">measure</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">indicator_description</property>
+                    <property name="nativeName">indicator_description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">ascending</property>
+                    <property name="nativeName">ascending</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">baseline_year</property>
+                    <property name="nativeName">baseline_year</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">baseline_value</property>
+                    <property name="nativeName">baseline_value</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">baseline_comment</property>
+                    <property name="nativeName">baseline_comment</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">indicatorperiod_pk</property>
+                    <property name="nativeName">indicatorperiod_pk</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">period_start</property>
+                    <property name="nativeName">period_start</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">period_end</property>
+                    <property name="nativeName">period_end</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">target_value</property>
+                    <property name="nativeName">target_value</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">target_comment</property>
+                    <property name="nativeName">target_comment</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">actual_value</property>
+                    <property name="nativeName">actual_value</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">actual_comment</property>
+                    <property name="nativeName">actual_comment</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
+                    <property name="name">country</property>
+                    <property name="nativeName">country</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">29</property>
+                    <property name="name">type_name</property>
+                    <property name="nativeName">type_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">30</property>
+                    <property name="name">related_partners</property>
+                    <property name="nativeName">related_partners</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select 
+ p1.title,
+ p1.subtitle,
+ p1.iati_activity_id,
+ p1.date_start_planned,
+ p1.date_end_planned,
+ p1.date_start_actual,
+ p1.date_end_actual,
+ rsr_result.title as result_title,
+ rsr_result.id as result_pk,
+ rsr_result.type,
+ rsr_result.description as result_description,
+ rsr_result.aggregation_status,
+ rsr_indicator.title as indicator_title,
+ rsr_indicator.id as indicator_pk,
+ rsr_indicator.measure,
+ rsr_indicator.description as indicator_description,
+ rsr_indicator.ascending,
+ rsr_indicator.baseline_year,
+ rsr_indicator.baseline_value,
+ rsr_indicator.baseline_comment,
+ rsr_indicatorperiod.id as indicatorperiod_pk,
+ rsr_indicatorperiod.period_start,
+ rsr_indicatorperiod.period_end,
+ rsr_indicatorperiod.target_value,
+ rsr_indicatorperiod.target_comment,
+ rsr_indicatorperiod.actual_value,
+ rsr_indicatorperiod.actual_comment,
+ rsr_recipientcountry.country,
+ codelists_resulttype.name as type_name,
+ (SELECT string_agg(p2.title, ', ')
+    FROM rsr_relatedproject 
+    left join rsr_project p2 on p2.id=rsr_relatedproject.project_id
+    WHERE rsr_relatedproject.related_project_id=p1.id
+) related_partners
+from rsr_project p1
+left join rsr_result on p1.id=rsr_result.project_id
+left join rsr_indicator on result_id=rsr_result.id
+left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
+left join codelists_resulttype on rsr_result.type=codelists_resulttype.code
+left join rsr_recipientcountry on p1.id = rsr_recipientcountry.project_id
+where p1.id = ? and codelists_resulttype.version_id=6
+order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>project_id</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>project_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>project_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>related_project_id</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>related_project_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>related_project_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>relation</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>relation</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>relation</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>related_iati_id</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>related_iati_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>related_iati_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="new_test" id="1698">
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">RSR readonly</property>
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[select 
+ rsr_project.title,
+ rsr_project.subtitle,
+ rsr_project.iati_activity_id,
+ rsr_project.date_start_planned,
+ rsr_project.date_end_planned,
+ rsr_project.date_start_actual,
+ rsr_project.date_end_actual,
+ rsr_result.title as result_title,
+ rsr_result.id as result_pk,
+ rsr_result.type,
+ rsr_result.description as result_description,
+ rsr_result.aggregation_status,
+ rsr_indicator.title as indicator_title,
+ rsr_indicator.id as indicator_pk,
+ rsr_indicator.measure,
+ rsr_indicator.description as indicator_description,
+ rsr_indicator.ascending,
+ rsr_indicator.baseline_year,
+ rsr_indicator.baseline_value,
+ rsr_indicator.baseline_comment,
+ rsr_indicatorperiod.id as indicatorperiod_pk,
+ rsr_indicatorperiod.period_start,
+ rsr_indicatorperiod.period_end,
+ rsr_indicatorperiod.target_value,
+ rsr_indicatorperiod.target_comment,
+ rsr_indicatorperiod.actual_value,
+ rsr_indicatorperiod.actual_comment,
+ rsr_recipientcountry.country,
+ codelists_resulttype.name as type_name,
+ (SELECT string_agg(rsr_relatedproject.project_id, ', ')
+    FROM rsr_partnership ps2, rsr_organisation o2 
+    WHERE rsr_relatedproject.related_project_id=rsr_project.id
+) partners
+from rsr_project 
+--left join rsr_relatedproject on rsr_relatedproject.related_project_id = rsr_project.id
+left join rsr_result on rsr_project.id=rsr_result.project_id
+left join rsr_indicator on result_id=rsr_result.id
+left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
+left join codelists_resulttype on rsr_result.type=codelists_resulttype.code
+left join rsr_recipientcountry on rsr_project.id = rsr_recipientcountry.project_id
+where rsr_project.id =? and codelists_resulttype.version_id=6
+order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="38">
@@ -9050,6 +9820,8 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
     </page-setup>
     <body>
         <list id="1344">
+            <property name="fontFamily">"Arial"</property>
+            <property name="textAlign">left</property>
             <property name="dataSet">partnership_selection</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -9062,371 +9834,9 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
             <property name="repeatHeader">false</property>
             <property name="pageBreakInterval">0</property>
             <header>
-                <table id="1542">
-                    <property name="dataSet">Project_results_indicators_periods</property>
-                    <list-property name="boundDataColumns">
-                        <structure>
-                            <property name="name">title</property>
-                            <text-property name="displayName">title</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["title"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">subtitle</property>
-                            <text-property name="displayName">subtitle</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">iati_activity_id</property>
-                            <text-property name="displayName">iati_activity_id</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_start_planned</property>
-                            <text-property name="displayName">date_start_planned</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_end_planned</property>
-                            <text-property name="displayName">date_end_planned</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_start_actual</property>
-                            <text-property name="displayName">date_start_actual</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_end_actual</property>
-                            <text-property name="displayName">date_end_actual</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">result_title</property>
-                            <text-property name="displayName">result_title</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["result_title"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">result_pk</property>
-                            <text-property name="displayName">result_pk</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">type</property>
-                            <text-property name="displayName">type</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["type"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">result_description</property>
-                            <text-property name="displayName">result_description</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["result_description"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">aggregation_status</property>
-                            <text-property name="displayName">aggregation_status</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["aggregation_status"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">indicator_title</property>
-                            <text-property name="displayName">indicator_title</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">indicator_pk</property>
-                            <text-property name="displayName">indicator_pk</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">measure</property>
-                            <text-property name="displayName">measure</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["measure"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">indicator_description</property>
-                            <text-property name="displayName">indicator_description</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["indicator_description"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">ascending</property>
-                            <text-property name="displayName">ascending</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["ascending"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">baseline_year</property>
-                            <text-property name="displayName">baseline_year</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["baseline_year"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">baseline_value</property>
-                            <text-property name="displayName">baseline_value</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">baseline_comment</property>
-                            <text-property name="displayName">baseline_comment</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">indicatorperiod_pk</property>
-                            <text-property name="displayName">indicatorperiod_pk</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["indicatorperiod_pk"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">period_start</property>
-                            <text-property name="displayName">period_start</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["period_start"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">period_end</property>
-                            <text-property name="displayName">period_end</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["period_end"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">target_value</property>
-                            <text-property name="displayName">target_value</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["target_value"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">target_comment</property>
-                            <text-property name="displayName">target_comment</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["target_comment"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">actual_value</property>
-                            <text-property name="displayName">actual_value</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["actual_value"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">actual_comment</property>
-                            <text-property name="displayName">actual_comment</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["actual_comment"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">type_name</property>
-                            <text-property name="displayName">type_name</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                    </list-property>
-                    <property name="repeatHeader">false</property>
-                    <property name="pageBreakInterval">4000000</property>
-                    <column id="1671"/>
-                    <column id="1672"/>
-                    <column id="1673"/>
-                    <column id="1674"/>
-                    <column id="1675"/>
-                    <column id="1676"/>
-                    <column id="1677"/>
-                    <column id="1678"/>
-                    <column id="1679"/>
-                    <column id="1680"/>
-                    <column id="1681"/>
-                    <column id="1682"/>
-                    <column id="1683"/>
-                    <column id="1684"/>
-                    <column id="1685"/>
-                    <column id="1686"/>
-                    <column id="1687"/>
-                    <column id="1688"/>
-                    <column id="1689"/>
-                    <column id="1690"/>
-                    <column id="1691"/>
-                    <column id="1692"/>
-                    <column id="1693"/>
-                    <column id="1694"/>
-                    <column id="1695"/>
-                    <header>
-                        <row id="1543">
-                            <property name="fontFamily">"Arial"</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <cell id="1544">
-                                <label id="1545">
-                                    <text-property name="text">IATI ID</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1546">
-                                <label id="1547">
-                                    <text-property name="text">Project title</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1548">
-                                <label id="1549">
-                                    <text-property name="text">Subtitle</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1550">
-                                <label id="1551">
-                                    <text-property name="text">Result title</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1552">
-                                <label id="1553">
-                                    <text-property name="text">Type </text-property>
-                                </label>
-                            </cell>
-                            <cell id="1554">
-                                <label id="1555">
-                                    <text-property name="text">Result description</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1556">
-                                <label id="1557">
-                                    <text-property name="text">Aggregation status</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1558">
-                                <label id="1559">
-                                    <text-property name="text">Indicator title</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1560">
-                                <label id="1561">
-                                    <text-property name="text">Measure</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1562">
-                                <label id="1563">
-                                    <text-property name="text">Indicator description</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1564">
-                                <label id="1565">
-                                    <text-property name="text">Ascending</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1566">
-                                <label id="1567">
-                                    <text-property name="text">Baseline year</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1568">
-                                <label id="1569">
-                                    <text-property name="text">Baseline value</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1570">
-                                <label id="1571">
-                                    <text-property name="text">Baseline comment</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1572">
-                                <label id="1573">
-                                    <text-property name="text">Period start</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1574">
-                                <label id="1575">
-                                    <text-property name="text">Period end</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1576">
-                                <label id="1577">
-                                    <text-property name="text">Target value</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1578">
-                                <label id="1579">
-                                    <text-property name="text">Target comment</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1580">
-                                <label id="1581">
-                                    <text-property name="text">Actual value</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1582">
-                                <label id="1583">
-                                    <text-property name="text">Actual comment</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1584">
-                                <label id="1585">
-                                    <text-property name="text">Type name</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1586">
-                                <label id="1587">
-                                    <text-property name="text">Date start planned</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1588">
-                                <label id="1589">
-                                    <text-property name="text">Date end planned</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1590">
-                                <label id="1591">
-                                    <text-property name="text">Date start actual</text-property>
-                                </label>
-                            </cell>
-                            <cell id="1592">
-                                <label id="1593">
-                                    <text-property name="text">Date end actual</text-property>
-                                </label>
-                            </cell>
-                        </row>
-                    </header>
-                    <footer>
-                        <row id="1645">
-                            <cell id="1646"/>
-                            <cell id="1647"/>
-                            <cell id="1648"/>
-                            <cell id="1649"/>
-                            <cell id="1650"/>
-                            <cell id="1651"/>
-                            <cell id="1652"/>
-                            <cell id="1653"/>
-                            <cell id="1654"/>
-                            <cell id="1655"/>
-                            <cell id="1656"/>
-                            <cell id="1657"/>
-                            <cell id="1658"/>
-                            <cell id="1659"/>
-                            <cell id="1660"/>
-                            <cell id="1661"/>
-                            <cell id="1662"/>
-                            <cell id="1663"/>
-                            <cell id="1664"/>
-                            <cell id="1665"/>
-                            <cell id="1666"/>
-                            <cell id="1667"/>
-                            <cell id="1668"/>
-                            <cell id="1669"/>
-                            <cell id="1670"/>
-                        </row>
-                    </footer>
-                </table>
-            </header>
-            <detail>
-                <table id="1345">
-                    <property name="dataSet">Project_results_indicators_periods</property>
+                <table id="2061">
+                    <property name="fontWeight">bold</property>
+                    <property name="dataSet">test</property>
                     <list-property name="paramBindings">
                         <structure>
                             <property name="paramName">param_1</property>
@@ -9599,9 +10009,21 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
+                            <property name="name">country</property>
+                            <text-property name="displayName">country</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["country"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
                             <property name="name">type_name</property>
                             <text-property name="displayName">type_name</text-property>
                             <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">related_partners</property>
+                            <text-property name="displayName">related_partners</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["related_partners"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                     </list-property>
@@ -9609,194 +10031,649 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
                     <property name="pageBreakInterval">0</property>
                     <list-property name="sort">
                         <structure>
-                            <expression name="key" type="javascript">row["iati_activity_id"]</expression>
-                            <property name="direction">desc</property>
+                            <expression name="key" type="javascript">row["title"]</expression>
+                            <property name="direction">asc</property>
                             <property name="strength">-1</property>
                         </structure>
                     </list-property>
-                    <column id="1524"/>
-                    <column id="1489"/>
-                    <column id="1490"/>
-                    <column id="1496"/>
-                    <column id="1498"/>
-                    <column id="1499"/>
-                    <column id="1500"/>
-                    <column id="1501"/>
-                    <column id="1503"/>
-                    <column id="1504"/>
-                    <column id="1505"/>
-                    <column id="1506"/>
-                    <column id="1507"/>
-                    <column id="1508"/>
-                    <column id="1510"/>
-                    <column id="1511"/>
-                    <column id="1512"/>
-                    <column id="1513"/>
-                    <column id="1514"/>
-                    <column id="1515"/>
-                    <column id="1516"/>
-                    <column id="1540"/>
-                    <column id="1536"/>
-                    <column id="1532"/>
-                    <column id="1528"/>
-                    <detail>
-                        <row id="1403">
-                            <property name="fontFamily">"Arial"</property>
-                            <property name="textAlign">left</property>
-                            <cell id="1522">
-                                <data id="1409">
-                                    <property name="resultSetColumn">iati_activity_id</property>
-                                </data>
+                    <column id="2215"/>
+                    <column id="2216"/>
+                    <column id="2217"/>
+                    <column id="2218"/>
+                    <column id="2219"/>
+                    <column id="2220"/>
+                    <column id="2221"/>
+                    <column id="2222"/>
+                    <column id="2223"/>
+                    <column id="2224"/>
+                    <column id="2225"/>
+                    <column id="2226"/>
+                    <column id="2227"/>
+                    <column id="2228"/>
+                    <column id="2229"/>
+                    <column id="2230"/>
+                    <column id="2231"/>
+                    <column id="2232"/>
+                    <column id="2233"/>
+                    <column id="2234"/>
+                    <column id="2235"/>
+                    <column id="2236"/>
+                    <column id="2237"/>
+                    <column id="2238"/>
+                    <column id="2239"/>
+                    <column id="2240"/>
+                    <column id="2241"/>
+                    <column id="2242"/>
+                    <column id="2243"/>
+                    <column id="2244"/>
+                    <header>
+                        <row id="2062">
+                            <cell id="2063">
+                                <label id="2064">
+                                    <text-property name="text">title</text-property>
+                                </label>
                             </cell>
-                            <cell id="1404">
-                                <data id="1405">
+                            <cell id="2065">
+                                <label id="2066">
+                                    <text-property name="text">subtitle</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2067">
+                                <label id="2068">
+                                    <text-property name="text">iati_activity_id</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2069">
+                                <label id="2070">
+                                    <text-property name="text">date_start_planned</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2071">
+                                <label id="2072">
+                                    <text-property name="text">date_end_planned</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2073">
+                                <label id="2074">
+                                    <text-property name="text">date_start_actual</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2075">
+                                <label id="2076">
+                                    <text-property name="text">date_end_actual</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2077">
+                                <label id="2078">
+                                    <text-property name="text">result_title</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2079">
+                                <label id="2080">
+                                    <text-property name="text">result_pk</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2081">
+                                <label id="2082">
+                                    <text-property name="text">type</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2083">
+                                <label id="2084">
+                                    <text-property name="text">result_description</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2085">
+                                <label id="2086">
+                                    <text-property name="text">aggregation_status</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2087">
+                                <label id="2088">
+                                    <text-property name="text">indicator_title</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2089">
+                                <label id="2090">
+                                    <text-property name="text">indicator_pk</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2091">
+                                <label id="2092">
+                                    <text-property name="text">measure</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2093">
+                                <label id="2094">
+                                    <text-property name="text">indicator_description</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2095">
+                                <label id="2096">
+                                    <text-property name="text">ascending</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2097">
+                                <label id="2098">
+                                    <text-property name="text">baseline_year</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2099">
+                                <label id="2100">
+                                    <text-property name="text">baseline_value</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2101">
+                                <label id="2102">
+                                    <text-property name="text">baseline_comment</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2103">
+                                <label id="2104">
+                                    <text-property name="text">indicatorperiod_pk</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2105">
+                                <label id="2106">
+                                    <text-property name="text">period_start</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2107">
+                                <label id="2108">
+                                    <text-property name="text">period_end</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2109">
+                                <label id="2110">
+                                    <text-property name="text">target_value</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2111">
+                                <label id="2112">
+                                    <text-property name="text">target_comment</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2113">
+                                <label id="2114">
+                                    <text-property name="text">actual_value</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2115">
+                                <label id="2116">
+                                    <text-property name="text">actual_comment</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2117">
+                                <label id="2118">
+                                    <text-property name="text">country</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2119">
+                                <label id="2120">
+                                    <text-property name="text">type_name</text-property>
+                                </label>
+                            </cell>
+                            <cell id="2121">
+                                <label id="2122">
+                                    <text-property name="text">related_partners</text-property>
+                                </label>
+                            </cell>
+                        </row>
+                    </header>
+                    <footer>
+                        <row id="2184">
+                            <cell id="2185"/>
+                            <cell id="2186"/>
+                            <cell id="2187"/>
+                            <cell id="2188"/>
+                            <cell id="2189"/>
+                            <cell id="2190"/>
+                            <cell id="2191"/>
+                            <cell id="2192"/>
+                            <cell id="2193"/>
+                            <cell id="2194"/>
+                            <cell id="2195"/>
+                            <cell id="2196"/>
+                            <cell id="2197"/>
+                            <cell id="2198"/>
+                            <cell id="2199"/>
+                            <cell id="2200"/>
+                            <cell id="2201"/>
+                            <cell id="2202"/>
+                            <cell id="2203"/>
+                            <cell id="2204"/>
+                            <cell id="2205"/>
+                            <cell id="2206"/>
+                            <cell id="2207"/>
+                            <cell id="2208"/>
+                            <cell id="2209"/>
+                            <cell id="2210"/>
+                            <cell id="2211"/>
+                            <cell id="2212"/>
+                            <cell id="2213"/>
+                            <cell id="2214"/>
+                        </row>
+                    </footer>
+                </table>
+            </header>
+            <detail>
+                <table id="2245">
+                    <property name="dataSet">test</property>
+                    <list-property name="paramBindings">
+                        <structure>
+                            <property name="paramName">param_1</property>
+                            <simple-property-list name="expression">
+                                <value type="javascript">row["project_id"]</value>
+                            </simple-property-list>
+                        </structure>
+                    </list-property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">title</property>
+                            <text-property name="displayName">title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">subtitle</property>
+                            <text-property name="displayName">subtitle</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["subtitle"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">iati_activity_id</property>
+                            <text-property name="displayName">iati_activity_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["iati_activity_id"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_planned</property>
+                            <text-property name="displayName">date_start_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_planned</property>
+                            <text-property name="displayName">date_end_planned</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_planned"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_start_actual</property>
+                            <text-property name="displayName">date_start_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_start_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">date_end_actual</property>
+                            <text-property name="displayName">date_end_actual</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["date_end_actual"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_title</property>
+                            <text-property name="displayName">result_title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_pk</property>
+                            <text-property name="displayName">result_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_pk"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type</property>
+                            <text-property name="displayName">type</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">result_description</property>
+                            <text-property name="displayName">result_description</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["result_description"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">aggregation_status</property>
+                            <text-property name="displayName">aggregation_status</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["aggregation_status"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_title</property>
+                            <text-property name="displayName">indicator_title</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_title"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_pk</property>
+                            <text-property name="displayName">indicator_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_pk"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">measure</property>
+                            <text-property name="displayName">measure</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["measure"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicator_description</property>
+                            <text-property name="displayName">indicator_description</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicator_description"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">ascending</property>
+                            <text-property name="displayName">ascending</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["ascending"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">baseline_year</property>
+                            <text-property name="displayName">baseline_year</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["baseline_year"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">baseline_value</property>
+                            <text-property name="displayName">baseline_value</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["baseline_value"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">baseline_comment</property>
+                            <text-property name="displayName">baseline_comment</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">indicatorperiod_pk</property>
+                            <text-property name="displayName">indicatorperiod_pk</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["indicatorperiod_pk"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">period_start</property>
+                            <text-property name="displayName">period_start</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["period_start"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">period_end</property>
+                            <text-property name="displayName">period_end</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["period_end"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">target_value</property>
+                            <text-property name="displayName">target_value</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["target_value"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">target_comment</property>
+                            <text-property name="displayName">target_comment</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["target_comment"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">actual_value</property>
+                            <text-property name="displayName">actual_value</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["actual_value"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">actual_comment</property>
+                            <text-property name="displayName">actual_comment</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["actual_comment"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">country</property>
+                            <text-property name="displayName">country</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["country"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type_name</property>
+                            <text-property name="displayName">type_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">related_partners</property>
+                            <text-property name="displayName">related_partners</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["related_partners"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
+                    <property name="repeatHeader">false</property>
+                    <property name="pageBreakInterval">0</property>
+                    <list-property name="sort">
+                        <structure>
+                            <expression name="key" type="javascript">row["title"]</expression>
+                            <property name="direction">asc</property>
+                            <property name="strength">-1</property>
+                        </structure>
+                    </list-property>
+                    <column id="2399"/>
+                    <column id="2400"/>
+                    <column id="2401"/>
+                    <column id="2402"/>
+                    <column id="2403"/>
+                    <column id="2404"/>
+                    <column id="2405"/>
+                    <column id="2406"/>
+                    <column id="2407"/>
+                    <column id="2408"/>
+                    <column id="2409"/>
+                    <column id="2410"/>
+                    <column id="2411"/>
+                    <column id="2412"/>
+                    <column id="2413"/>
+                    <column id="2414"/>
+                    <column id="2415"/>
+                    <column id="2416"/>
+                    <column id="2417"/>
+                    <column id="2418"/>
+                    <column id="2419"/>
+                    <column id="2420"/>
+                    <column id="2421"/>
+                    <column id="2422"/>
+                    <column id="2423"/>
+                    <column id="2424"/>
+                    <column id="2425"/>
+                    <column id="2426"/>
+                    <column id="2427"/>
+                    <column id="2428"/>
+                    <detail>
+                        <row id="2307">
+                            <cell id="2308">
+                                <data id="2309">
                                     <property name="resultSetColumn">title</property>
                                 </data>
                             </cell>
-                            <cell id="1406">
-                                <data id="1407">
+                            <cell id="2310">
+                                <data id="2311">
                                     <property name="resultSetColumn">subtitle</property>
                                 </data>
                             </cell>
-                            <cell id="1418">
-                                <data id="1419">
-                                    <property name="resultSetColumn">result_title</property>
+                            <cell id="2312">
+                                <data id="2313">
+                                    <property name="resultSetColumn">iati_activity_id</property>
                                 </data>
                             </cell>
-                            <cell id="1422">
-                                <data id="1423">
-                                    <property name="resultSetColumn">type</property>
-                                </data>
-                            </cell>
-                            <cell id="1424">
-                                <data id="1425">
-                                    <property name="resultSetColumn">result_description</property>
-                                </data>
-                            </cell>
-                            <cell id="1426">
-                                <data id="1427">
-                                    <property name="resultSetColumn">aggregation_status</property>
-                                </data>
-                            </cell>
-                            <cell id="1428">
-                                <data id="1429">
-                                    <property name="resultSetColumn">indicator_title</property>
-                                </data>
-                            </cell>
-                            <cell id="1432">
-                                <data id="1433">
-                                    <property name="resultSetColumn">measure</property>
-                                </data>
-                            </cell>
-                            <cell id="1434">
-                                <data id="1435">
-                                    <property name="resultSetColumn">indicator_description</property>
-                                </data>
-                            </cell>
-                            <cell id="1436">
-                                <data id="1437">
-                                    <property name="resultSetColumn">ascending</property>
-                                </data>
-                            </cell>
-                            <cell id="1438">
-                                <data id="1439">
-                                    <property name="resultSetColumn">baseline_year</property>
-                                </data>
-                            </cell>
-                            <cell id="1440">
-                                <data id="1441">
-                                    <property name="resultSetColumn">baseline_value</property>
-                                </data>
-                            </cell>
-                            <cell id="1442">
-                                <data id="1443">
-                                    <property name="resultSetColumn">baseline_comment</property>
-                                </data>
-                            </cell>
-                            <cell id="1446">
-                                <data id="1447">
-                                    <property name="resultSetColumn">period_start</property>
-                                </data>
-                            </cell>
-                            <cell id="1448">
-                                <data id="1449">
-                                    <property name="resultSetColumn">period_end</property>
-                                </data>
-                            </cell>
-                            <cell id="1450">
-                                <data id="1451">
-                                    <property name="resultSetColumn">target_value</property>
-                                </data>
-                            </cell>
-                            <cell id="1452">
-                                <data id="1453">
-                                    <property name="resultSetColumn">target_comment</property>
-                                </data>
-                            </cell>
-                            <cell id="1454">
-                                <data id="1455">
-                                    <property name="resultSetColumn">actual_value</property>
-                                </data>
-                            </cell>
-                            <cell id="1456">
-                                <data id="1457">
-                                    <property name="resultSetColumn">actual_comment</property>
-                                </data>
-                            </cell>
-                            <cell id="1458">
-                                <data id="1459">
-                                    <property name="resultSetColumn">type_name</property>
-                                </data>
-                            </cell>
-                            <cell id="1538">
-                                <data id="1411">
+                            <cell id="2314">
+                                <data id="2315">
                                     <property name="resultSetColumn">date_start_planned</property>
                                 </data>
                             </cell>
-                            <cell id="1534">
-                                <data id="1413">
+                            <cell id="2316">
+                                <data id="2317">
                                     <property name="resultSetColumn">date_end_planned</property>
                                 </data>
                             </cell>
-                            <cell id="1530">
-                                <data id="1415">
+                            <cell id="2318">
+                                <data id="2319">
                                     <property name="resultSetColumn">date_start_actual</property>
                                 </data>
                             </cell>
-                            <cell id="1526">
-                                <data id="1417">
+                            <cell id="2320">
+                                <data id="2321">
                                     <property name="resultSetColumn">date_end_actual</property>
+                                </data>
+                            </cell>
+                            <cell id="2322">
+                                <data id="2323">
+                                    <property name="resultSetColumn">result_title</property>
+                                </data>
+                            </cell>
+                            <cell id="2324">
+                                <data id="2325">
+                                    <property name="resultSetColumn">result_pk</property>
+                                </data>
+                            </cell>
+                            <cell id="2326">
+                                <data id="2327">
+                                    <property name="resultSetColumn">type</property>
+                                </data>
+                            </cell>
+                            <cell id="2328">
+                                <data id="2329">
+                                    <property name="resultSetColumn">result_description</property>
+                                </data>
+                            </cell>
+                            <cell id="2330">
+                                <data id="2331">
+                                    <property name="resultSetColumn">aggregation_status</property>
+                                </data>
+                            </cell>
+                            <cell id="2332">
+                                <data id="2333">
+                                    <property name="resultSetColumn">indicator_title</property>
+                                </data>
+                            </cell>
+                            <cell id="2334">
+                                <data id="2335">
+                                    <property name="resultSetColumn">indicator_pk</property>
+                                </data>
+                            </cell>
+                            <cell id="2336">
+                                <data id="2337">
+                                    <property name="resultSetColumn">measure</property>
+                                </data>
+                            </cell>
+                            <cell id="2338">
+                                <data id="2339">
+                                    <property name="resultSetColumn">indicator_description</property>
+                                </data>
+                            </cell>
+                            <cell id="2340">
+                                <data id="2341">
+                                    <property name="resultSetColumn">ascending</property>
+                                </data>
+                            </cell>
+                            <cell id="2342">
+                                <data id="2343">
+                                    <property name="resultSetColumn">baseline_year</property>
+                                </data>
+                            </cell>
+                            <cell id="2344">
+                                <data id="2345">
+                                    <property name="resultSetColumn">baseline_value</property>
+                                </data>
+                            </cell>
+                            <cell id="2346">
+                                <data id="2347">
+                                    <property name="resultSetColumn">baseline_comment</property>
+                                </data>
+                            </cell>
+                            <cell id="2348">
+                                <data id="2349">
+                                    <property name="resultSetColumn">indicatorperiod_pk</property>
+                                </data>
+                            </cell>
+                            <cell id="2350">
+                                <data id="2351">
+                                    <property name="resultSetColumn">period_start</property>
+                                </data>
+                            </cell>
+                            <cell id="2352">
+                                <data id="2353">
+                                    <property name="resultSetColumn">period_end</property>
+                                </data>
+                            </cell>
+                            <cell id="2354">
+                                <data id="2355">
+                                    <property name="resultSetColumn">target_value</property>
+                                </data>
+                            </cell>
+                            <cell id="2356">
+                                <data id="2357">
+                                    <property name="resultSetColumn">target_comment</property>
+                                </data>
+                            </cell>
+                            <cell id="2358">
+                                <data id="2359">
+                                    <property name="resultSetColumn">actual_value</property>
+                                </data>
+                            </cell>
+                            <cell id="2360">
+                                <data id="2361">
+                                    <property name="resultSetColumn">actual_comment</property>
+                                </data>
+                            </cell>
+                            <cell id="2362">
+                                <data id="2363">
+                                    <property name="resultSetColumn">country</property>
+                                </data>
+                            </cell>
+                            <cell id="2364">
+                                <data id="2365">
+                                    <property name="resultSetColumn">type_name</property>
+                                </data>
+                            </cell>
+                            <cell id="2366">
+                                <data id="2367">
+                                    <property name="resultSetColumn">related_partners</property>
                                 </data>
                             </cell>
                         </row>
                     </detail>
                     <footer>
-                        <row id="1460">
-                            <cell id="1523"/>
-                            <cell id="1461"/>
-                            <cell id="1462"/>
-                            <cell id="1468"/>
-                            <cell id="1470"/>
-                            <cell id="1471"/>
-                            <cell id="1472"/>
-                            <cell id="1473"/>
-                            <cell id="1475"/>
-                            <cell id="1476"/>
-                            <cell id="1477"/>
-                            <cell id="1478"/>
-                            <cell id="1479"/>
-                            <cell id="1480"/>
-                            <cell id="1482"/>
-                            <cell id="1483"/>
-                            <cell id="1484"/>
-                            <cell id="1485"/>
-                            <cell id="1486"/>
-                            <cell id="1487"/>
-                            <cell id="1488"/>
-                            <cell id="1539"/>
-                            <cell id="1535"/>
-                            <cell id="1531"/>
-                            <cell id="1527"/>
+                        <row id="2368">
+                            <cell id="2369"/>
+                            <cell id="2370"/>
+                            <cell id="2371"/>
+                            <cell id="2372"/>
+                            <cell id="2373"/>
+                            <cell id="2374"/>
+                            <cell id="2375"/>
+                            <cell id="2376"/>
+                            <cell id="2377"/>
+                            <cell id="2378"/>
+                            <cell id="2379"/>
+                            <cell id="2380"/>
+                            <cell id="2381"/>
+                            <cell id="2382"/>
+                            <cell id="2383"/>
+                            <cell id="2384"/>
+                            <cell id="2385"/>
+                            <cell id="2386"/>
+                            <cell id="2387"/>
+                            <cell id="2388"/>
+                            <cell id="2389"/>
+                            <cell id="2390"/>
+                            <cell id="2391"/>
+                            <cell id="2392"/>
+                            <cell id="2393"/>
+                            <cell id="2394"/>
+                            <cell id="2395"/>
+                            <cell id="2396"/>
+                            <cell id="2397"/>
+                            <cell id="2398"/>
                         </row>
                     </footer>
                 </table>
