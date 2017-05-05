@@ -156,9 +156,11 @@ export default class App extends React.Component {
                 </div>
                 <div className={'periodBtns'}>
                     <div className={'row'}>                        
-                        <div className={'periodFilter col-sm-12'}>
+                        <div className={'periodFilter col-sm-6'}>
                             <div className={'row'}><h5>Filter periods</h5>
-                                <div className="col-xs-12">
+                                <div className="col-xs-12">                                    
+                                    <ToggleButton onClick={this.resetFilters} label="All periods"
+                                                  disabled={buttonDisabled}/>
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
                                                   disabled={buttonDisabled}/>
@@ -167,12 +169,11 @@ export default class App extends React.Component {
                                     <ToggleButton onClick={this.showApproved}
                                                   label={approvedUpdateLabel}
                                                   disabled={buttonDisabled}/>
-                                    <ToggleButton onClick={this.resetFilters} label="Reset filters"
-                                                  disabled={buttonDisabled}/>
+
                                 </div>
                             </div>
                         </div>
-                        <div className={'periodBulkAct col-sm-12'}>
+                        <div className={'periodBulkAct col-sm-6'}>
                             <div className={'row'}><h5>Bulk action</h5>
                                 <div className="col-xs-6">
                                     <Select options={selectOptions}

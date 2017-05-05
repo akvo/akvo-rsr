@@ -2994,7 +2994,7 @@ div.iatiFilters {
         background: none;
         /*Periods block*/ }
         .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline {
-          margin-top: -17px;
+          margin-top: -10px;
           border-bottom: 1px solid rgba(32, 32, 36, 0.1); }
           .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul {
             color: rgba(32, 32, 36, 0.4);
@@ -3015,7 +3015,7 @@ div.iatiFilters {
   border: none !important;
   padding: 0; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
-    padding: 0 10px;
+    padding: 5px 10px;
     cursor: pointer;
     background-color: white;
     margin-bottom: 0;
@@ -3024,6 +3024,7 @@ div.iatiFilters {
     -webkit-transition: background-color 0.2s linear;
     transition: background-color 0.2s linear; }
     .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul:hover {
+      padding: 5px 10px;
       background-color: rgba(44, 42, 116, 0.1); }
     .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li {
       display: inline;
@@ -3084,7 +3085,7 @@ div.iatiFilters {
       right: 10px !important;
       background: url(../images/arrowUpDown.png) no-repeat top center !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul {
-      padding: 0 10px; }
+      padding: 5px 10px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul li {
         display: inline; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
@@ -3121,17 +3122,19 @@ div.iatiFilters {
           background: #2c2a74;
           color: white; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .arrow {
-      margin-right: 8px !important; }
+      margin-right: 8px !important;
+      margin-top: -5px !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .comments {
       margin-top: 20px; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item {
-      border: 1px solid rgba(119, 97, 0, 0.15);
-      background: rgba(255, 255, 255, 0.5);
-      margin-bottom: 10px; }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item:last-child {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.4) !important;
+      background: rgba(255, 255, 255, 0.2) !important;
+      margin-bottom: 10px;
+      padding-left: 15px; }
+      border .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item:last-child {
         margin-bottom: 5px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header {
-        background: rgba(255, 255, 255, 0.3); }
+        background: none !important; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header span {
           padding-left: 5px; }
           .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item .rc-collapse-header span button {
@@ -3143,8 +3146,8 @@ div.iatiFilters {
               cursor: not-allowed !important;
               pointer-events: none !important; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active {
-        border: 1px solid rgba(0, 167, 157, 0.5) !important;
-        box-shadow: 0 0 10px rgba(0, 167, 157, 0.5); }
+        border: 1px solid white !important;
+        background: rgba(255, 255, 255, 0.2) !important; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header {
           background: rgba(255, 255, 255, 0.3); }
           .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header .arrow {
@@ -3158,7 +3161,7 @@ div.iatiFilters {
           -ms-flex: 1;
           flex: 1;
           position: relative;
-          background: rgba(225, 237, 195, 0.1); }
+          background: rgba(225, 237, 195, 0); }
 
 .update-container {
   padding: 0 10px; }

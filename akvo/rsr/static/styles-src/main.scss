@@ -4350,7 +4350,7 @@ div.iatiFilters {
 
                         .rc-collapse-content-box {
                             .baseline {
-                                margin-top: -17px;
+                                margin-top: -10px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
 
                                 ul {
@@ -4401,7 +4401,7 @@ div.iatiFilters {
                 span {
                     &.periodWrap {
                         ul {
-                            padding: 0 10px;
+                            padding: 5px 10px;
                             cursor: pointer;
                             background-color: white;
                             margin-bottom: 0;
@@ -4409,6 +4409,7 @@ div.iatiFilters {
                             @include transition(background-color 0.2s linear);
 
                             &:hover {
+                                padding: 5px 10px;
                                 background-color: rgba($akvoPurple, 0.1);
                             }
 
@@ -4510,7 +4511,7 @@ div.iatiFilters {
                     span {
                         &.periodWrap {
                             ul {
-                                padding: 0 10px;
+                                padding: 5px 10px;
 
                                 li {
                                     display: inline;
@@ -4573,6 +4574,7 @@ div.iatiFilters {
                             .updates {
                                 .arrow {
                                     margin-right: 8px !important;
+                                    margin-top: -5px !important;
                                 }
 
                                 .comments {
@@ -4581,16 +4583,18 @@ div.iatiFilters {
 
                                 .rc-collapse {
                                     .rc-collapse-item {
-                                        border: 1px solid rgba($secondary7, 0.15);
-                                        background: rgba(white, 0.5);
+                                        border-bottom: 1px solid rgba(white, 0.4) !important;
+                                        background: rgba(white, 0.2) !important;
                                         margin-bottom: 10px;
+                                        padding-left: 15px;
 
+                                        border
                                         &:last-child {
                                             margin-bottom: 5px;
                                         }
 
                                         .rc-collapse-header {
-                                            background: rgba(white, 0.3);
+                                            background: none !important;
 
                                             span {
                                                 padding-left: 5px;
@@ -4612,8 +4616,8 @@ div.iatiFilters {
                                         }
 
                                         &.rc-collapse-item-active {
-                                            border: 1px solid rgba($rsrGreen, 0.5) !important;
-                                            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
+                                            border: 1px solid white !important;
+                                            background: rgba(white, 0.2) !important;
 
                                             .rc-collapse-header {
                                                 background: rgba(white, 0.3);
@@ -4633,7 +4637,7 @@ div.iatiFilters {
                                                     -ms-flex: 1;
                                                     flex: 1;
                                                     position: relative;
-                                                    background: rgba($secondary1, 0.1);
+                                                    background: rgba($secondary1, 0);
 
                                                     .rc-collapse-content-box {}
                                                 }

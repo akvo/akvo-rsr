@@ -160,7 +160,7 @@ function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
 
-    loadAsync('/rest/v1/typeaheads/organisations?format=json&partners=1', 0, 3);
+    loadAsync('/rest/v1/typeaheads/organisations?format=json', 0, 3);
 }
 
 var loadJS = function(url, implementationCode, location){
