@@ -230,7 +230,9 @@ export default class Updates extends React.Component {
 
     hideMe(id) {
         // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
-        return !this.props.keys[collapseId(c.OBJECTS_COMMENTS, id)] && this.props.ui.hide;
+        const parentCollapse = this.props.keys[collapseId(c.OBJECTS_UPDATES, this.props.parentId)];
+        const mePresent = parentCollapse && parentCollapse.find((updateID)=> parseInt(updateID) == id);
+        return !parentCollapse && !mePresent && this.props.ui.hide;
     }
 
     renderPanels(updateIds) {

@@ -142,10 +142,11 @@ export const getDraftUpdates = createSelector(
     /*
         Return an array with IDs of updates with status == c.UPDATE_STATUS_DRAFT
      */
-    [getUpdateIds, getUpdateObjects],
-    (updateIds, updateObjects) => {
-        return updateIds && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status == c.UPDATE_STATUS_DRAFT
+    [getUpdateIds, getPeriodObjects, getUpdateObjects],
+    (updateIds, periodObjects, updateObjects) => {
+        return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
+            updateObjects[id].status == c.UPDATE_STATUS_DRAFT &&
+            periodObjects[updateObjects[id].period].locked == false
         );
     }
 );
@@ -155,10 +156,11 @@ export const getApprovedUpdates = createSelector(
     /*
         Return an array with IDs of updates with status == c.UPDATE_STATUS_APPROVED
      */
-    [getUpdateIds, getUpdateObjects],
-    (updateIds, updateObjects) => {
-        return updateIds && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status == c.UPDATE_STATUS_APPROVED
+    [getUpdateIds, getPeriodObjects, getUpdateObjects],
+    (updateIds, periodObjects, updateObjects) => {
+        return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
+            updateObjects[id].status == c.UPDATE_STATUS_APPROVED &&
+            periodObjects[updateObjects[id].period].locked == false
         );
     }
 );

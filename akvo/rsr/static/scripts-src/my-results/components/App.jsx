@@ -27,8 +27,10 @@ import {
     selectPeriodsThatNeedReporting,
     showUpdates
 } from "../actions/ui-actions";
+
+import * as c from "../const"
 import {getApprovedUpdates, getDraftUpdates} from "../selectors";
-import {fieldValueOrSpinner} from "../utils";
+import { fieldValueOrSpinner, openNodes } from "../utils"
 
 import Results from "./Results";
 import {ToggleButton} from "./common";
@@ -74,7 +76,7 @@ export default class App extends React.Component {
     fetchUser(userId) {
         fetchModel('user', userId, activateToggleAll);
         this.props.dispatch(
-            {type: UPDATE_MODEL_FULFILLED, payload: {model, object}});
+            {type: c.UPDATE_MODEL_FULFILLED, payload: {model, object}});
 
     }
 
@@ -164,6 +166,8 @@ export default class App extends React.Component {
                                                   disabled={buttonDisabled}/>
                                     <ToggleButton onClick={this.showApproved}
                                                   label={approvedUpdateLabel}
+                                                  disabled={buttonDisabled}/>
+                                    <ToggleButton onClick={this.resetFilters} label="Reset filters"
                                                   disabled={buttonDisabled}/>
                                 </div>
                             </div>

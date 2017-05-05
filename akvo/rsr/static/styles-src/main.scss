@@ -4894,6 +4894,12 @@ div.iatiFilters {
     }
 }
 
+.results-bar-titles {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: $akvoBlack;
+}
+
 .hidePanel {
     display: none;
 }

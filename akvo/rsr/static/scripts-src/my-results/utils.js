@@ -197,6 +197,10 @@ export function parentModelName(model) {
     }
 }
 
+export function levelAbove(model, compare) {
+    return c.MODEL_INDEX[model] < c.MODEL_INDEX[compare];
+}
+
 
 function tree(model, parentId) {
     // Construct a tree representation of the subtree of data with object model[parentId] as root

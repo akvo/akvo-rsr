@@ -3307,5 +3307,10 @@ div.iatiFilters {
       .periodMenuBar .periodBtns .periodFilter h5 {
         padding-left: 15px; }
 
+.results-bar-titles {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #202024; }
+
 .hidePanel {
   display: none; }

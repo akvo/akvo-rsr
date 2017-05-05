@@ -28,6 +28,7 @@ import AlertFactory from "./alertContainer"
 import { ToggleButton } from "./common"
 import { NewUpdateButton } from "./updates/UpdateForm";
 import Updates from "./updates/Updates";
+import {levelAbove} from "../utils";
 
 
 const ToggleAlert = ({message, close}) => (
@@ -233,8 +234,13 @@ export default class Periods extends React.Component {
     }
 
     hideMe(id) {
-        // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
-        return !this.props.keys[collapseId(c.OBJECTS_UPDATES, id)] && this.props.ui.hide;
+        // determine if we're to hide this node
+        // if ui.hide is not false
+        return this.props.ui.hide &&
+            // and we're high up enough in the tree
+            levelAbove(c.OBJECTS_PERIODS, this.props.ui.hide) &&
+            // and none of our child nodes are open
+            !this.props.keys[collapseId(c.OBJECTS_UPDATES, id)];
     }
 
     renderPanels(periodIds) {
@@ -257,8 +263,8 @@ export default class Periods extends React.Component {
                     )(DeleteUpdateAlert);
                     delUpdateAlert = <DelUpdateAlert />;
                 }
-                // let className = this.hideMe(id) ? 'hidePanel' : '';
-                let className = '';
+                let className = this.hideMe(id) ? 'hidePanel' : '';
+                // let className = '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
 
                 return (

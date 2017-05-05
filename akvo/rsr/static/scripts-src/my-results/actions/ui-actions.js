@@ -98,7 +98,7 @@ export function noHide() {
 
 export function showUpdates(updateIds) {
     periodSelectReset();
-    uiHideMode(true);
+    uiHideMode(c.OBJECTS_UPDATES);
     updateIds.map((id) => updateFormOpen(id));
     openNodes(c.OBJECTS_UPDATES, updateIds, true);
 }
@@ -142,7 +142,7 @@ export function periodsThatNeedReporting() {
 export function selectPeriodsThatNeedReporting() {
     const needReporting = periodsThatNeedReporting();
     periodSelectReset();
-    uiHideMode(true);
+    uiHideMode(c.OBJECTS_PERIODS);
     openNodes(c.OBJECTS_PERIODS, needReporting, true);
 }
 
