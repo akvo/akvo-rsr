@@ -20540,7 +20540,7 @@ mmd(row["text"]);</expression>
                     <property name="marginLeft">0pt</property>
                     <property name="pageBreakAfter">always</property>
                     <property name="pageBreakInside">auto</property>
-                    <property name="width">179.12291666666664mm</property>
+                    <property name="width">178.85833333333335mm</property>
                     <property name="dataSet">Results_indicators_periods</property>
                     <list-property name="paramBindings">
                         <structure>
@@ -20685,6 +20685,13 @@ null</expression>
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
+                        <structure>
+                            <property name="name">Column Binding</property>
+                            <text-property name="displayName">date_start</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["period_start"]</expression>
+                            <property name="dataType">date</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
                     <structure name="toc"/>
                     <method name="onCreate"><![CDATA[var allan = 7;
@@ -20698,7 +20705,7 @@ null</expression>
                         <property name="width">55.03333333333333mm</property>
                     </column>
                     <column id="167">
-                        <property name="width">46.831250000000004mm</property>
+                        <property name="width">38.452777777777776mm</property>
                     </column>
                     <column id="37">
                         <property name="width">45.24375mm</property>
@@ -20876,30 +20883,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         </row>
                                         <row id="202">
                                             <property name="height">9.172222222222222mm</property>
-                                            <cell id="276"/>
-                                            <cell id="203">
-                                                <label id="186">
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">italic</property>
-                                                    <property name="paddingTop">0pt</property>
-                                                    <property name="paddingBottom">0pt</property>
-                                                    <property name="textAlign">center</property>
-                                                    <text-property name="text">BASELINE</text-property>
-                                                </label>
-                                            </cell>
-                                            <cell id="204">
-                                                <property name="color">#F0F0F0</property>
-                                                <label id="169">
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">italic</property>
-                                                    <property name="color">black</property>
-                                                    <property name="paddingTop">0pt</property>
-                                                    <property name="paddingBottom">0pt</property>
-                                                    <property name="textAlign">center</property>
-                                                    <text-property name="text">ACTUAL</text-property>
-                                                </label>
-                                            </cell>
-                                            <cell id="205">
+                                            <cell id="276">
                                                 <label id="188">
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
@@ -20909,6 +20893,31 @@ reportContext.getGlobalVariable('debug')</expression>
                                                     <text-property name="text">TARGET</text-property>
                                                 </label>
                                             </cell>
+                                            <cell id="203">
+                                                <label id="186">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="paddingTop">0pt</property>
+                                                    <property name="paddingBottom">0pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <text-property name="text">BASELINE</text-property>
+                                                </label>
+                                            </cell>
+                                            <cell id="204">
+                                                <property name="color">#F0F0F0</property>
+                                                <label id="169">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="color">black</property>
+                                                    <property name="marginLeft">24pt</property>
+                                                    <property name="paddingTop">0pt</property>
+                                                    <property name="paddingLeft">1pt</property>
+                                                    <property name="paddingBottom">0pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <text-property name="text">ACTUAL</text-property>
+                                                </label>
+                                            </cell>
+                                            <cell id="205"/>
                                         </row>
                                     </grid>
                                 </cell>
@@ -20931,9 +20940,127 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="paddingRight">8pt</property>
                                 <property name="textAlign">center</property>
                                 <property name="verticalAlign">middle</property>
+                                <data id="108">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginTop">4pt</property>
+                                    <property name="marginBottom">7pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["target_value_number"] != -1</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">target_value</property>
+                                </data>
+                                <data id="296">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginTop">4pt</property>
+                                    <property name="marginBottom">4pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <structure name="numberFormat">
+                                        <property name="category">General Number</property>
+                                        <property name="pattern">General Number</property>
+                                    </structure>
+                                    <property name="textAlign">center</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["target_value_number"] == -1</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">target_value_number</property>
+                                </data>
+                            </cell>
+                            <cell id="28">
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">8pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">8pt</property>
+                                <property name="verticalAlign">middle</property>
+                                <text-data id="263">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="color">#000000</property>
+                                    <property name="marginTop">4pt</property>
+                                    <property name="marginLeft">12pt</property>
+                                    <property name="marginBottom">4pt</property>
+                                    <property name="paddingTop">10px</property>
+                                    <property name="paddingLeft">4pt</property>
+                                    <property name="paddingBottom">8pt</property>
+                                    <property name="textAlign">left</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!(row["baseline_value"] &amp;&amp; row["baseline_year"])</expression>
+                                        </structure>
+                                    </list-property>
+                                    <expression name="valueExpr">row["baseline_value"] + " " + (row["baseline_year"] ? "(" + row["baseline_year"] + ")" : "")</expression>
+                                    <property name="contentType">html</property>
+                                </text-data>
+                            </cell>
+                            <cell id="163">
+                                <property name="paddingLeft">0pt</property>
+                                <property name="verticalAlign">middle</property>
+                                <data id="106">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginTop">4pt</property>
+                                    <property name="marginBottom">7pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <structure name="numberFormat">
+                                        <property name="category">Unformatted</property>
+                                    </structure>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["actual_value_number"] != -1</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">actual_value</property>
+                                </data>
+                                <data id="292">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginTop">4pt</property>
+                                    <property name="marginBottom">4pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <structure name="numberFormat">
+                                        <property name="category">General Number</property>
+                                        <property name="pattern">General Number</property>
+                                    </structure>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["actual_value_number"] == -1</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">actual_value_number</property>
+                                </data>
+                                <data id="904">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginLeft">16pt</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Custom</property>
+                                        <property name="pattern">yy MMM</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">Column Binding</property>
+                                </data>
+                            </cell>
+                            <cell id="30">
+                                <property name="verticalAlign">middle</property>
                                 <text-data name="percentage" id="215">
                                     <property name="fontFamily">sans-serif</property>
-                                    <property name="fontSize">10pt</property>
+                                    <property name="fontSize">9pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">none</property>
@@ -20943,9 +21070,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="marginLeft">0pt</property>
                                     <property name="marginBottom">-40pt</property>
                                     <property name="paddingTop">25pt</property>
-                                    <property name="paddingLeft">5pt</property>
+                                    <property name="paddingLeft">12pt</property>
                                     <property name="paddingBottom">12pt</property>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <property name="display">block</property>
                                     <expression name="valueExpr">(row["progress_pct"] != null)&#13;
 ?&#13;
@@ -21571,109 +21698,6 @@ Math.min(row["progress_pct"],100)&#13;
                                     </list-property>
                                     <property name="style">progress_low</property>
                                 </extended-item>
-                            </cell>
-                            <cell id="28">
-                                <property name="paddingTop">1pt</property>
-                                <property name="paddingLeft">8pt</property>
-                                <property name="paddingBottom">1pt</property>
-                                <property name="paddingRight">8pt</property>
-                                <property name="verticalAlign">middle</property>
-                                <text-data id="263">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="color">#000000</property>
-                                    <property name="marginTop">4pt</property>
-                                    <property name="marginBottom">4pt</property>
-                                    <property name="paddingTop">10px</property>
-                                    <property name="paddingLeft">8pt</property>
-                                    <property name="paddingBottom">8pt</property>
-                                    <property name="textAlign">center</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!(row["baseline_value"] &amp;&amp; row["baseline_year"])</expression>
-                                        </structure>
-                                    </list-property>
-                                    <expression name="valueExpr">row["baseline_value"] + " " + (row["baseline_year"] ? "(" + row["baseline_year"] + ")" : "")</expression>
-                                    <property name="contentType">html</property>
-                                </text-data>
-                            </cell>
-                            <cell id="163">
-                                <property name="verticalAlign">middle</property>
-                                <data id="106">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="marginTop">4pt</property>
-                                    <property name="marginBottom">7pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <structure name="numberFormat">
-                                        <property name="category">Unformatted</property>
-                                    </structure>
-                                    <property name="textAlign">center</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["actual_value_number"] != -1</expression>
-                                        </structure>
-                                    </list-property>
-                                    <property name="resultSetColumn">actual_value</property>
-                                </data>
-                                <data id="292">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="marginTop">4pt</property>
-                                    <property name="marginBottom">4pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <structure name="numberFormat">
-                                        <property name="category">General Number</property>
-                                        <property name="pattern">General Number</property>
-                                    </structure>
-                                    <property name="textAlign">center</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["actual_value_number"] == -1</expression>
-                                        </structure>
-                                    </list-property>
-                                    <property name="resultSetColumn">actual_value_number</property>
-                                </data>
-                            </cell>
-                            <cell id="30">
-                                <property name="verticalAlign">middle</property>
-                                <data id="108">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="marginTop">4pt</property>
-                                    <property name="marginBottom">7pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="textAlign">center</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["target_value_number"] != -1</expression>
-                                        </structure>
-                                    </list-property>
-                                    <property name="resultSetColumn">target_value</property>
-                                </data>
-                                <data id="296">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="marginTop">4pt</property>
-                                    <property name="marginBottom">4pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <structure name="numberFormat">
-                                        <property name="category">General Number</property>
-                                        <property name="pattern">General Number</property>
-                                    </structure>
-                                    <property name="textAlign">center</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["target_value_number"] == -1</expression>
-                                        </structure>
-                                    </list-property>
-                                    <property name="resultSetColumn">target_value_number</property>
-                                </data>
                             </cell>
                         </row>
                         <row id="771">
