@@ -34,6 +34,8 @@ Date: 13 April 2017
 
 # Akvo RSR version 3.23 New Delhi
 
+Date: 31 March 2017
+
 ## General improvements
 
 [#2581](https://github.com/akvo/akvo-rsr/issue/2581) Change landing page for My
@@ -78,6 +80,8 @@ upgrade
  contains whitespace. This is part of the ongoing work on SSL for RSR.
 
 # Akvo RSR version 3.22 Chisinau
+
+Date: 10 March 2017
 
 ## General improvements
 
