@@ -29,7 +29,10 @@ import {
 } from "../actions/ui-actions";
 
 import * as c from "../const"
-import {getApprovedUpdates, getDraftUpdates} from "../selectors";
+import {
+    getApprovedPeriods, getApprovedUpdates, getDraftUpdates,
+    getUpdatesForApprovedPeriods
+} from "../selectors";
 import { fieldValueOrSpinner, openNodes } from "../utils"
 
 import Results from "./Results";
@@ -59,7 +62,8 @@ const modifyUser = (isMEManager) => {
         ui: store.ui,
         user: store.models.user,
         draftUpdates: getDraftUpdates(store),
-        approvedUpdates: getApprovedUpdates(store),
+        approvedPeriods: getApprovedPeriods(store),
+        approvedUpdates: getUpdatesForApprovedPeriods(store),
     }
 })
 export default class App extends React.Component {
@@ -143,8 +147,8 @@ export default class App extends React.Component {
         const needReportingLabel = `Need reporting (${needReportingCount})`;
         const draftUpdateCount = fieldValueOrSpinner(this.props.draftUpdates, 'length');
         const draftUpdateLabel = `Pending approval (${draftUpdateCount})`;
-        const approvedUpdateCount = fieldValueOrSpinner(this.props.approvedUpdates, 'length');
-        const approvedUpdateLabel = `Approved (${approvedUpdateCount})`;
+        const approvedPeriodCount = fieldValueOrSpinner(this.props.approvedPeriods, 'length');
+        const approvedUpdateLabel = `Approved (${approvedPeriodCount})`;
         const buttonDisabled = !this.props.ui.allFetched;
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
 

@@ -164,3 +164,31 @@ export const getApprovedUpdates = createSelector(
         );
     }
 );
+
+
+export const getApprovedPeriods = createSelector(
+    /*
+        Return an array with IDs of periods with at least one update where all updates have
+        status == c.UPDATE_STATUS_APPROVED
+     */
+    [getPeriodIds, getPeriodObjects, getPeriodsChildrenIds, getUpdateObjects],
+    (periodIds, periodObjects, childUpdateIds, updateObjects) => periodIds && childUpdateIds && updateObjects && periodIds.filter(
+        (periodId) =>
+            periodObjects[periodId].locked == false &&
+            childUpdateIds[periodId].length > 0 &&
+            childUpdateIds[periodId].every(
+                (updateId) => updateObjects[updateId].status = c.UPDATE_STATUS_APPROVED
+            )
+    )
+);
+
+export const getUpdatesForApprovedPeriods = createSelector(
+    /*
+        Return an array with IDs of updates that are chilrden of periods returned from
+        getApprovedPeriods
+     */
+    [getUpdateIds, getUpdateObjects, getApprovedPeriods],
+    (updateIds, updateObjects, periodIds) => updateIds && updateObjects && periodIds && updateIds.filter(
+        updateId => periodIds.indexOf(updateObjects[updateId].period) != -1
+    )
+);

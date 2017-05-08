@@ -137,8 +137,8 @@ export function periodsThatNeedReporting() {
     const unlockedPeriods = filterPeriodsByLock(false);
     return unlockedPeriods.filter((id) => {
         const meta = periods.objects[id]._meta;
-        return meta && meta.children.ids.filter((id) => meta.children.objects[id].data);
-    })
+        return meta && meta.children.ids.length == 0;
+    });
 }
 
 
