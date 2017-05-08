@@ -71,6 +71,8 @@ removes associated comment from the actual value comment
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
+Date: 14 March 2017 
+
 ## Bug fixes
 
 [#2569](https://github.com/akvo/akvo-rsr/issues/2569) Django pipeline not configured correctly after
