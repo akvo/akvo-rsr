@@ -6,6 +6,8 @@
 
 # Akvo RSR version 3.24 Stockholm
 
+Date: 13 April 2017 
+
 ## General improvements
 
 [#2609](https://github.com/akvo/akvo-rsr/issues/2609) Add a link to the project editor on the project page
