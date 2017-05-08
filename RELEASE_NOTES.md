@@ -1,5 +1,7 @@
 # Akvo RSR version 3.24.1 Stockholm hotfix
 
+Date: 25 April
+
 ## Bug fixes
 
 [#2638](https://github.com/akvo/akvo-rsr/issues/2638) Fix duplicate related projects in IATI XML export
@@ -25,6 +27,8 @@ Date: 13 April 2017
 [#2362](https://github.com/akvo/akvo-rsr/issues/2362) Add new project buttons in MyRsr only shown if user has permissions to add projects.
 
 # Akvo RSR version 3.23.1 New Delhi hotfix
+
+Date: 04 April 2017
 
 ## Bug fixes
 
