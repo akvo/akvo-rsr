@@ -21982,7 +21982,6 @@ reportContext.getGlobalVariable('debug')</expression>
                         <header>
                             <row id="75">
                                 <property name="backgroundColor">#FFFFFF</property>
-                                <property name="height">23.98888888888889mm</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -22048,7 +22047,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                                     <property name="marginBottom">1pt</property>
                                                     <property name="paddingTop">2pt</property>
                                                     <property name="paddingLeft">3pt</property>
-                                                    <property name="paddingBottom">5pt</property>
+                                                    <property name="paddingBottom">8pt</property>
                                                     <property name="paddingRight">5px</property>
                                                     <expression name="valueExpr">row["indicator_title"] + ' (' + (row["period_start"] ? Formatter.format(row["period_start"], "yyyy-MM") : "") +
 " - " +
