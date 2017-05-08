@@ -21714,7 +21714,7 @@ mmd(row["text"]);</expression>
                     <property name="marginLeft">0pt</property>
                     <property name="pageBreakAfter">always</property>
                     <property name="pageBreakInside">auto</property>
-                    <property name="width">178.85833333333335mm</property>
+                    <property name="width">177.44722222222222mm</property>
                     <property name="dataSet">Results_indicators_periods</property>
                     <list-property name="paramBindings">
                         <structure>
@@ -21872,23 +21872,26 @@ null</expression>
 ]]></method>
                     <property name="repeatHeader">false</property>
                     <property name="pageBreakInterval">0</property>
+                    <column id="936">
+                        <property name="width">15mm</property>
+                    </column>
                     <column id="275">
-                        <property name="width">32.014583333333334mm</property>
+                        <property name="width">5mm</property>
                     </column>
                     <column id="35">
-                        <property name="width">55.03333333333333mm</property>
+                        <property name="width">5mm</property>
                     </column>
                     <column id="167">
-                        <property name="width">38.452777777777776mm</property>
+                        <property name="width">32.455555555555556mm</property>
                     </column>
                     <column id="37">
-                        <property name="width">45.24375mm</property>
+                        <property name="width">16.580555555555556mm</property>
                     </column>
                     <header>
                         <row id="14">
                             <property name="height">16.933333333333334mm</property>
-                            <cell id="267">
-                                <property name="colSpan">2</property>
+                            <cell id="928">
+                                <property name="colSpan">3</property>
                                 <property name="rowSpan">1</property>
                                 <property name="textAlign">left</property>
                                 <label id="151">
@@ -21937,8 +21940,8 @@ reportContext.getGlobalVariable('debug')</expression>
                         <header>
                             <row id="19">
                                 <property name="height">21.43125mm</property>
-                                <cell id="268">
-                                    <property name="colSpan">4</property>
+                                <cell id="929">
+                                    <property name="colSpan">5</property>
                                     <property name="rowSpan">1</property>
                                     <text-data id="159">
                                         <property name="fontSize">12pt</property>
@@ -21966,6 +21969,7 @@ reportContext.getGlobalVariable('debug')</expression>
                             <row id="23">
                                 <property name="backgroundColor">white</property>
                                 <property name="height">5px</property>
+                                <cell id="934"/>
                                 <cell id="273"/>
                                 <cell id="24"/>
                                 <cell id="165"/>
@@ -21988,8 +21992,8 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="269">
-                                    <property name="colSpan">4</property>
+                                <cell id="930">
+                                    <property name="colSpan">5</property>
                                     <property name="rowSpan">1</property>
                                     <property name="paddingTop">0pt</property>
                                     <property name="paddingLeft">0pt</property>
@@ -22040,59 +22044,19 @@ reportContext.getGlobalVariable('debug')</expression>
                                             <cell id="281">
                                                 <property name="colSpan">3</property>
                                                 <property name="rowSpan">1</property>
-                                                <property name="paddingTop">5pt</property>
+                                                <property name="paddingTop">1pt</property>
                                                 <property name="paddingBottom">5pt</property>
                                                 <text-data id="278">
                                                     <property name="marginTop">0px</property>
                                                     <property name="marginBottom">1pt</property>
                                                     <property name="paddingTop">2pt</property>
                                                     <property name="paddingLeft">3pt</property>
-                                                    <property name="paddingBottom">8pt</property>
+                                                    <property name="paddingBottom">4pt</property>
                                                     <property name="paddingRight">5px</property>
-                                                    <expression name="valueExpr">row["indicator_title"] + ' (' + (row["period_start"] ? Formatter.format(row["period_start"], "yyyy-MM") : "") +
-" - " +
-(row["period_end"] ? Formatter.format(row["period_end"], "yyyy-MM") : "") + ')'</expression>
+                                                    <expression name="valueExpr">row["indicator_title"]</expression>
                                                     <property name="contentType">html</property>
                                                 </text-data>
                                             </cell>
-                                        </row>
-                                        <row id="202">
-                                            <property name="height">9.172222222222222mm</property>
-                                            <cell id="276">
-                                                <label id="188">
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">italic</property>
-                                                    <property name="paddingTop">0pt</property>
-                                                    <property name="paddingBottom">0pt</property>
-                                                    <property name="textAlign">center</property>
-                                                    <text-property name="text">TARGET</text-property>
-                                                </label>
-                                            </cell>
-                                            <cell id="203">
-                                                <label id="186">
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">italic</property>
-                                                    <property name="paddingTop">0pt</property>
-                                                    <property name="paddingBottom">0pt</property>
-                                                    <property name="textAlign">left</property>
-                                                    <text-property name="text">BASELINE</text-property>
-                                                </label>
-                                            </cell>
-                                            <cell id="204">
-                                                <property name="color">#F0F0F0</property>
-                                                <label id="169">
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">italic</property>
-                                                    <property name="color">black</property>
-                                                    <property name="marginLeft">24pt</property>
-                                                    <property name="paddingTop">0pt</property>
-                                                    <property name="paddingLeft">1pt</property>
-                                                    <property name="paddingBottom">0pt</property>
-                                                    <property name="textAlign">left</property>
-                                                    <text-property name="text">ACTUAL</text-property>
-                                                </label>
-                                            </cell>
-                                            <cell id="205"/>
                                         </row>
                                     </grid>
                                 </cell>
@@ -22102,26 +22066,68 @@ reportContext.getGlobalVariable('debug')</expression>
                     <detail>
                         <row id="27">
                             <property name="backgroundColor">#FFFFFF</property>
+                            <property name="verticalAlign">top</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
                                     <expression name="valueExpr" type="javascript">!row["indicator_title"]</expression>
                                 </structure>
                             </list-property>
+                            <cell id="932">
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="verticalAlign">top</property>
+                                <label id="937">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="fontStyle">italic</property>
+                                    <property name="marginTop">8pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">8pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="textAlign">left</property>
+                                    <text-property name="text">Period</text-property>
+                                </label>
+                                <text-data id="913">
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="fontStyle">italic</property>
+                                    <property name="paddingTop">3pt</property>
+                                    <property name="paddingLeft">8pt</property>
+                                    <property name="paddingBottom">4pt</property>
+                                    <property name="textAlign">left</property>
+                                    <expression name="valueExpr">(row["period_start"] ? Formatter.format(row["period_start"], "MM-yyyy") : "") +
+" / " +
+(row["period_end"] ? Formatter.format(row["period_end"], "MM-yyyy") : "")</expression>
+                                    <property name="contentType">html</property>
+                                </text-data>
+                            </cell>
                             <cell id="270">
                                 <property name="paddingTop">1pt</property>
-                                <property name="paddingLeft">8pt</property>
+                                <property name="paddingLeft">1pt</property>
                                 <property name="paddingBottom">1pt</property>
-                                <property name="paddingRight">8pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="textAlign">center</property>
-                                <property name="verticalAlign">middle</property>
-                                <data id="108">
-                                    <property name="fontSize">12pt</property>
+                                <property name="verticalAlign">top</property>
+                                <label id="188">
                                     <property name="fontWeight">bold</property>
+                                    <property name="fontStyle">italic</property>
+                                    <property name="marginTop">8pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="textAlign">left</property>
+                                    <text-property name="text">TARGET</text-property>
+                                </label>
+                                <data id="108">
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">7pt</property>
                                     <property name="paddingLeft">1pt</property>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22131,8 +22137,8 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="resultSetColumn">target_value</property>
                                 </data>
                                 <data id="296">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">4pt</property>
                                     <property name="paddingLeft">1pt</property>
@@ -22140,7 +22146,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="category">General Number</property>
                                         <property name="pattern">General Number</property>
                                     </structure>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22152,20 +22158,30 @@ reportContext.getGlobalVariable('debug')</expression>
                             </cell>
                             <cell id="28">
                                 <property name="paddingTop">1pt</property>
-                                <property name="paddingLeft">8pt</property>
+                                <property name="paddingLeft">1pt</property>
                                 <property name="paddingBottom">1pt</property>
-                                <property name="paddingRight">8pt</property>
-                                <property name="verticalAlign">middle</property>
-                                <text-data id="263">
-                                    <property name="fontSize">12pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <property name="verticalAlign">top</property>
+                                <label id="186">
                                     <property name="fontWeight">bold</property>
+                                    <property name="fontStyle">italic</property>
+                                    <property name="marginTop">8pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">15pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="textAlign">left</property>
+                                    <text-property name="text">BASELINE</text-property>
+                                </label>
+                                <text-data id="263">
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
                                     <property name="color">#000000</property>
-                                    <property name="marginTop">4pt</property>
-                                    <property name="marginLeft">12pt</property>
-                                    <property name="marginBottom">4pt</property>
-                                    <property name="paddingTop">10px</property>
-                                    <property name="paddingLeft">4pt</property>
-                                    <property name="paddingBottom">8pt</property>
+                                    <property name="marginTop">1pt</property>
+                                    <property name="marginLeft">1pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="paddingTop">1px</property>
+                                    <property name="paddingLeft">15pt</property>
+                                    <property name="paddingBottom">1pt</property>
                                     <property name="textAlign">left</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -22179,13 +22195,27 @@ reportContext.getGlobalVariable('debug')</expression>
                             </cell>
                             <cell id="163">
                                 <property name="paddingLeft">0pt</property>
-                                <property name="verticalAlign">middle</property>
-                                <data id="106">
-                                    <property name="fontSize">12pt</property>
+                                <property name="verticalAlign">top</property>
+                                <label id="169">
                                     <property name="fontWeight">bold</property>
+                                    <property name="fontStyle">italic</property>
+                                    <property name="color">black</property>
+                                    <property name="marginTop">8pt</property>
+                                    <property name="marginLeft">1pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="marginRight">1pt</property>
+                                    <property name="paddingTop">0pt</property>
+                                    <property name="paddingLeft">50pt</property>
+                                    <property name="paddingBottom">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <text-property name="text">ACTUAL</text-property>
+                                </label>
+                                <data id="106">
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">7pt</property>
-                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingLeft">50pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">Unformatted</property>
                                     </structure>
@@ -22200,11 +22230,11 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="resultSetColumn">actual_value</property>
                                 </data>
                                 <data id="292">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">4pt</property>
-                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingLeft">50pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">General Number</property>
                                         <property name="pattern">General Number</property>
@@ -22221,7 +22251,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                 </data>
                             </cell>
                             <cell id="30">
-                                <property name="verticalAlign">middle</property>
+                                <property name="verticalAlign">top</property>
                                 <text-data name="percentage" id="215">
                                     <property name="fontFamily">sans-serif</property>
                                     <property name="fontSize">9pt</property>
@@ -22233,7 +22263,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="marginTop">0pt</property>
                                     <property name="marginLeft">0pt</property>
                                     <property name="marginBottom">-40pt</property>
-                                    <property name="paddingTop">25pt</property>
+                                    <property name="paddingTop">24pt</property>
                                     <property name="paddingLeft">12pt</property>
                                     <property name="paddingBottom">12pt</property>
                                     <property name="textAlign">left</property>
@@ -22865,21 +22895,21 @@ Math.min(row["progress_pct"],100)&#13;
                             </cell>
                         </row>
                         <row id="771">
-                            <property name="backgroundColor">#EFF3F8</property>
+                            <property name="backgroundColor">#F7F3ED</property>
                             <property name="pageBreakBefore">avoid</property>
-                            <cell id="772">
-                                <property name="colSpan">4</property>
+                            <cell id="933">
+                                <property name="colSpan">5</property>
                                 <property name="rowSpan">1</property>
                                 <property name="paddingTop">1pt</property>
-                                <property name="paddingLeft">16pt</property>
+                                <property name="paddingLeft">8pt</property>
                                 <property name="paddingBottom">1pt</property>
                                 <property name="paddingRight">8pt</property>
                                 <text-data id="887">
                                     <property name="fontSize">10pt</property>
                                     <property name="marginBottom">8pt</property>
-                                    <property name="paddingTop">8pt</property>
-                                    <property name="paddingLeft">14pt</property>
-                                    <property name="paddingBottom">8pt</property>
+                                    <property name="paddingTop">4pt</property>
+                                    <property name="paddingLeft">0pt</property>
+                                    <property name="paddingBottom">4pt</property>
                                     <property name="paddingRight">1pt</property>
                                     <expression name="valueExpr">row["actual_comment"]</expression>
                                     <property name="contentType">html</property>
@@ -22889,6 +22919,7 @@ Math.min(row["progress_pct"],100)&#13;
                     </detail>
                     <footer>
                         <row id="31">
+                            <cell id="935"/>
                             <cell id="274"/>
                             <cell id="32"/>
                             <cell id="166"/>
