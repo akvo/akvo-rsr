@@ -19,7 +19,7 @@ import {
     createToggleKey,
     collapseId,
     cascadeIds,
-    createToggleKeys, levelAbove
+    createToggleKeys, levelAbove, hideMe
 } from '../utils';
 
 import { ToggleButton } from "./common"
@@ -116,13 +116,7 @@ export default class Results extends React.Component {
     }
 
     hideMe(id) {
-        // determine if we're to hide this node
-        // if ui.hide is not false
-        return this.props.ui.hide &&
-            // and we're high up enough in the tree
-            levelAbove(c.OBJECTS_RESULTS, this.props.ui.hide) &&
-            // and none of our child nodes are open
-            !this.props.keys[collapseId(c.OBJECTS_INDICATORS, id)];
+        hideMe(c.OBJECTS_RESULTS, id);
     }
 
     renderPanels(ids) {

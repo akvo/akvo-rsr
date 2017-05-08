@@ -234,13 +234,7 @@ export default class Periods extends React.Component {
     }
 
     hideMe(id) {
-        // determine if we're to hide this node
-        // if ui.hide is not false
-        return this.props.ui.hide &&
-            // and we're high up enough in the tree
-            levelAbove(c.OBJECTS_PERIODS, this.props.ui.hide) &&
-            // and none of our child nodes are open
-            !this.props.keys[collapseId(c.OBJECTS_UPDATES, id)];
+        hideMe(c.OBJECTS_PERIODS, id);
     }
 
     renderPanels(periodIds) {

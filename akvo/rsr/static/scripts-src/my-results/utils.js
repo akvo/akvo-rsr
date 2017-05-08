@@ -202,6 +202,18 @@ export function levelAbove(model, compare) {
 }
 
 
+// TODO: turn ito selector?
+export function hideMe(model, objectId) {
+    // determine if the collapse panel should be hidden
+    // find the parent collapse
+    const parentCollapse = this.props.keys[collapseId(model, this.props.parentId)];
+    // if we have a parent, check if I'm one of the open panels
+    const mePresent = parentCollapse && parentCollapse.find((id)=> parseInt(id) == objectId);
+    // return true if I'm not present and this.props.ui.hide is not false
+    return !mePresent && this.props.ui.hide;
+}
+
+
 function tree(model, parentId) {
     // Construct a tree representation of the subtree of data with object model[parentId] as root
     //TODO: refactor, we shouldn't need findChildren here

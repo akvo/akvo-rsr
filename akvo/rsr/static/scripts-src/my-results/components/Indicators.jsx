@@ -103,13 +103,7 @@ export default class Indicators extends React.Component {
     }
 
     hideMe(id) {
-        // determine if we're to hide this node
-        // if ui.hide is not false
-        return this.props.ui.hide &&
-            // and we're high up enough in the tree
-            levelAbove(c.OBJECTS_INDICATORS, this.props.ui.hide) &&
-            // and none of our child nodes are open
-            !this.props.keys[collapseId(c.OBJECTS_PERIODS, id)];
+        hideMe(c.OBJECTS_INDICATORS, id);
     }
 
     renderPanels(indicatorIds) {

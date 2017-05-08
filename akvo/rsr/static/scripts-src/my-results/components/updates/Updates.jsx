@@ -229,10 +229,7 @@ export default class Updates extends React.Component {
     }
 
     hideMe(id) {
-        // if our ID is not in store.keys and ui.hideMode is true then we hide ourself
-        const parentCollapse = this.props.keys[collapseId(c.OBJECTS_UPDATES, this.props.parentId)];
-        const mePresent = parentCollapse && parentCollapse.find((updateID)=> parseInt(updateID) == id);
-        return !parentCollapse && !mePresent && this.props.ui.hide;
+        hideMe(c.OBJECTS_UPDATES, id);
     }
 
     renderPanels(updateIds) {
@@ -246,8 +243,8 @@ export default class Updates extends React.Component {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
-                // const className = this.hideMe(id) ? 'hidePanel' : '';
-                const className = '';
+                const className = this.hideMe(id) ? 'hidePanel' : '';
+                // const className = '';
                 return (
                     <Panel header={<UpdateHeader update={update}
                                                  periodLocked={this.props.periodLocked}
