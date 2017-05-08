@@ -116,7 +116,7 @@ export default class Results extends React.Component {
     }
 
     hideMe(id) {
-        hideMe(c.OBJECTS_RESULTS, id);
+        return hideMe(c.OBJECTS_RESULTS, this.props.parentId, id);
     }
 
     renderPanels(ids) {

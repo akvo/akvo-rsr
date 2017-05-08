@@ -28,6 +28,7 @@ import {
 import AlertFactory from "../alertContainer"
 import Comments from "../Comments"
 import UpdateForm from "./UpdateForm"
+import {hideMe} from "../../utils";
 
 
 const Alert = ({message, close}) => (
@@ -229,7 +230,7 @@ export default class Updates extends React.Component {
     }
 
     hideMe(id) {
-        hideMe(c.OBJECTS_UPDATES, id);
+        return hideMe(c.OBJECTS_UPDATES, this.props.parentId, id);
     }
 
     renderPanels(updateIds) {

@@ -132,12 +132,13 @@ function selectUnlockedPeriods() {
 
 
 export function periodsThatNeedReporting() {
-    // Returns ids of periods that are unlocked and have no updates
+    // Returns ids of periods that are unlocked and have no updates with data
     const periods = store.getState().models[c.OBJECTS_PERIODS];
     const unlockedPeriods = filterPeriodsByLock(false);
-    return unlockedPeriods.filter(
-        (id) => periods.objects[id]._meta && periods.objects[id]._meta.children.ids.length == 0
-    );
+    return unlockedPeriods.filter((id) => {
+        const meta = periods.objects[id]._meta;
+        return meta && meta.children.ids.filter((id) => meta.children.objects[id].data);
+    })
 }
 
 

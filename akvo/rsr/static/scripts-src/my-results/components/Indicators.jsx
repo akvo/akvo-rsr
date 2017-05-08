@@ -19,7 +19,7 @@ import { onChange } from "../actions/collapse-actions"
 import {
     _,
     collapseId,
-    createToggleKeys, levelAbove
+    createToggleKeys, hideMe, levelAbove
 } from '../utils';
 
 import Periods from './Periods';
@@ -103,7 +103,7 @@ export default class Indicators extends React.Component {
     }
 
     hideMe(id) {
-        hideMe(c.OBJECTS_INDICATORS, id);
+        return hideMe(c.OBJECTS_INDICATORS, this.props.parentId, id);
     }
 
     renderPanels(indicatorIds) {

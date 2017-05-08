@@ -28,7 +28,7 @@ import AlertFactory from "./alertContainer"
 import { ToggleButton } from "./common"
 import { NewUpdateButton } from "./updates/UpdateForm";
 import Updates from "./updates/Updates";
-import {levelAbove} from "../utils";
+import {hideMe, levelAbove} from "../utils";
 
 
 const ToggleAlert = ({message, close}) => (
@@ -234,7 +234,7 @@ export default class Periods extends React.Component {
     }
 
     hideMe(id) {
-        hideMe(c.OBJECTS_PERIODS, id);
+        return hideMe(c.OBJECTS_PERIODS, this.props.parentId, id);
     }
 
     renderPanels(periodIds) {
