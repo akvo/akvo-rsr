@@ -1,6 +1,6 @@
 # Akvo RSR version 3.24.1 Stockholm hotfix
 
-Date: 25 April
+Date: 25 April 2017
 
 ## Bug fixes
 
