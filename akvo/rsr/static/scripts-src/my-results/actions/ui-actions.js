@@ -107,6 +107,7 @@ export function showUpdates(updateIds) {
 function checkAndShowPeriods(ids) {
     periodSelectReset();
     checkSelected(c.SELECTED_PERIODS, ids);
+    uiHideMode(c.OBJECTS_PERIODS);
     openNodes(c.OBJECTS_PERIODS, ids, true);
 }
 
@@ -118,16 +119,6 @@ function filterPeriodsByLock(locked) {
         return ids.filter((id) => periodObjects[id].locked == locked);
     }
     return [];
-}
-
-
-function selectLockedPeriods() {
-    checkAndShowPeriods(filterPeriodsByLock(true));
-}
-
-
-function selectUnlockedPeriods() {
-    checkAndShowPeriods(filterPeriodsByLock(false));
 }
 
 
@@ -157,7 +148,7 @@ function selectPeriodByDates(periodStart, periodEnd) {
         periods.objects[id].period_end === periodEnd
     ));
     checkAndShowPeriods(filteredIds);
-    openNodes(c.OBJECTS_PERIODS, filteredIds, true);
+    // openNodes(c.OBJECTS_PERIODS, filteredIds, true);
 }
 
 
@@ -199,8 +190,6 @@ export function selectablePeriods(periodIds) {
                 label: `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
             };
         });
-        const lockedCount = filterPeriodsByLock(true).length;
-        const unlockedCount = filterPeriodsByLock(false).length;
         // Label for the options
         return periodDates;
     }
