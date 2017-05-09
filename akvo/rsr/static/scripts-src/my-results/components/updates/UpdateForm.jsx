@@ -551,7 +551,6 @@ export class NewUpdateButton extends React.Component {
             text: '',
             relative_data: true,
             status: c.UPDATE_STATUS_NEW,
-            // Keep track of the open/closed state of the form
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
         updateModel('updates', update, this.state.collapseId);

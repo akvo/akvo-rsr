@@ -145,7 +145,7 @@ export const getDraftUpdates = createSelector(
     [getUpdateIds, getPeriodObjects, getUpdateObjects],
     (updateIds, periodObjects, updateObjects) => {
         return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status == c.UPDATE_STATUS_DRAFT &&
+            updateObjects[id].status === c.UPDATE_STATUS_DRAFT &&
             periodObjects[updateObjects[id].period].locked == false
         );
     }
@@ -159,7 +159,7 @@ export const getApprovedUpdates = createSelector(
     [getUpdateIds, getPeriodObjects, getUpdateObjects],
     (updateIds, periodObjects, updateObjects) => {
         return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status == c.UPDATE_STATUS_APPROVED &&
+            updateObjects[id].status === c.UPDATE_STATUS_APPROVED &&
             periodObjects[updateObjects[id].period].locked == false
         );
     }
@@ -174,10 +174,10 @@ export const getApprovedPeriods = createSelector(
     [getPeriodIds, getPeriodObjects, getPeriodsChildrenIds, getUpdateObjects],
     (periodIds, periodObjects, childUpdateIds, updateObjects) => periodIds && childUpdateIds && updateObjects && periodIds.filter(
         (periodId) =>
-            periodObjects[periodId].locked == false &&
+            periodObjects[periodId].locked === false &&
             childUpdateIds[periodId].length > 0 &&
             childUpdateIds[periodId].every(
-                (updateId) => updateObjects[updateId].status = c.UPDATE_STATUS_APPROVED
+                (updateId) => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
             )
     )
 );
@@ -189,6 +189,6 @@ export const getUpdatesForApprovedPeriods = createSelector(
      */
     [getUpdateIds, getUpdateObjects, getApprovedPeriods],
     (updateIds, updateObjects, periodIds) => updateIds && updateObjects && periodIds && updateIds.filter(
-        updateId => periodIds.indexOf(updateObjects[updateId].period) != -1
+        updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
     )
 );
