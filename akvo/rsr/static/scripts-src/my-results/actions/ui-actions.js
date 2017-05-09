@@ -201,19 +201,10 @@ export function selectablePeriods(periodIds) {
         });
         const lockedCount = filterPeriodsByLock(true).length;
         const unlockedCount = filterPeriodsByLock(false).length;
-        // Construct labels and values for selecting all locked or unlocked periods similarly to above,
-        // as well as "header" labels that aren't selectable
+        // Label for the options
         const periodSelectOptions = [
-            {label: <strong style={optionStyle}>{'Select by status'}</strong>, value: null, disabled: true},
-            {label: `Locked periods (${lockedCount})`, value: selectLockedPeriods},
-            {label: `Unlocked periods (${unlockedCount})`, value: selectUnlockedPeriods},
             {label: <strong style={optionStyle}>{'Select by period date'}</strong>, value: null, disabled: true},
         ];
-        // Dispatch the concatenation of periodSelectOptions and periodDates to the ui store
-        // store.dispatch({
-        //     type: SET_PERIOD_DATES,
-        //     payload: periodSelectOptions.concat(periodDates),
-        // });
         return periodSelectOptions.concat(periodDates)
     }
     return  [

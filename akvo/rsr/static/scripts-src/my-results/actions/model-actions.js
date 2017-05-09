@@ -9,6 +9,7 @@
 import store from "../store"
 import * as c from "../const"
 import { getCookie, endpoints } from "../utils"
+import {periodSelectReset} from "./ui-actions";
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
@@ -385,7 +386,7 @@ function periodLockingParams(locked) {
     const data = selectedPeriods.map((id) => {
         return {url: endpoints.period(id), data: {locked: locked}}
     });
-    patchMultiple(c.OBJECTS_PERIODS, data);
+    patchMultiple(c.OBJECTS_PERIODS, data, periodSelectReset);
 }
 
 
