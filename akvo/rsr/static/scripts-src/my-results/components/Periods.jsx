@@ -81,9 +81,9 @@ class PeriodLockToggle extends React.Component {
         if (!this.state.locking) {
             this.lockingToggle(true);
             const callbacks = {
-                [c.UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this, 'Lock status updated'),
+                undefined,
                 [c.UPDATE_MODEL_REJECTED]: toggleCallback.bind(
-                    this, 'Lock status change failed, plz try again'
+                    this, 'Lock status change failed, please try again'
                 )
             };
             this.updatePeriodLock(period.id, {locked: !period.locked}, callbacks);

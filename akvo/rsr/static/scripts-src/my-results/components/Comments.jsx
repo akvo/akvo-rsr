@@ -80,16 +80,16 @@ class CommentForm extends React.Component {
                 'comment': comment
             };
             const callbacks = {
-                [c.UPDATE_MODEL_FULFILLED]: this.resetComment.bind(this, 'Comment saved'),
+                undefined,
                 [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
-                    this, commentAlertName, 'Comment could not be saved, plz try again.'
+                    this, commentAlertName, 'Comment could not be saved, please try again.'
                 )
             };
             saveModelToBackend(
                 c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
             );
         } else  {
-            creat1eAlert(commentAlertName, "Please enter some comment text");
+            createAlert(commentAlertName, "Please enter some comment text");
         }
     }
 

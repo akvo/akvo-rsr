@@ -430,9 +430,8 @@ export default class UpdateForm extends React.Component {
         updateFormClose(originalUpdate.id);
     }
 
-    formClose(id, message) {
+    formClose(id) {
         updateFormClose(id);
-        this.props.createAlert(this.state.updateAlertName, message);
     }
 
     saveUpdate(e) {
@@ -443,9 +442,9 @@ export default class UpdateForm extends React.Component {
         } else {
             update.status = c.UPDATE_STATUS_DRAFT;
         }
-        const callbacksFactory = (message, errorMessage) => {
+        const callbacksFactory = (errorMessage) => {
             return {
-                [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id, message),
+                [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, this.state.updateAlertName, errorMessage
                 )
@@ -454,12 +453,12 @@ export default class UpdateForm extends React.Component {
         if (isNewUpdate(update)) {
             saveUpdateToBackend(
                 endpoints.updates_and_comments(), pruneForPOST(update),
-                this.props.collapseId, callbacksFactory('Update created', "Couldn't create update")
+                this.props.collapseId, callbacksFactory("Couldn't create update, please try again")
             );
         } else {
             updateUpdateToBackend(
                 endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                this.props.collapseId, callbacksFactory('Update saved', "Couldn't save update")
+                this.props.collapseId, callbacksFactory("Couldn't save update")
             );
         }
     }
@@ -468,11 +467,9 @@ export default class UpdateForm extends React.Component {
         const url = endpoints.update_and_comments(this.props.update.id);
         const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
         const callbacks = {
-            [c.UPDATE_MODEL_FULFILLED]: this.props.createAlert.bind(
-                this, deleteUpdateAlertName, 'Update deleted'
-            ),
+            undefined,
             [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                this, deleteUpdateAlertName, "Couldn't delete update"
+                this, deleteUpdateAlertName, "Couldn't delete update, please try again"
             )
         };
         deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
