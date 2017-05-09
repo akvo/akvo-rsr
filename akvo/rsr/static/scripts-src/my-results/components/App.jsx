@@ -144,7 +144,7 @@ export default class App extends React.Component {
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         const needReportingCount = fieldValueOrSpinner(periodsThatNeedReporting(), 'length');
-        const needReportingLabel = `Need reporting (${needReportingCount})`;
+        const needReportingLabel = `Needs reporting (${needReportingCount})`;
         const draftUpdateCount = fieldValueOrSpinner(this.props.draftUpdates, 'length');
         const draftUpdateLabel = `Pending approval (${draftUpdateCount})`;
         const approvedPeriodCount = fieldValueOrSpinner(this.props.approvedPeriods, 'length');
