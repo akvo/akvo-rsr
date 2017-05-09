@@ -436,30 +436,34 @@ export default class UpdateForm extends React.Component {
 
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
-        // All changes to an update revert it to draft unless it is explicitly approved while saving
-        if (e.target.id == 'approve') {
-            update.status = c.UPDATE_STATUS_APPROVED;
+        if (!update.data.trim()) {
+            this.props.createAlert(this.state.updateAlertName, "Actual value is required for updates");
         } else {
-            update.status = c.UPDATE_STATUS_DRAFT;
-        }
-        const callbacksFactory = (errorMessage) => {
-            return {
-                [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
-                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                    this, this.state.updateAlertName, errorMessage
-                )
+            // All changes to an update revert it to draft unless it is explicitly approved while saving
+            if (e.target.id == 'approve') {
+                update.status = c.UPDATE_STATUS_APPROVED;
+            } else {
+                update.status = c.UPDATE_STATUS_DRAFT;
+            }
+            const callbacksFactory = (errorMessage) => {
+                return {
+                    [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
+                    [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                        this, this.state.updateAlertName, errorMessage
+                    )
+                };
             };
-        };
-        if (isNewUpdate(update)) {
-            saveUpdateToBackend(
-                endpoints.updates_and_comments(), pruneForPOST(update),
-                this.props.collapseId, callbacksFactory("Couldn't create update, please try again")
-            );
-        } else {
-            updateUpdateToBackend(
-                endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                this.props.collapseId, callbacksFactory("Couldn't save update")
-            );
+            if (isNewUpdate(update)) {
+                saveUpdateToBackend(
+                    endpoints.updates_and_comments(), pruneForPOST(update),
+                    this.props.collapseId, callbacksFactory("Couldn't create update, please try again")
+                );
+            } else {
+                updateUpdateToBackend(
+                    endpoints.update_and_comments(update.id), pruneForPATCH(update),
+                    this.props.collapseId, callbacksFactory("Couldn't save update")
+                );
+            }
         }
     }
 

@@ -202,13 +202,7 @@ export function selectablePeriods(periodIds) {
         const lockedCount = filterPeriodsByLock(true).length;
         const unlockedCount = filterPeriodsByLock(false).length;
         // Label for the options
-        const periodSelectOptions = [
-            {label: <strong style={optionStyle}>{'Select by period date'}</strong>, value: null, disabled: true},
-        ];
-        return periodSelectOptions.concat(periodDates)
+        return periodDates;
     }
-    return  [
-        {label: <strong style={optionStyle}>{'Select by status'}</strong>, value: null, disabled: true},
-        {label: <strong style={optionStyle}>{'Select by period date'}</strong>, value: null, disabled: true},
-    ];
+    return  [];
 }
