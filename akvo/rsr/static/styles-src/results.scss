@@ -4583,10 +4583,10 @@ div.iatiFilters {
 
                                 .rc-collapse {
                                     .rc-collapse-item {
+                                        border: 1px solid rgba(white, 0) !important;
                                         border-bottom: 1px solid rgba(white, 0.4) !important;
                                         background: rgba(white, 0.2) !important;
                                         margin-bottom: 10px;
-                                        padding-left: 15px;
 
                                         border
                                         &:last-child {
@@ -4595,9 +4595,48 @@ div.iatiFilters {
 
                                         .rc-collapse-header {
                                             background: none !important;
+                                            padding-left: 20px;
 
                                             span {
-                                                padding-left: 5px;
+                                                &.UpdateHead {
+                                                    padding: 0 0 0 5px;
+
+                                                    span {
+                                                        padding-left: 0;
+                                                        margin-right: 25px;
+
+                                                        &:last-child {
+                                                            margin-right: 0;
+                                                        }
+
+                                                        &.updateData {
+                                                            color: $primary4;
+
+                                                            span {
+                                                                color: initial;
+                                                                margin-right: 0;
+                                                            }
+                                                        }
+
+                                                        &.updateName {
+                                                            color: $primary4;
+
+                                                            span {
+                                                                color: initial;
+                                                                font-weight: bold;
+                                                            }
+                                                        }
+
+                                                        &.updateStatus {
+                                                            color: $rsrGreen;
+
+                                                            span {
+                                                                color: initial;
+                                                                font-weight: bold;
+                                                            }
+                                                        }
+                                                    }
+                                                }
 
                                                 button {
                                                     opacity: 1 !important;
@@ -4617,10 +4656,11 @@ div.iatiFilters {
 
                                         &.rc-collapse-item-active {
                                             border: 1px solid white !important;
-                                            background: rgba(white, 0.2) !important;
+                                            background: rgba(white, 0.5) !important;
 
                                             .rc-collapse-header {
-                                                background: rgba(white, 0.3);
+                                                background: rgba(white, 1) !important;
+                                                padding-left: 20px;
 
                                                 .arrow {
                                                     background: url(../images/arrowUpDown.png) no-repeat bottom center;
@@ -4639,7 +4679,72 @@ div.iatiFilters {
                                                     position: relative;
                                                     background: rgba($secondary1, 0);
 
-                                                    .rc-collapse-content-box {}
+                                                    .rc-collapse-content-box {
+                                                        padding-left: 20px;
+
+                                                        ul {
+                                                            padding-left: 0;
+                                                            list-style-type: none;
+
+                                                            li {
+                                                                display: inline;
+                                                                margin-right: 25px;
+
+                                                                &:last-child {
+                                                                    margin-right: 0;
+                                                                }
+                                                            }
+
+                                                            &.updateMeta {
+                                                                li {
+                                                                    &.updateDate {
+                                                                        color: $primary4;
+                                                                    }
+
+                                                                    &.updateName {
+                                                                        color: $primary4;
+
+                                                                        span {
+                                                                            color: initial;
+                                                                        }
+                                                                    }
+
+                                                                    &.updateStatus {
+                                                                        color: $rsrGreen;
+                                                                    }
+
+                                                                    &:first-of-type {}
+
+                                                                    &:nth-of-type(2) {}
+
+                                                                    &:nth-of-type(3) {}
+
+                                                                    &:nth-of-type(4) {}
+                                                                }
+                                                            }
+
+                                                            &.valueMeta {
+                                                                li {
+                                                                    &.updateValue, &.totalValue {
+                                                                        color: $primary4;
+
+                                                                        span {
+                                                                            font-weight: bold;
+                                                                            color: initial;
+                                                                        }
+                                                                    }
+
+                                                                    &:first-of-type {}
+
+                                                                    &:nth-of-type(2) {}
+
+                                                                    &:nth-of-type(3) {}
+
+                                                                    &:nth-of-type(4) {}
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -4817,7 +4922,7 @@ div.iatiFilters {
 .comments {
     padding: 10px 5px;
     margin-top: 30px;
-    background: rgba($primary5, 0.1);
+    background: rgba($primary5, 0);
     width: 98%;
     margin-left: 1%;
 
