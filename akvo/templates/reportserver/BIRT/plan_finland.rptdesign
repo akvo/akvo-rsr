@@ -20635,7 +20635,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
     <body>
         <list name="project_summary_list" id="479">
             <property name="fontFamily">sans-serif</property>
-            <property name="pageBreakBefore">always</property>
+            <property name="pageBreakBefore">auto</property>
             <property name="dataSet">Projects_by_continent_and_country</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -20981,7 +20981,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
             <detail>
                 <data id="600">
                     <property name="style">Sectionheader</property>
-                    <property name="pageBreakBefore">auto</property>
+                    <property name="pageBreakBefore">avoid</property>
                     <structure name="toc"/>
                     <property name="resultSetColumn">countryname</property>
                 </data>
@@ -21696,6 +21696,7 @@ mmd(row["text"]);</expression>
                 <label id="640">
                     <property name="display">block</property>
                     <property name="pageBreakAfter">always</property>
+                    <property name="pageBreakBefore">avoid</property>
                     <text-property name="text">Read more in RSR</text-property>
                     <list-property name="action">
                         <structure>
@@ -21889,6 +21890,7 @@ null</expression>
                     </column>
                     <header>
                         <row id="14">
+                            <property name="pageBreakInside">auto</property>
                             <property name="height">16.933333333333334mm</property>
                             <cell id="928">
                                 <property name="colSpan">3</property>
