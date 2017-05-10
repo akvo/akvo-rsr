@@ -439,7 +439,7 @@ export default class UpdateForm extends React.Component {
 
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
-        if (!update.data.trim()) {
+        if (!String(update.data).trim()) {
             this.props.createAlert(this.state.updateAlertName, "Actual value is required for updates");
         } else {
             // All changes to an update revert it to draft unless it is explicitly approved while saving

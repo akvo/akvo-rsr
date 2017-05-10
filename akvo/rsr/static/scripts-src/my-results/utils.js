@@ -340,8 +340,8 @@ export function fieldValueOrSpinner(obj, field) {
         If obj is defined return obj[field] otherwise return the spinner icon
      */
     if (obj) {
-        return obj[field];
+        return {value: obj[field]};
     } else {
-        return <i className="fa fa-spin fa-spinner" />;
+        return {icon: <i className="fa fa-spin fa-spinner" />};
     }
 }

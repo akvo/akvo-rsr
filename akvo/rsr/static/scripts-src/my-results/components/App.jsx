@@ -41,8 +41,12 @@ import {
 
 import { fieldValueOrSpinner } from "../utils"
 
+import {
+    ToggleButton,
+    ButtonLabel,
+} from "./common";
+
 import Results from "./Results";
-import {ToggleButton} from "./common";
 
 
 const dataFromElement = (elementName) => {
@@ -151,12 +155,13 @@ export default class App extends React.Component {
     render() {
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
-        const needReportingCount = fieldValueOrSpinner(this.props.needReportingPeriods, 'length');
-        const needReportingLabel = `Needs reporting (${needReportingCount})`;
-        const draftUpdateCount = fieldValueOrSpinner(this.props.draftUpdates, 'length');
-        const draftUpdateLabel = `Pending approval (${draftUpdateCount})`;
-        const approvedPeriodCount = fieldValueOrSpinner(this.props.approvedPeriods, 'length');
-        const approvedUpdateLabel = `Approved (${approvedPeriodCount})`;
+        let value, icon
+        ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
+        const needReportingLabel = <ButtonLabel label="Needs reporting " value={value} icon={icon}/>;
+        ({value, icon} = fieldValueOrSpinner(this.props.draftUpdates, 'length'));
+        const draftUpdateLabel = <ButtonLabel label="Pending approval " value={value} icon={icon}/>;
+        ({value, icon} = fieldValueOrSpinner(this.props.approvedPeriods, 'length'));
+        const approvedUpdateLabel = <ButtonLabel label="Approved " value={value} icon={icon}/>;
         const buttonDisabled = !this.props.ui.allFetched;
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
 
