@@ -34,11 +34,18 @@ import {
     endpoints,
     displayNumber,
     _,
-    isNewUpdate,
     collapseId,
 } from '../../utils.js';
 
 import { FileReaderInput } from '../common';
+
+// Newly created updates get the id 'new-<N>' where N is an int starting at 1
+const isNewUpdate = update => update.id.toString().substr(0, 4) === 'new-';
+
+
+// If the update is approved only M&E managers are allowed to delete
+const isAllowedToDelete = (user, update) =>
+    update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
 const Header = ({update}) => {
@@ -252,7 +259,7 @@ Attachments.propTypes = {
 const UpdateFormButtons = ({user, update, callbacks}) => {
     return (
         <div className="menuAction">
-        {!isNewUpdate(update) ?
+        {!isNewUpdate(update) && isAllowedToDelete(user, update)?
             <div role="presentation" className="removeUpdate">
                 <a onClick={callbacks.deleteUpdate}
                    className="btn btn-default btn-xs">{_('delete')}</a>
