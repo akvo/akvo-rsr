@@ -47,15 +47,19 @@ const UpdateDisplay = ({update}) => {
     const userName = update.user_details.first_name + " " + update.user_details.last_name;
     return (
         <div>
-            When: {displayDate(update.created_at)} |
-            By: {userName} |
-            Org: {update.user_details.approved_organisations[0].name} |
-            Status: {_('update_statuses')[update.status]} <br/>
-            Update value: {update.data} | {/*
+            <ul className="updateMeta">
+                <li className="updateDate">{displayDate(update.created_at)}</li>
+                <li className="updateName">by <span>{userName}</span> at <span>{update.user_details.approved_organisations[0].name}</span></li>
+                <li className="updateStatus">{_('update_statuses')[update.status]}</li>
+            </ul>
+            <ul className="valueMeta">
+                <li className="updateValue">Update value: <span>{update.data}</span></li>
+            {/*
          NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
          not update.period_actual_value from the backend
          */}
-            Actual total for this period (including this update): {update.actual_value}
+                <li className="totalValue">Actual total for this period (including this update): <span>{update.actual_value}</span></li>
+            </ul>
         </div>
     )
 };
@@ -124,7 +128,7 @@ const UserInfo = ({user_details}) => {
     const userName = user_details.first_name +" "+ user_details.last_name;
 
     return (
-        <span>Update: {userName}{organisation ? " at " + organisation: ''}</span>
+        <span><span>{userName}</span> {organisation ? " at " + organisation: ''}</span>
     )
 };
 UserInfo.propTypes = {
@@ -179,12 +183,13 @@ class UpdateHeader extends React.Component {
             updateAlert = <this.state.UpdateAlert />
         }
         const update = this.props.update;
-        return (
-            <span>
-                <UserInfo user_details={update.user_details}/>,
-                Data: {update.data} Status: {_('update_statuses')[update.status]}
-                {editUpdateButton}
-                {updateAlert}
+        return (            
+            <span className="UpdateHead">
+                <span className="updateName"><UserInfo user_details={update.user_details}/></span>
+                <span className="updateData">Data: <span>{update.data}</span></span>
+                <span className="updateStatus">{_('update_statuses')[update.status]}</span>
+                <span>{editUpdateButton}</span>
+                <span>{updateAlert}</span>
             </span>
         )
     }
