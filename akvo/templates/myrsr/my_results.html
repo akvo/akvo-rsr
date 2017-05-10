@@ -8,7 +8,7 @@
     <h4 class="resultProjectTitle" id="resultProjectTitle">
         <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
         <a href="{% url 'project_editor' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-pencil-square-o"></i> {% trans 'Edit project' %}</button></a>
-        <a href="{% url 'my_new_results' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-snowflake-o"></i> {% trans 'New results' %}</button></a>
+        {# <a href="{% url 'my_new_results' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-snowflake-o"></i> {% trans 'New results' %}</button></a> #}
     </h4>
     {% if not project.is_impact_project %}
         <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
