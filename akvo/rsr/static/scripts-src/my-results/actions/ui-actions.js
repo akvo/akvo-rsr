@@ -133,11 +133,10 @@ export function periodsThatNeedReporting() {
 }
 
 
-export function selectPeriodsThatNeedReporting() {
-    const needReporting = periodsThatNeedReporting();
+export function selectPeriodsThatNeedReporting(needReportingPeriodIds) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
-    openNodes(c.OBJECTS_PERIODS, needReporting, true);
+    openNodes(c.OBJECTS_PERIODS, needReportingPeriodIds, true);
 }
 
 

@@ -188,7 +188,30 @@ export const getUpdatesForApprovedPeriods = createSelector(
         getApprovedPeriods
      */
     [getUpdateIds, getUpdateObjects, getApprovedPeriods],
-    (updateIds, updateObjects, periodIds) => updateIds && updateObjects && periodIds && updateIds.filter(
-        updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
+    (updateIds, updateObjects, periodIds) =>
+        updateIds && updateObjects && periodIds && updateIds.filter(
+            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
+        )
+);
+
+
+export const getLockedPeriods = createSelector(
+    [getPeriodIds, getPeriodObjects],
+    (periodIds, periodObjects) =>
+        periodIds && periodObjects && periodIds.filter((id) => periodObjects[id].locked === true)
+);
+
+
+export const getUnlockedPeriods = createSelector(
+    [getPeriodIds, getPeriodObjects],
+    (periodIds, periodObjects) =>
+        periodIds && periodObjects && periodIds.filter((id) => periodObjects[id].locked === false)
+);
+
+
+export const getNeedReportingPeriods = createSelector(
+    [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds],
+    (periodObjects, unlockedPeriods, periodChildren) =>
+        unlockedPeriods && unlockedPeriods.filter((id) => periodChildren[id].length == 0
     )
 );

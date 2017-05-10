@@ -30,7 +30,7 @@ import {
 
 import * as c from "../const"
 import {
-    getApprovedPeriods, getApprovedUpdates, getDraftUpdates,
+    getApprovedPeriods, getApprovedUpdates, getDraftUpdates, getNeedReportingPeriods,
     getUpdatesForApprovedPeriods
 } from "../selectors";
 import { fieldValueOrSpinner, openNodes } from "../utils"
@@ -64,6 +64,7 @@ const modifyUser = (isMEManager) => {
         draftUpdates: getDraftUpdates(store),
         approvedPeriods: getApprovedPeriods(store),
         approvedUpdates: getUpdatesForApprovedPeriods(store),
+        needReportingPeriods: getNeedReportingPeriods(store),
     }
 })
 export default class App extends React.Component {
@@ -74,6 +75,7 @@ export default class App extends React.Component {
         this.unlockSelected = this.unlockSelected.bind(this);
         this.lockSelected = this.lockSelected.bind(this);
         this.selectChange = this.selectChange.bind(this);
+        this.needReporting = this.needReporting.bind(this);
         this.state = {selectedOption: undefined}
     }
 
@@ -126,7 +128,7 @@ export default class App extends React.Component {
     }
 
     needReporting() {
-        selectPeriodsThatNeedReporting();
+        selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
     }
 
     resetFilters() {
@@ -143,7 +145,7 @@ export default class App extends React.Component {
     render() {
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
-        const needReportingCount = fieldValueOrSpinner(periodsThatNeedReporting(), 'length');
+        const needReportingCount = fieldValueOrSpinner(this.props.needReportingPeriods, 'length');
         const needReportingLabel = `Needs reporting (${needReportingCount})`;
         const draftUpdateCount = fieldValueOrSpinner(this.props.draftUpdates, 'length');
         const draftUpdateLabel = `Pending approval (${draftUpdateCount})`;
