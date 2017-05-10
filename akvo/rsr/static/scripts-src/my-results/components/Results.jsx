@@ -24,6 +24,7 @@ import {
 
 import { ToggleButton } from "./common"
 import Indicators from './Indicators';
+import {noHide} from "../actions/ui-actions";
 
 
 const ResultHeaderIndicatorCount = ({count}) => {
@@ -106,6 +107,7 @@ export default class Results extends React.Component {
 
     collapseChange(activeKey) {
         this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        noHide();
     }
 
     toggleAll() {

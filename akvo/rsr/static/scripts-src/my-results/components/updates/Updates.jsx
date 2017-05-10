@@ -12,7 +12,7 @@ import { connect } from "react-redux"
 
 import * as alertActions from "../../actions/alert-actions"
 import {onChange, openPanel} from "../../actions/collapse-actions"
-import { updateFormToggle } from "../../actions/ui-actions"
+import {noHide, updateFormToggle} from "../../actions/ui-actions"
 
 import { ToggleButton } from "../common"
 import  * as c from '../../const.js';
@@ -220,6 +220,7 @@ export default class Updates extends React.Component {
 
     collapseChange(activeKey) {
         this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        noHide();
     }
 
     toggleAll() {

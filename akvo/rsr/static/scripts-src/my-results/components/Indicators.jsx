@@ -23,6 +23,7 @@ import {
 } from '../utils';
 
 import Periods from './Periods';
+import {noHide} from "../actions/ui-actions";
 
 
 const IndicatorHeader = ({indicator, aggregateActualValue}) => {
@@ -93,6 +94,7 @@ export default class Indicators extends React.Component {
 
     collapseChange(activeKey) {
         this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        noHide();
     }
 
     toggleAll() {

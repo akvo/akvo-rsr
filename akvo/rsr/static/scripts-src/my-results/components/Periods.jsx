@@ -12,7 +12,7 @@ import update  from 'immutability-helper';
 import * as alertActions from "../actions/alert-actions"
 import * as collapseActions from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
-import { periodSelectToggle } from "../actions/ui-actions"
+import {noHide, periodSelectToggle} from "../actions/ui-actions"
 
 import * as c from "../const"
 import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
@@ -220,6 +220,7 @@ export default class Periods extends React.Component {
 
     collapseChange(activeKey) {
         this.props.onChange(this.state.collapseId, activeKey);
+        noHide();
     }
 
     toggleAll() {
