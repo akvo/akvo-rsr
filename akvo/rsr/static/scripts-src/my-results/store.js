@@ -12,7 +12,7 @@ import thunk from "redux-thunk"
 
 import reducer from "./reducers"
 
-
+//TODO: investigate using promises or redux-saga
 const middleware = applyMiddleware(/*promise(),*/ thunk, logger());
 
 export default createStore(reducer, middleware);

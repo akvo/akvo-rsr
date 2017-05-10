@@ -13,24 +13,27 @@ import update from 'immutability-helper';
 
 import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
+
 import {
     updateModel,
     deleteFromModel,
     updateUpdateToBackend,
     saveUpdateToBackend,
-    deleteUpdateFromBackend
+    deleteUpdateFromBackend,
 } from "../../actions/model-actions"
-import {
-    updateFormOpen,
-    updateFormClose, noHide
-} from "../../actions/ui-actions"
 
 import * as c from '../../const.js';
+
+import {
+    updateFormOpen,
+    updateFormClose,
+    noHide,
+} from "../../actions/ui-actions"
+
 import {
     endpoints,
     displayNumber,
     _,
-    currentUser,
     isNewUpdate,
     collapseId,
 } from '../../utils.js';

@@ -11,19 +11,23 @@ import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
 import * as c from '../const.js';
+
 import {
     getIndicatorsAggregateActualValue,
     getResultsChildrenIds
 } from "../selectors";
+
 import { onChange } from "../actions/collapse-actions"
+import { noHide } from "../actions/ui-actions";
+
 import {
     _,
     collapseId,
-    createToggleKeys, hideMe, levelAbove
+    createToggleKeys,
+    hideMe,
 } from '../utils';
 
 import Periods from './Periods';
-import {noHide} from "../actions/ui-actions";
 
 
 const IndicatorHeader = ({indicator, aggregateActualValue}) => {

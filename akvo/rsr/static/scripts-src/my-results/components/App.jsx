@@ -10,30 +10,36 @@ import React from "react";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 import {connect} from "react-redux";
+
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
     fetchModel,
     fetchUser,
     lockSelectedPeriods,
     testFetchModel,
-    unlockSelectedPeriods
+    unlockSelectedPeriods,
 } from "../actions/model-actions";
+
 import {setPageData} from "../actions/page-actions";
+
 import {
     activateToggleAll,
     noHide,
-    periodsThatNeedReporting,
     selectablePeriods,
     selectPeriodsThatNeedReporting,
-    showUpdates
+    showUpdates,
 } from "../actions/ui-actions";
 
 import * as c from "../const"
+
 import {
-    getApprovedPeriods, getApprovedUpdates, getDraftUpdates, getNeedReportingPeriods,
-    getUpdatesForApprovedPeriods
+    getApprovedPeriods,
+    getDraftUpdates,
+    getNeedReportingPeriods,
+    getUpdatesForApprovedPeriods,
 } from "../selectors";
-import { fieldValueOrSpinner, openNodes } from "../utils"
+
+import { fieldValueOrSpinner } from "../utils"
 
 import Results from "./Results";
 import {ToggleButton} from "./common";
