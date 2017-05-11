@@ -5038,6 +5038,19 @@ div.iatiFilters {
 
             padding-top: 10px;
             padding-bottom: 10px;
+
+            button {
+                border: none;
+                color: #428bca;
+
+                &.filterActive {
+                    border: 1px solid rgba($primary6, 0.5) !important;
+                    background: rgba($primary6, 1) !important;
+                    color: white;
+                    pointer-events: initial;
+                    cursor: not-allowed;
+                }
+            }
         }
     }
 }
