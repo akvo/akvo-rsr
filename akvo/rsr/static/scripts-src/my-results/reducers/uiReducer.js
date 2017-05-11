@@ -28,6 +28,7 @@ const uiState = {
     allFetched: false,
     selectedOption: undefined,
     hide: false,
+    activeFilter: undefined,
     [c.SELECTED_PERIODS]: [],
     [c.UPDATE_FORMS]: [],
 };
@@ -78,6 +79,11 @@ export default function uiReducer(state=uiState, action) {
 
         case c.SET_PERIOD_DATES: {
             return {...state, periodDates: action.payload};
+        }
+
+        case c.UI_FILTER_BUTTON_ACTIVE: {
+            const {button} = action.payload;
+            return {...state, activeFilter: button};
         }
     }
     return state;

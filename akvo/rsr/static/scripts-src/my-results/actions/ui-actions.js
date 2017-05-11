@@ -93,6 +93,7 @@ function uiHideMode(mode) {
 
 export function noHide() {
     uiHideMode(false);
+    deactivateFilter();
 }
 
 
@@ -148,6 +149,22 @@ function selectPeriodByDates(periodStart, periodEnd) {
     ));
     checkAndShowPeriods(filteredIds);
     // openNodes(c.OBJECTS_PERIODS, filteredIds, true);
+}
+
+
+export function activateFilter(button) {
+    store.dispatch({
+        type: c.UI_FILTER_BUTTON_ACTIVE,
+        payload: {button}
+    })
+}
+
+
+export function deactivateFilter() {
+    store.dispatch({
+        type: c.UI_FILTER_BUTTON_ACTIVE,
+        payload: {button: undefined}
+    })
 }
 
 

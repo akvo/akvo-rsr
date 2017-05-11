@@ -23,7 +23,8 @@ import {
 import {setPageData} from "../actions/page-actions";
 
 import {
-    activateToggleAll,
+    activateFilter,
+    activateToggleAll, filterActive,
     noHide,
     selectablePeriods,
     selectPeriodsThatNeedReporting,
@@ -118,10 +119,12 @@ export default class App extends React.Component {
 
     showDraft() {
         showUpdates(this.props.draftUpdates);
+        activateFilter(c.FILTER_SHOW_DRAFT);
     }
 
     showApproved() {
         showUpdates(this.props.approvedUpdates);
+        activateFilter(c.FILTER_SHOW_APPROVED);
     }
 
     unlockSelected() {
@@ -139,6 +142,7 @@ export default class App extends React.Component {
 
     needReporting() {
         selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
+        activateFilter(c.FILTER_NEED_REPORTING);
     }
 
     resetFilters() {
@@ -152,10 +156,17 @@ export default class App extends React.Component {
             : false;
     }
 
+    filterButtonClass(button) {
+        return this.props.ui.activeFilter === button ?
+            'btn btn-sm btn-default filterActive'
+        :
+            'btn btn-sm btn-default';
+    }
+
     render() {
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
-        let value, icon
+        let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
         const needReportingLabel = <ButtonLabel label="Needs reporting " value={value} icon={icon}/>;
         ({value, icon} = fieldValueOrSpinner(this.props.draftUpdates, 'length'));
@@ -180,13 +191,21 @@ export default class App extends React.Component {
                                                   disabled={buttonDisabled}/>
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
-                                                  disabled={buttonDisabled}/>
+                                                  disabled={buttonDisabled}
+                                                  className={
+                                                      this.filterButtonClass(c.FILTER_NEED_REPORTING)
+                                                  }/>
                                     <ToggleButton onClick={this.showDraft} label={draftUpdateLabel}
-                                                  disabled={buttonDisabled}/>
+                                                  disabled={buttonDisabled}
+                                                  className={
+                                                      this.filterButtonClass(c.FILTER_SHOW_DRAFT)
+                                                  }/>
                                     <ToggleButton onClick={this.showApproved}
                                                   label={approvedUpdateLabel}
-                                                  disabled={buttonDisabled}/>
-
+                                                  disabled={buttonDisabled}
+                                                  className={
+                                                      this.filterButtonClass(c.FILTER_SHOW_APPROVED)
+                                                  }/>
                                 </div>
                             </div>
                         </div>
