@@ -186,7 +186,7 @@ class UpdateHeader extends React.Component {
         return (            
             <span className="UpdateHead">
                     <span className="updateName"><UserInfo user_details={update.user_details}/></span>
-                    <span className="updateData">Data: <span>{update.data}</span></span>
+                    <span className="updateData">Actual value: <span>{update.data}</span></span>
                     <span className="updateStatus">{_('update_statuses')[update.status]}</span>
                     <span>{editUpdateButton}</span>
                     <span>{updateAlert}</span>
