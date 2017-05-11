@@ -170,6 +170,15 @@ export function createToggleKey(ids, activeKey) {
 }
 
 
+// Newly created updates get the id 'new-<N>' where N is an int starting at 1
+export const isNewUpdate = updateOrId => {
+    if (typeof updateOrId === 'object') {
+        return updateOrId.id.toString().substr(0, 4) === 'new-';
+    }
+    return updateOrId.toString().substr(0, 4) === 'new-';
+};
+
+
 export function collapseId(model, id) {
     // The collapseId is created from the model name and the ID of the parent object of the Collapse
     return `${model}-${id}`;

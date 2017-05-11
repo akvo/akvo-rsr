@@ -16,6 +16,7 @@ import {
     collapseId,
     _,
     endpoints,
+    isNewUpdate, displayDate,
 } from '../utils'
 
 import { getUpdatesChildrenIds } from "../selectors";
@@ -99,14 +100,16 @@ class CommentForm extends React.Component {
     }
 
     render() {
+        const disabled = isNewUpdate(this.props.parentId);
         return (
             <div>
                 <div className="input-group">
                     <input className="form-control" value={this.state.comment}
-                           onChange={this.onChange}
-                           placeholder={_('add_comment_placeholder')}/>
+                           onChange={this.onChange} placeholder={_('add_comment_placeholder')}
+                           disabled={disabled}/>
                     <span className="input-group-btn">
-                        <button type="submit" onClick={this.addComment} className="btn btn-default">
+                        <button type="submit" onClick={this.addComment} className="btn btn-default"
+                                disabled={disabled}>
                             {_('add_comment')}
                         </button>
                     </span>
@@ -122,6 +125,7 @@ const Comment = ({comment}) => {
     const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
     return (
         <div className={'commentContainer'}>
+            <strong>{displayDate(comment.created_at)} </strong>
             {name} says:
             <span className={'comment'}>{comment.comment}</span>
         </div>
@@ -188,9 +192,13 @@ export default class Comments extends React.Component {
                 </div>
             );
         } else {
+            let disabledNote;
+            if (isNewUpdate(this.props.parentId)) {
+                disabledNote = " (Notes are disabled until the update is saved)"
+            }
             return (
                 <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
-                    <strong>Internal notes</strong>
+                    <strong>Internal notes</strong>{disabledNote}
                     <CommentForm parentId={this.props.parentId}/>
                 </div>
             );

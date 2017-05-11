@@ -35,12 +35,10 @@ import {
     displayNumber,
     _,
     collapseId,
+    isNewUpdate,
 } from '../../utils.js';
 
 import { FileReaderInput } from '../common';
-
-// Newly created updates get the id 'new-<N>' where N is an int starting at 1
-const isNewUpdate = update => update.id.toString().substr(0, 4) === 'new-';
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -257,6 +255,8 @@ Attachments.propTypes = {
 
 
 const UpdateFormButtons = ({user, update, callbacks}) => {
+    //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
+    // can be shown when saving is under way
     return (
         <div className="menuAction">
         {!isNewUpdate(update) && isAllowedToDelete(user, update)?
@@ -309,6 +309,7 @@ const pruneForPOST = (update) => {
 @connect((store) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
+        updates: store.models.updates,
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
@@ -448,6 +449,9 @@ export default class UpdateForm extends React.Component {
         let update = Object.assign({}, this.props.update);
         if (!String(update.data).trim()) {
             this.props.createAlert(this.state.updateAlertName, "Actual value is required for updates");
+        } else if (this.props.updates.changing) {
+            //NOOP if we're already talking to the backend
+            return;
         } else {
             // All changes to an update revert it to draft unless it is explicitly approved while saving
             if (e.target.id == 'approve') {
@@ -478,15 +482,20 @@ export default class UpdateForm extends React.Component {
     }
 
     deleteUpdate() {
-        const url = endpoints.update_and_comments(this.props.update.id);
-        const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
-        const callbacks = {
-            undefined,
-            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                this, deleteUpdateAlertName, "Couldn't delete update, please try again"
-            )
-        };
-        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
+        if (this.props.updates.changing) {
+            //NOOP if we're already talking to the backend (technically not really needed)
+            return;
+        } else {
+            const url = endpoints.update_and_comments(this.props.update.id);
+            const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
+            const callbacks = {
+                undefined,
+                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                    this, deleteUpdateAlertName, "Couldn't delete update, please try again"
+                )
+            };
+            deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
+        }
     }
 
     previousActualValue() {
