@@ -22100,9 +22100,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="paddingLeft">8pt</property>
                                     <property name="paddingBottom">4pt</property>
                                     <property name="textAlign">left</property>
-                                    <expression name="valueExpr">(row["period_start"] ? Formatter.format(row["period_start"], "MM-yyyy") : "") +
-" / " +
-(row["period_end"] ? Formatter.format(row["period_end"], "MM-yyyy") : "")</expression>
+                                    <expression name="valueExpr">(row["period_start"] ? Formatter.format(row["period_start"], "yyyy") : "")</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
