@@ -4164,9 +4164,9 @@ div.iatiFilters {
                 }
 
                 .indicatorType {
-                    margin: 0px 0 0 10px;
+                    margin: 0;
                     font-weight: 400;
-                    color: $akvoPurple;
+                    color: $flowOrange;
 
                     &::before {
                         margin-right: 10px;
@@ -4175,8 +4175,7 @@ div.iatiFilters {
                 }
 
                 .result-indicator-count {
-                    display: block;
-                    margin-top: 7px;
+                    margin-left: 15px;
                     color: rgba($akvoPurple, 0.5);
                     font-size: 0.9em;
 
@@ -4292,6 +4291,14 @@ div.iatiFilters {
                             li {
                                 display: inline;
 
+                                .aggrActualValue {
+                                    margin-left: 25px;
+
+                                    span {
+                                        color: initial;
+                                    }
+                                }
+
                                 &:nth-child(2) {
                                     margin-left: 10px;
                                     color: rgba($akvoBlack, 0.5);
@@ -4361,10 +4368,18 @@ div.iatiFilters {
                                         display: inline;
                                     }
 
-                                    .baseline-year {}
+                                    .baseline-year {
+                                        span {
+                                            color: initial;
+                                        }
+                                    }
 
                                     .baseline-value {
                                         margin-left: 55px;
+
+                                        span {
+                                            color: initial;
+                                        }
                                     }
                                 }
                             }
@@ -4426,9 +4441,21 @@ div.iatiFilters {
                                     padding-left: 0px;
                                 }
 
-                                &:nth-child(3) {}
+                                &:nth-child(3) {
+                                    color: rgba($akvoBlack, 0.4);
 
-                                &:nth-child(4) {}
+                                    span {
+                                        color: initial;
+                                    }
+                                }
+
+                                &:nth-child(4) {
+                                    color: rgba($akvoBlack, 0.4);
+
+                                    span {
+                                        color: initial;
+                                    }
+                                }
 
                                 &:nth-child(5) {
                                     margin-right: 0px;

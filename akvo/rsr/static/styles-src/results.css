@@ -2880,15 +2880,14 @@ div.iatiFilters {
         .results .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] span.resultTitle {
           color: #202024; }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType {
-          margin: 0px 0 0 10px;
+          margin: 0;
           font-weight: 400;
-          color: #2c2a74; }
+          color: #de8929; }
           .results .rc-collapse .rc-collapse-item .rc-collapse-header .indicatorType::before {
             margin-right: 10px;
             color: rgba(32, 32, 36, 0.5); }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count {
-          display: block;
-          margin-top: 7px;
+          margin-left: 15px;
           color: rgba(44, 42, 116, 0.5);
           font-size: 0.9em; }
           .results .rc-collapse .rc-collapse-item .rc-collapse-header .result-indicator-count .fa {
@@ -2960,6 +2959,10 @@ div.iatiFilters {
           margin-bottom: 0; }
           .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li {
             display: inline; }
+            .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .aggrActualValue {
+              margin-left: 25px; }
+              .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .aggrActualValue span {
+                color: initial; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
               margin-left: 10px;
               color: rgba(32, 32, 36, 0.5); }
@@ -3001,8 +3004,12 @@ div.iatiFilters {
             padding-left: 7px; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul li {
               display: inline; }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul .baseline-year span {
+              color: initial; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul .baseline-value {
               margin-left: 55px; }
+              .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .baseline ul .baseline-value span {
+                color: initial; }
 
 .periods > button {
   display: none; }
@@ -3034,6 +3041,14 @@ div.iatiFilters {
         padding-left: 0px; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(2) {
         padding-left: 0px; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) {
+        color: rgba(32, 32, 36, 0.4); }
+        .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) span {
+          color: initial; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) {
+        color: rgba(32, 32, 36, 0.4); }
+        .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) span {
+          color: initial; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) {
         margin-right: 0px;
         padding-left: 75px; }

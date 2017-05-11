@@ -36,7 +36,7 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
         <span className="indicatorTitle">
             <ul>
                 <li>{title}</li>
-                <li><span className="aggrActualValue">{ "Aggregate actual value: " + aggregateActualValue}</span></li>
+                <li><span className="aggrActualValue">{"Aggregate actual value: " }<span>{aggregateActualValue}</span></span></li>
             </ul>   
         </span>
     )
@@ -53,10 +53,10 @@ const IndicatorContent = ({indicator}) => {
         <div className="baseline">
             <ul>
                 <li className="baseline-year">
-                    {_('baseline_year')}: {indicator.baseline_year}
+                    {_('baseline_year')}: <span>{indicator.baseline_year}</span>
                 </li>
                 <li className="baseline-value">
-                    {_('baseline_value')}: {indicator.baseline_value}
+                    {_('baseline_value')}: <span>{indicator.baseline_value}</span>
                 </li>
             </ul>
         </div>

@@ -66,9 +66,11 @@ const ResultHeader = ({result, indicatorCount=0}) => {
 
     return (
         <span className="resultTitle">
-            {result.title}
-            {renderResultType(result)}
-            <ResultHeaderIndicatorCount count={indicatorCount} />
+            <h5>{result.title}</h5>
+            <div>
+                {renderResultType(result)}
+                <ResultHeaderIndicatorCount count={indicatorCount} />
+            </div>
         </span>
     )
 };

@@ -161,8 +161,8 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
             <ul className="">
                 <li><PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/></li>
                 <li>{periodDate}</li>
-                <li> Target value: {period.target_value}</li>
-                <li>Actual value: {actualValue}</li>
+                <li>Target value: <span>{period.target_value}</span></li>
+                <li>Actual value: <span>{actualValue}</span></li>
                 <li>{lockStatus}</li>           
             </ul>
 
