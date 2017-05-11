@@ -40,7 +40,7 @@ export const ButtonLabel = ({label, value, icon}) => {
         {icon}
     </span>
 };
-ToggleButton.propTypes = {
+ButtonLabel.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.number,
     icon: PropTypes.object,

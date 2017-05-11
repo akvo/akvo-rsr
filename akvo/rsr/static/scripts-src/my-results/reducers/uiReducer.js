@@ -60,7 +60,11 @@ export default function uiReducer(state=uiState, action) {
 
         case c.UI_ID_FALSE: {
             const {element, id} = action.payload;
-            return {...state, [element]: [...new Set(state[element]).delete(id)]};
+            //Set.delete() doesn't return the modified set, se we have to create the set and only
+            // then call delete(). BAH!
+            const elementSet = new Set(state[element]);
+            elementSet.delete(id);
+            return {...state, [element]: [...elementSet]};
         }
 
         case c.UI_HIDE: {
