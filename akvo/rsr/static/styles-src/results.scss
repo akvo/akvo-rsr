@@ -4793,18 +4793,19 @@ div.iatiFilters {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
-    padding: 0 10px;
+    padding: 0px 30px 0 10px;
+    margin-top: 10px;
 
     .update-entry-container {
         padding: 0 0 10px 0;
         position: relative;
 
         &.edit-in-progress {
-            background: rgba($rsrGreen, 0.05);
-            border: 1px solid rgba($rsrGreen, 0.3);
-            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
-            padding-right: 5px;
-            padding-left: 5px;
+            background: rgba(150, 167, 157, 0.05);
+            border: 1px solid rgba(230, 167, 157, 0.3);
+            box-shadow: 0 0 10px rgba(60, 148, 157, 0.5);
+            padding-right: 15px;
+            padding-left: 15px;
 
             .update-entry-container-header {
                 background: rgba(white, 0.5);
@@ -5008,11 +5009,22 @@ div.iatiFilters {
     }
 
     .periodBtns {
-        padding-left: 5px;
+        padding: 10px;
+        background: rgba($akvoBlack, 0.05);
 
         .periodBulkAct {
             h5 {
                 padding-left: 15px;
+            }
+
+            button {
+                background: $akvoBlack;
+                color: white;
+
+                &:hover {
+                    background: $akvoPurple;
+                    color: white;
+                }
             }
 
             padding-top: 10px;
