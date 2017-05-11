@@ -13,29 +13,39 @@ import update from 'immutability-helper';
 
 import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
+
 import {
     updateModel,
     deleteFromModel,
     updateUpdateToBackend,
     saveUpdateToBackend,
-    deleteUpdateFromBackend
+    deleteUpdateFromBackend,
 } from "../../actions/model-actions"
-import {
-    updateFormOpen,
-    updateFormClose, noHide
-} from "../../actions/ui-actions"
 
 import * as c from '../../const.js';
+
+import {
+    updateFormOpen,
+    updateFormClose,
+    noHide,
+} from "../../actions/ui-actions"
+
 import {
     endpoints,
     displayNumber,
     _,
-    currentUser,
-    isNewUpdate,
     collapseId,
 } from '../../utils.js';
 
 import { FileReaderInput } from '../common';
+
+// Newly created updates get the id 'new-<N>' where N is an int starting at 1
+const isNewUpdate = update => update.id.toString().substr(0, 4) === 'new-';
+
+
+// If the update is approved only M&E managers are allowed to delete
+const isAllowedToDelete = (user, update) =>
+    update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
 const Header = ({update}) => {
@@ -249,7 +259,7 @@ Attachments.propTypes = {
 const UpdateFormButtons = ({user, update, callbacks}) => {
     return (
         <div className="menuAction">
-        {!isNewUpdate(update) ?
+        {!isNewUpdate(update) && isAllowedToDelete(user, update)?
             <div role="presentation" className="removeUpdate">
                 <a onClick={callbacks.deleteUpdate}
                    className="btn btn-default btn-xs">{_('delete')}</a>
@@ -436,7 +446,7 @@ export default class UpdateForm extends React.Component {
 
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
-        if (!update.data.trim()) {
+        if (!String(update.data).trim()) {
             this.props.createAlert(this.state.updateAlertName, "Actual value is required for updates");
         } else {
             // All changes to an update revert it to draft unless it is explicitly approved while saving

@@ -9,9 +9,10 @@ import { normalize, schema } from 'normalizr';
 import update  from 'immutability-helper';
 
 import * as c from "../const";
+
 import {
     parentModelName,
-    findChildrenFromCurrentState
+    findChildrenFromCurrentState,
 } from "../utils";
 
 

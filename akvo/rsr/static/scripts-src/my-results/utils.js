@@ -112,10 +112,6 @@ export function _(s) {
 }
 
 
-// Newly created updates get the id 'new-<N>' where N is an int starting at 1
-export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
-
-
 export const findChildren = (parentId, childModel) => {
     //TODO: remove when _meta.children is fully used
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
@@ -340,8 +336,8 @@ export function fieldValueOrSpinner(obj, field) {
         If obj is defined return obj[field] otherwise return the spinner icon
      */
     if (obj) {
-        return obj[field];
+        return {value: obj[field]};
     } else {
-        return <i className="fa fa-spin fa-spinner" />;
+        return {icon: <i className="fa fa-spin fa-spinner" />};
     }
 }

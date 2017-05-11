@@ -12,10 +12,19 @@ import update  from 'immutability-helper';
 import * as alertActions from "../actions/alert-actions"
 import * as collapseActions from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
-import {noHide, periodSelectToggle} from "../actions/ui-actions"
+
+import {
+    noHide,
+    periodSelectToggle,
+} from "../actions/ui-actions"
 
 import * as c from "../const"
-import { getPeriodsActualValue, getIndicatorsChildrenIds } from "../selectors";
+
+import {
+    getPeriodsActualValue,
+    getIndicatorsChildrenIds
+} from "../selectors";
+
 import {
     displayDate,
     endpoints,
@@ -28,7 +37,7 @@ import AlertFactory from "./alertContainer"
 import { ToggleButton } from "./common"
 import { NewUpdateButton } from "./updates/UpdateForm";
 import Updates from "./updates/Updates";
-import {hideMe, levelAbove} from "../utils";
+import { hideMe } from "../utils";
 
 
 const ToggleAlert = ({message, close}) => (

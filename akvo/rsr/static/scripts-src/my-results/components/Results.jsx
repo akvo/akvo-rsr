@@ -11,20 +11,21 @@ import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
 import { onChange } from "../actions/collapse-actions"
-
+import { noHide } from "../actions/ui-actions";
 import * as c from '../const.js';
-import {getResultsChildrenIds} from "../selectors";
+import { getResultsChildrenIds } from "../selectors";
+
 import {
     _,
     createToggleKey,
     collapseId,
     cascadeIds,
-    createToggleKeys, levelAbove, hideMe
+    createToggleKeys,
+    hideMe,
 } from '../utils';
 
 import { ToggleButton } from "./common"
 import Indicators from './Indicators';
-import {noHide} from "../actions/ui-actions";
 
 
 const ResultHeaderIndicatorCount = ({count}) => {

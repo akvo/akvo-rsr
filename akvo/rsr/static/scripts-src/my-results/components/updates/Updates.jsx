@@ -11,16 +11,17 @@ import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
 import * as alertActions from "../../actions/alert-actions"
-import {onChange, openPanel} from "../../actions/collapse-actions"
-import {noHide, updateFormToggle} from "../../actions/ui-actions"
-
-import { ToggleButton } from "../common"
+import { onChange, openPanel } from "../../actions/collapse-actions"
+import { noHide, updateFormToggle } from "../../actions/ui-actions"
 import  * as c from '../../const.js';
 import { getPeriodsChildrenIds } from "../../selectors";
+import { hideMe } from "../../utils";
+
+import { ToggleButton } from "../common"
+
 import {
     displayDate,
     _,
-    currentUser,
     createToggleKeys,
     collapseId,
 } from '../../utils.js';
@@ -28,7 +29,6 @@ import {
 import AlertFactory from "../alertContainer"
 import Comments from "../Comments"
 import UpdateForm from "./UpdateForm"
-import {hideMe} from "../../utils";
 
 
 const Alert = ({message, close}) => (
@@ -185,11 +185,11 @@ class UpdateHeader extends React.Component {
         const update = this.props.update;
         return (            
             <span className="UpdateHead">
-                    <span className="updateName"><UserInfo user_details={update.user_details}/></span>
-                    <span className="updateData">Actual value: <span>{update.data}</span></span>
-                    <span className="updateStatus">{_('update_statuses')[update.status]}</span>
-                    <span>{editUpdateButton}</span>
-                    <span>{updateAlert}</span>
+                <span className="updateName"><UserInfo user_details={update.user_details}/></span>
+                <span className="updateData">Data: <span>{update.data}</span></span>
+                <span className="updateStatus">{_('update_statuses')[update.status]}</span>
+                <span>{editUpdateButton}</span>
+                <span>{updateAlert}</span>
             </span>
         )
     }

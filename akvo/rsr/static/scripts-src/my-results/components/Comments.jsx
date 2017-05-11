@@ -7,20 +7,20 @@
 
 import React from 'react'
 import PropTypes from 'prop-types';
-import Collapse, { Panel } from 'rc-collapse'
+import { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 
 import { onChange } from "../actions/collapse-actions"
+
 import {
     collapseId,
     _,
-    endpoints
+    endpoints,
 } from '../utils'
 
 import { getUpdatesChildrenIds } from "../selectors";
 import { saveModelToBackend } from "../actions/model-actions";
 import * as alertActions from "../actions/alert-actions"
-
 import * as c from "../const"
 
 import AlertFactory from "./alertContainer"

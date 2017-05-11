@@ -33,6 +33,20 @@ ToggleButton.propTypes = {
 };
 
 
+export const ButtonLabel = ({label, value, icon}) => {
+    return <span>
+        {label}
+        {value ? '(' + value + ')' : ''}
+        {icon}
+    </span>
+};
+ToggleButton.propTypes = {
+    label: PropTypes.string.isRequired,
+    value: PropTypes.number,
+    icon: PropTypes.object,
+};
+
+
 // Based on https://github.com/ngokevin/react-file-reader-input
 export class FileReaderInput extends React.Component {
   static propTypes = {
