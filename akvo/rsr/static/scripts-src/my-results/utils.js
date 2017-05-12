@@ -8,10 +8,11 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 
-import { onChange } from "actions/collapse-actions"
+import { collapseChange } from "actions/collapse-actions"
 
 import * as c from "const"
 import store from "store"
+import { resetKeys } from "./actions/collapse-actions";
 
 
 export function identicalArrays(array1, array2) {
@@ -333,10 +334,10 @@ export function openNodes(model, ids, reset) {
         {}
     );
     if (reset) {
-        store.dispatch({type: c.KEYS_RESET});
+        resetKeys();
     }
     Object.keys(mergedKeys).map((key) => {
-        store.dispatch(onChange(key, idsToActiveKey(mergedKeys[key])));
+        collapseChange(key, idsToActiveKey(mergedKeys[key]));
     });
 }
 

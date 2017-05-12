@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
-import { onChange } from "../actions/collapse-actions"
+import { collapseChange } from "../actions/collapse-actions"
 import { noHide } from "../actions/ui-actions";
 import * as c from '../const.js';
 import { getResultsChildrenIds } from "../selectors";
@@ -109,14 +109,14 @@ export default class Results extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        collapseChange(this.state.collapseId, activeKey);
         noHide();
     }
 
     toggleAll() {
         const keys = createToggleKeys(this.props.parentId, c.OBJECTS_RESULTS, this.activeKey());
         keys.map((collapse) => {
-            this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
+            collapseChange(collapse.collapseId, collapse.activeKey);
         })
     }
 

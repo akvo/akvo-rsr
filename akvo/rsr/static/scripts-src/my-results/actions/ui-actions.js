@@ -91,7 +91,7 @@ function uiHideMode(mode) {
 }
 
 
-export function activateFilter(button) {
+export function activateFilterCSS(button) {
     store.dispatch({
         type: c.UI_FILTER_BUTTON_ACTIVE,
         payload: {button}
@@ -125,7 +125,7 @@ function checkAndShowPeriods(ids) {
     periodSelectReset();
     checkSelected(c.SELECTED_PERIODS, ids);
     uiHideMode(c.OBJECTS_PERIODS);
-    activateFilter(c.FILTER_BULK_SELECT);
+    activateFilterCSS(c.FILTER_BULK_SELECT);
     openNodes(c.OBJECTS_PERIODS, ids, true);
 }
 

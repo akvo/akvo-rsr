@@ -10,13 +10,14 @@ import PropTypes from 'prop-types';
 import { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 
-import { onChange } from "../actions/collapse-actions"
+import { collapseChange } from "../actions/collapse-actions"
 
 import {
     collapseId,
     _,
     endpoints,
-    isNewUpdate, displayDate,
+    isNewUpdate,
+    displayDate,
 } from '../utils'
 
 import { getUpdatesChildrenIds } from "../selectors";
@@ -164,7 +165,7 @@ export default class Comments extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        collapseChange(this.state.collapseId, activeKey);
     }
 
     renderComments(commentIds) {

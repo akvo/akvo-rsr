@@ -23,7 +23,7 @@ import {
 import {setPageData} from "../actions/page-actions";
 
 import {
-    activateFilter,
+    activateFilterCSS,
     activateToggleAll, filterActive,
     noHide,
     selectablePeriods,
@@ -119,12 +119,12 @@ export default class App extends React.Component {
 
     showDraft() {
         showUpdates(this.props.draftUpdates);
-        activateFilter(c.FILTER_SHOW_DRAFT);
+        activateFilterCSS(c.FILTER_SHOW_DRAFT);
     }
 
     showApproved() {
         showUpdates(this.props.approvedUpdates);
-        activateFilter(c.FILTER_SHOW_APPROVED);
+        activateFilterCSS(c.FILTER_SHOW_APPROVED);
     }
 
     unlockSelected() {
@@ -142,7 +142,7 @@ export default class App extends React.Component {
 
     needReporting() {
         selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
-        activateFilter(c.FILTER_NEED_REPORTING);
+        activateFilterCSS(c.FILTER_NEED_REPORTING);
     }
 
     resetFilters() {

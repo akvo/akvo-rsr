@@ -11,11 +11,11 @@ import store from "../store"
 
 
 //TODO: decide if actions should dispatch in all cases
-export function onChange(collapseId, activeKey) {
-    return {
+export function collapseChange(collapseId, activeKey) {
+    store.dispatch({
         type: c.KEY_SET_ACTIVE,
         payload: {collapseId, activeKey}
-    }
+    });
 }
 
 
@@ -24,4 +24,9 @@ export function openPanel(collapseId, object) {
         type: c.KEY_ADD_TO_ACTIVE,
         payload: {collapseId, object}
     });
+}
+
+
+export function resetKeys() {
+    store.dispatch({type: c.KEYS_RESET});
 }

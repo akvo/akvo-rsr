@@ -17,7 +17,7 @@ import {
     getResultsChildrenIds
 } from "../selectors";
 
-import { onChange } from "../actions/collapse-actions"
+import { collapseChange } from "../actions/collapse-actions"
 import { noHide } from "../actions/ui-actions";
 
 import {
@@ -97,14 +97,14 @@ export default class Indicators extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        collapseChange(this.state.collapseId, activeKey);
         noHide();
     }
 
     toggleAll() {
         const keys = createToggleKeys(this.props.parentId, c.OBJECTS_INDICATORS, this.activeKey());
         keys.map((collapse) => {
-            this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
+            collapseChange(collapse.collapseId, collapse.activeKey);
         })
     }
 
