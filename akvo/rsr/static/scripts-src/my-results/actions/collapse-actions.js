@@ -30,3 +30,8 @@ export function openPanel(collapseId, object) {
 export function resetKeys() {
     store.dispatch({type: c.KEYS_RESET});
 }
+
+
+export function collapseRecordState() {
+    store.dispatch({type: c.KEYS_COPY_TO_VISIBLE, payload: {keys: store.getState().keys}});
+}

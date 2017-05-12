@@ -21,6 +21,8 @@
         updateForms: array of Update IDs that have open forms
  */
 
+import update  from 'immutability-helper';
+
 import * as c from "../const"
 
 
@@ -30,6 +32,7 @@ const uiState = {
     hide: false, // hide is set to a model, indicating that the node is to be hidden unless it is
     // part of the currently open collapse keys
     activeFilter: undefined, //indicates if a filter is currently in force
+    visibleKeys: undefined,
     [c.SELECTED_PERIODS]: [], //list if periods that are currently checked, used for bulk actions
     [c.UPDATE_FORMS]: [], //list of currently open indicator update forms
 };
@@ -86,6 +89,28 @@ export default function uiReducer(state=uiState, action) {
             const {button} = action.payload;
             return {...state, activeFilter: button};
         }
+
+        case c.KEYS_COPY_TO_VISIBLE: {
+            const {keys} = action.payload;
+            return {...state, visibleKeys: keys};
+        }
+
+        case c.UPDATE_MODEL_FULFILLED: {
+            const {collapseId, object} = action.payload;
+            // if collapseId isn't supplied we don't have to update keys
+            const visibleKeys = state.visibleKeys;
+            if (collapseId && visibleKeys) {
+                const key = object.id.toString();
+                if (visibleKeys[collapseId]) {
+                    const newVisibleKeys = update(visibleKeys[collapseId], {$push: [key]});
+                    const deduped = [...new Set(newVisibleKeys)];
+                    return update(state, {visibleKeys: {$merge: {[collapseId]: deduped}}});
+                } else {
+                    return update(state, {visibleKeys: {$merge: {[collapseId]: [key]}}});
+                }
+            }
+        }
+
     }
     return state;
 }

@@ -35,6 +35,14 @@ export function periodSelectCheck(id) {
 }
 
 
+export function updateFormReset() {
+    store.dispatch({
+        type: c.UI_ID_RESET,
+        payload: {element: c.UPDATE_FORMS}
+    })
+}
+
+
 export function updateFormToggle(id) {
     store.dispatch({
         type: c.UI_ID_TOGGLE,
@@ -116,6 +124,7 @@ export function noHide() {
 export function showUpdates(updateIds) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_UPDATES);
+    updateFormReset();
     updateIds.map((id) => updateFormOpen(id));
     openNodes(c.OBJECTS_UPDATES, updateIds, true);
 }

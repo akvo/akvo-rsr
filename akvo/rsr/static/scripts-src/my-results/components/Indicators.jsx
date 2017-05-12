@@ -18,7 +18,6 @@ import {
 } from "../selectors";
 
 import { collapseChange } from "../actions/collapse-actions"
-import { noHide } from "../actions/ui-actions";
 
 import {
     _,
@@ -98,7 +97,6 @@ export default class Indicators extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-        noHide();
     }
 
     toggleAll() {

@@ -13,10 +13,7 @@ import * as alertActions from "../actions/alert-actions"
 import * as collapseActions from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
 
-import {
-    noHide,
-    periodSelectToggle,
-} from "../actions/ui-actions"
+import { periodSelectToggle, } from "../actions/ui-actions"
 
 import * as c from "../const"
 
@@ -38,6 +35,7 @@ import { ToggleButton } from "./common"
 import { NewUpdateButton } from "./updates/UpdateForm";
 import Updates from "./updates/Updates";
 import { hideMe } from "../utils";
+import {collapseChange} from "../actions/collapse-actions";
 
 
 const ToggleAlert = ({message, close}) => (
@@ -228,14 +226,13 @@ export default class Periods extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.onChange(this.state.collapseId, activeKey);
-        noHide();
+        collapseChange(this.state.collapseId, activeKey);
     }
 
     toggleAll() {
         const keys = createToggleKeys(this.props.parentId, c.OBJECTS_PERIODS, this.activeKey());
         keys.map((collapse) => {
-            this.props.onChange(collapse.collapseId, collapse.activeKey);
+            collapseChange(collapse.collapseId, collapse.activeKey);
         })
     }
 
@@ -270,7 +267,6 @@ export default class Periods extends React.Component {
                     delUpdateAlert = <DelUpdateAlert />;
                 }
                 let className = this.hideMe(id) ? 'hidePanel' : '';
-                // let className = '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
 
                 return (

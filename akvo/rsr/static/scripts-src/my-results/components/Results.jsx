@@ -11,7 +11,6 @@ import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
 
 import { collapseChange } from "../actions/collapse-actions"
-import { noHide } from "../actions/ui-actions";
 import * as c from '../const.js';
 import { getResultsChildrenIds } from "../selectors";
 
@@ -110,7 +109,6 @@ export default class Results extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-        noHide();
     }
 
     toggleAll() {

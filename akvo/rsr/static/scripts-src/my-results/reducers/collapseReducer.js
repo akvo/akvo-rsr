@@ -47,11 +47,10 @@ export default function collapseReducer(keys={}, action) {
         case c.DELETE_FROM_MODEL: {
             const {collapseId, object} = action.payload;
             const keyToRemove = object.id.toString();
-            keys = {
+            return {
                 ...keys,
                 [collapseId]: keys[collapseId].filter((key) => key !== keyToRemove)
             };
-            break;
         }
     }
     return keys;

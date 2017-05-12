@@ -12,7 +12,7 @@ import { collapseChange } from "actions/collapse-actions"
 
 import * as c from "const"
 import store from "store"
-import { resetKeys } from "./actions/collapse-actions";
+import {collapseRecordState, resetKeys} from "./actions/collapse-actions";
 
 
 export function identicalArrays(array1, array2) {
@@ -213,12 +213,12 @@ export function levelAbove(model, compare) {
 export function hideMe(model, parentId, objectId) {
     // determine if the collapse panel should be hidden
     // find the parent collapse
-    const keys = store.getState().keys;
+    // const visibleKeys = store.getState().visibleKeys;
     const ui = store.getState().ui;
-    if (ui.hide) {
-        const parentCollapse = keys[collapseId(model, parentId)];
+    if (ui.hide && ui.visibleKeys) {
+        const parentCollapse = ui.visibleKeys[collapseId(model, parentId)];
         // if we have a parent, check if I'm one of the open panels
-        const mePresent = parentCollapse && parentCollapse.find((id)=> parseInt(id) == objectId);
+        const mePresent = parentCollapse && parentCollapse.find((id)=> id === String(objectId));
         // return true if I'm not present and this.props.ui.hide is not false
         return !mePresent;
     }
@@ -317,7 +317,7 @@ function lineageKeys(model, id) {
 }
 
 
-export function openNodes(model, ids, reset) {
+export function openNodes(model, ids) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model
     // and all required parents. If the reset boolean is true then first reset the whole tree.
 
@@ -333,12 +333,11 @@ export function openNodes(model, ids, reset) {
         },
         {}
     );
-    if (reset) {
-        resetKeys();
-    }
+    resetKeys();
     Object.keys(mergedKeys).map((key) => {
         collapseChange(key, idsToActiveKey(mergedKeys[key]));
     });
+    collapseRecordState();
 }
 
 

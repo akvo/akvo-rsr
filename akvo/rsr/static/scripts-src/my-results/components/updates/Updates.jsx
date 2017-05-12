@@ -228,7 +228,7 @@ export default class Updates extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-        noHide();
+        // noHide();
     }
 
     toggleAll() {
@@ -254,7 +254,6 @@ export default class Updates extends React.Component {
                 }
                 update.actual_value = actualValue;
                 const className = this.hideMe(id) ? 'hidePanel' : '';
-                // const className = '';
                 return (
                     <Panel header={<UpdateHeader update={update}
                                                  periodLocked={this.props.periodLocked}
