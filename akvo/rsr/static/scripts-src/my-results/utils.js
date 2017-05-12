@@ -202,12 +202,13 @@ export function parentModelName(model) {
     }
 }
 
+
 export function levelAbove(model, compare) {
     return c.MODEL_INDEX[model] < c.MODEL_INDEX[compare];
 }
 
 
-// TODO: turn ito selector?
+// TODO: turn into selector?
 export function hideMe(model, parentId, objectId) {
     // determine if the collapse panel should be hidden
     // find the parent collapse

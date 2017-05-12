@@ -25,12 +25,13 @@ import * as c from "../const"
 
 
 const uiState = {
-    allFetched: false,
-    selectedOption: undefined,
-    hide: false,
-    activeFilter: undefined,
-    [c.SELECTED_PERIODS]: [],
-    [c.UPDATE_FORMS]: [],
+    allFetched: false, // allFetched becomes true when all models have been fetched from the backend
+    selectedOption: undefined, // not used?
+    hide: false, // hide is set to a model, indicating that the node is to be hidden unless it is
+    // part of the currently open collapse keys
+    activeFilter: undefined, //indicates if a filter is currently in force
+    [c.SELECTED_PERIODS]: [], //list if periods that are currently checked, used for bulk actions
+    [c.UPDATE_FORMS]: [], //list of currently open indicator update forms
 };
 
 export default function uiReducer(state=uiState, action) {

@@ -163,6 +163,10 @@ export default class App extends React.Component {
             'btn btn-sm btn-default';
     }
 
+    filterSelectClass(select) {
+        return this.props.ui.activeFilter === select ? 'filterActive' : '';
+    }
+
     render() {
         const clearfix = {clear: 'both'};
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
@@ -215,8 +219,11 @@ export default class App extends React.Component {
                                     <Select options={selectOptions}
                                             value={this.state.selectedOptions}
                                             multi={false} placeholder="Select period(s)"
-                                            searchable={false}
-                                            clearable={false} onChange={this.selectChange}/>
+                                            searchable={false} clearable={false}
+                                            onChange={this.selectChange}
+                                            className={
+                                                this.filterSelectClass(c.FILTER_BULK_SELECT)
+                                            }/>
                                 </div>
                                 <div className="col-xs-6">
                                     <ToggleButton onClick={this.lockSelected} label="Lock selected"

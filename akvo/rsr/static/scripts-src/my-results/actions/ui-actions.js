@@ -91,6 +91,22 @@ function uiHideMode(mode) {
 }
 
 
+export function activateFilter(button) {
+    store.dispatch({
+        type: c.UI_FILTER_BUTTON_ACTIVE,
+        payload: {button}
+    })
+}
+
+
+export function deactivateFilter() {
+    store.dispatch({
+        type: c.UI_FILTER_BUTTON_ACTIVE,
+        payload: {button: undefined}
+    })
+}
+
+
 export function noHide() {
     uiHideMode(false);
     deactivateFilter();
@@ -109,28 +125,8 @@ function checkAndShowPeriods(ids) {
     periodSelectReset();
     checkSelected(c.SELECTED_PERIODS, ids);
     uiHideMode(c.OBJECTS_PERIODS);
+    activateFilter(c.FILTER_BULK_SELECT);
     openNodes(c.OBJECTS_PERIODS, ids, true);
-}
-
-
-function filterPeriodsByLock(locked) {
-    const ids = store.getState().models[c.OBJECTS_PERIODS].ids;
-    if (ids) {
-        const periodObjects = store.getState().models[c.OBJECTS_PERIODS].objects;
-        return ids.filter((id) => periodObjects[id].locked == locked);
-    }
-    return [];
-}
-
-
-export function periodsThatNeedReporting() {
-    // Returns ids of periods that are unlocked and have no updates with data
-    const periods = store.getState().models[c.OBJECTS_PERIODS];
-    const unlockedPeriods = filterPeriodsByLock(false);
-    return unlockedPeriods.filter((id) => {
-        const meta = periods.objects[id]._meta;
-        return meta && meta.children.ids.length == 0;
-    });
 }
 
 
@@ -148,23 +144,6 @@ function selectPeriodByDates(periodStart, periodEnd) {
         periods.objects[id].period_end === periodEnd
     ));
     checkAndShowPeriods(filteredIds);
-    // openNodes(c.OBJECTS_PERIODS, filteredIds, true);
-}
-
-
-export function activateFilter(button) {
-    store.dispatch({
-        type: c.UI_FILTER_BUTTON_ACTIVE,
-        payload: {button}
-    })
-}
-
-
-export function deactivateFilter() {
-    store.dispatch({
-        type: c.UI_FILTER_BUTTON_ACTIVE,
-        payload: {button: undefined}
-    })
 }
 
 
