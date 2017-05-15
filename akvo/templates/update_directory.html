@@ -115,7 +115,11 @@
     {{ block.super }}
 
     {# Twitter Typeahead #}
-    <script id="typeahead" src="{{ STATIC_URL }}lib/scripts/typeahead.js"></script>
+    <script id="typeahead"
+        src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.js"
+        integrity="sha256-9PktWqeso0y5/rAR0iDepG9qzPITS+ccSjYHU9vMCf4="
+        crossorigin="anonymous"></script>
+
 
     <script src="//maps.google.com/maps/api/js"></script>
     <script type="application/json" id="akvo-rsr-typeahead-thumbs">

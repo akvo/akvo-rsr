@@ -1,10 +1,14 @@
 # Akvo RSR version 3.24.1 Stockholm hotfix
 
+Date: 25 April 2017
+
 ## Bug fixes
 
 [#2638](https://github.com/akvo/akvo-rsr/issues/2638) Fix duplicate related projects in IATI XML export
 
 # Akvo RSR version 3.24 Stockholm
+
+Date: 13 April 2017 
 
 ## General improvements
 
@@ -24,6 +28,8 @@
 
 # Akvo RSR version 3.23.1 New Delhi hotfix
 
+Date: 04 April 2017
+
 ## Bug fixes
 
 [#2605](https://github.com/akvo/akvo-rsr/issues/2605) UnicodeError when handling errors in project editor
@@ -31,6 +37,8 @@
 [#2603](https://github.com/akvo/akvo-rsr/issues/2603) Fix bug in listing non partner projects on partner site
 
 # Akvo RSR version 3.23 New Delhi
+
+Date: 31 March 2017
 
 ## General improvements
 
@@ -67,6 +75,8 @@ removes associated comment from the actual value comment
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
+Date: 14 March 2017 
+
 ## Bug fixes
 
 [#2569](https://github.com/akvo/akvo-rsr/issues/2569) Django pipeline not configured correctly after
@@ -76,6 +86,8 @@ upgrade
  contains whitespace. This is part of the ongoing work on SSL for RSR.
 
 # Akvo RSR version 3.22 Chisinau
+
+Date: 10 March 2017
 
 ## General improvements
 

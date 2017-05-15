@@ -96,7 +96,7 @@ def typeahead_project(request):
     if request.GET.get('published', '0') == '0':
         # Project editor - organization projects, all
         page = request.rsr_page
-        projects = page.organisation.all_projects() if page else Project.objects.all()
+        projects = page.all_projects() if page else Project.objects.all()
     else:
         # Search bar - organization projects, published
         projects = _project_directory_coll(request)
