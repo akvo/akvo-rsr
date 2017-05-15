@@ -148,16 +148,24 @@ export default class App extends React.Component {
         }
     }
 
+    mamageButtonsAndHash(element) {
+    /*
+        Set state for the button to highlight, set the URL # value, set selectedOption to undefined
+        so it doesn't show a date period
+     */
+        activateFilterCSS(element);
+        setHash(element);
+        this.setState({selectedOption: undefined});
+    }
+
     showDraft() {
         showUpdates(this.props.draftUpdates);
-        activateFilterCSS(c.FILTER_SHOW_DRAFT);
-        setHash(c.FILTER_SHOW_DRAFT);
+        this.mamageButtonsAndHash(c.FILTER_SHOW_DRAFT);
     }
 
     showApproved(set=true) {
         showUpdates(this.props.approvedUpdates);
-        activateFilterCSS(c.FILTER_SHOW_APPROVED);
-        setHash(c.FILTER_SHOW_APPROVED);
+        this.mamageButtonsAndHash(c.FILTER_SHOW_APPROVED);
     }
 
     unlockSelected() {
@@ -169,14 +177,13 @@ export default class App extends React.Component {
     }
 
     selectChange(e) {
-        this.setState({selectedOptions: e});
+        this.setState({selectedOption: e});
         e.value();
     }
 
     needReporting() {
         selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
-        activateFilterCSS(c.FILTER_NEED_REPORTING);
-        setHash(c.FILTER_NEED_REPORTING);
+        this.mamageButtonsAndHash(c.FILTER_NEED_REPORTING);
     }
 
     resetFilters() {
@@ -252,7 +259,7 @@ export default class App extends React.Component {
                             <div className={'row'}><h5>Bulk action</h5>
                                 <div className="col-xs-6">
                                     <Select options={selectOptions}
-                                            value={this.state.selectedOptions}
+                                            value={this.state.selectedOption}
                                             multi={false} placeholder="Select period(s)"
                                             searchable={false} clearable={false}
                                             onChange={this.selectChange}
