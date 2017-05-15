@@ -41,7 +41,7 @@ class Link(models.Model):
             return u'%s' % _(u'No link specified')
 
     def show_link(self):
-        return u'<a href="%s">%s</a>' % (self.url, self.caption,)
+        return u'<a href="%s" target="_blank">%s</a>' % (self.url, self.caption,)
 
     class Meta:
         app_label = 'rsr'
