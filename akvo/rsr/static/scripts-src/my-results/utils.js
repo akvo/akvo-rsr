@@ -351,3 +351,12 @@ export function fieldValueOrSpinner(obj, field) {
         return {icon: <i className="fa fa-spin fa-spinner" />};
     }
 }
+
+
+export function setHash(hash) {
+    if (hash) {
+        window.location.hash = `#${hash}`;
+    } else {
+        window.location.hash = '';
+    }
+}

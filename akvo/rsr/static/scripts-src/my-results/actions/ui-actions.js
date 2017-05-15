@@ -8,7 +8,11 @@
 
 import * as c from "../const"
 import store from "../store"
-import { openNodes, displayDate} from "../utils"
+import {
+    openNodes,
+    displayDate,
+    setHash
+} from "../utils"
 
 
 export function periodSelectReset() {
@@ -146,13 +150,14 @@ export function selectPeriodsThatNeedReporting(needReportingPeriodIds) {
 }
 
 
-function selectPeriodByDates(periodStart, periodEnd) {
+export function selectPeriodByDates(periodStart, periodEnd) {
     const periods = store.getState().models[c.OBJECTS_PERIODS];
     const filteredIds = periods.ids.filter((id) => (
         periods.objects[id].period_start === periodStart &&
         periods.objects[id].period_end === periodEnd
     ));
     checkAndShowPeriods(filteredIds);
+    setHash(c.SELECTED_PERIODS + ':' + periodStart + ':' + periodEnd);
 }
 
 

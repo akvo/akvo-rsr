@@ -8,7 +8,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import { connect } from "react-redux"
-import Collapse, {  Panel } from 'rc-collapse';
+import Collapse, { Panel } from 'rc-collapse';
 
 import { collapseChange } from "../actions/collapse-actions"
 import * as c from '../const.js';
