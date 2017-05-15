@@ -4410,7 +4410,15 @@ div.iatiFilters {
 
             &.needsReporting {}
 
-            &.periodSelected {}
+            &.periodSelected {
+                .rc-collapse-header {
+                    .periodWrap {
+                        ul {
+                            background-color: rgba($akvoPurple, 0.1) !important;
+                        }
+                    }
+                }
+            }
 
             .rc-collapse-header {
                 span {
@@ -4587,8 +4595,8 @@ div.iatiFilters {
                                 .newUpdate {
                                     display: inline-block;
                                     margin: 10px auto;
-                                    background: $akvoBlack;
-                                    color: white;
+                                    background: transparent;
+                                    color: $anchorLink;
                                     border: none;
 
                                     &:hover {

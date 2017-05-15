@@ -3021,6 +3021,8 @@ div.iatiFilters {
 .periods .rc-collapse .rc-collapse-item {
   border: none !important;
   padding: 0; }
+  .periods .rc-collapse .rc-collapse-item.periodSelected .rc-collapse-header .periodWrap ul {
+    background-color: rgba(44, 42, 116, 0.1) !important; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
     padding: 5px 10px;
     cursor: pointer;
@@ -3130,8 +3132,8 @@ div.iatiFilters {
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate {
         display: inline-block;
         margin: 10px auto;
-        background: #202024;
-        color: white;
+        background: transparent;
+        color: #428bca;
         border: none; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate:hover {
           background: #2c2a74;
