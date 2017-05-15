@@ -101,8 +101,8 @@ export const
     UI_FILTER_BUTTON_ACTIVE = "UI_FILTER_BUTTON_ACTIVE",
 
     // filter buttons (including the period select box)
-    FILTER_NEED_REPORTING = "FILTER_NEED_REPORTING",
-    FILTER_SHOW_DRAFT = "FILTER_SHOW_DRAFT",
-    FILTER_SHOW_APPROVED = "FILTER_SHOW_APPROVED",
+    FILTER_NEED_REPORTING = "needReporting",
+    FILTER_SHOW_DRAFT = "pending",
+    FILTER_SHOW_APPROVED = "approved",
     FILTER_BULK_SELECT = "FILTER_BULK_SELECT"
 ;

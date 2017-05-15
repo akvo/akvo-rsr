@@ -27,6 +27,7 @@ import {
     activateToggleAll, filterActive,
     noHide,
     selectablePeriods,
+    selectPeriodByDates,
     selectPeriodsThatNeedReporting,
     showUpdates,
 } from "../actions/ui-actions";
@@ -40,7 +41,10 @@ import {
     getUpdatesForApprovedPeriods,
 } from "../selectors";
 
-import { fieldValueOrSpinner } from "../utils"
+import {
+    fieldValueOrSpinner,
+    setHash,
+} from "../utils"
 
 import {
     ToggleButton,
@@ -87,7 +91,10 @@ export default class App extends React.Component {
         this.lockSelected = this.lockSelected.bind(this);
         this.selectChange = this.selectChange.bind(this);
         this.needReporting = this.needReporting.bind(this);
-        this.state = {selectedOption: undefined}
+        this.state = {
+            selectedOption: undefined,
+            hash: window.location.hash && window.location.hash.substring(1),
+        }
     }
 
     fetchUser(userId) {
@@ -116,15 +123,41 @@ export default class App extends React.Component {
         fetchModel('comments', projectId, activateToggleAll);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.state.hash && nextProps.ui.allFetched) {
+            const hash = this.state.hash;
+            switch(hash) {
+                case c.FILTER_NEED_REPORTING: {
+                    this.needReporting();
+                    break;
+                }
+                case c.FILTER_SHOW_DRAFT: {
+                    this.showDraft();
+                    break;
+                }
+                case c.FILTER_SHOW_APPROVED: {
+                    this.showApproved();
+                    break;
+                }
+            }
+            if (hash.startsWith(c.SELECTED_PERIODS)) {
+                const [_, periodStart, periodEnd] = hash.split(':');
+                selectPeriodByDates(periodStart, periodEnd);
+            }
+            this.setState({hash: undefined});
+        }
+    }
 
     showDraft() {
         showUpdates(this.props.draftUpdates);
         activateFilterCSS(c.FILTER_SHOW_DRAFT);
+        setHash(c.FILTER_SHOW_DRAFT);
     }
 
-    showApproved() {
+    showApproved(set=true) {
         showUpdates(this.props.approvedUpdates);
         activateFilterCSS(c.FILTER_SHOW_APPROVED);
+        setHash(c.FILTER_SHOW_APPROVED);
     }
 
     unlockSelected() {
@@ -143,10 +176,12 @@ export default class App extends React.Component {
     needReporting() {
         selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
         activateFilterCSS(c.FILTER_NEED_REPORTING);
+        setHash(c.FILTER_NEED_REPORTING);
     }
 
     resetFilters() {
         noHide();
+        setHash();
     }
 
     userIsMEManager() {
@@ -191,7 +226,7 @@ export default class App extends React.Component {
                         <div className={'periodFilter col-sm-6'}>
                             <div className={'row'}><h5>Filter periods</h5>
                                 <div className="col-xs-12">                                    
-                                    <ToggleButton onClick={this.resetFilters} label="All periods"
+                                    <ToggleButton onClick={this.resetFilters} label="No filter"
                                                   disabled={buttonDisabled}/>
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
