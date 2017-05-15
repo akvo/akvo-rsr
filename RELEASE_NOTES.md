@@ -4,23 +4,29 @@ Date: TBD
 
 ## Continued improvements
 
-More User friendly MyResults – filter for MyResults has been refined to make it easier to quickly find your results frameworks (#2612)
+More User friendly MyResults – filter for MyResults has been refined to make it easier to quickly
+find your results frameworks – [#2612](https://github.com/akvo/akvo-rsr/issues/2612)
 
-Increased web page speed – enhanced speed using CDN and Cache-Control – [#2649](https://github.com/akvo/akvo-rsr/issues/2649)
+Increased web page speed – enhanced speed using CDN and Cache-Control –
+[#2533](https://github.com/akvo/akvo-rsr/issues/2533) and
+[#2649](https://github.com/akvo/akvo-rsr/issues/2649)
 
-Better performance of MyRSR – searching for projects made more efficient and faster – [#2636](https://github.com/akvo/akvo-rsr/issues/2636) and [#2637](https://github.com/akvo/akvo-rsr/issues/2637)
+Better performance of MyRSR – searching for projects made more efficient and faster –
+[#2636](https://github.com/akvo/akvo-rsr/issues/2636)
 
 ## Issues Resolved
 
-Project Location Unicode issues fixed. – [#2634](https://github.com/akvo/akvo-rsr/issues/2634) and [#2635](https://github.com/akvo/akvo-rsr/issues/2635).
+Project Location Unicode issues fixed. – [#2634](https://github.com/akvo/akvo-rsr/issues/2634)
 
-My Results filter less "sensitive” – [#2650](https://github.com/akvo/akvo-rsr/issues/2650
+My Results filter less "sensitive” – [#2612](https://github.com/akvo/akvo-rsr/issues/2612) and
+[#2650](https://github.com/akvo/akvo-rsr/issues/2650)
 
-Forbidden Error 403 messages fixed for EUTF – [#2615](https://github.com/akvo/akvo-rsr/issues/2615)
+Private projects only visible through MyRSR by members of the organisations which are partners of
+the projects. This fixes Forbidden Error 403 messages fixed for EUTF –
+[#2615](https://github.com/akvo/akvo-rsr/issues/2615) and
+[#2647](https://github.com/akvo/akvo-rsr/issues/2647)
 
-Private projects only visible through MyRSR by members of the organisations which are partners of the projects – [#2647](https://github.com/akvo/akvo-rsr/issues/2647)
-
-Unused template tags for maps removed - [#2640](https://github.com/akvo/akvo-rsr/issues/2640)
+Unused template tags for maps removed – [#2640](https://github.com/akvo/akvo-rsr/issues/2640)
 
 # Akvo RSR version 3.24.1 Stockholm hotfix
 
