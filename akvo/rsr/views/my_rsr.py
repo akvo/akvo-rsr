@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
@@ -164,10 +164,11 @@ def my_projects(request):
         except Project.DoesNotExist:
             Project.objects.none()
         except ValueError:
-            q_list = q.split()
-            for q_item in q_list:
-                projects = projects.filter(title__icontains=q_item) | \
-                    projects.filter(subtitle__icontains=q_item)
+            filter_expressions = [
+                Q(title__icontains=q_item) | Q(subtitle__icontains=q_item)
+                for q_item in q.split()
+            ]
+            projects = projects.filter(reduce(lambda x, y: x & y, filter_expressions))
 
     # Pagination
     qs = remove_empty_querydict_items(request.GET)

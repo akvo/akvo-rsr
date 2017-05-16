@@ -201,7 +201,7 @@ def right_now_in_akvo():
     """
     Calculate the numbers used in the "Right now in Akvo" box on the home page.
     """
-    projects = get_model('rsr', 'Project').objects.published()
+    projects = get_model('rsr', 'Project').objects.public().published()
     organisations = get_model('rsr', 'Organisation').objects.all()
     updates = get_model('rsr', 'ProjectUpdate').objects.all()
     people_served = projects.get_largest_value_sum(
