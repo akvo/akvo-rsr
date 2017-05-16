@@ -1,6 +1,6 @@
 # Akvo RSR – Version 3.25 Monte Video
 
-Date: TBD
+Date: 2017-05-16
 
 ## Continued improvements
 
