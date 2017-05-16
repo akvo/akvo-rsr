@@ -1031,7 +1031,7 @@ function updateSectionState(section) {
     setPageCompletionPercentage();
 
     // Mark section as updated
-    elAddClass(section, 'section-state-updated')
+    elAddClass(section, 'section-state-updated');
 
 }
 
@@ -3483,6 +3483,7 @@ function addOrgModal() {
             request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
             request.onload = function() {
+                var response;
                 if (request.status === 201) {
                     var organisation_id;
 
@@ -3518,7 +3519,6 @@ function addOrgModal() {
                     updateOrganisationTypeaheads(true);
                     cancelModal();
                 } else if (request.status === 400) {
-                    var response;
                     response = JSON.parse(request.responseText);
 
                     document.querySelector('.orgModal').scrollTop = 0;
