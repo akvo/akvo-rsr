@@ -152,7 +152,10 @@ def get_location_country_ids(qs):
         location_model = OrganisationLocation
 
     locations_qs = location_model.objects.filter(
-        location_target__in=qs).order_by('country__id').distinct('country__id')
+        location_target__in=qs
+    ).select_related(
+        'country',
+    ).order_by('country__id').distinct('country__id')
 
     return [
         get_id_for_iso(location.country.iso_code.upper())
