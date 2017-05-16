@@ -252,39 +252,42 @@ function flatten(arr) {
 }
 
 
-function keysList(node, close) {
+function keysList(node, open) {
     // "Disassemble" the tree representation of the data from tree() and return a list of objects.
     // Each object holds the collapseID of the corresponding Collapse and its activeKey
     const key = {
         collapseId: collapseId(node.model, node.id),
-        activeKey: close ? [] : idsToActiveKey(node.children.map(child => child.id.toString()))
+        activeKey: open ? idsToActiveKey(node.children.map(child => child.id.toString())) : [],
     };
     const children = node.children.filter((child) =>
         child.model !== undefined
     );
     const childKeys = children.map((node) =>
-        keysList(node, close)
+        keysList(node, open)
     );
     return flatten([key].concat(childKeys));
-
 }
 
 
-export function toggleTree(model, id, close) {
+export function toggleTree(model, id, open) {
     const fullTree = tree(model, id);
-    return keysList(fullTree, close);
+    return keysList(fullTree, open);
 }
 
+
+export function openOrCloseResults(activeKey) {
+    return activeKey == undefined || activeKey.length == 0;
+}
 
 export function createToggleKeys(parentId, model, activeKey) {
     // get all child nodes
     //TODO: refactor, we shouldn't need findChildren here
     const childIds = findChildren(parentId, model).ids;
     // determine if we should open or close
-    const fullyOpenKey = idsToActiveKey(childIds);
-    const close = identicalArrays(fullyOpenKey, activeKey);
+    // const fullyOpenKey = idsToActiveKey(childIds);
+    const open = openOrCloseResults(activeKey);
     // construct the array of Collapse activeKeys for the sub-tree
-    return toggleTree(model, parentId, close);
+    return toggleTree(model, parentId, open);
 }
 
 

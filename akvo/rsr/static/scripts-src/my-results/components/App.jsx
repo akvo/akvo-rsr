@@ -42,7 +42,8 @@ import {
 } from "../selectors";
 
 import {
-    fieldValueOrSpinner,
+    createToggleKeys,
+    fieldValueOrSpinner, openOrCloseResults,
     setHash,
 } from "../utils"
 
@@ -52,6 +53,7 @@ import {
 } from "./common";
 
 import Results from "./Results";
+import {collapseChange} from "../actions/collapse-actions";
 
 
 const dataFromElement = (elementName) => {
@@ -72,6 +74,7 @@ const modifyUser = (isMEManager) => {
 
 @connect((store) => {
     return {
+        keys: store.keys,
         page: store.page,
         models: store.models,
         ui: store.ui,
@@ -91,6 +94,7 @@ export default class App extends React.Component {
         this.lockSelected = this.lockSelected.bind(this);
         this.selectChange = this.selectChange.bind(this);
         this.needReporting = this.needReporting.bind(this);
+        this.toggleAll = this.toggleAll.bind(this);
         this.state = {
             selectedOption: undefined,
             hash: window.location.hash && window.location.hash.substring(1),
@@ -209,8 +213,21 @@ export default class App extends React.Component {
         return this.props.ui.activeFilter === select ? 'filterActive' : '';
     }
 
+    activeKey() {
+        return this.props.keys["results-results"];
+    }
+
+    toggleAll() {
+        const keys = createToggleKeys(c.OBJECTS_RESULTS, c.OBJECTS_RESULTS, this.activeKey());
+        keys.map((collapse) => {
+            collapseChange(collapse.collapseId, collapse.activeKey);
+        });
+        noHide();
+    }
+
     render() {
         const clearfix = {clear: 'both'};
+        const openCloseLabel = openOrCloseResults(this.activeKey()) ? 'Open all' : 'Close all';
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
@@ -224,17 +241,21 @@ export default class App extends React.Component {
 
         return (
             <div className={'periodMenuBar'}>
-                <div className={'row results-bar-titles'}>
-                    <div className="col-sm-6"><h4>Bulk action</h4></div>
-                    <div className="col-sm-6"><h4>Filter periods</h4></div>
-                </div>
                 <div className={'periodBtns'}>
                     <div className={'row'}>                        
-                        <div className={'periodFilter col-sm-6'}>
-                            <div className={'row'}><h5>Filter periods</h5>
-                                <div className="col-xs-12">                                    
+                        <div className={'periodFilter col-sm-2'}>
+                            <div className={'row'}><h5>Folding</h5>
+                                <div className="col-xs-12">
+                                    <ToggleButton onClick={this.toggleAll} label={openCloseLabel}
+                                                  disabled={buttonDisabled}/>
                                     <ToggleButton onClick={this.resetFilters} label="No filter"
                                                   disabled={buttonDisabled}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={'periodFilter col-sm-4'}>
+                            <div className={'row'}><h5>Filter periods</h5>
+                                <div className="col-xs-12">                                    
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
                                                   disabled={buttonDisabled}
