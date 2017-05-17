@@ -227,15 +227,7 @@ export default class App extends React.Component {
 
     render() {
         const clearfix = {clear: 'both'};
-        // "Overloaded" button that either resets an active filter or opens/closes the accordion
-        let foldingLabel, foldingAction;
-        if (this.props.ui.hide) {
-            foldingLabel = 'Reset filter';
-            foldingAction = this.resetFilters;
-        } else {
-            foldingLabel = openOrCloseResults(this.activeKey()) ? 'Open all' : 'Close all';
-            foldingAction = this.toggleAll;
-        }
+        const openCloseLabel = openOrCloseResults(this.activeKey()) ? 'Open all' : 'Close all';
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
@@ -254,7 +246,9 @@ export default class App extends React.Component {
                         <div className={'periodFilter col-sm-2'}>
                             <div className={'row'}><h5>Folding</h5>
                                 <div className="col-xs-12">
-                                    <ToggleButton onClick={foldingAction} label={foldingLabel}
+                                    <ToggleButton onClick={this.toggleAll} label={openCloseLabel}
+                                                  disabled={buttonDisabled}/>
+                                    <ToggleButton onClick={this.resetFilters} label="No filter"
                                                   disabled={buttonDisabled}/>
                                 </div>
                             </div>
