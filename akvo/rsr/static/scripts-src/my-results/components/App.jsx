@@ -287,8 +287,8 @@ export default class App extends React.Component {
                         <div className={'periodFilter col-sm-6'}>
                             <div className={'row'}><h5>{_("")}</h5>
                                 <div className="col-xs-12">
-                                    <ToggleButton onClick={this.resetFilters} label={_("reset_filter")}
-                                                  disabled={resetFilterDisabled}/>
+                                    {/*<ToggleButton onClick={this.resetFilters} label={_("reset_filter")}*/}
+                                                  {/*disabled={resetFilterDisabled}/>*/}
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
                                                   disabled={buttonDisabled}
