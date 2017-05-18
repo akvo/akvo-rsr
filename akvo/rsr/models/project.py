@@ -848,6 +848,14 @@ class Project(TimestampsMixin, models.Model):
         def publishingstatuses(self):
             return PublishingStatus.objects.filter(project__in=self)
 
+        def keywords(self):
+            Keyword = get_model('rsr', 'Keyword')
+            return Keyword.objects.filter(projects__in=self).distinct()
+
+        def sectors(self):
+            Sector = get_model('rsr', 'Sector')
+            return Sector.objects.filter(project__in=self).distinct()
+
     def __unicode__(self):
         return u'%s' % self.title
 

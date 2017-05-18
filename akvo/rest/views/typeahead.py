@@ -10,7 +10,8 @@ from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer,
-                                   TypeaheadKeywordSerializer,)
+                                   TypeaheadKeywordSerializer,
+                                   TypeaheadSectorSerializer,)
 
 from akvo.codelists.models import Country, Version
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
@@ -105,6 +106,57 @@ def typeahead_project(request):
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
+
+
+@api_view(['GET'])
+def typeahead_project_filters(request):
+    """Return the values for various project filters.
+
+    Based on the current filters, it returns new options for all the (other)
+    filters. This is used to generate dynamic filters.
+
+    """
+    from akvo.rsr.filters import location_choices
+    from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
+    from akvo.utils import codelist_choices
+
+    page = request.rsr_page
+    projects = page.projects() if page else Project.objects.all()
+    # FIXME: Can we prefetch things to make this faster???
+
+    # Get the relevant data for typeaheads based on filtered projects.
+    keywords = projects.keywords()
+
+    locations = [
+        {'id': choice[0], 'name': choice[1],}
+        for choice in location_choices(projects)
+    ]
+
+    valid_statuses = dict(codelist_choices(ACTIVITY_STATUS))
+    status = [
+        {'id': status, 'name': valid_statuses[status]}
+        for status in set(projects.values_list('iati_status', flat=True))
+        if status in valid_statuses
+    ]
+
+    organisations = projects.all_partners()
+
+    # FIXME: Currently only vocabulary 2 is supported (as was the case with
+    # static filters). This could be extended to other vocabularies, in future.
+    valid_sectors = dict(codelist_choices(SECTOR_CATEGORY))
+    sectors = projects.sectors().filter(
+        vocabulary='2', sector_code__in=valid_sectors
+    ).values('sector_code').distinct()
+
+    response = {
+        'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
+        'keyword': TypeaheadKeywordSerializer(keywords, many=True).data,
+        'status': sorted(status, key=lambda x: x['id']),
+        'sector': TypeaheadSectorSerializer(sectors, many=True).data,
+        'location': locations,
+    }
+
+    return Response(response)
 
 
 @api_view(['GET'])
