@@ -41,7 +41,7 @@ function buildEmploymentsApp() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
 
-    var Employment = React.createClass({displayName: 'Employment',
+    var Employment = React.createClass({displayName: "Employment",
         getInitialState: function() {
             return {
                 visible: true,
@@ -99,7 +99,7 @@ function buildEmploymentsApp() {
     });
 
 
-    var EmploymentList = React.createClass({displayName: 'EmploymentList',
+    var EmploymentList = React.createClass({displayName: "EmploymentList",
         render: function() {
             var thisEmploymentList = this;
             var employments = this.props.employments.map(function(job) {
@@ -110,7 +110,7 @@ function buildEmploymentsApp() {
         }
     });
 
-    var OrganisationInput = React.createClass({displayName: 'OrganisationInput',
+    var OrganisationInput = React.createClass({displayName: "OrganisationInput",
         typeaheadCallback: function(option) {
             document.getElementById('organisationInput').setAttribute('value', option.id);
         },
@@ -136,7 +136,7 @@ function buildEmploymentsApp() {
         }
     });
 
-    var ErrorNode = React.createClass({displayName: 'ErrorNode',
+    var ErrorNode = React.createClass({displayName: "ErrorNode",
         render: function() {
             if (this.props.visible) {
                 return React.createElement("div", {className: 'help-block-error'}, '* ' + this.props.errorText);
@@ -146,7 +146,7 @@ function buildEmploymentsApp() {
         }
     });
 
-    var CountryInput = React.createClass({displayName: 'CountryInput',
+    var CountryInput = React.createClass({displayName: "CountryInput",
         typeaheadCallback: function(option) {
             document.getElementById('countryInput').setAttribute('value', option.code);
         },
@@ -171,7 +171,7 @@ function buildEmploymentsApp() {
         }
     });
 
-    var JobTitleInput = React.createClass({displayName: 'JobTitleInput',
+    var JobTitleInput = React.createClass({displayName: "JobTitleInput",
         render: function() {
             var input = React.createFactory('input');
             var inputProps = {className: 'form-control', type: 'text', 'placeholder': i18n.job_title_text, id: "jobtitleInput"};
@@ -184,7 +184,7 @@ function buildEmploymentsApp() {
         }
     });
 
-    var FormButton = React.createClass({displayName: 'FormButton',
+    var FormButton = React.createClass({displayName: "FormButton",
         handleAddEmployment: function () {
             this.props.addEmployment();
         },
@@ -217,7 +217,7 @@ function buildEmploymentsApp() {
         }
     });
 
-    var AddEmploymentForm = React.createClass({displayName: 'AddEmploymentForm',
+    var AddEmploymentForm = React.createClass({displayName: "AddEmploymentForm",
         getInitialState: function () {
             return {
                 buttonText: i18n.request_join_text,
@@ -336,7 +336,7 @@ function buildEmploymentsApp() {
 
     });
 
-    var EmploymentApp = React.createClass({displayName: 'EmploymentApp',
+    var EmploymentApp = React.createClass({displayName: "EmploymentApp",
         getInitialState: function() {
             return {employments: []};
         },

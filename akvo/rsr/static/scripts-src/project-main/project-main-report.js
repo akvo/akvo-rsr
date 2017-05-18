@@ -104,7 +104,7 @@ function getCookie(name) {
 csrftoken = getCookie('csrftoken');
 
 function renderReportTab() {
-    var LargeTable = React.createClass({displayName: 'LargeTable',
+    var LargeTable = React.createClass({displayName: "LargeTable",
         lookUpTableName: function() {
             return i18nReport[this.props.tableName];
         },
@@ -120,15 +120,15 @@ function renderReportTab() {
 
             var headers = fieldsList.map(function(field) {
                 return (
-                    React.DOM.th(null, 
+                    React.createElement("th", null, 
                         thisTable.headerName(field)
                     )
                 );
             });
 
             return (
-                React.DOM.thead(null, 
-                    React.DOM.tr(null, 
+                React.createElement("thead", null, 
+                    React.createElement("tr", null, 
                         headers
                     )
                 )
@@ -149,13 +149,13 @@ function renderReportTab() {
                     } else if (value === false) {
                         value = 'False';
                     }
-                    cells.push(React.DOM.td(null, value));
+                    cells.push(React.createElement("td", null, value));
                 }
             }
 
             return (
-                React.DOM.tbody(null, 
-                    React.DOM.tr(null, 
+                React.createElement("tbody", null, 
+                    React.createElement("tr", null, 
                         cells
                     )
                 )
@@ -169,13 +169,13 @@ function renderReportTab() {
                 var relatedObjectId = relatedObject.id !== undefined ? ' (' + i18nReport.id + ': ' + relatedObject.id + ')' : '';
 
                 return (
-                    React.DOM.div( {className:thisTable.props.tableName}, 
-                        React.DOM.h4(null, thisTable.lookUpTableName() + relatedObjectId),
-                        React.DOM.div( {className:"table-responsive"}, 
-                            React.DOM.table( {className:"table table-bordered table-hover"}, 
-                                thisTable.renderHeader(thisTable.props.fields[0]),
-                                thisTable.renderContent(thisTable.props.fields[0], relatedObject),
-                                thisTable.renderHeader(thisTable.props.fields[1]),
+                    React.createElement("div", {className: thisTable.props.tableName}, 
+                        React.createElement("h4", null, thisTable.lookUpTableName() + relatedObjectId), 
+                        React.createElement("div", {className: "table-responsive"}, 
+                            React.createElement("table", {className: "table table-bordered table-hover"}, 
+                                thisTable.renderHeader(thisTable.props.fields[0]), 
+                                thisTable.renderContent(thisTable.props.fields[0], relatedObject), 
+                                thisTable.renderHeader(thisTable.props.fields[1]), 
                                 thisTable.renderContent(thisTable.props.fields[1], relatedObject)
                             )
                         )
@@ -184,14 +184,14 @@ function renderReportTab() {
             });
 
             return (
-                React.DOM.div( {className:this.props.tableName + "Container"}, 
+                React.createElement("div", {className: this.props.tableName + "Container"}, 
                     tables
                 )
             );
         }
     });
 
-    var SmallTable = React.createClass({displayName: 'SmallTable',
+    var SmallTable = React.createClass({displayName: "SmallTable",
         lookUpTableName: function() {
             return i18nReport[this.props.tableName];
         },
@@ -207,15 +207,15 @@ function renderReportTab() {
 
             var headers = this.props.fields[0].map(function(field) {
                 return (
-                    React.DOM.th(null, 
+                    React.createElement("th", null, 
                         thisTable.headerName(field)
                     )
                 );
             });
 
             return (
-                React.DOM.thead(null, 
-                    React.DOM.tr(null, 
+                React.createElement("thead", null, 
+                    React.createElement("tr", null, 
                         headers
                     )
                 )
@@ -240,17 +240,17 @@ function renderReportTab() {
                         } else if (value === false) {
                             value = 'False';
                         }
-                        cells.push(React.DOM.td(null, value));
+                        cells.push(React.createElement("td", null, value));
                     }
                 }
 
                 return (
-                    React.DOM.tr(null, cells)
+                    React.createElement("tr", null, cells)
                 );
             });
 
             return (
-                React.DOM.tbody(null, 
+                React.createElement("tbody", null, 
                     rows
                 )
             );
@@ -258,11 +258,11 @@ function renderReportTab() {
 
         render: function() {
             return (
-                React.DOM.div( {className:this.props.tableName + "Container"}, 
-                    React.DOM.h4(null, this.lookUpTableName()),
-                    React.DOM.div( {className:"table-responsive"}, 
-                        React.DOM.table( {className:"table table-bordered table-hover"}, 
-                            this.renderHeader(),
+                React.createElement("div", {className: this.props.tableName + "Container"}, 
+                    React.createElement("h4", null, this.lookUpTableName()), 
+                    React.createElement("div", {className: "table-responsive"}, 
+                        React.createElement("table", {className: "table table-bordered table-hover"}, 
+                            this.renderHeader(), 
                             this.renderContent()
                         )
                     )
@@ -271,7 +271,7 @@ function renderReportTab() {
         }
     });
 
-    var RelatedObjectTable = React.createClass({displayName: 'RelatedObjectTable',
+    var RelatedObjectTable = React.createClass({displayName: "RelatedObjectTable",
         getFields: function() {
             for (var i = 0; i < relatedObjectsReport.length; i++) {
                 if (relatedObjectsReport[i][0] === this.props.tableName) {
@@ -337,57 +337,57 @@ function renderReportTab() {
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }
     });
 
-    var ProjectTables = React.createClass({displayName: 'ProjectTables',
+    var ProjectTables = React.createClass({displayName: "ProjectTables",
         identifiersAndDates: function(proj) {
             return (
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-sm-6"}, 
-                        React.DOM.h4(null, i18nReport.identifiers),
-                        React.DOM.div( {className:"table-responsive"}, 
-                            React.DOM.table( {className:"table table-bordered table-hover"}, 
-                                React.DOM.tbody(null, 
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, "RSR ", i18nReport.id),
-                                        React.DOM.td(null, projectIdReport)
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.iati_activity, " ", i18nReport.id),
-                                        React.DOM.td(null, proj.iati_activity_id)
+                React.createElement("div", {className: "row"}, 
+                    React.createElement("div", {className: "col-sm-6"}, 
+                        React.createElement("h4", null, i18nReport.identifiers), 
+                        React.createElement("div", {className: "table-responsive"}, 
+                            React.createElement("table", {className: "table table-bordered table-hover"}, 
+                                React.createElement("tbody", null, 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, "RSR ", i18nReport.id), 
+                                        React.createElement("td", null, projectIdReport)
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.iati_activity, " ", i18nReport.id), 
+                                        React.createElement("td", null, proj.iati_activity_id)
                                     )
                                 )
                             )
                         )
-                    ),
-                    React.DOM.div( {className:"col-sm-6"}, 
-                        React.DOM.h4(null, i18nReport.activity_dates_status),
-                        React.DOM.div( {className:"table-responsive"}, 
-                            React.DOM.table( {className:"table table-bordered table-hover"}, 
-                                React.DOM.tbody(null, 
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.status),
-                                        React.DOM.td(null, proj.status_label)
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.planned, " ", i18nReport.start, " ", i18nReport.date),
-                                        React.DOM.td(null, proj.date_start_planned)
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.planned, " ", i18nReport.end, " ", i18nReport.date),
-                                        React.DOM.td(null, proj.date_end_planned)
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.actual, " ", i18nReport.start, " ", i18nReport.date),
-                                        React.DOM.td(null, proj.date_start_actual)
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.actual, " ", i18nReport.end, " ", i18nReport.date),
-                                        React.DOM.td(null, proj.date_end_actual)
+                    ), 
+                    React.createElement("div", {className: "col-sm-6"}, 
+                        React.createElement("h4", null, i18nReport.activity_dates_status), 
+                        React.createElement("div", {className: "table-responsive"}, 
+                            React.createElement("table", {className: "table table-bordered table-hover"}, 
+                                React.createElement("tbody", null, 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.status), 
+                                        React.createElement("td", null, proj.status_label)
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.planned, " ", i18nReport.start, " ", i18nReport.date), 
+                                        React.createElement("td", null, proj.date_start_planned)
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.planned, " ", i18nReport.end, " ", i18nReport.date), 
+                                        React.createElement("td", null, proj.date_end_planned)
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.actual, " ", i18nReport.start, " ", i18nReport.date), 
+                                        React.createElement("td", null, proj.date_start_actual)
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.actual, " ", i18nReport.end, " ", i18nReport.date), 
+                                        React.createElement("td", null, proj.date_end_actual)
                                     )
                                 )
                             )
@@ -407,43 +407,43 @@ function renderReportTab() {
             var sustainabilityText = {__html: micromarkdown.parse(proj.sustainability)};
 
             return (
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-sm-12"}, 
-                        React.DOM.h4(null, i18nReport.descriptions),
-                        React.DOM.div( {className:"table-responsive"}, 
-                            React.DOM.table( {className:"table table-bordered table-hover"}, 
-                                React.DOM.tbody(null, 
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.project_plan),
-                                        React.DOM.td( {dangerouslySetInnerHTML:projectPlanText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.goals_overview),
-                                        React.DOM.td( {dangerouslySetInnerHTML:goalsOverviewText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.target_group),
-                                        React.DOM.td( {dangerouslySetInnerHTML:targetGroupText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.project_plan_summary),
-                                        React.DOM.td( {dangerouslySetInnerHTML:projectPlanSummaryText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.background),
-                                        React.DOM.td( {dangerouslySetInnerHTML:backgroundText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.current_status),
-                                        React.DOM.td( {dangerouslySetInnerHTML:currentStatusText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.sustainability),
-                                        React.DOM.td( {dangerouslySetInnerHTML:sustainabilityText} )
-                                    ),
-                                    React.DOM.tr(null, 
-                                        React.DOM.th( {scope:"row"}, i18nReport.keywords),
-                                        React.DOM.td(null, proj.keyword_labels.join(', '))
+                React.createElement("div", {className: "row"}, 
+                    React.createElement("div", {className: "col-sm-12"}, 
+                        React.createElement("h4", null, i18nReport.descriptions), 
+                        React.createElement("div", {className: "table-responsive"}, 
+                            React.createElement("table", {className: "table table-bordered table-hover"}, 
+                                React.createElement("tbody", null, 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.project_plan), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: projectPlanText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.goals_overview), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: goalsOverviewText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.target_group), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: targetGroupText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.project_plan_summary), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: projectPlanSummaryText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.background), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: backgroundText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.current_status), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: currentStatusText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.sustainability), 
+                                        React.createElement("td", {dangerouslySetInnerHTML: sustainabilityText})
+                                    ), 
+                                    React.createElement("tr", null, 
+                                        React.createElement("th", {scope: "row"}, i18nReport.keywords), 
+                                        React.createElement("td", null, proj.keyword_labels.join(', '))
                                     )
                                 )
                             )
@@ -457,15 +457,15 @@ function renderReportTab() {
             var proj = this.props.projectInfo[0];
 
             return (
-                React.DOM.div(null, 
-                    this.identifiersAndDates(proj),
+                React.createElement("div", null, 
+                    this.identifiersAndDates(proj), 
                     this.descriptions(proj)
                 )
             );
         }
     });
 
-    var ReportApp = React.createClass({displayName: 'ReportApp',
+    var ReportApp = React.createClass({displayName: "ReportApp",
         getInitialState: function() {
             return {
                 relatedObjects: {}
@@ -530,13 +530,13 @@ function renderReportTab() {
         renderLoading: function() {
             if (loadedAPIsReport < relatedObjectsReport.length - 1) {
                 return (
-                    React.DOM.div( {className:"text-center"}, 
-                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nReport.loading,".."
+                    React.createElement("div", {className: "text-center"}, 
+                        React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nReport.loading, ".."
                     )
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -582,20 +582,20 @@ function renderReportTab() {
 
             if (relatedObjectsArray.length === 0) {
                 return (
-                    React.DOM.div( {className:"container"}, 
-                        React.DOM.div( {className:"row"}, 
-                            React.DOM.div( {className:"col-sm-6"}, 
-                                React.DOM.h4(null, i18nReport.identifiers),
-                                React.DOM.div( {className:"table-responsive"}, 
-                                    React.DOM.table( {className:"table table-bordered table-hover"}, 
-                                        React.DOM.tbody(null, 
-                                            React.DOM.tr(null, 
-                                                React.DOM.th( {scope:"row"}, "RSR ", i18nReport.id),
-                                                React.DOM.td(null, projectIdReport)
-                                            ),
-                                            React.DOM.tr(null, 
-                                                React.DOM.th( {scope:"row"}, i18nReport.iati_activity, " ", i18nReport.id),
-                                                React.DOM.td(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nReport.loading,"..")
+                    React.createElement("div", {className: "container"}, 
+                        React.createElement("div", {className: "row"}, 
+                            React.createElement("div", {className: "col-sm-6"}, 
+                                React.createElement("h4", null, i18nReport.identifiers), 
+                                React.createElement("div", {className: "table-responsive"}, 
+                                    React.createElement("table", {className: "table table-bordered table-hover"}, 
+                                        React.createElement("tbody", null, 
+                                            React.createElement("tr", null, 
+                                                React.createElement("th", {scope: "row"}, "RSR ", i18nReport.id), 
+                                                React.createElement("td", null, projectIdReport)
+                                            ), 
+                                            React.createElement("tr", null, 
+                                                React.createElement("th", {scope: "row"}, i18nReport.iati_activity, " ", i18nReport.id), 
+                                                React.createElement("td", null, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nReport.loading, "..")
                                             )
                                         )
                                     )
@@ -606,8 +606,8 @@ function renderReportTab() {
                 );
             } else {
                 return (
-                    React.DOM.div( {className:"container"}, 
-                        relatedObjectsArray,
+                    React.createElement("div", {className: "container"}, 
+                        relatedObjectsArray, 
                         this.renderLoading()
                     )
                 );

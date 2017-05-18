@@ -17,7 +17,7 @@ function showDonatePopup(url) {
     var Modal = ReactBootstrap.Modal;
     var Input = ReactBootstrap.Input;
 
-    var DonateModal = React.createClass({displayName: 'DonateModal',
+    var DonateModal = React.createClass({displayName: "DonateModal",
 
         getInitialState: function() {
             return {
@@ -58,7 +58,7 @@ function showDonatePopup(url) {
             );
 
             return (
-                React.DOM.div(null,  " ", thisModal, " " )
+                React.createElement("div", null, " ", thisModal, " ")
             );
         }
     });

@@ -43,7 +43,7 @@ function initReact() {
     SplitButton = ReactBootstrap.SplitButton;
     Table = ReactBootstrap.Table;
 
-    var InviteRow = React.createClass({displayName: 'InviteRow',
+    var InviteRow = React.createClass({displayName: "InviteRow",
         getInitialState: function() {
             return {
                 button_text: '+',
@@ -66,13 +66,13 @@ function initReact() {
         render: function() {
             var orgs = organisation_data.map(function(org) {
                 return (
-                    React.DOM.option( {key:org.id, value:org.id}, org.name)
+                    React.createElement("option", {key: org.id, value: org.id}, org.name)
                 );
             });
 
             var roles = role_data.map(function(role) {
                 return (
-                    React.DOM.option( {key:role.id, value:role.id}, role.name)
+                    React.createElement("option", {key: role.id, value: role.id}, role.name)
                 );
             });
 
@@ -82,23 +82,23 @@ function initReact() {
             }, this.state.button_text);
 
             return (
-                React.DOM.tr( {className:"invite-row"}, 
-                    React.DOM.td(null, 
-                        React.DOM.input( {className:"form-control", type:"email", placeholder:i18n.email_text, maxLength:"254", required:"required"} )
-                    ),
-                    React.DOM.td(null, 
-                        React.DOM.select( {className:"form-control org-select", defaultValue:""}, 
-                            React.DOM.option( {value:""}, i18n.select_org_text),
+                React.createElement("tr", {className: "invite-row"}, 
+                    React.createElement("td", null, 
+                        React.createElement("input", {className: "form-control", type: "email", placeholder: i18n.email_text, maxLength: "254", required: "required"})
+                    ), 
+                    React.createElement("td", null, 
+                        React.createElement("select", {className: "form-control org-select", defaultValue: ""}, 
+                            React.createElement("option", {value: ""}, i18n.select_org_text), 
                             orgs
                         )
-                    ),
-                    React.DOM.td(null, 
-                        React.DOM.select( {className:"form-control role-select", defaultValue:""}, 
-                            React.DOM.option( {value:""}, i18n.select_role_text),
+                    ), 
+                    React.createElement("td", null, 
+                        React.createElement("select", {className: "form-control role-select", defaultValue: ""}, 
+                            React.createElement("option", {value: ""}, i18n.select_role_text), 
                             roles
                         )
-                    ),
-                    React.DOM.td(null, 
+                    ), 
+                    React.createElement("td", null, 
                         thisButton
                     )
                 )
@@ -106,7 +106,7 @@ function initReact() {
         }
     });
 
-    var InviteTable = React.createClass({displayName: 'InviteTable',
+    var InviteTable = React.createClass({displayName: "InviteTable",
         getInitialState: function() {
             return {
                 rows: [0]
@@ -165,7 +165,7 @@ function initReact() {
     });
 
 
-    var InviteModal = React.createClass({displayName: 'InviteModal',
+    var InviteModal = React.createClass({displayName: "InviteModal",
         getInitialState: function() {
             return {
                 disable: false,
@@ -298,8 +298,8 @@ function initReact() {
             );
 
             return (
-                React.DOM.div(null, 
-                    modalButton,
+                React.createElement("div", null, 
+                    modalButton, 
                     thisModal
                 )
             );
@@ -307,7 +307,7 @@ function initReact() {
     });
 
 
-    var DeleteModal = React.createClass({displayName: 'DeleteModal',
+    var DeleteModal = React.createClass({displayName: "DeleteModal",
         getInitialState: function() {
             return {
                 showModal: false,
@@ -382,12 +382,12 @@ function initReact() {
             var group = this.props.employment.group;
             if (group && group.name === 'Admins' && !orgAdmin) {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             } else {
                 return (
-                    React.DOM.span(null, 
-                        modalButton,
+                    React.createElement("span", null, 
+                        modalButton, 
                         thisModal
                     )
                 );
@@ -396,7 +396,7 @@ function initReact() {
     });
 
 
-    var ApproveModal = React.createClass({displayName: 'ApproveModal',
+    var ApproveModal = React.createClass({displayName: "ApproveModal",
         getInitialState: function() {
             return {
                 showModal: false,
@@ -477,12 +477,12 @@ function initReact() {
             var group = this.props.employment.group;
             if (group && group.name === 'Admins' && !orgAdmin) {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             } else {
                 return (
-                    React.DOM.span(null, 
-                        modalButton,
+                    React.createElement("span", null, 
+                        modalButton, 
                         thisModal
                     )
                 );
@@ -490,13 +490,13 @@ function initReact() {
         }
     });
 
-    var CountryJobTitle = React.createClass({displayName: 'CountryJobTitle',
+    var CountryJobTitle = React.createClass({displayName: "CountryJobTitle",
         render: function() {
             var country = this.props.country;
             var job_title = this.props.job_title;
             if (country === "" && job_title === "") {
                 return (
-                    React.DOM.span(null, " ")
+                    React.createElement("span", null, " ")
                 );
             } else {
                 var text = "(";
@@ -511,14 +511,14 @@ function initReact() {
                 }
                 text += ")";
                 return (
-                    React.DOM.span( {className:"small"}, text,"   ")
+                    React.createElement("span", {className: "small"}, text, "   ")
                 );
             }
         }
     });
 
 
-    var Employment = React.createClass({displayName: 'Employment',
+    var Employment = React.createClass({displayName: "Employment",
         getInitialState: function() {
             return {
                 visible: true,
@@ -660,7 +660,7 @@ function initReact() {
         }
     });
 
-    var EmploymentRow = React.createClass({displayName: 'EmploymentRow',
+    var EmploymentRow = React.createClass({displayName: "EmploymentRow",
         render: function() {
             var employmentCell = React.createElement(Employment, {
                 key: this.props.employment.id,
@@ -668,18 +668,18 @@ function initReact() {
             });
 
             return (
-                React.DOM.tr(null, 
-                    React.DOM.td(null, this.props.employment.user.email),
-                    React.DOM.td(null, this.props.employment.user.first_name),
-                    React.DOM.td(null, this.props.employment.user.last_name),
-                    React.DOM.td( {className:"text-right"}, employmentCell)
+                React.createElement("tr", null, 
+                    React.createElement("td", null, this.props.employment.user.email), 
+                    React.createElement("td", null, this.props.employment.user.first_name), 
+                    React.createElement("td", null, this.props.employment.user.last_name), 
+                    React.createElement("td", {className: "text-right"}, employmentCell)
                 )
             );
         }
     });
 
 
-    var UserTable = React.createClass({displayName: 'UserTable',
+    var UserTable = React.createClass({displayName: "UserTable",
         getInitialState: function() {
             return {
                 employments: []

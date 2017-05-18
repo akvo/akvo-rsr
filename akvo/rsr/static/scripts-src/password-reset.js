@@ -16,7 +16,7 @@ function initReact() {
     Modal = ReactBootstrap.Modal;
     Input = ReactBootstrap.Input;
 
-    var ResetModal = React.createClass({displayName: 'ResetModal',
+    var ResetModal = React.createClass({displayName: "ResetModal",
         getInitialState: function() {
             return {
                 showModal: false
@@ -87,8 +87,8 @@ function initReact() {
             );
 
             return (
-                React.DOM.span(null, 
-                    modalLink,
+                React.createElement("span", null, 
+                    modalLink, 
                     thisModal
                 )
             );
