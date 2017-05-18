@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import fetch from 'isomorphic-fetch';
 
 import { collapseChange } from "actions/collapse-actions"
 

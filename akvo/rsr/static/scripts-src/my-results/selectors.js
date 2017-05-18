@@ -12,7 +12,7 @@
 import { createSelector } from "reselect"
 
 import * as c from "./const";
-import {idsToActiveKey} from "./utils";
+import { idsToActiveKey } from "./utils";
 
 
 // Input selectors for models

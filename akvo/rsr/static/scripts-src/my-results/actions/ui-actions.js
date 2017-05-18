@@ -11,7 +11,7 @@ import store from "../store"
 import {
     openNodes,
     displayDate,
-    setHash
+    setHash,
 } from "../utils"
 
 

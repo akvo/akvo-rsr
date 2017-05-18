@@ -12,9 +12,7 @@ import * as c from "../const"
 export default function pageReducer(state={}, action) {
     switch(action.type) {
         case c.PAGE_SET_DATA: {
-            const data = action.payload.data;
-            state = data;
-            break;
+            return action.payload.data;
         }
     }
     return state;

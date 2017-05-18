@@ -9,7 +9,7 @@
 import store from "../store"
 import * as c from "../const"
 import { getCookie, endpoints } from "../utils"
-import {periodSelectReset} from "./ui-actions";
+import { periodSelectReset } from "./ui-actions";
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
@@ -319,7 +319,7 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
                 executeCallback(callbacks, c.UPDATE_MODEL_FULFILLED);
             })
             .catch((error) => {
-                dispatch({type: c.UPDATE_MODEL_REJECTED, payload: {model: 'updates', error: error}});
+                dispatch({type: c.UPDATE_MODEL_REJECTED, payload: {model: c.OBJECTS_UPDATES, error: error}});
                 throw error;
             })
             .catch(() => {
