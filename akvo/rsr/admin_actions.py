@@ -8,6 +8,8 @@
 from .models import Project
 
 def set_project_status_complete(modeladmin, request, queryset):
+    """ Admin action setting selected projects to STATUS_COMPLETE
+    """
     queryset.update(status=Project.STATUS_COMPLETE)
 
 set_project_status_complete.short_description = "Set status of selected projects to complete"
