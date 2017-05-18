@@ -103,6 +103,7 @@ export default class App extends React.Component {
         this.state = {
             selectedOption: undefined,
             hash: window.location.hash && window.location.hash.substring(1),
+            initialViewSet: false,
         }
     }
 
@@ -155,14 +156,13 @@ export default class App extends React.Component {
             this.setState({hash: undefined});
         }
         // set the initial state of the Results panels to open of the user is an M&E manager
-        if (this.userIsMEManager()) {
-            if (!identicalArrays(this.activeKey(), this.props.MEManagerDefaultKeys)) {
-                collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
-            }
+        if (this.userIsMEManager() && nextProps.ui.allFetched && !this.state.initialViewSet) {
+            collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
+            this.setState({initialViewSet: true});
         }
     }
 
-    mamageButtonsAndHash(element) {
+    manageButtonsAndHash(element) {
     /*
         Set state for the button to highlight, set the URL # value, set selectedOption to undefined
         so it doesn't show a date period
@@ -174,12 +174,12 @@ export default class App extends React.Component {
 
     showDraft() {
         showUpdates(this.props.draftUpdates);
-        this.mamageButtonsAndHash(c.FILTER_SHOW_DRAFT);
+        this.manageButtonsAndHash(c.FILTER_SHOW_DRAFT);
     }
 
     showApproved(set=true) {
         showUpdates(this.props.approvedUpdates);
-        this.mamageButtonsAndHash(c.FILTER_SHOW_APPROVED);
+        this.manageButtonsAndHash(c.FILTER_SHOW_APPROVED);
     }
 
     unlockSelected() {
@@ -197,7 +197,7 @@ export default class App extends React.Component {
 
     needReporting() {
         selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
-        this.mamageButtonsAndHash(c.FILTER_NEED_REPORTING);
+        this.manageButtonsAndHash(c.FILTER_NEED_REPORTING);
     }
 
     resetFilters() {
