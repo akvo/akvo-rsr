@@ -12,6 +12,7 @@
 import { createSelector } from "reselect"
 
 import * as c from "./const";
+import {idsToActiveKey} from "./utils";
 
 
 // Input selectors for models
@@ -214,4 +215,13 @@ export const getNeedReportingPeriods = createSelector(
     (periodObjects, unlockedPeriods, periodChildren) =>
         unlockedPeriods && unlockedPeriods.filter((id) => periodChildren[id].length == 0
     )
+);
+
+
+export const getMEManagerDefaultKeys = createSelector(
+    /*
+        Just an array of IDs as string, used to set the top collapse (for Results) to all open
+     */
+    [getResultIds],
+    resultIds => idsToActiveKey(resultIds)
 );

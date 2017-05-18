@@ -36,15 +36,15 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getDraftUpdates,
+    getDraftUpdates, getMEManagerDefaultKeys,
     getNeedReportingPeriods,
     getUpdatesForApprovedPeriods,
 } from "../selectors";
 
 import {
     createToggleKeys,
-    fieldValueOrSpinner, openOrCloseResults,
-    setHash,
+    fieldValueOrSpinner, identicalArrays, openResults,
+    setHash, toggleTree,
 } from "../utils"
 
 import {
@@ -54,6 +54,10 @@ import {
 
 import Results from "./Results";
 import {collapseChange} from "../actions/collapse-actions";
+
+
+// The collapseID for the top collapse is always the same
+const resultsCollapseID = 'results-results';
 
 
 const dataFromElement = (elementName) => {
@@ -71,7 +75,6 @@ const modifyUser = (isMEManager) => {
     };
 };
 
-
 @connect((store) => {
     return {
         keys: store.keys,
@@ -83,6 +86,7 @@ const modifyUser = (isMEManager) => {
         approvedPeriods: getApprovedPeriods(store),
         approvedUpdates: getUpdatesForApprovedPeriods(store),
         needReportingPeriods: getNeedReportingPeriods(store),
+        MEManagerDefaultKeys: getMEManagerDefaultKeys(store),
     }
 })
 export default class App extends React.Component {
@@ -95,6 +99,7 @@ export default class App extends React.Component {
         this.selectChange = this.selectChange.bind(this);
         this.needReporting = this.needReporting.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.openResults = this.openResults.bind(this);
         this.state = {
             selectedOption: undefined,
             hash: window.location.hash && window.location.hash.substring(1),
@@ -103,9 +108,7 @@ export default class App extends React.Component {
 
     fetchUser(userId) {
         fetchModel('user', userId, activateToggleAll);
-        this.props.dispatch(
-            {type: c.UPDATE_MODEL_FULFILLED, payload: {model, object}});
-
+        this.props.dispatch({type: c.UPDATE_MODEL_FULFILLED, payload: {model, object}});
     }
 
     componentDidMount() {
@@ -128,6 +131,7 @@ export default class App extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        // Check if a filter should be applied from the based on URL fragment
         if (this.state.hash && nextProps.ui.allFetched) {
             const hash = this.state.hash;
             switch(hash) {
@@ -149,6 +153,12 @@ export default class App extends React.Component {
                 selectPeriodByDates(periodStart, periodEnd);
             }
             this.setState({hash: undefined});
+        }
+        // set the initial state of the Results panels to open of the user is an M&E manager
+        if (this.userIsMEManager()) {
+            if (!identicalArrays(this.activeKey(), this.props.MEManagerDefaultKeys)) {
+                collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
+            }
         }
     }
 
@@ -217,8 +227,35 @@ export default class App extends React.Component {
         return this.props.keys["results-results"];
     }
 
+    openResults() {
+        // Determine if we should open the full tree or close it
+        const keys = this.props.keys;
+        const activeKey = this.activeKey();
+        if (this.userIsMEManager()) {
+            // if activeKey is identical to the MEManagerDefaultKeys selector we are at the "closed"
+            // closed view for an M&E manager
+            const openCollapses = Object.keys(keys).filter(key => keys[key].length !== 0);
+            return identicalArrays(activeKey, this.props.MEManagerDefaultKeys) &&
+                openCollapses.length === 1;
+        } else {
+            // otherwise open only if the whole tree is closed
+            return activeKey == undefined || activeKey.length == 0;
+        }
+    }
+
+    createToggleKeys() {
+        const open = this.openResults(this.activeKey());
+        let MEManagerKeys;
+        if (this.userIsMEManager()) {
+            MEManagerKeys = this.props.MEManagerDefaultKeys;
+        }
+        // construct the array of Collapse activeKeys for the sub-tree
+        return toggleTree(c.OBJECTS_RESULTS, c.OBJECTS_RESULTS, open, MEManagerKeys);
+    }
+
+
     toggleAll() {
-        const keys = createToggleKeys(c.OBJECTS_RESULTS, c.OBJECTS_RESULTS, this.activeKey());
+        const keys = this.createToggleKeys();
         keys.map((collapse) => {
             collapseChange(collapse.collapseId, collapse.activeKey);
         });
@@ -227,7 +264,7 @@ export default class App extends React.Component {
 
     render() {
         const clearfix = {clear: 'both'};
-        const openCloseLabel = openOrCloseResults(this.activeKey()) ? 'Open all' : 'Close all';
+        const openCloseLabel = this.openResults() ? 'Open all' : 'Close all';
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
@@ -237,6 +274,7 @@ export default class App extends React.Component {
         ({value, icon} = fieldValueOrSpinner(this.props.approvedPeriods, 'length'));
         const approvedUpdateLabel = <ButtonLabel label="Approved " value={value} icon={icon}/>;
         const buttonDisabled = !this.props.ui.allFetched;
+        const noFilterDisabled = buttonDisabled || !this.props.ui.hide;
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
 
         return (
@@ -249,7 +287,7 @@ export default class App extends React.Component {
                                     <ToggleButton onClick={this.toggleAll} label={openCloseLabel}
                                                   disabled={buttonDisabled}/>
                                     <ToggleButton onClick={this.resetFilters} label="No filter"
-                                                  disabled={buttonDisabled}/>
+                                                  disabled={noFilterDisabled}/>
                                 </div>
                             </div>
                         </div>
