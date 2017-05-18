@@ -2949,7 +2949,7 @@ div.iatiFilters {
     .indicators .rc-collapse .rc-collapse-item .rc-collapse-header {
       background: rgba(255, 0, 0, 0);
       padding: 10px 5px;
-      opacity: 0.5; }
+      opacity: 0.8; }
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] {
         opacity: 1; }
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
@@ -3360,6 +3360,8 @@ div.iatiFilters {
     display: none; }
   .periodMenuBar .btn {
     margin-right: 10px; }
+  .periodMenuBar .periodOverview .overviewBtn {
+    margin: 10px 0 0 5px; }
   .periodMenuBar .periodBtns {
     padding: 10px;
     background: rgba(32, 32, 36, 0.05); }

@@ -227,7 +227,7 @@ export default class App extends React.Component {
 
     render() {
         const clearfix = {clear: 'both'};
-        const openCloseLabel = openOrCloseResults(this.activeKey()) ? 'Open all' : 'Close all';
+        const openCloseLabel = openOrCloseResults(this.activeKey()) ? 'Overview' : 'Close all';
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
@@ -243,19 +243,11 @@ export default class App extends React.Component {
             <div className={'periodMenuBar'}>
                 <div className={'periodBtns'}>
                     <div className={'row'}>                        
-                        <div className={'periodFilter col-sm-2'}>
-                            <div className={'row'}><h5>Folding</h5>
-                                <div className="col-xs-12">
-                                    <ToggleButton onClick={this.toggleAll} label={openCloseLabel}
-                                                  disabled={buttonDisabled}/>
-                                    <ToggleButton onClick={this.resetFilters} label="No filter"
-                                                  disabled={buttonDisabled}/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={'periodFilter col-sm-4'}>
+                        <div className={'periodFilter col-sm-6'}>
                             <div className={'row'}><h5>Filter periods</h5>
-                                <div className="col-xs-12">                                    
+                                <div className="col-xs-12">                                          
+                                    <ToggleButton onClick={this.resetFilters} label="Reset filter"
+                                                  disabled={buttonDisabled}/>                              
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
                                                   disabled={buttonDisabled}
@@ -299,7 +291,15 @@ export default class App extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div style={clearfix}></div>
+                <div className={'periodOverview'}>
+                            <div className={'row'}>
+                                <div className="col-xs-12">
+                                    <ToggleButton onClick={this.toggleAll} label={openCloseLabel}
+                                                  disabled={buttonDisabled} className="overviewBtn btn btn-sm btn-default"/>
+
+                                </div>
+                            </div>
+                        </div>
                 <Results parentId="results"/>
             </div>
         );
