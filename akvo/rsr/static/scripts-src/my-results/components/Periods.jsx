@@ -19,14 +19,14 @@ import * as c from "../const"
 
 import {
     getPeriodsActualValue,
-    getIndicatorsChildrenIds
+    getIndicatorsChildrenIds,
 } from "../selectors";
 
 import {
     displayDate,
     endpoints,
     collapseId,
-    createToggleKeys
+    createToggleKeys,
 } from "../utils.js";
 
 
@@ -34,8 +34,13 @@ import AlertFactory from "./alertContainer"
 import { ToggleButton } from "./common"
 import { NewUpdateButton } from "./updates/UpdateForm";
 import Updates from "./updates/Updates";
-import { hideMe } from "../utils";
-import {collapseChange} from "../actions/collapse-actions";
+
+import {
+    _,
+    hideMe,
+} from "../utils";
+
+import { collapseChange } from "../actions/collapse-actions";
 
 
 const ToggleAlert = ({message, close}) => (
@@ -92,7 +97,7 @@ class PeriodLockToggle extends React.Component {
             const callbacks = {
                 [c.UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this),
                 [c.UPDATE_MODEL_REJECTED]: toggleCallback.bind(
-                    this, 'Lock status change failed, please try again'
+                    this, _("lock_change_failed")
                 )
             };
             this.updatePeriodLock(period.id, {locked: !period.locked}, callbacks);
@@ -152,7 +157,7 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
     if (user.isMEManager) {
         lockStatus = <PeriodLockToggle period={period} />
     } else {
-        lockStatus = <PeriodLockStatus lockStatus={period.locked ? 'Locked' : 'Unlocked'}/>
+        lockStatus = <PeriodLockStatus lockStatus={period.locked ? _('locked') : _('unlocked')}/>
     }
     return (
         <span className="periodWrap">

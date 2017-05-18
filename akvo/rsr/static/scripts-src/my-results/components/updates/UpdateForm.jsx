@@ -447,7 +447,7 @@ export default class UpdateForm extends React.Component {
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
         if (!String(update.data).trim()) {
-            this.props.createAlert(this.state.updateAlertName, "Actual value is required for updates");
+            this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
         } else if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
@@ -469,12 +469,12 @@ export default class UpdateForm extends React.Component {
             if (isNewUpdate(update)) {
                 saveUpdateToBackend(
                     endpoints.updates_and_comments(), pruneForPOST(update),
-                    this.props.collapseId, callbacksFactory("Couldn't create update, please try again")
+                    this.props.collapseId, callbacksFactory(_('update_not_created'))
                 );
             } else {
                 updateUpdateToBackend(
                     endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                    this.props.collapseId, callbacksFactory("Couldn't save update")
+                    this.props.collapseId, callbacksFactory(_("update_not_saved"))
                 );
             }
         }
@@ -490,7 +490,7 @@ export default class UpdateForm extends React.Component {
             const callbacks = {
                 undefined,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                    this, deleteUpdateAlertName, "Couldn't delete update, please try again"
+                    this, deleteUpdateAlertName, _("update_not_deleted")
                 )
             };
             deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);

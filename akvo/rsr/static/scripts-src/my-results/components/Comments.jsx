@@ -84,14 +84,14 @@ class CommentForm extends React.Component {
             const callbacks = {
                 undefined,
                 [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
-                    this, commentAlertName, 'Comment could not be saved, please try again.'
+                    this, commentAlertName, _("comment_not_saved")
                 )
             };
             saveModelToBackend(
                 c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
             );
         } else  {
-            createAlert(commentAlertName, "Please enter some comment text");
+            createAlert(commentAlertName, "Please enter a comment text");
         }
     }
 
@@ -195,7 +195,7 @@ export default class Comments extends React.Component {
         } else {
             let disabledNote;
             if (isNewUpdate(this.props.parentId)) {
-                disabledNote = " (Notes are disabled until the update is saved)"
+                disabledNote = " (" + _("notes_disabled") + ")"
             }
             return (
                 <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>

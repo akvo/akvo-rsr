@@ -145,7 +145,29 @@
             "others": "{% trans 'others'|escapejs %}",
             "general_error": "{% trans 'An error occurred'|escapejs %}",
             "connection_error": "{% trans 'There was a connection error. Please check your internet connection and refresh the page.'|escapejs %}",
-            "update_statuses": {{ update_statuses | safe }}
+            "update_statuses": {{ update_statuses | safe }},
+            "actual_value_required": "{% trans 'Actual value is required for updates'|escapejs %}",
+            "update_not_created": "{% trans "Couldn't create update, please try again"|escapejs %}",
+            "update_not_saved": "{% trans "Couldn't save update"|escapejs %}",
+            "update_not_deleted": "{% trans "Couldn't delete update, please try again"|escapejs %}",
+            "full_view": "{% trans "Full view"|escapejs %}",
+            "overview": "{% trans "Overview"|escapejs %}",
+            "needs_reporting": "{% trans "Needs reporting"|escapejs %}",
+            "pending_approval": "{% trans "Pending approval"|escapejs %}",
+            "approved": "{% trans "Approved"|escapejs %}",
+            "reset_filter": "{% trans "Reset filter"|escapejs %}",
+            "select_periods": "{% trans "Select period(s)"|escapejs %}",
+            "lock_selected": "{% trans "Lock selected"|escapejs %}",
+            "filter_periods": "{% trans "Filter periods"|escapejs %}",
+            "bulk_action": "{% trans "Bulk action"|escapejs %}",
+            "comment_not_saved": "{% trans "Couldn't save comment, please try again"|escapejs %}",
+            "enter_comment": "{% trans "Please enter a comment text"|escapejs %}",
+            "notes_disabled": "{% trans "Notes are disabled until the update is saved"|escapejs %}",
+            "nameless_indicator": "{% trans "Nameless indicator"|escapejs %}",
+            "aggregate_actual_value": "{% trans "Aggregate actual value:"|escapejs %}",
+            "lock_change_failed": "{% trans "Lock status change failed, please try again"|escapejs %}",
+            "locked": "{% trans "Locked"|escapejs %}",
+            "unlocked": "{% trans "Unlocked"|escapejs %}"
         }
     </script>
     {% if project.is_impact_project and project.results.all %}

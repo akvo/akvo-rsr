@@ -24,7 +24,8 @@ import {setPageData} from "../actions/page-actions";
 
 import {
     activateFilterCSS,
-    activateToggleAll, filterActive,
+    activateToggleAll,
+    filterActive,
     noHide,
     selectablePeriods,
     selectPeriodByDates,
@@ -36,14 +37,16 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getDraftUpdates, getMEManagerDefaultKeys,
+    getDraftUpdates,
+    getMEManagerDefaultKeys,
     getNeedReportingPeriods,
     getUpdatesForApprovedPeriods,
 } from "../selectors";
 
 import {
-    createToggleKeys,
-    fieldValueOrSpinner, identicalArrays, openResults,
+    _,
+    fieldValueOrSpinner,
+    identicalArrays,
     setHash, toggleTree,
 } from "../utils"
 
@@ -53,7 +56,7 @@ import {
 } from "./common";
 
 import Results from "./Results";
-import {collapseChange} from "../actions/collapse-actions";
+import { collapseChange } from "../actions/collapse-actions";
 
 
 // The collapseID for the top collapse is always the same
@@ -264,15 +267,15 @@ export default class App extends React.Component {
 
     render() {
         const clearfix = {clear: 'both'};
-        const openCloseLabel = this.openResults() ? 'Full view' : 'Overview';
+        const openCloseLabel = this.openResults() ? _('full_view') : _('overview');
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
-        const needReportingLabel = <ButtonLabel label="Needs reporting " value={value} icon={icon}/>;
+        const needReportingLabel = <ButtonLabel label={_("needs_reporting")} value={value} icon={icon}/>;
         ({value, icon} = fieldValueOrSpinner(this.props.draftUpdates, 'length'));
-        const draftUpdateLabel = <ButtonLabel label="Pending approval " value={value} icon={icon}/>;
+        const draftUpdateLabel = <ButtonLabel label={_("pending_approval")} value={value} icon={icon}/>;
         ({value, icon} = fieldValueOrSpinner(this.props.approvedPeriods, 'length'));
-        const approvedUpdateLabel = <ButtonLabel label="Approved " value={value} icon={icon}/>;
+        const approvedUpdateLabel = <ButtonLabel label={_("approved")} value={value} icon={icon}/>;
         const buttonDisabled = !this.props.ui.allFetched;
         const resetFilterDisabled = buttonDisabled || !this.props.ui.hide;
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
@@ -282,9 +285,9 @@ export default class App extends React.Component {
                 <div className={'periodBtns'}>
                     <div className={'row'}>
                         <div className={'periodFilter col-sm-6'}>
-                            <div className={'row'}><h5>Filter periods</h5>
+                            <div className={'row'}><h5>{_("")}</h5>
                                 <div className="col-xs-12">
-                                    <ToggleButton onClick={this.resetFilters} label="Reset filter"
+                                    <ToggleButton onClick={this.resetFilters} label={_("reset_filter")}
                                                   disabled={resetFilterDisabled}/>
                                     <ToggleButton onClick={this.needReporting}
                                                   label={needReportingLabel}
@@ -307,11 +310,11 @@ export default class App extends React.Component {
                             </div>
                         </div>
                         <div className={'periodBulkAct col-sm-6'}>
-                            <div className={'row'}><h5>Bulk action</h5>
+                            <div className={'row'}><h5>{_("bulk_action")}</h5>
                                 <div className="col-xs-6">
                                     <Select options={selectOptions}
                                             value={this.state.selectedOption}
-                                            multi={false} placeholder="Select period(s)"
+                                            multi={false} placeholder={_("select_periods")}
                                             searchable={false} clearable={false}
                                             onChange={this.selectChange}
                                             className={
@@ -319,7 +322,7 @@ export default class App extends React.Component {
                                             }/>
                                 </div>
                                 <div className="col-xs-6">
-                                    <ToggleButton onClick={this.lockSelected} label="Lock selected"
+                                    <ToggleButton onClick={this.lockSelected} label={_("lock_selected")}
                                                   disabled={restrictedButtonDisabled}/>
                                     <ToggleButton onClick={this.unlockSelected}
                                                   label="Unlock selected"

@@ -11,6 +11,7 @@ import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
 import * as alertActions from "../../actions/alert-actions"
+
 import {
     collapseChange,
     openPanel,
@@ -52,7 +53,10 @@ const UpdateDisplay = ({update}) => {
         <div>
             <ul className="updateMeta">
                 <li className="updateDate">{displayDate(update.created_at)}</li>
-                <li className="updateName">by <span>{userName}</span> at <span>{update.user_details.approved_organisations[0].name}</span></li>
+                <li className="updateName">by
+                    <span>{userName}</span> at
+                    <span>{update.user_details.approved_organisations[0].name}</span>
+                </li>
                 <li className="updateStatus">{_('update_statuses')[update.status]}</li>
             </ul>
             <ul className="valueMeta">
@@ -61,7 +65,9 @@ const UpdateDisplay = ({update}) => {
          NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
          not update.period_actual_value from the backend
          */}
-                <li className="totalValue">Actual total for this period (including this update): <span>{update.actual_value}</span></li>
+                <li className="totalValue">Actual total for this period (including this update):
+                    <span>{update.actual_value}</span>
+                </li>
             </ul>
         </div>
     )

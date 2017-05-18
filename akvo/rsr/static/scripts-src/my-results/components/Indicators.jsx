@@ -30,12 +30,14 @@ import Periods from './Periods';
 
 
 const IndicatorHeader = ({indicator, aggregateActualValue}) => {
-    const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+    const title = indicator.title.length > 0 ? indicator.title : _("nameless_indicator");
     return (
         <span className="indicatorTitle">
             <ul>
                 <li>{title}</li>
-                <li><span className="aggrActualValue">{"Aggregate actual value: " }<span>{aggregateActualValue}</span></span></li>
+                <li><span className="aggrActualValue">
+                    {_("aggregate_actual_value")}<span>{aggregateActualValue}</span></span>
+                </li>
             </ul>   
         </span>
     )
@@ -47,7 +49,7 @@ IndicatorHeader.propTypes = {
 
 
 const IndicatorContent = ({indicator}) => {
-    const title = indicator.title.length > 0 ? indicator.title : "Nameless indicator";
+    const title = indicator.title.length > 0 ? indicator.title : _("nameless_indicator");
     return (
         <div className="baseline">
             <ul>
