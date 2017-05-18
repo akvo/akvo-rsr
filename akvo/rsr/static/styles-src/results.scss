@@ -4274,7 +4274,7 @@ div.iatiFilters {
             .rc-collapse-header {
                 background: rgba(red, 0);
                 padding: 10px 5px;
-                opacity: 0.5;
+                opacity: 0.8;
 
                 &[aria-expanded="true"] {
                     opacity: 1;
@@ -5014,6 +5014,12 @@ div.iatiFilters {
 
     .btn {
         margin-right: 10px;
+    }
+
+    .periodOverview {
+        .overviewBtn {
+            margin: 10px 0 0 5px;
+        }
     }
 
     .periodBtns {
