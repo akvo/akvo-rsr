@@ -189,12 +189,9 @@ class BaseProjectFilter(django_filters.FilterSet):
     status = django_filters.ChoiceFilter(
         initial=_('All'),
         label=_(u'status'),
-        choices=ANY_CHOICE + Project.STATUSES)
-
-    iati_status = django_filters.ChoiceFilter(
-        initial=_('All'),
-        label=_(u'status'),
-        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)))
+        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)),
+        name='iati_status',
+    )
 
     title_or_subtitle = django_filters.CharFilter(
         label=_(u'Search'),
@@ -252,7 +249,6 @@ def create_project_filter_class(request, projects):
                 'keyword',
                 'location',
                 'status',
-                'iati_status',
                 'organisation',
                 'category',
                 'sector',
