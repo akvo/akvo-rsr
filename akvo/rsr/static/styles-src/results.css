@@ -2962,7 +2962,8 @@ div.iatiFilters {
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .aggrActualValue {
               margin-left: 25px; }
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .aggrActualValue span {
-                color: initial; }
+                color: initial;
+                margin-left: 4px; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
               margin-left: 10px;
               color: rgba(32, 32, 36, 0.5); }

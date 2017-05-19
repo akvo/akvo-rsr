@@ -30,7 +30,7 @@ import {
     selectablePeriods,
     selectPeriodByDates,
     selectPeriodsThatNeedReporting,
-    showUpdates,
+    showUpdates, updateFormReset,
 } from "../actions/ui-actions";
 
 import * as c from "../const"
@@ -263,6 +263,7 @@ export default class App extends React.Component {
             collapseChange(collapse.collapseId, collapse.activeKey);
         });
         noHide();
+        updateFormReset();
     }
 
     render() {
@@ -285,7 +286,7 @@ export default class App extends React.Component {
                 <div className={'periodBtns'}>
                     <div className={'row'}>
                         <div className={'periodFilter col-sm-6'}>
-                            <div className={'row'}><h5>{_("")}</h5>
+                            <div className={'row'}><h5>{_("filter_periods")}</h5>
                                 <div className="col-xs-12">
                                     {/*<ToggleButton onClick={this.resetFilters} label={_("reset_filter")}*/}
                                                   {/*disabled={resetFilterDisabled}/>*/}

@@ -49,13 +49,15 @@ Alert.propTypes = {
 
 const UpdateDisplay = ({update}) => {
     const userName = update.user_details.first_name + " " + update.user_details.last_name;
+    //TODO: fix translation of "by" and "at", but this probably needs the whole row with params as a
+    // translation object
     return (
         <div>
             <ul className="updateMeta">
                 <li className="updateDate">{displayDate(update.created_at)}</li>
                 <li className="updateName">by
-                    <span>{userName}</span> at
-                    <span>{update.user_details.approved_organisations[0].name}</span>
+                    <span> {userName} </span>at
+                    <span> {update.user_details.approved_organisations[0].name}</span>
                 </li>
                 <li className="updateStatus">{_('update_statuses')[update.status]}</li>
             </ul>
@@ -66,7 +68,7 @@ const UpdateDisplay = ({update}) => {
          not update.period_actual_value from the backend
          */}
                 <li className="totalValue">Actual total for this period (including this update):
-                    <span>{update.actual_value}</span>
+                    <span> {update.actual_value}</span>
                 </li>
             </ul>
         </div>

@@ -35,9 +35,7 @@ ToggleButton.propTypes = {
 
 export const ButtonLabel = ({label, value, icon}) => {
     return <span>
-        {label}
-        {value ? '(' + value + ')' : ''}
-        {icon}
+        {label} {value ? '(' + value + ')' : ''} {icon}
     </span>
 };
 ButtonLabel.propTypes = {
