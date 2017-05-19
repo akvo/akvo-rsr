@@ -37,7 +37,7 @@ var FilterForm = React.createClass({
             "organisation": [],
             "sector": [],
         };
-        return {"options": options};
+        return {"options": options, "selected": {}};
     },
     componentDidMount: function(){
         this.fetchFilterOptions();
@@ -45,7 +45,14 @@ var FilterForm = React.createClass({
     fetchFilterOptions: function(){
         var options = {};
         var self = this;
-        fetch(this.props.options_url, options)
+        var params = {format: "json"};
+        var params = Object.keys(Object.assign(params, this.state.selected)).map(
+            function(key){
+                return key + '=' + encodeURIComponent(params[key]);
+            }
+        ).join('&');
+        var url = this.props.options_url + '?' + params;
+        fetch(url, options)
             .then(
                 function(response){
                     if (response.status >=200 && response.status < 300) {
@@ -78,8 +85,14 @@ var FilterForm = React.createClass({
     },
     onChange: function(field_name, values){
         var update = {};
-        update[field_name] = values[0].id;
-        console.log(update);
+        Object.assign(update, this.state.selected);
+        if (values.length > 0){
+            update[field_name] = values[0].id;
+        } else {
+            delete update[field_name];
+        }
+        var self = this;
+        this.setState({"selected": update}, this.fetchFilterOptions);
     },
     render: function(){
         var self = this;
@@ -122,7 +135,7 @@ var FilterForm = React.createClass({
 
 
 var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
-var url = 'http://rsr.localdev.akvo.org/rest/v1/typeaheads/project_filters?format=json';
+var url = '/rest/v1/typeaheads/project_filters';
 
 document.addEventListener('DOMContentLoaded', function() {
     ReactDOM.render(
