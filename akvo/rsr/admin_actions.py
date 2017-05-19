@@ -7,6 +7,7 @@
 
 from .models import Project
 
+
 def set_project_status_complete(modeladmin, request, queryset):
     """ Admin action setting selected projects to STATUS_COMPLETE
     """
