@@ -208,7 +208,6 @@ export function levelAbove(model, compare) {
 }
 
 
-// TODO: turn into selector?
 export function hideMe(model, parentId, objectId) {
     // determine if the collapse panel should be hidden
     // find the parent collapse

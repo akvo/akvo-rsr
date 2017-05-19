@@ -125,11 +125,13 @@ export function noHide() {
 }
 
 
-export function showUpdates(updateIds) {
+export function showUpdates(updateIds,openForm=false) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_UPDATES);
     updateFormReset();
-    updateIds.map((id) => updateFormOpen(id));
+    if (openForm) {
+        updateIds.map((id) => updateFormOpen(id));
+    }
     openNodes(c.OBJECTS_UPDATES, updateIds, true);
 }
 

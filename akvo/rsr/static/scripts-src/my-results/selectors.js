@@ -185,7 +185,7 @@ export const getApprovedPeriods = createSelector(
 
 export const getUpdatesForApprovedPeriods = createSelector(
     /*
-        Return an array with IDs of updates that are chilrden of periods returned from
+        Return an array with IDs of updates that are children of periods returned from
         getApprovedPeriods
      */
     [getUpdateIds, getUpdateObjects, getApprovedPeriods],

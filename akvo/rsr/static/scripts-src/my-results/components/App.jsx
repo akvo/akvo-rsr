@@ -176,7 +176,7 @@ export default class App extends React.Component {
     }
 
     showDraft() {
-        showUpdates(this.props.draftUpdates);
+        showUpdates(this.props.draftUpdates, true);
         this.manageButtonsAndHash(c.FILTER_SHOW_DRAFT);
     }
 
