@@ -6,21 +6,23 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from django.conf import settings
+from django.db.models import Q
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from akvo.codelists.models import Country, Version
+from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer,
                                    TypeaheadKeywordSerializer,
                                    TypeaheadSectorSerializer,)
-
-from akvo.codelists.models import Country, Version
+from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
 from akvo.rsr.views.project import _project_directory_coll
-
-from django.conf import settings
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from akvo.utils import codelist_choices
 
 
 def rejig(queryset, serializer):
@@ -107,6 +109,36 @@ def typeahead_project(request):
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
 
+def _int_or_none(value):
+    """Return int or None given a value."""
+    try:
+        return int(value)
+    except:
+        return None
+
+
+def _create_filters_query(request):
+    """Returns a Q object expression based on query parameters."""
+    keyword_param = _int_or_none(request.GET.get('keyword'))
+    location_param = _int_or_none(request.GET.get('location'))
+    status_param = _int_or_none(request.GET.get('status'))
+    organisation_param = _int_or_none(request.GET.get('organisation'))
+    sector_param = _int_or_none(request.GET.get('sector'))
+
+    keyword_filter = Q(keywords__id=keyword_param) if keyword_param else None
+    location_filter = get_m49_filter(location_param) if location_param else None
+    status_filter = Q(iati_status=status_param) if status_param else None
+    organisation_filter = Q(partners__id=organisation_param) if organisation_param else None
+    sector_filter = (
+        Q(sectors__sector_code=sector_param, sectors__vocabulary='2')
+        if sector_param else None
+    )
+    all_filters = [
+        keyword_filter, location_filter, status_filter, organisation_filter, sector_filter
+    ]
+    filters = filter(None, all_filters)
+    return reduce(lambda x, y: x & y, filters) if filters else None
+
 
 @api_view(['GET'])
 def typeahead_project_filters(request):
@@ -116,13 +148,15 @@ def typeahead_project_filters(request):
     filters. This is used to generate dynamic filters.
 
     """
-    from akvo.rsr.filters import location_choices
-    from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
-    from akvo.utils import codelist_choices
 
+    # Fetch projects based on whether we are an Akvo site or RSR main site
     page = request.rsr_page
     projects = page.projects() if page else Project.objects.all()
     # FIXME: Can we prefetch things to make this faster???
+
+    # Filter projects based on query parameters
+    filter_ = _create_filters_query(request)
+    projects = projects.filter(filter_) if filter_ is not None else projects
 
     # Get the relevant data for typeaheads based on filtered projects.
     keywords = projects.keywords()
