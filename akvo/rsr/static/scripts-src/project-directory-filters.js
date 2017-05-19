@@ -15,13 +15,14 @@ var Filter = React.createClass({displayName: "Filter",
                 React.createElement("label", null, this.props.title), 
                 React.createElement(Typeahead, {
                     ref: "typeahead", 
-                    clearButton: true, 
                     name: this.props.title, 
                     selected: this.props.selected, 
                     options: this.props.options, 
                     onChange: this.onChange, 
                     filterBy: ['filterBy'], 
-                    label: "label"}
+                    label: "label", 
+                    clearButton: true, 
+                    disabled: this.props.disabled}
                 )
             )
         );
@@ -40,7 +41,7 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             "organisation": [],
             "sector": [],
         };
-        return {"options": options, "selected": {}};
+        return {"options": options, "selected": {}, disabled: true};
     },
     componentDidMount: function(){
         this.fetchFilterOptions();
@@ -55,6 +56,7 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             }
         ).join('&');
         var url = this.props.options_url + '?' + params;
+        this.setState({disabled: true});
         fetch(url, options)
             .then(
                 function(response){
@@ -65,7 +67,7 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             )
             .then(function(options){
                 if (!options) {return;}
-                self.setState({"options": self.processOptions(options)});
+                self.setState({"options": self.processOptions(options), disabled: false});
             });
     },
     processOptions: function(options){
@@ -106,28 +108,31 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             input.value = id;
         };
         Object.keys(this.state.selected).map(set_id_as_value, this);
+        this.setState({disabled: true});
         document.getElementById('filterForm').submit();
+
     },
     closeForm: function(){
         document.querySelector('.menu-toggle').click();
     },
     render: function(){
-        var self = this;
+        var create_filter = function(filter_name){
+            return (
+                React.createElement(Filter, {
+                    ref: filter_name, 
+                    key: filter_name, 
+                    options: this.state.options[filter_name], 
+                    title: filter_name, 
+                    selected: [], 
+                    onChange: this.onChange, 
+                    disabled: this.state.disabled}
+                )
+            );
+        };
         return (
             React.createElement("aside", {id: "sidebar-wrapper"}, 
                 React.createElement("div", {id: "filter"}, 
-                    this.props.filters.map(function(filter_name){
-                         return (
-                             React.createElement(Filter, {
-                                 ref: filter_name, 
-                                 key: filter_name, 
-                                 options: self.state.options[filter_name], 
-                                 title: filter_name, 
-                                 selected: [], 
-                                 onChange: self.onChange}
-                             )
-                         );
-                     }), 
+                    this.props.filters.map(create_filter, this), 
                     React.createElement("div", null, 
                         React.createElement("nav", null, 
                             React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
