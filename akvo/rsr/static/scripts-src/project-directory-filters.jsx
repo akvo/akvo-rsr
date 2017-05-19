@@ -7,17 +7,15 @@
 
 var filtersWrapper = document.getElementById('wrapper');
 
-var TypeaheadClass = ReactBootstrapTypeahead.Typeahead;
-
-var FilterClass = React.createClass({
+var Filter = React.createClass({
     render: function(){
-        var Typeahead = React.createFactory(TypeaheadClass);
+        var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
             <div>
                 <label>{this.props.title}</label>
                 <Typeahead
                     selected={this.props.selected}
-                    options={this.props.data}
+                    options={this.props.options}
                     onChange={this.onChange}
                     filterBy={['filterBy']}
                     label='label'
@@ -26,30 +24,28 @@ var FilterClass = React.createClass({
         );
     },
     onChange: function(values){
-        console.log("Filter values changed");
-        console.log(values);
-        this.props.onChange(values);
+        this.props.onChange(this.props.title, values);
     }
 });
-var Filter = React.createFactory(FilterClass);
 
-var FilterFormClass = React.createClass({
+var FilterForm = React.createClass({
     getInitialState: function(){
-        return {
+        var options = {
             "keyword": [],
             "location": [],
             "status": [],
             "organisation": [],
             "sector": [],
         };
+        return {"options": options};
     },
     componentDidMount: function(){
-        this.fetchFilterData();
+        this.fetchFilterOptions();
     },
-    fetchFilterData: function(){
+    fetchFilterOptions: function(){
         var options = {};
         var self = this;
-        fetch(this.props.data_url, options)
+        fetch(this.props.options_url, options)
             .then(
                 function(response){
                     if (response.status >=200 && response.status < 300) {
@@ -57,32 +53,33 @@ var FilterFormClass = React.createClass({
                     }
                 }
             )
-            .then(function(data){
-                if (!data) {return;}
-                self.setState(self.processData(data));
+            .then(function(options){
+                if (!options) {return;}
+                self.setState({"options": self.processOptions(options)});
             });
     },
-    processData: function(data){
+    processOptions: function(options){
         // Add a filterBy attribute to all items
         var make_typeahead_item = function(item){
-            // Check various fields depending on type of data
+            // Check various fields depending on type of options
             // NOTE: name always appears after long_name, since we
             // prefer long_name for organisations
             var label = item.label || item.long_name || item.name || '';
             item.filterBy = (label + ' ' + item.id).trim();
             item.label = label;
         };
-        for (var key in data) {
-            if (data.hasOwnProperty(key)) {
-                var value = data[key];
+        for (var key in options) {
+            if (options.hasOwnProperty(key)) {
+                var value = options[key];
                 value.forEach(make_typeahead_item);
             }
         }
-        return data;
+        return options;
     },
-    onChange: function(values){
-        console.log("values changed");
-        console.log(values);
+    onChange: function(field_name, values){
+        var update = {};
+        update[field_name] = values[0].id;
+        console.log(update);
     },
     render: function(){
         var self = this;
@@ -93,7 +90,7 @@ var FilterFormClass = React.createClass({
                          return (
                              <Filter
                                  key={filter_name}
-                                 data={self.state[filter_name]}
+                                 options={self.state.options[filter_name]}
                                  title={filter_name}
                                  selected={[]}
                                  onChange={self.onChange}
@@ -124,13 +121,11 @@ var FilterFormClass = React.createClass({
 });
 
 
-var FilterForm = React.createFactory(FilterFormClass);
-
 var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
 var url = 'http://rsr.localdev.akvo.org/rest/v1/typeaheads/project_filters?format=json';
 
 document.addEventListener('DOMContentLoaded', function() {
     ReactDOM.render(
-        <FilterForm filters={filters} data_url={url}/>,
+        <FilterForm filters={filters} options_url={url}/>,
         filtersWrapper);
 });
