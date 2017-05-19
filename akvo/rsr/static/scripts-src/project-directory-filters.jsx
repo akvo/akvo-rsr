@@ -108,6 +108,9 @@ var FilterForm = React.createClass({
         Object.keys(this.state.selected).map(set_id_as_value, this);
         document.getElementById('filterForm').submit();
     },
+    closeForm: function(){
+        document.querySelector('.menu-toggle').click();
+    },
     render: function(){
         var self = this;
         return (
@@ -137,9 +140,9 @@ var FilterForm = React.createClass({
                                     </a>
                                 </li>
                                 <li>
-                                    {/* FIXME: Button doesn't work */}
-                                    <a className="showFilters menu-toggle text-center">
-                                        <i className="fa fa-toggle-off"></i>Close this
+                                    <a className="showFilters menu-toggle text-center" onClick={this.closeForm}>
+                                        <i className="fa fa-toggle-off"></i>
+                                        <span> Close this</span>
                                     </a>
                                 </li>
                             </ul>

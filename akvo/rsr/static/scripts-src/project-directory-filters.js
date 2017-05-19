@@ -108,6 +108,9 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         Object.keys(this.state.selected).map(set_id_as_value, this);
         document.getElementById('filterForm').submit();
     },
+    closeForm: function(){
+        document.querySelector('.menu-toggle').click();
+    },
     render: function(){
         var self = this;
         return (
@@ -137,9 +140,9 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                                     )
                                 ), 
                                 React.createElement("li", null, 
-                                    /* FIXME: Button doesn't work */
-                                    React.createElement("a", {className: "showFilters menu-toggle text-center"}, 
-                                        React.createElement("i", {className: "fa fa-toggle-off"}), "Close this"
+                                    React.createElement("a", {className: "showFilters menu-toggle text-center", onClick: this.closeForm}, 
+                                        React.createElement("i", {className: "fa fa-toggle-off"}), 
+                                        React.createElement("span", null, " Close this")
                                     )
                                 )
                             )
