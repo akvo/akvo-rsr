@@ -24,6 +24,12 @@ var jsfiles = [
     '!../../akvo/rsr/static/scripts-src/my-results/**/*.js',
 ];
 
+var jsxfiles = [
+    '../../akvo/rsr/static/scripts-src/**/*.jsx',
+    // excluded files
+    '!../../akvo/rsr/static/scripts-src/my-results/**/*.jsx',
+];
+
 gulp.task('lint', function() {
   return gulp.src(jsfiles)
     .pipe(plumber())
@@ -32,7 +38,7 @@ gulp.task('lint', function() {
 });
 
 gulp.task('jsx', function () {
-  return gulp.src('../../akvo/rsr/static/scripts-src/**/*.jsx')
+  return gulp.src(jsxfiles)
     .pipe(plumber())
     .pipe(react())
     .pipe(gulp.dest('../../akvo/rsr/static/scripts-src'));
