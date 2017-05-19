@@ -14,6 +14,9 @@ var Filter = React.createClass({
             <div>
                 <label>{this.props.title}</label>
                 <Typeahead
+                    ref='typeahead'
+                    clearButton={true}
+                    name={this.props.title}
                     selected={this.props.selected}
                     options={this.props.options}
                     onChange={this.onChange}
@@ -46,7 +49,7 @@ var FilterForm = React.createClass({
         var options = {};
         var self = this;
         var params = {format: "json"};
-        var params = Object.keys(Object.assign(params, this.state.selected)).map(
+        params = Object.keys(Object.assign(params, this.state.selected)).map(
             function(key){
                 return key + '=' + encodeURIComponent(params[key]);
             }
@@ -91,8 +94,19 @@ var FilterForm = React.createClass({
         } else {
             delete update[field_name];
         }
-        var self = this;
         this.setState({"selected": update}, this.fetchFilterOptions);
+    },
+    submitForm: function(){
+        /* HACK: The fields in the typeaheads are not option/selection fields,
+           but simple input fields. Submitting the form submits the display text,
+           but we would like to use the ids. */
+        var set_id_as_value = function(key){
+            var id = this.state.selected[key];
+            var input = ReactDOM.findDOMNode(this.refs[key].refs.typeahead.getInstance()).querySelector('input');
+            input.value = id;
+        };
+        Object.keys(this.state.selected).map(set_id_as_value, this);
+        document.getElementById('filterForm').submit();
     },
     render: function(){
         var self = this;
@@ -102,6 +116,7 @@ var FilterForm = React.createClass({
                     {this.props.filters.map(function(filter_name){
                          return (
                              <Filter
+                                 ref={filter_name}
                                  key={filter_name}
                                  options={self.state.options[filter_name]}
                                  title={filter_name}
@@ -115,8 +130,11 @@ var FilterForm = React.createClass({
                             <ul className="nav nav-pills nav-stacked">
                                 {/* FIXME: Use translation strings for 'apply filter' and 'close this' */}
                                 <li>
-                                    {/* FIXME: Button doesn't work */}
-                                    <a className="showFilters text-center" id="apply-filter">Apply filter</a>
+                                    <a className="showFilters text-center"
+                                       id="apply-filter"
+                                       onClick={this.submitForm}>
+                                        Apply filter
+                                    </a>
                                 </li>
                                 <li>
                                     {/* FIXME: Button doesn't work */}

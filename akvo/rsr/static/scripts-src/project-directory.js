@@ -91,14 +91,3 @@ $(document).ready(function () {
     }));
 
 });
-
-(function () {
-
-    var applyFilterButton;
-
-    applyFilterButton = document.getElementById('apply-filter');
-    applyFilterButton.onclick = function () {
-        document.getElementById('filterForm').submit();
-    };
-
-}());
