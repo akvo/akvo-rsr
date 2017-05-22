@@ -9,7 +9,6 @@ Akvo RSR module. For additional details on the GNU license please see
 
 import logging
 
-import time
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
