@@ -12,10 +12,10 @@ var Filter = React.createClass({
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
             <div>
-                <label>{this.props.title}</label>
+                <label>{this.props.display_name}</label>
                 <Typeahead
                     ref='typeahead'
-                    name={this.props.title}
+                    name={this.props.name}
                     selected={this.props.selected}
                     options={this.props.options}
                     onChange={this.onChange}
@@ -28,7 +28,7 @@ var Filter = React.createClass({
         );
     },
     onChange: function(values){
-        this.props.onChange(this.props.title, values);
+        this.props.onChange(this.props.name, values);
     }
 });
 
@@ -156,7 +156,8 @@ var FilterForm = React.createClass({
                     ref={filter_name}
                     key={filter_name}
                     options={this.state.options[filter_name]}
-                    title={filter_name}
+                    name={filter_name}
+                    display_name={this.props.i18n[filter_name+'_text']}
                     selected={this.state.initial_selection[filter_name]||[]}
                     onChange={this.onChange}
                     disabled={this.state.disabled}
@@ -170,18 +171,17 @@ var FilterForm = React.createClass({
                     <div>
                         <nav>
                             <ul className="nav nav-pills nav-stacked">
-                                {/* FIXME: Use translation strings for 'apply filter' and 'close this' */}
                                 <li>
                                     <a className="showFilters text-center"
                                        id="apply-filter"
                                        onClick={this.submitForm}>
-                                        Apply filter
+                                        {this.props.i18n.apply_filter_text}
                                     </a>
                                 </li>
                                 <li>
                                     <a className="showFilters menu-toggle text-center" onClick={this.closeForm}>
                                         <i className="fa fa-toggle-off"></i>
-                                        <span> Close this</span>
+                                        <span> {this.props.i18n.close_this_text}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -198,7 +198,8 @@ var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
 var url = '/rest/v1/typeaheads/project_filters';
 
 document.addEventListener('DOMContentLoaded', function() {
+    i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
     ReactDOM.render(
-        <FilterForm filters={filters} options_url={url}/>,
+        <FilterForm filters={filters} options_url={url} i18n={i18n}/>,
         filtersWrapper);
 });

@@ -78,7 +78,7 @@ function showDonatePopup(url) {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
-    var data_element = document.getElementById("project-main-text") || document.getElementById("typeahead-header-text");
+    var data_element = document.getElementById("project-main-text") || document.getElementById("donate-text");
     i18n = JSON.parse(data_element.innerHTML);
 
     // Hack to make this name available to onClick in HTML.

@@ -28,7 +28,7 @@ function insertParam(key, value) {
 
 $(document).ready(function () {
 
-    var templateJSON = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
+    var templateJSON = JSON.parse(document.getElementById("typeahead-text").innerHTML);
     var projects_text = templateJSON.projects_text;
     var organisations_text = templateJSON.organisations_text;
     var locations_text = templateJSON.locations_text;

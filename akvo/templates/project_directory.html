@@ -196,25 +196,35 @@
     </script>
 
     {# Translation strings #}
-    <script type="application/json" id="typeahead-header-text">
-    {
+    <script type="application/json" id="typeahead-text">
+        {
         "projects_text": "{% trans 'Projects'|escapejs %}",
         "organisations_text": "{% trans 'Organisations'|escapejs %}",
         "locations_text": "{% trans 'Locations'|escapejs %}",
-        "organisation_text": "{% trans 'organisation'|escapejs %}",
         "all_text": "{% trans 'All'|escapejs %}",
+        "keyword_text": "{% trans 'keyword'|escapejs %}",
+        "location_text": "{% trans 'location'|escapejs %}",
+        "status_text": "{% trans 'status'|escapejs %}",
+        "organisation_text": "{% trans 'organisation'|escapejs %}",
+        "sector_text": "{% trans 'sector'|escapejs %}",
+        "apply_filter_text": "{% trans 'Apply filter'|escapejs %}",
+        "close_this_text": "{% trans 'Close this'|escapejs %}"
+        }
+    </script>
 
+    <script type="application/json" id="donate-text">
+        {
         "donate_heading": "{% trans 'Donate'|escapejs %}",
         "donate_summary": "{% trans 'You will be sent to an external website that accepts donations for this project. To continue, click Donate.'|escapejs %}",
         "donate_text": "{% trans 'Donate'|escapejs %}",
         "donate_confirm_cancel_text": "{% trans 'Cancel'|escapejs %}"
-    }
+        }
     </script>
 
     <script type="application/json" id="react-typeahead-org">
-     {
-       "currentOrg": "{{ current_org }}"
-     }
+        {
+        "currentOrg": "{{ current_org }}"
+        }
     </script>
 
     {#  Initial data endpoints #}
