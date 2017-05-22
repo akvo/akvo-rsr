@@ -1,3 +1,11 @@
+# Akvo RSR – Version 3.25.1 Monte Video hotfix
+
+Date: 2017-05-22
+
+## Issues Resolved
+
+Broken date fields issue fixed – [#2634](https://github.com/akvo/akvo-rsr/issues/2677)
+
 # Akvo RSR – Version 3.25 Monte Video
 
 Date: 2017-05-16
@@ -38,7 +46,7 @@ Date: 25 April 2017
 
 # Akvo RSR version 3.24 Stockholm
 
-Date: 13 April 2017 
+Date: 13 April 2017
 
 ## General improvements
 
@@ -105,7 +113,7 @@ removes associated comment from the actual value comment
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
-Date: 14 March 2017 
+Date: 14 March 2017
 
 ## Bug fixes
 
