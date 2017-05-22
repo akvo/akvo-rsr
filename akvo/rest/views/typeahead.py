@@ -109,6 +109,7 @@ def typeahead_project(request):
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
 
+
 def _int_or_none(value):
     """Return int or None given a value."""
     try:
@@ -162,7 +163,7 @@ def typeahead_project_filters(request):
     keywords = projects.keywords()
 
     locations = [
-        {'id': choice[0], 'name': choice[1],}
+        {'id': choice[0], 'name': choice[1]}
         for choice in location_choices(projects)
     ]
 

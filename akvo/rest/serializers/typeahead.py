@@ -48,6 +48,7 @@ class TypeaheadKeywordSerializer(serializers.ModelSerializer):
         model = Keyword
         fields = ('id', 'label')
 
+
 class TypeaheadSectorSerializer(serializers.ModelSerializer):
 
     id = serializers.SerializerMethodField()

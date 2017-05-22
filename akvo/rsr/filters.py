@@ -54,6 +54,7 @@ def walk(node):
     else:
         return (walk(node.pop()) + walk(node)) if node else []
 
+
 def get_m49_filter(value):
     """Returns the location filter object based on value."""
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
@@ -64,12 +65,14 @@ def get_m49_filter(value):
     )
     return filter_
 
+
 def filter_m49(queryset, value):
     """Filters countries from the m49 list, for projects."""
     if not value:
         return queryset
     else:
         return queryset.filter(get_m49_filter(value))
+
 
 def filter_m49_orgs(queryset, value):
     """Filters countries from the m49 list, for projects."""
