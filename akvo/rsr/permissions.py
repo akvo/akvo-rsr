@@ -7,17 +7,15 @@
 import rules
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 
 from .models import (Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate,
                      PublishingStatus)
 
-
-ADMIN_GROUP = None
-PROJECT_EDITOR_GROUP = None
-ME_MANAGER_GROUP = None
-USER_GROUP = None
-USER_MANAGER_GROUP = None
+ADMIN_GROUP_NAME = 'Admins'
+ME_MANAGER_GROUP_NAME = 'M&E Managers'
+PROJECT_EDITOR_GROUP_NAME = 'Project Editors'
+USER_GROUP_NAME = 'Users'
+USER_MANAGER_GROUP_NAME = 'User Managers'
 
 
 @rules.predicate
@@ -29,13 +27,10 @@ def is_rsr_admin(user):
 
 @rules.predicate
 def is_org_admin(user, obj):
-    global ADMIN_GROUP
-    if ADMIN_GROUP is None:
-        ADMIN_GROUP = Group.objects.get(name='Admins')
     if not user.is_authenticated():
         return False
     for employment in user.approved_employments():
-        if employment.group_id == ADMIN_GROUP.id:
+        if employment.group.name == ADMIN_GROUP_NAME:
             org = employment.organisation
             if not obj:
                 return True
@@ -120,13 +115,10 @@ def is_org_admin(user, obj):
 
 @rules.predicate
 def is_org_user_manager(user, obj):
-    global USER_MANAGER_GROUP
-    if USER_MANAGER_GROUP is None:
-        USER_MANAGER_GROUP = Group.objects.get(name='User Managers')
     if not user.is_authenticated():
         return False
     for employment in user.approved_employments():
-        if employment.group_id == USER_MANAGER_GROUP.id:
+        if employment.group.name == USER_MANAGER_GROUP_NAME:
             if not obj:
                 return True
             elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
@@ -146,16 +138,10 @@ def is_org_user_manager(user, obj):
 
 @rules.predicate
 def is_org_project_editor(user, obj):
-    global ME_MANAGER_GROUP
-    if ME_MANAGER_GROUP is None:
-        ME_MANAGER_GROUP = Group.objects.get(name='M&E Managers')
-    global PROJECT_EDITOR_GROUP
-    if PROJECT_EDITOR_GROUP is None:
-        PROJECT_EDITOR_GROUP = Group.objects.get(name='Project Editors')
     if not user.is_authenticated():
         return False
     for employment in user.approved_employments():
-        if employment.group_id in set([PROJECT_EDITOR_GROUP.id, ME_MANAGER_GROUP.id]):
+        if employment.group.name in set([PROJECT_EDITOR_GROUP_NAME, ME_MANAGER_GROUP_NAME]):
             if not obj:
                 return True
             if isinstance(obj, Organisation):
@@ -220,13 +206,10 @@ def is_org_project_editor(user, obj):
 
 @rules.predicate
 def is_org_user(user, obj):
-    global USER_GROUP
-    if USER_GROUP is None:
-        USER_GROUP = Group.objects.get(name='Users')
     if not user.is_authenticated():
         return False
     for employment in user.approved_employments():
-        if employment.group_id == USER_GROUP.id:
+        if employment.group.name == USER_GROUP_NAME:
             if not obj:
                 return True
             if isinstance(obj, Project) and obj in employment.organisation.all_projects():
