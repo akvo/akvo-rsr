@@ -41,12 +41,30 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             "organisation": [],
             "sector": [],
         };
-        return {"options": options, "selected": {}, disabled: true};
+        var state = {
+            "options": options,
+            "selected": this.getStateFromUrl(),
+            "initial_selection": {},
+            disabled: true
+        };
+        return state;
+    },
+    getStateFromUrl: function(){
+        var selected = {};
+        var query = location.search.substring(1);
+        if (query === '') { return selected };
+        query.split('&').map(function(query_term){
+            var pair = query_term.split('=');
+            if (pair[1] !== '') {
+                selected[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+            }
+        });
+        return selected;
     },
     componentDidMount: function(){
-        this.fetchFilterOptions();
+        this.fetchFilterOptions(true);
     },
-    fetchFilterOptions: function(){
+    fetchFilterOptions: function(mountedNow){
         var options = {};
         var self = this;
         var params = {format: "json"};
@@ -68,7 +86,22 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             .then(function(options){
                 if (!options) {return;}
                 self.setState({"options": self.processOptions(options), disabled: false});
+                if (mountedNow) {
+                    self.setInitialSelectionState(options);
+                }
             });
+    },
+    setInitialSelectionState: function(options){
+        // NOTE: This function should always be called after process options,
+        // since it needs the processed options
+        var initial_selection = {};
+        var set_initial_selection = function (key){
+            var id = this.state.selected[key];
+            var find_function = function(option){return option.id == id;};
+            initial_selection[key] = [options[key].find(find_function)];
+        };
+        Object.keys(this.state.selected).map(set_initial_selection, this);
+        this.setState({"initial_selection": initial_selection});
     },
     processOptions: function(options){
         // Add a filterBy attribute to all items
@@ -77,6 +110,8 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             // NOTE: name always appears after long_name, since we
             // prefer long_name for organisations
             var label = item.label || item.long_name || item.name || '';
+            // Stringify the id;
+            item.id = String(item.id);
             item.filterBy = (label + ' ' + item.id).trim();
             item.label = label;
         };
@@ -110,7 +145,6 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         Object.keys(this.state.selected).map(set_id_as_value, this);
         this.setState({disabled: true});
         document.getElementById('filterForm').submit();
-
     },
     closeForm: function(){
         document.querySelector('.menu-toggle').click();
@@ -123,7 +157,7 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                     key: filter_name, 
                     options: this.state.options[filter_name], 
                     title: filter_name, 
-                    selected: [], 
+                    selected: this.state.initial_selection[filter_name]||[], 
                     onChange: this.onChange, 
                     disabled: this.state.disabled}
                 )
