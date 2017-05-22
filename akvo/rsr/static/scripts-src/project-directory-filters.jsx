@@ -63,6 +63,7 @@ var FilterForm = React.createClass({
     },
     componentDidMount: function(){
         this.fetchFilterOptions(true);
+        window.advanced_filter_form = this;
     },
     fetchFilterOptions: function(mountedNow){
         var options = {};
@@ -133,7 +134,7 @@ var FilterForm = React.createClass({
         }
         this.setState({"selected": update}, this.fetchFilterOptions);
     },
-    submitForm: function(){
+    preSubmitHack: function(){
         /* HACK: The fields in the typeaheads are not option/selection fields,
            but simple input fields. Submitting the form submits the display text,
            but we would like to use the ids. */
@@ -143,6 +144,9 @@ var FilterForm = React.createClass({
             input.value = id;
         };
         Object.keys(this.state.selected).map(set_id_as_value, this);
+    },
+    submitForm: function(){
+        this.preSubmitHack();
         this.setState({disabled: true});
         document.getElementById('filterForm').submit();
     },
