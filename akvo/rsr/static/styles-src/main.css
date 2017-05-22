@@ -1185,10 +1185,11 @@ h4.detailedInfo {
 #wrapper.toggled {
   padding-left: 200px; }
   #wrapper.toggled #sidebar-wrapper {
-    width: 200px; }
-  #wrapper.toggled #page-content-wrapper {
-    position: absolute;
-    margin-right: -200px; }
+    width: 300px; }
+    #wrapper.toggled #sidebar-wrapper .dropdown-menu {
+      max-width: 260px; }
+      #wrapper.toggled #sidebar-wrapper .dropdown-menu li > a {
+        white-space: normal !important; }
 
 #search-filter {
   background-color: #241F20; }

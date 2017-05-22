@@ -1356,11 +1356,13 @@ h4.detailedInfo {
 #wrapper.toggled {
     padding-left: 200px;
     #sidebar-wrapper {
-        width: 200px;
-    }
-    #page-content-wrapper {
-        position: absolute;
-        margin-right: -200px;
+        width: 300px;
+        .dropdown-menu {
+            max-width: 260px;
+            li > a {
+                white-space: normal !important;
+            }
+        }
     }
 }
 
