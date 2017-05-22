@@ -152,7 +152,7 @@ def typeahead_project_filters(request):
 
     # Fetch projects based on whether we are an Akvo site or RSR main site
     page = request.rsr_page
-    projects = page.projects() if page else Project.objects.all()
+    projects = page.projects() if page else Project.objects.all().public().published()
     # FIXME: Can we prefetch things to make this faster???
 
     # Filter projects based on query parameters
