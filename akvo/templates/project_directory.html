@@ -252,9 +252,7 @@
         {% include 'project_partner_data.html' %}
     {% endfor %}
 
-    <!-- {% javascript 'project_directory_typeahead' %} -->
-    <!-- fixme: Use the normal pipeline infrastructure -->
-    <script src="{{ STATIC_URL }}scripts-src/project-directory-filters.js"></script>
+    {% javascript 'project_directory_filters' %}
     {% javascript 'project_directory' %}
     {% javascript 'more_partners' %}
     {% javascript 'donate_popup' %}

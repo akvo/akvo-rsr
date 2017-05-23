@@ -208,11 +208,11 @@ var FilterForm = React.createClass({
 });
 
 
-var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
-var url = '/rest/v1/typeaheads/project_filters';
-
 document.addEventListener('DOMContentLoaded', function() {
-    i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
+    var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
+    var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
+    var url = '/rest/v1/typeaheads/project_filters';
+
     ReactDOM.render(
         <FilterForm filters={filters} options_url={url} i18n={i18n}/>,
         filtersWrapper);
