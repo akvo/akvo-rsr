@@ -59,6 +59,7 @@ class CommentForm extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.addComment = this.addComment.bind(this);
         this.resetComment = this.resetComment.bind(this);
+        this.onSave = this.onSave.bind(this);
         // we need a unique name for each alert
         const alertName = 'CommentAlert-' + this.props.parentId;
         this.state = {
@@ -72,6 +73,10 @@ class CommentForm extends React.Component {
         this.setState({comment: e.target.value});
     }
 
+    onSave() {
+        this.setState({comment: ''});
+    }
+
     addComment() {
         const { parentId, user, createAlert } = this.props;
         const { comment, commentAlertName } = this.state;
@@ -82,7 +87,7 @@ class CommentForm extends React.Component {
                 'comment': comment
             };
             const callbacks = {
-                undefined,
+                [c.UPDATE_MODEL_FULFILLED]: this.onSave,
                 [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
                     this, commentAlertName, _("comment_not_saved")
                 )
