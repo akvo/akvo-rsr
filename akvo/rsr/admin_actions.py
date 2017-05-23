@@ -9,8 +9,12 @@ from .models import Project
 
 
 def set_project_status_complete(modeladmin, request, queryset):
-    """ Admin action setting selected projects to STATUS_COMPLETE
+    """ Admin action setting selected projects iati_status to u'3', i.e. 'Completion' in 
+    codelists_v202.ACTIVITY_STATUS and status to Project.STATUS_COMPLETE
     """
-    queryset.update(status=Project.STATUS_COMPLETE)
+    for project in queryset:
+        project.iati_status=u'3'
+        # Project.status is set in Project.save() when iati_status is changed
+        project.save()
 
-set_project_status_complete.short_description = "Set status of selected projects to complete"
+set_project_status_complete.short_description = "Set status of selected projects to Completion"
