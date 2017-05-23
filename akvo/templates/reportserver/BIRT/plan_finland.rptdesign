@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -129,9 +129,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
-            <property name="odaUser">rsr_readonly</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:1235/rsr</property>
+            <property name="odaUser">rsr</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">VVVaQXR1Z2lPMDFvMDlyM0xaeHE3YXA4dncyOU81bmVqTjJranBuVw==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -20525,6 +20525,9 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
             <property name="fontSize">14pt</property>
             <property name="color">#0B80C7</property>
         </style>
+        <style name="CommentRow" id="945">
+            <property name="backgroundColor">#F7F3ED</property>
+        </style>
     </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -21289,7 +21292,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
                                                     <property name="category">Currency</property>
                                                     <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                                 </structure>
-                                                <property name="textAlign">left</property>
+                                                <property name="textAlign">right</property>
                                                 <property name="resultSetColumn">amount</property>
                                             </data>
                                         </cell>
@@ -21368,7 +21371,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
                                                     <property name="category">Currency</property>
                                                     <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                                 </structure>
-                                                <property name="textAlign">left</property>
+                                                <property name="textAlign">right</property>
                                                 <property name="resultSetColumn">value</property>
                                             </data>
                                         </cell>
@@ -21431,7 +21434,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
                                                     <property name="category">Currency</property>
                                                     <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                                 </structure>
-                                                <property name="textAlign">left</property>
+                                                <property name="textAlign">right</property>
                                                 <property name="resultSetColumn">value</property>
                                             </data>
                                         </cell>
@@ -21695,7 +21698,7 @@ mmd(row["text"]);</expression>
                 </list>
                 <label id="640">
                     <property name="display">block</property>
-                    <property name="pageBreakAfter">always</property>
+                    <property name="pageBreakAfter">auto</property>
                     <property name="pageBreakBefore">avoid</property>
                     <text-property name="text">Read more in RSR</text-property>
                     <list-property name="action">
@@ -21715,7 +21718,7 @@ mmd(row["text"]);</expression>
                     <property name="marginLeft">0pt</property>
                     <property name="pageBreakAfter">always</property>
                     <property name="pageBreakInside">auto</property>
-                    <property name="width">177.44722222222222mm</property>
+                    <property name="width">177.27083333333331mm</property>
                     <property name="dataSet">Results_indicators_periods</property>
                     <list-property name="paramBindings">
                         <structure>
@@ -21818,7 +21821,11 @@ res;</expression>
                         <structure>
                             <property name="name">progress_pct</property>
                             <text-property name="displayName">progress_pct</text-property>
-                            <expression name="expression" type="javascript">(row["actual_value"].toLowerCase() == "gender neutral" )&#13;
+                            <expression name="expression" type="javascript">(row["actual_value"] === null )&#13;
+?&#13;
+null&#13;
+:&#13;
+(row["actual_value"].toLowerCase() == "gender neutral" )&#13;
 ?&#13;
 100&#13;
 :&#13;
@@ -21874,19 +21881,19 @@ null</expression>
                     <property name="repeatHeader">false</property>
                     <property name="pageBreakInterval">0</property>
                     <column id="936">
-                        <property name="width">15mm</property>
+                        <property name="width">24.87083333333333mm</property>
                     </column>
                     <column id="275">
-                        <property name="width">5mm</property>
+                        <property name="width">37.041666666666664mm</property>
                     </column>
                     <column id="35">
-                        <property name="width">5mm</property>
+                        <property name="width">37.041666666666664mm</property>
                     </column>
                     <column id="167">
-                        <property name="width">32.455555555555556mm</property>
+                        <property name="width">58.20833333333333mm</property>
                     </column>
                     <column id="37">
-                        <property name="width">16.580555555555556mm</property>
+                        <property name="width">19.31458333333333mm</property>
                     </column>
                     <header>
                         <row id="14">
@@ -21967,17 +21974,6 @@ reportContext.getGlobalVariable('debug')</expression>
                                 </cell>
                             </row>
                         </header>
-                        <footer>
-                            <row id="23">
-                                <property name="backgroundColor">white</property>
-                                <property name="height">5px</property>
-                                <cell id="934"/>
-                                <cell id="273"/>
-                                <cell id="24"/>
-                                <cell id="165"/>
-                                <cell id="26"/>
-                            </row>
-                        </footer>
                     </group>
                     <group id="74">
                         <property name="groupName">Indicators</property>
@@ -22039,7 +22035,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                                     <property name="paddingBottom">5pt</property>
                                                     <property name="paddingRight">5pt</property>
                                                     <property name="display">inline</property>
-                                                    <expression name="valueExpr">b++, "Indicator " + a + "." + (b&lt;27 ? alphabet[b] : b)</expression>
+                                                    <expression name="valueExpr">var comments=[]; b++, "Indicator " + a + "." + (b&lt;27 ? alphabet[b] : b)</expression>
                                                     <property name="contentType">html</property>
                                                 </text-data>
                                             </cell>
@@ -22064,6 +22060,31 @@ reportContext.getGlobalVariable('debug')</expression>
                                 </cell>
                             </row>
                         </header>
+                        <footer>
+                            <row id="938">
+                                <property name="style">CommentRow</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">comments.length == 0</expression>
+                                    </structure>
+                                </list-property>
+                                <cell id="939">
+                                    <property name="colSpan">5</property>
+                                    <property name="rowSpan">1</property>
+                                    <text-data id="944">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="marginBottom">8pt</property>
+                                        <property name="paddingTop">4pt</property>
+                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingBottom">4pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <expression name="valueExpr">var cmt=""; for (i=0; i&lt;comments.length; i++) {cmt += comments[i] + "&lt;BR>";}; cmt</expression>
+                                        <property name="contentType">html</property>
+                                    </text-data>
+                                </cell>
+                            </row>
+                        </footer>
                     </group>
                     <detail>
                         <row id="27">
@@ -22100,7 +22121,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="paddingLeft">8pt</property>
                                     <property name="paddingBottom">4pt</property>
                                     <property name="textAlign">left</property>
-                                    <expression name="valueExpr">(row["period_start"] ? Formatter.format(row["period_start"], "yyyy") : "")</expression>
+                                    <expression name="valueExpr">var yr=(row["period_start"] ? Formatter.format(row["period_start"], "yyyy") : "");&#13;
+if (row["actual_comment"]) {comments.push(yr + ": " + row["actual_comment"])};&#13;
+yr</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -22118,7 +22141,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="paddingTop">1pt</property>
                                     <property name="paddingLeft">1pt</property>
                                     <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">left</property>
+                                    <property name="textAlign">center</property>
                                     <text-property name="text">TARGET</text-property>
                                 </label>
                                 <data id="108">
@@ -22127,7 +22150,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">7pt</property>
                                     <property name="paddingLeft">1pt</property>
-                                    <property name="textAlign">left</property>
+                                    <property name="textAlign">center</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22146,7 +22169,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="category">General Number</property>
                                         <property name="pattern">General Number</property>
                                     </structure>
-                                    <property name="textAlign">left</property>
+                                    <property name="textAlign">center</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22167,9 +22190,9 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="fontStyle">italic</property>
                                     <property name="marginTop">8pt</property>
                                     <property name="paddingTop">1pt</property>
-                                    <property name="paddingLeft">15pt</property>
+                                    <property name="paddingLeft">1pt</property>
                                     <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">left</property>
+                                    <property name="textAlign">center</property>
                                     <text-property name="text">BASELINE</text-property>
                                 </label>
                                 <text-data id="263">
@@ -22182,7 +22205,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="paddingTop">1px</property>
                                     <property name="paddingLeft">15pt</property>
                                     <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">left</property>
+                                    <property name="textAlign">center</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22204,10 +22227,10 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="marginLeft">1pt</property>
                                     <property name="marginBottom">1pt</property>
                                     <property name="marginRight">1pt</property>
-                                    <property name="paddingTop">0pt</property>
-                                    <property name="paddingLeft">50pt</property>
-                                    <property name="paddingBottom">0pt</property>
-                                    <property name="textAlign">left</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="textAlign">center</property>
                                     <text-property name="text">ACTUAL</text-property>
                                 </label>
                                 <data id="106">
@@ -22215,12 +22238,12 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">7pt</property>
-                                    <property name="paddingLeft">50pt</property>
+                                    <property name="paddingLeft">1pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">Unformatted</property>
                                     </structure>
-                                    <property name="textAlign">left</property>
-                                    <property name="display">inline</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="display">block</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22234,13 +22257,13 @@ reportContext.getGlobalVariable('debug')</expression>
                                     <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">4pt</property>
-                                    <property name="paddingLeft">50pt</property>
+                                    <property name="paddingLeft">1pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">General Number</property>
                                         <property name="pattern">General Number</property>
                                     </structure>
-                                    <property name="textAlign">left</property>
-                                    <property name="display">inline</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="display">block</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22894,38 +22917,7 @@ Math.min(row["progress_pct"],100)&#13;
                                 </extended-item>
                             </cell>
                         </row>
-                        <row id="771">
-                            <property name="backgroundColor">#F7F3ED</property>
-                            <property name="pageBreakBefore">avoid</property>
-                            <cell id="933">
-                                <property name="colSpan">5</property>
-                                <property name="rowSpan">1</property>
-                                <property name="paddingTop">1pt</property>
-                                <property name="paddingLeft">8pt</property>
-                                <property name="paddingBottom">1pt</property>
-                                <property name="paddingRight">8pt</property>
-                                <text-data id="887">
-                                    <property name="fontSize">10pt</property>
-                                    <property name="marginBottom">8pt</property>
-                                    <property name="paddingTop">4pt</property>
-                                    <property name="paddingLeft">0pt</property>
-                                    <property name="paddingBottom">4pt</property>
-                                    <property name="paddingRight">1pt</property>
-                                    <expression name="valueExpr">row["actual_comment"]</expression>
-                                    <property name="contentType">html</property>
-                                </text-data>
-                            </cell>
-                        </row>
                     </detail>
-                    <footer>
-                        <row id="31">
-                            <cell id="935"/>
-                            <cell id="274"/>
-                            <cell id="32"/>
-                            <cell id="166"/>
-                            <cell id="34"/>
-                        </row>
-                    </footer>
                 </table>
             </detail>
             <footer>
