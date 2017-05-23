@@ -52,7 +52,7 @@ var FilterForm = React.createClass({displayName: "FilterForm",
     getStateFromUrl: function(){
         var selected = {};
         var query = location.search.substring(1);
-        if (query === '') { return selected };
+        if (query === '') { return selected; }
         query.split('&').map(function(query_term){
             var pair = query_term.split('=');
             if (pair[1] !== '') {
@@ -86,7 +86,11 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             )
             .then(function(options){
                 if (!options) {return;}
-                self.setState({"options": self.processOptions(options), disabled: false});
+                var project_count = options.project_count;
+                delete options.project_count;
+                self.setState({
+                    "options": self.processOptions(options), disabled: false, project_count: project_count
+                });
                 if (mountedNow) {
                     self.setInitialSelectionState(options);
                 }
@@ -169,31 +173,36 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                 )
             );
         };
+        var project_count = this.state.disabled?(React.createElement("span", null, this.props.i18n.loading_text)):(
+            React.createElement("span", null, this.props.i18n.search_text, " ", this.state.project_count, " ", this.props.i18n.projects_text
+            )
+        );
         return (
-            React.createElement("aside", {id: "sidebar-wrapper"}, 
-                React.createElement("div", {id: "filter"}, 
-                    this.props.filters.map(create_filter, this), 
-                    React.createElement("div", null, 
-                        React.createElement("nav", null, 
-                            React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
-                                React.createElement("li", null, 
-                                    React.createElement("a", {className: "showFilters text-center", 
-                                       id: "apply-filter", 
-                                       onClick: this.submitForm}, 
-                                        this.props.i18n.apply_filter_text
-                                    )
-                                ), 
-                                React.createElement("li", null, 
-                                    React.createElement("a", {className: "showFilters menu-toggle text-center", onClick: this.toggleForm}, 
-                                        React.createElement("i", {className: "fa fa-toggle-off"}), 
-                                        React.createElement("span", null, " ", this.props.i18n.close_this_text)
-                                    )
+        React.createElement("aside", {id: "sidebar-wrapper"}, 
+            React.createElement("div", {id: "filter"}, 
+                project_count, 
+                this.props.filters.map(create_filter, this), 
+                React.createElement("div", null, 
+                    React.createElement("nav", null, 
+                        React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
+                            React.createElement("li", null, 
+                                React.createElement("a", {className: "showFilters text-center", 
+                                   id: "apply-filter", 
+                                   onClick: this.submitForm}, 
+                                    this.props.i18n.apply_filter_text
+                                )
+                            ), 
+                            React.createElement("li", null, 
+                                React.createElement("a", {className: "showFilters menu-toggle text-center", onClick: this.toggleForm}, 
+                                    React.createElement("i", {className: "fa fa-toggle-off"}), 
+                                    React.createElement("span", null, " ", this.props.i18n.close_this_text)
                                 )
                             )
                         )
                     )
                 )
             )
+        )
         );
     }
 });

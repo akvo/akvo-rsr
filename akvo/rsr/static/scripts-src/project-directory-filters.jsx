@@ -52,7 +52,7 @@ var FilterForm = React.createClass({
     getStateFromUrl: function(){
         var selected = {};
         var query = location.search.substring(1);
-        if (query === '') { return selected };
+        if (query === '') { return selected; }
         query.split('&').map(function(query_term){
             var pair = query_term.split('=');
             if (pair[1] !== '') {
@@ -86,7 +86,11 @@ var FilterForm = React.createClass({
             )
             .then(function(options){
                 if (!options) {return;}
-                self.setState({"options": self.processOptions(options), disabled: false});
+                var project_count = options.project_count;
+                delete options.project_count;
+                self.setState({
+                    "options": self.processOptions(options), disabled: false, project_count: project_count
+                });
                 if (mountedNow) {
                     self.setInitialSelectionState(options);
                 }
@@ -169,31 +173,36 @@ var FilterForm = React.createClass({
                 />
             );
         };
+        var project_count = this.state.disabled?(<span>{this.props.i18n.loading_text}</span>):(
+            <span>{this.props.i18n.search_text} {this.state.project_count} {this.props.i18n.projects_text}
+            </span>
+        );
         return (
-            <aside id="sidebar-wrapper">
-                <div id="filter">
-                    {this.props.filters.map(create_filter, this)}
-                    <div>
-                        <nav>
-                            <ul className="nav nav-pills nav-stacked">
-                                <li>
-                                    <a className="showFilters text-center"
-                                       id="apply-filter"
-                                       onClick={this.submitForm}>
-                                        {this.props.i18n.apply_filter_text}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a className="showFilters menu-toggle text-center" onClick={this.toggleForm}>
-                                        <i className="fa fa-toggle-off"></i>
-                                        <span> {this.props.i18n.close_this_text}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+        <aside id="sidebar-wrapper">
+            <div id="filter">
+                {project_count}
+                {this.props.filters.map(create_filter, this)}
+                <div>
+                    <nav>
+                        <ul className="nav nav-pills nav-stacked">
+                            <li>
+                                <a className="showFilters text-center"
+                                   id="apply-filter"
+                                   onClick={this.submitForm}>
+                                    {this.props.i18n.apply_filter_text}
+                                </a>
+                            </li>
+                            <li>
+                                <a className="showFilters menu-toggle text-center" onClick={this.toggleForm}>
+                                    <i className="fa fa-toggle-off"></i>
+                                    <span> {this.props.i18n.close_this_text}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-            </aside>
+            </div>
+        </aside>
         );
     }
 });

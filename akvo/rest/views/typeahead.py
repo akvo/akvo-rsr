@@ -157,7 +157,7 @@ def typeahead_project_filters(request):
 
     # Filter projects based on query parameters
     filter_ = _create_filters_query(request)
-    projects = projects.filter(filter_) if filter_ is not None else projects
+    projects = projects.filter(filter_).distinct() if filter_ is not None else projects
 
     # Get the relevant data for typeaheads based on filtered projects.
     keywords = projects.keywords()
@@ -184,6 +184,7 @@ def typeahead_project_filters(request):
     ).values('sector_code').distinct()
 
     response = {
+        'project_count': projects.count(),
         'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
         'keyword': TypeaheadKeywordSerializer(keywords, many=True).data,
         'status': sorted(status, key=lambda x: x['id']),
