@@ -1326,6 +1326,8 @@ h4.detailedInfo {
     }
     div#filter {
         padding: 5px 15px 15px 15px;
+        min-height: 700px;
+        overflow-y: hidden;
         div {
             .btn-group {
                 width: 100%;

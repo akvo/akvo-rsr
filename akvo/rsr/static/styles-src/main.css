@@ -1163,7 +1163,9 @@ h4.detailedInfo {
       padding-top: 20px;
       padding-bottom: 20px; } }
   #sidebar-wrapper div#filter {
-    padding: 5px 15px 15px 15px; }
+    padding: 5px 15px 15px 15px;
+    min-height: 700px;
+    overflow-y: hidden; }
     #sidebar-wrapper div#filter div .btn-group {
       width: 100%;
       border-top: 1px solid rgba(32, 32, 36, 0.1);
