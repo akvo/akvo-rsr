@@ -54,11 +54,13 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         var query = location.search.substring(1);
         if (query === '') { return selected; }
         query.split('&').map(function(query_term){
-            var pair = query_term.split('=');
-            if (pair[1] !== '') {
-                selected[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+            var pair = query_term.split('='),
+                key = decodeURIComponent(pair[0]),
+                value = decodeURIComponent(pair[1]);
+            if (value !== '' && (this.props.filters.indexOf(key) > -1)) {
+                selected[key] = value;
             }
-        });
+        }, this);
         return selected;
     },
     componentDidMount: function(){
