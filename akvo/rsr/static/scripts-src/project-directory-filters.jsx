@@ -103,6 +103,7 @@ var FilterForm = React.createClass({
         };
         Object.keys(this.state.selected).map(set_initial_selection, this);
         this.setState({"initial_selection": initial_selection});
+        if (Object.keys(initial_selection).length > 0) { this.toggleForm(); }
     },
     processOptions: function(options){
         // Add a filterBy attribute to all items
@@ -143,14 +144,14 @@ var FilterForm = React.createClass({
             var input = ReactDOM.findDOMNode(this.refs[key].refs.typeahead.getInstance()).querySelector('input');
             input.value = id;
         };
-        Object.keys(this.state.selected).map(set_id_as_value, this);
+        Object.getOwnPropertyNames(this.state.selected).map(set_id_as_value, this);
     },
     submitForm: function(){
         this.preSubmitHack();
         this.setState({disabled: true});
         document.getElementById('filterForm').submit();
     },
-    closeForm: function(){
+    toggleForm: function(){
         document.querySelector('.menu-toggle').click();
     },
     render: function(){
@@ -183,7 +184,7 @@ var FilterForm = React.createClass({
                                     </a>
                                 </li>
                                 <li>
-                                    <a className="showFilters menu-toggle text-center" onClick={this.closeForm}>
+                                    <a className="showFilters menu-toggle text-center" onClick={this.toggleForm}>
                                         <i className="fa fa-toggle-off"></i>
                                         <span> {this.props.i18n.close_this_text}</span>
                                     </a>
