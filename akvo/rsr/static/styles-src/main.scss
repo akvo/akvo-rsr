@@ -1328,6 +1328,11 @@ h4.detailedInfo {
         padding: 5px 15px 15px 15px;
         min-height: 700px;
         overflow-y: hidden;
+        div#advanced-filter-status {
+            text-align: center;
+            font-weight: bold;
+            display: block;
+        }
         div {
             .btn-group {
                 width: 100%;
