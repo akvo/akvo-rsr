@@ -120,7 +120,7 @@ function getPlaceholder(filter) {
 }
 
 function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) {
-    var TypeaheadLabel = React.createClass({displayName: 'TypeaheadLabel',
+    var TypeaheadLabel = React.createClass({displayName: "TypeaheadLabel",
         render: function() {
             return React.createElement('div', null,
                 React.createElement('label', {className: 'control-label'}, i18n.organisation_text)
@@ -128,7 +128,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
         }
     });
 
-    var TypeaheadContainer = React.createClass({displayName: 'TypeaheadContainer',
+    var TypeaheadContainer = React.createClass({displayName: "TypeaheadContainer",
         render: function() {
             return React.createElement('div', null,
                 React.createElement(TypeaheadLabel),
@@ -194,7 +194,7 @@ function loadAndRenderReact() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initial data
-    i18n = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
+    i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined') {

@@ -26,7 +26,7 @@ function getCookie(name) {
 csrftoken = getCookie('csrftoken');
 
 function loadMorePartners() {
-    var MorePartnersToolTip = React.createClass({displayName: 'MorePartnersToolTip',
+    var MorePartnersToolTip = React.createClass({displayName: "MorePartnersToolTip",
         render: function() {
             var partnershipsArray = [];
             for (var orgId in this.props.partnerships) {
@@ -49,18 +49,18 @@ function loadMorePartners() {
 
                     var splitLine;
                     if (arrayCount === partnershipsArray.length) {
-                        splitLine = React.DOM.span(null );
+                        splitLine = React.createElement("span", null);
                     } else {
-                        splitLine = React.DOM.hr(null );
+                        splitLine = React.createElement("hr", null);
                     }
 
                     return (
-                        React.DOM.div( {className:"extra-partner-entry"}, 
-                            React.DOM.a( {href:'/en/organisation/' + partner[0].organisation.id + '/'}, 
+                        React.createElement("div", {className: "extra-partner-entry"}, 
+                            React.createElement("a", {href: '/en/organisation/' + partner[0].organisation.id + '/'}, 
                                 partner[0].organisation.long_name
-                            ),
-                            React.DOM.br(null ),
-                            roles.join(', '),
+                            ), 
+                            React.createElement("br", null), 
+                            roles.join(', '), 
                             splitLine
                         )
                     );
@@ -68,9 +68,9 @@ function loadMorePartners() {
             });
 
             return (
-                React.DOM.div( {className:"tooltip right in"}, 
-                    React.DOM.div( {className:"tooltip-arrow"}),
-                    React.DOM.div( {className:"tooltip-inner"}, 
+                React.createElement("div", {className: "tooltip right in"}, 
+                    React.createElement("div", {className: "tooltip-arrow"}), 
+                    React.createElement("div", {className: "tooltip-inner"}, 
                         organisations
                     )
                 )
@@ -78,7 +78,7 @@ function loadMorePartners() {
         }
     });
 
-    var MorePartnersApp = React.createClass({displayName: 'MorePartnersApp',
+    var MorePartnersApp = React.createClass({displayName: "MorePartnersApp",
         getInitialState: function() {
             return {
                 hover: false,
@@ -154,7 +154,7 @@ function loadMorePartners() {
                     });
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -192,8 +192,8 @@ function loadMorePartners() {
         render: function() {
             if (this.state.partnerships === null) {
                 return (
-                    React.DOM.a( {href:"#partners", onClick:this.generateLink, className:"small moreLink tab-link"}, 
-                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nMorePartners.partners
+                    React.createElement("a", {href: "#partners", onClick: this.generateLink, className: "small moreLink tab-link"}, 
+                        React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nMorePartners.partners
                     )
                 );
             } else if (this.partnersCount() > 0) {
@@ -203,16 +203,16 @@ function loadMorePartners() {
                 }
 
                 return (
-                    React.DOM.div(null, 
-                        React.DOM.a( {href:"#partners", onClick:this.generateLink, className:"small moreLink tab-link", onMouseEnter:this.handleMouseEnter, onMouseLeave:this.handleMouseLeave}, 
+                    React.createElement("div", null, 
+                        React.createElement("a", {href: "#partners", onClick: this.generateLink, className: "small moreLink tab-link", onMouseEnter: this.handleMouseEnter, onMouseLeave: this.handleMouseLeave}, 
                             "+ ", this.partnersCount(), " ", partnersText
-                        ),
+                        ), 
                         this.showTooltip()
                     )
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }

@@ -1326,6 +1326,13 @@ h4.detailedInfo {
     }
     div#filter {
         padding: 5px 15px 15px 15px;
+        min-height: 700px;
+        overflow-y: hidden;
+        div#advanced-filter-status {
+            text-align: center;
+            font-weight: bold;
+            display: block;
+        }
         div {
             .btn-group {
                 width: 100%;
@@ -1356,11 +1363,13 @@ h4.detailedInfo {
 #wrapper.toggled {
     padding-left: 200px;
     #sidebar-wrapper {
-        width: 200px;
-    }
-    #page-content-wrapper {
-        position: absolute;
-        margin-right: -200px;
+        width: 300px;
+        .dropdown-menu {
+            max-width: 260px;
+            li > a {
+                white-space: normal !important;
+            }
+        }
     }
 }
 

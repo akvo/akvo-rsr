@@ -194,7 +194,7 @@ function loadAndRenderReact() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initial data
-    i18n = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
+    i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined') {
