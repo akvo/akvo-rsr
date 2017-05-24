@@ -405,7 +405,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             measure="1",
             ascending=True,
             title="Title",
-            description="Description",
+            description="Indicator Description",
             baseline_year=2016,
             baseline_value="1",
             baseline_comment="Comment"
@@ -488,6 +488,12 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         )
         self.assertEqual(1, len(related_activities))
         self.assertEqual(attributes, related_activities[0].attrib)
+
+        # Test indicator has description
+        indicator_description_xpath = './iati-activity/result/indicator/description/narrative'
+        self.assertXpathsExist(root_test, (indicator_description_xpath,))
+        indicators = root_test.xpath(indicator_description_xpath)
+        self.assertEqual(indicators[0].text, 'Indicator Description')
 
     def test_different_complete_project_export(self):
         """
