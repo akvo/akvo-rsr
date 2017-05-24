@@ -6,10 +6,12 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Keyword, Organisation, Project, ProjectUpdate
-from akvo.codelists.models import Country
-
 from rest_framework import serializers
+
+from akvo.codelists.models import Country
+from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
+from akvo.rsr.models import Keyword, Organisation, Project, ProjectUpdate, Sector
+from akvo.utils import codelist_choices
 
 
 class TypeaheadCountrySerializer(serializers.ModelSerializer):
@@ -45,3 +47,22 @@ class TypeaheadKeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Keyword
         fields = ('id', 'label')
+
+
+class TypeaheadSectorSerializer(serializers.ModelSerializer):
+
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+
+    # Lookup attribute for sector names. Not a serialized attribute.
+    sectors = dict(codelist_choices(SECTOR_CATEGORY))
+
+    def get_id(self, obj):
+        return obj['sector_code']
+
+    def get_name(self, obj):
+        return self.sectors[obj['sector_code']]
+
+    class Meta:
+        model = Sector
+        fields = ('id', 'name')

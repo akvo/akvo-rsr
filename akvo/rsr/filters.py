@@ -55,17 +55,23 @@ def walk(node):
         return (walk(node.pop()) + walk(node)) if node else []
 
 
-def filter_m49(queryset, value):
-    """Filters countries from the m49 list, for projects."""
-    if not value:
-        return queryset
+def get_m49_filter(value):
+    """Returns the location filter object based on value."""
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
     countries_lower = [c.lower() for c in countries]
     filter_ = (
         Q(recipient_countries__country__in=countries) |
         Q(locations__country__iso_code__in=countries_lower)
     )
-    return queryset.filter(filter_)
+    return filter_
+
+
+def filter_m49(queryset, value):
+    """Filters countries from the m49 list, for projects."""
+    if not value:
+        return queryset
+    else:
+        return queryset.filter(get_m49_filter(value))
 
 
 def filter_m49_orgs(queryset, value):
@@ -152,7 +158,10 @@ def get_location_country_ids(qs):
         location_model = OrganisationLocation
 
     locations_qs = location_model.objects.filter(
-        location_target__in=qs).order_by('country__id').distinct('country__id')
+        location_target__in=qs
+    ).select_related(
+        'country',
+    ).order_by('country__id').distinct('country__id')
 
     return [
         get_id_for_iso(location.country.iso_code.upper())
@@ -183,12 +192,9 @@ class BaseProjectFilter(django_filters.FilterSet):
     status = django_filters.ChoiceFilter(
         initial=_('All'),
         label=_(u'status'),
-        choices=ANY_CHOICE + Project.STATUSES)
-
-    iati_status = django_filters.ChoiceFilter(
-        initial=_('All'),
-        label=_(u'status'),
-        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)))
+        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)),
+        name='iati_status',
+    )
 
     title_or_subtitle = django_filters.CharFilter(
         label=_(u'Search'),
@@ -246,7 +252,6 @@ def create_project_filter_class(request, projects):
                 'keyword',
                 'location',
                 'status',
-                'iati_status',
                 'organisation',
                 'category',
                 'sector',

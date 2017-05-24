@@ -17,7 +17,7 @@ function showDonatePopup(url) {
     var Modal = ReactBootstrap.Modal;
     var Input = ReactBootstrap.Input;
 
-    var DonateModal = React.createClass({displayName: 'DonateModal',
+    var DonateModal = React.createClass({displayName: "DonateModal",
 
         getInitialState: function() {
             return {
@@ -58,7 +58,7 @@ function showDonatePopup(url) {
             );
 
             return (
-                React.DOM.div(null,  " ", thisModal, " " )
+                React.createElement("div", null, " ", thisModal, " ")
             );
         }
     });
@@ -78,7 +78,7 @@ function showDonatePopup(url) {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
-    var data_element = document.getElementById("project-main-text") || document.getElementById("typeahead-header-text");
+    var data_element = document.getElementById("project-main-text") || document.getElementById("donate-text");
     i18n = JSON.parse(data_element.innerHTML);
 
     // Hack to make this name available to onClick in HTML.
