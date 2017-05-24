@@ -58,7 +58,7 @@ def result(project):
                     if indicator.description:
                         description_element = etree.SubElement(indicator_element, "description")
                         narrative_element = etree.SubElement(description_element, "narrative")
-                        narrative_element.text = res.description
+                        narrative_element.text = indicator.description
 
                     for reference in indicator.references.all():
                         if reference.vocabulary or reference.reference or reference.vocabulary_uri:
