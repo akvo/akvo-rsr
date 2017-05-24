@@ -6,9 +6,9 @@
 
 {% block myrsr_main %}
     <h4 class="resultProjectTitle" id="resultProjectTitle">
-        <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
+        Results for <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
         <a href="{% url 'project_editor' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-pencil-square-o"></i> {% trans 'Edit project' %}</button></a>
-        {# <a href="{% url 'my_new_results' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-snowflake-o"></i> {% trans 'New results' %}</button></a> #}
+        <a href="{% url 'my_results' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-undo"></i> {% trans 'Old results' %}</button></a>
     </h4>
     {% if not project.is_impact_project %}
         <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
@@ -18,7 +18,7 @@
         {% if not me_managers %}
             <div id="draft" class="">{% trans 'There are no M&E managers for this project. No one will be able to approve data updates.' %}</div>
         {% endif %}
-        <div id="results-framework"></div>
+        <div id="new-results-framework"></div>
     {% endif %}
 {% endblock myrsr_main %}
 
@@ -36,21 +36,12 @@
     </script>
 
     {# Initial data endpoints #}
-    <script type="application/json" id="data-endpoints">
+    <script type="application/json" id="endpoint-data">
         {
-            "base_url": "//{{ request.META.HTTP_HOST }}",
-            "result": "/rest/v1/result/{result}/?format=json",
-            "results_of_project": "/rest/v1/result/?format=json&project={project}",
-            "indicators_of_project": "/rest/v1/indicator/?format=json&result__project={project}",
-            "periods_of_project": "/rest/v1/indicator_period/?format=json&indicator__result__project={project}",
-            "updates_and_comments_of_project": "/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project={project}",
-            "period_framework": "/rest/v1/indicator_period_framework/{period}/?format=json",
-            "update_and_comments": "/rest/v1/indicator_period_data_framework/{update}/?format=json",
-            "updates_and_comments": "/rest/v1/indicator_period_data_framework/?format=json",
-            "comments": "/rest/v1/indicator_period_data_comment/?format=json",
-            "user": "/rest/v1/user/{{ user.pk }}/?format=json",
-            "partnerships": "/rest/v1/partnership/?format=json&project={{ project.pk }}",
-            "file_upload": "/rest/v1/indicator_period_data/{update}/upload_file/?format=json"
+            "host": "{{ request.META.HTTP_HOST }}",
+            "projectId": {{ project.pk }},
+            "userID": {{ user.pk }},
+            "isMEManager": {{ user_is_me_manager }}
         }
     </script>
 
@@ -64,21 +55,21 @@
     </script>
 
     {# Months #}
-    <script type="application/json" id="months">
-        {
-            "january": "{% trans 'Jan'|escapejs %}",
-            "february": "{% trans 'Feb'|escapejs %}",
-            "march": "{% trans 'Mar'|escapejs %}",
-            "april": "{% trans 'Apr'|escapejs %}",
-            "may": "{% trans 'May'|escapejs %}",
-            "june": "{% trans 'Jun'|escapejs %}",
-            "july": "{% trans 'Jul'|escapejs %}",
-            "august": "{% trans 'Aug'|escapejs %}",
-            "september": "{% trans 'Sep'|escapejs %}",
-            "october": "{% trans 'Oct'|escapejs %}",
-            "november": "{% trans 'Nov'|escapejs %}",
-            "december": "{% trans 'Dec'|escapejs %}"
-        }
+    <script type="application/json" id="i18nMonths">
+        [
+            "{% trans 'Jan'|escapejs %}",
+            "{% trans 'Feb'|escapejs %}",
+            "{% trans 'Mar'|escapejs %}",
+            "{% trans 'Apr'|escapejs %}",
+            "{% trans 'May'|escapejs %}",
+            "{% trans 'Jun'|escapejs %}",
+            "{% trans 'Jul'|escapejs %}",
+            "{% trans 'Aug'|escapejs %}",
+            "{% trans 'Sep'|escapejs %}",
+            "{% trans 'Oct'|escapejs %}",
+            "{% trans 'Nov'|escapejs %}",
+            "{% trans 'Dec'|escapejs %}"
+        ]
     </script>
 
     {# Translation strings #}
@@ -144,6 +135,7 @@
             "change_image": "{% trans 'Change image'|escapejs %}",
             "remove_image": "{% trans 'Click to remove image'|escapejs %}",
             "attach_file": "{% trans 'Attach file'|escapejs %}",
+            "remove_file": "{% trans 'Remove file'|escapejs %}",
             "unknown_date": "{% trans 'Unknown date'|escapejs %}",
             "comment": "{% trans 'Comment'|escapejs %}",
             "comments": "{% trans 'Comments'|escapejs %}",
@@ -152,12 +144,37 @@
             "and": "{% trans 'and'|escapejs %}",
             "others": "{% trans 'others'|escapejs %}",
             "general_error": "{% trans 'An error occurred'|escapejs %}",
-            "connection_error": "{% trans 'There was a connection error. Please check your internet connection and refresh the page.'|escapejs %}"
+            "connection_error": "{% trans 'There was a connection error. Please check your internet connection and refresh the page.'|escapejs %}",
+            "update_statuses": {{ update_statuses | safe }},
+            "actual_value_required": "{% trans 'Actual value is required for updates'|escapejs %}",
+            "update_not_created": "{% trans "Couldn't create update, please try again"|escapejs %}",
+            "update_not_saved": "{% trans "Couldn't save update"|escapejs %}",
+            "update_not_deleted": "{% trans "Couldn't delete update, please try again"|escapejs %}",
+            "full_view": "{% trans "Full view"|escapejs %}",
+            "overview": "{% trans "Overview"|escapejs %}",
+            "needs_reporting": "{% trans "Needs reporting"|escapejs %}",
+            "pending_approval": "{% trans "Pending approval"|escapejs %}",
+            "approved": "{% trans "Approved"|escapejs %}",
+            "reset_filter": "{% trans "Reset filter"|escapejs %}",
+            "select_periods": "{% trans "Select period(s)"|escapejs %}",
+            "lock_selected": "{% trans "Lock selected"|escapejs %}",
+            "filter_periods": "{% trans "Filter periods"|escapejs %}",
+            "bulk_action": "{% trans "Bulk action"|escapejs %}",
+            "comment_not_saved": "{% trans "Couldn't save comment, please try again"|escapejs %}",
+            "enter_comment": "{% trans "Please enter a comment text"|escapejs %}",
+            "notes_disabled": "{% trans "Notes are disabled until the update is saved"|escapejs %}",
+            "nameless_indicator": "{% trans "Nameless indicator"|escapejs %}",
+            "aggregate_actual_value": "{% trans "Aggregate actual value:"|escapejs %}",
+            "lock_change_failed": "{% trans "Lock status change failed, please try again"|escapejs %}",
+            "locked": "{% trans "Locked"|escapejs %}",
+            "unlocked": "{% trans "Unlocked"|escapejs %}"
         }
     </script>
-
     {% if project.is_impact_project and project.results.all %}
-        {% javascript 'my_results' %}
+{#        {% javascript 'vendors' %}#}
+        {% javascript 'vendors.bundle' %}
+        {% javascript 'bundle' %}
+{#        {% javascript 'my_new_results' %}#}
     {% endif %}
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.4/react.min.js"></script>
 {% endblock js %}
