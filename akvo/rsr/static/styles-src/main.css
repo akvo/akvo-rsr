@@ -1076,9 +1076,6 @@ h4.detailedInfo {
 
 .searchContainer {
   position: relative; }
-  .searchContainer #search-view {
-    position: absolute;
-    top: -65px; }
   .searchContainer #search .showFilters {
     /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
