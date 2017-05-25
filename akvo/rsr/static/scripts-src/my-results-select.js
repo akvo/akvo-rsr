@@ -34,9 +34,10 @@ function initReact() {
     var ProjectTypeahead = React.createClass({displayName: "ProjectTypeahead",
         selectProject: function(selections) {
             var project = selections[0];
-            var currentUrl = window.location.href;
+            var resultsURL = endpoints.results_url
+            var resultsURL = resultsURL.substr(0, resultsURL.length - 2);
             if (project.id !== '') {
-                window.location.assign(currentUrl + project.id + '/');
+                window.location.assign(resultsURL + project.id + '/');
             }
         },
 

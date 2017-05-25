@@ -1,4 +1,3 @@
-
 /*
     Akvo RSR is covered by the GNU Affero General Public License.
     See more details in the license.txt file located at the root folder of the
@@ -7,12 +6,12 @@
 */
 
 
-import { PAGE_SET_DATA } from "../reducers/pageReducer"
+import * as c from "../const"
 
 
 export function setPageData(data) {
     return {
-        type: PAGE_SET_DATA,
+        type: c.PAGE_SET_DATA,
         payload: {data}
     }
 }

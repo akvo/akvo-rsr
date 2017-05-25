@@ -48,13 +48,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     {# Fonts #}
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Montserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700%7CLato:400,700,300%7CQuestrial%7CPoppins:400,600" rel="stylesheet" type="text/css">
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    {% stylesheet 'rsr_v3_style' %}
-    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+    {% if request.resolver_match.url_name == 'my_new_results' %}
+      {% stylesheet 'new_results' %}
+    {% else %}
+      {% stylesheet 'rsr_v3_style' %}
+    {% endif %}
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
         img[src*="gstatic.com/"], img[src*="googleapis.com/"] {

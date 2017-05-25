@@ -9,46 +9,98 @@ import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update  from 'immutability-helper';
 
-import { onChange } from "../actions/collapse-actions"
+import * as alertActions from "../actions/alert-actions"
+import * as collapseActions from "../actions/collapse-actions"
 import { updateModelToBackend } from "../actions/model-actions"
-import { periodSelectToggle } from "../actions/ui-actions"
+
+import { periodSelectToggle, } from "../actions/ui-actions"
+
+import * as c from "../const"
 
 import {
-    displayDate, APICall, endpoints, findChildren, createToggleKey, collapseId, createToggleKeys
+    getPeriodsActualValue,
+    getIndicatorsChildrenIds,
+} from "../selectors";
+
+import {
+    displayDate,
+    endpoints,
+    collapseId,
+    createToggleKeys,
 } from "../utils.js";
-import {
-    OBJECTS_PERIODS, OBJECTS_UPDATES, UPDATE_STATUS_APPROVED, SELECTED_PERIODS
-} from '../const.js';
 
-import Updates from "./updates/Updates";
-import { NewUpdateButton } from "./updates/UpdateForm";
+
+import AlertFactory from "./alertContainer"
 import { ToggleButton } from "./common"
+import { NewUpdateButton } from "./updates/UpdateForm";
+import Updates from "./updates/Updates";
+
+import {
+    _,
+    hideMe,
+} from "../utils";
+
+import { collapseChange } from "../actions/collapse-actions";
 
 
+const ToggleAlert = ({message, close}) => (
+    <div className='lock-toggle-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+
+
+@connect(null, alertActions)
 class PeriodLockToggle extends React.Component {
+
+    static propTypes = {
+        period: PropTypes.object,
+        callbacks: PropTypes.object,
+    };
+
     constructor (props) {
         super(props);
         this.lockToggle = this.lockToggle.bind(this);
         this.updatePeriodLock = this.updatePeriodLock.bind(this);
-        this.state = {locking: false};
+        const alertName = 'ToggleAlert-' + this.props.period.id;
+        this.state = {
+            locking: false,
+            toggleAlertName: alertName,
+            ToggleAlert: AlertFactory({alertName: alertName})(ToggleAlert),
+        };
     }
 
-    updatePeriodLock(periodId, data, callback) {
+    updatePeriodLock(periodId, data, callbacks) {
         const url = endpoints.period(periodId);
-        updateModelToBackend(OBJECTS_PERIODS, url, data, this.props.collapseId, callback)
+        updateModelToBackend(c.OBJECTS_PERIODS, url, data, this.props.collapseId, callbacks);
     }
 
     lockingToggle(locking) {
         this.setState({locking: locking});
     }
 
+    setLockMessage(message) {
+        this.props.createAlert(this.state.toggleAlertName, message);
+    }
+
     lockToggle(e) {
         const period = this.props.period;
+        const toggleCallback = (message) => {
+            this.lockingToggle(false);
+            if (message) {
+                this.setLockMessage(message);
+            }
+        };
         if (!this.state.locking) {
             this.lockingToggle(true);
-            this.updatePeriodLock(
-                period.id, {locked: !period.locked}, this.lockingToggle.bind(this, false)
-            );
+            const callbacks = {
+                [c.UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this),
+                [c.UPDATE_MODEL_REJECTED]: toggleCallback.bind(
+                    this, _("lock_change_failed")
+                )
+            };
+            this.updatePeriodLock(period.id, {locked: !period.locked}, callbacks);
         }
         e.stopPropagation();
     }
@@ -66,35 +118,38 @@ class PeriodLockToggle extends React.Component {
             label = "Lock period";
         }
         return (
-            <ToggleButton onClick={this.lockToggle}
-                          style={{float: 'right'}}
-                          label={label}
-                          icon={icon}/>
+            <div>
+                {<this.state.ToggleAlert />}
+                <ToggleButton onClick={this.lockToggle} label={label}/>
+            </div>
         )
     }
 }
 
-PeriodLockToggle.propTypes = {
-    period: PropTypes.object,
-    callbacks: PropTypes.object
-};
 
 const PeriodLockStatus = ({lockStatus}) => {
-    return <div style={{float: 'right'}}>{lockStatus}</div>
+    return <div>{lockStatus}</div>
+};
+PeriodLockStatus.propTypes = {
+    lockStatus: PropTypes.string.isRequired,
 };
 
-const PeriodSelect = ({id, toggleCheckbox}) => {
-    return <input id={id} type="checkbox" style={{float: 'right'}} onClick={toggleCheckbox}/>
+
+const PeriodSelect = ({id, toggleCheckbox, isChecked}) => {
+    // NOTE: the onChange event handler can't be used here because it fires too late and the event
+    // for opening/closing the collapse panel will be triggered. However when using the onClick
+    // handler React complains that the component isn't managed correctly, thus the noop onChange.
+    return <input id={id} type="checkbox" checked={isChecked ? "checked" : ""}
+                  onClick={toggleCheckbox} onChange={()=>{}}/>
+};
+PeriodSelect.propTypes = {
+    id: PropTypes.number.isRequired,
+    toggleCheckbox: PropTypes.func.isRequired,
+    isChecked: PropTypes.bool.isRequired,
 };
 
-const periodActualValue = (period) => {
-    return period.updates && period.updates.length > 0 ?
-        period.updates[period.updates.length-1].actual_value
-    :
-        "";
-};
 
-const PeriodHeader = ({period, user, actualValue, toggleCheckbox}) => {
+const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
@@ -102,42 +157,49 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox}) => {
     if (user.isMEManager) {
         lockStatus = <PeriodLockToggle period={period} />
     } else {
-        lockStatus = <PeriodLockStatus lockStatus={period.locked ? 'Locked' : 'Unlocked'}/>
+        lockStatus = <PeriodLockStatus lockStatus={period.locked ? _('locked') : _('unlocked')}/>
     }
     return (
-        <span>
-            <span>
-                Period: {periodDate} |
-                Target value: {period.target_value} |
-                Actual value: {actualValue}
-            </span>
-            <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox}/>
-            {lockStatus}
+        <span className="periodWrap">
+            <ul className="">
+                <li><PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/></li>
+                <li>{periodDate}</li>
+                <li>Target value: <span>{period.target_value}</span></li>
+                <li>Actual value: <span>{actualValue}</span></li>
+                <li>{lockStatus}</li>           
+            </ul>
+
+            
         </span>
     )
 };
-
 PeriodHeader.propTypes = {
     period: PropTypes.object.isRequired,
-    actualValue: PropTypes.number,
+    user: PropTypes.object.isRequired,
+    actualValue: PropTypes.number.isRequired,
+    toggleCheckbox: PropTypes.func.isRequired,
+    isChecked: PropTypes.bool.isRequired,
 };
 
 
-const objectsArrayToLookup = (arr, index) => {
-    return arr.reduce((lookup, obj) =>
-        Object.assign(lookup, {[obj[index]]: obj}),
-        {})
-};
+const DeleteUpdateAlert = ({message, close}) => (
+    <div className='delete-update-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
 
 
 @connect((store) => {
     return {
-        periods: store.models['periods'],
+        periods: store.models.periods,
         keys: store.keys,
         user: store.models.user.objects[store.models.user.ids[0]],
-        ui: store.ui
+        ui: store.ui,
+        indicatorChildrenIds: getIndicatorsChildrenIds(store),
+        actualValue: getPeriodsActualValue(store),
     }
-})
+}, {...alertActions, ...collapseActions})
 export default class Periods extends React.Component {
 
     static propTypes = {
@@ -150,8 +212,9 @@ export default class Periods extends React.Component {
         this.openNewForm = this.openNewForm.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
+        this.hideMe = this.hideMe.bind(this);
         // concatenate this model's name with parent's ID
-        this.state = {collapseId: collapseId(OBJECTS_PERIODS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_PERIODS, this.props.parentId)};
     }
 
     openNewForm(newKey, data) {
@@ -159,7 +222,7 @@ export default class Periods extends React.Component {
         this.setState(
             {newKeys: update(this.state.newKeys, {$push: [newKey]})},
             // Only when the activeKey state is committed do we update the updates model
-            this.props.callbacks.updateModel(OBJECTS_UPDATES, data)
+            this.props.callbacks.updateModel(c.OBJECTS_UPDATES, data)
         );
     }
 
@@ -168,54 +231,60 @@ export default class Periods extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        collapseChange(this.state.collapseId, activeKey);
     }
 
     toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, OBJECTS_PERIODS, this.activeKey());
+        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_PERIODS, this.activeKey());
         keys.map((collapse) => {
-            this.props.dispatch(onChange(collapse.collapseId, collapse.activeKey));
+            collapseChange(collapse.collapseId, collapse.activeKey);
         })
     }
 
     toggleCheckbox(e) {
         e.stopPropagation();
-        const periodId = e.target.id;
+        const periodId = parseInt(e.target.id);
         periodSelectToggle(periodId);
     }
 
-    renderPanels(periods) {
-        const callbacks = {openNewForm: this.openNewForm};
-        return (periods.map(
-            (period) => {
-                const { ids, updates } = findChildren(period.id, 'updates', 'period');
-                // Calculate actual value for the period
-                const lookupUpdates = objectsArrayToLookup(updates, 'id');
-                const isChecked = new Set(this.props.ui[SELECTED_PERIODS]).has(period.id);
-                const actualValue = ids && ids.filter(
-                    (id) => lookupUpdates[id].status == UPDATE_STATUS_APPROVED
-                ).reduce(
-                    // Actual value is calculated by adding all approved updates with numerical data
-                    (sum, id) => {
-                        const data = parseInt(lookupUpdates[id].data);
-                        // If data is NaN then data !== data returns true!
-                        if (!(data !== data)) {
-                            return sum + data;
-                        }
-                        return sum;
-                    }, 0
-                );
+    hideMe(id) {
+        return hideMe(c.OBJECTS_PERIODS, this.props.parentId, id);
+    }
+
+    renderPanels(periodIds) {
+        return (periodIds.map(
+            (id) => {
+                const period = this.props.periods.objects[id];
+                const actualValue = this.props.actualValue[id];
+                const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
+                const needsReporting =
+                    !period.locked && period._meta && period._meta.children.ids.length == 0;
+
+                let newUpdateButton, delUpdateAlert;
+                if (!period.locked) {
+                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
+                    // TODO: fix for new updates. The alert won't render since the temp update
+                    // object gets deleted when saving.
+                    // Possible solution: add an alert action and reducer instead of using callback
+                    const DelUpdateAlert = AlertFactory(
+                        {alertName: 'DeleteUpdateAlert-' + period.id}
+                    )(DeleteUpdateAlert);
+                    delUpdateAlert = <DelUpdateAlert />;
+                }
+                let className = this.hideMe(id) ? 'hidePanel' : '';
+                className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
+
                 return (
                     <Panel header={<PeriodHeader period={period}
                                               user={this.props.user}
                                               toggleCheckbox={this.toggleCheckbox}
                                               actualValue={actualValue}
                                               isChecked={isChecked}/>}
-                           key={period.id}>
-                        <Updates parentId={period.id}/>
-                        <NewUpdateButton period={period}
-                                         user={this.props.user}
-                                         dispatch={this.props.dispatch}/>
+                           key={id}
+                           className={className}>
+                        <Updates parentId={id} periodLocked={period.locked}/>
+                        {newUpdateButton}
+                        {delUpdateAlert}
                     </Panel>
                 )
             }
@@ -223,27 +292,28 @@ export default class Periods extends React.Component {
     }
 
     render() {
-        const { ids, periods } = findChildren(this.props.parentId, 'periods', 'indicator');
-        const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!periods) {
+        const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
+        if (!periodIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (periods.length > 0) {
+        } else if (periodIds.length > 0) {
             return (
-                <div className={OBJECTS_PERIODS}>
-                    <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <ToggleButton onClick={this.toggleAll}
-                                  label="++"
-                                  disabled={!this.props.ui.allFetched}/>
+                <div className={c.OBJECTS_PERIODS}>
+                    {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
+                    {/*<ToggleButton onClick={this.toggleAll}*/}
+                                  {/*label="++"*/}
+                                  {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(periods)}
+                        {this.renderPanels(periodIds)}
                     </Collapse>
                 </div>
             );
         } else {
             return (
-                <p>No periods</p>
+                <div className="emptyData">
+                    <p>No periods</p>
+                </div>
             );
         }
     }

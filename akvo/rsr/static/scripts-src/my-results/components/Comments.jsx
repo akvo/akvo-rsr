@@ -5,26 +5,139 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react'
-import Collapse, { Panel } from 'rc-collapse'
+import React from 'react'
+import PropTypes from 'prop-types';
+import { Panel } from 'rc-collapse'
 import { connect } from "react-redux"
 
-import { onChange } from "../actions/collapse-actions"
-import { findChildren, createToggleKey, collapseId } from '../utils'
-import { OBJECTS_COMMENTS } from '../const'
+import { collapseChange } from "../actions/collapse-actions"
 
-import { ToggleButton } from "./common"
+import {
+    collapseId,
+    _,
+    endpoints,
+    isNewUpdate,
+    displayDate,
+} from '../utils'
+
+import { getUpdatesChildrenIds } from "../selectors";
+import { saveModelToBackend } from "../actions/model-actions";
+import * as alertActions from "../actions/alert-actions"
+import * as c from "../const"
+
+import AlertFactory from "./alertContainer"
 
 
-const CommentHeader = ({comment}) => {
-    return (
-        <span>
-            {"Comment: " + comment.comment}
-        </span>
-    )
+const CommentAlert = ({message, close}) => (
+        <div className='comment-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+CommentAlert.propTypes = {
+    message: PropTypes.string.isRequired,
+    close: PropTypes.func.isRequired,
 };
 
-CommentHeader.propTypes = {
+
+@connect((store) => {
+    return {
+        user: store.models.user.objects[store.models.user.ids[0]],
+    }
+}, alertActions)
+class CommentForm extends React.Component {
+
+    static propTypes = {
+        parentId: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
+    };
+
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        this.addComment = this.addComment.bind(this);
+        this.resetComment = this.resetComment.bind(this);
+        this.onSave = this.onSave.bind(this);
+        // we need a unique name for each alert
+        const alertName = 'CommentAlert-' + this.props.parentId;
+        this.state = {
+            comment: '',
+            commentAlertName: alertName,
+            CommentAlert: AlertFactory({alertName: alertName})(CommentAlert),
+        };
+    }
+
+    onChange(e) {
+        this.setState({comment: e.target.value});
+    }
+
+    onSave() {
+        this.setState({comment: ''});
+    }
+
+    addComment() {
+        const { parentId, user, createAlert } = this.props;
+        const { comment, commentAlertName } = this.state;
+        if (comment.trim()) {
+            const newComment = {
+                'data': parentId,
+                'user': user.id,
+                'comment': comment
+            };
+            const callbacks = {
+                [c.UPDATE_MODEL_FULFILLED]: this.onSave,
+                [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
+                    this, commentAlertName, _("comment_not_saved")
+                )
+            };
+            saveModelToBackend(
+                c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
+            );
+        } else  {
+            createAlert(commentAlertName, "Please enter a comment text");
+        }
+    }
+
+    resetComment(message) {
+        this.setState({comment: ''});
+        this.props.createAlert(this.state.commentAlertName, message);
+    }
+
+    render() {
+        const disabled = isNewUpdate(this.props.parentId);
+        return (
+            <div>
+                <div className="input-group">
+                    <input className="form-control" value={this.state.comment}
+                           onChange={this.onChange} placeholder={_('add_comment_placeholder')}
+                           disabled={disabled}/>
+                    <span className="input-group-btn">
+                        <button type="submit" onClick={this.addComment} className="btn btn-default"
+                                disabled={disabled}>
+                            {_('add_comment')}
+                        </button>
+                    </span>
+                </div>
+                {<this.state.CommentAlert />}
+            </div>
+        )
+    }
+}
+
+
+const Comment = ({comment}) => {
+    const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
+    return (
+        <div className={'commentContainer'}>
+            <strong>{displayDate(comment.created_at)} </strong>
+            {name} says:
+            <span className={'comment'}>{comment.comment}</span>
+        </div>
+    )
+};
+Comment.propTypes = {
     comment: PropTypes.object.isRequired,
 };
 
@@ -32,20 +145,24 @@ CommentHeader.propTypes = {
 @connect((store) => {
     return {
         comments: store.models['comments'],
-        keys: store.keys
+        keys: store.keys,
+        updateChildrenIds: getUpdatesChildrenIds(store),
     }
 })
 export default class Comments extends React.Component {
 
     static propTypes = {
-        parentId: PropTypes.number.isRequired,
+        parentId: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]).isRequired,
     };
 
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         // concatenate this model's name with parent's ID
-        this.state = {collapseId: collapseId(OBJECTS_COMMENTS, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_COMMENTS, this.props.parentId)};
     }
 
     activeKey() {
@@ -53,37 +170,43 @@ export default class Comments extends React.Component {
     }
 
     collapseChange(activeKey) {
-        this.props.dispatch(onChange(this.state.collapseId, activeKey));
+        collapseChange(this.state.collapseId, activeKey);
     }
 
-    renderPanels(comments) {
-        return (comments.map(
-            (comment) =>
-                <Panel header={<CommentHeader comment={comment}/>} key={comment.id}>
-                    <div>By: {comment.user_details.first_name}</div>
-                </Panel>
+    renderComments(commentIds) {
+        return (commentIds.map(
+            (id) => {
+                const comment = this.props.comments.objects[id];
+                return <Comment key={id} comment={comment} />
+            }
         ))
     }
 
     render() {
-        const { ids, comments } = findChildren(this.props.parentId, 'comments', 'data');
-        const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!comments) {
+        const commentIds = this.props.updateChildrenIds[this.props.parentId] || [];
+
+        if (!commentIds) {
             return (
                 <p>Loading...</p>
             );
-        } else if (comments.length > 0) {
+        } else if (commentIds.length > 0) {
             return (
-                <div className={OBJECTS_COMMENTS}>
-                    <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>
-                    <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(comments)}
-                    </Collapse>
+                <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
+                    <strong>Internal notes:</strong>
+                    {this.renderComments(commentIds)}
+                    <CommentForm parentId={this.props.parentId}/>
                 </div>
             );
         } else {
+            let disabledNote;
+            if (isNewUpdate(this.props.parentId)) {
+                disabledNote = " (" + _("notes_disabled") + ")"
+            }
             return (
-                <p>No comments</p>
+                <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
+                    <strong>Internal notes</strong>{disabledNote}
+                    <CommentForm parentId={this.props.parentId}/>
+                </div>
             );
         }
     }

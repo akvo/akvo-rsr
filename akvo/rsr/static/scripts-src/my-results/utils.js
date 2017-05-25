@@ -5,14 +5,13 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React, { PropTypes } from 'react';
-import fetch from 'isomorphic-fetch';
+import React from 'react';
 
-import { onChange } from "actions/collapse-actions"
-import { KEYS_RESET } from "reducers/collapseReducer"
+import { collapseChange } from "actions/collapse-actions"
 
-import store from "./store"
-import { MODELS_LIST, PARENT_FIELD, OBJECTS_RESULTS, API_LIMIT } from "./const"
+import * as c from "const"
+import store from "store"
+import {collapseRecordState, resetKeys} from "./actions/collapse-actions";
 
 
 export function identicalArrays(array1, array2) {
@@ -63,83 +62,28 @@ export function getCookie(name) {
     return cookieValue;
 }
 
-export function APICall(method, url, data, callback, retries) {
-    function modify(method, url, data){
-        return fetch(url, {
-            credentials: 'same-origin',
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                "X-CSRFToken": getCookie('csrftoken')
-            },
-            body: JSON.stringify(data),
-        })
-    }
-
-    let handler;
-    switch (method) {
-        case "GET":
-            handler = () => fetch(url, {
-                credentials: 'same-origin',
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-            });
-            break;
-
-        case "POST":
-            handler = () => modify('POST', url, data);
-            break;
-
-        case "PUT":
-            handler = () => modify('PUT', url, data);
-            break;
-
-        case "PATCH":
-            handler = () => modify('PATCH', url, data);
-            break;
-
-        case "DELETE":
-            handler = () => fetch(url, {
-                credentials: 'same-origin',
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "X-CSRFToken": getCookie('csrftoken')
-                }
-            });
-            break;
-    }
-    return handler;
-    handler()
-        //TODO: error handling? See https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
-        .then(function(response) {
-            if (response.status != 204)
-                return response.json();
-            else
-                return response;
-        }).then(callback);
-}
-
 
 // Object holds callback URL functions as values, most of them called with an id parameter
 // Usage: endpoints.result(17) -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
 export const endpoints = {
         "result": (id) => `/rest/v1/result/${id}/?format=json`,
-        "results": (id) => `/rest/v1/result/?format=json&limit=${API_LIMIT}&project=${id}`,
+        "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "indicators": (id) =>
-            `/rest/v1/indicator/?format=json&limit=${API_LIMIT}&result__project=${id}`,
+            `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
         "periods": (id) =>
-            `/rest/v1/indicator_period/?format=json&limit=${API_LIMIT}&indicator__result__project=${id}`,
+            `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
         "updates": (id) =>
-            `/rest/v1/indicator_period_data/?format=json&limit=${API_LIMIT}&period__indicator__result__project=${id}`,
+            `/rest/v1/indicator_period_data/?format=json&limit=${c.API_LIMIT}&period__indicator__result__project=${id}`,
         "comments": (id) =>
-            `/rest/v1/indicator_period_data_comment/?format=json&limit=${API_LIMIT}&data__period__indicator__result__project=${id}`,
+            `/rest/v1/indicator_period_data_comment/?format=json&limit=${c.API_LIMIT}&data__period__indicator__result__project=${id}`,
+        "post_comment": () =>
+            "/rest/v1/indicator_period_data_comment/?format=json",
         "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,
         "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
         "updates_and_comments": () =>
-            `/rest/v1/indicator_period_data_framework/?format=json&limit=${API_LIMIT}`,
+            `/rest/v1/indicator_period_data_framework/?format=json&limit=${c.API_LIMIT}`,
         "user": (id) => `/rest/v1/user/${id}/?format=json`,
-        "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${API_LIMIT}&project=${id}`,
+        "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
 
@@ -167,13 +111,12 @@ export function _(s) {
     return strings[s];
 }
 
-// Newly created updates get the id 'new-<N>' where N is an int starting at 1
-export const isNewUpdate = (update) => {return update.id.toString().substr(0, 4) === 'new-'};
 
-
-export const findChildren = (parentId, childModel, parentField) => {
+export const findChildren = (parentId, childModel) => {
+    //TODO: remove when _meta.children is fully used
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
+    const parentField = c.PARENT_FIELD[childModel];
     const model = store.getState().models[childModel];
     if (model && model.ids) {
         const { ids, objects } = model;
@@ -188,6 +131,29 @@ export const findChildren = (parentId, childModel, parentField) => {
 };
 
 
+export const findChildrenFromCurrentState = (modelsState, parentId, childModel) => {
+    // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
+    // Return object with array of filtered ids and array of corresponding filtered objects
+    const parentField = c.PARENT_FIELD[childModel];
+    const model = modelsState[childModel];
+    if (model && model.ids) {
+        const { ids, objects } = model;
+        const filteredIds = ids.filter(
+            // if parentField is undefined return all ids (This applies to Result)
+            id => parentField ? objects[id][parentField] === parentId : true
+        );
+        const filteredObjects = filteredIds.reduce(
+            (acc, id) => {
+                acc[id] = objects[id];
+                return acc;
+            }, {}
+        );
+        return {ids: filteredIds, objects: filteredObjects}
+    }
+    return {ids: [], objects: undefined};
+};
+
+
 export function idsToActiveKey(ids) {
     // Return the IDs as an array of strings, used as activeKey
     const unique = new Set(ids);
@@ -198,10 +164,19 @@ export function idsToActiveKey(ids) {
 export function createToggleKey(ids, activeKey) {
     // Create an activeKey array for a Collapse element with either all panels open or none
     // uses the IDs of the panels derived from the relevant model IDs
-    const allOpen = (ids.length > 0) && idsToActiveKey(ids);
+    const allOpen = (ids && ids.length > 0) && idsToActiveKey(ids);
     // If allOpen is identical to activeKey, all panels are already open and we close them
     return identicalArrays(activeKey, allOpen) ? [] : allOpen;
 }
+
+
+// Newly created updates get the id 'new-<N>' where N is an int starting at 1
+export const isNewUpdate = updateOrId => {
+    if (typeof updateOrId === 'object') {
+        return updateOrId.id.toString().substr(0, 4) === 'new-';
+    }
+    return updateOrId.toString().substr(0, 4) === 'new-';
+};
 
 
 export function collapseId(model, id) {
@@ -212,24 +187,47 @@ export function collapseId(model, id) {
 
 function childModelName(model) {
     try {
-        return MODELS_LIST[MODELS_LIST.indexOf(model) + 1];
+        return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) + 1];
     } catch(e) {
         return undefined;
     }
 }
 
-function parentModelName(model) {
+
+export function parentModelName(model) {
     try {
-        return MODELS_LIST[MODELS_LIST.indexOf(model) - 1];
+        return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) - 1];
     } catch(e) {
         return undefined;
     }
+}
+
+
+export function levelAbove(model, compare) {
+    return c.MODEL_INDEX[model] < c.MODEL_INDEX[compare];
+}
+
+
+export function hideMe(model, parentId, objectId) {
+    // determine if the collapse panel should be hidden
+    // find the parent collapse
+    // const visibleKeys = store.getState().visibleKeys;
+    const ui = store.getState().ui;
+    if (ui.hide && ui.visibleKeys) {
+        const parentCollapse = ui.visibleKeys[collapseId(model, parentId)];
+        // if we have a parent, check if I'm one of the open panels
+        const mePresent = parentCollapse && parentCollapse.find((id)=> id === String(objectId));
+        // return true if I'm not present and this.props.ui.hide is not false
+        return !mePresent;
+    }
+    return false;
 }
 
 
 function tree(model, parentId) {
     // Construct a tree representation of the subtree of data with object model[parentId] as root
-    const ids = findChildren(parentId, model, PARENT_FIELD[model]).ids;
+    //TODO: refactor, we shouldn't need findChildren here
+    const ids = findChildren(parentId, model).ids;
     const childModel = childModelName(model);
     const children = ids.map((cId) => {
         return tree(childModel, cId)
@@ -252,39 +250,49 @@ function flatten(arr) {
 }
 
 
-function keysList(node, close) {
+function keysList(node, open, MEManagerKeys) {
     // "Disassemble" the tree representation of the data from tree() and return a list of objects.
     // Each object holds the collapseID of the corresponding Collapse and its activeKey
     const key = {
         collapseId: collapseId(node.model, node.id),
-        activeKey: close ? [] : idsToActiveKey(node.children.map(child => child.id.toString()))
+        activeKey: open ?
+            idsToActiveKey(node.children.map(child => child.id.toString()))
+        :
+            MEManagerKeys || [],
     };
     const children = node.children.filter((child) =>
         child.model !== undefined
     );
     const childKeys = children.map((node) =>
-        keysList(node, close)
+        keysList(node, open)
     );
     return flatten([key].concat(childKeys));
-
 }
 
 
-export function toggleTree(model, id, close) {
+export function toggleTree(model, id, open, MEManagerKeys) {
     const fullTree = tree(model, id);
-    return keysList(fullTree, close);
+    return keysList(fullTree, open, MEManagerKeys);
 }
 
+
+export function openResults(activeKey, isMEManager) {
+    if (isMEManager) {
+        return isMEManagerDefaultKeys(activeKey)
+    } else {
+        return activeKey == undefined || activeKey.length == 0;
+    }
+}
 
 export function createToggleKeys(parentId, model, activeKey) {
     // get all child nodes
-    const childIds = findChildren(
-        parentId, model, PARENT_FIELD[model]).ids;
+    //TODO: refactor, we shouldn't need findChildren here
+    // const childIds = findChildren(parentId, model).ids;
     // determine if we should open or close
     const fullyOpenKey = idsToActiveKey(childIds);
-    const close = identicalArrays(fullyOpenKey, activeKey);
+    const open = openResults(activeKey);
     // construct the array of Collapse activeKeys for the sub-tree
-    return toggleTree(model, parentId, close);
+    return toggleTree(model, parentId, open);
 }
 
 
@@ -294,17 +302,18 @@ function lineage(model, id) {
     if (parentModel) {
         const storeModel = store.getState().models[model];
         if (storeModel.objects) {
-            const parentId = storeModel.objects[id][PARENT_FIELD[model]];
+            const parentId = storeModel.objects[id][c.PARENT_FIELD[model]];
             return [{model, id}].concat(lineage(parentModel, parentId));
         }
     }
     return [{model, id}];
 }
 
+
 function lineageKeys(model, id) {
     // construct collapse activeKey keys for me and all my ancestors so I will be visible
     const reversedLineage = lineage(model, id).reverse();
-    let parentId = OBJECTS_RESULTS;
+    let parentId = c.OBJECTS_RESULTS;
     return reversedLineage.reduce(
         (keys, obj) => {
             const key = keys.concat({[collapseId(obj.model, parentId)]: [obj.id]});
@@ -315,7 +324,8 @@ function lineageKeys(model, id) {
     )
 }
 
-export function openNodes(model, ids, reset) {
+
+export function openNodes(model, ids) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model
     // and all required parents. If the reset boolean is true then first reset the whole tree.
 
@@ -331,10 +341,30 @@ export function openNodes(model, ids, reset) {
         },
         {}
     );
-    if (reset) {
-        store.dispatch({type: KEYS_RESET});
-    }
+    resetKeys();
     Object.keys(mergedKeys).map((key) => {
-        store.dispatch(onChange(key, idsToActiveKey(mergedKeys[key])));
+        collapseChange(key, idsToActiveKey(mergedKeys[key]));
     });
+    collapseRecordState();
+}
+
+
+export function fieldValueOrSpinner(obj, field) {
+    /*
+        If obj is defined return obj[field] otherwise return the spinner icon
+     */
+    if (obj) {
+        return {value: obj[field]};
+    } else {
+        return {icon: <i className="fa fa-spin fa-spinner" />};
+    }
+}
+
+
+export function setHash(hash) {
+    if (hash) {
+        window.location.hash = `#${hash}`;
+    } else {
+        window.location.hash = '';
+    }
 }

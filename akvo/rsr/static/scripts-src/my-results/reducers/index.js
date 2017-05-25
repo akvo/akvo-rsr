@@ -12,6 +12,7 @@ import modelsReducer from "./modelsReducer"
 import collapseReducer from "./collapseReducer"
 import pageReducer from "./pageReducer"
 import uiReducer from "./uiReducer"
+import alertReducer from "./alertReducer"
 
 /*
     The store has four top level keys, each managed by one reducer.
@@ -19,7 +20,7 @@ import uiReducer from "./uiReducer"
     models: holds the data of the RSR models one key for each model under "models":
         comments, indicators, periods, results updates and user
     The first five are the data populating the accordion representation of the projects results, the
-    user holds indormation on the logged in user
+    user holds information on the logged in user
 
     keys: holds data representing the state of the accordions. Each Collapse component with the
     activeKey attribute != undefined is kept here under the key <modelname>-<parentId> where
@@ -32,6 +33,8 @@ import uiReducer from "./uiReducer"
 
     ui: ** Experimental ** Holds data on UI state that's needed globally, currently only the
     open/closed state of update forms is held here
+
+    alerts: holds the state of alerts and error messages
  */
 
 const reducer = combineReducers({
@@ -39,6 +42,7 @@ const reducer = combineReducers({
     keys: collapseReducer,
     page: pageReducer,
     ui: uiReducer,
+    alerts: alertReducer,
 });
 
 export default reducer;

@@ -563,9 +563,6 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
             or not project.is_published():
         raise PermissionDenied
 
-    if not template == 'myrsr/my_results.html' and not user.is_superuser:
-        raise PermissionDenied
-
     me_managers_group = Group.objects.get(name='M&E Managers')
     admins_group = Group.objects.get(name='Admins')
     me_managers = project.publishing_orgs.employments().approved().\

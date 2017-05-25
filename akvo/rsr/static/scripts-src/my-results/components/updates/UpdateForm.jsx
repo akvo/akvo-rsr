@@ -10,26 +10,45 @@ import React, { PropTypes } from "react";
 import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
+
+import * as alertActions from "../../actions/alert-actions"
+import { addKey } from "../../actions/collapse-actions"
+
+import {
+    updateModel,
+    deleteFromModel,
+    updateUpdateToBackend,
+    saveUpdateToBackend,
+    deleteUpdateFromBackend,
+} from "../../actions/model-actions"
+
+import * as c from '../../const.js';
+
+import {
+    updateFormOpen,
+    updateFormClose,
+} from "../../actions/ui-actions"
+
+import {
+    endpoints,
+    displayNumber,
+    _,
+    collapseId,
+    isNewUpdate,
+} from '../../utils.js';
+
 import { FileReaderInput } from '../common';
 
-import { onChange, addKey } from "../../actions/collapse-actions"
-import {
-    updateModel, deleteFromModel, updateUpdateToBackend, saveUpdateToBackend,
-    deleteUpdateFromBackend
-} from "../../actions/model-actions"
-import { updateFormOpen, updateFormClose } from "../../actions/ui-actions"
 
-import { endpoints, displayNumber, _, currentUser, isNewUpdate, collapseId } from '../../utils.js';
-
-import {
-    UPDATE_STATUS_DRAFT, UPDATE_STATUS_NEW, UPDATE_STATUS_APPROVED, OBJECTS_UPDATES
-} from '../../const.js';
+// If the update is approved only M&E managers are allowed to delete
+const isAllowedToDelete = (user, update) =>
+    update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
 const Header = ({update}) => {
     return (
         <div className="col-xs-12">
-            <div className="row update-entry-container-header">
+            <div className="update-entry-container-header hidden">
                 Status: {_('update_statuses')[update.status]}
             </div>
         </div>
@@ -44,7 +63,7 @@ Header.propTypes = {
 const ActualValueInput = ({update, updatedActualValue, onChange}) => {
     return (
         <div className="row">
-            <div className="col-xs-6">
+            <div className="col-xs-12">
                 <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
                 <input className="form-control"
                        id="data"
@@ -52,7 +71,7 @@ const ActualValueInput = ({update, updatedActualValue, onChange}) => {
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
             </div>
-            <div className="col-xs-6">
+            <div className="col-xs-6 hidden">
                 <div className="upActualValue">
                     <label>
                         <span className="update-actual-value-text">
@@ -78,7 +97,7 @@ ActualValueInput.propTypes = {
 const ActualValueDescription = ({update, onChange}) => {
     return (
         <div className="row">
-            <div className="col-xs-9 update-description">
+            <div className="col-xs-12 update-description">
                 <div>
                     <label htmlFor="description">{_('actual_value_comment')}</label>
                     <textarea className="form-control"
@@ -215,11 +234,11 @@ class ImageUpload extends React.Component {
 const Attachments = ({update, onChange, removeAttachment}) => {
     return (
         <div className="row">
-            <div className="col-xs-6">
+            <div className="col-xs-3">
                 <ImageUpload update={update} onChange={onChange}
                              removeAttachment={removeAttachment}/>
             </div>
-            <div className="col-xs-6">
+            <div className="col-xs-3">
                 <FileUpload update={update} onChange={onChange}
                             removeAttachment={removeAttachment}/>
             </div>
@@ -234,10 +253,12 @@ Attachments.propTypes = {
 };
 
 
-const UpdateFormButtons = ({update, callbacks}) => {
+const UpdateFormButtons = ({user, update, callbacks}) => {
+    //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
+    // can be shown when saving is under way
     return (
         <div className="menuAction">
-        {!isNewUpdate(update) ?
+        {!isNewUpdate(update) && isAllowedToDelete(user, update)?
             <div role="presentation" className="removeUpdate">
                 <a onClick={callbacks.deleteUpdate}
                    className="btn btn-default btn-xs">{_('delete')}</a>
@@ -252,10 +273,12 @@ const UpdateFormButtons = ({update, callbacks}) => {
                     <a id="save" onClick={callbacks.saveUpdate}
                        className="btn btn-default btn-xs">{_('save')}</a>
                 </li>
-                <li role="presentation" className="approveUpdate">
-                    <a id="approve" onClick={callbacks.saveUpdate}
-                       className="btn btn-default btn-xs">{_('approve')}</a>
-                </li>
+                {user.isMEManager ?
+                    <li role="presentation" className="approveUpdate">
+                        <a id="approve" onClick={callbacks.saveUpdate}
+                           className="btn btn-default btn-xs">{_('approve')}</a>
+                    </li>
+                : ''}
                 <span></span>
             </ul>
         </div>
@@ -282,6 +305,12 @@ const pruneForPOST = (update) => {
     return updateForPOST;
 };
 
+@connect((store) => {
+    return {
+        user: store.models.user.objects[store.models.user.ids[0]],
+        updates: store.models.updates,
+    }
+}, alertActions)
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
@@ -295,6 +324,7 @@ export default class UpdateForm extends React.Component {
         // Save original update, used when editing is cancelled
         this.state = {
             originalUpdate: Object.assign({}, this.props.update),
+            updateAlertName: 'UpdateAlert-' + this.props.update.id,
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
@@ -302,6 +332,7 @@ export default class UpdateForm extends React.Component {
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
+        this.formClose = this.formClose.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -402,35 +433,68 @@ export default class UpdateForm extends React.Component {
         this.props.formToggle();
         const originalUpdate = this.state.originalUpdate;
         if (isNewUpdate(originalUpdate)) {
-            deleteFromModel(OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
         } else {
-            updateModel(OBJECTS_UPDATES, originalUpdate);
+            updateModel(c.OBJECTS_UPDATES, originalUpdate);
         }
         updateFormClose(originalUpdate.id);
     }
 
+    formClose(id) {
+        updateFormClose(id);
+    }
+
     saveUpdate(e) {
         let update = Object.assign({}, this.props.update);
-        // All changes to an update revert it to draft unless it is explicitly approved while saving
-        if (e.target.id == 'approve') {
-            update.status = UPDATE_STATUS_APPROVED;
+        if (!String(update.data).trim()) {
+            this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
+        } else if (this.props.updates.changing) {
+            //NOOP if we're already talking to the backend
+            return;
         } else {
-            update.status = UPDATE_STATUS_DRAFT;
-        }
-
-        const callback = updateFormClose.bind(null, update.id);
-        if (isNewUpdate(update)) {
-            saveUpdateToBackend(endpoints.updates_and_comments(), pruneForPOST(update),
-                                this.props.collapseId, callback);
-        } else {
-            updateUpdateToBackend(endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                                  this.props.collapseId, callback);
+            // All changes to an update revert it to draft unless it is explicitly approved while saving
+            if (e.target.id == 'approve') {
+                update.status = c.UPDATE_STATUS_APPROVED;
+            } else {
+                update.status = c.UPDATE_STATUS_DRAFT;
+            }
+            const callbacksFactory = (errorMessage) => {
+                return {
+                    [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
+                    [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                        this, this.state.updateAlertName, errorMessage
+                    )
+                };
+            };
+            if (isNewUpdate(update)) {
+                saveUpdateToBackend(
+                    endpoints.updates_and_comments(), pruneForPOST(update),
+                    this.props.collapseId, callbacksFactory(_('update_not_created'))
+                );
+            } else {
+                updateUpdateToBackend(
+                    endpoints.update_and_comments(update.id), pruneForPATCH(update),
+                    this.props.collapseId, callbacksFactory(_("update_not_saved"))
+                );
+            }
         }
     }
 
     deleteUpdate() {
-        const url = endpoints.update_and_comments(this.props.update.id);
-        deleteUpdateFromBackend(url, this.props.update, this.props.collapseId);
+        if (this.props.updates.changing) {
+            //NOOP if we're already talking to the backend (technically not really needed)
+            return;
+        } else {
+            const url = endpoints.update_and_comments(this.props.update.id);
+            const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
+            const callbacks = {
+                undefined,
+                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                    this, deleteUpdateAlertName, _("update_not_deleted")
+                )
+            };
+            deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
+        }
     }
 
     previousActualValue() {
@@ -461,6 +525,7 @@ export default class UpdateForm extends React.Component {
                     <Attachments update={update} onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
+                        user={this.props.user}
                         update={update}
                         callbacks={{
                             saveUpdate: this.saveUpdate,
@@ -480,12 +545,11 @@ export class NewUpdateButton extends React.Component {
     static propTypes = {
         period: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        dispatch: PropTypes.func.isRequired,
     };
 
     constructor (props) {
         super(props);
-        this.state = {collapseId: collapseId(OBJECTS_UPDATES, this.props.period.id)};
+        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id)};
         this.newUpdate = this.newUpdate.bind(this);
     }
 
@@ -504,8 +568,7 @@ export class NewUpdateButton extends React.Component {
             data: 0,
             text: '',
             relative_data: true,
-            status: UPDATE_STATUS_NEW,
-            // Keep track of the open/closed state of the form
+            status: c.UPDATE_STATUS_NEW,
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
         updateModel('updates', update, this.state.collapseId);
@@ -515,16 +578,12 @@ export class NewUpdateButton extends React.Component {
 
     render() {
         return (
-            <div>
-                <div>
+                <div className="emptyUpdate">
                     <a onClick={this.newUpdate}
-                       className={'btn btn-sm btn-default'}
-                       style={{margin: '0.3em 0.5em'}}>
-                        <i className='fa fa-plus' />
+                       className={'btn btn-sm btn-default newUpdate'}>                       
                         {_('new_update')}
                     </a>
                 </div>
-            </div>
         )
     }
 }

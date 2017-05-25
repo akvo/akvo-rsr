@@ -16,7 +16,7 @@ module.exports = {
     entry: {
         app: "./app.js",
         vendors: [
-            "isomorphic-fetch", "react", "redux", "redux-logger", "redux-thunk"
+            "isomorphic-fetch", "react", "redux", "redux-logger", "redux-thunk", "reselect"
         ]
     },
     output: {

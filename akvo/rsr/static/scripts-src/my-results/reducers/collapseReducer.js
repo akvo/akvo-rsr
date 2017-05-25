@@ -7,52 +7,50 @@
 
 
 import update from "immutability-helper"
-import { UPDATE_MODEL_FULFILLED, DELETE_FROM_MODEL } from "../reducers/modelsReducer"
 
+import * as c from "../const"
 
-export const
-    KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
-    KEYS_RESET = "KEYS_RESET";
 
 export default function collapseReducer(keys={}, action) {
     // Reducer for managing the Collapse.activeKey states
     switch(action.type) {
 
-        case KEY_SET_ACTIVE: {
+        case c.KEY_SET_ACTIVE: {
             // Set the model to current activeKey list
             const {collapseId, activeKey} = action.payload;
-            keys = {...keys, [collapseId]: activeKey};
-            break;
+            return {...keys, [collapseId]: activeKey};
         }
 
-        case KEYS_RESET: {
+        case c.KEYS_RESET: {
             // Reset the tree
-            keys = {};
-            break;
+            return {};
         }
 
-        case UPDATE_MODEL_FULFILLED: {
+        case c.UPDATE_MODEL_FULFILLED:
+        case c.KEY_ADD_TO_ACTIVE: {
             const {collapseId, object} = action.payload;
             // if collapseId isn't supplied we don't have to update keys
             if (collapseId) {
                 const key = object.id.toString();
                 if (keys[collapseId]) {
-                    keys = {...keys, [collapseId]: update(keys[collapseId], {$push: [key]})};
+                    const newKeys = update(keys[collapseId], {$push: [key]});
+                    const deduped = [...new Set(newKeys)];
+                    return {...keys, [collapseId]: deduped
+                    };
                 } else {
-                    keys = {...keys, [collapseId]: [key]};
+                    return {...keys, [collapseId]: [key]};
                 }
             }
-            break;
+            return keys;
         }
 
-        case DELETE_FROM_MODEL: {
+        case c.DELETE_FROM_MODEL: {
             const {collapseId, object} = action.payload;
             const keyToRemove = object.id.toString();
-            keys = {
+            return {
                 ...keys,
                 [collapseId]: keys[collapseId].filter((key) => key !== keyToRemove)
             };
-            break;
         }
     }
     return keys;
