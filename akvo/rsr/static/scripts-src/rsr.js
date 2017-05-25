@@ -35,7 +35,6 @@ $(document).ready(function() {
 
   // Advanced filtering & search
   $(".menu-toggle").click(function(e) {
-    e.preventDefault();
     $("#wrapper, #search").toggleClass("toggled");
     $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
   });
@@ -48,7 +47,7 @@ $(document).ready(function() {
       "hide": 1000
     }
   });
-  
+
 
   function getCookie(name) {
     var cookieValue = null;
