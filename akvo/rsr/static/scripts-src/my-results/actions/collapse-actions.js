@@ -5,12 +5,33 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import { KEY_SET_ACTIVE } from "../reducers/collapseReducer"
+
+import * as c from '../const';
+import store from "../store"
 
 
-export function onChange(collapseId, activeKey) {
-    return {
-        type: KEY_SET_ACTIVE,
+//TODO: decide if actions should dispatch in all cases
+export function collapseChange(collapseId, activeKey) {
+    store.dispatch({
+        type: c.KEY_SET_ACTIVE,
         payload: {collapseId, activeKey}
-    }
+    });
+}
+
+
+export function openPanel(collapseId, object) {
+    store.dispatch({
+        type: c.KEY_ADD_TO_ACTIVE,
+        payload: {collapseId, object}
+    });
+}
+
+
+export function resetKeys() {
+    store.dispatch({type: c.KEYS_RESET});
+}
+
+
+export function collapseRecordState() {
+    store.dispatch({type: c.KEYS_COPY_TO_VISIBLE, payload: {keys: store.getState().keys}});
 }

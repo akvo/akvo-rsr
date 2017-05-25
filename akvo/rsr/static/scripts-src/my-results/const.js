@@ -5,6 +5,7 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+
 // TODO: several of these constants should be derived from the RSR settings
 export const
     API_LIMIT = 100,
@@ -29,6 +30,15 @@ export const
         OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
     ],
 
+    // Lookup of slicing index for models when slicing MODELS_LIST
+    MODEL_INDEX = {
+        [OBJECTS_RESULTS]: 0,
+        [OBJECTS_INDICATORS]: 1,
+        [OBJECTS_PERIODS]: 2,
+        [OBJECTS_UPDATES]: 3,
+        [OBJECTS_COMMENTS]: 4,
+    },
+
     // Lookup of the parent FK field name on a model
     PARENT_FIELD = {
         [OBJECTS_RESULTS]: null,
@@ -38,8 +48,61 @@ export const
         [OBJECTS_COMMENTS]: 'data'
     },
 
+    // Lookup of the child model for a model
+    CHILD_OBJECTS = {
+        [OBJECTS_RESULTS]: OBJECTS_INDICATORS,
+        [OBJECTS_INDICATORS]: OBJECTS_PERIODS,
+        [OBJECTS_PERIODS]: OBJECTS_UPDATES,
+        [OBJECTS_UPDATES]: OBJECTS_COMMENTS,
+        [OBJECTS_COMMENTS]: null
+    },
+
     // UI state
     SELECTED_PERIODS = 'selectedPeriods',
-    UPDATE_FORMS = 'updateForms'
-;
+    UPDATE_FORMS = 'updateForms',
 
+    // Alerts
+    INITIALIZE_ALERT = 'INITIALIZE_ALERT',
+    CREATE_ALERT = 'CREATE_ALERT',
+    DISMISS_ALERT = 'DISMISS_ALERT',
+    DISMISS_ALL_ALERTS = 'DISMISS_ALL_ALERTS',
+    DESTROY_ALL_ALERTS = 'DESTROY_ALL_ALERTS',
+    DESTROY_ALERT = 'DESTROY_ALERT',
+
+    // modelsReducer
+    FETCH_MODEL_START = "FETCH_MODEL_START",
+    FETCH_MODEL_FULFILLED = "FETCH_MODEL_FULFILLED",
+    FETCH_MODEL_REJECTED = "FETCH_MODEL_REJECTED",
+
+    UPDATE_MODEL_START = "UPDATE_MODEL_START",
+    UPDATE_MODEL_FULFILLED = "UPDATE_MODEL_FULFILLED",
+    UPDATE_MODEL_REJECTED = "UPDATE_MODEL_REJECTED",
+
+    DELETE_FROM_MODEL = "DELETE_FROM_MODEL",
+    UPDATE_MODEL_DELETE_FULFILLED = "UPDATE_MODEL_DELETE_FULFILLED",
+
+    // collapseReducer
+    KEY_SET_ACTIVE = "KEY_SET_ACTIVE",
+    KEY_ADD_TO_ACTIVE = "KEY_ADD_TO_ACTIVE",
+    KEYS_RESET = "KEYS_RESET",
+    KEYS_COPY_TO_VISIBLE = "KEYS_COPY_TO_VISIBLE",
+
+    // pageReducer
+    PAGE_SET_DATA = "PAGE_SET_DATA",
+
+    // uiReducer
+    UI_ID_RESET = "UI_ID_RESET",
+    UI_ID_TOGGLE = "UI_ID_TOGGLE",
+    UI_ID_TRUE = "UI_ID_TRUE",
+    UI_ID_FALSE = "UI_ID_FALSE",
+    UI_HIDE = "UI_HIDE",
+    ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
+    SET_PERIOD_DATES = "SET_PERIOD_DATES",
+    UI_FILTER_BUTTON_ACTIVE = "UI_FILTER_BUTTON_ACTIVE",
+
+    // filter buttons (including the period select box)
+    FILTER_NEED_REPORTING = "needReporting",
+    FILTER_SHOW_DRAFT = "pending",
+    FILTER_SHOW_APPROVED = "approved",
+    FILTER_BULK_SELECT = "FILTER_BULK_SELECT"
+;

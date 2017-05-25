@@ -6,56 +6,203 @@
  */
 
 
+import * as c from "../const"
 import store from "../store"
-
 import {
-    UI_ID_TOGGLE, UI_ID_TRUE, UI_ID_FALSE, ALL_MODELS_FETCHED
-} from "../reducers/uiReducer"
+    openNodes,
+    displayDate,
+    setHash,
+} from "../utils"
 
-import { MODELS_LIST, OBJECTS_USER, SELECTED_PERIODS, UPDATE_FORMS } from "../const"
+
+export function periodSelectReset() {
+    store.dispatch({
+        type: c.UI_ID_RESET,
+        payload: {element: c.SELECTED_PERIODS}
+    })
+}
 
 
 export function periodSelectToggle(id) {
     store.dispatch({
-        type: UI_ID_TOGGLE,
-        payload: {element: SELECTED_PERIODS, id: id}
+        type: c.UI_ID_TOGGLE,
+        payload: {element: c.SELECTED_PERIODS, id: id}
+    })
+}
+
+
+export function periodSelectCheck(id) {
+    store.dispatch({
+        type: UI_ID_TRUE,
+        payload: {element: c.SELECTED_PERIODS, id: id}
+    })
+}
+
+
+export function updateFormReset() {
+    store.dispatch({
+        type: c.UI_ID_RESET,
+        payload: {element: c.UPDATE_FORMS}
     })
 }
 
 
 export function updateFormToggle(id) {
     store.dispatch({
-        type: UI_ID_TOGGLE,
-        payload: {element: UPDATE_FORMS, id: id}
+        type: c.UI_ID_TOGGLE,
+        payload: {element: c.UPDATE_FORMS, id: id}
     })
 }
 
 
 export function updateFormOpen(id) {
     store.dispatch({
-        type: UI_ID_TRUE,
-        payload: {element: UPDATE_FORMS, id: id}
+        type: c.UI_ID_TRUE,
+        payload: {element: c.UPDATE_FORMS, id: id}
     })
 }
 
 
 export function updateFormClose(id) {
     store.dispatch({
-        type: UI_ID_FALSE,
-        payload: {element: UPDATE_FORMS, id: id}
+        type: c.UI_ID_FALSE,
+        payload: {element: c.UPDATE_FORMS, id: id}
     });
 }
 
 
 export function activateToggleAll() {
     // Have we fetched all models? Include current user info too.
-    const allFetched = MODELS_LIST.concat([OBJECTS_USER]).every(
+    const allFetched = c.MODELS_LIST.concat([c.OBJECTS_USER]).every(
         (model) => store.getState().models[model].fetched
     );
     if (allFetched) {
         store.dispatch({
-            type: ALL_MODELS_FETCHED,
+            type: c.ALL_MODELS_FETCHED,
             payload: true
         });
     }
+}
+
+
+function checkSelected(element, ids) {
+    ids.map((id) => {
+        store.dispatch({
+            type: c.UI_ID_TRUE,
+            payload: {element, id}
+        })
+    })
+}
+
+
+function uiHideMode(mode) {
+    store.dispatch({
+        type: c.UI_HIDE,
+        payload: {mode}
+    })
+}
+
+
+export function activateFilterCSS(button) {
+    store.dispatch({
+        type: c.UI_FILTER_BUTTON_ACTIVE,
+        payload: {button}
+    })
+}
+
+
+export function deactivateFilter() {
+    store.dispatch({
+        type: c.UI_FILTER_BUTTON_ACTIVE,
+        payload: {button: undefined}
+    })
+}
+
+
+export function noHide() {
+    uiHideMode(false);
+    deactivateFilter();
+}
+
+
+export function showUpdates(updateIds,openForm=false) {
+    periodSelectReset();
+    uiHideMode(c.OBJECTS_UPDATES);
+    updateFormReset();
+    if (openForm) {
+        updateIds.map((id) => updateFormOpen(id));
+    }
+    openNodes(c.OBJECTS_UPDATES, updateIds, true);
+}
+
+
+function checkAndShowPeriods(ids) {
+    periodSelectReset();
+    checkSelected(c.SELECTED_PERIODS, ids);
+    uiHideMode(c.OBJECTS_PERIODS);
+    activateFilterCSS(c.FILTER_BULK_SELECT);
+    openNodes(c.OBJECTS_PERIODS, ids, true);
+}
+
+
+export function selectPeriodsThatNeedReporting(needReportingPeriodIds) {
+    periodSelectReset();
+    uiHideMode(c.OBJECTS_PERIODS);
+    openNodes(c.OBJECTS_PERIODS, needReportingPeriodIds, true);
+}
+
+
+export function selectPeriodByDates(periodStart, periodEnd) {
+    const periods = store.getState().models[c.OBJECTS_PERIODS];
+    const filteredIds = periods.ids.filter((id) => (
+        periods.objects[id].period_start === periodStart &&
+        periods.objects[id].period_end === periodEnd
+    ));
+    checkAndShowPeriods(filteredIds);
+    setHash(c.SELECTED_PERIODS + ':' + periodStart + ':' + periodEnd);
+}
+
+
+export function selectablePeriods(periodIds) {
+    // Create an array with the set of Period start and end dates. Used to select all periods with
+    // common dates
+    // const periodIds = store.getState().models[OBJECTS_PERIODS].ids;
+    // Create a list of start/end dates as strings to be able to apply Set to the list.
+    // dates = ["2016-05-01:2016-12-31", "2017-01-01:2017-06-30",...]
+    const optionStyle = {color: 'black'};
+    if (periodIds && periodIds.length > 0) {
+        const dates = periodIds.map((id) => {
+            const period = store.getState().models[c.OBJECTS_PERIODS].objects[id];
+            const periodStart = period.period_start;
+            const periodEnd = period.period_end;
+            return `${periodStart}:${periodEnd}`;
+        });
+        // Calculate how many we have of each date pair.
+        // dateMap = {2016-05-01:2016-12-31: 4, 2017-01-01:2017-06-30: 3, ...}
+        let dateMap = dates.reduce(function(acc, date) {
+            acc[date] = (acc[date] || 0) + 1;
+            return acc;
+        }, {});
+        const datesSet = new Set(dates);
+        // Construct the final data structure with a label for display in the select, and a value
+        // that's selectPeriodByDates function with bound params, called when the select is used
+        // periodDates = [
+        //     {label: "1 May 2016 - 31 Dec 2016 (4)", value: selectPeriodByDates.bind(null, "2016-05-01", "2016-12-31")},
+        //     {label: "1 Jan 2017 - 20 Jun 2017 (3)", value: selectPeriodByDates.bind(null, "2017-01-01", "2017-06-30")},
+        //     ...
+        // ]
+        const periodDates = [...datesSet].map((datePair) => {
+            const [periodStart, periodEnd] = datePair.split(':');
+            const periodStartDisplay = displayDate(periodStart);
+            const periodEndDisplay = displayDate(periodEnd);
+            const dateCount = dateMap[datePair];
+            return {
+                value: selectPeriodByDates.bind(null, periodStart, periodEnd),
+                label: `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
+            };
+        });
+        // Label for the options
+        return periodDates;
+    }
+    return  [];
 }

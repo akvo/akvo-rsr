@@ -1,6 +1,6 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n pipeline %}
+{% load i18n pipeline rsr_utils %}
 
 {% block title %}{% trans 'MyRSR' %} - {% trans 'My results' %}{% endblock %}
 
@@ -15,7 +15,10 @@
     <script type="application/json" id="data-endpoints">
         {
             "base_url": "//{{ request.META.HTTP_HOST }}",
-            "impact_projects": "{% url 'impact_projects_typeahead' %}"
+            "impact_projects": "{% url 'impact_projects_typeahead' %}",
+            {# This is a hack, we resolve to the correct path __except__ the project ID, which has #}
+            {# to be fixed in the JS code #}
+            "results_url": "{% results_url_resolver 0 %}"
         }
     </script>
 

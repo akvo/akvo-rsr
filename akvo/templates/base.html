@@ -48,13 +48,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     {# Fonts #}
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Montserrat:400,700%7CRaleway:400,500,600,700%7CDancing+Script:400,700%7CLato:400,700,300%7CQuestrial%7CPoppins:400,600" rel="stylesheet" type="text/css">
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    {% stylesheet 'rsr_v3_style' %}
-    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+    {% if request.resolver_match.url_name == 'my_new_results' %}
+      {% stylesheet 'new_results' %}
+    {% else %}
+      {% stylesheet 'rsr_v3_style' %}
+    {% endif %}
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
         img[src*="gstatic.com/"], img[src*="googleapis.com/"] {
@@ -96,7 +99,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-typeahead/1.3.0/react-bootstrap-typeahead.js" integrity="sha256-pJMiiSx35Ip7KmQTT74H2g2gG2+QZxyiKCWTdEIOyq8=" crossorigin="anonymous"></script>
       {# Other third party libraries #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.7.2/dom.jsPlumb.js" integrity="sha256-0bM5Fc0I7ovRAgHPI8ECaoa5wqvyi6xYL+t272uvdbE=" crossorigin="anonymous"></script>
-    {% else %}
+      <script src="//cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js" integrity="sha256-/jZqCQrAZxcboc/rOOI54YFU6KVLAi/Zvs6IG0xVXyk=" crossorigin="anonymous"></script>
+      {% else %}
       {# jQuery #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js" integrity="sha256-1OxYPHYEAB+HIz0f4AdsvZCfFaX4xrTD9d2BtGLXnTI=" crossorigin="anonymous"></script>
       {# "_" libs #}
@@ -111,6 +115,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap-typeahead/1.3.0/react-bootstrap-typeahead.min.js" integrity="sha256-h+f7x6eJizvxHSOOtL+EhGh8STY3xjELTArwjb0lkY4=" crossorigin="anonymous"></script>
       {# Other third party libraries #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.7.2/dom.jsPlumb.min.js" integrity="sha256-F1cIPOY4SemH0aexB8v8gKVMOpAOa2tT+TSPjZbdoS8=" crossorigin="anonymous"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js" integrity="sha256-aB35laj7IZhLTx58xw/Gm1EKOoJJKZt6RY+bH1ReHxs=" crossorigin="anonymous"></script>
     {% endif %}
 
     {# bootstrap #}
