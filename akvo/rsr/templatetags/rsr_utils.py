@@ -81,8 +81,8 @@ def results_url_resolver(context, project_id):
     REsolve which Results page to use based on user employment
     NEW_RESULTS_BETA_TESTERS setting should be a list of Organisation IDs for users employed by the
     organisations that are to beta test the new Results page
-    :param context: the request context 
-    :param project_id: Project ID 
+    :param context: the request context
+    :param project_id: Project ID
     :return: URL to either "old" or "new" Results framework page
     """
     kwargs = {'project_id': project_id}
