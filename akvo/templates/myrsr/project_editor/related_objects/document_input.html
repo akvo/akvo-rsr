@@ -46,8 +46,8 @@
                 {% for category in document.categories.all %}
                     {% include "myrsr/project_editor/related_objects/document_category_input.html" %}
                 {% empty %}
-                    {% with category_id_string=category.pk|default:"new-0"|stringformat:"s" %}
-                        {% include "myrsr/project_editor/related_objects/document_category_input.html" with category='ProjectDocumentCategory.'|add:project_id_string|add:'_'|add:category_id_string %}
+                    {% with document_id_string=document.pk|default:"new-0"|stringformat:"s" %}
+                        {% include "myrsr/project_editor/related_objects/document_category_input.html" with category='ProjectDocumentCategory.'|add:project_id_string|add:'_'|add:document_id_string %}
                     {% endwith %}
                 {% endfor %}
                 <div class="row form-group">

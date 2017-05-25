@@ -458,7 +458,12 @@ def user_management(request):
     # Order employments in reverse chronological order, but also group
     # employments by the user.
     employments = employments.annotate(max_id=Max('user__employers__id'))
-    employments = employments.order_by('-max_id', '-id')
+    employments = employments.order_by('-max_id', '-id').select_related(
+        'user',
+        'organisation',
+        'group',
+        'country',
+    )
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
@@ -500,10 +505,7 @@ def user_management(request):
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
-    organisations_list = []
-    for organisation in organisations:
-        organisation_dict = {'id': organisation.id, 'name': organisation.name}
-        organisations_list.append(organisation_dict)
+    organisations_list = list(organisations.values('id', 'name'))
 
     roles_list = []
     for role in roles:
@@ -559,9 +561,6 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
 
     if not user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED \
             or not project.is_published():
-        raise PermissionDenied
-
-    if not template == 'myrsr/my_results.html' and not user.is_superuser:
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')

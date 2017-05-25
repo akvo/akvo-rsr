@@ -31,7 +31,7 @@ function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
 
-    var DownloadButton = React.createClass({displayName: 'DownloadButton',
+    var DownloadButton = React.createClass({displayName: "DownloadButton",
         getInitialState: function() {
             return {helpText: null};
         },
@@ -83,18 +83,18 @@ function initReact() {
         render: function() {
             if (this.checkAllFilled() && !this.props.downloading) {
                 return (
-                    React.DOM.button( {type:"button", className:"btn btn-primary", onClick:this.handleDownload}, 
-                        React.DOM.i( {className:"fa fa-download"} ), " ", i18n.download_report
+                    React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.handleDownload}, 
+                        React.createElement("i", {className: "fa fa-download"}), " ", i18n.download_report
                     )
                 );
             } else {
                 return (
-                    React.DOM.span(null, 
-                        React.DOM.button( {type:"button", className:"btn btn-primary disabled pointerEvents", onClick:this.updateHelpText}, 
-                            React.DOM.i( {className:"fa fa-download"} ), " ", i18n.download_report
-                        ),
+                    React.createElement("span", null, 
+                        React.createElement("button", {type: "button", className: "btn btn-primary disabled pointerEvents", onClick: this.updateHelpText}, 
+                            React.createElement("i", {className: "fa fa-download"}), " ", i18n.download_report
+                        ), 
                         this.state.helpText &&
-                            React.DOM.div( {className:"help-block-error my-reports-download-error"}, 
+                            React.createElement("div", {className: "help-block-error my-reports-download-error"}, 
                                 this.state.helpText
                             )
                         
@@ -105,23 +105,23 @@ function initReact() {
         }
     });
 
-    var DownloadNotice = React.createClass({displayName: 'DownloadNotice',
+    var DownloadNotice = React.createClass({displayName: "DownloadNotice",
         render: function() {
             if (this.props.visible) {
                 return (
-                    React.DOM.div( {className:"alert alert-success", role:"alert"}, 
-                        React.DOM.i( {className:"fa fa-spinner fa-spin"},  " " ), " ", React.DOM.strong(null, i18n.generating_report), " ", i18n.available_shortly
+                    React.createElement("div", {className: "alert alert-success", role: "alert"}, 
+                        React.createElement("i", {className: "fa fa-spinner fa-spin"}, " "), " ", React.createElement("strong", null, i18n.generating_report), " ", i18n.available_shortly
                     )
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }
     });
 
-    var FormatsList = React.createClass({displayName: 'FormatsList',
+    var FormatsList = React.createClass({displayName: "FormatsList",
         handleClick: function(format) {
             this.props.setFormat(format);
         },
@@ -157,48 +157,48 @@ function initReact() {
 
                 var radioInput;
                 if (!thisFormatsList.props.downloading) {
-                    radioInput = React.DOM.input( {className:"format-radio", type:"radio", 'aria-label':"label1"});
+                    radioInput = React.createElement("input", {className: "format-radio", type: "radio", "aria-label": "label1"});
                 } else {
-                    radioInput = React.DOM.input( {className:"format-radio", type:"radio", 'aria-label':"label1", disabled:true});
+                    radioInput = React.createElement("input", {className: "format-radio", type: "radio", "aria-label": "label1", disabled: true});
                 }
 
                 if (formatNeeded()) {
                     var formatId = 'format-' + format.name;
                     var formatIcon = 'fa fa-' + format.icon;
                     return (
-                        React.DOM.div( {className:"col-sm-4", id:formatId, key:format.name}, 
-                            React.DOM.div( {className:"input-group", onClick:handleClick}, 
-                            React.DOM.span( {className:"input-group-addon"}, 
+                        React.createElement("div", {className: "col-sm-4", id: formatId, key: format.name}, 
+                            React.createElement("div", {className: "input-group", onClick: handleClick}, 
+                            React.createElement("span", {className: "input-group-addon"}, 
                                 radioInput
-                            ),
-                                React.DOM.div( {className:"form-control"}, 
-                                    React.DOM.i( {className:formatIcon}),"  ",
-                                    React.DOM.strong(null, format.display_name)
+                            ), 
+                                React.createElement("div", {className: "form-control"}, 
+                                    React.createElement("i", {className: formatIcon}), "  ", 
+                                    React.createElement("strong", null, format.display_name)
                                 )
                             )
                         )
                     );
                 } else {
                     return (
-                        React.DOM.span( {key:format.name} )
+                        React.createElement("span", {key: format.name})
                     );
                 }
             });
 
             return (
-                React.DOM.div( {className:"row"}, 
+                React.createElement("div", {className: "row"}, 
                     formats_data
                 )
             );
         }
     });
 
-    var SelectFormat = React.createClass({displayName: 'SelectFormat',
+    var SelectFormat = React.createClass({displayName: "SelectFormat",
         render: function() {
             if (this.props.report !== null) {
                 return (
-                    React.DOM.div( {id:"choose-format"}, 
-                        React.DOM.label(null, i18n.report_format),
+                    React.createElement("div", {id: "choose-format"}, 
+                        React.createElement("label", null, i18n.report_format), 
                         React.createElement(FormatsList, {
                             report: this.props.report,
                             formatOptions: this.props.formatOptions,
@@ -209,13 +209,13 @@ function initReact() {
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }
     });
 
-    var ProjectTypeahead = React.createClass({displayName: 'ProjectTypeahead',
+    var ProjectTypeahead = React.createClass({displayName: "ProjectTypeahead",
         getInitialState: function() {
             return {
                 disabled: this.props.downloading,
@@ -240,7 +240,7 @@ function initReact() {
 
         render: function() {
             return (
-                React.DOM.div( {className:"form-group"}, 
+                React.createElement("div", {className: "form-group"}, 
                     React.createElement(Typeahead, {
                         placeholder: this.state.placeholder,
                         maxVisible: 10,
@@ -256,7 +256,7 @@ function initReact() {
         }
     });
 
-    var SelectProject = React.createClass({displayName: 'SelectProject',
+    var SelectProject = React.createClass({displayName: "SelectProject",
         parameterNeeded: function(report) {
             for (var i = 0; i < report.parameters.length; i++) {
                 if (report.parameters[i] === 'project') {
@@ -269,9 +269,9 @@ function initReact() {
         render: function() {
             if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
                 return (
-                    React.DOM.div( {id:"choose-project"}, 
-                        React.DOM.label(null, i18n.project),
-                        React.DOM.div( {className:"project-typeahead"}, 
+                    React.createElement("div", {id: "choose-project"}, 
+                        React.createElement("label", null, i18n.project), 
+                        React.createElement("div", {className: "project-typeahead"}, 
                             React.createElement(ProjectTypeahead, {
                                 projectOptions: this.props.projectOptions,
                                 setProject: this.props.setProject,
@@ -282,13 +282,13 @@ function initReact() {
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }
     });
 
-    var OrganisationTypeahead = React.createClass({displayName: 'OrganisationTypeahead',
+    var OrganisationTypeahead = React.createClass({displayName: "OrganisationTypeahead",
         getInitialState: function() {
             return {
                 disabled: this.props.downloading,
@@ -312,7 +312,7 @@ function initReact() {
 
         render: function() {
             return (
-                React.DOM.div( {className:"form-group"}, 
+                React.createElement("div", {className: "form-group"}, 
                     React.createElement(Typeahead, {
                         placeholder: this.state.placeholder,
                         maxVisible: 10,
@@ -328,7 +328,7 @@ function initReact() {
         }
     });
 
-    var SelectOrganisation = React.createClass({displayName: 'SelectOrganisation',
+    var SelectOrganisation = React.createClass({displayName: "SelectOrganisation",
         parameterNeeded: function(report) {
             for (var i = 0; i < report.parameters.length; i++) {
                 if (report.parameters[i] === 'organisation') {
@@ -341,9 +341,9 @@ function initReact() {
         render: function() {
             if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
                 return (
-                    React.DOM.div( {id:"choose-organisation"}, 
-                        React.DOM.label(null, i18n.organisation),
-                        React.DOM.div( {className:"org-typeahead"}, 
+                    React.createElement("div", {id: "choose-organisation"}, 
+                        React.createElement("label", null, i18n.organisation), 
+                        React.createElement("div", {className: "org-typeahead"}, 
                             React.createElement(OrganisationTypeahead, {
                                 organisationOptions: this.props.organisationOptions,
                                 setOrganisation: this.props.setOrganisation,
@@ -354,24 +354,24 @@ function initReact() {
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }
     });
 
-    var ReportOption = React.createClass({displayName: 'ReportOption',
+    var ReportOption = React.createClass({displayName: "ReportOption",
         handleClick: function() {
             this.props.selectReport(this.props.report);
         },
 
         render: function() {
             return (
-                React.DOM.a( {href:"#", onClick:this.handleClick}, 
-                    React.DOM.div( {className:"report-title"}, 
+                React.createElement("a", {href: "#", onClick: this.handleClick}, 
+                    React.createElement("div", {className: "report-title"}, 
                         this.props.report.title
-                    ),
-                    React.DOM.div( {className:"report-description"}, 
+                    ), 
+                    React.createElement("div", {className: "report-description"}, 
                         this.props.report.description
                     )
                 )
@@ -379,7 +379,7 @@ function initReact() {
         }
     });
 
-    var ReportsDropdown = React.createClass({displayName: 'ReportsDropdown',
+    var ReportsDropdown = React.createClass({displayName: "ReportsDropdown",
         getInitialState: function() {
             return {
                 buttonText: i18n.select_a_report_type
@@ -415,11 +415,11 @@ function initReact() {
                 reportsData = this.props.reportOptions.map(function (report) {
                     if (report.name === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
                         return (
-                            React.DOM.span(null )
+                            React.createElement("span", null)
                         );
                     } else {
                         return (
-                            React.DOM.li( {key:report.name}, 
+                            React.createElement("li", {key: report.name}, 
                                 React.createElement(ReportOption, {
                                     report: report,
                                     selectReport: thisReportsDropdown.selectReport
@@ -429,30 +429,30 @@ function initReact() {
                     }
                 });
             } else {
-                reportsData = React.DOM.li(null, React.DOM.a( {href:"#"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " Loading..."));
+                reportsData = React.createElement("li", null, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " Loading..."));
             }
-            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? React.DOM.span( {className:"not-selected"}, this.state.buttonText) : React.DOM.span(null, this.state.buttonText);
+            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? React.createElement("span", {className: "not-selected"}, this.state.buttonText) : React.createElement("span", null, this.state.buttonText);
             var button;
             if (!this.props.downloading) {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true"}, 
-                            buttonDisplay,
-                            React.DOM.div( {className:"caret-indicator"}, 
-                                React.DOM.i( {className:"fa fa-sort"} )
+                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", type: "button", id: "select-report-type", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true"}, 
+                            buttonDisplay, 
+                            React.createElement("div", {className: "caret-indicator"}, 
+                                React.createElement("i", {className: "fa fa-sort"})
                             )
                         );
             } else {
-                button = React.DOM.button( {className:"btn btn-default dropdown-toggle", type:"button", id:"select-report-type", 'data-toggle':"dropdown", 'aria-haspopup':"true", 'aria-expanded':"true", disabled:true}, 
-                            buttonDisplay,
-                            React.DOM.div( {className:"caret-indicator"}, 
-                                React.DOM.i( {className:"fa fa-sort"} )
+                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", type: "button", id: "select-report-type", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true", disabled: true}, 
+                            buttonDisplay, 
+                            React.createElement("div", {className: "caret-indicator"}, 
+                                React.createElement("i", {className: "fa fa-sort"})
                             )
                         );
             }
 
             return (
-                React.DOM.div( {className:"dropdown"}, 
-                    button,
-                    React.DOM.ul( {className:"dropdown-menu", 'aria-labelledby':"select-report-type"}, 
+                React.createElement("div", {className: "dropdown"}, 
+                    button, 
+                    React.createElement("ul", {className: "dropdown-menu", "aria-labelledby": "select-report-type"}, 
                         reportsData
                     )
                 )
@@ -460,11 +460,11 @@ function initReact() {
         }
     });
 
-    var SelectReport = React.createClass({displayName: 'SelectReport',
+    var SelectReport = React.createClass({displayName: "SelectReport",
         render: function() {
             return (
-                React.DOM.div( {id:"choose-report-template"}, 
-                    React.DOM.label(null, i18n.report_type),
+                React.createElement("div", {id: "choose-report-template"}, 
+                    React.createElement("label", null, i18n.report_type), 
                     React.createElement(ReportsDropdown, {
                         userOptions: this.props.userOptions,
                         reportOptions: this.props.reportOptions,
@@ -476,7 +476,7 @@ function initReact() {
         }
     });
 
-    var MyReportsApp  = React.createClass({displayName: 'MyReportsApp',
+    var MyReportsApp  = React.createClass({displayName: "MyReportsApp",
         getInitialState: function() {
             return {
                 report: null,
@@ -595,35 +595,35 @@ function initReact() {
 
         render: function() {
             return (
-                React.DOM.div( {id:"my-reports"}, 
-                    React.DOM.h3(null, i18n.my_reports),
+                React.createElement("div", {id: "my-reports"}, 
+                    React.createElement("h3", null, i18n.my_reports), 
                     React.createElement(SelectReport, {
                         reportOptions: this.state.reportOptions,
                         userOptions: this.state.userOptions,
                         setReport: this.setReport,
                         downloading: this.state.downloading
-                    }),
+                    }), 
                     React.createElement(SelectOrganisation, {
                         report: this.state.report,
                         organisationOptions: this.state.organisationOptions,
                         setOrganisation: this.setOrganisation,
                         downloading: this.state.downloading
-                    }),
+                    }), 
                     React.createElement(SelectProject, {
                         report: this.state.report,
                         projectOptions: this.state.projectOptions,
                         setProject: this.setProject,
                         downloading: this.state.downloading
-                    }),
+                    }), 
                     React.createElement(SelectFormat, {
                         report: this.state.report,
                         formatOptions: this.state.formatOptions,
                         setFormat: this.setFormat,
                         downloading: this.state.downloading
-                    }),
+                    }), 
                     React.createElement(DownloadNotice, {
                         visible: this.state.downloading
-                    }),
+                    }), 
                     React.createElement(DownloadButton, {
                         report: this.state.report,
                         organisation: this.state.organisation,

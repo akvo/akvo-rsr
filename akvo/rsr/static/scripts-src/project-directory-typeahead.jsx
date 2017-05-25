@@ -28,7 +28,7 @@ function loadAsync(url, retryCount, retryLimit) {
             }
         } else {
             return;
-        }            
+        }
     };
 
     xmlHttp.open("GET", url, true);
@@ -45,12 +45,12 @@ function processResponse(response) {
     allEntry = {};
     allEntry.id = "";
     allEntry.name = i18n.all_text;
-    orgs.unshift(allEntry);    
+    orgs.unshift(allEntry);
 
     currentFilter = getCurrentOrgFilter(orgs);
     updateIdElement(currentFilter);
 
-    typeaheadOptions = getTypeaheadOptions(orgs);    
+    typeaheadOptions = getTypeaheadOptions(orgs);
     typeaheadPlaceholder = getPlaceholder(currentFilter);
     typeaheadCallback = function(option) {
         var id, idElement;
@@ -126,7 +126,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
                 React.createElement('label', {className: 'control-label'}, i18n.organisation_text)
             );
         }
-    });    
+    });
 
     var TypeaheadContainer = React.createClass({
         render: function() {
@@ -159,8 +159,7 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
 function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
-
-    loadAsync('/rest/v1/typeaheads/organisations?format=json', 0, 3);
+    loadAsync('/rest/v1/typeaheads/organisations?format=json&partners=1', 0, 3);
 }
 
 var loadJS = function(url, implementationCode, location){
@@ -195,7 +194,7 @@ function loadAndRenderReact() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initial data
-    i18n = JSON.parse(document.getElementById("typeahead-header-text").innerHTML);
+    i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
 
     // Check if React is loaded
     if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined') {

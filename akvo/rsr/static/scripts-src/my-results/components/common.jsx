@@ -6,15 +6,17 @@
  */
 
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
 
-export const ToggleButton = ({onClick, label, style, disabled, icon}) => {
-    const buttonStyle = Object.assign({margin: '0.3em 0.5em'}, style ? style : {});
+export const ToggleButton = (
+        {onClick, className='btn btn-sm btn-default', label, style, disabled, icon}) => {
+    const buttonStyle = Object.assign({}, style ? style : {});
     return (
         <button onClick={onClick}
-            className={'btn btn-sm btn-default'}
+            className={className}
             style={buttonStyle}
             disabled={disabled}>
             {icon}
@@ -22,7 +24,6 @@ export const ToggleButton = ({onClick, label, style, disabled, icon}) => {
         </button>
     )
 };
-
 ToggleButton.propTypes = {
     onClick: PropTypes.func,
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object,]),
@@ -32,13 +33,25 @@ ToggleButton.propTypes = {
 };
 
 
+export const ButtonLabel = ({label, value, icon}) => {
+    return <span>
+        {label} {value ? '(' + value + ')' : ''} {icon}
+    </span>
+};
+ButtonLabel.propTypes = {
+    label: PropTypes.string.isRequired,
+    value: PropTypes.number,
+    icon: PropTypes.object,
+};
+
+
 // Based on https://github.com/ngokevin/react-file-reader-input
 export class FileReaderInput extends React.Component {
   static propTypes = {
     as: React.PropTypes.oneOf(['binary', 'buffer', 'text', 'url']),
     children: React.PropTypes.any,
     onChange: React.PropTypes.func,
-  }
+  };
   constructor(props) {
     // FileReader compatibility warning.
     super(props);
@@ -61,7 +74,7 @@ export class FileReaderInput extends React.Component {
     e.persist();
 
     // Build Promise List, each promise resolved by FileReader.onload.
-    Promise.all(files.map(file => new Promise((resolve, reject) => {
+    Promise.all(files.map(file => new Promise((resolve) => {
       let reader = new FileReader();
 
       reader.onload = result => {
@@ -93,10 +106,10 @@ export class FileReaderInput extends React.Component {
       // Run the callback after all files have been read.
       this.props.onChange(e, zippedResults);
     });
-  }
-  triggerInput = e => {
+  };
+  triggerInput = () => {
     ReactDOM.findDOMNode(this._reactFileReaderInput).click();
-  }
+  };
   render() {
     const hiddenInputStyle = this.props.children ? {
       // If user passes in children, display children and hide input.

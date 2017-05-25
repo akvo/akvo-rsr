@@ -15,7 +15,7 @@ const ToggleButton = ({onClick, label}) => {
     return (
         <a onClick={onClick}
             className={'btn btn-sm btn-default'}
-            style={{margin: '0.3em 0.5em'}}>
+            >
             {label}
         </a>
     )

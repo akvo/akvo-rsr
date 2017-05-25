@@ -15,7 +15,7 @@ function renderReactComponents() {
     Carousel = ReactBootstrap.Carousel;
     CarouselItem = ReactBootstrap.CarouselItem;
 
-    var IndicatorPeriodValue = React.createClass({displayName: 'IndicatorPeriodValue',
+    var IndicatorPeriodValue = React.createClass({displayName: "IndicatorPeriodValue",
         render: function() {
             var target_value = this.props.indicator.target_value;
             var actual_value = this.props.indicator.actual_value;
@@ -29,31 +29,31 @@ function renderReactComponents() {
             }
 
             return (actual_value !== '' && target_value !== '') ? (
-                React.DOM.span(null, 
-                    ": ", React.DOM.i(null, actual_value, " (",i18n.actual_text,") / ", target_value, " (",i18n.target_text,")")
+                React.createElement("span", null, 
+                    ": ", React.createElement("i", null, actual_value, " (", i18n.actual_text, ") / ", target_value, " (", i18n.target_text, ")")
                 )
             ) : actual_value !== '' ? (
-                React.DOM.span(null, 
-                    ": ", React.DOM.i(null, actual_value, " (",i18n.actual_text,")")
+                React.createElement("span", null, 
+                    ": ", React.createElement("i", null, actual_value, " (", i18n.actual_text, ")")
                 )
             ) : target_value !== '' ? (
-                React.DOM.span(null, 
-                    ": ", React.DOM.i(null, target_value, " (",i18n.target_text,")")
+                React.createElement("span", null, 
+                    ": ", React.createElement("i", null, target_value, " (", i18n.target_text, ")")
                 )
             ) : (
-                React.DOM.span(null )
+                React.createElement("span", null)
             );
         }
     });
 
-    var IndicatorPeriod = React.createClass({displayName: 'IndicatorPeriod',
+    var IndicatorPeriod = React.createClass({displayName: "IndicatorPeriod",
         render: function () {
             var period_start = this.props.indicator.period_start;
             var period_end = this.props.indicator.period_end;
 
             if (period_start === undefined && period_end === undefined) {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
 
@@ -64,28 +64,28 @@ function renderReactComponents() {
             }
 
             return (
-                React.DOM.span(null, 
-                    " (",period_start, " - ", period_end,")"
+                React.createElement("span", null, 
+                    " (", period_start, " - ", period_end, ")"
                 )
             );
         }
     });
 
-    var Indicator = React.createClass({displayName: 'Indicator',
+    var Indicator = React.createClass({displayName: "Indicator",
         render: function () {
             return this.props.indicator.title ? (
-                React.DOM.div(null, 
-                    this.props.indicator.title,
-                    React.createElement(IndicatorPeriod, {indicator: this.props.indicator}),
+                React.createElement("div", null, 
+                    this.props.indicator.title, 
+                    React.createElement(IndicatorPeriod, {indicator: this.props.indicator}), 
                     React.createElement(IndicatorPeriodValue, {indicator: this.props.indicator})
                 )
             ) : (
-                React.DOM.span(null )
+                React.createElement("span", null)
             );
         }
     });
 
-    var Result = React.createClass({displayName: 'Result',
+    var Result = React.createClass({displayName: "Result",
         render: function () {
             var indicators = this.props.result.indicators.map(function(indicator) {
                 return (
@@ -93,15 +93,15 @@ function renderReactComponents() {
                 );
             });
             return (
-                React.DOM.span(null, 
-                    React.DOM.li(null, React.DOM.i( {className:"fa fa-check"} ), " ", React.DOM.strong(null, this.props.result.title)),
-                    React.DOM.dl( {className:"indicator-descriptions"}, indicators)
+                React.createElement("span", null, 
+                    React.createElement("li", null, React.createElement("i", {className: "fa fa-check"}), " ", React.createElement("strong", null, this.props.result.title)), 
+                    React.createElement("dl", {className: "indicator-descriptions"}, indicators)
                 )
             );
         }
     });
 
-    var ResultList = React.createClass({displayName: 'ResultList',
+    var ResultList = React.createClass({displayName: "ResultList",
         render: function () {
             var results = this.props.results.map(function(result) {
                 return (
@@ -109,12 +109,12 @@ function renderReactComponents() {
                 );
             });
             return (
-                React.DOM.ul( {className:"list-unstyled"}, results)
+                React.createElement("ul", {className: "list-unstyled"}, results)
             );
         }
     });
 
-    var AccordionPanel = React.createClass({displayName: 'AccordionPanel',
+    var AccordionPanel = React.createClass({displayName: "AccordionPanel",
         getInitialState: function() {
             // KB: Workaround, since i18n seems to change.
             return {
@@ -176,24 +176,24 @@ function renderReactComponents() {
             var htmlContent = {__html: micromarkdown.parse(this.props.content)};
 
             return (
-                React.DOM.div( {className:panelClass}, 
-                    React.DOM.div( {className:"panel-heading"}, 
-                        React.DOM.h4( {className:"panel-title"}, 
-                            React.DOM.a( {className:headerCollapse, onClick:this.handleClick}, 
+                React.createElement("div", {className: panelClass}, 
+                    React.createElement("div", {className: "panel-heading"}, 
+                        React.createElement("h4", {className: "panel-title"}, 
+                            React.createElement("a", {className: headerCollapse, onClick: this.handleClick}, 
                                 this.header()
                             )
                         )
-                    ),
-                    React.DOM.div( {className:panelCollapse, style:panelStyle}, 
-                        React.DOM.div( {className:"panel-body",
-                             dangerouslySetInnerHTML:htmlContent})
+                    ), 
+                    React.createElement("div", {className: panelCollapse, style: panelStyle}, 
+                        React.createElement("div", {className: "panel-body", 
+                             dangerouslySetInnerHTML: htmlContent})
                     )
                 )
             );
         }
     });
 
-    var AccordionInstance = React.createClass({displayName: 'AccordionInstance',
+    var AccordionInstance = React.createClass({displayName: "AccordionInstance",
         getInitialState: function() {
             if (this.props.source.background !== "") {
                 return {opened: "background"};
@@ -294,20 +294,20 @@ function renderReactComponents() {
             }
 
             return (
-                React.DOM.div( {className:"panel-group"}, 
-                    background,
-                    current_status,
-                    project_plan,
-                    target_group,
-                    sustainability,
-                    goals_overview,
+                React.createElement("div", {className: "panel-group"}, 
+                    background, 
+                    current_status, 
+                    project_plan, 
+                    target_group, 
+                    sustainability, 
+                    goals_overview, 
                     results
                 )
             );
         }
     });
 
-    var CarouselInstance = React.createClass({displayName: 'CarouselInstance',
+    var CarouselInstance = React.createClass({displayName: "CarouselInstance",
         render: function() {
             var photos = this.props.source.photos.map(function (photo) {
                 var photoCaption = React.createElement('h4', null, photo.caption);

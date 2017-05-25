@@ -6,8 +6,9 @@
 
 {% block myrsr_main %}
     <h4 class="resultProjectTitle" id="resultProjectTitle">
-        <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
+        Results for <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
         <a href="{% url 'project_editor' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-pencil-square-o"></i> {% trans 'Edit project' %}</button></a>
+        <a href="{% url 'my_results' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-undo"></i> {% trans 'Legacy results page' %}</button></a>
     </h4>
     {% if not project.is_impact_project %}
         <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
@@ -110,7 +111,7 @@
             "current": "{% trans 'Current'|escapejs %}",
             "add_to_actual_value": "{% trans 'Add to actual value'|escapejs %}",
             "input_placeholder": "{% trans 'Fill in a value to add to the actual value'|escapejs %}",
-            "actual_value_comment": "{% trans 'Value description'|escapejs %}",
+            "actual_value_comment": "{% trans 'Actual value comment'|escapejs %}",
             "comment_placeholder": "{% trans 'Add a comment to provide additional background information for this update'|escapejs %}",
             "new_total_value": "{% trans 'New total for this period'|escapejs %}",
             "total_value_after_update": "{% trans 'Actual total for this period (after this update)'|escapejs %}",
@@ -138,18 +139,41 @@
             "unknown_date": "{% trans 'Unknown date'|escapejs %}",
             "comment": "{% trans 'Comment'|escapejs %}",
             "comments": "{% trans 'Comments'|escapejs %}",
-            "add_comment": "{% trans 'Add comment'|escapejs %}",
-            "add_comment_placeholder": "{% trans 'Add an internal comment to the update'|escapejs %}",
+            "add_comment": "{% trans 'Add a note'|escapejs %}",
+            "add_comment_placeholder": "{% trans 'Add an internal note to the update'|escapejs %}",
             "and": "{% trans 'and'|escapejs %}",
             "others": "{% trans 'others'|escapejs %}",
             "general_error": "{% trans 'An error occurred'|escapejs %}",
             "connection_error": "{% trans 'There was a connection error. Please check your internet connection and refresh the page.'|escapejs %}",
-            "update_statuses": {{ update_statuses | safe }}
+            "update_statuses": {{ update_statuses | safe }},
+            "actual_value_required": "{% trans 'Actual value is required for updates'|escapejs %}",
+            "update_not_created": "{% trans "Couldn't create update, please try again"|escapejs %}",
+            "update_not_saved": "{% trans "Couldn't save update"|escapejs %}",
+            "update_not_deleted": "{% trans "Couldn't delete update, please try again"|escapejs %}",
+            "full_view": "{% trans "Full view"|escapejs %}",
+            "overview": "{% trans "Overview"|escapejs %}",
+            "needs_reporting": "{% trans "Needs reporting"|escapejs %}",
+            "pending_approval": "{% trans "Pending approval"|escapejs %}",
+            "approved": "{% trans "Approved"|escapejs %}",
+            "reset_filter": "{% trans "Reset filter"|escapejs %}",
+            "select_periods": "{% trans "Select period(s)"|escapejs %}",
+            "lock_selected": "{% trans "Lock selected"|escapejs %}",
+            "filter_periods": "{% trans "Filter periods"|escapejs %}",
+            "bulk_action": "{% trans "Bulk action"|escapejs %}",
+            "comment_not_saved": "{% trans "Couldn't save comment, please try again"|escapejs %}",
+            "enter_comment": "{% trans "Please enter a comment text"|escapejs %}",
+            "notes_disabled": "{% trans "Notes are disabled until the update is saved"|escapejs %}",
+            "nameless_indicator": "{% trans "Nameless indicator"|escapejs %}",
+            "aggregate_actual_value": "{% trans "Aggregate actual value:"|escapejs %}",
+            "lock_change_failed": "{% trans "Lock status change failed, please try again"|escapejs %}",
+            "locked": "{% trans "Locked"|escapejs %}",
+            "unlocked": "{% trans "Unlocked"|escapejs %}"
         }
     </script>
     {% if project.is_impact_project and project.results.all %}
 {#        {% javascript 'vendors' %}#}
         {% javascript 'vendors.bundle' %}
+        <script type="text/javascript" src="/static/scripts-src/bundle.js" charset="utf-8"></script>
         {% javascript 'bundle' %}
 {#        {% javascript 'my_new_results' %}#}
     {% endif %}

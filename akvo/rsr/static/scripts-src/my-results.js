@@ -198,17 +198,17 @@ function getUserData() {
 }
 
 function initReact() {
-    var CommentEntry = React.createClass({displayName: 'CommentEntry',
+    var CommentEntry = React.createClass({displayName: "CommentEntry",
         render: function() {
             // Render an internal comment entry.
             var comment = this.props.comment;
             var user = comment.user_details;
             return (
-                React.DOM.div( {className:"row"}, 
-                    React.DOM.div( {className:"col-xs-12 comment-header"}, 
+                React.createElement("div", {className: "row"}, 
+                    React.createElement("div", {className: "col-xs-12 comment-header"}, 
                         user.first_name, " ", user.last_name, " ", displayDate(comment.created_at)
-                    ),
-                    React.DOM.div( {className:"col-xs-12 comment-text"}, 
+                    ), 
+                    React.createElement("div", {className: "col-xs-12 comment-text"}, 
                         comment.comment
                     )
                 )
@@ -216,7 +216,7 @@ function initReact() {
         }
     });
 
-    var UpdateEntry = React.createClass({displayName: 'UpdateEntry',
+    var UpdateEntry = React.createClass({displayName: "UpdateEntry",
         getInitialState: function() {
             var updateData;
 
@@ -488,8 +488,8 @@ function initReact() {
 
             if (this.editing()) {
                 // In editing mode, only show "Edit update" in the left side of the header.
-                headerLeft = React.DOM.div( {className:"col-xs-9"}, 
-                    React.DOM.span( {className:"edit-update"}, i18nResults.edit_update)
+                headerLeft = React.createElement("div", {className: "col-xs-9"}, 
+                    React.createElement("span", {className: "edit-update"}, i18nResults.edit_update)
                 );
             } else {
                 // When not editing, display the user information on the left side of the header.
@@ -509,17 +509,17 @@ function initReact() {
                         organisations_display = ' | ' + approved_organisations[0].long_name + ' ' + i18nResults.and + ' ' + (approved_organisations.length - 1).toString() + ' ' + i18nResults.others;
                         break;
                 }
-                headerLeft = React.DOM.div( {className:"col-xs-9"}, 
-                    React.DOM.span( {className:"update-user"}, this.props.update.user_details.first_name, " ", this.props.update.user_details.last_name),
-                    React.DOM.span( {className:"update-user-organisation"}, organisations_display),
-                    React.DOM.span( {className:"update-created-at"}, displayDate(this.props.update.created_at))
+                headerLeft = React.createElement("div", {className: "col-xs-9"}, 
+                    React.createElement("span", {className: "update-user"}, this.props.update.user_details.first_name, " ", this.props.update.user_details.last_name), 
+                    React.createElement("span", {className: "update-user-organisation"}, organisations_display), 
+                    React.createElement("span", {className: "update-created-at"}, displayDate(this.props.update.created_at))
                 );
             }
 
             if (isPublic) {
                 // In the public view, do not display the status, since we only display approved
                 // updates anyway.
-                headerRight = React.DOM.span(null );
+                headerRight = React.createElement("span", null);
             } else {
                 // In the 'MyRSR' view, show the status and add the status class that belongs to
                 // the status.
@@ -539,14 +539,14 @@ function initReact() {
                         break;
                 }
 
-                headerRight = React.DOM.div( {className:"col-xs-3 text-right"}, 
-                    React.DOM.span( {className:statusClass},  " ", this.props.update.status_display)
+                headerRight = React.createElement("div", {className: "col-xs-3 text-right"}, 
+                    React.createElement("span", {className: statusClass}, " ", this.props.update.status_display)
                 );
             }
 
             return (
-                React.DOM.div( {className:"row update-entry-container-header"}, 
-                    headerLeft,
+                React.createElement("div", {className: "row update-entry-container-header"}, 
+                    headerLeft, 
                     headerRight
                 )
             );
@@ -564,19 +564,19 @@ function initReact() {
                 // If the data cannot be calculated (e.g. non-numeric data), do not display a
                 // calculation.
                 return (
-                    React.DOM.div( {className:"upActualValue"}, 
-                        React.DOM.span( {className:"update-actual-value-text"}, label,": " ),
-                        React.DOM.span( {className:"update-actual-value-data"}, this.state.data),React.DOM.br(null)
+                    React.createElement("div", {className: "upActualValue"}, 
+                        React.createElement("span", {className: "update-actual-value-text"}, label, ": "), 
+                        React.createElement("span", {className: "update-actual-value-data"}, this.state.data), React.createElement("br", null)
                     )
                 );
             } else {
                 // Display a calculation.
                 var relativeDataText = relativeData >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeData.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeData.toString());
                 return (
-                    React.DOM.div( {className:"upActualValue"}, 
-                        React.DOM.span( {className:"update-actual-value-text"}, label,": " ),
-                        React.DOM.span( {className:"update-actual-value-data"}, displayNumber(updateData), " " ),
-                        React.DOM.span( {className:"update-relative-value"}, "(",relativeDataText,")")
+                    React.createElement("div", {className: "upActualValue"}, 
+                        React.createElement("span", {className: "update-actual-value-text"}, label, ": "), 
+                        React.createElement("span", {className: "update-actual-value-data"}, displayNumber(updateData), " "), 
+                        React.createElement("span", {className: "update-relative-value"}, "(", relativeDataText, ")")
                     )
                 );
             }
@@ -599,12 +599,12 @@ function initReact() {
             if (this.editing()) {
                 // Show an input field to fill the new actual value when editing.
                 return (
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-xs-6"}, 
-                            React.DOM.label( {htmlFor:inputId}, i18nResults.add_to_actual_value),
-                            React.DOM.input( {className:"form-control", id:inputId, defaultValue:this.state.data, onChange:this.handleDataChange, placeholder:i18nResults.input_placeholder} )
-                        ),
-                        React.DOM.div( {className:"col-xs-6"}, 
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-6"}, 
+                            React.createElement("label", {htmlFor: inputId}, i18nResults.add_to_actual_value), 
+                            React.createElement("input", {className: "form-control", id: inputId, defaultValue: this.state.data, onChange: this.handleDataChange, placeholder: i18nResults.input_placeholder})
+                        ), 
+                        React.createElement("div", {className: "col-xs-6"}, 
                             this.renderActualRelative(i18nResults.new_total_value)
                         )
                     )
@@ -612,8 +612,8 @@ function initReact() {
             } else {
                 // Show the value that has been filled in when not in editing mode.
                 return (
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-xs-12"}, 
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-12"}, 
                             this.renderActualRelative(i18nResults.total_value_after_update)
                         )
                     )
@@ -628,26 +628,26 @@ function initReact() {
 
             if (this.props.update.photo_url === "") {
                 // If no photo has been uploaded, do not show the photo.
-                photoPart = React.DOM.span(null );
+                photoPart = React.createElement("span", null);
                 descriptionClass = "col-xs-9 update-description";
             } else {
                 // Also display a photo.
                 if (this.editing()) {
                     // When in edit mode and hovering over the photo, make it clear that clicking
                     // on the photo will remove it.
-                    photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.div( {className:"image-container"}, 
-                            React.DOM.a( {onClick:this.removePhoto}, 
-                                React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url} ),
-                                React.DOM.div( {className:"image-overlay text-center"}, i18nResults.remove_image)
+                    photoPart = React.createElement("div", {className: "col-xs-3 update-photo"}, 
+                        React.createElement("div", {className: "image-container"}, 
+                            React.createElement("a", {onClick: this.removePhoto}, 
+                                React.createElement("img", {src: endpoints.base_url + this.props.update.photo_url}), 
+                                React.createElement("div", {className: "image-overlay text-center"}, i18nResults.remove_image)
                             )
                         )
                     );
                 } else {
                     // Display the photo. Clicking on it will open the full size image in a new tab.
-                    photoPart = React.DOM.div( {className:"col-xs-3 update-photo"}, 
-                        React.DOM.a( {href:endpoints.base_url + this.props.update.photo_url, target:"_blank"}, 
-                            React.DOM.img( {src:endpoints.base_url + this.props.update.photo_url})
+                    photoPart = React.createElement("div", {className: "col-xs-3 update-photo"}, 
+                        React.createElement("a", {href: endpoints.base_url + this.props.update.photo_url, target: "_blank"}, 
+                            React.createElement("img", {src: endpoints.base_url + this.props.update.photo_url})
                         )
                     );
                 }
@@ -656,19 +656,19 @@ function initReact() {
 
             if (this.editing()) {
                 // Display a textarea for the description when in editing mode.
-                descriptionPart = React.DOM.div( {className:descriptionClass}, 
-                    React.DOM.label( {htmlFor:inputId}, i18nResults.actual_value_comment),
-                    React.DOM.textarea( {className:"form-control", id:inputId, defaultValue:this.props.update.text, onChange:this.handleDescriptionChange, placeholder:i18nResults.comment_placeholder} )
+                descriptionPart = React.createElement("div", {className: descriptionClass}, 
+                    React.createElement("label", {htmlFor: inputId}, i18nResults.actual_value_comment), 
+                    React.createElement("textarea", {className: "form-control", id: inputId, defaultValue: this.props.update.text, onChange: this.handleDescriptionChange, placeholder: i18nResults.comment_placeholder})
                 );
             } else {
                 // Display the description when not in editing mode. A special function is included
                 // to generate newlines (which are ignored by default).
-                descriptionPart = React.DOM.div( {className:descriptionClass}, 
+                descriptionPart = React.createElement("div", {className: descriptionClass}, 
                     this.props.update.text.split(/\r\n|\r|\n/g).map(function(line) {
                         return (
-                            React.DOM.span(null, 
-                                line,
-                                React.DOM.br(null )
+                            React.createElement("span", null, 
+                                line, 
+                                React.createElement("br", null)
                             )
                         );
                     })
@@ -676,8 +676,8 @@ function initReact() {
             }
 
             return (
-                React.DOM.div( {className:"row"}, 
-                    photoPart,
+                React.createElement("div", {className: "row"}, 
+                    photoPart, 
                     descriptionPart
                 )
             );
@@ -700,28 +700,28 @@ function initReact() {
 
                 if (this.props.update.file_url !== '') {
                     // Show the file name and a remove icon when a file has already been uploaded.
-                    fileUpload = React.DOM.div( {className:"col-xs-6"}, 
-                        React.DOM.i( {className:"fa fa-paperclip"}), " ", React.DOM.a( {href:this.props.update.file_url, target:"_blank"}, this.fileNameDisplay()),
-                        React.DOM.a( {onClick:this.removeFile},  " Remove")
+                    fileUpload = React.createElement("div", {className: "col-xs-6"}, 
+                        React.createElement("i", {className: "fa fa-paperclip"}), " ", React.createElement("a", {href: this.props.update.file_url, target: "_blank"}, this.fileNameDisplay()), 
+                        React.createElement("a", {onClick: this.removeFile}, " Remove")
                     );
                 } else {
                     // Show an upload file text when no file has been uploaded yet.
-                    fileUpload = React.DOM.div( {className:"col-xs-3"}, 
-                        React.DOM.label( {className:"fileUpload"}, 
-                            React.DOM.input( {type:"file", onChange:this.uploadFile} ),
-                            React.DOM.a(null, React.DOM.i( {className:"fa fa-paperclip"}), " ", i18nResults.attach_file)
+                    fileUpload = React.createElement("div", {className: "col-xs-3"}, 
+                        React.createElement("label", {className: "fileUpload"}, 
+                            React.createElement("input", {type: "file", onChange: this.uploadFile}), 
+                            React.createElement("a", null, React.createElement("i", {className: "fa fa-paperclip"}), " ", i18nResults.attach_file)
                         )
                     );
                 }
 
                 return (
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-xs-3"}, 
-                            React.DOM.label( {className:"imageUpload"}, 
-                                React.DOM.input( {type:"file", accept:"image/*", onChange:this.uploadImage} ),
-                                React.DOM.a(null, React.DOM.i( {className:"fa fa-camera"}), " ", labelText)
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-3"}, 
+                            React.createElement("label", {className: "imageUpload"}, 
+                                React.createElement("input", {type: "file", accept: "image/*", onChange: this.uploadImage}), 
+                                React.createElement("a", null, React.createElement("i", {className: "fa fa-camera"}), " ", labelText)
                             )
-                        ),
+                        ), 
                         fileUpload
                     )
                 );
@@ -729,16 +729,16 @@ function initReact() {
                 // Display a link to the file when a file has been uploaded and the update is not
                 // in editing mode.
                 return (
-                    React.DOM.div( {className:"row"}, 
-                        React.DOM.div( {className:"col-xs-6"}, 
-                            React.DOM.i( {className:"fa fa-paperclip"}), " ", React.DOM.a( {href:this.props.update.file_url, target:"_blank"}, this.fileNameDisplay())
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-6"}, 
+                            React.createElement("i", {className: "fa fa-paperclip"}), " ", React.createElement("a", {href: this.props.update.file_url, target: "_blank"}, this.fileNameDisplay())
                         )
                     )
                 );
             } else {
                 // Do not display an image or file upload when not editing the indicator update.
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -750,7 +750,7 @@ function initReact() {
             if (isPublic) {
                 // In the public view, internal comments are not displayed.
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
 
@@ -758,7 +758,7 @@ function initReact() {
                 // Render a 'CommentEntry' for each internal comment.
                 comments = this.props.update.comments.map(function(comment) {
                     return (
-                        React.DOM.div( {className:"comment", key:comment.id}, 
+                        React.createElement("div", {className: "comment", key: comment.id}, 
                             React.createElement(CommentEntry, {
                                 comment: comment
                             })
@@ -767,8 +767,8 @@ function initReact() {
                 });
             } else {
                 // Show a loading icon when the comments are still loading.
-                comments = React.DOM.div( {className:"comment"}, 
-                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.comments
+                comments = React.createElement("div", {className: "comment"}, 
+                    React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading, " ", i18nResults.comments
                 );
             }
 
@@ -776,28 +776,28 @@ function initReact() {
             var addCommentInput;
 
             if (this.state.loadingComment) {
-                addCommentInput = React.DOM.div(null, 
-                    React.DOM.div( {className:"input-group"}, 
-                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder} ),
-                        React.DOM.span( {className:"input-group-btn"}, 
-                            React.DOM.button( {className:"btn btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ),i18nResults.loading,"...")
+                addCommentInput = React.createElement("div", null, 
+                    React.createElement("div", {className: "input-group"}, 
+                        React.createElement("input", {className: "form-control", value: this.state.comment, id: inputId, placeholder: i18nResults.add_comment_placeholder}), 
+                        React.createElement("span", {className: "input-group-btn"}, 
+                            React.createElement("button", {className: "btn btn-default"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), i18nResults.loading, "...")
                         )
                     )
                 );
             } else {
-                addCommentInput = React.DOM.div(null, 
-                    React.DOM.div( {className:"input-group"}, 
-                        React.DOM.input( {className:"form-control", value:this.state.comment, id:inputId, placeholder:i18nResults.add_comment_placeholder, onChange:this.handleCommentChange} ),
-                        React.DOM.span( {className:"input-group-btn"}, 
-                            React.DOM.button( {onClick:this.addComment, type:"submit", className:"btn btn-default"}, i18nResults.add_comment)
+                addCommentInput = React.createElement("div", null, 
+                    React.createElement("div", {className: "input-group"}, 
+                        React.createElement("input", {className: "form-control", value: this.state.comment, id: inputId, placeholder: i18nResults.add_comment_placeholder, onChange: this.handleCommentChange}), 
+                        React.createElement("span", {className: "input-group-btn"}, 
+                            React.createElement("button", {onClick: this.addComment, type: "submit", className: "btn btn-default"}, i18nResults.add_comment)
                         )
                     )
                 );
             }
 
             return (
-                React.DOM.div( {className:"comments"}, 
-                    comments,
+                React.createElement("div", {className: "comments"}, 
+                    comments, 
                     addCommentInput
                 )
             );
@@ -808,14 +808,14 @@ function initReact() {
             if (this.props.selectedPeriod.locked || isPublic) {
                 // Locked periods, or in the public view, do not have actions. Display nothing.
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             } else if (this.state.loading) {
                 return (
-                    React.DOM.div( {className:"menuAction"}, 
-                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                            React.DOM.li( {role:"presentation"}, 
-                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading,"..."
+                    React.createElement("div", {className: "menuAction"}, 
+                        React.createElement("ul", {className: "nav-pills bottomRow navbar-right"}, 
+                            React.createElement("li", {role: "presentation"}, 
+                                React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading, "..."
                             )
                         )
                     )
@@ -824,16 +824,16 @@ function initReact() {
                 // When the user has click on 'Delete', show a confirmation for deletion of the
                 // update.
                 return (
-                    React.DOM.div( {className:"menuAction"}, 
-                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
+                    React.createElement("div", {className: "menuAction"}, 
+                        React.createElement("ul", {className: "nav-pills bottomRow navbar-right"}, 
+                            React.createElement("li", {role: "presentation", className: "cancelUpdate"}, 
                                 i18nResults.delete_confirmation
-                            ),
-                            React.DOM.li( {role:"presentation", className:"removeUpdateConfirm"}, 
-                                React.DOM.a( {onClick:this.removeUpdate, className:"btn btn-default btn-xs"}, i18nResults.yes)
-                            ),
-                            React.DOM.li( {role:"presentation", className:"removeUpdateCancel"}, 
-                                React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.no)
+                            ), 
+                            React.createElement("li", {role: "presentation", className: "removeUpdateConfirm"}, 
+                                React.createElement("a", {onClick: this.removeUpdate, className: "btn btn-default btn-xs"}, i18nResults.yes)
+                            ), 
+                            React.createElement("li", {role: "presentation", className: "removeUpdateCancel"}, 
+                                React.createElement("a", {onClick: this.switchAskRemove, className: "btn btn-default btn-xs"}, i18nResults.no)
                             )
                         )
                     )
@@ -841,69 +841,69 @@ function initReact() {
             } else if (this.editing()) {
                 // When editing and in the 'MyRSR' view, the actions are dependant on the status
                 // of the update.
-                var approveButtonEdit = React.DOM.span(null ),
-                    askForApprovalButton = React.DOM.span(null );
+                var approveButtonEdit = React.createElement("span", null),
+                    askForApprovalButton = React.createElement("span", null);
 
                 if (this.props.update.status !== 'A' && isMEManager) {
                     // Editing an non-approved update as an M&E Manager will show the 'Approve' button.
-                    approveButtonEdit = React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                        React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
+                    approveButtonEdit = React.createElement("li", {role: "presentation", className: "approveUpdate"}, 
+                        React.createElement("a", {onClick: this.approve, className: "btn btn-default btn-xs"}, i18nResults.approve)
                     );
                 } else if (!isMEManager) {
                     // Editing an update as a non-M&E Manager will show the 'Ask for approval' button.
-                    askForApprovalButton = React.DOM.li( {role:"presentation", className:"submitUpdate"}, 
-                        React.DOM.a( {onClick:this.askForApproval, className:"btn btn-default btn-xs"}, i18nResults.submit_for_approval)
+                    askForApprovalButton = React.createElement("li", {role: "presentation", className: "submitUpdate"}, 
+                        React.createElement("a", {onClick: this.askForApproval, className: "btn btn-default btn-xs"}, i18nResults.submit_for_approval)
                     );
                 }
 
                 return (
-                    React.DOM.div( {className:"menuAction"}, 
-                        React.DOM.div( {role:"presentation", className:"removeUpdate"}, 
-                            React.DOM.a( {onClick:this.switchAskRemove, className:"btn btn-default btn-xs"}, i18nResults.delete)
-                        ),
-                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                            React.DOM.li( {role:"presentation", className:"cancelUpdate"}, 
-                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-link btn-xs"}, i18nResults.cancel)
-                            ),
-                            React.DOM.li( {role:"presentation", className:"saveUpdate"}, 
-                                React.DOM.a( {onClick:this.saveUpdate, className:"btn btn-default btn-xs"}, i18nResults.save)
-                            ),
-                            approveButtonEdit,
+                    React.createElement("div", {className: "menuAction"}, 
+                        React.createElement("div", {role: "presentation", className: "removeUpdate"}, 
+                            React.createElement("a", {onClick: this.switchAskRemove, className: "btn btn-default btn-xs"}, i18nResults.delete)
+                        ), 
+                        React.createElement("ul", {className: "nav-pills bottomRow navbar-right"}, 
+                            React.createElement("li", {role: "presentation", className: "cancelUpdate"}, 
+                                React.createElement("a", {onClick: this.switchEdit, className: "btn btn-link btn-xs"}, i18nResults.cancel)
+                            ), 
+                            React.createElement("li", {role: "presentation", className: "saveUpdate"}, 
+                                React.createElement("a", {onClick: this.saveUpdate, className: "btn btn-default btn-xs"}, i18nResults.save)
+                            ), 
+                            approveButtonEdit, 
                             askForApprovalButton
                         )
                     )
                 );
             } else {
-                var returnForRevisionButton = React.DOM.span(null ),
-                    approveButton = React.DOM.span(null );
+                var returnForRevisionButton = React.createElement("span", null),
+                    approveButton = React.createElement("span", null);
 
                 if (!(this.props.update.user === user.id || isMEManager) ||
                     (['P', 'A'].indexOf(this.props.update.status) > -1 && !isMEManager)) {
                     // Show no actions for non-M&E Managers that have not placed the update or on a
                     // 'Pending approval' or 'Approved' update.
-                    return (React.DOM.span(null ));
+                    return (React.createElement("span", null));
                 } else {
                     if (this.props.update.status === 'P' && isMEManager) {
                         // Show the 'Return for revision' button for M&E Managers on updates with the status 'Pending approval'.
-                        returnForRevisionButton = React.DOM.li( {role:"presentation", className:"returnUpdate"}, 
-                            React.DOM.a( {onClick:this.returnForRevision, className:"btn btn-default btn-xs"}, i18nResults.return_for_revision)
+                        returnForRevisionButton = React.createElement("li", {role: "presentation", className: "returnUpdate"}, 
+                            React.createElement("a", {onClick: this.returnForRevision, className: "btn btn-default btn-xs"}, i18nResults.return_for_revision)
                         );
                     }
                     if (this.props.update.status !== 'A' && isMEManager) {
                         // Show the 'Approve' button for M&E Managers on updates without the status 'Approval'.
-                        approveButton = React.DOM.li( {role:"presentation", className:"approveUpdate"}, 
-                            React.DOM.a( {onClick:this.approve, className:"btn btn-default btn-xs"}, i18nResults.approve)
+                        approveButton = React.createElement("li", {role: "presentation", className: "approveUpdate"}, 
+                            React.createElement("a", {onClick: this.approve, className: "btn btn-default btn-xs"}, i18nResults.approve)
                         );
                     }
                 }
 
                 return (
-                    React.DOM.div( {className:"menuAction"}, 
-                        React.DOM.ul( {className:"nav-pills bottomRow navbar-right"}, 
-                            returnForRevisionButton,
-                            React.DOM.li( {role:"presentation", className:"editUpdate"}, 
-                                React.DOM.a( {onClick:this.switchEdit, className:"btn btn-default btn-xs"}, i18nResults.edit_update)
-                            ),
+                    React.createElement("div", {className: "menuAction"}, 
+                        React.createElement("ul", {className: "nav-pills bottomRow navbar-right"}, 
+                            returnForRevisionButton, 
+                            React.createElement("li", {role: "presentation", className: "editUpdate"}, 
+                                React.createElement("a", {onClick: this.switchEdit, className: "btn btn-default btn-xs"}, i18nResults.edit_update)
+                            ), 
                             approveButton
                         )
                     )
@@ -914,13 +914,13 @@ function initReact() {
         render: function() {
             // Render an indicator update entry.
             return (
-                React.DOM.div( {className:this.renderUpdateClass()}, 
-                    React.DOM.div( {className:"col-xs-12"}, 
-                        this.renderHeader(),
-                        this.renderActual(),
-                        this.renderDescription(),
-                        this.renderFileUpload(),
-                        this.renderComments(),
+                React.createElement("div", {className: this.renderUpdateClass()}, 
+                    React.createElement("div", {className: "col-xs-12"}, 
+                        this.renderHeader(), 
+                        this.renderActual(), 
+                        this.renderDescription(), 
+                        this.renderFileUpload(), 
+                        this.renderComments(), 
                         this.renderFooter()
                     )
                 )
@@ -928,7 +928,7 @@ function initReact() {
         }
     });
 
-    var UpdatesList = React.createClass({displayName: 'UpdatesList',
+    var UpdatesList = React.createClass({displayName: "UpdatesList",
         sortedUpdates: function() {
             // Sort and filter the updates:
             // Sort the updates by the 'created at' field.
@@ -968,7 +968,7 @@ function initReact() {
                 // When the indicator updates are loaded, render an 'UpdateEntry' for every update.
                 updates = this.sortedUpdates().map(function (update) {
                     return (
-                        React.DOM.div( {className:"update-container", key:update.id}, 
+                        React.createElement("div", {className: "update-container", key: update.id}, 
                             React.createElement(UpdateEntry, {
                                 addEditingData: thisList.props.addEditingData,
                                 removeEditingData: thisList.props.removeEditingData,
@@ -987,31 +987,31 @@ function initReact() {
                 });
             } else {
                 // Show a loading icon when the indicator updates are loading.
-                updates = React.DOM.div(null, 
-                    React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.updates
+                updates = React.createElement("div", null, 
+                    React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading, " ", i18nResults.updates
                 );
             }
 
             var updatesHeader;
             if (this.props.selectedIndicator.children_aggregate_percentage && !isPublic) {
-                updatesHeader = React.DOM.h5(null, i18nResults.cant_place_updates);
-                updates = React.DOM.span(null );
+                updatesHeader = React.createElement("h5", null, i18nResults.cant_place_updates);
+                updates = React.createElement("span", null);
             } else if (this.props.selectedPeriod.data === undefined || this.props.selectedPeriod.data.length > 0) {
-                updatesHeader = React.DOM.h5(null, i18nResults.updates);
+                updatesHeader = React.createElement("h5", null, i18nResults.updates);
             } else {
-                updatesHeader = React.DOM.h5(null, i18nResults.no_updates_yet);
+                updatesHeader = React.createElement("h5", null, i18nResults.no_updates_yet);
             }
 
             return (
-                React.DOM.div( {className:"updates-container"}, 
-                    updatesHeader,
+                React.createElement("div", {className: "updates-container"}, 
+                    updatesHeader, 
                     updates
                 )
             );
         }
     });
 
-    var IndicatorPeriodMain = React.createClass({displayName: 'IndicatorPeriodMain',
+    var IndicatorPeriodMain = React.createClass({displayName: "IndicatorPeriodMain",
         getInitialState: function() {
             return {
                 actualValueHover: false,
@@ -1060,34 +1060,34 @@ function initReact() {
             if (isPublic) {
                 // In the public view, it is not possible to add a new update.
                 return (
-                    React.DOM.div( {className:"new-update"})
+                    React.createElement("div", {className: "new-update"})
                 );
             }
 
             if (this.props.addingNewUpdate) {
                 // In case the new update is being added, show a loading icon.
                 return (
-                    React.DOM.div( {className:"new-update"}, 
-                        React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.adding_update
+                    React.createElement("div", {className: "new-update"}, 
+                        React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.adding_update
                     )
                 );
             } else if (!this.props.selectedPeriod.locked) {
                 if (this.props.selectedPeriod.data === undefined) {
                     // Show nothing if the updates are still loading.
                     return (
-                        React.DOM.div( {className:"new-update"})
+                        React.createElement("div", {className: "new-update"})
                     );
                 } else if (this.props.selectedIndicator.children_aggregate_percentage) {
                     // Show nothing if it the period has percentages and linked children.
                     return (
-                        React.DOM.div( {className:"new-update"})
+                        React.createElement("div", {className: "new-update"})
                     );
                 } else {
                     // If the updates have been loaded and the period is not locked, show a button
                     // to add a new update.
                     return (
-                        React.DOM.div( {className:"new-update"}, 
-                            React.DOM.a( {onClick:this.addNewUpdate, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-plus"} ), " ", i18nResults.new_update)
+                        React.createElement("div", {className: "new-update"}, 
+                            React.createElement("a", {onClick: this.addNewUpdate, className: "btn btn-sm btn-default"}, React.createElement("i", {className: "fa fa-plus"}), " ", i18nResults.new_update)
                         )
                     );
                 }
@@ -1110,21 +1110,21 @@ function initReact() {
                 // then show a button to unlock the period.
                 if (this.state.unLocking) {
                     return (
-                        React.DOM.div( {className:"new-update"}, 
-                            React.DOM.a( {className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.unlocking_period,"...")
+                        React.createElement("div", {className: "new-update"}, 
+                            React.createElement("a", {className: "btn btn-sm btn-default"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.unlocking_period, "...")
                         )
                     );
                 } else {
                     return (
-                        React.DOM.div( {className:"new-update"}, 
-                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.unlock_period)
+                        React.createElement("div", {className: "new-update"}, 
+                            React.createElement("a", {onClick: this.unlockPeriod, className: "btn btn-sm btn-default"}, React.createElement("i", {className: "fa fa-unlock-alt"}), " ", i18nResults.unlock_period)
                         )
                     );
                 }
             } else {
                 // In all other cases, show nothing.
                 return (
-                    React.DOM.div( {className:"new-update"})
+                    React.createElement("div", {className: "new-update"})
                 );
             }
 
@@ -1134,13 +1134,13 @@ function initReact() {
             // Render the target comment.
             if (this.props.selectedPeriod.target_comment === '') {
                 return (
-                    React.DOM.div( {className:"period-target-comment"})
+                    React.createElement("div", {className: "period-target-comment"})
                 );
             } else {
                 return (
-                    React.DOM.div( {className:"period-target-comment"}, 
-                        i18nResults.target_comment,
-                        React.DOM.span(null, this.props.selectedPeriod.target_comment)
+                    React.createElement("div", {className: "period-target-comment"}, 
+                        i18nResults.target_comment, 
+                        React.createElement("span", null, this.props.selectedPeriod.target_comment)
                     )
                 );
             }
@@ -1150,13 +1150,13 @@ function initReact() {
             // Render the actual comment.
             if (this.props.selectedPeriod.actual_comment === '') {
                 return (
-                    React.DOM.div( {className:"period-actual-comment"})
+                    React.createElement("div", {className: "period-actual-comment"})
                 );
             } else {
                 return (
-                    React.DOM.div( {className:"period-actual-comment"}, 
-                        i18nResults.actual_comment,
-                        React.DOM.span(null, this.props.selectedPeriod.actual_comment)
+                    React.createElement("div", {className: "period-actual-comment"}, 
+                        i18nResults.actual_comment, 
+                        React.createElement("span", null, this.props.selectedPeriod.actual_comment)
                     )
                 );
             }
@@ -1184,11 +1184,11 @@ function initReact() {
             // Render the percentage complete.
             if (this.props.selectedPeriod.percent_accomplishment !== null && this.props.selectedIndicator.measure !== '2') {
                 return (
-                    React.DOM.span( {className:"percentage-complete"},  " (",this.props.selectedPeriod.percent_accomplishment,"%)")
+                    React.createElement("span", {className: "percentage-complete"}, " (", this.props.selectedPeriod.percent_accomplishment, "%)")
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -1197,14 +1197,14 @@ function initReact() {
             // Render the hover of the info icon next to the actual value
             if (this.state.actualValueHover) {
                 return (
-                    React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, 
-                        React.DOM.div( {className:"tooltip-arrow"}),
-                        React.DOM.div( {className:"tooltip-inner"}, i18nResults.actual_value_info)
+                    React.createElement("div", {className: "result-tooltip fade top in", role: "tooltip"}, 
+                        React.createElement("div", {className: "tooltip-arrow"}), 
+                        React.createElement("div", {className: "tooltip-inner"}, i18nResults.actual_value_info)
                     )
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -1214,31 +1214,31 @@ function initReact() {
             var hover = this.renderHover();
 
             return (
-                React.DOM.div( {className:"indicator-period opacity-transition"}, 
-                    React.DOM.div( {className:"indicTitle"}, 
-                            React.DOM.h4( {className:"indicator-title"}, 
-                                React.DOM.a( {className:"backButton", onClick:this.goBack}, "< ", i18nResults.back),
-                                i18nResults.indicator_period,": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
-                            ),
+                React.createElement("div", {className: "indicator-period opacity-transition"}, 
+                    React.createElement("div", {className: "indicTitle"}, 
+                            React.createElement("h4", {className: "indicator-title"}, 
+                                React.createElement("a", {className: "backButton", onClick: this.goBack}, "< ", i18nResults.back), 
+                                i18nResults.indicator_period, ": ", displayDate(this.props.selectedPeriod.period_start), " - ", displayDate(this.props.selectedPeriod.period_end)
+                            ), 
                         this.renderNewUpdate()
-                    ),
-                    React.DOM.div( {className:"period-target-actual"}, 
-                        React.DOM.div( {className:"periodValues"}, 
-                            React.DOM.div( {className:"period-target"}, 
-                                i18nResults.target_value,
-                                React.DOM.span(null, this.renderTargetValue())
-                            ),
-                            React.DOM.div( {className:"period-actual"}, 
-                                i18nResults.actual_value,React.DOM.div( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, "i"),
-                                React.DOM.span( {className:"actualValueSpan"}, 
-                                    React.DOM.span(null, this.renderActualValue()),
+                    ), 
+                    React.createElement("div", {className: "period-target-actual"}, 
+                        React.createElement("div", {className: "periodValues"}, 
+                            React.createElement("div", {className: "period-target"}, 
+                                i18nResults.target_value, 
+                                React.createElement("span", null, this.renderTargetValue())
+                            ), 
+                            React.createElement("div", {className: "period-actual"}, 
+                                i18nResults.actual_value, React.createElement("div", {className: "badge", onMouseOver: this.handleMouseOver, onMouseOut: this.handleMouseOut}, "i"), 
+                                React.createElement("span", {className: "actualValueSpan"}, 
+                                    React.createElement("span", null, this.renderActualValue()), 
                                     this.renderPercentageComplete()
-                                ),
+                                ), 
                                  hover
-                            ),
-                            this.renderTargetComment(),
+                            ), 
+                            this.renderTargetComment(), 
                             this.renderActualComment()
-                        ),
+                        ), 
                         React.createElement(UpdatesList, {
                             addEditingData: this.props.addEditingData,
                             removeEditingData: this.props.removeEditingData,
@@ -1259,7 +1259,7 @@ function initReact() {
         }
     });
 
-    var IndicatorPeriodEntry = React.createClass({displayName: 'IndicatorPeriodEntry',
+    var IndicatorPeriodEntry = React.createClass({displayName: "IndicatorPeriodEntry",
         getInitialState: function() {
             return {
                 hover: false,
@@ -1347,29 +1347,29 @@ function initReact() {
             // Render the period itself.
             var periodDisplay = displayDate(this.props.period.period_start) + ' - ' + displayDate(this.props.period.period_end);
             var nrPendingUpdates = this.numberOfPendingUpdates();
-            var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? React.DOM.span( {className:"badge", onMouseOver:this.handleMouseOver, onMouseOut:this.handleMouseOut}, nrPendingUpdates) : React.DOM.span(null );
-            var hover = this.state.hover ? React.DOM.div( {className:"result-tooltip fade top in", role:"tooltip"}, React.DOM.div( {className:"tooltip-arrow"}),React.DOM.div( {className:"tooltip-inner"}, i18nResults.number_of_pending_updates)) : React.DOM.span(null );
+            var pendingUpdates = nrPendingUpdates > 0 && !isPublic ? React.createElement("span", {className: "badge", onMouseOver: this.handleMouseOver, onMouseOut: this.handleMouseOut}, nrPendingUpdates) : React.createElement("span", null);
+            var hover = this.state.hover ? React.createElement("div", {className: "result-tooltip fade top in", role: "tooltip"}, React.createElement("div", {className: "tooltip-arrow"}), React.createElement("div", {className: "tooltip-inner"}, i18nResults.number_of_pending_updates)) : React.createElement("span", null);
 
             if (this.getPeriodData() === undefined) {
                 // The period is still undefined, meaning that it is loading.
                 return (
-                    React.DOM.td( {className:"period-td"}, 
-                        periodDisplay, " ", React.DOM.i( {className:"fa fa-spin fa-spinner"} )
+                    React.createElement("td", {className: "period-td"}, 
+                        periodDisplay, " ", React.createElement("i", {className: "fa fa-spin fa-spinner"})
                     )
                 );
             } else if ((isPublic || this.props.period.locked) && this.getPeriodData().length === 0) {
                 // The period is locked or in the public view and no indicator updates yet.
                 // In these cases it is not possible to select the period.
                 return (
-                    React.DOM.td( {className:"period-td"}, 
+                    React.createElement("td", {className: "period-td"}, 
                         periodDisplay
                     )
                 );
             } else {
                 // The period is open or already has data, so make the period selectable.
                 return (
-                    React.DOM.td( {className:"period-td"}, 
-                        React.DOM.a( {onClick:this.switchPeriod}, 
+                    React.createElement("td", {className: "period-td"}, 
+                        React.createElement("a", {onClick: this.switchPeriod}, 
                             periodDisplay
                         ), " ", pendingUpdates, " ", hover
                     )
@@ -1382,21 +1382,21 @@ function initReact() {
             if (isPublic) {
                 // In the public view, display nothing.
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             } else if (!isMEManager) {
                 // In the 'MyRSR' view as a non-admin, display whether the period is locked or not.
                 switch(this.props.period.locked) {
                     case false:
                         return (
-                            React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.period_unlocked
+                            React.createElement("td", {className: "actions-td"}, 
+                                React.createElement("i", {className: "fa fa-unlock-alt"}), " ", i18nResults.period_unlocked
                             )
                         );
                     default:
                         return (
-                            React.DOM.td( {className:"actions-td"}, 
-                                React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.period_locked
+                            React.createElement("td", {className: "actions-td"}, 
+                                React.createElement("i", {className: "fa fa-lock"}), " ", i18nResults.period_locked
                             )
                         );
                 }
@@ -1404,20 +1404,20 @@ function initReact() {
                 // In the 'MyRSR' view as an admin, show the buttons to lock or unlock a period.
                 if (this.state.lockingOrUnlocking) {
                     return (
-                        React.DOM.td( {className:"actions-td"}, 
-                            React.DOM.a( {className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading)
+                        React.createElement("td", {className: "actions-td"}, 
+                            React.createElement("a", {className: "btn btn-sm btn-default"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading)
                         )
                     );
                 } else if (this.props.period.locked) {
                     return (
-                        React.DOM.td( {className:"actions-td"}, 
-                            React.DOM.a( {onClick:this.unlockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-unlock-alt"} ), " ", i18nResults.unlock_period)
+                        React.createElement("td", {className: "actions-td"}, 
+                            React.createElement("a", {onClick: this.unlockPeriod, className: "btn btn-sm btn-default"}, React.createElement("i", {className: "fa fa-unlock-alt"}), " ", i18nResults.unlock_period)
                         )
                     );
                 } else {
                     return (
-                        React.DOM.td( {className:"actions-td"}, 
-                            React.DOM.a( {onClick:this.lockPeriod, className:"btn btn-sm btn-default"}, React.DOM.i( {className:"fa fa-lock"} ), " ", i18nResults.lock_period)
+                        React.createElement("td", {className: "actions-td"}, 
+                            React.createElement("a", {onClick: this.lockPeriod, className: "btn btn-sm btn-default"}, React.createElement("i", {className: "fa fa-lock"}), " ", i18nResults.lock_period)
                         )
                     );
                 }
@@ -1446,11 +1446,11 @@ function initReact() {
             // Render the percentage completed.
             if (!(this.props.period.percent_accomplishment === null || this.props.selectedIndicator.measure === '2')) {
                 return (
-                    React.DOM.span( {className:"percentage-complete"},  " (",this.props.period.percent_accomplishment,"%)")
+                    React.createElement("span", {className: "percentage-complete"}, " (", this.props.period.percent_accomplishment, "%)")
                 );
             } else {
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -1458,22 +1458,22 @@ function initReact() {
         render: function() {
             // Render the indicator period entry.
             return (
-                React.DOM.tr(null, 
-                    this.renderPeriodDisplay(),
-                    React.DOM.td( {className:"target-td"}, 
+                React.createElement("tr", null, 
+                    this.renderPeriodDisplay(), 
+                    React.createElement("td", {className: "target-td"}, 
                         this.renderTargetValue()
-                    ),
-                    React.DOM.td( {className:"actual-td"}, 
-                        this.renderActualValue(),
+                    ), 
+                    React.createElement("td", {className: "actual-td"}, 
+                        this.renderActualValue(), 
                         this.renderPercentageComplete()
-                    ),
+                    ), 
                     this.renderActions()
                 )
             );
         }
     });
 
-    var IndicatorPeriodList = React.createClass({displayName: 'IndicatorPeriodList',
+    var IndicatorPeriodList = React.createClass({displayName: "IndicatorPeriodList",
         sortedPeriods: function() {
             // Sort the periods by the 'period start' field.
             function compare(u1, u2) {
@@ -1500,21 +1500,21 @@ function initReact() {
                 }
 
                 return (
-                    React.DOM.div( {className:"baseline"}, 
-                        React.DOM.div( {className:"baseline-year"}, 
-                            i18nResults.baseline_year,
-                            React.DOM.span(null, baselineYear)
-                        ),
-                        React.DOM.div( {className:"baseline-value"}, 
-                            i18nResults.baseline_value,
-                            React.DOM.span(null, baselineValue)
+                    React.createElement("div", {className: "baseline"}, 
+                        React.createElement("div", {className: "baseline-year"}, 
+                            i18nResults.baseline_year, 
+                            React.createElement("span", null, baselineYear)
+                        ), 
+                        React.createElement("div", {className: "baseline-value"}, 
+                            i18nResults.baseline_value, 
+                            React.createElement("span", null, baselineValue)
                         )
                     )
                 );
             } else {
                 // Render nothing when no baseline year or value is present.
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -1531,15 +1531,15 @@ function initReact() {
                     var parProjectTitle = result.parent_project[parProjectId];
                     var parNode;
                     if (isPublic) {
-                        parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
-                            React.DOM.span( {className:"relatedInfo"}, 
-                                i18nResults.parent_project,": ", React.DOM.a( {href:language + "/project/" + parProjectId + "/#results"}, parProjectTitle)
+                        parNode = React.createElement("div", {className: "indicator-period-list parentProject"}, 
+                            React.createElement("span", {className: "relatedInfo"}, 
+                                i18nResults.parent_project, ": ", React.createElement("a", {href: language + "/project/" + parProjectId + "/#results"}, parProjectTitle)
                             )
                         );
                     } else {
-                        parNode = React.DOM.div( {className:"indicator-period-list parentProject"}, 
-                            React.DOM.span( {className:"relatedInfo"}, 
-                                i18nResults.parent_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + parProjectId + "/"}, parProjectTitle)
+                        parNode = React.createElement("div", {className: "indicator-period-list parentProject"}, 
+                            React.createElement("span", {className: "relatedInfo"}, 
+                                i18nResults.parent_project, ": ", React.createElement("a", {href: language + "/myrsr/results/" + parProjectId + "/"}, parProjectTitle)
                             )
                         );
                     }
@@ -1553,15 +1553,15 @@ function initReact() {
                     var childProjectTitle = result.child_projects[childProjectId];
                     var childNode;
                     if (isPublic) {
-                        childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
-                            React.DOM.span( {className:"relatedInfo"}, 
-                                i18nResults.child_project,": ", React.DOM.a( {href:language + "/project/" + childProjectId + "/#results"}, childProjectTitle)
+                        childNode = React.createElement("div", {className: "indicator-period-list childProject"}, 
+                            React.createElement("span", {className: "relatedInfo"}, 
+                                i18nResults.child_project, ": ", React.createElement("a", {href: language + "/project/" + childProjectId + "/#results"}, childProjectTitle)
                             )
                         );
                     } else {
-                        childNode = React.DOM.div( {className:"indicator-period-list childProject"}, 
-                            React.DOM.span( {className:"relatedInfo"}, 
-                                i18nResults.child_project,": ", React.DOM.a( {href:language + "/myrsr/results/" + childProjectId + "/"}, childProjectTitle)
+                        childNode = React.createElement("div", {className: "indicator-period-list childProject"}, 
+                            React.createElement("span", {className: "relatedInfo"}, 
+                                i18nResults.child_project, ": ", React.createElement("a", {href: language + "/myrsr/results/" + childProjectId + "/"}, childProjectTitle)
                             )
                         );
                     }
@@ -1581,7 +1581,7 @@ function initReact() {
                 // For every period, render a 'IndicatorPeriodEntry'.
                 periods = this.sortedPeriods().map(function (period) {
                     return (
-                        React.DOM.tbody( {className:"indicator-period bg-transition", key:period.id}, 
+                        React.createElement("tbody", {className: "indicator-period bg-transition", key: period.id}, 
                             React.createElement(IndicatorPeriodEntry, {
                                 period: period,
                                 selectedIndicator: thisList.props.selectedIndicator,
@@ -1598,39 +1598,39 @@ function initReact() {
                 });
             } else {
                 // Show a loading icon when the periods have not been loaded yet.
-                periods = React.DOM.tbody( {className:"indicator-period bg-transition"}, 
-                    React.DOM.tr(null, 
-                        React.DOM.td(null, 
-                            React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicator_periods
+                periods = React.createElement("tbody", {className: "indicator-period bg-transition"}, 
+                    React.createElement("tr", null, 
+                        React.createElement("td", null, 
+                            React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading, " ", i18nResults.indicator_periods
                         )
                     )
                 );
             }
 
-            var actionCell = isPublic ? React.DOM.span(null ) : React.DOM.td( {className:"th-actions"} );
+            var actionCell = isPublic ? React.createElement("span", null) : React.createElement("td", {className: "th-actions"});
 
             return (
-                React.DOM.div( {className:"indicator-period-list selfProject"}, 
-                    React.DOM.h4( {className:"indicator-periods-title"}, i18nResults.indicator_periods),
-                    this.renderBaseline(),
-                    React.DOM.table( {className:"table table-responsive"}, 
-                        React.DOM.thead(null, 
-                            React.DOM.tr(null, 
-                                React.DOM.td( {className:"th-period"}, i18nResults.period),
-                                React.DOM.td( {className:"th-target"}, i18nResults.target_value),
-                                React.DOM.td( {className:"th-actual"}, i18nResults.actual_value),
+                React.createElement("div", {className: "indicator-period-list selfProject"}, 
+                    React.createElement("h4", {className: "indicator-periods-title"}, i18nResults.indicator_periods), 
+                    this.renderBaseline(), 
+                    React.createElement("table", {className: "table table-responsive"}, 
+                        React.createElement("thead", null, 
+                            React.createElement("tr", null, 
+                                React.createElement("td", {className: "th-period"}, i18nResults.period), 
+                                React.createElement("td", {className: "th-target"}, i18nResults.target_value), 
+                                React.createElement("td", {className: "th-actual"}, i18nResults.actual_value), 
                                 actionCell
                             )
-                        ),
+                        ), 
                         periods
-                    ),
+                    ), 
                     this.renderParentsChildren()
                 )
             );
         }
     });
 
-    var MainContent = React.createClass({displayName: 'MainContent',
+    var MainContent = React.createClass({displayName: "MainContent",
         getInitialState: function() {
             return {
                 addingNewUpdate: false
@@ -1716,21 +1716,21 @@ function initReact() {
                 if (isAdmin || isMEManager) {
                     var language = window.location.pathname.substring(0, 3);
                     addIndicatorsLink =
-                        React.DOM.a( {href:language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
+                        React.createElement("a", {href: language + "/myrsr/project_editor/" + projectIds.project_id + "/"}, i18nResults.add_indicators);
                 } else {
-                    addIndicatorsLink = React.DOM.span(null );
+                    addIndicatorsLink = React.createElement("span", null);
                 }
 
                 return (
-                    React.DOM.div( {className:"noIndicators"}, 
-                        i18nResults.no_indicators, " ", addIndicatorsLink,
-                        React.DOM.a( {href:"https://akvorsr.supporthero.io/article/show/design-a-results-framework", target:"_blank"}, i18nResults.more_info)
+                    React.createElement("div", {className: "noIndicators"}, 
+                        i18nResults.no_indicators, " ", addIndicatorsLink, 
+                        React.createElement("a", {href: "https://akvorsr.supporthero.io/article/show/design-a-results-framework", target: "_blank"}, i18nResults.more_info)
                     )
                 );
             } else if (this.props.selectedPeriod !== null) {
                 // Show a list of indicator updates.
                 return (
-                    React.DOM.div( {className:"indicator-period-container"}, 
+                    React.createElement("div", {className: "indicator-period-container"}, 
                         React.createElement(IndicatorPeriodMain, {
                             addNewUpdate: this.addNewUpdate,
                             addingNewUpdate: this.state.addingNewUpdate,
@@ -1753,13 +1753,13 @@ function initReact() {
             } else if (this.props.selectedIndicator !== null) {
                 // Show a list of periods.
                 return (
-                    React.DOM.div( {className:"indicator opacity-transition"}, 
-                        React.DOM.h4( {className:"indicator-title"}, 
-                            this.props.selectedIndicator.title,this.showMeasure()
-                        ),
-                        React.DOM.div( {className:"indicator-description"}, 
+                    React.createElement("div", {className: "indicator opacity-transition"}, 
+                        React.createElement("h4", {className: "indicator-title"}, 
+                            this.props.selectedIndicator.title, this.showMeasure()
+                        ), 
+                        React.createElement("div", {className: "indicator-description"}, 
                             this.props.selectedIndicator.description
-                        ),
+                        ), 
                         React.createElement(IndicatorPeriodList, {
                             selectedIndicator: this.props.selectedIndicator,
                             selectedPeriod: this.props.selectedPeriod,
@@ -1776,13 +1776,13 @@ function initReact() {
             } else {
                 // Nothing selected, leave main content empty.
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         }
     });
 
-    var IndicatorEntry = React.createClass({displayName: 'IndicatorEntry',
+    var IndicatorEntry = React.createClass({displayName: "IndicatorEntry",
         selected: function() {
             // See if this indicator has been selected.
             if (this.props.selectedIndicator !== null) {
@@ -1806,16 +1806,16 @@ function initReact() {
             }
 
             return (
-                React.DOM.div( {className:indicatorClass, onClick:this.switchIndicator}, 
-                    React.DOM.a(null, 
-                        React.DOM.h4(null, this.props.indicator.title)
+                React.createElement("div", {className: indicatorClass, onClick: this.switchIndicator}, 
+                    React.createElement("a", null, 
+                        React.createElement("h4", null, this.props.indicator.title)
                     )
                 )
             );
         }
     });
 
-    var ResultEntry = React.createClass({displayName: 'ResultEntry',
+    var ResultEntry = React.createClass({displayName: "ResultEntry",
         expanded: function() {
             // See if this result has been selected. If so, the result should be expanded.
             if (this.props.selectedResult !== null) {
@@ -1861,7 +1861,7 @@ function initReact() {
                 if (this.props.result.indicators !== undefined) {
                     var indicatorEntries = this.props.result.indicators.map(function (indicator) {
                         return (
-                            React.DOM.div( {key:indicator.id}, 
+                            React.createElement("div", {key: indicator.id}, 
                                 React.createElement(IndicatorEntry, {
                                     indicator: indicator,
                                     selectedIndicator: thisResult.props.selectedIndicator,
@@ -1872,15 +1872,15 @@ function initReact() {
                         );
                     });
                     return (
-                        React.DOM.div( {className:"result-nav-full clickable"}, indicatorEntries)
+                        React.createElement("div", {className: "result-nav-full clickable"}, indicatorEntries)
                     );
                 } else {
                     // Show a loading icon if indicators have not been loaded yet.
                     return (
-                        React.DOM.div( {className:"result-nav-full clickable"}, 
-                            React.DOM.div( {className:"indicator-nav bg-border-transition"}, 
-                                React.DOM.a(null, 
-                                    React.DOM.h4(null, React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.indicators)
+                        React.createElement("div", {className: "result-nav-full clickable"}, 
+                            React.createElement("div", {className: "indicator-nav bg-border-transition"}, 
+                                React.createElement("a", null, 
+                                    React.createElement("h4", null, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading, " ", i18nResults.indicators)
                                 )
                             )
                         )
@@ -1889,7 +1889,7 @@ function initReact() {
             } else {
                 // Do not show anything when result is not selected (expanded).
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             }
         },
@@ -1899,23 +1899,23 @@ function initReact() {
             switch (this.props.result.type) {
                 case '1':
                     return (
-                        React.DOM.div( {className:"indicatorType"}, i18nResults.output)
+                        React.createElement("div", {className: "indicatorType"}, i18nResults.output)
                     );
                 case '2':
                     return (
-                        React.DOM.div( {className:"indicatorType"}, i18nResults.outcome)
+                        React.createElement("div", {className: "indicatorType"}, i18nResults.outcome)
                     );
                 case '3':
                     return (
-                        React.DOM.div( {className:"indicatorType"}, i18nResults.impact)
+                        React.createElement("div", {className: "indicatorType"}, i18nResults.impact)
                     );
                 case '9':
                     return (
-                        React.DOM.div( {className:"indicatorType"}, i18nResults.other)
+                        React.createElement("div", {className: "indicatorType"}, i18nResults.other)
                     );
                 default:
                     return (
-                        React.DOM.div(null )
+                        React.createElement("div", null)
                     );
             }
         },
@@ -1925,7 +1925,7 @@ function initReact() {
             var indicatorLength;
 
             if (this.props.result.indicators === undefined) {
-                indicatorLength = React.DOM.i( {className:"fa fa-spin fa-spinner"} );
+                indicatorLength = React.createElement("i", {className: "fa fa-spin fa-spinner"});
             } else {
                 indicatorLength = this.props.result.indicators.length;
             }
@@ -1933,15 +1933,15 @@ function initReact() {
             if (this.expanded()) {
                 // Do not show a text when the result is selected (expanded).
                 return (
-                    React.DOM.span(null )
+                    React.createElement("span", null)
                 );
             } else {
                 // Show the number of indicators
                 return (
-                    React.DOM.span( {className:"result-indicator-count"}, 
-                        React.DOM.i( {className:"fa fa-tachometer"} ),
-                        React.DOM.span( {className:"indicator-count inlined"}, indicatorLength),
-                        React.DOM.p(null, this.indicatorText().toLowerCase())
+                    React.createElement("span", {className: "result-indicator-count"}, 
+                        React.createElement("i", {className: "fa fa-tachometer"}), 
+                        React.createElement("span", {className: "indicator-count inlined"}, indicatorLength), 
+                        React.createElement("p", null, this.indicatorText().toLowerCase())
                     )
                 );
             }
@@ -1953,23 +1953,23 @@ function initReact() {
             resultNavClass += this.expanded() ? " expanded" : "";
 
             return (
-                React.DOM.div( {className:resultNavClass, key:this.props.result.id}, 
-                    React.DOM.div( {className:"result-nav-summary clickable", onClick:this.switchResult}, 
-                        React.DOM.h3( {className:"result-title"}, 
-                            React.DOM.i( {className:"fa fa-chevron-down"} ),
-                            React.DOM.i( {className:"fa fa-chevron-up"} ),
-                            React.DOM.span(null, this.props.result.title),
+                React.createElement("div", {className: resultNavClass, key: this.props.result.id}, 
+                    React.createElement("div", {className: "result-nav-summary clickable", onClick: this.switchResult}, 
+                        React.createElement("h3", {className: "result-title"}, 
+                            React.createElement("i", {className: "fa fa-chevron-down"}), 
+                            React.createElement("i", {className: "fa fa-chevron-up"}), 
+                            React.createElement("span", null, this.props.result.title), 
                             this.renderResultType()
-                        ),
+                        ), 
                         this.renderIndicatorCount()
-                    ),
+                    ), 
                     this.renderIndicatorEntries()
                 )
             );
         }
     });
 
-    var SideBar = React.createClass({displayName: 'SideBar',
+    var SideBar = React.createClass({displayName: "SideBar",
         render: function() {
             // Renders the left sidebar of the results framework
             var thisList = this;
@@ -1977,7 +1977,7 @@ function initReact() {
             // For every result, a ResultEntry is created
             var resultEntries = this.props.results.map(function (result) {
                 return (
-                    React.DOM.div( {key:result.id}, 
+                    React.createElement("div", {key: result.id}, 
                         React.createElement(ResultEntry, {
                             result: result,
                             selectedResult: thisList.props.selectedResult,
@@ -1993,17 +1993,17 @@ function initReact() {
             if (!this.props.loadingResults) {
                 // Show the array of ResultEntry's when results have been loaded
                 return (
-                    React.DOM.div( {className:"results-list"}, 
+                    React.createElement("div", {className: "results-list"}, 
                         resultEntries
                     )
                 );
             } else {
                 // Show a loading icon when results are loading
                 return (
-                    React.DOM.div( {className:"results-list"}, 
-                        React.DOM.div( {className:"result-nav bg-transition"}, 
-                            React.DOM.div( {className:"result-nav-summary"}, 
-                                React.DOM.i( {className:"fa fa-spin fa-spinner"} ), " ", i18nResults.loading, " ", i18nResults.results
+                    React.createElement("div", {className: "results-list"}, 
+                        React.createElement("div", {className: "result-nav bg-transition"}, 
+                            React.createElement("div", {className: "result-nav-summary"}, 
+                                React.createElement("i", {className: "fa fa-spin fa-spinner"}), " ", i18nResults.loading, " ", i18nResults.results
                             )
                         )
                     )
@@ -2012,7 +2012,7 @@ function initReact() {
         }
     });
 
-    var ResultsApp = React.createClass({displayName: 'ResultsApp',
+    var ResultsApp = React.createClass({displayName: "ResultsApp",
         getInitialState: function() {
             var hash = location.hash,
                 defaultResult = null,
@@ -2452,13 +2452,13 @@ function initReact() {
             // Render the complete results framework, including a sidebar on the left and a main
             // panel in the rest of the screen
             return (
-                React.DOM.div( {className:"results"}, 
-                    React.DOM.article(null, 
-                        React.DOM.div( {className:"results-container"}, 
-                            React.DOM.div( {className:"sidebar"}, 
-                                React.DOM.div( {className:"result-nav-header"}, 
-                                    React.DOM.h3(null, i18nResults.results)
-                                ),
+                React.createElement("div", {className: "results"}, 
+                    React.createElement("article", null, 
+                        React.createElement("div", {className: "results-container"}, 
+                            React.createElement("div", {className: "sidebar"}, 
+                                React.createElement("div", {className: "result-nav-header"}, 
+                                    React.createElement("h3", null, i18nResults.results)
+                                ), 
                                 React.createElement(
                                     SideBar, {
                                         results: this.state.results,
@@ -2470,8 +2470,8 @@ function initReact() {
                                         selectPeriod: this.selectPeriod
                                     }
                                 )
-                            ),
-                            React.DOM.div( {className:"indicator-container"}, 
+                            ), 
+                            React.createElement("div", {className: "indicator-container"}, 
                                 React.createElement(
                                     MainContent, {
                                         addEditingData: this.addEditingData,

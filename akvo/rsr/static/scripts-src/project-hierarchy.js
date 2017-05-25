@@ -23,7 +23,7 @@ jsPlumb.ready(function() {
                 [ "Arrow", { location:Math.min(0.1 + index*0.1, 0.45), direction:-1 }, arrowCommon ]
             ];
             return two_arrows;
-        }
+        };
 
         var project_window = $("#project-hierarchy-project");
         var parent_windows = $(".project-hierarchy .project-hierarchy-parent");
