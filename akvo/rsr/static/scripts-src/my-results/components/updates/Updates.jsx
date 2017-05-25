@@ -149,7 +149,8 @@ UserInfo.propTypes = {
 
 @connect((store) => {
     return {
-        updateForms: store.ui[c.UPDATE_FORMS]
+        updateForms: store.ui[c.UPDATE_FORMS],
+        user: store.models.user.objects[store.models.user.ids[0]],
     }
 }, alertActions)
 class UpdateHeader extends React.Component {
@@ -164,6 +165,7 @@ class UpdateHeader extends React.Component {
         super(props);
 
         this.formToggle = this.formToggle.bind(this);
+        this.showEditButton = this.showEditButton.bind(this);
         // we need a unique name for each alert
         const alertName = 'UpdateAlert-' + this.props.update.id;
         this.state = {
@@ -179,9 +181,16 @@ class UpdateHeader extends React.Component {
         e.stopPropagation();
     }
 
+    showEditButton() {
+        // Project editors can only edit their own updates
+        return !this.props.periodLocked && (
+            this.props.user.isMEManager || this.props.user.id === this.props.update.user
+        );
+    }
+
     render() {
         let editUpdateButton, updateAlert;
-        if (!this.props.periodLocked) {
+        if (this.showEditButton()) {
             let className;
             if (new Set(this.props.updateForms).has(this.props.update.id)) {
                 className = 'btn btn-sm btn-default editingForm';

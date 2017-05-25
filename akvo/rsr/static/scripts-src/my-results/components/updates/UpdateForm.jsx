@@ -253,9 +253,32 @@ Attachments.propTypes = {
 };
 
 
+const UpdateActionButton = ({action, saveUpdate}) => {
+    const labels = {
+        [c.UPDATE_ACTION_SAVE]: _('save'),
+        [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
+        [c.UPDATE_ACTION_RETURN]: _('return_for_revision'),
+        [c.UPDATE_ACTION_APPROVE]: _('approve'),
+    };
+    return (
+        <li role="presentation" className={action}>
+            <a id="save" onClick={saveUpdate}
+               className="btn btn-default btn-xs">{labels[action]}</a>
+        </li>
+    )
+};
+
+
 const UpdateFormButtons = ({user, update, callbacks}) => {
     //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
     // can be shown when saving is under way
+    function getActionButtons(role, updateStatus) {
+        return c.UPDATE_BUTTONS[role][updateStatus].map(
+            action => <UpdateActionButton action={action} saveUpdate={callbacks.saveUpdate} />
+        )
+    }
+    const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
+    const actionButtons = getActionButtons(role, update.status);
     return (
         <div className="menuAction">
         {!isNewUpdate(update) && isAllowedToDelete(user, update)?
@@ -269,16 +292,7 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
                     <a onClick={callbacks.onCancel}
                        className="btn btn-link btn-xs">{_('cancel')}</a>
                 </li>
-                <li role="presentation" className="saveUpdate">
-                    <a id="save" onClick={callbacks.saveUpdate}
-                       className="btn btn-default btn-xs">{_('save')}</a>
-                </li>
-                {user.isMEManager ?
-                    <li role="presentation" className="approveUpdate">
-                        <a id="approve" onClick={callbacks.saveUpdate}
-                           className="btn btn-default btn-xs">{_('approve')}</a>
-                    </li>
-                : ''}
+                {actionButtons}
                 <span></span>
             </ul>
         </div>
