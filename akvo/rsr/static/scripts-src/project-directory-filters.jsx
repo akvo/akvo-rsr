@@ -64,6 +64,7 @@ var FilterForm = React.createClass({
         window.advanced_filter_form = this;
         if (Object.keys(this.state.selected).length > 0) {
             this.toggleForm();
+            document.querySelector('#search-view').scrollIntoView();
         }
     },
     render: function(){
