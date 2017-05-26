@@ -14,6 +14,7 @@ var trim_label = function(obj) {
     }
     return obj;
 };
+
 var Filter = React.createClass({displayName: "Filter",
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
@@ -61,6 +62,10 @@ var FilterForm = React.createClass({displayName: "FilterForm",
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
+        if (Object.keys(this.state.selected).length > 0) {
+            this.toggleForm();
+        }
+
     },
     render: function(){
         var create_filter = function(filter_name){
@@ -243,7 +248,6 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         };
         Object.keys(this.state.selected).map(set_initial_selection, this);
         this.setState({"initial_selection": initial_selection});
-        if (Object.keys(initial_selection).length > 0) { this.toggleForm(); }
     },
     updateState: function(options, mountedNow){
         var project_count = options.project_count;
