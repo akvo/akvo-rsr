@@ -1326,12 +1326,18 @@ h4.detailedInfo {
     }
     div#filter {
         padding: 5px 15px 15px 15px;
-        min-height: 700px;
         overflow-y: hidden;
-        div#advanced-filter-status {
+        #advanced-filter-status {
             text-align: center;
             font-weight: bold;
             display: block;
+            padding-top: 40px !important;
+        }
+        #advanced-filter-nav {
+            padding-top: 25px;
+            li {
+                padding: 5px 0;
+            }
         }
         div {
             .btn-group {
@@ -1363,9 +1369,8 @@ h4.detailedInfo {
 #wrapper.toggled {
     padding-left: 200px;
     #sidebar-wrapper {
-        width: 300px;
+        width: 350px;
         .dropdown-menu {
-            max-width: 260px;
             li > a {
                 white-space: normal !important;
             }

@@ -70,19 +70,16 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                 )
             );
         };
-        var project_count = this.state.disabled?(React.createElement("span", null, this.props.i18n.loading_text)):(
-            React.createElement("span", null, this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text
+        var project_count = this.state.disabled?(React.createElement("a", null, this.props.i18n.loading_text)):(
+            React.createElement("p", null, this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text
             )
         );
         return (
             React.createElement("aside", {id: "sidebar-wrapper"}, 
                 React.createElement("div", {id: "filter"}, 
-                    React.createElement("div", {id: "advanced-filter-status"}, 
-                        project_count
-                    ), 
                     this.props.filters.map(create_filter, this), 
                     React.createElement("div", null, 
-                        React.createElement("nav", null, 
+                        React.createElement("nav", {id: "advanced-filter-nav"}, 
                             React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
                                 React.createElement("li", null, 
                                     React.createElement("a", {className: "showFilters text-center", 
@@ -96,6 +93,9 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                                         React.createElement("i", {className: "fa fa-toggle-off"}), 
                                         React.createElement("span", null, " ", this.props.i18n.close_this_text)
                                     )
+                                ), 
+                                React.createElement("li", {id: "advanced-filter-status"}, 
+                                    project_count
                                 )
                             )
                         )
