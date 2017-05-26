@@ -1,3 +1,38 @@
+# Akvo RSR – Version 3.26 Panama City
+
+Date: 2017-05-25
+
+## Continued improvements
+
+Advanced filters on the project directory are now dynamic -- Selecting an option
+for one of the filters, changes the options shown in the other filters
+accordingly - [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
+
+Admin action to mark projects as
+complete [#2671](https://github.com/akvo/akvo-rsr/issues/2671)
+
+Open related links in new
+tab - [#2656](https://github.com/akvo/akvo-rsr/issues/2656)
+
+## Issues Resolved
+
+Indicator descriptions missing in IATI
+file [#2686](https://github.com/akvo/akvo-rsr/issues/2686)
+
+Fixed problem with saving document category in some
+cases - [#2658](https://github.com/akvo/akvo-rsr/issues/2658)
+
+Fixed user management page timeouts for users with too many
+employments - [#2651](https://github.com/akvo/akvo-rsr/issues/2651)
+
+# Akvo RSR – Version 3.25.1 Monte Video hotfix
+
+Date: 2017-05-22
+
+## Issues Resolved
+
+Broken date fields issue fixed – [#2634](https://github.com/akvo/akvo-rsr/issues/2677)
+
 # Akvo RSR – Version 3.25 Monte Video
 
 Date: 2017-05-16
@@ -38,7 +73,7 @@ Date: 25 April 2017
 
 # Akvo RSR version 3.24 Stockholm
 
-Date: 13 April 2017 
+Date: 13 April 2017
 
 ## General improvements
 
@@ -105,7 +140,7 @@ removes associated comment from the actual value comment
 
 # Akvo RSR version 3.22.1 Chisinau hotfix
 
-Date: 14 March 2017 
+Date: 14 March 2017
 
 ## Bug fixes
 
