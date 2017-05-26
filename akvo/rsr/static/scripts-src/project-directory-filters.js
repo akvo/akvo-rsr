@@ -8,6 +8,12 @@
 var filtersWrapper = document.getElementById('wrapper'),
     options_cache = {};
 
+var trim_label = function(obj) {
+    if (obj.hasOwnProperty('label')) {
+        obj.label = obj.label.trim();
+    }
+    return obj;
+};
 var Filter = React.createClass({displayName: "Filter",
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
@@ -30,6 +36,7 @@ var Filter = React.createClass({displayName: "Filter",
     },
     onChange: function(values){
         this.props.onChange(this.props.name, values);
+        if (values.length > 0) { trim_label(values[0]); }
     }
 });
 
@@ -228,9 +235,11 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         // since it needs the processed options
         var initial_selection = {};
         var set_initial_selection = function (key){
-            var id = this.state.selected[key];
-            var find_function = function(option){return option.id == id;};
-            initial_selection[key] = [options[key].find(find_function)];
+            var id = this.state.selected[key],
+                find_function = function(option){return option.id == id;},
+                selection = options[key].find(find_function),
+                selection_clone = Object.assign({}, selection);
+            initial_selection[key] = [trim_label(selection_clone)];
         };
         Object.keys(this.state.selected).map(set_initial_selection, this);
         this.setState({"initial_selection": initial_selection});
