@@ -37,7 +37,7 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getDraftUpdates,
+    getPendingUpdates,
     getMEManagerDefaultKeys,
     getNeedReportingPeriods,
     getUpdatesForApprovedPeriods,
@@ -85,7 +85,7 @@ const modifyUser = (isMEManager) => {
         models: store.models,
         ui: store.ui,
         user: store.models.user,
-        draftUpdates: getDraftUpdates(store),
+        draftUpdates: getPendingUpdates(store),
         approvedPeriods: getApprovedPeriods(store),
         approvedUpdates: getUpdatesForApprovedPeriods(store),
         needReportingPeriods: getNeedReportingPeriods(store),
