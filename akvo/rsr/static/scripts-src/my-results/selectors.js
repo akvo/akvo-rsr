@@ -213,7 +213,9 @@ export const getUnlockedPeriods = createSelector(
 export const getNeedReportingPeriods = createSelector(
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds],
     (periodObjects, unlockedPeriods, periodChildren) =>
-        unlockedPeriods && unlockedPeriods.filter((id) => periodChildren[id].length == 0
+        unlockedPeriods && unlockedPeriods.filter(
+            // Only filter if periodChildren !== {}
+            id => Object.keys(periodChildren).length !== 0 && periodChildren[id].length === 0
     )
 );
 

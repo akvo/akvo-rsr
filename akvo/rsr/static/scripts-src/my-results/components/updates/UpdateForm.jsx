@@ -262,7 +262,7 @@ const UpdateActionButton = ({action, saveUpdate}) => {
     };
     return (
         <li role="presentation" className={action}>
-            <a id="save" onClick={saveUpdate}
+            <a id={action} onClick={saveUpdate}
                className="btn btn-default btn-xs">{labels[action]}</a>
         </li>
     )
@@ -459,6 +459,30 @@ export default class UpdateForm extends React.Component {
     }
 
     saveUpdate(e) {
+        function setUpdateStatus(update, action) {
+            switch(action) {
+                case c.UPDATE_ACTION_SAVE: {
+                    if (update.status === c.UPDATE_STATUS_NEW) {
+                        update.status = c.UPDATE_STATUS_DRAFT;
+                    }
+                    break;
+                }
+                case c.UPDATE_ACTION_SUBMIT: {
+                    update.status = c.UPDATE_STATUS_PENDING;
+                    break;
+                }
+                case c.UPDATE_ACTION_RETURN: {
+                    update.status = c.UPDATE_STATUS_REVISION;
+                    break;
+                }
+                case c.UPDATE_ACTION_APPROVE: {
+                    update.status = c.UPDATE_STATUS_APPROVED;
+                    break;
+                }
+            }
+            return update;
+        }
+
         let update = Object.assign({}, this.props.update);
         if (!String(update.data).trim()) {
             this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
@@ -466,12 +490,9 @@ export default class UpdateForm extends React.Component {
             //NOOP if we're already talking to the backend
             return;
         } else {
-            // All changes to an update revert it to draft unless it is explicitly approved while saving
-            if (e.target.id == 'approve') {
-                update.status = c.UPDATE_STATUS_APPROVED;
-            } else {
-                update.status = c.UPDATE_STATUS_DRAFT;
-            }
+            //The id of the button is used to indicate the action taken
+            const action = e.target.id;
+            update = setUpdateStatus(update, action);
             const callbacksFactory = (errorMessage) => {
                 return {
                     [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),

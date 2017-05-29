@@ -182,10 +182,28 @@ class UpdateHeader extends React.Component {
     }
 
     showEditButton() {
-        // Project editors can only edit their own updates
-        return !this.props.periodLocked && (
-            this.props.user.isMEManager || this.props.user.id === this.props.update.user
-        );
+        // Only show the Edit update button if the user can edit at this time
+        const update = this.props.update;
+        if (this.props.periodLocked) {
+            return false
+        }
+        // M&E manager
+        if (this.props.user.isMEManager) {
+            // M&E manager can always edit updates
+            return true;
+        // Project editor
+        } else {
+            // Can't edit other's updates
+            if (this.props.user.id !== update.user) {
+                return false;
+            }
+            // Can't update submitted or approved
+            if (update.status === c.UPDATE_STATUS_PENDING ||
+                update.status === c.UPDATE_STATUS_APPROVED) {
+                return false;
+            }
+            return true;
+        }
     }
 
     render() {
@@ -213,7 +231,7 @@ class UpdateHeader extends React.Component {
             </span>
         )
     }
-};
+}
 
 
 @connect((store) => {
