@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <html-property name="description">Plan Finland MFA reporting</html-property>
     <list-property name="propertyBindings">
         <structure>
@@ -109,7 +109,7 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
             <property name="odaUser">rsr_readonly</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">cGFzc3dvcmQ=</encrypted-property>
+            <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
         </oda-data-source>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR-live" id="212">
             <list-property name="privateDriverProperties">
@@ -429,6 +429,7 @@ from rsr_result
 left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 where rsr_result.project_id = ?
+--AND rsr_indicatorperiod.period_end::date < '2017-01-01'
 order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -22006,13 +22007,13 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="pageBreakAfter">avoid</property>
                                         <property name="width">178.06458333333336mm</property>
                                         <column id="277">
-                                            <property name="width">39.6875mm</property>
+                                            <property name="width">18mm</property>
                                         </column>
                                         <column id="193">
-                                            <property name="width">38.1mm</property>
+                                            <property name="width">15mm</property>
                                         </column>
                                         <column id="194">
-                                            <property name="width">57.94375000000001mm</property>
+                                            <property name="width">36mm</property>
                                         </column>
                                         <column id="195">
                                             <property name="width">42.333333333333336mm</property>
@@ -22056,6 +22057,72 @@ reportContext.getGlobalVariable('debug')</expression>
                                                 </text-data>
                                             </cell>
                                         </row>
+                                        <row id="946">
+                                            <property name="backgroundColor">white</property>
+                                            <cell id="947">
+                                                <property name="paddingTop">0pt</property>
+                                                <property name="paddingLeft">0pt</property>
+                                                <property name="paddingBottom">0px</property>
+                                                <property name="paddingRight">7px</property>
+                                                <label id="937">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="marginTop">8pt</property>
+                                                    <property name="paddingTop">1pt</property>
+                                                    <property name="paddingLeft">8pt</property>
+                                                    <property name="paddingBottom">1pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <text-property name="text">Period</text-property>
+                                                </label>
+                                            </cell>
+                                            <cell id="948">
+                                                <property name="paddingTop">1pt</property>
+                                                <property name="paddingBottom">5pt</property>
+                                                <label id="188">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="marginTop">8pt</property>
+                                                    <property name="paddingTop">1pt</property>
+                                                    <property name="paddingLeft">1pt</property>
+                                                    <property name="paddingBottom">1pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <text-property name="text">TARGET</text-property>
+                                                </label>
+                                            </cell>
+                                            <cell id="949">
+                                                <property name="paddingTop">1pt</property>
+                                                <property name="paddingBottom">5pt</property>
+                                                <label id="186">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="marginTop">8pt</property>
+                                                    <property name="paddingTop">1pt</property>
+                                                    <property name="paddingLeft">8pt</property>
+                                                    <property name="paddingBottom">1pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <text-property name="text">BASELINE</text-property>
+                                                </label>
+                                            </cell>
+                                            <cell id="950">
+                                                <property name="paddingTop">1pt</property>
+                                                <property name="paddingBottom">5pt</property>
+                                                <property name="textAlign">left</property>
+                                                <label id="952">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="color">black</property>
+                                                    <property name="marginTop">8pt</property>
+                                                    <property name="marginLeft">1pt</property>
+                                                    <property name="marginBottom">1pt</property>
+                                                    <property name="marginRight">1pt</property>
+                                                    <property name="paddingTop">1pt</property>
+                                                    <property name="paddingLeft">1pt</property>
+                                                    <property name="paddingBottom">1pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <text-property name="text">ACTUAL</text-property>
+                                                </label>
+                                            </cell>
+                                        </row>
                                     </grid>
                                 </cell>
                             </row>
@@ -22076,7 +22143,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="fontSize">10pt</property>
                                         <property name="marginBottom">8pt</property>
                                         <property name="paddingTop">4pt</property>
-                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingLeft">8pt</property>
                                         <property name="paddingBottom">4pt</property>
                                         <property name="paddingRight">1pt</property>
                                         <expression name="valueExpr">var cmt=""; for (i=0; i&lt;comments.length; i++) {cmt += comments[i] + "&lt;BR>";}; cmt</expression>
@@ -22103,16 +22170,6 @@ reportContext.getGlobalVariable('debug')</expression>
                                 <property name="paddingRight">1pt</property>
                                 <property name="textAlign">center</property>
                                 <property name="verticalAlign">top</property>
-                                <label id="937">
-                                    <property name="fontWeight">bold</property>
-                                    <property name="fontStyle">italic</property>
-                                    <property name="marginTop">8pt</property>
-                                    <property name="paddingTop">1pt</property>
-                                    <property name="paddingLeft">8pt</property>
-                                    <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">left</property>
-                                    <text-property name="text">Period</text-property>
-                                </label>
                                 <text-data id="913">
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
@@ -22134,23 +22191,13 @@ yr</expression>
                                 <property name="paddingRight">1pt</property>
                                 <property name="textAlign">center</property>
                                 <property name="verticalAlign">top</property>
-                                <label id="188">
-                                    <property name="fontWeight">bold</property>
-                                    <property name="fontStyle">italic</property>
-                                    <property name="marginTop">8pt</property>
-                                    <property name="paddingTop">1pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">center</property>
-                                    <text-property name="text">TARGET</text-property>
-                                </label>
                                 <data id="108">
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">7pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="textAlign">center</property>
+                                    <property name="paddingLeft">30pt</property>
+                                    <property name="textAlign">left</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22164,12 +22211,12 @@ yr</expression>
                                     <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">4pt</property>
-                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingLeft">30pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">General Number</property>
                                         <property name="pattern">General Number</property>
                                     </structure>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22185,16 +22232,6 @@ yr</expression>
                                 <property name="paddingBottom">1pt</property>
                                 <property name="paddingRight">1pt</property>
                                 <property name="verticalAlign">top</property>
-                                <label id="186">
-                                    <property name="fontWeight">bold</property>
-                                    <property name="fontStyle">italic</property>
-                                    <property name="marginTop">8pt</property>
-                                    <property name="paddingTop">1pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">center</property>
-                                    <text-property name="text">BASELINE</text-property>
-                                </label>
                                 <text-data id="263">
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
@@ -22203,9 +22240,9 @@ yr</expression>
                                     <property name="marginLeft">1pt</property>
                                     <property name="marginBottom">1pt</property>
                                     <property name="paddingTop">1px</property>
-                                    <property name="paddingLeft">15pt</property>
+                                    <property name="paddingLeft">20pt</property>
                                     <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -22219,30 +22256,16 @@ yr</expression>
                             <cell id="163">
                                 <property name="paddingLeft">0pt</property>
                                 <property name="verticalAlign">top</property>
-                                <label id="169">
-                                    <property name="fontWeight">bold</property>
-                                    <property name="fontStyle">italic</property>
-                                    <property name="color">black</property>
-                                    <property name="marginTop">8pt</property>
-                                    <property name="marginLeft">1pt</property>
-                                    <property name="marginBottom">1pt</property>
-                                    <property name="marginRight">1pt</property>
-                                    <property name="paddingTop">1pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="paddingBottom">1pt</property>
-                                    <property name="textAlign">center</property>
-                                    <text-property name="text">ACTUAL</text-property>
-                                </label>
                                 <data id="106">
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">7pt</property>
-                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingLeft">60pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">Unformatted</property>
                                     </structure>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <property name="display">block</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -22257,12 +22280,12 @@ yr</expression>
                                     <property name="fontWeight">normal</property>
                                     <property name="marginTop">4pt</property>
                                     <property name="marginBottom">4pt</property>
-                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingLeft">60pt</property>
                                     <structure name="numberFormat">
                                         <property name="category">General Number</property>
                                         <property name="pattern">General Number</property>
                                     </structure>
-                                    <property name="textAlign">center</property>
+                                    <property name="textAlign">left</property>
                                     <property name="display">block</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -22274,10 +22297,11 @@ yr</expression>
                                 </data>
                             </cell>
                             <cell id="30">
+                                <property name="paddingTop">0pt</property>
                                 <property name="verticalAlign">top</property>
                                 <text-data name="percentage" id="215">
                                     <property name="fontFamily">sans-serif</property>
-                                    <property name="fontSize">9pt</property>
+                                    <property name="fontSize">7pt</property>
                                     <property name="fontWeight">normal</property>
                                     <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">none</property>
@@ -22285,9 +22309,9 @@ yr</expression>
                                     <property name="borderTopStyle">none</property>
                                     <property name="marginTop">0pt</property>
                                     <property name="marginLeft">0pt</property>
-                                    <property name="marginBottom">-40pt</property>
-                                    <property name="paddingTop">24pt</property>
-                                    <property name="paddingLeft">12pt</property>
+                                    <property name="marginBottom">-35pt</property>
+                                    <property name="paddingTop">12pt</property>
+                                    <property name="paddingLeft">10pt</property>
                                     <property name="paddingBottom">12pt</property>
                                     <property name="textAlign">left</property>
                                     <property name="display">block</property>
@@ -22854,8 +22878,8 @@ yr</expression>
                                     <property name="borderRightStyle">none</property>
                                     <property name="marginTop">0pt</property>
                                     <property name="marginBottom">0pt</property>
-                                    <property name="height">46pt</property>
-                                    <property name="width">46pt</property>
+                                    <property name="height">35pt</property>
+                                    <property name="width">35pt</property>
                                     <property name="dataSet">Four_rows</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -22932,5 +22956,19 @@ Math.min(row["progress_pct"],100)&#13;
                 </label>
             </footer>
         </list>
+        <label id="169">
+            <property name="fontWeight">bold</property>
+            <property name="fontStyle">italic</property>
+            <property name="color">black</property>
+            <property name="marginTop">8pt</property>
+            <property name="marginLeft">1pt</property>
+            <property name="marginBottom">1pt</property>
+            <property name="marginRight">1pt</property>
+            <property name="paddingTop">1pt</property>
+            <property name="paddingLeft">1pt</property>
+            <property name="paddingBottom">1pt</property>
+            <property name="textAlign">center</property>
+            <text-property name="text">ACTUAL</text-property>
+        </label>
     </body>
 </report>
