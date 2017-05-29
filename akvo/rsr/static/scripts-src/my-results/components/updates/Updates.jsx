@@ -47,28 +47,55 @@ Alert.propTypes = {
 };
 
 
+function displayName(user) {
+    return user.last_name ?
+        user.first_name ?
+            user.first_name + " " + user.last_name
+        :
+            user.last_name
+    :
+        user.first_name ?
+            user.first_name
+        :
+            user.email;
+}
+
+
 const UpdateDisplay = ({update}) => {
-    const userName = update.user_details.first_name + " " + update.user_details.last_name;
-    //TODO: fix translation of "by" and "at", but this probably needs the whole row with params as a
-    // translation object
+    //TODO: tranlsate! Will need some refactoring to handle possible different word sequences
+    const user = update.user_details;
+    const approver = update.approver_details;
+    const approvedBy = approver ?
+        <ul>
+            <li className="approverMeta">Approved on
+                <span> {displayDate(update.last_modified_at)}</span> by
+                <span> {displayName(user)}</span> at
+                <span> {approver.approved_organisations[0].name}</span>
+            </li>
+        </ul>
+    :
+        undefined;
     return (
         <div>
-            <ul className="updateMeta">
-                <li className="updateDate">{displayDate(update.created_at)}</li>
-                <li className="updateName">by
-                    <span> {userName} </span>at
-                    <span> {update.user_details.approved_organisations[0].name}</span>
-                </li>
-                <li className="updateStatus">{_('update_statuses')[update.status]}</li>
-            </ul>
             <ul className="valueMeta">
                 <li className="updateValue">Update value: <span>{update.data}</span></li>
-            {/*
-         NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
-         not update.period_actual_value from the backend
-         */}
+                {/* NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
+                 not update.period_actual_value from the backend */}
                 <li className="totalValue">Actual total for this period (including this update):
                     <span> {update.actual_value}</span>
+                </li>
+            </ul>
+            <ul>
+                <li className="creatorMeta">Created on
+                    <span> {displayDate(update.created_at)}</span> by
+                    <span> {displayName(user)}</span> at
+                    <span> {user.approved_organisations[0].name}</span>
+                </li>
+            </ul>
+            {approvedBy}
+            <ul>
+                <li className="statusMeta">Status:
+                    <span> {_('update_statuses')[update.status]}</span>
                 </li>
             </ul>
         </div>

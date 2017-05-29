@@ -3143,7 +3143,7 @@ div.iatiFilters {
       margin-right: 8px !important;
       margin-top: -5px !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .comments {
-      margin-top: 20px; }
+      margin-top: 0px; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item {
       border: 1px solid rgba(255, 255, 255, 0) !important;
       border-bottom: 1px solid rgba(255, 255, 255, 0.4) !important;
@@ -3209,17 +3209,12 @@ div.iatiFilters {
               list-style-type: none; }
               .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul li {
                 display: inline;
-                margin-right: 25px; }
+                margin-right: 25px;
+                color: #999999; }
+                .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul li.creatorMeta span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul li.approverMeta span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul li.statusMeta span {
+                  color: initial; }
                 .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul li:last-child {
                   margin-right: 0; }
-              .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.updateMeta li.updateDate {
-                color: #999999; }
-              .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.updateMeta li.updateName {
-                color: #999999; }
-                .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.updateMeta li.updateName span {
-                  color: initial; }
-              .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.updateMeta li.updateStatus {
-                color: #00a79d; }
               .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.valueMeta li.updateValue, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.valueMeta li.totalValue {
                 color: #999999; }
                 .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.valueMeta li.updateValue span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.valueMeta li.totalValue span {
@@ -3339,8 +3334,8 @@ div.iatiFilters {
                    }
                }*/ }
   .comments .commentContainer {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     color: rgba(32, 32, 36, 0.5); }
     .comments .commentContainer .comment {
       margin-left: 10px;
