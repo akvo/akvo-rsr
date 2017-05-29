@@ -4357,7 +4357,7 @@ div.iatiFilters {
                         background: none;
 
                         .rc-collapse-content-box {
-                            .baseline {
+                            .indicatorInfo {
                                 margin-top: -10px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
 
@@ -4367,6 +4367,12 @@ div.iatiFilters {
 
                                     li {
                                         display: inline;
+                                    }
+
+                                    .description {
+                                        span {
+                                            color: rgba($akvoBlack, 0.7);
+                                        }
                                     }
 
                                     .baseline-year {
