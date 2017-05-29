@@ -726,7 +726,13 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
     period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
                                related_name='data')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True)
+    # TODO: rename to created_by when old results framework page is no longer in use
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True,
+                             related_name='created_period_updates')
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name=_(u'approved by'), db_index=True,
+        related_name='approved_period_updates',blank=True, null=True,
+    )
     relative_data = models.BooleanField(_(u'relative data'), default=True)
     # TODO: rename to update or period_update; we're using the term Indicator update in the UI
     data = ValidXMLCharField(_(u'data'), max_length=300)
