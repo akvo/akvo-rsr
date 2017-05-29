@@ -393,40 +393,19 @@ function initReact() {
             });
         },
 
-        canSeePlanFinlandReport: function() {
-            if (this.props.userOptions.is_admin || this.props.userOptions.is_superuser) {
-                return true;
-            } else {
-                var approved_employments = this.props.userOptions.approved_employments;
-                for (var i = 0; i < approved_employments.length; i++) {
-                    var orgLongName = approved_employments[i].organisation_name.toLowerCase();
-                    if (orgLongName.indexOf('plan') > -1 && orgLongName.indexOf('finland') > -1) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        },
-
         render: function() {
             var reportsData,
                 thisReportsDropdown = this;
             if (this.props.reportOptions.length > 0 && this.props.userOptions !== null) {
                 reportsData = this.props.reportOptions.map(function (report) {
-                    if (report.name === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
-                        return (
-                            <span />
-                        );
-                    } else {
-                        return (
-                            <li key={report.name}>
-                                {React.createElement(ReportOption, {
-                                    report: report,
-                                    selectReport: thisReportsDropdown.selectReport
-                                })}
-                            </li>
-                        );
-                    }
+                    return (
+                        <li key={report.name}>
+                            {React.createElement(ReportOption, {
+                                 report: report,
+                                 selectReport: thisReportsDropdown.selectReport
+                            })}
+                        </li>
+                    );
                 });
             } else {
                 reportsData = <li><a href="#"><i className="fa fa-spin fa-spinner" /> Loading...</a></li>;
