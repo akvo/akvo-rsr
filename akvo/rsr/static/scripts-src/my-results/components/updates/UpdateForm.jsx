@@ -459,7 +459,7 @@ export default class UpdateForm extends React.Component {
     }
 
     saveUpdate(e) {
-        function setUpdateStatus(update, action) {
+        function setUpdateStatus(update, action, userId) {
             switch(action) {
                 case c.UPDATE_ACTION_SAVE: {
                     if (update.status === c.UPDATE_STATUS_NEW) {
@@ -477,6 +477,7 @@ export default class UpdateForm extends React.Component {
                 }
                 case c.UPDATE_ACTION_APPROVE: {
                     update.status = c.UPDATE_STATUS_APPROVED;
+                    update.approved_by = userId;
                     break;
                 }
             }
@@ -492,7 +493,7 @@ export default class UpdateForm extends React.Component {
         } else {
             //The id of the button is used to indicate the action taken
             const action = e.target.id;
-            update = setUpdateStatus(update, action);
+            update = setUpdateStatus(update, action, this.props.user.id);
             const callbacksFactory = (errorMessage) => {
                 return {
                     [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
