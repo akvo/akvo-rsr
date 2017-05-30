@@ -8,6 +8,13 @@
 var filtersWrapper = document.getElementById('wrapper'),
     options_cache = {};
 
+var trim_label = function(obj) {
+    if (obj.hasOwnProperty('label')) {
+        obj.label = obj.label.trim();
+    }
+    return obj;
+};
+
 var Filter = React.createClass({displayName: "Filter",
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
@@ -30,6 +37,7 @@ var Filter = React.createClass({displayName: "Filter",
     },
     onChange: function(values){
         this.props.onChange(this.props.name, values);
+        if (values.length > 0) { trim_label(values[0]); }
     }
 });
 
@@ -54,6 +62,11 @@ var FilterForm = React.createClass({displayName: "FilterForm",
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
+        if (Object.keys(this.state.selected).length > 0) {
+            this.toggleForm();
+            document.querySelector('#search-view').scrollIntoView();
+        }
+
     },
     render: function(){
         var create_filter = function(filter_name){
@@ -70,19 +83,16 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                 )
             );
         };
-        var project_count = this.state.disabled?(React.createElement("span", null, this.props.i18n.loading_text)):(
-            React.createElement("span", null, this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text
+        var project_count = this.state.disabled?(React.createElement("a", null, this.props.i18n.loading_text)):(
+            React.createElement("p", null, this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text
             )
         );
         return (
             React.createElement("aside", {id: "sidebar-wrapper"}, 
                 React.createElement("div", {id: "filter"}, 
-                    React.createElement("div", {id: "advanced-filter-status"}, 
-                        project_count
-                    ), 
                     this.props.filters.map(create_filter, this), 
                     React.createElement("div", null, 
-                        React.createElement("nav", null, 
+                        React.createElement("nav", {id: "advanced-filter-nav"}, 
                             React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
                                 React.createElement("li", null, 
                                     React.createElement("a", {className: "showFilters text-center", 
@@ -96,6 +106,9 @@ var FilterForm = React.createClass({displayName: "FilterForm",
                                         React.createElement("i", {className: "fa fa-toggle-off"}), 
                                         React.createElement("span", null, " ", this.props.i18n.close_this_text)
                                     )
+                                ), 
+                                React.createElement("li", {id: "advanced-filter-status"}, 
+                                    project_count
                                 )
                             )
                         )
@@ -228,13 +241,14 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         // since it needs the processed options
         var initial_selection = {};
         var set_initial_selection = function (key){
-            var id = this.state.selected[key];
-            var find_function = function(option){return option.id == id;};
-            initial_selection[key] = [options[key].find(find_function)];
+            var id = this.state.selected[key],
+                find_function = function(option){return option.id == id;},
+                selection = options[key].find(find_function),
+                selection_clone = Object.assign({}, selection);
+            initial_selection[key] = [trim_label(selection_clone)];
         };
         Object.keys(this.state.selected).map(set_initial_selection, this);
         this.setState({"initial_selection": initial_selection});
-        if (Object.keys(initial_selection).length > 0) { this.toggleForm(); }
     },
     updateState: function(options, mountedNow){
         var project_count = options.project_count;

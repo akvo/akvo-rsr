@@ -8,6 +8,13 @@
 var filtersWrapper = document.getElementById('wrapper'),
     options_cache = {};
 
+var trim_label = function(obj) {
+    if (obj.hasOwnProperty('label')) {
+        obj.label = obj.label.trim();
+    }
+    return obj;
+};
+
 var Filter = React.createClass({
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
@@ -30,6 +37,7 @@ var Filter = React.createClass({
     },
     onChange: function(values){
         this.props.onChange(this.props.name, values);
+        if (values.length > 0) { trim_label(values[0]); }
     }
 });
 
@@ -54,6 +62,10 @@ var FilterForm = React.createClass({
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
+        if (Object.keys(this.state.selected).length > 0) {
+            this.toggleForm();
+            document.querySelector('#search-view').scrollIntoView();
+        }
     },
     render: function(){
         var create_filter = function(filter_name){
@@ -70,19 +82,16 @@ var FilterForm = React.createClass({
                 />
             );
         };
-        var project_count = this.state.disabled?(<span>{this.props.i18n.loading_text}</span>):(
-            <span>{this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text}
-            </span>
+        var project_count = this.state.disabled?(<a>{this.props.i18n.loading_text}</a>):(
+            <p>{this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text}
+            </p>
         );
         return (
             <aside id="sidebar-wrapper">
                 <div id="filter">
-                    <div id="advanced-filter-status">
-                        {project_count}
-                    </div>
                     {this.props.filters.map(create_filter, this)}
                     <div>
-                        <nav>
+                        <nav id="advanced-filter-nav">
                             <ul className="nav nav-pills nav-stacked">
                                 <li>
                                     <a className="showFilters text-center"
@@ -96,6 +105,9 @@ var FilterForm = React.createClass({
                                         <i className="fa fa-toggle-off"></i>
                                         <span> {this.props.i18n.close_this_text}</span>
                                     </a>
+                                </li>
+                                <li id="advanced-filter-status">
+                                    {project_count}
                                 </li>
                             </ul>
                         </nav>
@@ -228,13 +240,14 @@ var FilterForm = React.createClass({
         // since it needs the processed options
         var initial_selection = {};
         var set_initial_selection = function (key){
-            var id = this.state.selected[key];
-            var find_function = function(option){return option.id == id;};
-            initial_selection[key] = [options[key].find(find_function)];
+            var id = this.state.selected[key],
+                find_function = function(option){return option.id == id;},
+                selection = options[key].find(find_function),
+                selection_clone = Object.assign({}, selection);
+            initial_selection[key] = [trim_label(selection_clone)];
         };
         Object.keys(this.state.selected).map(set_initial_selection, this);
         this.setState({"initial_selection": initial_selection});
-        if (Object.keys(initial_selection).length > 0) { this.toggleForm(); }
     },
     updateState: function(options, mountedNow){
         var project_count = options.project_count;
