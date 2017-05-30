@@ -139,15 +139,17 @@ export const getIndicatorsAggregateActualValue = createSelector(
 );
 
 
-export const getDraftUpdates = createSelector(
+export const getPendingUpdates = createSelector(
     /*
-        Return an array with IDs of updates with status == c.UPDATE_STATUS_DRAFT
+        Return an array with IDs of updates with status == c.UPDATE_STATUS_PENDING
      */
     [getUpdateIds, getPeriodObjects, getUpdateObjects],
     (updateIds, periodObjects, updateObjects) => {
         return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status === c.UPDATE_STATUS_DRAFT &&
-            periodObjects[updateObjects[id].period].locked == false
+            (
+                updateObjects[id].status === c.UPDATE_STATUS_PENDING ||
+                updateObjects[id].status === c.UPDATE_STATUS_REVISION
+            ) && periodObjects[updateObjects[id].period].locked == false
         );
     }
 );
@@ -211,10 +213,15 @@ export const getUnlockedPeriods = createSelector(
 
 
 export const getNeedReportingPeriods = createSelector(
-    [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds],
-    (periodObjects, unlockedPeriods, periodChildren) =>
-        unlockedPeriods && unlockedPeriods.filter((id) => periodChildren[id].length == 0
-    )
+    [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
+    (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
+        unlockedPeriods && updateObjects && unlockedPeriods.filter(
+            // Only filter if periodChildren !== {}
+            id => Object.keys(periodChildren).length !== 0 &&
+                periodChildren[id].filter(
+                    updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT
+                ).length === 0
+            )
 );
 
 

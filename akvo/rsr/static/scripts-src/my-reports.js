@@ -393,40 +393,19 @@ function initReact() {
             });
         },
 
-        canSeePlanFinlandReport: function() {
-            if (this.props.userOptions.is_admin || this.props.userOptions.is_superuser) {
-                return true;
-            } else {
-                var approved_employments = this.props.userOptions.approved_employments;
-                for (var i = 0; i < approved_employments.length; i++) {
-                    var orgLongName = approved_employments[i].organisation_name.toLowerCase();
-                    if (orgLongName.indexOf('plan') > -1 && orgLongName.indexOf('finland') > -1) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        },
-
         render: function() {
             var reportsData,
                 thisReportsDropdown = this;
             if (this.props.reportOptions.length > 0 && this.props.userOptions !== null) {
                 reportsData = this.props.reportOptions.map(function (report) {
-                    if (report.name === 'plan-finland' && !thisReportsDropdown.canSeePlanFinlandReport()) {
-                        return (
-                            React.createElement("span", null)
-                        );
-                    } else {
-                        return (
-                            React.createElement("li", {key: report.name}, 
-                                React.createElement(ReportOption, {
-                                    report: report,
-                                    selectReport: thisReportsDropdown.selectReport
-                                })
-                            )
-                        );
-                    }
+                    return (
+                        React.createElement("li", {key: report.name}, 
+                            React.createElement(ReportOption, {
+                                 report: report,
+                                 selectReport: thisReportsDropdown.selectReport
+                            })
+                        )
+                    );
                 });
             } else {
                 reportsData = React.createElement("li", null, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " Loading..."));

@@ -25,7 +25,10 @@ module.exports = {
     devtool: '#inline-source-map',
     debug: true,
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin("vendors", "../vendors.bundle.js")
+        new webpack.optimize.CommonsChunkPlugin("vendors", "../vendors.bundle.js"),
+        new webpack.optimize.UglifyJsPlugin(
+            { comments: false, compress: false, mangle: false, beautify: true }
+        )
     ],
     resolveLoader: { root: node },
     module: {

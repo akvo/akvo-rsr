@@ -173,7 +173,6 @@
     {% if project.is_impact_project and project.results.all %}
 {#        {% javascript 'vendors' %}#}
         {% javascript 'vendors.bundle' %}
-        <script type="text/javascript" src="/static/scripts-src/bundle.js" charset="utf-8"></script>
         {% javascript 'bundle' %}
 {#        {% javascript 'my_new_results' %}#}
     {% endif %}
