@@ -37,7 +37,7 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getDraftUpdates,
+    getPendingUpdates,
     getMEManagerDefaultKeys,
     getNeedReportingPeriods,
     getUpdatesForApprovedPeriods,
@@ -85,7 +85,7 @@ const modifyUser = (isMEManager) => {
         models: store.models,
         ui: store.ui,
         user: store.models.user,
-        draftUpdates: getDraftUpdates(store),
+        draftUpdates: getPendingUpdates(store),
         approvedPeriods: getApprovedPeriods(store),
         approvedUpdates: getUpdatesForApprovedPeriods(store),
         needReportingPeriods: getNeedReportingPeriods(store),
@@ -280,6 +280,16 @@ export default class App extends React.Component {
         const buttonDisabled = !this.props.ui.allFetched;
         const resetFilterDisabled = buttonDisabled || !this.props.ui.hide;
         const restrictedButtonDisabled = buttonDisabled || !this.userIsMEManager();
+        const lockingButtons = !restrictedButtonDisabled ?
+            <div className="col-xs-6">
+                <ToggleButton onClick={this.lockSelected} label={_("lock_selected")}
+                              disabled={restrictedButtonDisabled}/>
+                <ToggleButton onClick={this.unlockSelected} label="Unlock selected"
+                              disabled={restrictedButtonDisabled}/>
+            </div>
+        :
+            <div className="col-xs-6">
+            </div>
 
         return (
             <div className={'periodMenuBar'}>
@@ -322,13 +332,7 @@ export default class App extends React.Component {
                                                 this.filterSelectClass(c.FILTER_BULK_SELECT)
                                             }/>
                                 </div>
-                                <div className="col-xs-6">
-                                    <ToggleButton onClick={this.lockSelected} label={_("lock_selected")}
-                                                  disabled={restrictedButtonDisabled}/>
-                                    <ToggleButton onClick={this.unlockSelected}
-                                                  label="Unlock selected"
-                                                  disabled={restrictedButtonDisabled}/>
-                                </div>
+                                {lockingButtons}
                             </div>
                         </div>
                     </div>

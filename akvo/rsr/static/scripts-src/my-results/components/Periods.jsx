@@ -153,16 +153,19 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
-    let lockStatus;
+    let periodSelect, lockStatus;
     if (user.isMEManager) {
-        lockStatus = <PeriodLockToggle period={period} />
+        periodSelect = <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox}
+                                     isChecked={isChecked}/>;
+        lockStatus = <PeriodLockToggle period={period} />;
+
     } else {
         lockStatus = <PeriodLockStatus lockStatus={period.locked ? _('locked') : _('unlocked')}/>
     }
     return (
         <span className="periodWrap">
             <ul className="">
-                <li><PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox} isChecked={isChecked}/></li>
+                <li>{periodSelect}</li>
                 <li>{periodDate}</li>
                 <li>Target value: <span>{period.target_value}</span></li>
                 <li>Actual value: <span>{actualValue}</span></li>

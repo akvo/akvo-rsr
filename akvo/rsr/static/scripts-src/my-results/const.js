@@ -10,12 +10,39 @@
 export const
     API_LIMIT = 100,
     // From rsr.models.indicator.IndicatorPeriodData
+    ROLE_ME_MANAGER = 'ROLE_ME_MANAGER',
+    ROLE_PROJECT_EDITOR = 'ROLE_PROJECT_EDITOR',
+
     UPDATE_STATUS_NEW = 'N',
     UPDATE_STATUS_DRAFT = 'D',
     UPDATE_STATUS_PENDING = 'P',
     UPDATE_STATUS_REVISION = 'R',
     UPDATE_STATUS_APPROVED = 'A',
 
+    UPDATE_ACTION_SAVE = 'saveUpdate',
+    UPDATE_ACTION_SUBMIT = 'submitUpdate',
+    UPDATE_ACTION_RETURN = 'returnUpdate',
+    UPDATE_ACTION_APPROVE = 'approveUpdate',
+
+    // matrix determining what buttons to show depending on user role and update state
+    UPDATE_BUTTONS = {
+        [ROLE_ME_MANAGER]: {
+            [UPDATE_STATUS_NEW]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_APPROVE,],
+            [UPDATE_STATUS_DRAFT]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_APPROVE,],
+            [UPDATE_STATUS_PENDING]: [
+                UPDATE_ACTION_RETURN, UPDATE_ACTION_SAVE, UPDATE_ACTION_APPROVE,
+            ],
+            [UPDATE_STATUS_REVISION]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_APPROVE,],
+            [UPDATE_STATUS_APPROVED]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_APPROVE,],
+        },
+        [ROLE_PROJECT_EDITOR]: {
+            [UPDATE_STATUS_NEW]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_SUBMIT,],
+            [UPDATE_STATUS_DRAFT]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_SUBMIT,],
+            [UPDATE_STATUS_PENDING]: [],
+            [UPDATE_STATUS_REVISION]: [UPDATE_ACTION_SAVE, UPDATE_ACTION_SUBMIT,],
+            [UPDATE_STATUS_APPROVED]: [],
+        }
+    },
 
     OBJECTS_APP = 'app',
     OBJECTS_RESULTS = 'results',
