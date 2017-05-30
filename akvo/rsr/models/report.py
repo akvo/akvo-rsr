@@ -39,6 +39,7 @@ class Report(models.Model):
         help_text=_(u'Enter the parametrized path for downloading the report'),
     )
     formats = models.ManyToManyField(ReportFormat)
+    organisations = models.ManyToManyField('Organisation', blank=True)
 
     @property
     def parameters(self):
