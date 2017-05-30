@@ -123,6 +123,7 @@ class UserPasswordSerializer(serializers.Serializer):
 class UserDetailsSerializer(BaseRSRSerializer):
 
     approved_organisations = OrganisationBasicSerializer(many=True, required=False)
+    email = serializers.ReadOnlyField()
 
     class Meta:
         model = get_user_model()
