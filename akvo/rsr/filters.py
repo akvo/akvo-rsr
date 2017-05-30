@@ -141,8 +141,8 @@ def get_country_ids(qs):
 
 def get_recipient_country_ids(projects):
     """Return countries based on recipient country of projects."""
-    countries = RecipientCountry.objects.filter(project__in=projects)
-    return [get_id_for_iso(country.country.upper()) for country in countries]
+    countries = RecipientCountry.objects.filter(project__in=projects).values('country')
+    return [get_id_for_iso(country['country'].upper()) for country in countries]
 
 
 def get_location_country_ids(qs):
@@ -159,13 +159,13 @@ def get_location_country_ids(qs):
 
     locations_qs = location_model.objects.filter(
         location_target__in=qs
-    ).select_related(
-        'country',
-    ).order_by('country__id').distinct('country__id')
+    ).values(
+        'country__iso_code',
+    ).order_by('country__iso_code').distinct()
 
     return [
-        get_id_for_iso(location.country.iso_code.upper())
-        for location in locations_qs if location.country
+        get_id_for_iso(location['country__iso_code'].upper())
+        for location in locations_qs if location['country__iso_code']
     ]
 
 

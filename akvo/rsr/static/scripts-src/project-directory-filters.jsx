@@ -5,7 +5,8 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var filtersWrapper = document.getElementById('wrapper');
+var filtersWrapper = document.getElementById('wrapper'),
+    options_cache = {};
 
 var Filter = React.createClass({
     render: function(){
@@ -33,6 +34,7 @@ var Filter = React.createClass({
 });
 
 var FilterForm = React.createClass({
+    /* React class methods */
     getInitialState: function(){
         var options = {
             "keyword": [],
@@ -49,116 +51,9 @@ var FilterForm = React.createClass({
         };
         return state;
     },
-    getStateFromUrl: function(){
-        var selected = {};
-        var query = location.search.substring(1);
-        if (query === '') { return selected; }
-        query.split('&').map(function(query_term){
-            var pair = query_term.split('='),
-                key = decodeURIComponent(pair[0]),
-                value = decodeURIComponent(pair[1]);
-            if (value !== '' && (this.props.filters.indexOf(key) > -1)) {
-                selected[key] = value;
-            }
-        }, this);
-        return selected;
-    },
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
-    },
-    fetchFilterOptions: function(mountedNow){
-        var options = {};
-        var self = this;
-        var params = {format: "json"};
-        params = Object.keys(Object.assign(params, this.state.selected)).map(
-            function(key){
-                return key + '=' + encodeURIComponent(params[key]);
-            }
-        ).join('&');
-        var url = this.props.options_url + '?' + params;
-        this.setState({disabled: true});
-        fetch(url, options)
-            .then(
-                function(response){
-                    if (response.status >=200 && response.status < 300) {
-                        return response.json();
-                    }
-                }
-            )
-            .then(function(options){
-                if (!options) {return;}
-                var project_count = options.project_count;
-                delete options.project_count;
-                self.setState({
-                    "options": self.processOptions(options), disabled: false, project_count: project_count
-                });
-                if (mountedNow) {
-                    self.setInitialSelectionState(options);
-                }
-            });
-    },
-    setInitialSelectionState: function(options){
-        // NOTE: This function should always be called after process options,
-        // since it needs the processed options
-        var initial_selection = {};
-        var set_initial_selection = function (key){
-            var id = this.state.selected[key];
-            var find_function = function(option){return option.id == id;};
-            initial_selection[key] = [options[key].find(find_function)];
-        };
-        Object.keys(this.state.selected).map(set_initial_selection, this);
-        this.setState({"initial_selection": initial_selection});
-        if (Object.keys(initial_selection).length > 0) { this.toggleForm(); }
-    },
-    processOptions: function(options){
-        // Add a filterBy attribute to all items
-        var make_typeahead_item = function(item){
-            // Check various fields depending on type of options
-            // NOTE: name always appears after long_name, since we
-            // prefer long_name for organisations
-            var label = item.label || item.long_name || item.name || '';
-            // Stringify the id;
-            item.id = String(item.id);
-            item.filterBy = (label + ' ' + item.id).trim();
-            item.label = label;
-        };
-        for (var key in options) {
-            if (options.hasOwnProperty(key)) {
-                var value = options[key];
-                value.forEach(make_typeahead_item);
-            }
-        }
-        return options;
-    },
-    onChange: function(field_name, values){
-        var update = {};
-        Object.assign(update, this.state.selected);
-        if (values.length > 0){
-            update[field_name] = values[0].id;
-        } else {
-            delete update[field_name];
-        }
-        this.setState({"selected": update}, this.fetchFilterOptions);
-    },
-    preSubmitHack: function(){
-        /* HACK: The fields in the typeaheads are not option/selection fields,
-           but simple input fields. Submitting the form submits the display text,
-           but we would like to use the ids. */
-        var set_id_as_value = function(key){
-            var id = this.state.selected[key];
-            var input = ReactDOM.findDOMNode(this.refs[key].refs.typeahead.getInstance()).querySelector('input');
-            input.value = id;
-        };
-        Object.getOwnPropertyNames(this.state.selected).map(set_id_as_value, this);
-    },
-    submitForm: function(){
-        this.preSubmitHack();
-        this.setState({disabled: true});
-        document.getElementById('filterForm').submit();
-    },
-    toggleForm: function(){
-        document.querySelector('.menu-toggle').click();
     },
     render: function(){
         var create_filter = function(filter_name){
@@ -208,6 +103,149 @@ var FilterForm = React.createClass({
                 </div>
             </aside>
         );
+    },
+    /* Event handlers */
+    onChange: function(field_name, values){
+        var update = {};
+        Object.assign(update, this.state.selected);
+        if (values.length > 0){
+            update[field_name] = values[0].id;
+        } else {
+            delete update[field_name];
+        }
+        this.setState({"selected": update}, this.fetchFilterOptions);
+    },
+    submitForm: function(){
+        this.preSubmitHack();
+        this.setState({disabled: true});
+        document.getElementById('filterForm').submit();
+    },
+    toggleForm: function(){
+        document.querySelector('.menu-toggle').click();
+    },
+
+    /* Helper methods */
+    cacheAllOptions: function(){
+        // Cache the options to show when there are no selections
+        var self = this;
+        var url = this.getOptionsUrl({});
+        if (!options_cache[url]) {
+            fetch(url, {})
+                .then(self.parseResponse)
+                .then(function(options){
+                    if (options) {
+                        self.cacheOptions(url, options);
+                    }
+                });
+        }
+    },
+    cacheOptions: function(url, options){
+        // Adds the specified options to the cache, for the given url
+        options_cache[url] = options;
+    },
+    fetchFilterOptions: function(mountedNow){
+        var url = this.getOptionsUrl(this.state.selected),
+            cached_options = options_cache[url];
+        if (cached_options && cached_options.project_count){
+            this.updateState(Object.assign({}, cached_options));
+        } else {
+            this.setState({disabled: true});
+            var self = this;
+            fetch(url, {})
+                .then(self.parseResponse)
+                .then(function(options){
+                    if (options) {
+                        self.updateState(options, mountedNow);
+                        self.cacheOptions(url, options);
+                        if (mountedNow) {
+                            self.cacheAllOptions();
+                        }
+                    }
+                });
+        }
+    },
+    getOptionsUrl: function(selected){
+        var params = {format: "json"};
+        params = Object.keys(Object.assign(params, selected)).map(
+            function(key){
+                return key + '=' + encodeURIComponent(params[key]);
+            }
+        ).join('&');
+        return this.props.options_url + '?' + params;
+    },
+    getStateFromUrl: function(){
+        var selected = {};
+        var query = location.search.substring(1);
+        if (query === '') { return selected; }
+        query.split('&').map(function(query_term){
+            var pair = query_term.split('='),
+                key = decodeURIComponent(pair[0]),
+                value = decodeURIComponent(pair[1]);
+            if (value !== '' && (this.props.filters.indexOf(key) > -1)) {
+                selected[key] = value;
+            }
+        }, this);
+        return selected;
+    },
+    parseResponse: function(response){
+        if (response.status >=200 && response.status < 300) {
+            return response.json();
+        }
+    },
+    preSubmitHack: function(){
+        /* HACK: The fields in the typeaheads are not option/selection fields,
+           but simple input fields. Submitting the form submits the display text,
+           but we would like to use the ids. */
+        var set_id_as_value = function(key){
+            var id = this.state.selected[key];
+            var input = ReactDOM.findDOMNode(this.refs[key].refs.typeahead.getInstance()).querySelector('input');
+            input.value = id;
+        };
+        Object.getOwnPropertyNames(this.state.selected).map(set_id_as_value, this);
+    },
+    processOptions: function(options){
+        // Add a filterBy attribute to all items
+        var make_typeahead_item = function(item){
+            // Check various fields depending on type of options
+            // NOTE: name always appears after long_name, since we
+            // prefer long_name for organisations
+            var label = item.label || item.long_name || item.name || '';
+            // Stringify the id;
+            item.id = String(item.id);
+            item.filterBy = (label + ' ' + item.id).trim();
+            item.label = label;
+        };
+        for (var key in options) {
+            if (this.props.filters.indexOf(key) >= 0) {
+                var value = options[key];
+                value.forEach(make_typeahead_item);
+            }
+        }
+        return options;
+    },
+    setInitialSelectionState: function(options){
+        // NOTE: This function should always be called after process options,
+        // since it needs the processed options
+        var initial_selection = {};
+        var set_initial_selection = function (key){
+            var id = this.state.selected[key];
+            var find_function = function(option){return option.id == id;};
+            initial_selection[key] = [options[key].find(find_function)];
+        };
+        Object.keys(this.state.selected).map(set_initial_selection, this);
+        this.setState({"initial_selection": initial_selection});
+        if (Object.keys(initial_selection).length > 0) { this.toggleForm(); }
+    },
+    updateState: function(options, mountedNow){
+        var project_count = options.project_count;
+        this.setState({
+            "options": this.processOptions(options),
+            disabled: false,
+            project_count: project_count
+        });
+        if (mountedNow) {
+            this.setInitialSelectionState(options);
+        }
     }
 });
 
