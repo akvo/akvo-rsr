@@ -1,0 +1,1363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">72</property>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="rsr-Live" id="4">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
+            <property name="odaUser">rsr_readonly</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Paying customers" id="5">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">name</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">long_name</property>
+                    <text-property name="displayName">long_name</text-property>
+                    <text-property name="heading">long_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">organisation_type</property>
+                    <text-property name="displayName">organisation_type</text-property>
+                    <text-property name="heading">organisation_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo</property>
+                    <text-property name="displayName">logo</text-property>
+                    <text-property name="heading">logo</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">url</property>
+                    <text-property name="displayName">url</text-property>
+                    <text-property name="heading">url</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">phone</property>
+                    <text-property name="displayName">phone</text-property>
+                    <text-property name="heading">phone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">mobile</property>
+                    <text-property name="displayName">mobile</text-property>
+                    <text-property name="heading">mobile</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fax</property>
+                    <text-property name="displayName">fax</text-property>
+                    <text-property name="heading">fax</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">contact_person</property>
+                    <text-property name="displayName">contact_person</text-property>
+                    <text-property name="heading">contact_person</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">contact_email</property>
+                    <text-property name="displayName">contact_email</text-property>
+                    <text-property name="heading">contact_email</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">primary_location_id</property>
+                    <text-property name="displayName">primary_location_id</text-property>
+                    <text-property name="heading">primary_location_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iati_org_id</property>
+                    <text-property name="displayName">iati_org_id</text-property>
+                    <text-property name="heading">iati_org_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">language</property>
+                    <text-property name="displayName">language</text-property>
+                    <text-property name="heading">language</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">new_organisation_type</property>
+                    <text-property name="displayName">new_organisation_type</text-property>
+                    <text-property name="heading">new_organisation_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">notes</property>
+                    <text-property name="displayName">notes</text-property>
+                    <text-property name="heading">notes</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">created_at</property>
+                    <text-property name="displayName">created_at</text-property>
+                    <text-property name="heading">created_at</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">last_modified_at</property>
+                    <text-property name="displayName">last_modified_at</text-property>
+                    <text-property name="heading">last_modified_at</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">content_owner_id</property>
+                    <text-property name="displayName">content_owner_id</text-property>
+                    <text-property name="heading">content_owner_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">allow_edit</property>
+                    <text-property name="displayName">allow_edit</text-property>
+                    <text-property name="heading">allow_edit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">facebook</property>
+                    <text-property name="displayName">facebook</text-property>
+                    <text-property name="heading">facebook</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">twitter</property>
+                    <text-property name="displayName">twitter</text-property>
+                    <text-property name="heading">twitter</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">linkedin</property>
+                    <text-property name="displayName">linkedin</text-property>
+                    <text-property name="heading">linkedin</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">public_iati_file</property>
+                    <text-property name="displayName">public_iati_file</text-property>
+                    <text-property name="heading">public_iati_file</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">can_become_reporting</property>
+                    <text-property name="displayName">can_become_reporting</text-property>
+                    <text-property name="heading">can_become_reporting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">can_create_projects</property>
+                    <text-property name="displayName">can_create_projects</text-property>
+                    <text-property name="heading">can_create_projects</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">long_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">organisation_type</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">logo</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">url</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">phone</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">mobile</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">fax</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">contact_person</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">contact_email</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">primary_location_id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">iati_org_id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">language</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">new_organisation_type</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">notes</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">created_at</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">last_modified_at</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">content_owner_id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">allow_edit</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">facebook</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">twitter</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">linkedin</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">public_iati_file</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">can_become_reporting</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">can_create_projects</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">rsr-Live</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">long_name</property>
+                    <property name="nativeName">long_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">organisation_type</property>
+                    <property name="nativeName">organisation_type</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">logo</property>
+                    <property name="nativeName">logo</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">url</property>
+                    <property name="nativeName">url</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">phone</property>
+                    <property name="nativeName">phone</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">mobile</property>
+                    <property name="nativeName">mobile</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">fax</property>
+                    <property name="nativeName">fax</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">contact_person</property>
+                    <property name="nativeName">contact_person</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">contact_email</property>
+                    <property name="nativeName">contact_email</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">primary_location_id</property>
+                    <property name="nativeName">primary_location_id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">iati_org_id</property>
+                    <property name="nativeName">iati_org_id</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">language</property>
+                    <property name="nativeName">language</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">new_organisation_type</property>
+                    <property name="nativeName">new_organisation_type</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">notes</property>
+                    <property name="nativeName">notes</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">created_at</property>
+                    <property name="nativeName">created_at</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">last_modified_at</property>
+                    <property name="nativeName">last_modified_at</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">content_owner_id</property>
+                    <property name="nativeName">content_owner_id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">allow_edit</property>
+                    <property name="nativeName">allow_edit</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">facebook</property>
+                    <property name="nativeName">facebook</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">twitter</property>
+                    <property name="nativeName">twitter</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">linkedin</property>
+                    <property name="nativeName">linkedin</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">public_iati_file</property>
+                    <property name="nativeName">public_iati_file</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">can_become_reporting</property>
+                    <property name="nativeName">can_become_reporting</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">can_create_projects</property>
+                    <property name="nativeName">can_create_projects</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from rsr_organisation
+where rsr_organisation.can_create_projects = 'true']]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>name</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>40</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>name</design:label>
+            <design:formattingHints>
+              <design:displaySize>40</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>long_name</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>long_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>long_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>organisation_type</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>organisation_type</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>organisation_type</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>logo</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>100</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>logo</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>logo</design:label>
+            <design:formattingHints>
+              <design:displaySize>100</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>url</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>url</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>url</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>phone</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>phone</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>phone</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>mobile</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>mobile</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>mobile</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>fax</design:name>
+              <design:position>9</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>fax</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>fax</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>contact_person</design:name>
+              <design:position>10</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>30</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>contact_person</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>contact_person</design:label>
+            <design:formattingHints>
+              <design:displaySize>30</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>contact_email</design:name>
+              <design:position>11</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>50</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>contact_email</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>contact_email</design:label>
+            <design:formattingHints>
+              <design:displaySize>50</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>description</design:name>
+              <design:position>12</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>description</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>description</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>primary_location_id</design:name>
+              <design:position>13</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>primary_location_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>primary_location_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>iati_org_id</design:name>
+              <design:position>14</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>75</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>iati_org_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>iati_org_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>75</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>language</design:name>
+              <design:position>15</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>language</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>language</design:label>
+            <design:formattingHints>
+              <design:displaySize>2</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>new_organisation_type</design:name>
+              <design:position>16</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>new_organisation_type</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>new_organisation_type</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>notes</design:name>
+              <design:position>17</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>notes</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>notes</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>created_at</design:name>
+              <design:position>18</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>93</design:nativeDataTypeCode>
+            <design:precision>29</design:precision>
+            <design:scale>6</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>created_at</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>created_at</design:label>
+            <design:formattingHints>
+              <design:displaySize>29</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>last_modified_at</design:name>
+              <design:position>19</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>93</design:nativeDataTypeCode>
+            <design:precision>29</design:precision>
+            <design:scale>6</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>last_modified_at</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>last_modified_at</design:label>
+            <design:formattingHints>
+              <design:displaySize>29</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>content_owner_id</design:name>
+              <design:position>20</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>content_owner_id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>content_owner_id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>allow_edit</design:name>
+              <design:position>21</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>allow_edit</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>allow_edit</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>facebook</design:name>
+              <design:position>22</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>facebook</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>facebook</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>twitter</design:name>
+              <design:position>23</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>twitter</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>twitter</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>linkedin</design:name>
+              <design:position>24</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>200</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>linkedin</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>linkedin</design:label>
+            <design:formattingHints>
+              <design:displaySize>200</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>public_iati_file</design:name>
+              <design:position>25</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>public_iati_file</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>public_iati_file</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>can_become_reporting</design:name>
+              <design:position>26</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>can_become_reporting</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>can_become_reporting</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>can_create_projects</design:name>
+              <design:position>27</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-7</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>can_create_projects</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>can_create_projects</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>currency</design:name>
+              <design:position>28</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>currency</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>currency</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="# project paid" id="63">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">projects</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">projects</text-property>
+                    <text-property name="heading">projects</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">projects</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">rsr-Live</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">projects</property>
+                    <property name="nativeName">projects</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select rsr_organisation.id, rsr_organisation."name", count (distinct rsr_project.title) as Projects
+from rsr_organisation
+LEFT JOIN rsr_project ON (rsr_organisation.id=rsr_project.primary_organisation_id)
+where rsr_organisation.can_create_projects = 'true'
+and rsr_project.status = 'A'
+group by rsr_organisation."name", rsr_organisation.id
+order by id DESC]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>name</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>40</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>name</design:label>
+            <design:formattingHints>
+              <design:displaySize>40</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>projects</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>19</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>projects</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>projects</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="64">
+            <property name="fontFamily">"Arial"</property>
+            <property name="textAlign">left</property>
+            <property name="dataSet"># project paid</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">id</property>
+                    <text-property name="displayName">id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">name</property>
+                    <text-property name="displayName">name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">projects</property>
+                    <text-property name="displayName">projects</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["projects"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="sort">
+                <structure>
+                    <expression name="key" type="javascript">row["name"]</expression>
+                    <property name="direction">asc</property>
+                    <property name="strength">-1</property>
+                </structure>
+            </list-property>
+            <column id="83"/>
+            <column id="84"/>
+            <column id="85"/>
+            <header>
+                <row id="65">
+                    <property name="fontFamily">"Helvetica"</property>
+                    <property name="fontWeight">bold</property>
+                    <cell id="66">
+                        <label id="67">
+                            <text-property name="text">id</text-property>
+                        </label>
+                    </cell>
+                    <cell id="68">
+                        <label id="69">
+                            <text-property name="text">name</text-property>
+                        </label>
+                    </cell>
+                    <cell id="70">
+                        <label id="71">
+                            <text-property name="text"># projects</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="72">
+                    <cell id="73">
+                        <data id="74">
+                            <property name="resultSetColumn">id</property>
+                        </data>
+                    </cell>
+                    <cell id="75">
+                        <data id="76">
+                            <property name="resultSetColumn">name</property>
+                        </data>
+                    </cell>
+                    <cell id="77">
+                        <data id="78">
+                            <property name="resultSetColumn">projects</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="79">
+                    <cell id="80"/>
+                    <cell id="81"/>
+                    <cell id="82"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

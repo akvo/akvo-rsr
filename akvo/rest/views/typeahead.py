@@ -153,14 +153,13 @@ def typeahead_project_filters(request):
     # Fetch projects based on whether we are an Akvo site or RSR main site
     page = request.rsr_page
     projects = page.projects() if page else Project.objects.all().public().published()
-    # FIXME: Can we prefetch things to make this faster???
 
     # Filter projects based on query parameters
     filter_ = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
 
     # Get the relevant data for typeaheads based on filtered projects.
-    keywords = projects.keywords()
+    keywords = projects.keywords().values('id', 'label')
 
     locations = [
         {'id': choice[0], 'name': choice[1]}
@@ -174,7 +173,7 @@ def typeahead_project_filters(request):
         if status in valid_statuses
     ]
 
-    organisations = projects.all_partners()
+    organisations = projects.all_partners().values('id', 'name', 'long_name')
 
     # FIXME: Currently only vocabulary 2 is supported (as was the case with
     # static filters). This could be extended to other vocabularies, in future.

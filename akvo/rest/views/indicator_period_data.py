@@ -20,7 +20,7 @@ from rest_framework.response import Response
 class IndicatorPeriodDataViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriodData.objects.select_related('user').all()
+    queryset = IndicatorPeriodData.objects.select_related('user', 'approved_by').all()
     serializer_class = IndicatorPeriodDataSerializer
 
     project_relation = 'period__indicator__result__project__'
@@ -31,7 +31,8 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodData.objects.select_related(
         'period',
-        'user'
+        'user',
+        'approved_by',
     ).prefetch_related(
         'comments',
         'comments__user'

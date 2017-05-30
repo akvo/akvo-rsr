@@ -22,6 +22,7 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
     user_details = UserDetailsSerializer(required=False, source='user')
+    approver_details = UserDetailsSerializer(required=False, source='approved_by')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
@@ -36,6 +37,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     comments = IndicatorPeriodDataCommentSerializer(read_only=True, many=True, required=False)
     user_details = UserDetailsSerializer(required=False, source='user')
+    approver_details = UserDetailsSerializer(required=False, source='approved_by')
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()

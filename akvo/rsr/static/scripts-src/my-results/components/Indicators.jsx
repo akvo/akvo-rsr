@@ -49,9 +49,17 @@ IndicatorHeader.propTypes = {
 
 
 const IndicatorContent = ({indicator}) => {
-    const title = indicator.title.length > 0 ? indicator.title : _("nameless_indicator");
+    const description = indicator.description.length > 0 ?
+        <ul>
+            <li className="description">
+                <span>{indicator.description}</span>
+            </li>
+        </ul>
+    :
+        undefined;
     return (
-        <div className="baseline">
+        <div className="indicatorInfo">
+            {description}
             <ul>
                 <li className="baseline-year">
                     {_('baseline_year')}: <span>{indicator.baseline_year}</span>
