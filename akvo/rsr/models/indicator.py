@@ -731,7 +731,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                              related_name='created_period_updates')
     approved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_(u'approved by'), db_index=True,
-        related_name='approved_period_updates',blank=True, null=True,
+        related_name='approved_period_updates', blank=True, null=True,
     )
     relative_data = models.BooleanField(_(u'relative data'), default=True)
     # TODO: rename to update or period_update; we're using the term Indicator update in the UI
