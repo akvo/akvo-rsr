@@ -84,6 +84,9 @@
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
     </script>
 
+    {# react-onclickoutside.js should load before date-picker, etc. #}
+    {% javascript 'rsr_lib' %}
+
     {% if debug %}
       {# jQuery #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.js" integrity="sha256-WMJwNbei5YnfOX5dfgVCS5C4waqvc+/0fV7W2uy3DyU=" crossorigin="anonymous"></script>
@@ -124,7 +127,6 @@
     {# RSR default libraries #}
     {% javascript 'rsr' %}
     <script id="react-typeahead" src="{{STATIC_URL}}lib/scripts/react-typeahead.js"></script>
-    {% javascript 'rsr_lib' %}
 
     {% block js %}{% endblock js %}
 
