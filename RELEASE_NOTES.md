@@ -1,3 +1,21 @@
+# Akvo RSR – Version 3.26.1 Panama City (hot-fix)
+
+Date: 2017-05-30
+
+## Continued improvements
+
+Allow creating organization specific reports that are visible only to users
+belonging to those organizations for which the report is
+created [#2697](https://github.com/akvo/akvo-rsr/issues/2697)
+
+Make dynamic filters more responsive by using client side caching of
+options [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
+
+## Issues Resolved
+
+Add new states to indicator period updates to complete the
+workflow. [#2696](https://github.com/akvo/akvo-rsr/issues/2696)
+
 # Akvo RSR – Version 3.26 Panama City
 
 Date: 2017-05-25
