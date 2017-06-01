@@ -7,7 +7,7 @@ Date: 2017-06-01
 Missing custom stylesheet for Akvo
 pages has been fixed - [#2710](https://github.com/akvo/akvo-rsr/issues/2710)
 
-FProblem with react elements not being closed when clicking outside
+Problem with react elements not being closed when clicking outside
 them corrected - [#2708](https://github.com/akvo/akvo-rsr/issues/2708)
 
 # Akvo RSR – Version 3.26.1 Panama City (hot-fix)
