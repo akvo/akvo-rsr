@@ -1,3 +1,15 @@
+# Akvo RSR – Version 3.26.2 Panama City (hot-fix)
+
+Date: 2017-06-01
+
+## Issues Resolved
+
+Fix missing custom stylesheet for Akvo
+pages [#2710](https://github.com/akvo/akvo-rsr/issues/2710)
+
+Fix problem with react elements not being closed when clicking outside
+them [#2708](https://github.com/akvo/akvo-rsr/issues/2708)
+
 # Akvo RSR – Version 3.26.1 Panama City (hot-fix)
 
 Date: 2017-05-30
