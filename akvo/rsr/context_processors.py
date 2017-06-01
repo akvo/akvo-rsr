@@ -58,7 +58,7 @@ def extra_pages_context(request):
             'organisation': page.organisation,
             'return_url': page.return_url,
             'return_url_text': page.custom_return_url_text,
-            'stylesheet': page.stylesheet,
+            'page_stylesheet': page.stylesheet,
             'akvoapp_root_url': '//{}'.format(settings.AKVOAPP_DOMAIN),
             'domain_url': '//{}'.format(settings.RSR_DOMAIN),
             'no_facebook': not page.facebook_button,

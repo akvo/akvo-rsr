@@ -1,3 +1,33 @@
+# Akvo RSR – Version 3.26.2 Panama City (hot-fix)
+
+Date: 2017-06-01
+
+## Issues Resolved
+
+Fix missing custom stylesheet for Akvo
+pages [#2710](https://github.com/akvo/akvo-rsr/issues/2710)
+
+Fix problem with react elements not being closed when clicking outside
+them [#2708](https://github.com/akvo/akvo-rsr/issues/2708)
+
+# Akvo RSR – Version 3.26.1 Panama City (hot-fix)
+
+Date: 2017-05-30
+
+## Continued improvements
+
+Allow creating organization specific reports that are visible only to users
+belonging to those organizations for which the report is
+created [#2697](https://github.com/akvo/akvo-rsr/issues/2697)
+
+Make dynamic filters more responsive by using client side caching of
+options [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
+
+## Issues Resolved
+
+Add new states to indicator period updates to complete the
+workflow. [#2696](https://github.com/akvo/akvo-rsr/issues/2696)
+
 # Akvo RSR – Version 3.26 Panama City
 
 Date: 2017-05-25
