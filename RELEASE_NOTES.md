@@ -20,7 +20,7 @@ Creating organization specific reports, visible only to users
 belonging to those organizations for which the report is
 created, has been enabled - [#2697](https://github.com/akvo/akvo-rsr/issues/2697)
 
-Make dynamic filters more responsive by using client side caching of
+Dynamic filters made more responsive by using client side caching of
 options - [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
 
 ## Issues Resolved
@@ -34,14 +34,14 @@ Date: 2017-05-25
 
 ## Continued improvements
 
-Advanced filters on the project directory are now dynamic -- Selecting an option
+Advanced filters on the project directory are now dynamic -- selecting an option
 for one filter, changes the options shown in the other filters
 accordingly - [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
 
 Admin action created to mark projects as
 complete [#2671](https://github.com/akvo/akvo-rsr/issues/2671)
 
-Related links now open in new
+Related links now open in a new
 tab - [#2656](https://github.com/akvo/akvo-rsr/issues/2656)
 
 ## Issues Resolved
