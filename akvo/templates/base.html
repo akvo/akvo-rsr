@@ -53,6 +53,9 @@
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    {% if page_stylesheet %}
+      <link rel="stylesheet" href="{{MEDIA_URL}}{{page_stylesheet}}">
+    {% endif %}
     {% if request.resolver_match.url_name == 'my_new_results' %}
       {% stylesheet 'new_results' %}
     {% else %}
