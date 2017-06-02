@@ -20538,6 +20538,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
             <property name="leftMargin">15mm</property>
             <property name="bottomMargin">10mm</property>
             <property name="rightMargin">15mm</property>
+            <property name="overflow">auto</property>
             <page-header>
                 <grid id="338">
                     <property name="width">6.9375in</property>
@@ -20596,6 +20597,7 @@ order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></x
             <property name="bottomMargin">10mm</property>
             <property name="rightMargin">15mm</property>
             <property name="columns">2</property>
+            <property name="overflow">auto</property>
             <property name="headerHeight">15mm</property>
             <property name="footerHeight">0mm</property>
             <page-header>
@@ -21918,6 +21920,7 @@ null</expression>
                                     <property name="textAlign">left</property>
                                     <property name="display">block</property>
                                     <property name="pageBreakAfter">auto</property>
+                                    <property name="pageBreakBefore">auto</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -21930,6 +21933,7 @@ null</expression>
                             <cell id="160">
                                 <text-data id="217">
                                     <property name="textAlign">left</property>
+                                    <property name="pageBreakAfter">avoid</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -21966,6 +21970,7 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="paddingBottom">1pt</property>
                                         <property name="paddingRight">8pt</property>
                                         <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">avoid</property>
                                         <property name="pageBreakInside">auto</property>
                                         <expression name="valueExpr">b=0, a++, "Result " + a;</expression>
                                         <property name="contentType">html</property>
@@ -22065,14 +22070,25 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <row id="946">
                                             <property name="backgroundColor">white</property>
                                             <cell id="947">
+                                                <property name="colSpan">2</property>
+                                                <property name="rowSpan">1</property>
                                                 <property name="paddingTop">0pt</property>
                                                 <property name="paddingLeft">0pt</property>
-                                                <property name="paddingBottom">0px</property>
+                                                <property name="paddingBottom">1px</property>
                                                 <property name="paddingRight">7px</property>
+                                                <property name="verticalAlign">bottom</property>
+                                                <text-data id="958">
+                                                    <property name="fontStyle">italic</property>
+                                                    <property name="paddingTop">4pt</property>
+                                                    <property name="paddingLeft">9pt</property>
+                                                    <expression name="valueExpr">'Baseline: '+ row["baseline_value"]+' ('+row["baseline_year"]+')'</expression>
+                                                    <property name="contentType">html</property>
+                                                </text-data>
                                                 <label id="937">
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
                                                     <property name="marginTop">8pt</property>
+                                                    <property name="marginBottom">1pt</property>
                                                     <property name="paddingTop">1pt</property>
                                                     <property name="paddingLeft">8pt</property>
                                                     <property name="paddingBottom">1pt</property>
@@ -22080,13 +22096,10 @@ reportContext.getGlobalVariable('debug')</expression>
                                                     <text-property name="text">Period</text-property>
                                                 </label>
                                             </cell>
-                                            <cell id="948">
-                                                <property name="paddingTop">1pt</property>
-                                                <property name="paddingBottom">5pt</property>
-                                            </cell>
                                             <cell id="949">
                                                 <property name="paddingTop">1pt</property>
-                                                <property name="paddingBottom">5pt</property>
+                                                <property name="paddingBottom">1pt</property>
+                                                <property name="verticalAlign">bottom</property>
                                                 <label id="952">
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
@@ -22099,22 +22112,24 @@ reportContext.getGlobalVariable('debug')</expression>
                                                     <property name="paddingLeft">1pt</property>
                                                     <property name="paddingBottom">1pt</property>
                                                     <property name="textAlign">left</property>
-                                                    <text-property name="text">ACTUAL</text-property>
+                                                    <text-property name="text">Actual</text-property>
                                                 </label>
                                             </cell>
                                             <cell id="950">
                                                 <property name="paddingTop">1pt</property>
-                                                <property name="paddingBottom">5pt</property>
+                                                <property name="paddingBottom">1pt</property>
                                                 <property name="textAlign">left</property>
+                                                <property name="verticalAlign">bottom</property>
                                                 <label id="188">
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">italic</property>
                                                     <property name="marginTop">8pt</property>
+                                                    <property name="marginBottom">1pt</property>
                                                     <property name="paddingTop">1pt</property>
                                                     <property name="paddingLeft">1pt</property>
                                                     <property name="paddingBottom">1pt</property>
                                                     <property name="textAlign">left</property>
-                                                    <text-property name="text">TARGET</text-property>
+                                                    <text-property name="text">Target</text-property>
                                                 </label>
                                             </cell>
                                         </row>
@@ -22127,12 +22142,6 @@ reportContext.getGlobalVariable('debug')</expression>
                                                 <property name="paddingLeft">0pt</property>
                                                 <property name="paddingBottom">0px</property>
                                                 <property name="paddingRight">7px</property>
-                                                <text-data id="958">
-                                                    <property name="fontStyle">italic</property>
-                                                    <property name="paddingLeft">7pt</property>
-                                                    <expression name="valueExpr">'Baseline: '+ row["baseline_value"]+' ('+row["baseline_year"]+')'</expression>
-                                                    <property name="contentType">html</property>
-                                                </text-data>
                                             </cell>
                                             <cell id="956">
                                                 <property name="paddingTop">1pt</property>
