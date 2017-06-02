@@ -324,6 +324,23 @@ function lineageKeys(model, id) {
     )
 }
 
+export function closeNodes(model, ids) {
+    // Closes nodes with the given ids
+
+    // NOTE: This code assumes that all the nodes at a particular level are
+    // closed, i.e., if a node's id is present in the list of ids, all it's
+    // siblings' ids are also present in the list of ids.
+
+    const storeModel = store.getState().models[model];
+    // Construct a list of collapse keys, based on ids
+    const collapse_ids = ids.map((id) => {
+        const parent_id = parentModelName(model)?storeModel.objects[id][c.PARENT_FIELD[model]]:model;
+        return collapseId(model, parent_id);
+    });
+    const unique_collapse_ids = new Set(collapse_ids);
+    // Collapse/close all children of the collected collapse keys
+    [...unique_collapse_ids].map((id) => collapseChange(id, []));
+}
 
 export function openNodes(model, ids) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model
