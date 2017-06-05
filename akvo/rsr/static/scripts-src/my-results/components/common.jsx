@@ -48,9 +48,9 @@ ButtonLabel.propTypes = {
 // Based on https://github.com/ngokevin/react-file-reader-input
 export class FileReaderInput extends React.Component {
   static propTypes = {
-    as: React.PropTypes.oneOf(['binary', 'buffer', 'text', 'url']),
-    children: React.PropTypes.any,
-    onChange: React.PropTypes.func,
+    as: PropTypes.oneOf(['binary', 'buffer', 'text', 'url']),
+    children: PropTypes.any,
+    onChange: PropTypes.func,
   };
   constructor(props) {
     // FileReader compatibility warning.
