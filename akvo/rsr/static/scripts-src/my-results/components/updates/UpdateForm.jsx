@@ -37,7 +37,11 @@ import {
     isNewUpdate,
 } from '../../utils.js';
 
-import { FileReaderInput } from '../common';
+import {
+    ButtonLabel,
+    FileReaderInput,
+    ToggleButton,
+} from '../common';
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -262,8 +266,8 @@ const UpdateActionButton = ({action, saveUpdate}) => {
     };
     return (
         <li role="presentation" className={action}>
-            <a id={action} onClick={saveUpdate}
-               className="btn btn-default btn-xs">{labels[action]}</a>
+            <ToggleButton id={action} onClick={saveUpdate} label={labels[action]}
+                          className="btn btn-default btn-xs"/>
         </li>
     )
 };
@@ -283,14 +287,14 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
         <div className="menuAction">
         {!isNewUpdate(update) && isAllowedToDelete(user, update)?
             <div role="presentation" className="removeUpdate">
-                <a onClick={callbacks.deleteUpdate}
-                   className="btn btn-default btn-xs">{_('delete')}</a>
+                <ToggleButton onClick={callbacks.deleteUpdate} label={_('delete')}
+                              className="btn btn-default btn-xs"/>
             </div>
         : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
-                    <a onClick={callbacks.onCancel}
-                       className="btn btn-link btn-xs">{_('cancel')}</a>
+                    <ToggleButton onClick={callbacks.onCancel} label={_('cancel')}
+                                  className="btn btn-link btn-xs"/>
                 </li>
                 {actionButtons}
                 <span></span>
