@@ -272,17 +272,24 @@ const UpdateActionButton = ({action, saveUpdate, disabled}) => {
     )
 };
 
+UpdateActionButton.propTypes = {
+    action: PropTypes.string.isRequired,
+    saveUpdate: PropTypes.func.isRequired,
+    disabled: PropTypes.bool.isRequired,
+};
+
 
 const UpdateFormButtons = ({user, update, callbacks}) => {
     //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
     // can be shown when saving is under way
     function getActionButtons(role, updateStatus) {
+        let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
                 const disabled = (update.data === null || update.data === "") &&
                                   action !== c.UPDATE_ACTION_SAVE;
-                return <UpdateActionButton action={action} saveUpdate={callbacks.saveUpdate}
-                                           disabled={disabled}/>
+                return <UpdateActionButton key={++btnKey} action={action}
+                                           saveUpdate={callbacks.saveUpdate} disabled={disabled}/>
             }
         )
     }
@@ -309,6 +316,7 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
 };
 
 UpdateFormButtons.propTypes = {
+    user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
 };
@@ -615,7 +623,7 @@ export class NewUpdateButton extends React.Component {
             period: period.id,
             user_details: user,
             user: user.id,
-            data: null,
+            data: '',
             text: '',
             relative_data: true,
             status: c.UPDATE_STATUS_NEW,
