@@ -257,7 +257,7 @@ Attachments.propTypes = {
 };
 
 
-const UpdateActionButton = ({action, saveUpdate}) => {
+const UpdateActionButton = ({action, saveUpdate, disabled}) => {
     const labels = {
         [c.UPDATE_ACTION_SAVE]: _('save'),
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
@@ -267,7 +267,7 @@ const UpdateActionButton = ({action, saveUpdate}) => {
     return (
         <li role="presentation" className={action}>
             <ToggleButton id={action} onClick={saveUpdate} label={labels[action]}
-                          className="btn btn-default btn-xs"/>
+                          disabled={disabled} className="btn btn-default btn-xs"/>
         </li>
     )
 };
@@ -278,7 +278,12 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
     // can be shown when saving is under way
     function getActionButtons(role, updateStatus) {
         return c.UPDATE_BUTTONS[role][updateStatus].map(
-            action => <UpdateActionButton action={action} saveUpdate={callbacks.saveUpdate} />
+            action => {
+                const disabled = (update.data === null || update.data === "") &&
+                                  action !== c.UPDATE_ACTION_SAVE;
+                return <UpdateActionButton action={action} saveUpdate={callbacks.saveUpdate}
+                                           disabled={disabled}/>
+            }
         )
     }
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
