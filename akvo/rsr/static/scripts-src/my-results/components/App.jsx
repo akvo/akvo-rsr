@@ -181,7 +181,7 @@ export default class App extends React.Component {
     }
 
     showApproved(set=true) {
-        showUpdates(this.props.approvedUpdates);
+        showUpdates(this.props.approvedUpdates, false, true);
         this.manageButtonsAndHash(c.FILTER_SHOW_APPROVED);
     }
 
