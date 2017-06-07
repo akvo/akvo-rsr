@@ -1,12 +1,13 @@
 /*
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please see
-    < http://www.gnu.org/licenses/agpl.html >.
+   Akvo RSR is covered by the GNU Affero General Public License.
+   See more details in the license.txt file located at the root folder of the
+   Akvo RSR module. For additional details on the GNU license please see
+   < http://www.gnu.org/licenses/agpl.html >.
  */
 
 
-import React, { PropTypes } from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
@@ -248,7 +249,7 @@ class UpdateHeader extends React.Component {
             updateAlert = <this.state.UpdateAlert />
         }
         const update = this.props.update;
-        return (            
+        return (
             <span className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>
                 <span className="updateData">Actual value: <span>{update.data}</span></span>
