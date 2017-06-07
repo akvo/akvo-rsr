@@ -114,9 +114,10 @@ function createModal(){
                         React.createElement('br'),
                         React.createElement('br'),
                         React.createElement(
-                            'div',
+                            'form',
                             {
-                                className: formGroupClass
+                                className: formGroupClass,
+                                onSubmit: this.checkPassword
                             },
                             React.createElement(
                                 'input',
@@ -124,7 +125,8 @@ function createModal(){
                                     type: "password",
                                     value: this.state.passwordField,
                                     onChange: this.handleChange,
-                                    className: 'form-control'
+                                    className: 'form-control',
+                                    autoFocus: true
                                 }
                             )
                         ),
