@@ -735,7 +735,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     )
     relative_data = models.BooleanField(_(u'relative data'), default=True)
     # TODO: rename to update or period_update; we're using the term Indicator update in the UI
-    data = ValidXMLCharField(_(u'data'), max_length=300)
+    data = ValidXMLCharField(_(u'data'), max_length=300, blank=True, null=True)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_NEW_CODE)
