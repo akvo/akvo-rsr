@@ -53,6 +53,9 @@
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    {% if page_stylesheet %}
+      <link rel="stylesheet" href="{{MEDIA_URL}}{{page_stylesheet}}">
+    {% endif %}
     {% if request.resolver_match.url_name == 'my_new_results' %}
       {% stylesheet 'new_results' %}
     {% else %}
@@ -83,6 +86,9 @@
       var AKVO_RSR = {};
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
     </script>
+
+    {# react-onclickoutside.js should load before date-picker, etc. #}
+    {% javascript 'rsr_lib' %}
 
     {% if debug %}
       {# jQuery #}
@@ -124,7 +130,6 @@
     {# RSR default libraries #}
     {% javascript 'rsr' %}
     <script id="react-typeahead" src="{{STATIC_URL}}lib/scripts/react-typeahead.js"></script>
-    {% javascript 'rsr_lib' %}
 
     {% block js %}{% endblock js %}
 

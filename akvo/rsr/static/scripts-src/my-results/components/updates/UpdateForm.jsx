@@ -1,12 +1,13 @@
 /*
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please see
-    < http://www.gnu.org/licenses/agpl.html >.
+   Akvo RSR is covered by the GNU Affero General Public License.
+   See more details in the license.txt file located at the root folder of the
+   Akvo RSR module. For additional details on the GNU license please see
+   < http://www.gnu.org/licenses/agpl.html >.
  */
 
 
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
@@ -124,9 +125,9 @@ ActualValueDescription.propTypes = {
 
 class FileUpload extends React.Component {
     static propTypes = {
-        update: React.PropTypes.object.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        removeAttachment: React.PropTypes.func.isRequired,
+        update: PropTypes.object.isRequired,
+        onChange: PropTypes.func.isRequired,
+        removeAttachment: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -176,9 +177,9 @@ class FileUpload extends React.Component {
 
 class ImageUpload extends React.Component {
     static propTypes = {
-        update: React.PropTypes.object.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        removeAttachment: React.PropTypes.func.isRequired,
+        update: PropTypes.object.isRequired,
+        onChange: PropTypes.func.isRequired,
+        removeAttachment: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -251,9 +252,9 @@ const Attachments = ({update, onChange, removeAttachment}) => {
 };
 
 Attachments.propTypes = {
-    update: React.PropTypes.object.isRequired,
-    onChange: React.PropTypes.func.isRequired,
-    removeAttachment: React.PropTypes.func.isRequired,
+    update: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+    removeAttachment: PropTypes.func.isRequired,
 };
 
 
@@ -638,7 +639,7 @@ export class NewUpdateButton extends React.Component {
         return (
                 <div className="emptyUpdate">
                     <a onClick={this.newUpdate}
-                       className={'btn btn-sm btn-default newUpdate'}>                       
+                       className={'btn btn-sm btn-default newUpdate'}>
                         {_('new_update')}
                     </a>
                 </div>
