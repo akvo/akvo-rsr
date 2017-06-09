@@ -98,6 +98,44 @@ class ResultsFrameworkTestCase(TestCase):
         self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
         self.assertEqual(child_reference.vocabulary_uri, self.reference.vocabulary_uri)
 
+    def test_new_indicator_cloned_to_child(self):
+        """Test that new indicators are cloned in children that have imported results."""
+        # Given
+        # # Child project has already imported results from parent.
+        result = self.parent_project.results.first()
+
+        # When
+        Indicator.objects.create(result=result, title="Indicator #2", measure="1")
+
+        # Then
+        self.assertEqual(
+            Indicator.objects.filter(result__project=self.parent_project).count(),
+            Indicator.objects.filter(result__project=self.child_project).count()
+        )
+
+    def test_import_does_not_create_deleted_indicators(self):
+        """Test that import does not create indicators that have been deleted from child."""
+        # Given
+        title = 'Indicator #2'
+        result = self.parent_project.results.first()
+        child_result = result.child_results.first()
+        # New indicator created (also cloned to child)
+        Indicator.objects.create(result=result, title=title, measure='1')
+
+        # When
+        # Import results framework into child
+        child_result.indicators.get(title=title).delete()
+        import_status, import_message = self.child_project.import_results()
+
+        # Then
+        self.assertEqual(import_status, 1)
+        self.assertEqual(import_message, "Results imported")
+
+        self.assertEqual(
+            1,
+            Indicator.objects.filter(result__project=self.child_project).count()
+        )
+
     def test_update(self):
         """
         Test if placing updates will update the actual value of the period.
@@ -239,9 +277,7 @@ class ResultsFrameworkTestCase(TestCase):
         )
 
         # Publish child 2 project
-        publishing_status = PublishingStatus.objects.get(project=child_project_2.pk)
-        publishing_status.status = 'published'
-        publishing_status.save(update_fields=['status', ])
+        child_project_2.publish()
 
         # Link child 2 to parent
         RelatedProject.objects.create(
