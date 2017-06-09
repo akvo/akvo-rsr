@@ -8,10 +8,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import datetime
+from decimal import Decimal
 import unittest
 
 from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodData, User, RelatedProject)
+from akvo.rsr.models.indicator import calculate_percentage
 
 from django.test import TestCase
 
@@ -302,21 +304,279 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
 
     indicator_measure = '2'
 
-    def test_should_aggregate_child_indicators_values(self):
-        """Overriden since aggregation for percentage indicators is average."""
+    def test_should_set_period_actual_value(self):
+        # Given
+        numerator = 40
+        denominator = 100
+        actual_value = calculate_percentage(numerator, denominator)
+        period = IndicatorPeriod.objects.get(id=self.period.id)
 
+        # When
+        period.numerator = numerator
+        period.denominator = denominator
+        # This should be over-written
+        period.actual_value = actual_value * 200
+        period.save()
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        self.assertEqual(numerator, period.numerator)
+        self.assertEqual(denominator, period.denominator)
+        self.assertDecimalEqual(actual_value, period.actual_value)
+
+    def test_should_update_actual_value_with_non_relative_data_update(self):
+        # Given
+        relative_data = False
+        numerator = 42
+        denominator = 100
+        new_numerator = 42
+        new_denominator = 100
+        new_actual_value = calculate_percentage(new_numerator, new_denominator)
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        period.numerator = numerator
+        period.denominator = denominator
+        period.save()
+
+        # When
+        self.create_indicator_period_update(
+            numerator=new_numerator,
+            denominator=new_denominator,
+            relative_data=relative_data
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        self.assertDecimalEqual(new_actual_value, period.actual_value)
+
+    def test_should_aggregate_update_int_data(self):
+        # Given
+        numerator = 4
+        denominator = 6
+        relative_data = True
+        percentage = calculate_percentage(numerator, denominator)
+        self.create_indicator_period_update(
+            numerator=numerator,
+            denominator=denominator,
+            relative_data=relative_data
+        )
+
+        # When
+        self.create_indicator_period_update(
+            numerator=numerator,
+            denominator=denominator,
+            relative_data=relative_data
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        self.assertDecimalEqual(percentage, period.actual_value)
+
+    @unittest.skip('Should we allow negative numerator/denominator???')
+    def test_should_aggregate_update_str_negative_data(self):
+        # Given
+        original_numerator = 5
+        decrement_numerator = -2
+        denominator = 6
+        relative_data = True
+        self.create_indicator_period_update(
+            numerator=original_numerator,
+            denominator=denominator,
+            relative_data=relative_data
+        )
+
+        # When
+        self.create_indicator_period_update(
+            numerator=decrement_numerator,
+            denominator=denominator,
+            relative_data=relative_data
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        percentage = calculate_percentage(
+            original_numerator + decrement_numerator, denominator * 2
+        )
+        self.assertEqual(percentage, period.actual_value)
+
+    def test_should_replace_update_int_data(self):
+        # Given
+        numerator = 3
+        denominator = 5
+        relative_data = False
+        self.create_indicator_period_update(
+            numerator=numerator,
+            denominator=denominator,
+            relative_data=relative_data
+        )
+
+        # When
+        new_numerator = 4
+        new_denominator = 6
+        new_percentage = calculate_percentage(
+            float(new_numerator), float(new_denominator)
+        )
+        self.create_indicator_period_update(
+            numerator=new_numerator,
+            denominator=new_denominator,
+            relative_data=relative_data
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        self.assertDecimalEqual(new_percentage, period.actual_value)
+
+    @unittest.skip('Will not work with calculated percentages!')
+    def test_should_replace_with_non_numeric_update_data(self):
+        # FIXME: Non-numeric updates should probably be removed anyway, for any
+        # kind of indicator measure. They could be pulled out into a separate
+        # measure of their own, if required!
+        pass
+
+    # Single child tests
+
+    def test_should_copy_child_period_value(self):
+        # Given
+        numerator = 5
+        denominator = 10
+        self.period.numerator = numerator
+        self.period.denominator = denominator
+        self.period.save()
+        self.child_project.import_results()
+        child_numerator = 6
+        child_denominator = 10
+        child_percentage = calculate_percentage(
+            child_numerator, child_denominator
+        )
+        child_indicator_period = self.get_child_period(self.period)
+
+        # When
+        self.create_indicator_period_update(
+            numerator=child_numerator,
+            denominator=child_denominator,
+            indicator_period=child_indicator_period
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        self.assertDecimalEqual(child_percentage, period.actual_value)
+        self.assertDecimalEqual(child_numerator, period.numerator)
+        self.assertDecimalEqual(child_denominator, period.denominator)
+
+    def test_should_not_aggregate_child_period_value(self):
+        # Given
+        self.parent_project.aggregate_children = False
+        self.parent_project.save()
+        numerator = 5
+        denominator = 10
+        percentage = calculate_percentage(numerator, denominator)
+        self.period.numerator = numerator
+        self.period.denominator = denominator
+        self.period.save()
+        self.child_project.import_results()
+        child_numerator = 6
+        child_denominator = 10
+        child_indicator_period = self.get_child_period(self.period)
+
+        # When
+        self.create_indicator_period_update(
+            numerator=child_numerator,
+            denominator=child_denominator,
+            indicator_period=child_indicator_period
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        self.assertDecimalEqual(percentage, period.actual_value)
+        self.assertDecimalEqual(numerator, period.numerator)
+        self.assertDecimalEqual(denominator, period.denominator)
+
+    # Multiple children tests
+
+    def test_should_aggregate_child_indicators_values(self):
+        # Given
+        numerator = 5
+        denominator = 10
+        self.period.numerator = numerator
+        self.period.denominator = denominator
+        self.period.save()
+        child_project_2 = self.create_child_project('Child project 2')
+        self.child_project.import_results()
+        child_project_2.import_results()
+        child_period = self.get_child_period(self.period)
+        child_period_2 = self.get_child_period(self.period, child_project_2)
+        child_numerator = 6
+        child_denominator = 10
+
+        # When
+        self.create_indicator_period_update(
+            numerator=child_numerator,
+            denominator=child_denominator,
+            indicator_period=child_period
+        )
+        self.create_indicator_period_update(
+            numerator=child_numerator,
+            denominator=child_denominator,
+            indicator_period=child_period_2
+        )
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=self.period.id)
+        percentage = calculate_percentage(child_numerator, child_denominator)
+        self.assertDecimalEqual(percentage, period.actual_value)
+        self.assertDecimalEqual(child_numerator*2, period.numerator)
+        self.assertDecimalEqual(child_denominator*2, period.denominator)
+
+    # FIXME: Add test for relative update
+    # FIXME: Add test for negative relative update
+    # FIXME: Add test for absolute update
+
+    def test_should_not_aggregate_excluded_child_period_values(self):
         # Given
         child_project_2 = self.create_child_project('Child project 2')
         self.child_project.import_results()
         child_project_2.import_results()
-        child_indicator_period = self.get_child_period(self.period)
-        child_indicator_period_2 = self.get_child_period(self.period, child_project_2)
-        value = 5
+        child_project_2.aggregate_to_parent = False
+        child_project_2.save()
+        child_period = self.get_child_period(self.period)
+        child_period_2 = self.get_child_period(self.period, child_project_2)
+        child_numerator = 6
+        child_denominator = 10
 
         # When
-        self.create_indicator_period_update(data=value, indicator_period=child_indicator_period)
-        self.create_indicator_period_update(data=value, indicator_period=child_indicator_period_2)
+        self.create_indicator_period_update(
+            numerator=child_numerator,
+            denominator=child_denominator,
+            indicator_period=child_period
+        )
+        self.create_indicator_period_update(
+            numerator=child_numerator,
+            denominator=child_denominator,
+            indicator_period=child_period_2
+        )
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(value), period.actual_value)
+        percentage = calculate_percentage(child_numerator, child_denominator)
+        self.assertDecimalEqual(percentage, period.actual_value)
+        self.assertDecimalEqual(child_numerator, period.numerator)
+        self.assertDecimalEqual(child_denominator, period.denominator)
+
+    def create_indicator_period_update(self, numerator, denominator, relative_data=True, indicator_period=None):
+        indicator_period_data = IndicatorPeriodData.objects.create(
+            period=(
+                indicator_period if indicator_period is not None else
+                self.period
+            ),
+            user=self.user,
+            numerator=numerator,
+            denominator=denominator,
+            relative_data=relative_data,
+            status=self.APPROVED
+        )
+        return indicator_period_data
+
+    def assertDecimalEqual(self, first, second, precision=2, msg=''):
+        return self.assertEqual(
+            round(Decimal(first), precision),
+            round(Decimal(second), precision)
+        )

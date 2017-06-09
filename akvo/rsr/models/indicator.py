@@ -24,6 +24,12 @@ from django.dispatch import receiver
 
 from sorl.thumbnail.fields import ImageField
 
+PERCENTAGE_MEASURE = '2'
+
+
+def calculate_percentage(numerator, denominator):
+    return Decimal(numerator) * Decimal(100) / Decimal(denominator)
+
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
@@ -194,7 +200,7 @@ class Indicator(models.Model):
         Returns True if this indicator has percentage as a measure and has children that aggregate
         to this indicator.
         """
-        if self.measure == '2' and self.is_parent_indicator() and \
+        if self.measure == PERCENTAGE_MEASURE and self.is_parent_indicator() and \
                 self.result.project.aggregate_children and \
                 any([ind.result.project.aggregate_to_parent for ind in self.child_indicators.all()]):
             return True
@@ -301,6 +307,18 @@ class IndicatorPeriod(models.Model):
         help_text=_(u'Here you can provide extra information on the actual value, if needed '
                     u'(for instance, why the actual value differs from the target value).')
     )
+    numerator = models.DecimalField(
+        _(u'numerator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The numerator for a calculated percentage')
+    )
+    denominator = models.DecimalField(
+        _(u'denominator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The denominator for a calculated percentage')
+    )
 
     def __unicode__(self):
         if self.period_start:
@@ -328,6 +346,14 @@ class IndicatorPeriod(models.Model):
 
     def save(self, *args, **kwargs):
         actual_value_changed = False
+
+        if (
+            self.indicator.measure == PERCENTAGE_MEASURE and
+            self.numerator is not None and
+            self.denominator not in {0, '0', None}
+        ):
+            percentage = calculate_percentage(self.numerator, self.denominator)
+            self.actual_value = str(percentage)
 
         # When the general information of a parent period is updated, this information should also
         # be reflected in the child periods.
@@ -418,16 +444,22 @@ class IndicatorPeriod(models.Model):
         :return Actual value of period
         """
 
-        # If this period is a parent period, the sum or average of the children should be
-        # re-calculated
+        # If this period is a parent period, the sum or average of the children
+        # should be re-calculated
         if not only_self and self.is_parent_period() and \
                 self.indicator.result.project.aggregate_children:
             return self.recalculate_children(save)
 
         prev_val = '0'
+        if self.indicator.measure == PERCENTAGE_MEASURE:
+            prev_num = '0'
+            prev_den = '0'
 
         # For every approved update, add up the new value (if possible)
         for update in self.data.filter(status='A').order_by('created_at'):
+            if self.indicator.measure == PERCENTAGE_MEASURE:
+                update.period_numerator = prev_num
+                update.period_denominator = prev_den
             update.period_actual_value = prev_val
             update.save(recalculate=False)
 
@@ -437,25 +469,43 @@ class IndicatorPeriod(models.Model):
             if update.relative_data:
                 try:
                     # Try to add up the update to the previous actual value
-                    prev_val = str(Decimal(prev_val) + Decimal(update.data))
+                    if self.indicator.measure == PERCENTAGE_MEASURE:
+                        prev_num = str(Decimal(prev_num) + Decimal(update.numerator))
+                        prev_den = str(Decimal(prev_den) + Decimal(update.denominator))
+                        prev_val = str(Decimal(calculate_percentage(float(prev_num), float(prev_den))))
+                    else:
+                        prev_val = str(Decimal(prev_val) + Decimal(update.data))
                 except InvalidOperation:
                     # If not possible, the update data or previous value is a normal string
+                    if self.indicator.measure == PERCENTAGE_MEASURE:
+                        prev_num = update.numerator
+                        prev_den = update.denominator
                     prev_val = update.data
             else:
+                if self.indicator.measure == PERCENTAGE_MEASURE:
+                    prev_num = update.numerator
+                    prev_den = update.denominator
                 prev_val = update.data
 
         # For every non-approved update, set the data to the current data
         for update in self.data.exclude(status='A'):
             update.period_actual_value = prev_val
+            if self.indicator.measure == PERCENTAGE_MEASURE:
+                update.period_numerator = prev_num
+                update.period_denominator = prev_den
             update.save(recalculate=False)
 
         # Special case: only_self and no data should give an empty string instead of '0'
         if only_self and not self.data.exists():
             prev_val = ''
+            # FIXME: Do we need a special case here with numerator and denominator???
 
         # Finally, update the actual value of the period itself
         if save:
             self.actual_value = prev_val
+            if self.indicator.measure == PERCENTAGE_MEASURE:
+                self.numerator = prev_num
+                self.denominator = prev_den
             self.save()
 
         # Return the actual value of the period itself
@@ -472,13 +522,19 @@ class IndicatorPeriod(models.Model):
         :param save; Boolean, saves to period if True
         :return Actual value of period
         """
-        if self.indicator.measure == '2':
-            new_value = self.child_periods_average()
+        if self.indicator.measure == PERCENTAGE_MEASURE:
+            numerator, denominator = self.child_periods_percentage()
+            new_value = (
+                calculate_percentage(numerator, denominator) if denominator is not '0' else '0'
+            )
         else:
             new_value = self.child_periods_sum(include_self=True)
 
         if save:
             self.actual_value = new_value
+            if self.indicator.measure == PERCENTAGE_MEASURE:
+                self.numerator = numerator
+                self.denominator = denominator
             self.save()
 
         return new_value
@@ -552,7 +608,7 @@ class IndicatorPeriod(models.Model):
             )
         return child_periods
 
-    # TODO: refactor child_periods_sum() and child_periods_average() and child_periods_with_data(),
+    # TODO: refactor child_periods_sum() and child_periods_with_data(),
     # they use each other in very inefficient ways I think
     def child_periods_sum(self, include_self=False):
         """
@@ -565,12 +621,11 @@ class IndicatorPeriod(models.Model):
         period_sum = 0
 
         # Loop through the child periods and sum up all the values
-        for period in self.child_periods.all():
-            if period.indicator.result.project.aggregate_to_parent and period.actual_value:
-                try:
-                    period_sum += Decimal(period.actual_value)
-                except (InvalidOperation, TypeError):
-                    pass
+        for period in self.child_periods_with_data(only_aggregated=True):
+            try:
+                period_sum += Decimal(period.actual_value)
+            except (InvalidOperation, TypeError):
+                pass
 
         if include_self:
             try:
@@ -580,22 +635,21 @@ class IndicatorPeriod(models.Model):
 
         return str(period_sum)
 
-    def child_periods_average(self):
-        """
-        Returns the average of child indicator periods.
+    def child_periods_percentage(self):
+        """Returns percentage calculated from the child periods.
 
-        :return String of the average
-        """
-        if self.indicator.result.project.aggregate_children:
-            child_periods = self.child_periods_with_data()
-            for child in child_periods:
-                if not (child.indicator.result.project.aggregate_to_parent and child.actual_value):
-                    child_periods = child_periods.exclude(pk=child.pk)
+        :return String of numerator and denominator
 
-            number_of_child_periods = child_periods.count()
-            if number_of_child_periods > 0:
-                return str(Decimal(self.child_periods_sum()) / number_of_child_periods)
-        return '0'
+        """
+        period_numerator = 0
+        period_denominator = 0
+        for period in self.child_periods_with_data(only_aggregated=True):
+            try:
+                period_numerator += Decimal(period.numerator)
+                period_denominator += Decimal(period.denominator)
+            except (InvalidOperation, TypeError):
+                pass
+        return str(period_numerator), str(period_denominator)
 
     def adjacent_period(self, next_period=True):
         """
@@ -753,12 +807,32 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
 
+    numerator = models.DecimalField(
+        _(u'numerator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The numerator for a calculated percentage')
+    )
+    denominator = models.DecimalField(
+        _(u'denominator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The denominator for a calculated percentage')
+    )
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'indicator period data')
         verbose_name_plural = _(u'indicator period data')
 
     def save(self, recalculate=True, *args, **kwargs):
+        if (
+                self.period.indicator.measure == PERCENTAGE_MEASURE and
+                self.numerator is not None and
+                self.denominator not in {0, '0', None}
+        ):
+            self.data = calculate_percentage(self.numerator, self.denominator)
+
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
         # In case the status is approved, recalculate the period
