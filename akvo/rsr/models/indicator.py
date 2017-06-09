@@ -534,7 +534,7 @@ class IndicatorPeriod(models.Model):
         """
         return self.child_periods.count() > 0
 
-    def child_periods_with_data(self):
+    def child_periods_with_data(self, only_aggregated=False):
         """
         Returns the child indicator periods with numeric data
         """
@@ -545,7 +545,12 @@ class IndicatorPeriod(models.Model):
                 children_with_data += [child.pk]
             except (InvalidOperation, TypeError):
                 pass
-        return self.child_periods.filter(pk__in=children_with_data)
+        child_periods = self.child_periods.filter(pk__in=children_with_data)
+        if only_aggregated:
+            child_periods = child_periods.filter(
+                indicator__result__project__aggregate_to_parent=True
+            )
+        return child_periods
 
     # TODO: refactor child_periods_sum() and child_periods_average() and child_periods_with_data(),
     # they use each other in very inefficient ways I think
