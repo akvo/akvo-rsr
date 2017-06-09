@@ -849,15 +849,15 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         if self.relative_data:
             try:
-                add_up = Decimal(self.data) + Decimal(self.period_actual_value)
+                add_up = Decimal(self.data) + Decimal(self.period.actual_value)
                 relative = '+' + str(self.data) if self.data >= 0 else str(self.data)
                 return "{} ({})".format(str(add_up), relative)
             except (InvalidOperation, TypeError):
                 return self.data
         else:
             try:
-                substract = Decimal(self.data) - Decimal(self.period_actual_value)
-                relative = '+' + str(substract) if substract >= 0 else str(substract)
+                subtract = Decimal(self.data) - Decimal(self.period.actual_value)
+                relative = '+' + str(subtract) if subtract >= 0 else str(subtract)
                 return "{} ({})".format(self.data, relative)
             except (InvalidOperation, TypeError):
                 return self.data
