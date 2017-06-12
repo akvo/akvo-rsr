@@ -28,6 +28,8 @@ import * as c from '../../const.js';
 import {
     updateFormOpen,
     updateFormClose,
+    selectPeriodsThatNeedReporting,
+    showUpdates,
 } from "../../actions/ui-actions"
 
 import {
@@ -43,6 +45,12 @@ import {
     FileReaderInput,
     ToggleButton,
 } from '../common';
+
+import {
+    getNeedReportingPeriods,
+    getPendingUpdates,
+    getUpdatesForApprovedPeriods,
+} from "../../selectors";
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -341,6 +349,10 @@ const pruneForPOST = (update) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
+        ui: store.ui,
+        needReportingPeriods: getNeedReportingPeriods(store),
+        draftUpdates: getPendingUpdates(store),
+        approvedUpdates: getUpdatesForApprovedPeriods(store),
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
@@ -365,6 +377,8 @@ export default class UpdateForm extends React.Component {
         this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.formClose = this.formClose.bind(this);
+        this.refreshFilter = this.refreshFilter.bind(this);
+        this.successCallback = this.successCallback.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -476,8 +490,39 @@ export default class UpdateForm extends React.Component {
         updateFormClose(id);
     }
 
+    refreshFilter() {
+        const filter = this.props.ui.activeFilter;
+        switch (filter) {
+            case c.FILTER_NEED_REPORTING: {
+                selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
+                break;
+            }
+            case c.FILTER_SHOW_DRAFT: {
+                showUpdates(this.props.draftUpdates, true);
+                break;
+            }
+            case c.FILTER_SHOW_APPROVED: {
+                showUpdates(this.props.approvedUpdates, false, true);
+                break;
+            }
+        }
+    }
+
+    successCallback(id) {
+        this.formClose.bind(id);
+        // TODO: calling refreshFilter here breaks when deleting an update as
+        // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
+        // that has just been approved showing in the Need reporting filter view.
+        // Need to find a way to let the state change drive the changing of the hidden panels
+
+        // this.refreshFilter(); // Breaks when deleting an update!!!
+    };
+
     saveUpdate(e) {
         function setUpdateStatus(update, action, userId) {
+            /*
+            Set the status field of the update according to the action taken
+             */
             switch(action) {
                 case c.UPDATE_ACTION_SAVE: {
                     if (update.status === c.UPDATE_STATUS_NEW) {
@@ -502,7 +547,18 @@ export default class UpdateForm extends React.Component {
             return update;
         }
 
+
+        const callbacksFactory = (id, errorMessage) => {
+            return {
+                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, id),
+                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                    this, this.state.updateAlertName, errorMessage
+                )
+            };
+        };
+
         let update = Object.assign({}, this.props.update),
+            //The id of the button is used to indicate the action taken
             action = e.target.id;
         if (!String(update.data).trim()) {
             if (action === c.UPDATE_ACTION_SAVE) {
@@ -516,25 +572,18 @@ export default class UpdateForm extends React.Component {
             //NOOP if we're already talking to the backend
             return;
         }
-        //The id of the button is used to indicate the action taken
+
         update = setUpdateStatus(update, action, this.props.user.id);
-        const callbacksFactory = (errorMessage) => {
-            return {
-                [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
-                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                    this, this.state.updateAlertName, errorMessage
-                )
-            };
-        };
+
         if (isNewUpdate(update)) {
             saveUpdateToBackend(
                 endpoints.updates_and_comments(), pruneForPOST(update),
-                this.props.collapseId, callbacksFactory(_('update_not_created'))
+                this.props.collapseId, callbacksFactory(update.id, _('update_not_created'))
             );
         } else {
             updateUpdateToBackend(
                 endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                this.props.collapseId, callbacksFactory(_("update_not_saved"))
+                this.props.collapseId, callbacksFactory(update.id, _("update_not_saved"))
             );
         }
     }
@@ -544,10 +593,17 @@ export default class UpdateForm extends React.Component {
             //NOOP if we're already talking to the backend (technically not really needed)
             return;
         } else {
-            const url = endpoints.update_and_comments(this.props.update.id);
-            const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
+            const update = this.props.update;
+            const url = endpoints.update_and_comments(update.id);
+            const deleteUpdateAlertName = 'DeleteUpdateAlert-' + update.period;
             const callbacks = {
-                undefined,
+
+                // NOTE: the success callback key, c.UPDATE_MODEL_FULFILLED, is incorrect in
+                // relation to the actual event, c.UPDATE_MODEL_DELETE_FULFILLED, that is triggered
+                // when an object has been successfully deleted from a model
+                // [c.UPDATE_MODEL_FULFILLED]: this.refreshFilter.bind(this),
+
+                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, update.id),
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, deleteUpdateAlertName, _("update_not_deleted")
                 )
