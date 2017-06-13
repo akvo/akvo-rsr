@@ -431,6 +431,9 @@ class IndicatorPeriod(models.Model):
             update.period_actual_value = prev_val
             update.save(recalculate=False)
 
+            if update.data is None:
+                continue
+
             if update.relative_data:
                 try:
                     # Try to add up the update to the previous actual value
