@@ -208,16 +208,26 @@ export function levelAbove(model, compare) {
 }
 
 
+export function levelBelow(model, compare) {
+    return c.MODEL_INDEX[model] > c.MODEL_INDEX[compare];
+}
+
+
 export function hideMe(model, parentId, objectId) {
-    // determine if the collapse panel should be hidden
-    // find the parent collapse
-    // const visibleKeys = store.getState().visibleKeys;
+    /*
+    determine if I (objectId) should be hidden
+     */
     const ui = store.getState().ui;
     if (ui.hide && ui.visibleKeys) {
+        // first check if I'm below the ui.hide level, if so I should be visible
+        if (levelBelow(model, ui.hide)) {
+            return false;
+        }
+        // otherwise, find the parent collapse, check that it's in ui.visibleKeys
         const parentCollapse = ui.visibleKeys[collapseId(model, parentId)];
         // if we have a parent, check if I'm one of the open panels
         const mePresent = parentCollapse && parentCollapse.find((id)=> id === String(objectId));
-        // return true if I'm not present and this.props.ui.hide is not false
+        // hide me if I'm not present and this.props.ui.hide is not false
         return !mePresent;
     }
     return false;

@@ -219,7 +219,8 @@ export const getNeedReportingPeriods = createSelector(
             // Only filter if periodChildren !== {}
             id => Object.keys(periodChildren).length !== 0 &&
                 periodChildren[id].filter(
-                    updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT
+                    updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
+                                updateObjects[updateId].status !== c.UPDATE_STATUS_NEW
                 ).length === 0
             )
 );
