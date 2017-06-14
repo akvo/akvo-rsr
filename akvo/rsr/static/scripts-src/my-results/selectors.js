@@ -147,8 +147,7 @@ export const getPendingUpdates = createSelector(
     (updateIds, periodObjects, updateObjects) => {
         return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
             (
-                updateObjects[id].status === c.UPDATE_STATUS_PENDING ||
-                updateObjects[id].status === c.UPDATE_STATUS_REVISION
+                updateObjects[id].status === c.UPDATE_STATUS_PENDING
             ) && periodObjects[updateObjects[id].period].locked == false
         );
     }
@@ -220,7 +219,8 @@ export const getNeedReportingPeriods = createSelector(
             id => Object.keys(periodChildren).length !== 0 &&
                 periodChildren[id].filter(
                     updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
-                                updateObjects[updateId].status !== c.UPDATE_STATUS_NEW
+                                updateObjects[updateId].status !== c.UPDATE_STATUS_NEW &&
+                                updateObjects[updateId].status !== c.UPDATE_STATUS_REVISION
                 ).length === 0
             )
 );
