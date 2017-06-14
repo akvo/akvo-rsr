@@ -560,7 +560,10 @@ export default class UpdateForm extends React.Component {
         let update = Object.assign({}, this.props.update),
             //The id of the button is used to indicate the action taken
             action = e.target.id;
-        if (!String(update.data).trim()) {
+        if (this.props.updates.changing) {
+            //NOOP if we're already talking to the backend
+            return;
+        } else if (!String(update.data).trim()) {
             if (action === c.UPDATE_ACTION_SAVE) {
                 // Explicitly empty data, only allowed when saving a draft
                 update.data = null;
@@ -568,9 +571,6 @@ export default class UpdateForm extends React.Component {
                 this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
                 return;
             }
-        } else if (this.props.updates.changing) {
-            //NOOP if we're already talking to the backend
-            return;
         }
 
         update = setUpdateStatus(update, action, this.props.user.id);
