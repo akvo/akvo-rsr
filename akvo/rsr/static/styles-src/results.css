@@ -3360,6 +3360,10 @@ div.iatiFilters {
     margin-right: 10px; }
   .periodMenuBar .periodOverview .overviewBtn {
     margin: 10px 0 0 5px; }
+  .periodMenuBar .loading {
+    margin-top: 20px;
+    margin-left: 5px;
+    font-size: 120%; }
   .periodMenuBar .periodBtns {
     padding: 10px;
     background: rgba(32, 32, 36, 0.05); }
