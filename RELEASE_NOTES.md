@@ -1,14 +1,23 @@
+# Akvo RSR – Version 3.27 Lima
+
+Date: 2017-06-16
+
+## Continued improvements
+
+An assortment of important beta features for the new RSR Results Framework,
+which is being pilot by limited number of RSR partners
+
 # Akvo RSR – Version 3.26.2 Panama City (hot-fix)
 
 Date: 2017-06-01
 
 ## Issues Resolved
 
-Fix missing custom stylesheet for Akvo
-pages [#2710](https://github.com/akvo/akvo-rsr/issues/2710)
+Missing custom stylesheet for Akvo
+pages has been fixed - [#2710](https://github.com/akvo/akvo-rsr/issues/2710)
 
-Fix problem with react elements not being closed when clicking outside
-them [#2708](https://github.com/akvo/akvo-rsr/issues/2708)
+Problem with react elements not being closed when clicking outside
+them corrected - [#2708](https://github.com/akvo/akvo-rsr/issues/2708)
 
 # Akvo RSR – Version 3.26.1 Panama City (hot-fix)
 
@@ -16,12 +25,12 @@ Date: 2017-05-30
 
 ## Continued improvements
 
-Allow creating organization specific reports that are visible only to users
+Creating organization specific reports, visible only to users
 belonging to those organizations for which the report is
-created [#2697](https://github.com/akvo/akvo-rsr/issues/2697)
+created, has been enabled - [#2697](https://github.com/akvo/akvo-rsr/issues/2697)
 
-Make dynamic filters more responsive by using client side caching of
-options [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
+Dynamic filters made more responsive by using client side caching of
+options - [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
 
 ## Issues Resolved
 
@@ -34,26 +43,26 @@ Date: 2017-05-25
 
 ## Continued improvements
 
-Advanced filters on the project directory are now dynamic -- Selecting an option
-for one of the filters, changes the options shown in the other filters
+Advanced filters on the project directory are now dynamic -- selecting an option
+for one filter, changes the options shown in the other filters
 accordingly - [#2552](https://github.com/akvo/akvo-rsr/issues/2552)
 
-Admin action to mark projects as
+Admin action created to mark projects as
 complete [#2671](https://github.com/akvo/akvo-rsr/issues/2671)
 
-Open related links in new
+Related links now open in a new
 tab - [#2656](https://github.com/akvo/akvo-rsr/issues/2656)
 
 ## Issues Resolved
 
-Indicator descriptions missing in IATI
-file [#2686](https://github.com/akvo/akvo-rsr/issues/2686)
+Missing indicator descriptions in IATI
+file now available - [#2686](https://github.com/akvo/akvo-rsr/issues/2686)
 
-Fixed problem with saving document category in some
-cases - [#2658](https://github.com/akvo/akvo-rsr/issues/2658)
+Problem with saving document category in some
+cases fixed - [#2658](https://github.com/akvo/akvo-rsr/issues/2658)
 
-Fixed user management page timeouts for users with too many
-employments - [#2651](https://github.com/akvo/akvo-rsr/issues/2651)
+User management page timeouts for users with too many
+employments fixed - [#2651](https://github.com/akvo/akvo-rsr/issues/2651)
 
 # Akvo RSR – Version 3.25.1 Monte Video hotfix
 

@@ -208,16 +208,26 @@ export function levelAbove(model, compare) {
 }
 
 
+export function levelBelow(model, compare) {
+    return c.MODEL_INDEX[model] > c.MODEL_INDEX[compare];
+}
+
+
 export function hideMe(model, parentId, objectId) {
-    // determine if the collapse panel should be hidden
-    // find the parent collapse
-    // const visibleKeys = store.getState().visibleKeys;
+    /*
+    determine if I (objectId) should be hidden
+     */
     const ui = store.getState().ui;
     if (ui.hide && ui.visibleKeys) {
+        // first check if I'm below the ui.hide level, if so I should be visible
+        if (levelBelow(model, ui.hide)) {
+            return false;
+        }
+        // otherwise, find the parent collapse, check that it's in ui.visibleKeys
         const parentCollapse = ui.visibleKeys[collapseId(model, parentId)];
         // if we have a parent, check if I'm one of the open panels
         const mePresent = parentCollapse && parentCollapse.find((id)=> id === String(objectId));
-        // return true if I'm not present and this.props.ui.hide is not false
+        // hide me if I'm not present and this.props.ui.hide is not false
         return !mePresent;
     }
     return false;
@@ -324,6 +334,23 @@ function lineageKeys(model, id) {
     )
 }
 
+export function closeNodes(model, ids) {
+    // Closes nodes with the given ids
+
+    // NOTE: This code assumes that all the nodes at a particular level are
+    // closed, i.e., if a node's id is present in the list of ids, all it's
+    // siblings' ids are also present in the list of ids.
+
+    const storeModel = store.getState().models[model];
+    // Construct a list of collapse keys, based on ids
+    const collapse_ids = ids.map((id) => {
+        const parent_id = parentModelName(model)?storeModel.objects[id][c.PARENT_FIELD[model]]:model;
+        return collapseId(model, parent_id);
+    });
+    const unique_collapse_ids = new Set(collapse_ids);
+    // Collapse/close all children of the collected collapse keys
+    [...unique_collapse_ids].map((id) => collapseChange(id, []));
+}
 
 export function openNodes(model, ids) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model

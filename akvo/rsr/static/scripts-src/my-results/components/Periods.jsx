@@ -1,10 +1,11 @@
 /*
- Akvo RSR is covered by the GNU Affero General Public License.
- See more details in the license.txt file located at the root folder of the
- Akvo RSR module. For additional details on the GNU license please see
- < http://www.gnu.org/licenses/agpl.html >.
+   Akvo RSR is covered by the GNU Affero General Public License.
+   See more details in the license.txt file located at the root folder of the
+   Akvo RSR module. For additional details on the GNU license please see
+   < http://www.gnu.org/licenses/agpl.html >.
  */
-import React, { PropTypes } from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update  from 'immutability-helper';
@@ -169,10 +170,10 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
                 <li>{periodDate}</li>
                 <li>Target value: <span>{period.target_value}</span></li>
                 <li>Actual value: <span>{actualValue}</span></li>
-                <li>{lockStatus}</li>           
+                <li>{lockStatus}</li>
             </ul>
 
-            
+
         </span>
     )
 };
@@ -259,12 +260,15 @@ export default class Periods extends React.Component {
             (id) => {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
-                const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
+                const ui = this.props.ui;
+                const isChecked = new Set(ui[c.SELECTED_PERIODS]).has(id);
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
                 let newUpdateButton, delUpdateAlert;
-                if (!period.locked) {
+                if (!period.locked && (
+                    ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
+                )) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.

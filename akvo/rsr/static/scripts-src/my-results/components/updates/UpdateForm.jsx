@@ -1,12 +1,13 @@
 /*
-    Akvo RSR is covered by the GNU Affero General Public License.
-    See more details in the license.txt file located at the root folder of the
-    Akvo RSR module. For additional details on the GNU license please see
-    < http://www.gnu.org/licenses/agpl.html >.
+   Akvo RSR is covered by the GNU Affero General Public License.
+   See more details in the license.txt file located at the root folder of the
+   Akvo RSR module. For additional details on the GNU license please see
+   < http://www.gnu.org/licenses/agpl.html >.
  */
 
 
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
@@ -27,6 +28,8 @@ import * as c from '../../const.js';
 import {
     updateFormOpen,
     updateFormClose,
+    selectPeriodsThatNeedReporting,
+    showUpdates,
 } from "../../actions/ui-actions"
 
 import {
@@ -37,7 +40,17 @@ import {
     isNewUpdate,
 } from '../../utils.js';
 
-import { FileReaderInput } from '../common';
+import {
+    ButtonLabel,
+    FileReaderInput,
+    ToggleButton,
+} from '../common';
+
+import {
+    getNeedReportingPeriods,
+    getPendingUpdates,
+    getUpdatesForApprovedPeriods,
+} from "../../selectors";
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -120,9 +133,9 @@ ActualValueDescription.propTypes = {
 
 class FileUpload extends React.Component {
     static propTypes = {
-        update: React.PropTypes.object.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        removeAttachment: React.PropTypes.func.isRequired,
+        update: PropTypes.object.isRequired,
+        onChange: PropTypes.func.isRequired,
+        removeAttachment: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -172,9 +185,9 @@ class FileUpload extends React.Component {
 
 class ImageUpload extends React.Component {
     static propTypes = {
-        update: React.PropTypes.object.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        removeAttachment: React.PropTypes.func.isRequired,
+        update: PropTypes.object.isRequired,
+        onChange: PropTypes.func.isRequired,
+        removeAttachment: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -247,13 +260,13 @@ const Attachments = ({update, onChange, removeAttachment}) => {
 };
 
 Attachments.propTypes = {
-    update: React.PropTypes.object.isRequired,
-    onChange: React.PropTypes.func.isRequired,
-    removeAttachment: React.PropTypes.func.isRequired,
+    update: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+    removeAttachment: PropTypes.func.isRequired,
 };
 
 
-const UpdateActionButton = ({action, saveUpdate}) => {
+const UpdateActionButton = ({action, saveUpdate, disabled}) => {
     const labels = {
         [c.UPDATE_ACTION_SAVE]: _('save'),
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
@@ -262,10 +275,16 @@ const UpdateActionButton = ({action, saveUpdate}) => {
     };
     return (
         <li role="presentation" className={action}>
-            <a id={action} onClick={saveUpdate}
-               className="btn btn-default btn-xs">{labels[action]}</a>
+            <ToggleButton id={action} onClick={saveUpdate} label={labels[action]}
+                          disabled={disabled} className="btn btn-default btn-xs"/>
         </li>
     )
+};
+
+UpdateActionButton.propTypes = {
+    action: PropTypes.string.isRequired,
+    saveUpdate: PropTypes.func.isRequired,
+    disabled: PropTypes.bool.isRequired,
 };
 
 
@@ -273,8 +292,14 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
     //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
     // can be shown when saving is under way
     function getActionButtons(role, updateStatus) {
+        let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
-            action => <UpdateActionButton action={action} saveUpdate={callbacks.saveUpdate} />
+            action => {
+                const disabled = (update.data === null || update.data === "") &&
+                                  action !== c.UPDATE_ACTION_SAVE;
+                return <UpdateActionButton key={++btnKey} action={action}
+                                           saveUpdate={callbacks.saveUpdate} disabled={disabled}/>
+            }
         )
     }
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
@@ -283,14 +308,14 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
         <div className="menuAction">
         {!isNewUpdate(update) && isAllowedToDelete(user, update)?
             <div role="presentation" className="removeUpdate">
-                <a onClick={callbacks.deleteUpdate}
-                   className="btn btn-default btn-xs">{_('delete')}</a>
+                <ToggleButton onClick={callbacks.deleteUpdate} label={_('delete')}
+                              className="btn btn-default btn-xs"/>
             </div>
         : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
-                    <a onClick={callbacks.onCancel}
-                       className="btn btn-link btn-xs">{_('cancel')}</a>
+                    <ToggleButton onClick={callbacks.onCancel} label={_('cancel')}
+                                  className="btn btn-link btn-xs"/>
                 </li>
                 {actionButtons}
                 <span></span>
@@ -300,6 +325,7 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
 };
 
 UpdateFormButtons.propTypes = {
+    user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
 };
@@ -323,6 +349,10 @@ const pruneForPOST = (update) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
+        ui: store.ui,
+        needReportingPeriods: getNeedReportingPeriods(store),
+        draftUpdates: getPendingUpdates(store),
+        approvedUpdates: getUpdatesForApprovedPeriods(store),
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
@@ -347,6 +377,8 @@ export default class UpdateForm extends React.Component {
         this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.formClose = this.formClose.bind(this);
+        this.refreshFilter = this.refreshFilter.bind(this);
+        this.successCallback = this.successCallback.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -458,8 +490,39 @@ export default class UpdateForm extends React.Component {
         updateFormClose(id);
     }
 
+    refreshFilter() {
+        const filter = this.props.ui.activeFilter;
+        switch (filter) {
+            case c.FILTER_NEED_REPORTING: {
+                selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
+                break;
+            }
+            case c.FILTER_SHOW_DRAFT: {
+                showUpdates(this.props.draftUpdates, true);
+                break;
+            }
+            case c.FILTER_SHOW_APPROVED: {
+                showUpdates(this.props.approvedUpdates, false, true);
+                break;
+            }
+        }
+    }
+
+    successCallback(id) {
+        this.formClose.bind(id);
+        // TODO: calling refreshFilter here breaks when deleting an update as
+        // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
+        // that has just been approved showing in the Need reporting filter view.
+        // Need to find a way to let the state change drive the changing of the hidden panels
+
+        // this.refreshFilter(); // Breaks when deleting an update!!!
+    };
+
     saveUpdate(e) {
         function setUpdateStatus(update, action, userId) {
+            /*
+            Set the status field of the update according to the action taken
+             */
             switch(action) {
                 case c.UPDATE_ACTION_SAVE: {
                     if (update.status === c.UPDATE_STATUS_NEW) {
@@ -484,35 +547,44 @@ export default class UpdateForm extends React.Component {
             return update;
         }
 
-        let update = Object.assign({}, this.props.update);
-        if (!String(update.data).trim()) {
-            this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
-        } else if (this.props.updates.changing) {
+
+        const callbacksFactory = (id, errorMessage) => {
+            return {
+                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, id),
+                [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                    this, this.state.updateAlertName, errorMessage
+                )
+            };
+        };
+
+        let update = Object.assign({}, this.props.update),
+            //The id of the button is used to indicate the action taken
+            action = e.target.id;
+        if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
-        } else {
-            //The id of the button is used to indicate the action taken
-            const action = e.target.id;
-            update = setUpdateStatus(update, action, this.props.user.id);
-            const callbacksFactory = (errorMessage) => {
-                return {
-                    [c.UPDATE_MODEL_FULFILLED]: this.formClose.bind(null, update.id),
-                    [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                        this, this.state.updateAlertName, errorMessage
-                    )
-                };
-            };
-            if (isNewUpdate(update)) {
-                saveUpdateToBackend(
-                    endpoints.updates_and_comments(), pruneForPOST(update),
-                    this.props.collapseId, callbacksFactory(_('update_not_created'))
-                );
+        } else if (!String(update.data).trim()) {
+            if (action === c.UPDATE_ACTION_SAVE) {
+                // Explicitly empty data, only allowed when saving a draft
+                update.data = null;
             } else {
-                updateUpdateToBackend(
-                    endpoints.update_and_comments(update.id), pruneForPATCH(update),
-                    this.props.collapseId, callbacksFactory(_("update_not_saved"))
-                );
+                this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
+                return;
             }
+        }
+
+        update = setUpdateStatus(update, action, this.props.user.id);
+
+        if (isNewUpdate(update)) {
+            saveUpdateToBackend(
+                endpoints.updates_and_comments(), pruneForPOST(update),
+                this.props.collapseId, callbacksFactory(update.id, _('update_not_created'))
+            );
+        } else {
+            updateUpdateToBackend(
+                endpoints.update_and_comments(update.id), pruneForPATCH(update),
+                this.props.collapseId, callbacksFactory(update.id, _("update_not_saved"))
+            );
         }
     }
 
@@ -521,10 +593,17 @@ export default class UpdateForm extends React.Component {
             //NOOP if we're already talking to the backend (technically not really needed)
             return;
         } else {
-            const url = endpoints.update_and_comments(this.props.update.id);
-            const deleteUpdateAlertName = 'DeleteUpdateAlert-' + this.props.update.period;
+            const update = this.props.update;
+            const url = endpoints.update_and_comments(update.id);
+            const deleteUpdateAlertName = 'DeleteUpdateAlert-' + update.period;
             const callbacks = {
-                undefined,
+
+                // NOTE: the success callback key, c.UPDATE_MODEL_FULFILLED, is incorrect in
+                // relation to the actual event, c.UPDATE_MODEL_DELETE_FULFILLED, that is triggered
+                // when an object has been successfully deleted from a model
+                // [c.UPDATE_MODEL_FULFILLED]: this.refreshFilter.bind(this),
+
+                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, update.id),
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, deleteUpdateAlertName, _("update_not_deleted")
                 )
@@ -601,7 +680,7 @@ export class NewUpdateButton extends React.Component {
             period: period.id,
             user_details: user,
             user: user.id,
-            data: 0,
+            data: '',
             text: '',
             relative_data: true,
             status: c.UPDATE_STATUS_NEW,
@@ -616,7 +695,7 @@ export class NewUpdateButton extends React.Component {
         return (
                 <div className="emptyUpdate">
                     <a onClick={this.newUpdate}
-                       className={'btn btn-sm btn-default newUpdate'}>                       
+                       className={'btn btn-sm btn-default newUpdate'}>
                         {_('new_update')}
                     </a>
                 </div>

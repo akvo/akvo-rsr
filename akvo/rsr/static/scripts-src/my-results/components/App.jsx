@@ -163,6 +163,29 @@ export default class App extends React.Component {
             collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
             this.setState({initialViewSet: true});
         }
+
+        const redraw = () =>
+            this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
+            !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
+            !identicalArrays(this.props.draftUpdates, nextProps.draftUpdates) ||
+            !identicalArrays(this.props.approvedUpdates, nextProps.approvedUpdates);
+
+        if (redraw()) {
+            switch(nextProps.ui.activeFilter) {
+                case c.FILTER_NEED_REPORTING: {
+                    selectPeriodsThatNeedReporting(nextProps.needReportingPeriods);
+                    break;
+                }
+                case c.FILTER_SHOW_DRAFT: {
+                    showUpdates(nextProps.draftUpdates, true);
+                    break;
+                }
+                case c.FILTER_SHOW_APPROVED: {
+                    showUpdates(nextProps.approvedUpdates, false, true);
+                    break;
+                }
+            }
+        }
     }
 
     manageButtonsAndHash(element) {
@@ -176,12 +199,10 @@ export default class App extends React.Component {
     }
 
     showDraft() {
-        showUpdates(this.props.draftUpdates, true);
         this.manageButtonsAndHash(c.FILTER_SHOW_DRAFT);
     }
 
     showApproved(set=true) {
-        showUpdates(this.props.approvedUpdates);
         this.manageButtonsAndHash(c.FILTER_SHOW_APPROVED);
     }
 
@@ -199,7 +220,6 @@ export default class App extends React.Component {
     }
 
     needReporting() {
-        selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
         this.manageButtonsAndHash(c.FILTER_NEED_REPORTING);
     }
 

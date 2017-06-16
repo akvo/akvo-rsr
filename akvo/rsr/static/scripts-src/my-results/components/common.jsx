@@ -12,13 +12,11 @@ import ReactDOM from 'react-dom';
 
 
 export const ToggleButton = (
-        {onClick, className='btn btn-sm btn-default', label, style, disabled, icon}) => {
+        {onClick, id, className='btn btn-sm btn-default', label, style, disabled, icon}) => {
     const buttonStyle = Object.assign({}, style ? style : {});
     return (
-        <button onClick={onClick}
-            className={className}
-            style={buttonStyle}
-            disabled={disabled}>
+        <button onClick={onClick} className={className} style={buttonStyle} disabled={disabled}
+                id={id}>
             {icon}
             {label}
         </button>
@@ -48,9 +46,9 @@ ButtonLabel.propTypes = {
 // Based on https://github.com/ngokevin/react-file-reader-input
 export class FileReaderInput extends React.Component {
   static propTypes = {
-    as: React.PropTypes.oneOf(['binary', 'buffer', 'text', 'url']),
-    children: React.PropTypes.any,
-    onChange: React.PropTypes.func,
+    as: PropTypes.oneOf(['binary', 'buffer', 'text', 'url']),
+    children: PropTypes.any,
+    onChange: PropTypes.func,
   };
   constructor(props) {
     // FileReader compatibility warning.

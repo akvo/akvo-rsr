@@ -9,6 +9,7 @@
 import * as c from "../const"
 import store from "../store"
 import {
+    closeNodes,
     openNodes,
     displayDate,
     setHash,
@@ -125,14 +126,17 @@ export function noHide() {
 }
 
 
-export function showUpdates(updateIds,openForm=false) {
+export function showUpdates(updateIds,openForm=false,collapse=false) {
     periodSelectReset();
-    uiHideMode(c.OBJECTS_UPDATES);
+    uiHideMode(c.OBJECTS_PERIODS);
     updateFormReset();
     if (openForm) {
         updateIds.map((id) => updateFormOpen(id));
     }
     openNodes(c.OBJECTS_UPDATES, updateIds, true);
+    if (collapse) {
+        closeNodes(c.OBJECTS_UPDATES, updateIds);
+    }
 }
 
 
