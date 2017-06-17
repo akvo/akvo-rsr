@@ -12,7 +12,11 @@
 import { createSelector } from "reselect"
 
 import * as c from "./const";
-import { idsToActiveKey } from "./utils";
+
+import {
+    idsToActiveKey,
+    isEmpty,
+} from "./utils";
 
 
 // Input selectors for models
@@ -31,7 +35,7 @@ const getUser = (store) => store.models.user;
 
 const getChildrenFactory = model => {
     const modelSelectors = {
-        // {childModelName: [parentSelector, childrenSelector}
+        // {childModelName: [parentIds, parentSelector, childrenIds, childrenSelector]}
         [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
@@ -102,7 +106,7 @@ export const getPeriodsActualValue = createSelector(
      */
     [getPeriodIds, getUpdateObjects, getPeriodsChildrenIds],
     (periodIds, updateObjects, childUpdateIds) => {
-        return periodIds.reduce((acc, periodId) => {
+        return periodIds && updateObjects && !isEmpty(childUpdateIds) && periodIds.reduce((acc, periodId) => {
             const actualValue = childUpdateIds[periodId].filter(
                 (updateId) => updateObjects[updateId].status == c.UPDATE_STATUS_APPROVED
             ).reduce(
@@ -129,7 +133,7 @@ export const getIndicatorsAggregateActualValue = createSelector(
      */
     [getIndicatorIds, getIndicatorsChildrenIds, getPeriodsActualValue],
     (indicatorIDs, childPeriodIds, actualValue) => {
-        return indicatorIDs.reduce((acc, indicatorId) => {
+        return indicatorIDs && childPeriodIds && !isEmpty(actualValue) && indicatorIDs.reduce((acc, indicatorId) => {
             const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
                 return acc + actualValue[periodId];
             }, 0);
@@ -174,13 +178,14 @@ export const getApprovedPeriods = createSelector(
         status == c.UPDATE_STATUS_APPROVED
      */
     [getPeriodIds, getPeriodObjects, getPeriodsChildrenIds, getUpdateObjects],
-    (periodIds, periodObjects, childUpdateIds, updateObjects) => periodIds && childUpdateIds && updateObjects && periodIds.filter(
-        (periodId) =>
-            periodObjects[periodId].locked === false &&
-            childUpdateIds[periodId].length > 0 &&
-            childUpdateIds[periodId].every(
-                (updateId) => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
-            )
+    (periodIds, periodObjects, childUpdateIds, updateObjects) =>
+        periodIds && childUpdateIds && updateObjects && periodIds.filter(
+            (periodId) =>
+                periodObjects[periodId].locked === false &&
+                childUpdateIds[periodId].length > 0 &&
+                childUpdateIds[periodId].every(
+                    (updateId) => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
+                )
     )
 );
 
@@ -216,13 +221,12 @@ export const getNeedReportingPeriods = createSelector(
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
         unlockedPeriods && updateObjects && unlockedPeriods.filter(
             // Only filter if periodChildren !== {}
-            id => Object.keys(periodChildren).length !== 0 &&
-                periodChildren[id].filter(
-                    updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
-                                updateObjects[updateId].status !== c.UPDATE_STATUS_NEW &&
-                                updateObjects[updateId].status !== c.UPDATE_STATUS_REVISION
-                ).length === 0
-            )
+            id => !isEmpty(periodChildren) && periodChildren[id].filter(
+                updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
+                            updateObjects[updateId].status !== c.UPDATE_STATUS_NEW &&
+                            updateObjects[updateId].status !== c.UPDATE_STATUS_REVISION
+            ).length === 0
+        )
 );
 
 

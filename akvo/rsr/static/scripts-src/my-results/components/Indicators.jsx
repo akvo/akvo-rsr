@@ -144,9 +144,9 @@ export default class Indicators extends React.Component {
     render() {
         const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
 
-        if (!indicatorIds) {
+        if (!this.props.indicators.fetched) {
             return (
-                <p>Loading...</p>
+                <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
         } else if (indicatorIds.length > 0) {
             return (
