@@ -14,6 +14,12 @@ import store from "store"
 import {collapseRecordState, resetKeys} from "./actions/collapse-actions";
 
 
+export function distinct(arr) {
+    //return an array of uniques values
+    return [...new Set(arr)];
+}
+
+
 export function identicalArrays(array1, array2) {
     // Compare two arrays and return true if they are identical, otherwise false
     try {
@@ -156,8 +162,7 @@ export const findChildrenFromCurrentState = (modelsState, parentId, childModel) 
 
 export function idsToActiveKey(ids) {
     // Return the IDs as an array of strings, used as activeKey
-    const unique = new Set(ids);
-    return [...unique].map(id => id.toString());
+    return distinct(ids).map(id => id.toString());
 }
 
 
@@ -343,13 +348,12 @@ export function closeNodes(model, ids) {
 
     const storeModel = store.getState().models[model];
     // Construct a list of collapse keys, based on ids
-    const collapse_ids = ids.map((id) => {
+    const collapseIds = ids.map((id) => {
         const parent_id = parentModelName(model)?storeModel.objects[id][c.PARENT_FIELD[model]]:model;
         return collapseId(model, parent_id);
     });
-    const unique_collapse_ids = new Set(collapse_ids);
     // Collapse/close all children of the collected collapse keys
-    [...unique_collapse_ids].map((id) => collapseChange(id, []));
+    distinct(collapseIds).map((id) => collapseChange(id, []));
 }
 
 export function openNodes(model, ids) {

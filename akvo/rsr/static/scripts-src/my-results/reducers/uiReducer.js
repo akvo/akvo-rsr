@@ -21,9 +21,10 @@
         updateForms: array of Update IDs that have open forms
  */
 
-import update  from 'immutability-helper';
+import update from 'immutability-helper';
 
 import * as c from "../const"
+import {distinct} from "../utils";
 
 
 const uiState = {
@@ -102,9 +103,8 @@ export default function uiReducer(state=uiState, action) {
             if (collapseId && visibleKeys) {
                 const key = object.id.toString();
                 if (visibleKeys[collapseId]) {
-                    const newVisibleKeys = update(visibleKeys[collapseId], {$push: [key]});
-                    const deduped = [...new Set(newVisibleKeys)];
-                    return update(state, {visibleKeys: {$merge: {[collapseId]: deduped}}});
+                    const newVisibleKeys = distinct(update(visibleKeys[collapseId], {$push: [key]}));
+                    return update(state, {visibleKeys: {$merge: {[collapseId]: newVisibleKeys}}});
                 } else {
                     return update(state, {visibleKeys: {$merge: {[collapseId]: [key]}}});
                 }
