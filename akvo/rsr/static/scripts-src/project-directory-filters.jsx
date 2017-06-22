@@ -62,8 +62,7 @@ var FilterForm = React.createClass({
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
-        if (Object.keys(this.state.selected).length > 0) {
-            this.toggleForm();
+        if (Cookies.get('showAdvancedFilters') === 'on') {
             document.querySelector('#search-view').scrollIntoView();
         }
     },
