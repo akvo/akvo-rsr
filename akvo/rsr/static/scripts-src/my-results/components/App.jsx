@@ -311,10 +311,10 @@ export default class App extends React.Component {
             <div className="col-xs-6">
             </div>;
 
-        const results = this.props.ui.allFetched ?
-            <Results parentId="results"/>
-        :
-            <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
+        // const results = this.props.ui.allFetched ?
+        //     <Results parentId="results"/>
+        // :
+        //     <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
         return (
             <div className={'periodMenuBar'}>
@@ -371,7 +371,7 @@ export default class App extends React.Component {
                         </div>
                     </div>
                 </div>
-                {results}
+                <Results parentId="results"/>
             </div>
         );
     }
