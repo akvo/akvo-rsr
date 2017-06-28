@@ -128,6 +128,7 @@ def directory(request):
         'current_org': org_filter,
         'map_projects': map_projects,
         'sectors_dict': sectors_dict,
+        'limit': limit,
     }
     return render(request, 'project_directory.html', context)
 
