@@ -7,11 +7,14 @@
 
 import React from 'react';
 
-import { collapseChange } from "actions/collapse-actions"
+import * as c from "./const"
+import store from "./store"
 
-import * as c from "const"
-import store from "store"
-import {collapseRecordState, resetKeys} from "./actions/collapse-actions";
+import {
+    collapseChange,
+    collapseRecordState,
+    resetKeys
+} from "./actions/collapse-actions";
 
 
 export function identicalArrays(array1, array2) {
