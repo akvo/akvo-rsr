@@ -18335,7 +18335,7 @@ mmd(row["text"]);</expression>
                             <list-property name="action">
                                 <structure>
                                     <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="javascript">"http://rsr.akvo.org/en/project/"+row["id"]+"/"</expression>
+                                    <expression name="uri" type="javascript">"http://rsr.akvo.org/en/project/"+row["project_id"]+"/"</expression>
                                     <property name="targetWindow">_blank</property>
                                 </structure>
                             </list-property>
@@ -18548,8 +18548,9 @@ null</expression>
                                     <property name="paddingRight">0pt</property>
                                     <property name="textAlign">left</property>
                                     <property name="display">block</property>
-                                    <property name="pageBreakAfter">auto</property>
-                                    <property name="pageBreakBefore">auto</property>
+                                    <property name="pageBreakAfter">avoid</property>
+                                    <property name="pageBreakBefore">avoid</property>
+                                    <property name="pageBreakInside">avoid</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -18582,7 +18583,7 @@ reportContext.getGlobalVariable('debug')</expression>
                         <expression name="keyExpr" type="javascript">row["title"]</expression>
                         <property name="repeatHeader">false</property>
                         <property name="pageBreakBefore">auto</property>
-                        <property name="pageBreakInside">avoid</property>
+                        <property name="pageBreakInside">auto</property>
                         <header>
                             <row id="19">
                                 <property name="pageBreakBefore">auto</property>
@@ -18594,7 +18595,8 @@ reportContext.getGlobalVariable('debug')</expression>
                                         <property name="fontSize">12pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#6D8FAF</property>
-                                        <property name="paddingTop">8pt</property>
+                                        <property name="marginTop">4pt</property>
+                                        <property name="paddingTop">0pt</property>
                                         <property name="paddingLeft">0pt</property>
                                         <property name="paddingBottom">1pt</property>
                                         <property name="paddingRight">8pt</property>
