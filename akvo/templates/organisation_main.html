@@ -126,7 +126,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             <dt class="iatiStatuses">{% trans 'Pipeline/identification' %}</dt>
             <dd>
               {% if organisation.published_projects.status_onhold.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=1">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=1">
                   {{ organisation.published_projects.status_onhold.count }}
                 </a>
               {% else %}
@@ -136,7 +136,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             <dt class="iatiStatuses">{% trans 'Implementation' %}</dt>
             <dd>
               {% if organisation.published_projects.status_active.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=2">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=2">
                   {{ organisation.published_projects.status_active.count }}
                 </a>
               {% else %}
@@ -146,7 +146,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             <dt class="iatiStatuses">{% trans 'Completion' %}</dt>
             <dd>
               {% if organisation.published_projects.status_complete.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=3">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=3">
                   {{ organisation.published_projects.status_complete.count }}
                 </a>
               {% else %}
@@ -156,7 +156,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             <dt class="iatiStatuses">{% trans 'Post-completion' %}</dt>
             <dd>
               {% if organisation.published_projects.status_post_complete.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=4">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=4">
                   {{ organisation.published_projects.status_post_complete.count }}
                 </a>
               {% else %}
@@ -166,7 +166,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             <dt class="iatiStatuses">{% trans 'Cancelled' %}</dt>
             <dd>
               {% if organisation.published_projects.status_cancelled.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=5">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=5">
                   {{ organisation.published_projects.status_cancelled.count }}
                 </a>
               {% else %}
@@ -176,7 +176,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             <dt class="iatiStatuses">{% trans 'Suspended' %}</dt>
             <dd>
               {% if organisation.published_projects.status_none.count %}
-                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;iati_status=6">
+                <a href="{% url 'project-directory' %}?organisation={{ organisation.pk }}&amp;status=6">
                   {{ organisation.published_projects.status_none.count }}
                 </a>
               {% else %}
