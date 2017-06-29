@@ -120,8 +120,8 @@ export const getPeriodsActualValue = createSelector(
                     return acc;
                 }, 0
             );
-            return {...acc, [periodId]: actualValue}
-        }, {})
+            return {...acc, [periodId]: actualValue};
+        }, {});
     }
 );
 
@@ -137,7 +137,47 @@ export const getIndicatorsAggregateActualValue = createSelector(
             const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
                 return acc + actualValue[periodId];
             }, 0);
-            return {...acc, [indicatorId]: aggregateValue}
+            return {...acc, [indicatorId]: aggregateValue};
+        }, {});
+    }
+);
+
+
+export const getIndicatorsAggregateTargetValue = createSelector(
+    /*
+      Return an object on the form:
+      {indicatorId1: <aggregateTargetValue1>, indicatorId2: <aggregateTargetValue2>,...}
+    */
+    [getIndicatorIds, getIndicatorsChildrenIds, getPeriodObjects],
+    (indicatorIDs, childPeriodIds, periodObjects) => {
+        return indicatorIDs && childPeriodIds && periodObjects && indicatorIDs.reduce((acc, indicatorId) => {
+            const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
+                const target_value = parseInt(periodObjects[periodId].target_value);
+                // If target_value is NaN then target_value !== target_value returns true!
+                if (!(target_value !== target_value)) {
+                    return acc + target_value;
+                } else {
+                    return acc;
+                }
+            }, 0);
+            return {...acc, [indicatorId]: aggregateValue};
+        }, {});
+    }
+);
+
+
+export const getIndicatorsAggregateCompletionPercentage = createSelector(
+    /*
+      Return an object on the form:
+      {indicatorId1: <aggregateCompletionPercentage1>, indicatorId2: <aggregateCompletionPercentage2>,...}
+    */
+    [getIndicatorIds, getIndicatorsAggregateTargetValue, getIndicatorsAggregateActualValue],
+    (indicatorIDs, targetValue, actualValue) => {
+        return indicatorIDs.reduce((acc, indicatorId) => {
+            const target = targetValue[indicatorId],
+                  actual = actualValue[indicatorId],
+                  completion = (target != undefined && target > 0) ? Math.round(actual * 100/target): NaN;
+            return {...acc, [indicatorId]: completion};
         }, {});
     }
 );
