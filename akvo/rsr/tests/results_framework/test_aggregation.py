@@ -13,7 +13,7 @@ import unittest
 
 from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodData, User, RelatedProject)
-from akvo.rsr.models.indicator import calculate_percentage
+from akvo.rsr.models.indicator import calculate_percentage, MultipleUpdateError
 
 from django.test import TestCase
 
@@ -163,7 +163,7 @@ class UnitAggregationTestCase(TestCase):
         period = IndicatorPeriod.objects.get(id=self.period.id)
         self.assertEqual(unicode(new_value), period.actual_value)
 
-    def test_should_aggregate_update_int_data(self):
+    def test_should_aggregate_update_numeric_data(self):
         # Given
         increment = 2
         relative_data = True
@@ -190,7 +190,7 @@ class UnitAggregationTestCase(TestCase):
         period = IndicatorPeriod.objects.get(id=self.period.id)
         self.assertEqual(unicode(original + increment), period.actual_value)
 
-    def test_should_replace_update_int_data(self):
+    def test_should_replace_update_numeric_data(self):
         # Given
         value = 2
         new_value = 20
@@ -348,12 +348,15 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         period = IndicatorPeriod.objects.get(id=self.period.id)
         self.assertDecimalEqual(new_actual_value, period.actual_value)
 
-    def test_should_aggregate_update_int_data(self):
+    @unittest.skip('Only allow single updates')
+    def test_should_aggregate_update_numeric_data(self):
+        pass
+
+    def test_should_not_allow_multiple_updates(self):
         # Given
         numerator = 4
         denominator = 6
         relative_data = True
-        percentage = calculate_percentage(numerator, denominator)
         self.create_indicator_period_update(
             numerator=numerator,
             denominator=denominator,
@@ -361,69 +364,20 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         )
 
         # When
-        self.create_indicator_period_update(
-            numerator=numerator,
-            denominator=denominator,
-            relative_data=relative_data
-        )
+        with self.assertRaises(MultipleUpdateError):
+            self.create_indicator_period_update(
+                numerator=numerator,
+                denominator=denominator,
+                relative_data=relative_data
+            )
 
-        # Then
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertDecimalEqual(percentage, period.actual_value)
-
-    @unittest.skip('Should we allow negative numerator/denominator???')
+    @unittest.skip('Multiple updates are not allowed')
     def test_should_aggregate_update_str_negative_data(self):
-        # Given
-        original_numerator = 5
-        decrement_numerator = -2
-        denominator = 6
-        relative_data = True
-        self.create_indicator_period_update(
-            numerator=original_numerator,
-            denominator=denominator,
-            relative_data=relative_data
-        )
+        pass
 
-        # When
-        self.create_indicator_period_update(
-            numerator=decrement_numerator,
-            denominator=denominator,
-            relative_data=relative_data
-        )
-
-        # Then
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        percentage = calculate_percentage(
-            original_numerator + decrement_numerator, denominator * 2
-        )
-        self.assertEqual(percentage, period.actual_value)
-
-    def test_should_replace_update_int_data(self):
-        # Given
-        numerator = 3
-        denominator = 5
-        relative_data = False
-        self.create_indicator_period_update(
-            numerator=numerator,
-            denominator=denominator,
-            relative_data=relative_data
-        )
-
-        # When
-        new_numerator = 4
-        new_denominator = 6
-        new_percentage = calculate_percentage(
-            float(new_numerator), float(new_denominator)
-        )
-        self.create_indicator_period_update(
-            numerator=new_numerator,
-            denominator=new_denominator,
-            relative_data=relative_data
-        )
-
-        # Then
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertDecimalEqual(new_percentage, period.actual_value)
+    @unittest.skip('Multiple updates are not allowed')
+    def test_should_replace_update_numeric_data(self):
+        pass
 
     @unittest.skip('Will not work with calculated percentages!')
     def test_should_replace_with_non_numeric_update_data(self):

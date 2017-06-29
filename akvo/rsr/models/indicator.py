@@ -8,9 +8,7 @@ from akvo.codelists.models import IndicatorMeasure, IndicatorVocabulary
 from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOCABULARY
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
-from akvo.utils import codelist_choices
-from akvo.utils import codelist_value
-from akvo.utils import rsr_image_path
+from akvo.utils import codelist_choices, codelist_value, rsr_image_path
 from .result import Result
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
@@ -29,6 +27,10 @@ PERCENTAGE_MEASURE = '2'
 
 def calculate_percentage(numerator, denominator):
     return Decimal(numerator) * Decimal(100) / Decimal(denominator)
+
+
+class MultipleUpdateError(Exception):
+    pass
 
 
 class Indicator(models.Model):
@@ -826,6 +828,11 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         verbose_name_plural = _(u'indicator period data')
 
     def save(self, recalculate=True, *args, **kwargs):
+        # Allow only a single update for percentage measure indicators
+        if (self.period.indicator.measure == PERCENTAGE_MEASURE and
+            self.period.data.exclude(id=self.id).count() > 0):
+            raise MultipleUpdateError('Cannot create multiple updates with percentages')
+
         if (
                 self.period.indicator.measure == PERCENTAGE_MEASURE and
                 self.numerator is not None and
