@@ -188,6 +188,8 @@ var FilterForm = React.createClass({
     getStateFromUrl: function(){
         var selected = {};
         var query = location.search.substring(1);
+        // Treat iati_status query param as status param
+        query = query.replace('iati_status', 'status');
         if (query === '') { return selected; }
         query.split('&').map(function(query_term){
             var pair = query_term.split('='),
