@@ -2848,6 +2848,24 @@ div.iatiFilters {
   margin-right: 0.3em; }
 
 /* Results Framework */
+header[role="banner"] {
+  display: block;
+  width: 100%;
+  height: 100px;
+  background: #fcfcfc;
+  margin-bottom: 10px; }
+
+main {
+  display: flex;
+  height: 100vh; }
+  main article {
+    width: 70%;
+    overflow: scroll; }
+  main aside {
+    background: #ddd;
+    width: 30%;
+    display: flex; }
+
 .results {
   background: white;
   padding: 5px;

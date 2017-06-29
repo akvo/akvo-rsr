@@ -60,7 +60,7 @@ const isAllowedToDelete = (user, update) =>
 
 const Header = ({update}) => {
     return (
-        <div className="col-xs-12">
+        <div>
             <div className="update-entry-container-header hidden">
                 Status: {_('update_statuses')[update.status]}
             </div>
@@ -73,28 +73,16 @@ Header.propTypes = {
 };
 
 
-const ActualValueInput = ({update, updatedActualValue, onChange}) => {
+const ActualValueInput = ({update, onChange}) => {
     return (
         <div className="row">
-            <div className="col-xs-12">
+            <div>
                 <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
                 <input className="form-control"
                        id="data"
                        value={update.data}
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
-            </div>
-            <div className="col-xs-6 hidden">
-                <div className="upActualValue">
-                    <label>
-                        <span className="update-actual-value-text">
-                            {_('total_value_after_update')}:
-                        </span>
-                    </label>
-                    <div className="update-actual-value-data">
-                        {updatedActualValue}
-                    </div>
-                </div>
             </div>
         </div>
     )
@@ -110,7 +98,7 @@ ActualValueInput.propTypes = {
 const ActualValueDescription = ({update, onChange}) => {
     return (
         <div className="row">
-            <div className="col-xs-12 update-description">
+            <div className="update-description">
                 <div>
                     <label htmlFor="description">{_('actual_value_comment')}</label>
                     <textarea className="form-control"
@@ -628,14 +616,12 @@ export default class UpdateForm extends React.Component {
     render() {
         const update = this.props.update;
         const updateValue = parseFloat(update.data ? update.data : 0);
-        const updatedActualValue = displayNumber(this.previousActualValue() + updateValue);
 
         return (
             <div className="update-container">
                 <div className="row update-entry-container edit-in-progress">
                     <Header update={update}/>
-                    <ActualValueInput update={update} onChange={this.onChange}
-                                      updatedActualValue={updatedActualValue}/>
+                    <ActualValueInput update={update} onChange={this.onChange}/>
                     <ActualValueDescription update={update}  onChange={this.onChange}/>
                     <Attachments update={update} onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
@@ -660,6 +646,7 @@ export class NewUpdateButton extends React.Component {
     static propTypes = {
         period: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
+        disabled: PropTypes.bool.isRequired,
     };
 
     constructor (props) {
@@ -694,10 +681,8 @@ export class NewUpdateButton extends React.Component {
     render() {
         return (
                 <div className="emptyUpdate">
-                    <a onClick={this.newUpdate}
-                       className={'btn btn-sm btn-default newUpdate'}>
-                        {_('new_update')}
-                    </a>
+                    <ToggleButton onClick={this.newUpdate} label={_('new_update')}
+                                  disabled={this.props.disabled} className="btn btn-sm btn-default newUpdate"/>
                 </div>
         )
     }

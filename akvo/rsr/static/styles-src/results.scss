@@ -4108,6 +4108,31 @@ div.iatiFilters {
 }
 
 /* Results Framework */
+
+header[role="banner"] {
+    display: block;
+    width: 100%;
+    height: 100px;
+    background: #fcfcfc;
+    margin-bottom: 10px;
+}
+
+main {
+    display: flex;
+    height: 100vh;
+
+    article {
+        width: 70%;
+        overflow: scroll;
+    }
+
+    aside {
+        background: #ddd;
+        width: 30%;
+        display: flex;
+    }
+}
+
 .results {
     background: white;
     padding: 5px;

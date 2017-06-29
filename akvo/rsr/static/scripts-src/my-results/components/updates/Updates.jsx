@@ -147,13 +147,14 @@ class Update extends React.Component {
             <div className="col-xs-12">
                 {/*{editUpdateButton}*/}
                 {/*{updateAlert}*/}
-                {new Set(this.props.updateForms).has(this.props.update.id) ?
-                    <UpdateForm
-                        update={this.props.update}
-                        formToggle={this.formToggle}
-                        collapseId={this.props.collapseId}/>
-                :
-                    <UpdateDisplay update={this.props.update}/>}
+                {/*{new Set(this.props.updateForms).has(this.props.update.id) ?*/}
+                    {/*<UpdateForm*/}
+                        {/*update={this.props.update}*/}
+                        {/*formToggle={this.formToggle}*/}
+                        {/*collapseId={this.props.collapseId}/>*/}
+                {/*:*/}
+                    {/*<UpdateDisplay update={this.props.update}/>}*/}
+                <UpdateDisplay update={this.props.update}/>
             </div>
         )
     }
@@ -236,19 +237,20 @@ class UpdateHeader extends React.Component {
 
     render() {
         let editUpdateButton, updateAlert;
+        const {updateForms, update} = this.props;
         if (this.showEditButton()) {
             let className;
-            if (new Set(this.props.updateForms).has(this.props.update.id)) {
+            if (new Set(updateForms).has(update.id)) {
                 className = 'btn btn-sm btn-default editingForm';
             } else {
                 className = 'btn btn-sm btn-default';
             }
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
-                                             label={_('edit_update')}/>;
+                                             label={_('edit_update')}
+                                             disabled={updateForms.length > 0}/>;
             updateAlert = <this.state.UpdateAlert />
         }
-        const update = this.props.update;
         return (
             <span className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>

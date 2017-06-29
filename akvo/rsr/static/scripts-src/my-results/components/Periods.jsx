@@ -266,7 +266,8 @@ export default class Periods extends React.Component {
 
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked) {
-                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
+                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}
+                                          disabled={this.props.ui.updateForms.length > 0}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
                     // Possible solution: add an alert action and reducer instead of using callback

@@ -399,3 +399,11 @@ export function setHash(hash) {
         window.location.hash = '';
     }
 }
+
+
+export function userIsMEManager(user) {
+    return user.fetched ?
+        user.objects[user.ids[0]].isMEManager
+    :
+        false;
+}
