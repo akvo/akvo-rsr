@@ -114,7 +114,7 @@ export default class FilterBar extends React.Component {
             collapseChange(collapse.collapseId, collapse.activeKey);
         });
         noHide();
-        updateFormReset();
+        updateFormClose();
     }
 
     openResults() {

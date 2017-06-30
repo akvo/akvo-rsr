@@ -84,18 +84,6 @@ export const
         [OBJECTS_COMMENTS]: null
     },
 
-    // UI state
-    SELECTED_PERIODS = 'selectedPeriods',
-    UPDATE_FORMS = 'updateForms',
-
-    // Alerts
-    INITIALIZE_ALERT = 'INITIALIZE_ALERT',
-    CREATE_ALERT = 'CREATE_ALERT',
-    DISMISS_ALERT = 'DISMISS_ALERT',
-    DISMISS_ALL_ALERTS = 'DISMISS_ALL_ALERTS',
-    DESTROY_ALL_ALERTS = 'DESTROY_ALL_ALERTS',
-    DESTROY_ALERT = 'DESTROY_ALERT',
-
     // modelsReducer
     FETCH_MODEL_START = "FETCH_MODEL_START",
     FETCH_MODEL_FULFILLED = "FETCH_MODEL_FULFILLED",
@@ -122,10 +110,26 @@ export const
     UI_ID_TOGGLE = "UI_ID_TOGGLE",
     UI_ID_TRUE = "UI_ID_TRUE",
     UI_ID_FALSE = "UI_ID_FALSE",
+    // boolean controlling a single UI element, used to show the update form
+    UI_FLAG_TOGGLE = "UI_FLAG_TOGGLE",
+    UI_FLAG_TRUE = "UI_FLAG_TRUE",
+    UI_FLAG_FALSE = "UI_FLAG_FALSE",
     UI_HIDE = "UI_HIDE",
     ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
     SET_PERIOD_DATES = "SET_PERIOD_DATES",
     UI_FILTER_BUTTON_ACTIVE = "UI_FILTER_BUTTON_ACTIVE",
+
+    // UI state
+    SELECTED_PERIODS = 'selectedPeriods',
+    UPDATE_FORM_DISPLAY = 'updateFormDisplay', // boolean, keeping track if the update form is open
+
+    // Alerts
+    INITIALIZE_ALERT = 'INITIALIZE_ALERT',
+    CREATE_ALERT = 'CREATE_ALERT',
+    DISMISS_ALERT = 'DISMISS_ALERT',
+    DISMISS_ALL_ALERTS = 'DISMISS_ALL_ALERTS',
+    DESTROY_ALL_ALERTS = 'DESTROY_ALL_ALERTS',
+    DESTROY_ALERT = 'DESTROY_ALERT',
 
     // filter buttons (including the period select box)
     FILTER_NEED_REPORTING = "needReporting",

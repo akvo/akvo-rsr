@@ -18,7 +18,7 @@
             TODO: allFetched is only used to disable the "global" buttons at page loading, but could
             be used when data is updated too for the same purpose
         selectedPeriods: array of Period IDs that are currently selected via checkbox
-        updateForms: array of Update IDs that have open forms
+        updateFormDisplay: Boolean determining the visibility of the update form
  */
 
 import update from 'immutability-helper';
@@ -35,7 +35,7 @@ const uiState = {
     activeFilter: undefined, //indicates if a filter is currently in force
     visibleKeys: undefined,
     [c.SELECTED_PERIODS]: [], //list if periods that are currently checked, used for bulk actions
-    [c.UPDATE_FORMS]: [], //list of currently open indicator update forms
+    [c.UPDATE_FORM_DISPLAY]: false, //list of currently open indicator update forms
 };
 
 export default function uiReducer(state=uiState, action) {
@@ -71,6 +71,24 @@ export default function uiReducer(state=uiState, action) {
             const elementSet = new Set(state[element]);
             elementSet.delete(id);
             return {...state, [element]: [...elementSet]};
+        }
+
+        case c.UI_FLAG_TOGGLE: {
+            const {element, id} = action.payload;
+            return state[element] ?
+                {...state, [element]: false}
+            :
+                {...state, [element]: id};
+        }
+
+        case c.UI_FLAG_TRUE: {
+            const {element, id} = action.payload;
+            return {...state, [element]: id};
+        }
+
+        case c.UI_FLAG_FALSE: {
+            const {element} = action.payload;
+            return {...state, [element]: false};
         }
 
         case c.UI_HIDE: {

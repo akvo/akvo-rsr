@@ -41,34 +41,26 @@ export function periodSelectCheck(id) {
 }
 
 
-export function updateFormReset() {
-    store.dispatch({
-        type: c.UI_ID_RESET,
-        payload: {element: c.UPDATE_FORMS}
-    })
-}
-
-
 export function updateFormToggle(id) {
     store.dispatch({
-        type: c.UI_ID_TOGGLE,
-        payload: {element: c.UPDATE_FORMS, id: id}
+        type: c.UI_FLAG_TOGGLE,
+        payload: {element: c.UPDATE_FORM_DISPLAY, id}
     })
 }
 
 
 export function updateFormOpen(id) {
     store.dispatch({
-        type: c.UI_ID_TRUE,
-        payload: {element: c.UPDATE_FORMS, id: id}
+        type: c.UI_FLAG_TRUE,
+        payload: {element: c.UPDATE_FORM_DISPLAY, id}
     })
 }
 
 
-export function updateFormClose(id) {
+export function updateFormClose() {
     store.dispatch({
-        type: c.UI_ID_FALSE,
-        payload: {element: c.UPDATE_FORMS, id: id}
+        type: c.UI_FLAG_FALSE,
+        payload: {element: c.UPDATE_FORM_DISPLAY}
     });
 }
 

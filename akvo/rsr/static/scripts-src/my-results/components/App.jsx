@@ -28,7 +28,7 @@ import {
     selectablePeriods,
     selectPeriodByDates,
     selectPeriodsThatNeedReporting,
-    showUpdates, updateFormReset, updateFormToggle,
+    showUpdates, updateFormToggle,
 } from "../actions/ui-actions";
 
 import * as c from "../const"
@@ -93,7 +93,6 @@ export default class App extends React.Component {
         this.showDraft = this.showDraft.bind(this);
         this.showApproved = this.showApproved.bind(this);
         this.needReporting = this.needReporting.bind(this);
-        this.formToggle = this.formToggle.bind(this);
         this.state = {
             selectedOption: undefined,
             hash: window.location.hash && window.location.hash.substring(1),
@@ -196,10 +195,6 @@ export default class App extends React.Component {
         this.manageButtonsAndHash(c.FILTER_NEED_REPORTING);
     }
 
-    formToggle() {
-        updateFormToggle(this.props.ui[c.UPDATE_FORMS][0]);
-    }
-
     render() {
         const callbacks = {
             needReporting: this.needReporting,
@@ -213,12 +208,13 @@ export default class App extends React.Component {
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
         // TODO: refactor so we check if _the_ update form is open or not
-        const updateForm = this.props.ui[c.UPDATE_FORMS].length > 0 ?
-            <UpdateForm update={this.props.models.updates.objects[this.props.ui[c.UPDATE_FORMS][0]]}
-                        formToggle={this.formToggle}
+        const updateObjects = this.props.models.updates.objects;
+        const updateFormDisplay = this.props.ui[c.UPDATE_FORM_DISPLAY];
+        const updateForm = updateFormDisplay ?
+            <UpdateForm update={updateObjects[updateFormDisplay]}
                         collapseId={collapseId(
                             c.OBJECTS_UPDATES,
-                            this.props.models.updates.objects[[this.props.ui[c.UPDATE_FORMS][0].id]]
+                            updateObjects[updateFormDisplay]
                         )}/>
         :
             "Nothing here yet...";

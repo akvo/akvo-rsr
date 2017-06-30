@@ -346,7 +346,6 @@ const pruneForPOST = (update) => {
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
-        formToggle: PropTypes.func.isRequired,
         update: PropTypes.object.isRequired,
         collapseId: PropTypes.string.isRequired,
     };
@@ -464,18 +463,17 @@ export default class UpdateForm extends React.Component {
     }
 
     onCancel() {
-        this.props.formToggle();
+        updateFormClose();
         const originalUpdate = this.state.originalUpdate;
         if (isNewUpdate(originalUpdate)) {
             deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
         } else {
             updateModel(c.OBJECTS_UPDATES, originalUpdate);
         }
-        updateFormClose(originalUpdate.id);
     }
 
-    formClose(id) {
-        updateFormClose(id);
+    formClose() {
+        updateFormClose();
     }
 
     refreshFilter() {
@@ -497,7 +495,7 @@ export default class UpdateForm extends React.Component {
     }
 
     successCallback(id) {
-        this.formClose.bind(id);
+        updateFormClose();
         // TODO: calling refreshFilter here breaks when deleting an update as
         // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
         // that has just been approved showing in the Need reporting filter view.
@@ -674,7 +672,7 @@ export class NewUpdateButton extends React.Component {
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
         updateModel('updates', update, this.state.collapseId);
-        updateFormOpen(update.id);
+        updateFormOpen();
         newUpdateID += 1;
     }
 

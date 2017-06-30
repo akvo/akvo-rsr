@@ -109,7 +109,7 @@ UpdateDisplay.propTypes = {
 
 @connect((store) => {
     return {
-        updateForms: store.ui[c.UPDATE_FORMS]
+        [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
     }
 }, alertActions)
 class Update extends React.Component {
@@ -178,7 +178,7 @@ UserInfo.propTypes = {
 
 @connect((store) => {
     return {
-        updateForms: store.ui[c.UPDATE_FORMS],
+        [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
         user: store.models.user.objects[store.models.user.ids[0]],
     }
 }, alertActions)
@@ -206,7 +206,7 @@ class UpdateHeader extends React.Component {
     formToggle(e) {
         const {collapseId, update} = this.props;
         updateFormToggle(update.id);
-        openPanel(collapseId, update);
+        // openPanel(collapseId, update);
         e.stopPropagation();
     }
 
@@ -237,10 +237,10 @@ class UpdateHeader extends React.Component {
 
     render() {
         let editUpdateButton, updateAlert;
-        const {updateForms, update} = this.props;
+        const {updateFormDisplay, update} = this.props;
         if (this.showEditButton()) {
             let className;
-            if (new Set(updateForms).has(update.id)) {
+            if (updateFormDisplay) {
                 className = 'btn btn-sm btn-default editingForm';
             } else {
                 className = 'btn btn-sm btn-default';
@@ -248,7 +248,7 @@ class UpdateHeader extends React.Component {
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
                                              label={_('edit_update')}
-                                             disabled={updateForms.length > 0}/>;
+                                             disabled={updateFormDisplay}/>;
             updateAlert = <this.state.UpdateAlert />
         }
         return (
