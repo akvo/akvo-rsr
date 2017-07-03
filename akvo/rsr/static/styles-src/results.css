@@ -3300,14 +3300,12 @@ main {
     .update-container .update-entry-container .menuAction {
       position: relative;
       margin-top: 30px; }
-      .update-container .update-entry-container .menuAction .removeUpdate {
-        position: absolute; }
-        .update-container .update-entry-container .menuAction .removeUpdate .btn {
-          background: #ee3124;
-          color: white;
-          border-color: #ee3124; }
-          .update-container .update-entry-container .menuAction .removeUpdate .btn:hover {
-            background: rgba(238, 49, 36, 0.5); }
+      .update-container .update-entry-container .menuAction .removeUpdate .btn {
+        background: #ee3124;
+        color: white;
+        border-color: #ee3124; }
+        .update-container .update-entry-container .menuAction .removeUpdate .btn:hover {
+          background: rgba(238, 49, 36, 0.5); }
       .update-container .update-entry-container .menuAction .bottomRow {
         position: relative;
         list-style-type: none;
