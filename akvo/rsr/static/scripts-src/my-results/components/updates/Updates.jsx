@@ -136,24 +136,8 @@ class Update extends React.Component {
     }
 
     render() {
-        // let editUpdateButton, updateAlert;
-        // if (!this.props.periodLocked) {
-        //     editUpdateButton = <ToggleButton onClick={this.formToggle}
-        //                                      className={'btn btn-sm btn-default'}
-        //                                      label={_('edit_update')}/>;
-        //     updateAlert = <this.state.UpdateAlert />
-        // }
         return(
             <div className="col-xs-12">
-                {/*{editUpdateButton}*/}
-                {/*{updateAlert}*/}
-                {/*{new Set(this.props.updateForms).has(this.props.update.id) ?*/}
-                    {/*<UpdateForm*/}
-                        {/*update={this.props.update}*/}
-                        {/*formToggle={this.formToggle}*/}
-                        {/*collapseId={this.props.collapseId}/>*/}
-                {/*:*/}
-                    {/*<UpdateDisplay update={this.props.update}/>}*/}
                 <UpdateDisplay update={this.props.update}/>
             </div>
         )
@@ -320,16 +304,14 @@ export default class Updates extends React.Component {
                 update.actual_value = actualValue;
                 const className = this.hideMe(id) ? 'hidePanel' : '';
                 return (
-                    <Panel header={<UpdateHeader update={update}
-                                                 periodLocked={this.props.periodLocked}
-                                                 collapseId={this.state.collapseId}/>}
-                           className={className}
-                           key={id}>
+                    <div className={'row'}>
+                        <UpdateHeader update={update} periodLocked={this.props.periodLocked}
+                                      collapseId={this.state.collapseId}/>
                         <div className={'row'}>
                             <Update update={update} collapseId={this.state.collapseId}/>
                             <Comments parentId={id}/>
                         </div>
-                    </Panel>
+                    </div>
                 )
             }
         ))

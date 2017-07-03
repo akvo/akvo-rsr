@@ -156,6 +156,7 @@ export default class Comments extends React.Component {
             PropTypes.string,
             PropTypes.number,
         ]).isRequired,
+        inForm: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -184,7 +185,7 @@ export default class Comments extends React.Component {
 
     render() {
         const commentIds = this.props.updateChildrenIds[this.props.parentId] || [];
-
+        const {inForm} = this.props;
         if (!commentIds) {
             return (
                 <p>Loading...</p>
@@ -194,7 +195,10 @@ export default class Comments extends React.Component {
                 <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
                     <strong>Internal notes:</strong>
                     {this.renderComments(commentIds)}
-                    <CommentForm parentId={this.props.parentId}/>
+                    {inForm ?
+                        <CommentForm parentId={this.props.parentId}/>
+                    :
+                        undefined}
                 </div>
             );
         } else {
@@ -205,7 +209,10 @@ export default class Comments extends React.Component {
             return (
                 <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
                     <strong>Internal notes</strong>{disabledNote}
-                    <CommentForm parentId={this.props.parentId}/>
+                    {inForm ?
+                        <CommentForm parentId={this.props.parentId}/>
+                    :
+                        undefined}
                 </div>
             );
         }
