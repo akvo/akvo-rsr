@@ -228,10 +228,10 @@ export default class App extends React.Component {
             <section className="results">
                 <FilterBar callbacks={callbacks}/>
                 <main role="main">
-                    <article>
+                    <article className={updateForm ? 'shared' : 'full'}>
                         {results}
                     </article>
-                    <aside>
+                    <aside className={updateForm ? 'open' : 'closed'}>
                         {updateForm}
                     </aside>
                 </main>

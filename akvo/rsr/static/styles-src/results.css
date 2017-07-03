@@ -2858,10 +2858,15 @@ header[role="banner"] {
 main {
   display: flex;
   height: 100vh; }
-  main article {
+  main article.full {
+    width: 100%;
+    overflow: scroll; }
+  main article.shared {
     width: 70%;
     overflow: scroll; }
-  main aside {
+  main aside.closed {
+    display: none; }
+  main aside.open {
     background: #ddd;
     width: 30%;
     display: flex; }

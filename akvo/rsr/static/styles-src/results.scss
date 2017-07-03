@@ -4121,12 +4121,21 @@ main {
     display: flex;
     height: 100vh;
 
-    article {
+    article.full {
+        width: 100%;
+        overflow: scroll;
+    }
+
+    article.shared {
         width: 70%;
         overflow: scroll;
     }
 
-    aside {
+    aside.closed {
+        display: none;
+    }
+
+    aside.open {
         background: #ddd;
         width: 30%;
         display: flex;
