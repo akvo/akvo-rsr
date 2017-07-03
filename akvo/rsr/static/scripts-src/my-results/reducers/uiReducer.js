@@ -127,6 +127,15 @@ export default function uiReducer(state=uiState, action) {
                     return update(state, {visibleKeys: {$merge: {[collapseId]: [key]}}});
                 }
             }
+            return state;
+        }
+
+        case c.UPDATE_MODEL_DELETE_FULFILLED: {
+            // make sure the update form is closed when the update is deleted
+            const {model} = action.payload;
+            if (model === c.OBJECTS_UPDATES) {
+                return {...state, [c.UPDATE_FORM_DISPLAY]: false};
+            }
         }
 
     }

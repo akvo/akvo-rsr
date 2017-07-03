@@ -48,7 +48,12 @@ export default function collapseReducer(keys={}, action) {
             const keyToRemove = object.id.toString();
             return {
                 ...keys,
-                [collapseId]: keys[collapseId].filter((key) => key !== keyToRemove)
+                // in the two pane view the updates collapse is probably closed as this is the
+                // default view, so we need to check if keys[collapseId] exists before changing it
+                [collapseId]: keys[collapseId] ?
+                    keys[collapseId].filter((key) => key !== keyToRemove)
+                :
+                    []
             };
         }
     }

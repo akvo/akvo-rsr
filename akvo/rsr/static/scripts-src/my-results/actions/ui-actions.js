@@ -122,7 +122,7 @@ export function noHide() {
 export function showUpdates(updateIds,openForm=false,collapse=false) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
-    updateFormReset();
+    updateFormClose();
     if (openForm) {
         updateIds.map((id) => updateFormOpen(id));
     }

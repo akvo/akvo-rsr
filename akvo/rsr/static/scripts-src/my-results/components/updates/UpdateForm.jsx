@@ -294,19 +294,18 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
     const actionButtons = getActionButtons(role, update.status);
     return (
         <div className="menuAction">
-        {!isNewUpdate(update) && isAllowedToDelete(user, update)?
-            <div role="presentation" className="removeUpdate">
-                <ToggleButton onClick={callbacks.deleteUpdate} label={_('delete')}
-                              className="btn btn-default btn-xs"/>
-            </div>
-        : ''}
             <ul className="nav-pills bottomRow navbar-right">
+                {!isNewUpdate(update) && isAllowedToDelete(user, update)?
+                    <li role="presentation" className="removeUpdate">
+                        <ToggleButton onClick={callbacks.deleteUpdate} label={_('delete')}
+                                      className="btn btn-default btn-xs"/>
+                    </li>
+                : ''}
                 <li role="presentation" className="cancelUpdate">
                     <ToggleButton onClick={callbacks.onCancel} label={_('cancel')}
                                   className="btn btn-link btn-xs"/>
                 </li>
                 {actionButtons}
-                <span></span>
             </ul>
         </div>
     )
@@ -494,7 +493,7 @@ export default class UpdateForm extends React.Component {
         }
     }
 
-    successCallback(id) {
+    successCallback() {
         updateFormClose();
         // TODO: calling refreshFilter here breaks when deleting an update as
         // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
@@ -536,7 +535,7 @@ export default class UpdateForm extends React.Component {
 
         const callbacksFactory = (id, errorMessage) => {
             return {
-                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, id),
+                [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, this.state.updateAlertName, errorMessage
                 )
@@ -589,7 +588,7 @@ export default class UpdateForm extends React.Component {
                 // when an object has been successfully deleted from a model
                 // [c.UPDATE_MODEL_FULFILLED]: this.refreshFilter.bind(this),
 
-                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, update.id),
+                [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, deleteUpdateAlertName, _("update_not_deleted")
                 )
@@ -671,8 +670,8 @@ export class NewUpdateButton extends React.Component {
             status: c.UPDATE_STATUS_NEW,
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
-        updateModel('updates', update, this.state.collapseId);
-        updateFormOpen();
+        updateModel('updates', update);
+        updateFormOpen(id);
         newUpdateID += 1;
     }
 

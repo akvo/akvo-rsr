@@ -207,17 +207,22 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        // TODO: refactor so we check if _the_ update form is open or not
-        const updateObjects = this.props.models.updates.objects;
-        const updateFormDisplay = this.props.ui[c.UPDATE_FORM_DISPLAY];
-        const updateForm = updateFormDisplay ?
-            <UpdateForm update={updateObjects[updateFormDisplay]}
-                        collapseId={collapseId(
-                            c.OBJECTS_UPDATES,
-                            updateObjects[updateFormDisplay]
-                        )}/>
-        :
-            "Nothing here yet...";
+        const updates = this.props.models.updates;
+        // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
+        // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
+        // "real" one with an ID from the backend. Thus we need to check not only that
+        // ui.updateFormDisplay has a value, but also that that value is among the current list of
+        // updates
+        const updateFormDisplay = this.props.ui[c.UPDATE_FORM_DISPLAY] &&
+                                  updates.ids.find((id)=>id===this.props.ui[c.UPDATE_FORM_DISPLAY]);
+        let updateForm = undefined;
+        if (updateFormDisplay) {
+            const update = updates.objects[updateFormDisplay];
+            updateForm = <UpdateForm update={update}
+                                     collapseId={collapseId(
+                                         c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
+                                     )}/>
+        }
 
         return (
             <section className="results">
