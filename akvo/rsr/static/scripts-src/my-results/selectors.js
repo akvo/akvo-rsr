@@ -104,8 +104,8 @@ export const getPeriodsActualValue = createSelector(
         Return an object on the form:
         {periodId1: <actualValue1>, periodId2: <actualValue2>,...}
      */
-    [getPeriodIds, getUpdateObjects, getPeriodsChildrenIds],
-    (periodIds, updateObjects, childUpdateIds) => {
+    [getPeriodIds, getPeriodObjects, getUpdateObjects, getPeriodsChildrenIds],
+    (periodIds, periodObjects, updateObjects, childUpdateIds) => {
         return periodIds && updateObjects && !isEmpty(childUpdateIds) && periodIds.reduce((acc, periodId) => {
             const actualValue = childUpdateIds[periodId].filter(
                 (updateId) => updateObjects[updateId].status == c.UPDATE_STATUS_APPROVED
@@ -120,7 +120,13 @@ export const getPeriodsActualValue = createSelector(
                     return acc;
                 }, 0
             );
-            return {...acc, [periodId]: actualValue};
+          // We allow users to set an actual value on periods directly from the
+          // project editor. When there are no updates, over which we can
+          // aggregate, this value should be used as the actual value. Also, the
+          // UI only allows actual values to be numbers, so we try and convert
+          // it to a number.
+          const periodActualValue = (parseFloat(periodObjects[periodId].actual_value)||0);
+          return {...acc, [periodId]: (childUpdateIds[periodId].length > 0)?actualValue:periodActualValue};
         }, {});
     }
 );
