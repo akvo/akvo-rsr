@@ -4477,6 +4477,11 @@ main {
                                 background-color: rgba($akvoPurple, 0.1);
                             }
 
+                            &.formOpen {
+                                padding: 5px 10px;
+                                background-color: rgba($akvoPurple, 0.1);
+                            }
+
                             li {
                                 display: inline;
                                 margin-right: 10px;

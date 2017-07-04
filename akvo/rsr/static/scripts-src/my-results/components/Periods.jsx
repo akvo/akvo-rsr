@@ -20,7 +20,7 @@ import * as c from "../const"
 
 import {
     getPeriodsActualValue,
-    getIndicatorsChildrenIds,
+    getIndicatorsChildrenIds, getPeriodsChildrenIds,
 } from "../selectors";
 
 import {
@@ -150,7 +150,7 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert}) => {
+const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert, formOpen}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
@@ -165,7 +165,7 @@ const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton,
     }
     return (
         <span className="periodWrap">
-            <ul className="">
+            <ul className={formOpen ? "formOpen" : ""}>
                 <li>{periodSelect}</li>
                 <li>{periodDate}</li>
                 <li>{newUpdateButton}{delUpdateAlert}</li>
@@ -199,6 +199,7 @@ const DeleteUpdateAlert = ({message, close}) => (
         user: store.models.user.objects[store.models.user.ids[0]],
         ui: store.ui,
         indicatorChildrenIds: getIndicatorsChildrenIds(store),
+        periodChildrenIds: getPeriodsChildrenIds(store),
         actualValue: getPeriodsActualValue(store),
     }
 }, {...alertActions, ...collapseActions})
@@ -259,6 +260,9 @@ export default class Periods extends React.Component {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
+                const formOpen = this.props.periodChildrenIds[id].indexOf(
+                    this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
+                ) > 0;
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
@@ -278,12 +282,14 @@ export default class Periods extends React.Component {
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
 
                 return (
-                    <Panel header={<PeriodHeader period={period}
-                                                 user={this.props.user}
-                                                 toggleCheckbox={this.toggleCheckbox}
-                                                 isChecked={isChecked}
-                                                 newUpdateButton={newUpdateButton}
-                                                 delUpdateAlert={delUpdateAlert}/>}
+                    <Panel header={
+                        <PeriodHeader period={period}
+                                      user={this.props.user}
+                                      toggleCheckbox={this.toggleCheckbox}
+                                      isChecked={isChecked}
+                                      newUpdateButton={newUpdateButton}
+                                      delUpdateAlert={delUpdateAlert}
+                                      formOpen={formOpen}/>}
                            key={id}
                            className={className}>
                         <Updates parentId={id} periodLocked={period.locked}/>

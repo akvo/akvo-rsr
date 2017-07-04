@@ -3061,6 +3061,9 @@ main {
     .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul:hover {
       padding: 5px 10px;
       background-color: rgba(44, 42, 116, 0.1); }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul.formOpen {
+      padding: 5px 10px;
+      background-color: rgba(44, 42, 116, 0.1); }
     .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li {
       display: inline;
       margin-right: 10px;
