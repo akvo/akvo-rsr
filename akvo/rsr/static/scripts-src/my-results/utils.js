@@ -368,6 +368,19 @@ function lineage(model, id) {
     return [{model, id}];
 }
 
+export function getAncestor(model, id, ancestorModel) {
+  // return the specified ancestor object for an object given the ancestorModel
+  while (model && model != ancestorModel) {
+    const parentModel = parentModelName(model);
+    const storeModel = store.getState().models[model];
+    if (storeModel.objects) {
+      const parentId = storeModel.objects[id][c.PARENT_FIELD[model]];
+      return getAncestor(parentModel, parentId, ancestorModel);
+    }
+  }
+  return store.getState().models[model].objects[id];
+}
+
 
 function lineageKeys(model, id) {
     // construct collapse activeKey keys for me and all my ancestors so I will be visible

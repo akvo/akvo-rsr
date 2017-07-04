@@ -84,6 +84,22 @@ export const
         [OBJECTS_COMMENTS]: null
     },
 
+    // Indicator measure constants
+    PERCENTAGE_MEASURE = "2",
+
+    // UI state
+    SELECTED_PERIODS = 'selectedPeriods',
+    UPDATE_FORMS = 'updateForms',
+    UPDATE_FORM_DISPLAY = 'updateFormDisplay', // boolean, keeping track if the update form is open
+
+    // Alerts
+    INITIALIZE_ALERT = 'INITIALIZE_ALERT',
+    CREATE_ALERT = 'CREATE_ALERT',
+    DISMISS_ALERT = 'DISMISS_ALERT',
+    DISMISS_ALL_ALERTS = 'DISMISS_ALL_ALERTS',
+    DESTROY_ALL_ALERTS = 'DESTROY_ALL_ALERTS',
+    DESTROY_ALERT = 'DESTROY_ALERT',
+
     // modelsReducer
     FETCH_MODEL_START = "FETCH_MODEL_START",
     FETCH_MODEL_FULFILLED = "FETCH_MODEL_FULFILLED",
@@ -118,18 +134,6 @@ export const
     ALL_MODELS_FETCHED = "ALL_MODELS_FETCHED",
     SET_PERIOD_DATES = "SET_PERIOD_DATES",
     UI_FILTER_BUTTON_ACTIVE = "UI_FILTER_BUTTON_ACTIVE",
-
-    // UI state
-    SELECTED_PERIODS = 'selectedPeriods',
-    UPDATE_FORM_DISPLAY = 'updateFormDisplay', // boolean, keeping track if the update form is open
-
-    // Alerts
-    INITIALIZE_ALERT = 'INITIALIZE_ALERT',
-    CREATE_ALERT = 'CREATE_ALERT',
-    DISMISS_ALERT = 'DISMISS_ALERT',
-    DISMISS_ALL_ALERTS = 'DISMISS_ALL_ALERTS',
-    DESTROY_ALL_ALERTS = 'DESTROY_ALL_ALERTS',
-    DESTROY_ALERT = 'DESTROY_ALERT',
 
     // filter buttons (including the period select box)
     FILTER_NEED_REPORTING = "needReporting",

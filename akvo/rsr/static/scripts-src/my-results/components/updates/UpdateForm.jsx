@@ -33,6 +33,7 @@ import {
     _,
     collapseId,
     isNewUpdate,
+    getAncestor,
 } from '../../utils.js';
 
 import {
@@ -67,16 +68,21 @@ Header.propTypes = {
 };
 
 
-const ActualValueInput = ({update, onChange, onClose}) => {
+
+const ActualValueInput = ({update, onChange, onClose, isPercentage}) => {
+    const readOnly = isPercentage,
+          value = isPercentage?update.data + '%':update.data,
+          label = isPercentage?_('percentage'):_('add_to_actual_value');
     return (
         <div className="row">
             <div>
-                <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
+                <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
-                                  className="btn btn-link btn-xs"/>
+                              className="btn btn-link btn-xs"/>
                 <input className="form-control"
+                       readOnly={readOnly}
                        id="data"
-                       value={update.data}
+                       value={value}
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
             </div>
@@ -88,6 +94,33 @@ ActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
     updatedActualValue: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    isPercentage: PropTypes.bool.isRequired,
+};
+
+
+const PercentageActualValueInput = ({update, onChange}) => {
+    return (
+        <div className="row">
+            <div className="col-xs-6">
+                {/* FIXME: Use translated strings*/}
+                <label htmlFor="actualValueNumerator">Numerator</label>
+                <input className="form-control"
+                       id="numerator"
+                       value={update.numerator}
+                       onChange={onChange}
+                       placeholder={_('input_placeholder')} />
+            </div>
+            <div className="col-xs-6">
+                {/* FIXME: Use translated strings*/}
+                <label htmlFor="actualValueDenominator">Denominator</label>
+                <input className="form-control"
+                       id="denominator"
+                       value={update.denominator}
+                       onChange={onChange}
+                       placeholder={_('input_placeholder')} />
+            </div>
+        </div>
+    )
 };
 
 
@@ -139,16 +172,16 @@ class FileUpload extends React.Component {
         // Update with new file
         if (update._file && update._file != 'delete') {
             filename = <div>{update._file.name}</div>
-        // Existing, unmodified update
-        } else if (update.file_url) {
-            filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
-        }
-        if (filename) {
-            removeFile = <a id="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
-                             {_('remove_file')}
-                         </a>
-        }
-        return (
+            // Existing, unmodified update
+            } else if (update.file_url) {
+                filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
+            }
+            if (filename) {
+                removeFile = <a id="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
+                    {_('remove_file')}
+                </a>
+            }
+            return (
             <span>
                 <FileReaderInput as="url" id="updateFile" onChange={this.props.onChange}
                                  ref={input => this.input = input}>
@@ -162,7 +195,7 @@ class FileUpload extends React.Component {
                 {removeFile}
                 {filename}
             </span>
-        );
+            );
     }
 }
 
@@ -191,25 +224,25 @@ class ImageUpload extends React.Component {
         // Update with new photo
         if (update._photo && update._photo != 'delete') {
             imageName = <div>{update._photo.file.name}</div>
-        // Existing, unmodified update
-        } else if (update.photo_url) {
-            imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
-        }
-        if (imageName) {
-            removeImage =
-                <div className="col-xs-3 update-photo">
-                    <div className="image-container">
-                        <a onClick={this.clearInput}>
-                            <img src={update._photo ? update._photo.img: update.photo_url}/>
-                            <div id="removeImage" className="image-overlay text-center">
-                                {_('remove_image')}
-                            </div>
-                        </a>
+            // Existing, unmodified update
+            } else if (update.photo_url) {
+                imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
+            }
+            if (imageName) {
+                removeImage =
+                    <div className="col-xs-3 update-photo">
+                        <div className="image-container">
+                            <a onClick={this.clearInput}>
+                                <img src={update._photo ? update._photo.img: update.photo_url}/>
+                                <div id="removeImage" className="image-overlay text-center">
+                                    {_('remove_image')}
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                </div>
-        }
+            }
 
-        return (
+            return (
             <div>
                 {removeImage}
                 <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
@@ -223,7 +256,7 @@ class ImageUpload extends React.Component {
                 </FileReaderInput>
                 {imageName}
             </div>
-        );
+            );
     }
 }
 
@@ -284,7 +317,7 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
                 const disabled = (update.data === null || update.data === "") &&
-                                  action !== c.UPDATE_ACTION_SAVE;
+                                 action !== c.UPDATE_ACTION_SAVE;
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
                                            icon={icon}
@@ -300,13 +333,13 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
         <div className="menuAction">
             <ul className="nav-pills bottomRow navbar-right">
                 {!isNewUpdate(update) && isAllowedToDelete(user, update)?
-                    <li role="presentation" className="removeUpdate">
-                        <ToggleButton onClick={callbacks.deleteUpdate}
-                                      icon={icon}
-                                      label={_('delete')}
-                                      className="btn btn-default btn-xs" />
-                    </li>
-                : ''}
+                 <li role="presentation" className="removeUpdate">
+                     <ToggleButton onClick={callbacks.deleteUpdate}
+                                   icon={icon}
+                                   label={_('delete')}
+                                   className="btn btn-default btn-xs" />
+                 </li>
+                 : ''}
                 {actionButtons}
             </ul>
         </div>
@@ -323,7 +356,8 @@ UpdateFormButtons.propTypes = {
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
-    const fields = ['data', 'text', 'relative_data', 'status', '_file', '_photo', 'approved_by',];
+    const fields = ['data', 'numerator', 'denominator', 'text', 'relative_data',
+                    'status', '_file', '_photo', 'approved_by', ];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
@@ -416,7 +450,7 @@ export default class UpdateForm extends React.Component {
             reader.onloadend = (evt) => {
                 const newImage = update(
                     this.props.update, {$merge:
-                        {_photo: {file, img: evt.target.result}}
+                                        {_photo: {file, img: evt.target.result}}
                     }
                 );
                 updateModel('updates', newImage);
@@ -436,10 +470,10 @@ export default class UpdateForm extends React.Component {
                     // only set to delete a file if there was one in the first place
                     if (originalUpdate.file_url) {
                         changedUpdate = update(this.props.update,
-                            {$merge: {file: '', file_url: '', _file: 'delete'}});
+                                               {$merge: {file: '', file_url: '', _file: 'delete'}});
                     } else {
                         changedUpdate = update(this.props.update,
-                            {$merge: {file: '', file_url: '', _file: undefined}});
+                                               {$merge: {file: '', file_url: '', _file: undefined}});
                     }
                     break;
                 }
@@ -448,26 +482,82 @@ export default class UpdateForm extends React.Component {
                     // only set to delete an image if there was one in the first place
                     if (originalUpdate.photo_url) {
                         changedUpdate = update(this.props.update,
-                            {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
+                                               {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
                     } else {
                         changedUpdate = update(this.props.update,
-                            {$merge: {photo: '', photo_url: '', _photo: undefined}});
+                                               {$merge: {photo: '', photo_url: '', _photo: undefined}});
                     }
                     break;
                 }
 
                 default: {
                     changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
+                    if (field == "numerator" || field == "denominator") {
+                        changedUpdate = update(changedUpdate,
+                                               {$merge: {["data"]: this.computePercentage(changedUpdate)}});
+                    }
                 }
             }
             updateModel('updates', changedUpdate);
         }
     }
 
+    computePercentage(update) {
+        if (!update.numerator || !update.denominator ) {
+            return 0;
+        } else {
+            return (update.numerator * 100)/update.denominator;
+        }
+
+    }
+
+    onCancel() {
+        this.props.formToggle();
+        const originalUpdate = this.state.originalUpdate;
+        if (isNewUpdate(originalUpdate)) {
+            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+        } else {
+            updateModel(c.OBJECTS_UPDATES, originalUpdate);
+        }
+        updateFormClose(originalUpdate.id);
+    }
+
+    formClose(id) {
+        updateFormClose(id);
+    }
+
+    refreshFilter() {
+        const filter = this.props.ui.activeFilter;
+        switch (filter) {
+            case c.FILTER_NEED_REPORTING: {
+                selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
+                break;
+            }
+            case c.FILTER_SHOW_DRAFT: {
+                showUpdates(this.props.draftUpdates, true);
+                break;
+            }
+            case c.FILTER_SHOW_APPROVED: {
+                showUpdates(this.props.approvedUpdates, false, true);
+                break;
+            }
+        }
+    }
+
+    successCallback(id) {
+        this.formClose.bind(id);
+        // TODO: calling refreshFilter here breaks when deleting an update as
+        // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
+        // that has just been approved showing in the Need reporting filter view.
+        // Need to find a way to let the state change drive the changing of the hidden panels
+
+        // this.refreshFilter(); // Breaks when deleting an update!!!
+    };
+
     saveUpdate(e) {
         function setUpdateStatus(update, action, userId) {
             /*
-            Set the status field of the update according to the action taken
+               Set the status field of the update according to the action taken
              */
             switch(action) {
                 case c.UPDATE_ACTION_SAVE: {
@@ -573,30 +663,36 @@ export default class UpdateForm extends React.Component {
     render() {
         const {update, period} = this.props;
         const updateValue = parseFloat(update.data ? update.data : 0);
+        const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
+        const percentageUpdate = indicator.measure === c.PERCENTAGE_MEASURE;
 
         return (
             <div className="update-container">
-                <div className="row update-entry-container edit-in-progress">
-                    <Header targetValue={period.target_value}/>
-                    <ActualValueInput update={update}
-                                      onChange={this.onChange}
-                                      onClose={this.props.onClose}/>
-                    <ActualValueDescription update={update}
-                                            onChange={this.onChange}/>
-                    <Attachments update={update}
-                                 onChange={this.attachmentsChange}
-                                 removeAttachment={this.removeAttachment}/>
-                    <UpdateFormButtons
-                        user={this.props.user}
-                        update={update}
-                        changing={this.props.updates.changing}
-                        callbacks={{
-                            saveUpdate: this.saveUpdate,
-                            deleteUpdate: this.deleteUpdate}}/>
-                </div>
-                <Comments parentId={update.id}
-                          inForm={true}/>
+            <div className="row update-entry-container edit-in-progress">
+            <Header targetValue={period.target_value}/>
+            <ActualValueInput update={update}
+            onChange={this.onChange}
+            onClose={this.props.onClose}
+            isPercentage={percentageUpdate}/>
+            {percentageUpdate?(<PercentageActualValueInput
+                                   update={update}
+                                   onChange={this.onChange}/>):undefined}
+            <ActualValueDescription update={update}
+            onChange={this.onChange}/>
+            <Attachments update={update}
+            onChange={this.attachmentsChange}
+            removeAttachment={this.removeAttachment}/>
+            <UpdateFormButtons
+            user={this.props.user}
+            update={update}
+            changing={this.props.updates.changing}
+            callbacks={{
+                saveUpdate: this.saveUpdate,
+                deleteUpdate: this.deleteUpdate}}/>
             </div>
+            <Comments parentId={update.id}
+            inForm={true}/>
+        </div>
         )
     }
 }
