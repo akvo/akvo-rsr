@@ -58,11 +58,11 @@ const isAllowedToDelete = (user, update) =>
     update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
-const Header = ({update}) => {
+const Header = ({targetValue}) => {
     return (
         <div>
-            <div className="update-entry-container-header hidden">
-                Status: {_('update_statuses')[update.status]}
+            <div className="">
+                {_('target_value')}: {targetValue}
             </div>
         </div>
     )
@@ -73,11 +73,13 @@ Header.propTypes = {
 };
 
 
-const ActualValueInput = ({update, onChange}) => {
+const ActualValueInput = ({update, onChange, onCancel}) => {
     return (
         <div className="row">
             <div>
                 <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
+                <ToggleButton onClick={onCancel} label="X"
+                                  className="btn btn-link btn-xs"/>
                 <input className="form-control"
                        id="data"
                        value={update.data}
@@ -301,10 +303,6 @@ const UpdateFormButtons = ({user, update, callbacks}) => {
                                       className="btn btn-default btn-xs"/>
                     </li>
                 : ''}
-                <li role="presentation" className="cancelUpdate">
-                    <ToggleButton onClick={callbacks.onCancel} label={_('cancel')}
-                                  className="btn btn-link btn-xs"/>
-                </li>
                 {actionButtons}
             </ul>
         </div>
@@ -345,6 +343,7 @@ const pruneForPOST = (update) => {
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
+        period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
         collapseId: PropTypes.string.isRequired,
     };
@@ -611,14 +610,16 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const update = this.props.update;
+        const {update, period} = this.props;
         const updateValue = parseFloat(update.data ? update.data : 0);
 
         return (
             <div className="update-container">
                 <div className="row update-entry-container edit-in-progress">
-                    <Header update={update}/>
-                    <ActualValueInput update={update} onChange={this.onChange}/>
+                    <Header targetValue={period.target_value}/>
+                    <ActualValueInput update={update}
+                                      onChange={this.onChange}
+                                      onCancel={this.onCancel}/>
                     <ActualValueDescription update={update}  onChange={this.onChange}/>
                     <Attachments update={update} onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
@@ -627,8 +628,7 @@ export default class UpdateForm extends React.Component {
                         update={update}
                         callbacks={{
                             saveUpdate: this.saveUpdate,
-                            deleteUpdate: this.deleteUpdate,
-                            onCancel: this.onCancel}}/>
+                            deleteUpdate: this.deleteUpdate}}/>
                 </div>
             </div>
         )

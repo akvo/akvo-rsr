@@ -207,7 +207,7 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        const updates = this.props.models.updates;
+        const {updates, periods} = this.props.models;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
@@ -218,7 +218,9 @@ export default class App extends React.Component {
         let updateForm = undefined;
         if (updateFormDisplay) {
             const update = updates.objects[updateFormDisplay];
-            updateForm = <UpdateForm update={update}
+            const period = periods.objects[update.period];
+            updateForm = <UpdateForm period={period}
+                                     update={update}
                                      collapseId={collapseId(
                                          c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
                                      )}/>
