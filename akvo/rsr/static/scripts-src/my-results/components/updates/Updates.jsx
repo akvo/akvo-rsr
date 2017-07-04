@@ -232,7 +232,7 @@ class UpdateHeader extends React.Component {
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
                                              label={_('edit_update')}
-                                             disabled={updateFormDisplay}/>;
+                                             disabled={updateFormDisplay !== false}/>;
             updateAlert = <this.state.UpdateAlert />
         }
         return (
@@ -304,12 +304,12 @@ export default class Updates extends React.Component {
                 update.actual_value = actualValue;
                 const className = this.hideMe(id) ? 'hidePanel' : '';
                 return (
-                    <div className={'row'}>
+                    <div className={'row'} key={id}>
                         <UpdateHeader update={update} periodLocked={this.props.periodLocked}
                                       collapseId={this.state.collapseId}/>
                         <div className={'row'}>
                             <Update update={update} collapseId={this.state.collapseId}/>
-                            <Comments parentId={id}/>
+                            <Comments parentId={id} inForm={false}/>
                         </div>
                     </div>
                 )
@@ -327,12 +327,7 @@ export default class Updates extends React.Component {
         } else if (updateIds.length > 0) {
             return (
                 <div className={c.OBJECTS_UPDATES}>
-                    {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
-                    {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
-                                  {/*disabled={!this.props.ui.allFetched}/>*/}
-                    <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(updateIds)}
-                    </Collapse>
+                    {this.renderPanels(updateIds)}
                 </div>
             );
         } else {

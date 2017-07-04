@@ -150,7 +150,7 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) => {
+const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
@@ -168,8 +168,7 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
             <ul className="">
                 <li>{periodSelect}</li>
                 <li>{periodDate}</li>
-                <li>Target value: <span>{period.target_value}</span></li>
-                <li>Actual value: <span>{actualValue}</span></li>
+                <li>{newUpdateButton}{delUpdateAlert}</li>
                 <li>{lockStatus}</li>
             </ul>
 
@@ -180,7 +179,6 @@ const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) =>
 PeriodHeader.propTypes = {
     period: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    actualValue: PropTypes.number.isRequired,
     toggleCheckbox: PropTypes.func.isRequired,
     isChecked: PropTypes.bool.isRequired,
 };
@@ -267,7 +265,7 @@ export default class Periods extends React.Component {
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}
-                                          disabled={this.props.ui.updateFormDisplay}/>;
+                                          disabled={this.props.ui.updateFormDisplay !== false}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
                     // Possible solution: add an alert action and reducer instead of using callback
@@ -281,15 +279,14 @@ export default class Periods extends React.Component {
 
                 return (
                     <Panel header={<PeriodHeader period={period}
-                                              user={this.props.user}
-                                              toggleCheckbox={this.toggleCheckbox}
-                                              actualValue={actualValue}
-                                              isChecked={isChecked}/>}
+                                                 user={this.props.user}
+                                                 toggleCheckbox={this.toggleCheckbox}
+                                                 isChecked={isChecked}
+                                                 newUpdateButton={newUpdateButton}
+                                                 delUpdateAlert={delUpdateAlert}/>}
                            key={id}
                            className={className}>
                         <Updates parentId={id} periodLocked={period.locked}/>
-                        {newUpdateButton}
-                        {delUpdateAlert}
                     </Panel>
                 )
             }
