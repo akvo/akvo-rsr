@@ -696,7 +696,7 @@ export class NewUpdateButton extends React.Component {
                 <div className="emptyUpdate">
                     <a onClick={this.newUpdate}
                        className={'btn btn-sm btn-default newUpdate'}>
-                        {_('new_update')}
+                        {_('add_indicator_value')}
                     </a>
                 </div>
         )

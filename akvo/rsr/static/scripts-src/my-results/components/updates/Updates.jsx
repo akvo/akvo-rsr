@@ -136,13 +136,6 @@ class Update extends React.Component {
     }
 
     render() {
-        // let editUpdateButton, updateAlert;
-        // if (!this.props.periodLocked) {
-        //     editUpdateButton = <ToggleButton onClick={this.formToggle}
-        //                                      className={'btn btn-sm btn-default'}
-        //                                      label={_('edit_update')}/>;
-        //     updateAlert = <this.state.UpdateAlert />
-        // }
         return(
             <div className="col-xs-12">
                 {/*{editUpdateButton}*/}
@@ -245,7 +238,7 @@ class UpdateHeader extends React.Component {
             }
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
-                                             label={_('edit_update')}/>;
+                                             label={_('edit_indicator_value')}/>;
             updateAlert = <this.state.UpdateAlert />
         }
         const update = this.props.update;
