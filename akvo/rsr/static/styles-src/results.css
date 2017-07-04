@@ -2964,6 +2964,11 @@ div.iatiFilters {
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .aggrActualValue span {
                 color: initial;
                 margin-left: 4px; }
+            .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .react-sweet-progress {
+              position: absolute;
+              right: 4em;
+              top: 0.75em;
+              width: 12em; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
               margin-left: 10px;
               color: rgba(32, 32, 36, 0.5); }
@@ -3360,6 +3365,10 @@ div.iatiFilters {
     margin-right: 10px; }
   .periodMenuBar .periodOverview .overviewBtn {
     margin: 10px 0 0 5px; }
+  .periodMenuBar .loading {
+    margin-top: 20px;
+    margin-left: 5px;
+    font-size: 120%; }
   .periodMenuBar .periodBtns {
     padding: 10px;
     background: rgba(32, 32, 36, 0.05); }

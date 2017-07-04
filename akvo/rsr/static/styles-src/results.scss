@@ -4300,6 +4300,13 @@ div.iatiFilters {
                                     }
                                 }
 
+                                .react-sweet-progress {
+                                    position: absolute;
+                                    right: 4em;
+                                    top: 0.75em;
+                                    width: 12em;
+                                }
+
                                 &:nth-child(2) {
                                     margin-left: 10px;
                                     color: rgba($akvoBlack, 0.5);
@@ -5008,6 +5015,12 @@ div.iatiFilters {
         .overviewBtn {
             margin: 10px 0 0 5px;
         }
+    }
+
+    .loading {
+        margin-top: 20px;
+        margin-left: 5px;
+        font-size: 120%;
     }
 
     .periodBtns {

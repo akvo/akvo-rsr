@@ -9,11 +9,14 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import { connect } from "react-redux"
 import Collapse, {  Panel } from 'rc-collapse';
+import { Progress } from 'react-sweet-progress';
+import "react-sweet-progress/lib/style.css";
 
 import * as c from '../const.js';
 
 import {
     getIndicatorsAggregateActualValue,
+    getIndicatorsAggregateCompletionPercentage,
     getResultsChildrenIds
 } from "../selectors";
 
@@ -29,8 +32,13 @@ import {
 import Periods from './Periods';
 
 
-const IndicatorHeader = ({indicator, aggregateActualValue}) => {
+const IndicatorHeader = ({indicator, aggregateActualValue, aggregateCompletionPercentage}) => {
     const title = indicator.title.length > 0 ? indicator.title : _("nameless_indicator");
+    // Don't show progress bar if there's no target value (aggregateCompletionPercentage is NaN)
+    const progress_bar = aggregateCompletionPercentage !== aggregateCompletionPercentage ? undefined : (
+        // Limit percentage to 100 for progress bar to work correctly
+        <li><Progress percent={Math.min(100, aggregateCompletionPercentage)} /></li>
+    )
     return (
         <span className="indicatorTitle">
             <ul>
@@ -38,25 +46,26 @@ const IndicatorHeader = ({indicator, aggregateActualValue}) => {
                 <li><span className="aggrActualValue">
                     {_("aggregate_actual_value")}<span>{aggregateActualValue}</span></span>
                 </li>
-            </ul>   
+                {progress_bar}
+            </ul>
         </span>
     )
 };
 IndicatorHeader.propTypes = {
     indicator: PropTypes.object,
     aggregateActualValue: PropTypes.number,
+    aggregateCompletionPercentage: PropTypes.number,
 };
 
 
 const IndicatorContent = ({indicator}) => {
-    const description = indicator.description.length > 0 ?
+    const description = indicator.description.length > 0 ? (
         <ul>
             <li className="description">
                 <span>{indicator.description}</span>
             </li>
         </ul>
-    :
-        undefined;
+    ): undefined;
     return (
         <div className="indicatorInfo">
             {description}
@@ -84,6 +93,7 @@ IndicatorContent.propTypes = {
         ui: store.ui,
         resultChildrenIds: getResultsChildrenIds(store),
         aggregateActualValue: getIndicatorsAggregateActualValue(store),
+        aggregateCompletionPercentage: getIndicatorsAggregateCompletionPercentage(store),
     }
 })
 export default class Indicators extends React.Component {
@@ -130,6 +140,9 @@ export default class Indicators extends React.Component {
                                         indicator={indicator}
                                         aggregateActualValue={
                                             this.props.aggregateActualValue[id]
+                                        }
+                                        aggregateCompletionPercentage={
+                                            this.props.aggregateCompletionPercentage[id]
                                         }/>}
                            className={className}
                            key={id}>
@@ -144,9 +157,9 @@ export default class Indicators extends React.Component {
     render() {
         const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
 
-        if (!indicatorIds) {
+        if (!this.props.indicators.fetched) {
             return (
-                <p>Loading...</p>
+                <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
         } else if (indicatorIds.length > 0) {
             return (
@@ -160,7 +173,7 @@ export default class Indicators extends React.Component {
                 </div>
             );
         } else {
-            return (                
+            return (
                 <div className="emptyData">
                   <p>No indicators</p>
                 </div>

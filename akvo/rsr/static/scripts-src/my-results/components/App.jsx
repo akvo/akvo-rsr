@@ -288,7 +288,7 @@ export default class App extends React.Component {
 
     render() {
         const clearfix = {clear: 'both'};
-        const openCloseLabel = this.openResults() ? _('full_view') : _('overview');
+        const openCloseLabel = this.openResults() ? _('overview') : _('full_view');
         const selectOptions = selectablePeriods(this.props.models.periods && this.props.models.periods.ids);
         let value, icon;
         ({value, icon} = fieldValueOrSpinner(this.props.needReportingPeriods, 'length'));
@@ -309,14 +309,19 @@ export default class App extends React.Component {
             </div>
         :
             <div className="col-xs-6">
-            </div>
+            </div>;
+
+        // const results = this.props.ui.allFetched ?
+        //     <Results parentId="results"/>
+        // :
+        //     <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
         return (
             <div className={'periodMenuBar'}>
                 <div className={'periodBtns'}>
                     <div className={'row'}>
                         <div className={'periodFilter col-sm-6'}>
-                            <div className={'row'}><h5>{_("filter_periods")}</h5>
+                            <div className={'row'}><h5>{_("indicator_reporting")}</h5>
                                 <div className="col-xs-12">
                                     {/*<ToggleButton onClick={this.resetFilters} label={_("reset_filter")}*/}
                                                   {/*disabled={resetFilterDisabled}/>*/}
@@ -341,7 +346,7 @@ export default class App extends React.Component {
                             </div>
                         </div>
                         <div className={'periodBulkAct col-sm-6'}>
-                            <div className={'row'}><h5>{_("bulk_action")}</h5>
+                            <div className={'row'}><h5>{_("filter_periods")}</h5>
                                 <div className="col-xs-6">
                                     <Select options={selectOptions}
                                             value={this.state.selectedOption}
