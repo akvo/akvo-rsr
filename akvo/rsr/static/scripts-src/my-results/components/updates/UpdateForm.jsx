@@ -51,6 +51,7 @@ import {
     getPendingUpdates,
     getUpdatesForApprovedPeriods,
 } from "../../selectors";
+import Comments from "../Comments";
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -69,7 +70,10 @@ const Header = ({targetValue}) => {
 };
 
 Header.propTypes = {
-    update: PropTypes.object.isRequired,
+    targetValue: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
 };
 
 
@@ -630,6 +634,7 @@ export default class UpdateForm extends React.Component {
                             saveUpdate: this.saveUpdate,
                             deleteUpdate: this.deleteUpdate}}/>
                 </div>
+                <Comments parentId={update.id} inForm={true}/>
             </div>
         )
     }

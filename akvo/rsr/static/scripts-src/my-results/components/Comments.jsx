@@ -52,6 +52,7 @@ class CommentForm extends React.Component {
             PropTypes.string,
             PropTypes.number,
         ]).isRequired,
+        disabled: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -106,7 +107,7 @@ class CommentForm extends React.Component {
     }
 
     render() {
-        const disabled = isNewUpdate(this.props.parentId);
+        const {disabled} = this.props;
         return (
             <div>
                 <div className="input-group">
@@ -190,28 +191,16 @@ export default class Comments extends React.Component {
             return (
                 <p>Loading...</p>
             );
-        } else if (commentIds.length > 0) {
-            return (
-                <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
-                    <strong>Internal notes:</strong>
-                    {this.renderComments(commentIds)}
-                    {inForm ?
-                        <CommentForm parentId={this.props.parentId}/>
-                    :
-                        undefined}
-                </div>
-            );
         } else {
-            let disabledNote;
-            if (isNewUpdate(this.props.parentId)) {
-                disabledNote = " (" + _("notes_disabled") + ")"
-            }
+            const disabled = isNewUpdate(this.props.parentId);
+            const disabledNote = disabled ? " (" + _("notes_disabled") + ")" : undefined;
             return (
                 <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
-                    <strong>Internal notes</strong>{disabledNote}
+                    <strong>Internal notes:</strong>{disabledNote}
+                    {disabled ? undefined : this.renderComments(commentIds)}
                     {inForm ?
-                        <CommentForm parentId={this.props.parentId}/>
-                    :
+                        <CommentForm parentId={this.props.parentId} disabled={disabled}/>
+                        :
                         undefined}
                 </div>
             );
