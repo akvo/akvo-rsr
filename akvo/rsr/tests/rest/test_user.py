@@ -12,6 +12,7 @@ from __future__ import print_function
 from django.conf import settings
 from django.test import TransactionTestCase, Client
 
+from akvo.codelists.models import Country, Version
 from akvo.rsr.models import Employment, Organisation, User
 from akvo.utils import check_auth_groups
 
@@ -31,6 +32,13 @@ class UserTestCase(TransactionTestCase):
         self.user = self._create_user('abc@example.com', self.user_password)
         self.c.login(username=self.user.username, password=self.user_password)
 
+        version = Version.objects.create(code=settings.IATI_VERSION)
+        self.country = Country.objects.create(
+            code='CI',
+            name=u'CI - C\xc3\xb4te Divoire',
+            version=version
+        )
+
     def test_request_organisation_simple(self):
         # Given
         data = {'organisation': self.org.id}
@@ -48,7 +56,7 @@ class UserTestCase(TransactionTestCase):
 
     def test_request_organisation_once(self):
         # Given
-        data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
+        data = {'organisation': self.org.id, 'country': 'CI', 'job_title': ''}
         pk = self.user.id
 
         # When

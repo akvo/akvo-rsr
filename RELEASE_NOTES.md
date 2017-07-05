@@ -1,3 +1,12 @@
+# Akvo RSR – Version 3.27 Lima
+
+Date: 2017-06-16
+
+## Continued improvements
+
+An assortment of important beta features for the new RSR Results Framework,
+which is being pilot by limited number of RSR partners
+
 # Akvo RSR – Version 3.26.2 Panama City (hot-fix)
 
 Date: 2017-06-01

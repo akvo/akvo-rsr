@@ -146,7 +146,7 @@ export default class FilterBar extends React.Component {
 
     render() {
         const {callbacks} = this.props;
-        const openCloseLabel = this.openResults() ? _('full_view') : _('overview');
+        const openCloseLabel = this.openResults() ? _('overview') : _('full_view');
         const selectOptions = selectablePeriods(this.props.periods && this.props.periods.ids);
 
         const needReportingLabel = <InteractiveLabel label={_("needs_reporting")}
@@ -164,7 +164,7 @@ export default class FilterBar extends React.Component {
                         <div className={'row'}>
                             <div className={'periodFilter col-sm-6'}>
                                 <div className={'row'}>
-                                    <h5>{_("filter_periods")}</h5>
+                                    <h5>{_("indicator_reporting")}</h5>
                                     <div className="col-xs-12">
                                         <ToggleButton onClick={callbacks.needReporting}
                                                       label={needReportingLabel}
@@ -187,7 +187,7 @@ export default class FilterBar extends React.Component {
                                 </div>
                             </div>
                             <div className={'periodBulkAct col-sm-6'}>
-                                <div className={'row'}><h5>{_("bulk_action")}</h5>
+                                <div className={'row'}><h5>{_("filter_periods")}</h5>
                                     <div className="col-xs-6">
                                         <Select options={selectOptions}
                                                 value={this.state.selectedOption}

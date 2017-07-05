@@ -4334,6 +4334,13 @@ main {
                                     }
                                 }
 
+                                .react-sweet-progress {
+                                    position: absolute;
+                                    right: 4em;
+                                    top: 0.75em;
+                                    width: 12em;
+                                }
+
                                 &:nth-child(2) {
                                     margin-left: 10px;
                                     color: rgba($akvoBlack, 0.5);
@@ -5109,4 +5116,8 @@ main {
 
 .hidePanel {
     display: none;
+}
+
+.form-button {
+    margin-right: 5px;
 }

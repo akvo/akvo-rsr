@@ -196,7 +196,8 @@ const DeleteUpdateAlert = ({message, close}) => (
     return {
         periods: store.models.periods,
         keys: store.keys,
-        user: store.models.user.objects[store.models.user.ids[0]],
+        user: store.models.user.ids && store.models.user.ids.length > 0 ?
+            store.models.user.objects[store.models.user.ids[0]] : {},
         ui: store.ui,
         indicatorChildrenIds: getIndicatorsChildrenIds(store),
         periodChildrenIds: getPeriodsChildrenIds(store),
@@ -263,13 +264,16 @@ export default class Periods extends React.Component {
                 const formOpen = this.props.periodChildrenIds[id].indexOf(
                     this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
                 ) > -1;
+
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
+                const ui = this.props.ui;
                 let newUpdateButton, delUpdateAlert;
-                if (!period.locked) {
-                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}
-                                          disabled={this.props.ui.updateFormDisplay !== false}/>;
+                if (!period.locked && (
+                    ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
+                )) {
+                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
                     // Possible solution: add an alert action and reducer instead of using callback
@@ -301,9 +305,9 @@ export default class Periods extends React.Component {
 
     render() {
         const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
-        if (!periodIds) {
+        if (!this.props.periods.fetched) {
             return (
-                <p>Loading...</p>
+                <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
         } else if (periodIds.length > 0) {
             return (
