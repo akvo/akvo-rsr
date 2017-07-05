@@ -16,6 +16,7 @@ import * as c from "./const";
 import {
     idsToActiveKey,
     isEmpty,
+    computePercentage,
 } from "./utils";
 
 
@@ -142,17 +143,32 @@ export const getIndicatorsAggregateActualValue = createSelector(
             indicatorId2: <aggregateActualValue2>,...
         }
      */
-    [getIndicatorIds, getIndicatorsChildrenIds, getPeriodsActualValue],
-    (indicatorIDs, childPeriodIds, actualValue) => {
-        return indicatorIDs && childPeriodIds && !isEmpty(actualValue) && indicatorIDs.reduce((acc, indicatorId) => {
-            const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
-                return acc + actualValue[periodId];
-            }, 0);
+    [getIndicatorIds, getIndicatorObjects, getIndicatorsChildrenIds, getPeriodObjects, getPeriodsActualValue],
+    (indicatorIDs, indicatorObjects, childPeriodIds, periodObjects, actualValue) => {
+        return indicatorIDs && indicatorObjects && childPeriodIds && !isEmpty(actualValue) && indicatorIDs.reduce((acc, indicatorId) => {
+            let aggregateValue;
+            if (indicatorObjects[indicatorId].measure === c.PERCENTAGE_MEASURE) {
+                // Computed aggregate percentage -> (sum of all numerators) * 100 / (last/latest denominator)
+                const numerator = childPeriodIds[indicatorId].reduce((sum, periodId) => {
+                    return sum + (parseFloat(periodObjects[periodId].numerator)||0);
+                }, 0);
+                const childPeriods = childPeriodIds[indicatorId].map((id) => {return periodObjects[id];});
+                const latestPeriod = (periods) => {
+                    periods.sort((period1, period2) => {return period1.period_end < period2.period_end?1:-1;});
+                    return periods[0];
+                };
+                const denominator = (childPeriods.length == 1)?
+                          childPeriods[0].denominator:latestPeriod(childPeriods).denominator;
+                aggregateValue = computePercentage(numerator, denominator);
+            } else {
+                aggregateValue = childPeriodIds[indicatorId].reduce((sum, periodId) => {
+                    return sum + actualValue[periodId];
+                }, 0);
+            }
             return {...acc, [indicatorId]: aggregateValue};
         }, {});
     }
 );
-
 
 export const getIndicatorsAggregateTargetValue = createSelector(
     /*

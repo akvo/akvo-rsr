@@ -464,3 +464,14 @@ export function userIsMEManager(user) {
     :
         false;
 }
+
+
+export function computePercentage(numerator, denominator) {
+    numerator = parseFloat(numerator) || 0;
+    denominator = parseFloat(denominator) || 0;
+    if (denominator != 0) {
+        return (numerator * 100) / denominator;
+    } else {
+        return 0;
+    }
+}
