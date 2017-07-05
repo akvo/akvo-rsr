@@ -6,7 +6,7 @@
 
 {% block myrsr_main %}
     <h4 class="resultProjectTitle" id="resultProjectTitle">
-        Results for <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
+        Results for: <a href="{% url 'project-main' project.pk %}">{{ project.title }}</a>
         <a href="{% url 'project_editor' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-pencil-square-o"></i> {% trans 'Edit project' %}</button></a>
         <a href="{% url 'my_results' project.pk %}"><button class="btn btn-default btn-sm"><i class="fa fa-undo"></i> {% trans 'Legacy results page' %}</button></a>
     </h4>
