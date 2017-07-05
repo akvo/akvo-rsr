@@ -3405,3 +3405,6 @@ div.iatiFilters {
 
 .hidePanel {
   display: none; }
+
+.form-button {
+  margin-right: 5px; }
