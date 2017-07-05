@@ -262,7 +262,7 @@ export default class Periods extends React.Component {
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
                 const formOpen = this.props.periodChildrenIds[id].indexOf(
                     this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
-                ) > 0;
+                ) > -1;
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
