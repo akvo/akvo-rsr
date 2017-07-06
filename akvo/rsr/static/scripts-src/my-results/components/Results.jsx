@@ -143,12 +143,13 @@ export default class Results extends React.Component {
 
     render() {
         // Special case, always get all Results
-        const resultIds = this.props.results.ids;
+        const results = this.props.results;
+        const resultIds = results.ids;
         const toggleKey = createToggleKey(resultIds, this.activeKey());
 
-        if (!resultIds) {
+        if (!results.fetched) {
             return (
-                <p>Loading...</p>
+                <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
         } else if (resultIds.length > 0) {
             return (

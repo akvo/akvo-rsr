@@ -12,7 +12,11 @@
 import { createSelector } from "reselect"
 
 import * as c from "./const";
-import { idsToActiveKey } from "./utils";
+
+import {
+    idsToActiveKey,
+    isEmpty,
+} from "./utils";
 
 
 // Input selectors for models
@@ -31,7 +35,7 @@ const getUser = (store) => store.models.user;
 
 const getChildrenFactory = model => {
     const modelSelectors = {
-        // {childModelName: [parentSelector, childrenSelector}
+        // {childModelName: [parentIds, parentSelector, childrenIds, childrenSelector]}
         [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
@@ -100,9 +104,9 @@ export const getPeriodsActualValue = createSelector(
         Return an object on the form:
         {periodId1: <actualValue1>, periodId2: <actualValue2>,...}
      */
-    [getPeriodIds, getUpdateObjects, getPeriodsChildrenIds],
-    (periodIds, updateObjects, childUpdateIds) => {
-        return periodIds.reduce((acc, periodId) => {
+    [getPeriodIds, getPeriodObjects, getUpdateObjects, getPeriodsChildrenIds],
+    (periodIds, periodObjects, updateObjects, childUpdateIds) => {
+        return periodIds && updateObjects && !isEmpty(childUpdateIds) && periodIds.reduce((acc, periodId) => {
             const actualValue = childUpdateIds[periodId].filter(
                 (updateId) => updateObjects[updateId].status == c.UPDATE_STATUS_APPROVED
             ).reduce(
@@ -116,8 +120,14 @@ export const getPeriodsActualValue = createSelector(
                     return acc;
                 }, 0
             );
-            return {...acc, [periodId]: actualValue}
-        }, {})
+          // We allow users to set an actual value on periods directly from the
+          // project editor. When there are no updates, over which we can
+          // aggregate, this value should be used as the actual value. Also, the
+          // UI only allows actual values to be numbers, so we try and convert
+          // it to a number.
+          const periodActualValue = (parseFloat(periodObjects[periodId].actual_value)||0);
+          return {...acc, [periodId]: (childUpdateIds[periodId].length > 0)?actualValue:periodActualValue};
+        }, {});
     }
 );
 
@@ -129,11 +139,51 @@ export const getIndicatorsAggregateActualValue = createSelector(
      */
     [getIndicatorIds, getIndicatorsChildrenIds, getPeriodsActualValue],
     (indicatorIDs, childPeriodIds, actualValue) => {
-        return indicatorIDs.reduce((acc, indicatorId) => {
+        return indicatorIDs && childPeriodIds && !isEmpty(actualValue) && indicatorIDs.reduce((acc, indicatorId) => {
             const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
                 return acc + actualValue[periodId];
             }, 0);
-            return {...acc, [indicatorId]: aggregateValue}
+            return {...acc, [indicatorId]: aggregateValue};
+        }, {});
+    }
+);
+
+
+export const getIndicatorsAggregateTargetValue = createSelector(
+    /*
+      Return an object on the form:
+      {indicatorId1: <aggregateTargetValue1>, indicatorId2: <aggregateTargetValue2>,...}
+    */
+    [getIndicatorIds, getIndicatorsChildrenIds, getPeriodObjects],
+    (indicatorIDs, childPeriodIds, periodObjects) => {
+        return indicatorIDs && childPeriodIds && periodObjects && indicatorIDs.reduce((acc, indicatorId) => {
+            const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
+                const target_value = parseInt(periodObjects[periodId].target_value);
+                // If target_value is NaN then target_value !== target_value returns true!
+                if (!(target_value !== target_value)) {
+                    return acc + target_value;
+                } else {
+                    return acc;
+                }
+            }, 0);
+            return {...acc, [indicatorId]: aggregateValue};
+        }, {});
+    }
+);
+
+
+export const getIndicatorsAggregateCompletionPercentage = createSelector(
+    /*
+      Return an object on the form:
+      {indicatorId1: <aggregateCompletionPercentage1>, indicatorId2: <aggregateCompletionPercentage2>,...}
+    */
+    [getIndicatorIds, getIndicatorsAggregateTargetValue, getIndicatorsAggregateActualValue],
+    (indicatorIDs, targetValue, actualValue) => {
+        return indicatorIDs.reduce((acc, indicatorId) => {
+            const target = targetValue[indicatorId],
+                  actual = actualValue[indicatorId],
+                  completion = (target != undefined && target > 0) ? Math.round(actual * 100/target): NaN;
+            return {...acc, [indicatorId]: completion};
         }, {});
     }
 );
@@ -174,13 +224,14 @@ export const getApprovedPeriods = createSelector(
         status == c.UPDATE_STATUS_APPROVED
      */
     [getPeriodIds, getPeriodObjects, getPeriodsChildrenIds, getUpdateObjects],
-    (periodIds, periodObjects, childUpdateIds, updateObjects) => periodIds && childUpdateIds && updateObjects && periodIds.filter(
-        (periodId) =>
-            periodObjects[periodId].locked === false &&
-            childUpdateIds[periodId].length > 0 &&
-            childUpdateIds[periodId].every(
-                (updateId) => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
-            )
+    (periodIds, periodObjects, childUpdateIds, updateObjects) =>
+        periodIds && childUpdateIds && updateObjects && periodIds.filter(
+            (periodId) =>
+                periodObjects[periodId].locked === false &&
+                childUpdateIds[periodId].length > 0 &&
+                childUpdateIds[periodId].every(
+                    (updateId) => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
+                )
     )
 );
 
@@ -216,13 +267,12 @@ export const getNeedReportingPeriods = createSelector(
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
         unlockedPeriods && updateObjects && unlockedPeriods.filter(
             // Only filter if periodChildren !== {}
-            id => Object.keys(periodChildren).length !== 0 &&
-                periodChildren[id].filter(
-                    updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
-                                updateObjects[updateId].status !== c.UPDATE_STATUS_NEW &&
-                                updateObjects[updateId].status !== c.UPDATE_STATUS_REVISION
-                ).length === 0
-            )
+            id => !isEmpty(periodChildren) && periodChildren[id].filter(
+                updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
+                            updateObjects[updateId].status !== c.UPDATE_STATUS_NEW &&
+                            updateObjects[updateId].status !== c.UPDATE_STATUS_REVISION
+            ).length === 0
+        )
 );
 
 

@@ -62,8 +62,7 @@ var FilterForm = React.createClass({
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
-        if (Object.keys(this.state.selected).length > 0) {
-            this.toggleForm();
+        if (Cookies.get('showAdvancedFilters') === 'on') {
             document.querySelector('#search-view').scrollIntoView();
         }
     },
@@ -188,6 +187,8 @@ var FilterForm = React.createClass({
     getStateFromUrl: function(){
         var selected = {};
         var query = location.search.substring(1);
+        // Treat iati_status query param as status param
+        query = query.replace('iati_status', 'status');
         if (query === '') { return selected; }
         query.split('&').map(function(query_term){
             var pair = query_term.split('='),

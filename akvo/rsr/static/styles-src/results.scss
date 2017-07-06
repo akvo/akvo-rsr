@@ -4300,6 +4300,17 @@ div.iatiFilters {
                                     }
                                 }
 
+                                &.indicatorProgress {
+                                    position: absolute;
+                                    right: 3em;
+                                    top: 0.75em;
+                                    color: rgba($akvoBlack, 0.5);
+
+                                    .react-sweet-progress-circle-outer {
+                                        margin-left: 1em;
+                                    }
+                                }
+
                                 &:nth-child(2) {
                                     margin-left: 10px;
                                     color: rgba($akvoBlack, 0.5);
@@ -5010,6 +5021,12 @@ div.iatiFilters {
         }
     }
 
+    .loading {
+        margin-top: 20px;
+        margin-left: 5px;
+        font-size: 120%;
+    }
+
     .periodBtns {
         padding: 10px;
         background: rgba($akvoBlack, 0.05);
@@ -5065,4 +5082,8 @@ div.iatiFilters {
 
 .hidePanel {
     display: none;
+}
+
+.form-button {
+    margin-right: 5px;
 }

@@ -33,12 +33,27 @@ window.AKVO_RSR.utils = {
 
 $(document).ready(function() {
 
+  function toggle_advanced_filters(show){
+    // Toggles the advanced filters pane if show is undefined
+    // Shows the pane if show is true.
+    // Hides the pane if show is false.
+    if (show != undefined && show == $("#wrapper, #search").hasClass('toggled')){
+      return;
+    }
+    $("#wrapper, #search").toggleClass("toggled");
+    $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
+    Cookies.set('showAdvancedFilters', $("#wrapper, #search").hasClass('toggled')?'on':'off');
+  }
+
   // Advanced filtering & search
   $(".menu-toggle").click(function(e) {
     e.preventDefault();
-    $("#wrapper, #search").toggleClass("toggled");
-    $("a.showFilters > i").toggleClass("fa-toggle-off fa-toggle-on");
+    toggle_advanced_filters();
   });
+
+  if ($("#wrapper, #search").length && Cookies.get('showAdvancedFilters') === 'on'){
+    toggle_advanced_filters(true);
+  }
 
   // partner + tooltip
   $('[data-toggle="tooltip"]').tooltip({
@@ -48,7 +63,7 @@ $(document).ready(function() {
       "hide": 1000
     }
   });
-  
+
 
   function getCookie(name) {
     var cookieValue = null;
