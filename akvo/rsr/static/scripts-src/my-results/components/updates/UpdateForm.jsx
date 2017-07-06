@@ -312,8 +312,10 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
             <ul className="nav-pills bottomRow navbar-right">
                 {!isNewUpdate(update) && isAllowedToDelete(user, update)?
                     <li role="presentation" className="removeUpdate">
-                        <ToggleButton onClick={callbacks.deleteUpdate} label={_('delete')}
-                                      className="btn btn-default btn-xs"/>
+                        <ToggleButton onClick={callbacks.deleteUpdate}
+                                      icon={icon}
+                                      label={_('delete')}
+                                      className="btn btn-default btn-xs" />
                     </li>
                 : ''}
                 {actionButtons}
@@ -692,10 +694,10 @@ export class NewUpdateButton extends React.Component {
 
     render() {
         return (
-                <div className="emptyUpdate">
-                    <ToggleButton onClick={this.newUpdate} label={_('add_indicator_value')}
-                                  disabled={this.props.disabled} className="btn btn-sm btn-default newUpdate"/>
-                </div>
+            <ToggleButton onClick={this.newUpdate}
+                          label={_('add_indicator_value')}
+                          disabled={this.props.disabled}
+                          className="btn btn-sm btn-default newUpdate" />
         )
     }
 }

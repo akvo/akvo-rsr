@@ -119,10 +119,10 @@ class PeriodLockToggle extends React.Component {
             label = "Lock period";
         }
         return (
-            <div>
+            <span>
                 {<this.state.ToggleAlert />}
                 <ToggleButton onClick={this.lockToggle} label={label}/>
-            </div>
+            </span>
         )
     }
 }
