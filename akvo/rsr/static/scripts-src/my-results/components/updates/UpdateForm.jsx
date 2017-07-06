@@ -266,7 +266,7 @@ Attachments.propTypes = {
 };
 
 
-const UpdateActionButton = ({action, saveUpdate, disabled}) => {
+const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
     const labels = {
         [c.UPDATE_ACTION_SAVE]: _('save'),
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
@@ -275,8 +275,12 @@ const UpdateActionButton = ({action, saveUpdate, disabled}) => {
     };
     return (
         <li role="presentation" className={action}>
-            <ToggleButton id={action} onClick={saveUpdate} label={labels[action]}
-                          disabled={disabled} className="btn btn-default btn-xs"/>
+            <ToggleButton id={action}
+                          onClick={saveUpdate}
+                          label={labels[action]}
+                          icon={icon}
+                          disabled={disabled}
+                          className="btn btn-default btn-xs"/>
         </li>
     )
 };
@@ -284,37 +288,45 @@ const UpdateActionButton = ({action, saveUpdate, disabled}) => {
 UpdateActionButton.propTypes = {
     action: PropTypes.string.isRequired,
     saveUpdate: PropTypes.func.isRequired,
+    icon: PropTypes.object,
     disabled: PropTypes.bool.isRequired,
 };
 
 
-const UpdateFormButtons = ({user, update, callbacks}) => {
+const UpdateFormButtons = ({user, update, changing, callbacks}) => {
     //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
     // can be shown when saving is under way
-    function getActionButtons(role, updateStatus) {
+    function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
                 const disabled = (update.data === null || update.data === "") &&
                                   action !== c.UPDATE_ACTION_SAVE;
-                return <UpdateActionButton key={++btnKey} action={action}
-                                           saveUpdate={callbacks.saveUpdate} disabled={disabled}/>
+                return <UpdateActionButton key={++btnKey}
+                                           action={action}
+                                           icon={icon}
+                                           saveUpdate={callbacks.saveUpdate}
+                                           disabled={disabled}/>
             }
         )
     }
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
-    const actionButtons = getActionButtons(role, update.status);
+    const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
+    const actionButtons = getActionButtons(role, update.status, icon);
     return (
         <div className="menuAction">
         {!isNewUpdate(update) && isAllowedToDelete(user, update)?
             <div role="presentation" className="removeUpdate">
-                <ToggleButton onClick={callbacks.deleteUpdate} label={_('delete')}
-                              className="btn btn-default btn-xs"/>
+                <ToggleButton onClick={callbacks.deleteUpdate}
+                              label={_('delete')}
+                              className="btn btn-default btn-xs"
+                              icon={icon}/>
             </div>
         : ''}
             <ul className="nav-pills bottomRow navbar-right">
                 <li role="presentation" className="cancelUpdate">
-                    <ToggleButton onClick={callbacks.onCancel} label={_('cancel')}
+                    <ToggleButton onClick={callbacks.onCancel}
+                                  label={_('cancel')}
                                   className="btn btn-link btn-xs"/>
                 </li>
                 {actionButtons}
@@ -642,6 +654,7 @@ export default class UpdateForm extends React.Component {
                     <UpdateFormButtons
                         user={this.props.user}
                         update={update}
+                        changing={this.props.updates.changing}
                         callbacks={{
                             saveUpdate: this.saveUpdate,
                             deleteUpdate: this.deleteUpdate,
