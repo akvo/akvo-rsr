@@ -37,15 +37,18 @@ const IndicatorHeader = ({indicator, aggregateActualValue, aggregateCompletionPe
     // Don't show progress bar if there's no target value (aggregateCompletionPercentage is NaN)
     const progress_bar = aggregateCompletionPercentage !== aggregateCompletionPercentage ? undefined : (
         // Limit percentage to 100 for progress bar to work correctly
-        <li><Progress percent={Math.min(100, aggregateCompletionPercentage)} /></li>
+        <li className="indicatorProgress">
+            Actual vs. Target
+            <Progress type="circle"
+                      strokeWidth={10}
+                      width={25}
+                      percent={Math.min(100, aggregateCompletionPercentage)} />
+        </li>
     )
     return (
         <span className="indicatorTitle">
             <ul>
                 <li>{title}</li>
-                <li><span className="aggrActualValue">
-                    {_("aggregate_actual_value")}<span>{aggregateActualValue}</span></span>
-                </li>
                 {progress_bar}
             </ul>
         </span>
