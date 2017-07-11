@@ -133,7 +133,7 @@ export const
 
     // filter buttons (including the period select box)
     FILTER_NEED_REPORTING = "needReporting",
-    FILTER_SHOW_DRAFT = "pending",
+    FILTER_SHOW_PENDING = "pending",
     FILTER_SHOW_APPROVED = "approved",
     FILTER_BULK_SELECT = "FILTER_BULK_SELECT"
 ;

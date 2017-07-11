@@ -267,6 +267,33 @@ export function hideMe(model, parentId, objectId) {
 }
 
 
+export function fullUpdateVisibility(update, activeFilter) {
+    // determine if an update should be "dimmed" indicating it is shown in a filter where it's not
+    // to be interacted with
+    // returns true if the update should be fully visible
+    let visible;
+    switch(activeFilter) {
+        case c.FILTER_NEED_REPORTING: {
+            visible = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
+            break;
+        }
+        case c.FILTER_SHOW_PENDING: {
+            visible = [c.UPDATE_STATUS_PENDING];
+            break;
+        }
+        case c.FILTER_SHOW_APPROVED: {
+            visible = [c.UPDATE_STATUS_APPROVED];
+            break;
+        }
+        default: {
+            // full visibility to all updates if no filter is active
+            return true;
+        }
+    }
+    return visible.indexOf(update.status) > -1;
+}
+
+
 function tree(model, parentId) {
     // Construct a tree representation of the subtree of data with object model[parentId] as root
     //TODO: refactor, we shouldn't need findChildren here

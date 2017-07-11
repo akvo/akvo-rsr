@@ -70,7 +70,7 @@ const PeriodLockingButtons = ({user, disabled}) => {
         periods: store.models.periods,
         ui: store.ui,
         user: store.models.user,
-        draftUpdates: getPendingUpdates(store),
+        pendingUpdates: getPendingUpdates(store),
         approvedPeriods: getApprovedPeriods(store),
         needReportingPeriods: getNeedReportingPeriods(store),
         MEManagerDefaultKeys: getMEManagerDefaultKeys(store),
@@ -152,7 +152,7 @@ export default class FilterBar extends React.Component {
         const needReportingLabel = <InteractiveLabel label={_("needs_reporting")}
                                                      selector={this.props.needReportingPeriods}/>;
         const draftUpdateLabel = <InteractiveLabel label={_("pending_approval")}
-                                                   selector={this.props.draftUpdates}/>;
+                                                   selector={this.props.pendingUpdates}/>;
         const approvedUpdateLabel = <InteractiveLabel label={_("approved")}
                                                       selector={this.props.approvedPeriods}/>;
         const buttonDisabled = !this.props.ui.allFetched;
@@ -175,7 +175,7 @@ export default class FilterBar extends React.Component {
                                         <ToggleButton onClick={callbacks.showDraft} label={draftUpdateLabel}
                                                       disabled={buttonDisabled}
                                                       className={
-                                                          this.filterButtonClass(c.FILTER_SHOW_DRAFT)
+                                                          this.filterButtonClass(c.FILTER_SHOW_PENDING)
                                                       }/>
                                         <ToggleButton onClick={callbacks.showApproved}
                                                       label={approvedUpdateLabel}

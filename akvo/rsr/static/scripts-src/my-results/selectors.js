@@ -195,7 +195,7 @@ export const getPendingUpdates = createSelector(
      */
     [getUpdateIds, getPeriodObjects, getUpdateObjects],
     (updateIds, periodObjects, updateObjects) => {
-        return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
+        return updateIds && periodObjects && updateObjects && updateIds.filter(id =>
             (
                 updateObjects[id].status === c.UPDATE_STATUS_PENDING
             ) && periodObjects[updateObjects[id].period].locked == false
@@ -218,36 +218,6 @@ export const getApprovedUpdates = createSelector(
 );
 
 
-export const getApprovedPeriods = createSelector(
-    /*
-        Return an array with IDs of periods with at least one update where all updates have
-        status == c.UPDATE_STATUS_APPROVED
-     */
-    [getPeriodIds, getPeriodObjects, getPeriodsChildrenIds, getUpdateObjects],
-    (periodIds, periodObjects, childUpdateIds, updateObjects) =>
-        periodIds && childUpdateIds && updateObjects && periodIds.filter(
-            (periodId) =>
-                periodObjects[periodId].locked === false &&
-                childUpdateIds[periodId].length > 0 &&
-                childUpdateIds[periodId].every(
-                    (updateId) => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
-                )
-    )
-);
-
-export const getUpdatesForApprovedPeriods = createSelector(
-    /*
-        Return an array with IDs of updates that are children of periods returned from
-        getApprovedPeriods
-     */
-    [getUpdateIds, getUpdateObjects, getApprovedPeriods],
-    (updateIds, updateObjects, periodIds) =>
-        updateIds && updateObjects && periodIds && updateIds.filter(
-            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
-        )
-);
-
-
 export const getLockedPeriods = createSelector(
     [getPeriodIds, getPeriodObjects],
     (periodIds, periodObjects) =>
@@ -262,16 +232,56 @@ export const getUnlockedPeriods = createSelector(
 );
 
 
-export const getNeedReportingPeriods = createSelector(
+export const getApprovedPeriods = createSelector(
+    // return an array of periodIds for periods with at least on update with UPDATE_STATUS_APPROVED
+    // status
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
         unlockedPeriods && updateObjects && unlockedPeriods.filter(
-            // Only filter if periodChildren !== {}
-            id => !isEmpty(periodChildren) && periodChildren[id].filter(
-                updateId => updateObjects[updateId].status !== c.UPDATE_STATUS_DRAFT &&
-                            updateObjects[updateId].status !== c.UPDATE_STATUS_NEW &&
-                            updateObjects[updateId].status !== c.UPDATE_STATUS_REVISION
-            ).length === 0
+            id => periodChildren[id].filter(
+                updateId => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
+            ).length > 0
+        )
+);
+
+
+export const getUpdatesForApprovedPeriods = createSelector(
+    /*
+        Return an array with IDs of updates that are children of periods returned from
+        getApprovedPeriods
+     */
+    [getUpdateIds, getUpdateObjects, getApprovedPeriods],
+    (updateIds, updateObjects, periodIds) =>
+        updateIds && updateObjects && periodIds && updateIds.filter(
+            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
+        )
+);
+
+
+export const getNeedReportingPeriods = createSelector(
+    // return an array of periodIds for periods with no updates or at least one "needs reporting"
+    // status update
+    [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
+    (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
+        unlockedPeriods && updateObjects && unlockedPeriods.filter(
+            id => isEmpty(periodChildren[id]) || periodChildren[id].filter(
+                updateId => updateObjects[updateId].status === c.UPDATE_STATUS_DRAFT ||
+                            updateObjects[updateId].status === c.UPDATE_STATUS_NEW ||
+                            updateObjects[updateId].status === c.UPDATE_STATUS_REVISION
+            ).length > 0
+        )
+);
+
+
+export const getPendingApprovalPeriods = createSelector(
+    // return an array of periodIds for periods with at least on update with UPDATE_STATUS_PENDING
+    // status
+    [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
+    (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
+        unlockedPeriods && updateObjects && unlockedPeriods.filter(
+            id => periodChildren[id].filter(
+                updateId => updateObjects[updateId].status === c.UPDATE_STATUS_PENDING
+            ).length > 0
         )
 );
 

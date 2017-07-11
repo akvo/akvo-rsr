@@ -17,10 +17,14 @@ import {
     collapseChange,
     openPanel,
 } from "../../actions/collapse-actions"
+
 import { noHide, updateFormToggle } from "../../actions/ui-actions"
 import  * as c from '../../const.js';
 import { getPeriodsChildrenIds } from "../../selectors";
-import { hideMe } from "../../utils";
+import {
+    fullUpdateVisibility,
+    hideMe
+} from "../../utils";
 
 import { ToggleButton } from "../common"
 
@@ -163,6 +167,7 @@ UserInfo.propTypes = {
 @connect((store) => {
     return {
         [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
+        activeFilter: store.ui.activeFilter,
         user: store.models.user.objects[store.models.user.ids[0]],
     }
 }, alertActions)
@@ -195,8 +200,13 @@ class UpdateHeader extends React.Component {
     }
 
     showEditButton() {
-        // Only show the Edit update button if the user can edit at this time
-        const update = this.props.update;
+        // Only show the Edit update button if the period is unlocked, the update is shown in the
+        // relevant filter and the user can edit at this time
+        const {update, activeFilter} = this.props;
+        const show = fullUpdateVisibility(update, activeFilter);
+        if (!show) {
+            return false
+        }
         if (this.props.periodLocked) {
             return false
         }
@@ -211,11 +221,10 @@ class UpdateHeader extends React.Component {
                 return false;
             }
             // Can't update submitted or approved
-            if (update.status === c.UPDATE_STATUS_PENDING ||
-                update.status === c.UPDATE_STATUS_APPROVED) {
-                return false;
-            }
-            return true;
+            return (
+                update.status !== c.UPDATE_STATUS_PENDING &&
+                update.status !== c.UPDATE_STATUS_APPROVED
+            );
         }
     }
 
@@ -268,7 +277,7 @@ export default class Updates extends React.Component {
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.hideMe = this.hideMe.bind(this);
-        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, props.parentId)};
     }
 
     activeKey() {
@@ -296,15 +305,19 @@ export default class Updates extends React.Component {
         return (updateIds.map(
             (id) => {
                 const update = this.props.updates.objects[id];
+                const activeFilter = this.props.ui.activeFilter;
                 // Calculate running total of numeric updates data
                 const data = parseInt(update.data);
                 if (data && update.status == c.UPDATE_STATUS_APPROVED) {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
-                const className = this.hideMe(id) ? 'hidePanel' : '';
+                const className = fullUpdateVisibility(update, activeFilter) ?
+                    'row'
+                :
+                    'row dimmed';
                 return (
-                    <div className={'row'} key={id}>
+                    <div className={className} key={id}>
                         <UpdateHeader update={update} periodLocked={this.props.periodLocked}
                                       collapseId={this.state.collapseId}/>
                         <div className={'row'}>

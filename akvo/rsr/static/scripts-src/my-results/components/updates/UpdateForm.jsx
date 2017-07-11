@@ -28,7 +28,7 @@ import * as c from '../../const.js';
 import {
     updateFormOpen,
     updateFormClose,
-    selectPeriodsThatNeedReporting,
+    filterPeriods,
     showUpdates,
 } from "../../actions/ui-actions"
 
@@ -48,7 +48,6 @@ import {
 
 import {
     getNeedReportingPeriods,
-    getPendingUpdates,
     getUpdatesForApprovedPeriods,
 } from "../../selectors";
 import Comments from "../Comments";
@@ -350,9 +349,6 @@ const pruneForPOST = (update) => {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
         ui: store.ui,
-        needReportingPeriods: getNeedReportingPeriods(store),
-        draftUpdates: getPendingUpdates(store),
-        approvedUpdates: getUpdatesForApprovedPeriods(store),
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
@@ -377,7 +373,6 @@ export default class UpdateForm extends React.Component {
         this.removeAttachment = this.removeAttachment.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.formClose = this.formClose.bind(this);
-        this.refreshFilter = this.refreshFilter.bind(this);
         this.successCallback = this.successCallback.bind(this);
     }
 
@@ -489,32 +484,8 @@ export default class UpdateForm extends React.Component {
         updateFormClose();
     }
 
-    refreshFilter() {
-        const filter = this.props.ui.activeFilter;
-        switch (filter) {
-            case c.FILTER_NEED_REPORTING: {
-                selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
-                break;
-            }
-            case c.FILTER_SHOW_DRAFT: {
-                showUpdates(this.props.draftUpdates, true);
-                break;
-            }
-            case c.FILTER_SHOW_APPROVED: {
-                showUpdates(this.props.approvedUpdates, false, true);
-                break;
-            }
-        }
-    }
-
     successCallback() {
         updateFormClose();
-        // TODO: calling refreshFilter here breaks when deleting an update as
-        // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
-        // that has just been approved showing in the Need reporting filter view.
-        // Need to find a way to let the state change drive the changing of the hidden panels
-
-        // this.refreshFilter(); // Breaks when deleting an update!!!
     };
 
     saveUpdate(e) {
@@ -660,7 +631,6 @@ export class NewUpdateButton extends React.Component {
     static propTypes = {
         period: PropTypes.object.isRequired,
         user: PropTypes.object.isRequired,
-        disabled: PropTypes.bool.isRequired,
     };
 
     constructor (props) {
@@ -696,7 +666,6 @@ export class NewUpdateButton extends React.Component {
         return (
             <ToggleButton onClick={this.newUpdate}
                           label={_('add_indicator_value')}
-                          disabled={this.props.disabled}
                           className="btn btn-sm btn-default newUpdate" />
         )
     }

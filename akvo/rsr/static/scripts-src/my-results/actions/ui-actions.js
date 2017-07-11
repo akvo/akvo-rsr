@@ -142,10 +142,10 @@ function checkAndShowPeriods(ids) {
 }
 
 
-export function selectPeriodsThatNeedReporting(needReportingPeriodIds) {
+export function filterPeriods(periodIds) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
-    openNodes(c.OBJECTS_PERIODS, needReportingPeriodIds, true);
+    openNodes(c.OBJECTS_PERIODS, periodIds, true);
 }
 
 

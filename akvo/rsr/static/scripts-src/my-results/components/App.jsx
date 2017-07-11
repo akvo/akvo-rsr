@@ -27,7 +27,7 @@ import {
     noHide,
     selectablePeriods,
     selectPeriodByDates,
-    selectPeriodsThatNeedReporting,
+    filterPeriods,
     showUpdates, updateFormToggle,
 } from "../actions/ui-actions";
 
@@ -35,10 +35,9 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getPendingUpdates,
     getMEManagerDefaultKeys,
     getNeedReportingPeriods,
-    getUpdatesForApprovedPeriods,
+    getPendingApprovalPeriods,
 } from "../selectors";
 
 import {
@@ -80,10 +79,9 @@ const modifyUser = (isMEManager) => {
         models: store.models,
         ui: store.ui,
         user: store.models.user,
-        draftUpdates: getPendingUpdates(store),
-        approvedPeriods: getApprovedPeriods(store),
-        approvedUpdates: getUpdatesForApprovedPeriods(store),
         needReportingPeriods: getNeedReportingPeriods(store),
+        pendingApprovalPeriods: getPendingApprovalPeriods(store),
+        approvedPeriods: getApprovedPeriods(store),
         MEManagerDefaultKeys: getMEManagerDefaultKeys(store),
     }
 })
@@ -128,7 +126,7 @@ export default class App extends React.Component {
                     this.needReporting();
                     break;
                 }
-                case c.FILTER_SHOW_DRAFT: {
+                case c.FILTER_SHOW_PENDING: {
                     this.showDraft();
                     break;
                 }
@@ -152,21 +150,21 @@ export default class App extends React.Component {
         const redraw = () =>
             this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
             !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
-            !identicalArrays(this.props.draftUpdates, nextProps.draftUpdates) ||
-            !identicalArrays(this.props.approvedUpdates, nextProps.approvedUpdates);
+            !identicalArrays(this.props.pendingApprovalPeriods, nextProps.pendingApprovalPeriods) ||
+            !identicalArrays(this.props.approvedPeriods, nextProps.approvedPeriods);
 
         if (redraw()) {
             switch(nextProps.ui.activeFilter) {
                 case c.FILTER_NEED_REPORTING: {
-                    selectPeriodsThatNeedReporting(nextProps.needReportingPeriods);
+                    filterPeriods(nextProps.needReportingPeriods);
                     break;
                 }
-                case c.FILTER_SHOW_DRAFT: {
-                    showUpdates(nextProps.draftUpdates, true);
+                case c.FILTER_SHOW_PENDING: {
+                    filterPeriods(nextProps.pendingApprovalPeriods);
                     break;
                 }
                 case c.FILTER_SHOW_APPROVED: {
-                    showUpdates(nextProps.approvedUpdates, false, true);
+                    filterPeriods(nextProps.approvedPeriods);
                     break;
                 }
             }
@@ -184,7 +182,7 @@ export default class App extends React.Component {
     }
 
     showDraft() {
-        this.manageButtonsAndHash(c.FILTER_SHOW_DRAFT);
+        this.manageButtonsAndHash(c.FILTER_SHOW_PENDING);
     }
 
     showApproved(set=true) {
