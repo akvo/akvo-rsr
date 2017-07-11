@@ -4673,21 +4673,21 @@ main {
                                     margin-top: 0px;
                                 }
 
-                                .rc-collapse {
-                                    .rc-collapse-item {
-                                        border: 1px solid rgba(white, 0) !important;
-                                        border-bottom: 1px solid rgba(white, 0.4) !important;
-                                        background: rgba(white, 0.2) !important;
-                                        margin-bottom: 10px;
-
-                                        border
+                                //.rc-collapse {
+                                //    .rc-collapse-item {
+                                //        border: 1px solid rgba(white, 0) !important;
+                                //        border-bottom: 1px solid rgba(white, 0.4) !important;
+                                //        background: rgba(white, 0.2) !important;
+                                //        margin-bottom: 10px;
+                                //
+                                //        border
                                         &:last-child {
                                             margin-bottom: 5px;
                                         }
 
-                                        .rc-collapse-header {
-                                            background: none !important;
-                                            padding-left: 20px;
+                                        //.rc-collapse-header {
+                                        //    background: none !important;
+                                        //    padding-left: 20px;
 
                                             span {
                                                 &.UpdateHead {
@@ -4703,24 +4703,28 @@ main {
 
                                                         &.updateData {
                                                             color: $primary4;
+                                                            margin-right: 5px;
 
                                                             span {
                                                                 color: initial;
-                                                                margin-right: 0;
+                                                                margin-right: 5px;
                                                             }
                                                         }
 
                                                         &.updateName {
                                                             color: $primary4;
+                                                            margin-right: 5px;
 
                                                             span {
                                                                 color: initial;
                                                                 font-weight: bold;
+                                                                margin-right: 5px;
                                                             }
                                                         }
 
                                                         &.updateStatus {
                                                             color: $rsrGreen;
+                                                            margin-right: 5px;
 
                                                             span {
                                                                 color: initial;
@@ -4744,7 +4748,7 @@ main {
                                             }
 
                                             .arrow {}
-                                        }
+                                        //}
 
                                         &.rc-collapse-item-active {
                                             border: 1px solid white !important;
@@ -4821,8 +4825,8 @@ main {
                                                 }
                                             }
                                         }
-                                    }
-                                }
+                                //    }
+                                //}
                             }
                         }
                     }
