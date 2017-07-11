@@ -12,7 +12,7 @@ import {connect} from "react-redux";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 
-import {noHide, selectablePeriods, updateFormReset} from "../actions/ui-actions";
+import {noHide, selectablePeriods, updateFormClose, updateFormReset} from "../actions/ui-actions";
 
 import {
     lockSelectedPeriods,
@@ -94,12 +94,8 @@ export default class FilterBar extends React.Component {
         e.value();
     }
 
-    activeKey() {
-        return this.props.keys["results-results"];
-    }
-
     createToggleKeys() {
-        const open = this.openResults(this.activeKey());
+        const open = this.openResults();
         let MEManagerKeys;
         if (userIsMEManager(this.props.user)) {
             MEManagerKeys = this.props.MEManagerDefaultKeys;
