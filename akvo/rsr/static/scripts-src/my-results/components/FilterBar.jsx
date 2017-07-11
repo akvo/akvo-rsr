@@ -158,7 +158,7 @@ export default class FilterBar extends React.Component {
         const buttonDisabled = !this.props.ui.allFetched;
 
         return (
-            <header role="banner">
+            <header role="banner" className="periodMenuBar">
                 <nav>
                     <div className={'periodBtns'}>
                         <div className={'row'}>
