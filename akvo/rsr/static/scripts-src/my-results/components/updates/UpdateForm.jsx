@@ -76,12 +76,12 @@ Header.propTypes = {
 };
 
 
-const ActualValueInput = ({update, onChange, onCancel}) => {
+const ActualValueInput = ({update, onChange, onClose}) => {
     return (
         <div className="row">
             <div>
                 <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
-                <ToggleButton onClick={onCancel} label="X"
+                <ToggleButton onClick={onClose} label="X"
                                   className="btn btn-link btn-xs"/>
                 <input className="form-control"
                        id="data"
@@ -356,6 +356,8 @@ export default class UpdateForm extends React.Component {
     static propTypes = {
         period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
+        originalUpdate: PropTypes.object.isRequired,
+        onClose: PropTypes.func.isRequired,
         collapseId: PropTypes.string.isRequired,
     };
 
@@ -363,7 +365,6 @@ export default class UpdateForm extends React.Component {
         super(props);
         // Save original update, used when editing is cancelled
         this.state = {
-            originalUpdate: Object.assign({}, this.props.update),
             updateAlertName: 'UpdateAlert-' + this.props.update.id,
         };
         this.saveUpdate = this.saveUpdate.bind(this);
@@ -371,9 +372,6 @@ export default class UpdateForm extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
-        this.onCancel = this.onCancel.bind(this);
-        this.formClose = this.formClose.bind(this);
-        this.successCallback = this.successCallback.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -390,9 +388,10 @@ export default class UpdateForm extends React.Component {
 
     removeAttachment(type) {
         let changedUpdate;
+        const {originalUpdate} = this.props;
         if (type == 'file') {
             // only set to delete a file if there was one in the first place
-            if (this.state.originalUpdate.file_url)
+            if (originalUpdate.file_url)
                 changedUpdate = update(this.props.update,
                                        {$merge: {file: '', file_url: '', _file: 'delete'}});
             else
@@ -400,7 +399,7 @@ export default class UpdateForm extends React.Component {
                                        {$merge: {file: '', file_url: '', _file: undefined}});
         } else if (type == 'photo') {
             // only set to delete an image if there was one in the first place
-            if (this.state.originalUpdate.photo_url)
+            if (originalUpdate.photo_url)
                 changedUpdate = update(this.props.update,
                                        {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
             else
@@ -414,6 +413,7 @@ export default class UpdateForm extends React.Component {
         // When  any part of the update form changes, modify the object in store['updates']
 
         let changedUpdate;
+        const {originalUpdate} = this.props;
         const field = e.target.id;
         const file = e.target.files && e.target.files[0];
 
@@ -444,20 +444,24 @@ export default class UpdateForm extends React.Component {
                 case "removeFile": {
                     this.state.fileInput.value = "";
                     // only set to delete a file if there was one in the first place
-                    if (this.state.originalUpdate.file_url) {
-                        changedUpdate = update(this.props.update, {$merge: {file: '', file_url: '', _file: 'delete'}});
+                    if (originalUpdate.file_url) {
+                        changedUpdate = update(this.props.update,
+                            {$merge: {file: '', file_url: '', _file: 'delete'}});
                     } else {
-                        changedUpdate = update(this.props.update, {$merge: {file: '', file_url: '', _file: undefined}});
+                        changedUpdate = update(this.props.update,
+                            {$merge: {file: '', file_url: '', _file: undefined}});
                     }
                     break;
                 }
 
                 case "removeImage": {
                     // only set to delete an image if there was one in the first place
-                    if (this.state.originalUpdate.photo_url) {
-                        changedUpdate = update(this.props.update, {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
+                    if (originalUpdate.photo_url) {
+                        changedUpdate = update(this.props.update,
+                            {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
                     } else {
-                        changedUpdate = update(this.props.update, {$merge: {photo: '', photo_url: '', _photo: undefined}});
+                        changedUpdate = update(this.props.update,
+                            {$merge: {photo: '', photo_url: '', _photo: undefined}});
                     }
                     break;
                 }
@@ -470,23 +474,15 @@ export default class UpdateForm extends React.Component {
         }
     }
 
-    onCancel() {
-        updateFormClose();
-        const originalUpdate = this.state.originalUpdate;
-        if (isNewUpdate(originalUpdate)) {
-            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
-        } else {
-            updateModel(c.OBJECTS_UPDATES, originalUpdate);
-        }
-    }
-
-    formClose() {
-        updateFormClose();
-    }
-
-    successCallback() {
-        updateFormClose();
-    };
+    // onClose() {
+    //     updateFormClose();
+    //     const originalUpdate = this.state.originalUpdate;
+    //     if (isNewUpdate(originalUpdate)) {
+    //         deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+    //     } else {
+    //         updateModel(c.OBJECTS_UPDATES, originalUpdate);
+    //     }
+    // }
 
     saveUpdate(e) {
         function setUpdateStatus(update, action, userId) {
@@ -605,9 +601,11 @@ export default class UpdateForm extends React.Component {
                     <Header targetValue={period.target_value}/>
                     <ActualValueInput update={update}
                                       onChange={this.onChange}
-                                      onCancel={this.onCancel}/>
-                    <ActualValueDescription update={update}  onChange={this.onChange}/>
-                    <Attachments update={update} onChange={this.attachmentsChange}
+                                      onClose={this.props.onClose}/>
+                    <ActualValueDescription update={update}
+                                            onChange={this.onChange}/>
+                    <Attachments update={update}
+                                 onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
                         user={this.props.user}
@@ -617,7 +615,8 @@ export default class UpdateForm extends React.Component {
                             saveUpdate: this.saveUpdate,
                             deleteUpdate: this.deleteUpdate}}/>
                 </div>
-                <Comments parentId={update.id} inForm={true}/>
+                <Comments parentId={update.id}
+                          inForm={true}/>
             </div>
         )
     }

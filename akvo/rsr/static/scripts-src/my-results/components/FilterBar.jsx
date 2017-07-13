@@ -168,7 +168,7 @@ export default class FilterBar extends React.Component {
                                                       className={
                                                           this.filterButtonClass(c.FILTER_NEED_REPORTING)
                                                       }/>
-                                        <ToggleButton onClick={callbacks.showDraft} label={draftUpdateLabel}
+                                        <ToggleButton onClick={callbacks.showPending} label={draftUpdateLabel}
                                                       disabled={buttonDisabled}
                                                       className={
                                                           this.filterButtonClass(c.FILTER_SHOW_PENDING)
