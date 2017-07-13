@@ -2857,13 +2857,15 @@ header[role="banner"] {
 
 main {
   display: flex;
-  height: 100vh; }
+  height: calc(100vh - 300px); }
   main article.full {
     width: 100%;
-    overflow: scroll; }
+    overflow-x: hidden;
+    overflow-y: scroll; }
   main article.shared {
     width: 70%;
-    overflow: scroll; }
+    overflow-x: hidden;
+    overflow-y: scroll; }
   main aside.closed {
     display: none; }
   main aside.open {
