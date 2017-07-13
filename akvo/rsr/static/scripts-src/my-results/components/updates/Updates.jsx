@@ -81,7 +81,7 @@ const UpdateDisplay = ({update}) => {
     :
         undefined;
     return (
-        <div>
+        <div className="UpdateBody">
             <ul className="valueMeta">
                 <li className="updateValue">Update value: <span>{update.data}</span></li>
                 {/* NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
@@ -141,9 +141,7 @@ class Update extends React.Component {
 
     render() {
         return(
-            <div className="col-xs-12">
-                <UpdateDisplay update={this.props.update}/>
-            </div>
+            <UpdateDisplay update={this.props.update}/>
         )
     }
 }
@@ -245,13 +243,13 @@ class UpdateHeader extends React.Component {
             updateAlert = <this.state.UpdateAlert />
         }
         return (
-            <span className="UpdateHead">
+            <div className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>
                 <span className="updateData">Actual value: <span>{update.data}</span></span>
                 <span className="updateStatus">{_('update_statuses')[update.status]}</span>
                 <span>{editUpdateButton}</span>
                 <span>{updateAlert}</span>
-            </span>
+            </div>
         )
     }
 }

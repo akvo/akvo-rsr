@@ -3183,40 +3183,43 @@ main {
       opacity: 0.6 !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates:last-child {
       margin-bottom: 5px; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead {
-      padding: 0 0 0 5px; }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span {
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead {
+      padding: 0 0 0 20px;
+      margin-bottom: 1rem; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span {
         padding-left: 0;
         margin-right: 25px; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span:last-child {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span:last-child {
           margin-right: 0; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span.updateData {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span.updateData {
           color: #999999;
           margin-right: 5px; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span.updateData span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span.updateData span {
             color: initial;
             margin-right: 5px; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span.updateName {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span.updateName {
           color: #999999;
           margin-right: 5px; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span.updateName span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span.updateName span {
             color: initial;
             font-weight: bold;
             margin-right: 5px; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span.updateStatus {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span.updateStatus {
           color: #00a79d;
           margin-right: 5px; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span.UpdateHead span.updateStatus span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateHead span.updateStatus span {
             color: initial;
             font-weight: bold; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span button {
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div button {
       opacity: 1 !important;
       margin-left: 15px !important;
       padding: 1px 5px !important; }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates span button.editingForm {
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div button.editingForm {
         opacity: 0.3 !important;
         cursor: not-allowed !important;
         pointer-events: none !important; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody ul {
+      list-style-type: none; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active {
       border: 1px solid white !important;
       background: rgba(255, 255, 255, 0.5) !important; }
@@ -3347,7 +3350,7 @@ main {
         font-weight: bold; }
 
 .comments {
-  padding: 10px 5px;
+  padding: 10px 5px 0px 20px;
   margin-top: 30px;
   background: rgba(57, 102, 128, 0);
   width: 98%;

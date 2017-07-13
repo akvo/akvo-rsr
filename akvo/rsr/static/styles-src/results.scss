@@ -4693,9 +4693,10 @@ main {
                                         //    background: none !important;
                                         //    padding-left: 20px;
 
-                                            span {
+                                            div {
                                                 &.UpdateHead {
-                                                    padding: 0 0 0 5px;
+                                                    padding: 0 0 0 20px;
+                                                    margin-bottom: 1rem;
 
                                                     span {
                                                         padding-left: 0;
@@ -4751,6 +4752,13 @@ main {
                                                 }
                                             }
 
+                                            div {
+                                                &.UpdateBody {
+                                                    ul {
+                                                        list-style-type: none;
+                                                    }
+                                                }
+                                            }
                                             .arrow {}
                                         //}
 
@@ -5001,7 +5009,7 @@ main {
 }
 
 .comments {
-    padding: 10px 5px;
+    padding: 10px 5px 0px 20px;
     margin-top: 30px;
     background: rgba($primary5, 0);
     width: 98%;
