@@ -3502,7 +3502,7 @@ function addOrgModal() {
                         request_loc.send(form_data + '&location_target=' + organisation_id);
                     }
 
-                    // Add logo (fails silently)
+                    // Add logo
                     var logo_request, logo_data, org_logo_files;
                     org_logo_files = document.getElementById("org-logo").files;
                     if (org_logo_files !== undefined) {
@@ -3510,6 +3510,37 @@ function addOrgModal() {
                         logo_data = new FormData();
                         logo_data.append("logo", org_logo_files[0]);
                         logo_request = new XMLHttpRequest();
+                        logo_request.onreadystatechange = function() {
+                            if (logo_request.readyState !== XMLHttpRequest.DONE) { return; }
+                            if (logo_request.status === 200) { return; }
+                            var Modal = ReactBootstrap.Modal,
+                                Button = ReactBootstrap.Button;
+                            var ErrorModal = React.createClass({displayName: "ErrorModal",
+                                render: function(){
+                                    return (
+                                        React.createElement("div", {className: "modalContainer"},
+                                            React.createElement(Modal.Dialog, null,
+                                                React.createElement(Modal.Header, {closeButton: true, onHide: this.hideModal},
+                                                    React.createElement(Modal.Title, null, "Error: Failed to upload Organisation Logo")
+                                                ),
+                                                React.createElement(Modal.Body, null,
+                                                    "The logo for the organisation could not be successfully updated," + ' ' +
+                                                    "probably due to a network issue."
+                                                ),
+                                                React.createElement(Modal.Footer, null,
+                                                    React.createElement(Button, {onClick: this.hideModal}, "Close")
+                                                )
+                                            )
+                                        )
+                                    );
+                                },
+
+                                hideModal: function(){
+                                    ReactDOM.findDOMNode(this).remove();
+                                }
+                            });
+                            ReactDOM.render(React.createElement(ErrorModal, null), document.querySelector('footer'));
+                        };
                         logo_request.open("POST", api_url);
                         logo_request.setRequestHeader("X-CSRFToken", csrftoken);
                         logo_request.send(logo_data);
