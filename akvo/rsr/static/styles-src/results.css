@@ -2857,7 +2857,8 @@ header[role="banner"] {
 
 main {
   display: flex;
-  height: calc(100vh - 300px); }
+  height: calc(100vh - 300px);
+  width: 100%; }
   main article.full {
     width: 100%;
     overflow-x: hidden;
