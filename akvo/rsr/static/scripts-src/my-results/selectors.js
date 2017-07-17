@@ -66,13 +66,15 @@ const getChildrenFactory = model => {
 
 
 export const getResultsChildrenIds = createSelector(
-    // Return an object with the structure
-    //  {
-    //      [resultId1]: [childIndicatorId1, childIndicatorId2, ...],
-    //      [resultId2]: [childIndicatorId3, childIndicatorId3, ...],
-    //      ...
-    //  }
-    // Used to find all children indicators to a result object
+    /*
+        Return an object with the structure
+         {
+             [resultId1]: [childIndicatorId1, childIndicatorId2, ...],
+             [resultId2]: [childIndicatorId3, childIndicatorId3, ...],
+             ...
+         }
+        Used to find all children indicators to a result object
+     */
     getChildrenFactory(c.OBJECTS_INDICATORS),
     children => children
 );
@@ -135,7 +137,10 @@ export const getPeriodsActualValue = createSelector(
 export const getIndicatorsAggregateActualValue = createSelector(
     /*
         Return an object on the form:
-        {indicatorId1: <aggregateActualValue1>, indicatorId2: <aggregateActualValue2>,...}
+        {
+            indicatorId1: <aggregateActualValue1>,
+            indicatorId2: <aggregateActualValue2>,...
+        }
      */
     [getIndicatorIds, getIndicatorsChildrenIds, getPeriodsActualValue],
     (indicatorIDs, childPeriodIds, actualValue) => {
@@ -151,8 +156,11 @@ export const getIndicatorsAggregateActualValue = createSelector(
 
 export const getIndicatorsAggregateTargetValue = createSelector(
     /*
-      Return an object on the form:
-      {indicatorId1: <aggregateTargetValue1>, indicatorId2: <aggregateTargetValue2>,...}
+        Return an object on the form:
+        {
+            indicatorId1: <aggregateTargetValue1>,
+            indicatorId2: <aggregateTargetValue2>,...
+        }
     */
     [getIndicatorIds, getIndicatorsChildrenIds, getPeriodObjects],
     (indicatorIDs, childPeriodIds, periodObjects) => {
@@ -175,7 +183,10 @@ export const getIndicatorsAggregateTargetValue = createSelector(
 export const getIndicatorsAggregateCompletionPercentage = createSelector(
     /*
       Return an object on the form:
-      {indicatorId1: <aggregateCompletionPercentage1>, indicatorId2: <aggregateCompletionPercentage2>,...}
+        {
+            indicatorId1: <aggregateCompletionPercentage1>,
+            indicatorId2: <aggregateCompletionPercentage2>,...
+        }
     */
     [getIndicatorIds, getIndicatorsAggregateTargetValue, getIndicatorsAggregateActualValue],
     (indicatorIDs, targetValue, actualValue) => {
@@ -233,8 +244,10 @@ export const getUnlockedPeriods = createSelector(
 
 
 export const getApprovedPeriods = createSelector(
-    // return an array of periodIds for periods with at least on update with UPDATE_STATUS_APPROVED
-    // status
+    /*
+        return an array of periodIds for periods with at least on update with UPDATE_STATUS_APPROVED
+        status
+     */
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
         unlockedPeriods && updateObjects && unlockedPeriods.filter(
@@ -259,8 +272,10 @@ export const getUpdatesForApprovedPeriods = createSelector(
 
 
 export const getNeedReportingPeriods = createSelector(
-    // return an array of periodIds for periods with no updates or at least one "needs reporting"
-    // status update
+    /*
+        return an array of periodIds for periods with no updates or at least one "needs reporting"
+        status update
+     */
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
         unlockedPeriods && updateObjects && unlockedPeriods.filter(
@@ -274,8 +289,10 @@ export const getNeedReportingPeriods = createSelector(
 
 
 export const getPendingApprovalPeriods = createSelector(
-    // return an array of periodIds for periods with at least on update with UPDATE_STATUS_PENDING
-    // status
+    /*
+        return an array of periodIds for periods with at least on update with UPDATE_STATUS_PENDING
+        status
+     */
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
         unlockedPeriods && updateObjects && unlockedPeriods.filter(
