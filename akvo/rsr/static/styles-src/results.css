@@ -2979,7 +2979,8 @@ main {
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header[aria-expanded="true"] {
         opacity: 1; }
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
-        display: inline-block; }
+        display: inline-block;
+        max-width: 60%; }
         .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul {
           padding-left: 0;
           margin-bottom: 0; }
@@ -2994,7 +2995,8 @@ main {
               position: absolute;
               right: 3em;
               top: 0.75em;
-              color: rgba(32, 32, 36, 0.5); }
+              color: rgba(32, 32, 36, 0.5);
+              max-width: 20%; }
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li.indicatorProgress .react-sweet-progress-circle-outer {
                 margin-left: 1em; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-child(2) {
