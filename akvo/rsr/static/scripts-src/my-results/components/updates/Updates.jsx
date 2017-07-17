@@ -18,12 +18,16 @@ import {
     openPanel,
 } from "../../actions/collapse-actions"
 
-import { noHide, updateFormToggle } from "../../actions/ui-actions"
+import {noHide, updateFormOpen, updateFormToggle} from "../../actions/ui-actions"
 import  * as c from '../../const.js';
-import { getPeriodsChildrenIds } from "../../selectors";
 import {
+    getPeriodsChildrenIds, getUpdatesForApprovedPeriods, getUpdatesForNeedReportingPeriods,
+    getUpdatesForPendingApprovalPeriods
+} from "../../selectors";
+import {
+    closeNodes,
     fullUpdateVisibility,
-    hideMe
+    hideMe, openNodes
 } from "../../utils";
 
 import { ToggleButton } from "../common"
@@ -121,22 +125,10 @@ class Update extends React.Component {
     static propTypes = {
         update: PropTypes.object.isRequired,
         collapseId: PropTypes.string.isRequired,
-        // periodLocked: PropTypes.bool.isRequired,
     };
 
     constructor (props) {
         super(props);
-        this.formToggle = this.formToggle.bind(this);
-        // // we need a unique name for each alert
-        // const alertName = 'UpdateAlert-' + this.props.update.id;
-        // this.state = {
-        //     updateAlertName: alertName,
-        //     UpdateAlert: AlertFactory({alertName: alertName})(Alert),
-        // };
-    }
-
-    formToggle() {
-        updateFormToggle(this.props.update.id);
     }
 
     render() {
@@ -192,8 +184,9 @@ class UpdateHeader extends React.Component {
 
     formToggle(e) {
         const {collapseId, update} = this.props;
-        updateFormToggle(update.id);
-        // openPanel(collapseId, update);
+        updateFormOpen(update.id);
+        openNodes(c.OBJECTS_PERIODS, [update.period]);
+        closeNodes(c.OBJECTS_PERIODS, [update.period]);
         e.stopPropagation();
     }
 
@@ -257,10 +250,14 @@ class UpdateHeader extends React.Component {
 
 @connect((store) => {
     return {
-        updates: store.models['updates'],
+        updates: store.models.updates,
         keys: store.keys,
         ui: store.ui,
         periodChildrenIds: getPeriodsChildrenIds(store),
+        needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
+        pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),
+        approvedUpdates: getUpdatesForApprovedPeriods(store),
+
     }
 })
 export default class Updates extends React.Component {
@@ -298,6 +295,36 @@ export default class Updates extends React.Component {
         return hideMe(c.OBJECTS_UPDATES, this.props.parentId, id);
     }
 
+    getUpdateIds() {
+        let updateIds = this.props.periodChildrenIds[this.props.parentId] || [];
+        const updates = this.props.updates.objects;
+        const needReporting = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
+        const pending = [c.UPDATE_STATUS_PENDING];
+        const approved = [c.UPDATE_STATUS_APPROVED];
+
+        const filterUpdatesByStatus = (ids, status) => {
+            return ids.filter(
+                id => status.indexOf(updates[id].status) > -1
+            )
+        };
+
+        switch(this.props.ui.activeFilter) {
+            case c.FILTER_NEED_REPORTING: {
+                updateIds = filterUpdatesByStatus(updateIds, needReporting);
+                break;
+            }
+            case c.FILTER_SHOW_PENDING: {
+                updateIds = filterUpdatesByStatus(updateIds, pending);
+                break;
+            }
+            case c.FILTER_SHOW_APPROVED: {
+                updateIds = filterUpdatesByStatus(updateIds, approved);
+                break;
+            }
+        }
+        return updateIds;
+    }
+
     renderPanels(updateIds) {
         let actualValue = 0;
         return (updateIds.map(
@@ -329,7 +356,8 @@ export default class Updates extends React.Component {
     }
 
     render() {
-        const updateIds = this.props.periodChildrenIds[this.props.parentId] || [];
+        let updateIds = this.getUpdateIds();
+
         // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!this.props.updates.fetched) {
             return (

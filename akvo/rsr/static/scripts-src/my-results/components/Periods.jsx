@@ -150,7 +150,8 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert, formOpen}) => {
+const PeriodHeader = (
+        {period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert, formOpen}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;

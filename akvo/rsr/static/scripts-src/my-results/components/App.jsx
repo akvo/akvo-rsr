@@ -38,7 +38,8 @@ import {
     getApprovedPeriods,
     getMEManagerDefaultKeys,
     getNeedReportingPeriods,
-    getPendingApprovalPeriods,
+    getPendingApprovalPeriods, getUpdatesForApprovedPeriods, getUpdatesForNeedReportingPeriods,
+    getUpdatesForPendingApprovalPeriods,
 } from "../selectors";
 
 import {
@@ -183,6 +184,11 @@ export default class App extends React.Component {
             // "redraw", i.e. call filterPeriods with the correct data when activeFilter or the
             // selectors for the filters data changes
             const redraw = () =>
+                // when ui.updateFormDisplay changes to false, the form is closing and we need to
+                // redraw the accordion since it is closed except for the current update when the
+                // form is opened
+                this.props.ui.updateFormDisplay !== nextProps.ui.updateFormDisplay &&
+                nextProps.ui.updateFormDisplay === false ||
                 this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
                 !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
                 !identicalArrays(this.props.pendingApprovalPeriods,

@@ -288,6 +288,19 @@ export const getNeedReportingPeriods = createSelector(
 );
 
 
+export const getUpdatesForNeedReportingPeriods = createSelector(
+    /*
+        Return an array with IDs of updates that are children of periods returned from
+        getNeedReportingPeriods
+     */
+    [getUpdateIds, getUpdateObjects, getNeedReportingPeriods],
+    (updateIds, updateObjects, periodIds) =>
+        updateIds && updateObjects && periodIds && updateIds.filter(
+            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
+        )
+);
+
+
 export const getPendingApprovalPeriods = createSelector(
     /*
         return an array of periodIds for periods with at least on update with UPDATE_STATUS_PENDING
@@ -299,6 +312,19 @@ export const getPendingApprovalPeriods = createSelector(
             id => periodChildren[id].filter(
                 updateId => updateObjects[updateId].status === c.UPDATE_STATUS_PENDING
             ).length > 0
+        )
+);
+
+
+export const getUpdatesForPendingApprovalPeriods = createSelector(
+    /*
+        Return an array with IDs of updates that are children of periods returned from
+        getPendingApprovalPeriods
+     */
+    [getUpdateIds, getUpdateObjects, getPendingApprovalPeriods],
+    (updateIds, updateObjects, periodIds) =>
+        updateIds && updateObjects && periodIds && updateIds.filter(
+            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
         )
 );
 

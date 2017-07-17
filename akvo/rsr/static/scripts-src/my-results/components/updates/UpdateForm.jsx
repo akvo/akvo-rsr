@@ -51,6 +51,7 @@ import {
     getUpdatesForApprovedPeriods,
 } from "../../selectors";
 import Comments from "../Comments";
+import {closeNodes, openNodes} from "../../utils";
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -658,6 +659,8 @@ export class NewUpdateButton extends React.Component {
         //TODO: promise based solution where addKey is called on completion of updateModel?
         updateModel('updates', update);
         updateFormOpen(id);
+        openNodes(c.OBJECTS_PERIODS, [update.period]);
+        closeNodes(c.OBJECTS_PERIODS, [update.period]);
         newUpdateID += 1;
     }
 
