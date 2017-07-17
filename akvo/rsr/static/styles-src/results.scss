@@ -4283,6 +4283,7 @@ div.iatiFilters {
                 span {
                     &.indicatorTitle {
                         display: inline-block;
+                        max-width: 60%;
 
                         ul {
                             padding-left: 0;
@@ -4297,6 +4298,18 @@ div.iatiFilters {
                                     span {
                                         color: initial;
                                         margin-left: 4px;
+                                    }
+                                }
+
+                                &.indicatorProgress {
+                                    position: absolute;
+                                    right: 3em;
+                                    top: 0.75em;
+                                    color: rgba($akvoBlack, 0.5);
+                                    max-width: 20%;
+
+                                    .react-sweet-progress-circle-outer {
+                                        margin-left: 1em;
                                     }
                                 }
 
@@ -5071,4 +5084,8 @@ div.iatiFilters {
 
 .hidePanel {
     display: none;
+}
+
+.form-button {
+    margin-right: 5px;
 }

@@ -45,6 +45,10 @@ def directory(request):
     """The project list view."""
     qs = remove_empty_querydict_items(request.GET)
 
+    # iati_status was renamed to sector in fa8094647b
+    if 'status' not in qs:
+        qs['status'] = qs.pop('iati_status', [''])[0]
+
     # Set show_filters to "in" if any filter is selected
     show_filters = "in"  # To simplify template use bootstrap class
     available_filters = [
@@ -128,6 +132,7 @@ def directory(request):
         'current_org': org_filter,
         'map_projects': map_projects,
         'sectors_dict': sectors_dict,
+        'limit': limit,
     }
     return render(request, 'project_directory.html', context)
 

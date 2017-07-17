@@ -1,3 +1,30 @@
+# Akvo RSR – Version 3.28 Georgetown
+
+Date: 2017-07-06
+
+## Issues Resolved
+
+Problem with displaying report types for some users has been
+resolved - [#2745](https://github.com/akvo/akvo-rsr/issues/2745)
+
+Open the advanced filters pane only if it was previously opened by the user, not
+otherwise - [#2741](https://github.com/akvo/akvo-rsr/issues/2741)
+
+Links from the organisation page that filters projects in different states have
+been fixed - [#2740](fa8094647b1270ec5aa28f15c09b10f7f1b24693)
+
+Problem with page set being reset to 10, after filters are applied has been
+fixed - [#2684](https://github.com/akvo/akvo-rsr/issues/2684)
+
+# Akvo RSR – Version 3.27 Lima
+
+Date: 2017-06-16
+
+## Continued improvements
+
+An assortment of important beta features for the new RSR Results Framework,
+which is being pilot by limited number of RSR partners
+
 # Akvo RSR – Version 3.26.2 Panama City (hot-fix)
 
 Date: 2017-06-01

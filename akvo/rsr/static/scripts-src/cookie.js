@@ -27,7 +27,7 @@ function createDiv() {
     div.innerHTML = '<p>' + cookie_text + '<a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-terms-of-use/cookie-policy/" rel="nofollow" title="Privacy &amp; Cookies Policy" target="_blank">' + policy_text + '</a>.    <a class="close-cookie-banner btn btn-primary" href="javascript:void(0);" onclick="window.removeMe();"><span>' + button_text + '</span></a></p>';
     bodytag.insertBefore(div,bodytag.firstChild); // Adds the Cookie Law Banner just after the opening <body> tag
     document.getElementsByTagName('body')[0].className+=' cookiebanner'; //Adds a class to the <body> tag when the banner is visible
-    createCookie(cookieName, cookieValue, cookieDuration); // Create the cookie
+    Cookies.set(cookieName, cookieValue, {expires: cookieDuration}); // Create the cookie
 }
 
 
@@ -51,7 +51,7 @@ function createModal(){
         },
 
         createProtectionCookie: function() {
-            createCookie(protectCookieName, cookieValue, protectCookieDuration);
+            Cookies.set(protectCookieName, cookieValue, {expires: protectCookieDuration});
         },
 
         checkPassword: function() {
@@ -157,32 +157,9 @@ function createModal(){
 }
 
 
-function createCookie(name,value,days) {
-    var date, expires = "";
-    if (days) {
-        date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        expires = "; expires="+date.toGMTString();
-    }
-    if(dropCookie) {
-        document.cookie = name+"="+value+expires+"; path=/";
-    }
-}
-
-function checkCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-}
-
 function removeMe(){
-	var element = document.getElementById('cookie-law');
-	element.parentNode.removeChild(element);
+  var element = document.getElementById('cookie-law');
+  element.parentNode.removeChild(element);
 }
 window.removeMe = removeMe;
 
@@ -238,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     testEnvironments = ['test', 'uat'];     // Set the test environments that need a password
 
     // Check for a protection cookie on Test or UAT
-    if (checkCookie(protectCookieName)!== cookieValue) {
+    if (Cookies.get(protectCookieName)!== cookieValue) {
         var hostnameArray = window.location.hostname.split(".");
         for (var i = 0; i < testEnvironments.length; i++) {
             if (hostnameArray.indexOf(testEnvironments[i]) > -1) {
@@ -249,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Check for general cookie
-    if (checkCookie(cookieName) !== cookieValue) {
+    if (Cookies.get(cookieName) !== cookieValue) {
         createDiv();
     }
 });

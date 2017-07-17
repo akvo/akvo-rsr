@@ -76,7 +76,7 @@ class Employment(models.Model):
         return codelist_value(codelist_models.Country, self, 'country')
 
     def iati_country_unicode(self):
-        return str(self.iati_country())
+        return unicode(self.iati_country())
 
     def approve(self, approved_by):
         """

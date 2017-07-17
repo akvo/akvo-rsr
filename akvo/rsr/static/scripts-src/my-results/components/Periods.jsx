@@ -198,7 +198,8 @@ const DeleteUpdateAlert = ({message, close}) => (
     return {
         periods: store.models.periods,
         keys: store.keys,
-        user: store.models.user.objects[store.models.user.ids[0]],
+        user: store.models.user.ids && store.models.user.ids.length > 0 ?
+            store.models.user.objects[store.models.user.ids[0]] : {},
         ui: store.ui,
         indicatorChildrenIds: getIndicatorsChildrenIds(store),
         actualValue: getPeriodsActualValue(store),
@@ -260,12 +261,15 @@ export default class Periods extends React.Component {
             (id) => {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
-                const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
+                const ui = this.props.ui;
+                const isChecked = new Set(ui[c.SELECTED_PERIODS]).has(id);
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
                 let newUpdateButton, delUpdateAlert;
-                if (!period.locked) {
+                if (!period.locked && (
+                    ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
+                )) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
@@ -297,9 +301,9 @@ export default class Periods extends React.Component {
 
     render() {
         const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
-        if (!periodIds) {
+        if (!this.props.periods.fetched) {
             return (
-                <p>Loading...</p>
+                <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
         } else if (periodIds.length > 0) {
             return (

@@ -62,11 +62,9 @@ var FilterForm = React.createClass({displayName: "FilterForm",
     componentDidMount: function(){
         this.fetchFilterOptions(true);
         window.advanced_filter_form = this;
-        if (Object.keys(this.state.selected).length > 0) {
-            this.toggleForm();
+        if (Cookies.get('showAdvancedFilters') === 'on') {
             document.querySelector('#search-view').scrollIntoView();
         }
-
     },
     render: function(){
         var create_filter = function(filter_name){
@@ -189,6 +187,8 @@ var FilterForm = React.createClass({displayName: "FilterForm",
     getStateFromUrl: function(){
         var selected = {};
         var query = location.search.substring(1);
+        // Treat iati_status query param as status param
+        query = query.replace('iati_status', 'status');
         if (query === '') { return selected; }
         query.split('&').map(function(query_term){
             var pair = query_term.split('='),
