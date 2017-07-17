@@ -7,11 +7,14 @@
 
 import React from 'react';
 
-import { collapseChange } from "actions/collapse-actions"
-
 import * as c from "const"
 import store from "store"
-import {collapseRecordState, resetKeys} from "./actions/collapse-actions";
+
+import {
+    collapseChange,
+    collapseRecordState,
+    resetKeys,
+} from "./actions/collapse-actions";
 
 
 export function distinct(arr) {
@@ -120,19 +123,6 @@ export const endpoints = {
         "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
-
-
-export function displayNumber(numberString) {
-    // Add commas to numbers of 1000 or higher.
-    if (numberString !== undefined && numberString !== null) {
-        var locale = "en-gb";
-        var float = parseFloat(numberString);
-        if (!isNaN(float)) {
-            return float.toLocaleString(locale);
-        }
-    }
-    return '';
-}
 
 
 // Translation a la python. Let's hope we never need lodash...

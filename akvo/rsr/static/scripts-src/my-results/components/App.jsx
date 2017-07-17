@@ -14,9 +14,8 @@ import {
     deleteFromModel,
     fetchModel,
     fetchUser,
-    lockSelectedPeriods,
     testFetchModel,
-    unlockSelectedPeriods, updateModel,
+    updateModel,
 } from "../actions/model-actions";
 
 import {setPageData} from "../actions/page-actions";
@@ -25,11 +24,9 @@ import {
     activateFilterCSS,
     activateToggleAll,
     filterActive,
-    noHide,
-    selectablePeriods,
     selectPeriodByDates,
     filterPeriods,
-    showUpdates, updateFormToggle, updateFormClose,
+    updateFormClose,
 } from "../actions/ui-actions";
 
 import * as c from "../const"
@@ -38,15 +35,16 @@ import {
     getApprovedPeriods,
     getMEManagerDefaultKeys,
     getNeedReportingPeriods,
-    getPendingApprovalPeriods, getUpdatesForApprovedPeriods, getUpdatesForNeedReportingPeriods,
-    getUpdatesForPendingApprovalPeriods,
+    getPendingApprovalPeriods,
 } from "../selectors";
 
 import {
-    _, collapseId,
-    fieldValueOrSpinner,
-    identicalArrays, isNewUpdate,
-    setHash, toggleTree, userIsMEManager,
+    _,
+    collapseId,
+    identicalArrays,
+    isNewUpdate,
+    setHash,
+    userIsMEManager,
 } from "../utils"
 
 import FilterBar from "./FilterBar";
@@ -76,11 +74,10 @@ const modifyUser = (isMEManager) => {
 
 @connect((store) => {
     return {
-        keys: store.keys,
-        page: store.page,
-        models: store.models,
-        ui: store.ui,
+        updates: store.models.updates,
+        periods: store.models.periods,
         user: store.models.user,
+        ui: store.ui,
         needReportingPeriods: getNeedReportingPeriods(store),
         pendingApprovalPeriods: getPendingApprovalPeriods(store),
         approvedPeriods: getApprovedPeriods(store),
@@ -167,8 +164,7 @@ export default class App extends React.Component {
 
         const prepareUpdateForm = () => {
             // set state for if update form is visible, and if so store the original update
-            const {ui} = nextProps;
-            const {updates} = nextProps.models;
+            const {updates, ui} = nextProps;
             const updateFormDisplay = ui && ui[c.UPDATE_FORM_DISPLAY] && updates && updates.ids.find(
                 id => id === ui[c.UPDATE_FORM_DISPLAY]
             );
@@ -267,7 +263,7 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        const {updates, periods} = this.props.models;
+        const {updates, periods} = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that

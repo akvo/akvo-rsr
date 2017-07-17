@@ -8,30 +8,24 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
 import * as alertActions from "../../actions/alert-actions"
 
-import {
-    collapseChange,
-    openPanel,
-} from "../../actions/collapse-actions"
-
-import {noHide, updateFormOpen, updateFormToggle} from "../../actions/ui-actions"
+import { collapseChange } from "../../actions/collapse-actions"
+import { updateFormOpen } from "../../actions/ui-actions"
 import  * as c from '../../const.js';
 import {
-    getPeriodsChildrenIds, getUpdatesForApprovedPeriods, getUpdatesForNeedReportingPeriods,
-    getUpdatesForPendingApprovalPeriods
+    getPeriodsChildrenIds,
+    getUpdatesForApprovedPeriods,
+    getUpdatesForNeedReportingPeriods,
+    getUpdatesForPendingApprovalPeriods,
 } from "../../selectors";
 import {
     closeNodes,
     fullUpdateVisibility,
     hideMe, openNodes
 } from "../../utils";
-
-import { ToggleButton } from "../common"
-
 import {
     displayDate,
     _,
@@ -40,8 +34,8 @@ import {
 } from '../../utils.js';
 
 import AlertFactory from "../alertContainer"
+import { ToggleButton } from "../common"
 import Comments from "../Comments"
-import UpdateForm from "./UpdateForm"
 
 
 const Alert = ({message, close}) => (
@@ -70,7 +64,7 @@ function displayName(user) {
 }
 
 
-const UpdateDisplay = ({update}) => {
+const Update = ({update}) => {
     //TODO: tranlsate! Will need some refactoring to handle possible different word sequences
     const user = update.user_details;
     const approver = update.approver_details;
@@ -110,33 +104,10 @@ const UpdateDisplay = ({update}) => {
         </div>
     )
 };
-UpdateDisplay.propTypes = {
+Update.propTypes = {
     update: PropTypes.object.isRequired
 };
 
-
-@connect((store) => {
-    return {
-        [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
-    }
-}, alertActions)
-class Update extends React.Component {
-
-    static propTypes = {
-        update: PropTypes.object.isRequired,
-        collapseId: PropTypes.string.isRequired,
-    };
-
-    constructor (props) {
-        super(props);
-    }
-
-    render() {
-        return(
-            <UpdateDisplay update={this.props.update}/>
-        )
-    }
-}
 
 const UserInfo = ({user_details}) => {
     const organisation = user_details.approved_organisations.length ?

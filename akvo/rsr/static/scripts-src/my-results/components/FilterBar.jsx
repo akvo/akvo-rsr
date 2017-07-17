@@ -12,7 +12,11 @@ import {connect} from "react-redux";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 
-import {noHide, selectablePeriods, updateFormClose, updateFormReset} from "../actions/ui-actions";
+import {
+    noHide,
+    selectablePeriods,
+    updateFormClose,
+} from "../actions/ui-actions";
 
 import {
     lockSelectedPeriods,

@@ -8,7 +8,6 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
 
@@ -17,7 +16,6 @@ import { addKey } from "../../actions/collapse-actions"
 
 import {
     updateModel,
-    deleteFromModel,
     updateUpdateToBackend,
     saveUpdateToBackend,
     deleteUpdateFromBackend,
@@ -28,28 +26,20 @@ import * as c from '../../const.js';
 import {
     updateFormOpen,
     updateFormClose,
-    filterPeriods,
-    showUpdates,
 } from "../../actions/ui-actions"
 
 import {
     endpoints,
-    displayNumber,
     _,
     collapseId,
     isNewUpdate,
 } from '../../utils.js';
 
 import {
-    ButtonLabel,
     FileReaderInput,
     ToggleButton,
 } from '../common';
 
-import {
-    getNeedReportingPeriods,
-    getUpdatesForApprovedPeriods,
-} from "../../selectors";
 import Comments from "../Comments";
 import {closeNodes, openNodes} from "../../utils";
 
@@ -474,16 +464,6 @@ export default class UpdateForm extends React.Component {
             updateModel('updates', changedUpdate);
         }
     }
-
-    // onClose() {
-    //     updateFormClose();
-    //     const originalUpdate = this.state.originalUpdate;
-    //     if (isNewUpdate(originalUpdate)) {
-    //         deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
-    //     } else {
-    //         updateModel(c.OBJECTS_UPDATES, originalUpdate);
-    //     }
-    // }
 
     saveUpdate(e) {
         function setUpdateStatus(update, action, userId) {
