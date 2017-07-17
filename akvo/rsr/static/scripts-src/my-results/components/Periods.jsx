@@ -129,7 +129,7 @@ class PeriodLockToggle extends React.Component {
 
 
 const PeriodLockStatus = ({lockStatus}) => {
-    return <div>{lockStatus}</div>
+    return {lockStatus}
 };
 PeriodLockStatus.propTypes = {
     lockStatus: PropTypes.string.isRequired,
@@ -150,19 +150,20 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = (
-        {period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert, formOpen}) => {
+const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert,
+                          formOpen, showLockButton}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
     let periodSelect, lockStatus;
-    if (user.isMEManager) {
-        periodSelect = <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox}
+    if (user.isMEManager && showLockButton) {
+        periodSelect = <PeriodSelect id={period.id}
+                                     toggleCheckbox={toggleCheckbox}
                                      isChecked={isChecked}/>;
         lockStatus = <PeriodLockToggle period={period} />;
 
     } else {
-        lockStatus = <PeriodLockStatus lockStatus={period.locked ? _('locked') : _('unlocked')}/>
+        lockStatus = period.locked ? _('locked') : _('unlocked');
     }
     return (
         <span className="periodWrap">
@@ -172,8 +173,6 @@ const PeriodHeader = (
                 <li>{newUpdateButton}{delUpdateAlert}</li>
                 <li>{lockStatus}</li>
             </ul>
-
-
         </span>
     )
 };
@@ -285,7 +284,8 @@ export default class Periods extends React.Component {
                 }
                 let className = this.hideMe(id) ? 'hidePanel' : '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
-
+                const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
+                        this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
                 return (
                     <Panel header={
                         <PeriodHeader period={period}
@@ -294,7 +294,8 @@ export default class Periods extends React.Component {
                                       isChecked={isChecked}
                                       newUpdateButton={newUpdateButton}
                                       delUpdateAlert={delUpdateAlert}
-                                      formOpen={formOpen}/>}
+                                      formOpen={formOpen}
+                                      showLockButton={showLockButton}/>}
                            key={id}
                            className={className}>
                         <Updates parentId={id} periodLocked={period.locked}/>

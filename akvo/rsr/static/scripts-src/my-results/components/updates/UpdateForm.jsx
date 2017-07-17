@@ -268,7 +268,6 @@ const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
         </li>
     )
 };
-
 UpdateActionButton.propTypes = {
     action: PropTypes.string.isRequired,
     saveUpdate: PropTypes.func.isRequired,
@@ -494,14 +493,13 @@ export default class UpdateForm extends React.Component {
             return update;
         }
 
-
         const callbacksFactory = (id, errorMessage) => {
             return {
                 [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, this.state.updateAlertName, errorMessage
                 )
-            };
+            }
         };
 
         let update = Object.assign({}, this.props.update),
