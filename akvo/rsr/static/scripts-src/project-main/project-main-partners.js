@@ -82,9 +82,14 @@ function renderPartnersTab() {
             }
         },
 
+        partnerName: function(partner){
+            var org = partner[0].organisation;
+            return (org.long_name || org.name).trim();
+        },
+
         compare: function(o1, o2) {
-            var o1Name = o1[0].organisation.name;
-            var o2Name = o2[0].organisation.name;
+            var o1Name = this.partnerName(o1),
+                o2Name = this.partnerName(o2);
             if (o1Name < o2Name) {
                 return -1;
             } else if (o1Name > o2Name) {
@@ -102,8 +107,6 @@ function renderPartnersTab() {
                     )
                 );
             } else {
-
-
                 var partnershipsArray = [];
                 for (var orgId in this.state.partnerships) {
                     if(this.state.partnerships.hasOwnProperty(orgId)) {
@@ -121,16 +124,18 @@ function renderPartnersTab() {
                         }
                     }
 
+                    var id = partner[0].organisation.id;
+
                     return (
-                        React.createElement("div", {className: "row verticalPadding projectPartners"}, 
+                        React.createElement("div", {className: "row verticalPadding projectPartners", key: id}, 
                             React.createElement("div", {className: "col-sm-2 img"}, 
-                                React.createElement("a", {href: '/en/organisation/' + partner[0].organisation.id + '/'}, 
+                                React.createElement("a", {href: '/en/organisation/' + id + '/'}, 
                                     thisApp.orgLogo(partner[0].organisation.logo, 120, 120)
                                 )
                             ), 
                             React.createElement("div", {className: "col-sm-6"}, 
-                                React.createElement("a", {href: '/en/organisation/' + partner[0].organisation.id + '/', className: "org-link"}, 
-                                    React.createElement("i", {className: "fa fa-users"}), " ", React.createElement("h2", null, partner[0].organisation.name)
+                                React.createElement("a", {href: '/en/organisation/' + id + '/', className: "org-link"}, 
+                                    React.createElement("i", {className: "fa fa-users"}), " ", React.createElement("h2", null, thisApp.partnerName(partner))
                                 )
                             ), 
                             React.createElement("div", {className: "col-sm-4"}, 
