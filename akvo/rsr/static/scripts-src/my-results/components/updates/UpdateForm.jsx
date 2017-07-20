@@ -8,7 +8,6 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
 
@@ -17,7 +16,6 @@ import { addKey } from "../../actions/collapse-actions"
 
 import {
     updateModel,
-    deleteFromModel,
     updateUpdateToBackend,
     saveUpdateToBackend,
     deleteUpdateFromBackend,
@@ -28,29 +26,22 @@ import * as c from '../../const.js';
 import {
     updateFormOpen,
     updateFormClose,
-    selectPeriodsThatNeedReporting,
-    showUpdates,
 } from "../../actions/ui-actions"
 
 import {
     endpoints,
-    displayNumber,
     _,
     collapseId,
     isNewUpdate,
 } from '../../utils.js';
 
 import {
-    ButtonLabel,
     FileReaderInput,
     ToggleButton,
 } from '../common';
 
-import {
-    getNeedReportingPeriods,
-    getPendingUpdates,
-    getUpdatesForApprovedPeriods,
-} from "../../selectors";
+import Comments from "../Comments";
+import {closeNodes, openNodes} from "../../utils";
 
 
 // If the update is approved only M&E managers are allowed to delete
@@ -58,43 +49,36 @@ const isAllowedToDelete = (user, update) =>
     update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
-const Header = ({update}) => {
+const Header = ({targetValue}) => {
     return (
-        <div className="col-xs-12">
-            <div className="update-entry-container-header hidden">
-                Status: {_('update_statuses')[update.status]}
+        <div>
+            <div className="">
+                {_('target_value')}: {targetValue}
             </div>
         </div>
     )
 };
 
 Header.propTypes = {
-    update: PropTypes.object.isRequired,
+    targetValue: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
 };
 
 
-const ActualValueInput = ({update, updatedActualValue, onChange}) => {
+const ActualValueInput = ({update, onChange, onClose}) => {
     return (
         <div className="row">
-            <div className="col-xs-12">
+            <div>
                 <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
+                <ToggleButton onClick={onClose} label="X"
+                                  className="btn btn-link btn-xs"/>
                 <input className="form-control"
                        id="data"
                        value={update.data}
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
-            </div>
-            <div className="col-xs-6 hidden">
-                <div className="upActualValue">
-                    <label>
-                        <span className="update-actual-value-text">
-                            {_('total_value_after_update')}:
-                        </span>
-                    </label>
-                    <div className="update-actual-value-data">
-                        {updatedActualValue}
-                    </div>
-                </div>
             </div>
         </div>
     )
@@ -110,7 +94,7 @@ ActualValueInput.propTypes = {
 const ActualValueDescription = ({update, onChange}) => {
     return (
         <div className="row">
-            <div className="col-xs-12 update-description">
+            <div className="update-description">
                 <div>
                     <label htmlFor="description">{_('actual_value_comment')}</label>
                     <textarea className="form-control"
@@ -284,7 +268,6 @@ const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
         </li>
     )
 };
-
 UpdateActionButton.propTypes = {
     action: PropTypes.string.isRequired,
     saveUpdate: PropTypes.func.isRequired,
@@ -315,22 +298,16 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
     const actionButtons = getActionButtons(role, update.status, icon);
     return (
         <div className="menuAction">
-        {!isNewUpdate(update) && isAllowedToDelete(user, update)?
-            <div role="presentation" className="removeUpdate">
-                <ToggleButton onClick={callbacks.deleteUpdate}
-                              label={_('delete')}
-                              className="btn btn-default btn-xs"
-                              icon={icon}/>
-            </div>
-        : ''}
             <ul className="nav-pills bottomRow navbar-right">
-                <li role="presentation" className="cancelUpdate">
-                    <ToggleButton onClick={callbacks.onCancel}
-                                  label={_('cancel')}
-                                  className="btn btn-link btn-xs"/>
-                </li>
+                {!isNewUpdate(update) && isAllowedToDelete(user, update)?
+                    <li role="presentation" className="removeUpdate">
+                        <ToggleButton onClick={callbacks.deleteUpdate}
+                                      icon={icon}
+                                      label={_('delete')}
+                                      className="btn btn-default btn-xs" />
+                    </li>
+                : ''}
                 {actionButtons}
-                <span></span>
             </ul>
         </div>
     )
@@ -362,16 +339,15 @@ const pruneForPOST = (update) => {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
         ui: store.ui,
-        needReportingPeriods: getNeedReportingPeriods(store),
-        draftUpdates: getPendingUpdates(store),
-        approvedUpdates: getUpdatesForApprovedPeriods(store),
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
-        formToggle: PropTypes.func.isRequired,
+        period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
+        originalUpdate: PropTypes.object.isRequired,
+        onClose: PropTypes.func.isRequired,
         collapseId: PropTypes.string.isRequired,
     };
 
@@ -379,7 +355,6 @@ export default class UpdateForm extends React.Component {
         super(props);
         // Save original update, used when editing is cancelled
         this.state = {
-            originalUpdate: Object.assign({}, this.props.update),
             updateAlertName: 'UpdateAlert-' + this.props.update.id,
         };
         this.saveUpdate = this.saveUpdate.bind(this);
@@ -387,10 +362,6 @@ export default class UpdateForm extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
-        this.onCancel = this.onCancel.bind(this);
-        this.formClose = this.formClose.bind(this);
-        this.refreshFilter = this.refreshFilter.bind(this);
-        this.successCallback = this.successCallback.bind(this);
     }
 
     attachmentsChange(e, results) {
@@ -407,9 +378,10 @@ export default class UpdateForm extends React.Component {
 
     removeAttachment(type) {
         let changedUpdate;
+        const {originalUpdate} = this.props;
         if (type == 'file') {
             // only set to delete a file if there was one in the first place
-            if (this.state.originalUpdate.file_url)
+            if (originalUpdate.file_url)
                 changedUpdate = update(this.props.update,
                                        {$merge: {file: '', file_url: '', _file: 'delete'}});
             else
@@ -417,7 +389,7 @@ export default class UpdateForm extends React.Component {
                                        {$merge: {file: '', file_url: '', _file: undefined}});
         } else if (type == 'photo') {
             // only set to delete an image if there was one in the first place
-            if (this.state.originalUpdate.photo_url)
+            if (originalUpdate.photo_url)
                 changedUpdate = update(this.props.update,
                                        {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
             else
@@ -431,6 +403,7 @@ export default class UpdateForm extends React.Component {
         // When  any part of the update form changes, modify the object in store['updates']
 
         let changedUpdate;
+        const {originalUpdate} = this.props;
         const field = e.target.id;
         const file = e.target.files && e.target.files[0];
 
@@ -461,20 +434,24 @@ export default class UpdateForm extends React.Component {
                 case "removeFile": {
                     this.state.fileInput.value = "";
                     // only set to delete a file if there was one in the first place
-                    if (this.state.originalUpdate.file_url) {
-                        changedUpdate = update(this.props.update, {$merge: {file: '', file_url: '', _file: 'delete'}});
+                    if (originalUpdate.file_url) {
+                        changedUpdate = update(this.props.update,
+                            {$merge: {file: '', file_url: '', _file: 'delete'}});
                     } else {
-                        changedUpdate = update(this.props.update, {$merge: {file: '', file_url: '', _file: undefined}});
+                        changedUpdate = update(this.props.update,
+                            {$merge: {file: '', file_url: '', _file: undefined}});
                     }
                     break;
                 }
 
                 case "removeImage": {
                     // only set to delete an image if there was one in the first place
-                    if (this.state.originalUpdate.photo_url) {
-                        changedUpdate = update(this.props.update, {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
+                    if (originalUpdate.photo_url) {
+                        changedUpdate = update(this.props.update,
+                            {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
                     } else {
-                        changedUpdate = update(this.props.update, {$merge: {photo: '', photo_url: '', _photo: undefined}});
+                        changedUpdate = update(this.props.update,
+                            {$merge: {photo: '', photo_url: '', _photo: undefined}});
                     }
                     break;
                 }
@@ -486,49 +463,6 @@ export default class UpdateForm extends React.Component {
             updateModel('updates', changedUpdate);
         }
     }
-
-    onCancel() {
-        this.props.formToggle();
-        const originalUpdate = this.state.originalUpdate;
-        if (isNewUpdate(originalUpdate)) {
-            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
-        } else {
-            updateModel(c.OBJECTS_UPDATES, originalUpdate);
-        }
-        updateFormClose(originalUpdate.id);
-    }
-
-    formClose(id) {
-        updateFormClose(id);
-    }
-
-    refreshFilter() {
-        const filter = this.props.ui.activeFilter;
-        switch (filter) {
-            case c.FILTER_NEED_REPORTING: {
-                selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
-                break;
-            }
-            case c.FILTER_SHOW_DRAFT: {
-                showUpdates(this.props.draftUpdates, true);
-                break;
-            }
-            case c.FILTER_SHOW_APPROVED: {
-                showUpdates(this.props.approvedUpdates, false, true);
-                break;
-            }
-        }
-    }
-
-    successCallback(id) {
-        this.formClose.bind(id);
-        // TODO: calling refreshFilter here breaks when deleting an update as
-        // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
-        // that has just been approved showing in the Need reporting filter view.
-        // Need to find a way to let the state change drive the changing of the hidden panels
-
-        // this.refreshFilter(); // Breaks when deleting an update!!!
-    };
 
     saveUpdate(e) {
         function setUpdateStatus(update, action, userId) {
@@ -559,14 +493,13 @@ export default class UpdateForm extends React.Component {
             return update;
         }
 
-
         const callbacksFactory = (id, errorMessage) => {
             return {
-                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, id),
+                [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, this.state.updateAlertName, errorMessage
                 )
-            };
+            }
         };
 
         let update = Object.assign({}, this.props.update),
@@ -615,7 +548,7 @@ export default class UpdateForm extends React.Component {
                 // when an object has been successfully deleted from a model
                 // [c.UPDATE_MODEL_FULFILLED]: this.refreshFilter.bind(this),
 
-                [c.UPDATE_MODEL_FULFILLED]: this.successCallback.bind(this, update.id),
+                [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this, deleteUpdateAlertName, _("update_not_deleted")
                 )
@@ -638,18 +571,20 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const update = this.props.update;
+        const {update, period} = this.props;
         const updateValue = parseFloat(update.data ? update.data : 0);
-        const updatedActualValue = displayNumber(this.previousActualValue() + updateValue);
 
         return (
             <div className="update-container">
                 <div className="row update-entry-container edit-in-progress">
-                    <Header update={update}/>
-                    <ActualValueInput update={update} onChange={this.onChange}
-                                      updatedActualValue={updatedActualValue}/>
-                    <ActualValueDescription update={update}  onChange={this.onChange}/>
-                    <Attachments update={update} onChange={this.attachmentsChange}
+                    <Header targetValue={period.target_value}/>
+                    <ActualValueInput update={update}
+                                      onChange={this.onChange}
+                                      onClose={this.props.onClose}/>
+                    <ActualValueDescription update={update}
+                                            onChange={this.onChange}/>
+                    <Attachments update={update}
+                                 onChange={this.attachmentsChange}
                                  removeAttachment={this.removeAttachment}/>
                     <UpdateFormButtons
                         user={this.props.user}
@@ -657,9 +592,10 @@ export default class UpdateForm extends React.Component {
                         changing={this.props.updates.changing}
                         callbacks={{
                             saveUpdate: this.saveUpdate,
-                            deleteUpdate: this.deleteUpdate,
-                            onCancel: this.onCancel}}/>
+                            deleteUpdate: this.deleteUpdate}}/>
                 </div>
+                <Comments parentId={update.id}
+                          inForm={true}/>
             </div>
         )
     }
@@ -699,19 +635,18 @@ export class NewUpdateButton extends React.Component {
             status: c.UPDATE_STATUS_NEW,
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
-        updateModel('updates', update, this.state.collapseId);
-        updateFormOpen(update.id);
+        updateModel('updates', update);
+        updateFormOpen(id);
+        openNodes(c.OBJECTS_PERIODS, [update.period]);
+        closeNodes(c.OBJECTS_PERIODS, [update.period]);
         newUpdateID += 1;
     }
 
     render() {
         return (
-                <div className="emptyUpdate">
-                    <a onClick={this.newUpdate}
-                       className={'btn btn-sm btn-default newUpdate'}>
-                        {_('add_indicator_value')}
-                    </a>
-                </div>
+            <ToggleButton onClick={this.newUpdate}
+                          label={_('add_indicator_value')}
+                          className="btn btn-sm btn-default newUpdate" />
         )
     }
 }

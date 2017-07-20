@@ -18,12 +18,13 @@
             TODO: allFetched is only used to disable the "global" buttons at page loading, but could
             be used when data is updated too for the same purpose
         selectedPeriods: array of Period IDs that are currently selected via checkbox
-        updateForms: array of Update IDs that have open forms
+        updateFormDisplay: Boolean determining the visibility of the update form
  */
 
-import update  from 'immutability-helper';
+import update from 'immutability-helper';
 
 import * as c from "../const"
+import {distinct} from "../utils";
 
 
 const uiState = {
@@ -34,7 +35,7 @@ const uiState = {
     activeFilter: undefined, //indicates if a filter is currently in force
     visibleKeys: undefined,
     [c.SELECTED_PERIODS]: [], //list if periods that are currently checked, used for bulk actions
-    [c.UPDATE_FORMS]: [], //list of currently open indicator update forms
+    [c.UPDATE_FORM_DISPLAY]: false, //list of currently open indicator update forms
 };
 
 export default function uiReducer(state=uiState, action) {
@@ -72,6 +73,24 @@ export default function uiReducer(state=uiState, action) {
             return {...state, [element]: [...elementSet]};
         }
 
+        case c.UI_FLAG_TOGGLE: {
+            const {element, id} = action.payload;
+            return state[element] ?
+                {...state, [element]: false}
+            :
+                {...state, [element]: id};
+        }
+
+        case c.UI_FLAG_TRUE: {
+            const {element, id} = action.payload;
+            return {...state, [element]: id};
+        }
+
+        case c.UI_FLAG_FALSE: {
+            const {element} = action.payload;
+            return {...state, [element]: false};
+        }
+
         case c.UI_HIDE: {
             const {mode} = action.payload;
             return {...state, hide: mode};
@@ -102,12 +121,20 @@ export default function uiReducer(state=uiState, action) {
             if (collapseId && visibleKeys) {
                 const key = object.id.toString();
                 if (visibleKeys[collapseId]) {
-                    const newVisibleKeys = update(visibleKeys[collapseId], {$push: [key]});
-                    const deduped = [...new Set(newVisibleKeys)];
-                    return update(state, {visibleKeys: {$merge: {[collapseId]: deduped}}});
+                    const newVisibleKeys = distinct(update(visibleKeys[collapseId], {$push: [key]}));
+                    return update(state, {visibleKeys: {$merge: {[collapseId]: newVisibleKeys}}});
                 } else {
                     return update(state, {visibleKeys: {$merge: {[collapseId]: [key]}}});
                 }
+            }
+            return state;
+        }
+
+        case c.UPDATE_MODEL_DELETE_FULFILLED: {
+            // make sure the update form is closed when the update is deleted
+            const {model} = action.payload;
+            if (model === c.OBJECTS_UPDATES) {
+                return {...state, [c.UPDATE_FORM_DISPLAY]: false};
             }
         }
 
