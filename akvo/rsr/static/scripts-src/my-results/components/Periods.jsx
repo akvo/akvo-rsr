@@ -271,8 +271,9 @@ export default class Periods extends React.Component {
                 const ui = this.props.ui;
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked && (
-                    ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
-                )) {
+                    !ui.updateFormDisplay && (
+                        ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
+                ))) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
