@@ -9,6 +9,7 @@
 import update from "immutability-helper"
 
 import * as c from "../const"
+import {distinct} from "../utils";
 
 
 export default function collapseReducer(keys={}, action) {
@@ -33,10 +34,8 @@ export default function collapseReducer(keys={}, action) {
             if (collapseId) {
                 const key = object.id.toString();
                 if (keys[collapseId]) {
-                    const newKeys = update(keys[collapseId], {$push: [key]});
-                    const deduped = [...new Set(newKeys)];
-                    return {...keys, [collapseId]: deduped
-                    };
+                    const newKeys = distinct(update(keys[collapseId], {$push: [key]}));
+                    return {...keys, [collapseId]: newKeys};
                 } else {
                     return {...keys, [collapseId]: [key]};
                 }
@@ -49,7 +48,12 @@ export default function collapseReducer(keys={}, action) {
             const keyToRemove = object.id.toString();
             return {
                 ...keys,
-                [collapseId]: keys[collapseId].filter((key) => key !== keyToRemove)
+                // in the two pane view the updates collapse is probably closed as this is the
+                // default view, so we need to check if keys[collapseId] exists before changing it
+                [collapseId]: keys[collapseId] ?
+                    keys[collapseId].filter((key) => key !== keyToRemove)
+                :
+                    []
             };
         }
     }
