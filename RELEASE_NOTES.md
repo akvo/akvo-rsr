@@ -1,3 +1,11 @@
+# Akvo RSR – Version 3.29 La Paz
+
+Date: 2017-07-20
+
+## Continued improvements
+
+Minor bug fixes and enhancements to the beta RSR Results Framework.
+
 # Akvo RSR – Version 3.28 Georgetown
 
 Date: 2017-07-06

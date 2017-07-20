@@ -7,8 +7,8 @@
 
 import React from 'react';
 
-import * as c from "const"
-import store from "store"
+import * as c from "./const"
+import store from "./store"
 
 import {
     collapseChange,
@@ -21,7 +21,6 @@ export function distinct(arr) {
     //return an array of uniques values
     return [...new Set(arr)];
 }
-
 
 export function identicalArrays(array1, array2) {
     // Compare two arrays and return true if they are identical, otherwise false
