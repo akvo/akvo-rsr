@@ -7,11 +7,11 @@
 """
 # Development mode
 DEBUG = TEMPLATE_DEBUG = True
-PIPELINE_ENABLED = False
+PIPELINE['PIPELINE_ENABLED'] = PIPELINE['PIPELINE_COLLECTOR_ENABLED'] = False
 
 # Production mode
 # DEBUG = TEMPLATE_DEBUG = False
-# PIPELINE_ENABLED = True
+# PIPELINE['PIPELINE_ENABLED'] = True
 # STATIC_URL = '/static/'  # Collectstatic
 
 # The console email backend will print emails to console, useful for dev server
