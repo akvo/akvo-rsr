@@ -1,10 +1,22 @@
-# Akvo RSR – Version 3.29 La Paz
+# Akvo RSR Release Notes 
+----
+
+## Version 3.29 - La Paz
 
 Date: 2017-07-20
 
-## Continued improvements
+## Noteworthy 
 
-Minor bug fixes and enhancements to the beta RSR Results Framework.
+ * Indicator Reporting design further improved in the beta RSR Results Framework 
+
+ * New partner introduced to the beta RSR Results Framework 
+
+ * JavaScript testing framework added; based on Mocha, Chai and Enzyme to focus initially on unit testing of new React based development [#2735](https://github.com/akvo/akvo-rsr/issues/2735)
+
+## Resolved Issues
+
+ * Actual vs. Target Progress Indicator in the beta RSR Results Framework can now accommodate longer titles 
+
 
 # Akvo RSR – Version 3.28 Georgetown
 

@@ -10,8 +10,9 @@ import * as c from "../const"
 import store from "../store"
 import {
     closeNodes,
-    openNodes,
     displayDate,
+    distinct,
+    openNodes,
     setHash,
 } from "../utils"
 
@@ -40,34 +41,26 @@ export function periodSelectCheck(id) {
 }
 
 
-export function updateFormReset() {
-    store.dispatch({
-        type: c.UI_ID_RESET,
-        payload: {element: c.UPDATE_FORMS}
-    })
-}
-
-
 export function updateFormToggle(id) {
     store.dispatch({
-        type: c.UI_ID_TOGGLE,
-        payload: {element: c.UPDATE_FORMS, id: id}
+        type: c.UI_FLAG_TOGGLE,
+        payload: {element: c.UPDATE_FORM_DISPLAY, id}
     })
 }
 
 
 export function updateFormOpen(id) {
     store.dispatch({
-        type: c.UI_ID_TRUE,
-        payload: {element: c.UPDATE_FORMS, id: id}
+        type: c.UI_FLAG_TRUE,
+        payload: {element: c.UPDATE_FORM_DISPLAY, id}
     })
 }
 
 
-export function updateFormClose(id) {
+export function updateFormClose() {
     store.dispatch({
-        type: c.UI_ID_FALSE,
-        payload: {element: c.UPDATE_FORMS, id: id}
+        type: c.UI_FLAG_FALSE,
+        payload: {element: c.UPDATE_FORM_DISPLAY}
     });
 }
 
@@ -129,7 +122,7 @@ export function noHide() {
 export function showUpdates(updateIds,openForm=false,collapse=false) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
-    updateFormReset();
+    updateFormClose();
     if (openForm) {
         updateIds.map((id) => updateFormOpen(id));
     }
@@ -149,10 +142,10 @@ function checkAndShowPeriods(ids) {
 }
 
 
-export function selectPeriodsThatNeedReporting(needReportingPeriodIds) {
+export function filterPeriods(periodIds) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
-    openNodes(c.OBJECTS_PERIODS, needReportingPeriodIds, true);
+    openNodes(c.OBJECTS_PERIODS, periodIds, true);
 }
 
 
@@ -187,7 +180,6 @@ export function selectablePeriods(periodIds) {
             acc[date] = (acc[date] || 0) + 1;
             return acc;
         }, {});
-        const datesSet = new Set(dates);
         // Construct the final data structure with a label for display in the select, and a value
         // that's selectPeriodByDates function with bound params, called when the select is used
         // periodDates = [
@@ -195,7 +187,7 @@ export function selectablePeriods(periodIds) {
         //     {label: "1 Jan 2017 - 20 Jun 2017 (3)", value: selectPeriodByDates.bind(null, "2017-01-01", "2017-06-30")},
         //     ...
         // ]
-        const periodDates = [...datesSet].map((datePair) => {
+        const periodDates = distinct(dates).map((datePair) => {
             const [periodStart, periodEnd] = datePair.split(':');
             const periodStartDisplay = displayDate(periodStart);
             const periodEndDisplay = displayDate(periodEnd);

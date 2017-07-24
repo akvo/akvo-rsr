@@ -8,8 +8,12 @@
 
 import store from "../store"
 import * as c from "../const"
-import { getCookie, endpoints } from "../utils"
-import { periodSelectReset } from "./ui-actions";
+import {
+    getCookie,
+    endpoints
+} from "../utils"
+
+import { periodSelectReset } from "./ui-actions"
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 

@@ -13,9 +13,14 @@ import store from "./store"
 import {
     collapseChange,
     collapseRecordState,
-    resetKeys
+    resetKeys,
 } from "./actions/collapse-actions";
 
+
+export function distinct(arr) {
+    //return an array of uniques values
+    return [...new Set(arr)];
+}
 
 export function identicalArrays(array1, array2) {
     // Compare two arrays and return true if they are identical, otherwise false
@@ -119,19 +124,6 @@ export const endpoints = {
 };
 
 
-export function displayNumber(numberString) {
-    // Add commas to numbers of 1000 or higher.
-    if (numberString !== undefined && numberString !== null) {
-        var locale = "en-gb";
-        var float = parseFloat(numberString);
-        if (!isNaN(float)) {
-            return float.toLocaleString(locale);
-        }
-    }
-    return '';
-}
-
-
 // Translation a la python. Let's hope we never need lodash...
 let strings;
 export function _(s) {
@@ -187,8 +179,7 @@ export const findChildrenFromCurrentState = (modelsState, parentId, childModel) 
 
 export function idsToActiveKey(ids) {
     // Return the IDs as an array of strings, used as activeKey
-    const unique = new Set(ids);
-    return [...unique].map(id => id.toString());
+    return distinct(ids).map(id => id.toString());
 }
 
 
@@ -262,6 +253,33 @@ export function hideMe(model, parentId, objectId) {
         return !mePresent;
     }
     return false;
+}
+
+
+export function fullUpdateVisibility(update, activeFilter) {
+    // determine if an update should be "dimmed" indicating it is shown in a filter where it's not
+    // to be interacted with
+    // returns true if the update should be fully visible
+    let visible;
+    switch(activeFilter) {
+        case c.FILTER_NEED_REPORTING: {
+            visible = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
+            break;
+        }
+        case c.FILTER_SHOW_PENDING: {
+            visible = [c.UPDATE_STATUS_PENDING];
+            break;
+        }
+        case c.FILTER_SHOW_APPROVED: {
+            visible = [c.UPDATE_STATUS_APPROVED];
+            break;
+        }
+        default: {
+            // full visibility to all updates if no filter is active
+            return true;
+        }
+    }
+    return visible.indexOf(update.status) > -1;
 }
 
 
@@ -374,13 +392,12 @@ export function closeNodes(model, ids) {
 
     const storeModel = store.getState().models[model];
     // Construct a list of collapse keys, based on ids
-    const collapse_ids = ids.map((id) => {
+    const collapseIds = ids.map((id) => {
         const parent_id = parentModelName(model)?storeModel.objects[id][c.PARENT_FIELD[model]]:model;
         return collapseId(model, parent_id);
     });
-    const unique_collapse_ids = new Set(collapse_ids);
     // Collapse/close all children of the collected collapse keys
-    [...unique_collapse_ids].map((id) => collapseChange(id, []));
+    distinct(collapseIds).map((id) => collapseChange(id, []));
 }
 
 export function openNodes(model, ids) {
@@ -425,4 +442,12 @@ export function setHash(hash) {
     } else {
         window.location.hash = '';
     }
+}
+
+
+export function userIsMEManager(user) {
+    return user.fetched ?
+        user.objects[user.ids[0]].isMEManager
+    :
+        false;
 }

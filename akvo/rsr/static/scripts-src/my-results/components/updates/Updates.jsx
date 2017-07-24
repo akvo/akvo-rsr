@@ -8,22 +8,24 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
 
 import * as alertActions from "../../actions/alert-actions"
 
-import {
-    collapseChange,
-    openPanel,
-} from "../../actions/collapse-actions"
-import { noHide, updateFormToggle } from "../../actions/ui-actions"
+import { collapseChange } from "../../actions/collapse-actions"
+import { updateFormOpen } from "../../actions/ui-actions"
 import  * as c from '../../const.js';
-import { getPeriodsChildrenIds } from "../../selectors";
-import { hideMe } from "../../utils";
-
-import { ToggleButton } from "../common"
-
+import {
+    getPeriodsChildrenIds,
+    getUpdatesForApprovedPeriods,
+    getUpdatesForNeedReportingPeriods,
+    getUpdatesForPendingApprovalPeriods,
+} from "../../selectors";
+import {
+    closeNodes,
+    fullUpdateVisibility,
+    hideMe, openNodes
+} from "../../utils";
 import {
     displayDate,
     _,
@@ -32,8 +34,8 @@ import {
 } from '../../utils.js';
 
 import AlertFactory from "../alertContainer"
+import { ToggleButton } from "../common"
 import Comments from "../Comments"
-import UpdateForm from "./UpdateForm"
 
 
 const Alert = ({message, close}) => (
@@ -62,7 +64,7 @@ function displayName(user) {
 }
 
 
-const UpdateDisplay = ({update}) => {
+const Update = ({update}) => {
     //TODO: tranlsate! Will need some refactoring to handle possible different word sequences
     const user = update.user_details;
     const approver = update.approver_details;
@@ -77,7 +79,7 @@ const UpdateDisplay = ({update}) => {
     :
         undefined;
     return (
-        <div>
+        <div className="UpdateBody">
             <ul className="valueMeta">
                 <li className="updateValue">Update value: <span>{update.data}</span></li>
                 {/* NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
@@ -102,55 +104,10 @@ const UpdateDisplay = ({update}) => {
         </div>
     )
 };
-UpdateDisplay.propTypes = {
+Update.propTypes = {
     update: PropTypes.object.isRequired
 };
 
-
-@connect((store) => {
-    return {
-        updateForms: store.ui[c.UPDATE_FORMS]
-    }
-}, alertActions)
-class Update extends React.Component {
-
-    static propTypes = {
-        update: PropTypes.object.isRequired,
-        collapseId: PropTypes.string.isRequired,
-        // periodLocked: PropTypes.bool.isRequired,
-    };
-
-    constructor (props) {
-        super(props);
-        this.formToggle = this.formToggle.bind(this);
-        // // we need a unique name for each alert
-        // const alertName = 'UpdateAlert-' + this.props.update.id;
-        // this.state = {
-        //     updateAlertName: alertName,
-        //     UpdateAlert: AlertFactory({alertName: alertName})(Alert),
-        // };
-    }
-
-    formToggle() {
-        updateFormToggle(this.props.update.id);
-    }
-
-    render() {
-        return(
-            <div className="col-xs-12">
-                {/*{editUpdateButton}*/}
-                {/*{updateAlert}*/}
-                {new Set(this.props.updateForms).has(this.props.update.id) ?
-                    <UpdateForm
-                        update={this.props.update}
-                        formToggle={this.formToggle}
-                        collapseId={this.props.collapseId}/>
-                :
-                    <UpdateDisplay update={this.props.update}/>}
-            </div>
-        )
-    }
-}
 
 const UserInfo = ({user_details}) => {
     const organisation = user_details.approved_organisations.length ?
@@ -170,7 +127,8 @@ UserInfo.propTypes = {
 
 @connect((store) => {
     return {
-        updateForms: store.ui[c.UPDATE_FORMS],
+        [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
+        activeFilter: store.ui.activeFilter,
         user: store.models.user.objects[store.models.user.ids[0]],
     }
 }, alertActions)
@@ -197,14 +155,20 @@ class UpdateHeader extends React.Component {
 
     formToggle(e) {
         const {collapseId, update} = this.props;
-        updateFormToggle(update.id);
-        openPanel(collapseId, update);
+        updateFormOpen(update.id);
+        openNodes(c.OBJECTS_PERIODS, [update.period]);
+        closeNodes(c.OBJECTS_PERIODS, [update.period]);
         e.stopPropagation();
     }
 
     showEditButton() {
-        // Only show the Edit update button if the user can edit at this time
-        const update = this.props.update;
+        // Only show the Edit update button if the period is unlocked, the update is shown in the
+        // relevant filter and the user can edit at this time
+        const {update, activeFilter} = this.props;
+        const show = fullUpdateVisibility(update, activeFilter);
+        if (!show) {
+            return false
+        }
         if (this.props.periodLocked) {
             return false
         }
@@ -219,37 +183,37 @@ class UpdateHeader extends React.Component {
                 return false;
             }
             // Can't update submitted or approved
-            if (update.status === c.UPDATE_STATUS_PENDING ||
-                update.status === c.UPDATE_STATUS_APPROVED) {
-                return false;
-            }
-            return true;
+            return (
+                update.status !== c.UPDATE_STATUS_PENDING &&
+                update.status !== c.UPDATE_STATUS_APPROVED
+            );
         }
     }
 
     render() {
         let editUpdateButton, updateAlert;
+        const {updateFormDisplay, update} = this.props;
         if (this.showEditButton()) {
             let className;
-            if (new Set(this.props.updateForms).has(this.props.update.id)) {
+            if (updateFormDisplay) {
                 className = 'btn btn-sm btn-default editingForm';
             } else {
                 className = 'btn btn-sm btn-default';
             }
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
-                                             label={_('edit_indicator_value')}/>;
+                                             label={_('edit_indicator_value')}
+                                             disabled={updateFormDisplay !== false}/>;
             updateAlert = <this.state.UpdateAlert />
         }
-        const update = this.props.update;
         return (
-            <span className="UpdateHead">
+            <div className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>
                 <span className="updateData">Actual value: <span>{update.data}</span></span>
                 <span className="updateStatus">{_('update_statuses')[update.status]}</span>
                 <span>{editUpdateButton}</span>
                 <span>{updateAlert}</span>
-            </span>
+            </div>
         )
     }
 }
@@ -257,10 +221,14 @@ class UpdateHeader extends React.Component {
 
 @connect((store) => {
     return {
-        updates: store.models['updates'],
+        updates: store.models.updates,
         keys: store.keys,
         ui: store.ui,
         periodChildrenIds: getPeriodsChildrenIds(store),
+        needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
+        pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),
+        approvedUpdates: getUpdatesForApprovedPeriods(store),
+
     }
 })
 export default class Updates extends React.Component {
@@ -275,7 +243,7 @@ export default class Updates extends React.Component {
         this.collapseChange = this.collapseChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.hideMe = this.hideMe.bind(this);
-        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, this.props.parentId)};
+        this.state = {collapseId: collapseId(c.OBJECTS_UPDATES, props.parentId)};
     }
 
     activeKey() {
@@ -298,36 +266,69 @@ export default class Updates extends React.Component {
         return hideMe(c.OBJECTS_UPDATES, this.props.parentId, id);
     }
 
+    getUpdateIds() {
+        let updateIds = this.props.periodChildrenIds[this.props.parentId] || [];
+        const updates = this.props.updates.objects;
+        const needReporting = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
+        const pending = [c.UPDATE_STATUS_PENDING];
+        const approved = [c.UPDATE_STATUS_APPROVED];
+
+        const filterUpdatesByStatus = (ids, status) => {
+            return ids.filter(
+                id => status.indexOf(updates[id].status) > -1
+            )
+        };
+
+        switch(this.props.ui.activeFilter) {
+            case c.FILTER_NEED_REPORTING: {
+                updateIds = filterUpdatesByStatus(updateIds, needReporting);
+                break;
+            }
+            case c.FILTER_SHOW_PENDING: {
+                updateIds = filterUpdatesByStatus(updateIds, pending);
+                break;
+            }
+            case c.FILTER_SHOW_APPROVED: {
+                updateIds = filterUpdatesByStatus(updateIds, approved);
+                break;
+            }
+        }
+        return updateIds;
+    }
+
     renderPanels(updateIds) {
         let actualValue = 0;
         return (updateIds.map(
             (id) => {
                 const update = this.props.updates.objects[id];
+                const activeFilter = this.props.ui.activeFilter;
                 // Calculate running total of numeric updates data
                 const data = parseInt(update.data);
                 if (data && update.status == c.UPDATE_STATUS_APPROVED) {
                     actualValue += data;
                 }
                 update.actual_value = actualValue;
-                const className = this.hideMe(id) ? 'hidePanel' : '';
+                const className = fullUpdateVisibility(update, activeFilter) ?
+                    'row'
+                :
+                    'row dimmed';
                 return (
-                    <Panel header={<UpdateHeader update={update}
-                                                 periodLocked={this.props.periodLocked}
-                                                 collapseId={this.state.collapseId}/>}
-                           className={className}
-                           key={id}>
+                    <div className={className} key={id}>
+                        <UpdateHeader update={update} periodLocked={this.props.periodLocked}
+                                      collapseId={this.state.collapseId}/>
                         <div className={'row'}>
                             <Update update={update} collapseId={this.state.collapseId}/>
-                            <Comments parentId={id}/>
+                            <Comments parentId={id} inForm={false}/>
                         </div>
-                    </Panel>
+                    </div>
                 )
             }
         ))
     }
 
     render() {
-        const updateIds = this.props.periodChildrenIds[this.props.parentId] || [];
+        let updateIds = this.getUpdateIds();
+
         // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!this.props.updates.fetched) {
             return (
@@ -336,12 +337,7 @@ export default class Updates extends React.Component {
         } else if (updateIds.length > 0) {
             return (
                 <div className={c.OBJECTS_UPDATES}>
-                    {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
-                    {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
-                                  {/*disabled={!this.props.ui.allFetched}/>*/}
-                    <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(updateIds)}
-                    </Collapse>
+                    {this.renderPanels(updateIds)}
                 </div>
             );
         } else {

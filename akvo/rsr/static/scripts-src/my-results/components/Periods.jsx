@@ -20,7 +20,7 @@ import * as c from "../const"
 
 import {
     getPeriodsActualValue,
-    getIndicatorsChildrenIds,
+    getIndicatorsChildrenIds, getPeriodsChildrenIds,
 } from "../selectors";
 
 import {
@@ -119,17 +119,17 @@ class PeriodLockToggle extends React.Component {
             label = "Lock period";
         }
         return (
-            <div>
+            <span>
                 {<this.state.ToggleAlert />}
                 <ToggleButton onClick={this.lockToggle} label={label}/>
-            </div>
+            </span>
         )
     }
 }
 
 
 const PeriodLockStatus = ({lockStatus}) => {
-    return <div>{lockStatus}</div>
+    return {lockStatus}
 };
 PeriodLockStatus.propTypes = {
     lockStatus: PropTypes.string.isRequired,
@@ -150,37 +150,35 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = ({period, user, actualValue, toggleCheckbox, isChecked}) => {
+const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert,
+                          formOpen, showLockButton}) => {
     const periodStart = displayDate(period.period_start);
     const periodEnd = displayDate(period.period_end);
     const periodDate = `${periodStart} - ${periodEnd}`;
     let periodSelect, lockStatus;
-    if (user.isMEManager) {
-        periodSelect = <PeriodSelect id={period.id} toggleCheckbox={toggleCheckbox}
+    if (user.isMEManager && showLockButton) {
+        periodSelect = <PeriodSelect id={period.id}
+                                     toggleCheckbox={toggleCheckbox}
                                      isChecked={isChecked}/>;
         lockStatus = <PeriodLockToggle period={period} />;
 
     } else {
-        lockStatus = <PeriodLockStatus lockStatus={period.locked ? _('locked') : _('unlocked')}/>
+        lockStatus = period.locked ? _('locked') : _('unlocked');
     }
     return (
         <span className="periodWrap">
-            <ul className="">
+            <ul className={formOpen ? "formOpen" : ""}>
                 <li>{periodSelect}</li>
                 <li>{periodDate}</li>
-                <li>Target value: <span>{period.target_value}</span></li>
-                <li>Actual value: <span>{actualValue}</span></li>
+                <li>{newUpdateButton}{delUpdateAlert}</li>
                 <li>{lockStatus}</li>
             </ul>
-
-
         </span>
     )
 };
 PeriodHeader.propTypes = {
     period: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    actualValue: PropTypes.number.isRequired,
     toggleCheckbox: PropTypes.func.isRequired,
     isChecked: PropTypes.bool.isRequired,
 };
@@ -202,6 +200,7 @@ const DeleteUpdateAlert = ({message, close}) => (
             store.models.user.objects[store.models.user.ids[0]] : {},
         ui: store.ui,
         indicatorChildrenIds: getIndicatorsChildrenIds(store),
+        periodChildrenIds: getPeriodsChildrenIds(store),
         actualValue: getPeriodsActualValue(store),
     }
 }, {...alertActions, ...collapseActions})
@@ -261,15 +260,20 @@ export default class Periods extends React.Component {
             (id) => {
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
-                const ui = this.props.ui;
-                const isChecked = new Set(ui[c.SELECTED_PERIODS]).has(id);
+                const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
+                const formOpen = this.props.periodChildrenIds[id].indexOf(
+                    this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
+                ) > -1;
+
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
+                const ui = this.props.ui;
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked && (
-                    ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
-                )) {
+                    !ui.updateFormDisplay && (
+                        ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
+                ))) {
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
@@ -281,18 +285,21 @@ export default class Periods extends React.Component {
                 }
                 let className = this.hideMe(id) ? 'hidePanel' : '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
-
+                const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
+                        this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
                 return (
-                    <Panel header={<PeriodHeader period={period}
-                                              user={this.props.user}
-                                              toggleCheckbox={this.toggleCheckbox}
-                                              actualValue={actualValue}
-                                              isChecked={isChecked}/>}
+                    <Panel header={
+                        <PeriodHeader period={period}
+                                      user={this.props.user}
+                                      toggleCheckbox={this.toggleCheckbox}
+                                      isChecked={isChecked}
+                                      newUpdateButton={newUpdateButton}
+                                      delUpdateAlert={delUpdateAlert}
+                                      formOpen={formOpen}
+                                      showLockButton={showLockButton}/>}
                            key={id}
                            className={className}>
                         <Updates parentId={id} periodLocked={period.locked}/>
-                        {newUpdateButton}
-                        {delUpdateAlert}
                     </Panel>
                 )
             }

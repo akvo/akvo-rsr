@@ -11,8 +11,9 @@ import update  from 'immutability-helper';
 import * as c from "../const";
 
 import {
-    parentModelName,
+    distinct,
     findChildrenFromCurrentState,
+    parentModelName,
 } from "../utils";
 
 
@@ -116,7 +117,7 @@ export default function modelsReducer(state=initialModels, action) {
                 ids: {$push: [object.id]}
             });
             // remove duplicate ids
-            merged.ids = [...new Set(merged.ids)];
+            merged.ids = distinct(merged.ids);
             return {...state, [model]: merged};
         }
 
