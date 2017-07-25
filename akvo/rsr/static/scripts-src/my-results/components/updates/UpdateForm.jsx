@@ -25,7 +25,7 @@ import * as c from '../../const.js';
 
 import {
     updateFormOpen,
-    updateFormClose,
+    updateFormClose, uiHideMode,
 } from "../../actions/ui-actions"
 
 import {
@@ -849,6 +849,7 @@ export class NewUpdateButton extends React.Component {
         //TODO: promise based solution where addKey is called on completion of updateModel?
         updateModel('updates', update);
         updateFormOpen(id);
+        uiHideMode(c.OBJECTS_PERIODS);
         openNodes(c.OBJECTS_PERIODS, [update.period]);
         closeNodes(c.OBJECTS_PERIODS, [update.period]);
         newUpdateID += 1;
