@@ -3508,6 +3508,7 @@ function addOrgModal() {
                     if (org_logo_files !== undefined) {
                         api_url = '/rest/v1/organisation/' + organisation_id + '/add_logo/?format=json';
                         logo_data = new FormData();
+                        console.log("org_logo_files[0]: " + org_logo_files[0]);
                         logo_data.append("logo", org_logo_files[0]);
                         logo_request = new XMLHttpRequest();
                         logo_request.onreadystatechange = function() {
