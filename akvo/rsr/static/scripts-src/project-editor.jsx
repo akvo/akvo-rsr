@@ -1467,10 +1467,11 @@ function setMeasureVisibility(indicatorTypeSelect) {
     // related_objects/indicator_input.html
     var parent = findAncestorByClass(indicatorTypeSelect, 'parent');
     var measureRow = parent.getElementsByClassName('measure')[0];
-    if (selectNode.value === '1') {
-        elRemoveClass(measureRow, 'hidden');
-    } else {
+    // hide measure fields for qualitative indicators
+    if (indicatorTypeSelect.value === '2') {
         elAddClass(measureRow, 'hidden');
+    } else {
+        elRemoveClass(measureRow, 'hidden');
     }
 }
 
