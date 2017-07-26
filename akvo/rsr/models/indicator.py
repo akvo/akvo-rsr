@@ -26,6 +26,13 @@ from sorl.thumbnail.fields import ImageField
 
 
 class Indicator(models.Model):
+    QUANTITATIVE = 1
+    QUALITATIVE = 2
+    INDICATOR_TYPES = (
+        (QUANTITATIVE, _('Quantitative')),
+        (QUALITATIVE, _('Qualitative')),
+    )
+
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
     parent_indicator = models.ForeignKey(
         'self', blank=True, null=True, default=None,
@@ -35,6 +42,9 @@ class Indicator(models.Model):
         _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
                     u'that can be counted and evaluated as the project continues and is completed.')
+    )
+    type = models.PositiveSmallIntegerField(
+        _('indicator type'), choices=INDICATOR_TYPES, default=QUANTITATIVE
     )
     measure = ValidXMLCharField(
         _(u'indicator measure'), blank=True, max_length=1,
@@ -56,7 +66,7 @@ class Indicator(models.Model):
         help_text=_(u'The year the baseline value was taken.')
     )
     baseline_value = ValidXMLCharField(
-        _(u'baseline value'), blank=True, max_length=50,
+        _(u'baseline value'), blank=True, max_length=200,
         help_text=_(u'The value of the baseline at the start of the project.')
     )
     baseline_comment = ValidXMLCharField(
