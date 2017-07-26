@@ -74,8 +74,9 @@ const modifyUser = (isMEManager) => {
 
 @connect((store) => {
     return {
-        updates: store.models.updates,
+        indicators: store.models.indicators,
         periods: store.models.periods,
+        updates: store.models.updates,
         user: store.models.user,
         ui: store.ui,
         needReportingPeriods: getNeedReportingPeriods(store),
@@ -263,7 +264,7 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        const {updates, periods} = this.props;
+        const {updates, periods, indicators} = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
@@ -274,7 +275,9 @@ export default class App extends React.Component {
         if (updateFormDisplay) {
             const update = updates.objects[updateFormDisplay];
             const period = periods.objects[update.period];
-            updateForm = <UpdateForm period={period}
+            const indicator = indicators.objects[period.indicator];
+            updateForm = <UpdateForm indicator={indicator}
+                                     period={period}
                                      update={update}
                                      onClose={this.onClose}
                                      originalUpdate={this.state.originalUpdate}

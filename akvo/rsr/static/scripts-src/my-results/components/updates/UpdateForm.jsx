@@ -49,7 +49,7 @@ const isAllowedToDelete = (user, update) =>
     update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
-const Header = ({targetValue}) => {
+const QuantitativeHeader = ({targetValue}) => {
     return (
         <div>
             <div className="">
@@ -58,8 +58,23 @@ const Header = ({targetValue}) => {
         </div>
     )
 };
+QuantitativeHeader.propTypes = {
+    targetValue: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
+};
 
-Header.propTypes = {
+const QualitativeHeader = ({targetValue}) => {
+    return (
+        <div>
+            <div className="">
+                {_('target')}: {targetValue}
+            </div>
+        </div>
+    )
+};
+QualitativeHeader.propTypes = {
     targetValue: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -67,7 +82,7 @@ Header.propTypes = {
 };
 
 
-const ActualValueInput = ({update, onChange, onClose}) => {
+const QuantitativeActualValueInput = ({update, onChange, onClose}) => {
     return (
         <div className="row">
             <div>
@@ -83,8 +98,31 @@ const ActualValueInput = ({update, onChange, onClose}) => {
         </div>
     )
 };
+QuantitativeActualValueInput.propTypes = {
+    update: PropTypes.object.isRequired,
+    updatedActualValue: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+};
 
-ActualValueInput.propTypes = {
+
+const QualitativeActualValueInput = ({update, onChange, onClose}) => {
+    return (
+        <div className="row">
+            <div>
+                <label htmlFor="actualValue">{_('actual')}</label>
+                <ToggleButton onClick={onClose} label="X"
+                                  className="btn btn-link btn-xs"/>
+                <textarea className="form-control"
+                          id="text"
+                          value={update.data}
+                          onChange={onChange}
+                          placeholder={_('input_placeholder')}>
+                </textarea>
+            </div>
+        </div>
+    )
+};
+QualitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
     updatedActualValue: PropTypes.string,
     onChange: PropTypes.func.isRequired,
@@ -312,11 +350,76 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
         </div>
     )
 };
-
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
     callbacks: PropTypes.object.isRequired,
+};
+
+
+const QuantitativeUpdateForm = ({period, update, self}) => {
+    return (
+        <div className="update-container">
+            <div className="row update-entry-container edit-in-progress">
+                <QuantitativeHeader targetValue={period.target_value}/>
+                <QuantitativeActualValueInput update={update}
+                                  onChange={self.onChange}
+                                  onClose={self.props.onClose}/>
+                <ActualValueDescription update={update}
+                                        onChange={self.onChange}/>
+                <Attachments update={update}
+                             onChange={self.attachmentsChange}
+                             removeAttachment={self.removeAttachment}/>
+                <UpdateFormButtons
+                    user={self.props.user}
+                    update={update}
+                    changing={self.props.updates.changing}
+                    callbacks={{
+                        saveUpdate: self.saveUpdate,
+                        deleteUpdate: self.deleteUpdate}}/>
+            </div>
+            <Comments parentId={update.id}
+                      inForm={true}/>
+        </div>
+    )
+};
+QuantitativeUpdateForm.propTypes = {
+    period: PropTypes.object.isRequired,
+    update: PropTypes.object.isRequired,
+    self: PropTypes.object.isRequired,
+};
+
+
+const QualitativeUpdateForm = ({period, update, self}) => {
+    return (
+        <div className="update-container">
+            <div className="row update-entry-container edit-in-progress">
+                <QualitativeHeader targetValue={period.target_value}/>
+                <QualitativeActualValueInput update={update}
+                                  onChange={self.onChange}
+                                  onClose={self.props.onClose}/>
+                <ActualValueDescription update={update}
+                                        onChange={self.onChange}/>
+                <Attachments update={update}
+                             onChange={self.attachmentsChange}
+                             removeAttachment={self.removeAttachment}/>
+                <UpdateFormButtons
+                    user={self.props.user}
+                    update={update}
+                    changing={self.props.updates.changing}
+                    callbacks={{
+                        saveUpdate: self.saveUpdate,
+                        deleteUpdate: self.deleteUpdate}}/>
+            </div>
+            <Comments parentId={update.id}
+                      inForm={true}/>
+        </div>
+    )
+};
+QualitativeUpdateForm.propTypes = {
+    period: PropTypes.object.isRequired,
+    update: PropTypes.object.isRequired,
+    self: PropTypes.object.isRequired,
 };
 
 
@@ -344,6 +447,7 @@ const pruneForPOST = (update) => {
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
+        indicator: PropTypes.object.isRequired,
         period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
         originalUpdate: PropTypes.object.isRequired,
@@ -571,33 +675,15 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {update, period} = this.props;
-        const updateValue = parseFloat(update.data ? update.data : 0);
-
-        return (
-            <div className="update-container">
-                <div className="row update-entry-container edit-in-progress">
-                    <Header targetValue={period.target_value}/>
-                    <ActualValueInput update={update}
-                                      onChange={this.onChange}
-                                      onClose={this.props.onClose}/>
-                    <ActualValueDescription update={update}
-                                            onChange={this.onChange}/>
-                    <Attachments update={update}
-                                 onChange={this.attachmentsChange}
-                                 removeAttachment={this.removeAttachment}/>
-                    <UpdateFormButtons
-                        user={this.props.user}
-                        update={update}
-                        changing={this.props.updates.changing}
-                        callbacks={{
-                            saveUpdate: this.saveUpdate,
-                            deleteUpdate: this.deleteUpdate}}/>
-                </div>
-                <Comments parentId={update.id}
-                          inForm={true}/>
-            </div>
-        )
+        const {indicator, period, update} = this.props;
+        switch(indicator.type) {
+            case 1: {
+                return <QuantitativeUpdateForm period={period} update={update} self={this}/>
+            }
+            case 2: {
+                return <QualitativeUpdateForm period={period} update={update} self={this}/>
+            }
+        }
     }
 }
 
