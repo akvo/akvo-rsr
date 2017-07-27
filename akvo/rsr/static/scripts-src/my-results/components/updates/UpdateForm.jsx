@@ -323,7 +323,7 @@ UpdateFormButtons.propTypes = {
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
-    const fields = ['data', 'text', 'relative_data', 'status', '_file', '_photo', 'approved_by',];
+    const fields = ['data', 'text', 'status', '_file', '_photo', 'approved_by',];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
@@ -631,7 +631,6 @@ export class NewUpdateButton extends React.Component {
             user: user.id,
             data: '',
             text: '',
-            relative_data: true,
             status: c.UPDATE_STATUS_NEW,
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
