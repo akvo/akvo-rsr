@@ -477,8 +477,8 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         period = IndicatorPeriod.objects.get(id=self.period.id)
         percentage = calculate_percentage(child_numerator, child_denominator)
         self.assertDecimalEqual(percentage, period.actual_value)
-        self.assertDecimalEqual(child_numerator*2, period.numerator)
-        self.assertDecimalEqual(child_denominator*2, period.denominator)
+        self.assertDecimalEqual(child_numerator * 2, period.numerator)
+        self.assertDecimalEqual(child_denominator * 2, period.denominator)
 
     # FIXME: Add test for relative update
     # FIXME: Add test for negative relative update

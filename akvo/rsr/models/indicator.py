@@ -829,8 +829,10 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
 
     def save(self, recalculate=True, *args, **kwargs):
         # Allow only a single update for percentage measure indicators
-        if (self.period.indicator.measure == PERCENTAGE_MEASURE and
-            self.period.data.exclude(id=self.id).count() > 0):
+        if (
+            self.period.indicator.measure == PERCENTAGE_MEASURE and
+            self.period.data.exclude(id=self.id).count() > 0
+        ):
             raise MultipleUpdateError('Cannot create multiple updates with percentages')
 
         if (
