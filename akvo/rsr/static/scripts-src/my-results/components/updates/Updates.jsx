@@ -81,7 +81,7 @@ const Update = ({update}) => {
     return (
         <div className="UpdateBody">
             <ul className="valueMeta">
-                <li className="updateValue">Update value: <span>{update.data}</span></li>
+                <li className="updateValue">Update value: <span>{update.value}</span></li>
                 {/* NOTE: we use update.actual_value, a value calculated in App.annotateUpdates(),
                  not update.period_actual_value from the backend */}
                 <li className="totalValue">Actual total for this period (including this update):
@@ -209,7 +209,7 @@ class UpdateHeader extends React.Component {
         return (
             <div className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>
-                <span className="updateData">Actual value: <span>{update.data}</span></span>
+                <span className="updateData">Actual value: <span>{update.value}</span></span>
                 <span className="updateStatus">{_('update_statuses')[update.status]}</span>
                 <span>{editUpdateButton}</span>
                 <span>{updateAlert}</span>
@@ -302,10 +302,10 @@ export default class Updates extends React.Component {
             (id) => {
                 const update = this.props.updates.objects[id];
                 const activeFilter = this.props.ui.activeFilter;
-                // Calculate running total of numeric updates data
-                const data = parseInt(update.data);
-                if (data && update.status == c.UPDATE_STATUS_APPROVED) {
-                    actualValue += data;
+                // Calculate running total of numeric update values
+                const value = parseInt(update.value);
+                if (value && update.status == c.UPDATE_STATUS_APPROVED) {
+                    actualValue += value;
                 }
                 update.actual_value = actualValue;
                 const className = fullUpdateVisibility(update, activeFilter) ?

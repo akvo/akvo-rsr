@@ -43,6 +43,9 @@ class Indicator(models.Model):
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
                     u'that can be counted and evaluated as the project continues and is completed.')
     )
+    # NOTE: type and measure should probably only be one field measure, wit the values Unit,
+    # Percentage and Qualitative. However since the project editor design splits the choice we use
+    # two fields, type and measure to simplify the interaction between front and back end.
     type = models.PositiveSmallIntegerField(
         _('indicator type'), choices=INDICATOR_TYPES, default=QUANTITATIVE
     )
@@ -441,20 +444,20 @@ class IndicatorPeriod(models.Model):
             update.period_actual_value = prev_val
             update.save(recalculate=False)
 
-            if update.data is None:
+            if update.value is None:
                 continue
 
             if update.relative_data:
                 try:
                     # Try to add up the update to the previous actual value
-                    prev_val = str(Decimal(prev_val) + Decimal(update.data))
+                    prev_val = str(Decimal(prev_val) + Decimal(update.value))
                 except InvalidOperation:
-                    # If not possible, the update data or previous value is a normal string
-                    prev_val = update.data
+                    # If not possible, the update value or previous value is a normal string
+                    prev_val = update.value
             else:
-                prev_val = update.data
+                prev_val = update.value
 
-        # For every non-approved update, set the data to the current data
+        # For every non-approved update, set the value to the current value
         for update in self.data.exclude(status='A'):
             update.period_actual_value = prev_val
             update.save(recalculate=False)
@@ -546,7 +549,7 @@ class IndicatorPeriod(models.Model):
 
     def child_periods_with_data(self):
         """
-        Returns the child indicator periods with numeric data
+        Returns the child indicator periods with numeric values
         """
         children_with_data = []
         for child in self.child_periods.all():
@@ -747,8 +750,9 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         related_name='approved_period_updates', blank=True, null=True,
     )
     relative_data = models.BooleanField(_(u'relative data'), default=True)
-    # TODO: rename to update or period_update; we're using the term Indicator update in the UI
-    data = ValidXMLCharField(_(u'data'), max_length=300, blank=True, null=True)
+    # TODO: migrate value field to DecimalField
+    value = ValidXMLCharField(_(u'quantitative indicator value'), max_length=300, blank=True, null=True)
+    narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_NEW_CODE)
@@ -854,18 +858,18 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         """
         if self.relative_data:
             try:
-                add_up = Decimal(self.data) + Decimal(self.period_actual_value)
-                relative = '+' + str(self.data) if self.data >= 0 else str(self.data)
+                add_up = Decimal(self.value) + Decimal(self.period_actual_value)
+                relative = '+' + str(self.value) if self.value >= 0 else str(self.value)
                 return "{} ({})".format(str(add_up), relative)
             except (InvalidOperation, TypeError):
-                return self.data
+                return self.value
         else:
             try:
-                substract = Decimal(self.data) - Decimal(self.period_actual_value)
+                substract = Decimal(self.value) - Decimal(self.period_actual_value)
                 relative = '+' + str(substract) if substract >= 0 else str(substract)
-                return "{} ({})".format(self.data, relative)
+                return "{} ({})".format(self.value, relative)
             except (InvalidOperation, TypeError):
-                return self.data
+                return self.value
 
 
 class IndicatorPeriodDataComment(TimestampsMixin, models.Model):

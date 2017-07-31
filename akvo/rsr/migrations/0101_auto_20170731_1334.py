@@ -18,6 +18,13 @@ class Migration(migrations.Migration):
             field=models.PositiveSmallIntegerField(default=1, verbose_name='indicator type', choices=[(1, 'Quantitative'), (2, 'Qualitative')]),
             preserve_default=True,
         ),
+        migrations.AddField(
+            model_name='indicatorperioddata',
+            name='narrative',
+            field=akvo.rsr.fields.ValidXMLTextField(verbose_name='qualitative indicator narrative', blank=True),
+            preserve_default=True,
+        ),
+        migrations.RenameField('indicatorperioddata', 'data', 'value'),
         migrations.AlterField(
             model_name='indicator',
             name='baseline_value',

@@ -90,8 +90,8 @@ const QuantitativeActualValueInput = ({update, onChange, onClose}) => {
                 <ToggleButton onClick={onClose} label="X"
                                   className="btn btn-link btn-xs"/>
                 <input className="form-control"
-                       id="data"
-                       value={update.data}
+                       id="value"
+                       value={update.value}
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
             </div>
@@ -113,8 +113,8 @@ const QualitativeActualValueInput = ({update, onChange, onClose}) => {
                 <ToggleButton onClick={onClose} label="X"
                                   className="btn btn-link btn-xs"/>
                 <textarea className="form-control"
-                          id="text"
-                          value={update.data}
+                          id="narrative"
+                          value={update.narrative}
                           onChange={onChange}
                           placeholder={_('input_placeholder')}>
                 </textarea>
@@ -315,13 +315,11 @@ UpdateActionButton.propTypes = {
 
 
 const UpdateFormButtons = ({user, update, changing, callbacks}) => {
-    //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
-    // can be shown when saving is under way
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                const disabled = (update.data === null || update.data === "") &&
+                const disabled = (update.value === null || update.value === "") &&
                                   action !== c.UPDATE_ACTION_SAVE;
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
@@ -426,7 +424,7 @@ QualitativeUpdateForm.propTypes = {
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
-    const fields = ['data', 'text', 'relative_data', 'status', '_file', '_photo', 'approved_by',];
+    const fields = ['value', 'narrative', 'text', 'relative_data', 'status', '_file', '_photo', 'approved_by',];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
@@ -612,10 +610,10 @@ export default class UpdateForm extends React.Component {
         if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
-        } else if (!String(update.data).trim()) {
+        } else if (!String(update.value).trim()) {
             if (action === c.UPDATE_ACTION_SAVE) {
                 // Explicitly empty data, only allowed when saving a draft
-                update.data = null;
+                update.value = null;
             } else {
                 this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
                 return;
@@ -663,7 +661,7 @@ export default class UpdateForm extends React.Component {
 
     previousActualValue() {
         if (this.props.update) {
-            return this.props.update.actual_value - this.props.update.data;
+            return this.props.update.actual_value - this.props.update.value;
         } else {
             const updates = this.props.period.updates;
             if (updates && updates.length > 0) {
@@ -715,7 +713,8 @@ export class NewUpdateButton extends React.Component {
             period: period.id,
             user_details: user,
             user: user.id,
-            data: '',
+            value: '',
+            narrative: '',
             text: '',
             relative_data: true,
             status: c.UPDATE_STATUS_NEW,

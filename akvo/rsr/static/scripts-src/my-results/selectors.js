@@ -114,10 +114,10 @@ export const getPeriodsActualValue = createSelector(
             ).reduce(
                 // Actual value is calculated by adding all approved updates with numerical data
                 (acc, updateId) => {
-                    const data = parseInt(updateObjects[updateId].data);
-                    // If data is NaN then data !== data returns true!
-                    if (!(data !== data)) {
-                        return acc + data;
+                    const value = parseInt(updateObjects[updateId].value);
+                    // If value is NaN then value !== value returns true!
+                    if (!(value !== value)) {
+                        return acc + value;
                     }
                     return acc;
                 }, 0

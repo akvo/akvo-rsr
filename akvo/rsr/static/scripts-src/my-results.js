@@ -218,17 +218,17 @@ function initReact() {
 
     var UpdateEntry = React.createClass({displayName: "UpdateEntry",
         getInitialState: function() {
-            var updateData;
+            var updateValue;
 
-            // In case the update is new (status 'N') and the data is '0', do not display the data.
-            if (this.props.update.data === '0' && this.props.update.status === 'N') {
-                updateData = '';
+            // In case the update is new (status 'N') and the value is '0', do not display the value.
+            if (this.props.update.value === '0' && this.props.update.status === 'N') {
+                updateValue = '';
             } else {
-                updateData = this.props.update.data;
+                updateValue = this.props.update.value;
             }
 
             return {
-                data: updateData,
+                value: updateValue,
                 description: this.props.update.text,
                 isRelative: this.props.update.relative_data,
                 comment: '',
@@ -280,7 +280,7 @@ function initReact() {
             // Save update and reload the whole period when an approved update is edited.
             this.baseSave({
                 'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
+                'value': this.state.value.trim(),
                 'relative_data': this.state.isRelative,
                 'status': status
             }, false, this.props.update.status === 'A');
@@ -290,7 +290,7 @@ function initReact() {
             // Save an indicator update and set the status to pending approval ('P').
             this.baseSave({
                 'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
+                'value': this.state.value.trim(),
                 'relative_data': this.state.isRelative,
                 'status': 'P'
             }, false, false);
@@ -301,7 +301,7 @@ function initReact() {
             // new updated actual value of the period.
             this.baseSave({
                 'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
+                'value': this.state.value.trim(),
                 'relative_data': this.state.isRelative,
                 'status': 'A'
             }, false, true);
@@ -311,7 +311,7 @@ function initReact() {
             // Return the indicator update for revision ('R').
             this.baseSave({
                 'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
+                'value': this.state.value.trim(),
                 'relative_data': this.state.isRelative,
                 'status': 'R'
             }, false, false);
@@ -448,7 +448,7 @@ function initReact() {
 
         handleDataChange: function(e) {
             // Keep track of the data in the 'Actual value' field of the update.
-            this.setState({data: e.target.value});
+            this.setState({value: e.target.value});
         },
 
         handleDescriptionChange: function(e) {
@@ -556,27 +556,27 @@ function initReact() {
             // Render the new actual value of the period, including a calculation based on the
             // previous actual value of the period.
             var periodActualValue = parseFloat(this.props.update.period_actual_value);
-            var originalData = parseFloat(this.state.data);
-            var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
-            var relativeData = this.state.isRelative ? originalData : updateData - periodActualValue;
+            var originalValue = parseFloat(this.state.value);
+            var updateValue = this.state.isRelative ? periodActualValue + originalValue : originalValue;
+            var relativeValue = this.state.isRelative ? originalValue : updateValue - periodActualValue;
 
-            if (isNaN(updateData) || isNaN(relativeData)) {
-                // If the data cannot be calculated (e.g. non-numeric data), do not display a
+            if (isNaN(updateValue) || isNaN(relativeValue)) {
+                // If the value cannot be calculated (e.g. non-numeric data), do not display a
                 // calculation.
                 return (
                     React.createElement("div", {className: "upActualValue"}, 
                         React.createElement("span", {className: "update-actual-value-text"}, label, ": "), 
-                        React.createElement("span", {className: "update-actual-value-data"}, this.state.data), React.createElement("br", null)
+                        React.createElement("span", {className: "update-actual-value-data"}, this.state.value), React.createElement("br", null)
                     )
                 );
             } else {
                 // Display a calculation.
-                var relativeDataText = relativeData >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeData.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeData.toString());
+                var relativeValueText = relativeValue >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeValue.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeValue.toString());
                 return (
                     React.createElement("div", {className: "upActualValue"}, 
                         React.createElement("span", {className: "update-actual-value-text"}, label, ": "), 
-                        React.createElement("span", {className: "update-actual-value-data"}, displayNumber(updateData), " "), 
-                        React.createElement("span", {className: "update-relative-value"}, "(", relativeDataText, ")")
+                        React.createElement("span", {className: "update-actual-value-data"}, displayNumber(updateValue), " "), 
+                        React.createElement("span", {className: "update-relative-value"}, "(", relativeValueText, ")")
                     )
                 );
             }
@@ -602,7 +602,7 @@ function initReact() {
                     React.createElement("div", {className: "row"}, 
                         React.createElement("div", {className: "col-xs-6"}, 
                             React.createElement("label", {htmlFor: inputId}, i18nResults.add_to_actual_value), 
-                            React.createElement("input", {className: "form-control", id: inputId, defaultValue: this.state.data, onChange: this.handleDataChange, placeholder: i18nResults.input_placeholder})
+                            React.createElement("input", {className: "form-control", id: inputId, defaultValue: this.state.value, onChange: this.handleDataChange, placeholder: i18nResults.input_placeholder})
                         ), 
                         React.createElement("div", {className: "col-xs-6"}, 
                             this.renderActualRelative(i18nResults.new_total_value)
@@ -1650,12 +1650,12 @@ function initReact() {
             var url = endpoints.base_url + endpoints.updates_and_comments;
             var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
 
-            // Default data of a new update. Note that we supply a default '0' data, since that
+            // Default value of a new update. Note that we supply a default '0' value, since that
             // field is mandatory.
             var data = JSON.stringify({
                 'period': periodId,
                 'user': user.id,
-                'data': '0',
+                'value': '0',
                 'period_actual_value': actualValue
             });
 
