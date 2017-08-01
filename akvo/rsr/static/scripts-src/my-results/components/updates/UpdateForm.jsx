@@ -315,6 +315,7 @@ UpdateActionButton.propTypes = {
 
 
 const UpdateFormButtons = ({user, update, changing, callbacks}) => {
+
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
@@ -329,9 +330,11 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
             }
         )
     }
+
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
     const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
     const actionButtons = getActionButtons(role, update.status, icon);
+
     return (
         <div className="menuAction">
             <ul className="nav-pills bottomRow navbar-right">
@@ -351,6 +354,7 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
+    changing: PropTypes.bool.isRequired,
     callbacks: PropTypes.object.isRequired,
 };
 
