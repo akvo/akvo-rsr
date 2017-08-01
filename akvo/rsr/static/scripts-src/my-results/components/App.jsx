@@ -227,6 +227,7 @@ export default class App extends React.Component {
         */
         activateFilterCSS(element);
         setHash(element);
+        updateFormClose();
         this.setState({selectedOption: undefined});
     }
 
