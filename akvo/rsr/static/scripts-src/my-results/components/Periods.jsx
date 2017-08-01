@@ -258,17 +258,16 @@ export default class Periods extends React.Component {
     renderPanels(periodIds) {
         return (periodIds.map(
             (id) => {
+                const {parentId, ui} = this.props;
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
                 const formOpen = this.props.periodChildrenIds[id].indexOf(
                     this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
                 ) > -1;
-
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
-                const ui = this.props.ui;
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked && (
                     !ui.updateFormDisplay && (
@@ -283,6 +282,7 @@ export default class Periods extends React.Component {
                     )(DeleteUpdateAlert);
                     delUpdateAlert = <DelUpdateAlert />;
                 }
+
                 let className = this.hideMe(id) ? 'hidePanel' : '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
                 const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
@@ -299,7 +299,7 @@ export default class Periods extends React.Component {
                                       showLockButton={showLockButton}/>}
                            key={id}
                            className={className}>
-                        <Updates parentId={id} periodLocked={period.locked}/>
+                        <Updates indicatorId={parentId} period={period}/>
                     </Panel>
                 )
             }
