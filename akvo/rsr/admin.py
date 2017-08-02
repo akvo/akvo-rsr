@@ -1499,7 +1499,7 @@ class IndicatorPeriodDataCommentInline(admin.TabularInline):
 
 class IndicatorPeriodDataAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'IndicatorPeriodData')
-    list_display = ('period', 'user', 'data', 'relative_data', 'status')
+    list_display = ('period', 'user', 'data', 'status')
     readonly_fields = ('created_at', 'last_modified_at')
     inlines = (IndicatorPeriodDataCommentInline, )
 
