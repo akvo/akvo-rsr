@@ -825,6 +825,23 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             if orig.period != self.period:
                 validation_errors['period'] = unicode(_(u'Not allowed to change indicator period '
                                                         u'in a data update'))
+
+        if self.period.indicator.type == Indicator.QUANTITATIVE:
+            if self.narrative is not None:
+                validation_errors['period'] = unicode(
+                    _(u'Narrative field should be empty in quantitative indicators'))
+            if self.value is not None:
+                try:
+                    self.value = Decimal(self.value)
+                except:
+                    validation_errors['period'] = unicode(
+                        _(u'Only numeric values are allowed in quantitative indicators'))
+
+        if self.period.indicator.type == Indicator.QUALITATIVE:
+            if self.value is not None:
+                validation_errors['period'] = unicode(
+                    _(u'Value field should be empty in qualitative indicators'))
+
         if validation_errors:
             raise ValidationError(validation_errors)
 
