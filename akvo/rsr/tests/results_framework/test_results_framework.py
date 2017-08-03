@@ -40,11 +40,12 @@ class ResultsFrameworkTestCase(TestCase):
             title="Parent project",
             subtitle="Parent project (subtitle)",
         )
+        self.parent_project.publish()
 
-        # Publish parent project
-        publishing_status = PublishingStatus.objects.get(project=self.parent_project.pk)
-        publishing_status.status = 'published'
-        publishing_status.save(update_fields=['status', ])
+        # # Publish parent project
+        # publishing_status = PublishingStatus.objects.get(project=self.parent_project.pk)
+        # publishing_status.status = 'published'
+        # publishing_status.save(update_fields=['status', ])
 
         # Create child project
         self.child_project = Project.objects.create(
@@ -64,9 +65,14 @@ class ResultsFrameworkTestCase(TestCase):
             relation=RelatedProject.PROJECT_RELATION_CHILD,
         )
 
+        ### DEBUG ###
+        import pdb
+        pdb.set_trace()
+        ### DEBUG ###
+
         # Create results framework
-        result = Result.objects.create(project=self.parent_project, title="Result #1", type="1", )
-        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1", )
+        self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1", )
+        indicator = Indicator.objects.create(result=self.result, title="Indicator #1", measure="1", )
         self.period = IndicatorPeriod.objects.create(
             indicator=indicator,
             period_start=datetime.date.today(),
@@ -105,7 +111,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -116,7 +122,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="5"
+            value="5"
         )
         self.assertEqual(self.period.actual_value, "10")
 
@@ -131,7 +137,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -154,7 +160,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -168,7 +174,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="15"
+            value="15"
         )
         self.assertEqual(child_period.actual_value, "")
 
@@ -188,7 +194,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -206,7 +212,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="15"
+            value="15"
         )
         self.assertEqual(child_period.actual_value, "")
 
@@ -261,7 +267,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="30"
+            value="30"
         )
         self.assertEqual(child_period.actual_value, "")
 
@@ -273,7 +279,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_2_period,
-            data="20"
+            value="20"
         )
         self.assertEqual(child_2_period.actual_value, "")
 
@@ -372,6 +378,32 @@ class ResultsFrameworkTestCase(TestCase):
         period = IndicatorPeriod.objects.get(indicator=indicator)
         self.assertEqual(period.period_start, period_start)
         self.assertEqual(period.period_end, period_end)
+
+    def test_qualitative_indicator(self):
+        indicator = Indicator.objects.create(
+            result=self.result, title="Indicator #2", type=Indicator.QUALITATIVE,
+        )
+        period = IndicatorPeriod.objects.create(
+            indicator=indicator,
+            period_start=datetime.date.today(),
+            period_end=datetime.date.today() + datetime.timedelta(days=1),
+            target_value="A qualitative target description",
+            locked=False,
+        )
+        narrative = (u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
+        update = IndicatorPeriodData.objects.create(user=self.user, period=period, narrative=narrative)
+        update.clean()
+        update.save()
+        self.assertEqual(update.narrative, narrative)
 
     @unittest.skip('See TODO in IndicatorPeriod.clean')
     def test_prevent_creating_new_periods_on_child_indicators(self):
