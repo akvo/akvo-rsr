@@ -90,6 +90,9 @@
     {# react-onclickoutside.js should load before date-picker, etc. #}
     {% javascript 'rsr_lib' %}
 
+    <!-- Polyfill for promise for browsers which don't implement it -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/native-promise-only/0.8.1/npo.js"></script>
+
     {% if debug %}
       {# jQuery #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.js" integrity="sha256-WMJwNbei5YnfOX5dfgVCS5C4waqvc+/0fV7W2uy3DyU=" crossorigin="anonymous"></script>
