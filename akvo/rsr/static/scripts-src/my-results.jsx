@@ -230,7 +230,6 @@ function initReact() {
             return {
                 data: updateData,
                 description: this.props.update.text,
-                isRelative: this.props.update.relative_data,
                 comment: '',
                 askRemove: false,
                 loading: false,
@@ -281,7 +280,6 @@ function initReact() {
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
                 'status': status
             }, false, this.props.update.status === 'A');
         },
@@ -291,7 +289,6 @@ function initReact() {
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
                 'status': 'P'
             }, false, false);
         },
@@ -302,7 +299,6 @@ function initReact() {
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
                 'status': 'A'
             }, false, true);
         },
@@ -312,7 +308,6 @@ function initReact() {
             this.baseSave({
                 'text': this.state.description.trim(),
                 'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
                 'status': 'R'
             }, false, false);
         },
@@ -584,17 +579,6 @@ function initReact() {
 
         renderActual: function() {
             var inputId = "actual-input-" + this.props.update.id;
-
-            //// The checkbox to make the update relative or absolute has been removed, to make ////
-            //// things more clear for the users. ////
-            //// ---- old code ------------------ ////
-            //var checkboxId = "relative-checkbox-" + this.props.update.id;
-            //var checkbox;
-            //if (this.state.isRelative) {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18nResults.relative_data}</label>;
-            //} else {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18nResults.relative_data}</label>;
-            //}
 
             if (this.editing()) {
                 // Show an input field to fill the new actual value when editing.

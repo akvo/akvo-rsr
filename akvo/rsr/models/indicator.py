@@ -468,22 +468,16 @@ class IndicatorPeriod(models.Model):
             if update.data is None:
                 continue
 
-            if update.relative_data:
-                try:
-                    # Try to add up the update to the previous actual value
-                    if self.indicator.measure == PERCENTAGE_MEASURE:
-                        prev_num = str(Decimal(prev_num) + Decimal(update.numerator))
-                        prev_den = str(Decimal(prev_den) + Decimal(update.denominator))
-                        prev_val = str(Decimal(calculate_percentage(float(prev_num), float(prev_den))))
-                    else:
-                        prev_val = str(Decimal(prev_val) + Decimal(update.data))
-                except InvalidOperation:
-                    # If not possible, the update data or previous value is a normal string
-                    if self.indicator.measure == PERCENTAGE_MEASURE:
-                        prev_num = update.numerator
-                        prev_den = update.denominator
-                    prev_val = update.data
-            else:
+            try:
+                # Try to add up the update to the previous actual value
+                if self.indicator.measure == PERCENTAGE_MEASURE:
+                    prev_num = str(Decimal(prev_num) + Decimal(update.numerator))
+                    prev_den = str(Decimal(prev_den) + Decimal(update.denominator))
+                    prev_val = str(Decimal(calculate_percentage(float(prev_num), float(prev_den))))
+                else:
+                    prev_val = str(Decimal(prev_val) + Decimal(update.data))
+            except InvalidOperation:
+                # If not possible, the update data or previous value is a normal string
                 if self.indicator.measure == PERCENTAGE_MEASURE:
                     prev_num = update.numerator
                     prev_den = update.denominator
@@ -797,7 +791,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         settings.AUTH_USER_MODEL, verbose_name=_(u'approved by'), db_index=True,
         related_name='approved_period_updates', blank=True, null=True,
     )
-    relative_data = models.BooleanField(_(u'relative data'), default=True)
     # TODO: rename to update or period_update; we're using the term Indicator update in the UI
     data = ValidXMLCharField(_(u'data'), max_length=300, blank=True, null=True)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')

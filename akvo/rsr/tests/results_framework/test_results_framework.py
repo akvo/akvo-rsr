@@ -297,7 +297,8 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="30"
+            numerator="30",
+            denominator="100",
         )
         self.assertEqual(child_period.actual_value, "")
 
@@ -309,7 +310,8 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_2_period,
-            data="20"
+            numerator="20",
+            denominator="100",
         )
         self.assertEqual(child_2_period.actual_value, "")
 

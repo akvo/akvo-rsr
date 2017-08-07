@@ -72,12 +72,11 @@ class UnitAggregationTestCase(TestCase):
         )
         return child_project
 
-    def create_indicator_period_update(self, data, relative_data=True, indicator_period=None):
+    def create_indicator_period_update(self, data, indicator_period=None):
         indicator_period_data = IndicatorPeriodData.objects.create(
             period=indicator_period if indicator_period is not None else self.period,
             user=self.user,
             data=data,
-            relative_data=relative_data,
             status=self.APPROVED
         )
         return indicator_period_data
@@ -132,7 +131,7 @@ class UnitAggregationTestCase(TestCase):
     # in all inputs, and any indicator with no periods should have this value
     # as '0' or non-numeric.
     @unittest.skip('BUG?!: IndicatorPeriod actual_value seems to get overwritten')
-    def test_should_update_actual_value_with_relative_data_update(self):
+    def test_should_update_actual_value_with_update_data(self):
         # Given
         actual_value = 40
         increment = 2
@@ -147,30 +146,13 @@ class UnitAggregationTestCase(TestCase):
         period = IndicatorPeriod.objects.get(id=self.period.id)
         self.assertEqual(unicode(actual_value + increment), period.actual_value)
 
-    def test_should_update_actual_value_with_non_relative_data_update(self):
-        # Given
-        relative_data = False
-        actual_value = 40
-        new_value = 42
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        period.actual_value = actual_value
-        period.save()
-
-        # When
-        self.create_indicator_period_update(data=new_value, relative_data=relative_data)
-
-        # Then
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(new_value), period.actual_value)
-
     def test_should_aggregate_update_numeric_data(self):
         # Given
         increment = 2
-        relative_data = True
-        self.create_indicator_period_update(data=increment, relative_data=relative_data)
+        self.create_indicator_period_update(data=increment)
 
         # When
-        self.create_indicator_period_update(data=increment, relative_data=relative_data)
+        self.create_indicator_period_update(data=increment)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -180,39 +162,23 @@ class UnitAggregationTestCase(TestCase):
         # Given
         original = 5
         increment = -2
-        relative_data = True
-        self.create_indicator_period_update(data=str(original), relative_data=relative_data)
+        self.create_indicator_period_update(data=str(original))
 
         # When
-        self.create_indicator_period_update(data=str(increment), relative_data=relative_data)
+        self.create_indicator_period_update(data=str(increment))
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
         self.assertEqual(unicode(original + increment), period.actual_value)
 
-    def test_should_replace_update_numeric_data(self):
-        # Given
-        value = 2
-        new_value = 20
-        relative_data = False
-        self.create_indicator_period_update(data=value, relative_data=relative_data)
-
-        # When
-        self.create_indicator_period_update(data=new_value, relative_data=relative_data)
-
-        # Then
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(new_value), period.actual_value)
-
     def test_should_replace_with_non_numeric_update_data(self):
         # Given
         value = '2'
         new_value = 'something went wrong'
-        relative_data = True
-        self.create_indicator_period_update(data=value, relative_data=relative_data)
+        self.create_indicator_period_update(data=value)
 
         # When
-        self.create_indicator_period_update(data=new_value, relative_data=relative_data)
+        self.create_indicator_period_update(data=new_value)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -324,30 +290,6 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         self.assertEqual(denominator, period.denominator)
         self.assertDecimalEqual(actual_value, period.actual_value)
 
-    def test_should_update_actual_value_with_non_relative_data_update(self):
-        # Given
-        relative_data = False
-        numerator = 42
-        denominator = 100
-        new_numerator = 42
-        new_denominator = 100
-        new_actual_value = calculate_percentage(new_numerator, new_denominator)
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        period.numerator = numerator
-        period.denominator = denominator
-        period.save()
-
-        # When
-        self.create_indicator_period_update(
-            numerator=new_numerator,
-            denominator=new_denominator,
-            relative_data=relative_data
-        )
-
-        # Then
-        period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertDecimalEqual(new_actual_value, period.actual_value)
-
     @unittest.skip('Only allow single updates')
     def test_should_aggregate_update_numeric_data(self):
         pass
@@ -356,11 +298,9 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         # Given
         numerator = 4
         denominator = 6
-        relative_data = True
         self.create_indicator_period_update(
             numerator=numerator,
             denominator=denominator,
-            relative_data=relative_data
         )
 
         # When
@@ -368,7 +308,6 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             self.create_indicator_period_update(
                 numerator=numerator,
                 denominator=denominator,
-                relative_data=relative_data
             )
 
     @unittest.skip('Multiple updates are not allowed')
@@ -480,10 +419,6 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         self.assertDecimalEqual(child_numerator * 2, period.numerator)
         self.assertDecimalEqual(child_denominator * 2, period.denominator)
 
-    # FIXME: Add test for relative update
-    # FIXME: Add test for negative relative update
-    # FIXME: Add test for absolute update
-
     def test_should_not_aggregate_excluded_child_period_values(self):
         # Given
         child_project_2 = self.create_child_project('Child project 2')
@@ -515,7 +450,7 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
         self.assertDecimalEqual(child_numerator, period.numerator)
         self.assertDecimalEqual(child_denominator, period.denominator)
 
-    def create_indicator_period_update(self, numerator, denominator, relative_data=True, indicator_period=None):
+    def create_indicator_period_update(self, numerator, denominator, indicator_period=None):
         indicator_period_data = IndicatorPeriodData.objects.create(
             period=(
                 indicator_period if indicator_period is not None else
@@ -524,7 +459,6 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             user=self.user,
             numerator=numerator,
             denominator=denominator,
-            relative_data=relative_data,
             status=self.APPROVED
         )
         return indicator_period_data
