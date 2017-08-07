@@ -34,6 +34,7 @@ import {
     collapseId,
     isNewUpdate,
     getAncestor,
+    computePercentage,
 } from '../../utils.js';
 
 import {
@@ -506,9 +507,8 @@ export default class UpdateForm extends React.Component {
         if (!update.numerator || !update.denominator ) {
             return 0;
         } else {
-            return (update.numerator * 100)/update.denominator;
+            return computePercentage(update.numerator, update.denominator);
         }
-
     }
 
     onCancel() {

@@ -26,7 +26,7 @@ PERCENTAGE_MEASURE = '2'
 
 
 def calculate_percentage(numerator, denominator):
-    return Decimal(numerator) * Decimal(100) / Decimal(denominator)
+    return round(Decimal(numerator) * 100 / Decimal(denominator), 2)
 
 
 class MultipleUpdateError(Exception):
@@ -473,7 +473,7 @@ class IndicatorPeriod(models.Model):
                 if self.indicator.measure == PERCENTAGE_MEASURE:
                     prev_num = str(Decimal(prev_num) + Decimal(update.numerator))
                     prev_den = str(Decimal(prev_den) + Decimal(update.denominator))
-                    prev_val = str(Decimal(calculate_percentage(float(prev_num), float(prev_den))))
+                    prev_val = str(calculate_percentage(float(prev_num), float(prev_den)))
                 else:
                     prev_val = str(Decimal(prev_val) + Decimal(update.data))
             except InvalidOperation:

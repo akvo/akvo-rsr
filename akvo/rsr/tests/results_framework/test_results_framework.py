@@ -297,28 +297,28 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            numerator="30",
-            denominator="100",
+            numerator="4",
+            denominator="6",
         )
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
-        self.assertEqual(child_period.actual_value, "30")
-        self.assertEqual(parent_indicator.periods.first().actual_value, "30")
+        self.assertEqual(child_period.actual_value, "66.67")
+        self.assertEqual(parent_indicator.periods.first().actual_value, "66.67")
 
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_2_period,
-            numerator="20",
-            denominator="100",
+            numerator="2",
+            denominator="4",
         )
         self.assertEqual(child_2_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(child_2_period.actual_value, "20")
-        self.assertEqual(parent_indicator.periods.first().actual_value, "25")
+        self.assertEqual(child_2_period.actual_value, "50.0")
+        self.assertEqual(parent_indicator.periods.first().actual_value, "60.0")
 
     def test_import_state_after_change(self):
         # Given
