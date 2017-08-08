@@ -84,9 +84,6 @@ export const
         [OBJECTS_COMMENTS]: null
     },
 
-    // Indicator measure constants
-    PERCENTAGE_MEASURE = "2",
-
     // UI state
     SELECTED_PERIODS = 'selectedPeriods',
     UPDATE_FORMS = 'updateForms',
@@ -146,7 +143,7 @@ export const
     INDICATOR_QUALITATIVE = 2,
 
     // Indicator measures (Includes the proposed qualitative measure type)
-    MEASURE_UNIT = 1,
-    MEASURE_PERCENTAGE = 2,
-    MEASURE_QUALITATIVE = 3
+    MEASURE_UNIT = "1",
+    MEASURE_PERCENTAGE = "2",
+    MEASURE_QUALITATIVE = "3"
 ;

@@ -86,8 +86,8 @@ QualitativeHeader.propTypes = {
 
 const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage}) => {
     const readOnly = isPercentage,
-          value = isPercentage?update.value + '%':update.value,
-          label = isPercentage?_('percentage'):_('add_to_actual_value');
+          value = isPercentage ? update.value + '%' : update.value,
+          label = isPercentage ? _('percentage') : _('add_to_actual_value');
 
     return (
         <div className="row">
@@ -414,8 +414,7 @@ UpdateFormButtons.propTypes = {
 
 const QuantitativeUpdateForm = ({period, update, measure, self}) => {
     const updateValue = parseFloat(update.value ? update.value : 0);
-    const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
-    const percentageUpdate = indicator.measure === c.PERCENTAGE_MEASURE;
+    const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
     return (
         <div className="update-container">
@@ -427,7 +426,7 @@ const QuantitativeUpdateForm = ({period, update, measure, self}) => {
                                               isPercentage={percentageUpdate}/>
                 {percentageUpdate?(<PercentageActualValueInput
                                        update={update}
-                                       onChange={self.onChange}/>):undefined}
+                                       onChange={self.onChange}/>) : undefined}
                 <ActualValueDescription update={update}
                                         onChange={self.onChange}/>
                 <Attachments update={update}
@@ -802,7 +801,7 @@ export default class UpdateForm extends React.Component {
                 return <QuantitativeUpdateForm period={period}
                                                update={update}
                                                self={this}
-                                               measure={parseInt(indicator.measure)}/>
+                                               measure={indicator.measure}/>
             }
             case c.INDICATOR_QUALITATIVE: {
                 return <QualitativeUpdateForm period={period}
