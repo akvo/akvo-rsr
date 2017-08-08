@@ -51,7 +51,7 @@ const isAllowedToDelete = (user, update) =>
     update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
-const Header = ({targetValue}) => {
+const QuantitativeHeader = ({targetValue}) => {
     return (
         <div>
             <div className="">
@@ -60,8 +60,23 @@ const Header = ({targetValue}) => {
         </div>
     )
 };
+QuantitativeHeader.propTypes = {
+    targetValue: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
+};
 
-Header.propTypes = {
+const QualitativeHeader = ({targetValue}) => {
+    return (
+        <div>
+            <div className="">
+                {_('target')}: {targetValue}
+            </div>
+        </div>
+    )
+};
+QualitativeHeader.propTypes = {
     targetValue: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -69,11 +84,11 @@ Header.propTypes = {
 };
 
 
-
-const ActualValueInput = ({update, onChange, onClose, isPercentage}) => {
+const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage}) => {
     const readOnly = isPercentage,
-          value = isPercentage?update.data + '%':update.data,
+          value = isPercentage?update.value + '%':update.value,
           label = isPercentage?_('percentage'):_('add_to_actual_value');
+
     return (
         <div className="row">
             <div>
@@ -81,17 +96,40 @@ const ActualValueInput = ({update, onChange, onClose, isPercentage}) => {
                 <ToggleButton onClick={onClose} label="X"
                               className="btn btn-link btn-xs"/>
                 <input className="form-control"
-                       readOnly={readOnly}
-                       id="data"
-                       value={value}
-                       onChange={onChange}
-                       placeholder={_('input_placeholder')} />
+                    readOnly={readOnly}
+                    id="value"
+                    value={value}
+                    onChange={onChange}
+                    placeholder={_('input_placeholder')} />
             </div>
         </div>
     )
 };
+QuantitativeActualValueInput.propTypes = {
+    update: PropTypes.object.isRequired,
+    updatedActualValue: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+};
 
-ActualValueInput.propTypes = {
+
+const QualitativeActualValueInput = ({update, onChange, onClose}) => {
+    return (
+        <div className="row">
+            <div>
+                <label htmlFor="actualValue">{_('actual')}</label>
+                <ToggleButton onClick={onClose} label="X"
+                                  className="btn btn-link btn-xs"/>
+                <textarea className="form-control"
+                          id="narrative"
+                          value={update.narrative}
+                          onChange={onChange}
+                          placeholder={_('input_placeholder')}>
+                </textarea>
+            </div>
+        </div>
+    )
+};
+QualitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
     updatedActualValue: PropTypes.string,
     onChange: PropTypes.func.isRequired,
@@ -311,14 +349,13 @@ UpdateActionButton.propTypes = {
 
 
 const UpdateFormButtons = ({user, update, changing, callbacks}) => {
-    //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
-    // can be shown when saving is under way
+
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                const disabled = (update.data === null || update.data === "") &&
-                                 action !== c.UPDATE_ACTION_SAVE;
+                const disabled = (update.value === null || update.value === "") &&
+                                  action !== c.UPDATE_ACTION_SAVE;
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
                                            icon={icon}
@@ -327,9 +364,11 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
             }
         )
     }
+
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
     const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
     const actionButtons = getActionButtons(role, update.status, icon);
+
     return (
         <div className="menuAction">
             <ul className="nav-pills bottomRow navbar-right">
@@ -346,18 +385,92 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
         </div>
     )
 };
-
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
+    changing: PropTypes.bool.isRequired,
     callbacks: PropTypes.object.isRequired,
+};
+
+
+const QuantitativeUpdateForm = ({period, update, self}) => {
+    const updateValue = parseFloat(update.value ? update.value : 0);
+    const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
+    const percentageUpdate = indicator.measure === c.PERCENTAGE_MEASURE;
+
+    return (
+        <div className="update-container">
+            <div className="row update-entry-container edit-in-progress">
+                <QuantitativeHeader targetValue={period.target_value}/>
+                <QuantitativeActualValueInput update={update}
+                                              onChange={self.onChange}
+                                              onClose={self.props.onClose}
+                                              isPercentage={percentageUpdate}/>
+                {percentageUpdate?(<PercentageActualValueInput
+                                       update={update}
+                                       onChange={self.onChange}/>):undefined}
+                <ActualValueDescription update={update}
+                                        onChange={self.onChange}/>
+                <Attachments update={update}
+                             onChange={self.attachmentsChange}
+                             removeAttachment={self.removeAttachment}/>
+                <UpdateFormButtons
+                    user={self.props.user}
+                    update={update}
+                    changing={self.props.updates.changing}
+                    callbacks={{
+                        saveUpdate: self.saveUpdate,
+                        deleteUpdate: self.deleteUpdate}}/>
+            </div>
+            <Comments parentId={update.id}
+                      inForm={true}/>
+        </div>
+    )
+};
+QuantitativeUpdateForm.propTypes = {
+    period: PropTypes.object.isRequired,
+    update: PropTypes.object.isRequired,
+    self: PropTypes.object.isRequired,
+};
+
+
+const QualitativeUpdateForm = ({period, update, self}) => {
+    return (
+        <div className="update-container">
+            <div className="row update-entry-container edit-in-progress">
+                <QualitativeHeader targetValue={period.target_value}/>
+                <QualitativeActualValueInput update={update}
+                                  onChange={self.onChange}
+                                  onClose={self.props.onClose}/>
+                <ActualValueDescription update={update}
+                                        onChange={self.onChange}/>
+                <Attachments update={update}
+                             onChange={self.attachmentsChange}
+                             removeAttachment={self.removeAttachment}/>
+                <UpdateFormButtons
+                    user={self.props.user}
+                    update={update}
+                    changing={self.props.updates.changing}
+                    callbacks={{
+                        saveUpdate: self.saveUpdate,
+                        deleteUpdate: self.deleteUpdate}}/>
+            </div>
+            <Comments parentId={update.id}
+                      inForm={true}/>
+        </div>
+    )
+};
+QualitativeUpdateForm.propTypes = {
+    period: PropTypes.object.isRequired,
+    update: PropTypes.object.isRequired,
+    self: PropTypes.object.isRequired,
 };
 
 
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
-    const fields = ['data', 'numerator', 'denominator', 'text',
+    const fields = ['value', 'narrative', 'numerator', 'denominator', 'text',
                     'status', '_file', '_photo', 'approved_by', ];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
@@ -379,6 +492,7 @@ const pruneForPOST = (update) => {
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
+        indicator: PropTypes.object.isRequired,
         period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
         originalUpdate: PropTypes.object.isRequired,
@@ -495,7 +609,7 @@ export default class UpdateForm extends React.Component {
                     changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
                     if (field == "numerator" || field == "denominator") {
                         changedUpdate = update(changedUpdate,
-                                               {$merge: {["data"]: this.computePercentage(changedUpdate)}});
+                                               {$merge: {["value"]: this.computePercentage(changedUpdate)}});
                     }
                 }
             }
@@ -598,10 +712,10 @@ export default class UpdateForm extends React.Component {
         if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
-        } else if (!String(update.data).trim()) {
+        } else if (!String(update.value).trim()) {
             if (action === c.UPDATE_ACTION_SAVE) {
                 // Explicitly empty data, only allowed when saving a draft
-                update.data = null;
+                update.value = null;
             } else {
                 this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
                 return;
@@ -649,7 +763,7 @@ export default class UpdateForm extends React.Component {
 
     previousActualValue() {
         if (this.props.update) {
-            return this.props.update.actual_value - this.props.update.data;
+            return this.props.update.actual_value - this.props.update.value;
         } else {
             const updates = this.props.period.updates;
             if (updates && updates.length > 0) {
@@ -661,39 +775,15 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {update, period} = this.props;
-        const updateValue = parseFloat(update.data ? update.data : 0);
-        const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
-        const percentageUpdate = indicator.measure === c.PERCENTAGE_MEASURE;
-
-        return (
-            <div className="update-container">
-            <div className="row update-entry-container edit-in-progress">
-            <Header targetValue={period.target_value}/>
-            <ActualValueInput update={update}
-            onChange={this.onChange}
-            onClose={this.props.onClose}
-            isPercentage={percentageUpdate}/>
-            {percentageUpdate?(<PercentageActualValueInput
-                                   update={update}
-                                   onChange={this.onChange}/>):undefined}
-            <ActualValueDescription update={update}
-            onChange={this.onChange}/>
-            <Attachments update={update}
-            onChange={this.attachmentsChange}
-            removeAttachment={this.removeAttachment}/>
-            <UpdateFormButtons
-            user={this.props.user}
-            update={update}
-            changing={this.props.updates.changing}
-            callbacks={{
-                saveUpdate: this.saveUpdate,
-                deleteUpdate: this.deleteUpdate}}/>
-            </div>
-            <Comments parentId={update.id}
-            inForm={true}/>
-        </div>
-        )
+        const {indicator, period, update} = this.props;
+        switch(indicator.type) {
+            case 1: {
+                return <QuantitativeUpdateForm period={period} update={update} self={this}/>
+            }
+            case 2: {
+                return <QualitativeUpdateForm period={period} update={update} self={this}/>
+            }
+        }
     }
 }
 
@@ -725,7 +815,8 @@ export class NewUpdateButton extends React.Component {
             period: period.id,
             user_details: user,
             user: user.id,
-            data: '',
+            value: '',
+            narrative: '',
             text: '',
             status: c.UPDATE_STATUS_NEW,
         };

@@ -18,15 +18,20 @@
                 {% endif %}
             </div>
             <div class="col-md-4">
+                {% include choice_input with obj=indicator field='type' %}
+            </div>
+        </div>
+        <div class="row measure{% if indicator.type == 2 %} hidden{% endif %}">
+            <div class="col-md-6">
                 {% include choice_input with obj=indicator field='measure' %}
+            </div>
+            <div class="col-md-6">
+                {% include boolean_input with obj=indicator field='ascending' nullboolean=True %}
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 {% include textarea_input with obj=indicator field='description' %}
-            </div>
-            <div class="col-md-4">
-                {% include boolean_input with obj=indicator field='ascending' nullboolean=True %}
             </div>
         </div>
 

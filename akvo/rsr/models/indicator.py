@@ -26,6 +26,9 @@ PERCENTAGE_MEASURE = '2'
 
 
 def calculate_percentage(numerator, denominator):
+    denominator = Decimal(denominator)
+    if denominator == 0:
+        return 0
     return round(Decimal(numerator) * 100 / Decimal(denominator), 2)
 
 
@@ -34,6 +37,13 @@ class MultipleUpdateError(Exception):
 
 
 class Indicator(models.Model):
+    QUANTITATIVE = 1
+    QUALITATIVE = 2
+    INDICATOR_TYPES = (
+        (QUANTITATIVE, _('Quantitative')),
+        (QUALITATIVE, _('Qualitative')),
+    )
+
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
     parent_indicator = models.ForeignKey(
         'self', blank=True, null=True, default=None,
@@ -43,6 +53,12 @@ class Indicator(models.Model):
         _(u'indicator title'), blank=True, max_length=500,
         help_text=_(u'Within each result indicators can be defined. Indicators should be items '
                     u'that can be counted and evaluated as the project continues and is completed.')
+    )
+    # NOTE: type and measure should probably only be one field measure, wit the values Unit,
+    # Percentage and Qualitative. However since the project editor design splits the choice we use
+    # two fields, type and measure to simplify the interaction between front and back end.
+    type = models.PositiveSmallIntegerField(
+        _('indicator type'), choices=INDICATOR_TYPES, default=QUANTITATIVE
     )
     measure = ValidXMLCharField(
         _(u'indicator measure'), blank=True, max_length=1,
@@ -64,7 +80,7 @@ class Indicator(models.Model):
         help_text=_(u'The year the baseline value was taken.')
     )
     baseline_value = ValidXMLCharField(
-        _(u'baseline value'), blank=True, max_length=50,
+        _(u'baseline value'), blank=True, max_length=200,
         help_text=_(u'The value of the baseline at the start of the project.')
     )
     baseline_comment = ValidXMLCharField(
@@ -465,7 +481,7 @@ class IndicatorPeriod(models.Model):
             update.period_actual_value = prev_val
             update.save(recalculate=False)
 
-            if update.data is None:
+            if update.value is None:
                 continue
 
             try:
@@ -475,15 +491,15 @@ class IndicatorPeriod(models.Model):
                     prev_den = str(Decimal(prev_den) + Decimal(update.denominator))
                     prev_val = str(calculate_percentage(float(prev_num), float(prev_den)))
                 else:
-                    prev_val = str(Decimal(prev_val) + Decimal(update.data))
+                    prev_val = str(Decimal(prev_val) + Decimal(update.value))
             except InvalidOperation:
                 # If not possible, the update data or previous value is a normal string
                 if self.indicator.measure == PERCENTAGE_MEASURE:
                     prev_num = update.numerator
                     prev_den = update.denominator
-                prev_val = update.data
+                prev_val = update.value
 
-        # For every non-approved update, set the data to the current data
+        # For every non-approved update, set the value to the current value
         for update in self.data.exclude(status='A'):
             update.period_actual_value = prev_val
             if self.indicator.measure == PERCENTAGE_MEASURE:
@@ -520,9 +536,7 @@ class IndicatorPeriod(models.Model):
         """
         if self.indicator.measure == PERCENTAGE_MEASURE:
             numerator, denominator = self.child_periods_percentage()
-            new_value = (
-                calculate_percentage(numerator, denominator) if denominator is not '0' else '0'
-            )
+            new_value = calculate_percentage(numerator, denominator)
         else:
             new_value = self.child_periods_sum(include_self=True)
 
@@ -588,7 +602,7 @@ class IndicatorPeriod(models.Model):
 
     def child_periods_with_data(self, only_aggregated=False):
         """
-        Returns the child indicator periods with numeric data
+        Returns the child indicator periods with numeric values
         """
         children_with_data = []
         for child in self.child_periods.all():
@@ -791,8 +805,9 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         settings.AUTH_USER_MODEL, verbose_name=_(u'approved by'), db_index=True,
         related_name='approved_period_updates', blank=True, null=True,
     )
-    # TODO: rename to update or period_update; we're using the term Indicator update in the UI
-    data = ValidXMLCharField(_(u'data'), max_length=300, blank=True, null=True)
+    # TODO: migrate value field to DecimalField
+    value = ValidXMLCharField(_(u'quantitative indicator value'), max_length=300, blank=True, null=True)
+    narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_NEW_CODE)
@@ -833,7 +848,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                 self.numerator is not None and
                 self.denominator not in {0, '0', None}
         ):
-            self.data = calculate_percentage(self.numerator, self.denominator)
+            self.value = calculate_percentage(self.numerator, self.denominator)
 
         super(IndicatorPeriodData, self).save(*args, **kwargs)
 
@@ -892,6 +907,23 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             if orig.period != self.period:
                 validation_errors['period'] = unicode(_(u'Not allowed to change indicator period '
                                                         u'in a data update'))
+
+        if self.period.indicator.type == Indicator.QUANTITATIVE:
+            if self.narrative is not None:
+                validation_errors['period'] = unicode(
+                    _(u'Narrative field should be empty in quantitative indicators'))
+            if self.value is not None:
+                try:
+                    self.value = Decimal(self.value)
+                except:
+                    validation_errors['period'] = unicode(
+                        _(u'Only numeric values are allowed in quantitative indicators'))
+
+        if self.period.indicator.type == Indicator.QUALITATIVE:
+            if self.value is not None:
+                validation_errors['period'] = unicode(
+                    _(u'Value field should be empty in qualitative indicators'))
+
         if validation_errors:
             raise ValidationError(validation_errors)
 
@@ -920,23 +952,13 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         return self.file.url if self.file else u''
 
     def update_new_value(self):
-        """
-        Returns a string with the new value, taking into account a relative update.
-        """
-        if self.relative_data:
-            try:
-                add_up = Decimal(self.data) + Decimal(self.period.actual_value)
-                relative = '+' + str(self.data) if self.data >= 0 else str(self.data)
-                return "{} ({})".format(str(add_up), relative)
-            except (InvalidOperation, TypeError):
-                return self.data
-        else:
-            try:
-                subtract = Decimal(self.data) - Decimal(self.period.actual_value)
-                relative = '+' + str(subtract) if subtract >= 0 else str(subtract)
-                return "{} ({})".format(self.data, relative)
-            except (InvalidOperation, TypeError):
-                return self.data
+        """Returns a string with the new value."""
+        try:
+            add_up = Decimal(self.value) + Decimal(self.period_actual_value)
+            relative = '+' + str(self.value) if self.value >= 0 else str(self.value)
+            return "{} ({})".format(str(add_up), relative)
+        except (InvalidOperation, TypeError):
+            return self.value
 
 
 class IndicatorPeriodDataComment(TimestampsMixin, models.Model):

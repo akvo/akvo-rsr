@@ -72,11 +72,11 @@ class UnitAggregationTestCase(TestCase):
         )
         return child_project
 
-    def create_indicator_period_update(self, data, indicator_period=None):
+    def create_indicator_period_update(self, value, indicator_period=None):
         indicator_period_data = IndicatorPeriodData.objects.create(
             period=indicator_period if indicator_period is not None else self.period,
             user=self.user,
-            data=data,
+            value=value,
             status=self.APPROVED
         )
         return indicator_period_data
@@ -140,7 +140,7 @@ class UnitAggregationTestCase(TestCase):
         period.save()
 
         # When
-        self.create_indicator_period_update(data=increment)
+        self.create_indicator_period_update(value=increment)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -149,10 +149,10 @@ class UnitAggregationTestCase(TestCase):
     def test_should_aggregate_update_numeric_data(self):
         # Given
         increment = 2
-        self.create_indicator_period_update(data=increment)
+        self.create_indicator_period_update(value=increment)
 
         # When
-        self.create_indicator_period_update(data=increment)
+        self.create_indicator_period_update(value=increment)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -162,10 +162,10 @@ class UnitAggregationTestCase(TestCase):
         # Given
         original = 5
         increment = -2
-        self.create_indicator_period_update(data=str(original))
+        self.create_indicator_period_update(value=str(original))
 
         # When
-        self.create_indicator_period_update(data=str(increment))
+        self.create_indicator_period_update(value=str(increment))
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -175,10 +175,10 @@ class UnitAggregationTestCase(TestCase):
         # Given
         value = '2'
         new_value = 'something went wrong'
-        self.create_indicator_period_update(data=value)
+        self.create_indicator_period_update(value=value)
 
         # When
-        self.create_indicator_period_update(data=new_value)
+        self.create_indicator_period_update(value=new_value)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -197,7 +197,7 @@ class UnitAggregationTestCase(TestCase):
 
         # When
         self.create_indicator_period_update(
-            data=child_value,
+            value=child_value,
             indicator_period=child_indicator_period
         )
 
@@ -218,7 +218,7 @@ class UnitAggregationTestCase(TestCase):
 
         # When
         self.create_indicator_period_update(
-            data=child_value,
+            value=child_value,
             indicator_period=child_indicator_period
         )
 
@@ -238,8 +238,8 @@ class UnitAggregationTestCase(TestCase):
         value = 5
 
         # When
-        self.create_indicator_period_update(data=value, indicator_period=child_indicator_period)
-        self.create_indicator_period_update(data=value, indicator_period=child_indicator_period_2)
+        self.create_indicator_period_update(value=value, indicator_period=child_indicator_period)
+        self.create_indicator_period_update(value=value, indicator_period=child_indicator_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -257,8 +257,8 @@ class UnitAggregationTestCase(TestCase):
         value = 5
 
         # When
-        self.create_indicator_period_update(data=value, indicator_period=child_indicator_period)
-        self.create_indicator_period_update(data=value, indicator_period=child_indicator_period_2)
+        self.create_indicator_period_update(value=value, indicator_period=child_indicator_period)
+        self.create_indicator_period_update(value=value, indicator_period=child_indicator_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
