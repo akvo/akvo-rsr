@@ -90,7 +90,7 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
           label = isPercentage ? _('percentage') : _('add_to_actual_value');
 
     return (
-        <div className="row">
+        <div className="">
             <div>
                 <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
@@ -114,7 +114,7 @@ QuantitativeActualValueInput.propTypes = {
 
 const QualitativeActualValueInput = ({update, onChange, onClose}) => {
     return (
-        <div className="row">
+        <div className="">
             <div>
                 <label htmlFor="actualValue">{_('actual')}</label>
                 <ToggleButton onClick={onClose} label="X"
@@ -139,7 +139,7 @@ QualitativeActualValueInput.propTypes = {
 
 const PercentageActualValueInput = ({update, onChange}) => {
     return (
-        <div className="row">
+        <div className="">
             <div className="col-xs-6">
                 {/* FIXME: Use translated strings*/}
                 <label htmlFor="actualValueNumerator">Numerator</label>
@@ -165,7 +165,7 @@ const PercentageActualValueInput = ({update, onChange}) => {
 
 const ActualValueDescription = ({update, onChange}) => {
     return (
-        <div className="row">
+        <div className="">
             <div className="update-description">
                 <div>
                     <label htmlFor="description">{_('actual_value_comment')}</label>
@@ -418,7 +418,7 @@ const QuantitativeUpdateForm = ({period, update, measure, self}) => {
 
     return (
         <div className="update-container">
-            <div className="row update-entry-container edit-in-progress">
+            <div className="update-entry-container edit-in-progress">
                 <QuantitativeHeader targetValue={period.target_value}/>
                 <QuantitativeActualValueInput update={update}
                                               onChange={self.onChange}
@@ -456,7 +456,7 @@ QuantitativeUpdateForm.propTypes = {
 const QualitativeUpdateForm = ({period, update, measure, self}) => {
     return (
         <div className="update-container">
-            <div className="row update-entry-container edit-in-progress">
+            <div className="update-entry-container edit-in-progress">
                 <QualitativeHeader targetValue={period.target_value}/>
                 <QualitativeActualValueInput update={update}
                                   onChange={self.onChange}

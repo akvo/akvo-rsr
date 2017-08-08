@@ -4114,7 +4114,7 @@ header[role="banner"] {
     width: 100%;
     height: 100px;
     background: #fcfcfc;
-    margin-bottom: 10px;
+    margin-bottom: 35px;
 }
 
 main {
@@ -4141,7 +4141,9 @@ main {
     aside.open {
         background: #ddd;
         width: 30%;
+        padding: 0px 5px 5px 5px;
         display: flex;
+        margin-top: 10px;
     }
 }
 
@@ -4690,160 +4692,162 @@ main {
                                 //        margin-bottom: 10px;
                                 //
                                 //        border
-                                        &:last-child {
-                                            margin-bottom: 5px;
+                                &:last-child {
+                                    margin-bottom: 5px;
+                                }
+
+                                //.rc-collapse-header {
+                                //    background: none !important;
+                                //    padding-left: 20px;
+
+                                div {
+                                    &.UpdateHead {
+                                        padding: 0 0 0 20px;
+                                        margin-bottom: 1rem;
+
+                                        span {
+                                            padding-left: 0;
+                                            margin-right: 25px;
+
+                                            &:last-child {
+                                                margin-right: 0;
+                                            }
+
+                                            &.updateData {
+                                                color: $primary4;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    margin-right: 5px;
+                                                }
+                                            }
+
+                                            &.updateName {
+                                                color: $primary4;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    font-weight: bold;
+                                                    margin-right: 5px;
+                                                }
+                                            }
+
+                                            &.updateStatus {
+                                                color: $rsrGreen;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    font-weight: bold;
+                                                }
+                                            }
                                         }
+                                    }
 
-                                        //.rc-collapse-header {
-                                        //    background: none !important;
-                                        //    padding-left: 20px;
+                                    button {
+                                        opacity: 1 !important;
+                                        margin-left: 15px !important;
+                                        padding: 1px 5px !important;
 
-                                            div {
-                                                &.UpdateHead {
-                                                    padding: 0 0 0 20px;
-                                                    margin-bottom: 1rem;
+                                        &.editingForm {
+                                            opacity: 0.3 !important;
+                                            cursor: not-allowed !important;
+                                            pointer-events: none !important;
+                                        }
+                                    }
+                                }
 
-                                                    span {
-                                                        padding-left: 0;
+                                div {
+                                    &.UpdateBody {
+                                        ul {
+                                            list-style-type: none;
+                                        }
+                                    }
+                                }
+
+                                .arrow {}
+
+                                //}
+
+                                &.rc-collapse-item-active {
+                                    border: 1px solid white !important;
+                                    background: rgba(white, 0.5) !important;
+
+                                    .rc-collapse-header {
+                                        background: rgba(white, 1) !important;
+                                        padding-left: 20px;
+
+                                        .arrow {
+                                            background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                                        }
+                                    }
+
+                                    .rc-collapse-content {
+                                        &.rc-collapse-content-active {
+                                            padding: 5px 10px 10px 10px;
+                                            vertical-align: top;
+                                            -webkit-box-flex: 1;
+                                            -moz-box-flex: 1;
+                                            -webkit-flex: 1;
+                                            -ms-flex: 1;
+                                            flex: 1;
+                                            position: relative;
+                                            background: rgba($secondary1, 0);
+
+                                            .rc-collapse-content-box {
+                                                padding-left: 20px;
+
+                                                ul {
+                                                    padding-left: 0;
+                                                    list-style-type: none;
+
+                                                    li {
+                                                        display: inline;
                                                         margin-right: 25px;
+                                                        color: $primary4;
+
+                                                        &.creatorMeta, &.approverMeta, &.statusMeta {
+                                                            span {
+                                                                color: initial;
+                                                            }
+                                                        }
 
                                                         &:last-child {
                                                             margin-right: 0;
                                                         }
-
-                                                        &.updateData {
-                                                            color: $primary4;
-                                                            margin-right: 5px;
-
-                                                            span {
-                                                                color: initial;
-                                                                margin-right: 5px;
-                                                            }
-                                                        }
-
-                                                        &.updateName {
-                                                            color: $primary4;
-                                                            margin-right: 5px;
-
-                                                            span {
-                                                                color: initial;
-                                                                font-weight: bold;
-                                                                margin-right: 5px;
-                                                            }
-                                                        }
-
-                                                        &.updateStatus {
-                                                            color: $rsrGreen;
-                                                            margin-right: 5px;
-
-                                                            span {
-                                                                color: initial;
-                                                                font-weight: bold;
-                                                            }
-                                                        }
                                                     }
-                                                }
 
-                                                button {
-                                                    opacity: 1 !important;
-                                                    margin-left: 15px !important;
-                                                    padding: 1px 5px !important;
-
-                                                    &.editingForm {
-                                                        opacity: 0.3 !important;
-                                                        cursor: not-allowed !important;
-                                                        pointer-events: none !important;
-                                                    }
-                                                }
-                                            }
-
-                                            div {
-                                                &.UpdateBody {
-                                                    ul {
-                                                        list-style-type: none;
-                                                    }
-                                                }
-                                            }
-                                            .arrow {}
-                                        //}
-
-                                        &.rc-collapse-item-active {
-                                            border: 1px solid white !important;
-                                            background: rgba(white, 0.5) !important;
-
-                                            .rc-collapse-header {
-                                                background: rgba(white, 1) !important;
-                                                padding-left: 20px;
-
-                                                .arrow {
-                                                    background: url(../images/arrowUpDown.png) no-repeat bottom center;
-                                                }
-                                            }
-
-                                            .rc-collapse-content {
-                                                &.rc-collapse-content-active {
-                                                    padding: 5px 10px 10px 10px;
-                                                    vertical-align: top;
-                                                    -webkit-box-flex: 1;
-                                                    -moz-box-flex: 1;
-                                                    -webkit-flex: 1;
-                                                    -ms-flex: 1;
-                                                    flex: 1;
-                                                    position: relative;
-                                                    background: rgba($secondary1, 0);
-
-                                                    .rc-collapse-content-box {
-                                                        padding-left: 20px;
-
-
-                                                        ul {
-                                                            padding-left: 0;
-                                                            list-style-type: none;
-
-                                                            li {
-                                                                display: inline;
-                                                                margin-right: 25px;
+                                                    &.valueMeta {
+                                                        li {
+                                                            &.updateValue, &.totalValue {
                                                                 color: $primary4;
 
-                                                                &.creatorMeta, &.approverMeta, &.statusMeta {
-
-                                                                    span {
-                                                                        color: initial;
-                                                                    }
-
-                                                                }
-
-                                                                &:last-child {
-                                                                    margin-right: 0;
+                                                                span {
+                                                                    font-weight: bold;
+                                                                    color: initial;
                                                                 }
                                                             }
-                                                            &.valueMeta {
-                                                                li {
-                                                                    &.updateValue, &.totalValue {
-                                                                        color: $primary4;
 
-                                                                        span {
-                                                                            font-weight: bold;
-                                                                            color: initial;
-                                                                        }
-                                                                    }
+                                                            &:first-of-type {}
 
-                                                                    &:first-of-type {}
+                                                            &:nth-of-type(2) {}
 
-                                                                    &:nth-of-type(2) {}
+                                                            &:nth-of-type(3) {}
 
-                                                                    &:nth-of-type(3) {}
-
-                                                                    &:nth-of-type(4) {}
-                                                                }
-                                                            }
+                                                            &:nth-of-type(4) {}
                                                         }
                                                     }
                                                 }
                                             }
                                         }
+                                    }
+                                }
+
                                 //    }
                                 //}
+                           
                             }
                         }
                     }
@@ -4860,20 +4864,12 @@ main {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
-    padding: 0px 30px 0 10px;
-    margin-top: 10px;
 
     .update-entry-container {
         padding: 0 0 10px 0;
         position: relative;
 
         &.edit-in-progress {
-            background: rgba(150, 167, 157, 0.05);
-            border: 1px solid rgba(230, 167, 157, 0.3);
-            box-shadow: 0 0 10px rgba(60, 148, 157, 0.5);
-            padding-right: 15px;
-            padding-left: 15px;
-
             .update-entry-container-header {
                 background: rgba(white, 0.5);
                 margin-bottom: 10px;
@@ -4944,7 +4940,6 @@ main {
             margin-top: 30px;
 
             .removeUpdate {
-
                 .btn {
                     background: $akvoTvRed;
                     color: white;
