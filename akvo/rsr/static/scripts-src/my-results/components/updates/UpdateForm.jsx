@@ -354,8 +354,9 @@ const UpdateFormButtons = ({user, update, changing, callbacks}) => {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                const disabled = (update.value === null || update.value === "") &&
-                                  action !== c.UPDATE_ACTION_SAVE;
+                let disabled = action !== c.UPDATE_ACTION_SAVE;
+                disabled = disabled && !(update.value !== null && update.value !== "");
+                disabled = disabled && !(update.narrative !== null && update.narrative !== "");
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
                                            icon={icon}
