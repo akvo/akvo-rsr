@@ -163,8 +163,7 @@ class Partnership(models.Model):
     def organisation_show_link(self):
         if self.organisation:
             return u'<a href="{0}">{1}</a>'.format(self.organisation.get_absolute_url(),
-                                                   self.organisation.long_name or
-                                                   self.organisation.name)
+                                                   self.organisation.get_name)
         return ''
 
     def funding_amount_with_currency(self):
@@ -181,10 +180,8 @@ class Partnership(models.Model):
 
     def __unicode__(self):
         if self.organisation:
-            if self.organisation.name:
-                organisation_unicode = self.organisation.name
-            elif self.organisation.long_name:
-                organisation_unicode = self.organisation.long_name
+            if self.organisation.get_name:
+                organisation_unicode = self.organisation.get_name
             else:
                 organisation_unicode = u'%s' % _(u'Organisation name not specified')
         else:

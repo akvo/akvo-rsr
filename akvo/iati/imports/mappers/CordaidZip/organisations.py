@@ -116,7 +116,7 @@ class Organisations(ImportMapper):
         org_fields = {}
         org_fields['long_name'] = self.get_child_element_text(
             self.parent_elem, 'name', 'long_name').strip()
-        org_fields['name'] = org_fields['long_name'][:25]
+        org_fields['name'] = org_fields['long_name'][:40]
         org_fields['new_organisation_type'] = int(self.get_child_element_text(
             self.parent_elem, 'iati_organisation_type', 'new_organisation_type', 22))
         org_fields['iati_org_id'] = self.get_child_element_text(

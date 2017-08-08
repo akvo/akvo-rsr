@@ -79,7 +79,7 @@ class Organisation(TimestampsMixin, models.Model):
     name = ValidXMLCharField(
         _(u'name'), max_length=40, db_index=True, unique=True,
         help_text=_(u'Short name which will appear in organisation and partner listings '
-                    u'(25 characters).')
+                    u'(40 characters).')
     )
     long_name = ValidXMLCharField(
         _(u'long name'), max_length=100, db_index=True, unique=True,
@@ -321,7 +321,31 @@ class Organisation(TimestampsMixin, models.Model):
             return queryset
 
     def __unicode__(self):
-        return self.name
+        return self.get_name
+
+    @property
+    def get_name(self):
+        """"When importing organisations from IATI, the name field may have been truncated to 25 or
+        (more seldom) 40 characters.
+        Therefore we check if the name is exactly 25 or 40 chars long AND is identical to the
+        substring of long_name to that length. If this is the case we use the long_name as there is
+        a very high probability that the name field has been truncated.
+        """
+        name_length = len(self.name)
+        long_name_length = len(self.long_name)
+        SHORT_TRUNCATED_NAME_LENGTH = 25
+        LONG_TRUNCATED_NAME_LENGTH = 40
+        if (name_length == 0
+            or (
+                    name_length == SHORT_TRUNCATED_NAME_LENGTH and
+                    long_name_length > SHORT_TRUNCATED_NAME_LENGTH
+                or
+                    name_length == LONG_TRUNCATED_NAME_LENGTH and
+                    long_name_length > LONG_TRUNCATED_NAME_LENGTH
+            )
+            and self.name == self.long_name[:len(self.name)]):
+            return self.long_name.strip()
+        return self.name.strip()
 
     def iati_org_type(self):
         return dict(ORGANISATION_TYPE)[str(self.new_organisation_type)] if \

@@ -165,7 +165,7 @@ class PartnerSite(TimestampsMixin, models.Model):
 
     def __unicode__(self):
         """Unicode representation."""
-        return _(u'Akvo page for {}').format(self.organisation.name)
+        return _(u'Akvo page for {}').format(self.organisation.get_name)
 
     def save(self, *args, **kwargs):
         if self.hostname:
