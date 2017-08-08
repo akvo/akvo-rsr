@@ -46,8 +46,8 @@ class IatiExport(TimestampsMixin, models.Model):
         verbose_name_plural = _(u'IATI exports')
 
     def __unicode__(self):
-        if self.reporting_organisation and self.reporting_organisation.name:
-            return u'%s %s' % (_(u'IATI export for'), self.reporting_organisation.name)
+        if self.reporting_organisation and self.reporting_organisation.get_name:
+            return u'%s %s' % (_(u'IATI export for'), self.reporting_organisation.get_name)
         else:
             return u'%s' % _(u'IATI export for unknown organisation')
 

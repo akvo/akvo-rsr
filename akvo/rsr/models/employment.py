@@ -70,7 +70,7 @@ class Employment(models.Model):
 
     def __unicode__(self):
         return u"{0} {1}: {2}".format(self.user.first_name, self.user.last_name,
-                                      self.organisation.name)
+                                      self.organisation.get_name)
 
     def iati_country(self):
         return codelist_value(codelist_models.Country, self, 'country')

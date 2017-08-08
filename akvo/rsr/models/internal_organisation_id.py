@@ -26,8 +26,8 @@ class InternalOrganisationID(models.Model):
 
     def __unicode__(self):
         return _(u"{rec_org_name}'s internal ID for {ref_org_name}: {identifier}").format(
-            rec_org_name=self.recording_org.name,
-            ref_org_name=self.referenced_org.name,
+            rec_org_name=self.recording_org.get_name,
+            ref_org_name=self.referenced_org.get_name,
             identifier=self.identifier,
         )
 

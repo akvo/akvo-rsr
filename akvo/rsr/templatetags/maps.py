@@ -76,7 +76,7 @@ def coll_map(coll, width='100%', height='100%', dynamic='dynamic'):
             elif isinstance(item, Organisation):
                 item_type = 'organisation'
                 icon = ORGANISATION_MARKER_ICON
-                text = item.name.encode('utf8')
+                text = item.get_name.encode('utf8')
             elif isinstance(item, ProjectUpdate):
                 item_type = 'projectUpdate'
                 icon = PROJECT_UPDATE_MARKER_ICON

@@ -50,7 +50,7 @@ class AkvoOrganisationParser(XMLParser):
             return [dict(latitude=latitude, longitude=longitude, country=country, primary=primary)]
 
         long_name = find_text(tree, 'name')
-        name = long_name[:25]
+        name = long_name[:40]
         description = find_text(tree, 'description')
         url = find_text(tree, 'url')
         iati_type = find_text(tree, 'iati_organisation_type')

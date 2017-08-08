@@ -97,16 +97,16 @@ class ImportMapper(object):
 
         if name:
             try:
-                return Organisation.objects.get(name=name[:25])
+                return Organisation.objects.get(name=name[:40])
             except Organisation.DoesNotExist:
                 try:
-                    return Organisation.objects.get(long_name=name[:75])
+                    return Organisation.objects.get(long_name=name[:100])
                 except Organisation.DoesNotExist:
                     pass
 
         return Organisation.objects.create(
-            name=name[:25],
-            long_name=name[:75],
+            name=name[:40],
+            long_name=name[:100],
             iati_org_id=ref if ref else None,
             organisation_type=ORG_TYPE_NGO,
             content_owner=self.project.reporting_org

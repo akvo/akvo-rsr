@@ -73,11 +73,11 @@
       <li class="row">
         <div class="col-lg-2 col-sm-3 col-xs-5">
           <a href="{% url 'organisation-main' o.id %}">
-            {% img o 165 165 o.name %}
+            {% img o 165 165 o.get_name %}
           </a>
         </div>
         <div class="col-lg-4 col-sm-3 col-xs-7">
-          <h1><a href="{% url 'organisation-main' o.id %}"><i class="fa fa-users"></i> {{o.name}}</a></h1>
+          <h1><a href="{% url 'organisation-main' o.id %}"><i class="fa fa-users"></i> {{o.get_name}}</a></h1>
           {% if o.iati_org_id %}<div class="orgIatiId"><i class="fa fa-key"></i> {{o.iati_org_id}}</div>{% endif %}
           <div class="orgType"><i class="fa fa-tag"></i> {{o.iati_org_type}}</div>
           <div class="projectLocation"><i class="fa fa-map-marker"></i>
