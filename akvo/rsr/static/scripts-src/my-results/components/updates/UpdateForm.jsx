@@ -348,15 +348,33 @@ UpdateActionButton.propTypes = {
 };
 
 
-const UpdateFormButtons = ({user, update, changing, callbacks}) => {
+const UpdateFormButtons = ({user, update, measure, changing, callbacks}) => {
 
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
                 let disabled = action !== c.UPDATE_ACTION_SAVE;
-                disabled = disabled && !(update.value !== null && update.value !== "");
-                disabled = disabled && !(update.narrative !== null && update.narrative !== "");
+                switch (measure) {
+                    case c.MEASURE_UNIT: {
+                        disabled = disabled && !(update.value !== null && update.value !== "");
+                        break;
+                    }
+                    case c.MEASURE_PERCENTAGE: {
+                        disabled = disabled &&
+                            (
+                                !(update.numerator !== undefined && update.numerator !== "") ||
+                                !(update.denominator!== undefined && update.denominator !== "")
+                            );
+                        break;
+                    }
+                    case c.MEASURE_QUALITATIVE: {
+                        disabled = disabled &&
+                                   !(update.narrative !== null && update.narrative !== "");
+                        break;
+                    }
+                }
+
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
                                            icon={icon}
@@ -394,7 +412,7 @@ UpdateFormButtons.propTypes = {
 };
 
 
-const QuantitativeUpdateForm = ({period, update, self}) => {
+const QuantitativeUpdateForm = ({period, update, measure, self}) => {
     const updateValue = parseFloat(update.value ? update.value : 0);
     const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
     const percentageUpdate = indicator.measure === c.PERCENTAGE_MEASURE;
@@ -418,6 +436,7 @@ const QuantitativeUpdateForm = ({period, update, self}) => {
                 <UpdateFormButtons
                     user={self.props.user}
                     update={update}
+                    measure={measure}
                     changing={self.props.updates.changing}
                     callbacks={{
                         saveUpdate: self.saveUpdate,
@@ -435,7 +454,7 @@ QuantitativeUpdateForm.propTypes = {
 };
 
 
-const QualitativeUpdateForm = ({period, update, self}) => {
+const QualitativeUpdateForm = ({period, update, measure, self}) => {
     return (
         <div className="update-container">
             <div className="row update-entry-container edit-in-progress">
@@ -451,6 +470,7 @@ const QualitativeUpdateForm = ({period, update, self}) => {
                 <UpdateFormButtons
                     user={self.props.user}
                     update={update}
+                    measure={measure}
                     changing={self.props.updates.changing}
                     callbacks={{
                         saveUpdate: self.saveUpdate,
@@ -778,11 +798,17 @@ export default class UpdateForm extends React.Component {
     render() {
         const {indicator, period, update} = this.props;
         switch(indicator.type) {
-            case 1: {
-                return <QuantitativeUpdateForm period={period} update={update} self={this}/>
+            case c.INDICATOR_QUANTATIVE: {
+                return <QuantitativeUpdateForm period={period}
+                                               update={update}
+                                               self={this}
+                                               measure={parseInt(indicator.measure)}/>
             }
-            case 2: {
-                return <QualitativeUpdateForm period={period} update={update} self={this}/>
+            case c.INDICATOR_QUALITATIVE: {
+                return <QualitativeUpdateForm period={period}
+                                              update={update}
+                                              self={this}
+                                              measure={c.MEASURE_QUALITATIVE}/>
             }
         }
     }

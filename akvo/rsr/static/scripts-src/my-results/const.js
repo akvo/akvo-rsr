@@ -139,5 +139,14 @@ export const
     FILTER_NEED_REPORTING = "needReporting",
     FILTER_SHOW_PENDING = "pending",
     FILTER_SHOW_APPROVED = "approved",
-    FILTER_BULK_SELECT = "FILTER_BULK_SELECT"
+    FILTER_BULK_SELECT = "FILTER_BULK_SELECT",
+
+    // Indicator types
+    INDICATOR_QUANTATIVE = 1,
+    INDICATOR_QUALITATIVE = 2,
+
+    // Indicator measures (Includes the proposed qualitative measure type)
+    MEASURE_UNIT = 1,
+    MEASURE_PERCENTAGE = 2,
+    MEASURE_QUALITATIVE = 3
 ;
