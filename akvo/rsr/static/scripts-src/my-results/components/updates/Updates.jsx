@@ -69,9 +69,9 @@ const TimestampInfo =({update, user, label}) => {
     return (
         <ul>
             <li className="approverMeta">{label}
-                <span> {displayDate(update.last_modified_at)}</span> by
-                <span> {displayName(user)}</span> at
-                <span> {user.approved_organisations[0].name}</span>
+                <span class="UpdateDate"> {displayDate(update.last_modified_at)}</span>
+                <span className="hide"> {displayName(user)}</span>
+                <span className="hide"> {user.approved_organisations[0].name}</span>
             </li>
         </ul>
     )
@@ -190,6 +190,7 @@ const QuantitativeUpdate = ({id, update, periodLocked, collapseId}) => {
             <div className="row">
                 <QuantitativeUpdateBody update={update}/>
                 <Comments parentId={id} inForm={false}/>
+                <hr className="delicate"/>
             </div>
         </div>
     )
@@ -291,6 +292,7 @@ class UpdateHeader extends React.Component {
     render() {
         let editUpdateButton, updateAlert;
         const {updateFormDisplay, update} = this.props;
+
         if (this.showEditButton()) {
             let className;
             if (updateFormDisplay) {

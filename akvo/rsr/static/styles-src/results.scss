@@ -4144,12 +4144,12 @@ main {
         margin-top: 10px;
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
+        overflow: scroll;
     }
 }
 
 .results {
     background: white;
-    padding: 5px 5px 5px 0;
     box-sizing: border-box;
 
     * {
@@ -4695,23 +4695,63 @@ main {
 
                                     &::after {}
 
-                                    .comments {
-                                        margin: 0px 0 0 40px;
+                                    .UpdateHead {
+                                        .updateName {}
+
+                                        .updateStatus {}
                                     }
-                                }
 
-                                hr.delicate {
-                                    width: 95%;
-                                    background: rgba(0, 0, 0, 0.1);
+                                    .row {
+                                        .UpdateBody {
+                                            .valueMeta {}
 
-                                    /*                                     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #dbdbdb), color-stop(100%, rgba(255, 255, 255, 0)));
-                                                                        background: -webkit-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
-                                                                        background: -o-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
-                                                                        background: -ms-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);;
-                                                                        background: radial-gradient(ellipse at center, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%) */
-                                    border: 0em none;
-                                    height: 1px;
-                                    margin: 50px auto 20px auto;
+                                            .statusMeta {
+                                                display: none;
+                                            }
+
+                                            .updateValue {
+                                                span {}
+                                            }
+
+                                            .approverMeta {
+                                                span {
+                                                    &.hide {
+                                                        display: none;
+                                                    }
+
+                                                    &.UpdateDate {
+                                                        display: inline-block;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        .comments {
+                                            margin: 10px 0 0 40px;
+                                        }
+
+                                        hr.delicate {
+                                            width: 95%;
+                                            background: rgba(0, 0, 0, 0.1);
+
+                                            /*                                     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #dbdbdb), color-stop(100%, rgba(255, 255, 255, 0)));
+                                                                                background: -webkit-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                                background: -o-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                                background: -ms-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);;
+                                                                                background: radial-gradient(ellipse at center, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%) */
+                                            border: 0em none;
+                                            height: 1px;
+                                            margin: 50px auto 20px auto;
+                                        }
+                                    }
+
+                                    &:last-child {
+                                        .row {
+                                            hr {
+                                                display: none;
+                                            }
+                                        }
+                                    }
                                 }
 
                                 .arrow {
