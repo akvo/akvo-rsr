@@ -209,6 +209,7 @@ const QualitativeUpdate = ({id, period, update, collapseId}) => {
             <div className="row">
                 <QualitativeUpdateBody period={period} update={update}/>
                 <Comments parentId={id} inForm={false}/>
+                <hr className="delicate"/>
             </div>
         </div>
     )

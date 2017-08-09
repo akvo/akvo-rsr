@@ -4138,11 +4138,12 @@ main {
     }
 
     aside.open {
-        background: #ddd;
-        width: 30%;
+        width: calc(30% - 5px);
         padding: 0px 5px 5px 5px;
         display: flex;
         margin-top: 10px;
+        margin-left: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
     }
 }
 
@@ -4342,7 +4343,7 @@ main {
                                 &.indicatorProgress {
                                     position: absolute;
                                     right: 2em;
-                                    top: 0em;
+                                    top: 3px;
                                     color: rgb(19, 140, 228) !important;
                                     max-width: 20%;
 
@@ -4646,9 +4647,8 @@ main {
 
                 .rc-collapse-content {
                     &.rc-collapse-content-active {
-                        padding: 5px 10px 10px;
+                        padding: 10px;
                         vertical-align: top;
-                        background-color: rgba($akvoBlack, 0.1);
                         -webkit-box-flex: 1;
                         -moz-box-flex: 1;
                         -webkit-flex: 1;
@@ -4689,13 +4689,34 @@ main {
                             }
 
                             .updates {
+                                > .row {
+                                    margin-bottom: 20px;
+                                    padding-left: 20px;
+
+                                    &::after {}
+
+                                    .comments {
+                                        margin: 0px 0 0 40px;
+                                    }
+                                }
+
+                                hr.delicate {
+                                    width: 95%;
+                                    background: rgba(0, 0, 0, 0.1);
+
+                                    /*                                     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #dbdbdb), color-stop(100%, rgba(255, 255, 255, 0)));
+                                                                        background: -webkit-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                        background: -o-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                        background: -ms-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);;
+                                                                        background: radial-gradient(ellipse at center, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%) */
+                                    border: 0em none;
+                                    height: 1px;
+                                    margin: 50px auto 20px auto;
+                                }
+
                                 .arrow {
                                     margin-right: 8px !important;
                                     margin-top: -5px !important;
-                                }
-
-                                .comments {
-                                    margin-top: 0px;
                                 }
 
                                 .dimmed {
