@@ -89,7 +89,7 @@ function checkSelected(element, ids) {
 }
 
 
-function uiHideMode(mode) {
+export function uiHideMode(mode) {
     store.dispatch({
         type: c.UI_HIDE,
         payload: {mode}

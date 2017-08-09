@@ -13,7 +13,7 @@ import { connect } from "react-redux"
 import * as alertActions from "../../actions/alert-actions"
 
 import { collapseChange } from "../../actions/collapse-actions"
-import { updateFormOpen } from "../../actions/ui-actions"
+import {uiHideMode, updateFormOpen} from "../../actions/ui-actions"
 import  * as c from '../../const.js';
 import {
     getPeriodsChildrenIds,
@@ -252,6 +252,7 @@ class UpdateHeader extends React.Component {
     formToggle(e) {
         const {collapseId, update} = this.props;
         updateFormOpen(update.id);
+        uiHideMode(c.OBJECTS_PERIODS);
         openNodes(c.OBJECTS_PERIODS, [update.period]);
         closeNodes(c.OBJECTS_PERIODS, [update.period]);
         e.stopPropagation();
