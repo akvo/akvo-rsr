@@ -40,11 +40,12 @@ class ResultsFrameworkTestCase(TestCase):
             title="Parent project",
             subtitle="Parent project (subtitle)",
         )
+        self.parent_project.publish()
 
-        # Publish parent project
-        publishing_status = PublishingStatus.objects.get(project=self.parent_project.pk)
-        publishing_status.status = 'published'
-        publishing_status.save(update_fields=['status', ])
+        # # Publish parent project
+        # publishing_status = PublishingStatus.objects.get(project=self.parent_project.pk)
+        # publishing_status.status = 'published'
+        # publishing_status.save(update_fields=['status', ])
 
         # Create child project
         self.child_project = Project.objects.create(
@@ -65,8 +66,8 @@ class ResultsFrameworkTestCase(TestCase):
         )
 
         # Create results framework
-        result = Result.objects.create(project=self.parent_project, title="Result #1", type="1", )
-        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1", )
+        self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1", )
+        indicator = Indicator.objects.create(result=self.result, title="Indicator #1", measure="1", )
         self.period = IndicatorPeriod.objects.create(
             indicator=indicator,
             period_start=datetime.date.today(),
@@ -98,6 +99,44 @@ class ResultsFrameworkTestCase(TestCase):
         self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
         self.assertEqual(child_reference.vocabulary_uri, self.reference.vocabulary_uri)
 
+    def test_new_indicator_cloned_to_child(self):
+        """Test that new indicators are cloned in children that have imported results."""
+        # Given
+        # # Child project has already imported results from parent.
+        result = self.parent_project.results.first()
+
+        # When
+        Indicator.objects.create(result=result, title="Indicator #2", measure="1")
+
+        # Then
+        self.assertEqual(
+            Indicator.objects.filter(result__project=self.parent_project).count(),
+            Indicator.objects.filter(result__project=self.child_project).count()
+        )
+
+    def test_import_does_not_create_deleted_indicators(self):
+        """Test that import does not create indicators that have been deleted from child."""
+        # Given
+        title = 'Indicator #2'
+        result = self.parent_project.results.first()
+        child_result = result.child_results.first()
+        # New indicator created (also cloned to child)
+        Indicator.objects.create(result=result, title=title, measure='1')
+
+        # When
+        # Import results framework into child
+        child_result.indicators.get(title=title).delete()
+        import_status, import_message = self.child_project.import_results()
+
+        # Then
+        self.assertEqual(import_status, 1)
+        self.assertEqual(import_message, "Results imported")
+
+        self.assertEqual(
+            1,
+            Indicator.objects.filter(result__project=self.child_project).count()
+        )
+
     def test_update(self):
         """
         Test if placing updates will update the actual value of the period.
@@ -105,7 +144,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -116,7 +155,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="5"
+            value="5"
         )
         self.assertEqual(self.period.actual_value, "10")
 
@@ -131,7 +170,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -139,7 +178,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update.save()
         self.assertEqual(self.period.actual_value, "10")
 
-        indicator_update.data = "11"
+        indicator_update.value = "11"
         indicator_update.save()
         self.assertEqual(self.period.actual_value, "11")
 
@@ -154,7 +193,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -168,7 +207,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="15"
+            value="15"
         )
         self.assertEqual(child_period.actual_value, "")
 
@@ -188,7 +227,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            data="10"
+            value="10"
         )
         self.assertEqual(self.period.actual_value, "")
 
@@ -206,7 +245,7 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="15"
+            value="15"
         )
         self.assertEqual(child_period.actual_value, "")
 
@@ -239,9 +278,7 @@ class ResultsFrameworkTestCase(TestCase):
         )
 
         # Publish child 2 project
-        publishing_status = PublishingStatus.objects.get(project=child_project_2.pk)
-        publishing_status.status = 'published'
-        publishing_status.save(update_fields=['status', ])
+        child_project_2.publish()
 
         # Link child 2 to parent
         RelatedProject.objects.create(
@@ -261,26 +298,28 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            data="30"
+            numerator="4",
+            denominator="6",
         )
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
-        self.assertEqual(child_period.actual_value, "30")
-        self.assertEqual(parent_indicator.periods.first().actual_value, "30")
+        self.assertEqual(child_period.actual_value, "66.67")
+        self.assertEqual(parent_indicator.periods.first().actual_value, "66.67")
 
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_2_period,
-            data="20"
+            numerator="2",
+            denominator="4",
         )
         self.assertEqual(child_2_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(child_2_period.actual_value, "20")
-        self.assertEqual(parent_indicator.periods.first().actual_value, "25")
+        self.assertEqual(child_2_period.actual_value, "50.0")
+        self.assertEqual(parent_indicator.periods.first().actual_value, "60.0")
 
     def test_import_state_after_change(self):
         # Given
@@ -372,6 +411,32 @@ class ResultsFrameworkTestCase(TestCase):
         period = IndicatorPeriod.objects.get(indicator=indicator)
         self.assertEqual(period.period_start, period_start)
         self.assertEqual(period.period_end, period_end)
+
+    def test_qualitative_indicator(self):
+        indicator = Indicator.objects.create(
+            result=self.result, title="Indicator #2", type=Indicator.QUALITATIVE,
+        )
+        period = IndicatorPeriod.objects.create(
+            indicator=indicator,
+            period_start=datetime.date.today(),
+            period_end=datetime.date.today() + datetime.timedelta(days=1),
+            target_value="A qualitative target description",
+            locked=False,
+        )
+        narrative = (u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
+        update = IndicatorPeriodData.objects.create(user=self.user, period=period, narrative=narrative)
+        update.clean()
+        update.save()
+        self.assertEqual(update.narrative, narrative)
 
     @unittest.skip('See TODO in IndicatorPeriod.clean')
     def test_prevent_creating_new_periods_on_child_indicators(self):

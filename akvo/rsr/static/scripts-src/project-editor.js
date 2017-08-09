@@ -1207,6 +1207,9 @@ function setPartialOnClicks() {
             if (selectInputId[0] == 'rsr_budgetitem' && selectInputId[1] == 'label') {
                 selectInputs[m].onchange = toggleOtherLabel(selectInputs[m]);
             }
+            if (selectInputId[0] == 'rsr_indicator' && selectInputId[1] == 'type') {
+                selectInputs[m].onchange = setMeasureVisibility.bind(null, selectInputs[m]);
+            }
         }
     }
 
@@ -1454,6 +1457,22 @@ function togglePartner(selectNode) {
         checkPartnerships();
         markMandatoryFields(parent);
     };
+}
+
+function setMeasureVisibility(indicatorTypeSelect) {
+    /*
+        Show or hide measure fields depending on indicator type
+     */
+    // parent is the div wrapping one whole indicator form, it's the outer node in
+    // related_objects/indicator_input.html
+    var parent = findAncestorByClass(indicatorTypeSelect, 'parent');
+    var measureRow = parent.getElementsByClassName('measure')[0];
+    // hide measure fields for qualitative indicators
+    if (indicatorTypeSelect.value === '2') {
+        elAddClass(measureRow, 'hidden');
+    } else {
+        elRemoveClass(measureRow, 'hidden');
+    }
 }
 
 function togglePartial(hidePartial) {
