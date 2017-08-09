@@ -9,6 +9,13 @@ var endpointsPartners,
     i18nPartners,
     projectIdPartners;
 
+// Polyfill from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position){
+      return this.substr(position || 0, searchString.length) === searchString;
+  };
+}
+
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
     var cookieValue = null;
@@ -82,9 +89,42 @@ function renderPartnersTab() {
             }
         },
 
+        partnerName: function(partner){
+            /*
+            Return org.long_name if org.name looks like a truncated version of org.long_name
+
+            When importing organisations from IATI, the name field may have been truncated to 25 or
+            (more seldom) 40 characters.
+            Therefore we check if the name is exactly 25 or 40 chars long AND is identical to the
+            substring of long_name to that length. If this is the case we use the long_name as there
+            is a very high probability that the name field has been truncated.
+
+            NOTE: this is also done in the Organisation.get_name method
+            */
+            var org = partner[0].organisation;
+            var SHORT_TRUNCATED_NAME_LENGTH = 25;
+            var LONG_TRUNCATED_NAME_LENGTH = 40;
+            var name = org.name;
+            var long_name = org.long_name;
+            if (
+                    name.length === 0
+                    || (
+                            name.length == SHORT_TRUNCATED_NAME_LENGTH &&
+                            long_name.length > SHORT_TRUNCATED_NAME_LENGTH
+                        ||
+                            name.length == LONG_TRUNCATED_NAME_LENGTH &&
+                            long_name.length > LONG_TRUNCATED_NAME_LENGTH
+                    )
+                    && long_name.startsWith(name))
+            {
+                return long_name.trim()
+            }
+            return name.trim();
+        },
+
         compare: function(o1, o2) {
-            var o1Name = o1[0].organisation.name;
-            var o2Name = o2[0].organisation.name;
+            var o1Name = this.partnerName(o1),
+                o2Name = this.partnerName(o2);
             if (o1Name < o2Name) {
                 return -1;
             } else if (o1Name > o2Name) {
@@ -102,8 +142,6 @@ function renderPartnersTab() {
                     )
                 );
             } else {
-
-
                 var partnershipsArray = [];
                 for (var orgId in this.state.partnerships) {
                     if(this.state.partnerships.hasOwnProperty(orgId)) {
@@ -121,16 +159,18 @@ function renderPartnersTab() {
                         }
                     }
 
+                    var id = partner[0].organisation.id;
+
                     return (
-                        React.createElement("div", {className: "row verticalPadding projectPartners"}, 
+                        React.createElement("div", {className: "row verticalPadding projectPartners", key: id}, 
                             React.createElement("div", {className: "col-sm-2 img"}, 
-                                React.createElement("a", {href: '/en/organisation/' + partner[0].organisation.id + '/'}, 
+                                React.createElement("a", {href: '/organisation/' + id + '/'}, 
                                     thisApp.orgLogo(partner[0].organisation.logo, 120, 120)
                                 )
                             ), 
                             React.createElement("div", {className: "col-sm-6"}, 
-                                React.createElement("a", {href: '/en/organisation/' + partner[0].organisation.id + '/', className: "org-link"}, 
-                                    React.createElement("i", {className: "fa fa-users"}), " ", React.createElement("h2", null, partner[0].organisation.name)
+                                React.createElement("a", {href: '/organisation/' + id + '/', className: "org-link"}, 
+                                    React.createElement("i", {className: "fa fa-users"}), " ", React.createElement("h2", null, thisApp.partnerName(partner))
                                 )
                             ), 
                             React.createElement("div", {className: "col-sm-4"}, 
