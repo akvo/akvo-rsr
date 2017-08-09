@@ -220,7 +220,7 @@ class Indicator(models.Model):
         """
         if self.measure == PERCENTAGE_MEASURE and self.is_parent_indicator() and \
                 self.result.project.aggregate_children and \
-                any([ind.result.project.aggregate_to_parent for ind in self.child_indicators.all()]):
+                any(self.child_indicators.values_list('result__project__aggregate_to_parent', flat=True)):
             return True
         return False
 
