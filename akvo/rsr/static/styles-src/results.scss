@@ -4112,9 +4112,8 @@ div.iatiFilters {
 header[role="banner"] {
     display: block;
     width: 100%;
-    height: 100px;
     background: #fcfcfc;
-    margin-bottom: 35px;
+    margin-bottom: 5px;
 }
 
 main {
@@ -4344,7 +4343,7 @@ main {
                                     position: absolute;
                                     right: 2em;
                                     top: 0em;
-                                    color: rgba($akvoBlack, 0.5);
+                                    color: rgb(19, 140, 228) !important;
                                     max-width: 20%;
 
                                     .react-sweet-progress-circle-outer {
@@ -5096,6 +5095,8 @@ main {
 
 .periodMenuBar {
     box-sizing: border-box;
+
+    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
 
     * {
         box-sizing: border-box;

@@ -2851,9 +2851,8 @@ div.iatiFilters {
 header[role="banner"] {
   display: block;
   width: 100%;
-  height: 100px;
   background: #fcfcfc;
-  margin-bottom: 35px; }
+  margin-bottom: 5px; }
 
 main {
   display: flex;
@@ -2997,7 +2996,7 @@ main {
               position: absolute;
               right: 2em;
               top: 0em;
-              color: rgba(32, 32, 36, 0.5);
+              color: #138ce4 !important;
               max-width: 20%; }
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li.indicatorProgress .react-sweet-progress-circle-outer {
                 margin-left: 1em; }
@@ -3405,7 +3404,11 @@ main {
             color: rgba(32, 32, 36, 0.5); }
 
 .periodMenuBar {
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); }
   .periodMenuBar * {
     box-sizing: border-box; }
   .periodMenuBar .results-bar-titles {
