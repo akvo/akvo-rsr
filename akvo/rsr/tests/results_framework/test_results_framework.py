@@ -424,15 +424,15 @@ class ResultsFrameworkTestCase(TestCase):
             locked=False,
         )
         narrative = (u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
-                  u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz "
+                     u"abcdefghijklmnompqrstuvwxyz abcdefghijklmnompqrstuvwxyz ")
         update = IndicatorPeriodData.objects.create(user=self.user, period=period, narrative=narrative)
         update.clean()
         update.save()
