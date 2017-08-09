@@ -49,10 +49,9 @@ const IndicatorHeader = (
     const progress_bar = aggregateCompletionPercentage !== aggregateCompletionPercentage ? undefined : (
         // Limit percentage to 100 for progress bar to work correctly
         <li className="indicatorProgress">
-            Actual vs. Target
             <Progress type="circle"
-                      strokeWidth={10}
-                      width={25}
+                      strokeWidth={5}
+                      width={35}
                       percent={Math.min(100, aggregateCompletionPercentage)} />
         </li>
     );

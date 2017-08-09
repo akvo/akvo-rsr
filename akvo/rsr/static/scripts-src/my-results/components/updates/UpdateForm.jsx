@@ -54,8 +54,8 @@ const isAllowedToDelete = (user, update) =>
 const QuantitativeHeader = ({targetValue}) => {
     return (
         <div>
-            <div className="">
-                {_('target_value')}: {targetValue}
+            <div className="targetLabel">
+                {_('target_value')}: <span>{targetValue}</span>
             </div>
         </div>
     )
@@ -70,8 +70,8 @@ QuantitativeHeader.propTypes = {
 const QualitativeHeader = ({targetValue}) => {
     return (
         <div>
-            <div className="">
-                {_('target')}: {targetValue}
+            <div className="targetLabel">
+                {_('target')}: <span>{targetValue}</span>
             </div>
         </div>
     )
@@ -94,7 +94,7 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
             <div>
                 <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
-                              className="btn btn-link btn-xs"/>
+                              className="btn btn-default btn-xs"/>
                 <input className="form-control"
                     readOnly={readOnly}
                     id="value"
@@ -118,7 +118,7 @@ const QualitativeActualValueInput = ({update, onChange, onClose}) => {
             <div>
                 <label htmlFor="actualValue">{_('actual')}</label>
                 <ToggleButton onClick={onClose} label="X"
-                                  className="btn btn-link btn-xs"/>
+                                  className="btn btn-default btn-xs"/>
                 <textarea className="form-control"
                           id="narrative"
                           value={update.narrative}

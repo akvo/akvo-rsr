@@ -4149,7 +4149,7 @@ main {
 
 .results {
     background: white;
-    padding: 5px;
+    padding: 5px 5px 5px 0;
     box-sizing: border-box;
 
     * {
@@ -4342,18 +4342,37 @@ main {
 
                                 &.indicatorProgress {
                                     position: absolute;
-                                    right: 3em;
-                                    top: 0.75em;
+                                    right: 2em;
+                                    top: 0em;
                                     color: rgba($akvoBlack, 0.5);
                                     max-width: 20%;
 
                                     .react-sweet-progress-circle-outer {
                                         margin-left: 1em;
+
+                                        .react-sweet-progress-symbol {
+                                            font-size: 13px !important;
+                                            font-weight: 400  !important;
+
+                                            svg {
+                                                width: 21px !important;
+                                                height: 21px !important;
+
+                                                path {
+                                                    fill: transparent !important;
+                                                }
+
+                                                g {
+                                                    stroke: rgb(4, 158, 81) !important;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
 
                                 &:nth-child(2) {
                                     margin-left: 10px;
+                                    font-weight: 400;
                                     color: rgba($akvoBlack, 0.5);
 
                                     &::before {
@@ -4870,10 +4889,32 @@ main {
         position: relative;
 
         &.edit-in-progress {
+            .targetLabel {
+                margin-top: 25px;
+                color: rgba(black, 0.5);
+
+                span {
+                    color: black;
+                }
+            }
+
             .update-entry-container-header {
                 background: rgba(white, 0.5);
                 margin-bottom: 10px;
                 display: none;
+            }
+
+            div {
+                width: 100%;
+                position: relative;
+
+                label[for="actualValue"] + button {
+                    position: absolute;
+                    font-weight: bold;
+                    top: -35px;
+                    right: 0;
+                    background: transparent;
+                }
             }
         }
 
@@ -5009,7 +5050,6 @@ main {
 }
 
 .comments {
-    padding: 10px 5px 0px 20px;
     margin-top: 30px;
     background: rgba($primary5, 0);
     width: 98%;
