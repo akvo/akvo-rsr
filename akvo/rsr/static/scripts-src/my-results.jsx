@@ -469,7 +469,7 @@ function initReact() {
 
         renderUpdateClass: function() {
             // When an update is in editing mode, it should have the 'edit-in-progress' class.
-            var updateClass = "row update-entry-container";
+            var updateClass = "update-entry-container";
             if (this.editing()) {
                 updateClass += " edit-in-progress";
             }
@@ -540,7 +540,7 @@ function initReact() {
             }
 
             return (
-                <div className="row update-entry-container-header">
+                <div className="update-entry-container-header">
                     {headerLeft}
                     {headerRight}
                 </div>

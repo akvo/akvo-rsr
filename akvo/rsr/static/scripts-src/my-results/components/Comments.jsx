@@ -195,7 +195,7 @@ export default class Comments extends React.Component {
             const disabled = isNewUpdate(this.props.parentId);
             const disabledNote = disabled ? " (" + _("notes_disabled") + ")" : undefined;
             return (
-                <div className={c.OBJECTS_COMMENTS + ' col-xs-12'}>
+                <div className={c.OBJECTS_COMMENTS}>
                     <strong>Internal notes:</strong>{disabledNote}
                     {disabled ? undefined : this.renderComments(commentIds)}
                     {inForm ?

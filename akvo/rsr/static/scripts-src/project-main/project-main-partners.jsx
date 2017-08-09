@@ -106,18 +106,17 @@ function renderPartnersTab() {
             var LONG_TRUNCATED_NAME_LENGTH = 40;
             var name = org.name;
             var long_name = org.long_name;
-            if (
-                    name.length === 0
-                    || (
-                            name.length == SHORT_TRUNCATED_NAME_LENGTH &&
-                            long_name.length > SHORT_TRUNCATED_NAME_LENGTH
-                        ||
-                            name.length == LONG_TRUNCATED_NAME_LENGTH &&
-                            long_name.length > LONG_TRUNCATED_NAME_LENGTH
-                    )
-                    && long_name.startsWith(name))
+            if (name.length === 0 ||
+                (
+                    ((name.length == SHORT_TRUNCATED_NAME_LENGTH &&
+                      long_name.length > SHORT_TRUNCATED_NAME_LENGTH) ||
+                     (name.length == LONG_TRUNCATED_NAME_LENGTH &&
+                      long_name.length > LONG_TRUNCATED_NAME_LENGTH)) &&
+                    long_name.startsWith(name)
+                )
+            )
             {
-                return long_name.trim()
+                return long_name.trim();
             }
             return name.trim();
         },
