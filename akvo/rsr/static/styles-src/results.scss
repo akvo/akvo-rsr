@@ -5131,6 +5131,7 @@ main {
         padding-top: 5px;
         padding-bottom: 5px;
         color: rgba($akvoBlack, 0.5);
+        width: calc(100% - 50px);
 
         .comment {
             margin-left: 10px;
