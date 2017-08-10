@@ -2872,7 +2872,7 @@ main {
     width: calc(30% - 5px);
     padding: 0px 5px 5px 5px;
     display: flex;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 5px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     overflow: scroll; }
@@ -3295,6 +3295,12 @@ main {
               .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.valueMeta li.updateValue span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box ul.valueMeta li.totalValue span {
                 font-weight: bold;
                 color: initial; }
+
+.update-container.qualitativeUpdate .update-description {
+  display: none; }
+
+.update-container.qualitativeUpdate textarea#narrative {
+  min-height: 220px !important; }
 
 .update-container .update-entry-container {
   padding: 0 0 10px 0;
