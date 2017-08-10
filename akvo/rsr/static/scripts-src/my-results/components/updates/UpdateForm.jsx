@@ -455,7 +455,7 @@ QuantitativeUpdateForm.propTypes = {
 
 const QualitativeUpdateForm = ({period, update, measure, self}) => {
     return (
-        <div className="update-container">
+        <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
                 <QualitativeHeader targetValue={period.target_value}/>
                 <QualitativeActualValueInput update={update}
