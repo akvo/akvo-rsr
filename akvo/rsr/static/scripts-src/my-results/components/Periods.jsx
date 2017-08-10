@@ -20,7 +20,8 @@ import * as c from "../const"
 
 import {
     getPeriodsActualValue,
-    getIndicatorsChildrenIds, getPeriodsChildrenIds,
+    getIndicatorsChildrenIds,
+    getPeriodsChildrenIds,
 } from "../selectors";
 
 import {
@@ -28,6 +29,7 @@ import {
     endpoints,
     collapseId,
     createToggleKeys,
+    getAncestor,
 } from "../utils.js";
 
 
@@ -151,31 +153,31 @@ PeriodSelect.propTypes = {
 
 
 const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton, delUpdateAlert,
-                          formOpen, showLockButton}) => {
-    const periodStart = displayDate(period.period_start);
-    const periodEnd = displayDate(period.period_end);
-    const periodDate = `${periodStart} - ${periodEnd}`;
-    let periodSelect, lockStatus;
-    if (user.isMEManager && showLockButton) {
-        periodSelect = <PeriodSelect id={period.id}
-                                     toggleCheckbox={toggleCheckbox}
-                                     isChecked={isChecked}/>;
-        lockStatus = <PeriodLockToggle period={period} />;
+                       formOpen, showLockButton}) => {
+                           const periodStart = displayDate(period.period_start);
+                           const periodEnd = displayDate(period.period_end);
+                           const periodDate = `${periodStart} - ${periodEnd}`;
+                           let periodSelect, lockStatus;
+                           if (user.isMEManager && showLockButton) {
+                               periodSelect = <PeriodSelect id={period.id}
+                                                            toggleCheckbox={toggleCheckbox}
+                                                            isChecked={isChecked}/>;
+                               lockStatus = <PeriodLockToggle period={period} />;
 
-    } else {
-        lockStatus = period.locked ? _('locked') : _('unlocked');
-    }
-    return (
-        <span className="periodWrap">
-            <ul className={formOpen ? "formOpen" : ""}>
-                <li>{periodSelect}</li>
-                <li>{periodDate}</li>
-                <li>{newUpdateButton}{delUpdateAlert}</li>
-                <li>{lockStatus}</li>
-            </ul>
-        </span>
-    )
-};
+                           } else {
+                               lockStatus = period.locked ? _('locked') : _('unlocked');
+                           }
+                           return (
+                               <span className="periodWrap">
+                                   <ul className={formOpen ? "formOpen" : ""}>
+                                       <li>{periodSelect}</li>
+                                       <li>{periodDate}</li>
+                                       <li>{newUpdateButton}{delUpdateAlert}</li>
+                                       <li>{lockStatus}</li>
+                                   </ul>
+                               </span>
+                           )
+                       };
 PeriodHeader.propTypes = {
     period: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
@@ -197,7 +199,7 @@ const DeleteUpdateAlert = ({message, close}) => (
         periods: store.models.periods,
         keys: store.keys,
         user: store.models.user.ids && store.models.user.ids.length > 0 ?
-            store.models.user.objects[store.models.user.ids[0]] : {},
+              store.models.user.objects[store.models.user.ids[0]] : {},
         ui: store.ui,
         indicatorChildrenIds: getIndicatorsChildrenIds(store),
         periodChildrenIds: getPeriodsChildrenIds(store),
@@ -258,22 +260,26 @@ export default class Periods extends React.Component {
     renderPanels(periodIds) {
         return (periodIds.map(
             (id) => {
+                const {parentId, ui} = this.props;
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
                 const formOpen = this.props.periodChildrenIds[id].indexOf(
                     this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
                 ) > -1;
-
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
-                const ui = this.props.ui;
+                const indicator = getAncestor(c.OBJECTS_PERIODS, id, c.OBJECTS_INDICATORS);
+
                 let newUpdateButton, delUpdateAlert;
                 if (!period.locked && (
                     !ui.updateFormDisplay && (
                         ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
-                ))) {
+                    )) && !(
+                        indicator.measure === c.PERCENTAGE_MEASURE &&
+                        this.props.periodChildrenIds[id].length >= 1
+                    )){
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.
@@ -283,10 +289,11 @@ export default class Periods extends React.Component {
                     )(DeleteUpdateAlert);
                     delUpdateAlert = <DelUpdateAlert />;
                 }
+
                 let className = this.hideMe(id) ? 'hidePanel' : '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
                 const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
-                        this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
+                                       this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
                 return (
                     <Panel header={
                         <PeriodHeader period={period}
@@ -299,7 +306,7 @@ export default class Periods extends React.Component {
                                       showLockButton={showLockButton}/>}
                            key={id}
                            className={className}>
-                        <Updates parentId={id} periodLocked={period.locked}/>
+                        <Updates indicatorId={parentId} period={period}/>
                     </Panel>
                 )
             }
@@ -317,8 +324,8 @@ export default class Periods extends React.Component {
                 <div className={c.OBJECTS_PERIODS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll}*/}
-                                  {/*label="++"*/}
-                                  {/*disabled={!this.props.ui.allFetched}/>*/}
+                     {/*label="++"*/}
+                     {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periodIds)}
                     </Collapse>
