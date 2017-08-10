@@ -801,7 +801,7 @@ export default class UpdateForm extends React.Component {
                 return <QuantitativeUpdateForm period={period}
                                                update={update}
                                                self={this}
-                                               measure={indicator.measure}/>
+                                               measure={indicator.measure || "1"}/>
             }
             case c.INDICATOR_QUALITATIVE: {
                 return <QualitativeUpdateForm period={period}
