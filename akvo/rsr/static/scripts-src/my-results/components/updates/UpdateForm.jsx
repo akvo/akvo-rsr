@@ -140,7 +140,7 @@ QualitativeActualValueInput.propTypes = {
 const PercentageActualValueInput = ({update, onChange}) => {
     return (
         <div className="">
-            <div className="col-xs-6">
+            <div>
                 {/* FIXME: Use translated strings*/}
                 <label htmlFor="actualValueNumerator">Numerator</label>
                 <input className="form-control"
@@ -149,7 +149,7 @@ const PercentageActualValueInput = ({update, onChange}) => {
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
             </div>
-            <div className="col-xs-6">
+            <div>
                 {/* FIXME: Use translated strings*/}
                 <label htmlFor="actualValueDenominator">Denominator</label>
                 <input className="form-control"
