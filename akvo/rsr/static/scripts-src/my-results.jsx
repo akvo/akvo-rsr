@@ -456,17 +456,6 @@ function initReact() {
             this.setState({comment: e.target.value});
         },
 
-        handleRelativeChange: function(e) {
-            // Keep track of the checkbox that controls the relative or absolute change of the
-            // update. Note: absolute changes (and this checkbox) are disabled for now, updates
-            // are always relative.
-            if (this.state.isRelative) {
-                this.setState({isRelative: false});
-            } else {
-                this.setState({isRelative: true});
-            }
-        },
-
         renderUpdateClass: function() {
             // When an update is in editing mode, it should have the 'edit-in-progress' class.
             var updateClass = "row update-entry-container";
@@ -552,10 +541,9 @@ function initReact() {
             // previous actual value of the period.
             var periodActualValue = parseFloat(this.props.update.period_actual_value);
             var originalValue = parseFloat(this.state.value);
-            var updateValue = this.state.isRelative ? periodActualValue + originalValue : originalValue;
-            var relativeValue = this.state.isRelative ? originalValue : updateValue - periodActualValue;
+            var updateValue = periodActualValue + originalValue;
 
-            if (isNaN(updateValue) || isNaN(relativeValue)) {
+            if (isNaN(updateValue) || isNaN(originalValue)) {
                 // If the value cannot be calculated (e.g. non-numeric data), do not display a
                 // calculation.
                 return (
@@ -566,12 +554,12 @@ function initReact() {
                 );
             } else {
                 // Display a calculation.
-                var relativeValueText = relativeValue >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeValue.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeValue.toString());
+                var valueChangeText = originalValue >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(originalValue.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(originalValue.toString());
                 return (
                     <div className="upActualValue">
                         <span className="update-actual-value-text">{label}: </span>
                         <span className="update-actual-value-data">{displayNumber(updateValue)} </span>
-                        <span className="update-relative-value">({relativeValueText})</span>
+                        <span className="update-relative-value">({valueChangeText})</span>
                     </div>
                 );
             }
