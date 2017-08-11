@@ -322,8 +322,9 @@ Attachments.propTypes = {
 };
 
 
-const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
+const UpdateActionButton = ({action, updateActions, icon, disabled}) => {
     const labels = {
+        [c.UPDATE_ACTION_DELETE]: _('delete'),
         [c.UPDATE_ACTION_SAVE]: _('save'),
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
         [c.UPDATE_ACTION_RETURN]: _('return_for_revision'),
@@ -332,7 +333,7 @@ const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
     return (
         <li role="presentation" className={action}>
             <ToggleButton id={action}
-                          onClick={saveUpdate}
+                          onClick={updateActions}
                           label={labels[action]}
                           icon={icon}
                           disabled={disabled}
@@ -342,19 +343,19 @@ const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
 };
 UpdateActionButton.propTypes = {
     action: PropTypes.string.isRequired,
-    saveUpdate: PropTypes.func.isRequired,
+    updateActions: PropTypes.func.isRequired,
     icon: PropTypes.object,
     disabled: PropTypes.bool.isRequired,
 };
 
 
-const UpdateFormButtons = ({user, update, measure, changing, callbacks}) => {
+const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => {
 
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                let disabled = action !== c.UPDATE_ACTION_SAVE;
+                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE;
                 switch (measure) {
                     case c.MEASURE_UNIT: {
                         disabled = disabled && !(update.value !== null && update.value !== "");
@@ -378,7 +379,7 @@ const UpdateFormButtons = ({user, update, measure, changing, callbacks}) => {
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
                                            icon={icon}
-                                           saveUpdate={callbacks.saveUpdate}
+                                           updateActions={updateActions}
                                            disabled={disabled}/>
             }
         )
@@ -391,14 +392,6 @@ const UpdateFormButtons = ({user, update, measure, changing, callbacks}) => {
     return (
         <div className="menuAction">
             <ul className="nav-pills bottomRow navbar-right">
-                {!isNewUpdate(update) && isAllowedToDelete(user, update)?
-                 <li role="presentation" className="removeUpdate">
-                     <ToggleButton onClick={callbacks.deleteUpdate}
-                                   icon={icon}
-                                   label={_('delete')}
-                                   className="btn btn-default btn-xs" />
-                 </li>
-                 : ''}
                 {actionButtons}
             </ul>
         </div>
@@ -408,7 +401,7 @@ UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
     changing: PropTypes.bool.isRequired,
-    callbacks: PropTypes.object.isRequired,
+    updateActions: PropTypes.func.isRequired,
 };
 
 
@@ -437,9 +430,7 @@ const QuantitativeUpdateForm = ({period, update, measure, self}) => {
                     update={update}
                     measure={measure}
                     changing={self.props.updates.changing}
-                    callbacks={{
-                        saveUpdate: self.saveUpdate,
-                        deleteUpdate: self.deleteUpdate}}/>
+                    updateActions={self.updateActionsHandler}/>
             </div>
             <Comments parentId={update.id}
                       inForm={true}/>
@@ -528,6 +519,7 @@ export default class UpdateForm extends React.Component {
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
+        this.updateActionsHandler = this.updateActionsHandler.bind(this);
         this.onChange = this.onChange.bind(this);
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
@@ -688,7 +680,18 @@ export default class UpdateForm extends React.Component {
         // this.refreshFilter(); // Breaks when deleting an update!!!
     };
 
-    saveUpdate(e) {
+    updateActionsHandler(e) {
+        //The id of the button is used to indicate the action taken
+        const action = e.target.id;
+        if (action === c.UPDATE_ACTION_DELETE) {
+            this.deleteUpdate();
+        } else {
+            this.saveUpdate(action);
+        }
+
+    }
+
+    saveUpdate(action) {
         function setUpdateStatus(update, action, userId) {
             /*
                Set the status field of the update according to the action taken
@@ -726,9 +729,7 @@ export default class UpdateForm extends React.Component {
             }
         };
 
-        let update = Object.assign({}, this.props.update),
-            //The id of the button is used to indicate the action taken
-            action = e.target.id;
+        let update = Object.assign({}, this.props.update);
         if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
