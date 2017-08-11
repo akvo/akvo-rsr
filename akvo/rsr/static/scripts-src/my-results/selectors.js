@@ -147,7 +147,7 @@ export const getIndicatorsAggregateActualValue = createSelector(
     (indicatorIDs, indicatorObjects, childPeriodIds, periodObjects, actualValue) => {
         return indicatorIDs && indicatorObjects && childPeriodIds && !isEmpty(actualValue) && indicatorIDs.reduce((acc, indicatorId) => {
             let aggregateValue;
-            if (indicatorObjects[indicatorId].measure === c.PERCENTAGE_MEASURE) {
+            if (indicatorObjects[indicatorId].measure === c.MEASURE_PERCENTAGE) {
                 // Computed aggregate percentage -> (sum of all numerators) * 100 / (last/latest denominator)
                 const numerator = childPeriodIds[indicatorId].reduce((sum, periodId) => {
                     return sum + (parseFloat(periodObjects[periodId].numerator)||0);
