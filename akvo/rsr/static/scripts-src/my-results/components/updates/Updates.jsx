@@ -69,7 +69,7 @@ const TimestampInfo =({update, user, label}) => {
     return (
         <ul>
             <li className="approverMeta">{label}
-                <span class="UpdateDate"> {displayDate(update.last_modified_at)}</span>
+                <span className="UpdateDate"> {displayDate(update.last_modified_at)}</span>
                 <span className="hide"> {displayName(user)}</span>
                 <span className="hide"> {user.approved_organisations[0].name}</span>
             </li>
