@@ -4483,8 +4483,17 @@ main {
 
     .rc-collapse {
         .rc-collapse-item {
-            border: none !important;
             padding: 0;
+            border-top: none !important;
+            border-right: none !important;
+            border-left: none !important;
+            border-botton: 1px solid grey !important;
+            margin-top: 10px;
+            padding-bottom: 10px;
+
+            &:last-child {
+                border-bottom: none;
+            }
 
             &.needsReporting {}
 

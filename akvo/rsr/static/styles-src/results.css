@@ -3070,8 +3070,15 @@ main {
   right: 10px !important; }
 
 .periods .rc-collapse .rc-collapse-item {
-  border: none !important;
-  padding: 0; }
+  padding: 0;
+  border-top: none !important;
+  border-right: none !important;
+  border-left: none !important;
+  border-botton: 1px solid grey !important;
+  margin-top: 10px;
+  padding-bottom: 10px; }
+  .periods .rc-collapse .rc-collapse-item:last-child {
+    border-bottom: none; }
   .periods .rc-collapse .rc-collapse-item.periodSelected .rc-collapse-header .periodWrap ul {
     background-color: rgba(44, 42, 116, 0.1) !important; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
