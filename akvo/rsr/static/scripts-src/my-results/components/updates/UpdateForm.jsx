@@ -133,7 +133,6 @@ QualitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
     updatedActualValue: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    isPercentage: PropTypes.bool.isRequired,
 };
 
 
@@ -462,9 +461,7 @@ const QualitativeUpdateForm = ({period, update, measure, self}) => {
                     update={update}
                     measure={measure}
                     changing={self.props.updates.changing}
-                    callbacks={{
-                        saveUpdate: self.saveUpdate,
-                        deleteUpdate: self.deleteUpdate}}/>
+                    updateActions={self.updateActionsHandler}/>
             </div>
             <Comments parentId={update.id}
                       inForm={true}/>
