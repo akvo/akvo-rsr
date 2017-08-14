@@ -1,5 +1,28 @@
 # Akvo RSR Release Notes 
 ----
+## Version 3.30 - Paramaribo 
+
+Date: 2017-08-14
+
+## New and Noteworthy
+
+* Qualitative indicators introduced – The first step of incorporating qualitative indicators within the improved RSR Results Framework. Partners are now also able to capture data from their qualitative indicators in RSR, with this data able to be included in RSR reports. ( [#2755](https://github.com/akvo/akvo-rsr/issues/2755), [#2756](https://github.com/akvo/akvo-rsr/issues/2756), [#2808](https://github.com/akvo/akvo-rsr/pull/2808) )
+
+* Aggregation of percentage indicators  – Entering the 'raw data' behind result values in percentages, namely the numerator and denominator, introduced. Users are now able to have more complete percentage results data. ( [#2446](https://github.com/akvo/akvo-rsr/issues/2446), [#2791](https://github.com/akvo/akvo-rsr/issues/2810), [#2810](https://github.com/akvo/akvo-rsr/issues/2810), [#2817](https://github.com/akvo/akvo-rsr/pull/2817) )
+
+* Indicator Reporting Update design now fully introduced – With the completion of the UI work to right-side panel of the Indicator Reporting update the final piece of the redesigned results framework has been completed. ( [#2781](https://github.com/akvo/akvo-rsr/issues/2781), [#2801](https://github.com/akvo/akvo-rsr/pull/2801), [#2802](https://github.com/akvo/akvo-rsr/issues/2802), [#2788](https://github.com/akvo/akvo-rsr/pull/2788) )
+
+
+## Resolved issues
+
+* Results Framework UI stabilized – Scrolling, navigating through the redesigned RSR Results Framework has been improved.   ( [#2787](https://github.com/akvo/akvo-rsr/issues/2787), [#2788](https://github.com/akvo/akvo-rsr/pull/2788), [#2801](https://github.com/akvo/akvo-rsr/pull/2801), [#2802](https://github.com/akvo/akvo-rsr/issues/2802) ) 
+
+* 504 timeouts on the results framework page for projects with many children and indicators resolved – Stabilized the issue of too many queries leading to 504 timeouts for parent projects with many child projects and indicators. ( [#2782](https://github.com/akvo/akvo-rsr/issues/2782), [#2783](https://github.com/akvo/akvo-rsr/pull/2783) )
+
+* Advanced Filters now work in the IE browser – a javascript error leading to the malfunctioning of the RSR Advanced Filter functionality when you the IE browser has been fixed. ( [#2785](https://github.com/akvo/akvo-rsr/issues/2785), [#2786](https://github.com/akvo/akvo-rsr/pull/2786) ) 
+
+* Display complete (long) names of partners – text pending ( [#2773](https://github.com/akvo/akvo-rsr/pull/2773), [#2796](https://github.com/akvo/akvo-rsr/pull/2796) )
+
 
 ## Version 3.29 - La Paz
 
