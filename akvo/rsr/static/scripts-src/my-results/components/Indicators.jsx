@@ -16,7 +16,7 @@ import * as c from '../const.js';
 
 import {
     getIndicatorsAggregateActualValue,
-    getIndicatorsAggregateCompletionPercentage,
+    getIndicatorsAggregateCompletionPercentage, getIndicatorsChildrenIds,
     getResultsChildrenIds
 } from "../selectors";
 
@@ -32,23 +32,35 @@ import {
 import Periods from './Periods';
 
 
-const IndicatorHeader = ({indicator, aggregateActualValue, aggregateCompletionPercentage}) => {
+const IndicatorHeaderPeriodCount = ({count}) => {
+    const periodText = count == 1 ? 'period' : 'periods';
+    return <li> {count} {periodText}</li>;
+};
+IndicatorHeaderPeriodCount.propTypes = {
+    count: PropTypes.number
+};
+
+
+const IndicatorHeader = (
+        {indicator, periodCount, aggregateActualValue, aggregateCompletionPercentage}) => {
     const title = indicator.title.length > 0 ? indicator.title : _("nameless_indicator");
+    const type = indicator.type === 1 ? 'Quantitative' : 'Qualitative';
     // Don't show progress bar if there's no target value (aggregateCompletionPercentage is NaN)
     const progress_bar = aggregateCompletionPercentage !== aggregateCompletionPercentage ? undefined : (
         // Limit percentage to 100 for progress bar to work correctly
         <li className="indicatorProgress">
-            Actual vs. Target
             <Progress type="circle"
-                      strokeWidth={10}
-                      width={25}
+                      strokeWidth={5}
+                      width={35}
                       percent={Math.min(100, aggregateCompletionPercentage)} />
         </li>
-    )
+    );
     return (
         <span className="indicatorTitle">
             <ul>
                 <li>{title}</li>
+                <li>{type}</li>
+                <IndicatorHeaderPeriodCount count={periodCount} />
                 {progress_bar}
             </ul>
         </span>
@@ -56,6 +68,7 @@ const IndicatorHeader = ({indicator, aggregateActualValue, aggregateCompletionPe
 };
 IndicatorHeader.propTypes = {
     indicator: PropTypes.object,
+    periodCount: PropTypes.number,
     aggregateActualValue: PropTypes.number,
     aggregateCompletionPercentage: PropTypes.number,
 };
@@ -95,6 +108,7 @@ IndicatorContent.propTypes = {
         keys: store.keys,
         ui: store.ui,
         resultChildrenIds: getResultsChildrenIds(store),
+        indicatorsChildrenIds: getIndicatorsChildrenIds(store),
         aggregateActualValue: getIndicatorsAggregateActualValue(store),
         aggregateCompletionPercentage: getIndicatorsAggregateCompletionPercentage(store),
     }
@@ -138,9 +152,11 @@ export default class Indicators extends React.Component {
             (id) => {
                 const indicator = this.props.indicators.objects[id];
                 const className = this.hideMe(id) ? 'hidePanel' : '';
+                const periods = this.props.indicatorsChildrenIds[id];
                 return (
                     <Panel header={<IndicatorHeader
                                         indicator={indicator}
+                                        periodCount={periods.length || 0}
                                         aggregateActualValue={
                                             this.props.aggregateActualValue[id]
                                         }

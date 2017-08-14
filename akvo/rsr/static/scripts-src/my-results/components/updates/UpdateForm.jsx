@@ -25,7 +25,7 @@ import * as c from '../../const.js';
 
 import {
     updateFormOpen,
-    updateFormClose,
+    updateFormClose, uiHideMode,
 } from "../../actions/ui-actions"
 
 import {
@@ -33,6 +33,8 @@ import {
     _,
     collapseId,
     isNewUpdate,
+    getAncestor,
+    computePercentage,
 } from '../../utils.js';
 
 import {
@@ -49,17 +51,32 @@ const isAllowedToDelete = (user, update) =>
     update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 
-const Header = ({targetValue}) => {
+const QuantitativeHeader = ({targetValue}) => {
     return (
         <div>
-            <div className="">
-                {_('target_value')}: {targetValue}
+            <div className="targetLabel">
+                {_('target_value')}: <span>{targetValue}</span>
             </div>
         </div>
     )
 };
+QuantitativeHeader.propTypes = {
+    targetValue: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
+};
 
-Header.propTypes = {
+const QualitativeHeader = ({targetValue}) => {
+    return (
+        <div>
+            <div className="targetLabel">
+                {_('target')}: <span>{targetValue}</span>
+            </div>
+        </div>
+    )
+};
+QualitativeHeader.propTypes = {
     targetValue: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -67,16 +84,76 @@ Header.propTypes = {
 };
 
 
-const ActualValueInput = ({update, onChange, onClose}) => {
+const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage}) => {
+    const readOnly = isPercentage,
+          value = isPercentage ? update.value + '%' : update.value,
+          label = isPercentage ? _('percentage') : _('add_to_actual_value');
+
     return (
-        <div className="row">
+        <div className="">
             <div>
-                <label htmlFor="actualValue">{_('add_to_actual_value')}</label>
+                <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
-                                  className="btn btn-link btn-xs"/>
+                              className="btn btn-default btn-xs"/>
                 <input className="form-control"
-                       id="data"
-                       value={update.data}
+                    readOnly={readOnly}
+                    id="value"
+                    value={value}
+                    onChange={onChange}
+                    placeholder={_('input_placeholder')} />
+            </div>
+        </div>
+    )
+};
+QuantitativeActualValueInput.propTypes = {
+    update: PropTypes.object.isRequired,
+    updatedActualValue: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+};
+
+
+const QualitativeActualValueInput = ({update, onChange, onClose}) => {
+    return (
+        <div className="">
+            <div>
+                <label htmlFor="actualValue">{_('actual')}</label>
+                <ToggleButton onClick={onClose} label="X"
+                                  className="btn btn-default btn-xs"/>
+                <textarea className="form-control"
+                          id="narrative"
+                          value={update.narrative}
+                          onChange={onChange}
+                          placeholder={_('input_placeholder')}>
+                </textarea>
+            </div>
+        </div>
+    )
+};
+QualitativeActualValueInput.propTypes = {
+    update: PropTypes.object.isRequired,
+    updatedActualValue: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+};
+
+
+const PercentageActualValueInput = ({update, onChange}) => {
+    return (
+        <div className="">
+            <div>
+                {/* FIXME: Use translated strings*/}
+                <label htmlFor="actualValueNumerator">Numerator</label>
+                <input className="form-control"
+                       id="numerator"
+                       value={update.numerator}
+                       onChange={onChange}
+                       placeholder={_('input_placeholder')} />
+            </div>
+            <div>
+                {/* FIXME: Use translated strings*/}
+                <label htmlFor="actualValueDenominator">Denominator</label>
+                <input className="form-control"
+                       id="denominator"
+                       value={update.denominator}
                        onChange={onChange}
                        placeholder={_('input_placeholder')} />
             </div>
@@ -84,16 +161,10 @@ const ActualValueInput = ({update, onChange, onClose}) => {
     )
 };
 
-ActualValueInput.propTypes = {
-    update: PropTypes.object.isRequired,
-    updatedActualValue: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-};
-
 
 const ActualValueDescription = ({update, onChange}) => {
     return (
-        <div className="row">
+        <div className="">
             <div className="update-description">
                 <div>
                     <label htmlFor="description">{_('actual_value_comment')}</label>
@@ -139,16 +210,16 @@ class FileUpload extends React.Component {
         // Update with new file
         if (update._file && update._file != 'delete') {
             filename = <div>{update._file.name}</div>
-        // Existing, unmodified update
-        } else if (update.file_url) {
-            filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
-        }
-        if (filename) {
-            removeFile = <a id="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
-                             {_('remove_file')}
-                         </a>
-        }
-        return (
+            // Existing, unmodified update
+            } else if (update.file_url) {
+                filename = <div>{decodeURIComponent(update.file_url.split('/').pop())}</div>
+            }
+            if (filename) {
+                removeFile = <a id="removeFile" style={{marginLeft: "0.5em"}} onClick={this.clearInput}>
+                    {_('remove_file')}
+                </a>
+            }
+            return (
             <span>
                 <FileReaderInput as="url" id="updateFile" onChange={this.props.onChange}
                                  ref={input => this.input = input}>
@@ -162,7 +233,7 @@ class FileUpload extends React.Component {
                 {removeFile}
                 {filename}
             </span>
-        );
+            );
     }
 }
 
@@ -191,25 +262,25 @@ class ImageUpload extends React.Component {
         // Update with new photo
         if (update._photo && update._photo != 'delete') {
             imageName = <div>{update._photo.file.name}</div>
-        // Existing, unmodified update
-        } else if (update.photo_url) {
-            imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
-        }
-        if (imageName) {
-            removeImage =
-                <div className="col-xs-3 update-photo">
-                    <div className="image-container">
-                        <a onClick={this.clearInput}>
-                            <img src={update._photo ? update._photo.img: update.photo_url}/>
-                            <div id="removeImage" className="image-overlay text-center">
-                                {_('remove_image')}
-                            </div>
-                        </a>
+            // Existing, unmodified update
+            } else if (update.photo_url) {
+                imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
+            }
+            if (imageName) {
+                removeImage =
+                    <div className="col-xs-3 update-photo">
+                        <div className="image-container">
+                            <a onClick={this.clearInput}>
+                                <img src={update._photo ? update._photo.img: update.photo_url}/>
+                                <div id="removeImage" className="image-overlay text-center">
+                                    {_('remove_image')}
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                </div>
-        }
+            }
 
-        return (
+            return (
             <div>
                 {removeImage}
                 <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
@@ -223,7 +294,7 @@ class ImageUpload extends React.Component {
                 </FileReaderInput>
                 {imageName}
             </div>
-        );
+            );
     }
 }
 
@@ -250,8 +321,9 @@ Attachments.propTypes = {
 };
 
 
-const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
+const UpdateActionButton = ({action, updateActions, icon, disabled}) => {
     const labels = {
+        [c.UPDATE_ACTION_DELETE]: _('delete'),
         [c.UPDATE_ACTION_SAVE]: _('save'),
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
         [c.UPDATE_ACTION_RETURN]: _('return_for_revision'),
@@ -260,7 +332,7 @@ const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
     return (
         <li role="presentation" className={action}>
             <ToggleButton id={action}
-                          onClick={saveUpdate}
+                          onClick={updateActions}
                           label={labels[action]}
                           icon={icon}
                           disabled={disabled}
@@ -270,60 +342,144 @@ const UpdateActionButton = ({action, saveUpdate, icon, disabled}) => {
 };
 UpdateActionButton.propTypes = {
     action: PropTypes.string.isRequired,
-    saveUpdate: PropTypes.func.isRequired,
+    updateActions: PropTypes.func.isRequired,
     icon: PropTypes.object,
     disabled: PropTypes.bool.isRequired,
 };
 
 
-const UpdateFormButtons = ({user, update, changing, callbacks}) => {
-    //TODO: change those "buttons" to real button tags so they can easily be disabled and a spinner
-    // can be shown when saving is under way
+const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => {
+
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                const disabled = (update.data === null || update.data === "") &&
-                                  action !== c.UPDATE_ACTION_SAVE;
+                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE;
+                switch (measure) {
+                    case c.MEASURE_UNIT: {
+                        disabled = disabled && !(update.value !== null && update.value !== "");
+                        break;
+                    }
+                    case c.MEASURE_PERCENTAGE: {
+                        disabled = disabled &&
+                            (
+                                !(update.numerator !== undefined && update.numerator !== "") ||
+                                !(update.denominator!== undefined && update.denominator !== "")
+                            );
+                        break;
+                    }
+                    case c.MEASURE_QUALITATIVE: {
+                        disabled = disabled &&
+                                   !(update.narrative !== null && update.narrative !== "");
+                        break;
+                    }
+                }
+
                 return <UpdateActionButton key={++btnKey}
                                            action={action}
                                            icon={icon}
-                                           saveUpdate={callbacks.saveUpdate}
+                                           updateActions={updateActions}
                                            disabled={disabled}/>
             }
         )
     }
+
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
     const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
     const actionButtons = getActionButtons(role, update.status, icon);
+
     return (
         <div className="menuAction">
             <ul className="nav-pills bottomRow navbar-right">
-                {!isNewUpdate(update) && isAllowedToDelete(user, update)?
-                    <li role="presentation" className="removeUpdate">
-                        <ToggleButton onClick={callbacks.deleteUpdate}
-                                      icon={icon}
-                                      label={_('delete')}
-                                      className="btn btn-default btn-xs" />
-                    </li>
-                : ''}
                 {actionButtons}
             </ul>
         </div>
     )
 };
-
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
-    callbacks: PropTypes.object.isRequired,
+    changing: PropTypes.bool.isRequired,
+    updateActions: PropTypes.func.isRequired,
+};
+
+
+const QuantitativeUpdateForm = ({period, update, measure, self}) => {
+    const updateValue = parseFloat(update.value ? update.value : 0);
+    const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
+
+    return (
+        <div className="update-container">
+            <div className="update-entry-container edit-in-progress">
+                <QuantitativeHeader targetValue={period.target_value}/>
+                <QuantitativeActualValueInput update={update}
+                                              onChange={self.onChange}
+                                              onClose={self.props.onClose}
+                                              isPercentage={percentageUpdate}/>
+                {percentageUpdate?(<PercentageActualValueInput
+                                       update={update}
+                                       onChange={self.onChange}/>) : undefined}
+                <ActualValueDescription update={update}
+                                        onChange={self.onChange}/>
+                <Attachments update={update}
+                             onChange={self.attachmentsChange}
+                             removeAttachment={self.removeAttachment}/>
+                <UpdateFormButtons
+                    user={self.props.user}
+                    update={update}
+                    measure={measure}
+                    changing={self.props.updates.changing}
+                    updateActions={self.updateActionsHandler}/>
+            </div>
+            <Comments parentId={update.id}
+                      inForm={true}/>
+        </div>
+    )
+};
+QuantitativeUpdateForm.propTypes = {
+    period: PropTypes.object.isRequired,
+    update: PropTypes.object.isRequired,
+    self: PropTypes.object.isRequired,
+};
+
+
+const QualitativeUpdateForm = ({period, update, measure, self}) => {
+    return (
+        <div className="update-container qualitativeUpdate">
+            <div className="update-entry-container edit-in-progress">
+                <QualitativeHeader targetValue={period.target_value}/>
+                <QualitativeActualValueInput update={update}
+                                  onChange={self.onChange}
+                                  onClose={self.props.onClose}/>
+                <ActualValueDescription update={update}
+                                        onChange={self.onChange}/>
+                <Attachments update={update}
+                             onChange={self.attachmentsChange}
+                             removeAttachment={self.removeAttachment}/>
+                <UpdateFormButtons
+                    user={self.props.user}
+                    update={update}
+                    measure={measure}
+                    changing={self.props.updates.changing}
+                    updateActions={self.updateActionsHandler}/>
+            </div>
+            <Comments parentId={update.id}
+                      inForm={true}/>
+        </div>
+    )
+};
+QualitativeUpdateForm.propTypes = {
+    period: PropTypes.object.isRequired,
+    update: PropTypes.object.isRequired,
+    self: PropTypes.object.isRequired,
 };
 
 
 const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
-    const fields = ['data', 'text', 'relative_data', 'status', '_file', '_photo', 'approved_by',];
+    const fields = ['value', 'narrative', 'numerator', 'denominator', 'text',
+                    'status', '_file', '_photo', 'approved_by', ];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
@@ -344,6 +500,7 @@ const pruneForPOST = (update) => {
 export default class UpdateForm extends React.Component {
 
     static propTypes = {
+        indicator: PropTypes.object.isRequired,
         period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
         originalUpdate: PropTypes.object.isRequired,
@@ -359,6 +516,7 @@ export default class UpdateForm extends React.Component {
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
+        this.updateActionsHandler = this.updateActionsHandler.bind(this);
         this.onChange = this.onChange.bind(this);
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
@@ -416,7 +574,7 @@ export default class UpdateForm extends React.Component {
             reader.onloadend = (evt) => {
                 const newImage = update(
                     this.props.update, {$merge:
-                        {_photo: {file, img: evt.target.result}}
+                                        {_photo: {file, img: evt.target.result}}
                     }
                 );
                 updateModel('updates', newImage);
@@ -436,10 +594,10 @@ export default class UpdateForm extends React.Component {
                     // only set to delete a file if there was one in the first place
                     if (originalUpdate.file_url) {
                         changedUpdate = update(this.props.update,
-                            {$merge: {file: '', file_url: '', _file: 'delete'}});
+                                               {$merge: {file: '', file_url: '', _file: 'delete'}});
                     } else {
                         changedUpdate = update(this.props.update,
-                            {$merge: {file: '', file_url: '', _file: undefined}});
+                                               {$merge: {file: '', file_url: '', _file: undefined}});
                     }
                     break;
                 }
@@ -448,26 +606,92 @@ export default class UpdateForm extends React.Component {
                     // only set to delete an image if there was one in the first place
                     if (originalUpdate.photo_url) {
                         changedUpdate = update(this.props.update,
-                            {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
+                                               {$merge: {photo: '', photo_url: '', _photo: 'delete'}});
                     } else {
                         changedUpdate = update(this.props.update,
-                            {$merge: {photo: '', photo_url: '', _photo: undefined}});
+                                               {$merge: {photo: '', photo_url: '', _photo: undefined}});
                     }
                     break;
                 }
 
                 default: {
                     changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
+                    if (field == "numerator" || field == "denominator") {
+                        changedUpdate = update(changedUpdate,
+                                               {$merge: {["value"]: this.computePercentage(changedUpdate)}});
+                    }
                 }
             }
             updateModel('updates', changedUpdate);
         }
     }
 
-    saveUpdate(e) {
+    computePercentage(update) {
+        if (!update.numerator || !update.denominator ) {
+            return 0;
+        } else {
+            return computePercentage(update.numerator, update.denominator);
+        }
+    }
+
+    onCancel() {
+        this.props.formToggle();
+        const originalUpdate = this.state.originalUpdate;
+        if (isNewUpdate(originalUpdate)) {
+            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+        } else {
+            updateModel(c.OBJECTS_UPDATES, originalUpdate);
+        }
+        updateFormClose(originalUpdate.id);
+    }
+
+    formClose(id) {
+        updateFormClose(id);
+    }
+
+    refreshFilter() {
+        const filter = this.props.ui.activeFilter;
+        switch (filter) {
+            case c.FILTER_NEED_REPORTING: {
+                selectPeriodsThatNeedReporting(this.props.needReportingPeriods);
+                break;
+            }
+            case c.FILTER_SHOW_DRAFT: {
+                showUpdates(this.props.draftUpdates, true);
+                break;
+            }
+            case c.FILTER_SHOW_APPROVED: {
+                showUpdates(this.props.approvedUpdates, false, true);
+                break;
+            }
+        }
+    }
+
+    successCallback(id) {
+        this.formClose.bind(id);
+        // TODO: calling refreshFilter here breaks when deleting an update as
+        // this.props.approvedUpdates is "stale" when calling. Currently this leads to an update
+        // that has just been approved showing in the Need reporting filter view.
+        // Need to find a way to let the state change drive the changing of the hidden panels
+
+        // this.refreshFilter(); // Breaks when deleting an update!!!
+    };
+
+    updateActionsHandler(e) {
+        //The id of the button is used to indicate the action taken
+        const action = e.target.id;
+        if (action === c.UPDATE_ACTION_DELETE) {
+            this.deleteUpdate();
+        } else {
+            this.saveUpdate(action);
+        }
+
+    }
+
+    saveUpdate(action) {
         function setUpdateStatus(update, action, userId) {
             /*
-            Set the status field of the update according to the action taken
+               Set the status field of the update according to the action taken
              */
             switch(action) {
                 case c.UPDATE_ACTION_SAVE: {
@@ -502,16 +726,14 @@ export default class UpdateForm extends React.Component {
             }
         };
 
-        let update = Object.assign({}, this.props.update),
-            //The id of the button is used to indicate the action taken
-            action = e.target.id;
+        let update = Object.assign({}, this.props.update);
         if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
-        } else if (!String(update.data).trim()) {
+        } else if (!String(update.value).trim()) {
             if (action === c.UPDATE_ACTION_SAVE) {
                 // Explicitly empty data, only allowed when saving a draft
-                update.data = null;
+                update.value = null;
             } else {
                 this.props.createAlert(this.state.updateAlertName, _('actual_value_required'));
                 return;
@@ -559,7 +781,7 @@ export default class UpdateForm extends React.Component {
 
     previousActualValue() {
         if (this.props.update) {
-            return this.props.update.actual_value - this.props.update.data;
+            return this.props.update.actual_value - this.props.update.value;
         } else {
             const updates = this.props.period.updates;
             if (updates && updates.length > 0) {
@@ -571,33 +793,21 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {update, period} = this.props;
-        const updateValue = parseFloat(update.data ? update.data : 0);
-
-        return (
-            <div className="update-container">
-                <div className="row update-entry-container edit-in-progress">
-                    <Header targetValue={period.target_value}/>
-                    <ActualValueInput update={update}
-                                      onChange={this.onChange}
-                                      onClose={this.props.onClose}/>
-                    <ActualValueDescription update={update}
-                                            onChange={this.onChange}/>
-                    <Attachments update={update}
-                                 onChange={this.attachmentsChange}
-                                 removeAttachment={this.removeAttachment}/>
-                    <UpdateFormButtons
-                        user={this.props.user}
-                        update={update}
-                        changing={this.props.updates.changing}
-                        callbacks={{
-                            saveUpdate: this.saveUpdate,
-                            deleteUpdate: this.deleteUpdate}}/>
-                </div>
-                <Comments parentId={update.id}
-                          inForm={true}/>
-            </div>
-        )
+        const {indicator, period, update} = this.props;
+        switch(indicator.type) {
+            case c.INDICATOR_QUANTATIVE: {
+                return <QuantitativeUpdateForm period={period}
+                                               update={update}
+                                               self={this}
+                                               measure={indicator.measure || "1"}/>
+            }
+            case c.INDICATOR_QUALITATIVE: {
+                return <QualitativeUpdateForm period={period}
+                                              update={update}
+                                              self={this}
+                                              measure={c.MEASURE_QUALITATIVE}/>
+            }
+        }
     }
 }
 
@@ -629,14 +839,15 @@ export class NewUpdateButton extends React.Component {
             period: period.id,
             user_details: user,
             user: user.id,
-            data: '',
+            value: '',
+            narrative: '',
             text: '',
-            relative_data: true,
             status: c.UPDATE_STATUS_NEW,
         };
         //TODO: promise based solution where addKey is called on completion of updateModel?
         updateModel('updates', update);
         updateFormOpen(id);
+        uiHideMode(c.OBJECTS_PERIODS);
         openNodes(c.OBJECTS_PERIODS, [update.period]);
         closeNodes(c.OBJECTS_PERIODS, [update.period]);
         newUpdateID += 1;

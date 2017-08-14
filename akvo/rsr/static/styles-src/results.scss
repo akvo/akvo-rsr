@@ -4112,9 +4112,8 @@ div.iatiFilters {
 header[role="banner"] {
     display: block;
     width: 100%;
-    height: 100px;
     background: #fcfcfc;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 main {
@@ -4139,15 +4138,18 @@ main {
     }
 
     aside.open {
-        background: #ddd;
-        width: 30%;
+        width: calc(30% - 5px);
+        padding: 0px 5px 5px 5px;
         display: flex;
+        margin-top: 5px;
+        margin-left: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        overflow: scroll;
     }
 }
 
 .results {
     background: white;
-    padding: 5px;
     box-sizing: border-box;
 
     * {
@@ -4340,18 +4342,37 @@ main {
 
                                 &.indicatorProgress {
                                     position: absolute;
-                                    right: 3em;
-                                    top: 0.75em;
-                                    color: rgba($akvoBlack, 0.5);
+                                    right: 2em;
+                                    top: 3px;
+                                    color: rgb(19, 140, 228) !important;
                                     max-width: 20%;
 
                                     .react-sweet-progress-circle-outer {
                                         margin-left: 1em;
+
+                                        .react-sweet-progress-symbol {
+                                            font-size: 13px !important;
+                                            font-weight: 400  !important;
+
+                                            svg {
+                                                width: 21px !important;
+                                                height: 21px !important;
+
+                                                path {
+                                                    fill: transparent !important;
+                                                }
+
+                                                g {
+                                                    stroke: rgb(4, 158, 81) !important;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
 
                                 &:nth-child(2) {
                                     margin-left: 10px;
+                                    font-weight: 400;
                                     color: rgba($akvoBlack, 0.5);
 
                                     &::before {
@@ -4462,8 +4483,17 @@ main {
 
     .rc-collapse {
         .rc-collapse-item {
-            border: none !important;
             padding: 0;
+            border-top: none !important;
+            border-right: none !important;
+            border-left: none !important;
+            border-botton: 1px solid grey !important;
+            margin-top: 10px;
+            padding-bottom: 10px;
+
+            &:last-child {
+                border-bottom: none;
+            }
 
             &.needsReporting {}
 
@@ -4626,9 +4656,8 @@ main {
 
                 .rc-collapse-content {
                     &.rc-collapse-content-active {
-                        padding: 5px 10px 10px;
+                        padding: 10px;
                         vertical-align: top;
-                        background-color: rgba($akvoBlack, 0.1);
                         -webkit-box-flex: 1;
                         -moz-box-flex: 1;
                         -webkit-flex: 1;
@@ -4669,13 +4698,74 @@ main {
                             }
 
                             .updates {
+                                > .row {
+                                    margin-bottom: 20px;
+                                    padding-left: 20px;
+
+                                    &::after {}
+
+                                    .UpdateHead {
+                                        .updateName {}
+
+                                        .updateStatus {}
+                                    }
+
+                                    .row {
+                                        .UpdateBody {
+                                            .valueMeta {}
+
+                                            .statusMeta {
+                                                display: none;
+                                            }
+
+                                            .updateValue {
+                                                span {}
+                                            }
+
+                                            .approverMeta {
+                                                span {
+                                                    &.hide {
+                                                        display: none;
+                                                    }
+
+                                                    &.UpdateDate {
+                                                        display: inline-block;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        .comments {
+                                            margin: 10px 0 0 40px;
+                                        }
+
+                                        hr.delicate {
+                                            width: 95%;
+                                            background: rgba(0, 0, 0, 0.1);
+
+                                            /*                                     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #dbdbdb), color-stop(100%, rgba(255, 255, 255, 0)));
+                                                                                background: -webkit-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                                background: -o-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                                background: -ms-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);;
+                                                                                background: radial-gradient(ellipse at center, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%) */
+                                            border: 0em none;
+                                            height: 1px;
+                                            margin: 50px auto 20px auto;
+                                        }
+                                    }
+
+                                    &:last-child {
+                                        .row {
+                                            hr {
+                                                display: none;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 .arrow {
                                     margin-right: 8px !important;
                                     margin-top: -5px !important;
-                                }
-
-                                .comments {
-                                    margin-top: 0px;
                                 }
 
                                 .dimmed {
@@ -4690,160 +4780,162 @@ main {
                                 //        margin-bottom: 10px;
                                 //
                                 //        border
-                                        &:last-child {
-                                            margin-bottom: 5px;
+                                &:last-child {
+                                    margin-bottom: 5px;
+                                }
+
+                                //.rc-collapse-header {
+                                //    background: none !important;
+                                //    padding-left: 20px;
+
+                                div {
+                                    &.UpdateHead {
+                                        padding: 0 0 0 20px;
+                                        margin-bottom: 1rem;
+
+                                        span {
+                                            padding-left: 0;
+                                            margin-right: 25px;
+
+                                            &:last-child {
+                                                margin-right: 0;
+                                            }
+
+                                            &.updateData {
+                                                color: $primary4;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    margin-right: 5px;
+                                                }
+                                            }
+
+                                            &.updateName {
+                                                color: $primary4;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    font-weight: bold;
+                                                    margin-right: 5px;
+                                                }
+                                            }
+
+                                            &.updateStatus {
+                                                color: $rsrGreen;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    font-weight: bold;
+                                                }
+                                            }
                                         }
+                                    }
 
-                                        //.rc-collapse-header {
-                                        //    background: none !important;
-                                        //    padding-left: 20px;
+                                    button {
+                                        opacity: 1 !important;
+                                        margin-left: 15px !important;
+                                        padding: 1px 5px !important;
 
-                                            div {
-                                                &.UpdateHead {
-                                                    padding: 0 0 0 20px;
-                                                    margin-bottom: 1rem;
+                                        &.editingForm {
+                                            opacity: 0.3 !important;
+                                            cursor: not-allowed !important;
+                                            pointer-events: none !important;
+                                        }
+                                    }
+                                }
 
-                                                    span {
-                                                        padding-left: 0;
+                                div {
+                                    &.UpdateBody {
+                                        ul {
+                                            list-style-type: none;
+                                        }
+                                    }
+                                }
+
+                                .arrow {}
+
+                                //}
+
+                                &.rc-collapse-item-active {
+                                    border: 1px solid white !important;
+                                    background: rgba(white, 0.5) !important;
+
+                                    .rc-collapse-header {
+                                        background: rgba(white, 1) !important;
+                                        padding-left: 20px;
+
+                                        .arrow {
+                                            background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                                        }
+                                    }
+
+                                    .rc-collapse-content {
+                                        &.rc-collapse-content-active {
+                                            padding: 5px 10px 10px 10px;
+                                            vertical-align: top;
+                                            -webkit-box-flex: 1;
+                                            -moz-box-flex: 1;
+                                            -webkit-flex: 1;
+                                            -ms-flex: 1;
+                                            flex: 1;
+                                            position: relative;
+                                            background: rgba($secondary1, 0);
+
+                                            .rc-collapse-content-box {
+                                                padding-left: 20px;
+
+                                                ul {
+                                                    padding-left: 0;
+                                                    list-style-type: none;
+
+                                                    li {
+                                                        display: inline;
                                                         margin-right: 25px;
+                                                        color: $primary4;
+
+                                                        &.creatorMeta, &.approverMeta, &.statusMeta {
+                                                            span {
+                                                                color: initial;
+                                                            }
+                                                        }
 
                                                         &:last-child {
                                                             margin-right: 0;
                                                         }
-
-                                                        &.updateData {
-                                                            color: $primary4;
-                                                            margin-right: 5px;
-
-                                                            span {
-                                                                color: initial;
-                                                                margin-right: 5px;
-                                                            }
-                                                        }
-
-                                                        &.updateName {
-                                                            color: $primary4;
-                                                            margin-right: 5px;
-
-                                                            span {
-                                                                color: initial;
-                                                                font-weight: bold;
-                                                                margin-right: 5px;
-                                                            }
-                                                        }
-
-                                                        &.updateStatus {
-                                                            color: $rsrGreen;
-                                                            margin-right: 5px;
-
-                                                            span {
-                                                                color: initial;
-                                                                font-weight: bold;
-                                                            }
-                                                        }
                                                     }
-                                                }
 
-                                                button {
-                                                    opacity: 1 !important;
-                                                    margin-left: 15px !important;
-                                                    padding: 1px 5px !important;
-
-                                                    &.editingForm {
-                                                        opacity: 0.3 !important;
-                                                        cursor: not-allowed !important;
-                                                        pointer-events: none !important;
-                                                    }
-                                                }
-                                            }
-
-                                            div {
-                                                &.UpdateBody {
-                                                    ul {
-                                                        list-style-type: none;
-                                                    }
-                                                }
-                                            }
-                                            .arrow {}
-                                        //}
-
-                                        &.rc-collapse-item-active {
-                                            border: 1px solid white !important;
-                                            background: rgba(white, 0.5) !important;
-
-                                            .rc-collapse-header {
-                                                background: rgba(white, 1) !important;
-                                                padding-left: 20px;
-
-                                                .arrow {
-                                                    background: url(../images/arrowUpDown.png) no-repeat bottom center;
-                                                }
-                                            }
-
-                                            .rc-collapse-content {
-                                                &.rc-collapse-content-active {
-                                                    padding: 5px 10px 10px 10px;
-                                                    vertical-align: top;
-                                                    -webkit-box-flex: 1;
-                                                    -moz-box-flex: 1;
-                                                    -webkit-flex: 1;
-                                                    -ms-flex: 1;
-                                                    flex: 1;
-                                                    position: relative;
-                                                    background: rgba($secondary1, 0);
-
-                                                    .rc-collapse-content-box {
-                                                        padding-left: 20px;
-
-
-                                                        ul {
-                                                            padding-left: 0;
-                                                            list-style-type: none;
-
-                                                            li {
-                                                                display: inline;
-                                                                margin-right: 25px;
+                                                    &.valueMeta {
+                                                        li {
+                                                            &.updateValue, &.totalValue {
                                                                 color: $primary4;
 
-                                                                &.creatorMeta, &.approverMeta, &.statusMeta {
-
-                                                                    span {
-                                                                        color: initial;
-                                                                    }
-
-                                                                }
-
-                                                                &:last-child {
-                                                                    margin-right: 0;
+                                                                span {
+                                                                    font-weight: bold;
+                                                                    color: initial;
                                                                 }
                                                             }
-                                                            &.valueMeta {
-                                                                li {
-                                                                    &.updateValue, &.totalValue {
-                                                                        color: $primary4;
 
-                                                                        span {
-                                                                            font-weight: bold;
-                                                                            color: initial;
-                                                                        }
-                                                                    }
+                                                            &:first-of-type {}
 
-                                                                    &:first-of-type {}
+                                                            &:nth-of-type(2) {}
 
-                                                                    &:nth-of-type(2) {}
+                                                            &:nth-of-type(3) {}
 
-                                                                    &:nth-of-type(3) {}
-
-                                                                    &:nth-of-type(4) {}
-                                                                }
-                                                            }
+                                                            &:nth-of-type(4) {}
                                                         }
                                                     }
                                                 }
                                             }
                                         }
+                                    }
+                                }
+
                                 //    }
                                 //}
+                           
                             }
                         }
                     }
@@ -4860,24 +4952,47 @@ main {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
-    padding: 0px 30px 0 10px;
-    margin-top: 10px;
+    &.qualitativeUpdate {
+        .update-description {
+            display: none;
+        }
+
+        textarea#narrative {
+            min-height: 220px !important;
+        }
+    }
 
     .update-entry-container {
         padding: 0 0 10px 0;
         position: relative;
 
         &.edit-in-progress {
-            background: rgba(150, 167, 157, 0.05);
-            border: 1px solid rgba(230, 167, 157, 0.3);
-            box-shadow: 0 0 10px rgba(60, 148, 157, 0.5);
-            padding-right: 15px;
-            padding-left: 15px;
+            .targetLabel {
+                margin-top: 25px;
+                color: rgba(black, 0.5);
+
+                span {
+                    color: black;
+                }
+            }
 
             .update-entry-container-header {
                 background: rgba(white, 0.5);
                 margin-bottom: 10px;
                 display: none;
+            }
+
+            div {
+                width: 100%;
+                position: relative;
+
+                label[for="actualValue"] + button {
+                    position: absolute;
+                    font-weight: bold;
+                    top: -35px;
+                    right: 0;
+                    background: transparent;
+                }
             }
         }
 
@@ -4943,8 +5058,7 @@ main {
             position: relative;
             margin-top: 30px;
 
-            .removeUpdate {
-
+            .deleteUpdate {
                 .btn {
                     background: $akvoTvRed;
                     color: white;
@@ -5014,7 +5128,6 @@ main {
 }
 
 .comments {
-    padding: 10px 5px 0px 20px;
     margin-top: 30px;
     background: rgba($primary5, 0);
     width: 98%;
@@ -5036,6 +5149,7 @@ main {
         padding-top: 5px;
         padding-bottom: 5px;
         color: rgba($akvoBlack, 0.5);
+        width: calc(100% - 50px);
 
         .comment {
             margin-left: 10px;
@@ -5061,6 +5175,8 @@ main {
 
 .periodMenuBar {
     box-sizing: border-box;
+
+    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
 
     * {
         box-sizing: border-box;

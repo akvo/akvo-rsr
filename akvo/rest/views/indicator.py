@@ -12,7 +12,12 @@ from akvo.rsr.models import Indicator
 class IndicatorViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Indicator.objects.all()
+    queryset = Indicator.objects.all().select_related(
+        'result',
+        'result__project',
+    ).prefetch_related(
+        'child_indicators'
+    )
     serializer_class = IndicatorSerializer
     project_relation = 'result__project__'
 
@@ -20,6 +25,11 @@ class IndicatorViewSet(PublicProjectViewSet):
 class IndicatorFrameworkViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Indicator.objects.all()
+    queryset = Indicator.objects.all().select_related(
+        'result',
+        'result__project',
+    ).prefetch_related(
+        'child_indicators'
+    )
     serializer_class = IndicatorFrameworkSerializer
     project_relation = 'result__project__'

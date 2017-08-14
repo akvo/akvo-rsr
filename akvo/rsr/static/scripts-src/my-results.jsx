@@ -13,7 +13,8 @@ var csrftoken,
     isPublic,
     months,
     projectIds,
-    user = {};
+    user = {},
+    MEASURE_PERCENTAGE = "2";
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -218,19 +219,18 @@ function initReact() {
 
     var UpdateEntry = React.createClass({
         getInitialState: function() {
-            var updateData;
+            var updateValue;
 
-            // In case the update is new (status 'N') and the data is '0', do not display the data.
-            if (this.props.update.data === '0' && this.props.update.status === 'N') {
-                updateData = '';
+            // In case the update is new (status 'N') and the value is '0', do not display the value.
+            if (this.props.update.value === '0' && this.props.update.status === 'N') {
+                updateValue = '';
             } else {
-                updateData = this.props.update.data;
+                updateValue = this.props.update.value;
             }
 
             return {
-                data: updateData,
+                value: updateValue,
                 description: this.props.update.text,
-                isRelative: this.props.update.relative_data,
                 comment: '',
                 askRemove: false,
                 loading: false,
@@ -273,48 +273,55 @@ function initReact() {
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
+        getSaveData: function(){
+            var save_data = {
+                'text': this.state.description.trim(),
+                'value': this.state.value.trim(),
+            };
+
+            // A *HACK* to get percentage updates working in the old UI
+            if (this.props.selectedIndicator.measure == MEASURE_PERCENTAGE) {
+                save_data.denominator = parseFloat(this.props.update.denominator) || 100;
+                save_data.numerator = (
+                    Math.round10(parseFloat(save_data.value) * save_data.denominator / 100, -2) ||
+                    save_data.value
+                )
+            }
+
+            return save_data;
+        },
+
         saveUpdate: function() {
             // Set status to 'Draft' when a 'New' status is saved.
-            var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
+            var status = this.props.update.status !== 'N' ? this.props.update.status : 'D',
+                save_data = this.getSaveData();
+
+            save_data.status = status;
 
             // Save update and reload the whole period when an approved update is edited.
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
-                'status': status
-            }, false, this.props.update.status === 'A');
+            this.baseSave(save_data, false, this.props.update.status === 'A');
         },
 
         askForApproval: function() {
             // Save an indicator update and set the status to pending approval ('P').
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
-                'status': 'P'
-            }, false, false);
+            var save_data = this.getSaveData();
+            save_data.status = 'P';
+            this.baseSave(save_data, false, false);
         },
 
         approve: function() {
             // Save and approve ('A') an indicator update and reload the whole period to see the
             // new updated actual value of the period.
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
-                'status': 'A'
-            }, false, true);
+            var save_data = this.getSaveData();
+            save_data.status = 'A';
+            this.baseSave(save_data, false, false);
         },
 
         returnForRevision: function() {
             // Return the indicator update for revision ('R').
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'data': this.state.data.trim(),
-                'relative_data': this.state.isRelative,
-                'status': 'R'
-            }, false, false);
+            var save_data = this.getSaveData();
+            save_data.status = 'R';
+            this.baseSave(save_data, false, false);
         },
 
         deleteFile: function(type) {
@@ -448,7 +455,7 @@ function initReact() {
 
         handleDataChange: function(e) {
             // Keep track of the data in the 'Actual value' field of the update.
-            this.setState({data: e.target.value});
+            this.setState({value: e.target.value});
         },
 
         handleDescriptionChange: function(e) {
@@ -459,17 +466,6 @@ function initReact() {
         handleCommentChange: function(e) {
             // Keep track of the data in the 'Internal comment' field.
             this.setState({comment: e.target.value});
-        },
-
-        handleRelativeChange: function(e) {
-            // Keep track of the checkbox that controls the relative or absolute change of the
-            // update. Note: absolute changes (and this checkbox) are disabled for now, updates
-            // are always relative.
-            if (this.state.isRelative) {
-                this.setState({isRelative: false});
-            } else {
-                this.setState({isRelative: true});
-            }
         },
 
         renderUpdateClass: function() {
@@ -556,27 +552,26 @@ function initReact() {
             // Render the new actual value of the period, including a calculation based on the
             // previous actual value of the period.
             var periodActualValue = parseFloat(this.props.update.period_actual_value);
-            var originalData = parseFloat(this.state.data);
-            var updateData = this.state.isRelative ? periodActualValue + originalData : originalData;
-            var relativeData = this.state.isRelative ? originalData : updateData - periodActualValue;
+            var originalValue = parseFloat(this.state.value);
+            var updateValue = periodActualValue + originalValue;
 
-            if (isNaN(updateData) || isNaN(relativeData)) {
-                // If the data cannot be calculated (e.g. non-numeric data), do not display a
+            if (isNaN(updateValue) || isNaN(originalValue)) {
+                // If the value cannot be calculated (e.g. non-numeric data), do not display a
                 // calculation.
                 return (
                     <div className="upActualValue">
                         <span className="update-actual-value-text">{label}: </span>
-                        <span className="update-actual-value-data">{this.state.data}</span><br/>
+                        <span className="update-actual-value-data">{this.state.value}</span><br/>
                     </div>
                 );
             } else {
                 // Display a calculation.
-                var relativeDataText = relativeData >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeData.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeData.toString());
+                var valueChangeText = originalValue >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(originalValue.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(originalValue.toString());
                 return (
                     <div className="upActualValue">
                         <span className="update-actual-value-text">{label}: </span>
-                        <span className="update-actual-value-data">{displayNumber(updateData)} </span>
-                        <span className="update-relative-value">({relativeDataText})</span>
+                        <span className="update-actual-value-data">{displayNumber(updateValue)} </span>
+                        <span className="update-relative-value">({valueChangeText})</span>
                     </div>
                 );
             }
@@ -585,24 +580,13 @@ function initReact() {
         renderActual: function() {
             var inputId = "actual-input-" + this.props.update.id;
 
-            //// The checkbox to make the update relative or absolute has been removed, to make ////
-            //// things more clear for the users. ////
-            //// ---- old code ------------------ ////
-            //var checkboxId = "relative-checkbox-" + this.props.update.id;
-            //var checkbox;
-            //if (this.state.isRelative) {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} checked /> {i18nResults.relative_data}</label>;
-            //} else {
-            //    checkbox = <label><input type="checkbox" id={checkboxId} onChange={this.handleRelativeChange} /> {i18nResults.relative_data}</label>;
-            //}
-
             if (this.editing()) {
                 // Show an input field to fill the new actual value when editing.
                 return (
                     <div className="row">
                         <div className="col-xs-6">
                             <label htmlFor={inputId}>{i18nResults.add_to_actual_value}</label>
-                            <input className="form-control" id={inputId} defaultValue={this.state.data} onChange={this.handleDataChange} placeholder={i18nResults.input_placeholder} />
+                            <input className="form-control" id={inputId} defaultValue={this.state.value} onChange={this.handleDataChange} placeholder={i18nResults.input_placeholder} />
                         </div>
                         <div className="col-xs-6">
                             {this.renderActualRelative(i18nResults.new_total_value)}
@@ -980,7 +964,8 @@ function initReact() {
                                 selectedPeriod: thisList.props.selectedPeriod,
                                 selectPeriod: thisList.props.selectPeriod,
                                 reloadPeriod: thisList.props.reloadPeriod,
-                                update: update
+                                update: update,
+                                selectedIndicator: thisList.props.selectedIndicator
                             })}
                         </div>
                     );
@@ -1082,6 +1067,11 @@ function initReact() {
                     return (
                         <div className="new-update"></div>
                     );
+                } else if (this.props.selectedIndicator.measure == MEASURE_PERCENTAGE && this.props.selectedPeriod.data.length >= 1) {
+                    // Show nothing if it the indicator is a percentage measure, and period already has updates
+                    return (
+                        <div className="new-update"></div>
+                    );
                 } else {
                     // If the updates have been loaded and the period is not locked, show a button
                     // to add a new update.
@@ -1091,20 +1081,6 @@ function initReact() {
                         </div>
                     );
                 }
-                // if (this.props.selectedPeriod.data !== undefined) {
-                //     // If the updates have been loaded and the period is not locked, show a button
-                //     // to add a new update.
-                //     return (
-                //         <div className="new-update">
-                //             <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18nResults.new_update}</a>
-                //         </div>
-                //     );
-                // } else {
-                //     // Show nothing if the updates are still loading.
-                //     return (
-                //         <div className="new-update"></div>
-                //     );
-                // }
             } else if (isMEManager) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
@@ -1650,12 +1626,12 @@ function initReact() {
             var url = endpoints.base_url + endpoints.updates_and_comments;
             var actualValue = this.props.selectedPeriod.actual_value === '' ? '0' : this.props.selectedPeriod.actual_value;
 
-            // Default data of a new update. Note that we supply a default '0' data, since that
+            // Default value of a new update. Note that we supply a default '0' value, since that
             // field is mandatory.
             var data = JSON.stringify({
                 'period': periodId,
                 'user': user.id,
-                'data': '0',
+                'value': '0',
                 'period_actual_value': actualValue
             });
 
@@ -2563,3 +2539,45 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAndRenderReact();
     }
 });
+
+// Decimal rounding function (from MDN)
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+(function() {
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param {String}  type  The type of adjustment.
+     * @param {Number}  value The number.
+     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+     * @returns {Number} The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // If the value is negative...
+        if (value < 0) {
+            return -decimalAdjust(type, -value, exp);
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function(value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
+})();
