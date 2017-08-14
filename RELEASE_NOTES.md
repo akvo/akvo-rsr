@@ -24,6 +24,7 @@ Date: 2017-08-14
 * Display complete (long) names of partners – text pending ( [#2773](https://github.com/akvo/akvo-rsr/pull/2773), [#2796](https://github.com/akvo/akvo-rsr/pull/2796) )
 
 
+
 ## Version 3.29 - La Paz
 
 Date: 2017-07-20
