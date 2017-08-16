@@ -6,15 +6,16 @@ Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
+from collections import namedtuple
 
 from akvo.rsr.models import Employment, Indicator, Organisation, Partnership, Project, Result, User
-from akvo.utils import check_auth_groups
+from akvo.utils import check_auth_groups, DjangoModel
 
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
-from akvo.rest.views.project_editor import add_error
+from akvo.rest.views.project_editor import add_error, split_key
 
 
 class BaseReorderTestCase(object):
@@ -314,3 +315,20 @@ class ErrorHandlerTestCase(TestCase):
 
         # Then
         self.assertEquals(1, len(errors))
+
+
+class SplitKeyTestCase(TestCase):
+
+    def test_split_key_returns_three_items(self):
+        # Given
+        key = u'rsr_relatedproject.relation.1234_new-0'
+
+        # When
+        key_info = split_key(key)
+
+        # Then
+        self.assertEquals(
+            key_info.model, DjangoModel._make((u'rsr_relatedproject', u'rsr', u'relatedproject'))
+        )
+        self.assertEquals(key_info.field, u'relation')
+        self.assertEquals(key_info.ids, [u'1234', u'new-0'])
