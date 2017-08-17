@@ -294,6 +294,38 @@ class IndicatorReference(models.Model):
         return str(self.iati_vocabulary())
 
 
+class OrganisationIndicatorLabel(models.Model):
+    from .organisation import Organisation
+
+    organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
+                                     related_name='indicator_labels')
+    label = ValidXMLCharField(_(u'label'), max_length=100)
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'organisation indicator label')
+        verbose_name_plural = _(u'organisation indicator labels')
+        unique_together = ('organisation', 'label')
+
+    def __unicode__(self):
+        return self.label
+
+
+class IndicatorLabel(models.Model):
+    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
+                                  related_name='labels')
+    label = models.ForeignKey(OrganisationIndicatorLabel, verbose_name=_(u'label'),
+                                  related_name='indicators')
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator label')
+        verbose_name_plural = _(u'indicator labels')
+
+    def __unicode__(self):
+        return self.label
+
+
 class IndicatorPeriod(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'), related_name='periods')
     parent_period = models.ForeignKey('self', blank=True, null=True, default=None,

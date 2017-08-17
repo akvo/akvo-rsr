@@ -102,6 +102,11 @@
               {% include inline_admin_formset.opts.template %}
             {% endwith %}
           {% endif %}
+          {% if forloop.counter == 3 and inline_admin_formsets.8 %}
+            {% with inline_admin_formset=inline_admin_formsets.8 %}
+              {% include inline_admin_formset.opts.template %}
+            {% endwith %}
+          {% endif %}
         {% endfor %}
         {% block after_related_objects %}{% endblock %}
 
