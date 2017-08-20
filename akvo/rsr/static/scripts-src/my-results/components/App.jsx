@@ -208,9 +208,11 @@ export default class App extends React.Component {
                     }
                 }
                 if (this.state.updateFormDisplay &&
-                        this.props.ui.activeFilter !== nextProps.ui.activeFilter) {
-                    this.onClose();
-                }
+                    (this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
+                     !nextProps.ui.activeFilter))
+                    {
+                        this.onClose();
+                    }
             }
         };
 
