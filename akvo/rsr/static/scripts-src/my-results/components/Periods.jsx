@@ -277,7 +277,7 @@ export default class Periods extends React.Component {
                     !ui.updateFormDisplay && (
                         ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
                     )) && !(
-                        indicator.measure === c.PERCENTAGE_MEASURE &&
+                        indicator.measure === c.MEASURE_PERCENTAGE &&
                         this.props.periodChildrenIds[id].length >= 1
                     )){
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;

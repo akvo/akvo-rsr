@@ -69,7 +69,7 @@ const TimestampInfo =({update, user, label}) => {
     return (
         <ul>
             <li className="approverMeta">{label}
-                <span class="UpdateDate"> {displayDate(update.last_modified_at)}</span>
+                <span className="UpdateDate"> {displayDate(update.last_modified_at)}</span>
                 <span className="hide"> {displayName(user)}</span>
                 <span className="hide"> {user.approved_organisations[0].name}</span>
             </li>
@@ -116,13 +116,13 @@ UpdateStatus.propTypes = {
 const QuantitativeUpdateBody = ({update}) => {
     const {user_details, approver_details} = update;
     const approvedBy = approver_details ?
-        <TimestampInfo update={update} user={approver_details} label="Approved on" />
+        <TimestampInfo update={update} user={approver_details} label="Approved on " />
     :
         undefined;
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
-            <TimestampInfo update={update} user={user_details} label="Created on" />
+            <TimestampInfo update={update} user={user_details} label="Created on " />
             {approvedBy}
             <UpdateStatus update={update} />
         </div>

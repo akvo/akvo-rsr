@@ -1,4 +1,4 @@
-# Akvo RSR Release Notes 
+# Akvo RSR Release Notes
 ----
 ## Version 3.30 - Paramaribo 
 
@@ -25,21 +25,49 @@ Date: 2017-08-14
 
 
 
-## Version 3.29 - La Paz
+# Version 3.30 - Paramaribo
+
+Date: 2017-08-14
+
+## New and Noteworthy
+
+* Qualitative indicators introduced – The first step of incorporating qualitative indicators within the improved RSR Results Framework has been completed. Partners are now also able to capture data from their qualitative indicators in RSR; this results data can be exported to RSR reports. ( [#2755](https://github.com/akvo/akvo-rsr/issues/2755), [#2756](https://github.com/akvo/akvo-rsr/issues/2756), [#2808](https://github.com/akvo/akvo-rsr/pull/2808) )
+
+* Aggregation of percentage indicators  – Entering the 'raw data' behind result values in percentages, namely the numerator and denominator, introduced to the new results framework. Users are now able to have more complete results data for their indicators measured in percentage. ( [#2446](https://github.com/akvo/akvo-rsr/issues/2446), [#2791](https://github.com/akvo/akvo-rsr/issues/2810), [#2810](https://github.com/akvo/akvo-rsr/issues/2810), [#2817](https://github.com/akvo/akvo-rsr/pull/2817) )
+
+* Indicator Reporting Update design now fully introduced – With the completion of the UI work to the right-side panel of the Indicator Reporting Update, the final piece of the redesigned results framework has been completed. ( [#2781](https://github.com/akvo/akvo-rsr/issues/2781), [#2801](https://github.com/akvo/akvo-rsr/pull/2801), [#2802](https://github.com/akvo/akvo-rsr/issues/2802), [#2788](https://github.com/akvo/akvo-rsr/pull/2788) )
+
+
+## Resolved issues
+
+* Results Framework UI stabilized – Scrolling, navigating through the redesigned RSR Results Framework has been further improved.   ( [#2787](https://github.com/akvo/akvo-rsr/issues/2787), [#2788](https://github.com/akvo/akvo-rsr/pull/2788), [#2801](https://github.com/akvo/akvo-rsr/pull/2801), [#2802](https://github.com/akvo/akvo-rsr/issues/2802) )
+
+* 504 timeouts on the results framework page for projects with many children and indicators resolved – Fixed the issue of too many queries leading to 504 timeouts for parent projects with many child projects and indicators. ( [#2782](https://github.com/akvo/akvo-rsr/issues/2782), [#2783](https://github.com/akvo/akvo-rsr/pull/2783) )
+
+* Advanced Filters now work in the IE browser – A javascript error leading to the malfunctioning of the RSR Advanced Filter functionality when you use the IE browser has been resolved. ( [#2785](https://github.com/akvo/akvo-rsr/issues/2785), [#2786](https://github.com/akvo/akvo-rsr/pull/2786) )
+
+* Display complete (long) names of partners – In the name field, long names led to an incomplete/truncated version of the full name. Full names, regardless of length can now be displayed. ( [#2773](https://github.com/akvo/akvo-rsr/pull/2773), [#2796](https://github.com/akvo/akvo-rsr/pull/2796) )
+
+### Code maintenance
+
+* Remove the `IndicatorPeriodData.relative_data` field ( [#2789](https://github.com/akvo/akvo-rsr/issues/2789) )
+
+
+# Version 3.29 - La Paz
 
 Date: 2017-07-20
 
-## Noteworthy 
+## Noteworthy
 
- * Indicator Reporting design further improved in the beta RSR Results Framework 
+ * Indicator Reporting design further improved in the beta RSR Results Framework
 
- * New partner introduced to the beta RSR Results Framework 
+ * New partner introduced to the beta RSR Results Framework
 
  * JavaScript testing framework added; based on Mocha, Chai and Enzyme to focus initially on unit testing of new React based development [#2735](https://github.com/akvo/akvo-rsr/issues/2735)
 
 ## Resolved Issues
 
- * Actual vs. Target Progress Indicator in the beta RSR Results Framework can now accommodate longer titles 
+ * Actual vs. Target Progress Indicator in the beta RSR Results Framework can now accommodate longer titles
 
 
 # Akvo RSR – Version 3.28 Georgetown

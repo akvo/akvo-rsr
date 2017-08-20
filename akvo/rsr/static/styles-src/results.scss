@@ -4141,7 +4141,7 @@ main {
         width: calc(30% - 5px);
         padding: 0px 5px 5px 5px;
         display: flex;
-        margin-top: 10px;
+        margin-top: 5px;
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         overflow: scroll;
@@ -4483,8 +4483,17 @@ main {
 
     .rc-collapse {
         .rc-collapse-item {
-            border: none !important;
             padding: 0;
+            border-top: none !important;
+            border-right: none !important;
+            border-left: none !important;
+            border-botton: 1px solid grey !important;
+            margin-top: 10px;
+            padding-bottom: 10px;
+
+            &:last-child {
+                border-bottom: none;
+            }
 
             &.needsReporting {}
 
@@ -4943,6 +4952,15 @@ main {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
+    &.qualitativeUpdate {
+        .update-description {
+            display: none;
+        }
+
+        textarea#narrative {
+            min-height: 220px !important;
+        }
+    }
 
     .update-entry-container {
         padding: 0 0 10px 0;
@@ -5040,7 +5058,7 @@ main {
             position: relative;
             margin-top: 30px;
 
-            .removeUpdate {
+            .deleteUpdate {
                 .btn {
                     background: $akvoTvRed;
                     color: white;

@@ -13,7 +13,8 @@ var csrftoken,
     isPublic,
     months,
     projectIds,
-    user = {};
+    user = {},
+    MEASURE_PERCENTAGE = "2";
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
@@ -272,44 +273,55 @@ function initReact() {
             apiCall('PATCH', url, JSON.stringify(data), success);
         },
 
-        saveUpdate: function() {
-            // Set status to 'Draft' when a 'New' status is saved.
-            var status = this.props.update.status !== 'N' ? this.props.update.status : 'D';
-
-            // Save update and reload the whole period when an approved update is edited.
-            this.baseSave({
+        getSaveData: function(){
+            var save_data = {
                 'text': this.state.description.trim(),
                 'value': this.state.value.trim(),
-                'status': status
-            }, false, this.props.update.status === 'A');
+            };
+
+            // A *HACK* to get percentage updates working in the old UI
+            if (this.props.selectedIndicator.measure == MEASURE_PERCENTAGE) {
+                save_data.denominator = parseFloat(this.props.update.denominator) || 100;
+                save_data.numerator = (
+                    Math.round10(parseFloat(save_data.value) * save_data.denominator / 100, -2) ||
+                    save_data.value
+                )
+            }
+
+            return save_data;
+        },
+
+        saveUpdate: function() {
+            // Set status to 'Draft' when a 'New' status is saved.
+            var status = this.props.update.status !== 'N' ? this.props.update.status : 'D',
+                save_data = this.getSaveData();
+
+            save_data.status = status;
+
+            // Save update and reload the whole period when an approved update is edited.
+            this.baseSave(save_data, false, this.props.update.status === 'A');
         },
 
         askForApproval: function() {
             // Save an indicator update and set the status to pending approval ('P').
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'value': this.state.value.trim(),
-                'status': 'P'
-            }, false, false);
+            var save_data = this.getSaveData();
+            save_data.status = 'P';
+            this.baseSave(save_data, false, false);
         },
 
         approve: function() {
             // Save and approve ('A') an indicator update and reload the whole period to see the
             // new updated actual value of the period.
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'value': this.state.value.trim(),
-                'status': 'A'
-            }, false, true);
+            var save_data = this.getSaveData();
+            save_data.status = 'A';
+            this.baseSave(save_data, false, false);
         },
 
         returnForRevision: function() {
             // Return the indicator update for revision ('R').
-            this.baseSave({
-                'text': this.state.description.trim(),
-                'value': this.state.value.trim(),
-                'status': 'R'
-            }, false, false);
+            var save_data = this.getSaveData();
+            save_data.status = 'R';
+            this.baseSave(save_data, false, false);
         },
 
         deleteFile: function(type) {
@@ -456,20 +468,9 @@ function initReact() {
             this.setState({comment: e.target.value});
         },
 
-        handleRelativeChange: function(e) {
-            // Keep track of the checkbox that controls the relative or absolute change of the
-            // update. Note: absolute changes (and this checkbox) are disabled for now, updates
-            // are always relative.
-            if (this.state.isRelative) {
-                this.setState({isRelative: false});
-            } else {
-                this.setState({isRelative: true});
-            }
-        },
-
         renderUpdateClass: function() {
             // When an update is in editing mode, it should have the 'edit-in-progress' class.
-            var updateClass = "update-entry-container";
+            var updateClass = "row update-entry-container";
             if (this.editing()) {
                 updateClass += " edit-in-progress";
             }
@@ -540,7 +541,7 @@ function initReact() {
             }
 
             return (
-                React.createElement("div", {className: "update-entry-container-header"}, 
+                React.createElement("div", {className: "row update-entry-container-header"}, 
                     headerLeft, 
                     headerRight
                 )
@@ -552,10 +553,9 @@ function initReact() {
             // previous actual value of the period.
             var periodActualValue = parseFloat(this.props.update.period_actual_value);
             var originalValue = parseFloat(this.state.value);
-            var updateValue = this.state.isRelative ? periodActualValue + originalValue : originalValue;
-            var relativeValue = this.state.isRelative ? originalValue : updateValue - periodActualValue;
+            var updateValue = periodActualValue + originalValue;
 
-            if (isNaN(updateValue) || isNaN(relativeValue)) {
+            if (isNaN(updateValue) || isNaN(originalValue)) {
                 // If the value cannot be calculated (e.g. non-numeric data), do not display a
                 // calculation.
                 return (
@@ -566,12 +566,12 @@ function initReact() {
                 );
             } else {
                 // Display a calculation.
-                var relativeValueText = relativeValue >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(relativeValue.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(relativeValue.toString());
+                var valueChangeText = originalValue >= 0 ? displayNumber(periodActualValue.toString()) + '+' + displayNumber(originalValue.toString()) : displayNumber(periodActualValue.toString()) + displayNumber(originalValue.toString());
                 return (
                     React.createElement("div", {className: "upActualValue"}, 
                         React.createElement("span", {className: "update-actual-value-text"}, label, ": "), 
                         React.createElement("span", {className: "update-actual-value-data"}, displayNumber(updateValue), " "), 
-                        React.createElement("span", {className: "update-relative-value"}, "(", relativeValueText, ")")
+                        React.createElement("span", {className: "update-relative-value"}, "(", valueChangeText, ")")
                     )
                 );
             }
@@ -964,7 +964,8 @@ function initReact() {
                                 selectedPeriod: thisList.props.selectedPeriod,
                                 selectPeriod: thisList.props.selectPeriod,
                                 reloadPeriod: thisList.props.reloadPeriod,
-                                update: update
+                                update: update,
+                                selectedIndicator: thisList.props.selectedIndicator
                             })
                         )
                     );
@@ -1066,6 +1067,11 @@ function initReact() {
                     return (
                         React.createElement("div", {className: "new-update"})
                     );
+                } else if (this.props.selectedIndicator.measure == MEASURE_PERCENTAGE && this.props.selectedPeriod.data.length >= 1) {
+                    // Show nothing if it the indicator is a percentage measure, and period already has updates
+                    return (
+                        React.createElement("div", {className: "new-update"})
+                    );
                 } else {
                     // If the updates have been loaded and the period is not locked, show a button
                     // to add a new update.
@@ -1075,20 +1081,6 @@ function initReact() {
                         )
                     );
                 }
-                // if (this.props.selectedPeriod.data !== undefined) {
-                //     // If the updates have been loaded and the period is not locked, show a button
-                //     // to add a new update.
-                //     return (
-                //         <div className="new-update">
-                //             <a onClick={this.addNewUpdate} className="btn btn-sm btn-default"><i className="fa fa-plus" /> {i18nResults.new_update}</a>
-                //         </div>
-                //     );
-                // } else {
-                //     // Show nothing if the updates are still loading.
-                //     return (
-                //         <div className="new-update"></div>
-                //     );
-                // }
             } else if (isMEManager) {
                 // In case the period is locked, in the 'MyRSR' view, and the user is an admin,
                 // then show a button to unlock the period.
@@ -2547,3 +2539,45 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAndRenderReact();
     }
 });
+
+// Decimal rounding function (from MDN)
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+(function() {
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param {String}  type  The type of adjustment.
+     * @param {Number}  value The number.
+     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+     * @returns {Number} The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // If the value is negative...
+        if (value < 0) {
+            return -decimalAdjust(type, -value, exp);
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    }
+
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function(value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
+})();
