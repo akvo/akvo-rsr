@@ -39,10 +39,13 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import (Indicator, IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
+from .indicator import (Indicator, IndicatorDimension, IndicatorLabel,
+                        IndicatorPeriod, IndicatorPeriodData,
                         IndicatorPeriodDataComment, IndicatorReference,
-                        IndicatorPeriodActualDimension, IndicatorPeriodTargetDimension,
-                        IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation)
+                        IndicatorPeriodActualDimension,
+                        IndicatorPeriodTargetDimension,
+                        IndicatorPeriodActualLocation,
+                        IndicatorPeriodTargetLocation)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -106,6 +109,7 @@ __all__ = [
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
+    'IndicatorDimension',
     'IndicatorLabel',
     'IndicatorPeriod',
     'IndicatorPeriodActualDimension',

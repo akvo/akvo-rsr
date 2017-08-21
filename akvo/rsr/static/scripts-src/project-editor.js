@@ -46,8 +46,8 @@ var localStorageResponses = localStorage.getItem(localStorageName);
 // PARTIALS
 var partials = [
     'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
-    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-label',
-    'indicator-period', 'indicator-reference', 'indicator-period-actual-dimension',
+    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-dimension',
+    'indicator-label', 'indicator-period', 'indicator-reference', 'indicator-period-actual-dimension',
     'indicator-period-actual-location', 'indicator-period-target-dimension',
     'indicator-period-target-location', 'link', 'partner', 'planned-disbursement', 'policy-marker',
     'recipient-country', 'recipient-region', 'related-project','result', 'sector', 'transaction',
@@ -84,12 +84,12 @@ function serialize(form) {
        Modified to skip hidden fields and added / removed some field types.
        Modified to only serialize fields that have been changed. */
 
-	var  q = [];
+  var  q = [];
 
-	for (var i = 0; i < form.elements.length; i++) {
+  for (var i = 0; i < form.elements.length; i++) {
         var formField = form.elements[i];
 
-		if (formField.name !== "" && fieldChanged(formField)) {
+    if (formField.name !== "" && fieldChanged(formField)) {
             // Form field has a name and is changed (and not hidden), only then process it
             if (formField.nodeName === 'INPUT') {
                 if (formField.type === 'text' || formField.type === 'number') {
@@ -104,8 +104,8 @@ function serialize(form) {
                 q.push(formField.name + "=" + encodeURIComponent(formField.value));
             }
         }
-	}
-	return q.join("&");
+  }
+  return q.join("&");
 }
 
 function startSave(saveButton) {
@@ -1582,6 +1582,7 @@ function addPartial(partialName, partialContainer) {
             ['result', 'indicator', 'indicator-period', 'indicator-period-actual-location'],
             ['result', 'indicator', 'indicator-period', 'indicator-period-target-dimension'],
             ['result', 'indicator', 'indicator-period', 'indicator-period-target-location'],
+            ['result', 'indicator', 'indicator-dimension'],
             ['result', 'indicator', 'indicator-label'],
             ['result', 'indicator', 'indicator-reference'],
             ['transaction', 'transaction-sector'],

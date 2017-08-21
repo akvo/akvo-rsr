@@ -1064,3 +1064,23 @@ class IndicatorPeriodActualDimension(models.Model):
 
     def __unicode__(self):
         return self.name + ': ' + self.value if self.name and self.value else ''
+
+
+class IndicatorDimension(models.Model):
+    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
+                                  related_name='dimensions')
+    name = ValidXMLCharField(
+        _(u'dimension name'), blank=True, max_length=100,
+        help_text=_(u'The name of a category to be used when disaggregating (e.g "Age")'))
+    value = ValidXMLCharField(
+        _(u'dimension value'), blank=True, max_length=100,
+        help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator dimension')
+        verbose_name_plural = _(u'indicator dimensions')
+        ordering = ['id']
+
+    def __unicode__(self):
+        return self.name + ': ' + self.value if self.name and self.value else ''

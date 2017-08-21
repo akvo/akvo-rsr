@@ -86,6 +86,25 @@
           </div>
         </div>
 
+        <!-- FIXME: Make this visible only to BETA users?  -->
+        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimension" }}">
+            <h5>{% trans 'Indicator Dimensions' %}</h5>
+            <div class="indicator-dimension-container" id="indicator-dimension-container">
+                {% for dimension in indicator.dimensions.all %}
+                {% include "myrsr/project_editor/related_objects/indicator_dimension_input.html" %}
+                {% empty %}
+                {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+                {% include "myrsr/project_editor/related_objects/indicator_dimension_input.html" with dimension='IndicatorDimension.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+                {% endwith %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                        <a href="#" class="add-indicator-dimension"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator dimension' %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
           <div class="col-md-6">
             {% include text_input with obj=indicator field='baseline_year' number=True %}
@@ -122,6 +141,5 @@
         </div>
       </div>
     </div>
-
   {% endwith %}
 {% endwith %}
