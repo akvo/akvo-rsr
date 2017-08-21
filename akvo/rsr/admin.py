@@ -234,7 +234,7 @@ class OrganisationIndicatorLabelInline(NestedTabularInline):
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:
-            return 1 if obj.custom_fields.count() == 0 else 0
+            return 1 if obj.indicator_labels.count() == 0 else 0
         else:
             return 1
 
