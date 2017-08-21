@@ -39,7 +39,7 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import (Indicator, IndicatorPeriod, IndicatorPeriodData,
+from .indicator import (Indicator, IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
                         IndicatorPeriodDataComment, IndicatorReference,
                         IndicatorPeriodActualDimension, IndicatorPeriodTargetDimension,
                         IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation)
@@ -50,6 +50,7 @@ from .link import Link
 from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocation,
                        AdministrativeLocation)
 from .organisation import Organisation
+from .organisation_indicator_label import OrganisationIndicatorLabel
 from .organisation_account import OrganisationAccount
 from .organisation_budget import (OrganisationCountryBudget, OrganisationRegionBudget,
                                   OrganisationRecipientOrgBudget, OrganisationTotalBudget,
@@ -105,6 +106,7 @@ __all__ = [
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
+    'IndicatorLabel',
     'IndicatorPeriod',
     'IndicatorPeriodActualDimension',
     'IndicatorPeriodActualLocation',
@@ -128,6 +130,7 @@ __all__ = [
     'OrganisationDocumentCategory',
     'OrganisationDocumentCountry',
     'OrganisationExpenseLine',
+    'OrganisationIndicatorLabel',
     'OrganisationLocation',
     'OrganisationRecipientOrgBudget',
     'OrganisationRecipientOrgBudgetLine',

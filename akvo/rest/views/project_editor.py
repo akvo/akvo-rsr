@@ -14,12 +14,13 @@ from collections import namedtuple
 from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
                              ValidXMLCharField, ValidXMLTextField)
 from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, CrsAdd,
-                             CrsAddOtherFlag, Fss, FssForecast, Indicator, IndicatorPeriod,
-                             IndicatorReference, IndicatorPeriodActualDimension,
+                             CrsAddOtherFlag, Fss, FssForecast, Indicator, IndicatorLabel,
+                             IndicatorPeriod, IndicatorReference, IndicatorPeriodActualDimension,
                              IndicatorPeriodActualLocation, IndicatorPeriodTargetDimension,
-                             IndicatorPeriodTargetLocation, Keyword, Organisation, Project,
-                             ProjectDocument, ProjectDocumentCategory, ProjectEditorValidationSet,
-                             ProjectLocation, Result, Transaction, TransactionSector)
+                             IndicatorPeriodTargetLocation, Keyword, Organisation,
+                             Project, OrganisationIndicatorLabel, ProjectDocument,
+                             ProjectDocumentCategory, ProjectEditorValidationSet, ProjectLocation,
+                             Result, Transaction, TransactionSector)
 from akvo.utils import DjangoModel
 
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
@@ -43,6 +44,7 @@ from sorl.thumbnail import get_thumbnail
 RELATED_OBJECTS_MAPPING = {
     # Special mapping for related objects without a 'project' field
     Indicator: (Result, 'result'),
+    IndicatorLabel: (Indicator, 'indicator'),
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
@@ -224,14 +226,17 @@ def pre_process_data(key, data, errors):
             try:
                 if 'project' in key_parts.field:
                     return Project.objects.get(pk=int(data)), errors
-                elif 'organisation' in key_parts.field:
+                if 'organisation' in key_parts.field:
                     return Organisation.objects.get(pk=int(data)), errors
-                elif 'label' in key_parts.field:
+                if key_parts.model.model_name == 'indicatorlabel' and key_parts.field == 'label':
+                    return OrganisationIndicatorLabel.objects.get(pk=int(data)), errors
+                if key_parts.model.model_name == 'budgetitem' and key_parts.field == 'label':
                     return BudgetItemLabel.objects.get(pk=int(data)), errors
-                elif 'country' in key_parts.field:
+                if 'country' in key_parts.field:
                     return Country.objects.get(pk=int(data)), errors
+                return None, errors
             except (Project.DoesNotExist, Organisation.DoesNotExist, BudgetItemLabel.DoesNotExist,
-                    Country.DoesNotExist) as e:
+                    Country.DoesNotExist, OrganisationIndicatorLabel.DoesNotExist) as e:
                 errors = add_error(errors, e, key)
                 return None, errors
         else:

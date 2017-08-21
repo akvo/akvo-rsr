@@ -9,6 +9,7 @@ from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOC
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path
+from .organisation_indicator_label import OrganisationIndicatorLabel
 from .result import Result
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
@@ -294,23 +295,6 @@ class IndicatorReference(models.Model):
         return str(self.iati_vocabulary())
 
 
-class OrganisationIndicatorLabel(models.Model):
-    from .organisation import Organisation
-
-    organisation = models.ForeignKey(Organisation, verbose_name=_(u'organisation'),
-                                     related_name='indicator_labels')
-    label = ValidXMLCharField(_(u'label'), max_length=100)
-
-    class Meta:
-        app_label = 'rsr'
-        verbose_name = _(u'organisation indicator label')
-        verbose_name_plural = _(u'organisation indicator labels')
-        unique_together = ('organisation', 'label')
-
-    def __unicode__(self):
-        return self.label
-
-
 class IndicatorLabel(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
                                   related_name='labels')
@@ -323,7 +307,7 @@ class IndicatorLabel(models.Model):
         verbose_name_plural = _(u'indicator labels')
 
     def __unicode__(self):
-        return self.label
+        return self.label.label
 
 
 class IndicatorPeriod(models.Model):

@@ -215,20 +215,47 @@ def choices(obj, field):
 
     :returns ((1, "Core Activity"), (2, "Sub Activity"), (3, "Lower Sub Activity"))
     """
-    model_field = retrieve_model(obj)._meta.get_field(field)
+
+    model = retrieve_model(obj)
+    model_field = model._meta.get_field(field)
+
     if not isinstance(model_field, models.ForeignKey):
         return [model_field.choices, [choice[0] for choice in model_field.choices]]
+
     elif isinstance(obj, get_model('rsr', 'BudgetItem')) or \
             (isinstance(obj, basestring) and 'BudgetItem' in obj):
         # The ForeignKey field on budget items is the budget item labels
         all_budget_labels = get_model('rsr', 'budgetitemlabel').objects.all()
-        return [all_budget_labels.values_list('id', 'label'),
-                [label.pk for label in all_budget_labels]]
+        return [
+            all_budget_labels.values_list('id', 'label'),
+            [label.pk for label in all_budget_labels]
+        ]
+
     elif isinstance(obj, get_model('rsr', 'ProjectLocation')) or \
             (isinstance(obj, basestring) and 'ProjectLocation' in obj):
         # The ForeignKey field on locations is the countries
         all_countries = get_model('rsr', 'country').objects.all()
-        return [all_countries.values_list('id', 'name'), [country.pk for country in all_countries]]
+        return [
+            all_countries.values_list('id', 'name'),
+            [country.pk for country in all_countries]
+        ]
+
+    elif isinstance(obj, get_model('rsr', 'IndicatorLabel')) or \
+            (isinstance(obj, basestring) and 'IndicatorLabel' in obj):
+
+        if isinstance(obj, basestring) and 'IndicatorLabel' in obj:
+            # String looking like: u'IndicatorLabel.5577_22634_19197', 5577 is the project ID
+            project_pk = obj.split('.')[1].split('_')[0]
+            project = get_model('rsr', 'Project').objects.get(pk=project_pk)
+        else:
+            project = obj.indicator.result.project
+        organisation_indicator_labels = get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
+            organisation=project.primary_organisation
+        )
+        return [
+            organisation_indicator_labels.values_list('id', 'label'),
+            [label.pk for label in organisation_indicator_labels]
+        ]
 
 
 @register.filter
