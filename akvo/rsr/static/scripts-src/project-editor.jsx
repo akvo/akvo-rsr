@@ -46,7 +46,7 @@ var localStorageResponses = localStorage.getItem(localStorageName);
 // PARTIALS
 var partials = [
     'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
-    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-period',
+    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-label', 'indicator-period',
     'indicator-reference', 'indicator-period-actual-dimension', 'indicator-period-actual-location',
     'indicator-period-target-dimension', 'indicator-period-target-location', 'link', 'partner',
     'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
@@ -1582,6 +1582,7 @@ function addPartial(partialName, partialContainer) {
             ['result', 'indicator', 'indicator-period', 'indicator-period-actual-location'],
             ['result', 'indicator', 'indicator-period', 'indicator-period-target-dimension'],
             ['result', 'indicator', 'indicator-period', 'indicator-period-target-location'],
+            ['result', 'indicator', 'indicator-label'],
             ['result', 'indicator', 'indicator-reference'],
             ['transaction', 'transaction-sector'],
             ['project-location', 'location-administrative'],
