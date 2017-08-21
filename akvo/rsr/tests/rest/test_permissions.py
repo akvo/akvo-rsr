@@ -158,6 +158,8 @@ class PermissionFilteringTestCase(TestCase):
                 result = M.Result.objects.create(project=project)
                 # indicator
                 indicator = M.Indicator.objects.create(result=result)
+                # indicator dimension
+                M.IndicatorDimension.objects.create(indicator=indicator)
                 # indicator label
                 M.IndicatorLabel.objects.create(indicator=indicator, label=label)
                 # indicator reference
@@ -449,6 +451,12 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.Indicator] = {
             'group_count': group_count(8, 4, 6, 4),
             'project_relation': 'result__project__'
+        }
+
+        # one indicator dimension per indicator
+        model_map[M.IndicatorDimension] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'indicator__result__project__'
         }
 
         # one label per indicator

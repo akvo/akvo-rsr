@@ -195,6 +195,10 @@ rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_project
 rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
 
+rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
+
 rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)

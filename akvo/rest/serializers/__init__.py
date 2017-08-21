@@ -32,6 +32,7 @@ from .indicator_period_dimension import (IndicatorPeriodActualDimensionSerialize
                                          IndicatorPeriodTargetDimensionSerializer)
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
+from .indicator_dimension import IndicatorDimensionSerializer
 from .indicator_reference import IndicatorReferenceSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .keyword import KeywordSerializer
@@ -118,6 +119,7 @@ __all__ = [
     'IatiCheckSerializer',
     'IatiExportSerializer',
     'IndicatorSerializer',
+    'IndicatorDimensionSerializer',
     'IndicatorFrameworkSerializer',
     'IndicatorLabelSerializer',
     'IndicatorPeriodActualDimensionSerializer',
