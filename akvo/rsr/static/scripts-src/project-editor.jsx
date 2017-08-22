@@ -46,13 +46,13 @@ var localStorageResponses = localStorage.getItem(localStorageName);
 // PARTIALS
 var partials = [
     'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
-    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-label', 'indicator-period',
-    'indicator-reference', 'indicator-period-actual-dimension', 'indicator-period-actual-location',
-    'indicator-period-target-dimension', 'indicator-period-target-location', 'link', 'partner',
-    'planned-disbursement', 'policy-marker', 'recipient-country', 'recipient-region',
-    'related-project','result', 'sector', 'transaction', 'transaction-sector',
-    'location-administrative', 'project-location', 'keyword', 'crs-add', 'crsadd-other-flag', 'fss',
-    'fss-forecast', 'legacy-data'
+    'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-label',
+    'indicator-period', 'indicator-reference', 'indicator-period-actual-dimension',
+    'indicator-period-actual-location', 'indicator-period-target-dimension',
+    'indicator-period-target-location', 'link', 'partner', 'planned-disbursement', 'policy-marker',
+    'recipient-country', 'recipient-region', 'related-project','result', 'sector', 'transaction',
+    'transaction-sector', 'location-administrative', 'project-location', 'keyword', 'crs-add',
+    'crsadd-other-flag', 'fss', 'fss-forecast', 'legacy-data'
 ];
 
 // Measure the percentage of completion for each panel and display the results to the user
