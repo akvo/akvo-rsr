@@ -87,7 +87,29 @@ QualitativeHeader.propTypes = {
 const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage}) => {
     const readOnly = isPercentage,
           value = isPercentage ? update.value + '%' : update.value,
-          label = isPercentage ? _('percentage') : _('add_to_actual_value');
+          label = isPercentage ? _('percentage') : _('add_to_actual_value'),
+          numerator = isPercentage ? (
+              <div>
+              {/* FIXME: Use translated strings*/}
+              <label htmlFor="actualValueNumerator">Numerator</label>
+              <input className="form-control"
+                     id="numerator"
+                     value={update.numerator}
+                     onChange={onChange}
+                     placeholder={_('input_placeholder')} />
+              </div>
+          ) : undefined,
+          denominator = isPercentage ? (
+              <div>
+                  {/* FIXME: Use translated strings*/}
+                  <label htmlFor="actualValueDenominator">Denominator</label>
+                  <input className="form-control"
+                         id="denominator"
+                         value={update.denominator}
+                         onChange={onChange}
+                         placeholder={_('input_placeholder')} />
+              </div>
+          ) : undefined;
 
     return (
         <div className="">
@@ -96,29 +118,32 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
                 <ToggleButton onClick={onClose} label="X"
                               className="btn btn-default btn-xs"/>
                 <input className="form-control"
-                    readOnly={readOnly}
-                    id="value"
-                    value={value}
-                    onChange={onChange}
-                    placeholder={_('input_placeholder')} />
+                       readOnly={readOnly}
+                       id="value"
+                       value={value}
+                       onChange={onChange}
+                       placeholder={_('input_placeholder')} />
             </div>
+            {numerator}
+            {denominator}
         </div>
     )
 };
 QuantitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
-    updatedActualValue: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    isPercentage: PropTypes.bool.isRequired,
 };
 
 
-const QualitativeActualValueInput = ({update, onChange, onClose}) => {
+const QualitativeActualValueInput = ({update, onClose, onChange}) => {
     return (
         <div className="">
             <div>
                 <label htmlFor="actualValue">{_('actual')}</label>
                 <ToggleButton onClick={onClose} label="X"
-                                  className="btn btn-default btn-xs"/>
+                              className="btn btn-default btn-xs"/>
                 <textarea className="form-control"
                           id="narrative"
                           value={update.narrative}
@@ -131,34 +156,8 @@ const QualitativeActualValueInput = ({update, onChange, onClose}) => {
 };
 QualitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
-    updatedActualValue: PropTypes.string,
+    onClose: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
-};
-
-
-const PercentageActualValueInput = ({update, onChange}) => {
-    return (
-        <div className="">
-            <div>
-                {/* FIXME: Use translated strings*/}
-                <label htmlFor="actualValueNumerator">Numerator</label>
-                <input className="form-control"
-                       id="numerator"
-                       value={update.numerator}
-                       onChange={onChange}
-                       placeholder={_('input_placeholder')} />
-            </div>
-            <div>
-                {/* FIXME: Use translated strings*/}
-                <label htmlFor="actualValueDenominator">Denominator</label>
-                <input className="form-control"
-                       id="denominator"
-                       value={update.denominator}
-                       onChange={onChange}
-                       placeholder={_('input_placeholder')} />
-            </div>
-        </div>
-    )
 };
 
 
@@ -416,9 +415,6 @@ const QuantitativeUpdateForm = ({period, update, measure, self}) => {
                                               onChange={self.onChange}
                                               onClose={self.props.onClose}
                                               isPercentage={percentageUpdate}/>
-                {percentageUpdate?(<PercentageActualValueInput
-                                       update={update}
-                                       onChange={self.onChange}/>) : undefined}
                 <ActualValueDescription update={update}
                                         onChange={self.onChange}/>
                 <Attachments update={update}
@@ -449,8 +445,8 @@ const QualitativeUpdateForm = ({period, update, measure, self}) => {
             <div className="update-entry-container edit-in-progress">
                 <QualitativeHeader targetValue={period.target_value}/>
                 <QualitativeActualValueInput update={update}
-                                  onChange={self.onChange}
-                                  onClose={self.props.onClose}/>
+                                             onClose={self.props.onClose}
+                                             onChange={self.onChange}/>
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>
