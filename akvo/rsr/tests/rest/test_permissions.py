@@ -75,6 +75,12 @@ class PermissionFilteringTestCase(TestCase):
             username = 'rsr-superuser@{}.org'.format(org_name)
             cls.create_user(username, group, organisation, is_superuser=True)
 
+            # Create organisation indicator labels
+            label = M.OrganisationIndicatorLabel.objects.create(
+                organisation=organisation,
+                label=u'label1'
+            )
+
             # Create Projects
             for project_name in ('Private project', 'Public project'):
                 for status in (M.PublishingStatus.STATUS_PUBLISHED, M.PublishingStatus.STATUS_UNPUBLISHED):
@@ -152,6 +158,8 @@ class PermissionFilteringTestCase(TestCase):
                 result = M.Result.objects.create(project=project)
                 # indicator
                 indicator = M.Indicator.objects.create(result=result)
+                # indicator label
+                M.IndicatorLabel.objects.create(indicator=indicator, label=label)
                 # indicator reference
                 M.IndicatorReference.objects.create(indicator=indicator)
                 # indicator period
@@ -441,6 +449,13 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.Indicator] = {
             'group_count': group_count(8, 4, 6, 4),
             'project_relation': 'result__project__'
+        }
+
+        # one label per indicator
+        # FIXME: change_* permissions weirdness
+        model_map[M.IndicatorLabel] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'indicator__result__project__'
         }
 
         # one reference per indicator
