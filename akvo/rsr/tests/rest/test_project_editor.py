@@ -8,7 +8,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 from collections import namedtuple
 
-from akvo.rsr.models import Employment, Indicator, Organisation, Partnership, Project, Result, User
+from akvo.rsr.models import Employment, Indicator, Organisation, Partnership, Project, Result, User, \
+    BudgetItem, BudgetItemLabel, OrganisationIndicatorLabel, IndicatorLabel
+from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
 
 from django.conf import settings
@@ -332,3 +334,90 @@ class SplitKeyTestCase(TestCase):
         )
         self.assertEquals(key_info.field, u'relation')
         self.assertEquals(key_info.ids, [u'1234', u'new-0'])
+
+
+class ChoicesTestCase(TestCase):
+
+    def setUp(self):
+        # super(ProjectEditorReorderIndicatorsTestCase, self).setUp()
+        self.project = Project.objects.create(title="Test Project")
+
+    def test_non_fk_field(self):
+
+        # When
+        status_choices, ids = choices(self.project, 'status')
+
+        # Then
+        self.assertEqual(
+            [(c[0], unicode(c[1])) for c in status_choices],
+            [(c[0], unicode(c[1])) for c in Project.STATUSES]
+        )
+        self.assertEqual(
+            [id for id in ids],
+            [c[0] for c in Project.STATUSES]
+        )
+
+    def test_budget_item_choices(self):
+        # Given
+        label1 = BudgetItemLabel.objects.create(label=u'label 1')
+        label2 = BudgetItemLabel.objects.create(label=u'label 2')
+        budget_item = BudgetItem.objects.create(project=self.project)
+
+        # When
+        labels, ids = choices(budget_item, 'label')
+
+        # Then
+        self.assertEqual(
+            set(labels),
+            set([(1, u'label 1'), (2, u'label 2')])
+        )
+        self.assertEqual(
+            ids,
+            [1, 2]
+        )
+
+    def test_indicator_label_choices(self):
+        # Given
+        organisation = Organisation.objects.create(
+            name='name', long_name='long name', can_create_projects=True
+        )
+        Partnership.objects.create(
+            organisation=organisation, project=self.project,
+            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
+        )
+        label1 = OrganisationIndicatorLabel.objects.create(
+            organisation=organisation, label=u'label 1'
+        )
+        label2 = OrganisationIndicatorLabel.objects.create(
+            organisation=organisation, label=u'label 2'
+        )
+
+        result = Result.objects.create(project=self.project, title="Result #1", type="1", )
+        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1", )
+        indicator_label = IndicatorLabel.objects.create(indicator=indicator, label=label1)
+
+        # When
+        labels, ids = choices(indicator_label, 'label')
+
+        # Then
+        self.assertEqual(
+            set(labels),
+            set([(1, u'label 1'), (2, u'label 2')])
+        )
+        self.assertEqual(
+            ids,
+            [1, 2]
+        )
+
+        # When
+        labels, ids = choices('IndicatorLabel.{}_1234_567_89'.format(self.project.pk), 'label')
+
+        # Then
+        self.assertEqual(
+            set(labels),
+            set([(1, u'label 1'), (2, u'label 2')])
+        )
+        self.assertEqual(
+            ids,
+            [1, 2]
+        )

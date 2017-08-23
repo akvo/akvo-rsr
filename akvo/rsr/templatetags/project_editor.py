@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from django import template
 from django.db import models
-from django.db.models import get_model
+from django.db.models import get_model, QuerySet
 
 from akvo.rsr.models import ProjectEditorValidation
 
@@ -211,34 +211,43 @@ def value(obj, field):
 @register.filter
 def choices(obj, field):
     """
-    Retrieves the choices of a given object's field.
+    Retrieves the choices of a given object's field and the IDs of the choices
 
-    :returns ((1, "Core Activity"), (2, "Sub Activity"), (3, "Lower Sub Activity"))
+    :returns [((1, "Core Activity"), (2, "Sub Activity"), (3, "Lower Sub Activity")), [1, 2, 3]]
     """
+
+    def first_items_list(iterable):
+        return [item[0] for item in iterable]
+
+    def values_list_of(model, *fields):
+        if isinstance(model, QuerySet):
+            objects = model
+        else:
+            objects = get_model('rsr', model).objects.all()
+        return objects.values_list(*fields)
+
+    def choices_and_ids(model, *fields):
+        choices_list = values_list_of(model, *fields)
+        return [
+            choices_list,
+            first_items_list(choices_list)
+        ]
 
     model = retrieve_model(obj)
     model_field = model._meta.get_field(field)
 
     if not isinstance(model_field, models.ForeignKey):
-        return [model_field.choices, [choice[0] for choice in model_field.choices]]
+        return [model_field.choices, first_items_list(model_field.choices)]
 
     elif isinstance(obj, get_model('rsr', 'BudgetItem')) or \
             (isinstance(obj, basestring) and 'BudgetItem' in obj):
         # The ForeignKey field on budget items is the budget item labels
-        all_budget_labels = get_model('rsr', 'budgetitemlabel').objects.all()
-        return [
-            all_budget_labels.values_list('id', 'label'),
-            [label.pk for label in all_budget_labels]
-        ]
+        return choices_and_ids('budgetitemlabel', 'id', 'label')
 
     elif isinstance(obj, get_model('rsr', 'ProjectLocation')) or \
             (isinstance(obj, basestring) and 'ProjectLocation' in obj):
         # The ForeignKey field on locations is the countries
-        all_countries = get_model('rsr', 'country').objects.all()
-        return [
-            all_countries.values_list('id', 'name'),
-            [country.pk for country in all_countries]
-        ]
+        return choices_and_ids('country', 'id', 'name')
 
     elif isinstance(obj, get_model('rsr', 'IndicatorLabel')) or \
             (isinstance(obj, basestring) and 'IndicatorLabel' in obj):
@@ -252,10 +261,7 @@ def choices(obj, field):
         organisation_indicator_labels = get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
             organisation=project.primary_organisation
         )
-        return [
-            organisation_indicator_labels.values_list('id', 'label'),
-            [label.pk for label in organisation_indicator_labels]
-        ]
+        return choices_and_ids(organisation_indicator_labels, 'id', 'label')
 
 
 @register.filter
