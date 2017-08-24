@@ -6,10 +6,12 @@ Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-from collections import namedtuple
 
-from akvo.rsr.models import Employment, Indicator, Organisation, Partnership, Project, Result, User, \
-    BudgetItem, BudgetItemLabel, OrganisationIndicatorLabel, IndicatorLabel
+
+from akvo.rsr.models import (
+    Employment, Indicator, Organisation, Partnership, Project, Result, User, BudgetItem,
+    BudgetItemLabel, OrganisationIndicatorLabel, IndicatorLabel
+)
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
 
@@ -359,8 +361,8 @@ class ChoicesTestCase(TestCase):
 
     def test_budget_item_choices(self):
         # Given
-        label1 = BudgetItemLabel.objects.create(label=u'label 1')
-        label2 = BudgetItemLabel.objects.create(label=u'label 2')
+        BudgetItemLabel.objects.create(label=u'label 1')
+        BudgetItemLabel.objects.create(label=u'label 2')
         budget_item = BudgetItem.objects.create(project=self.project)
 
         # When
@@ -368,8 +370,8 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            set(labels),
-            set([(1, u'label 1'), (2, u'label 2')])
+            {labels},
+            {(1, u'label 1'), (2, u'label 2')}
         )
         self.assertEqual(
             ids,
@@ -388,7 +390,7 @@ class ChoicesTestCase(TestCase):
         label1 = OrganisationIndicatorLabel.objects.create(
             organisation=organisation, label=u'label 1'
         )
-        label2 = OrganisationIndicatorLabel.objects.create(
+        OrganisationIndicatorLabel.objects.create(
             organisation=organisation, label=u'label 2'
         )
 
@@ -401,8 +403,8 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            set(labels),
-            set([(1, u'label 1'), (2, u'label 2')])
+            {labels},
+            {(1, u'label 1'), (2, u'label 2')}
         )
         self.assertEqual(
             ids,

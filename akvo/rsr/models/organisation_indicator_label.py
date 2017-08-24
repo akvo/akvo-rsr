@@ -26,5 +26,3 @@ class OrganisationIndicatorLabel(models.Model):
 
     def __unicode__(self):
         return self.label
-
-
