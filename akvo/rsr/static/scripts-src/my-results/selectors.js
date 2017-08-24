@@ -25,6 +25,8 @@ const getResultIds = (store) => store.models.results.ids;
 const getResultObjects = (store) => store.models.results.objects;
 const getIndicatorIds = (store) => store.models.indicators.ids;
 const getIndicatorObjects = (store) => store.models.indicators.objects;
+const getDimensionIds = (store) => store.models.dimensions.ids;
+const getDimensionObjects = (store) => store.models.dimensions.objects;
 const getPeriodIds = (store) => store.models.periods.ids;
 const getPeriodObjects = (store) => store.models.periods.objects;
 const getUpdateIds = (store) => store.models.updates.ids;
@@ -38,6 +40,7 @@ const getChildrenFactory = model => {
     const modelSelectors = {
         // {childModelName: [parentIds, parentSelector, childrenIds, childrenSelector]}
         [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
+        [c.OBJECTS_DIMENSIONS]: [getIndicatorIds, getIndicatorObjects, getDimensionIds, getDimensionObjects],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
         [c.OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
@@ -87,6 +90,11 @@ export const getIndicatorsChildrenIds = createSelector(
     children => children
 );
 
+export const getIndicatorsDimensionIds = createSelector(
+    // Same structure as getResultsChildrenIds but for indicators and dimension children
+    getChildrenFactory(c.OBJECTS_DIMENSIONS),
+    children => children
+);
 
 export const getPeriodsChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for periods and update children

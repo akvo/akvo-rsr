@@ -106,6 +106,8 @@ export const endpoints = {
         "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "indicators": (id) =>
             `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
+        "dimensions": (id) =>
+            `/rest/v1/indicator_dimension/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
         "periods": (id) =>
             `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
         "updates": (id) =>

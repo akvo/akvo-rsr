@@ -119,7 +119,7 @@ export default class App extends React.Component {
         const projectId = project.project_id;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
-        // fetchModel('periods', projectId, [activateToggleAll, selectablePeriods]);
+        fetchModel('dimensions', projectId, activateToggleAll);
         fetchModel('periods', projectId, activateToggleAll);
         fetchModel('updates', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);

@@ -14,12 +14,18 @@ import update from 'immutability-helper';
 import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
 
+import groupBy from 'lodash/groupBy';
+
 import {
     updateModel,
     updateUpdateToBackend,
     saveUpdateToBackend,
     deleteUpdateFromBackend,
 } from "../../actions/model-actions"
+
+import {
+    getIndicatorsDimensionIds,
+} from "../../selectors";
 
 import * as c from '../../const.js';
 
@@ -90,13 +96,13 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
           label = isPercentage ? _('percentage') : _('add_to_actual_value'),
           numerator = isPercentage ? (
               <div>
-              {/* FIXME: Use translated strings*/}
-              <label htmlFor="actualValueNumerator">Numerator</label>
-              <input className="form-control"
-                     id="numerator"
-                     value={update.numerator}
-                     onChange={onChange}
-                     placeholder={_('input_placeholder')} />
+                  {/* FIXME: Use translated strings*/}
+                  <label htmlFor="actualValueNumerator">Numerator</label>
+                  <input className="form-control"
+                         id="numerator"
+                         value={update.numerator}
+                         onChange={onChange}
+                         placeholder={_('input_placeholder')} />
               </div>
           ) : undefined,
           denominator = isPercentage ? (
@@ -361,10 +367,10 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
                     }
                     case c.MEASURE_PERCENTAGE: {
                         disabled = disabled &&
-                            (
-                                !(update.numerator !== undefined && update.numerator !== "") ||
-                                !(update.denominator!== undefined && update.denominator !== "")
-                            );
+                                   (
+                                       !(update.numerator !== undefined && update.numerator !== "") ||
+                                       !(update.denominator!== undefined && update.denominator !== "")
+                                   );
                         break;
                     }
                     case c.MEASURE_QUALITATIVE: {
@@ -403,7 +409,7 @@ UpdateFormButtons.propTypes = {
 };
 
 
-const QuantitativeUpdateForm = ({period, update, measure, self}) => {
+const QuantitativeUpdateForm = ({period, update, measure, self, dimensions}) => {
     const updateValue = parseFloat(update.value ? update.value : 0);
     const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
@@ -420,6 +426,11 @@ const QuantitativeUpdateForm = ({period, update, measure, self}) => {
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>
+                <DisaggregatedInputs period={period}
+                                     update={update}
+                                     measure={measure}
+                                     dimensions={dimensions}
+                                     type={c.INDICATOR_QUALITATIVE}/>
                 <UpdateFormButtons
                     user={self.props.user}
                     update={update}
@@ -439,7 +450,7 @@ QuantitativeUpdateForm.propTypes = {
 };
 
 
-const QualitativeUpdateForm = ({period, update, measure, self}) => {
+const QualitativeUpdateForm = ({period, update, measure, self, dimensions}) => {
     return (
         <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
@@ -450,6 +461,11 @@ const QualitativeUpdateForm = ({period, update, measure, self}) => {
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>
+                <DisaggregatedInputs period={period}
+                                     update={update}
+                                     measure={measure}
+                                     dimensions={dimensions}
+                                     type={c.INDICATOR_QUALITATIVE}/>
                 <UpdateFormButtons
                     user={self.props.user}
                     update={update}
@@ -466,6 +482,95 @@ QualitativeUpdateForm.propTypes = {
     period: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
     self: PropTypes.object.isRequired,
+};
+
+const DisaggregatedInputs = ({period, update, measure, type, dimensions}) => {
+    const grouped_dimensions = groupBy(dimensions, 'name'),
+          dimension_elements = Object.entries(grouped_dimensions).map(([dimension, values]) => {
+              const inputs = values.map((value) => {
+                  return (
+                      <DisaggregatedValueInput key={value.value}
+                                               dimension={value}
+                                               type={type}
+                                               measure={measure}/>
+                  )
+              });
+              return (
+                  <div key={"dimension-" + dimension}>
+                      <h5>{dimension}</h5>
+                      {inputs}
+                  </div>
+              );
+          });
+    return (
+        <div>
+            <h4>Disaggregations</h4>
+            {dimension_elements}
+        </div>
+    )
+};
+
+const DisaggregatedValueInput = ({dimension, type, measure}) => {
+    let input;
+    switch (measure) {
+        case c.MEASURE_UNIT: {
+            input = (
+                <input className="form-control"
+                       id="disaggregated-value"
+                       placeholder={_('input_placeholder')} />
+            );
+            break;
+        }
+        case c.MEASURE_PERCENTAGE: {
+            const numerator = (
+                <div>
+                    {/* FIXME: Use translated strings*/}
+                    <label htmlFor="actualValueNumerator">Numerator</label>
+                    <input className="form-control"
+                           id="disaggregated-numerator"
+                           placeholder={_('input_placeholder')} />
+                </div>),
+                  denominator = (
+                      <div>
+                          {/* FIXME: Use translated strings*/}
+                          <label htmlFor="actualValueDenominator">Denominator</label>
+                          <input className="form-control"
+                                 id="disaggregated-denominator"
+                                 placeholder={_('input_placeholder')} />
+                      </div>);
+
+            input = (
+                <div>
+                    <input className="form-control"
+                           readOnly={true}
+                           id="disaggregated-value"
+                           placeholder={_('input_placeholder')} />
+                    {numerator}
+                    {denominator}
+                </div>
+            );
+            break;
+        }
+        case c.MEASURE_QUALITATIVE: {
+            input = (
+                <textarea className="form-control"
+                          id="disaggregated-narrative"
+                          placeholder={_('input_placeholder')}>
+                </textarea>
+            );
+            break;
+        }
+    }
+    return (
+        <div>
+            <span>{dimension.value}</span>
+            <div className="">
+                <div>
+                    {input}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 
@@ -488,6 +593,8 @@ const pruneForPOST = (update) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
+        dimensions: store.models.dimensions,
+        dimension_ids: getIndicatorsDimensionIds(store),
         ui: store.ui,
     }
 }, alertActions)
@@ -787,17 +894,22 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {indicator, period, update} = this.props;
+        const {indicator, period, update} = this.props,
+              dimensions = this.props.dimension_ids[indicator.id].map(
+            (id) => {return this.props.dimensions.objects[id]}
+        );
         switch(indicator.type) {
             case c.INDICATOR_QUANTATIVE: {
                 return <QuantitativeUpdateForm period={period}
                                                update={update}
+                                               dimensions={dimensions}
                                                self={this}
                                                measure={indicator.measure || "1"}/>
             }
             case c.INDICATOR_QUALITATIVE: {
                 return <QualitativeUpdateForm period={period}
                                               update={update}
+                                              dimensions={dimensions}
                                               self={this}
                                               measure={c.MEASURE_QUALITATIVE}/>
             }

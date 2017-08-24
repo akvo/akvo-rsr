@@ -56,6 +56,7 @@ export const
     OBJECTS_APP = 'app',
     OBJECTS_RESULTS = 'results',
     OBJECTS_INDICATORS = 'indicators',
+    OBJECTS_DIMENSIONS = 'dimensions',
     OBJECTS_PERIODS = 'periods',
     OBJECTS_UPDATES = 'updates',
     OBJECTS_COMMENTS = 'comments',
@@ -79,6 +80,7 @@ export const
     PARENT_FIELD = {
         [OBJECTS_RESULTS]: null,
         [OBJECTS_INDICATORS]: 'result',
+        [OBJECTS_DIMENSIONS]: 'indicator',
         [OBJECTS_PERIODS]: 'indicator',
         [OBJECTS_UPDATES]: 'period',
         [OBJECTS_COMMENTS]: 'data'
