@@ -4459,6 +4459,13 @@ main {
                                             color: initial;
                                         }
                                     }
+                                    .value-header {
+                                        padding-left: 20px;
+                                        font-variant: small-caps;
+                                        &.hidden-header {
+                                            padding-right: 80px;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -4595,6 +4602,11 @@ main {
                                             }
                                         }
                                     }
+                                }
+
+                                .lockToggle {
+                                    float: right;
+                                    margin-right: 25px;
                                 }
                             }
                         }
@@ -4733,6 +4745,7 @@ main {
 
                                                     &.UpdateDate {
                                                         display: inline-block;
+                                                        margin-left: 5px;
                                                     }
                                                 }
                                             }
@@ -4855,6 +4868,12 @@ main {
                                         ul {
                                             list-style-type: none;
                                         }
+
+                                        .timestamp-info-container {
+                                            float: right;
+                                            margin-right: 50px;
+                                        }
+
                                     }
                                 }
 
@@ -4938,7 +4957,7 @@ main {
 
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }

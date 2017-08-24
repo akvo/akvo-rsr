@@ -109,7 +109,8 @@ class PeriodLockToggle extends React.Component {
     }
 
     render() {
-        let icon, label;
+        let icon, label,
+            className = 'btn btn-sm btn-default lockToggle';
         if (this.state.locking) {
             icon = <i className="fa fa-spin fa-spinner" />;
             label = "Updating lock status";
@@ -123,7 +124,7 @@ class PeriodLockToggle extends React.Component {
         return (
             <span>
                 {<this.state.ToggleAlert />}
-                <ToggleButton onClick={this.lockToggle} label={label}/>
+                <ToggleButton onClick={this.lockToggle} className={className} label={label}/>
             </span>
         )
     }
@@ -172,6 +173,8 @@ const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton,
                                    <ul className={formOpen ? "formOpen" : ""}>
                                        <li>{periodSelect}</li>
                                        <li>{periodDate}</li>
+                                       <li>{period.target_value}</li>
+                                       <li>{period.actual_value}</li>
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
                                        <li>{lockStatus}</li>
                                    </ul>

@@ -93,6 +93,13 @@ const IndicatorContent = ({indicator}) => {
                     {_('baseline_value')}: <span>{indicator.baseline_value}</span>
                 </li>
             </ul>
+
+            <ul>
+                <li className="value-header hidden-header">{/* Selction toggle */}</li>
+                <li className="value-header hidden-header">{/* Period dates */}</li>
+                <li className="value-header">Target</li>
+                <li className="value-header">Actual</li>
+            </ul>
         </div>
     )
 };
