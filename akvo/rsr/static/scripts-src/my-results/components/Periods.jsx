@@ -173,8 +173,8 @@ const PeriodHeader = ({period, user, toggleCheckbox, isChecked, newUpdateButton,
                                    <ul className={formOpen ? "formOpen" : ""}>
                                        <li>{periodSelect}</li>
                                        <li>{periodDate}</li>
-                                       <li>{period.target_value}</li>
-                                       <li>{period.actual_value}</li>
+                                       <li className="targetValue"><span>Target:</span> {period.target_value}</li>
+                                       <li className="actualValue"><span>Actual:</span> {period.actual_value}</li>
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
                                        <li>{lockStatus}</li>
                                    </ul>
