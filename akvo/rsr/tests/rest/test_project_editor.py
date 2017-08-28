@@ -361,8 +361,8 @@ class ChoicesTestCase(TestCase):
 
     def test_budget_item_choices(self):
         # Given
-        BudgetItemLabel.objects.create(label=u'label 1')
-        BudgetItemLabel.objects.create(label=u'label 2')
+        label1 = BudgetItemLabel.objects.create(label=u'label 1')
+        label2 = BudgetItemLabel.objects.create(label=u'label 2')
         budget_item = BudgetItem.objects.create(project=self.project)
 
         # When
@@ -370,12 +370,12 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            {labels},
-            {(1, u'label 1'), (2, u'label 2')}
+            set(labels),
+            {(label1.pk, label1.label), (label2.pk, label2.label)}
         )
         self.assertEqual(
             ids,
-            [1, 2]
+            [label1.pk, label2.pk]
         )
 
     def test_indicator_label_choices(self):
@@ -390,7 +390,7 @@ class ChoicesTestCase(TestCase):
         label1 = OrganisationIndicatorLabel.objects.create(
             organisation=organisation, label=u'label 1'
         )
-        OrganisationIndicatorLabel.objects.create(
+        label2 = OrganisationIndicatorLabel.objects.create(
             organisation=organisation, label=u'label 2'
         )
 
@@ -403,8 +403,8 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            {labels},
-            {(1, u'label 1'), (2, u'label 2')}
+            set(labels),
+            {(label1.pk, label1.label), (label2.pk, label2.label)}
         )
         self.assertEqual(
             ids,
@@ -417,7 +417,7 @@ class ChoicesTestCase(TestCase):
         # Then
         self.assertEqual(
             set(labels),
-            set([(1, u'label 1'), (2, u'label 2')])
+            {(label1.pk, label1.label), (label2.pk, label2.label)}
         )
         self.assertEqual(
             ids,
