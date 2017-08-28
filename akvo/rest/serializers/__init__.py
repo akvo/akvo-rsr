@@ -15,6 +15,7 @@ from .category import CategorySerializer
 from .country import CountrySerializer
 from .crs_add import CrsAddSerializer, CrsAddOtherFlagSerializer
 from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
+from .disaggregation import DisaggregationSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .fss import FssSerializer, FssForecastSerializer
@@ -109,6 +110,7 @@ __all__ = [
     'CountryBudgetItemSerializer',
     'CrsAddSerializer',
     'CrsAddOtherFlagSerializer',
+    'DisaggregationSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
     'FssSerializer',

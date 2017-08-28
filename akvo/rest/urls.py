@@ -42,6 +42,7 @@ router.register(r'indicator_period_actual_location', views.IndicatorPeriodActual
 router.register(r'indicator_period_data', views.IndicatorPeriodDataViewSet)
 router.register(r'indicator_period_data_framework', views.IndicatorPeriodDataFrameworkViewSet)
 router.register(r'indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
+router.register(r'disaggregation', views.DisaggregationViewSet)
 router.register(r'indicator_period_target_dimension', views.IndicatorPeriodTargetDimensionViewSet)
 router.register(r'indicator_period_target_location', views.IndicatorPeriodTargetLocationViewSet)
 router.register(r'indicator_reference', views.IndicatorReferenceViewSet)
