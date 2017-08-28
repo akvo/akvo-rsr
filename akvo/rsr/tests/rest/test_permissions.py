@@ -159,7 +159,7 @@ class PermissionFilteringTestCase(TestCase):
                 # indicator
                 indicator = M.Indicator.objects.create(result=result)
                 # indicator dimension
-                M.IndicatorDimension.objects.create(indicator=indicator)
+                dimension = M.IndicatorDimension.objects.create(indicator=indicator)
                 # indicator label
                 M.IndicatorLabel.objects.create(indicator=indicator, label=label)
                 # indicator reference
@@ -188,6 +188,8 @@ class PermissionFilteringTestCase(TestCase):
                                                            longitude=update.id)
                     # indicator period data
                     data = M.IndicatorPeriodData.objects.create(period=period, user=user)
+                    # disaggregation
+                    M.Disaggregation.objects.create(update=data, dimension=dimension)
                     # indicator period data comment
                     M.IndicatorPeriodDataComment.objects.create(data=data, user=user)
                     # comments
@@ -513,6 +515,12 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.IndicatorPeriodData] = {
             'group_count': group_count(56, 28, 42, 28),
             'project_relation': 'period__indicator__result__project__'
+        }
+
+        # one disaggregation created per user per indicator period update
+        model_map[M.Disaggregation] = {
+            'group_count': group_count(56, 28, 42, 28),
+            'project_relation': 'update__period__indicator__result__project__'
         }
 
         # one comment per indicator period data
