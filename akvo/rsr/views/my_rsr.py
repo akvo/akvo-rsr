@@ -270,7 +270,8 @@ def project_editor(request, project_id):
             'documents',
             'keywords',
         ).select_related(
-            'publishingstatus__status'
+            'publishingstatus__status',
+            'primary_organisation',
         ).get(pk=project_id)
     except Project.DoesNotExist:
         return Http404
@@ -278,19 +279,6 @@ def project_editor(request, project_id):
     if (not request.user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED) and not \
             (request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
-
-    # Custom fields
-    custom_fields_section_1 = project.custom_fields.filter(section=1).order_by('order', 'id')
-    custom_fields_section_2 = project.custom_fields.filter(section=2).order_by('order', 'id')
-    custom_fields_section_3 = project.custom_fields.filter(section=3).order_by('order', 'id')
-    custom_fields_section_4 = project.custom_fields.filter(section=4).order_by('order', 'id')
-    custom_fields_section_5 = project.custom_fields.filter(section=5).order_by('order', 'id')
-    custom_fields_section_6 = project.custom_fields.filter(section=6).order_by('order', 'id')
-    custom_fields_section_7 = project.custom_fields.filter(section=7).order_by('order', 'id')
-    custom_fields_section_8 = project.custom_fields.filter(section=8).order_by('order', 'id')
-    custom_fields_section_9 = project.custom_fields.filter(section=9).order_by('order', 'id')
-    custom_fields_section_10 = project.custom_fields.filter(section=10).order_by('order', 'id')
-    custom_fields_section_11 = project.custom_fields.filter(section=11).order_by('order', 'id')
 
     # Validations / progress bars
     validations = ProjectEditorValidation.objects.select_related('validation_set')
@@ -339,19 +327,12 @@ def project_editor(request, project_id):
         # Default indicator
         'default_indicator': default_indicator,
 
-        # Custom fields
-        'custom_fields_section_1': custom_fields_section_1,
-        'custom_fields_section_2': custom_fields_section_2,
-        'custom_fields_section_3': custom_fields_section_3,
-        'custom_fields_section_4': custom_fields_section_4,
-        'custom_fields_section_5': custom_fields_section_5,
-        'custom_fields_section_6': custom_fields_section_6,
-        'custom_fields_section_7': custom_fields_section_7,
-        'custom_fields_section_8': custom_fields_section_8,
-        'custom_fields_section_9': custom_fields_section_9,
-        'custom_fields_section_10': custom_fields_section_10,
-        'custom_fields_section_11': custom_fields_section_11,
     }
+
+    # Custom fields context
+    for section_id in xrange(1, 12):
+        context['custom_fields_section_{}'.format(section_id)] = \
+            project.custom_fields.filter(section=section_id).order_by('order', 'id')
 
     return render(request, 'myrsr/project_editor/project_editor.html', context)
 
