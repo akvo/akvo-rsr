@@ -510,13 +510,14 @@ const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggr
                       {inputs}
                   </div>
               );
-          });
-    return (
-        <div>
-            <h4>Disaggregations</h4>
-            {dimension_elements}
-        </div>
-    )
+          }),
+          headline = dimensions.length > 0 ?  (<h4>Disaggregations</h4>): undefined;
+          return  (
+              <div>
+                  {headline}
+                  {dimension_elements}
+              </div>
+          );
 };
 
 const DisaggregatedValueInput = ({dimension, disaggregation, type, measure, onChange}) => {
