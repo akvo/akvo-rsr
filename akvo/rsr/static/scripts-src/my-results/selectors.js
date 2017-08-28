@@ -31,6 +31,8 @@ const getPeriodIds = (store) => store.models.periods.ids;
 const getPeriodObjects = (store) => store.models.periods.objects;
 const getUpdateIds = (store) => store.models.updates.ids;
 const getUpdateObjects = (store) => store.models.updates.objects;
+const getDisaggregationIds = (store) => store.models.disaggregations.ids;
+const getDisaggregationObjects = (store) => store.models.disaggregations.objects;
 const getCommentIds = (store) => store.models.comments.ids;
 const getCommentObjects = (store) => store.models.comments.objects;
 const getUser = (store) => store.models.user;
@@ -43,6 +45,7 @@ const getChildrenFactory = model => {
         [c.OBJECTS_DIMENSIONS]: [getIndicatorIds, getIndicatorObjects, getDimensionIds, getDimensionObjects],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
+        [c.OBJECTS_DISAGGREGATIONS]: [getUpdateIds, getUpdateObjects, getDisaggregationIds, getDisaggregationObjects],
         [c.OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
     };
     return createSelector(
@@ -109,6 +112,21 @@ export const getUpdatesChildrenIds = createSelector(
     children => children
 );
 
+export const getUpdatesDisaggregationIds = createSelector(
+    // Same structure as getResultsChildrenIds but for updates and disaggregation children
+    getChildrenFactory(c.OBJECTS_DISAGGREGATIONS),
+    children => children
+);
+
+export const getUpdatesDisaggregationObjects = createSelector(
+    // Same structure as getResultsChildrenIds but for updates and disaggregation children
+    [getUpdatesDisaggregationIds, getDisaggregationObjects],
+    (updateDisaggregationIds, disaggregationObjects) => {
+        return Object.entries(updateDisaggregationIds).reduce((acc, [update_id, disaggregationIds]) => {
+            return {...acc, [update_id]: disaggregationIds.map((id) => disaggregationObjects[id])};
+        }, {});
+    }
+);
 
 export const getPeriodsActualValue = createSelector(
     /*

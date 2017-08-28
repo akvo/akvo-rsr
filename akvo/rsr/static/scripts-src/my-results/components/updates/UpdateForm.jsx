@@ -15,6 +15,7 @@ import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
 
 import groupBy from 'lodash/groupBy';
+import keyBy from 'lodash/keyBy';
 
 import {
     updateModel,
@@ -409,7 +410,7 @@ UpdateFormButtons.propTypes = {
 };
 
 
-const QuantitativeUpdateForm = ({period, update, measure, self, dimensions}) => {
+const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disaggregations}) => {
     const updateValue = parseFloat(update.value ? update.value : 0);
     const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
@@ -430,6 +431,8 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions}) => 
                                      update={update}
                                      measure={measure}
                                      dimensions={dimensions}
+                                     disaggregations={disaggregations}
+                                     self={self}
                                      type={c.INDICATOR_QUALITATIVE}/>
                 <UpdateFormButtons
                     user={self.props.user}
@@ -450,7 +453,7 @@ QuantitativeUpdateForm.propTypes = {
 };
 
 
-const QualitativeUpdateForm = ({period, update, measure, self, dimensions}) => {
+const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disaggregations}) => {
     return (
         <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
@@ -465,6 +468,8 @@ const QualitativeUpdateForm = ({period, update, measure, self, dimensions}) => {
                                      update={update}
                                      measure={measure}
                                      dimensions={dimensions}
+                                     disaggregations={disaggregations}
+                                     self={self}
                                      type={c.INDICATOR_QUALITATIVE}/>
                 <UpdateFormButtons
                     user={self.props.user}
@@ -484,16 +489,20 @@ QualitativeUpdateForm.propTypes = {
     self: PropTypes.object.isRequired,
 };
 
-const DisaggregatedInputs = ({period, update, measure, type, dimensions}) => {
+const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggregations, self}) => {
     const grouped_dimensions = groupBy(dimensions, 'name'),
+          dimension_disaggregations = keyBy(disaggregations, 'dimension'),
           dimension_elements = Object.entries(grouped_dimensions).map(([dimension, values]) => {
               const inputs = values.map((value) => {
-                  return (
+                  const disaggregation = dimension_disaggregations[value.id];
+                  return disaggregation ? (
                       <DisaggregatedValueInput key={value.value}
                                                dimension={value}
+                                               disaggregation={disaggregation}
                                                type={type}
+                                               onChange={self.onDisaggregationsChange}
                                                measure={measure}/>
-                  )
+                  ) : undefined;
               });
               return (
                   <div key={"dimension-" + dimension}>
@@ -510,13 +519,16 @@ const DisaggregatedInputs = ({period, update, measure, type, dimensions}) => {
     )
 };
 
-const DisaggregatedValueInput = ({dimension, type, measure}) => {
+const DisaggregatedValueInput = ({dimension, disaggregation, type, measure, onChange}) => {
     let input;
     switch (measure) {
         case c.MEASURE_UNIT: {
             input = (
                 <input className="form-control"
-                       id="disaggregated-value"
+                       value={disaggregation.value}
+                       onChange={onChange}
+                       data-dimension={dimension.id}
+                       data-field='value'
                        placeholder={_('input_placeholder')} />
             );
             break;
@@ -527,7 +539,10 @@ const DisaggregatedValueInput = ({dimension, type, measure}) => {
                     {/* FIXME: Use translated strings*/}
                     <label htmlFor="actualValueNumerator">Numerator</label>
                     <input className="form-control"
-                           id="disaggregated-numerator"
+                           value={disaggregation.numerator}
+                           onChange={onChange}
+                           data-dimension={dimension.id}
+                           data-field='numerator'
                            placeholder={_('input_placeholder')} />
                 </div>),
                   denominator = (
@@ -535,7 +550,10 @@ const DisaggregatedValueInput = ({dimension, type, measure}) => {
                           {/* FIXME: Use translated strings*/}
                           <label htmlFor="actualValueDenominator">Denominator</label>
                           <input className="form-control"
-                                 id="disaggregated-denominator"
+                                 value={disaggregation.denominator}
+                                 onChange={onChange}
+                                 data-dimension={dimension.id}
+                                 data-field='denominator'
                                  placeholder={_('input_placeholder')} />
                       </div>);
 
@@ -543,7 +561,10 @@ const DisaggregatedValueInput = ({dimension, type, measure}) => {
                 <div>
                     <input className="form-control"
                            readOnly={true}
-                           id="disaggregated-value"
+                           value={disaggregation.value}
+                           onChange={onChange}
+                           data-dimension={dimension.id}
+                           data-field='value'
                            placeholder={_('input_placeholder')} />
                     {numerator}
                     {denominator}
@@ -555,6 +576,10 @@ const DisaggregatedValueInput = ({dimension, type, measure}) => {
             input = (
                 <textarea className="form-control"
                           id="disaggregated-narrative"
+                          value={disaggregation.narrative}
+                          onChange={onChange}
+                          data-dimension={dimension.id}
+                          data-field='narrative'
                           placeholder={_('input_placeholder')}>
                 </textarea>
             );
@@ -578,7 +603,7 @@ const pruneForPATCH = (update) => {
     // Only include the listed fields when PATCHing an update
     // currently the list mimics the old MyResults data
     const fields = ['value', 'narrative', 'numerator', 'denominator', 'text',
-                    'status', '_file', '_photo', 'approved_by', ];
+                    'status', '_file', '_photo', 'approved_by', 'disaggregations'];
     return fields.reduce((acc, f) => {return Object.assign(acc, {[f]: update[f]})}, {});
 };
 
@@ -593,8 +618,6 @@ const pruneForPOST = (update) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
-        dimensions: store.models.dimensions,
-        dimension_ids: getIndicatorsDimensionIds(store),
         ui: store.ui,
     }
 }, alertActions)
@@ -604,6 +627,7 @@ export default class UpdateForm extends React.Component {
         indicator: PropTypes.object.isRequired,
         period: PropTypes.object.isRequired,
         update: PropTypes.object.isRequired,
+        disaggregations: PropTypes.array.isRequired,
         originalUpdate: PropTypes.object.isRequired,
         onClose: PropTypes.func.isRequired,
         collapseId: PropTypes.string.isRequired,
@@ -619,6 +643,7 @@ export default class UpdateForm extends React.Component {
         this.deleteUpdate = this.deleteUpdate.bind(this);
         this.updateActionsHandler = this.updateActionsHandler.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onDisaggregationsChange = this.onDisaggregationsChange.bind(this);
         this.attachmentsChange = this.attachmentsChange.bind(this);
         this.removeAttachment = this.removeAttachment.bind(this);
     }
@@ -727,11 +752,27 @@ export default class UpdateForm extends React.Component {
         }
     }
 
-    computePercentage(update) {
-        if (!update.numerator || !update.denominator ) {
+    onDisaggregationsChange(e){
+        let changedDisaggregation;
+        const dimension_id = e.target.getAttribute('data-dimension'),
+              field = e.target.getAttribute('data-field'),
+              disaggregations = keyBy(this.props.disaggregations, 'dimension'),
+              disaggregation = disaggregations[dimension_id];
+        changedDisaggregation = update(disaggregation, {$merge: {[field]: e.target.value}});
+        if (field === 'numerator' || field === 'denominator') {
+            changedDisaggregation = update(
+                changedDisaggregation,
+                {$merge: {["value"]: this.computePercentage(changedDisaggregation)}}
+            );
+        }
+        updateModel('disaggregations', changedDisaggregation);
+    }
+
+    computePercentage(object) {
+        if (!object.numerator || !object.denominator ) {
             return 0;
         } else {
-            return computePercentage(update.numerator, update.denominator);
+            return computePercentage(object.numerator, object.denominator);
         }
     }
 
@@ -843,6 +884,17 @@ export default class UpdateForm extends React.Component {
 
         update = setUpdateStatus(update, action, this.props.user.id);
 
+        // Don't save Empty disaggregations
+        const isNonEmptyDisaggregation = (disaggregation) => {
+            return (
+                disaggregation.value ||
+                disaggregation.numerator ||
+                disaggregation.denominator ||
+                disaggregation.narrative
+            );
+        }
+        update.disaggregations = this.props.disaggregations.filter(isNonEmptyDisaggregation);
+
         if (isNewUpdate(update)) {
             saveUpdateToBackend(
                 endpoints.updates_and_comments(), pruneForPOST(update),
@@ -894,15 +946,13 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {indicator, period, update} = this.props,
-              dimensions = this.props.dimension_ids[indicator.id].map(
-            (id) => {return this.props.dimensions.objects[id]}
-        );
+        const {dimensions, disaggregations, indicator, period, update} = this.props;
         switch(indicator.type) {
             case c.INDICATOR_QUANTATIVE: {
                 return <QuantitativeUpdateForm period={period}
                                                update={update}
                                                dimensions={dimensions}
+                                               disaggregations={disaggregations}
                                                self={this}
                                                measure={indicator.measure || "1"}/>
             }
@@ -910,6 +960,7 @@ export default class UpdateForm extends React.Component {
                 return <QualitativeUpdateForm period={period}
                                               update={update}
                                               dimensions={dimensions}
+                                              disaggregations={disaggregations}
                                               self={this}
                                               measure={c.MEASURE_QUALITATIVE}/>
             }

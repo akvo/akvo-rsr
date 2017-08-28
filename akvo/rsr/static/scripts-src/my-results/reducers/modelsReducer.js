@@ -29,9 +29,11 @@ const normalizedObjects = (data) => {
 const initialModels = {
     results: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     indicators: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    dimensions: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     periods: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     updates: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     comments: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
+    disaggregations: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     user: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined}
 };
 

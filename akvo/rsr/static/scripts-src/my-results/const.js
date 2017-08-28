@@ -60,6 +60,7 @@ export const
     OBJECTS_PERIODS = 'periods',
     OBJECTS_UPDATES = 'updates',
     OBJECTS_COMMENTS = 'comments',
+    OBJECTS_DISAGGREGATIONS = 'disaggregations',
     OBJECTS_USER = 'user',
 
     // List of the models used in the accordion, in hierarchy order
@@ -83,16 +84,19 @@ export const
         [OBJECTS_DIMENSIONS]: 'indicator',
         [OBJECTS_PERIODS]: 'indicator',
         [OBJECTS_UPDATES]: 'period',
-        [OBJECTS_COMMENTS]: 'data'
+        [OBJECTS_DISAGGREGATIONS]: 'update',
+        [OBJECTS_COMMENTS]: 'data',
     },
 
     // Lookup of the child model for a model
     CHILD_OBJECTS = {
         [OBJECTS_RESULTS]: OBJECTS_INDICATORS,
         [OBJECTS_INDICATORS]: OBJECTS_PERIODS,
+        [OBJECTS_DIMENSIONS]: null,
         [OBJECTS_PERIODS]: OBJECTS_UPDATES,
         [OBJECTS_UPDATES]: OBJECTS_COMMENTS,
-        [OBJECTS_COMMENTS]: null
+        [OBJECTS_COMMENTS]: null,
+        [OBJECTS_DISAGGREGATIONS]: null,
     },
 
     // UI state

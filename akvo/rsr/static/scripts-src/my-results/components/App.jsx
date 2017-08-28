@@ -9,6 +9,9 @@
 import React from "react";
 import {connect} from "react-redux";
 
+import keyBy from 'lodash/keyBy';
+import update from 'immutability-helper';
+
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
     deleteFromModel,
@@ -36,6 +39,8 @@ import {
     getMEManagerDefaultKeys,
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
+    getUpdatesDisaggregationObjects,
+    getIndicatorsDimensionIds,
 } from "../selectors";
 
 import {
@@ -77,6 +82,9 @@ const modifyUser = (isMEManager) => {
         indicators: store.models.indicators,
         periods: store.models.periods,
         updates: store.models.updates,
+        disaggregations: getUpdatesDisaggregationObjects(store),
+        dimension_ids: getIndicatorsDimensionIds(store),
+        dimensions: store.models.dimensions,
         user: store.models.user,
         ui: store.ui,
         needReportingPeriods: getNeedReportingPeriods(store),
@@ -122,6 +130,7 @@ export default class App extends React.Component {
         fetchModel('dimensions', projectId, activateToggleAll);
         fetchModel('periods', projectId, activateToggleAll);
         fetchModel('updates', projectId, activateToggleAll);
+        fetchModel('disaggregations', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);
     }
 
@@ -174,6 +183,16 @@ export default class App extends React.Component {
             if (updateFormDisplay && updateFormDisplay !== this.state.updateFormDisplay) {
                 originalUpdate = {...updates.objects[updateFormDisplay]};
                 this.setState({originalUpdate});
+                const {disaggregations, periods, indicators} = nextProps;
+                const update = updates.objects[updateFormDisplay];
+                const period = periods.objects[update.period];
+                const indicator = indicators.objects[period.indicator];
+                const dimensions = this.props.dimension_ids[indicator.id].map(
+                    (id) => {return this.props.dimensions.objects[id]}
+                );
+                this.createNewDisaggregations(
+                    updateFormDisplay, dimensions, disaggregations[updateFormDisplay]
+                );
             }
         };
 
@@ -185,12 +204,12 @@ export default class App extends React.Component {
                 // redraw the accordion since it is closed except for the current update when the
                 // form is opened
                 this.props.ui.updateFormDisplay !== nextProps.ui.updateFormDisplay &&
-                nextProps.ui.updateFormDisplay === false ||
-                this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
-                !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
-                !identicalArrays(this.props.pendingApprovalPeriods,
-                                 nextProps.pendingApprovalPeriods) ||
-                !identicalArrays(this.props.approvedPeriods, nextProps.approvedPeriods);
+                               nextProps.ui.updateFormDisplay === false ||
+                               this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
+                               !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
+                               !identicalArrays(this.props.pendingApprovalPeriods,
+                                                nextProps.pendingApprovalPeriods) ||
+                               !identicalArrays(this.props.approvedPeriods, nextProps.approvedPeriods);
 
             if (redraw()) {
                 switch(nextProps.ui.activeFilter) {
@@ -208,6 +227,7 @@ export default class App extends React.Component {
                     }
                 }
                 if (this.state.updateFormDisplay &&
+
                     (this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
                      !nextProps.ui.activeFilter))
                     {
@@ -224,9 +244,9 @@ export default class App extends React.Component {
 
     manageButtonsAndHash(element) {
         /*
-        Set state for the button to highlight, set the URL # value, set selectedOption to undefined
-        so it doesn't show a date period
-        */
+           Set state for the button to highlight, set the URL # value, set selectedOption to undefined
+           so it doesn't show a date period
+         */
         activateFilterCSS(element);
         setHash(element);
         updateFormClose();
@@ -255,6 +275,24 @@ export default class App extends React.Component {
         }
     }
 
+    createNewDisaggregations(update_id, dimensions, disaggregations){
+        const dimension_disaggregations = keyBy(disaggregations, 'dimension');
+        let changedDisaggregations = disaggregations;
+        dimensions.forEach((dimension) => {
+            if (dimension_disaggregations[dimension.id] === undefined) {
+                const disaggregation = {
+                    'update': update_id,
+                    'dimension': dimension.id,
+                    'id': 'new-'+dimension.id,
+                };
+                changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
+                /* disaggregations.push(disaggregation)*/
+                updateModel('disaggregations', disaggregation);
+            }
+        });
+        return changedDisaggregations;
+    }
+
     render() {
         const callbacks = {
             needReporting: this.needReporting,
@@ -267,7 +305,7 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        const {updates, periods, indicators} = this.props;
+        const {disaggregations, updates, periods, indicators} = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
@@ -279,14 +317,21 @@ export default class App extends React.Component {
             const update = updates.objects[updateFormDisplay];
             const period = periods.objects[update.period];
             const indicator = indicators.objects[period.indicator];
-            updateForm = <UpdateForm indicator={indicator}
-                                     period={period}
-                                     update={update}
-                                     onClose={this.onClose}
-                                     originalUpdate={this.state.originalUpdate}
-                                     collapseId={collapseId(
-                                         c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
-                                     )}/>
+            const dimensions = this.props.dimension_ids[indicator.id].map(
+                (id) => {return this.props.dimensions.objects[id]}
+            );
+            updateForm = (
+                <UpdateForm indicator={indicator}
+                            period={period}
+                            update={update}
+                            disaggregations={disaggregations[updateFormDisplay]}
+                            dimensions={dimensions}
+                            onClose={this.onClose}
+                            originalUpdate={this.state.originalUpdate}
+                            collapseId={collapseId(
+                                             c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
+                                        )}/>
+            )
         }
 
         return (
