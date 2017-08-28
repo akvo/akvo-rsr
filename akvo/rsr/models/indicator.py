@@ -1084,3 +1084,43 @@ class IndicatorDimension(models.Model):
 
     def __unicode__(self):
         return self.name + ': ' + self.value if self.name and self.value else ''
+
+
+class Disaggregation(TimestampsMixin, models.Model):
+    """Model for storing a disaggregated value along one axis of a dimension."""
+
+    dimension = models.ForeignKey(IndicatorDimension)
+    # FIXME: Should be able to associate with period/indicator too?
+    update = models.ForeignKey(IndicatorPeriodData,
+                               verbose_name=_(u'indicator period update'),
+                               related_name='disaggregations')
+
+    # FIXME: Add a type to allow disaggregated values for target/baseline
+    # type = models.CharField
+
+    # NOTE: corresponding value field on Update is still a CharField
+    value = models.DecimalField(
+        _(u'quantitative disaggregated value'),
+        max_digits=20,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+    narrative = ValidXMLTextField(_(u'qualitative narrative'), blank=True)
+    numerator = models.DecimalField(
+        _(u'numerator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The numerator for a percentage value')
+    )
+    denominator = models.DecimalField(
+        _(u'denominator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The denominator for a percentage value')
+    )
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'disaggregated value')
+        verbose_name_plural = _(u'disaggregated values')
