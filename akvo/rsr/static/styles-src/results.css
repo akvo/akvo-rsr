@@ -3203,6 +3203,9 @@ main {
       padding-left: 20px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .statusMeta {
         display: none; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span {
+        width: calc(100% - 40px);
+        display: inline-block; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
         display: none; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.UpdateDate {
