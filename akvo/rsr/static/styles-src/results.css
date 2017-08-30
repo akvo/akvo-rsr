@@ -3051,6 +3051,8 @@ main {
           .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul {
             color: rgba(32, 32, 36, 0.4);
             padding-left: 7px; }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul:nth-of-type(2) {
+              display: none; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul li {
               display: inline; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
@@ -3061,6 +3063,11 @@ main {
               margin-left: 55px; }
               .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-value span {
                 color: initial; }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .value-header {
+              padding-left: 20px;
+              font-variant: small-caps; }
+              .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .value-header.hidden-header {
+                padding-right: 80px; }
 
 .periods > button {
   display: none; }
@@ -3080,12 +3087,14 @@ main {
   .periods .rc-collapse .rc-collapse-item:last-child {
     border-bottom: none; }
   .periods .rc-collapse .rc-collapse-item.periodSelected .rc-collapse-header .periodWrap ul {
-    background-color: rgba(44, 42, 116, 0.1) !important; }
+    background-color: rgba(44, 42, 116, 0.1) !important;
+    min-height: 40px !important; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
     padding: 5px 10px;
     cursor: pointer;
     background-color: white;
     margin-bottom: 0;
+    min-height: 40px !important;
     -moz-transition: background-color 0.2s linear;
     -o-transition: background-color 0.2s linear;
     -webkit-transition: background-color 0.2s linear;
@@ -3104,14 +3113,10 @@ main {
         padding-left: 0px; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(2) {
         padding-left: 0px; }
-      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) {
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) span, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) span {
         color: rgba(32, 32, 36, 0.4); }
-        .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) span {
-          color: initial; }
-      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) {
-        color: rgba(32, 32, 36, 0.4); }
-        .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) span {
-          color: initial; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3).targetValue, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3).actualValue, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4).targetValue, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4).actualValue {
+        font-variant: small-caps; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) {
         margin-right: 0px;
         padding-left: 75px; }
@@ -3139,6 +3144,9 @@ main {
             .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div button:hover {
               background: #2c2a74;
               color: white; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li .lockToggle {
+        float: right;
+        margin-right: 25px; }
   .periods .rc-collapse .rc-collapse-item.rc-collapse-item-inactive .rc-collapse-header .arrow {
     display: inline-block;
     width: 20px;
@@ -3209,7 +3217,8 @@ main {
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
         display: none; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.UpdateDate {
-        display: inline-block; }
+        display: inline-block;
+        margin-left: 5px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .comments {
         margin: 10px 0 0 40px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row hr.delicate {
@@ -3269,6 +3278,9 @@ main {
         pointer-events: none !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody ul {
       list-style-type: none; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .timestamp-info-container {
+      float: right;
+      margin-right: 50px; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active {
       border: 1px solid white !important;
       background: rgba(255, 255, 255, 0.5) !important; }

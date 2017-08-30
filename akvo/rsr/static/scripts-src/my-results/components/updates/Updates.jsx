@@ -88,9 +88,6 @@ const UpdateValue =({update}) => {
     return (
         <ul className="valueMeta">
             <li className="updateValue">Update value: <span>{value}</span></li>
-            <li className="totalValue">Actual total for this period (including this update):
-                <span> {actual_value}</span>
-            </li>
         </ul>
     )
 };
@@ -122,8 +119,10 @@ const QuantitativeUpdateBody = ({update}) => {
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
-            <TimestampInfo update={update} user={user_details} label="Created on " />
-            {approvedBy} 
+            <div className="timestamp-info-container">
+                <TimestampInfo update={update} user={user_details} label="Created on " />
+                {approvedBy}
+            </div>
             <UpdateStatus update={update} />
         </div>
     )

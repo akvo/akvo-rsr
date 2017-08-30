@@ -4436,6 +4436,10 @@ main {
                                     color: rgba($akvoBlack, 0.4);
                                     padding-left: 7px;
 
+                                    &:nth-of-type(2) {
+                                        display: none;
+                                    }
+
                                     li {
                                         display: inline;
                                     }
@@ -4457,6 +4461,15 @@ main {
 
                                         span {
                                             color: initial;
+                                        }
+                                    }
+
+                                    .value-header {
+                                        padding-left: 20px;
+                                        font-variant: small-caps;
+
+                                        &.hidden-header {
+                                            padding-right: 80px;
                                         }
                                     }
                                 }
@@ -4502,6 +4515,7 @@ main {
                     .periodWrap {
                         ul {
                             background-color: rgba($akvoPurple, 0.1) !important;
+                            min-height: 40px !important;
                         }
                     }
                 }
@@ -4515,6 +4529,7 @@ main {
                             cursor: pointer;
                             background-color: white;
                             margin-bottom: 0;
+                            min-height: 40px !important;
 
                             @include transition(background-color 0.2s linear);
 
@@ -4541,19 +4556,13 @@ main {
                                     padding-left: 0px;
                                 }
 
-                                &:nth-child(3) {
-                                    color: rgba($akvoBlack, 0.4);
-
+                                &:nth-child(3), &:nth-child(4) {
                                     span {
-                                        color: initial;
+                                        color: rgba($akvoBlack, 0.4);
                                     }
-                                }
 
-                                &:nth-child(4) {
-                                    color: rgba($akvoBlack, 0.4);
-
-                                    span {
-                                        color: initial;
+                                    &.targetValue, &.actualValue {
+                                        font-variant: small-caps;
                                     }
                                 }
 
@@ -4595,6 +4604,11 @@ main {
                                             }
                                         }
                                     }
+                                }
+
+                                .lockToggle {
+                                    float: right;
+                                    margin-right: 25px;
                                 }
                             }
                         }
@@ -4733,6 +4747,7 @@ main {
 
                                                     &.UpdateDate {
                                                         display: inline-block;
+                                                        margin-left: 5px;
                                                     }
                                                 }
                                             }
@@ -4854,6 +4869,11 @@ main {
                                     &.UpdateBody {
                                         ul {
                                             list-style-type: none;
+                                        }
+
+                                        .timestamp-info-container {
+                                            float: right;
+                                            margin-right: 50px;
                                         }
                                     }
                                 }
