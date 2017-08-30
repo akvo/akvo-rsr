@@ -23,6 +23,7 @@ from .humanitarian_scope import HumanitarianScopeViewSet
 from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
+from .indicator_label import IndicatorLabelViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
@@ -122,6 +123,7 @@ __all__ = [
     'IatiExportViewSet',
     'IndicatorViewSet',
     'IndicatorFrameworkViewSet',
+    'IndicatorLabelViewSet',
     'IndicatorPeriodActualDimensionViewSet',
     'IndicatorPeriodActualLocationViewSet',
     'IndicatorPeriodViewSet',

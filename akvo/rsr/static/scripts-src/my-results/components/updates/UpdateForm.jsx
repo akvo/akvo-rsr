@@ -451,8 +451,6 @@ const QualitativeUpdateForm = ({period, update, measure, self}) => {
                 <QualitativeActualValueInput update={update}
                                   onChange={self.onChange}
                                   onClose={self.props.onClose}/>
-                <ActualValueDescription update={update}
-                                        onChange={self.onChange}/>
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>

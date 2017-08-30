@@ -23,6 +23,7 @@ from .humanitarian_scope import HumanitarianScopeSerializer
 from .iati_check import IatiCheckSerializer
 from .iati_export import IatiActivityExportSerializer, IatiExportSerializer
 from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
+from .indicator_label import IndicatorLabelSerializer
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
@@ -118,6 +119,7 @@ __all__ = [
     'IatiExportSerializer',
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
+    'IndicatorLabelSerializer',
     'IndicatorPeriodActualDimensionSerializer',
     'IndicatorPeriodActualLocationSerializer',
     'IndicatorPeriodDataCommentSerializer',

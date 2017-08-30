@@ -1,86 +1,127 @@
 {% load i18n project_editor %}
 
-<div class="indicator-item parent" id="indicator.{{ indicator|obj_id }}">
-    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=indicator %}
-    <div class="hide-partial {% if indicator.pk %}hidden{% endif %}">
+{% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" %}
+  {% with indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+
+    <div class="indicator-item parent" id="indicator.{{ indicator|obj_id }}">
+      {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=indicator %}
+      <div class="hide-partial {% if indicator.pk %}hidden{% endif %}">
+
         <div class="row">
-            <div class="alert alert-warning reload-warning hidden" role="alert">
-              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-              <strong>{% trans 'Warning!' %}</strong> {% trans 'Reload page to see default indicator periods.' %}
-            </div>
+          <div class="alert alert-warning reload-warning hidden" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <strong>{% trans 'Warning!' %}</strong>
+            {% trans 'Reload page to see default indicator periods.' %}
+          </div>
         </div>
+
         <div class="row">
-            <div class="col-md-8">
-                {% if indicator.is_child_indicator %}
-                    {% include text_input with obj=indicator field='title' disabled=True %}
-                {% else %}
-                    {% include text_input with obj=indicator field='title' %}
-                {% endif %}
-            </div>
-            <div class="col-md-4">
-                {% include choice_input with obj=indicator field='type' %}
-            </div>
+          <div class="col-md-8">
+            {% if indicator.is_child_indicator %}
+              {% include text_input with obj=indicator field='title' disabled=True %}
+            {% else %}
+              {% include text_input with obj=indicator field='title' %}
+            {% endif %}
+          </div>
+          <div class="col-md-4">
+            {% include choice_input with obj=indicator field='type' %}
+          </div>
         </div>
+
         <div class="row measure{% if indicator.type == 2 %} hidden{% endif %}">
-            <div class="col-md-6">
-                {% include choice_input with obj=indicator field='measure' %}
-            </div>
-            <div class="col-md-6">
-                {% include boolean_input with obj=indicator field='ascending' nullboolean=True %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                {% include textarea_input with obj=indicator field='description' %}
-            </div>
+          <div class="col-md-6">
+            {% include choice_input with obj=indicator field='measure' %}
+          </div>
+          <div class="col-md-6">
+            {% include boolean_input with obj=indicator field='ascending' nullboolean=True %}
+          </div>
         </div>
 
-        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorreference" }}">
-            <h5>{% trans 'Indicator references' %}</h5>
-            <div class="indicator-reference-container" id="indicator-reference-container">
-                {% for reference in indicator.references.all %}
-                    {% include "myrsr/project_editor/related_objects/indicator_reference_input.html" %}
-                {% empty %}
-                    {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
-                        {% include "myrsr/project_editor/related_objects/indicator_reference_input.html" with reference='IndicatorReference.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
-                    {% endwith %}
-                {% endfor %}
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-indicator-reference"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator reference' %}</a>
-                    </div>
+        <div class="row">
+          <div class="col-md-12">
+            {% include textarea_input with obj=indicator field='description' %}
+          </div>
+        </div>
+
+        <div class="related-object-container
+            {{ validations|mandatory_or_hidden:"rsr_indicatorreference" }}">
+          <h5>{% trans 'Indicator references' %}</h5>
+          <div class="indicator-reference-container" id="indicator-reference-container">
+            {% for reference in indicator.references.all %}
+              {% include "myrsr/project_editor/related_objects/indicator_reference_input.html" %}
+            {% empty %}
+              {% with reference='IndicatorReference.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+                {% include "myrsr/project_editor/related_objects/indicator_reference_input.html" %}
+              {% endwith %}
+            {% endfor %}
+            <div class="row form-group">
+              <div class="col-md-12 text-center add-object-link">
+                <a href="#" class="add-indicator-reference"><span
+                    class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator reference' %}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="related-object-container
+            {{ validations|mandatory_or_hidden:"rsr_indicatorlabel" }}">
+          <h5>{% trans 'Indicator labels' %}</h5>
+          <div class="indicator-label-container" id="indicator-label-container">
+            {% for label in indicator.labels.all %}
+              {% include "myrsr/project_editor/related_objects/indicator_label_input.html" %}
+            {% empty %}
+              {% with label='IndicatorLabel.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+                {% include "myrsr/project_editor/related_objects/indicator_label_input.html" %}
+              {% endwith %}
+            {% endfor %}
+            {% if not indicator.is_child_indicator %}
+              <div class="row form-group">
+                <div class="col-md-12 text-center add-object-link">
+                  <a href="#" class="add-indicator-label"><span
+                      class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator label' %}</a>
                 </div>
-            </div>
+              </div>
+            {% endif %}
+          </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                {% include text_input with obj=indicator field='baseline_year' number=True %}
-            </div>
-            <div class="col-md-6">
-                {% include text_input with obj=indicator field='baseline_value' %}
-            </div>
+          <div class="col-md-6">
+            {% include text_input with obj=indicator field='baseline_year' number=True %}
+          </div>
+          <div class="col-md-6">
+            {% include text_input with obj=indicator field='baseline_value' %}
+          </div>
         </div>
+
         {% include textarea_input with obj=indicator field='baseline_comment' %}
 
-        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorperiod" }}">
-            <h5>{% trans 'Indicator periods' %}</h5>
-            <div class="indicator-period-container" id="indicator-period-container">
-                {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
-                    {% for period in indicator.periods.all %}
-                        {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
-                    {% empty %}
-                        {% include "myrsr/project_editor/related_objects/indicator_period_input.html" with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
-                    {% endfor %}
-                {% endwith %}
-                {%  if not indicator.is_child_indicator %}
-                    <div class="row form-group">
-                        <div class="col-md-12 text-center add-object-link">
-                            <a href="#" class="add-indicator-period"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add another indicator period' %}</a>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
+        <div class="related-object-container
+            {{ validations|mandatory_or_hidden:"rsr_indicatorperiod" }}">
+          <h5>{% trans 'Indicator periods' %}</h5>
+          <div class="indicator-period-container" id="indicator-period-container">
+            {% for period in indicator.periods.all %}
+              {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
+            {% empty %}
+              {% with period='IndicatorPeriod.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+                {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
+              {% endwith %}
+            {% endfor %}
+            {% if not indicator.is_child_indicator %}
+              <div class="row form-group">
+                <div class="col-md-12 text-center add-object-link">
+                  <a href="#" class="add-indicator-period"><span
+                      class="glyphicon glyphicon-plus"></span>
+                    {% trans 'Add another indicator period' %}
+                  </a>
+                </div>
+              </div>
+            {% endif %}
+          </div>
         </div>
+      </div>
     </div>
-</div>
+
+  {% endwith %}
+{% endwith %}
