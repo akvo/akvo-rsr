@@ -123,7 +123,7 @@ const QuantitativeUpdateBody = ({update}) => {
         <div className="UpdateBody">
             <UpdateValue update={update} />
             <TimestampInfo update={update} user={user_details} label="Created on " />
-            {approvedBy}
+            {approvedBy} 
             <UpdateStatus update={update} />
         </div>
     )
@@ -149,13 +149,13 @@ UpdateValue.propTypes = {
 const QualitativeUpdateBody = ({period, update}) => {
     const {user_details, approver_details} = update;
     const approvedBy = approver_details ?
-        <TimestampInfo update={update} user={approver_details} label="Approved on" />
+        <TimestampInfo update={update} user={approver_details} label="Approved on " />
     :
         undefined;
     return (
         <div className="UpdateBody">
             <UpdateNarrative period={period} update={update} />
-            <TimestampInfo update={update} user={user_details} label="Created on" />
+            <TimestampInfo update={update} user={user_details} label="Created on " />
             {approvedBy}
             <UpdateStatus update={update} />
         </div>

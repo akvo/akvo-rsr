@@ -4719,7 +4719,10 @@ main {
                                             }
 
                                             .updateValue {
-                                                span {}
+                                                span {
+                                                    width: calc(100% - 40px);
+                                                    display: inline-block;
+                                                }
                                             }
 
                                             .approverMeta {
