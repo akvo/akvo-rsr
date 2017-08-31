@@ -902,7 +902,18 @@ export default class UpdateForm extends React.Component {
                 disaggregation.narrative
             );
         }
-        update.disaggregations = this.props.disaggregations.filter(isNonEmptyDisaggregation);
+        const pruneDisaggregation = (disaggregation) => {
+            let pruned = Object.assign({}, disaggregation);
+            const attributes = ['value', 'numerator', 'denominator', 'narrative'];
+            attributes.forEach((attribute) => {
+                if (pruned[attribute] === '') {
+                    delete pruned[attribute];
+                }
+            });
+            return pruned;
+        }
+
+        update.disaggregations = this.props.disaggregations.filter(isNonEmptyDisaggregation).map(pruneDisaggregation);
 
         if (isNewUpdate(update)) {
             saveUpdateToBackend(
