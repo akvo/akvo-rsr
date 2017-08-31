@@ -758,8 +758,16 @@ export default class UpdateForm extends React.Component {
         const dimension_id = e.target.getAttribute('data-dimension'),
               field = e.target.getAttribute('data-field'),
               disaggregations = keyBy(this.props.disaggregations, 'dimension'),
-              disaggregation = disaggregations[dimension_id];
+              disaggregation = disaggregations[dimension_id],
+              value = e.target.value,
+              isNumber = (x) => {
+                  return x.match(/[0-9.]*/)[0] === x;
+              };
         changedDisaggregation = update(disaggregation, {$merge: {[field]: e.target.value}});
+        if ((field == 'value' || field === 'numerator' || field === 'denominator') && !isNumber(value)){
+            this.props.createAlert(this.state.updateAlertName, _('only_numeric_value'));
+            return;
+        }
         if (field === 'numerator' || field === 'denominator') {
             changedDisaggregation = update(
                 changedDisaggregation,

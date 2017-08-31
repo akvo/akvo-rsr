@@ -284,6 +284,10 @@ export default class App extends React.Component {
                     'update': update_id,
                     'dimension': dimension.id,
                     'id': 'new-'+dimension.id,
+                    'value': '',
+                    'numerator': '',
+                    'denominator': '',
+                    'narrative': '',
                 };
                 changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
                 /* disaggregations.push(disaggregation)*/
