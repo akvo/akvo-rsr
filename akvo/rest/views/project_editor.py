@@ -11,15 +11,20 @@ import json
 
 from collections import namedtuple
 
-from akvo.rsr.fields import (LatitudeField, LongitudeField, ProjectLimitedTextField,
-                             ValidXMLCharField, ValidXMLTextField)
-from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country, CrsAdd,
-                             CrsAddOtherFlag, Fss, FssForecast, Indicator, IndicatorLabel,
-                             IndicatorPeriod, IndicatorReference, IndicatorPeriodActualDimension,
-                             IndicatorPeriodActualLocation, IndicatorPeriodTargetDimension,
-                             IndicatorPeriodTargetLocation, Keyword, Organisation,
-                             Project, OrganisationIndicatorLabel, ProjectDocument,
-                             ProjectDocumentCategory, ProjectEditorValidationSet, ProjectLocation,
+from akvo.rsr.fields import (LatitudeField, LongitudeField,
+                             ProjectLimitedTextField, ValidXMLCharField,
+                             ValidXMLTextField)
+from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country,
+                             CrsAdd, CrsAddOtherFlag, Fss, FssForecast,
+                             Indicator, IndicatorDimension, IndicatorLabel,
+                             IndicatorPeriod, IndicatorReference,
+                             IndicatorPeriodActualDimension,
+                             IndicatorPeriodActualLocation,
+                             IndicatorPeriodTargetDimension,
+                             IndicatorPeriodTargetLocation, Keyword,
+                             Organisation, Project, OrganisationIndicatorLabel,
+                             ProjectDocument, ProjectDocumentCategory,
+                             ProjectEditorValidationSet, ProjectLocation,
                              Result, Transaction, TransactionSector)
 from akvo.utils import DjangoModel
 
@@ -47,6 +52,7 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorLabel: (Indicator, 'indicator'),
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
+    IndicatorDimension: (Indicator, 'indicator'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
     IndicatorPeriodTargetDimension: (IndicatorPeriod, 'period'),
@@ -267,6 +273,7 @@ def convert_related_objects(rel_objects):
         'indicatorperiodtargetdimension': 'indicator_period_target_dimension',
         'indicatorperiodtargetlocation': 'indicator_period_target_location',
         'indicatorreference': 'indicator_reference',
+        'indicatordimension': 'indicator_dimension',
         'projectcondition': 'project_condition',
         'budgetitem': 'budget_item',
         'countrybudgetitem': 'country_budget_item',

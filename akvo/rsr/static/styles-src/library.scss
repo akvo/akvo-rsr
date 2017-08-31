@@ -336,15 +336,69 @@ $transitionable-prefixed-values: transform, transform-origin !default;
     font-size: calculateRem($size);
 }
 
-/*
-  rc-collapse
- */
+@mixin button($btnColor, $color) {
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: $btnColor;
+    color: $color !important;
+    text-decoration: none;
+    cursor: pointer;
 
-/* $models-colors: (
-  // classname, color, bg-color, content-bg-color, border-color
-  (results, #9F9EC5, #2B2A74, #6867A8, #16155A),
-  (indicators, #4D0015, #962644, #DA7791, #740B27),
-  (periods, #1F4B00, #539325, #9CD474, #35710B),
-  (updates, #554000, #A6882A, #F0D583, #80640D),
-  (comments, #222, #b0b0b0, #999999, #a55)
-); */
+    @include border-radius(3px);
+
+    border: 1px solid transparent;
+    text-align: center;
+
+    &:hover {
+        background: darken($btnColor, 10%);
+        color: white;
+    }
+
+    &.disabled {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent;
+
+        &:hover {
+            cursor: not-allowed;
+            background-color: rgba(128, 128, 128, 0.1) !important;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid transparent;
+        }
+    }
+}
+
+@mixin smallButton($btnColor, $color) {
+    @include button($btnColor, $color);
+
+    padding: 3px 6px;
+}
+
+@mixin btnOutline($btnColor, $color) {
+    @include button($btnColor, $color);
+
+    background-color: transparent;
+    color: $btnColor !important;
+    border: 1px solid $btnColor;
+
+    &:hover {
+        color: white !important;
+        border: none;
+        border: 1px solid $anchorLink;
+        background-color: $anchorLink;
+    }
+
+    &.disabled {
+        cursor: not-allowed;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid rgba(128, 128, 128, 0.4);
+
+        &:hover {
+            cursor: not-allowed;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid rgba(128, 128, 128, 0.4);
+        }
+    }
+}

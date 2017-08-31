@@ -35,17 +35,6 @@
   ========================================================================== */
 /* Placeholder
   ========================================================================== */
-/*
-  rc-collapse
- */
-/* $models-colors: (
-  // classname, color, bg-color, content-bg-color, border-color
-  (results, #9F9EC5, #2B2A74, #6867A8, #16155A),
-  (indicators, #4D0015, #962644, #DA7791, #740B27),
-  (periods, #1F4B00, #539325, #9CD474, #35710B),
-  (updates, #554000, #A6882A, #F0D583, #80640D),
-  (comments, #222, #b0b0b0, #999999, #a55)
-); */
 html {
   width: 100%;
   overflow-y: scroll; }
@@ -3089,6 +3078,34 @@ main {
   .periods .rc-collapse .rc-collapse-item.periodSelected .rc-collapse-header .periodWrap ul {
     background-color: rgba(44, 42, 116, 0.1) !important;
     min-height: 40px !important; }
+  .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate {
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: #202024;
+    color: white !important;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-align: center;
+    padding: 3px 6px; }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate:hover {
+      background: #080809;
+      color: white; }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate.disabled {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate.disabled:hover {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
     padding: 5px 10px;
     cursor: pointer;
@@ -3345,6 +3362,20 @@ main {
       top: -35px;
       right: 0;
       background: transparent; }
+  .update-container .update-entry-container.edit-in-progress .disaggregationFields {
+    width: 100%;
+    overflow: auto;
+    border-top: 1px solid rgba(32, 32, 36, 0.1);
+    border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+    padding: 15px 0;
+    margin-top: 10px; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
+      margin-bottom: 10px; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput {
+      margin: 10px auto;
+      padding: 0 5px; }
+      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput h5 {
+        margin: 8px auto; }
   .update-container .update-entry-container .update-entry-container-header {
     background: rgba(32, 32, 36, 0);
     border-bottom: 1px solid rgba(32, 32, 36, 0.1);
