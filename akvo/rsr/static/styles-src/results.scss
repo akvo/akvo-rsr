@@ -5017,6 +5017,28 @@ main {
                     background: transparent;
                 }
             }
+
+            .disaggregationFields {
+                width: 100%;
+                overflow: auto;
+                border-top: 1px solid rgba($akvoBlack, 0.1);
+                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                padding: 15px 0;
+                margin-top: 10px;
+
+                h4 {
+                    margin-bottom: 10px;
+                }
+
+                .disaggregationInput {
+                    margin: 10px auto;
+                    padding: 0 5px;
+
+                    h5 {
+                        margin: 8px auto;
+                    }
+                }
+            }
         }
 
         .update-entry-container-header {

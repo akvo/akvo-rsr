@@ -3345,6 +3345,20 @@ main {
       top: -35px;
       right: 0;
       background: transparent; }
+  .update-container .update-entry-container.edit-in-progress .disaggregationFields {
+    width: 100%;
+    overflow: auto;
+    border-top: 1px solid rgba(32, 32, 36, 0.1);
+    border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+    padding: 15px 0;
+    margin-top: 10px; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
+      margin-bottom: 10px; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput {
+      margin: 10px auto;
+      padding: 0 5px; }
+      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput h5 {
+        margin: 8px auto; }
   .update-container .update-entry-container .update-entry-container-header {
     background: rgba(32, 32, 36, 0);
     border-bottom: 1px solid rgba(32, 32, 36, 0.1);

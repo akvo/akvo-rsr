@@ -505,7 +505,7 @@ const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggr
                   ) : undefined;
               });
               return (
-                  <div key={"dimension-" + dimension}>
+                  <div key={"dimension-" + dimension} className="disaggregationInput">
                       <h5>{dimension}</h5>
                       {inputs}
                   </div>
@@ -513,7 +513,7 @@ const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggr
           }),
           headline = dimensions.length > 0 ?  (<h4>Disaggregations</h4>): undefined;
           return  (
-              <div>
+              <div className="disaggregationFields">
                   {headline}
                   {dimension_elements}
               </div>
