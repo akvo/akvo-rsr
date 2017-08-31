@@ -3078,6 +3078,34 @@ main {
   .periods .rc-collapse .rc-collapse-item.periodSelected .rc-collapse-header .periodWrap ul {
     background-color: rgba(44, 42, 116, 0.1) !important;
     min-height: 40px !important; }
+  .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate {
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: #202024;
+    color: white !important;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-align: center;
+    padding: 3px 6px; }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate:hover {
+      background: #080809;
+      color: white; }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate.disabled {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate.disabled:hover {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
     padding: 5px 10px;
     cursor: pointer;
@@ -3187,33 +3215,14 @@ main {
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate {
       display: flex; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate {
-        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
         display: inline-block;
-        padding: 5px 8px;
-        background-color: #202024;
-        color: white !important;
-        text-decoration: none;
-        cursor: pointer;
-        -moz-border-radius: 3px;
-        -o-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        border: 1px solid transparent;
-        text-align: center;
-        padding: 3px 6px; }
+        margin: 10px auto;
+        background: transparent;
+        color: #428bca;
+        border: none; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate:hover {
-          background: #080809;
+          background: #2c2a74;
           color: white; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate.disabled {
-          cursor: not-allowed;
-          background-color: rgba(128, 128, 128, 0.1) !important;
-          color: rgba(128, 128, 128, 0.4) !important;
-          border: 1px solid transparent; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate.disabled:hover {
-            cursor: not-allowed;
-            background-color: rgba(128, 128, 128, 0.1) !important;
-            color: rgba(128, 128, 128, 0.4) !important;
-            border: 1px solid transparent; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row {
       margin-bottom: 20px;
       padding-left: 20px; }

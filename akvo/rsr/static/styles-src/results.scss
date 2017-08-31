@@ -4524,6 +4524,10 @@ main {
             .rc-collapse-header {
                 span {
                     &.periodWrap {
+                        .newUpdate {
+                            @include smallButton($akvoBlack, white);
+                        }
+
                         ul {
                             padding: 5px 10px;
                             cursor: pointer;
@@ -4698,7 +4702,16 @@ main {
                                 display: flex;
 
                                 .newUpdate {
-                                    @include smallButton($akvoBlack, white);
+                                    display: inline-block;
+                                    margin: 10px auto;
+                                    background: transparent;
+                                    color: $anchorLink;
+                                    border: none;
+
+                                    &:hover {
+                                        background: $rsrBlue;
+                                        color: white;
+                                    }
                                 }
                             }
 
