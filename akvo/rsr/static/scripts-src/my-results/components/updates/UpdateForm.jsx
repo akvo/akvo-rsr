@@ -24,10 +24,6 @@ import {
     deleteUpdateFromBackend,
 } from "../../actions/model-actions"
 
-import {
-    getIndicatorsDimensionIds,
-} from "../../selectors";
-
 import * as c from '../../const.js';
 
 import {
