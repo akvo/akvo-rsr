@@ -137,10 +137,12 @@ const ShowDisaggregations = ({dimensions, disaggregations, isQualitative}) => {
               )
           });
     return (
-        <div className="showDisaggregations">
-        {heading}
-        {disaggregation_data}
-        </div>
+        <ul className="showDisaggregations">
+            <li>
+                {heading}
+                {disaggregation_data}
+            </li>
+        </ul>
     );
 };
 
