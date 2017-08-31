@@ -35,17 +35,6 @@
   ========================================================================== */
 /* Placeholder
   ========================================================================== */
-/*
-  rc-collapse
- */
-/* $models-colors: (
-  // classname, color, bg-color, content-bg-color, border-color
-  (results, #9F9EC5, #2B2A74, #6867A8, #16155A),
-  (indicators, #4D0015, #962644, #DA7791, #740B27),
-  (periods, #1F4B00, #539325, #9CD474, #35710B),
-  (updates, #554000, #A6882A, #F0D583, #80640D),
-  (comments, #222, #b0b0b0, #999999, #a55)
-); */
 html {
   width: 100%;
   overflow-y: scroll; }
@@ -3198,14 +3187,33 @@ main {
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate {
       display: flex; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate {
+        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
         display: inline-block;
-        margin: 10px auto;
-        background: transparent;
-        color: #428bca;
-        border: none; }
+        padding: 5px 8px;
+        background-color: #202024;
+        color: white !important;
+        text-decoration: none;
+        cursor: pointer;
+        -moz-border-radius: 3px;
+        -o-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        text-align: center;
+        padding: 3px 6px; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate:hover {
-          background: #2c2a74;
+          background: #080809;
           color: white; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate.disabled {
+          cursor: not-allowed;
+          background-color: rgba(128, 128, 128, 0.1) !important;
+          color: rgba(128, 128, 128, 0.4) !important;
+          border: 1px solid transparent; }
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .emptyUpdate .newUpdate.disabled:hover {
+            cursor: not-allowed;
+            background-color: rgba(128, 128, 128, 0.1) !important;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid transparent; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row {
       margin-bottom: 20px;
       padding-left: 20px; }

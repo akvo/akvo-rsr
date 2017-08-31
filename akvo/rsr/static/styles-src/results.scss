@@ -4698,16 +4698,7 @@ main {
                                 display: flex;
 
                                 .newUpdate {
-                                    display: inline-block;
-                                    margin: 10px auto;
-                                    background: transparent;
-                                    color: $anchorLink;
-                                    border: none;
-
-                                    &:hover {
-                                        background: $rsrBlue;
-                                        color: white;
-                                    }
+                                    @include smallButton($akvoBlack, white);
                                 }
                             }
 
