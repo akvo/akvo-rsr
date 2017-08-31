@@ -35,17 +35,6 @@
   ========================================================================== */
 /* Placeholder
   ========================================================================== */
-/*
-  rc-collapse
- */
-/* $models-colors: (
-  // classname, color, bg-color, content-bg-color, border-color
-  (results, #9F9EC5, #2B2A74, #6867A8, #16155A),
-  (indicators, #4D0015, #962644, #DA7791, #740B27),
-  (periods, #1F4B00, #539325, #9CD474, #35710B),
-  (updates, #554000, #A6882A, #F0D583, #80640D),
-  (comments, #222, #b0b0b0, #999999, #a55)
-); */
 html {
   width: 100%;
   overflow-y: scroll; }
@@ -3051,6 +3040,8 @@ main {
           .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul {
             color: rgba(32, 32, 36, 0.4);
             padding-left: 7px; }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul:nth-of-type(2) {
+              display: none; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul li {
               display: inline; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
@@ -3061,6 +3052,11 @@ main {
               margin-left: 55px; }
               .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-value span {
                 color: initial; }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .value-header {
+              padding-left: 20px;
+              font-variant: small-caps; }
+              .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .value-header.hidden-header {
+                padding-right: 80px; }
 
 .periods > button {
   display: none; }
@@ -3080,12 +3076,42 @@ main {
   .periods .rc-collapse .rc-collapse-item:last-child {
     border-bottom: none; }
   .periods .rc-collapse .rc-collapse-item.periodSelected .rc-collapse-header .periodWrap ul {
-    background-color: rgba(44, 42, 116, 0.1) !important; }
+    background-color: rgba(44, 42, 116, 0.1) !important;
+    min-height: 40px !important; }
+  .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate {
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: #4ec1ea;
+    color: white !important;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-align: center;
+    padding: 3px 6px; }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate:hover {
+      background: #20b1e5;
+      color: white; }
+    .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate.disabled {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap .newUpdate.disabled:hover {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
   .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul {
     padding: 5px 10px;
     cursor: pointer;
     background-color: white;
     margin-bottom: 0;
+    min-height: 40px !important;
     -moz-transition: background-color 0.2s linear;
     -o-transition: background-color 0.2s linear;
     -webkit-transition: background-color 0.2s linear;
@@ -3104,14 +3130,10 @@ main {
         padding-left: 0px; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(2) {
         padding-left: 0px; }
-      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) {
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) span, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) span {
         color: rgba(32, 32, 36, 0.4); }
-        .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3) span {
-          color: initial; }
-      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) {
-        color: rgba(32, 32, 36, 0.4); }
-        .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4) span {
-          color: initial; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3).targetValue, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(3).actualValue, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4).targetValue, .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(4).actualValue {
+        font-variant: small-caps; }
       .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) {
         margin-right: 0px;
         padding-left: 75px; }
@@ -3139,6 +3161,9 @@ main {
             .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li:nth-child(5) div button:hover {
               background: #2c2a74;
               color: white; }
+      .periods .rc-collapse .rc-collapse-item .rc-collapse-header span.periodWrap ul li .lockToggle {
+        float: right;
+        margin-right: 25px; }
   .periods .rc-collapse .rc-collapse-item.rc-collapse-item-inactive .rc-collapse-header .arrow {
     display: inline-block;
     width: 20px;
@@ -3203,10 +3228,18 @@ main {
       padding-left: 20px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .statusMeta {
         display: none; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span {
+        width: calc(100% - 40px);
+        display: inline-block; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
         display: none; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.UpdateDate {
-        display: inline-block; }
+        display: inline-block;
+        margin-left: 5px; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .showDisaggregations {
+        padding-left: 40px; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .showDisaggregations h5 {
+          color: rgba(32, 32, 36, 0.5); }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .comments {
         margin: 10px 0 0 40px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row hr.delicate {
@@ -3266,6 +3299,9 @@ main {
         pointer-events: none !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody ul {
       list-style-type: none; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .timestamp-info-container {
+      float: right;
+      margin-right: 50px; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active {
       border: 1px solid white !important;
       background: rgba(255, 255, 255, 0.5) !important; }
@@ -3330,6 +3366,22 @@ main {
       top: -35px;
       right: 0;
       background: transparent; }
+  .update-container .update-entry-container.edit-in-progress .disaggregationFields {
+    width: 100%;
+    overflow: auto;
+    border-top: 1px solid rgba(32, 32, 36, 0.1);
+    border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+    padding: 15px 0;
+    margin-top: 10px; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
+      margin-bottom: 10px; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput {
+      margin: 10px auto;
+      padding: 0 5px; }
+      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput h5 {
+        margin: 8px auto; }
+      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput span {
+        color: rgba(32, 32, 36, 0.5); }
   .update-container .update-entry-container .update-entry-container-header {
     background: rgba(32, 32, 36, 0);
     border-bottom: 1px solid rgba(32, 32, 36, 0.1);

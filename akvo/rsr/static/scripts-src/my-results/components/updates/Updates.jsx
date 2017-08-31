@@ -10,6 +10,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from "react-redux"
 
+import groupBy from 'lodash/groupBy';
+import keyBy from 'lodash/keyBy';
+
 import * as alertActions from "../../actions/alert-actions"
 
 import { collapseChange } from "../../actions/collapse-actions"
@@ -20,6 +23,8 @@ import {
     getUpdatesForApprovedPeriods,
     getUpdatesForNeedReportingPeriods,
     getUpdatesForPendingApprovalPeriods,
+    getUpdatesDisaggregationObjects,
+    getIndicatorsDimensionIds,
 } from "../../selectors";
 import {
     closeNodes,
@@ -88,9 +93,6 @@ const UpdateValue =({update}) => {
     return (
         <ul className="valueMeta">
             <li className="updateValue">Update value: <span>{value}</span></li>
-            <li className="totalValue">Actual total for this period (including this update):
-                <span> {actual_value}</span>
-            </li>
         </ul>
     )
 };
@@ -112,8 +114,39 @@ UpdateStatus.propTypes = {
     update: PropTypes.object.isRequired
 };
 
+const ShowDisaggregations = ({dimensions, disaggregations, isQualitative}) => {
+    if (dimensions.length == 0) {
+        return (<div></div>);
+    }
+    const grouped_dimensions = groupBy(dimensions, 'name'),
+          dimension_disaggregations = keyBy(disaggregations, 'dimension'),
+          heading = <h5>Disaggregations</h5>,
+          disaggregation_data = Object.entries(grouped_dimensions).map(([name, values]) => {
+              const dimension_values = values.map(({id, value}) => {
+                  const disaggregation = dimension_disaggregations[id],
+                        disaggregation_value =
+                            disaggregation ?
+                            (isQualitative? disaggregation.narrative : disaggregation.value) : "";
+                  return (<li key={value}>{value}: {disaggregation_value}</li>);
+              });
+              return (
+                  <div key={name}>
+                      <span>{name}</span>
+                      <ul>{dimension_values}</ul>
+                  </div>
+              )
+          });
+    return (
+        <ul className="showDisaggregations">
+            <li>
+                {heading}
+                {disaggregation_data}
+            </li>
+        </ul>
+    );
+};
 
-const QuantitativeUpdateBody = ({update}) => {
+const QuantitativeUpdateBody = ({update, dimensions, disaggregations}) => {
     const {user_details, approver_details} = update;
     const approvedBy = approver_details ?
         <TimestampInfo update={update} user={approver_details} label="Approved on " />
@@ -122,8 +155,11 @@ const QuantitativeUpdateBody = ({update}) => {
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
-            <TimestampInfo update={update} user={user_details} label="Created on " />
-            {approvedBy}
+            <ShowDisaggregations dimensions={dimensions} disaggregations={disaggregations}/>
+            <div className="timestamp-info-container">
+                <TimestampInfo update={update} user={user_details} label="Created on " />
+                {approvedBy}
+            </div>
             <UpdateStatus update={update} />
         </div>
     )
@@ -146,16 +182,17 @@ UpdateValue.propTypes = {
 };
 
 
-const QualitativeUpdateBody = ({period, update}) => {
+const QualitativeUpdateBody = ({period, update, dimensions, disaggregations}) => {
     const {user_details, approver_details} = update;
     const approvedBy = approver_details ?
-        <TimestampInfo update={update} user={approver_details} label="Approved on" />
-    :
-        undefined;
+                       <TimestampInfo update={update} user={approver_details} label="Approved on " />
+:
+                       undefined;
     return (
         <div className="UpdateBody">
             <UpdateNarrative period={period} update={update} />
-            <TimestampInfo update={update} user={user_details} label="Created on" />
+            <ShowDisaggregations dimensions={dimensions} disaggregations={disaggregations} isQualitative={true}/>
+            <TimestampInfo update={update} user={user_details} label="Created on " />
             {approvedBy}
             <UpdateStatus update={update} />
         </div>
@@ -169,9 +206,9 @@ QualitativeUpdateBody.propTypes = {
 
 const UserInfo = ({user_details}) => {
     const organisation = user_details.approved_organisations.length ?
-        user_details.approved_organisations[0].name
-    :
-        null;
+                         user_details.approved_organisations[0].name
+:
+                         null;
     const userName = user_details.first_name +" "+ user_details.last_name;
 
     return (
@@ -182,13 +219,15 @@ UserInfo.propTypes = {
     user_details: PropTypes.object.isRequired,
 };
 
-const QuantitativeUpdate = ({id, update, periodLocked, collapseId}) => {
+const QuantitativeUpdate = ({id, update, dimensions, disaggregations, periodLocked, collapseId}) => {
     return (
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={periodLocked}
                           collapseId={collapseId}/>
             <div className="row">
-                <QuantitativeUpdateBody update={update}/>
+                <QuantitativeUpdateBody update={update}
+                                        dimensions={dimensions}
+                                        disaggregations={disaggregations}/>
                 <Comments parentId={id} inForm={false}/>
                 <hr className="delicate"/>
             </div>
@@ -203,12 +242,15 @@ QuantitativeUpdate.propTypes = {
 };
 
 
-const QualitativeUpdate = ({id, period, update, collapseId}) => {
+const QualitativeUpdate = ({id, period, update, dimensions, disaggregations, collapseId}) => {
     return (
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={period.locked} collapseId={collapseId}/>
             <div className="row">
-                <QualitativeUpdateBody period={period} update={update}/>
+                <QualitativeUpdateBody period={period}
+                                       update={update}
+                                       dimensions={dimensions}
+                                       disaggregations={disaggregations}/>
                 <Comments parentId={id} inForm={false}/>
                 <hr className="delicate"/>
             </div>
@@ -324,6 +366,9 @@ class UpdateHeader extends React.Component {
         updates: store.models.updates,
         keys: store.keys,
         ui: store.ui,
+        disaggregations: getUpdatesDisaggregationObjects(store),
+        dimension_ids: getIndicatorsDimensionIds(store),
+        dimensions: store.models.dimensions,
         periodChildrenIds: getPeriodsChildrenIds(store),
         needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
         pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),
@@ -403,6 +448,11 @@ export default class Updates extends React.Component {
                 const update = this.props.updates.objects[id];
                 // Calculate running total of numeric update values
                 const value = parseInt(update.value);
+                const dimensions = this.props.dimension_ids[indicator.id].map(
+                    (id) => {return this.props.dimensions.objects[id]}
+                );
+                const disaggregations = this.props.disaggregations[update.id];
+
                 if (value && update.status == c.UPDATE_STATUS_APPROVED) {
                     actualValue += value;
                 }
@@ -412,6 +462,8 @@ export default class Updates extends React.Component {
                         return <QuantitativeUpdate key={id}
                                                    id={id}
                                                    update={update}
+                                                   dimensions={dimensions}
+                                                   disaggregations={disaggregations}
                                                    periodLocked={this.props.period.locked}
                                                    collapseId={this.state.collapseId}/>
                     }
@@ -419,6 +471,8 @@ export default class Updates extends React.Component {
                         return <QualitativeUpdate key={id}
                                                   id={id}
                                                   update={update}
+                                                  dimensions={dimensions}
+                                                  disaggregations={disaggregations}
                                                   period={this.props.period}
                                                   collapseId={this.state.collapseId}/>
                     }

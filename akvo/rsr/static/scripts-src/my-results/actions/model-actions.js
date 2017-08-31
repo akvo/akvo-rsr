@@ -313,6 +313,22 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
                         payload: {model: c.OBJECTS_UPDATES, object: data, collapseId}
                     });
                 }
+                // Delete any disaggregations that are there
+                data.disaggregations.map((disaggregation) => {
+                    dispatch({
+                        type: c.DELETE_FROM_MODEL,
+                        payload: {model: c.OBJECTS_DISAGGREGATIONS, object: disaggregation}
+                    });
+                });
+                // and replace them with new disaggregations if any
+                newUpdate.disaggregations.map((disaggregation) => {
+                    dispatch({
+                        type: c.UPDATE_MODEL_FULFILLED,
+                        payload: {model: c.OBJECTS_DISAGGREGATIONS, object: disaggregation}
+                    });
+                });
+                // Remove the disaggregations attribute on newUpdate, returned by API endpoint
+                delete newUpdate.disaggregations;
                 // and replace it with the data from the server
                 dispatch({
                     type: c.UPDATE_MODEL_FULFILLED,

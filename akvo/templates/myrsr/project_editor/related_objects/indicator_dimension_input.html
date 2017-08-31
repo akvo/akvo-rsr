@@ -1,0 +1,15 @@
+{% load i18n project_editor %}
+
+<div class="indicator-dimension-item parent" id="indicator_dimension.{{ dimension|obj_id }}">
+    {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension %}
+    <div class="hide-partial {% if dimension.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=dimension field='name' %}
+            </div>
+            <div class="col-md-6">
+                {% include text_input with obj=dimension field='value' %}
+            </div>
+        </div>
+    </div>
+</div>

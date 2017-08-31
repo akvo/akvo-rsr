@@ -33,6 +33,14 @@
                     </div>
                 </div>
 
+                {% if custom_fields_section_3 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                          <h4>Additional fields for {{ project.primary_organisation }}</h4>
+                        </div>
+                    </div>
+                {%  endif %}
+
                 {% for customfield in custom_fields_section_3 %}
                     {% include custom_field_input %}
                 {% endfor %}

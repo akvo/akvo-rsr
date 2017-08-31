@@ -21,6 +21,15 @@
                 {% include textarea_input with obj=project field='target_group' %}
                 {% include textarea_input with obj=project field='project_plan' %}
                 {% include textarea_input with obj=project field='sustainability' %}
+
+                {% if custom_fields_section_4 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                          <h4>Additional fields for {{ project.primary_organisation }}</h4>
+                        </div>
+                    </div>
+                {%  endif %}
+
                 {% for customfield in custom_fields_section_4 %}
                     {% include custom_field_input %}
                 {% endfor %}

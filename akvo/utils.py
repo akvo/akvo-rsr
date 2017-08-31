@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # utility functions for RSR
-
+from collections import namedtuple
 from datetime import datetime
 import hashlib
 import inspect
@@ -41,6 +41,11 @@ COUNTRY_SHAPES = None
 
 class HttpResponseNoContent(HttpResponse):
     status_code = 204
+
+
+# tuple holding a Django table full name, app name and model name.
+# Used in the project_editor DRF code
+DjangoModel = namedtuple('DjangoModel', 'table_name, app, model_name')
 
 
 def rsr_image_path(instance, file_name, path_template='db/project/%s/%s'):

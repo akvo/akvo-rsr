@@ -227,6 +227,18 @@ class OrganisationCustomFieldInline(NestedTabularInline):
             return 1
 
 
+class OrganisationIndicatorLabelInline(NestedTabularInline):
+    model = get_model('rsr', 'OrganisationIndicatorLabel')
+    fields = ('label',)
+    fk_name = 'organisation'
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj:
+            return 1 if obj.indicator_labels.count() == 0 else 0
+        else:
+            return 1
+
+
 class InternalOrganisationIDAdmin(admin.ModelAdmin):
     list_display = (u'identifier', u'recording_org', u'referenced_org',)
     search_fields = (u'identifier', u'recording_org__name', u'referenced_org__name',)
@@ -262,7 +274,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     inlines = (OrganisationLocationInline, OrganisationTotalBudgetInline,
                OrganisationRecipientOrgBudgetInline, OrganisationRegionBudgetInline,
                OrganisationCountryBudgetInline, OrganisationTotalExpenditureInline,
-               OrganisationDocumentInline, OrganisationCustomFieldInline)
+               OrganisationDocumentInline, OrganisationCustomFieldInline,
+               OrganisationIndicatorLabelInline)
     exclude = ('internal_org_ids',)
     list_display = ('name', 'long_name', 'website', 'language')
     search_fields = ('name', 'long_name')

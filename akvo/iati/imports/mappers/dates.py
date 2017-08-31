@@ -16,7 +16,11 @@ class Dates(ImportMapper):
         else:
             date_element = self.parent_elem.find(
                 "activity-date[@type='{}']".format(self.ver_2_date_type))
-        date = self.get_date(date_element, 'iso-date', self.date_field) if date_element else None
+
+        date = None
+        if date_element is not None:
+            date = self.get_date(date_element, 'iso-date', self.date_field)
+
         return self.update_project_field(self.date_field, date)
 
 

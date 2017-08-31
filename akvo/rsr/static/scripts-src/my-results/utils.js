@@ -106,10 +106,14 @@ export const endpoints = {
         "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
         "indicators": (id) =>
             `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
+        "dimensions": (id) =>
+            `/rest/v1/indicator_dimension/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
         "periods": (id) =>
             `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
         "updates": (id) =>
             `/rest/v1/indicator_period_data/?format=json&limit=${c.API_LIMIT}&period__indicator__result__project=${id}`,
+        "disaggregations": (id) =>
+            `/rest/v1/disaggregation/?format=json&limit=${c.API_LIMIT}&update__period__indicator__result__project=${id}`,
         "comments": (id) =>
             `/rest/v1/indicator_period_data_comment/?format=json&limit=${c.API_LIMIT}&data__period__indicator__result__project=${id}`,
         "post_comment": () =>
