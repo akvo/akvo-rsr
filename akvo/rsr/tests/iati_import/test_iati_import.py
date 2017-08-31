@@ -6,6 +6,7 @@ Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
+from datetime import datetime
 
 from akvo.rsr.models import IatiImport, IatiImportJob, Organisation, Project, User, BudgetItemLabel
 from akvo.codelists.models import BudgetIdentifier, Currency, ResultType, Version
@@ -83,17 +84,21 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v1.language, "en")
         self.assertEqual(project_v1.currency, "USD")
         self.assertEqual(project_v1.title, "Test project for IATI import v1")
+        self.assertEqual(project_v1.date_start_planned, datetime(2012, 04, 15).date())
+        self.assertEqual(project_v1.date_start_actual, datetime(2012, 04, 28).date())
+        self.assertEqual(project_v1.date_end_planned, datetime(2015, 12, 31).date())
+        self.assertEqual(project_v1.date_end_actual, datetime(2015, 12, 31).date())
         self.assertEqual(project_v1.partners.count(), 4)
+        self.assertEqual(project_v1.transactions.count(), 2)
+        self.assertEqual(project_v1.transactions.count(), 2)
+        self.assertEqual(project_v1.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
-        self.assertEqual(project_v1.transactions.count(), 2)
-        self.assertEqual(project_v1.transactions.count(), 2)
         self.assertEqual(transaction_1.reference, '1234')
         self.assertEqual(transaction_1.currency, 'EUR')
         self.assertEqual(transaction_1.iati_currency(), u'Euro')
         self.assertEqual(transaction_2.reference, '4321')
         self.assertEqual(transaction_2.currency, 'USD')
         self.assertEqual(transaction_2.iati_currency(), u'US Dollar')
-        self.assertEqual(project_v1.reporting_org.iati_org_id, "NL-KVK-0987654321")
 
     def test_iati_v2_import(self):
         """
@@ -113,6 +118,10 @@ class IatiImportTestCase(TestCase):
         self.assertEqual(project_v2.currency, "USD")
         self.assertEqual(project_v2.hierarchy, 1)
         self.assertEqual(project_v2.title, "Test project for IATI import v2")
+        self.assertEqual(project_v2.date_start_planned, datetime(2012, 04, 15).date())
+        self.assertEqual(project_v2.date_start_actual, datetime(2012, 04, 28).date())
+        self.assertEqual(project_v2.date_end_planned, datetime(2015, 12, 31).date())
+        self.assertEqual(project_v2.date_end_actual, datetime(2015, 12, 31).date())
         self.assertEqual(project_v2.partners.count(), 4)
         self.assertEqual(project_v2.transactions.count(), 1)
         self.assertEqual(project_v2.reporting_org.iati_org_id, "NL-KVK-0987654321")

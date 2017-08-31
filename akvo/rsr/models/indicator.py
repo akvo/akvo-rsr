@@ -9,6 +9,7 @@ from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE, INDICATOR_VOC
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.utils import codelist_choices, codelist_value, rsr_image_path
+from .organisation_indicator_label import OrganisationIndicatorLabel
 from .result import Result
 
 from decimal import Decimal, InvalidOperation, DivisionByZero
@@ -292,6 +293,21 @@ class IndicatorReference(models.Model):
 
     def iati_vocabulary_unicode(self):
         return str(self.iati_vocabulary())
+
+
+class IndicatorLabel(models.Model):
+    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
+                                  related_name='labels')
+    label = models.ForeignKey(OrganisationIndicatorLabel, verbose_name=_(u'label'),
+                              related_name='indicators')
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator label')
+        verbose_name_plural = _(u'indicator labels')
+
+    def __unicode__(self):
+        return self.label.label
 
 
 class IndicatorPeriod(models.Model):
@@ -1048,3 +1064,63 @@ class IndicatorPeriodActualDimension(models.Model):
 
     def __unicode__(self):
         return self.name + ': ' + self.value if self.name and self.value else ''
+
+
+class IndicatorDimension(models.Model):
+    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
+                                  related_name='dimensions')
+    name = ValidXMLCharField(
+        _(u'dimension name'), blank=True, max_length=100,
+        help_text=_(u'The name of a category to be used when disaggregating (e.g "Age")'))
+    value = ValidXMLCharField(
+        _(u'dimension value'), blank=True, max_length=100,
+        help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'indicator dimension')
+        verbose_name_plural = _(u'indicator dimensions')
+        ordering = ['id']
+
+    def __unicode__(self):
+        return self.name + ': ' + self.value if self.name and self.value else ''
+
+
+class Disaggregation(TimestampsMixin, models.Model):
+    """Model for storing a disaggregated value along one axis of a dimension."""
+
+    dimension = models.ForeignKey(IndicatorDimension)
+    # FIXME: Should be able to associate with period/indicator too?
+    update = models.ForeignKey(IndicatorPeriodData,
+                               verbose_name=_(u'indicator period update'),
+                               related_name='disaggregations')
+
+    # FIXME: Add a type to allow disaggregated values for target/baseline
+    # type = models.CharField
+
+    # NOTE: corresponding value field on Update is still a CharField
+    value = models.DecimalField(
+        _(u'quantitative disaggregated value'),
+        max_digits=20,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+    narrative = ValidXMLTextField(_(u'qualitative narrative'), blank=True)
+    numerator = models.DecimalField(
+        _(u'numerator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The numerator for a percentage value')
+    )
+    denominator = models.DecimalField(
+        _(u'denominator for indicator'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+        help_text=_(u'The denominator for a percentage value')
+    )
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'disaggregated value')
+        verbose_name_plural = _(u'disaggregated values')

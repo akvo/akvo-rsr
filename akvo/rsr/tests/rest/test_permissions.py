@@ -75,6 +75,12 @@ class PermissionFilteringTestCase(TestCase):
             username = 'rsr-superuser@{}.org'.format(org_name)
             cls.create_user(username, group, organisation, is_superuser=True)
 
+            # Create organisation indicator labels
+            label = M.OrganisationIndicatorLabel.objects.create(
+                organisation=organisation,
+                label=u'label1'
+            )
+
             # Create Projects
             for project_name in ('Private project', 'Public project'):
                 for status in (M.PublishingStatus.STATUS_PUBLISHED, M.PublishingStatus.STATUS_UNPUBLISHED):
@@ -152,6 +158,10 @@ class PermissionFilteringTestCase(TestCase):
                 result = M.Result.objects.create(project=project)
                 # indicator
                 indicator = M.Indicator.objects.create(result=result)
+                # indicator dimension
+                dimension = M.IndicatorDimension.objects.create(indicator=indicator)
+                # indicator label
+                M.IndicatorLabel.objects.create(indicator=indicator, label=label)
                 # indicator reference
                 M.IndicatorReference.objects.create(indicator=indicator)
                 # indicator period
@@ -178,6 +188,8 @@ class PermissionFilteringTestCase(TestCase):
                                                            longitude=update.id)
                     # indicator period data
                     data = M.IndicatorPeriodData.objects.create(period=period, user=user)
+                    # disaggregation
+                    M.Disaggregation.objects.create(update=data, dimension=dimension)
                     # indicator period data comment
                     M.IndicatorPeriodDataComment.objects.create(data=data, user=user)
                     # comments
@@ -443,6 +455,19 @@ class PermissionFilteringTestCase(TestCase):
             'project_relation': 'result__project__'
         }
 
+        # one indicator dimension per indicator
+        model_map[M.IndicatorDimension] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'indicator__result__project__'
+        }
+
+        # one label per indicator
+        # FIXME: change_* permissions weirdness
+        model_map[M.IndicatorLabel] = {
+            'group_count': group_count(8, 4, 4, 4),
+            'project_relation': 'indicator__result__project__'
+        }
+
         # one reference per indicator
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorReference] = {
@@ -490,6 +515,12 @@ class PermissionFilteringTestCase(TestCase):
         model_map[M.IndicatorPeriodData] = {
             'group_count': group_count(56, 28, 42, 28),
             'project_relation': 'period__indicator__result__project__'
+        }
+
+        # one disaggregation created per user per indicator period update
+        model_map[M.Disaggregation] = {
+            'group_count': group_count(56, 28, 42, 28),
+            'project_relation': 'update__period__indicator__result__project__'
         }
 
         # one comment per indicator period data
