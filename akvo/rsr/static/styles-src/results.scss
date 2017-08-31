@@ -4525,7 +4525,7 @@ main {
                 span {
                     &.periodWrap {
                         .newUpdate {
-                            @include smallButton($akvoBlack, white);
+                            @include smallButton($btnColor, white);
                         }
 
                         ul {
@@ -4962,7 +4962,7 @@ main {
 
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
@@ -5040,6 +5040,9 @@ main {
 
                     h5 {
                         margin: 8px auto;
+                    }
+                    span {
+                        color: rgba($akvoBlack, 0.5);
                     }
                 }
             }
