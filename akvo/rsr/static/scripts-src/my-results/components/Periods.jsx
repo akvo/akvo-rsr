@@ -153,8 +153,8 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = ({period, user, toggleCheckbox, isChecked, isQualitative, newUpdateButton, delUpdateAlert,
-                       formOpen, showLockButton}) => {
+const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQualitative,
+                       newUpdateButton, delUpdateAlert, formOpen, showLockButton}) => {
                            const periodStart = displayDate(period.period_start);
                            const periodEnd = displayDate(period.period_end);
                            const periodDate = `${periodStart} - ${periodEnd}`;
@@ -173,8 +173,18 @@ const PeriodHeader = ({period, user, toggleCheckbox, isChecked, isQualitative, n
                                    <ul className={formOpen ? "formOpen" : ""}>
                                        <li>{periodSelect}</li>
                                        <li>{periodDate}</li>
-                                       {isQualitative ? undefined: <li className="targetValue"><span>Target:</span> {period.target_value}</li>}
-                                       {isQualitative ? undefined: <li className="actualValue"><span>Actual:</span> {period.actual_value}</li>}
+                                       {isQualitative ?
+                                           undefined
+                                       :
+                                           <li className="targetValue">
+                                               <span>Target:</span> {period.target_value}
+                                           </li>}
+                                       {isQualitative ?
+                                           undefined
+                                       :
+                                           <li className="actualValue">
+                                               <span>Actual:</span> {actualValue}
+                                           </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
                                        <li>{lockStatus}</li>
                                    </ul>
@@ -300,14 +310,15 @@ export default class Periods extends React.Component {
                 return (
                     <Panel header={
                         <PeriodHeader period={period}
-                                             user={this.props.user}
-                                             toggleCheckbox={this.toggleCheckbox}
-                                             isChecked={isChecked}
-                                             isQualitative={indicator.type === c.INDICATOR_QUALITATIVE}
-                                             newUpdateButton={newUpdateButton}
-                                             delUpdateAlert={delUpdateAlert}
-                                             formOpen={formOpen}
-                                             showLockButton={showLockButton}/>}
+                                      actualValue={actualValue}
+                                      user={this.props.user}
+                                      toggleCheckbox={this.toggleCheckbox}
+                                      isChecked={isChecked}
+                                      isQualitative={indicator.type === c.INDICATOR_QUALITATIVE}
+                                      newUpdateButton={newUpdateButton}
+                                      delUpdateAlert={delUpdateAlert}
+                                      formOpen={formOpen}
+                                      showLockButton={showLockButton}/>}
                            key={id}
                            className={className}>
                         <Updates indicatorId={parentId} period={period}/>

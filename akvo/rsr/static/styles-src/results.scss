@@ -4525,7 +4525,7 @@ main {
                 span {
                     &.periodWrap {
                         .newUpdate {
-                            @include smallButton($akvoBlack, white);
+                            @include smallButton($btnColor, white);
                         }
 
                         ul {
@@ -4755,6 +4755,15 @@ main {
                                                     }
                                                 }
                                             }
+
+                                            .showDisaggregations {
+                                                padding-left: 40px;
+
+                                                h5 {
+                                                    color: rgba($akvoBlack, 0.5);
+                                                }
+                                            }
+
                                         }
 
                                         .comments {
@@ -4962,7 +4971,7 @@ main {
 
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
@@ -5040,6 +5049,9 @@ main {
 
                     h5 {
                         margin: 8px auto;
+                    }
+                    span {
+                        color: rgba($akvoBlack, 0.5);
                     }
                 }
             }
