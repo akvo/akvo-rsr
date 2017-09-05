@@ -299,7 +299,7 @@ class IndicatorLabel(models.Model):
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
                                   related_name='labels')
     label = models.ForeignKey(OrganisationIndicatorLabel, verbose_name=_(u'label'),
-                              related_name='indicators')
+                              related_name='indicators', on_delete=models.PROTECT)
 
     class Meta:
         app_label = 'rsr'
