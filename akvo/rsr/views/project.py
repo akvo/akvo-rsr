@@ -291,8 +291,6 @@ def main(request, project_id, template="project_main.html"):
         'related_documents': related_documents,
         'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
-        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
-        'child_projects_ids': [child_project.id for child_project in project.children()],
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
         'user_is_me_manager': 'false',
     }

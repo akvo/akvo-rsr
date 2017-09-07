@@ -29,7 +29,7 @@
     <script id="smooth-scroll" src="{{ STATIC_URL }}lib/scripts/smooth-scroll-9.1.4.min.js"></script>
 
     {# Settings #}
-    <script type="application/json" id="settings">
+    <script type="application/json" id="mode">
         {
             "public": false
         }
@@ -55,11 +55,9 @@
     </script>
 
     {# Project id's #}
-    <script type="application/json" id="project-ids">
+    <script type="application/json" id="project">
         {
-            "project_id": {{ project.pk }},
-            "parent_projects_ids": {{ parent_projects_ids }},
-            "child_projects_ids": {{ child_projects_ids }}
+            "id": {{ project.pk }}
         }
     </script>
 

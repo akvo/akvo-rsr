@@ -115,7 +115,7 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        const project = dataFromElement('project-ids');
+        const project = dataFromElement('project');
         const mode = dataFromElement('mode');
         const strings = dataFromElement('translation-texts');
         this.props.dispatch(setPageData({project, mode, strings}));
@@ -124,7 +124,7 @@ export default class App extends React.Component {
         const isMEManager = dataFromElement('endpoint-data').isMEManager;
         fetchModel('user', userId, activateToggleAll, modifyUser(isMEManager));
 
-        const projectId = project.project_id;
+        const projectId = project.id;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
         fetchModel('dimensions', projectId, activateToggleAll);

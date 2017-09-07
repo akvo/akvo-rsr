@@ -111,18 +111,16 @@
     {% if project.results.all %}
 
         {# Settings #}
-        <script type="application/json" id="settings">
+        <script type="application/json" id="mode">
             {
                 "public": true
             }
         </script>
 
         {# Project id's #}
-        <script type="application/json" id="project-ids">
+        <script type="application/json" id="project">
             {
-                "project_id": {{ project.pk }},
-                "parent_projects_ids": {{ parent_projects_ids }},
-                "child_projects_ids": {{ child_projects_ids }}
+                "id": {{ project.pk }}
             }
         </script>
 
