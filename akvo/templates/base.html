@@ -55,7 +55,7 @@
     {% if page_stylesheet %}
       <link rel="stylesheet" href="{{MEDIA_URL}}{{page_stylesheet}}">
     {% endif %}
-    {% if request.resolver_match.url_name == 'my_new_results' %}
+    {% if request.resolver_match.url_name == 'my_new_results' or request.resolver_match.url_name == 'project-main' %}
       {% stylesheet 'new_results' %}
     {% else %}
       {% stylesheet 'rsr_v3_style' %}

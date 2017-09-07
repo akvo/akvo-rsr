@@ -33,6 +33,13 @@ urlpatterns = i18n_patterns(
     url(r'^projects/$',
         'akvo.rsr.views.project.directory', name='project-directory'),
 
+    url(
+        r'^old_project/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.project.main',
+        {"template": "old_project_main.html"},
+        name='old-project-main'
+    ),
+
     url(r'^project/(?P<project_id>\d+)/$',
         'akvo.rsr.views.project.main', name='project-main'),
 

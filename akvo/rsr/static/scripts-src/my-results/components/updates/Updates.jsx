@@ -267,6 +267,7 @@ QualitativeUpdate.propTypes = {
 
 @connect((store) => {
     return {
+        page: store.page,
         [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
         activeFilter: store.ui.activeFilter,
         user: store.models.user.objects[store.models.user.ids[0]],
@@ -305,7 +306,10 @@ class UpdateHeader extends React.Component {
     showEditButton() {
         // Only show the Edit update button if the period is unlocked, the update is shown in the
         // relevant filter and the user can edit at this time
-        const {update, activeFilter} = this.props;
+        const {page, update, activeFilter} = this.props;
+        if (page.settings) {
+            return false;
+        }
         const show = fullUpdateVisibility(update, activeFilter);
         if (!show) {
             return false

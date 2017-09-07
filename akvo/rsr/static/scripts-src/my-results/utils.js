@@ -129,13 +129,9 @@ export const endpoints = {
 
 
 // Translation a la python. Let's hope we never need lodash...
-let strings;
 export function _(s) {
-    // load once from the DOM
-    if (!strings) {
-        strings = JSON.parse(document.getElementById('translation-texts').innerHTML);
-    }
-    return strings[s];
+    const strings = store.getState().page.strings;
+    return strings && strings[s];
 }
 
 
@@ -372,6 +368,7 @@ function lineage(model, id) {
     return [{model, id}];
 }
 
+
 export function getAncestor(model, id, ancestorModel) {
   // return the specified ancestor object for an object given the ancestorModel
   while (model && model != ancestorModel) {
@@ -400,6 +397,7 @@ function lineageKeys(model, id) {
     )
 }
 
+
 export function closeNodes(model, ids) {
     // Closes nodes with the given ids
 
@@ -416,6 +414,7 @@ export function closeNodes(model, ids) {
     // Collapse/close all children of the collected collapse keys
     distinct(collapseIds).map((id) => collapseChange(id, []));
 }
+
 
 export function openNodes(model, ids) {
     // construct collapse keys that represent the open state of all nodes in ids list of type model
