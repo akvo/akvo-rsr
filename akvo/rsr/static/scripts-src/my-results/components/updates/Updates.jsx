@@ -307,7 +307,7 @@ class UpdateHeader extends React.Component {
         // Only show the Edit update button if the period is unlocked, the update is shown in the
         // relevant filter and the user can edit at this time
         const {page, update, activeFilter} = this.props;
-        if (page.settings) {
+        if (page.mode.public) {
             return false;
         }
         const show = fullUpdateVisibility(update, activeFilter);

@@ -273,7 +273,7 @@ export default class Periods extends React.Component {
 
     renderPanels(periodIds) {
         const showNewUpdateButton = (page, period, ui, indicator) => {
-            if (page.settings.public) {
+            if (page.mode.public) {
                 return false;
             }
             if (period.locked) {

@@ -116,9 +116,9 @@ export default class App extends React.Component {
 
     componentDidMount() {
         const project = dataFromElement('project-ids');
-        const settings = dataFromElement('settings');
+        const mode = dataFromElement('mode');
         const strings = dataFromElement('translation-texts');
-        this.props.dispatch(setPageData({project, settings, strings}));
+        this.props.dispatch(setPageData({project, mode, strings}));
 
         const userId = dataFromElement('endpoint-data').userID;
         const isMEManager = dataFromElement('endpoint-data').isMEManager;
