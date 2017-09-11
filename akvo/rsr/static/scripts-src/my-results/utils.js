@@ -63,6 +63,12 @@ export function isEmpty(obj) {
 }
 
 
+// From https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/1830844#1830844
+export function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
 // global holding the month's translation strings
 let months;
 export function displayDate(dateString) {

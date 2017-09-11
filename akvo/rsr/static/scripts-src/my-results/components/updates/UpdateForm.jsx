@@ -36,6 +36,7 @@ import {
     _,
     collapseId,
     isNewUpdate,
+    isNumeric,
     getAncestor,
     computePercentage,
 } from '../../utils.js';
@@ -756,7 +757,11 @@ export default class UpdateForm extends React.Component {
                 }
 
                 default: {
-                    changedUpdate = update(this.props.update, {$merge: {[field]: e.target.value}});
+                    const {value} = e.target;
+                    if (this.props.indicator.type === c.INDICATOR_QUANTATIVE && !this.checkNumeric(field, value)) {
+                        return;
+                    }
+                    changedUpdate = update(this.props.update, {$merge: {[field]: value}});
                     if (field == "numerator" || field == "denominator") {
                         changedUpdate = update(changedUpdate,
                                                {$merge: {["value"]: this.computePercentage(changedUpdate)}});
@@ -767,19 +772,23 @@ export default class UpdateForm extends React.Component {
         }
     }
 
+    checkNumeric(field, value) {
+        if ((field == 'value' || field === 'numerator' || field === 'denominator') && !isNumeric(value)) {
+            this.props.createAlert(this.state.updateAlertName, _('only_numeric_value'));
+            return false;
+        }
+        return true;
+    }
+
     onDisaggregationsChange(e){
         let changedDisaggregation;
         const dimension_id = e.target.getAttribute('data-dimension'),
               field = e.target.getAttribute('data-field'),
               disaggregations = keyBy(this.props.disaggregations, 'dimension'),
               disaggregation = disaggregations[dimension_id],
-              value = e.target.value,
-              isNumber = (x) => {
-                  return x.match(/[0-9.]*/)[0] === x;
-              };
+              value = e.target.value;
         changedDisaggregation = update(disaggregation, {$merge: {[field]: e.target.value}});
-        if ((field == 'value' || field === 'numerator' || field === 'denominator') && !isNumber(value)){
-            this.props.createAlert(this.state.updateAlertName, _('only_numeric_value'));
+        if (!this.checkNumeric(field, value)) {
             return;
         }
         if (field === 'numerator' || field === 'denominator') {
