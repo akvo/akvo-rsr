@@ -40,6 +40,8 @@ import {
     computePercentage,
 } from '../../utils.js';
 
+import AlertFactory from "../alertContainer"
+
 import {
     FileReaderInput,
     ToggleButton,
@@ -52,6 +54,18 @@ import {closeNodes, openNodes} from "../../utils";
 // If the update is approved only M&E managers are allowed to delete
 const isAllowedToDelete = (user, update) =>
     update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
+
+
+const UpdateAlert = ({message, close}) => (
+    <div className='update-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+UpdateAlert.propTypes = {
+    message: PropTypes.string.isRequired,
+    close: PropTypes.func.isRequired,
+};
 
 
 const QuantitativeHeader = ({targetValue}) => {
@@ -414,6 +428,7 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
         <div className="update-container">
             <div className="update-entry-container edit-in-progress">
                 <QuantitativeHeader targetValue={period.target_value}/>
+                {<self.state.UpdateAlert/>}
                 <QuantitativeActualValueInput update={update}
                                               onChange={self.onChange}
                                               onClose={self.props.onClose}
@@ -454,6 +469,7 @@ const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disag
         <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
                 <QualitativeHeader targetValue={period.target_value}/>
+                {<self.state.UpdateAlert/>}
                 <QualitativeActualValueInput update={update}
                                              onClose={self.props.onClose}
                                              onChange={self.onChange}/>
@@ -633,8 +649,10 @@ export default class UpdateForm extends React.Component {
     constructor(props) {
         super(props);
         // Save original update, used when editing is cancelled
+        const alertName = 'UpdateAlert-' + this.props.update.id;
         this.state = {
-            updateAlertName: 'UpdateAlert-' + this.props.update.id,
+            updateAlertName: alertName,
+            UpdateAlert: AlertFactory({alertName: alertName})(UpdateAlert),
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
@@ -941,7 +959,7 @@ export default class UpdateForm extends React.Component {
 
                 [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                    this, deleteUpdateAlertName, _("update_not_deleted")
+                    this, this.state.updateAlertName, _("update_not_deleted")
                 )
             };
             deleteUpdateFromBackend(url, this.props.update, this.props.collapseId, callbacks);
@@ -970,7 +988,7 @@ export default class UpdateForm extends React.Component {
                                                dimensions={dimensions}
                                                disaggregations={disaggregations}
                                                self={this}
-                                               measure={indicator.measure || "1"}/>
+                                               measure={indicator.measure || c.MEASURE_UNIT}/>
             }
             case c.INDICATOR_QUALITATIVE: {
                 return <QualitativeUpdateForm period={period}
