@@ -416,6 +416,7 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
+    measure: PropTypes.string.isRequired,
     changing: PropTypes.bool.isRequired,
     updateActions: PropTypes.func.isRequired,
 };
@@ -439,13 +440,10 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>
-                <DisaggregatedInputs period={period}
-                                     update={update}
-                                     measure={measure}
+                <DisaggregatedInputs measure={measure}
                                      dimensions={dimensions}
                                      disaggregations={disaggregations}
-                                     self={self}
-                                     type={c.INDICATOR_QUALITATIVE}/>
+                                     onChange={self.onDisaggregationsChange}/>
                 <UpdateFormButtons
                     user={self.props.user}
                     update={update}
@@ -461,7 +459,10 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
 QuantitativeUpdateForm.propTypes = {
     period: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
+    measure: PropTypes.string.isRequired,
     self: PropTypes.object.isRequired,
+    dimensions: PropTypes.array.isRequired,
+    disaggregations: PropTypes.array.isRequired,
 };
 
 
@@ -477,13 +478,10 @@ const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disag
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>
-                <DisaggregatedInputs period={period}
-                                     update={update}
-                                     measure={measure}
+                <DisaggregatedInputs measure={measure}
                                      dimensions={dimensions}
                                      disaggregations={disaggregations}
-                                     self={self}
-                                     type={c.INDICATOR_QUALITATIVE}/>
+                                     onChange={self.onDisaggregationsChange}/>
                 <UpdateFormButtons
                     user={self.props.user}
                     update={update}
@@ -499,10 +497,13 @@ const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disag
 QualitativeUpdateForm.propTypes = {
     period: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
+    measure: PropTypes.string.isRequired,
     self: PropTypes.object.isRequired,
+    dimensions: PropTypes.array.isRequired,
+    disaggregations: PropTypes.array.isRequired,
 };
 
-const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggregations, self}) => {
+const DisaggregatedInputs = ({measure, dimensions, disaggregations, onChange}) => {
     const grouped_dimensions = groupBy(dimensions, 'name'),
           dimension_disaggregations = keyBy(disaggregations, 'dimension'),
           dimension_elements = Object.entries(grouped_dimensions).map(([dimension, values]) => {
@@ -512,8 +513,7 @@ const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggr
                       <DisaggregatedValueInput key={value.value}
                                                dimension={value}
                                                disaggregation={disaggregation}
-                                               type={type}
-                                               onChange={self.onDisaggregationsChange}
+                                               onChange={onChange}
                                                measure={measure}/>
                   ) : undefined;
               });
@@ -532,8 +532,15 @@ const DisaggregatedInputs = ({period, update, measure, type, dimensions, disaggr
               </div>
           );
 };
+DisaggregatedInputs.propTypes = {
+    measure: PropTypes.string.isRequired,
+    dimensions: PropTypes.array.isRequired,
+    disaggregations: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
 
-const DisaggregatedValueInput = ({dimension, disaggregation, type, measure, onChange}) => {
+
+const DisaggregatedValueInput = ({dimension, disaggregation, measure, onChange}) => {
     let input;
     switch (measure) {
         case c.MEASURE_UNIT: {
@@ -610,6 +617,12 @@ const DisaggregatedValueInput = ({dimension, disaggregation, type, measure, onCh
             </div>
         </div>
     );
+};
+DisaggregatedValueInput.propTypes = {
+    measure: PropTypes.string.isRequired,
+    dimensions: PropTypes.array.isRequired,
+    disaggregations: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 
