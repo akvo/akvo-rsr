@@ -43,14 +43,17 @@ def create_update_from_actual_value_and_comment(apps, schema_editor):
     User.objects.get(email=RSR_SYSTEM_USER['email'])
     rsr_system_user = User.objects.get(email=RSR_SYSTEM_USER['email'])
 
-    def create_update(period_id, value, comment, user_id):
-        # FIXME: Should we set the creation time to an old time?
+    def create_update(period_id, value, comment, user_id, timestamp):
         data = IndicatorPeriodData.objects.create(
             period_id=period_id,
             value=value,
             text=comment,
             user_id=user_id,
             status=APPROVED_CODE
+        )
+        # HACK: use QuerySet.update() to modify the "unmodifiable" timestamp fields
+        IndicatorPeriodData.objects.filter(period_id=period_id).update(
+            created_at=timestamp, last_modified_at=timestamp
         )
         IndicatorPeriodDataComment.objects.create(
             user_id=user_id,
@@ -81,14 +84,14 @@ def create_update_from_actual_value_and_comment(apps, schema_editor):
     user_not_found = []
     for values in periods:
         ids = values[:4]
-        user_id = get_last_modified_user_id(ids)
+        user_id, timestamp = get_last_modified_user_id(ids)
         if user_id is None:
             user_not_found.append(ids)
             user_id = rsr_system_user.id
 
         period_id = ids[0]
         value, comment = values[4:]
-        create_update(period_id, value, comment, user_id)
+        create_update(period_id, value, comment, user_id, timestamp)
 
     print 'Actual user not identified for the following periods (using RSR System user as proxy):'
     for ids in user_not_found:
@@ -101,15 +104,20 @@ def get_last_modified_user_id(ids):
         log_entries = LogEntry.objects\
                               .filter(content_type__model=model, object_id=id_)\
                               .exclude(action_flag=DELETION)\
-                              .values_list('user_id', flat=True)
+                              .values_list('user_id', 'action_time')
 
         count = len(log_entries)
         if count > 0:
-            user_id = log_entries[0]
+            user_id = log_entries[0][0]
+            # Use the action_time field to set the created_at and last_modified_at fields in the
+            # IndicatorPeriodData object we create later. This is probably the best estimate of
+            # when the value was created/added
+            timestamp = log_entries[0][1]
             break
         else:
             user_id = None
-    return user_id
+            timestamp = None
+    return user_id, timestamp
 
 
 class Migration(migrations.Migration):
