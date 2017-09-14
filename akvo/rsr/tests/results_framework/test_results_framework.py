@@ -12,6 +12,7 @@ import unittest
 
 from akvo.rsr.models import (Project, PublishingStatus, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodData, IndicatorReference, User, RelatedProject)
+from akvo.rsr.models.result.utils import QUALITATIVE
 
 from django.test import TestCase
 
@@ -414,7 +415,7 @@ class ResultsFrameworkTestCase(TestCase):
 
     def test_qualitative_indicator(self):
         indicator = Indicator.objects.create(
-            result=self.result, title="Indicator #2", type=Indicator.QUALITATIVE,
+            result=self.result, title="Indicator #2", type=QUALITATIVE,
         )
         period = IndicatorPeriod.objects.create(
             indicator=indicator,
