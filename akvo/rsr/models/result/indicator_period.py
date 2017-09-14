@@ -4,19 +4,19 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator import Indicator, calculate_percentage, PERCENTAGE_MEASURE
-
-from akvo.rsr.fields import ValidXMLCharField
-
 from decimal import Decimal, InvalidOperation, DivisionByZero
 
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from .indicator_period_data import IndicatorPeriodData
+from .utils import calculate_percentage, PERCENTAGE_MEASURE
+from akvo.rsr.fields import ValidXMLCharField
+
 
 class IndicatorPeriod(models.Model):
-    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'), related_name='periods')
+    indicator = models.ForeignKey('Indicator', verbose_name=_(u'indicator'), related_name='periods')
     parent_period = models.ForeignKey('self', blank=True, null=True, default=None,
                                       verbose_name=_(u'parent indicator period'),
                                       related_name='child_periods')
@@ -277,9 +277,6 @@ class IndicatorPeriod(models.Model):
         :param save; Boolean, save period if True
         :return Actual comment of period
         """
-        # Importing here to avoid circular import
-        from ..indicator import IndicatorPeriodData
-
         approved_updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
         update_texts = [
             u'{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)

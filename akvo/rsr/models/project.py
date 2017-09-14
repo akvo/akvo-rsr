@@ -41,7 +41,7 @@ from ..mixins import TimestampsMixin
 
 from .country import Country
 from .iati_check import IatiCheck
-from .indicator import IndicatorPeriod
+from .result import IndicatorPeriod
 from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation

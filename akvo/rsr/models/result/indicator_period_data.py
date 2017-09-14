@@ -4,21 +4,19 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator import (Indicator, calculate_percentage, image_path, file_path, PERCENTAGE_MEASURE,
-                       MultipleUpdateError)
-from indicator_period import IndicatorPeriod
-
-from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
-
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from sorl.thumbnail.fields import ImageField
+
+from .utils import (calculate_percentage, file_path, image_path,
+                    MultipleUpdateError, PERCENTAGE_MEASURE, QUALITATIVE,
+                    QUANTITATIVE)
+from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
+from akvo.rsr.mixins import TimestampsMixin
 
 
 class IndicatorPeriodData(TimestampsMixin, models.Model):
@@ -48,7 +46,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         ('M', _(u'mobile')),
     )
 
-    period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
+    period = models.ForeignKey('IndicatorPeriod', verbose_name=_(u'indicator period'),
                                related_name='data')
     # TODO: rename to created_by when old results framework page is no longer in use
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True,
@@ -160,7 +158,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                 validation_errors['period'] = unicode(_(u'Not allowed to change indicator period '
                                                         u'in a data update'))
 
-        if self.period.indicator.type == Indicator.QUANTITATIVE:
+        if self.period.indicator.type == QUANTITATIVE:
             if self.narrative is not None:
                 validation_errors['period'] = unicode(
                     _(u'Narrative field should be empty in quantitative indicators'))
@@ -171,7 +169,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
                     validation_errors['period'] = unicode(
                         _(u'Only numeric values are allowed in quantitative indicators'))
 
-        if self.period.indicator.type == Indicator.QUALITATIVE:
+        if self.period.indicator.type == QUALITATIVE:
             if self.value is not None:
                 validation_errors['period'] = unicode(
                     _(u'Value field should be empty in qualitative indicators'))

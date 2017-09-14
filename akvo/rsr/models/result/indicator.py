@@ -4,10 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator_period import IndicatorPeriod
-
-from ..result import Result
-
 from akvo.codelists.models import IndicatorMeasure
 from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE
 from akvo.rsr.fields import ValidXMLCharField
@@ -21,49 +17,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-
-from akvo.utils import rsr_image_path
-
-
-PERCENTAGE_MEASURE = '2'
-
-
-def calculate_percentage(numerator, denominator):
-    denominator = Decimal(denominator)
-    if denominator == 0:
-        return 0
-    return round(Decimal(numerator) * 100 / Decimal(denominator), 2)
-
-
-def image_path(instance, file_name):
-    """
-    Create a path like 'db/indicator_period/<period.id>/data_photo/<data.id>/image_name.ext'.
-
-    :param instance; an IndicatorPeriodData instance
-    :param file_name; the name of the file that is to be stored
-    """
-    path = 'db/indicator_period/%d/data_photo/%%(instance_pk)s/%%(file_name)s' % instance.period.pk
-    return rsr_image_path(instance, file_name, path)
-
-
-def file_path(instance, file_name):
-    """
-    Create a path like 'db/indicator_period/<period.id>/data_file/<data.id>/image_name.ext'.
-
-    :param instance; an IndicatorPeriodData instance
-    :param file_name; the name of the file that is to be stored
-    """
-    path = 'db/indicator_period/%d/data_file/%%(instance_pk)s/%%(file_name)s' % instance.period.pk
-    return rsr_image_path(instance, file_name, path)
-
-
-class MultipleUpdateError(Exception):
-    pass
+from .indicator_period import IndicatorPeriod
+from .result import Result
+from .utils import PERCENTAGE_MEASURE, QUALITATIVE, QUANTITATIVE
 
 
 class Indicator(models.Model):
-    QUANTITATIVE = 1
-    QUALITATIVE = 2
     INDICATOR_TYPES = (
         (QUANTITATIVE, _('Quantitative')),
         (QUALITATIVE, _('Qualitative')),
