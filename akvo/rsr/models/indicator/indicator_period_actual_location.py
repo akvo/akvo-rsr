@@ -11,6 +11,7 @@ from akvo.rsr.fields import ValidXMLCharField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 class IndicatorPeriodActualLocation(models.Model):
     period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
                                related_name='actual_locations')

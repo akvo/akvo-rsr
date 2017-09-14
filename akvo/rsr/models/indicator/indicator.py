@@ -4,11 +4,14 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from indicator_period import IndicatorPeriod
+
+from ..result import Result
+
 from akvo.codelists.models import IndicatorMeasure
 from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
-from ..result import Result
 
 from decimal import Decimal, InvalidOperation
 
