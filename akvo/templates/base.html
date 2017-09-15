@@ -138,7 +138,10 @@
     {# RSR default libraries #}
     <script type="application/json" id="sentry-dsn">
         {
-            "sentry_dsn": "{{sentry_dsn}}"
+        "sentry_dsn": "{{sentry_dsn}}"
+        {% if not request.user.is_anonymous %}
+        ,"email": "{{request.user.email}}"
+        {% endif %}
         }
     </script>
     {% javascript 'rsr' %}

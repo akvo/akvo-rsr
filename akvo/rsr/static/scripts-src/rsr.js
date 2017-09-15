@@ -31,12 +31,18 @@ window.AKVO_RSR.utils = {
 };
 
 function setup_sentry(){
-    var sentry_dsn = JSON.parse(document.querySelector('#sentry-dsn').innerHTML).sentry_dsn;
+    var data = JSON.parse(document.querySelector('#sentry-dsn').innerHTML),
+        sentry_dsn = data.sentry_dsn,
+        user_email = data.email;
+
     if (sentry_dsn === '') {
         console.log("Could not find Sentry DSN. Sentry not installed");
     } else {
         Raven.config(sentry_dsn).install();
         console.log("Sentry installed");
+        if (user_email != undefined) {
+            Raven.setUserContext({email: user_email});
+        }
     }
 };
 
