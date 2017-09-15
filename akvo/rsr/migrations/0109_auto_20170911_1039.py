@@ -40,7 +40,6 @@ def create_update_from_actual_value_and_comment(apps, schema_editor):
     IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
     IndicatorPeriodDataComment = apps.get_model('rsr', 'IndicatorPeriodDataComment')
     User = apps.get_model('rsr', 'User')
-    User.objects.get(email=RSR_SYSTEM_USER['email'])
     rsr_system_user = User.objects.get(email=RSR_SYSTEM_USER['email'])
 
     def create_update(period_id, value, comment, user_id, timestamp):
@@ -52,9 +51,10 @@ def create_update_from_actual_value_and_comment(apps, schema_editor):
             status=APPROVED_CODE
         )
         # HACK: use QuerySet.update() to modify the "unmodifiable" timestamp fields
-        IndicatorPeriodData.objects.filter(period_id=period_id).update(
-            created_at=timestamp, last_modified_at=timestamp
-        )
+        if timestamp:
+            IndicatorPeriodData.objects.filter(period_id=period_id).update(
+                created_at=timestamp, last_modified_at=timestamp
+            )
         IndicatorPeriodDataComment.objects.create(
             user_id=user_id,
             data=data,
