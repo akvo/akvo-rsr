@@ -21,7 +21,7 @@ class Link(models.Model):
 
     kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS, default='E')
     url = models.URLField(
-        _(u'link url'), blank=True,
+        _(u'link url'),
         help_text=_(u'Enter the link to an external website you wish to redirect to from your '
                     u'project page. The URL should start with \'http://\' or \'https://\'.')
     )
