@@ -6,6 +6,7 @@
 /*---------------------------------------------------------------------------------*/
 
 @import "library.scss";
+
 html {
     width: 100%;
     overflow-y: scroll;
@@ -18,22 +19,28 @@ body {
     text-rendering: optimizelegibility;
     font-family: $bodyFont;
     padding-top: 75px;
+
     @include font-size(22px);
+
     line-height: 1.5;
+
     @media (max-width: 900px) {
         @include font-size(20px);
     }
-    @media (max-width: 500px){
+
+    @media (max-width: 500px) {
         @include font-size(18px);
     }
+
     @include responsive(small-max-screens) {
         padding-top: 65px;
     }
 }
+
 h1, h2, h3, h4, h5, h6, p, ul, ol {
-  margin-top: 0;
-  margin-bottom: 1rem;
- }
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
 
 h1,
 h2,
@@ -55,15 +62,17 @@ a:visited {
     color: $anchorLink;
     text-decoration: none;
     cursor: pointer;
+
     @include transition(color 0.2s linear);
+
     &:link {
         -webkit-tap-highlight-color: #fcd700;
     }
+
     &:hover {
         color: $anchorLinkHover;
     }
 }
-
 
 /****************** Miscellanous Typography ********************/
 
@@ -73,6 +82,7 @@ a:visited {
 
 img {
     max-width: 100%;
+
     .gmnoprint & {
         max-width: none;
     }
@@ -91,6 +101,7 @@ img {
 .noStyleUl {
     list-style-type: none;
     padding: 0;
+
     li {
         padding: 0;
     }
@@ -110,19 +121,25 @@ em {
 div.morePartners {
     overflow: visible;
     display: inline-block;
+
     .tooltip {
         display: inline-block;
         position: absolute;
+
         .tooltip-arrow {
             top: 10px;
         }
     }
+
     a.moreLink {
         margin-left: 5px;
         padding: 3px 5px;
         background: rgba($anchorLink, 0.2);
+
         @include border-radius(4px);
+
         font-weight: bold;
+
         &:hover {
             background: rgba($anchorLinkHover, 0.8);
             color: white;
@@ -156,7 +173,6 @@ div.morePartners {
     padding: 20px 0;
 }
 
-
 /* Force full-width columns below 570px (when using col-xs-N) */
 
 @include responsive(small-screens) {
@@ -165,6 +181,7 @@ div.morePartners {
         width: 100%;
     }
 }
+
 
 .btn {
     @include transition(all 0.1s linear);
@@ -175,7 +192,9 @@ button.btn-primary {
     border: 1px solid $anchorLink;
     color: white;
     background: $anchorLink;
+
     @include transition(all 0.1s linear);
+
     &:hover {
         color: white;
         background: $anchorLinkHover;
@@ -195,7 +214,6 @@ button.btn-primary {
         @include border-radius(5px);
     }
 }
-
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
@@ -230,14 +248,19 @@ span.twitter-typeahead .tt-dropdown-menu {
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     background-clip: padding-box;
+
     .tt-suggestions {
         color: rgba(black, 0.7) !important;
+
         * {
             color: rgba(black, 0.7) !important;
         }
     }
+
     .tt-dataset-projects {}
+
     .tt-dataset-organisations {}
+
     .tt-dataset-locations {}
 }
 
@@ -295,40 +318,49 @@ dl {
             text-align: left;
             color: rgba($akvoBlack, 0.4);
             font-weight: normal;
+
             img {
                 &.unknownFunderLogo {
                     width: 80px;
                     height: 60px;
                 }
             }
+
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
             }
+
             &.funders {
                 margin-top: 5px;
             }
+
             &.iatiStatuses {
                 width: 190px;
             }
         }
+
         dd {
             span {
                 &.unknownFunder {
-                    color: rgba($akvoBlack, 0.4)
+                    color: rgba($akvoBlack, 0.4);
                 }
             }
+
             &.totalFinance {
                 margin-top: 30px;
                 font-weight: bold;
             }
+
             &.funders {
                 margin-top: 5px;
+
                 span.iati-activity-id {
                     font-style: italic;
                 }
             }
         }
+
         &.org_statistics_table {
             dd {
                 text-align: right;
@@ -342,7 +374,6 @@ label {
     font-weight: normal;
 }
 
-
 /****************************************************************************
                                 HEADER + NAVIGATION
 ****************************************************************************/
@@ -351,24 +382,31 @@ nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
     padding: 5px 0;
+
     @include border-radius(0);
+
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
+
     button.navbar-toggle {
         background: $rsrBlue;
         border: 1px solid $rsrBlue;
+
         &:hover {
             background: white;
             border: 1px solid $rsrBlue;
+
             .icon-bar {
                 background: $rsrBlue;
             }
         }
     }
+
     .navbar-brand {
         float: left;
         font-size: 18px;
         line-height: 20px;
         padding: 0 15px 0 0;
+
         h1 {
             width: 130px;
             top: 0px;
@@ -378,6 +416,7 @@ nav.navbar-fixed-top {
             background-size: 125px auto;
             text-indent: -9999px;
             margin-top: 0;
+
             @include responsive(small-max-screens) {
                 width: 180px;
                 top: -5px;
@@ -388,6 +427,8 @@ nav.navbar-fixed-top {
                 text-indent: -9999px;
                 margin-top: 0;
             }
+
+
             @include responsive(ipadAir) {
                 width: 180px;
                 top: -5px;
@@ -400,33 +441,43 @@ nav.navbar-fixed-top {
             }
         }
     }
+
     .navbar-nav {
         li {
             font-weight: normal;
             padding-top: 3px;
+
             &:first-child {}
+
             a {
                 color: $akvoPurple;
                 border: thin solid transparent;
+
                 &:hover {
                     color: $anchorLinkHover;
                 }
+
                 &.active {
                     color: $rsrGreen;
                     font-weight: bold;
                     background: rgba($anchorLinkHover, 0.1);
+
                     @include border-radius(3px);
+
                     @include responsive(tablets) {
                         background: rgba($anchorLinkHover, 0.1);
                     }
                 }
+
                 &.addUpdateBtn {
                     margin-right: 15px;
                     background-color: transparent;
                     border-color: transparent;
+
                     &:hover {
                         color: $anchorLinkHover;
                     }
+
                     @include responsive(tablets) {
                         width: 95%;
                         padding: 10px 5%;
@@ -434,103 +485,141 @@ nav.navbar-fixed-top {
                     }
                 }
             }
+
             &.navProject {
                 .active {
                     background: darken(rgba($anchorLinkHover, 0.05), 10%);
                     border: thin solid rgba($anchorLinkHover, 0);
+
                     @include border-radius(3px);
+
                     color: $anchorLinkHover;
+
                     @include transition(all 0.2s linear);
+
                     &:hover {
                         background: darken(rgba($anchorLinkHover, 0), 10%);
                         border: thin solid rgba($anchorLinkHover, 0);
+
                         @include border-radius(3px);
+
                         color: $anchorLinkHover;
                     }
                 }
             }
+
             &.navUpdate {
                 .active {
                     background: darken(rgba($anchorLinkHover, 0.05), 10%);
                     border: thin solid rgba($anchorLinkHover, 0);
+
                     @include border-radius(3px);
+
                     color: $anchorLinkHover;
+
                     @include transition(all 0.2s linear);
+
                     &:hover {
                         background: darken(rgba($anchorLinkHover, 0), 10%);
                         border: thin solid rgba($anchorLinkHover, 0);
+
                         @include border-radius(3px);
+
                         color: $anchorLinkHover;
                     }
                 }
             }
+
             &.navOrganisation {
                 .active {
                     background: darken(rgba($anchorLinkHover, 0.05), 10%);
                     border: thin solid rgba($anchorLinkHover, 0);
+
                     @include border-radius(3px);
+
                     color: $anchorLinkHover;
+
                     @include transition(all 0.2s linear);
+
                     &:hover {
                         background: darken(rgba($anchorLinkHover, 0), 10%);
                         border: thin solid rgba($anchorLinkHover, 0);
+
                         @include border-radius(3px);
+
                         color: $anchorLinkHover;
                     }
                 }
             }
         }
+
         &.navbar-right {
             li {
                 margin-right: 2px;
+
                 &:nth-child(2) {
                     a {
                         padding-left: 10px;
                         padding-right: 10px;
                     }
                 }
+
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
+
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
+
+
                     &.active {
                         background: rgba($anchorLinkHover, 0.1);
                         color: $anchorLinkHover;
                     }
                 }
+
                 .langDropdown {
                     .btn-default {
                         border-color: transparent;
                     }
+
                     margin-top: 10px;
+
                     @include responsive(small-max-screens) {
                         padding-left: 15px;
                         padding-right: 15px;
                     }
+
+
                     .dropdown-menu {
                         @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
                             position: initial;
                             float: none;
                         }
+
                         @include responsive(small-max-screens) {
                             background-color: #FFF;
                             border: 1px solid rgba(0, 0, 0, 0.14902);
                             box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
                             -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+
                             a {
                                 color: $anchorLink;
                                 font-family: $titleFont;
                                 border: thin solid transparent;
+
                                 &:hover {
                                     color: $anchorLinkHover;
                                 }
+
                                 &.active {
                                     color: complement($rsrBlue);
                                     font-weight: bold;
                                     background: rgba($anchorLinkHover, 0.1);
+
                                     @include border-radius(3px);
+
                                     @include responsive(tablets) {
                                         background: rgba($anchorLinkHover, 0.1);
                                     }
@@ -548,12 +637,14 @@ nav.navbar-fixed-top {
     .active {
         color: #2A6297;
     }
+
     .container {
         /* nav menu overflows to two lines in spanish and french unless container width
         is increased slightly just above the threshold for switching to dropdown */
         @media only screen and (max-width: $width-large) and (min-width: $width-middle) {
             min-width: 1000px;
         }
+
         .navbar-collapse {
             &.in {
                 /*  Allow language dropdown menu to extend the height of the nav container.
@@ -570,39 +661,49 @@ nav.navbar-fixed-top {
     .navbar-header {
         float: none;
     }
+
     .navbar-left,
     .navbar-right {
         float: none !important;
     }
+
     .navbar-toggle {
         display: block;
     }
+
     .navbar-collapse {
         border-top: 1px solid transparent;
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
+
     .navbar-fixed-top {
         top: 0;
         border-width: 0 0 1px;
     }
+
     .navbar-collapse.collapse {
         display: none !important;
     }
+
     .navbar-nav {
         float: none !important;
         margin-top: 7.5px;
     }
+
     .navbar-nav > li {
         float: none;
     }
+
     .navbar-nav > li > a {
         padding-top: 10px;
         padding-bottom: 10px;
     }
+
     .collapse.in {
         display: block !important;
     }
 }
+
 
 .navbar-inverse {
     .navbar-collapse {
@@ -632,55 +733,72 @@ nav.navbar-fixed-top {
     margin: -20px 0 10px 0;
     padding-top: 10px;
 }
+
 .myRsrPg {
     h3 {
         display: inline-block;
         margin-top: 20px;
     }
 }
+
 .choose-report-template {
     label {
         display: block;
     }
 }
+
 .myRsrMenu {
     position: relative;
     margin: 5px auto 0 auto;
+
     .nav-tabs {
         border-bottom: none;
     }
+
     h4 {
         padding-top: 15px;
     }
+
     nav[role=navigation] {
         background: rgba($akvoBlack, 0);
+
         ul {
             li {
                 display: inline;
+
                 @include responsive(small-max-screens) {
                     bottom: -8px;
                 }
+
+
                 a {
                     color: $primary5;
                     padding: 15px;
+
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
                     }
+
+
                     &:hover {
                         color: $anchorLinkHover;
                         border-color: transparent;
                         background-color: rgba($akvoBlack, 0.1);
                     }
+
                     &.active {
                         color: $anchorLinkHover;
                         font-weight: normal;
                         background: rgba(white, 1);
+
                         @include box-shadow(0 -1px 0px rgba($akvoBlack, 0.1));
                     }
                 }
+
                 &.usrMgt {
                     position: absolute;
                     right: 0;
+
                     @include responsive(small-max-screens) {
                         position: relative;
                         right: auto;
@@ -694,29 +812,41 @@ nav.navbar-fixed-top {
 div.updateListMenu {
     ul {
         margin-top: -10px;
+
         li {
             display: inline-block;
-            @include responsive (mediums-max-screens) {
+
+            @include responsive(mediums-max-screens) {
                 display: block;
             }
-            @include responsive (small-max-screens) {}
+
+
+            @include responsive(small-max-screens) {}
+
+
             a {
                 &:last-child {
                     margin-right: 0;
                 }
+
                 &.disabled {
                     background-color: lighten($primary4, 30%);
                     color: lighten($primary4, 20%);
                     pointer-events: initial;
                     cursor: not-allowed;
                     border: none;
+
                     @include border-radius(5px);
+
                     &:hover {
                         text-decoration: none;
                     }
                 }
             }
-            @include responsive (wide-screens) {}
+
+            @include responsive(wide-screens) {}
+
+
             > a {}
         }
     }
@@ -737,6 +867,7 @@ div.update-confirm-container {
     background: $akvoBlack;
     color: white;
     border: none;
+
     &:hover {
         background: $rsrBlue;
     }
@@ -748,39 +879,49 @@ div.update-confirm-container {
         .relatedInfo {
             color: $akvoPurple;
         }
+
         .relatedInfoProjectTitle {
             display: none;
             margin-top: 15px;
+
             + .indicator-periods-title {
                 margin-top: 15px;
             }
         }
     }
+
     &.selfProject {}
+
     thead {
         tr {
             background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
+
             th {
                 padding-top: 15px;
                 padding-bottom: 15px;
             }
         }
     }
+
     tbody {
         &.indicator-period {
             border: none;
+
             tr {
-                border-bottom: 1px solid rgba($akvoBlack,0.05);
+                border-bottom: 1px solid rgba($akvoBlack, 0.05);
+
                 td {
                     padding-top: 25px;
                     padding-bottom: 25px;
                     border: none;
+
                     &.actions-td {
                         .btn-default {
                             margin-top: -7px;
                             background: $akvoBlack;
                             color: white;
+
                             &:hover {
                                 background: $akvoPurple;
                             }
@@ -799,27 +940,34 @@ div.update-confirm-container {
         tr {
             background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
+
             th {
                 padding-top: 15px;
                 padding-bottom: 15px;
             }
         }
     }
+
     tbody {
         tr {
             background: white !important;
+
             &.notPublished {
                 background: rgba($primary4, 0.15) !important;
+
                 td {
                     position: relative;
                     padding-top: 40px;
+
                     .unplubishedPjt {
                         position: absolute;
                         top: 7px;
                         left: 8px;
                         padding: 3px;
                         display: inline-block;
+
                         @include border-radius(2px);
+
                         color: $akvoTvRed;
                         border: 1px solid $akvoTvRed;
                         font-size: 80%;
@@ -827,18 +975,23 @@ div.update-confirm-container {
                     }
                 }
             }
+
             &.isPrivate {
                 background: rgba($progressNot, 0.1) !important;
+
                 td {
                     position: relative;
                     padding-top: 40px;
+
                     .privatePjt {
                         position: absolute;
                         top: 7px;
                         left: 8px;
                         padding: 3px;
                         display: inline-block;
+
                         @include border-radius(2px);
+
                         color: $akvoTvRed;
                         border: 1px solid $akvoTvRed;
                         font-size: 80%;
@@ -846,6 +999,7 @@ div.update-confirm-container {
                     }
                 }
             }
+
             td {
                 padding-top: 30px;
                 padding-bottom: 30px;
@@ -853,32 +1007,45 @@ div.update-confirm-container {
             }
         }
     }
+
     div.projectListMenu {
         ul {
             margin-top: -10px;
+
             li {
                 display: inline-block;
-                @include responsive (mediums-max-screens) {
+
+                @include responsive(mediums-max-screens) {
                     display: block;
                 }
-                @include responsive (small-max-screens) {}
+
+
+                @include responsive(small-max-screens) {}
+
+
                 a {
                     &:last-child {
                         margin-right: 0;
                     }
                 }
-                @include responsive (wide-screens) {}
+
+                @include responsive(wide-screens) {}
+
+
                 > a {}
             }
+
             @media (min-width: 992px) {
                 min-width: 340px;
             }
         }
     }
+
     a {
         &:last-child {
             margin-right: 0;
         }
+
         &.addUpdate {
             &.disabled {
                 background-color: lighten($primary4, 30%);
@@ -886,7 +1053,9 @@ div.update-confirm-container {
                 pointer-events: initial;
                 cursor: not-allowed;
                 border: none;
+
                 @include border-radius(5px);
+
                 &:hover {
                     text-decoration: none;
                 }
@@ -906,6 +1075,7 @@ div.paginationWrap {
 
 .help-block-error {
     @extend .help-block;
+
     color: #a94442;
 }
 
@@ -915,6 +1085,7 @@ div.paginationWrap {
 
 .save-success {
     @extend .help-block;
+
     color: rgba($progressSuccess, 1);
 }
 
@@ -922,6 +1093,7 @@ div.paginationWrap {
     font-style: italic;
     padding: 10px 0 10px 15px;
     margin-bottom: 15px;
+
     span {
         color: rgba($akvoBlack, 0.3);
     }
@@ -932,10 +1104,12 @@ div.paginationWrap {
         background-color: rgba($akvoBlack, 0);
         padding: 10px 0 10px 0;
     }
+
     .btn {
         background: $akvoBlack;
         color: white;
         border: none;
+
         &:hover {
             background: $rsrBlue;
         }
@@ -947,17 +1121,21 @@ div.paginationWrap {
         margin-top: 65px;
     }
 }
+
 .oneLocation {
     margin-bottom: 50px;
 }
+
 .table {
-        .locationTab & {
-            margin-bottom: 25px;
-        }
-        &.locationTab {
+    .locationTab & {
+        margin-bottom: 25px;
+    }
+
+    &.locationTab {
         overflow: hidden;
         overflow-x: scroll;
         max-width: 100%;
+
         thead {
             th {
                 width: 15.33% !important;
@@ -966,6 +1144,7 @@ div.paginationWrap {
                 white-space: nowrap !important;
             }
         }
+
         tbody {
             td {
                 width: 15.33% !important;
@@ -976,22 +1155,29 @@ div.paginationWrap {
         }
     }
 }
+
 .table-responsive {
-    @include responsive (small-max-screens) {
+    @include responsive(small-max-screens) {
         border: none;
     }
 
+
     .media {
         width: 39%;
+
         > a {
             min-width: 80px;
         }
+
         .media-body {
             p {
                 max-width: 170px;
+
                 @include noWrapTxt;
+
                 @include responsive(small-max-screens) {
                     max-width: 120px;
+
                     @include noWrapTxt;
                 }
             }
@@ -1002,6 +1188,7 @@ div.paginationWrap {
 .twoColumns {
     width: 100%;
     display: block;
+
     a {
         @include responsive(small-max-screens) {
             width: 98%;
@@ -1010,6 +1197,8 @@ div.paginationWrap {
             margin: 2px 0 2px 0;
             display: block;
         }
+
+
         @include responsive(ipadAir) {
             width: 98%;
             padding: 2px 1%;
@@ -1021,61 +1210,76 @@ div.paginationWrap {
 }
 
 #organisations {
-    background: rgba($akvoBlack, 0.0);
+    background: rgba($akvoBlack, 0);
     padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 25px;
+
     @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
+
     @include responsive(small-max-screens) {
         margin-top: 20px;
         margin-bottom: 20px;
+
         .btn {
             margin: 10px auto;
         }
     }
+
+
     .btn {
         background: $akvoBlack;
         color: white;
         border: none;
+
         &:hover {
             background: $rsrBlue;
         }
     }
+
     ul {
         padding-left: 5px;
         margin-bottom: 25px;
+
         li {
             list-style-type: none;
         }
     }
+
     .tt-hint {
         color: #999;
     }
+
     .tt-dropdown-menu {
         margin-top: 12px;
         padding: 8px 15px;
         background-color: #fff;
         border: 1px solid #ccc;
         border: 1px solid rgba(0, 0, 0, 0.2);
+
         @include border-radius(8px);
+
         @include box-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
     }
+
     .tt-suggestion {
         padding: 3px 20px;
         line-height: 24px;
+
         &.tt-cursor {
             color: #fff;
             background-color: #0097cf;
         }
+
         p {
             margin: 0;
         }
     }
+
     .twitter-typeahead {
         width: 100%;
     }
 }
-
 
 /* FOOTER */
 
@@ -1086,33 +1290,42 @@ body > footer {
 footer {
     .navbar {
         background: $akvoBlack;
+
         @include border-radius(0);
+
         #footer-body {
             ul.nav {
                 li {
                     padding-top: 10px;
                     padding-bottom: 10px;
+
                     a {
                         display: block;
+
                         @include border-radius(5px);
+
                         &:hover {
                             background-color: rgba(white, 0.1);
                         }
+
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
                             background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
                             text-indent: -9999px;
                             background-size: 70px 42px;
+
                             &:hover {
                                 background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
                                 text-indent: -9999px;
                                 background-size: 70px 42px;
                             }
+
                             @include responsive(small-max-screens) {
                                 width: 100%;
                                 background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
                                 background-size: 80px auto;
+
                                 &:hover {
                                     background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
                                     background-size: 80px auto;
@@ -1129,6 +1342,7 @@ footer {
 #footer-body {
     text-align: center;
     font-size: 0;
+
     .navbar-nav {
         display: inline-block;
         float: none;
@@ -1136,14 +1350,16 @@ footer {
     }
 }
 
-
 /* GENERIC STRUCTURE and TEXT STYLES */
 
 .touch-navbar {
     margin-top: -10px;
+
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
+
+
     @include responsive(ipadAir) {
         margin-top: -20px;
     }
@@ -1162,6 +1378,7 @@ footer {
 
 .detailedPoint {
     float: right;
+
     @media only screen and (max-width: $width-medium) and (min-width: $width-small) {
         .fa-calendar-o {
             display: none;
@@ -1178,11 +1395,11 @@ h4.detailedInfo {
     background-color: $secondary1;
 }
 
-
 /* LISTINGS */
 
 #map {
     height: 400px;
+
     @include responsive(xtra-small-max-screens) {
         display: none;
     }
@@ -1192,6 +1409,8 @@ h4.detailedInfo {
     @include responsive(xtra-small-max-screens) {
         display: none;
     }
+
+
     margin-top: -30px;
     z-index: 99;
     opacity: 0.8;
@@ -1208,10 +1427,7 @@ h4.detailedInfo {
 
 .searchContainer {
     position: relative;
-    #search-view {
-        position: absolute;
-        top: -65px;
-    }
+
     #search {
         .showFilters {
             /*background-color: rgba(white,0.2);
@@ -1220,12 +1436,15 @@ h4.detailedInfo {
             color: white;
             border: 1px solid rgba(white, 0.2);
             transition: all 0.4s ease-in;
+
             @include noWrapTxt;
+
             &:hover {
                 background: rgba($anchorLinkHover, 0);
                 border: 1px solid rgba($anchorLinkHover, 0.5);
                 color: $anchorLinkHover;
             }
+
             @include responsive(small-max-screens) {
                 display: table;
                 top: inherit;
@@ -1233,11 +1452,13 @@ h4.detailedInfo {
                 margin: 10px auto 0;
             }
         }
+
         &.toggled {
             .showFilters {
                 background-color: rgba(white, 0.1);
                 border: 1px solid rgba($rsrGreen, 0.5);
                 color: $rsrGreen;
+
                 &:hover {
                     background: rgba($anchorLinkHover, 0);
                     border: 1px solid rgba($anchorLinkHover, 0.5);
@@ -1255,8 +1476,11 @@ h4.detailedInfo {
 
 .paginationWrap {
     background: rgba(58, 58, 58, 0);
+
     @include border-radius(3px);
+
     margin-bottom: 15px;
+
     .pagination {
         li {
             a,
@@ -1268,33 +1492,40 @@ h4.detailedInfo {
             }
         }
     }
+
     .sortList {
         display: inline-block;
         padding-left: 0;
         margin: 23px 0 0 0;
         text-align: left;
+
         @include responsive(small-max-screens) {
             text-align: center;
             margin: 20px auto;
         }
+
+
         .dropdown {
             .dropdown-menu {
                 li {
                     a {
                         color: $anchorLink;
                     }
+
                     &.disabled {
                         a {
                             font-weight: bold;
                             color: $anchorLinkHover;
                         }
                     }
+
                     @include responsive(small-max-screens) {
                         a {
                             color: $anchorLink;
                             padding-top: 10px;
                             padding-bottom: 10px;
                         }
+
                         &.disabled {
                             a {
                                 font-weight: bold;
@@ -1316,46 +1547,44 @@ h4.detailedInfo {
     margin-left: -200px;
     overflow-y: auto;
     background: rgba(white, 0.9);
+
     @include border-radius(0 0 5px 0);
+
     @include transition(all 0.5s ease);
+
     @include box-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
+
     .showFilters {
         &:hover {
             color: $anchorLinkHover;
         }
+
         @include responsive(small-max-screens) {
             padding-top: 20px;
             padding-bottom: 20px;
         }
     }
+
     div#filter {
         padding: 5px 15px 15px 15px;
-        overflow-y: hidden;
-        #advanced-filter-status {
-            text-align: center;
-            font-weight: bold;
-            display: block;
-            padding-top: 40px !important;
-        }
-        #advanced-filter-nav {
-            padding-top: 25px;
-            li {
-                padding: 5px 0;
-            }
-        }
+
         div {
             .btn-group {
                 width: 100%;
                 border-top: 1px solid rgba($akvoBlack, 0.1);
                 padding: 5px 0;
+
                 select {
                     border-color: rgba($akvoBlack, 0.2);
                 }
+
                 label {
                     color: rgba($akvoBlack, 0.5);
+
                     @include noWrapTxt;
                 }
             }
+
             &:nth-child(1) {
                 .btn-group {
                     border-top: none;
@@ -1372,13 +1601,14 @@ h4.detailedInfo {
 
 #wrapper.toggled {
     padding-left: 200px;
+
     #sidebar-wrapper {
-        width: 350px;
-        .dropdown-menu {
-            li > a {
-                white-space: normal !important;
-            }
-        }
+        width: 200px;
+    }
+
+    #page-content-wrapper {
+        position: absolute;
+        margin-right: -200px;
     }
 }
 
@@ -1386,27 +1616,34 @@ h4.detailedInfo {
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
+
+
     #search {
         color: #fff;
         text-align: center;
+
         @include responsive(small-max-screens) {
             padding-bottom: 0;
         }
+
+
         button {
             padding-top: 5px;
             padding-bottom: 5px;
         }
     }
+
     background-color: #241F20;
+
     p {
         color: lighten($rsrBlue2, 10%);
     }
+
     div#filter {
         background: darken(rgba(#383334, 1), 0%);
         text-align: center;
     }
 }
-
 
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
@@ -1417,53 +1654,70 @@ h4.detailedInfo {
         margin-bottom: 30px;
         list-style-type: none;
         padding: 15px 0;
+
         @include border-radius(3px);
+
         background: white;
+
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
+
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
         }
+
         &:nth-child(2n+1) {
             background: rgb(238, 238, 238);
         }
+
         &:last-child {
             margin-bottom: 0;
         }
+
         h1 {
             margin-top: 0;
             font-size: 1.3em;
         }
+
         div h4:first-of-type {
             margin-top: 0;
         }
+
         .thumbImg {
             height: 100%;
+
             img {
                 width: 100%;
             }
         }
+
         .projectLocation {
             color: rgba($akvoBlack, 0.5);
             margin-top: 0;
         }
+
         .projectTitle {
             display: block;
             margin: 0 0 3px 0;
         }
+
         span.userFullName {
             color: rgba($akvoBlack, 0.5);
             margin: 0 0 0px 0;
         }
+
         .upDateTime {
             color: rgba($akvoBlack, 0.5);
             margin-top: 10px;
         }
+
         .orgType {
             color: rgba($akvoBlack, 0.5);
         }
+
         .orgIatiId {
             color: rgba($akvoBlack, 0.5);
         }
+
         .additionalInfo {
             div {
                 span {
@@ -1471,12 +1725,15 @@ h4.detailedInfo {
                 }
             }
         }
+
         dl {
             &.dl-horizontal {
                 dd {
                     @include responsive(small-max-screens) {
                         margin-left: 100px;
                     }
+
+
                     @include responsive(wide-max-screens) {
                         margin-left: 0px;
                         display: block;
@@ -1485,46 +1742,60 @@ h4.detailedInfo {
             }
         }
     }
+
     .excerpt {
         @include noWrapBlockTxt;
     }
+
     &.projects {
         ul {
             li {
                 h1 {
                     a {
                         color: $rsrBlue;
+
                         &:hover {
                             color: $anchorLinkHover;
                         }
                     }
                 }
+
                 border: thin solid rgba($rsrBlue, 0);
+
                 @include transition(all 0.2s ease-in);
+
                 .projectSubT {
                     margin-bottom: 0;
                 }
+
                 &:nth-child(2n+1) {
                     background: darken(rgba($rsrBlue, 0.05), 10%);
                     border: thin solid rgba($rsrBlue, 0.05);
                 }
+
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
                 }
+
                 &:hover {
                     background: darken(rgba($rsrBlue, 0.1), 0%);
                     border: thin solid rgba($rsrBlue, 0.3);
                 }
+
                 .donateButton {
                     text-align: left;
+
                     a {
                         @include responsive(mediums-max-screens) {
                             margin-top: 0.6em;
                         }
+
+
                         @include responsive(small-max-screens) {
                             margin-top: 1em;
                         }
                     }
+
                     .totalBudgetLabel {
                         width: initial;
                     }
@@ -1532,41 +1803,53 @@ h4.detailedInfo {
             }
         }
     }
+
     &.updates {
         ul {
             li {
                 border: thin solid rgba($rsrGreen, 0);
+
                 @include transition(all 0.2s ease-in);
+
                 .orgName {}
+
                 .projectTitle {
                     color: rgba($anchorLink, 1);
+
                     i {
                         font-size: 1.1em;
                         color: rgba($anchorLink, 1);
                     }
+
                     &:hover {
                         color: $anchorLinkHover;
                     }
                 }
+
                 h1 {
                     a {
                         color: $rsrGreen;
+
                         &:hover {
                             color: $anchorLinkHover;
                         }
                     }
                 }
+
                 &:nth-child(2n+1) {
                     background: darken(rgba($rsrGreen, 0.05), 10%);
                     border: thin solid rgba($rsrGreen, 0.1);
                 }
+
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
                 }
+
                 &:hover {
                     background: darken(rgba($rsrGreen, 0.1), 0%);
                     border: thin solid rgba($rsrGreen, 0.35);
                 }
+
                 .excerpt {
                     li {
                         background: none;
@@ -1580,55 +1863,71 @@ h4.detailedInfo {
             }
         }
     }
+
     &.organisations {
         ul {
             li {
                 border: thin solid rgba($akvoTvRed, 0);
+
                 @include transition(all 0.2s ease-in);
+
                 i {
                     font-size: 1.1em;
                 }
+
                 .projectLocation {}
+
                 .projectTitle {
                     display: block;
                     margin: 0 0 3px 0;
                 }
+
                 span.userFullName {
                     margin: 0 0 0px 0;
                 }
+
                 .upDateTime {
                     margin-top: 10px;
                 }
+
                 .orgType {}
+
                 .additionalInfo {
                     div {
                         color: rgba($akvoBlack, 0.5);
+
                         span {
                             margin-left: 5px;
                         }
                     }
                 }
+
                 .socialInfo {
                     p {
                         color: rgba($akvoBlack, 0.5);
                     }
                 }
+
                 h1 {
                     a {
                         color: $akvoTvRed;
+
                         &:hover {
                             color: $anchorLinkHover;
                         }
                     }
                 }
+
                 &:nth-child(2n+1) {
                     background: darken(rgba($akvoTvRed, 0.05), 0);
                     border: thin solid rgba($akvoTvRed, 0.05);
                 }
+
                 &:hover {
                     background: darken(rgba($akvoTvRed, 0.1), 0%);
                     border: thin solid rgba($akvoTvRed, 0.35);
                 }
+
                 img {
                     transition: all 0.2s ease-in;
                 }
@@ -1636,7 +1935,6 @@ h4.detailedInfo {
         }
     }
 }
-
 
 /* PROJECT */
 
@@ -1646,63 +1944,82 @@ header {
         padding: 15px 0;
         border-bottom: 1px solid rgba($rsrGreen, 0.15);
         margin: -10px 0 15px 0;
+
         @include box-shadow(inset 0 2px 6px -5px rgba($akvoBlack, 0.5));
+
         h1 {
             margin-top: 10px;
             margin-bottom: 0;
             font-size: 1.5em;
+
             a {
                 color: $rsrBlue;
+
                 &:hover {
                     color: $rsrBlue;
                 }
             }
         }
+
         .shareBlock {
             position: relative;
             margin-top: 10px;
+
             div {
                 text-align: right;
+
                 @include responsive(small-max-screens) {
                     text-align: left;
                 }
+
+
                 .btn {
                     background: $akvoBlack;
                     color: white;
                     border: none;
+
                     &:hover {
                         background: $rsrBlue;
                     }
                 }
+
                 a {
                     position: relative;
                     top: 0px;
+
                     @include responsive(small-max-screens) {
                         left: 0;
                         top: 0;
                     }
+
+
                     &.fullPdf {
                         @include noWrapTxt;
                     }
                 }
             }
+
             .reportPdf {
                 margin-top: 15px;
                 text-align: right;
                 padding-right: 0;
+
                 @include responsive(small-max-screens) {
                     text-align: left;
                     padding-left: 0;
                 }
             }
+
             .projectLocation {
                 color: lighten($akvoBlack, 50%);
+
                 .map-toggle {
                     text-transform: uppercase;
                     font-size: 0.875em;
                     font-weight: bold;
                 }
             }
+
             /* Style buttons and logos for Akvo Pages project pages */
             .btn,
             img {
@@ -1715,15 +2032,19 @@ header {
 
 .donateSection {
     @include box-sizing(border-box);
+
     background: rgba(complement($rsrBlue2), 0.1);
     padding: 10px 15px;
     box-shadow: 0 0 1px rgba(complement($rsrBlue2), 0.8);
+
     a {
         margin: -10px auto 5px auto;
+
         &.donateButton {
             background: $akvoBlack;
             color: white;
             border: none;
+
             &:hover {
                 background: $rsrBlue;
             }
@@ -1733,8 +2054,9 @@ header {
 
 #project-map {
     border: 1px solid darken($lightOrange, 10%);
+
     div.akvo_map {
-        width: calc(100%-2px);
+        width: calc(100% - 2px);
         height: 300px;
     }
 }
@@ -1746,19 +2068,23 @@ header {
         }
     }
 }
+
 .project-tab {
     &.summary {
-        margin-top:-20px;
+        margin-top: -20px;
     }
+
     &.partners {
         margin-top: 60px;
     }
+
     &.updates {
         .updateAsset:first-child {
             margin-top: 25px;
         }
     }
 }
+
 div.projectTopRow {
     position: relative;
     background: rgba(245, 245, 245, 0);
@@ -1768,42 +2094,53 @@ div.projectTopRow {
     padding-bottom: 20px;
     border-bottom: 1px solid rgba($akvoBlack, 0);
     box-shadow: 0 3px 3px rgba($akvoBlack, 0.1);
+
     #carousel {
         padding: 15px 0;
         margin-left: -15px;
+
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
+
+
         .carousel-indicators {
             bottom: -5px;
+
             li {
                 border-color: $anchorLink;
+
                 &.active {
                     background-color: $anchorLink;
                 }
             }
         }
+
         .carousel-inner {
             .item {
                 text-align: center;
+
                 a {
                     img {
                         max-height: 400px;
                         margin: auto;
                     }
                 }
+
                 .carousel-caption {
                     background-color: rgba(255, 255, 255, 0.7);
                     bottom: 0px;
                     left: 0;
                     padding-top: 10px;
                     padding-bottom: 5px;
-                    width:100%;
+                    width: 100%;
+
                     h4 {
                         margin-top: 0;
                         margin-bottom: 0;
                         color: $rsrBlue;
                     }
+
                     p {
                         margin-bottom: 20px;
                         color: $akvoBlack;
@@ -1811,22 +2148,29 @@ div.projectTopRow {
                 }
             }
         }
+
         .carousel-control.right {
             background-image: none;
         }
+
         .carousel-control.left {
             background-image: none;
         }
     }
+
     .projectSideInfo {
         padding: 5px 0;
         margin-left: -15px;
+
         @include responsive(small-max-screens) {
             margin-left: inherit;
         }
+
+
         ul {
             margin: 0;
             padding: 0;
+
             li {
                 color: lighten($akvoBlack, 50%);
                 list-style-type: none;
@@ -1834,52 +2178,66 @@ div.projectTopRow {
                 padding-bottom: 5px;
                 border-bottom: thin solid rgba(230, 230, 230, 0.5);
                 border-top: thin solid rgba(248, 248, 248, 0.8);
+
                 &:first-child {
                     padding-top: 5px;
                     border-top: none;
+
                     .detailedInfo {
                         margin-bottom: 10px;
                         display: block;
                     }
                 }
+
                 &:last-child {
                     padding-bottom: 0;
                     border-bottom: none;
                 }
+
                 &.projectPartners {
                     padding-bottom: 20px;
                     border-bottom: none;
+
                     span + div {
                         margin-top: 10px;
                     }
+
                     a.logoImg {
                         max-width: 50px;
+
                         img {
                             width: 80%;
                             transition: all 0.2s ease-in;
                             margin: inherit;
                         }
                     }
+
                     .partType {
                         @include noWrapBlockTxt;
                     }
+
                     .projectLocation {
                         margin-top: 5px;
                     }
                 }
+
                 &.financeBlock {
                     border-top: none;
                     padding: 15px 0 15px 0;
                     background: rgba(white, 0.1);
                     border: thin solid rgba(230, 230, 230, 0.7);
+
                     @include border-radius(5px);
+
                     span {
                         margin-left: 15px;
                     }
+
                     a {
                         margin-left: 15px;
                     }
                 }
+
                 .donateButton {
                     margin-right: 15px;
                 }
@@ -1899,10 +2257,13 @@ div.projectTopRow {
 
 div.textBlock {
     margin: 10px auto;
+
     .panel {
         border: 1px solid rgba(235, 235, 235, 0.5);
+
         .panel-heading {
             padding: 0;
+
             .panel-title {
                 a {
                     display: block;
@@ -1911,37 +2272,46 @@ div.textBlock {
                     color: $anchorLink;
                     text-decoration: none;
                     cursor: pointer;
+
                     @include transition(color 0.2s linear);
+
                     &:link {
                         -webkit-tap-highlight-color: #fcd700;
                     }
+
                     &:hover {
                         color: $anchorLinkHover;
                     }
                 }
             }
         }
+
         .panel-collapse {
             .panel-body {
                 background: rgba($rsrBlue, 0);
             }
         }
     }
+
     .updateComponent {
         padding-top: 10px;
         padding-bottom: 15px;
         background: transparent;
+
         h4 {
             margin-bottom: 10px;
         }
+
         .updateLinkTitle {
             display: block;
             color: $rsrGreen;
             margin-bottom: 5px;
             margin-left: 10px;
+
             i {
                 margin-right: 5px;
             }
+
             &:hover {
                 color: $anchorLinkHover;
             }
@@ -1949,13 +2319,15 @@ div.textBlock {
     }
 }
 
-.accordionContainer{
+.accordionContainer {
     padding-top: 10px;
     padding-bottom: 10px;
     overflow: auto;
+
     p {
         padding: 15px 30px;
     }
+
     #accordion {
         .panel-group {
             .panel-heading {
@@ -1964,6 +2336,7 @@ div.textBlock {
                         content: '- ';
                         position: relative;
                     }
+
                     &.collapsed {
                         &:before {
                             content: '+ ';
@@ -1980,25 +2353,33 @@ div.textBlock {
     position: relative;
     margin: -15px 0 20px 0;
     padding-top: 10px;
+
     .nav-tabs {
         border-bottom: none;
     }
-    nav{
-        border-bottom:  1px solid rgba($akvoBlack, 0.1);
+
+    nav {
+        border-bottom: 1px solid rgba($akvoBlack, 0.1);
+
         ul {
             li {
                 display: inline;
+
                 a.tab-link {
                     color: $primary5;
                     padding: 15px;
+
                     @include responsive(small-max-screens) {
                         padding: 20px 10px;
                     }
+
+
                     &:hover {
                         color: $anchorLinkHover;
                         border-color: transparent;
                         background-color: rgba($akvoBlack, 0.1);
                     }
+
                     &.selected {
                         color: $anchorLinkHover;
                         font-weight: normal;
@@ -2010,6 +2391,7 @@ div.textBlock {
         }
     }
 }
+
 .allUpdates {
     margin-top: 25px;
 }
@@ -2018,20 +2400,25 @@ div.textBlock {
     padding-top: 10px;
     padding-bottom: 15px;
     background: lighten($veryLightOrange, 25%);
+
     h4 {
         margin-bottom: 10px;
     }
+
     .updateLinkTitle {
         display: block;
         color: $rsrGreen;
         margin-bottom: 5px;
+
         i {
             margin-right: 5px;
         }
+
         &:hover {
             color: $anchorLinkHover;
         }
     }
+
     .updateLine {
         margin-bottom: 5px;
     }
@@ -2042,13 +2429,15 @@ div.textBlock {
     padding-top: 30px;
     padding-bottom: 30px;
     background: lighten($akvoBlack, 83%);
+
     .detailedInfo {
         color: rgba($akvoPurple, 1);
     }
+
     #project-footer-right {
         border: 1px solid rgba($akvoBlack, 0.05);
         padding: 0.25em 1.5em;
-        background: rgba(white, 0.3)
+        background: rgba(white, 0.3);
     }
 }
 
@@ -2059,6 +2448,7 @@ div.textBlock {
     padding: 10px;
     text-align: center;
     margin-bottom: 20px;
+
     @include border-radius(5px);
 }
 
@@ -2071,13 +2461,13 @@ div.textBlock {
     .budgetItem {
         margin-top: 12px;
         width: 60%;
+
         &:nth-child(1),
         &:nth-child(2) {
             margin-top: 0;
         }
     }
 }
-
 
 /* Project hierarchy */
 
@@ -2088,6 +2478,7 @@ div.textBlock {
     margin: 30px;
     padding: 10px;
     text-align: center;
+
     @include border-radius(5px);
 }
 
@@ -2107,17 +2498,21 @@ div.textBlock {
 .extra-partner-tooltip {
     div.extra-partner-entry {
         margin-bottom: 0.75em;
+
         &:last-child {
             margin-bottom: 0;
             border-bottom: none;
+
             hr {
                 display: none;
             }
         }
+
         hr {
             margin: 0.5em 0 0 0;
             padding: 0;
         }
+
         img {
             display: block;
             width: 80px;
@@ -2138,25 +2533,27 @@ div.textBlock {
     }
 }
 
-
 /* Tooltips */
 
 .tooltip {
     z-index: 99999;
+
     .tooltip-arrow {}
+
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
         background: rgba(white, 0.95);
         border: thin solid rgba($akvoBlack, 0.15);
         color: $akvoBlack;
+
         @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
+
         a {
             font-weight: bold;
         }
     }
 }
-
 
 /* Typeahead Styling */
 
@@ -2168,16 +2565,20 @@ ul.typeahead-selector {
     border-left: 1px solid #ccc;
     background-color: #fff;
     list-style: none;
+
     @include border-radius(4px);
+
     li {
         padding-left: 6px;
         padding-top: 4px;
         padding-bottom: 4px;
+
         &:hover,
         &.hover {
             font-weight: bold;
             cursor: pointer;
         }
+
         a {
             color: rgb(85, 85, 85);
         }
@@ -2192,19 +2593,21 @@ ul.typeahead-selector {
     }
 }
 
-
 /* Organisation Page */
 
 .organisationDetail {
     .organisationHeader {
         background: rgba($akvoBlack, 0.05);
     }
+
     .orgDescr {
         background-color: rgba(lighten($akvoTvRed, 15%), 0);
+
         p {
             padding-left: 20px;
         }
     }
+
     h1 {
         margin-top: 0;
         margin-bottom: 20px;
@@ -2212,28 +2615,35 @@ ul.typeahead-selector {
         padding-bottom: 10px;
         border-bottom: 1px solid rgba($akvoTvRed, 0.05);
         position: relative;
+
         i {
             font-size: 0.75em;
             top: -5px;
         }
     }
+
     .orgLogo {
         padding: 10px 0;
+
         img {
             width: 35%;
             margin-left: 5px;
         }
     }
+
     .orgDetails {
         background: rgba(white, 0.45);
+
         @include border-radius(5px);
     }
+
     .orgUrl,
     .orgIati,
     .orgEmail {
         display: block;
         padding-bottom: 0.75em;
     }
+
     @include responsive(small-max-screens) {
         .orgDetails {
             > h4 {
@@ -2248,21 +2658,23 @@ ul.typeahead-selector {
         max-width: 325px;
         margin-right: auto;
         margin-left: auto;
+
         dd,
         dt {
             display: inline-block;
         }
+
         dt {
             width: 49%;
             text-align: left;
         }
+
         dd {
             width: 49%;
             text-align: right;
         }
     }
 }
-
 
 /* Update Page */
 
@@ -2271,12 +2683,15 @@ ul.typeahead-selector {
         color: $rsrGreen;
         margin-top: 0;
     }
+
     .asideUpList {
         .row {
             padding: 15px 0;
+
             &:nth-of-type(2n+1) {
                 background-color: rgba($rsrGreen, 0.1);
             }
+
             h5 {
                 margin-top: 0;
             }
@@ -2284,49 +2699,59 @@ ul.typeahead-selector {
     }
 }
 
-
 /* Donate Page*/
 
 .projectDonate {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto;
+
     @include responsive(small-max-screens) {
         width: 95%;
         max-width: 450px;
         text-align: justify;
+
         .paymentOption,
         .donateTitle,
         h3 {
             text-align: center;
         }
     }
+
+
     .donateButton {
         margin-bottom: 2em;
     }
+
     .donateButtonContainer {
         text-align: center;
     }
+
     .methodInfo {
         min-height: 15em;
         padding: 2.5em 1em 1em 1em;
         background-color: $secondary8;
     }
+
     .donateStep2Image {
         margin-top: 0.5em;
         margin-bottom: 1em;
     }
+
     .editDonation {
         margin-top: 1em;
         background-color: $primary4;
         border-color: $primary4;
     }
+
     .clear {
         clear: both;
     }
+
     .paymentSystemInfo {
         background-color: $secondary8;
     }
+
     @include responsive(small-screens) {
         @include responsive(mediums-max-screens) {
             h3 {
@@ -2334,26 +2759,30 @@ ul.typeahead-selector {
             }
         }
     }
+
+
     @include responsive(small-max-screens) {
         .paymentOption {
             margin-top: 3em;
         }
+
         .paymentSystemInfo {
             margin-top: 4em;
             padding-top: 1.25em;
             padding-bottom: 1.25em;
             clear: both;
         }
+
         .donateButton {
             width: initial;
         }
+
         h3 {
             margin-top: 1.25em;
             margin-bottom: 1em;
         }
     }
 }
-
 
 /* Financial details page */
 
@@ -2365,20 +2794,25 @@ section.projectFinancial {
             }
         }
     }
+
     .donationBreak {
         display: none;
     }
+
     @include responsive(small-max-screens) {
         width: 95%;
         max-width: 450px;
         margin-left: auto;
         margin-right: auto;
+
         .dl-horizontal {
             dt {
                 float: left;
             }
         }
     }
+
+
     @include responsive(mediums-max-screens) {
         @include responsive(small-screens) {
             .dl-horizontal {
@@ -2386,16 +2820,19 @@ section.projectFinancial {
                     width: initial;
                 }
             }
+
             .donationBreak {
                 display: initial;
                 clear: both;
             }
+
             .currentFunders {
                 dd {
                     &.donation {
                         float: right;
                     }
                 }
+
                 dt {
                     &.donation {
                         clear: both;
@@ -2406,30 +2843,34 @@ section.projectFinancial {
     }
 }
 
-
 /* Project Partners details page */
 
 section.projectPartners {
     .title {
         margin-bottom: 1em;
     }
+
     .row {
         margin-left: 0;
         margin-right: 0;
         margin-bottom: 1.5em;
         background: rgba(245, 245, 245, 0.5);
         border: thin solid rgba($rsrBlue, 0.1);
+
         @include border-radius(3px);
+
         h2,
         h3,
         h4 {
             margin-top: 0;
         }
+
         img {
             max-height: 120px;
             margin: 0 auto;
             display: block;
         }
+
         @include responsive(small-max-screens) {
             img {
                 max-height: 150px;
@@ -2437,14 +2878,18 @@ section.projectPartners {
                 max-width: 60%;
             }
         }
+
+
         h2 {
             display: inline-block;
             font-size: 1.3em;
         }
+
         .fa {
             font-size: 1.3em;
             color: $akvoPurple;
         }
+
         a.org-link {
             &:hover {
                 i,
@@ -2453,19 +2898,23 @@ section.projectPartners {
                 }
             }
         }
+
         ul {
             margin: 0;
             padding: 0;
         }
+
         li {
             list-style: none;
         }
     }
+
     @include responsive(small-max-screens) {
         .container {
             padding-left: 0;
             padding-right: 0;
         }
+
         &.projectPartners {
             max-width: 95%;
             display: block;
@@ -2474,7 +2923,6 @@ section.projectPartners {
         }
     }
 }
-
 
 /* Display currency totals right-aligned */
 
@@ -2488,65 +2936,80 @@ dd {
     }
 }
 
-
 /* Project report page */
 
 .projectReport {
     @include responsive(small-max-screens) {
-      tr {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        margin: 0.5em 0;
-        border: 1px solid rgba(3,3,3,0.2);
-      }
-      td, th {
-        flex: 1 1 150px;
-        border: 0.5px solid rgba(3,3,3,0.2);
-      }
-      td.edit-buttons, td.empty {
-        /*flex: 1 0 90%;
-        text-align: center;*/
-      }
+        tr {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 0.5em 0;
+            border: 1px solid rgba(3, 3, 3, 0.2);
+        }
+
+        td, th {
+            flex: 1 1 150px;
+            border: 0.5px solid rgba(3, 3, 3, 0.2);
+        }
+
+        td.edit-buttons, td.empty {
+            /*flex: 1 0 90%;
+            text-align: center;*/
+        }
     }
+
+
     @include responsive(small-max-screens) {
         max-width: 95%;
         margin-left: auto;
         margin-right: auto;
     }
+
+
     table {
         color: rgba($akvoBlack, 0.7);
+
         th {
             color: rgba($primary5, 0.8);
         }
+
         &.table-striped {
             thead > tr:nth-child(1) {
                 background-color: rgba($primary6, 0.1) !important;
             }
+
             tr:nth-child(even) {
                 background-color: rgba(white, 0.1);
             }
+
             tr:nth-child(odd) {
                 background-color: rgba($primary5, 0.05);
             }
         }
+
         &.table-bordered {
-            border: 2px solid rgb(255,255,255);
+            border: 2px solid rgb(255, 255, 255);
+
             td, th {
-                border: 2px solid rgb(255,255,255);
+                border: 2px solid rgb(255, 255, 255);
             }
         }
     }
+
     h4 {
         margin: 50px 0 10px 0;
     }
+
     @media only screen and (min-width: $width-medium) {
         table {
             table-layout: auto;
+
             th {
                 @media only screen and (max-width: $width-large) {
                     width: 90px;
                 }
+
                 @media only screen and (min-width: $width-large) {
                     width: 120px;
                 }
@@ -2555,16 +3018,17 @@ dd {
     }
 }
 
-
 /* Project update page */
 
 .updateText {
     white-space: pre-line;
+
     li {
         padding: initial;
         margin: initial;
         white-space: initial;
     }
+
     li p {
         margin: 0;
         padding: 0;
@@ -2576,12 +3040,12 @@ a.addUpdateBtn {
     color: white;
     background-color: $rsrGreen;
     border-color: $rsrGreen;
+
     &:hover {
         background-color: $anchorLinkHover;
         border-color: $anchorLinkHover;
     }
 }
-
 
 /* Google translation bar styles */
 
@@ -2590,15 +3054,18 @@ body {
         .nav {
             padding-top: 39px;
         }
+
         .navbar-brand {
             margin-top: 39px;
         }
+
         article,
         .updateMain,
         .organisationDetail,
         #map {
             padding-top: 39px;
         }
+
         div.skiptranslate ~ article,
         div.skiptranslate ~ .updateMain,
         div.skiptranslate ~ .organisationDetail,
@@ -2608,28 +3075,30 @@ body {
     }
 }
 
-
 /* Cookie */
 
 #cookie-law {
     position: fixed;
     bottom: 0;
     z-index: 9999;
+
     @include box-shadow(0px -2px 3px rgba($akvoBlack, 0.55));
+
     width: 100%;
     background: darken($akvoPurple, 15%);
+
     p {
         padding: 15px 0;
         text-align: center;
         color: white;
         margin: 0;
         font-size: 1.1em;
+
         a {
             font-weight: bold;
         }
     }
 }
-
 
 /* Project Admin */
 
@@ -2638,12 +3107,15 @@ body {
         &[data-completion='empty'] {
             background: rgba($progressWarning, 1);
         }
+
         &[data-completion='incomplete'] {
             background: rgba($progressNot, 1);
         }
+
         &[data-completion='complete'] {
             background: rgba($progressSuccess, 1);
         }
+
         .progress-percentage {
             display: none;
         }
@@ -2655,10 +3127,12 @@ body {
         cursor: pointer;
         transition: background 0.1s linear;
         padding: 0 15px 15px 15px;
+
         &:hover {
             background: rgba($progressSuccess, 0.1);
         }
     }
+
     .progress {
         .progress-bar {
             .progress-percentage {
@@ -2666,32 +3140,40 @@ body {
             }
         }
     }
+
     .progress-and-publish {
         top: 20px;
+
         .row {
             .help-block-error {
                 padding-left: 15px;
             }
         }
     }
+
     .redLegenda {
         background: $progressWarning;
         color: $progressWarning;
     }
+
     .orangeLegenda {
         background: $progressNot;
         color: $progressNot;
     }
+
     .greenLegenda {
         background: $progressSuccess;
         color: $progressSuccess;
     }
+
     .mandatoryIndicator {
         color: $progressWarning;
     }
+
     .published {
         color: $progressSuccess;
     }
+
     .notPublished {
         color: $secondary2;
     }
@@ -2702,10 +3184,12 @@ body {
         cursor: pointer;
         transition: background 0.1s linear;
         padding: 0 15px 15px 15px;
+
         &:hover {
             background: rgba($rsrBlue2, 0.1);
         }
     }
+
     label {
         color: rgba($akvoPurple, 0.5);
     }
@@ -2718,10 +3202,12 @@ body {
         font-size: 1.5em;
         display: block;
     }
+
     .myPanel {
         overflow: hidden;
         line-height: 25px;
         position: relative;
+
         .formBlock {
             width: 99%;
             height: 0;
@@ -2731,8 +3217,10 @@ body {
             transition: all .5s linear;
             padding: 5px 15px;
             margin: 0 auto;
+
             @include border-radius(5px);
         }
+
         input[type='radio']:checked ~ .formBlock {
             height: auto;
             overflow: auto;
@@ -2740,14 +3228,17 @@ body {
             box-shadow: 0 0 15px rgba($akvoPurple, 0.2);
         }
     }
+
     input[type='radio'] {
         display: none;
     }
+
     .formStep {
         position: relative;
 
         & > div > label {
             @include border-radius(5px);
+
             display: block;
             width: 100%;
             top: initial;
@@ -2755,85 +3246,108 @@ body {
             transition: background 0.1s linear;
             background: rgba($akvoPurple, 0.1);
             cursor: pointer;
+
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
+
             .info-icon {
                 padding-left: 0.5em;
                 cursor: pointer;
                 font-size: 90%;
+
                 &.activated {
                     color: rgba(44, 42, 116, 0.3);
                 }
             }
         }
+
         .section-progress {
             position: absolute;
             width: 30%;
             top: 20px;
             right: 5px;
         }
+
         form {
             padding-top: 10px;
         }
+
         span.tab {
             padding-left: 5em;
         }
     }
+
     .borderBottom {
         padding-bottom: 10px;
         border-bottom: 1px solid rgba($akvoPurple, 0);
+
         &.myPanel {}
     }
+
     $padding: 10px;
     $label-font-size: 13px;
+
     *,
     *:before,
     *:after {
         box-sizing: border-box;
     }
+
     .control {
         position: relative;
         padding-top: $padding + $label-font-size;
         padding-bottom: $padding;
+
         // you proably want to replace these with your grid classes
         &.small {
             width: 30%;
         }
+
         &.medium {
             width: 70%;
             padding-left: $padding;
         }
+
         &:last-child {
             border: 0;
         }
     }
+
     .control-label {
         min-width: 90%;
     }
+
     a {
         &.btn {
             margin-top: 23px;
+
             &.btn-link {
                 margin-top: 0;
             }
         }
     }
+
     .col-md-4 a.btn.btn-link,
     .col-md-3 a.btn.btn-link {
         margin-top: 23px;
     }
+
     .add-object-link {
         top: 8px;
     }
+
     hr {
         border: none;
         height: 1px;
         color: rgba($akvoPurple, 0.3);
+
         /* old IE */
         background-color: rgba($akvoPurple, 0.3);
+
         /* Modern Browsers */
     }
+
     input,
     textarea,
     select,
@@ -2845,92 +3359,114 @@ body {
             top: -20px;
             transition: top 0.7s ease, opacity 0.7s ease;
             opacity: 1;
+
             // Some nice styling
             font-size: $label-font-size;
             font-weight: 600;
         }
+
         &:focus + label,
         &:focus + span + label,
         &:focus + ul + label {
             color: $rsrBlue;
         }
     }
+
     .delete-related-object {
         color: $progressWarning;
     }
+
     .delete-photo-button {
         color: $progressWarning;
     }
+
     .delete-document {
         color: $progressWarning;
     }
+
     .info-icon {
         padding-left: 0.5em;
         cursor: pointer;
         cursor: hand;
         font-size: 120%;
+
         &.activated {
             color: rgba(44, 42, 116, 0.3);
         }
     }
+
     .mandatory {
         color: $progressWarning;
         font-size: 125%;
         margin-left: 4px;
         margin-right: -4px;
     }
+
     .mandatory-block {
         @extend .mandatory;
+
         font-size: 90%;
         margin-left: 0px;
         margin-right: 0px;
     }
+
     label.progress-bar {
         &[aria-valuenow="0"] {
             background: rgba($progressWarning, 1);
             color: $progressWarning;
         }
+
         &[aria-valuenow="10"] {
             background: rgba($progressWarning, 1);
             color: white;
         }
+
         &[aria-valuenow="20"] {
             background: rgba($progressWarning, 1);
             color: white;
         }
+
         &[aria-valuenow="30"] {
             background: rgba($progressWarning, 1);
             color: white;
         }
+
         &[aria-valuenow="40"] {
             background: rgba($progressNot, 1);
             color: white;
         }
+
         &[aria-valuenow="50"] {
             background: rgba($progressNot, 1);
             color: white;
         }
+
         &[aria-valuenow="60"] {
             background: rgba($progressNot, 1);
             color: white;
         }
+
         &[aria-valuenow="70"] {
             background: rgba($progressSuccess, 1);
             color: white;
         }
+
         &[aria-valuenow="80"] {
             background: rgba($progressSuccess, 1);
             color: white;
         }
+
         &[aria-valuenow="90"] {
             background: rgba($progressSuccess, 1);
             color: white;
         }
+
         &[aria-valuenow="100"] {
             background: rgba($progressSuccess, 1);
             color: white;
         }
     }
+
     div.parent {
         background: rgba($progressNot, 0.15);
         -webkit-border-radius: 10px;
@@ -2943,6 +3479,7 @@ body {
         margin-bottom: 10px;
         transition: background 0.1s linear;
     }
+
     div.partial-header {
         font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: normal;
@@ -2952,12 +3489,15 @@ body {
         margin-bottom: 10px;
         cursor: pointer;
     }
+
     .save-message {
         text-align: center;
     }
+
     .save-button {
         text-align: right;
     }
+
     .toggle-help {
         font-size: 0.9em;
         color: rgba(44, 42, 116, 0.5);
@@ -2972,6 +3512,7 @@ body {
     padding-left: 0.5em;
     cursor: pointer;
     cursor: hand;
+
     &.activated {
         color: rgba(44, 42, 116, 0.3);
     }
@@ -3002,47 +3543,24 @@ body {
     margin-bottom: 25px;
 }
 
-
 /* New concatenated project page */
 
 .tab-menu {
     padding: 0.5em 1em 2em 1em;
+
     a {
         padding: 0.5em;
         margin: 0 1em;
         color: $anchorLink;
+
         &:hover,
         &.selected {
             border-bottom: 3px solid $newResultColor;
             color: $newResultColor;
         }
+
         &:active {
             opacity: 0.6;
-        }
-    }
-}
-
-
-/* Results framework display */
-
-#results-framework {
-    padding: 0;
-    margin: 0;
-}
-
-.resultProjectTitle {
-    margin: 15px 0 25px 0;
-    span {
-        margin-right: 15px;
-    }
-    button {
-        margin: 0px 0 0 25px;
-        background: $akvoBlack;
-        color: white;
-        border: none;
-        &:hover {
-            background: $rsrBlue;
-            color: white;
         }
     }
 }
@@ -3058,9 +3576,11 @@ article {
 
 .clickable {
     cursor: pointer;
+
     &:hover {
         opacity: 1;
     }
+
     &:active {
         opacity: 0.6;
     }
@@ -3085,27 +3605,6 @@ article {
     @include transition(opacity 0.25s ease-in-out);
 }
 
-.results-container {
-    @include display-flex;
-    padding-left: 0;
-    .indicator-container {
-        .indicator-period-container {
-            .indicator-period {
-                .period-target-actual {
-                    .updates-container {
-                        clear: both;
-                    }
-                    .periodValues {
-                        .period-target-comment {
-                            padding-right: 15px;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 .reload-warning {
     margin-left: 15px;
     margin-right: 15px;
@@ -3114,1382 +3613,27 @@ article {
 .default-period-container {
     margin-right: 10px;
     font-size: 80%;
+
     .default-yes-button {
         color: green;
         margin-left: 5px;
     }
+
     .default-no-button {
         color: red;
         margin-left: 5px;
     }
 }
 
-.baseline,
-.periodValues {
-    padding:0.5em 0 2em 0;
-    position: relative;
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 55px;
-    .baseline-value,
-    .baseline-year,
-    .period-target,
-    .period-actual,
-    .period-target-comment,
-    .period-actual-comment {
-        display: inline-block !important;
-        padding: 0 0 10px 0px;
-        > span:first-child {
-            display: block;
-            span {
-                display: inline;
-            }
-        }
-        span:nth-child(2n), .actualValueSpan {
-            display: block;
-            font-family: $titleFont;
-            span {
-                display: inline;
-            }
-            span:nth-child(1) {
-                margin-left: 10px;
-            }
-        }
-    }
-    //.period-target-comment {
-    //    width: 50%;
-    //    float: left;
-    //    span:nth-child(2n) {
-    //        font-weight: 400;
-    //    }
-    //}
-    //.period-actual-comment {
-    //    width: 50%;
-    //    float: right;
-    //    span:nth-child(2n) {
-    //        font-weight: 400;
-    //    }
-    //}
-    .baseline-value,
-    .period-target {
-        width: 50%;
-        float: left;
-    }
-    .baseline-year,
-    .period-actual {
-        width: 50%;
-        float: right;
-        position: relative;
-        span {
-            &:nth-child(1) {
-                display: inline-block;
-                margin-right: 10px;
-            }
-            &:nth-child(4) {
-                display: block;
-                font-weight: 700;
-            }
-            &.actualValueSpan {
-                display: block;
-                span:nth-child(1) {
-                    margin-right: 0;
-                }
-                span {
-                    display: inline;
-                }
-            }
-        }
-        .badge {
-            background-color: $akvoBlack;
-            @include transition(all 0.1s linear);
-            margin-top: -5px;
-            padding: 5px 9px;
-            @include border-radius(15px);
-            font-family: $scriptFont;
-            &:hover {
-                background-color: $akvoPurple;
-                cursor: pointer;
-            }
-        }
-        .result-tooltip {
-            clear: both;
-            position: absolute;
-            top: 35px;
-            left: 60px;
-            background: rgba(white, 1);
-            border: 1px solid rgba($primary4, 0.8);
-            color: $akvoBlack;
-            @include border-radius(4px);
-            .tooltip-inner {
-                background: rgba(white, 1);
-                color: $akvoBlack;
-                @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
-            }
-            .tooltip-arrow {
-                position: absolute;
-                background: rgba(white, 1);
-                border: 1px solid rgba($primary4, 0.8);
-                left: 50px;
-                top: -2px;
-                &:after,
-                &:before {
-                    bottom: 100%;
-                    left: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                }
-                &:after {
-                    border-color: rgba(136, 183, 213, 0);
-                    border-bottom-color: rgba($primary4, 0.5);
-                    border-width: 7px;
-                    margin-left: -7px;
-                }
-                &:before {
-                    border-color: rgba(194, 225, 245, 0);
-                    border-bottom-color: rgba($primary4, 0.5);
-                    border-width: 8px;
-                    margin-left: -8px;
-                }
-            }
-        }
-    }
-    .period-target-comment {
-        width: 50%;
-        float: left;
-        padding: 0 0 40px 0px;
-    }
-    .period-actual-comment {
-        width: 50%;
-        float: right;
-        padding: 0 0 40px 0px;
-    }
-}
-
-.sidebar {
-    width: 50%;
-    min-width: 200px;
-    overflow-y: auto;
-    vertical-align: top;
-    .results-list {
-        background: white;
-        border: 1px solid rgba($secondary8, 1);
-    }
-    .result-nav-header {
-        display: none;
-        background: rgba($akvoPurple, 0);
-        h3 {
-            color: rgba(white, 1);
-            display: inline-block;
-            font-size: 1em;
-            text-transform: uppercase;
-            position: relative;
-            padding: 5px 10px;
-            margin-top: 0;
-            background: rgba($akvoPurple, 1);
-            margin-bottom: 0;
-            @include border-radius(5px 5px 0 0);
-            > a {
-                position: absolute;
-                right: -5px;
-            }
-        }
-    }
-    .result-nav {
-        opacity: 0.8;
-        cursor: pointer;
-        @include transition(all 0.2s linear);
-        padding: 10px 0 0px 0px;
-        border-bottom: 1px solid rgba($secondary8, 1);
-        border-top: 1px solid rgba(white, 1);
-        &:before {
-            height: 1px;
-            background-color: rgba(224, 225, 226, 0);
-            width: 100%;
-            display: block;
-            content: '';
-            margin: 0 auto;
-            @include transition(background-color 0.25s ease-in-out);
-        }
-        &:hover {
-            opacity: 1;
-            background: rgba($rsrBlue2, 0);
-        }
-        .result-nav-summary {
-            padding: 15px 0 10px 10px;
-            position: relative;
-            .indicatorType {
-                margin-top: 0px;
-                font-weight: 400;
-                color: $anchorLinkHover;
-                font-size: 0.8em;
-            }
-            h3 {
-                font-size: 1em;
-                color: rgba($rsrBlue, 1);
-                @include transition(all 0.2s linear);
-                &:hover {
-                    color: $anchorLinkHover;
-                }
-                &.result-title {
-                    position: relative;
-                    box-sizing: border-box;
-                    font-weight: 400;
-                    max-width: 100%;
-                    margin: 0 auto 0 0;
-                    display: block;
-                    display: -webkit-box;
-                    line-height: 1.4em;
-                    -webkit-box-orient: vertical;
-                    .fa {
-                        position: absolute;
-                        font-size: 1.3em;
-                        right: 5px;
-                        text-shadow: 0 1px 0 rgb(255, 255, 255);
-                        color: rgba($akvoBlack, 0.7);
-                    }
-                    > span {
-                        display: block;
-                        width: 90%;
-                        color: $akvoBlack;
-                    }
-                }
-            }
-        }
-        .fa-chevron-up {
-            display: none;
-        }
-        .result-indicator-count {
-            color: $akvoPurple;
-            display: block;
-            margin-top: 5px;
-            font-size: 0.8em;
-            span {
-                margin-left: 5px;
-            }
-            p {
-                display: inline-block;
-                margin-left: 5px;
-            }
-        }
-        .result-nav-full {
-            display: none;
-        }
-        .indicator-text {
-            display: none;
-        }
-        &.expanded {
-            padding: 20px 0 0px 0px;
-            background: rgba($secondary8, 0.9 );
-            border-top: 1px solid rgba(white, 0);
-            opacity: 1;
-            &:before {
-                background-color: transparent;
-            }
-            h3 {
-                color: $anchorLinkHover;
-            }
-            ~ .result-nav {
-                &:before {
-                    background-color: transparent;
-                }
-            }
-            .fa-chevron-down {
-                display: none;
-            }
-            .fa-chevron-up {
-                display: block;
-            }
-            .indicator-text {
-                display: initial;
-            }
-            .indicator-count {
-                display: none;
-            }
-            .result-nav-full {
-                display: block;
-                cursor: pointer;
-                padding: 1px 0 0 0px;
-                background-color: white;
-                div {
-                    &:last-child {
-                        .indicator-nav {
-                            border-bottom: none;
-                        }
-                    }
-                    .indicator-nav {
-                        padding: 0.5em 15px 0.5em 0em;
-                        background: rgba($akvoPurple, 0.2);
-                        border-bottom: 2px solid white;
-                        font-weight: 400;
-                        opacity: 0.8;
-                        h4 {
-                            color: $akvoPurple;
-                            font-size: 0.9em;
-                        }
-                        &:hover {
-                            background: rgba($akvoPurple, 0.6);
-                            opacity: 1;
-                            h4 {
-                                color: white;
-                            }
-                        }
-                        &.active {
-                            background: rgba($akvoPurple, 1) url(../images/carretWhite.svg) center right no-repeat;
-                            border-left: 0px solid rgba(174, 9, 34, 0);
-                            background-size: 5% auto;
-                            opacity: 1;
-                            h4 {
-                                color: white;
-                            }
-                        }
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-                    }
-                    a {
-                        h4 {
-                            font-size: 1em;
-                            color: $akvoPurple;
-                            margin-bottom: 1px;
-                            line-height: 150%;
-                            padding-left: 10px;
-                        }
-                        &:hover {
-                            color: rgba($akvoPurple, 0.5);
-                            text-decoration: none;
-                        }
-                    }
-                    .last-update {
-                        font-size: 0.9em;
-                        color: rgb(170, 170, 170);
-                    }
-                }
-            }
-        }
-    }
-}
-
-.indicator-container {
-    vertical-align: top;
-    padding: 20px 1em 0.25em 1em;
-    background-color: rgba($secondary8, 0.3);
-    border: 1px solid rgba($secondary8, 0.8);
-    @include flex(1);
-    position: relative;
-    .noIndicators {
-        position: absolute;
-        top: 45%;
-        text-align: center;
-        display: inline-block;
-        width: 100%;
-        color: rgba($primary4, 0.5);
-        text-shadow: 1px 1px 0 rgba(white, 1);
-        align-items: center;
-        span:first-child {
-            display: block;
-            font-size: 150%;
-        }
-        a {
-            display: block;
-            width: 100%;
-        }
-    }
-    .indicator-title {
-        font-size: 1.3em;
-        margin-bottom: 25px;
-        .backButton {
-                display: inline;
-                background: transparent;
-                padding: 3px 5px;
-                @include border-radius(3px);
-                font-size: 0.7em;
-                color: white$rsrBlue2;
-                margin:-5px 10px 0 0;
-                &:hover {
-                    color: $anchorLinkHover;
-                }
-
-        }
-    }
-    .indicator-period {
-        .indicTitle {
-            position: relative;
-            .indicator-title {
-                i {
-                    display: none;
-                }
-            }
-            .new-update {
-                position: absolute;
-                display: inline-block;
-                top: -5px;
-                right: 0;
-                .btn {
-                    background: $akvoBlack;
-                    color: white;
-                    @include border-radius(5px);
-                    &:hover {
-                        background: $akvoPurple;
-                        color: white;
-                    }
-                }
-            }
-        }
-    }
-    .indicator-periods-title {
-        font-size: 1em;
-        color: $akvoBlack;
-        margin-top: 40px;
-        display: none;
-    }
-    .result-summary {
-        display: none;
-        opacity: 0;
-        h4 {
-            font-size: 0.9em;
-            color: #aaaaaa;
-            font-variant: small-caps;
-            text-transform: lowercase;
-        }
-        h3 {
-            font-size: 1.2em;
-            color: #424c2b;
-            margin-bottom: 4px;
-        }
-        .result-parent {
-            font-size: 0.8em;
-            color: #aaaaaa;
-        }
-        .indicator-link {
-            cursor: pointer;
-            &:hover {
-                opacity: 0.8;
-            }
-            &:active {
-                opacity: 0.6;
-            }
-        }
-        .result-indicators {
-            margin-top: 20px;
-            ul {
-                list-style-type: none;
-                padding-left: 5px;
-                li {
-                    color: $anchorLink;
-                }
-            }
-        }
-    }
-    .indicator-group {
-        padding: 0;
-        display: none;
-        .indicator-title {
-            font-size: 1em;
-            .glyphicon {
-                float: left;
-                margin-right: 4px;
-            }
-        }
-        .table {
-            padding: 0.5em 0.25em;
-            /*background-color: rgb(235,235,231);*/
-            tbody {
-                &.indicator-period {
-                    border: none;
-                    padding: 15px 0;
-                }
-                &.expanded {
-                    background-color: white;
-                }
-            }
-            thead {
-                font-weight: normal;
-                color: rgb(192, 192, 192);
-                tr {
-                    background-color: #ececec;
-                }
-            }
-            tr,
-            td {
-                border: none;
-                color: rgb(172, 172, 172);
-            }
-            tr {
-                min-height: 125px;
-                .add-button {
-                    display: none;
-                }
-                &.expanded ~ .add-button-tr td {
-                    text-align: right;
-                    .add-button {
-                        border: none;
-                        display: inline-block;
-                        margin-right: 1.4em;
-                    }
-                }
-            }
-            td {
-                vertical-align: middle;
-                &.period-td,
-                &.actual-td,
-                &.target-td,
-                &.actions-td {
-                    white-space: nowrap;
-                }
-                &.target-td {
-                    font-weight: 600;
-                }
-                &.actions-td {
-                    .tooltip {
-                        top: -170px;
-                        left: 132.703px;
-                        display: block;
-                        .tooltip-arrow {
-                            left: 77.4336%;
-                        }
-                    }
-                }
-                &.period-td {
-                    position: relative;
-                    .result-tooltip {
-                        position: absolute;
-                        top: 0;
-                    }
-                }
-                &.indicator-bar-td {
-                    width: 55%;
-                }
-            }
-            .expand-indicator-period {
-                .fa-chevron-up {
-                    display: none;
-                }
-                .fa-chevron-down {
-                    display: initial;
-                }
-                &.expanded {
-                    .fa-chevron-up {
-                        display: initial;
-                    }
-                    .fa-chevron-down {
-                        display: none;
-                    }
-                }
-            }
-        }
-        .indicator {
-            display: none;
-        }
-    }
-}
-
-
-/* Styling for the indicator period progress bar */
-
-.indicator-bar-td {
-    height: 80px;
-    padding: 0;
-}
-
-
-/* Insert some transparent text to space the "progress" label */
-
-.th-progress {
-    &:before {
-        content: 'spacer';
-        width: 40px;
-        height: 1px;
-        display: inline-block;
-        color: transparent;
-        @media only screen and (max-width: 800px) {
-            display: none;
-        }
-    }
-}
-
-.indicator-bar-display-container {
-    position: relative;
-    height: 100%;
-    margin-left: 50px;
-    margin-right: 15px;
-    .indicator-bar,
-    .indicator-bar-progress-amount {
-        position: absolute;
-        top: 38px;
-        bottom: 24px;
-        left: 0px;
-        height: 8px;
-        @include border-radius(2px);
-        border: 1px solid #CDDFEF;
-    }
-    .indicator-baseline {
-        position: absolute;
-        left: -45px;
-        top: 30px;
-        font-size: 1.1em;
-        font-weight: bold;
-        vertical-align: bottom;
-        width: 35px;
-        text-align: right;
-    }
-    .indicator-bar {
-        background-color: #E2EBF5;
-        right: 0px;
-    }
-    .indicator-bar-progress-amount {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-    .indicator-bar-progress-container {
-        /* The progress box has non-zero width, so add some
-            ** padding to ensure it doesn't overflow the parent
-            ** container.
-            */
-        position: relative;
-        height: 100%;
-        .indicator-bar-progress {
-            position: absolute;
-            width: 4px;
-            margin-left: -2px;
-            /* Offset half the width */
-            height: 23px;
-            top: 30px;
-            background-color: #A3C7E3;
-            text-align: center;
-        }
-    }
-}
-
-.target-td {
-    vertical-align: middle;
-}
-.update-description {
-    color: rgba($akvoBlack, 1);
-    font-size: 90%;
-    label {
-        color: initial;
-    }
-}
-
-.indicator-bar-progress-complete-container {
-    .indicator-bar-progress-complete {
-        padding-left: 15px;
-        font-size: 1.1em;
-        font-weight: normal;
-        color: rgb(81, 80, 80);
-        vertical-align: bottom;
-    }
-    .indicator-bar-progress-text {
-        padding-left: 15px;
-        font-size: 1.1em;
-        font-weight: bold;
-        color: #A3C7E3;
-        vertical-align: bottom;
-    }
-}
-
-.indicator-container .indicator-group .table tbody {
-    background-color: white;
-    border-bottom: none !important;
-    &:last-child {
-        margin-bottom: 0;
-    }
-    .edit-button {
-        position: absolute;
-        height: 20px;
-        width: 20px;
-        top: 15px;
-        right: 10px;
-        color: $akvoBlack;
-        font-size: 1.5em;
-        &.activated {
-            display: none;
-        }
-    }
-    .delete-button {
-        position: absolute;
-        height: 20px;
-        width: 20px;
-        top: 13px;
-        right: 35px;
-        font-size: 1.5em;
-        color: $akvoBlack;
-        &.activated {
-            display: none;
-        }
-    }
-    .delete-confirm {
-        display: none;
-        position: absolute;
-        right: 10px;
-        top: 55px;
-        height: 90px;
-        background-color: white;
-        color: $akvoBlack;
-        padding: 1em;
-        z-index: 101;
-        > div {
-            height: 40px;
-            position: relative;
-        }
-        .delete-confirm-no {
-            position: absolute;
-            left: 10px;
-            top: 10px;
-        }
-        .delete-confirm-yes {
-            background-color: #ae0922;
-            border-color: #ae0922;
-            margin-left: auto;
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            &:hover {
-                background-color: #ff5500;
-                border-color: #ff5500;
-            }
-        }
-    }
-    .update-date {
-        display: inline-block;
-        text-align: left;
-        width: 50%;
-    }
-    .update-name {
-        display: inline-block;
-        text-align: left;
-        width: 30%;
-        margin-right: 10%;
-        color: $akvoBlack;
-        &.delete-pending {
-            margin-bottom: 90px;
-        }
-    }
-    .update-timeline {
-        display: inline-block;
-        width: 75%;
-        height: 80px;
-        padding-top: 1em;
-        z-index: 99;
-        position: relative;
-    }
-    .update-target {
-        position: absolute;
-        margin-top: 48px;
-        display: inline-block;
-        width: 24%;
-        height: 80px;
-        text-align: center;
-        span {
-            font-size: 1.1em;
-            color: rgb(81, 80, 80);
-            vertical-align: text-top;
-            &.update-target-actual {
-                padding-left: 15px;
-                font-size: 1.1em;
-                font-weight: bold;
-                color: #A3C7E3;
-                vertical-align: bottom;
-            }
-        }
-    }
-    .update-description {
-        padding: 0.5em;
-        margin: 20px auto 30px;
-        &.editable {
-            background: whitesmoke;
-            border: 1px solid #A3C7E3;
-        }
-        .update-photo {
-            float: right;
-            width: 150px;
-            height: 100px;
-            background-size: cover;
-        }
-    }
-    .save-button {
-        position: absolute;
-        display: none;
-        right: 10px;
-        bottom: 10px;
-        &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: white;
-            background-color: rgb(0, 122, 184);
-            @include border-radius(2px);
-            text-align: center;
-        }
-    }
-    .cancel-button {
-        position: absolute;
-        display: none;
-        right: 60px;
-        bottom: 10px;
-        background-color: none;
-        &.active {
-            display: inline-block;
-            padding: 3px 7px;
-            color: rgb(0, 122, 184);
-            @include border-radius(2px);
-            text-align: center;
-        }
-    }
-}
-
 label.imageUpload,
 label.fileUpload {
+    padding-left: 5px;
+
     input[type="file"] {
         position: fixed;
         top: -1000px;
     }
 }
-
-.update-container {
-    background: rgba($primary4, 0.05);
-    border: 1px solid rgba($akvoBlack, 0.2);
-    padding: 0 1em;
-    margin-bottom: 50px;
-    .update-entry-container {
-        padding: 0 0 10px 0;
-        position: relative;
-        &.edit-in-progress {
-            background: rgba($rsrGreen, 0.05);
-            border: 1px solid rgba($rsrGreen, 0.3);
-            box-shadow: 0 0 10px rgba($rsrGreen, 0.5);
-            .update-entry-container-header {
-                background: rgba(white, 0.5);
-                margin-bottom: 10px;
-            }
-        }
-        .update-entry-container-header {
-            background: rgba($akvoBlack, 0);
-            border-bottom: 1px solid rgba($akvoBlack, 0.1);
-            padding: 0.75em 0;
-            .update-user {
-                color: $akvoPurple;
-                font-weight: bold;
-            }
-            .update-created-at {
-                margin-left: 15px;
-                color: rgba($akvoBlack, 0.7);
-            }
-            .update-status {
-                color: $primary5;
-                &.pending {
-                    color: $progressNot;
-                }
-                &.revision {
-                    color: $progressWarning;
-                }
-                &.approved {
-                    color: $progressSuccess;
-                }
-            }
-        }
-        .image-container {
-            position: relative;
-            margin-top: 5px;
-            @include transition(all 0.2s ease-in-out);
-            .image-overlay {
-                display: none;
-                position: absolute;
-                padding-top: 35%;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: calc(100%);
-                color: $progressWarning;
-                vertical-align: middle;
-                text-transform: uppercase;
-                font-weight: bold;
-            }
-            &:hover .image-overlay {
-                display: block;
-                background: rgba(255, 255, 255, .9);
-
-            }
-        }
-        .comments {
-            padding: 10px 5px 5px 5px;
-            margin-top: 20px;
-            background: rgba($primary5, 0.1);
-            @include border-radius(3px);
-            .input-group {
-                /* button {
-                           background: $akvoBlack;
-                           color:white;
-                           &:hover {
-                               background: $akvoPurple;
-                           }
-                       }*/
-            }
-            .comment {
-                margin-top: 0px;
-                margin-bottom: 20px;
-                .comment-header {
-                    font-weight: bold;
-                    span {
-                        color: $akvoPurple;
-                        &:last-child {
-                            margin-left: 15px;
-                            color: rgba($akvoBlack, 0.5);
-                        }
-                    }
-                }
-                .comment-text {
-                    font-size: 90%;
-                    padding-left: 20px;
-                    padding-right: 20px;
-                }
-            }
-        }
-        .menuAction {
-            position: relative;
-            .removeUpdate {
-                position: absolute;
-                top: 30px;
-                left: 0;
-                .btn {
-                    background: $akvoTvRed;
-                    color: white;
-                    border-color: $akvoTvRed;
-                    &:hover {
-                        background: rgba($akvoTvRed, 0.5);
-                    }
-                }
-            }
-            .bottomRow {
-                margin-top: 20px;
-                padding: 0.75em;
-                position: relative;
-                list-style-type: none;
-                .btn {
-                    padding: 2px 7px;
-                    &.btn-default {
-                        background: $akvoBlack;
-                        color: white;
-                        .editUpdate & {
-                            background: initial;
-                            color: initial;
-                        }
-                        &:hover {
-                            background: $akvoPurple;
-                        }
-                    }
-                }
-                .cancelUpdate {
-                    margin-right: 25px;
-                }
-                .saveUpdate {}
-                .returnUpdate {}
-                .submitUpdate {}
-                .approveUpdate {}
-            }
-        }
-        .upActualValue {
-            margin: 15px 0 0 0px;
-            .update-actual-value-text {
-                color: rgba($primary5, 1);
-            }
-            .update-actual-value-data {
-                font-weight: bold;
-            }
-            .update-relative-value {
-                margin-left: 5px;
-                font-weight: bold;
-            }
-        }
-    }
-}
-
-.update-dialog-container {
-    &.pending-new-update {
-        .update-entry-container {
-            background-color: #D1E6D1;
-            &:first-child {
-                border-left: none;
-            }
-        }
-    }
-    td {
-        padding: 8px 2em;
-        .update-entry-container {
-            padding: 2em;
-            position: relative;
-            background-color: #ececec;
-            &:first-child {
-                border-left: 4px solid #ae0922;
-            }
-            &.edit-in-progress {
-                background-color: #D1E6D1;
-                border-left: none;
-            }
-            .update-exceed-target {
-                margin: 3em 0 1em 0;
-                text-align: right;
-                input.exceed-value {
-                    opacity: 0;
-                }
-                label {
-                    margin-right: 10px;
-                    color: rgba($akvoBlack, 0.5);
-                }
-                .update-exceed-target-checkbox {
-                    margin-right: 10px;
-                    &:checked {
-                        ~ input.exceed-value {
-                            opacity: 1;
-                        }
-                    }
-                }
-            }
-            .indicator-bar-display-container {
-                position: relative;
-                height: 100%;
-                margin-left: 45px;
-                margin-right: 0;
-                .indicator-baseline {
-                    top: 34px;
-                    left: -60px;
-                }
-                .indicator-bar-progress-text {
-                    position: absolute;
-                    bottom: -18px;
-                    width: 44px;
-                    margin-left: -22px;
-                    text-align: center;
-                    color: #B5B5B5;
-                    border: 1px solid #B5B5B5;
-                    background-color: #ececec;
-                    cursor: pointer;
-                    .progress-hover-text {
-                        content: '';
-                        opacity: 0;
-                        height: 0px;
-                        width: 0px;
-                        padding: 0;
-                        margin: 0;
-                        font-size: 0;
-                    }
-                    &:last-child {
-                        color: #A3C7E3;
-                        border-color: #A3C7E3;
-                    }
-                    &:hover {
-                        z-index: 101;
-                        background-color: white;
-                        .progress-hover-text {
-                            display: block;
-                            font-size: initial;
-                            opacity: 1;
-                            position: absolute;
-                            top: 26px;
-                            color: inherit;
-                            content: initial;
-                            background-color: white;
-                            width: 100px;
-                            height: auto;
-                            margin-left: -28px;
-                            /* Half of the width of this - half the width of the parent */
-                            padding: 5px 0;
-                            &:before {
-                                content: '';
-                                width: 0;
-                                height: 0;
-                                border-left: 5px solid transparent;
-                                border-right: 5px solid transparent;
-                                border-bottom: 5px solid white;
-                                position: absolute;
-                                top: -5px;
-                                left: 45px;
-                            }
-                        }
-                    }
-                }
-                .indicator-bar,
-                .indicator-bar-progress-amount {
-                    position: absolute;
-                    top: 38px;
-                    bottom: 24px;
-                    left: 0px;
-                    height: 14px;
-                    @include border-radius(2px);
-                    border: 1px solid #CDDFEF;
-                }
-                .indicator-bar {
-                    background-color: #fff;
-                    right: 0px;
-                }
-                .indicator-bar-progress-amount {
-                    background-color: #fff;
-                    border-right: none;
-                }
-                .indicator-bar-progress-container {
-                    /* The progress box has non-zero width, so add some
-                        ** padding to ensure it doesn't overflow the parent
-                        ** container.
-                        */
-                    position: relative;
-                    height: 100%;
-                    .indicator-bar-progress {
-                        position: absolute;
-                        width: 3px;
-                        height: 20px;
-                        top: 35px;
-                        background-color: #B5B5B5;
-                        &:nth-last-child(2) {
-                            background-color: #A3C7E3;
-                        }
-                        text-align: center;
-                        &.update-dialog-timeline-marker {
-                            border: none;
-                        }
-                    }
-                }
-            }
-            .target-td {
-                vertical-align: middle;
-            }
-            .indicator-bar-progress-complete-container {
-                .indicator-bar-progress-complete {
-                    padding-left: 15px;
-                    font-size: 1.5em;
-                    font-weight: normal;
-                    color: rgb(81, 80, 80);
-                    vertical-align: bottom;
-                }
-                .indicator-bar-progress-text {
-                    padding-left: 15px;
-                    font-size: 1.5em;
-                    font-weight: bold;
-                    color: #A3C7E3;
-                    vertical-align: bottom;
-                    z-index: 19999;
-                }
-            }
-            &:last-child {
-                margin-bottom: 0;
-            }
-            .edit-button {
-                position: absolute;
-                height: 20px;
-                width: 20px;
-                top: 15px;
-                right: 10px;
-                color: $akvoBlack;
-                font-size: 1.5em;
-                &.activated {
-                    display: none;
-                }
-            }
-            .delete-button {
-                position: absolute;
-                height: 20px;
-                width: 20px;
-                top: 13px;
-                right: 35px;
-                font-size: 1.5em;
-                color: $akvoBlack;
-                &.activated {
-                    display: none;
-                }
-            }
-            .update-date {
-                display: inline-block;
-                text-align: left;
-                width: 50%;
-            }
-            .update-name {
-                display: inline-block;
-                text-align: left;
-                width: 30%;
-                margin-right: 10%;
-                color: $akvoBlack;
-            }
-            .update-timeline {
-                display: inline-block;
-                width: 84%;
-                height: 80px;
-                padding-top: 1em;
-                z-index: 99;
-                position: relative;
-            }
-            .update-target {
-                position: absolute;
-                margin-top: 49px;
-                display: inline-block;
-                width: 15%;
-                height: 80px;
-                text-align: right;
-                span {
-                    font-size: 1.1em;
-                    color: rgb(81, 80, 80);
-                    vertical-align: text-top;
-                    &.update-target-actual {
-                        padding-left: 15px;
-                        font-size: 1.1em;
-                        font-weight: bold;
-                        color: #A3C7E3;
-                        vertical-align: bottom;
-                    }
-                }
-            }
-            .update-description {
-                padding: 0.5em;
-                margin: 20px auto 30px;
-                .update-container & {
-                    color: red;
-                }
-                &.editable {
-                    background: whitesmoke;
-                    border: 1px solid #A3C7E3;
-                }
-                .update-photo {
-                    float: right;
-                    width: 150px;
-                    height: 100px;
-                    background-size: cover;
-                }
-            }
-            .save-button {
-                position: absolute;
-                display: none;
-                right: 10px;
-                bottom: 10px;
-                &.active {
-                    display: inline-block;
-                    padding: 3px 7px;
-                    color: white;
-                    background-color: $akvoBlack;
-                    @include border-radius(2px);
-                    text-align: center;
-                }
-            }
-            .cancel-button {
-                position: absolute;
-                display: none;
-                right: 60px;
-                bottom: 10px;
-                &.active {
-                    display: inline-block;
-                    padding: 3px 7px;
-                    color: $akvoBlack;
-                    @include border-radius(2px);
-                    text-align: center;
-                }
-            }
-            .edit-slider {
-                z-index: 9999;
-                .original-position-marker {
-                    width: 3px;
-                    margin-left: -2px;
-                    height: 20px;
-                    position: absolute;
-                    background-color: #B5B5B5;
-                    top: -3px;
-                    z-index: 102;
-                }
-                .change-indicator {
-                    position: absolute;
-                    background-color: green;
-                    height: 12px;
-                    top: 1px;
-                    z-index: 101;
-                    opacity: 0.5;
-                    &.negative {
-                        background-color: red;
-                    }
-                }
-                .noUi-base,
-                &.noUi-horizontal {
-                    height: 5px;
-                    border: 0;
-                    background-color: rgba(white, 0);
-                    margin-top: -28px;
-                    z-index: 99999;
-                    @include border-radius(4px);
-                    box-shadow: none;
-                    .noUi-origin {
-                        background-color: rgba(white, 0);
-                        @include border-radius(4px);
-                    }
-                    .noUi-handle {
-                        position: relative;
-                        width: 28px;
-                        height: 28px;
-                        z-index: 9999;
-                        background-color: rgb(0, 122, 184);
-                        cursor: pointer;
-                        left: -14px;
-                        box-shadow: none;
-                        top: -7px;
-                        color: white;
-                        &:after {
-                            display: block;
-                            content: '|||';
-                            color: white;
-                            width: 26px;
-                            height: 26px;
-                            line-height: 23px;
-                            text-align: center;
-                            letter-spacing: -2px;
-                            color: white;
-                            background-color: transparent;
-                            top: 0;
-                            left: -1px;
-                        }
-                        &:before {
-                            display: none;
-                        }
-                        &:hover {
-                            background-color: lighten(rgb(0, 122, 184), 10%);
-                        }
-                        &:active {
-                            background-color: $flowOrange;
-                        }
-                        .handle-label {
-                            position: absolute;
-                            top: -32px;
-                            background-color: rgb(0, 122, 184);
-                            padding: 3px;
-                            width: 44px;
-                            left: -8px;
-                            text-align: center;
-                            &:after {
-                                content: '';
-                                height: 0px;
-                                width: 0px;
-                                position: absolute;
-                                bottom: -5px;
-                                left: 17px;
-                                border-left: 5px solid transparent;
-                                border-right: 5px solid transparent;
-                                border-top: 5px solid rgb(0, 122, 184);
-                            }
-                        }
-                        .handle-change-label {
-                            position: absolute;
-                            width: 42px;
-                            text-align: center;
-                            bottom: -25px;
-                            left: -8px;
-                            background-color: white;
-                            color: rgb(0, 122, 184);
-                        }
-                    }
-                }
-                &.active {
-                    display: initial;
-                }
-            }
-        }
-    }
-}
-
 
 /* Modal dialog stuff for the Project Editor */
 
@@ -4509,9 +3653,11 @@ div.active {
         margin-top: -3px;
         cursor: pointer;
         color: rgba($progressSuccess, 1);
+
         &:hover {
             font-weight: bold;
         }
+
         &:active {
             opacity: 0.8;
         }
@@ -4539,22 +3685,29 @@ div.active {
     bottom: 20%;
     left: 100px;
     z-index: 1032;
-    @include responsive (small-max-screens) {
+
+    @include responsive(small-max-screens) {
         right: 25px;
         left: 25px;
     }
-    @include responsive (xtra-small-max-screens) {
+
+
+    @include responsive(xtra-small-max-screens) {
         right: 5px;
         left: 5px;
     }
+
+
     @media only screen and (max-height: 900px) {
         top: 10%;
         bottom: 10%;
     }
+
     @media only screen and (max-height: 700px) {
         top: 5%;
         bottom: 5%;
     }
+
     .orgModal {
         width: 100%;
         max-width: 800px;
@@ -4563,14 +3716,18 @@ div.active {
         background-color: white;
         overflow-y: scroll;
         position: relative;
+
         @include border-radius(5px);
+
         .modalContents {
             min-width: 100px;
             position: relative;
             padding: 1em 2em 5em 2em;
+
             .inputContainer {
                 margin-top: 2.75em;
                 margin-bottom: 1em;
+
                 input,
                 select,
                 textarea {
@@ -4582,15 +3739,18 @@ div.active {
                         font-size: 13px;
                         font-weight: 600;
                     }
+
                     &:valid + label {
                         opacity: 1;
                     }
+
                     &:focus + label {
                         color: $rsrBlue;
                     }
                 }
             }
         }
+
         .controls {
             position: absolute;
             bottom: 0;
@@ -4598,11 +3758,14 @@ div.active {
             right: 0;
             height: 3.5em;
             text-align: right;
+
             button {
                 margin: 0 0.5em;
+
                 &.modal-cancel {
                     margin-right: 1em;
                 }
+
                 &.modal-save {
                     margin-right: 1.5em;
                 }
@@ -4611,7 +3774,6 @@ div.active {
     }
 }
 
-
 /* My reports section */
 
 div#my-reports {
@@ -4619,54 +3781,67 @@ div#my-reports {
         font-size: 13px;
         font-weight: 600;
     }
+
     .dropdown {
         .dropdown-toggle {
             text-align: left;
             width: 100%;
             margin-bottom: 10px;
+
             .not-selected {
                 color: grey;
             }
+
             .caret-indicator {
                 float: right;
             }
         }
+
         .dropdown-menu {
             text-align: left;
             width: 100%;
             top: 35px;
         }
     }
+
     .input-group {
         min-height: 100px;
         margin-bottom: 10px;
         cursor: pointer;
+
         .form-control {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100px;
+
             .fa {
                 font-size: 75px;
             }
+
             &:hover {
                 background: rgba($akvoBlack, 0.05);
             }
         }
     }
+
     .report-title {
         font-weight: bold;
     }
+
     .report-description {
         white-space: pre-wrap;
         white-space: -moz-pre-wrap;
-        white-space: -pre-wrap;
+
+        //white-space: -pre-wrap;
         white-space: -o-pre-wrap;
         word-wrap: break-word;
     }
+
     .my-reports-download-error {
         margin: 1em 0;
     }
+
     /* Override pointer events for disabled items that show help text */
     .pointerEvents {
         pointer-events: initial;
@@ -4685,18 +3860,25 @@ div#my-reports {
 
 .period-td {
     position: relative;
+
     .badge {
         background-color: $akvoBlack;
+
         @include transition(all 0.1s linear);
+
         margin-top: -5px;
         padding: 5px 9px;
+
         @include border-radius(15px);
+
         font-family: $scriptFont;
+
         &:hover {
             background-color: $akvoPurple;
             cursor: pointer;
         }
     }
+
     .result-tooltip {
         position: absolute;
         top: 55px;
@@ -4704,18 +3886,23 @@ div#my-reports {
         background: rgba(white, 1);
         border: 1px solid rgba($primary4, 0.8);
         color: $akvoBlack;
+
         @include border-radius(4px);
+
         .tooltip-inner {
             background: rgba(white, 1);
             color: $akvoBlack;
+
             @include box-shadow(1px 1px 2px rgba($akvoBlack, 0.5));
         }
+
         .tooltip-arrow {
             position: absolute;
             background: rgba(white, 1);
             border: 1px solid rgba($primary4, 0.8);
             right: 8px;
             top: -2px;
+
             &:after,
             &:before {
                 bottom: 100%;
@@ -4727,12 +3914,14 @@ div#my-reports {
                 position: absolute;
                 pointer-events: none;
             }
+
             &:after {
                 border-color: rgba(136, 183, 213, 0);
                 border-bottom-color: rgba($primary4, 0.5);
                 border-width: 7px;
                 margin-left: -7px;
             }
+
             &:before {
                 border-color: rgba(194, 225, 245, 0);
                 border-bottom-color: rgba($primary4, 0.5);
@@ -4749,6 +3938,7 @@ button#createIATIExport {
     background: $akvoBlack;
     color: white;
     border: none;
+
     &:hover {
         background: $rsrBlue;
     }
@@ -4760,52 +3950,64 @@ div#exportsOverview, div#newIATIExport {
             background: rgba($progressSuccess, 0.1) !important;
             color: $progressSuccess !important;
         }
+
         &.warning {
             background: rgba($flowOrange, 0.1) !important;
             color: $flowOrange !important;
         }
+
         &.error {
             background: rgba($akvoTvRed, 0.1) !important;
             color: $akvoTvRed !important;
         }
     }
+
     .IATIfilters {
         button.btn-default {
             margin-top: 10px;
         }
     }
+
     button.btn-default {
         border: none;
         margin-left: 3px;
+
         &:hover {
             background: $rsrBlue;
-            color:white;
+            color: white;
         }
     }
 }
 
 div.iatiFilters {
-    background: rgba($akvoBlack, 0.0);
+    background: rgba($akvoBlack, 0);
     padding-top: 15px;
     padding-bottom: 15px;
     margin-top: 25px;
+
     .filterGroup {
         p {
             margin-top: 10px;
         }
     }
+
     @include box-shadow(0 0 2px rgba($akvoBlack, 0.3));
+
     @include responsive(small-max-screens) {
         margin-top: 20px;
         margin-bottom: 20px;
+
         .btn {
             margin: 10px auto;
         }
     }
+
+
     h3 {
         margin-top: 0;
         display: block;
     }
+
     .newIatiExport {
         .btn {
             display: inline-block;
@@ -4815,9 +4017,11 @@ div.iatiFilters {
             color: white;
         }
     }
+
     .btn {
         border: none;
         margin-left: 3px;
+
         &:hover {
             background: $rsrBlue;
         }
@@ -4828,12 +4032,15 @@ div.iatiFilters {
     span.noCheck {
         color: $akvoBlack;
     }
+
     span.success {
         color: $progressSuccess;
     }
+
     span.warning {
         color: $flowOrange;
     }
+
     span.error {
         color: $akvoTvRed;
     }
@@ -4849,10 +4056,1247 @@ div.iatiFilters {
     margin-right: 0.3em;
 }
 
-// Registration honeypot field
+/* Results Framework */
 
-#id_hp_title {
+header[role="banner"] {
+    display: block;
+    width: 100%;
+    background: #fcfcfc;
+    margin-bottom: 5px;
+}
+
+main {
+    display: flex;
+    height: calc(100vh - 300px);
+    width: 100%;
+
+    article.full {
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    article.shared {
+        width: 70%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    aside.closed {
+        display: none;
+    }
+
+    aside.open {
+        width: calc(30% - 5px);
+        padding: 0px 5px 5px 5px;
+        display: flex;
+        margin-top: 5px;
+        margin-left: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        overflow: scroll;
+    }
+}
+
+.resultProjectTitle {
+    margin: 15px 0 25px 0;
+
+    span {
+        margin-right: 15px;
+    }
+
+    button {
+        margin: 0px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+
+        &:hover {
+            background: $rsrBlue;
+            color: white;
+        }
+    }
+}
+
+.results {
+    &.liveView {
+        .periodWrap {
+            .lockStatusTxt {
+                display: none !important;
+            }
+        }
+    }
+
+    background: white;
+    box-sizing: border-box;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    > button {
+        display: none;
+    }
+
+    .rc-collapse {
+        border-radius: 3px;
+
+        .rc-collapse-anim-active {
+            -webkit-transition: height 0.2s ease-out;
+            transition: height 0.2s ease-out;
+        }
+
+        & > .rc-collapse-item:first-child {}
+
+        .rc-collapse-item {
+            padding: 10px 5px;
+            background: white;
+            border: 1px solid rgba($secondary7, 0.2);
+            margin-top: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .rc-collapse-header {
+                padding: 5px 10px;
+                position: relative;
+
+                span {
+                    &.resultTitle {
+                        display: inline-block;
+                        width: calc(100% - 20px);
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+
+                &[aria-expanded="true"] {
+                    span {
+                        &.resultTitle {
+                            color: $akvoBlack;
+                        }
+                    }
+                }
+
+                .indicatorType {
+                    margin: 0;
+                    font-weight: 400;
+                    color: $flowOrange;
+
+                    &::before {
+                        margin-right: 10px;
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+
+                .result-indicator-count {
+                    margin-left: 15px;
+                    color: rgba($akvoPurple, 0.5);
+                    font-size: 0.9em;
+
+                    .fa {
+                        display: none;
+                    }
+                }
+
+                .arrow {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 4px;
+                    color: black;
+                    position: absolute;
+                    right: 0;
+                    background: url(../images/arrowUpDown.png) no-repeat top center;
+                }
+            }
+
+            .rc-collapse-content.rc-collapse-content-inactive {
+                display: none;
+            }
+
+            &.rc-collapse-item-active {
+                background: rgba(240, 240, 240, 0.5);
+                border: 1px solid rgba(242, 240, 230, 1);
+
+                .rc-collapse-header {
+                    cursor: pointer;
+
+                    span {}
+
+                    &[aria-expanded="true"] {
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
+                    }
+                }
+
+                .rc-collapse-content {
+                    padding: 5px 0;
+
+                    &.rc-collapse-content-inactive {
+                        background-color: rgba(242, 240, 230, 0.3);
+                        border: 1px solid rgba(242, 240, 230, 0.5);
+                    }
+
+                    &.rc-collapse-content-active {
+                        vertical-align: top;
+                        background-color: rgba(242, 240, 230, 0);
+                        border: 1px solid rgba(242, 240, 230, 0);
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+                        border: none;
+
+                        .rc-collapse-content-box {
+                            /*Indicators block*/
+                            .emptyData {
+                                padding: 10px;
+                                color: rgba($akvoBlack, 0.5);
+
+                                p {
+                                    text-align: center;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.indicators {
+    padding-right: 10px;
+    padding-left: 10px;
+
+    > button {
+        display: none;
+    }
+
+    .rc-collapse {
+        .rc-collapse-item {
+            padding: 5px;
+            background: rgba(white, 1);
+            margin-top: 5px;
+            border: 1px solid rgba(32, 32, 36, 0.1);
+            margin-bottom: 5px;
+
+            .rc-collapse-header {
+                background: rgba(red, 0);
+                padding: 10px 5px;
+                opacity: 0.8;
+
+                &[aria-expanded="true"] {
+                    opacity: 1;
+                }
+
+                span {
+                    &.indicatorTitle {
+                        display: inline-block;
+                        max-width: 60%;
+
+                        ul {
+                            padding-left: 0;
+                            margin-bottom: 0;
+
+                            li {
+                                display: inline;
+
+                                .aggrActualValue {
+                                    margin-left: 25px;
+
+                                    span {
+                                        color: initial;
+                                        margin-left: 4px;
+                                    }
+                                }
+
+                                &.indicatorProgress {
+                                    position: absolute;
+                                    right: 2em;
+                                    top: 3px;
+                                    color: rgb(19, 140, 228) !important;
+                                    max-width: 20%;
+
+                                    .react-sweet-progress-circle-outer {
+                                        margin-left: 1em;
+
+                                        .react-sweet-progress-symbol {
+                                            font-size: 13px !important;
+                                            font-weight: 400  !important;
+
+                                            svg {
+                                                width: 21px !important;
+                                                height: 21px !important;
+
+                                                path {
+                                                    fill: transparent !important;
+                                                }
+
+                                                g {
+                                                    stroke: rgb(4, 158, 81) !important;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                &:nth-child(2) {
+                                    margin-left: 10px;
+                                    font-weight: 400;
+                                    color: rgba($akvoBlack, 0.5);
+
+                                    &::before {
+                                        margin-right: 10px;
+                                        color: rgba($akvoBlack, 0.5);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.rc-collapse-item-inactive {
+                .rc-collapse-header {
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
+                }
+            }
+
+            &.rc-collapse-item-active {
+                background: rgba(white, 1);
+                border: 1px solid #f2f0e6;
+
+                .rc-collapse-header {
+                    opacity: 1;
+
+                    &[aria-expanded="true"] {
+                        opacity: 1;
+
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
+                    }
+                }
+
+                .rc-collapse-content {
+                    &.rc-collapse-content-active {
+                        vertical-align: top;
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+                        background: none;
+
+                        .rc-collapse-content-box {
+                            .indicatorInfo {
+                                margin-top: -10px;
+                                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+
+                                ul {
+                                    color: rgba($akvoBlack, 0.4);
+                                    padding-left: 7px;
+
+                                    &:nth-of-type(2) {
+                                        display: none;
+                                    }
+
+                                    li {
+                                        display: inline;
+                                    }
+
+                                    .description {
+                                        span {
+                                            color: rgba($akvoBlack, 0.7);
+                                        }
+                                    }
+
+                                    .baseline-year {
+                                        span {
+                                            color: initial;
+                                        }
+                                    }
+
+                                    .baseline-value {
+                                        margin-left: 55px;
+
+                                        span {
+                                            color: initial;
+                                        }
+                                    }
+
+                                    .value-header {
+                                        padding-left: 20px;
+                                        font-variant: small-caps;
+
+                                        &.hidden-header {
+                                            padding-right: 80px;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        /*Periods block*/
+                    }
+                }
+            }
+        }
+    }
+}
+
+.periods {
+    > button {
+        display: none;
+    }
+
+    .arrow {
+        top: 16px !important;
+        right: 10px !important;
+    }
+
+    .rc-collapse {
+        .rc-collapse-item {
+            padding: 0;
+            border-top: none !important;
+            border-right: none !important;
+            border-left: none !important;
+            border-botton: 1px solid grey !important;
+            margin-top: 10px;
+            padding-bottom: 10px;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &.needsReporting {}
+
+            &.periodSelected {
+                .rc-collapse-header {
+                    .periodWrap {
+                        ul {
+                            background-color: rgba($akvoPurple, 0.1) !important;
+                            min-height: 40px !important;
+                        }
+                    }
+                }
+            }
+
+            .rc-collapse-header {
+                span {
+                    &.periodWrap {
+                        .newUpdate {
+                            @include smallButton($btnColor, white);
+                        }
+
+                        ul {
+                            padding: 5px 10px;
+                            cursor: pointer;
+                            background-color: white;
+                            margin-bottom: 0;
+                            min-height: 40px !important;
+
+                            @include transition(background-color 0.2s linear);
+
+                            &:hover {
+                                padding: 5px 10px;
+                                background-color: rgba($akvoPurple, 0.1);
+                            }
+
+                            &.formOpen {
+                                padding: 5px 10px;
+                                background-color: rgba($akvoPurple, 0.1);
+                            }
+
+                            li {
+                                display: inline;
+                                margin-right: 10px;
+                                padding-left: 35px;
+
+                                &:nth-child(1) {
+                                    padding-left: 0px;
+                                }
+
+                                &:nth-child(2) {
+                                    padding-left: 0px;
+                                }
+
+                                &:nth-child(3), &:nth-child(4) {
+                                    span {
+                                        color: rgba($akvoBlack, 0.4);
+                                    }
+
+                                    &.targetValue, &.actualValue {
+                                        font-variant: small-caps;
+                                    }
+                                }
+
+                                &:nth-child(5) {
+                                    margin-right: 0px;
+                                    padding-left: 75px;
+
+                                    div {
+                                        display: inline;
+
+                                        &.lock-toggle-alert {
+                                            background: white;
+
+                                            @include border-radius(3px);
+
+                                            padding: 5px 7px;
+
+                                            button {
+                                                background: transparent;
+                                                border: none;
+                                                color: $anchorLink;
+
+                                                &:hover {
+                                                    background: $rsrBlue;
+                                                    color: white;
+                                                }
+                                            }
+                                        }
+
+                                        button {
+                                            margin: 0px 0 0 25px;
+                                            background: transparent;
+                                            border: none;
+                                            color: $anchorLink;
+
+                                            &:hover {
+                                                background: $rsrBlue;
+                                                color: white;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .lockToggle {
+                                    float: right;
+                                    margin-right: 25px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.rc-collapse-item-inactive {
+                .rc-collapse-header {
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        top: 16px !important;
+                        right: 10px !important;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
+                }
+            }
+
+            &.rc-collapse-item-active {
+                .rc-collapse-header {
+                    background: rgba(white, 0.3);
+                    border: none;
+
+                    .arrow {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        vertical-align: middle;
+                        margin-right: 8px;
+                        color: black;
+                        top: 16px !important;
+                        right: 10px !important;
+                        background: url(../images/arrowUpDown.png) no-repeat top center !important;
+                    }
+
+                    span {
+                        &.periodWrap {
+                            ul {
+                                padding: 5px 10px;
+
+                                li {
+                                    display: inline;
+                                }
+                            }
+                        }
+                    }
+
+                    &[aria-expanded="true"] {
+                        .arrow {
+                            background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
+                        }
+                    }
+                }
+
+                .rc-collapse-content {
+                    &.rc-collapse-content-active {
+                        padding: 10px;
+                        vertical-align: top;
+                        -webkit-box-flex: 1;
+                        -moz-box-flex: 1;
+                        -webkit-flex: 1;
+                        -ms-flex: 1;
+                        flex: 1;
+                        position: relative;
+
+                        .arrow {
+                            display: inline-block;
+                            width: 20px;
+                            height: 20px;
+                            vertical-align: middle;
+                            margin-right: 8px;
+                            top: 16px;
+                            right: 10px;
+                            color: black;
+                            background: url(../images/arrowUpDown.png) no-repeat top center;
+                        }
+
+                        .rc-collapse-content-box {
+                            .emptyData {}
+
+                            .emptyUpdate {
+                                display: flex;
+
+                                .newUpdate {
+                                    display: inline-block;
+                                    margin: 10px auto;
+                                    background: transparent;
+                                    color: $anchorLink;
+                                    border: none;
+
+                                    &:hover {
+                                        background: $rsrBlue;
+                                        color: white;
+                                    }
+                                }
+                            }
+
+                            .updates {
+                                > .row {
+                                    margin-bottom: 20px;
+                                    padding-left: 20px;
+
+                                    &::after {}
+
+                                    .UpdateHead {
+                                        .updateName {}
+
+                                        .updateStatus {}
+                                    }
+
+                                    .row {
+                                        .UpdateBody {
+                                            .valueMeta {}
+
+                                            .statusMeta {
+                                                display: none;
+                                            }
+
+                                            .updateValue {
+                                                span {
+                                                    width: calc(100% - 40px);
+                                                    display: inline-block;
+                                                }
+                                            }
+
+                                            .approverMeta {
+                                                span {
+                                                    &.hide {
+                                                        display: none;
+                                                    }
+
+                                                    &.UpdateDate {
+                                                        display: inline-block;
+                                                        margin-left: 5px;
+                                                    }
+                                                }
+                                            }
+
+                                            .showDisaggregations {
+                                                padding-left: 40px;
+
+                                                h5 {
+                                                    color: rgba($akvoBlack, 0.5);
+                                                }
+                                            }
+                                        }
+
+                                        .comments {
+                                            margin: 10px 0 0 40px;
+                                        }
+
+                                        hr.delicate {
+                                            width: 95%;
+                                            background: rgba(0, 0, 0, 0.1);
+
+                                            /*                                     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #dbdbdb), color-stop(100%, rgba(255, 255, 255, 0)));
+                                                                                background: -webkit-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                                background: -o-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);
+                                                                                background: -ms-radial-gradient(center, ellipse cover, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%);;
+                                                                                background: radial-gradient(ellipse at center, #dbdbdb 0em, rgba(255, 255, 255, 0) 100%) */
+                                            border: 0em none;
+                                            height: 1px;
+                                            margin: 50px auto 20px auto;
+                                        }
+                                    }
+
+                                    &:last-child {
+                                        .row {
+                                            hr {
+                                                display: none;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .arrow {
+                                    margin-right: 8px !important;
+                                    margin-top: -5px !important;
+                                }
+
+                                .dimmed {
+                                    opacity: 0.6 !important;
+                                }
+
+                                //.rc-collapse {
+                                //    .rc-collapse-item {
+                                //        border: 1px solid rgba(white, 0) !important;
+                                //        border-bottom: 1px solid rgba(white, 0.4) !important;
+                                //        background: rgba(white, 0.2) !important;
+                                //        margin-bottom: 10px;
+                                //
+                                //        border
+                                &:last-child {
+                                    margin-bottom: 5px;
+                                }
+
+                                //.rc-collapse-header {
+                                //    background: none !important;
+                                //    padding-left: 20px;
+
+                                div {
+                                    &.UpdateHead {
+                                        padding: 0 0 0 20px;
+                                        margin-bottom: 1rem;
+
+                                        span {
+                                            padding-left: 0;
+                                            margin-right: 25px;
+
+                                            &:last-child {
+                                                margin-right: 0;
+                                            }
+
+                                            &.updateData {
+                                                color: $primary4;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    margin-right: 5px;
+                                                }
+                                            }
+
+                                            &.updateName {
+                                                color: $primary4;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    font-weight: bold;
+                                                    margin-right: 5px;
+                                                }
+                                            }
+
+                                            &.updateStatus {
+                                                color: $rsrGreen;
+                                                margin-right: 5px;
+
+                                                span {
+                                                    color: initial;
+                                                    font-weight: bold;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    button {
+                                        opacity: 1 !important;
+                                        margin-left: 15px !important;
+                                        padding: 1px 5px !important;
+
+                                        &.editingForm {
+                                            opacity: 0.3 !important;
+                                            cursor: not-allowed !important;
+                                            pointer-events: none !important;
+                                        }
+                                    }
+                                }
+
+                                div {
+                                    &.UpdateBody {
+                                        ul {
+                                            list-style-type: none;
+                                        }
+
+                                        .timestamp-info-container {
+                                            float: right;
+                                            margin-right: 50px;
+                                        }
+                                    }
+                                }
+
+                                .arrow {}
+
+                                //}
+
+                                &.rc-collapse-item-active {
+                                    border: 1px solid white !important;
+                                    background: rgba(white, 0.5) !important;
+
+                                    .rc-collapse-header {
+                                        background: rgba(white, 1) !important;
+                                        padding-left: 20px;
+
+                                        .arrow {
+                                            background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                                        }
+                                    }
+
+                                    .rc-collapse-content {
+                                        &.rc-collapse-content-active {
+                                            padding: 5px 10px 10px 10px;
+                                            vertical-align: top;
+                                            -webkit-box-flex: 1;
+                                            -moz-box-flex: 1;
+                                            -webkit-flex: 1;
+                                            -ms-flex: 1;
+                                            flex: 1;
+                                            position: relative;
+                                            background: rgba($secondary1, 0);
+
+                                            .rc-collapse-content-box {
+                                                padding-left: 20px;
+
+                                                ul {
+                                                    padding-left: 0;
+                                                    list-style-type: none;
+
+                                                    li {
+                                                        display: inline;
+                                                        margin-right: 25px;
+                                                        color: $primary4;
+
+                                                        &.creatorMeta, &.approverMeta, &.statusMeta {
+                                                            span {
+                                                                color: initial;
+                                                            }
+                                                        }
+
+                                                        &:last-child {
+                                                            margin-right: 0;
+                                                        }
+                                                    }
+
+                                                    &.valueMeta {
+                                                        li {
+                                                            &.updateValue, &.totalValue {
+                                                                color: $primary4;
+
+                                                                span {
+                                                                    font-weight: bold;
+                                                                    color: initial;
+                                                                }
+                                                            }
+
+                                                            &:first-of-type {}
+
+                                                            &:nth-of-type(2) {}
+
+                                                            &:nth-of-type(3) {}
+
+                                                            &:nth-of-type(4) {}
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                //    }
+                                //}
+                           
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.myAlert {}
+
+.lock-toggle-alert {}
+
+.update-container {
+    // background: rgba($primary4, 0.05);
+    // border: 1px solid rgba($akvoBlack, 0.2);
+    &.qualitativeUpdate {
+        .update-description {
+            display: none;
+        }
+
+        textarea#narrative {
+            min-height: 220px !important;
+        }
+    }
+
+    .update-entry-container {
+        padding: 0 0 10px 0;
+        position: relative;
+
+        &.edit-in-progress {
+            .targetLabel {
+                margin-top: 25px;
+                color: rgba(black, 0.5);
+
+                span {
+                    color: black;
+                }
+            }
+
+            .update-entry-container-header {
+                background: rgba(white, 0.5);
+                margin-bottom: 10px;
+                display: none;
+            }
+
+            div {
+                width: 100%;
+                position: relative;
+
+                label[for="actualValue"] + button {
+                    position: absolute;
+                    font-weight: bold;
+                    top: -35px;
+                    right: 0;
+                    background: transparent;
+                }
+            }
+
+            .disaggregationFields {
+                width: 100%;
+                overflow: auto;
+                border-top: 1px solid rgba($akvoBlack, 0.1);
+                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                padding: 15px 0;
+                margin-top: 10px;
+
+                h4 {
+                    margin-bottom: 10px;
+                }
+
+                .disaggregationInput {
+                    margin: 10px auto;
+                    padding: 0 5px;
+
+                    h5 {
+                        margin: 8px auto;
+                    }
+
+                    span {
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+            }
+        }
+
+        .update-entry-container-header {
+            background: rgba($akvoBlack, 0);
+            border-bottom: 1px solid rgba($akvoBlack, 0.1);
+            padding: 0.75em 0;
+
+            .update-user {
+                color: $akvoPurple;
+                font-weight: bold;
+            }
+
+            .update-created-at {
+                margin-left: 15px;
+                color: rgba($akvoBlack, 0.7);
+            }
+
+            .update-status {
+                color: $primary5;
+
+                &.pending {
+                    color: $progressNot;
+                }
+
+                &.revision {
+                    color: $progressWarning;
+                }
+
+                &.approved {
+                    color: $progressSuccess;
+                }
+            }
+        }
+
+        .image-container {
+            position: relative;
+            margin-top: 5px;
+
+            @include transition(all 0.2s ease-in-out);
+
+            .image-overlay {
+                display: none;
+                position: absolute;
+                padding-top: 35%;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: calc(100%);
+                color: $progressWarning;
+                vertical-align: middle;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+
+            &:hover .image-overlay {
+                display: block;
+                background: rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        .menuAction {
+            position: relative;
+            margin-top: 30px;
+
+            .deleteUpdate {
+                .btn {
+                    background: $akvoTvRed;
+                    color: white;
+                    border-color: $akvoTvRed;
+
+                    &:hover {
+                        background: rgba($akvoTvRed, 0.5);
+                    }
+                }
+            }
+
+            .bottomRow {
+                position: relative;
+                list-style-type: none;
+                margin-right: 0;
+
+                .btn {
+                    padding: 2px 7px;
+
+                    &.btn-default {
+                        background: $akvoBlack;
+                        color: white;
+
+                        .editUpdate & {
+                            background: initial;
+                            color: initial;
+                        }
+
+                        &:hover {
+                            background: $akvoPurple;
+                        }
+                    }
+                }
+
+                .cancelUpdate {
+                    margin-right: 25px;
+                }
+
+                .saveUpdate {}
+
+                .returnUpdate {}
+
+                .submitUpdate {}
+
+                .approveUpdate {}
+            }
+        }
+
+        .upActualValue {
+            display: none;
+            margin: 15px 0 0 0px;
+
+            .update-actual-value-text {
+                color: rgba($primary5, 1);
+            }
+
+            .update-actual-value-data {
+                font-weight: bold;
+            }
+
+            .update-relative-value {
+                margin-left: 5px;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.comments {
+    margin-top: 30px;
+    background: rgba($primary5, 0);
+    width: 98%;
+    margin-left: 1%;
+
+    @include border-radius(3px);
+
+    .input-group {
+        /* button {
+                   background: $akvoBlack;
+                   color:white;
+                   &:hover {
+                       background: $akvoPurple;
+                   }
+               }*/
+    }
+
+    .commentContainer {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        color: rgba($akvoBlack, 0.5);
+        width: calc(100% - 50px);
+
+        .comment {
+            margin-left: 10px;
+            color: $akvoBlack;
+
+            .comment-header {
+                font-weight: bold;
+
+                span {
+                    color: $akvoPurple;
+
+                    &:last-child {
+                        margin-left: 15px;
+                        color: rgba($akvoBlack, 0.5);
+                    }
+                }
+            }
+
+            .comment-text {}
+        }
+    }
+}
+
+.periodMenuBar {
+    box-sizing: border-box;
+
+    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .results-bar-titles {
+        display: none;
+    }
+
+    .btn {
+        margin-right: 10px;
+    }
+
+    .periodOverview {
+        .overviewBtn {
+            margin: 10px 0 0 5px;
+        }
+    }
+
+    .loading {
+        margin-top: 20px;
+        margin-left: 5px;
+        font-size: 120%;
+    }
+
+    .periodBtns {
+        padding: 10px;
+        background: rgba($akvoBlack, 0.05);
+
+        .periodBulkAct {
+            h5 {
+                padding-left: 15px;
+            }
+
+            button {
+                background: $akvoBlack;
+                color: white;
+
+                &:hover {
+                    background: $akvoPurple;
+                    color: white;
+                }
+            }
+
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .periodFilter {
+            h5 {
+                padding-left: 15px;
+            }
+
+            padding-top: 10px;
+            padding-bottom: 10px;
+
+            button {
+                border: none;
+                color: #428bca;
+
+                &.filterActive {
+                    border: 1px solid rgba($primary6, 0.5) !important;
+                    background: rgba($primary6, 1) !important;
+                    color: white;
+                    pointer-events: initial;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}
+
+.results-bar-titles {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: $akvoBlack;
+}
+
+.hidePanel {
     display: none;
-    position: absolute;
-    top: -9999px;
+}
+
+.form-button {
+    margin-right: 5px;
 }

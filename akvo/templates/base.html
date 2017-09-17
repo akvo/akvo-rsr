@@ -52,14 +52,8 @@
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    {% if page_stylesheet %}
-      <link rel="stylesheet" href="{{MEDIA_URL}}{{page_stylesheet}}">
-    {% endif %}
-    {% if request.resolver_match.url_name == 'my_new_results' or request.resolver_match.url_name == 'project-main' %}
-      {% stylesheet 'new_results' %}
-    {% else %}
-      {% stylesheet 'rsr_v3_style' %}
-    {% endif %}
+    {% stylesheet 'rsr_v3_style' %}
+    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
         img[src*="gstatic.com/"], img[src*="googleapis.com/"] {
