@@ -186,7 +186,7 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                                                <span>Actual:</span> {actualValue}
                                            </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
-                                       <li>{lockStatus}</li>
+                                       <li className="lockStatusTxt">{lockStatus}</li>
                                    </ul>
                                </span>
                            )

@@ -3565,33 +3565,6 @@ body {
     }
 }
 
-/* Results framework display */
-
-#results-framework {
-    padding: 0;
-    margin: 0;
-}
-
-.resultProjectTitle {
-    margin: 15px 0 25px 0;
-
-    span {
-        margin-right: 15px;
-    }
-
-    button {
-        margin: 0px 0 0 25px;
-        background: $akvoBlack;
-        color: white;
-        border: none;
-
-        &:hover {
-            background: $rsrBlue;
-            color: white;
-        }
-    }
-}
-
 * {
     box-sizing: border-box;
 }
@@ -3630,30 +3603,6 @@ article {
 
 .opacity-transition {
     @include transition(opacity 0.25s ease-in-out);
-}
-
-.results-container {
-    @include display-flex;
-
-    padding-left: 0;
-
-    .indicator-container {
-        .indicator-period-container {
-            .indicator-period {
-                .period-target-actual {
-                    .updates-container {
-                        clear: both;
-                    }
-
-                    .periodValues {
-                        .period-target-comment {
-                            padding-right: 15px;
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 .reload-warning {
@@ -4148,7 +4097,35 @@ main {
     }
 }
 
+.resultProjectTitle {
+    margin: 15px 0 25px 0;
+
+    span {
+        margin-right: 15px;
+    }
+
+    button {
+        margin: 0px 0 0 25px;
+        background: $akvoBlack;
+        color: white;
+        border: none;
+
+        &:hover {
+            background: $rsrBlue;
+            color: white;
+        }
+    }
+}
+
 .results {
+    &.liveView {
+        .periodWrap {
+            .lockStatusTxt {
+                display: none !important;
+            }
+        }
+    }
+
     background: white;
     box-sizing: border-box;
 
@@ -4763,7 +4740,6 @@ main {
                                                     color: rgba($akvoBlack, 0.5);
                                                 }
                                             }
-
                                         }
 
                                         .comments {
@@ -4971,7 +4947,7 @@ main {
 
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -5050,6 +5026,7 @@ main {
                     h5 {
                         margin: 8px auto;
                     }
+
                     span {
                         color: rgba($akvoBlack, 0.5);
                     }

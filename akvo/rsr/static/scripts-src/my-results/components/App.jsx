@@ -339,7 +339,7 @@ export default class App extends React.Component {
         }
 
         return (
-            <section className="results">
+            <section className="results liveView">
                 <FilterBar callbacks={callbacks}/>
                 <main role="main">
                     <article className={updateForm ? 'shared' : 'full'}>

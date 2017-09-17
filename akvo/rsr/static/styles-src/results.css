@@ -2453,24 +2453,6 @@ body.translationBarActive div.skiptranslate ~ #map {
     .tab-menu a:active {
       opacity: 0.6; }
 
-/* Results framework display */
-#results-framework {
-  padding: 0;
-  margin: 0; }
-
-.resultProjectTitle {
-  margin: 15px 0 25px 0; }
-  .resultProjectTitle span {
-    margin-right: 15px; }
-  .resultProjectTitle button {
-    margin: 0px 0 0 25px;
-    background: #202024;
-    color: white;
-    border: none; }
-    .resultProjectTitle button:hover {
-      background: #2c2a74;
-      color: white; }
-
 * {
   box-sizing: border-box; }
 
@@ -2508,18 +2490,6 @@ article {
   -o-transition: opacity 0.25s ease-in-out;
   -webkit-transition: opacity 0.25s ease-in-out;
   transition: opacity 0.25s ease-in-out; }
-
-.results-container {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  padding-left: 0; }
-  .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .updates-container {
-    clear: both; }
-  .results-container .indicator-container .indicator-period-container .indicator-period .period-target-actual .periodValues .period-target-comment {
-    padding-right: 15px; }
 
 .reload-warning {
   margin-left: 15px;
@@ -2866,9 +2836,24 @@ main {
     border: 1px solid rgba(0, 0, 0, 0.1);
     overflow: scroll; }
 
+.resultProjectTitle {
+  margin: 15px 0 25px 0; }
+  .resultProjectTitle span {
+    margin-right: 15px; }
+  .resultProjectTitle button {
+    margin: 0px 0 0 25px;
+    background: #202024;
+    color: white;
+    border: none; }
+    .resultProjectTitle button:hover {
+      background: #2c2a74;
+      color: white; }
+
 .results {
   background: white;
   box-sizing: border-box; }
+  .results.liveView .periodWrap .lockStatusTxt {
+    display: none !important; }
   .results * {
     box-sizing: border-box; }
   .results > button {
