@@ -8,10 +8,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from ..fields import ValidXMLCharField
-
 from akvo.codelists.models import ResultType
 from akvo.codelists.store.codelists_v202 import RESULT_TYPE
+from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 
 

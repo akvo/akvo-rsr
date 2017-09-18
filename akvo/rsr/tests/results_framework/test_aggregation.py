@@ -13,7 +13,8 @@ import unittest
 
 from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodData, User, RelatedProject)
-from akvo.rsr.models.indicator import calculate_percentage, MultipleUpdateError
+from akvo.rsr.models.result.utils import (calculate_percentage,
+                                          MultipleUpdateError)
 
 from django.test import TestCase
 
