@@ -393,6 +393,13 @@ function showTab(tabClass) {
         tabLink.classList.remove('selected');
     }
 
+    var projectFooter = document.querySelector('footer#project-footer');
+    if (tabClass === 'results') {
+        projectFooter.style.display = 'none';
+    } else {
+        projectFooter.style.display = 'block';
+    }
+
     activeTab.style.display = 'block';
     activeTabLink.classList.add('selected');
 }

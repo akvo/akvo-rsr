@@ -2837,10 +2837,10 @@ main {
     overflow: scroll; }
 
 main.project-page {
-  height: calc(100vh - 648px); }
+  height: calc(100vh - 300px); }
 
 main.results-page {
-  height: calc(100vh - 438px); }
+  height: calc(100vh - 300px); }
 
 .resultProjectTitle {
   margin: 15px 0 25px 0; }
