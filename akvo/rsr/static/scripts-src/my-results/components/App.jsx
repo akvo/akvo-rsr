@@ -79,6 +79,7 @@ const modifyUser = (isMEManager) => {
 
 @connect((store) => {
     return {
+        page: store.page,
         indicators: store.models.indicators,
         periods: store.models.periods,
         updates: store.models.updates,
@@ -309,7 +310,7 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        const {disaggregations, updates, periods, indicators} = this.props;
+        const {page, disaggregations, updates, periods, indicators} = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
@@ -341,7 +342,7 @@ export default class App extends React.Component {
         return (
             <section className="results liveView">
                 <FilterBar callbacks={callbacks}/>
-                <main role="main">
+                <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
                     <article className={updateForm ? 'shared' : 'full'}>
                         {results}
                     </article>
