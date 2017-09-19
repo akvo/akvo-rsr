@@ -67,7 +67,8 @@ django-statsd-mozilla==0.3.15
 statsd==3.1
 
 # Sentry integration
-raven==4.2.3
+contextlib2==0.5.5
+raven==6.1.0
 
 # Permission rules
 rules==0.3
