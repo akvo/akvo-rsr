@@ -770,9 +770,9 @@ export default class UpdateForm extends React.Component {
                 }
 
                 default: {
-                    const {value} = e.target;
+                    let {value} = e.target;
                     if (this.props.indicator.type === c.INDICATOR_QUANTATIVE && !this.checkNumeric(field, value)) {
-                        return;
+                        value = '';
                     }
                     changedUpdate = update(this.props.update, {$merge: {[field]: value}});
                     if (field == "numerator" || field == "denominator") {
@@ -785,8 +785,9 @@ export default class UpdateForm extends React.Component {
         }
     }
 
-    checkNumeric(field, value) {
-        if ((field == 'value' || field === 'numerator' || field === 'denominator') && !isNumeric(value)) {
+    checkNumeric(field, value, onSubmit=false) {
+        const allowed = isNumeric(value) || value === '-' || value === '';
+        if ((field == 'value' || field === 'numerator' || field === 'denominator') && !allowed) {
             this.props.createAlert(this.state.updateAlertName, _('only_numeric_value'));
             return false;
         }
@@ -800,10 +801,10 @@ export default class UpdateForm extends React.Component {
               disaggregations = keyBy(this.props.disaggregations, 'dimension'),
               disaggregation = disaggregations[dimension_id],
               value = e.target.value;
-        changedDisaggregation = update(disaggregation, {$merge: {[field]: e.target.value}});
         if (!this.checkNumeric(field, value)) {
             return;
         }
+        changedDisaggregation = update(disaggregation, {$merge: {[field]: e.target.value}});
         if (field === 'numerator' || field === 'denominator') {
             changedDisaggregation = update(
                 changedDisaggregation,
@@ -913,6 +914,35 @@ export default class UpdateForm extends React.Component {
             }
         };
 
+        const setNullValues = (action, update) => {
+            if (action === c.UPDATE_ACTION_SAVE) {
+                for (const field of ['value', 'numerator', 'denominator']) {
+                    if (!String(update[field]).trim()) {
+                        update[field] = null;
+                    }
+                }
+            }
+        };
+
+        const submittable = (action, update) => {
+            const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
+            const emptyAllowed = action === c.UPDATE_ACTION_SAVE;
+            switch(indicator.measure) {
+                case c.MEASURE_UNIT: {
+                    return emptyAllowed && update.value === '' || isNumeric(update.value);
+                }
+                case c.MEASURE_PERCENTAGE: {
+                    return (emptyAllowed && update.numerator === '' && update.denominator === '') ||
+                        (isNumeric(update.numerator) && isNumeric(update.denominator) &&
+                            update.denominator !== 0)
+                }
+                case c.MEASURE_QUALITATIVE: {
+                    return true;
+                }
+            }
+            return false;
+        };
+
         let update = Object.assign({}, this.props.update);
         if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
@@ -937,7 +967,7 @@ export default class UpdateForm extends React.Component {
                 disaggregation.denominator ||
                 disaggregation.narrative
             );
-        }
+        };
         const pruneDisaggregation = (disaggregation) => {
             let pruned = Object.assign({}, disaggregation);
             const attributes = ['value', 'numerator', 'denominator', 'narrative'];
@@ -947,7 +977,7 @@ export default class UpdateForm extends React.Component {
                 }
             });
             return pruned;
-        }
+        };
 
         update.disaggregations = this.props.disaggregations.filter(isNonEmptyDisaggregation).map(pruneDisaggregation);
 
