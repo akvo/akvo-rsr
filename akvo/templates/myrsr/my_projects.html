@@ -75,7 +75,7 @@
                     <li> <a class="addUpdate disabled" title="{% trans "Can't edit a completed or cancelled project" %}"> {% trans 'Edit' %} </a></li>
                   {% endif %}
                   {% if project.is_impact_project and project.is_published and not project.iati_status in project.EDIT_DISABLED %}
-                    <li><a href="{% results_url_resolver project.pk %}">{% trans 'Results data' %}</a></li>
+                    <li><a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a></li>
                   {% else %}
                     <li><a class="addUpdate disabled" title="{% trans "Can't update an unpublished, cancelled or completed project" %}">{% trans 'Results data' %}</a></li>
                   {% endif %}
