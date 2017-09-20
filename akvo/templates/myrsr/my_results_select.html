@@ -18,7 +18,7 @@
             "impact_projects": "{% url 'impact_projects_typeahead' %}",
             {# This is a hack, we resolve to the correct path __except__ the project ID, which has #}
             {# to be fixed in the JS code #}
-            "results_url": "{% results_url_resolver 0 %}"
+            "results_url": "{% url 'my_results' 0 %}"
         }
     </script>
 
