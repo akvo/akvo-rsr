@@ -188,7 +188,7 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                                                <span>Actual:</span> {actualValue}
                                            </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
-                                       <li>{lockStatus}</li>
+                                       <li className="lockStatusTxt">{lockStatus}</li>
                                    </ul>
                                </span>
                            )
@@ -211,6 +211,7 @@ const DeleteUpdateAlert = ({message, close}) => (
 
 @connect((store) => {
     return {
+        page: store.page,
         periods: store.models.periods,
         keys: store.keys,
         user: store.models.user.ids && store.models.user.ids.length > 0 ?
@@ -273,9 +274,27 @@ export default class Periods extends React.Component {
     }
 
     renderPanels(periodIds) {
+        const showNewUpdateButton = (page, period, ui, indicator) => {
+            if (page.mode.public) {
+                return false;
+            }
+            if (period.locked) {
+                return false;
+            }
+            if (ui.updateFormDisplay ||
+                ui.activeFilter !== c.FILTER_NEED_REPORTING && ui.activeFilter !== undefined) {
+                return false;
+            }
+            if (indicator.measure === c.MEASURE_PERCENTAGE &&
+                    this.props.periodChildrenIds[id].length >= 1) {
+                return false;
+            }
+            return true;
+        };
+
         return (periodIds.map(
             (id) => {
-                const {parentId, ui} = this.props;
+                const {parentId, ui, page} = this.props;
                 const period = this.props.periods.objects[id];
                 const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
@@ -288,13 +307,7 @@ export default class Periods extends React.Component {
                 const indicator = getAncestor(c.OBJECTS_PERIODS, id, c.OBJECTS_INDICATORS);
 
                 let newUpdateButton, delUpdateAlert;
-                if (!period.locked && (
-                    !ui.updateFormDisplay && (
-                        ui.activeFilter === c.FILTER_NEED_REPORTING || ui.activeFilter === undefined
-                    )) && !(
-                        indicator.measure === c.MEASURE_PERCENTAGE &&
-                        this.props.periodChildrenIds[id].length >= 1
-                    )){
+                if (showNewUpdateButton(page, period, ui, indicator)){
                     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
                     // TODO: fix for new updates. The alert won't render since the temp update
                     // object gets deleted when saving.

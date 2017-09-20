@@ -30,7 +30,7 @@
                     {% include text_input with obj=period field='actual_value' disabled=True %}
                     <p class="help-block">
                         {% trans 'It is not possible to edit the actual value when indicator data has been filled in through the My results section. ' %}
-                        {% trans 'Go to the' %} <a href="{% results_url_resolver project.pk %}" target="_blank">{% trans 'My results' %}</a> {% trans 'section to update this value.' %}
+                        {% trans 'Go to the' %} <a href="{% url 'my_results' project.pk %}" target="_blank">{% trans 'My results' %}</a> {% trans 'section to update this value.' %}
                     </p>
                 {% endif %}
             </div>

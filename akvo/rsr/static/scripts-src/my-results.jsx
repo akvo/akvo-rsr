@@ -12,7 +12,7 @@ var csrftoken,
     isMEManager = false,
     isPublic,
     months,
-    projectIds,
+    projectId,
     user = {},
     MEASURE_PERCENTAGE = "2";
 
@@ -1692,7 +1692,7 @@ function initReact() {
                 if (isAdmin || isMEManager) {
                     var language = window.location.pathname.substring(0, 3);
                     addIndicatorsLink =
-                        <a href={language + "/myrsr/project_editor/" + projectIds.project_id + "/"}>{i18nResults.add_indicators}</a>;
+                        <a href={language + "/myrsr/project_editor/" + projectId + "/"}>{i18nResults.add_indicators}</a>;
                 } else {
                     addIndicatorsLink = <span />;
                 }
@@ -2029,7 +2029,7 @@ function initReact() {
 
         componentDidMount: function() {
             // Once the component is mounted, load the results through the API
-            this.loadResults(projectIds.project_id);
+            this.loadResults(projectId);
         },
 
         loadResults: function(projectId) {
@@ -2521,11 +2521,11 @@ function loadAndRenderReact() {
 /* Initialise page */
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve data endpoints, translations and project IDs
-    isPublic = JSON.parse(document.getElementById('settings').innerHTML).public;
+    isPublic = JSON.parse(document.getElementById('mode').innerHTML).public;
     endpoints = JSON.parse(document.getElementById('data-endpoints').innerHTML);
     i18nResults = JSON.parse(document.getElementById('translation-texts').innerHTML);
     months = JSON.parse(document.getElementById('months').innerHTML);
-    projectIds = JSON.parse(document.getElementById('project-ids').innerHTML);
+    projectId = JSON.parse(document.getElementById('project').innerHTML).id;
 
     if (!isPublic) {
         getUserData();
