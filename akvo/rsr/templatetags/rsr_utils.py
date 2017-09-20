@@ -10,7 +10,6 @@ from __future__ import absolute_import, print_function
 from django import template
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
 
 from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation
 
