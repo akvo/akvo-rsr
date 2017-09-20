@@ -38,21 +38,8 @@ import {
     collapseId,
 } from '../../utils.js';
 
-import AlertFactory from "../alertContainer"
 import { ToggleButton } from "../common"
 import Comments from "../Comments"
-
-
-const Alert = ({message, close}) => (
-    <div className='update-alert'>
-        {message}
-        <button className="btn btn-sm btn-default" onClick={close}>X</button>
-    </div>
-);
-Alert.propTypes = {
-    message: PropTypes.string.isRequired,
-    close: PropTypes.func.isRequired,
-};
 
 
 function displayName(user) {
@@ -284,15 +271,8 @@ class UpdateHeader extends React.Component {
 
     constructor (props) {
         super(props);
-
         this.formToggle = this.formToggle.bind(this);
         this.showEditButton = this.showEditButton.bind(this);
-        // we need a unique name for each alert
-        const alertName = 'UpdateAlert-' + this.props.update.id;
-        this.state = {
-            updateAlertName: alertName,
-            UpdateAlert: AlertFactory({alertName: alertName})(Alert),
-        };
     }
 
     formToggle(e) {
@@ -334,7 +314,7 @@ class UpdateHeader extends React.Component {
     }
 
     render() {
-        let editUpdateButton, updateAlert;
+        let editUpdateButton;
         const {updateFormDisplay, update} = this.props;
 
         if (this.showEditButton()) {
@@ -348,14 +328,12 @@ class UpdateHeader extends React.Component {
                                              className={className}
                                              label={_('edit_indicator_value')}
                                              disabled={updateFormDisplay !== false}/>;
-            updateAlert = <this.state.UpdateAlert />
         }
         return (
             <div className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>
                 <span className="updateStatus">{_('update_statuses')[update.status]}</span>
                 <span>{editUpdateButton}</span>
-                <span>{updateAlert}</span>
             </div>
         )
     }
