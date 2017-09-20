@@ -1208,7 +1208,10 @@ function setPartialOnClicks() {
                 selectInputs[m].onchange = toggleOtherLabel(selectInputs[m]);
             }
             if (selectInputId[0] == 'rsr_indicator' && selectInputId[1] == 'type') {
-                selectInputs[m].onchange = setMeasureVisibility.bind(null, selectInputs[m]);
+                selectInputs[m].onchange = function(e){
+                    setMeasureVisibility(e.target);
+                    setDimensionVisibility(e.target);
+                };
             }
         }
     }
@@ -1472,6 +1475,25 @@ function setMeasureVisibility(indicatorTypeSelect) {
         elAddClass(measureRow, 'hidden');
     } else {
         elRemoveClass(measureRow, 'hidden');
+    }
+}
+
+function setDimensionVisibility(indicatorTypeSelect) {
+    /*
+       Show or hide dimension fields depending on indicator type
+     */
+    // parent is the div wrapping one whole indicator form, it's the outer node in
+    // related_objects/indicator_input.html
+    var parent = findAncestorByClass(indicatorTypeSelect, 'parent'),
+        dimensionDiv = parent.querySelector('.indicator-dimension-container'),
+        relatedContainer = dimensionDiv.parentElement;
+    // hide indicator dimension fields for qualitative indicators
+    if (indicatorTypeSelect.value === '2') {
+        elAddClass(dimensionDiv, 'hidden');
+        elAddClass(relatedContainer, 'hidden');
+    } else {
+        elRemoveClass(dimensionDiv, 'hidden');
+        elRemoveClass(relatedContainer, 'hidden');
     }
 }
 
