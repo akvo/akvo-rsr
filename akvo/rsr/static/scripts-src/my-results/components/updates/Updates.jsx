@@ -366,6 +366,7 @@ class UpdateHeader extends React.Component {
 
 @connect((store) => {
     return {
+        page: store.page,
         indicators: store.models.indicators,
         updates: store.models.updates,
         keys: store.keys,
@@ -416,6 +417,7 @@ export default class Updates extends React.Component {
 
     getUpdateIds() {
         let updateIds = this.props.periodChildrenIds[this.props.period.id] || [];
+        const {page} = this.props;
         const updates = this.props.updates.objects;
         const needReporting = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
         const pending = [c.UPDATE_STATUS_PENDING];
@@ -427,20 +429,25 @@ export default class Updates extends React.Component {
             )
         };
 
-        switch(this.props.ui.activeFilter) {
-            case c.FILTER_NEED_REPORTING: {
-                updateIds = filterUpdatesByStatus(updateIds, needReporting);
-                break;
-            }
-            case c.FILTER_SHOW_PENDING: {
-                updateIds = filterUpdatesByStatus(updateIds, pending);
-                break;
-            }
-            case c.FILTER_SHOW_APPROVED: {
-                updateIds = filterUpdatesByStatus(updateIds, approved);
-                break;
+        if (page.mode && page.mode.public) {
+            updateIds = filterUpdatesByStatus(updateIds, approved);
+        } else {
+            switch(this.props.ui.activeFilter) {
+                case c.FILTER_NEED_REPORTING: {
+                    updateIds = filterUpdatesByStatus(updateIds, needReporting);
+                    break;
+                }
+                case c.FILTER_SHOW_PENDING: {
+                    updateIds = filterUpdatesByStatus(updateIds, pending);
+                    break;
+                }
+                case c.FILTER_SHOW_APPROVED: {
+                    updateIds = filterUpdatesByStatus(updateIds, approved);
+                    break;
+                }
             }
         }
+
         return updateIds;
     }
 
