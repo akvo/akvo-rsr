@@ -70,7 +70,7 @@ class PeriodLockToggle extends React.Component {
         this.state = {
             locking: false,
             toggleAlertName: alertName,
-            ToggleAlert: AlertFactory({alertName: alertName})(ToggleAlert),
+            ToggleAlert: undefined,
         };
     }
 
@@ -84,7 +84,9 @@ class PeriodLockToggle extends React.Component {
     }
 
     setLockMessage(message) {
-        this.props.createAlert(this.state.toggleAlertName, message);
+        const {toggleAlertName} = this.state;
+        this.setState({ToggleAlert: AlertFactory({alertName: toggleAlertName})(ToggleAlert)});
+        this.props.createAlert(toggleAlertName, message);
     }
 
     lockToggle(e) {
@@ -123,7 +125,7 @@ class PeriodLockToggle extends React.Component {
         }
         return (
             <span>
-                {<this.state.ToggleAlert />}
+                {this.state.ToggleAlert ? <this.state.ToggleAlert /> : ''}
                 <ToggleButton onClick={this.lockToggle} className={className} label={label}/>
             </span>
         )

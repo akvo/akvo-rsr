@@ -15,7 +15,11 @@ module.exports = {
     entry: {
         app: './scripts-src/my-results/app.js',
         vendors: [
-            "isomorphic-fetch", "react", "redux", "redux-logger", "redux-thunk", "reselect"
+            // NOTE: babel-polyfill always needs to be loaded before react and redux
+            // https://github.com/facebook/react/issues/8379#issuecomment-316346239
+            'babel-polyfill', 'react', 'redux',
+            'redux-logger', 'redux-thunk', 'reselect',
+            'isomorphic-fetch',
         ]
     },
     output: {

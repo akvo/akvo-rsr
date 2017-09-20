@@ -80,6 +80,9 @@
       AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
     </script>
 
+    {# Polyfill for nice functions like Object.entries, Array.from, etc.#}
+    {% javascript 'polyfill' %}
+
     {# react-onclickoutside.js should load before date-picker, etc. #}
     {% javascript 'rsr_lib' %}
 
