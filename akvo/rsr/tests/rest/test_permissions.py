@@ -462,9 +462,8 @@ class PermissionFilteringTestCase(TestCase):
         }
 
         # one label per indicator
-        # FIXME: change_* permissions weirdness
         model_map[M.IndicatorLabel] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 4, 6, 4),
             'project_relation': 'indicator__result__project__'
         }
 

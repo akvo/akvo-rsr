@@ -64,32 +64,35 @@
           </div>
         </div>
 
-        <div class="related-object-container
-            {{ validations|mandatory_or_hidden:"rsr_indicatorlabel" }}">
-          <h5>{% trans 'Indicator labels' %}</h5>
-          <div class="indicator-label-container" id="indicator-label-container">
-            {% for label in indicator.labels.all %}
-              {% include "myrsr/project_editor/related_objects/indicator_label_input.html" %}
-            {% empty %}
-              {% with label='IndicatorLabel.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+        {% if project.primary_organisation.indicator_labels.all %}
+          <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorlabel" }}">
+            <h5>{% trans 'Thematic labels for indicators' %}Type: {{ indicator.type }}</h5>
+            <div class="indicator-label-container" id="indicator-label-container">
+              {% for label in indicator.labels.all %}
                 {% include "myrsr/project_editor/related_objects/indicator_label_input.html" %}
-              {% endwith %}
-            {% endfor %}
-            {% if not indicator.is_child_indicator %}
-              <div class="row form-group">
-                <div class="col-md-12 text-center add-object-link">
-                  <a href="#" class="add-indicator-label"><span
-                      class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator label' %}</a>
+              {% empty %}
+                {% with label='IndicatorLabel.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+                  {% include "myrsr/project_editor/related_objects/indicator_label_input.html" %}
+                {% endwith %}
+              {% endfor %}
+              {% if not indicator.is_child_indicator %}
+                <div class="row form-group">
+                  <div class="col-md-12 text-center add-object-link">
+                    <a href="#" class="add-indicator-label"><span
+                        class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator label' %}</a>
+                  </div>
                 </div>
-              </div>
-            {% endif %}
+              {% endif %}
+            </div>
           </div>
-        </div>
+        {% endif %}
 
-        <!-- FIXME: Make this visible only to BETA users?  -->
-        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimension" }}">
+        <div class="related-object-container {% if indicator.type == 2 %} hidden {% endif %}{{ validations|mandatory_or_hidden:"rsr_indicatordimension" }}">
             <h5>{% trans 'Indicator Dimensions' %}</h5>
-            <div class="indicator-dimension-container" id="indicator-dimension-container">
+            <!-- *NOTE*: Just hiding the related container above doesn't work, because the
+                 javascript to deduce hidden fields from validation sets removes that hidden tag,
+                 once the page loads. This child needs to be hidden to prevent that.  -->
+            <div class="indicator-dimension-container {% if indicator.type == 2 %} hidden {% endif %}" id="indicator-dimension-container">
                 {% for dimension in indicator.dimensions.all %}
                 {% include "myrsr/project_editor/related_objects/indicator_dimension_input.html" %}
                 {% empty %}

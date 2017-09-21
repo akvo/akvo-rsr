@@ -19,6 +19,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from lxml import etree
 
+from akvo.rsr.models import IndicatorPeriodData
 from ..forms import ProjectUpdateForm
 from ..filters import (create_project_filter_class, remove_empty_querydict_items)
 from ..models import Project, ProjectUpdate
@@ -235,7 +236,7 @@ def _get_hierarchy_grid(project):
     return grid
 
 
-def main(request, project_id):
+def main(request, project_id, template="project_main.html"):
     """
     The main project page, consisting of 6 tabs:
 
@@ -290,11 +291,11 @@ def main(request, project_id):
         'related_documents': related_documents,
         'updates': updates[:5] if updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
-        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
-        'child_projects_ids': [child_project.id for child_project in project.children()],
+        'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
+        'user_is_me_manager': 'false',
     }
 
-    return render(request, 'project_main.html', context)
+    return render(request, template, context)
 
 
 #####################

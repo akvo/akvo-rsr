@@ -21,7 +21,7 @@ class Link(models.Model):
 
     kind = ValidXMLCharField(_(u'kind'), max_length=1, choices=LINK_KINDS, default='E')
     url = models.URLField(
-        _(u'link url'), blank=True,
+        _(u'link url'),
         help_text=_(u'Enter the link to an external website you wish to redirect to from your '
                     u'project page. The URL should start with \'http://\' or \'https://\'.')
     )
@@ -33,15 +33,18 @@ class Link(models.Model):
     def __unicode__(self):
         if self.url and self.caption:
             return self.show_link()
-        elif self.url:
-            return u'<a href="%s">%s</a>' % (self.url, self.url,)
         elif self.caption:
             return self.caption
         else:
             return u'%s' % _(u'No link specified')
 
     def show_link(self):
-        return u'<a href="%s" target="_blank">%s</a>' % (self.url, self.caption,)
+        caption = (
+            self.caption
+            if self.caption else
+            (self.url if len(self.url) < 30 else self.url[:27] + '...')
+        )
+        return u'<a href="%s" target="_blank">%s</a>' % (self.url, caption,)
 
     class Meta:
         app_label = 'rsr'

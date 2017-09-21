@@ -38,21 +38,8 @@ import {
     collapseId,
 } from '../../utils.js';
 
-import AlertFactory from "../alertContainer"
 import { ToggleButton } from "../common"
 import Comments from "../Comments"
-
-
-const Alert = ({message, close}) => (
-    <div className='update-alert'>
-        {message}
-        <button className="btn btn-sm btn-default" onClick={close}>X</button>
-    </div>
-);
-Alert.propTypes = {
-    message: PropTypes.string.isRequired,
-    close: PropTypes.func.isRequired,
-};
 
 
 function displayName(user) {
@@ -76,7 +63,9 @@ const TimestampInfo =({update, user, label}) => {
             <li className="approverMeta">{label}
                 <span className="UpdateDate"> {displayDate(update.last_modified_at)}</span>
                 <span className="hide"> {displayName(user)}</span>
-                <span className="hide"> {user.approved_organisations[0].name}</span>
+                <span className="hide"> {
+                    user.approved_organisations[0] && user.approved_organisations[0].name
+                }</span>
             </li>
         </ul>
     )
@@ -267,6 +256,7 @@ QualitativeUpdate.propTypes = {
 
 @connect((store) => {
     return {
+        page: store.page,
         [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
         activeFilter: store.ui.activeFilter,
         user: store.models.user.objects[store.models.user.ids[0]],
@@ -282,15 +272,8 @@ class UpdateHeader extends React.Component {
 
     constructor (props) {
         super(props);
-
         this.formToggle = this.formToggle.bind(this);
         this.showEditButton = this.showEditButton.bind(this);
-        // we need a unique name for each alert
-        const alertName = 'UpdateAlert-' + this.props.update.id;
-        this.state = {
-            updateAlertName: alertName,
-            UpdateAlert: AlertFactory({alertName: alertName})(Alert),
-        };
     }
 
     formToggle(e) {
@@ -305,7 +288,10 @@ class UpdateHeader extends React.Component {
     showEditButton() {
         // Only show the Edit update button if the period is unlocked, the update is shown in the
         // relevant filter and the user can edit at this time
-        const {update, activeFilter} = this.props;
+        const {page, update, activeFilter} = this.props;
+        if (page.mode.public) {
+            return false;
+        }
         const show = fullUpdateVisibility(update, activeFilter);
         if (!show) {
             return false
@@ -332,7 +318,7 @@ class UpdateHeader extends React.Component {
     }
 
     render() {
-        let editUpdateButton, updateAlert;
+        let editUpdateButton;
         const {updateFormDisplay, update} = this.props;
 
         if (this.showEditButton()) {
@@ -346,14 +332,12 @@ class UpdateHeader extends React.Component {
                                              className={className}
                                              label={_('edit_indicator_value')}
                                              disabled={updateFormDisplay !== false}/>;
-            updateAlert = <this.state.UpdateAlert />
         }
         return (
             <div className="UpdateHead">
                 <span className="updateName"><UserInfo user_details={update.user_details}/></span>
                 <span className="updateStatus">{_('update_statuses')[update.status]}</span>
                 <span>{editUpdateButton}</span>
-                <span>{updateAlert}</span>
             </div>
         )
     }
@@ -362,6 +346,7 @@ class UpdateHeader extends React.Component {
 
 @connect((store) => {
     return {
+        page: store.page,
         indicators: store.models.indicators,
         updates: store.models.updates,
         keys: store.keys,
@@ -412,6 +397,7 @@ export default class Updates extends React.Component {
 
     getUpdateIds() {
         let updateIds = this.props.periodChildrenIds[this.props.period.id] || [];
+        const {page} = this.props;
         const updates = this.props.updates.objects;
         const needReporting = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
         const pending = [c.UPDATE_STATUS_PENDING];
@@ -423,20 +409,25 @@ export default class Updates extends React.Component {
             )
         };
 
-        switch(this.props.ui.activeFilter) {
-            case c.FILTER_NEED_REPORTING: {
-                updateIds = filterUpdatesByStatus(updateIds, needReporting);
-                break;
-            }
-            case c.FILTER_SHOW_PENDING: {
-                updateIds = filterUpdatesByStatus(updateIds, pending);
-                break;
-            }
-            case c.FILTER_SHOW_APPROVED: {
-                updateIds = filterUpdatesByStatus(updateIds, approved);
-                break;
+        if (page.mode && page.mode.public) {
+            updateIds = [];
+        } else {
+            switch(this.props.ui.activeFilter) {
+                case c.FILTER_NEED_REPORTING: {
+                    updateIds = filterUpdatesByStatus(updateIds, needReporting);
+                    break;
+                }
+                case c.FILTER_SHOW_PENDING: {
+                    updateIds = filterUpdatesByStatus(updateIds, pending);
+                    break;
+                }
+                case c.FILTER_SHOW_APPROVED: {
+                    updateIds = filterUpdatesByStatus(updateIds, approved);
+                    break;
+                }
             }
         }
+
         return updateIds;
     }
 
@@ -483,6 +474,7 @@ export default class Updates extends React.Component {
 
     render() {
         let updateIds = this.getUpdateIds();
+        const {page} = this.props;
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!this.props.updates.fetched) {
@@ -497,9 +489,12 @@ export default class Updates extends React.Component {
             );
         } else {
             return (
-                <div className="emptyData">
-                    <p>No updates</p>
-                </div>
+                page.mode && page.mode.public ?
+                    null
+                :
+                    <div className="emptyData">
+                        <p>No updates</p>
+                    </div>
             );
         }
     }

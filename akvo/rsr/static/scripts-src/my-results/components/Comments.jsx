@@ -29,7 +29,7 @@ import AlertFactory from "./alertContainer"
 
 
 const CommentAlert = ({message, close}) => (
-        <div className='comment-alert'>
+    <div className='results-alert comment-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
@@ -59,7 +59,6 @@ class CommentForm extends React.Component {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.addComment = this.addComment.bind(this);
-        this.resetComment = this.resetComment.bind(this);
         this.onSave = this.onSave.bind(this);
         // we need a unique name for each alert
         const alertName = 'CommentAlert-' + this.props.parentId;
@@ -99,11 +98,6 @@ class CommentForm extends React.Component {
         } else  {
             createAlert(commentAlertName, "Please enter a comment text");
         }
-    }
-
-    resetComment(message) {
-        this.setState({comment: ''});
-        this.props.createAlert(this.state.commentAlertName, message);
     }
 
     render() {

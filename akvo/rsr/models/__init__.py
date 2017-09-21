@@ -39,13 +39,13 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .indicator import (Disaggregation, Indicator, IndicatorDimension,
-                        IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
-                        IndicatorPeriodDataComment, IndicatorReference,
-                        IndicatorPeriodActualDimension,
-                        IndicatorPeriodTargetDimension,
-                        IndicatorPeriodActualLocation,
-                        IndicatorPeriodTargetLocation)
+from .result import (Disaggregation, Indicator, IndicatorDimension,
+                     IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
+                     IndicatorPeriodDataComment, IndicatorReference,
+                     IndicatorPeriodActualDimension,
+                     IndicatorPeriodTargetDimension,
+                     IndicatorPeriodActualLocation,
+                     IndicatorPeriodTargetLocation)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -200,6 +200,10 @@ rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
 
+rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin |is_org_project_editor)
+rules.add_perm('rsr.change_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
+
 rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
@@ -272,6 +276,10 @@ rules.add_perm('rsr.add_organisationcustomfield', is_rsr_admin | is_org_admin |
 rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin |
                is_org_project_editor)
 rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
+
+rules.add_perm('rsr.add_organisationindicatorlabel', is_rsr_admin)
+rules.add_perm('rsr.change_organisationindicatorlabel', is_rsr_admin)
+rules.add_perm('rsr.delete_organisationindicatorlabel', is_rsr_admin)
 
 rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)

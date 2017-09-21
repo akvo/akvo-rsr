@@ -378,3 +378,11 @@ export const getMEManagerDefaultKeys = createSelector(
     [getResultIds],
     resultIds => idsToActiveKey(resultIds)
 );
+
+export const getPublicViewDefaultKeys = createSelector(
+    /*
+        Just an array of IDs as string, used for the default view on the project page Results tab
+     */
+    [getIndicatorIds],
+    indicatorIds => idsToActiveKey(indicatorIds)
+);

@@ -553,8 +553,6 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
 
     context = {
         'project': project,
-        'parent_projects_ids': [parent_project.id for parent_project in project.parents()],
-        'child_projects_ids': [child_project.id for child_project in project.children()],
         'user': user,
         # turn it into JSON boolean
         'user_is_me_manager': 'true' if user_is_me_manager else 'false',

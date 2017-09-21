@@ -41,6 +41,7 @@ import {
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
     getIndicatorsDimensionIds,
+    getPublicViewDefaultKeys,
 } from "../selectors";
 
 import {
@@ -48,6 +49,7 @@ import {
     collapseId,
     identicalArrays,
     isNewUpdate,
+    openNodes,
     setHash,
     userIsMEManager,
 } from "../utils"
@@ -79,6 +81,7 @@ const modifyUser = (isMEManager) => {
 
 @connect((store) => {
     return {
+        page: store.page,
         indicators: store.models.indicators,
         periods: store.models.periods,
         updates: store.models.updates,
@@ -91,6 +94,7 @@ const modifyUser = (isMEManager) => {
         pendingApprovalPeriods: getPendingApprovalPeriods(store),
         approvedPeriods: getApprovedPeriods(store),
         MEManagerDefaultKeys: getMEManagerDefaultKeys(store),
+        publicViewDefaultKeys: getPublicViewDefaultKeys(store),
     }
 })
 export default class App extends React.Component {
@@ -115,16 +119,16 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        const project = dataFromElement('project-ids');
-        const settings = dataFromElement('settings');
+        const project = dataFromElement('project');
+        const mode = dataFromElement('mode');
         const strings = dataFromElement('translation-texts');
-        this.props.dispatch(setPageData({project, settings, strings}));
+        this.props.dispatch(setPageData({project, mode, strings}));
 
         const userId = dataFromElement('endpoint-data').userID;
         const isMEManager = dataFromElement('endpoint-data').isMEManager;
         fetchModel('user', userId, activateToggleAll, modifyUser(isMEManager));
 
-        const projectId = project.project_id;
+        const projectId = project.id;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
         fetchModel('dimensions', projectId, activateToggleAll);
@@ -163,12 +167,17 @@ export default class App extends React.Component {
         };
 
         const setInitialView = () => {
-            // set the initial state of the Results panels to open if the user is an M&E manager
-            if (userIsMEManager(this.props.user) &&
-                    nextProps.ui.allFetched &&
-                    !this.state.initialViewSet) {
-                collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
-                this.setState({initialViewSet: true});
+            // set the initial state of the Results panels to open if the user is an M&E manager or
+            // this is the public view
+            if (nextProps.ui.allFetched && !this.state.initialViewSet) {
+                if (nextProps.page.mode && nextProps.page.mode.public) {
+                    openNodes(c.OBJECTS_INDICATORS, this.props.publicViewDefaultKeys);
+                    this.setState({initialViewSet: true});
+                }
+                if (userIsMEManager(this.props.user)) {
+                    collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
+                    this.setState({initialViewSet: true});
+                }
             }
         };
 
@@ -309,7 +318,7 @@ export default class App extends React.Component {
         :
             <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
-        const {disaggregations, updates, periods, indicators} = this.props;
+        const {page, disaggregations, updates, periods, indicators} = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
@@ -339,9 +348,9 @@ export default class App extends React.Component {
         }
 
         return (
-            <section className="results">
+            <section className="results liveView">
                 <FilterBar callbacks={callbacks}/>
-                <main role="main">
+                <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
                     <article className={updateForm ? 'shared' : 'full'}>
                         {results}
                     </article>

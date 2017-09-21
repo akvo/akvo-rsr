@@ -127,10 +127,6 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/results/(?P<project_id>\d+)/$',
         'akvo.rsr.views.my_rsr.my_results', name='my_results'),
 
-    url(r'^myrsr/new_results/(?P<project_id>\d+)/$',
-        'akvo.rsr.views.my_rsr.my_results',
-        {"template": "myrsr/my_new_results.html"}, name='my_new_results'),
-
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
 
