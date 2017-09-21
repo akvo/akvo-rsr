@@ -4965,9 +4965,13 @@ main.results-page {
     }
 }
 
-.myAlert {}
-
-.lock-toggle-alert {}
+.results-alert {
+    font-size: 80%;
+    color: red;
+    button {
+        padding: 3px 6px;
+    }
+}
 
 .update-container {
     // background: rgba($primary4, 0.05);
