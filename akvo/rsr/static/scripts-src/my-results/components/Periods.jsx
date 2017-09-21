@@ -335,6 +335,8 @@ export default class Periods extends React.Component {
                                       formOpen={formOpen}
                                       showLockButton={showLockButton}/>}
                            key={id}
+                           showArrow={!page.mode.public}
+                           disabled={page.mode.public}
                            className={className}>
                         <Updates indicatorId={parentId} period={period}/>
                     </Panel>
