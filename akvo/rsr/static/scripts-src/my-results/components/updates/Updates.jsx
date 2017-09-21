@@ -490,7 +490,7 @@ export default class Updates extends React.Component {
         } else {
             return (
                 page.mode && page.mode.public ?
-                    undefined
+                    null
                 :
                     <div className="emptyData">
                         <p>No updates</p>
