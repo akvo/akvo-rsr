@@ -3330,6 +3330,12 @@ main.results-page {
                 font-weight: bold;
                 color: initial; }
 
+.results-alert {
+  font-size: 80%;
+  color: red; }
+  .results-alert button {
+    padding: 3px 6px; }
+
 .update-container.qualitativeUpdate .update-description {
   display: none; }
 
