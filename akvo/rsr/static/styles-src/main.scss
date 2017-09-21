@@ -4126,14 +4126,6 @@ main.results-page {
 }
 
 .results {
-    &.liveView {
-        .periodWrap {
-            .lockStatusTxt {
-                display: none !important;
-            }
-        }
-    }
-
     background: white;
     box-sizing: border-box;
 
@@ -4955,7 +4947,7 @@ main.results-page {
 
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
