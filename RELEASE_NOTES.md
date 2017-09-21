@@ -1,7 +1,7 @@
 # Akvo RSR Release Notes
 ----
 
-## Version 3.32 - King Edward
+## Version 3.32 - King Edward Point
 
 Date: 2017-09-21
 
