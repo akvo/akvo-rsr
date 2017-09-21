@@ -1211,6 +1211,7 @@ function setPartialOnClicks() {
                 selectInputs[m].onchange = function(e){
                     setMeasureVisibility(e.target);
                     setDimensionVisibility(e.target);
+                    // setLabelsVisibility(e.target);
                 };
             }
         }
@@ -1477,6 +1478,22 @@ function setMeasureVisibility(indicatorTypeSelect) {
         elRemoveClass(measureRow, 'hidden');
     }
 }
+
+// function setLabelsVisibility(indicatorTypeSelect) {
+//     /*
+//         Show or hide measure fields depending on indicator type
+//      */
+//     // parent is the div wrapping one whole indicator form, it's the outer node in
+//     // related_objects/indicator_input.html
+//     var parent = findAncestorByClass(indicatorTypeSelect, 'parent');
+//     var labelsContainer = parent.getElementsByClassName('indicator-label-container')[0].parentNode;
+//     // hide measure fields for qualitative indicators
+//     if (indicatorTypeSelect.value !== '2') {
+//         elAddClass(labelsContainer, 'hidden');
+//     } else {
+//         elRemoveClass(labelsContainer, 'hidden');
+//     }
+// }
 
 function setDimensionVisibility(indicatorTypeSelect) {
     /*
