@@ -128,7 +128,7 @@ const Comment = ({comment}) => {
         <div className={'commentContainer'}>
             <strong>{displayDate(comment.created_at)} </strong>
             <span className={'commentLabel'}>{name} says: </span>
-            <span className={'comment'}>{comment.comment}</span>
+            <div className={'comment'}>{comment.comment}</div>
         </div>
     )
 };
