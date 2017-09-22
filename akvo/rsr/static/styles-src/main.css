@@ -3476,9 +3476,11 @@ main.results-page {
     padding-top: 5px;
     padding-bottom: 5px;
     color: rgba(32, 32, 36, 0.5);
-    width: calc(100% - 50px); }
+    width: calc(100% - 10px); }
+    .comments .commentContainer .commentLabel {
+      display: inline-block;
+      margin-right: 5px; }
     .comments .commentContainer .comment {
-      margin-left: 10px;
       color: #202024; }
       .comments .commentContainer .comment .comment-header {
         font-weight: bold; }

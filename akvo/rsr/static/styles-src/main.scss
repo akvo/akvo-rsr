@@ -4955,7 +4955,7 @@ main.results-page {
 
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
@@ -5199,10 +5199,14 @@ main.results-page {
         padding-top: 5px;
         padding-bottom: 5px;
         color: rgba($akvoBlack, 0.5);
-        width: calc(100% - 50px);
+        width: calc(100% - 10px);
+
+        .commentLabel {
+            display: inline-block;
+            margin-right: 5px;
+        }
 
         .comment {
-            margin-left: 10px;
             color: $akvoBlack;
 
             .comment-header {
