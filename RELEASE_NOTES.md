@@ -1,6 +1,57 @@
 # Akvo RSR Release Notes
 ----
-## Version 3.30 - Paramaribo 
+
+## Version 3.32 - King Edward Point
+
+Date: 2017-09-21
+
+## New and Noteworthy
+
+- Shiny, new RSR Results Framework UI introduced – The results framework UI has been replaced with a new UI that is easier to work with and snappier to use, after beta testing for the past few releases with select partners.
+
+- The RSR Results Framework viewer, shown in the Results tab on the project page, has also been replaced with the updated UI. [#2857](https://github.com/akvo/akvo-rsr/issues/2857)
+
+- User alerts and input validation for the new results UI has been improved. [#2800](https://github.com/akvo/akvo-rsr/issues/2800)
+
+## Resolved issues
+
+- Project links not being displayed when no caption is set problem corrected. [#2864](https://github.com/akvo/akvo-rsr/issues/2864)
+
+-  Fixed problem of `OrganisationIndicatorLabel` admin interface not being shown to some Users. [#2864](https://github.com/akvo/akvo-rsr/issues/2864)
+
+- Updating `actual value` and `actual comment` on a period directly from the Project Editor disallowed - Indicator reporting updates via the MyResults tab now mandatory. [#2666](https://github.com/akvo/akvo-rsr/issues/2666) [#2849](https://github.com/akvo/akvo-rsr/issues/2849)
+
+- Problem with the new RSR Results Framework UI not working on IE and some older versions of Safari resolved. [#2873](https://github.com/akvo/akvo-rsr/issues/2873)
+
+## Code maintenance
+
+- Refactoring of the RSR Results Framework models code to be more modular and easier to work with. [#2869](https://github.com/akvo/akvo-rsr/issues/2869)
+
+## Version 3.31 - Stanley
+
+Date: 2017-08-31
+
+## New and Noteworthy
+
+- Disaggregation introduced – The first step for allowing partners to collect disaggregated results data for indicator reporting has been introduced in the improved Results Framework UI. [#2674](https://github.com/akvo/akvo-rsr/issues/2674)  [#2778](https://github.com/akvo/akvo-rsr/issues/2778)
+
+- Thematic labels for qualitative indicator reporting introduced to the RSR Project Editor. [#2772](https://github.com/akvo/akvo-rsr/issues/2772)
+
+## Resolved issues
+
+- Remove new update for qualitative indicator when view is switched to full view. [#2828](https://github.com/akvo/akvo-rsr/issues/2828)
+
+- Added a management command for updating project custom fields to be in sync with the organisation custom fields. [#2826](https://github.com/akvo/akvo-rsr/issues/2826)
+
+- Fixed bug in importing `activity-date` when importing an IATI XML file [#2843](https://github.com/akvo/akvo-rsr/issues/2843)
+
+- Show aggregate actual values and the target value in the period headings in the beta results framework [#2836](https://github.com/akvo/akvo-rsr/issues/2836)
+
+- Minor cosmetic fixes for the beta results framework UI [#2840](https://github.com/akvo/akvo-rsr/issues/2840) [#2829](https://github.com/akvo/akvo-rsr/issues/2829)
+
+- Custom fields in the project editor are displayed separately from the standard RSR fields for the partners that use them [#2825](https://github.com/akvo/akvo-rsr/issues/2825)
+
+## Version 3.30 - Paramaribo
 
 Date: 2017-08-14
 
@@ -15,11 +66,11 @@ Date: 2017-08-14
 
 ## Resolved issues
 
-* Results Framework UI stabilized – Scrolling, navigating through the redesigned RSR Results Framework has been improved.   ( [#2787](https://github.com/akvo/akvo-rsr/issues/2787), [#2788](https://github.com/akvo/akvo-rsr/pull/2788), [#2801](https://github.com/akvo/akvo-rsr/pull/2801), [#2802](https://github.com/akvo/akvo-rsr/issues/2802) ) 
+* Results Framework UI stabilized – Scrolling, navigating through the redesigned RSR Results Framework has been improved.   ( [#2787](https://github.com/akvo/akvo-rsr/issues/2787), [#2788](https://github.com/akvo/akvo-rsr/pull/2788), [#2801](https://github.com/akvo/akvo-rsr/pull/2801), [#2802](https://github.com/akvo/akvo-rsr/issues/2802) )
 
 * 504 timeouts on the results framework page for projects with many children and indicators resolved – Stabilized the issue of too many queries leading to 504 timeouts for parent projects with many child projects and indicators. ( [#2782](https://github.com/akvo/akvo-rsr/issues/2782), [#2783](https://github.com/akvo/akvo-rsr/pull/2783) )
 
-* Advanced Filters now work in the IE browser – a javascript error leading to the malfunctioning of the RSR Advanced Filter functionality when you the IE browser has been fixed. ( [#2785](https://github.com/akvo/akvo-rsr/issues/2785), [#2786](https://github.com/akvo/akvo-rsr/pull/2786) ) 
+* Advanced Filters now work in the IE browser – a javascript error leading to the malfunctioning of the RSR Advanced Filter functionality when you the IE browser has been fixed. ( [#2785](https://github.com/akvo/akvo-rsr/issues/2785), [#2786](https://github.com/akvo/akvo-rsr/pull/2786) )
 
 * Display complete (long) names of partners – text pending ( [#2773](https://github.com/akvo/akvo-rsr/pull/2773), [#2796](https://github.com/akvo/akvo-rsr/pull/2796) )
 

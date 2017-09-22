@@ -58,7 +58,7 @@ const isAllowedToDelete = (user, update) =>
 
 
 const UpdateAlert = ({message, close}) => (
-    <div className='update-alert'>
+    <div className='results-alert update-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
@@ -430,11 +430,11 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
         <div className="update-container">
             <div className="update-entry-container edit-in-progress">
                 <QuantitativeHeader targetValue={period.target_value}/>
-                {<self.state.UpdateAlert/>}
                 <QuantitativeActualValueInput update={update}
                                               onChange={self.onChange}
                                               onClose={self.props.onClose}
                                               isPercentage={percentageUpdate}/>
+                {<self.state.UpdateAlert/>}
                 <ActualValueDescription update={update}
                                         onChange={self.onChange}/>
                 <Attachments update={update}
@@ -471,10 +471,10 @@ const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disag
         <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
                 <QualitativeHeader targetValue={period.target_value}/>
-                {<self.state.UpdateAlert/>}
                 <QualitativeActualValueInput update={update}
                                              onClose={self.props.onClose}
                                              onChange={self.onChange}/>
+                {<self.state.UpdateAlert/>}
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
                              removeAttachment={self.removeAttachment}/>

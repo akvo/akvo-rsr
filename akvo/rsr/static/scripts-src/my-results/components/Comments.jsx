@@ -29,7 +29,7 @@ import AlertFactory from "./alertContainer"
 
 
 const CommentAlert = ({message, close}) => (
-    <div className='comment-alert'>
+    <div className='results-alert comment-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
