@@ -127,8 +127,8 @@ const Comment = ({comment}) => {
     return (
         <div className={'commentContainer'}>
             <strong>{displayDate(comment.created_at)} </strong>
-            {name} says:
-            <span className={'comment'}>{comment.comment}</span>
+            <span className={'commentLabel'}>{name} says: </span>
+            <div className={'comment'}>{comment.comment}</div>
         </div>
     )
 };
