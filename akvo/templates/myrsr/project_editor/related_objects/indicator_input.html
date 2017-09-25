@@ -66,7 +66,7 @@
 
         {% if project.primary_organisation.indicator_labels.all %}
           <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorlabel" }}">
-            <h5>{% trans 'Thematic labels for indicators' %}Type: {{ indicator.type }}</h5>
+            <h5>{% trans 'Thematic labels for indicators' %}</h5>
             <div class="indicator-label-container" id="indicator-label-container">
               {% for label in indicator.labels.all %}
                 {% include "myrsr/project_editor/related_objects/indicator_label_input.html" %}
