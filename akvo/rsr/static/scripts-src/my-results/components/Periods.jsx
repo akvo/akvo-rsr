@@ -47,7 +47,7 @@ import { collapseChange } from "../actions/collapse-actions";
 
 
 const ToggleAlert = ({message, close}) => (
-    <div className='lock-toggle-alert'>
+    <div className='results-alert lock-toggle-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
@@ -110,7 +110,7 @@ PeriodHeader.propTypes = {
 
 
 const DeleteUpdateAlert = ({message, close}) => (
-    <div className='delete-update-alert'>
+    <div className='alert delete-update-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
@@ -243,6 +243,8 @@ export default class Periods extends React.Component {
                                       formOpen={formOpen}
                                       showLockButton={showLockButton}/>}
                            key={id}
+                           showArrow={!page.mode.public}
+                           disabled={page.mode.public}
                            className={className}>
                         <Updates indicatorId={parentId} period={period}/>
                     </Panel>
