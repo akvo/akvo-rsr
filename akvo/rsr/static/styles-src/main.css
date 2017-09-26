@@ -2858,8 +2858,6 @@ main.results-page {
 .results {
   background: white;
   box-sizing: border-box; }
-  .results.liveView .periodWrap .lockStatusTxt {
-    display: none !important; }
   .results * {
     box-sizing: border-box; }
   .results > button {
