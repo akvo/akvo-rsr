@@ -456,12 +456,12 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            set(labels),
-            {(label1.pk, label1.label), (label2.pk, label2.label)}
+            list(labels),
+            [(label1.pk, label1.label), (label2.pk, label2.label)]
         )
         self.assertEqual(
-            set(ids),
-            {label1.pk, label2.pk}
+            ids,
+            [label1.pk, label2.pk]
         )
 
         # When
@@ -469,10 +469,10 @@ class ChoicesTestCase(TestCase):
 
         # Then
         self.assertEqual(
-            set(labels),
-            {(label1.pk, label1.label), (label2.pk, label2.label)}
+            list(labels),
+            [(label1.pk, label1.label), (label2.pk, label2.label)]
         )
         self.assertEqual(
-            set(ids),
-            {label1.pk, label2.pk}
+            ids,
+            [label1.pk, label2.pk]
         )
