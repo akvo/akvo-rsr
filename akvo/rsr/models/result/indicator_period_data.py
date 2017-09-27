@@ -82,6 +82,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period data')
         verbose_name_plural = _(u'indicator period data')
+        ordering = ('-id', )
 
     def save(self, recalculate=True, *args, **kwargs):
         # Allow only a single update for percentage measure indicators
