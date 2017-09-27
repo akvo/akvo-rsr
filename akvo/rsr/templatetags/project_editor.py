@@ -259,8 +259,8 @@ def choices(obj, field):
         else:
             project = obj.indicator.result.project
         organisation_indicator_labels = get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
-            organisation=project.primary_organisation
-        )
+            organisation=project.all_partners()
+        ).distinct()
         return choices_and_ids(organisation_indicator_labels, 'id', 'label')
 
 
