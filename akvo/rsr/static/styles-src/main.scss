@@ -4126,14 +4126,6 @@ main.results-page {
 }
 
 .results {
-    &.liveView {
-        .periodWrap {
-            .lockStatusTxt {
-                display: none !important;
-            }
-        }
-    }
-
     background: white;
     box-sizing: border-box;
 
@@ -4955,7 +4947,7 @@ main.results-page {
 
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
@@ -4965,9 +4957,13 @@ main.results-page {
     }
 }
 
-.myAlert {}
-
-.lock-toggle-alert {}
+.results-alert {
+    font-size: 80%;
+    color: red;
+    button {
+        padding: 3px 6px;
+    }
+}
 
 .update-container {
     // background: rgba($primary4, 0.05);
@@ -5195,10 +5191,14 @@ main.results-page {
         padding-top: 5px;
         padding-bottom: 5px;
         color: rgba($akvoBlack, 0.5);
-        width: calc(100% - 50px);
+        width: calc(100% - 10px);
+
+        .commentLabel {
+            display: inline-block;
+            margin-right: 5px;
+        }
 
         .comment {
-            margin-left: 10px;
             color: $akvoBlack;
 
             .comment-header {

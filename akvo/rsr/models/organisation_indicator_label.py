@@ -23,6 +23,7 @@ class OrganisationIndicatorLabel(models.Model):
         verbose_name = _(u'organisation indicator label')
         verbose_name_plural = _(u'organisation indicator labels')
         unique_together = ('organisation', 'label')
+        ordering = ('organisation', 'label')
 
     def __unicode__(self):
         return self.label

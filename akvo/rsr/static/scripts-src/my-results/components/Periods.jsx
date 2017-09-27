@@ -47,98 +47,11 @@ import { collapseChange } from "../actions/collapse-actions";
 
 
 const ToggleAlert = ({message, close}) => (
-    <div className='lock-toggle-alert'>
+    <div className='results-alert lock-toggle-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
 );
-
-
-@connect(null, alertActions)
-class PeriodLockToggle extends React.Component {
-
-    static propTypes = {
-        period: PropTypes.object,
-        callbacks: PropTypes.object,
-    };
-
-    constructor (props) {
-        super(props);
-        this.lockToggle = this.lockToggle.bind(this);
-        this.updatePeriodLock = this.updatePeriodLock.bind(this);
-        const alertName = 'ToggleAlert-' + this.props.period.id;
-        this.state = {
-            locking: false,
-            toggleAlertName: alertName,
-            ToggleAlert: undefined,
-        };
-    }
-
-    updatePeriodLock(periodId, data, callbacks) {
-        const url = endpoints.period(periodId);
-        updateModelToBackend(c.OBJECTS_PERIODS, url, data, this.props.collapseId, callbacks);
-    }
-
-    lockingToggle(locking) {
-        this.setState({locking: locking});
-    }
-
-    setLockMessage(message) {
-        const {toggleAlertName} = this.state;
-        this.setState({ToggleAlert: AlertFactory({alertName: toggleAlertName})(ToggleAlert)});
-        this.props.createAlert(toggleAlertName, message);
-    }
-
-    lockToggle(e) {
-        const period = this.props.period;
-        const toggleCallback = (message) => {
-            this.lockingToggle(false);
-            if (message) {
-                this.setLockMessage(message);
-            }
-        };
-        if (!this.state.locking) {
-            this.lockingToggle(true);
-            const callbacks = {
-                [c.UPDATE_MODEL_FULFILLED]: toggleCallback.bind(this),
-                [c.UPDATE_MODEL_REJECTED]: toggleCallback.bind(
-                    this, _("lock_change_failed")
-                )
-            };
-            this.updatePeriodLock(period.id, {locked: !period.locked}, callbacks);
-        }
-        e.stopPropagation();
-    }
-
-    render() {
-        let icon, label,
-            className = 'btn btn-sm btn-default lockToggle';
-        if (this.state.locking) {
-            icon = <i className="fa fa-spin fa-spinner" />;
-            label = "Updating lock status";
-        } else if (this.props.period.locked) {
-            icon = <i className={'fa fa-lock'}/>;
-            label = "Unlock period";
-        } else {
-            icon = <i className="fa fa-unlock-alt" />;
-            label = "Lock period";
-        }
-        return (
-            <span>
-                {this.state.ToggleAlert ? <this.state.ToggleAlert /> : ''}
-                <ToggleButton onClick={this.lockToggle} className={className} label={label}/>
-            </span>
-        )
-    }
-}
-
-
-const PeriodLockStatus = ({lockStatus}) => {
-    return {lockStatus}
-};
-PeriodLockStatus.propTypes = {
-    lockStatus: PropTypes.string.isRequired,
-};
 
 
 const PeriodSelect = ({id, toggleCheckbox, isChecked}) => {
@@ -160,15 +73,11 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                            const periodStart = displayDate(period.period_start);
                            const periodEnd = displayDate(period.period_end);
                            const periodDate = `${periodStart} - ${periodEnd}`;
-                           let periodSelect, lockStatus;
+                           let periodSelect;
                            if (user.isMEManager && showLockButton) {
                                periodSelect = <PeriodSelect id={period.id}
                                                             toggleCheckbox={toggleCheckbox}
                                                             isChecked={isChecked}/>;
-                               lockStatus = <PeriodLockToggle period={period} />;
-
-                           } else {
-                               lockStatus = period.locked ? _('locked') : _('unlocked');
                            }
                            return (
                                <span className="periodWrap">
@@ -188,7 +97,6 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                                                <span>Actual:</span> {actualValue}
                                            </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
-                                       <li className="lockStatusTxt">{lockStatus}</li>
                                    </ul>
                                </span>
                            )
@@ -202,7 +110,7 @@ PeriodHeader.propTypes = {
 
 
 const DeleteUpdateAlert = ({message, close}) => (
-    <div className='delete-update-alert'>
+    <div className='alert delete-update-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
@@ -335,6 +243,8 @@ export default class Periods extends React.Component {
                                       formOpen={formOpen}
                                       showLockButton={showLockButton}/>}
                            key={id}
+                           showArrow={!page.mode.public}
+                           disabled={page.mode.public}
                            className={className}>
                         <Updates indicatorId={parentId} period={period}/>
                     </Panel>

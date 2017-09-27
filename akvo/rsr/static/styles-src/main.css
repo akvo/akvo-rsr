@@ -2858,8 +2858,6 @@ main.results-page {
 .results {
   background: white;
   box-sizing: border-box; }
-  .results.liveView .periodWrap .lockStatusTxt {
-    display: none !important; }
   .results * {
     box-sizing: border-box; }
   .results > button {
@@ -3330,6 +3328,12 @@ main.results-page {
                 font-weight: bold;
                 color: initial; }
 
+.results-alert {
+  font-size: 80%;
+  color: red; }
+  .results-alert button {
+    padding: 3px 6px; }
+
 .update-container.qualitativeUpdate .update-description {
   display: none; }
 
@@ -3470,9 +3474,11 @@ main.results-page {
     padding-top: 5px;
     padding-bottom: 5px;
     color: rgba(32, 32, 36, 0.5);
-    width: calc(100% - 50px); }
+    width: calc(100% - 10px); }
+    .comments .commentContainer .commentLabel {
+      display: inline-block;
+      margin-right: 5px; }
     .comments .commentContainer .comment {
-      margin-left: 10px;
       color: #202024; }
       .comments .commentContainer .comment .comment-header {
         font-weight: bold; }

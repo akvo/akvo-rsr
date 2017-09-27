@@ -245,7 +245,7 @@ POST_URLS = [
      ('IndicatorPeriodDataComment.objects.count()',),),
 
     ('/rest/v1/indicator_period_data_framework/?format=json',
-     {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "N"},
+     {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "D"},
      ('IndicatorPeriodData.objects.count()',),),
 
     # akvo/rsr/static/scripts-src/my-iati.js

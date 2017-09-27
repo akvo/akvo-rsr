@@ -410,7 +410,7 @@ export default class Updates extends React.Component {
         };
 
         if (page.mode && page.mode.public) {
-            updateIds = filterUpdatesByStatus(updateIds, approved);
+            updateIds = [];
         } else {
             switch(this.props.ui.activeFilter) {
                 case c.FILTER_NEED_REPORTING: {
@@ -474,6 +474,7 @@ export default class Updates extends React.Component {
 
     render() {
         let updateIds = this.getUpdateIds();
+        const {page} = this.props;
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
         if (!this.props.updates.fetched) {
@@ -488,9 +489,12 @@ export default class Updates extends React.Component {
             );
         } else {
             return (
-                <div className="emptyData">
-                    <p>No updates</p>
-                </div>
+                page.mode && page.mode.public ?
+                    null
+                :
+                    <div className="emptyData">
+                        <p>No updates</p>
+                    </div>
             );
         }
     }
