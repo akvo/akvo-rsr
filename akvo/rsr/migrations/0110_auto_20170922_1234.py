@@ -8,7 +8,7 @@ import akvo.rsr.fields
 
 def update_status_new_to_draft(apps, schema):
     IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
-    IndicatorPeriodData.objects.filter(status='N').delete()
+    IndicatorPeriodData.objects.filter(status='N').update(status='D')
 
 
 class Migration(migrations.Migration):
