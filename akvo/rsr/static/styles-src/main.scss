@@ -4707,6 +4707,15 @@ main.results-page {
 
                                     .row {
                                         .UpdateBody {
+                                            .update-photo, .update-attachment {
+                                                padding: 0 40px;
+                                                width: calc(100% - 20px);
+                                            }
+
+                                            .update-attachment {
+                                                margin: 20px 0 40px 0;
+                                            }
+
                                             .valueMeta {}
 
                                             .statusMeta {
@@ -4716,7 +4725,7 @@ main.results-page {
                                             .updateValue {
                                                 span {
                                                     width: calc(100% - 40px);
-                                                    display: inline-block;
+                                                    display: inline;
                                                 }
                                             }
 
@@ -4947,7 +4956,7 @@ main.results-page {
 
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -4960,6 +4969,7 @@ main.results-page {
 .results-alert {
     font-size: 80%;
     color: red;
+
     button {
         padding: 3px 6px;
     }
@@ -5172,7 +5182,6 @@ main.results-page {
 .comments {
     margin-top: 30px;
     background: rgba($primary5, 0);
-    width: 98%;
     margin-left: 1%;
 
     @include border-radius(3px);
