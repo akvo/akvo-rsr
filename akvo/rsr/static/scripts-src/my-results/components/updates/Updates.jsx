@@ -78,10 +78,11 @@ TimestampInfo.propTypes = {
 
 
 const UpdateValue =({update}) => {
-    const {value, actual_value} = update;
+    const {value, actual_value, text} = update;
     return (
         <ul className="valueMeta">
             <li className="updateValue">Update value: <span>{value}</span></li>
+            <li className="updateValueComment">Update comment: <span>{text}</span></li>
         </ul>
     )
 };
@@ -100,6 +101,32 @@ const UpdateStatus =({update}) => {
     )
 };
 UpdateStatus.propTypes = {
+    update: PropTypes.object.isRequired
+};
+
+
+const UpdateAttachments =({update}) => {
+    const {photo, file} = update;
+    const photo_container = photo?(
+        <div className="update-photo">
+            <div className="image-container">
+                <img src={photo}/>
+            </div>
+        </div>
+    ): undefined;
+    const file_container = file?(
+        <div className="update-attachment">
+            Attachment: <a href={file} target="_blank">{decodeURIComponent(file.split('/').pop())}</a>
+        </div>
+    ):undefined;
+    return (
+        <div>
+            {photo_container}
+            {file_container}
+        </div>
+    );
+};
+UpdateAttachments.propTypes = {
     update: PropTypes.object.isRequired
 };
 
@@ -184,6 +211,7 @@ const QualitativeUpdateBody = ({period, update, dimensions, disaggregations}) =>
             <TimestampInfo update={update} user={user_details} label="Created on " />
             {approvedBy}
             <UpdateStatus update={update} />
+            <UpdateAttachments update={update} />
         </div>
     )
 };
