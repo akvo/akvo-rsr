@@ -9,11 +9,37 @@ from unittest import TestCase
 
 from django.contrib.auth import get_user_model
 
-from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate
+from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
+    OrganisationIndicatorLabel
 
 
 class ProjectModelTestCase(TestCase):
     """Tests for the project model"""
+
+    def setUp(self):
+        self.project = Project.objects.create(title="Test Project")
+        self.organisation = Organisation.objects.create(
+            name="Organisation for labels",
+            long_name="Organisation for labels",
+            new_organisation_type=22
+        )
+        partnership = Partnership.objects.create(
+            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
+            project=self.project, organisation=self.organisation
+        )
+        self.label_1 = OrganisationIndicatorLabel.objects.create(
+            organisation=self.organisation,
+            label='label 1'
+        )
+        self.label_2 = OrganisationIndicatorLabel.objects.create(
+            organisation=self.organisation,
+            label='label 2'
+        )
+
+    def tearDown(self):
+        Project.objects.all().delete()
+        Organisation.objects.all().delete()
+
 
     def test_project_last_update(self):
         """Test that Project.last_update is updated correctly when an update is deleted.
@@ -24,59 +50,62 @@ class ProjectModelTestCase(TestCase):
         The tests check that the fix for this bug works correctly.
         """
         # setup needed model instances
-        project_1 = Project.objects.create(title="Test project 1")
         user_1 = get_user_model().objects.create(email='user1@com.com')
-        update_1 = ProjectUpdate.objects.create(title="Test update 1", project=project_1, user=user_1)
-        update_2 = ProjectUpdate.objects.create(title="Test update 2", project=project_1, user=user_1)
+        update_1 = ProjectUpdate.objects.create(title="Test update 1", project=self.project, user=user_1)
+        update_2 = ProjectUpdate.objects.create(title="Test update 2", project=self.project, user=user_1)
 
         # check that update_2 is the latest
         self.assertTrue(update_1.created_at < update_2.created_at)
 
         # check that update_2 is Project.last_update
-        self.assertEqual(project_1.last_update, update_2)
+        self.assertEqual(self.project.last_update, update_2)
 
         update_2.delete()
         # now update_1 should be last_update
-        self.assertEqual(project_1.last_update, update_1)
+        self.assertEqual(self.project.last_update, update_1)
 
         update_1.delete()
         # now last_update is None
-        self.assertEqual(project_1.last_update, None)
+        self.assertEqual(self.project.last_update, None)
 
     def test_project_funds_update_on_donations_change(self):
         """Test that Project.funds is correct when donations are changed."""
 
         # setup needed model instances
-        project_1 = Project.objects.create(title="Test project 1")
-        budget_item = BudgetItem.objects.create(project=project_1, amount=200)
+        budget_item = BudgetItem.objects.create(project=self.project, amount=200)
 
         # Change donations
-        project_1.donations = 100
-        project_1.save()
+        self.project.donations = 100
+        self.project.save()
 
         # assert that funds for the project are correct
-        self.assertEqual(project_1.budget, budget_item.amount)
-        self.assertEqual(project_1.donations, project_1.funds)
-        self.assertEqual(project_1.funds_needed, project_1.budget - project_1.funds)
+        self.assertEqual(self.project.budget, budget_item.amount)
+        self.assertEqual(self.project.donations, self.project.funds)
+        self.assertEqual(self.project.funds_needed, self.project.budget - self.project.funds)
 
     def test_project_funds_update_on_pledges_change(self):
         """Test that Project.funds is correct when pledged amounts change."""
 
         # setup needed model instances
-        project_1 = Project.objects.create(title="Test project 1")
-        budget_item = BudgetItem.objects.create(project=project_1, amount=200)
+        budget_item = BudgetItem.objects.create(project=self.project, amount=200)
         partnership = Partnership.objects.create(
             iati_organisation_role=Partnership.IATI_FUNDING_PARTNER,
-            project=project_1, funding_amount=100
+            project=self.project, funding_amount=100
         )
 
         # Change donations and partner pledged amount
         partnership.funding_amount = 100
         partnership.save()
-        project_1.donations = 100
-        project_1.save()
+        self.project.donations = 100
+        self.project.save()
 
         # assert that funds for the project are correct
-        self.assertEqual(project_1.budget, budget_item.amount)
-        self.assertEqual(project_1.funds, partnership.funding_amount + project_1.donations)
-        self.assertEqual(project_1.funds_needed, project_1.budget - project_1.funds)
+        self.assertEqual(self.project.budget, budget_item.amount)
+        self.assertEqual(self.project.funds, partnership.funding_amount + self.project.donations)
+        self.assertEqual(self.project.funds_needed, self.project.budget - self.project.funds)
+
+    def test_project_has_labels(self):
+        has_labels = self.project.has_indicator_labels()
+        labels = self.project.indicator_labels()
+        self.assertEqual(has_labels, True)
+        self.assertEqual(labels.count(), 2)
