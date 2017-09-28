@@ -258,10 +258,14 @@ def choices(obj, field):
             project = get_model('rsr', 'Project').objects.get(pk=project_pk)
         else:
             project = obj.indicator.result.project
-        organisation_indicator_labels = get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
-            organisation=project.all_partners()
-        ).distinct()
-        return choices_and_ids(organisation_indicator_labels, 'id', 'label')
+        return choices_and_ids(project.indicator_labels(), 'id', 'label')
+
+
+@register.filter
+def has_indicator_labels(project):
+    if project is not None:
+        return project.has_indicator_labels()
+    return False
 
 
 @register.filter

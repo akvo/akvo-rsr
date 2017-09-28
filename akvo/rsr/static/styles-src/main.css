@@ -2335,6 +2335,10 @@ body.translationBarActive div.skiptranslate ~ #map {
   margin-left: 0px;
   margin-right: 0px; }
 
+.projectEdit .label-hidden {
+  display: none !important;
+  visibility: hidden !important; }
+
 .projectEdit label.progress-bar[aria-valuenow="0"] {
   background: #d9534f;
   color: #d9534f; }

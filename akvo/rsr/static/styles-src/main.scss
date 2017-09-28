@@ -3410,6 +3410,11 @@ body {
         margin-right: 0px;
     }
 
+    .label-hidden {
+        display:none!important;
+        visibility:hidden!important;
+    }
+
     label.progress-bar {
         &[aria-valuenow="0"] {
             background: rgba($progressWarning, 1);

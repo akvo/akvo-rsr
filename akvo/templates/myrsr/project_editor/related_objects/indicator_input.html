@@ -64,8 +64,8 @@
           </div>
         </div>
 
-        {% if project.primary_organisation.indicator_labels.all %}
-          <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorlabel" }}">
+        {% if indicator.result.project|has_indicator_labels %}
+          <div class="related-object-container{% if indicator.type == 1 %} label-hidden{% endif %} {{ validations|mandatory_or_hidden:"rsr_indicatorlabel" }}">
             <h5>{% trans 'Thematic labels for indicators' %}</h5>
             <div class="indicator-label-container" id="indicator-label-container">
               {% for label in indicator.labels.all %}
