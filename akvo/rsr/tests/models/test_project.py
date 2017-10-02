@@ -23,7 +23,7 @@ class ProjectModelTestCase(TestCase):
             long_name="Organisation for labels",
             new_organisation_type=22
         )
-        partnership = Partnership.objects.create(
+        Partnership.objects.create(
             iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
             project=self.project, organisation=self.organisation
         )
@@ -39,7 +39,6 @@ class ProjectModelTestCase(TestCase):
     def tearDown(self):
         Project.objects.all().delete()
         Organisation.objects.all().delete()
-
 
     def test_project_last_update(self):
         """Test that Project.last_update is updated correctly when an update is deleted.

@@ -262,13 +262,6 @@ def choices(obj, field):
 
 
 @register.filter
-def has_indicator_labels(project):
-    if project is not None:
-        return project.has_indicator_labels()
-    return False
-
-
-@register.filter
 def manytomany_value(obj):
     """
     Retrieves the id of a given object's field.
