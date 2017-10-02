@@ -4317,6 +4317,10 @@ main.results-page {
                                     }
                                 }
 
+                                &:nth-of-type(3) {
+                                    margin-left: 25px;
+                                }
+
                                 &.indicatorProgress {
                                     position: absolute;
                                     right: 2em;
@@ -4714,9 +4718,11 @@ main.results-page {
                                             }
 
                                             .updateValue {
+                                                margin-bottom: 10px;
+
                                                 span {
                                                     width: calc(100% - 40px);
-                                                    display: inline-block;
+                                                    display: inline;
                                                 }
                                             }
 
@@ -4735,9 +4741,19 @@ main.results-page {
 
                                             .showDisaggregations {
                                                 padding-left: 40px;
+                                                margin: 25px auto;
 
                                                 h5 {
                                                     color: rgba($akvoBlack, 0.5);
+                                                }
+
+                                                div {
+                                                    display: inline-block;
+                                                    margin-left: 10px;
+
+                                                    &.first-of-type {
+                                                        margin-left: 0;
+                                                    }
                                                 }
                                             }
                                         }
@@ -4860,10 +4876,7 @@ main.results-page {
                                             list-style-type: none;
                                         }
 
-                                        .timestamp-info-container {
-                                            float: right;
-                                            margin-right: 50px;
-                                        }
+                                        .timestamp-info-container {}
                                     }
                                 }
 
@@ -4947,7 +4960,7 @@ main.results-page {
 
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -4960,6 +4973,7 @@ main.results-page {
 .results-alert {
     font-size: 80%;
     color: red;
+
     button {
         padding: 3px 6px;
     }
@@ -5196,6 +5210,7 @@ main.results-page {
         .commentLabel {
             display: inline-block;
             margin-right: 5px;
+            margin-left: 15px;
         }
 
         .comment {
