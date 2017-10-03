@@ -79,7 +79,7 @@ function akvoDateRange(date1, date2){
         </scalar-parameter>
     </parameters>
     <data-sources>
-        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR-test" id="49">
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR-readonly" id="49">
             <list-property name="privateDriverProperties">
                 <ex-property>
                     <name>metadataBidiFormatStr</name>
@@ -98,50 +98,6 @@ function akvoDateRange(date1, date2){
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
-            <property name="odaUser">rsr</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YnlwMGNndE1SQU13Y2JubzIxY3hWYm14cFM0TkxSaThuQkNScklNZQ==</encrypted-property>
-        </oda-data-source>
-        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR readonly" id="122">
-            <list-property name="privateDriverProperties">
-                <ex-property>
-                    <name>metadataBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledMetadataBidiFormatStr</name>
-                </ex-property>
-                <ex-property>
-                    <name>contentBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledContentBidiFormatStr</name>
-                </ex-property>
-            </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
-            <property name="odaUser">rsr_readonly</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
-        </oda-data-source>
-        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR" id="212">
-            <list-property name="privateDriverProperties">
-                <ex-property>
-                    <name>metadataBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledMetadataBidiFormatStr</name>
-                </ex-property>
-                <ex-property>
-                    <name>contentBidiFormatStr</name>
-                    <value>ILYNN</value>
-                </ex-property>
-                <ex-property>
-                    <name>disabledContentBidiFormatStr</name>
-                </ex-property>
-            </list-property>
-            <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://psql:5432/rsrreports</property>
             <property name="odaUser">rsr</property>
             <encrypted-property name="odaPassword" encryptionID="base64">YnlwMGNndE1SQU13Y2JubzIxY3hWYm14cFM0TkxSaThuQkNScklNZQ==</encrypted-property>
         </oda-data-source>
@@ -355,7 +311,7 @@ function akvoDateRange(date1, date2){
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
@@ -1866,7 +1822,7 @@ order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorpe
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
@@ -3080,7 +3036,7 @@ where rsr_project.id=?]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
@@ -3148,7 +3104,7 @@ where rsr_partnership.project_id=?]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
@@ -3264,7 +3220,7 @@ where (rsr_relatedproject.relation = '1') and (rsr_relatedproject.related_projec
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
@@ -3377,7 +3333,7 @@ where (rsr_relatedproject.relation = '2') and (rsr_relatedproject.related_projec
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
@@ -3535,7 +3491,7 @@ select ? as number, 'B' as name
                     </structure>
                 </list-property>
             </structure>
-            <property name="dataSource">RSR-test</property>
+            <property name="dataSource">RSR-readonly</property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
