@@ -39,12 +39,12 @@
     }
 };
 function akvoDateRange(date1, date2){
-    if ( (date1 == null || date1 == "") && (date2 == null || date2 == "")) {
+    if ( (date1 == null || date1 == "") &amp;&amp; (date2 == null || date2 == "")) {
         return "";
     }
-//    if (date1.getDate() == 1 && date1.getMonth() == 1
-//     && date2.getDate() == 31 && date2.getMonth() == 12
-//     && date1.getFullYear() == date2.getFullYear()){
+//    if (date1.getDate() == 1 &amp;&amp; date1.getMonth() == 1
+//     &amp;&amp; date2.getDate() == 31 &amp;&amp; date2.getMonth() == 12
+//     &amp;&amp; date1.getFullYear() == date2.getFullYear()){
 //       return date1.getFullYear().toString();
 //    } 
     res = "";
@@ -4393,19 +4393,6 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     <text-property name="displayName">baseline_comment</text-property>
                     <expression name="expression" type="javascript">dataSetRow["baseline_comment"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">actual_value_number</property>
-                    <expression name="expression" type="javascript">dataSetRow["actual_value"] &amp;&amp; !isNaN(dataSetRow["actual_value"]) ? dataSetRow["actual_value"] : -1</expression>
-                    <property name="dataType">integer</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">target_value_number</property>
-                    <text-property name="displayName">target_value_number</text-property>
-                    <expression name="expression" type="javascript">(dataSetRow["target_value"] &amp;&amp; !isNaN(dataSetRow["target_value"])) ? dataSetRow["target_value"] : -1</expression>
-                    <property name="dataType">integer</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">progress_pct</property>
