@@ -106,19 +106,27 @@ UpdateStatus.propTypes = {
 
 
 const UpdateAttachments =({update}) => {
-    const {photo, file} = update;
-    const photo_container = photo?(
+    const {_photo, photo_url, _file, file_url} = update;
+    const photo_src = _photo ? _photo.img : photo_url ? photo_url : undefined;
+    const photo_container = photo_src ?
         <div className="update-photo">
             <div className="image-container">
-                <img src={photo}/>
+                <img src={photo_src}/>
             </div>
         </div>
-    ): undefined;
-    const file_container = file?(
+    :
+        undefined;
+    const file_container = _file ?
         <div className="update-attachment">
-            Attachment: <a href={file} target="_blank">{decodeURIComponent(file.split('/').pop())}</a>
+            Attachment: {_file.name}
         </div>
-    ):undefined;
+    :
+        file_url ?
+            <div className="update-attachment">
+                Attachment: <a href={file_url} target="_blank">{file_url.split('/').pop()}</a>
+            </div>
+        :
+            undefined;
     return (
         <div>
             {photo_container}
