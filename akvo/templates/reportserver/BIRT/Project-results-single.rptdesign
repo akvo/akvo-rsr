@@ -22,10 +22,10 @@
     if (actual === null || actual == "") {
         return null;
     }
-    if (actual.toLowerCase() == "available" ||actual.toLowerCase() == "operational" ) {
+    if (actual.toLowerCase() == "available" || actual.toLowerCase() == "operational" || actual.toLowerCase() == "prototype available" ) {
         return 100;
     }
-    if (actual.toLowerCase() == "not available" ||actual.toLowerCase() == "not yet available" ) {
+    if (actual.toLowerCase() == "not available" || actual.toLowerCase() == "not yet available" ) {
         return 0;
     }
     if (isNaN(actual) || target==null || isNaN(target)) {
@@ -39,7 +39,14 @@
     }
 };
 function akvoDateRange(date1, date2){
-    if ( (date1 == null || date1 == "") &amp;&amp; (date2 == null || date2 == "")) { return "";}
+    if ( (date1 == null || date1 == "") && (date2 == null || date2 == "")) {
+        return "";
+    }
+//    if (date1.getDate() == 1 && date1.getMonth() == 1
+//     && date2.getDate() == 31 && date2.getMonth() == 12
+//     && date1.getFullYear() == date2.getFullYear()){
+//       return date1.getFullYear().toString();
+//    } 
     res = "";
     if (date1) {res += Formatter.format(date1, "d-MMM-yyyy");}
     res += " -- ";
@@ -4488,9 +4495,9 @@ dataSetRow["actual_value"]&#13;
 :&#13;
 dataSetRow["measure"]  == "2"&#13;
 ?&#13;
-Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}")&#13;
+Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}")+"%"&#13;
 :&#13;
-Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}")+"%"</expression>
+Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}")</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
@@ -4499,6 +4506,10 @@ Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}
                     <text-property name="displayName">target_fmt</text-property>
                     <expression name="expression" type="javascript">isNaN(dataSetRow["target_value"]) ?&#13;
 dataSetRow["target_value"]&#13;
+:&#13;
+dataSetRow["measure"]  == "2"&#13;
+?&#13;
+Formatter.format(Number(dataSetRow["target_value"]),"#,##0{RoundingMode=HALF_UP}")+"%"&#13;
 :&#13;
 Formatter.format(Number(dataSetRow["target_value"]),"#,##0{RoundingMode=HALF_UP}")</expression>
                     <property name="dataType">string</property>
