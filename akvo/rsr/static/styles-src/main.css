@@ -2184,11 +2184,7 @@ body.translationBarActive div.skiptranslate ~ #map {
     box-sizing: border-box;
     transition: all .5s linear;
     padding: 5px 15px;
-    margin: 0 auto;
-    -moz-border-radius: 5px;
-    -o-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px; }
+    margin: 0 auto; }
   .projectEdit .myPanel input[type='radio']:checked ~ .formBlock {
     height: auto;
     overflow: auto;
@@ -2201,10 +2197,6 @@ body.translationBarActive div.skiptranslate ~ #map {
 .projectEdit .formStep {
   position: relative; }
   .projectEdit .formStep > div > label {
-    -moz-border-radius: 5px;
-    -o-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
     display: block;
     width: 100%;
     top: initial;
@@ -2384,9 +2376,7 @@ body.translationBarActive div.skiptranslate ~ #map {
   color: white; }
 
 .projectEdit div.parent {
-  background: rgba(240, 173, 78, 0.15);
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
+  background: rgba(32, 32, 36, 0.05);
   display: block;
   width: 100%;
   top: initial;
@@ -2975,6 +2965,8 @@ main.results-page {
               .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li .aggrActualValue span {
                 color: initial;
                 margin-left: 4px; }
+            .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-of-type(3) {
+              margin-left: 25px; }
             .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li.indicatorProgress {
               position: absolute;
               right: 2em;
@@ -3221,18 +3213,26 @@ main.results-page {
       padding-left: 20px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .statusMeta {
         display: none; }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span {
-        width: calc(100% - 40px);
-        display: inline-block; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue {
+        margin-bottom: 10px; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span {
+          width: calc(100% - 40px);
+          display: inline; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
         display: none; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.UpdateDate {
         display: inline-block;
         margin-left: 5px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .showDisaggregations {
-        padding-left: 40px; }
+        padding-left: 40px;
+        margin: 25px auto; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .showDisaggregations h5 {
           color: rgba(32, 32, 36, 0.5); }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .showDisaggregations div {
+          display: inline-block;
+          margin-left: 10px; }
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .showDisaggregations div.first-of-type {
+            margin-left: 0; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .comments {
         margin: 10px 0 0 40px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row hr.delicate {
@@ -3292,9 +3292,6 @@ main.results-page {
         pointer-events: none !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody ul {
       list-style-type: none; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .timestamp-info-container {
-      float: right;
-      margin-right: 50px; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active {
       border: 1px solid white !important;
       background: rgba(255, 255, 255, 0.5) !important; }
@@ -3481,7 +3478,8 @@ main.results-page {
     width: calc(100% - 10px); }
     .comments .commentContainer .commentLabel {
       display: inline-block;
-      margin-right: 5px; }
+      margin-right: 5px;
+      margin-left: 15px; }
     .comments .commentContainer .comment {
       color: #202024; }
       .comments .commentContainer .comment .comment-header {
