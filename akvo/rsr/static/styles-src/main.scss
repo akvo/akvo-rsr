@@ -5083,6 +5083,7 @@ main.results-page {
         .image-container {
             position: relative;
             margin-top: 5px;
+            z-index: 1000;
 
             @include transition(all 0.2s ease-in-out);
 
@@ -5102,7 +5103,7 @@ main.results-page {
 
             &:hover .image-overlay {
                 display: block;
-                background: rgba(255, 255, 255, 0.9);
+                background: rgba(255, 255, 255, 0.5);
             }
         }
 
