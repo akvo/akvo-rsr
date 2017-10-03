@@ -123,7 +123,8 @@ const UpdateAttachments =({update}) => {
     :
         file_url ?
             <div className="update-attachment">
-                Attachment: <a href={file_url} target="_blank">{file_url.split('/').pop()}</a>
+                Attachment: <a href={file_url}
+                               target="_blank">{decodeURIComponent(file_url.split('/').pop())}</a>
             </div>
         :
             undefined;
