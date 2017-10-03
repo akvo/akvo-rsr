@@ -3217,8 +3217,6 @@ body {
             transition: all .5s linear;
             padding: 5px 15px;
             margin: 0 auto;
-
-            @include border-radius(5px);
         }
 
         input[type='radio']:checked ~ .formBlock {
@@ -3237,8 +3235,6 @@ body {
         position: relative;
 
         & > div > label {
-            @include border-radius(5px);
-
             display: block;
             width: 100%;
             top: initial;
@@ -3468,9 +3464,7 @@ body {
     }
 
     div.parent {
-        background: rgba($progressNot, 0.15);
-        -webkit-border-radius: 10px;
-        border-radius: 10px;
+        background: rgba($akvoBlack, 0.05);
         display: block;
         width: 100%;
         top: initial;
