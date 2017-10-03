@@ -230,49 +230,45 @@ function replaceNames(newObjects) {
         unicodeNode.innerHTML = newObjects[i].unicode;
 
         // Update IDs and names of all input fields
-        for (var j = 0; j < INPUT_ELEMENTS.length; j++) {
-            var inputElement = INPUT_ELEMENTS[j];
-            var relObjectElements = parentNode.querySelectorAll(inputElement);
+        var relObjectElements = parentNode.querySelectorAll(INPUT_ELEMENTS.join());
+        for (var k = 0; k < relObjectElements.length; k++) {
+            var relObjectElement = relObjectElements[k];
 
-            for (var k = 0; k < relObjectElements.length; k++) {
-                var relObjectElement = relObjectElements[k];
-
-                if (relObjectElement.type !== 'checkbox') {
-                    // Check if the input is an underlying partial or not
-                    var relObjectParentElement = findAncestorByClass(relObjectElement, 'parent');
-                    var idList = relObjectElement.getAttribute('id').split('.');
-                    if (relObjectParentElement === parentNode) {
-                        idList[2] = newObjects[i].new_id;
-                        relObjectElement.setAttribute('id', idList.join('.'));
-                        relObjectElement.setAttribute('name', idList.join('.'));
-                    } else {
-                        // Update underlying objects if they're not going to be replaced later on or
-                        // already replaced (e.g. there's no 'new' in the ID)
-                        var relObjectParentElementId = relObjectParentElement.getAttribute('id');
-                        var relObjectWillBeReplaced = false;
-                        if (relObjectParentElementId.indexOf('new') > -1) {
-                            for (var newObjectsKey in newObjects) {
-                                if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
-                                    newObjects[newObjectsKey].old_id === relObjectParentElementId) {
-                                    relObjectWillBeReplaced = true;
-                                    break;
-                                }
+            if (relObjectElement.type !== 'checkbox') {
+                // Check if the input is an underlying partial or not
+                var relObjectParentElement = findAncestorByClass(relObjectElement, 'parent');
+                var idList = relObjectElement.getAttribute('id').split('.');
+                if (relObjectParentElement === parentNode) {
+                    idList[2] = newObjects[i].new_id;
+                    relObjectElement.setAttribute('id', idList.join('.'));
+                    relObjectElement.setAttribute('name', idList.join('.'));
+                } else {
+                    // Update underlying objects if they're not going to be replaced later on or
+                    // already replaced (e.g. there's no 'new' in the ID)
+                    var relObjectParentElementId = relObjectParentElement.getAttribute('id');
+                    var relObjectWillBeReplaced = false;
+                    if (relObjectParentElementId.indexOf('new') > -1) {
+                        for (var newObjectsKey in newObjects) {
+                            if (Object.prototype.hasOwnProperty.call(newObjects, newObjectsKey) &&
+                                newObjects[newObjectsKey].old_id === relObjectParentElementId) {
+                                relObjectWillBeReplaced = true;
+                                break;
                             }
-                            if (!relObjectWillBeReplaced) {
-                                // Underlying object is not in newObjects, so we need to replace the IDs of
-                                // those inputs as well
-                                var indexToBeReplaced = newObjects[i].old_id.split('.')[1].split('_').length - 1;
-                                var newRelObjectParentElementIdList = idList[2].split('_');
-                                newRelObjectParentElementIdList[indexToBeReplaced] = newObjects[i].new_id;
-                                idList[2] = newRelObjectParentElementIdList.join('_');
-                                relObjectElement.setAttribute('id', idList.join('.'));
-                                relObjectElement.setAttribute('name', idList.join('.'));
+                        }
+                        if (!relObjectWillBeReplaced) {
+                            // Underlying object is not in newObjects, so we need to replace the IDs of
+                            // those inputs as well
+                            var indexToBeReplaced = newObjects[i].old_id.split('.')[1].split('_').length - 1;
+                            var newRelObjectParentElementIdList = idList[2].split('_');
+                            newRelObjectParentElementIdList[indexToBeReplaced] = newObjects[i].new_id;
+                            idList[2] = newRelObjectParentElementIdList.join('_');
+                            relObjectElement.setAttribute('id', idList.join('.'));
+                            relObjectElement.setAttribute('name', idList.join('.'));
 
-                                // And we need to update the parent ID of that partial too
-                                var relObjectParentElementIdList = relObjectParentElementId.split('.');
-                                relObjectParentElementIdList[1] = newRelObjectParentElementIdList.join('_');
-                                relObjectParentElement.setAttribute('id', relObjectParentElementIdList.join('.'));
-                            }
+                            // And we need to update the parent ID of that partial too
+                            var relObjectParentElementIdList = relObjectParentElementId.split('.');
+                            relObjectParentElementIdList[1] = newRelObjectParentElementIdList.join('_');
+                            relObjectParentElement.setAttribute('id', relObjectParentElementIdList.join('.'));
                         }
                     }
                 }
@@ -1211,7 +1207,7 @@ function setPartialOnClicks() {
                 selectInputs[m].onchange = function(e){
                     setMeasureVisibility(e.target);
                     setDimensionVisibility(e.target);
-                    // setLabelsVisibility(e.target);
+                    setLabelsVisibility(e.target);
                 };
             }
         }
@@ -1479,21 +1475,16 @@ function setMeasureVisibility(indicatorTypeSelect) {
     }
 }
 
-// function setLabelsVisibility(indicatorTypeSelect) {
-//     /*
-//         Show or hide measure fields depending on indicator type
-//      */
-//     // parent is the div wrapping one whole indicator form, it's the outer node in
-//     // related_objects/indicator_input.html
-//     var parent = findAncestorByClass(indicatorTypeSelect, 'parent');
-//     var labelsContainer = parent.getElementsByClassName('indicator-label-container')[0].parentNode;
-//     // hide measure fields for qualitative indicators
-//     if (indicatorTypeSelect.value !== '2') {
-//         elAddClass(labelsContainer, 'hidden');
-//     } else {
-//         elRemoveClass(labelsContainer, 'hidden');
-//     }
-// }
+function setLabelsVisibility(indicatorTypeSelect) {
+    var parent = findAncestorByClass(indicatorTypeSelect, 'parent');
+    var labelsContainer = parent.getElementsByClassName('indicator-label-container')[0].parentNode;
+    // hide measure fields for qualitative indicators
+    if (indicatorTypeSelect.value !== '2') {
+        elAddClass(labelsContainer, 'label-hidden');
+    } else {
+        elRemoveClass(labelsContainer, 'label-hidden');
+    }
+}
 
 function setDimensionVisibility(indicatorTypeSelect) {
     /*
@@ -1543,14 +1534,12 @@ function updatePartialIDs(partial, newID) {
     partial.setAttribute('id', [oldIdList[0], newID].join('.'));
 
     // Replace names and IDs of all input, select and textarea fields
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS[i]);
-        for (var j = 0; j < partialInputs.length; j++) {
-            if (partialInputs[j].type !== 'checkbox') {
-                var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
-                partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
-                partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
-            }
+    var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS.join());
+    for (var j = 0; j < partialInputs.length; j++) {
+        if (partialInputs[j].type !== 'checkbox') {
+            var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
+            partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
+            partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
         }
     }
 
@@ -1975,12 +1964,10 @@ function inputCompleted(field) {
 }
 
 function partialFilled(parentNode) {
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var inputElements = parentNode.querySelectorAll(INPUT_ELEMENTS[i]);
-        for (var j = 0; j < inputElements.length; j++) {
-            if (inputCompleted(inputElements[j])) {
-                return true;
-            }
+    var inputElements = parentNode.querySelectorAll(INPUT_ELEMENTS.join());
+    for (var j = 0; j < inputElements.length; j++) {
+        if (inputCompleted(inputElements[j])) {
+            return true;
         }
     }
     return false;
@@ -2020,16 +2007,14 @@ function setHiddenFields(parent) {
     parent = parent || document;
 
     // Check per field if it should be hidden or not
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var allElements = parent.querySelectorAll(INPUT_ELEMENTS[i]);
-        for (var j = 0; j < allElements.length; j++) {
-            var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
-            if (formGroupNode !== null) {
-                if (!(shouldBeHidden(allElements[j]) || elHasClass(formGroupNode, 'always-hidden'))) {
-                    elRemoveClass(formGroupNode, 'hidden');
-                } else {
-                    elAddClass(formGroupNode, 'hidden');
-                }
+    var allElements = parent.querySelectorAll(INPUT_ELEMENTS.join());
+    for (var j = 0; j < allElements.length; j++) {
+        var formGroupNode = findAncestorByClass(allElements[j], 'form-group');
+        if (formGroupNode !== null) {
+            if (!(shouldBeHidden(allElements[j]) || elHasClass(formGroupNode, 'always-hidden'))) {
+                elRemoveClass(formGroupNode, 'hidden');
+            } else {
+                elAddClass(formGroupNode, 'hidden');
             }
         }
     }
@@ -2234,23 +2219,21 @@ function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
 }
 
 function setSectionChangeListener(section) {
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var elements = section.querySelectorAll(INPUT_ELEMENTS[i]);
+    var elements = section.querySelectorAll(INPUT_ELEMENTS.join());
 
-        for (var y = 0; y < elements.length; y++) {
-            var listener;
-            var el = elements[y];
+    for (var y = 0; y < elements.length; y++) {
+        var listener;
+        var el = elements[y];
 
-            if (elHasClass(el, 'has-listener')) {
+        if (elHasClass(el, 'has-listener')) {
 
-                // We have already added a class for this listener
-                // do nothing
-                continue;
-            }
-
-            listener = getChangeListener(section, el);
-            el.addEventListener('change', listener);
+            // We have already added a class for this listener
+            // do nothing
+            continue;
         }
+
+        listener = getChangeListener(section, el);
+        el.addEventListener('change', listener);
     }
 }
 
@@ -3436,12 +3419,10 @@ function fieldChanged(inputField) {
 function checkUnsavedChangesForm(form) {
     /* Checks if a form has unsaved changes. Returns true if so and false otherwise. */
 
-    for (var i = 0; i < INPUT_ELEMENTS.length; i++) {
-        var inputElements = form.querySelectorAll(INPUT_ELEMENTS[i]);
-        for (var j = 0; j < inputElements.length; j++) {
-            if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
-                return true;
-            }
+    var inputElements = form.querySelectorAll(INPUT_ELEMENTS.join());
+    for (var j = 0; j < inputElements.length; j++) {
+        if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
+            return true;
         }
     }
     return false;
