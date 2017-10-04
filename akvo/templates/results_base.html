@@ -5,7 +5,7 @@
     {
         "host": "{{ request.META.HTTP_HOST }}",
         "projectId": {{ project.pk }},
-        "userID": {{ user.pk }},
+        "userID": {% if user.pk %}{{ user.pk }}{% else %}null{% endif %},
         "isMEManager": {{ user_is_me_manager }}
     }
 </script>
