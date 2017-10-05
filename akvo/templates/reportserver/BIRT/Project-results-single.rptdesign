@@ -67,7 +67,7 @@ function akvoDateRange(date1, date2){
             <property name="dataType">integer</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="javascript">2849</value>
+                <value type="javascript">2081</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -4432,7 +4432,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <structure>
                     <property name="name">actual_fmt</property>
                     <text-property name="displayName">actual_fmt</text-property>
-                    <expression name="expression" type="javascript">isNaN(dataSetRow["actual_value"])&#13;
+                    <expression name="expression" type="javascript">null === dataSetRow["actual_value"] || "" === dataSetRow["actual_value"] || isNaN(dataSetRow["actual_value"])&#13;
 ?&#13;
 dataSetRow["actual_value"]&#13;
 :&#13;
@@ -5445,6 +5445,10 @@ Math.min(row["progress_pct"],100)&#13;
                             </list-property>
                             <property name="resultSetColumn">actual_fmt</property>
                         </data>
+                        <text-data id="323">
+                            <expression name="valueExpr">row["progress_pct"]</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
                     </cell>
                     <cell id="30">
                         <property name="verticalAlign">middle</property>
