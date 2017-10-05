@@ -31,6 +31,7 @@
     if (isNaN(actual) || target==null || isNaN(target)) {
         return null;
     }
+    //TODO check "ascending" field
     if (baseline == null || isNaN(baseline)  || target == baseline) {
         if (target == 0) {return null;}
         return Math.round(actual * 100 / target); 
@@ -4432,7 +4433,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <structure>
                     <property name="name">actual_fmt</property>
                     <text-property name="displayName">actual_fmt</text-property>
-                    <expression name="expression" type="javascript">null === dataSetRow["actual_value"] || "" === dataSetRow["actual_value"] || isNaN(dataSetRow["actual_value"])&#13;
+                    <expression name="expression" type="javascript">isNaN(parseFloat(dataSetRow["actual_value"]))&#13;
 ?&#13;
 dataSetRow["actual_value"]&#13;
 :&#13;
@@ -5445,10 +5446,6 @@ Math.min(row["progress_pct"],100)&#13;
                             </list-property>
                             <property name="resultSetColumn">actual_fmt</property>
                         </data>
-                        <text-data id="323">
-                            <expression name="valueExpr">row["progress_pct"]</expression>
-                            <property name="contentType">html</property>
-                        </text-data>
                     </cell>
                     <cell id="30">
                         <property name="verticalAlign">middle</property>
