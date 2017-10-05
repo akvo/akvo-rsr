@@ -456,7 +456,7 @@ left join rsr_indicator on result_id=rsr_result.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
 where rsr_result.project_id = ?
 --AND rsr_indicatorperiod.period_end::date < '2017-01-01'
-order by rsr_result.id, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
+order by rsr_result.id, rsr_indicator.order, rsr_indicator.id, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -15830,9 +15830,10 @@ And description = 'Self-funding expenditure 2016']]></xml-property>
                     <property name="pageBreakAfter">avoid</property>
                     <text-property name="text">Project summary</text-property>
                 </label>
-                <data id="604">
-                    <property name="resultSetColumn">project_plan_summary</property>
-                </data>
+                <text id="968">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">(akvoMMD(row["project_plan_summary"]));</VALUE-OF>]]></text-property>
+                </text>
                 <label id="675">
                     <property name="fontSize">14pt</property>
                     <property name="fontWeight">bold</property>
@@ -15841,9 +15842,10 @@ And description = 'Self-funding expenditure 2016']]></xml-property>
                     <property name="pageBreakAfter">avoid</property>
                     <text-property name="text">Project plan</text-property>
                 </label>
-                <data id="668">
-                    <property name="resultSetColumn">project_plan</property>
-                </data>
+                <text id="969">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">(akvoMMD(row["project_plan"]));</VALUE-OF>]]></text-property>
+                </text>
                 <label id="676">
                     <property name="fontSize">14pt</property>
                     <property name="fontWeight">bold</property>
@@ -15852,9 +15854,10 @@ And description = 'Self-funding expenditure 2016']]></xml-property>
                     <property name="pageBreakAfter">avoid</property>
                     <text-property name="text">Goals overview</text-property>
                 </label>
-                <data id="603">
-                    <property name="resultSetColumn">goals_overview</property>
-                </data>
+                <text id="970">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<VALUE-OF  format="HTML">(akvoMMD(row["goals_overview"]));</VALUE-OF>]]></text-property>
+                </text>
                 <list name="updates_list" id="764">
                     <property name="dataSet">Project_updates</property>
                     <list-property name="paramBindings">
@@ -16031,7 +16034,7 @@ And description = 'Self-funding expenditure 2016']]></xml-property>
                             <list-property name="action">
                                 <structure>
                                     <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="javascript">"http://rsr.akvo.org/en/project/"+row["project_id"]+"/"</expression>
+                                    <expression name="uri" type="javascript">"https://rsr.akvo.org/en/project/"+row["project_id"]+"/"</expression>
                                     <property name="targetWindow">_blank</property>
                                 </structure>
                             </list-property>
@@ -17270,6 +17273,12 @@ Math.min(row["progress_pct"],100)&#13;
             <property name="paddingLeft">1pt</property>
             <property name="paddingBottom">1pt</property>
             <property name="textAlign">center</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">true</expression>
+                </structure>
+            </list-property>
             <text-property name="text">ACTUAL</text-property>
         </label>
     </body>
