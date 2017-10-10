@@ -125,8 +125,19 @@ export default class App extends React.Component {
         this.props.dispatch(setPageData({project, mode, strings}));
 
         const userId = dataFromElement('endpoint-data').userID;
-        const isMEManager = dataFromElement('endpoint-data').isMEManager;
-        fetchModel('user', userId, activateToggleAll, modifyUser(isMEManager));
+        if (userId) {
+            const isMEManager = dataFromElement('endpoint-data').isMEManager;
+            fetchModel('user', userId, activateToggleAll, modifyUser(isMEManager));
+        } else {
+            this.props.dispatch({
+                type: c.FETCH_MODEL_FULFILLED,
+                payload: {
+                    model: 'user', data: {results: {
+                        id: 0,
+                        first_name: "Anonymous",
+                        last_name: "User",
+                        isMEManager: false}}}});
+        }
 
         const projectId = project.id;
         fetchModel('results', projectId, activateToggleAll);
