@@ -3634,7 +3634,15 @@ label.fileUpload {
         top: -1000px;
     }
 }
-
+.filesName {
+    position: relative;
+    width: 95% !important;
+    overflow: hidden;
+    div {
+        width: 95%;
+        @include noWrapBlockTxt;
+    }
+}
 /* Modal dialog stuff for the Project Editor */
 
 div.inactive {
@@ -4094,6 +4102,7 @@ main {
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         overflow: scroll;
+        position: relative;
     }
 }
 
@@ -4978,6 +4987,7 @@ main.results-page {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
+    max-width: 100%;
     &.qualitativeUpdate {
         .update-description {
             display: none;

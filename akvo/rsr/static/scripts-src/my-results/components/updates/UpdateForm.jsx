@@ -248,7 +248,7 @@ class FileUpload extends React.Component {
                     </label>
                 </FileReaderInput>
                 {removeFile}
-                {filename}
+                <div className="filesName">{filename}</div>
             </span>
             );
     }

@@ -2513,6 +2513,16 @@ label.fileUpload {
     position: fixed;
     top: -1000px; }
 
+.filesName {
+  position: relative;
+  width: 95% !important;
+  overflow: hidden; }
+  .filesName div {
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal; }
+
 /* Modal dialog stuff for the Project Editor */
 div.inactive .addOrg {
   display: none; }
@@ -2834,7 +2844,8 @@ main {
     margin-top: 5px;
     margin-left: 5px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    overflow: scroll; }
+    overflow: scroll;
+    position: relative; }
 
 main.project-page {
   height: calc(100vh - 300px); }
@@ -3339,124 +3350,124 @@ main.results-page {
   .results-alert button {
     padding: 3px 6px; }
 
-.update-container.qualitativeUpdate .update-description {
-  display: none; }
-
-.update-container.qualitativeUpdate textarea#narrative {
-  min-height: 220px !important; }
-
-.update-container .update-entry-container {
-  padding: 0 0 10px 0;
-  position: relative; }
-  .update-container .update-entry-container.edit-in-progress .targetLabel {
-    margin-top: 25px;
-    color: rgba(0, 0, 0, 0.5); }
-    .update-container .update-entry-container.edit-in-progress .targetLabel span {
-      color: black; }
-  .update-container .update-entry-container.edit-in-progress .update-entry-container-header {
-    background: rgba(255, 255, 255, 0.5);
-    margin-bottom: 10px;
+.update-container {
+  max-width: 100%; }
+  .update-container.qualitativeUpdate .update-description {
     display: none; }
-  .update-container .update-entry-container.edit-in-progress div {
-    width: 100%;
+  .update-container.qualitativeUpdate textarea#narrative {
+    min-height: 220px !important; }
+  .update-container .update-entry-container {
+    padding: 0 0 10px 0;
     position: relative; }
-    .update-container .update-entry-container.edit-in-progress div label[for="actualValue"] + button {
-      position: absolute;
-      font-weight: bold;
-      top: -35px;
-      right: 0;
-      background: transparent; }
-  .update-container .update-entry-container.edit-in-progress .disaggregationFields {
-    width: 100%;
-    overflow: auto;
-    border-top: 1px solid rgba(32, 32, 36, 0.1);
-    border-bottom: 1px solid rgba(32, 32, 36, 0.1);
-    padding: 15px 0;
-    margin-top: 10px; }
-    .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
-      margin-bottom: 10px; }
-    .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput {
-      margin: 10px auto;
-      padding: 0 5px; }
-      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput h5 {
-        margin: 8px auto; }
-      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput span {
-        color: rgba(32, 32, 36, 0.5); }
-  .update-container .update-entry-container .update-entry-container-header {
-    background: rgba(32, 32, 36, 0);
-    border-bottom: 1px solid rgba(32, 32, 36, 0.1);
-    padding: 0.75em 0; }
-    .update-container .update-entry-container .update-entry-container-header .update-user {
-      color: #2c2a74;
-      font-weight: bold; }
-    .update-container .update-entry-container .update-entry-container-header .update-created-at {
-      margin-left: 15px;
-      color: rgba(32, 32, 36, 0.7); }
-    .update-container .update-entry-container .update-entry-container-header .update-status {
-      color: #396680; }
-      .update-container .update-entry-container .update-entry-container-header .update-status.pending {
-        color: #f0ad4e; }
-      .update-container .update-entry-container .update-entry-container-header .update-status.revision {
-        color: #d9534f; }
-      .update-container .update-entry-container .update-entry-container-header .update-status.approved {
-        color: #5cb85c; }
-  .update-container .update-entry-container .image-container {
-    position: relative;
-    margin-top: 5px;
-    -moz-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    -webkit-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out; }
-    .update-container .update-entry-container .image-container .image-overlay {
-      display: none;
-      position: absolute;
-      padding-top: 35%;
-      top: 0;
-      left: 0;
+    .update-container .update-entry-container.edit-in-progress .targetLabel {
+      margin-top: 25px;
+      color: rgba(0, 0, 0, 0.5); }
+      .update-container .update-entry-container.edit-in-progress .targetLabel span {
+        color: black; }
+    .update-container .update-entry-container.edit-in-progress .update-entry-container-header {
+      background: rgba(255, 255, 255, 0.5);
+      margin-bottom: 10px;
+      display: none; }
+    .update-container .update-entry-container.edit-in-progress div {
       width: 100%;
-      height: calc(100%);
-      color: #d9534f;
-      vertical-align: middle;
-      text-transform: uppercase;
-      font-weight: bold; }
-    .update-container .update-entry-container .image-container:hover .image-overlay {
-      display: block;
-      background: rgba(255, 255, 255, 0.9); }
-  .update-container .update-entry-container .menuAction {
-    position: relative;
-    margin-top: 30px; }
-    .update-container .update-entry-container .menuAction .deleteUpdate .btn {
-      background: #ee3124;
-      color: white;
-      border-color: #ee3124; }
-      .update-container .update-entry-container .menuAction .deleteUpdate .btn:hover {
-        background: rgba(238, 49, 36, 0.5); }
-    .update-container .update-entry-container .menuAction .bottomRow {
+      position: relative; }
+      .update-container .update-entry-container.edit-in-progress div label[for="actualValue"] + button {
+        position: absolute;
+        font-weight: bold;
+        top: -35px;
+        right: 0;
+        background: transparent; }
+    .update-container .update-entry-container.edit-in-progress .disaggregationFields {
+      width: 100%;
+      overflow: auto;
+      border-top: 1px solid rgba(32, 32, 36, 0.1);
+      border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+      padding: 15px 0;
+      margin-top: 10px; }
+      .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
+        margin-bottom: 10px; }
+      .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput {
+        margin: 10px auto;
+        padding: 0 5px; }
+        .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput h5 {
+          margin: 8px auto; }
+        .update-container .update-entry-container.edit-in-progress .disaggregationFields .disaggregationInput span {
+          color: rgba(32, 32, 36, 0.5); }
+    .update-container .update-entry-container .update-entry-container-header {
+      background: rgba(32, 32, 36, 0);
+      border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+      padding: 0.75em 0; }
+      .update-container .update-entry-container .update-entry-container-header .update-user {
+        color: #2c2a74;
+        font-weight: bold; }
+      .update-container .update-entry-container .update-entry-container-header .update-created-at {
+        margin-left: 15px;
+        color: rgba(32, 32, 36, 0.7); }
+      .update-container .update-entry-container .update-entry-container-header .update-status {
+        color: #396680; }
+        .update-container .update-entry-container .update-entry-container-header .update-status.pending {
+          color: #f0ad4e; }
+        .update-container .update-entry-container .update-entry-container-header .update-status.revision {
+          color: #d9534f; }
+        .update-container .update-entry-container .update-entry-container-header .update-status.approved {
+          color: #5cb85c; }
+    .update-container .update-entry-container .image-container {
       position: relative;
-      list-style-type: none;
-      margin-right: 0; }
-      .update-container .update-entry-container .menuAction .bottomRow .btn {
-        padding: 2px 7px; }
-        .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
-          background: #202024;
-          color: white; }
-          .editUpdate .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
-            background: initial;
-            color: initial; }
-          .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default:hover {
-            background: #2c2a74; }
-      .update-container .update-entry-container .menuAction .bottomRow .cancelUpdate {
-        margin-right: 25px; }
-  .update-container .update-entry-container .upActualValue {
-    display: none;
-    margin: 15px 0 0 0px; }
-    .update-container .update-entry-container .upActualValue .update-actual-value-text {
-      color: #396680; }
-    .update-container .update-entry-container .upActualValue .update-actual-value-data {
-      font-weight: bold; }
-    .update-container .update-entry-container .upActualValue .update-relative-value {
-      margin-left: 5px;
-      font-weight: bold; }
+      margin-top: 5px;
+      -moz-transition: all 0.2s ease-in-out;
+      -o-transition: all 0.2s ease-in-out;
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out; }
+      .update-container .update-entry-container .image-container .image-overlay {
+        display: none;
+        position: absolute;
+        padding-top: 35%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: calc(100%);
+        color: #d9534f;
+        vertical-align: middle;
+        text-transform: uppercase;
+        font-weight: bold; }
+      .update-container .update-entry-container .image-container:hover .image-overlay {
+        display: block;
+        background: rgba(255, 255, 255, 0.9); }
+    .update-container .update-entry-container .menuAction {
+      position: relative;
+      margin-top: 30px; }
+      .update-container .update-entry-container .menuAction .deleteUpdate .btn {
+        background: #ee3124;
+        color: white;
+        border-color: #ee3124; }
+        .update-container .update-entry-container .menuAction .deleteUpdate .btn:hover {
+          background: rgba(238, 49, 36, 0.5); }
+      .update-container .update-entry-container .menuAction .bottomRow {
+        position: relative;
+        list-style-type: none;
+        margin-right: 0; }
+        .update-container .update-entry-container .menuAction .bottomRow .btn {
+          padding: 2px 7px; }
+          .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
+            background: #202024;
+            color: white; }
+            .editUpdate .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default {
+              background: initial;
+              color: initial; }
+            .update-container .update-entry-container .menuAction .bottomRow .btn.btn-default:hover {
+              background: #2c2a74; }
+        .update-container .update-entry-container .menuAction .bottomRow .cancelUpdate {
+          margin-right: 25px; }
+    .update-container .update-entry-container .upActualValue {
+      display: none;
+      margin: 15px 0 0 0px; }
+      .update-container .update-entry-container .upActualValue .update-actual-value-text {
+        color: #396680; }
+      .update-container .update-entry-container .upActualValue .update-actual-value-data {
+        font-weight: bold; }
+      .update-container .update-entry-container .upActualValue .update-relative-value {
+        margin-left: 5px;
+        font-weight: bold; }
 
 .comments {
   margin-top: 30px;
