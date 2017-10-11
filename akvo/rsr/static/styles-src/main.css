@@ -3438,7 +3438,7 @@ main.results-page {
       position: relative;
       margin-top: 30px; }
       .update-container .update-entry-container .menuAction .deleteUpdate .btn {
-        background: #ee3124;
+        background: #ee3124 !important;
         color: white;
         border-color: #ee3124; }
         .update-container .update-entry-container .menuAction .deleteUpdate .btn:hover {
