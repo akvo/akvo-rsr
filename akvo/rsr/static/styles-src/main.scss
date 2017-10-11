@@ -5093,13 +5093,14 @@ main.results-page {
         .image-container {
             position: relative;
             margin-top: 5px;
+            z-index: 1000;
 
             @include transition(all 0.2s ease-in-out);
 
             .image-overlay {
                 display: none;
                 position: absolute;
-                padding-top: 35%;
+                padding-top: 5px;
                 top: 0;
                 left: 0;
                 width: 100%;
@@ -5112,7 +5113,7 @@ main.results-page {
 
             &:hover .image-overlay {
                 display: block;
-                background: rgba(255, 255, 255, 0.9);
+                background: rgba(255, 255, 255, 0.5);
             }
         }
 

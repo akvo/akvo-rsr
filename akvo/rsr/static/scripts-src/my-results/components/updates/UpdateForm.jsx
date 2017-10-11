@@ -280,38 +280,38 @@ class ImageUpload extends React.Component {
         if (update._photo && update._photo != 'delete') {
             imageName = <div>{update._photo.file.name}</div>
             // Existing, unmodified update
-            } else if (update.photo_url) {
-                imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
-            }
-            if (imageName) {
-                removeImage =
-                    <div className="col-xs-3 update-photo">
-                        <div className="image-container">
-                            <a onClick={this.clearInput}>
-                                <img src={update._photo ? update._photo.img: update.photo_url}/>
-                                <div id="removeImage" className="image-overlay text-center">
-                                    {_('remove_image')}
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-            }
-
-            return (
-            <div>
-                {removeImage}
-                <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
-                                 ref={input => this.input = input}>
-                    <label className="imageUpload">
-                        <a>
-                            <i className="fa fa-camera"/>
-                            {removeImage ? _('change_image') : _('add_image')}
+        } else if (update.photo_url) {
+            imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
+        }
+        if (imageName) {
+            removeImage =
+                <div className="col-xs-3 update-photo">
+                    <div className="image-container">
+                        <a onClick={this.clearInput}>
+                            <img src={update._photo ? update._photo.img: update.photo_url}/>
+                            <div id="removeImage" className="image-overlay text-center">
+                                {_('remove_image')}
+                            </div>
                         </a>
-                    </label>
-                </FileReaderInput>
-                {imageName}
-            </div>
-            );
+                    </div>
+                </div>
+        }
+
+        return (
+        <div>
+            {removeImage}
+            <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
+                             ref={input => this.input = input}>
+                <label className="imageUpload">
+                    <a>
+                        <i className="fa fa-camera"/>
+                        {removeImage ? _('change_image') : _('add_image')}
+                    </a>
+                </label>
+            </FileReaderInput>
+            {imageName}
+        </div>
+        );
     }
 }
 

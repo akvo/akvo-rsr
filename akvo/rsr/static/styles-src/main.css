@@ -3414,6 +3414,7 @@ main.results-page {
     .update-container .update-entry-container .image-container {
       position: relative;
       margin-top: 5px;
+      z-index: 1000;
       -moz-transition: all 0.2s ease-in-out;
       -o-transition: all 0.2s ease-in-out;
       -webkit-transition: all 0.2s ease-in-out;
@@ -3421,7 +3422,7 @@ main.results-page {
       .update-container .update-entry-container .image-container .image-overlay {
         display: none;
         position: absolute;
-        padding-top: 35%;
+        padding-top: 5px;
         top: 0;
         left: 0;
         width: 100%;
@@ -3432,7 +3433,7 @@ main.results-page {
         font-weight: bold; }
       .update-container .update-entry-container .image-container:hover .image-overlay {
         display: block;
-        background: rgba(255, 255, 255, 0.9); }
+        background: rgba(255, 255, 255, 0.5); }
     .update-container .update-entry-container .menuAction {
       position: relative;
       margin-top: 30px; }
