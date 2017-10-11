@@ -208,3 +208,28 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             return "{} ({})".format(str(add_up), relative)
         except (InvalidOperation, TypeError):
             return self.value
+
+    @classmethod
+    def get_user_viewable_updates(cls, queryset, user):
+        approved_updates = queryset.filter(status=cls.STATUS_APPROVED_CODE)
+
+        if user.is_anonymous():
+            f_queryset = approved_updates
+
+        elif user.is_admin or user.is_superuser:
+            f_queryset = queryset
+
+        else:
+            own_updates = queryset.filter(user=user)
+            non_draft_updates = queryset.exclude(status=cls.STATUS_DRAFT_CODE)
+            filter_ = user.get_permission_filter(
+                'rsr.view_indicatorperioddata',
+                'period__indicator__result__project__'
+            )
+            f_queryset = (
+                approved_updates |
+                own_updates |
+                non_draft_updates.filter(filter_)
+            )
+
+        return f_queryset.distinct()

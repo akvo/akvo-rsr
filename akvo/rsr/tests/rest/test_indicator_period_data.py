@@ -16,7 +16,7 @@ from django.test import TestCase, Client
 from akvo.rsr.models import (
     Project, Organisation, Partnership, User,
     Employment, Result, Indicator, IndicatorPeriod,
-    IndicatorDimension
+    IndicatorDimension, IndicatorPeriodData
 )
 
 from akvo.utils import check_auth_groups
@@ -79,6 +79,27 @@ class IndicatorPeriodDataTestCase(TestCase):
         Organisation.objects.all().delete()
         Group.objects.all().delete()
 
+    def _create_new_user(self, group, is_admin=False, is_superuser=False):
+        self.username2 = "username2"
+        self.password2 = "password2"
+        self.user2 = User.objects.create_user(
+            username=self.username2,
+            password=self.password2,
+            email='{}@test.akvo.org'.format(self.username2),
+        )
+        self.user2.is_active = True
+        self.user2.is_admin = is_admin
+        self.user2.is_superuser = is_superuser
+        self.user2.save()
+        group = Group.objects.get(name='M&E Managers')
+        employment = Employment.objects.create(
+            user=self.user2,
+            organisation=self.reporting_org,
+            group=group,
+            is_approved=True,
+        )
+        return employment
+
     def test_create_update(self):
         """Test that posting an update works."""
 
@@ -97,7 +118,6 @@ class IndicatorPeriodDataTestCase(TestCase):
 
         # Then
         self.assertEqual(201, response.status_code)
-        response.content
 
     def test_modify_update(self):
         """Test that modifying an update works."""
@@ -192,6 +212,164 @@ class IndicatorPeriodDataTestCase(TestCase):
         self.assertEqual(str(new_value), content['value'])
         self.assertEqual(1, len(content['disaggregations']))
         self.assertEqual(float(new_value), float(content['disaggregations'][0]['value']))
+
+    def test_draft_update_invisible_to_me_manager(self):
+        """Test that draft update is invisible to M&E managers."""
+
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        self._create_new_user(group='M&E Managers')
+
+        # When
+        self.c.logout()
+        self.c.login(username=self.username2, password=self.password2)
+        response = self.c.get(url, content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        content = json.loads(response.content)
+        self.assertEqual(0, len(content['results']))
+
+    def test_draft_update_invisible_to_other_project_editors(self):
+        """Test that draft update is invisible to other Project Editors."""
+
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        self._create_new_user(group='Project Editors')
+
+        # When
+        self.c.logout()
+        self.c.login(username=self.username2, password=self.password2)
+        response = self.c.get(url, content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        content = json.loads(response.content)
+        self.assertEqual(0, len(content['results']))
+
+    def test_draft_update_visible_to_admin(self):
+        """Test that draft update is visible to admins."""
+
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        content = json.loads(response.content)
+        self._create_new_user(group='Project Editors', is_admin=True)
+        update = IndicatorPeriodData.objects.get(id=content['id'])
+
+        # When
+        self.c.logout()
+        self.c.login(username=self.username2, password=self.password2)
+        response = self.c.get(url, content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        content = json.loads(response.content)
+        self.assertEqual(1, len(content['results']))
+        self.assertEqual(update.id, content['results'][0]['id'])
+
+    def test_period_framework_hides_draft_updates_for_me_managers(self):
+        """Test draft updates hidden from M&E Managers in period framework."""
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        self._create_new_user(group='M&E Managers')
+
+        # When
+        self.c.logout()
+        self.c.login(username=self.username2, password=self.password2)
+        url = '/rest/v1/indicator_period_framework/?format=json'
+        response = self.c.get(url, content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        content = json.loads(response.content)
+        self.assertEqual(0, len(content['results'][0]['data']))
+
+    def test_period_framework_hides_draft_updates_for_project_editors(self):
+        """Test draft updates hidden from other Project Editors in period framework."""
+
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        self._create_new_user(group='Project Editors')
+
+        # When
+        self.c.logout()
+        self.c.login(username=self.username2, password=self.password2)
+        url = '/rest/v1/indicator_period_framework/?format=json'
+        response = self.c.get(url, content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        content = json.loads(response.content)
+        self.assertEqual(0, len(content['results'][0]['data']))
+
+    def test_period_framework_lists_draft_updates_for_admin(self):
+        """Test draft updates visible to admins in the period framework."""
+
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        content = json.loads(response.content)
+        self._create_new_user(group='Project Editors', is_admin=True)
+        update = IndicatorPeriodData.objects.get(id=content['id'])
+
+        # When
+        self.c.logout()
+        self.c.login(username=self.username2, password=self.password2)
+        url = '/rest/v1/indicator_period_framework/?format=json'
+        response = self.c.get(url, content_type='application/json')
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        content = json.loads(response.content)
+        self.assertEqual(1, len(content['results'][0]['data']))
+        self.assertEqual(update.id, content['results'][0]['data'][0]['id'])
 
     def setup_results_framework(self):
         self.result = Result.objects.create(
