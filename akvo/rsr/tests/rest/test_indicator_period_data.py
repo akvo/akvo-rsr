@@ -226,7 +226,6 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        content = json.loads(response.content)
         self._create_new_user(group='M&E Managers')
 
         # When
@@ -252,7 +251,6 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        content = json.loads(response.content)
         self._create_new_user(group='Project Editors')
 
         # When
@@ -305,7 +303,6 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        content = json.loads(response.content)
         self._create_new_user(group='M&E Managers')
 
         # When
@@ -332,7 +329,6 @@ class IndicatorPeriodDataTestCase(TestCase):
         response = self.c.post(url,
                                data=json.dumps(data),
                                content_type='application/json')
-        content = json.loads(response.content)
         self._create_new_user(group='Project Editors')
 
         # When
