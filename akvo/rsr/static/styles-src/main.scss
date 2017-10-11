@@ -3217,8 +3217,6 @@ body {
             transition: all .5s linear;
             padding: 5px 15px;
             margin: 0 auto;
-
-            @include border-radius(5px);
         }
 
         input[type='radio']:checked ~ .formBlock {
@@ -3237,8 +3235,6 @@ body {
         position: relative;
 
         & > div > label {
-            @include border-radius(5px);
-
             display: block;
             width: 100%;
             top: initial;
@@ -3410,6 +3406,11 @@ body {
         margin-right: 0px;
     }
 
+    .label-hidden {
+        display:none!important;
+        visibility:hidden!important;
+    }
+
     label.progress-bar {
         &[aria-valuenow="0"] {
             background: rgba($progressWarning, 1);
@@ -3468,9 +3469,7 @@ body {
     }
 
     div.parent {
-        background: rgba($progressNot, 0.15);
-        -webkit-border-radius: 10px;
-        border-radius: 10px;
+        background: rgba($akvoBlack, 0.05);
         display: block;
         width: 100%;
         top: initial;
@@ -4326,6 +4325,10 @@ main.results-page {
                                     }
                                 }
 
+                                &:nth-of-type(3) {
+                                    margin-left: 25px;
+                                }
+
                                 &.indicatorProgress {
                                     position: absolute;
                                     right: 2em;
@@ -4732,6 +4735,8 @@ main.results-page {
                                             }
 
                                             .updateValue {
+                                                margin-bottom: 10px;
+
                                                 span {
                                                     width: calc(100% - 40px);
                                                     display: inline;
@@ -4753,9 +4758,19 @@ main.results-page {
 
                                             .showDisaggregations {
                                                 padding-left: 40px;
+                                                margin: 25px auto;
 
                                                 h5 {
                                                     color: rgba($akvoBlack, 0.5);
+                                                }
+
+                                                div {
+                                                    display: inline-block;
+                                                    margin-left: 10px;
+
+                                                    &.first-of-type {
+                                                        margin-left: 0;
+                                                    }
                                                 }
                                             }
                                         }
@@ -4878,10 +4893,7 @@ main.results-page {
                                             list-style-type: none;
                                         }
 
-                                        .timestamp-info-container {
-                                            float: right;
-                                            margin-right: 50px;
-                                        }
+                                        .timestamp-info-container {}
                                     }
                                 }
 
@@ -5216,6 +5228,7 @@ main.results-page {
         .commentLabel {
             display: inline-block;
             margin-right: 5px;
+            margin-left: 15px;
         }
 
         .comment {

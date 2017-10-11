@@ -320,6 +320,19 @@ class ErrorHandlerTestCase(TestCase):
         # Then
         self.assertEquals(1, len(errors))
 
+    def test_should_handle_error_object_errors(self):
+        # Given
+        try:
+            raise ValueError
+        except ValueError as e:
+            errors = []
+            field_name = u'rsr_budgetitem.amount.5966_new-0'
+            # When
+            add_error(errors, e, field_name)
+
+        # Then
+        self.assertEquals(1, len(errors))
+
 
 class SplitKeyTestCase(TestCase):
 

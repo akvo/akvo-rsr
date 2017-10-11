@@ -25,6 +25,12 @@ class IndicatorPeriodDataViewSet(PublicProjectViewSet):
 
     project_relation = 'period__indicator__result__project__'
 
+    def get_queryset(self):
+        queryset = super(IndicatorPeriodDataViewSet, self).get_queryset()
+        return IndicatorPeriodData.get_user_viewable_updates(
+            queryset, self.request.user
+        )
+
 
 class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
@@ -39,6 +45,12 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     ).all()
     serializer_class = IndicatorPeriodDataFrameworkSerializer
     project_relation = 'period__indicator__result__project__'
+
+    def get_queryset(self):
+        queryset = super(IndicatorPeriodDataFrameworkViewSet, self).get_queryset()
+        return IndicatorPeriodData.get_user_viewable_updates(
+            queryset, self.request.user
+        )
 
 
 class IndicatorPeriodDataCommentViewSet(PublicProjectViewSet):

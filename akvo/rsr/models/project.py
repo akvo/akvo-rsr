@@ -1379,6 +1379,14 @@ class Project(TimestampsMixin, models.Model):
                 return True
         return False
 
+    def indicator_labels(self):
+        return get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
+            organisation=self.all_partners()
+        ).distinct()
+
+    def has_indicator_labels(self):
+        return self.indicator_labels().count() > 0
+
     def toggle_aggregate_children(self, aggregate):
         """
         If aggregation to children is turned off,
