@@ -3633,7 +3633,15 @@ label.fileUpload {
         top: -1000px;
     }
 }
-
+.filesName {
+    position: relative;
+    width: 95% !important;
+    overflow: hidden;
+    div {
+        width: 95%;
+        @include noWrapBlockTxt;
+    }
+}
 /* Modal dialog stuff for the Project Editor */
 
 div.inactive {
@@ -4093,6 +4101,7 @@ main {
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         overflow: scroll;
+        position: relative;
     }
 }
 
@@ -4710,6 +4719,15 @@ main.results-page {
 
                                     .row {
                                         .UpdateBody {
+                                            .update-photo, .update-attachment {
+                                                padding: 0 40px;
+                                                width: calc(100% - 20px);
+                                            }
+
+                                            .update-attachment {
+                                                margin: 20px 0 40px 0;
+                                            }
+
                                             .valueMeta {}
 
                                             .statusMeta {
@@ -4981,6 +4999,7 @@ main.results-page {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
+    max-width: 100%;
     &.qualitativeUpdate {
         .update-description {
             display: none;
@@ -5086,13 +5105,14 @@ main.results-page {
         .image-container {
             position: relative;
             margin-top: 5px;
+            z-index: 1000;
 
             @include transition(all 0.2s ease-in-out);
 
             .image-overlay {
                 display: none;
                 position: absolute;
-                padding-top: 35%;
+                padding-top: 5px;
                 top: 0;
                 left: 0;
                 width: 100%;
@@ -5105,7 +5125,7 @@ main.results-page {
 
             &:hover .image-overlay {
                 display: block;
-                background: rgba(255, 255, 255, 0.9);
+                background: rgba(255, 255, 255, 0.5);
             }
         }
 
@@ -5115,7 +5135,7 @@ main.results-page {
 
             .deleteUpdate {
                 .btn {
-                    background: $akvoTvRed;
+                    background: $akvoTvRed !important;
                     color: white;
                     border-color: $akvoTvRed;
 
@@ -5185,7 +5205,6 @@ main.results-page {
 .comments {
     margin-top: 30px;
     background: rgba($primary5, 0);
-    width: 98%;
     margin-left: 1%;
 
     @include border-radius(3px);
