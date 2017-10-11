@@ -5,9 +5,10 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React from 'react'
+import update from 'immutability-helper';
 import PropTypes from 'prop-types';
 import { Panel } from 'rc-collapse'
+import React from 'react'
 import { connect } from "react-redux"
 
 import { collapseChange } from "../actions/collapse-actions"
@@ -21,12 +22,13 @@ import {
 } from '../utils'
 
 import { getUpdatesChildrenIds } from "../selectors";
-import { saveModelToBackend } from "../actions/model-actions";
+import {saveModelToBackend, updateModel} from "../actions/model-actions";
 import * as alertActions from "../actions/alert-actions"
 import * as c from "../const"
 
 import AlertFactory from "./alertContainer"
 
+let newCommentID = 1;
 
 const CommentAlert = ({message, close}) => (
     <div className='results-alert comment-alert'>
@@ -43,6 +45,7 @@ CommentAlert.propTypes = {
 @connect((store) => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
+        updates: store.models.updates,
     }
 }, alertActions)
 class CommentForm extends React.Component {
@@ -80,37 +83,60 @@ class CommentForm extends React.Component {
     addComment() {
         const { parentId, user, createAlert } = this.props;
         const { comment, commentAlertName } = this.state;
+        const id = `new-${newCommentID}`;
         if (comment.trim()) {
             const newComment = {
+                id,
+                comment,
                 'data': parentId,
                 'user': user.id,
-                'comment': comment
             };
-            const callbacks = {
-                [c.UPDATE_MODEL_FULFILLED]: this.onSave,
-                [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
-                    this, commentAlertName, _("comment_not_saved")
-                )
-            };
-            saveModelToBackend(
-                c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
-            );
+            /*
+                This is a somewhat ugly hack to be abe to post an empty update that only has a
+                comment.
+                When a note is added to a new update, it's instantiated in the store, but also set
+                to the _comment field on the update.
+                Also set the _callbacks field on the update to be able to show an alert if the post
+                of the comment fails.
+                When the update is saved (model-action.sendUpdateToBackend) the _comment field is
+                checked and if it holds a comment it's posted to the backend and the store is
+                updated.
+             */
+            if (isNewUpdate(parentId)) {
+                const callbacks = {
+                    [c.UPDATE_MODEL_FULFILLED]: null,
+                    [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
+                        this, commentAlertName, _("comment_not_saved")
+                    )
+                };
+                let newUpdate = {...this.props.updates.objects[parentId]};
+                newUpdate = update(newUpdate, {$merge: {_comment: newComment, _callbacks: callbacks}});
+                updateModel(c.OBJECTS_UPDATES, newUpdate);
+                updateModel(c.OBJECTS_COMMENTS, newComment);
+            } else {
+                const callbacks = {
+                    [c.UPDATE_MODEL_FULFILLED]: this.onSave,
+                    [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
+                        this, commentAlertName, _("comment_not_saved")
+                    )
+                };
+                saveModelToBackend(
+                    c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
+                );
+            }
         } else  {
             createAlert(commentAlertName, "Please enter a comment text");
         }
     }
 
     render() {
-        const {disabled} = this.props;
         return (
             <div>
                 <div className="input-group">
                     <input className="form-control" value={this.state.comment}
-                           onChange={this.onChange} placeholder={_('add_comment_placeholder')}
-                           disabled={disabled}/>
+                           onChange={this.onChange} placeholder={_('add_comment_placeholder')}/>
                     <span className="input-group-btn">
-                        <button type="submit" onClick={this.addComment} className="btn btn-default"
-                                disabled={disabled}>
+                        <button type="submit" onClick={this.addComment} className="btn btn-default">
                             {_('add_comment')}
                         </button>
                     </span>
@@ -123,12 +149,15 @@ class CommentForm extends React.Component {
 
 
 const Comment = ({comment}) => {
-    const name = comment.user_details.first_name + ' ' + comment.user_details.last_name;
+    const name = comment.user_details ?
+        comment.user_details.first_name + ' ' + comment.user_details.last_name
+    :
+        undefined;
     return (
         <div className={'commentContainer'}>
-            <strong>{displayDate(comment.created_at)} </strong>
-            {name} says:
-            <span className={'comment'}>{comment.comment}</span>
+            {comment.created_at ? <strong>{displayDate(comment.created_at)} </strong> : undefined}
+            {name ? <span className={'commentLabel'}>{name} says: </span> : undefined}
+            <div className={'comment'}>{comment.comment}</div>
         </div>
     )
 };
@@ -186,14 +215,14 @@ export default class Comments extends React.Component {
                 <p>Loading...</p>
             );
         } else {
-            const disabled = isNewUpdate(this.props.parentId);
-            const disabledNote = disabled ? " (" + _("notes_disabled") + ")" : undefined;
+            // const disabled = isNewUpdate(this.props.parentId);
+            // const disabledNote = disabled ? " (" + _("notes_disabled") + ")" : undefined;
             return (
                 <div className={c.OBJECTS_COMMENTS}>
-                    <strong>Internal notes:</strong>{disabledNote}
-                    {disabled ? undefined : this.renderComments(commentIds)}
+                    <strong>Internal notes:</strong>
+                    {this.renderComments(commentIds)}
                     {inForm ?
-                        <CommentForm parentId={this.props.parentId} disabled={disabled}/>
+                        <CommentForm parentId={this.props.parentId}/>
                         :
                         undefined}
                 </div>

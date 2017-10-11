@@ -3217,8 +3217,6 @@ body {
             transition: all .5s linear;
             padding: 5px 15px;
             margin: 0 auto;
-
-            @include border-radius(5px);
         }
 
         input[type='radio']:checked ~ .formBlock {
@@ -3237,8 +3235,6 @@ body {
         position: relative;
 
         & > div > label {
-            @include border-radius(5px);
-
             display: block;
             width: 100%;
             top: initial;
@@ -3410,6 +3406,11 @@ body {
         margin-right: 0px;
     }
 
+    .label-hidden {
+        display:none!important;
+        visibility:hidden!important;
+    }
+
     label.progress-bar {
         &[aria-valuenow="0"] {
             background: rgba($progressWarning, 1);
@@ -3468,9 +3469,7 @@ body {
     }
 
     div.parent {
-        background: rgba($progressNot, 0.15);
-        -webkit-border-radius: 10px;
-        border-radius: 10px;
+        background: rgba($akvoBlack, 0.05);
         display: block;
         width: 100%;
         top: initial;
@@ -3634,7 +3633,15 @@ label.fileUpload {
         top: -1000px;
     }
 }
-
+.filesName {
+    position: relative;
+    width: 95% !important;
+    overflow: hidden;
+    div {
+        width: 95%;
+        @include noWrapBlockTxt;
+    }
+}
 /* Modal dialog stuff for the Project Editor */
 
 div.inactive {
@@ -4094,6 +4101,7 @@ main {
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
         overflow: scroll;
+        position: relative;
     }
 }
 
@@ -4126,14 +4134,6 @@ main.results-page {
 }
 
 .results {
-    &.liveView {
-        .periodWrap {
-            .lockStatusTxt {
-                display: none !important;
-            }
-        }
-    }
-
     background: white;
     box-sizing: border-box;
 
@@ -4323,6 +4323,10 @@ main.results-page {
                                         color: initial;
                                         margin-left: 4px;
                                     }
+                                }
+
+                                &:nth-of-type(3) {
+                                    margin-left: 25px;
                                 }
 
                                 &.indicatorProgress {
@@ -4715,6 +4719,15 @@ main.results-page {
 
                                     .row {
                                         .UpdateBody {
+                                            .update-photo, .update-attachment {
+                                                padding: 0 40px;
+                                                width: calc(100% - 20px);
+                                            }
+
+                                            .update-attachment {
+                                                margin: 20px 0 40px 0;
+                                            }
+
                                             .valueMeta {}
 
                                             .statusMeta {
@@ -4722,9 +4735,11 @@ main.results-page {
                                             }
 
                                             .updateValue {
+                                                margin-bottom: 10px;
+
                                                 span {
                                                     width: calc(100% - 40px);
-                                                    display: inline-block;
+                                                    display: inline;
                                                 }
                                             }
 
@@ -4743,9 +4758,19 @@ main.results-page {
 
                                             .showDisaggregations {
                                                 padding-left: 40px;
+                                                margin: 25px auto;
 
                                                 h5 {
                                                     color: rgba($akvoBlack, 0.5);
+                                                }
+
+                                                div {
+                                                    display: inline-block;
+                                                    margin-left: 10px;
+
+                                                    &.first-of-type {
+                                                        margin-left: 0;
+                                                    }
                                                 }
                                             }
                                         }
@@ -4868,10 +4893,7 @@ main.results-page {
                                             list-style-type: none;
                                         }
 
-                                        .timestamp-info-container {
-                                            float: right;
-                                            margin-right: 50px;
-                                        }
+                                        .timestamp-info-container {}
                                     }
                                 }
 
@@ -4968,6 +4990,7 @@ main.results-page {
 .results-alert {
     font-size: 80%;
     color: red;
+
     button {
         padding: 3px 6px;
     }
@@ -4976,6 +4999,7 @@ main.results-page {
 .update-container {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
+    max-width: 100%;
     &.qualitativeUpdate {
         .update-description {
             display: none;
@@ -5081,13 +5105,14 @@ main.results-page {
         .image-container {
             position: relative;
             margin-top: 5px;
+            z-index: 1000;
 
             @include transition(all 0.2s ease-in-out);
 
             .image-overlay {
                 display: none;
                 position: absolute;
-                padding-top: 35%;
+                padding-top: 5px;
                 top: 0;
                 left: 0;
                 width: 100%;
@@ -5100,7 +5125,7 @@ main.results-page {
 
             &:hover .image-overlay {
                 display: block;
-                background: rgba(255, 255, 255, 0.9);
+                background: rgba(255, 255, 255, 0.5);
             }
         }
 
@@ -5110,7 +5135,7 @@ main.results-page {
 
             .deleteUpdate {
                 .btn {
-                    background: $akvoTvRed;
+                    background: $akvoTvRed !important;
                     color: white;
                     border-color: $akvoTvRed;
 
@@ -5180,7 +5205,6 @@ main.results-page {
 .comments {
     margin-top: 30px;
     background: rgba($primary5, 0);
-    width: 98%;
     margin-left: 1%;
 
     @include border-radius(3px);
@@ -5199,10 +5223,15 @@ main.results-page {
         padding-top: 5px;
         padding-bottom: 5px;
         color: rgba($akvoBlack, 0.5);
-        width: calc(100% - 50px);
+        width: calc(100% - 10px);
+
+        .commentLabel {
+            display: inline-block;
+            margin-right: 5px;
+            margin-left: 15px;
+        }
 
         .comment {
-            margin-left: 10px;
             color: $akvoBlack;
 
             .comment-header {

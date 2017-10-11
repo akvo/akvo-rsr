@@ -7,6 +7,7 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import re
 import django
 
 from django.conf import settings
@@ -27,6 +28,7 @@ def extra_context(request, protocol="http"):
     deploy_branch = getattr(settings, 'DEPLOY_BRANCH', 'Unknown')
     deploy_commit_id = getattr(settings, 'DEPLOY_COMMIT_ID', 'Unknown')
     deploy_commit_full_id = getattr(settings, 'DEPLOY_COMMIT_FULL_ID', 'Unknown')
+    sentry_dsn = get_sentry_dsn(settings)
 
     return dict(
         current_site=current_site,
@@ -35,8 +37,17 @@ def extra_context(request, protocol="http"):
         deploy_tag=deploy_tag,
         deploy_branch=deploy_branch,
         deploy_commit_id=deploy_commit_id,
-        deploy_commit_full_id=deploy_commit_full_id
+        deploy_commit_full_id=deploy_commit_full_id,
+        sentry_dsn=sentry_dsn,
     )
+
+
+def get_sentry_dsn(settings):
+    sentry_dsn = getattr(settings, 'RAVEN_CONFIG', {}).get('dsn', '')
+    sentry_dsn = re.sub('(:\w*?)@', '@', sentry_dsn)
+    # Always use https!
+    sentry_dsn = sentry_dsn.replace('http://', 'https://')
+    return sentry_dsn
 
 
 def get_current_path_without_lang(request):

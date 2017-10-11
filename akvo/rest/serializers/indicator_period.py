@@ -6,7 +6,7 @@
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataFrameworkSerializer
-from akvo.rsr.models import IndicatorPeriod
+from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 
 from rest_framework import serializers
 
@@ -23,9 +23,23 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
-    data = IndicatorPeriodDataFrameworkSerializer(many=True, required=False)
+    data = serializers.SerializerMethodField('get_updates')
     parent_period = serializers.ReadOnlyField(source='parent_period.pk')
     percent_accomplishment = serializers.ReadOnlyField()
 
     class Meta:
         model = IndicatorPeriod
+
+    def get_updates(self, obj):
+        user = self.context['request'].user
+        updates = IndicatorPeriodData.objects.filter(period=obj).select_related(
+            'period',
+            'user',
+            'approved_by',
+        ).prefetch_related(
+            'comments',
+            'comments__user'
+        )
+        updates = IndicatorPeriodData.get_user_viewable_updates(updates, user)
+        serializer = IndicatorPeriodDataFrameworkSerializer(updates, many=True)
+        return serializer.data

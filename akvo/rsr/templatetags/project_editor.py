@@ -258,10 +258,7 @@ def choices(obj, field):
             project = get_model('rsr', 'Project').objects.get(pk=project_pk)
         else:
             project = obj.indicator.result.project
-        organisation_indicator_labels = get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
-            organisation=project.primary_organisation
-        )
-        return choices_and_ids(organisation_indicator_labels, 'id', 'label')
+        return choices_and_ids(project.indicator_labels(), 'id', 'label')
 
 
 @register.filter

@@ -369,11 +369,17 @@ class User(AbstractBaseUser, PermissionsMixin):
                 return True
         return False
 
-    def approved_employments(self):
-        """
-        Return all approved employments.
+    def approved_employments(self, group_names=None):
+        """Return approved employments.
+
+        When no group_names are provided, all the employments are returned.
+
+        group_names can be used to filter employments in specific groups.
+
         """
         employments = self.employers.all().exclude(is_approved=False)
+        if group_names is not None:
+            employments.filter(group__name__in=group_names)
         return employments.select_related('organisation', 'group', 'user')
 
     def can_create_project(self):
@@ -476,6 +482,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         editor_group = Group.objects.get(name='Project Editors')
         return self.has_role_in_org(org, editor_group)
 
+    def get_me_manager_employment_orgs(self):
+        """Return all organizations where user is a m&e manager."""
+
+        employments = Employment.objects.filter(
+            user=self, is_approved=True, group__name__in=['M&E Managers']
+        )
+        return employments.organisations()
+
     def get_project_editor_me_manager_employment_orgs(self):
         """Return all organisations where user is a project editor or m&e manager."""
 
@@ -495,6 +509,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Return all projects of orgs where user is an admin."""
 
         orgs = self.get_admin_employment_orgs()
+        return Project.objects.of_partners(orgs).distinct()
+
+    def me_manager_projects(self):
+        """Return all projects of orgs where user is m&e manager."""
+
+        orgs = self.get_me_manager_employment_orgs()
         return Project.objects.of_partners(orgs).distinct()
 
     def project_editor_me_manager_projects(self):
@@ -528,6 +548,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'is_org_admin': Q(**{project_filter_name: self.admin_projects()}),
             'is_org_project_editor': Q(
                 **{project_filter_name: self.project_editor_me_manager_projects()}
+            ),
+            'is_org_me_manager': Q(
+                **{project_filter_name: self.me_manager_projects()}
             ),
             'is_org_user_manager': (
                 Q(**{project_filter_name: self.user_manager_projects()}) & Q(user=self)

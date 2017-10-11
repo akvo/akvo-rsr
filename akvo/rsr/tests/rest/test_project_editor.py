@@ -320,6 +320,19 @@ class ErrorHandlerTestCase(TestCase):
         # Then
         self.assertEquals(1, len(errors))
 
+    def test_should_handle_error_object_errors(self):
+        # Given
+        try:
+            raise ValueError
+        except ValueError as e:
+            errors = []
+            field_name = u'rsr_budgetitem.amount.5966_new-0'
+            # When
+            add_error(errors, e, field_name)
+
+        # Then
+        self.assertEquals(1, len(errors))
+
 
 class SplitKeyTestCase(TestCase):
 
@@ -407,8 +420,8 @@ class ChoicesTestCase(TestCase):
             {(label1.pk, label1.label), (label2.pk, label2.label)}
         )
         self.assertEqual(
-            ids,
-            [1, 2]
+            set(ids),
+            {label1.pk, label2.pk}
         )
 
         # When
@@ -420,6 +433,59 @@ class ChoicesTestCase(TestCase):
             {(label1.pk, label1.label), (label2.pk, label2.label)}
         )
         self.assertEqual(
+            set(ids),
+            {label1.pk, label2.pk}
+        )
+
+    def test_indicator_label_choices_multiple_organisations(self):
+        # Given
+        organisation1 = Organisation.objects.create(
+            name='name1', long_name='long name1', can_create_projects=True
+        )
+        organisation2 = Organisation.objects.create(
+            name='name2', long_name='long name2', can_create_projects=True
+        )
+        Partnership.objects.create(
+            organisation=organisation1, project=self.project,
+            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
+        )
+        Partnership.objects.create(
+            organisation=organisation2, project=self.project,
+            iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER
+        )
+        label1 = OrganisationIndicatorLabel.objects.create(
+            organisation=organisation1, label=u'label 1'
+        )
+        label2 = OrganisationIndicatorLabel.objects.create(
+            organisation=organisation2, label=u'label 2'
+        )
+
+        result = Result.objects.create(project=self.project, title="Result #1", type="1", )
+        indicator = Indicator.objects.create(result=result, title="Indicator #1", measure="1", )
+        indicator_label = IndicatorLabel.objects.create(indicator=indicator, label=label1)
+
+        # When
+        labels, ids = choices(indicator_label, 'label')
+
+        # Then
+        self.assertEqual(
+            list(labels),
+            [(label1.pk, label1.label), (label2.pk, label2.label)]
+        )
+        self.assertEqual(
             ids,
-            [1, 2]
+            [label1.pk, label2.pk]
+        )
+
+        # When
+        labels, ids = choices('IndicatorLabel.{}_1234_567_89'.format(self.project.pk), 'label')
+
+        # Then
+        self.assertEqual(
+            list(labels),
+            [(label1.pk, label1.label), (label2.pk, label2.label)]
+        )
+        self.assertEqual(
+            ids,
+            [label1.pk, label2.pk]
         )
