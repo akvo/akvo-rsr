@@ -247,11 +247,10 @@ export default class App extends React.Component {
                     }
                 }
                 if (this.state.updateFormDisplay &&
-
                     (this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
                      !nextProps.ui.activeFilter))
                     {
-                        this.onClose();
+                        this.onClose(false);
                     }
             }
         };
@@ -285,13 +284,15 @@ export default class App extends React.Component {
         this.manageButtonsAndHash(c.FILTER_NEED_REPORTING);
     }
 
-    onClose() {
+    onClose(update=true) {
         updateFormClose();
-        const originalUpdate = this.state.originalUpdate;
-        if (isNewUpdate(originalUpdate)) {
-            deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
-        } else {
-            updateModel(c.OBJECTS_UPDATES, originalUpdate);
+        if (update) {
+            const originalUpdate = this.state.originalUpdate;
+            if (isNewUpdate(originalUpdate)) {
+                deleteFromModel(c.OBJECTS_UPDATES, originalUpdate, this.props.collapseId);
+            } else {
+                updateModel(c.OBJECTS_UPDATES, originalUpdate);
+            }
         }
     }
 
