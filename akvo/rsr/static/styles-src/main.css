@@ -3233,6 +3233,8 @@ main.results-page {
         margin-bottom: 10px; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span {
           width: calc(100% - 40px);
+          display: block; }
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue:first-child span {
           display: inline; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
         display: none; }
@@ -3497,7 +3499,8 @@ main.results-page {
       margin-right: 5px;
       margin-left: 15px; }
     .comments .commentContainer .comment {
-      color: #202024; }
+      color: #202024;
+      width: calc(100% - 60px); }
       .comments .commentContainer .comment .comment-header {
         font-weight: bold; }
         .comments .commentContainer .comment .comment-header span {
