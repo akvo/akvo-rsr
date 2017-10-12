@@ -4739,7 +4739,12 @@ main.results-page {
 
                                                 span {
                                                     width: calc(100% - 40px);
-                                                    display: inline;
+                                                    display: block;
+                                                }
+                                                &:first-child {
+                                                    span {
+                                                        display: inline;
+                                                    }
                                                 }
                                             }
 
@@ -5233,7 +5238,7 @@ main.results-page {
 
         .comment {
             color: $akvoBlack;
-
+            width: calc(100% - 60px);
             .comment-header {
                 font-weight: bold;
 
