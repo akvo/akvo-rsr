@@ -16,6 +16,35 @@ import {
     resetKeys,
 } from "./actions/collapse-actions";
 
+import {updateModel} from "./actions/model-actions";
+import keyBy from 'lodash/keyBy';
+import update from 'immutability-helper';
+
+
+// Note: this function used to be a method of the App class, but the the transpiling messes something
+// up the result being the the update function from immuatbility-helper can't be found/called
+export function createNewDisaggregations(update_id, dimensions, disaggregations){
+    const dimension_disaggregations = keyBy(disaggregations, 'dimension');
+    let changedDisaggregations = disaggregations;
+    dimensions.forEach((dimension) => {
+        if (dimension_disaggregations[dimension.id] === undefined) {
+            const disaggregation = {
+                'update': update_id,
+                'dimension': dimension.id,
+                'id': 'new-'+dimension.id,
+                'value': '',
+                'numerator': '',
+                'denominator': '',
+                'narrative': '',
+            };
+            changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
+            /* disaggregations.push(disaggregation)*/
+            updateModel('disaggregations', disaggregation);
+        }
+    });
+    return changedDisaggregations;
+}
+
 
 export function distinct(arr) {
     //return an array of uniques values

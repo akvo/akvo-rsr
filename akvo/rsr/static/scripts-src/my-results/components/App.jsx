@@ -9,8 +9,6 @@
 import React from "react";
 import {connect} from "react-redux";
 
-import keyBy from 'lodash/keyBy';
-import update from 'immutability-helper';
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
@@ -46,7 +44,7 @@ import {
 
 import {
     _,
-    collapseId,
+    collapseId, createNewDisaggregations,
     identicalArrays,
     isNewUpdate,
     openNodes,
@@ -210,7 +208,7 @@ export default class App extends React.Component {
                 const dimensions = this.props.dimension_ids[indicator.id].map(
                     (id) => {return this.props.dimensions.objects[id]}
                 );
-                this.createNewDisaggregations(
+                createNewDisaggregations(
                     updateFormDisplay, dimensions, disaggregations[updateFormDisplay]
                 );
             }
@@ -296,27 +294,27 @@ export default class App extends React.Component {
         }
     }
 
-    createNewDisaggregations(update_id, dimensions, disaggregations){
-        const dimension_disaggregations = keyBy(disaggregations, 'dimension');
-        let changedDisaggregations = disaggregations;
-        dimensions.forEach((dimension) => {
-            if (dimension_disaggregations[dimension.id] === undefined) {
-                const disaggregation = {
-                    'update': update_id,
-                    'dimension': dimension.id,
-                    'id': 'new-'+dimension.id,
-                    'value': '',
-                    'numerator': '',
-                    'denominator': '',
-                    'narrative': '',
-                };
-                changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
-                /* disaggregations.push(disaggregation)*/
-                updateModel('disaggregations', disaggregation);
-            }
-        });
-        return changedDisaggregations;
-    }
+    // createNewDisaggregations(update_id, dimensions, disaggregations){
+    //     const dimension_disaggregations = keyBy(disaggregations, 'dimension');
+    //     let changedDisaggregations = disaggregations;
+    //     dimensions.forEach((dimension) => {
+    //         if (dimension_disaggregations[dimension.id] === undefined) {
+    //             const disaggregation = {
+    //                 'update': update_id,
+    //                 'dimension': dimension.id,
+    //                 'id': 'new-'+dimension.id,
+    //                 'value': '',
+    //                 'numerator': '',
+    //                 'denominator': '',
+    //                 'narrative': '',
+    //             };
+    //             changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
+    //             /* disaggregations.push(disaggregation)*/
+    //             updateModel('disaggregations', disaggregation);
+    //         }
+    //     });
+    //     return changedDisaggregations;
+    // }
 
     render() {
         const callbacks = {
