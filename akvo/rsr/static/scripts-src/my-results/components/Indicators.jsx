@@ -60,7 +60,7 @@ const IndicatorHeader = (
             <ul>
                 <li>{title}</li>
                 <li>{type}</li>
-                <IndicatorHeaderPeriodCount count={periodCount} />
+                <IndicatorHeaderPeriodCount count={periodCount} className="periodCount"/>
                 {progress_bar}
             </ul>
         </span>

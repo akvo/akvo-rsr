@@ -18,6 +18,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .indicator_period import IndicatorPeriod
+from .indicator_label import IndicatorLabel
 from .result import Result
 from .utils import PERCENTAGE_MEASURE, QUALITATIVE, QUANTITATIVE
 
@@ -104,6 +105,9 @@ class Indicator(models.Model):
                         setattr(child_indicator, field, parent_field_value)
 
                 child_indicator.save()
+
+            if self.type != QUALITATIVE:
+                IndicatorLabel.objects.filter(indicator=self).delete()
 
         # Create a new indicator when it's added
         else:

@@ -27,3 +27,4 @@ class IndicatorPeriodDataComment(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period data comment')
         verbose_name_plural = _(u'indicator period data comments')
+        ordering = ('-id', )

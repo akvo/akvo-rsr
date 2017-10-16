@@ -62,26 +62,35 @@ const TimestampInfo =({update, user, label}) => {
         <ul>
             <li className="approverMeta">{label}
                 <span className="UpdateDate"> {displayDate(update.last_modified_at)}</span>
-                <span className="hide"> {displayName(user)}</span>
-                <span className="hide"> {
-                    user.approved_organisations[0] && user.approved_organisations[0].name
-                }</span>
+                {user ?
+                    <span className="hide"> {displayName(user)}</span>
+                :
+                    undefined
+                }
+                {user ?
+                    <span className="hide"> {
+                        user.approved_organisations[0] && user.approved_organisations[0].name
+                    }</span>
+                :
+                    undefined
+                }
             </li>
         </ul>
     )
 };
 TimestampInfo.propTypes = {
     update: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object,
     label: PropTypes.string.isRequired,
 };
 
 
 const UpdateValue =({update}) => {
-    const {value, actual_value} = update;
+    const {value, actual_value, text} = update;
     return (
         <ul className="valueMeta">
             <li className="updateValue">Update value: <span>{value}</span></li>
+            <li className="updateValueComment">Update comment: <span>{text}</span></li>
         </ul>
     )
 };
@@ -100,6 +109,32 @@ const UpdateStatus =({update}) => {
     )
 };
 UpdateStatus.propTypes = {
+    update: PropTypes.object.isRequired
+};
+
+
+const UpdateAttachments =({update}) => {
+    const {photo, file} = update;
+    const photo_container = photo?(
+        <div className="update-photo">
+            <div className="image-container">
+                <img src={photo}/>
+            </div>
+        </div>
+    ): undefined;
+    const file_container = file?(
+        <div className="update-attachment">
+            Attachment: <a href={file} target="_blank">{decodeURIComponent(file.split('/').pop())}</a>
+        </div>
+    ):undefined;
+    return (
+        <div>
+            {photo_container}
+            {file_container}
+        </div>
+    );
+};
+UpdateAttachments.propTypes = {
     update: PropTypes.object.isRequired
 };
 
@@ -137,17 +172,19 @@ const ShowDisaggregations = ({dimensions, disaggregations, isQualitative}) => {
 
 const QuantitativeUpdateBody = ({update, dimensions, disaggregations}) => {
     const {user_details, approver_details} = update;
-    const approvedBy = approver_details ?
-        <TimestampInfo update={update} user={approver_details} label="Approved on " />
+    const approvedOn = update.status === c.UPDATE_STATUS_APPROVED ?
+                       <TimestampInfo update={update}
+                                      user={approver_details}
+                                      label={_('approved_on') + ':'} />
     :
-        undefined;
+                       undefined;
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
             <ShowDisaggregations dimensions={dimensions} disaggregations={disaggregations}/>
             <div className="timestamp-info-container">
-                <TimestampInfo update={update} user={user_details} label="Created on " />
-                {approvedBy}
+                <TimestampInfo update={update} user={user_details} label={_('created_on') + ':'} />
+                {approvedOn}
             </div>
             <UpdateStatus update={update} />
         </div>
@@ -173,17 +210,20 @@ UpdateValue.propTypes = {
 
 const QualitativeUpdateBody = ({period, update, dimensions, disaggregations}) => {
     const {user_details, approver_details} = update;
-    const approvedBy = approver_details ?
-                       <TimestampInfo update={update} user={approver_details} label="Approved on " />
-:
+    const approvedOn = update.status === c.UPDATE_STATUS_APPROVED ?
+                       <TimestampInfo update={update}
+                                      user={approver_details}
+                                      label={_('approved_on') + ':'} />
+    :
                        undefined;
     return (
         <div className="UpdateBody">
             <UpdateNarrative period={period} update={update} />
             <ShowDisaggregations dimensions={dimensions} disaggregations={disaggregations} isQualitative={true}/>
-            <TimestampInfo update={update} user={user_details} label="Created on " />
-            {approvedBy}
+            <TimestampInfo update={update} user={user_details} label={_('created_on') + ':'} />
+            {approvedOn}
             <UpdateStatus update={update} />
+            <UpdateAttachments update={update} />
         </div>
     )
 };

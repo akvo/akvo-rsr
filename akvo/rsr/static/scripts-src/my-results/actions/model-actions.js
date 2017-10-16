@@ -336,6 +336,20 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
                 });
             })
             .then(() => {
+                if (data._comment) {
+                    const newComment = {...data._comment};
+                    const callbacks = {...data._callbacks};
+                    newComment.data = newUpdate.id;
+                    dispatch({
+                        type: c.DELETE_FROM_MODEL,
+                        payload: {model: c.OBJECTS_COMMENTS, object: data._comment, collapseId}
+                    });
+                    saveModelToBackend(
+                        c.OBJECTS_COMMENTS, endpoints.post_comment(), newComment, null, callbacks
+                    );
+                }
+            })
+            .then(() => {
                 executeCallback(callbacks, c.UPDATE_MODEL_FULFILLED);
             })
             .catch((error) => {
