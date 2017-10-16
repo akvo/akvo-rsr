@@ -149,12 +149,13 @@ export default class FilterBar extends React.Component {
         const {page, callbacks} = this.props;
         const openCloseLabel = this.openResults() ? _('overview') : _('full_view');
         const selectOptions = selectablePeriods(this.props.periods && this.props.periods.ids);
-
-        const needReportingLabel = <InteractiveLabel label={_("needs_reporting")}
+        //TODO: investigate if we can use the React life cycle methods to not render until the
+        // translation stings are in place
+        const needReportingLabel = <InteractiveLabel label={_("needs_reporting") || ""}
                                                      selector={this.props.needReportingPeriods}/>;
-        const draftUpdateLabel = <InteractiveLabel label={_("pending_approval")}
+        const draftUpdateLabel = <InteractiveLabel label={_("pending_approval") || ""}
                                                    selector={this.props.pendingUpdates}/>;
-        const approvedUpdateLabel = <InteractiveLabel label={_("approved")}
+        const approvedUpdateLabel = <InteractiveLabel label={_("approved") || ""}
                                                       selector={this.props.approvedPeriods}/>;
         const buttonDisabled = !this.props.ui.allFetched;
 
