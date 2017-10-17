@@ -60,7 +60,7 @@ const PeriodLockingButtons = ({user, disabled}) => {
                           label={_("lock_selected")}
                           disabled={disabled}/>
             <ToggleButton onClick={unlockSelectedPeriods}
-                          label="Unlock selected"
+                          label={_("unlock_selected")}
                           disabled={disabled}/>
         </div>
     :
