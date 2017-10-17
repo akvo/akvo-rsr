@@ -6,6 +6,7 @@
 # Abdoulaye Semde <abdoulaye@akvo.org>, 2017
 # Anke van Lenteren <anke@vanlenteren.com>, 2012
 # Frédéric MILLOGO <frederic@akvo.org>, 2016
+# Gabriel von Heijne, 2017
 # IzziOli <isabelle.olivetti@virgin.net>, 2012
 # IzziOli <isabelle.olivetti@virgin.net>, 2012
 # Kasper Brandt, 2015
@@ -17,8 +18,8 @@ msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-10-13 10:15+0200\n"
-"PO-Revision-Date: 2017-10-16 12:58+0000\n"
-"Last-Translator: Wendemi ILBOUDO <wendemi@akvo.org>\n"
+"PO-Revision-Date: 2017-10-17 07:15+0000\n"
+"Last-Translator: Gabriel von Heijne\n"
 "Language-Team: French (http://www.transifex.com/akvo-foundation/akvo-rsr/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -258,7 +259,7 @@ msgstr "identifiants budget"
 
 #: akvo/codelists/models/budget_identifier_sector.py:24
 msgid "budget identifier sector"
-msgstr "secteur d'identifiant budget"
+msgstr "secteur d'identifiant du budget"
 
 #: akvo/codelists/models/budget_identifier_sector.py:25
 msgid "budget identifier sectors"
@@ -6858,7 +6859,7 @@ msgstr "Décrivez le rapportage."
 
 #: akvo/rsr/models/report.py:39
 msgid "Enter the parametrized path for downloading the report"
-msgstr ""
+msgstr "Entrez le chemin paramétré pour télécharger le rapport"
 
 #: akvo/rsr/models/result/disaggregation.py:23
 msgid "indicator period update"
@@ -6906,7 +6907,7 @@ msgstr "Quantitatif"
 
 #: akvo/rsr/models/result/indicator.py:28
 msgid "Qualitative"
-msgstr "qualitatif"
+msgstr "Qualitatif"
 
 #: akvo/rsr/models/result/indicator.py:31 akvo/rsr/models/result/result.py:158
 msgid "result"
@@ -7281,15 +7282,15 @@ msgstr "Non autorisé à changer la période de l'indicateur dans une mise à jo
 
 #: akvo/rsr/models/result/indicator_period_data.py:164
 msgid "Narrative field should be empty in quantitative indicators"
-msgstr ""
+msgstr "Le champ narratif devrait être vide au niveau des indicateurs quantitatifs"
 
 #: akvo/rsr/models/result/indicator_period_data.py:170
 msgid "Only numeric values are allowed in quantitative indicators"
-msgstr ""
+msgstr "Seules les valeurs numériques sont autorisées au niveau des indicateurs quantitatifs"
 
 #: akvo/rsr/models/result/indicator_period_data.py:175
 msgid "Value field should be empty in qualitative indicators"
-msgstr ""
+msgstr "Le champ de valeur devrait être vide au niveau des indicateurs quantitatifs"
 
 #: akvo/rsr/models/result/indicator_period_data_comment.py:28
 msgid "indicator period data comment"
@@ -7820,7 +7821,7 @@ msgid ""
 "            Our staff has been notified and will look into the problem as soon as possible.<br><br>\n"
 "            Please try again later or <a href=\"http://rsrsupport.akvo.org/form\">contact us</a> through our support system.\n"
 "\t\t\t"
-msgstr ""
+msgstr "\n            Nous n'avons pas pu répondre à votre dernière requête (500 erreurs).<br><br>\n           Notre personnel a été informé et il examinera le problème dès que possible.<br><br>\n           Veuillez réessayer plus tard ou <a href=\"http://rsrsupport.akvo.org/form\">contactez nous</a> à travers notre sytème de support.\n\t\t\t"
 
 #: akvo/templates/admin/base_site.html:5
 msgid "Akvo RSR site admin"
@@ -8010,23 +8011,23 @@ msgstr "Accepter"
 
 #: akvo/templates/base.html:161
 msgid "Password protected environment"
-msgstr ""
+msgstr "Espace protégé par le mot de passe "
 
 #: akvo/templates/base.html:162
 msgid "This is a password protected environment, please fill in the password:"
-msgstr ""
+msgstr "Ceci est un espace protégé par le mot de passe, veuillez saisir le mot de passe: "
 
 #: akvo/templates/base.html:163
 msgid "After a week we will ask you to fill in the password again."
-msgstr ""
+msgstr "Après une semaine, nous vous demanderons de saisir à nouveau le mot de passe."
 
 #: akvo/templates/base.html:164
 msgid "Continue"
-msgstr ""
+msgstr "Continuez"
 
 #: akvo/templates/base.html:165
 msgid "Incorrect password"
-msgstr ""
+msgstr "Mot de passe incorrect"
 
 #: akvo/templates/inclusion_tags/more_partners.html:24
 #, python-format
@@ -10711,7 +10712,7 @@ msgid ""
 "\n"
 "Thank you,\n"
 "Akvo.org\n"
-msgstr ""
+msgstr "\nCher/chère %(user_name)s,\n\nVous avez été ajouté à l'organisation suivante sur Akvo RSR: %(org_name)s.\n\nVeuillez visiter la section MyRSR pour voir vos projets et ajouter des mises à jour aux projets ici:\nhttps://%(site)s/myrsr/\n\nMerci,\nAkvo.org\n"
 
 #: akvo/templates/registration/approved_added_email_subject.txt:1
 #, python-format
@@ -10731,7 +10732,7 @@ msgid ""
 "\n"
 "Thank you,\n"
 "Akvo.org\n"
-msgstr ""
+msgstr "\nCher/chère %(user_name)s,\n\nVotre demande d'adhésion %(org_name)s sur Akvo RSR a été approuvée.\n\n Veuillez visiter la section MyRSR pour voir vos projets et ajouter des mises à jour aux projets ici :\nhttps://%(site)s/myrsr/\n\nMerci,\nAkvo.org\n"
 
 #: akvo/templates/registration/approved_request_email_subject.txt:1
 #, python-format
@@ -10783,7 +10784,7 @@ msgid ""
 "        Akvo.org\n"
 "    </p>\n"
 "    "
-msgstr ""
+msgstr "\n    <h1>Invitation à l'utilisation de Akvo RSR</h1>\n    <p>Cher Monsieur ou chère Madame,</p>\n    <p>Vous avez été invité à utiliser Akvo RSR par votre%(user_name)s lien avec l'organisation suivante: %(org_name)s.</p>\n    <p>Veuillez cliquer sur le lien suivant pour activer votre compte et commencer à utiliser Akvo RSR:</p>\n    <h3><a href=\"https://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/%(employment_pk)s/%(token_date)s/%(token)s/\">cliquer ici pour activer votre compte</a></h3>\n    <p>Si vous pensez que ce mail ne vous était pas adressé, ne faites rien et vous ne recevrez plus d'e-mails de notre part.</p>\n    <p>\n        Merci,<br/>\n        Akvo.org\n    </p>"
 
 #: akvo/templates/registration/invited_user_message.txt:3
 #, python-format
@@ -10800,7 +10801,7 @@ msgid ""
 "\n"
 "Thank you,\n"
 "Akvo.org\n"
-msgstr ""
+msgstr "\nCher Monsieur ou chère Madame,\n\nVous avez été invité à utiliser Akvo RSR par votre %(user_name)s lien avec l'organisation suivante: %(org_name)s.\n\nVeuillez cliquer sur le lien suivant pour activer votre compte et commencer à utiliser Akvo RSR:\nhttps://%(site)s/activate_invite/%(user_pk)s/%(invite_user_pk)s/%(employment_pk)s/%(token_date)s/%(token)s/\n\nSi vous pensez que ce mail ne vous était pas adressé, ne faites rien et vous ne recevrez plus d'e-mails de notre part.\n\nMerci,\nAkvo.org\n"
 
 #: akvo/templates/registration/invited_user_subject.txt:1
 msgid "You have been invited to use Akvo RSR!"
@@ -10940,7 +10941,7 @@ msgid ""
 "\n"
 "Thank you,\n"
 "Akvo.org\n"
-msgstr ""
+msgstr "\nS'il vous plaît, vérifiez les informations d'identification de cet utilisateur, puis activez ici:\nhttps://%(site)s/myrsr/user_management/\n\nMerci,\nAkvo.org\n"
 
 #: akvo/templates/registration/user_organisation_request_subject.txt:1
 #, python-format
@@ -10957,7 +10958,7 @@ msgstr "Valeur réelle"
 
 #: akvo/templates/results_base.html:44
 msgid "Actual value comment"
-msgstr ""
+msgstr "Commentaire sur la valeur réelle"
 
 #: akvo/templates/results_base.html:45
 msgid "This is the total of all indicator updates for this period"
@@ -10965,15 +10966,15 @@ msgstr "Ceci est le total de toutes les mises à jour de l'indicateur pour cette
 
 #: akvo/templates/results_base.html:46
 msgid "Actual value is required for updates"
-msgstr ""
+msgstr "La valeur réelle est exigée pour les mises à jour"
 
 #: akvo/templates/results_base.html:47
 msgid "Add a note"
-msgstr ""
+msgstr "Ajouter une note"
 
 #: akvo/templates/results_base.html:48
 msgid "Add a note to the update"
-msgstr ""
+msgstr "Ajouter une note à la mise à jour"
 
 #: akvo/templates/results_base.html:49
 msgid "Add image"
@@ -10981,7 +10982,7 @@ msgstr "Ajouter une image"
 
 #: akvo/templates/results_base.html:50
 msgid "Insert reporting value"
-msgstr ""
+msgstr "Insérez la valeur de rapport"
 
 #: akvo/templates/results_base.html:51
 msgid "Add indicators"
@@ -10997,15 +10998,15 @@ msgstr "Ajout de nouvelle mise à jour"
 
 #: akvo/templates/results_base.html:54
 msgid "Aggregate actual value:"
-msgstr ""
+msgstr "Agrégez la valeur réelle:"
 
 #: akvo/templates/results_base.html:57
 msgid "Approved"
-msgstr ""
+msgstr "Approuvé"
 
 #: akvo/templates/results_base.html:58
 msgid "Approved on"
-msgstr ""
+msgstr "Approuvé le"
 
 #: akvo/templates/results_base.html:59
 msgid "Attach file"
@@ -11027,7 +11028,7 @@ msgstr "Année de référence"
 msgid ""
 "This period is an average of the child projects, disable aggregations to "
 "place updates on this period"
-msgstr ""
+msgstr "Cette période est une moyenne des projets enfants, désactivez les agrégations pour mettre à jour cette période "
 
 #: akvo/templates/results_base.html:65
 msgid "Change image"
@@ -11043,7 +11044,7 @@ msgstr "Commentaire"
 
 #: akvo/templates/results_base.html:68
 msgid "Couldn't save comment, please try again"
-msgstr ""
+msgstr "Impossible d'enregistrer le commentaire, veuillez réessayer"
 
 #: akvo/templates/results_base.html:69
 msgid ""
@@ -11069,27 +11070,27 @@ msgstr "Courant"
 
 #: akvo/templates/results_base.html:73
 msgid "Created on"
-msgstr ""
+msgstr "créé le"
 
 #: akvo/templates/results_base.html:76
 msgid "Denominator"
-msgstr ""
+msgstr "Dénominateur"
 
 #: akvo/templates/results_base.html:77
 msgid "Disaggregations"
-msgstr ""
+msgstr "Désagrégations"
 
 #: akvo/templates/results_base.html:79
 msgid "Please enter a comment text"
-msgstr ""
+msgstr "Veuillez entrer un  texte de commentaire"
 
 #: akvo/templates/results_base.html:80
 msgid "Filter periods"
-msgstr ""
+msgstr "Filtrer les périodes"
 
 #: akvo/templates/results_base.html:81
 msgid "Full view"
-msgstr ""
+msgstr "Vue complète"
 
 #: akvo/templates/results_base.html:82
 msgid "An error occurred"
@@ -11119,7 +11120,7 @@ msgstr "Durée (s) de l'indicateur"
 
 #: akvo/templates/results_base.html:87
 msgid "Indicator reporting"
-msgstr ""
+msgstr "Rapport de l'indicateur"
 
 #: akvo/templates/results_base.html:89
 msgid "Fill in a value to add to the actual value"
@@ -11127,7 +11128,7 @@ msgstr "Remplissez pour ajouter une valeur à la valeur réelle"
 
 #: akvo/templates/results_base.html:91
 msgid "Lock status change failed, please try again"
-msgstr ""
+msgstr "Échec de changement du statut de verrouillage, veuillez réessayer"
 
 #: akvo/templates/results_base.html:92
 msgid "Lock period"
@@ -11135,11 +11136,11 @@ msgstr "Verrouiller période"
 
 #: akvo/templates/results_base.html:93
 msgid "Lock selected"
-msgstr ""
+msgstr "Verrouillage sélectionné"
 
 #: akvo/templates/results_base.html:94
 msgid "Locked"
-msgstr ""
+msgstr "Verrouillé"
 
 #: akvo/templates/results_base.html:95
 msgid "Find out more about adding indicators to the results framework"
@@ -11147,11 +11148,11 @@ msgstr "En savoir plus sur l'ajout des indicateurs dans la structuration des res
 
 #: akvo/templates/results_base.html:96
 msgid "Nameless indicator"
-msgstr ""
+msgstr "Indicateur sans nom"
 
 #: akvo/templates/results_base.html:97
 msgid "Needs reporting"
-msgstr ""
+msgstr "Notification des besoins"
 
 #: akvo/templates/results_base.html:98
 msgid "New total for this period"
@@ -11163,7 +11164,7 @@ msgstr "Ce résultat n'a pas encore d'indicateurs"
 
 #: akvo/templates/results_base.html:101
 msgid "No results"
-msgstr ""
+msgstr "Aucun résultat"
 
 #: akvo/templates/results_base.html:103
 msgid "This period has no updates yet"
@@ -11171,7 +11172,7 @@ msgstr "Cette session n'a pas encore de mises à jour"
 
 #: akvo/templates/results_base.html:104
 msgid "Notes are disabled until the update is saved"
-msgstr ""
+msgstr "Les notifications sont désactivées jusqu'à ce que la mise à jour soit sauvegardée"
 
 #: akvo/templates/results_base.html:105
 msgid "Number of pending updates"
@@ -11179,11 +11180,11 @@ msgstr "Nombre de mises à jour en attente"
 
 #: akvo/templates/results_base.html:106
 msgid "Numerator"
-msgstr ""
+msgstr "Numérateur"
 
 #: akvo/templates/results_base.html:107
 msgid "Only numeric values are accepted"
-msgstr ""
+msgstr "Seules les valeurs numériques sont acceptées"
 
 #: akvo/templates/results_base.html:108
 msgid "Other"
@@ -11203,7 +11204,7 @@ msgstr "Output"
 
 #: akvo/templates/results_base.html:112
 msgid "Overview"
-msgstr ""
+msgstr "Aperçu"
 
 #: akvo/templates/results_base.html:113
 msgid "Parent project"
@@ -11211,11 +11212,11 @@ msgstr "Projet parent"
 
 #: akvo/templates/results_base.html:114
 msgid "Pending approval"
-msgstr ""
+msgstr "En attente d'approbation"
 
 #: akvo/templates/results_base.html:115
 msgid "Percentage"
-msgstr "Poucentage"
+msgstr "Pourcentage"
 
 #: akvo/templates/results_base.html:116
 #: akvo/templates/results_framework/approve_update_message.html:28
@@ -11237,7 +11238,7 @@ msgstr "période déverouillée"
 
 #: akvo/templates/results_base.html:119
 msgid "Remove file"
-msgstr ""
+msgstr "Supprimer le fichier"
 
 #: akvo/templates/results_base.html:120
 msgid "Click to remove image"
@@ -11257,7 +11258,7 @@ msgstr "Renvoyer pour révision"
 
 #: akvo/templates/results_base.html:126
 msgid "Select period(s)"
-msgstr ""
+msgstr "Sélectionnez la ou les période(s)"
 
 #: akvo/templates/results_base.html:128
 msgid "Submit for approval"
@@ -11265,7 +11266,7 @@ msgstr "Soumettre pour approbation"
 
 #: akvo/templates/results_base.html:129
 msgid "Target"
-msgstr ""
+msgstr "Cible"
 
 #: akvo/templates/results_base.html:130
 msgid "Target comment"
@@ -11289,7 +11290,7 @@ msgstr "Déverrouiller période"
 
 #: akvo/templates/results_base.html:136
 msgid "Unlocked"
-msgstr ""
+msgstr "Déverrouillé"
 
 #: akvo/templates/results_base.html:137
 msgid "Unlocking period"
@@ -11301,19 +11302,19 @@ msgstr "La mise à jour de l'indicateur"
 
 #: akvo/templates/results_base.html:139
 msgid "Couldn't create update, please try again"
-msgstr ""
+msgstr "Impossible d'effectuer la mise à jour, veuillez réessayer"
 
 #: akvo/templates/results_base.html:140
 msgid "Couldn't delete update, please try again"
-msgstr ""
+msgstr "Impossible de supprimer la mise à jour, veuillez réessayer"
 
 #: akvo/templates/results_base.html:141
 msgid "Couldn't save update"
-msgstr ""
+msgstr "Impossible d'enregistrer la mise à jour"
 
 #: akvo/templates/results_base.html:143
 msgid "Update value"
-msgstr ""
+msgstr "Actualiser la valeur"
 
 #: akvo/templates/results_base.html:144
 msgid "Indicator Updates"
