@@ -7,11 +7,15 @@ IATI codelists, based on the IATI version.
 See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/code-list-api/
 """
 
-import requests
-import re
 import argparse
+import collections
+import re
+import requests
 import sys
+
 from xml.etree import ElementTree
+
+Bit = collections.namedtuple('Bit', 'type value')
 
 # Modify this list to add new versions
 VERSIONS = {
@@ -25,16 +29,69 @@ VERSIONS = {
 }
 
 
+translated_codelists = {
+    'REGION_VOCABULARY': [u"name", u"description"],
+    'BUDGET_TYPE': [u"name", u"description"],
+    'Region': [u"name"],
+    'HumanitarianScopeVocabulary': [u"name"],
+    # should we translate? 'Country': [u"name"],
+    'SectorVocabulary': [u"name", u"description"],
+    'DisbursementChannel': [u"name", u"description"],
+    'GeographicLocationReach': [u"name", u"description"],
+    'LoanRepaymentPeriod': [u"name", u"description"],
+    'PolicySignificance': [u"name"],
+    'PolicyMarker': [u"name", u"description"],
+    'ActivityScope': [u"name", u"description"],
+    'LocationType': [u"name"],
+    'TiedStatus': [u"name", u"description"],
+    'BudgetIdentifier': [u"name"],
+    'RelatedActivityType': [u"name", u"description"],
+    'TransactionType': [u"name", u"description"],
+    'ActivityStatus': [u"name", u"description"],
+    'HumanitarianScopeType': [u"name"],
+    'CRSAddOtherFlags': [u"name", u"description"],
+    'ResultType': [u"name", u"description"],
+    'DocumentCategory': [u"name", u"description"],
+    'OrganisationType': [u"name"],
+    'IndicatorMeasure': [u"name", u"description"],
+    'FlowType': [u"name", u"description"],
+    'Language': [u"name"],
+    'AidType': [u"name"], # Very long descriptions!
+    'IndicatorVocabulary': [u"name"],
+    'LoanRepaymentType': [u"name", u"description"],
+    'GeographicLocationClass': [u"name", u"description"],
+    'BudgetStatus': [u"name", u"description"],
+    'GeographicVocabulary': [u"name", u"description"],
+    'FinanceType': [u"name"], # Very long descriptions!
+    # one very long name, probably a data bug 'CollaborationType': [u"name", u"description"],
+    'SectorCategory': [u"name"], # Very long descriptions!
+    'BudgetIdentifierVocabulary': [u"name", u"description"],
+    'Sector': [u"name"], #very long descriptions
+    'Currency': [u"name"],
+    'ContactType': [u"name", u"description"],
+}
+
+DOC_TEMPLATE = u"""# -*- coding: utf-8 -*-
+
+from django.utils.translation import ugettext_lazy as _
+
+{codelists}
+"""
+
+CODELIST_TEMPLATE = u"""
+# From {url}
+{name} = (
+    {field_names}
+{rows}
+)"""
+
+UNICODE_BIT = u'u"{}"'
+I18N_BIT = u'_(u"{}")'
+
 def pythonify_codelist_name(codelist_name):
     "Turn OrganisationType into ORGANISATION_TYPE"
     bits = re.findall('[A-Z][^A-Z]*', codelist_name)
     return '_'.join(bits).upper().replace("-", "_")
-
-
-def stringify(bits):
-    "Add unicode string 'markup' to strings"
-    return [(lambda bit: "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
-    # return [(lambda bit: bit if bit.isdigit() else "u'%s'" % bit.replace("'", ""))(bit) for bit in bits]
 
 
 def prettify_country_name(country):
@@ -61,54 +118,53 @@ def prettify_country_name(country):
     return ' '.join(bits)
 
 
-def codelist_to_tuples(xml_string, codelist, version):
-    "Takes XML codelist string and converts it to tuples"
-    tree = ElementTree.fromstring(xml_string)
-
+def codelist_data(result, version, transform=None):
+    """ Create a data structure with the following format:
+        {
+            'fields: ['<field_name_1>', '<field_name_2>', ...,
+            'rows: [
+                {
+                    '<field_name_1>': '<codelist_value_1>,
+                    '<field_name_2>', '<codelist_value_2>,
+                    ...
+                },
+                {
+                    ...
+                }
+            ]
+        }
+    """
+    tree = ElementTree.fromstring(result.text.encode('utf-8'))
     if version in ["1.01", "1.02", "1.03"]:
-        codelist_tree = tree
+        items = tree
     else:
-        codelist_tree = tree.find('codelist-items').findall('codelist-item')
+        items = tree.find('codelist-items').findall('codelist-item')
 
-    fields = []
-    for codelist_field in list(codelist_tree):
-        for codelist_field_item in codelist_field.findall('*'):
-            unicode_field_tag = "u'" + codelist_field_item.tag + "'"
-            if unicode_field_tag not in fields:
-                fields.append(unicode_field_tag)
-    fields_string = ', '.join(fields)
-
-    codelist_content = []
-    for codelist_field in list(codelist_tree):
-        codelist_field_content = ["" for _field in fields]
-        codelist_tags = []
-        for codelist_field_item in codelist_field.findall('*'):
-            if codelist_field_item.tag not in codelist_tags:
-                codelist_tags.append(codelist_field_item.tag)
-                list_index = fields.index("u'" + codelist_field_item.tag + "'")
-                if codelist_field_item.text:
-                    # Make country names look nice
-                    if codelist == "Country" and codelist_field_item.tag == "name":
-                        codelist_field_content[list_index] = prettify_country_name(codelist_field_item.text)
-                    else:
-                        codelist_field_content[list_index] = codelist_field_item.text.\
-                            replace("\n", "").replace("\r", "")
-        codelist_content.append(codelist_field_content)
-    tuples = '),\n    ('.join([', '.join(stringify(row)) for row in codelist_content])
-
-    identifier = pythonify_codelist_name(codelist)
-
-    return '%s = (\n    (%s),\n    (%s)\n)' % (identifier, fields_string, tuples)
+    rows = []
+    for item in items:
+        row = {}
+        fields = set()
+        for field in item.getchildren():
+            # an attrib here indicates an alternative language, which we skip for now
+            if not field.attrib:
+                #  we need to "collect" fields since not all items have all fields
+                fields = fields.union({field.tag})
+                text = field.text.replace('\n', u'').replace('\r', u'') if field.text else u''
+                if transform and transform['field'] == field.tag:
+                    text = transform['func'](text)
+                row[field.tag] = text
+        rows.append(row)
+    return {'fields': fields, 'rows': rows}
 
 
 def get_codelists(version, url):
     "Depending on the codelist version, retrieves the codelists"
     if version in ["1.01", "1.02", "1.03"]:
         codelists_url = url + "codelist.xml"
-        codelist_url = url + "codelist/%s.xml"
+        codelist_url_template = url + "codelist/{}.xml"
     else:
         codelists_url = url + "codelists.xml"
-        codelist_url = url + "xml/%s.xml"
+        codelist_url_template = url + "xml/{}.xml"
 
     result = requests.get(codelists_url)
     codelists = []
@@ -122,36 +178,68 @@ def get_codelists(version, url):
                 if not codelist.attrib['ref'] in codelists:
                     codelists.append(codelist.attrib['ref'])
     else:
-        print "ERROR: Could not retrieve codelists from %s" % codelists_url
+        print "ERROR: Could not retrieve codelists from {}".format(codelists_url)
 
-    return codelist_url, codelists
+    return codelist_url_template, codelists
 
 
-def generate_code_lists(version):
-    "Main function for generating codelists based on the codelist version"
-    codelists_url = VERSIONS[version]
-    codelist_url, codelists = get_codelists(version, codelists_url)
+def generate_codelists_data(version):
+    """ For each codelist extend the data structure returned from codelist_data with a the fields
+        'url' and 'name' and append to the list 'data' which is returned holding all data for all
+        codelists
+    """
+    codelist_url_template, codelist_names = get_codelists(version, VERSIONS[version])
 
-    python_code = []
-    python_code.append('codelist_list = [')
-    for codelist in codelists:
-        python_code.append("'" + pythonify_codelist_name(codelist) + "', ")
-    python_code.append(']\n\n')
-
-    for codelist in codelists:
-        result = requests.get(codelist_url % codelist)
+    data = []
+    for name in codelist_names:
+        url = codelist_url_template.format(name)
+        result = requests.get(url)
         if result.status_code == 200 and len(result.text) > 0:
-            print "Generating python for %s..." % codelist
-            if codelist not in ["IATIOrganisationIdentifier", ]:
-                # IATIOrganisationIdentifier is not a codelist
-                python_code.append('# From %s' % codelist_url % codelist)
-                python_code.append('\n')
-                python_code.append(codelist_to_tuples(result.text.encode('utf-8'), codelist, version))
-                python_code.append('\n\n')
-        else:
-            print "ERROR: Could not generate python for %s" % codelist
-    print
-    return python_code
+            print "Gathering data for {}...".format(name)
+            if name not in ["IATIOrganisationIdentifier", ]:
+                if name == "Country":
+                    codelist_dict = codelist_data(
+                        result, version, {'field': 'name', 'func': prettify_country_name})
+                else:
+                    codelist_dict = codelist_data(result, version)
+                codelist_dict['url'] = url
+                codelist_dict['name'] = name
+                data.append(codelist_dict)
+    return data
+
+
+def data_to_strings(data):
+    """ Use the data structure created in generate_codelists_data to assemble the string parts of
+        the codelist document.
+    """
+    codelists = []
+    for codelist in data:
+        url = codelist['url']
+        name = pythonify_codelist_name(codelist['name'])
+        field_names = u"({}),".format(
+            u", ".join([UNICODE_BIT.format(field) for field in codelist['fields']]))
+
+        rows = []
+        for row in codelist['rows']:
+            fields = []
+            for field in codelist['fields']:
+                if field in translated_codelists.get(codelist['name'], []):
+                    template = I18N_BIT
+                else:
+                    template = UNICODE_BIT
+                fields.append(template.format(row.get(field, u'').replace('"', '\\"')))
+            rows.append(u"    ({}),".format(u", ".join(fields)))
+
+        rows = u"\n".join(rows)
+
+        output = CODELIST_TEMPLATE.format(
+            url=url,
+            name=name,
+            field_names=field_names,
+            rows=rows
+        )
+        codelists.append(output)
+    return codelists
 
 
 if __name__ == '__main__':
@@ -166,7 +254,15 @@ if __name__ == '__main__':
             print "- %s" % version
         sys.exit(0)
 
-    source = generate_code_lists(args.version)
+    data_dict = generate_codelists_data(args.version)
+    identifiers = [pythonify_codelist_name(data['name']) for data in data_dict]
+
+    strings = data_to_strings(data_dict)
+
+    codelists = u'\n'.join(strings).encode('utf-8')
+
     with open("../store/codelists_v%s.py" % args.version.replace(".", ""), "w") as iati_file:
-        iati_file.write('# -*- coding: utf-8 -*-\n\n')
-        iati_file.write(''.join(source).encode('utf-8'))
+        iati_file.write(u'# -*- coding: utf-8 -*-\n\n')
+        iati_file.write(u'from django.utils.translation import ugettext_lazy as _\n\n')
+        iati_file.writelines(u'codelist_list = [\n    "{}"\n]\n'.format(u'",\n    "'.join(identifiers)))
+        iati_file.write(codelists)
