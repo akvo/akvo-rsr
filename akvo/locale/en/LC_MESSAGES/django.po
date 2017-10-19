@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-17 14:14+0200\n"
+"POT-Creation-Date: 2017-10-19 10:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -623,6 +623,7 @@ msgid "publisher types"
 msgstr ""
 
 #: akvo/codelists/models/region.py:23
+#: akvo/codelists/store/codelists_v202.py:825
 msgid "region"
 msgstr ""
 
@@ -713,6 +714,7546 @@ msgstr ""
 #: akvo/rsr/models/organisation_budget.py:123
 #: akvo/rsr/models/policy_marker.py:47
 msgid "vocabulary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:72
+msgid "Executive - executive"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:73
+msgid "Legislative - legislative"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:74
+msgid "Accountability - macroeconomic policy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:75
+msgid "Accountability - budgeting"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:76
+msgid "Accountability - planning"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:77
+msgid "Accountability - Treasury/Accounts"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:78
+msgid "Accountability - debt and aid management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:79
+msgid "Accountability - tax policy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:80
+msgid "Accountability - tax collection"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:81
+msgid "Accountability - local government finance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:82
+msgid "Accountability - other central transfers to institutions "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:83
+msgid "Accountability - national audit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:84
+msgid "Accountability - national monitoring and evaluation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:85
+msgid "Accountability - monetary institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:86
+msgid "Accountability - financial sector policy and regulation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:87
+msgid "External Affairs - foreign affairs "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:88
+msgid "External Affairs - diplomatic missions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:89
+msgid "External Affairs - official development assistance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:90
+msgid "General Personnel Services - general personnel services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:91
+msgid "Statistics - statistics"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:92
+msgid "Other General Services - support to civil society "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:93
+msgid "Other General Services - central procurement"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:94
+msgid "Other General Services - Local Government Administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:95
+msgid "Other General Services - other general services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:96
+msgid "Elections - elections"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:97
+msgid "Justice, Law and Order - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:98
+msgid "Justice, Law and Order - police"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:99
+msgid "Justice, Law and Order - fire"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:100
+msgid "Justice, Law and Order - judicial affairs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:101
+msgid "Justice, Law and Order - Ombudsman"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:102
+msgid "Justice, Law and Order - human rights affairs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:103
+msgid "Justice, Law and Order - immigration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:104
+msgid "Justice, Law and Order - anti corruption"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:105
+msgid "Justice, Law and Order - prisons"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:106
+msgid "Justice, Law and Order - peace building"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:107
+msgid "Justice, Law and Order - demobilisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:108
+msgid "Defence - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:109
+msgid "Defence - military"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:110
+msgid "Defence - civil defence"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:111
+msgid "Defence - foreign military aid"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:112
+msgid ""
+"General Economic, Commercial and Labour Affairs - policy, planning and "
+"administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:113
+msgid ""
+"General Economic, Commercial and Labour Affairs - general economic affairs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:114
+msgid "General Economic, Commercial and Labour Affairs - investment promotion"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:115
+msgid "General Economic, Commercial and Labour Affairs - privatisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:116
+msgid "General Economic, Commercial and Labour Affairs - trade"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:117
+msgid "General Economic, Commercial and Labour Affairs - labour"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:118
+msgid ""
+"General Economic, Commercial and Labour Affairs - national standards "
+"development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:119
+msgid "Public Works - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:120
+msgid "Public Works - construction regulation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:121
+msgid "Public Works - mechanical services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:122
+msgid "Agriculture - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:123
+msgid "Agriculture - irrigation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:124
+msgid "Agriculture - inputs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:125
+msgid "Agriculture - food crop"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:126
+msgid "Agriculture - industrial crop"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:127
+msgid "Agriculture - livestock"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:128
+msgid "Agriculture - agricultural training and extension"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:129
+msgid "Agriculture - research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:130
+msgid "Agriculture - other services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:131
+msgid "Forestry - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:132
+msgid "Forestry - development and services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:133
+msgid "Forestry - education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:134
+msgid "Forestry - research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:135
+msgid "Fishing and Hunting - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:136
+msgid "Fishing and Hunting - development and services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:137
+msgid "Fishing and Hunting - education and training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:138
+msgid "Fishing and Hunting - research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:139
+msgid "Energy - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:140
+msgid "Energy - education and training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:141
+msgid "Energy - energy regulation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:142
+msgid "Energy - electricity transmission"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:143
+msgid "Energy - nuclear"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:144
+msgid "Energy - power generation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:145
+msgid "Energy - gas "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:146
+msgid "Mining and Mineral Development - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:147
+msgid "Mining and Mineral Development - prospection and exploration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:148
+msgid "Mining and Mineral Development - coal and other solid mineral fuels"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:149
+msgid "Mining and Mineral Development - petroleum and gas"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:150
+msgid "Mining and Mineral Development - other fuel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:151
+msgid "Mining and Mineral Development - non fuel minerals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:152
+msgid "Transport - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:153
+msgid "Transport - transport regulation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:154
+msgid "Transport - feeder road construction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:155
+msgid "Transport - feeder road maintenance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:156
+msgid "Transport - national road construction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:157
+msgid "Transport - national road maintenance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:158
+msgid "Transport - rail"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:159
+msgid "Transport - water"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:160
+msgid "Transport - air"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:161
+msgid "Transport - pipeline"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:162
+msgid "Transport - storage and distribution"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:163
+msgid "Transport - public transport services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:164
+msgid "Transport - meteorological services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:165
+msgid "Transport - education and training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:166
+msgid "Industry - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:167
+msgid "Industry - development and services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:168
+msgid "Industry - industrial research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:169
+msgid "Industry - (investment in industry)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:170
+msgid "Communications - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:171
+msgid "Communications - ICT Infrastructure"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:172
+msgid "Communications - telecoms and postal services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:173
+msgid "Communications - information services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:174
+msgid "Tourism - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:175
+msgid "Tourism - services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:176
+msgid ""
+"Microfinance and financial services - Microfinance and financial services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:177
+msgid "Water supply and Sanitation - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:178
+msgid "Water supply and Sanitation - education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:179
+msgid "Water supply and Sanitation - rural water supply and sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:180
+msgid "Water supply and Sanitation - urban water supply and sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:181
+msgid "Water supply and Sanitation - rural water supply"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:182
+msgid "Water supply and Sanitation - urban water supply"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:183
+msgid "Water supply and Sanitation - rural sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:184
+msgid "Water supply and Sanitation - urban sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:185
+msgid "Water supply and Sanitation - sewage and waste management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:186
+msgid "Environment - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:187
+msgid "Environment - research/ education and training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:188
+msgid "Environment - natural resource management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:189
+msgid "Environment - water resources management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:190
+msgid "Environment - wildlife protection, parks and site preservation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:191
+msgid "Health - policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:192
+msgid "Recreation, Culture and Religion - recreation and sport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:193
+msgid "Recreation, Culture and Religion - culture"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:194
+msgid "Recreation, Culture and Religion - broadcasting and publishing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:195
+msgid "Recreation, Culture and Religion - religion"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:196
+msgid "Education - administration, policy and planning"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:197
+msgid "Education - research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:198
+msgid "Education - pre-primary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:199
+msgid "Education - primary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:200
+msgid "Education - lower secondary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:201
+msgid "Education - upper secondary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:202
+msgid "Education - post secondary non tertiary "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:203
+msgid "Education - tertiary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:204
+msgid "Education - vocational training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:205
+msgid "Education - advanced technical and managerial training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:206
+msgid "Education - basic adult education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:207
+msgid "Education - teacher training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:208
+msgid "Education - subsidiary services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:209
+msgid ""
+"Social Protection, Land Housing and Community Amenities - policy, planning "
+"and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:210
+msgid ""
+"Social Protection, Land Housing and Community Amenities - social security "
+"(excl pensions)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:211
+msgid ""
+"Social Protection, Land Housing and Community Amenities - general pensions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:212
+msgid ""
+"Social Protection, Land Housing and Community Amenities - civil service and "
+"military pensions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:213
+msgid ""
+"Social Protection, Land Housing and Community Amenities - social services "
+"(incl youth development and women+ children)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:214
+msgid ""
+"Social Protection, Land Housing and Community Amenities - land policy and "
+"management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:215
+msgid "Social Protection, Land Housing and Community Amenities - rural devt"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:216
+msgid "Social Protection, Land Housing and Community Amenities - urban devt"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:217
+msgid ""
+"Social Protection, Land Housing and Community Amenities - housing and "
+"community amenities"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:218
+msgid ""
+"Social Protection, Land Housing and Community Amenities - emergency relief"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:219
+msgid ""
+"Social Protection, Land Housing and Community Amenities - disaster "
+"prevention and preparedness"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:220
+msgid ""
+"Social Protection, Land Housing and Community Amenities - support to "
+"refugees and internally displaced persons"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:221
+msgid "Development Partner affairs - policy planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:222
+msgid "Development Partner affairs - Technical staff services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:223
+msgid "External to government sector - External to general government sector"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:224
+msgid "General Budget Support - General Budget Support"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:230
+msgid "Gender Equality"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:231
+msgid "Aid to Environment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:232
+msgid "Participatory Development/Good Governance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:233
+msgid "Trade Development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:234
+msgid "Aid Targeting the Objectives of the Convention on Biological Diversity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:235
+msgid ""
+"Aid Targeting the Objectives of the Framework Convention on Climate Change - "
+"Mitigation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:236
+msgid ""
+"Aid Targeting the Objectives of the Framework Convention on Climate Change - "
+"Adaptation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:237
+msgid ""
+"Aid Targeting the Objectives of the Convention to Combat Desertification"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:238
+msgid "Reproductive, Maternal, Newborn and Child Health (RMNCH)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:244
+msgid "Partially tied"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:244
+msgid ""
+"Official Development Assistance for which the associated goods and services "
+"must be procured from a restricted number of countries, which must however "
+"include substantially all aid recipient countries and can include the donor "
+"country."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:245
+msgid "Tied"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:245
+msgid ""
+"Official grants or loans where procurement of the goods or services involved "
+"is limited to the donor country or to a group of countries which does not "
+"include substantially all aid recipient countries."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:246
+msgid "Untied"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:246
+msgid ""
+"Untied aid is defined as loans and grants whose proceeds are fully and "
+"freely available to finance procurement from all OECD countries and "
+"substantially all developing countries."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:252
+#: akvo/codelists/store/codelists_v202.py:2080
+msgid "General budget support"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:253
+msgid "Sector budget support"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:254
+msgid ""
+"Core support to NGOs, other private bodies, PPPs and research institutes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:255
+msgid "Core contributions to multilateral institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:256
+msgid ""
+"Contributions to specific-purpose programmes and funds managed by "
+"international organisations (multilateral, INGO)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:257
+msgid "Basket funds/pooled funding"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:258
+msgid "Project-type interventions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:259
+msgid "Donor country personnel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:260
+msgid "Other technical assistance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:261
+msgid "Scholarships/training in donor country"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:262
+msgid "Imputed student costs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:263
+#: akvo/codelists/store/codelists_v202.py:2083
+msgid "Debt relief"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:264
+msgid "Administrative costs not included elsewhere"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:265
+msgid "Development awareness"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:266
+msgid "Refugees in donor countries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:272
+#: akvo/templates/results_base.html:53
+msgid "Unit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:272
+msgid "The indicator is measured in units."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:273
+#: akvo/templates/results_base.html:54
+msgid "Percentage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:273
+msgid "The indicator is measured in percentages"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:279
+msgid "General Enquiries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:280
+msgid "Project Management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:281
+msgid "Financial Management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:282
+msgid "Communications"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:295
+msgid "Incoming Funds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:295
+msgid ""
+"Funds recieved for use on the activity, which can be from an external or "
+"internal source. "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:296
+msgid "Commitment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:296
+msgid ""
+"A firm, written obligation from a donor or provider to provide a specified "
+"amount of funds, under particular terms and conditions, for specific "
+"purposes, for the benefit of the recipient. "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:297
+msgid "Disbursement"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:297
+msgid ""
+"Outgoing funds that are placed at the disposal of a recipient government or "
+"organisation, or funds transferred between two separately reported "
+"activities.Under IATI traceability standards the recipient of a disbursement "
+"should also be required to report their activities to IATI."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:298
+msgid "Expenditure"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:298
+msgid ""
+"Outgoing funds that are spent on goods and services for the activity. The "
+"recipients of expenditures fall outside of IATI traceability standards."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:299
+msgid "Interest Repayment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:299
+msgid ""
+"The actual amount of interest paid on a loan or line of credit, including "
+"fees."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:300
+msgid "Loan Repayment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:300
+msgid ""
+"The actual amount of principal (amortisation) repaid, including any arrears. "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:301
+msgid "Reimbursement"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:301
+msgid ""
+"A type of disbursement that covers funds that have already been spent by the "
+"recipient, as agreed in the terms of the grant or loan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:302
+msgid "Purchase of Equity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:302
+msgid "Outgoing funds that are used to purchase equity in a business"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:303
+msgid "Sale of Equity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:303
+msgid "Incoming funds from the sale of equity. "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:304
+msgid "Credit Guarantee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:304
+msgid ""
+"A commitment made by a funding organisation to underwrite a loan or line of "
+"credit entered into by a third party. "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:305
+msgid "Incoming Commitment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:305
+msgid ""
+"A firm, written obligation from a donor or provider to provide a specified "
+"amount of funds, under particular terms and conditions, reported by a "
+"recipient for this activity."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:311
+msgid "Standard grant"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:312
+msgid "Subsidies to national private investors"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:313
+msgid "Interest subsidy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:314
+msgid "Interest subsidy to national private exporters"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:315
+msgid "Capital subscription on deposit basis"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:316
+msgid "Capital subscription on encashment basis"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:317
+msgid "Aid loan excluding debt reorganisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:318
+msgid "Investment-related loan to developing countries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:319
+msgid "Loan in a joint venture with the recipient"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:320
+msgid "Loan to national private investor"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:321
+msgid "Loan to national private exporter"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:322
+msgid "Standard loan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:323
+msgid "Reimbursable grant"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:324
+msgid "Bonds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:325
+msgid "Asset-backed securities"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:326
+msgid "Other debt securities"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:327
+msgid "Subordinated loan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:328
+msgid "Preferred equity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:329
+msgid "Other hybrid instruments"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:330
+msgid "Non-banks guaranteed export credits"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:331
+msgid "Non-banks non-guaranteed portions of guaranteed export credits"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:332
+msgid "Bank export credits"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:333
+msgid "Common equity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:334
+msgid "Acquisition of equity not part of joint venture in developing countries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:335
+msgid "Other acquisition of equity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:336
+msgid "Shares in collective investment vehicles"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:337
+msgid "Reinvested earnings"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:338
+msgid "Debt forgiveness/conversion: ODA claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:339
+msgid "Debt forgiveness/conversion: ODA claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:340
+msgid "Debt forgiveness/conversion: OOF claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:341
+msgid "Debt forgiveness/conversion: OOF claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:342
+msgid "Debt forgiveness/conversion: Private claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:343
+msgid "Debt forgiveness/conversion: Private claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:344
+msgid "Debt forgiveness: OOF claims (DSR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:345
+msgid "Debt forgiveness: Private claims (DSR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:346
+msgid "Debt forgiveness: Other"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:347
+msgid "Debt rescheduling: ODA claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:348
+msgid "Debt rescheduling: ODA claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:349
+msgid "Debt rescheduling: OOF claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:350
+msgid "Debt rescheduling: OOF claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:351
+msgid "Debt rescheduling: Private claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:352
+msgid "Debt rescheduling: Private claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:353
+msgid "Debt rescheduling: OOF claims (DSR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:354
+msgid "Debt rescheduling: Private claims (DSR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:355
+msgid "Debt rescheduling: OOF claim (DSR – original loan principal)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:356
+msgid "Debt rescheduling: OOF claim (DSR – original loan interest)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:357
+msgid "Debt rescheduling: Private claim (DSR – original loan principal)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:358
+msgid "Debt forgiveness/conversion: export credit claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:359
+msgid "Debt forgiveness/conversion: export credit claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:360
+msgid "Debt forgiveness: export credit claims (DSR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:361
+msgid "Debt rescheduling: export credit claims (P)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:362
+msgid "Debt rescheduling: export credit claims (I)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:363
+msgid "Debt rescheduling: export credit claims (DSR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:364
+msgid "Debt rescheduling: export credit claim (DSR – original loan principal)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:365
+msgid "Foreign direct investment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:366
+msgid "Other foreign direct investment, including reinvested earnings"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:367
+msgid "Bank bonds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:368
+msgid "Non-bank bonds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:369
+msgid "Other bank securities/claims"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:370
+msgid "Other non-bank securities/claims"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:371
+msgid "Securities and other instruments issued by multilateral agencies"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:372
+msgid "Guarantees/insurance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:378
+msgid "not targeted"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:379
+msgid "significant objective"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:380
+msgid "principal objective"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:381
+msgid "principal objective AND in support of an action programme"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:382
+msgid "Explicit primary objective"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:388
+msgid "abandoned airfield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:389
+msgid "abandoned camp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:390
+msgid "abandoned canal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:391
+msgid "abandoned factory"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:392
+msgid "abandoned farm"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:393
+msgid "abandoned mine"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:394
+msgid "abandoned mission"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:395
+msgid "abandoned oil well"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:396
+msgid "abandoned police post"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:397
+msgid "abandoned populated place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:398
+msgid "abandoned prison"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:399
+msgid "abandoned railroad"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:400
+msgid "abandoned railroad station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:401
+msgid "abandoned railroad stop"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:402
+msgid "abandoned watercourse"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:403
+msgid "abandoned well"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:404
+msgid "administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:405
+msgid "administrative facility"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:406
+msgid "agricultural colony"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:407
+msgid "agricultural facility"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:408
+msgid "agricultural reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:409
+msgid "agricultural school"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:410
+msgid "airbase"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:411
+msgid "airfield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:412
+msgid "airport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:413
+msgid "amphitheater"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:414
+msgid "anabranch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:415
+msgid "anchorage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:416
+msgid "ancient road"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:417
+msgid "ancient site"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:418
+msgid "ancient wall"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:419
+msgid "apartment building"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:420
+msgid "aquaculture facility"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:421
+msgid "aqueduct"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:422
+msgid "arch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:423
+msgid "Arctic land"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:424
+msgid "area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:425
+msgid "artificial island"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:426
+msgid "artillery range"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:427
+msgid "asphalt lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:428
+msgid "astronomical station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:429
+msgid "asylum"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:430
+msgid "athletic field"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:431
+msgid "atoll(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:432
+msgid "atomic center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:433
+msgid "badlands"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:434
+msgid "baling station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:435
+msgid "banana plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:436
+msgid "bank"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:437
+msgid "bank(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:438
+msgid "bar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:439
+msgid "barracks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:440
+msgid "battlefield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:441
+msgid "bay"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:442
+msgid "bays"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:443
+msgid "beach"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:444
+msgid "beach ridge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:445
+msgid "beaches"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:446
+msgid "beacon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:447
+msgid "bench"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:448
+msgid "bight(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:449
+msgid "blowhole(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:450
+msgid "blowout(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:451
+msgid "boatyard"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:452
+msgid "bog(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:453
+msgid "border post"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:454
+msgid "boulder field"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:455
+msgid "boundary marker"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:456
+msgid "breakwater"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:457
+msgid "brewery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:458
+msgid "bridge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:459
+msgid "buffer zone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:460
+msgid "building(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:461
+msgid "burial cave(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:462
+msgid "bush(es)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:463
+msgid "business center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:464
+msgid "butte(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:465
+msgid "cairn"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:466
+msgid "caldera"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:467
+msgid "camp(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:468
+msgid "canal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:469
+msgid "canal bend"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:470
+msgid "canal tunnel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:471
+msgid "canalized stream"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:472
+msgid "cannery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:473
+msgid "canyon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:474
+msgid "cape"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:475
+msgid "capital of a political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:476
+msgid "caravan route"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:477
+msgid "casino"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:478
+msgid "castle"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:479
+msgid "cattle dipping tank"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:480
+msgid "causeway"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:481
+msgid "cave(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:482
+msgid "cemetery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:483
+msgid "channel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:484
+msgid "chrome mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:485
+msgid "church"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:486
+msgid "cirque"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:487
+msgid "cirques"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:488
+msgid "clearing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:489
+msgid "cleft(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:490
+msgid "cliff(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:491
+msgid "clinic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:492
+msgid "coal mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:493
+msgid "coalfield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:494
+msgid "coast"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:495
+msgid "coast guard station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:496
+msgid "coconut grove"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:497
+msgid "college"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:498
+msgid "common"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:499
+msgid "communication center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:500
+msgid "community center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:501
+msgid "concession area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:502
+msgid "cone(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:503
+msgid "confluence"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:504
+msgid "continental rise"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:505
+msgid "convent"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:506
+msgid "copper mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:507
+msgid "copper works"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:508
+msgid "coral reef(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:509
+msgid "corral(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:510
+msgid "corridor"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:511
+msgid "cotton plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:512
+msgid "country house"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:513
+msgid "courthouse"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:514
+msgid "cove(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:515
+msgid "crater lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:516
+msgid "crater lakes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:517
+msgid "crater(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:518
+msgid "cuesta(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:519
+msgid "cultivated area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:520
+msgid "current"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:521
+msgid "customs house"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:522
+msgid "customs post"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:523
+msgid "cutoff"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:524
+msgid "dairy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:525
+msgid "dam"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:526
+msgid "deep"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:527
+msgid "delta"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:528
+msgid "dependent political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:529
+msgid "depression(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:530
+msgid "desert"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:531
+msgid "destroyed populated place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:532
+msgid "diatomite mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:533
+msgid "dike"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:534
+msgid "diplomatic facility"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:535
+msgid "dispensary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:536
+msgid "distributary(-ies)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:537
+msgid "ditch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:538
+msgid "ditch mouth(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:539
+msgid "divide"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:540
+msgid "dock(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:541
+msgid "docking basin"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:542
+msgid "dockyard"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:543
+msgid "drainage basin"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:544
+msgid "drainage canal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:545
+msgid "drainage ditch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:546
+msgid "dry dock"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:547
+msgid "dry stream bed"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:548
+msgid "dune(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:549
+msgid "economic region"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:550
+msgid "escarpment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:551
+msgid "estate(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:552
+msgid "estuary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:553
+msgid "experiment station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:554
+msgid "facility"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:555
+msgid "facility center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:556
+msgid "factory"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:557
+msgid "fan(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:558
+msgid "farm"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:559
+msgid "farm village"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:560
+msgid "farms"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:561
+msgid "farmstead"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:562
+msgid "ferry"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:563
+msgid "ferry terminal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:564
+msgid "field(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:565
+msgid "fire station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:566
+msgid "first-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:567
+msgid "fishing area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:568
+msgid "fishponds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:569
+msgid "fissure"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:570
+msgid "fjord"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:571
+msgid "fjords"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:572
+msgid "ford"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:573
+msgid "forest reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:574
+msgid "forest station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:575
+msgid "forest(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:576
+msgid "former inlet"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:577
+msgid "former sugar mill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:578
+msgid "fort"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:579
+msgid "fossilized forest"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:580
+msgid "foundry"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:581
+msgid "fourth-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:582
+msgid "free trade zone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:583
+msgid "freely associated state"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:584
+msgid "fuel depot"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:585
+msgid "gap"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:586
+msgid "garden(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:587
+msgid "gas-oil separator plant"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:588
+msgid "gasfield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:589
+msgid "gate"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:590
+msgid "geyser"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:591
+msgid "ghÄt"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:592
+msgid "glacier(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:593
+msgid "gold mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:594
+msgid "golf course"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:595
+msgid "gorge(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:596
+msgid "grassland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:597
+msgid "grave"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:598
+msgid "gravel area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:599
+msgid "grazing area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:600
+msgid "guest house"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:601
+msgid "gulf"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:602
+msgid "halting place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:603
+msgid "hammock(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:604
+msgid "hangar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:605
+msgid "hanging valley"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:606
+msgid "harbor(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:607
+msgid "headland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:608
+msgid "headwaters"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:609
+msgid "heath"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:610
+msgid "heliport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:611
+msgid "hermitage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:612
+msgid "hill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:613
+msgid "hills"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:614
+msgid "historical administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:615
+msgid "historical first-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:616
+msgid "historical fourth-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:617
+msgid "historical political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:618
+msgid "historical populated place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:619
+msgid "historical railroad"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:620
+msgid "historical railroad station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:621
+msgid "historical region"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:622
+msgid "historical second-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:623
+msgid "historical site"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:624
+msgid "historical third-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:625
+msgid "historical undersea feature"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:626
+msgid "homestead"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:627
+msgid "hospital"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:628
+msgid "hot spring(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:629
+msgid "hotel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:630
+msgid "house(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:631
+msgid "housing development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:632
+msgid "hunting reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:633
+msgid "hut"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:634
+msgid "huts"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:635
+msgid "hydroelectric power station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:636
+msgid "icecap"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:637
+msgid "icecap depression"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:638
+msgid "icecap dome"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:639
+msgid "icecap ridge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:640
+msgid "independent political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:641
+msgid "industrial area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:642
+msgid "inlet"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:643
+msgid "inspection station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:644
+msgid "interdune trough(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:645
+msgid "interfluve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:646
+msgid "intermittent lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:647
+msgid "intermittent lakes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:648
+msgid "intermittent oxbow lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:649
+msgid "intermittent pond"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:650
+msgid "intermittent ponds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:651
+msgid "intermittent pool"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:652
+msgid "intermittent reservoir"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:653
+msgid "intermittent salt lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:654
+msgid "intermittent salt lakes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:655
+msgid "intermittent salt pond(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:656
+msgid "intermittent stream"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:657
+msgid "intermittent wetland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:658
+msgid "intersection"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:659
+msgid "iron mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:660
+msgid "irrigated field(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:661
+msgid "irrigation canal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:662
+msgid "irrigation ditch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:663
+msgid "irrigation system"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:664
+msgid "island"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:665
+msgid "islands"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:666
+msgid "Israeli settlement"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:667
+msgid "isthmus"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:668
+msgid "jetty"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:669
+msgid "karst area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:670
+msgid "labor camp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:671
+msgid "lagoon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:672
+msgid "lagoons"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:673
+msgid "lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:674
+msgid "lake bed(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:675
+msgid "lake channel(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:676
+msgid "lake region"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:677
+msgid "lakes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:678
+msgid "land-tied island"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:679
+msgid "landfill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:680
+msgid "landing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:681
+msgid "lava area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:682
+msgid "lead mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:683
+msgid "leased area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:684
+msgid "leper colony"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:685
+msgid "leprosarium"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:686
+msgid "levee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:687
+msgid "lighthouse"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:688
+msgid "limekiln"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:689
+msgid "local government office"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:690
+msgid "locality"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:691
+msgid "lock(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:692
+msgid "logging camp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:693
+msgid "lost river"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:694
+msgid "maneuver area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:695
+msgid "mangrove island"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:696
+msgid "mangrove swamp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:697
+msgid "marina"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:698
+msgid "marine channel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:699
+msgid "maritime school"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:700
+msgid "market"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:701
+msgid "marsh(es)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:702
+msgid "meadow"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:703
+msgid "meander neck"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:704
+msgid "medical center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:705
+msgid "mesa(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:706
+msgid "meteorological station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:707
+msgid "military base"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:708
+msgid "military installation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:709
+msgid "military school"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:710
+msgid "mill(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:711
+msgid "mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:712
+msgid "mining area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:713
+msgid "mining camp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:714
+msgid "mission"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:715
+msgid "mole"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:716
+msgid "monastery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:717
+msgid "monument"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:718
+msgid "moor(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:719
+msgid "moraine"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:720
+msgid "mosque"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:721
+msgid "mound(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:722
+msgid "mountain"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:723
+msgid "mountains"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:724
+msgid "mud flat(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:725
+msgid "munitions plant"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:726
+msgid "museum"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:727
+msgid "narrows"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:728
+msgid "natural tunnel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:729
+msgid "nature reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:730
+msgid "naval base"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:731
+msgid "navigation canal(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:732
+msgid "navigation channel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:733
+msgid "nickel mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:734
+msgid "novitiate"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:735
+msgid "nuclear power station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:736
+msgid "nunatak"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:737
+msgid "nunataks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:738
+msgid "nursery(-ies)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:739
+msgid "oasis(-es)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:740
+msgid "observation point"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:741
+msgid "observatory"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:742
+msgid "ocean"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:743
+msgid "office building"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:744
+msgid "oil camp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:745
+msgid "oil palm plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:746
+msgid "oil pipeline"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:747
+msgid "oil pipeline junction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:748
+msgid "oil pipeline terminal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:749
+msgid "oil pumping station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:750
+msgid "oil refinery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:751
+msgid "oil well"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:752
+msgid "oilfield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:753
+msgid "olive grove"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:754
+msgid "olive oil mill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:755
+msgid "orchard(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:756
+msgid "ore treatment plant"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:757
+msgid "overfalls"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:758
+msgid "oxbow lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:759
+msgid "pagoda"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:760
+msgid "palace"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:761
+msgid "palm grove"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:762
+msgid "palm tree reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:763
+msgid "pan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:764
+msgid "pans"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:765
+msgid "parish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:766
+msgid "park"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:767
+msgid "park gate"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:768
+msgid "park headquarters"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:769
+msgid "parking garage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:770
+msgid "parking lot"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:771
+msgid "pass"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:772
+msgid "patrol post"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:773
+msgid "peak"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:774
+msgid "peaks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:775
+msgid "peat cutting area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:776
+msgid "peninsula"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:777
+msgid "petroleum basin"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:778
+msgid "phosphate works"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:779
+msgid "pier"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:780
+msgid "pine grove"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:781
+msgid "placer mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:782
+msgid "plain(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:783
+msgid "plateau"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:784
+msgid "point"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:785
+msgid "points"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:786
+msgid "polder"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:787
+msgid "police post"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:788
+msgid "political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:789
+msgid "pond"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:790
+msgid "ponds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:791
+msgid "pool(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:792
+msgid "populated locality"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:793
+msgid "populated place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:794
+msgid "populated places"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:795
+msgid "port"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:796
+msgid "portage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:797
+msgid "post office"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:798
+msgid "power station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:799
+msgid "prison"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:800
+msgid "promenade"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:801
+msgid "promontory(-ies)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:802
+msgid "pyramid"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:803
+msgid "pyramids"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:804
+msgid "quarry(-ies)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:805
+msgid "quay"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:806
+msgid "quicksand"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:807
+msgid "racetrack"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:808
+msgid "radio observatory"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:809
+msgid "radio station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:810
+msgid "railroad"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:811
+msgid "railroad junction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:812
+msgid "railroad siding"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:813
+msgid "railroad signal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:814
+msgid "railroad station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:815
+msgid "railroad stop"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:816
+msgid "railroad tunnel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:817
+msgid "railroad yard"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:818
+msgid "ranch(es)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:819
+msgid "rapids"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:820
+msgid "ravine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:821 akvo/rsr/models/location.py:147
+msgid "reach"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:822
+msgid "reef(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:823
+msgid "reformatory"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:824
+msgid "refugee camp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:826
+msgid "religious center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:827
+msgid "religious populated place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:828
+msgid "religious site"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:829
+msgid "research institute"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:830
+msgid "reservation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:831
+msgid "reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:832
+msgid "reservoir(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:833
+msgid "resort"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:834
+msgid "resthouse"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:835
+msgid "retreat"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:836
+msgid "ridge(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:837
+msgid "road"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:838
+msgid "road bend"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:839
+msgid "road cut"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:840
+msgid "road junction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:841
+msgid "road tunnel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:842
+msgid "roadstead"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:843
+msgid "rock"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:844
+msgid "rock desert"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:845
+msgid "rockfall"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:846
+msgid "rocks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:847
+msgid "rookery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:848
+msgid "rubber plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:849
+msgid "ruin(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:850
+msgid "ruined bridge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:851
+msgid "ruined dam"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:852
+msgid "sabkha(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:853
+msgid "saddle"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:854
+msgid "salt area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:855
+msgid "salt evaporation ponds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:856
+msgid "salt lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:857
+msgid "salt lakes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:858
+msgid "salt marsh"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:859
+msgid "salt mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:860
+msgid "salt pond"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:861
+msgid "salt ponds"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:862
+msgid "sanatorium"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:863
+msgid "sand area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:864
+msgid "sandy desert"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:865
+msgid "satellite station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:866
+msgid "sawmill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:867
+msgid "school"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:868
+msgid "school district"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:869
+msgid "scientific research base"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:870
+msgid "scrubland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:871
+msgid "sea"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:872
+msgid "seachannel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:873
+msgid "seachannels"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:874
+msgid "seamount"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:875
+msgid "seamounts"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:876
+msgid "seaplane landing area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:877
+msgid "seat of a first-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:878
+msgid "seat of a fourth-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:879
+msgid "seat of a second-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:880
+msgid "seat of a third-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:881
+msgid "second-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:882
+msgid "section of bank"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:883
+msgid "section of canal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:884
+msgid "section of estate"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:885
+msgid "section of harbor"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:886
+msgid "section of independent political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:887
+msgid "section of intermittent stream"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:888
+msgid "section of island"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:889
+msgid "section of lagoon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:890
+msgid "section of lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:891
+msgid "section of peninsula"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:892
+msgid "section of plain"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:893
+msgid "section of plateau"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:894
+msgid "section of populated place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:895
+msgid "section of reef"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:896
+msgid "section of stream"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:897
+msgid "section of valley"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:898
+msgid "section of wadi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:899
+msgid "section of waterfall(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:900
+msgid "semi-independent political entity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:901
+msgid "sewage treatment plant"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:902
+msgid "sheepfold"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:903
+msgid "shoal(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:904
+msgid "shopping center or mall"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:905
+msgid "shore"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:906
+msgid "shrine"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:907
+msgid "sill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:908
+msgid "sinkhole"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:909
+msgid "sisal plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:910
+msgid "slide"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:911
+msgid "slope(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:912
+msgid "sluice"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:913
+msgid "snowfield"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:914
+msgid "sound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:915
+msgid "spa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:916
+msgid "space center"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:917
+msgid "spillway"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:918
+msgid "spit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:919
+msgid "spring(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:920
+msgid "spur(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:921
+msgid "square"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:922
+msgid "stable"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:923
+msgid "stadium"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:924
+msgid "steps"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:925
+msgid "stock route"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:926
+msgid "stony desert"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:927
+msgid "store"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:928
+msgid "storehouse"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:929
+msgid "strait"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:930
+msgid "stream"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:931
+msgid "stream bank"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:932
+msgid "stream bend"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:933
+msgid "stream gauging station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:934
+msgid "stream mouth(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:935
+msgid "streams"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:936
+msgid "street"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:937
+msgid "sub-surface dam"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:938
+msgid "subway"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:939
+msgid "subway station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:940
+msgid "sugar mill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:941
+msgid "sugar plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:942
+msgid "sugar refinery"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:943
+msgid "sulphur spring(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:944
+msgid "swamp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:945
+msgid "synagogue"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:946
+msgid "tablemount (or guyot)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:947
+msgid "tablemounts (or guyots)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:948
+msgid "talus slope"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:949
+msgid "tank farm"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:950
+msgid "tea plantation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:951
+msgid "technical school"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:952
+msgid "temple(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:953
+msgid "terminal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:954
+msgid "terrace"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:955
+msgid "territory"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:956
+msgid "third-order administrative division"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:957
+msgid "tidal creek(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:958
+msgid "tidal flat(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:959
+msgid "tin mine(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:960
+msgid "toll gate/barrier"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:961
+msgid "tomb(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:962
+msgid "tower"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:963
+msgid "traffic circle"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:964
+msgid "trail"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:965
+msgid "transit terminal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:966
+msgid "tree(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:967
+msgid "triangulation station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:968
+msgid "tribal area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:969
+msgid "tundra"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:970
+msgid "tunnel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:971
+msgid "tunnels"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:972
+msgid "underground irrigation canal(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:973
+msgid "underground lake"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:974
+msgid "undersea apron"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:975
+msgid "undersea arch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:976
+msgid "undersea arrugado"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:977
+msgid "undersea bank"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:978
+msgid "undersea banks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:979
+msgid "undersea basin"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:980
+msgid "undersea bench"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:981
+msgid "undersea borderland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:982
+msgid "undersea canyon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:983
+msgid "undersea canyons"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:984
+msgid "undersea cordillera"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:985
+msgid "undersea escarpment (or scarp)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:986
+msgid "undersea fan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:987
+msgid "undersea flat"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:988
+msgid "undersea fork"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:989
+msgid "undersea forks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:990
+msgid "undersea fracture zone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:991
+msgid "undersea furrow"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:992
+msgid "undersea gap"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:993
+msgid "undersea gully"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:994
+msgid "undersea hill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:995
+msgid "undersea hills"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:996
+msgid "undersea hole"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:997
+msgid "undersea knoll"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:998
+msgid "undersea knolls"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:999
+msgid "undersea ledge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1000
+msgid "undersea levee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1001
+msgid "undersea median valley"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1002
+msgid "undersea mesa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1003
+msgid "undersea moat"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1004
+msgid "undersea mound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1005
+msgid "undersea mountain"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1006
+msgid "undersea mountains"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1007
+msgid "undersea peak"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1008
+msgid "undersea peaks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1009
+msgid "undersea pinnacle"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1010
+msgid "undersea plain"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1011
+msgid "undersea plateau"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1012
+msgid "undersea platform"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1013
+msgid "undersea province"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1014
+msgid "undersea ramp"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1015
+msgid "undersea range"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1016
+msgid "undersea ravine"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1017
+msgid "undersea reef"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1018
+msgid "undersea reefs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1019
+msgid "undersea ridge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1020
+msgid "undersea ridges"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1021
+msgid "undersea rise"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1022
+msgid "undersea saddle"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1023
+msgid "undersea shelf"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1024
+msgid "undersea shelf edge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1025
+msgid "undersea shelf valley"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1026
+msgid "undersea shoal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1027
+msgid "undersea shoals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1028
+msgid "undersea sill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1029
+msgid "undersea slope"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1030
+msgid "undersea spur"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1031
+msgid "undersea terrace"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1032
+msgid "undersea tongue"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1033
+msgid "undersea trench"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1034
+msgid "undersea trough"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1035
+msgid "undersea valley"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1036
+msgid "undersea valleys"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1037
+msgid "United States Government Establishment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1038
+msgid "upland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1039
+msgid "valley"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1040
+msgid "valleys"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1041
+msgid "veterinary facility"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1042
+msgid "vineyard"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1043
+msgid "vineyards"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1044
+msgid "volcano"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1045
+msgid "wadi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1046
+msgid "wadi bend"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1047
+msgid "wadi junction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1048
+msgid "wadi mouth"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1049
+msgid "wadies"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1050
+msgid "wall"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1051
+msgid "water mill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1052
+msgid "water pumping station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1053
+msgid "water tank"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1054
+msgid "watercourse"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1055
+msgid "waterfall(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1056
+msgid "waterhole(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1057
+msgid "waterworks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1058
+msgid "weir(s)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1059
+msgid "well"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1060
+msgid "wells"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1061
+msgid "wetland"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1062
+msgid "whaling station"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1063
+msgid "wharf(-ves)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1064
+msgid "whirlpool"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1065
+msgid "wildlife reserve"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1066
+msgid "windmill"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1067
+msgid "wreck"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1068
+msgid "zone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1069
+msgid "zoo"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1075
+msgid "Global"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1075
+msgid "The activity scope is global"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1076
+msgid "Regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1076
+msgid "The activity scope is a supranational region"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1077
+msgid "Multi-national"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1077
+msgid ""
+"The activity scope covers multiple countries, that don't constitute a region"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1078
+msgid "National"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1078
+msgid "The activity scope covers one country"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1079
+msgid "Sub-national: Multi-first-level administrative areas"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1079
+msgid ""
+"The activity scope covers more than one first-level subnational "
+"administrative areas (e.g. counties, provinces, states)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1080
+msgid "Sub-national: Single first-level administrative area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1080
+msgid ""
+"The activity scope covers one first-level subnational administrative area (e."
+"g. country, province, state)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1081
+msgid "Sub-national: Single second-level administrative area"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1081
+msgid ""
+"The activity scope covers one second-level subnational administrative area "
+"(e.g. municipality or district)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1082
+msgid "Single location"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1082
+msgid ""
+"The activity scope covers one single location (e.g. town, village, farm)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1088
+msgid "Activity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1088
+msgid "The location specifies where the activity is carried out"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1089
+msgid "Intended Beneficiaries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1089
+msgid ""
+"The location specifies where the intended beneficiaries of the activity live"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1095
+msgid "States Ex-Yugoslavia unspecified"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1096
+msgid "Europe, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1097
+msgid "North of Sahara, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1098
+msgid "South of Sahara, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1099
+msgid "Africa, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1100
+msgid "West Indies, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1101
+msgid "North & Central America, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1102
+msgid "South America, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1103
+msgid "America, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1104
+msgid "Middle East, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1105
+msgid "Central Asia, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1106
+msgid "South Asia, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1107
+msgid "South & Central Asia, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1108
+msgid "Far East Asia, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1109
+msgid "Asia, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1110
+msgid "Oceania, regional"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1111
+msgid "Developing countries, unspecified"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1117
+msgid "Annual"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1117
+msgid "The loan has 1 repayment per year"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1118
+msgid "Semi-annual"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1118
+msgid "The loan has 2 repayments per year"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1119
+msgid "Quarterly"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1119
+msgid "The loan has 4 repayments per year "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1120
+msgid "Monthly"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1120
+msgid "The loan has 12, monthly repayments per year"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1126
+#: akvo/templates/organisation_main.html:126
+#: akvo/templates/partials/widgets/project_status.html:5
+#: akvo/templates/widgets/project_list.html:70
+msgid "Pipeline/identification"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1126
+msgid "The activity is being scoped or planned "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1127
+#: akvo/templates/organisation_main.html:136
+#: akvo/templates/partials/widgets/project_status.html:9
+#: akvo/templates/widgets/project_list.html:71
+msgid "Implementation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1127
+msgid "The activity is currently being implemented"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1128
+#: akvo/templates/organisation_main.html:146
+#: akvo/templates/partials/widgets/project_status.html:13
+#: akvo/templates/widgets/project_list.html:72
+msgid "Completion"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1128
+msgid "Physical activity is complete or the final disbursement has been made."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1129
+#: akvo/templates/organisation_main.html:156
+msgid "Post-completion"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1129
+msgid ""
+"Physical activity is complete or the final disbursement has been made, but "
+"the activity remains open pending financial sign off or M&E"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1130 akvo/rsr/models/project.py:93
+#: akvo/templates/organisation_main.html:166
+#: akvo/templates/partials/widgets/project_status.html:21
+#: akvo/templates/widgets/project_list.html:74
+msgid "Cancelled"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1130
+msgid "The activity has been cancelled"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1131
+#: akvo/templates/organisation_main.html:176
+#: akvo/templates/partials/widgets/project_status.html:25
+#: akvo/templates/widgets/project_list.html:75
+msgid "Suspended"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1131
+msgid "The activity has been temporarily suspended"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1137
+msgid "Education policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1138
+msgid "Education facilities and training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1139
+msgid "Teacher training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1140
+msgid "Educational research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1141
+msgid "Primary education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1142
+msgid "Basic life skills for youth and adults"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1143
+msgid "Basic life skills for youth"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1144
+msgid "Primary education equivalent for adults"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1145
+msgid "Early childhood education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1146
+#: akvo/codelists/store/codelists_v202.py:2050
+msgid "Secondary education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1147
+msgid "Lower secondary education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1148
+msgid "Upper secondary education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1149
+msgid "Vocational training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1150
+msgid "Higher education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1151
+msgid "Advanced technical and managerial training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1152
+msgid "Health policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1153
+msgid "Medical education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1154
+msgid "Medical research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1155
+msgid "Medical services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1156
+msgid "Basic health care"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1157
+msgid "Basic health infrastructure"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1158
+msgid "Basic nutrition"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1159
+msgid "Infectious disease control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1160
+msgid "Health education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1161
+msgid "Malaria control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1162
+msgid "Tuberculosis control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1163
+msgid "Health personnel development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1164
+msgid "Population policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1165
+msgid "Reproductive health care"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1166
+msgid "Family planning"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1167
+msgid "STD control including HIV/AIDS"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1168
+msgid "Personnel development for population and reproductive health"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1169
+msgid "Water sector policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1170
+msgid "Water resources conservation (including data collection)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1171
+msgid "Water supply and sanitation - large systems"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1172
+msgid "Water supply - large systems"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1173
+msgid "Sanitation - large systems"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1174
+msgid "Basic drinking water supply and basic sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1175
+msgid "Basic drinking water supply"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1176
+msgid "Basic sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1177
+msgid "River basins’ development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1178
+msgid "Waste management / disposal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1179
+msgid "Education and training in water supply and sanitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1180
+msgid "Public sector policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1181
+msgid "Public Finance Management (PFM)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1182
+msgid "Decentralisation and support to subnational government"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1183
+msgid "Anti-corruption organisations and institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1184
+msgid "Domestic Revenue Mobilisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1185
+msgid "Tax collection"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1186
+msgid "Budget planning"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1187
+msgid "National audit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1188
+msgid "Debt and aid management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1189
+msgid "Public sector financial management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1190
+msgid "Foreign affairs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1191
+msgid "Diplomatic missions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1192
+msgid "Administration of developing countries' foreign aid"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1193
+msgid "General personnel services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1194
+msgid "Central procurement"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1195
+msgid "Other general public services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1196
+msgid "National monitoring and evaluation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1197
+msgid "Local government finance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1198
+msgid "Other central transfers to institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1199
+msgid "Legal and judicial development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1200
+msgid "Justice, law and order policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1201
+msgid "Police"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1202
+msgid "Fire and rescue services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1203
+msgid "Judicial affairs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1204
+msgid "Ombudsman"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1205
+msgid "Immigration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1206
+msgid "Prisons"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1207
+msgid "Government administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1208
+msgid "Macroeconomic policy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1209
+msgid "Meteorological services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1210
+msgid "National standards development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1211
+msgid "Democratic participation and civil society"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1212
+#: akvo/codelists/store/codelists_v202.py:1219
+msgid "Elections"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1213
+msgid "Legislatures and political parties"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1214
+msgid "Media and free flow of information"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1215
+msgid "Executive office"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1216
+msgid "Tax policy and administration support"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1217
+msgid "Other non-tax revenue mobilisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1218
+#: akvo/codelists/store/codelists_v202.py:1220
+msgid "Human rights"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1221
+msgid "Free flow of information"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1222
+msgid "Women's equality organisations and institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1223
+msgid "Women’s equality organisations and institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1224
+msgid "Ending violence against women and girls"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1225
+msgid "Local government administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1226
+msgid "Security system management and reform"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1227
+msgid "Civilian peace-building, conflict prevention and resolution"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1228
+msgid "Participation in international peacekeeping operations"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1229
+msgid "Reintegration and SALW control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1230
+msgid "Removal of land mines and explosive remnants of war"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1231
+msgid "Child soldiers (Prevention and demobilisation)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1232
+msgid "Social/ welfare services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1233
+msgid ""
+"Social protection and welfare services policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1234
+msgid "Social security (excl pensions)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1235
+msgid "General pensions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1236
+msgid "Civil service pensions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1237
+msgid "Social services (incl youth development and women+ children)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1238
+msgid "Employment policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1239
+msgid "Housing policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1240
+msgid "Low-cost housing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1241
+msgid "Multisector aid for basic social services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1242
+msgid "Culture and recreation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1243
+msgid "Statistical capacity building"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1244
+msgid "Narcotics control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1245
+msgid "Social mitigation of HIV/AIDS"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1246
+msgid "Recreation and sport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1247
+msgid "Culture"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1248
+msgid "Transport policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1249
+msgid "Transport policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1250
+msgid "Public transport services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1251
+msgid "Transport regulation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1252
+msgid "Road transport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1253
+msgid "Feeder road construction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1254
+msgid "Feeder road maintenance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1255
+msgid "National road construction"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1256
+msgid "National road maintenance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1257
+msgid "Rail transport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1258
+msgid "Water transport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1259
+msgid "Air transport"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1260
+msgid "Storage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1261
+msgid "Education and training in transport and storage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1262
+msgid "Communications policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1263
+msgid "Communications policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1264
+msgid "Postal services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1265
+msgid "Information services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1266
+msgid "Telecommunications"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1267
+msgid "Radio/television/print media"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1268
+msgid "Information and communication technology (ICT)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1269
+#: akvo/codelists/store/codelists_v202.py:1286
+msgid "Energy policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1270
+msgid "Power generation/non-renewable sources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1271
+msgid "Power generation/renewable sources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1272
+msgid "Electrical transmission/ distribution"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1273
+#: akvo/codelists/store/codelists_v202.py:1310
+msgid "Gas distribution"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1274
+msgid "Oil-fired power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1275
+msgid "Gas-fired power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1276
+msgid "Coal-fired power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1277
+msgid "Nuclear power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1278
+#: akvo/codelists/store/codelists_v202.py:1293
+msgid "Hydro-electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1279
+#: akvo/codelists/store/codelists_v202.py:1297
+msgid "Geothermal energy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1280
+#: akvo/codelists/store/codelists_v202.py:1294
+msgid "Solar energy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1281
+msgid "Wind power"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1282
+msgid "Ocean power"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1283
+msgid "Biomass"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1284
+#: akvo/codelists/store/codelists_v202.py:1289
+msgid "Energy education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1285
+#: akvo/codelists/store/codelists_v202.py:1290
+msgid "Energy research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1287
+msgid "Energy sector policy, planning and administration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1288
+msgid "Energy regulation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1291
+msgid "Energy conservation and demand-side efficiency"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1292
+msgid "Energy generation, renewable sources – multiple technologies"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1295
+msgid "Wind energy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1296
+msgid "Marine energy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1298
+msgid "Biofuel-fired power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1299
+msgid "Energy generation, non-renewable sources – unspecified"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1300
+msgid "Coal-fired electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1301
+msgid "Oil-fired electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1302
+msgid "Natural gas-fired electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1303
+msgid "Fossil fuel electric power plants with carbon capture and storage (CCS)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1304
+msgid "Non-renewable waste-fired electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1305
+#: akvo/codelists/store/codelists_v202.py:2065
+msgid "Hybrid energy electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1306
+#: akvo/codelists/store/codelists_v202.py:2066
+msgid "Nuclear energy electric power plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1307
+msgid "Heat plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1308
+msgid "District heating and cooling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1309
+msgid "Electric power transmission and distribution"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1311
+msgid "Financial policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1312
+msgid "Monetary institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1313
+msgid "Formal sector financial intermediaries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1314
+msgid "Informal/semi-formal financial intermediaries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1315
+msgid "Education/training in banking and financial services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1316
+msgid "Business support services and institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1317
+msgid "Privatisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1318
+msgid "Agricultural policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1319
+msgid "Agricultural development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1320
+msgid "Agricultural land resources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1321
+msgid "Agricultural water resources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1322
+msgid "Agricultural inputs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1323
+msgid "Food crop production"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1324
+msgid "Industrial crops/export crops"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1325
+msgid "Livestock"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1326
+msgid "Agrarian reform"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1327
+msgid "Agricultural alternative development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1328
+msgid "Agricultural extension"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1329
+msgid "Agricultural education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1330
+msgid "Agricultural research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1331
+msgid "Agricultural services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1332
+msgid "Plant and post-harvest protection and pest control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1333
+msgid "Agricultural financial services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1334
+msgid "Agricultural co-operatives"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1335
+msgid "Livestock/veterinary services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1336
+msgid "Forestry policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1337
+msgid "Forestry development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1338
+msgid "Fuelwood/charcoal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1339
+msgid "Forestry education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1340
+msgid "Forestry research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1341
+msgid "Forestry services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1342
+msgid "Fishing policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1343
+msgid "Fishery development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1344
+msgid "Fishery education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1345
+msgid "Fishery research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1346
+msgid "Fishery services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1347
+msgid "Industrial policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1348
+msgid "Industrial development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1349
+msgid "Small and medium-sized enterprises (SME) development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1350
+msgid "Cottage industries and handicraft"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1351
+msgid "Agro-industries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1352
+msgid "Forest industries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1353
+msgid "Textiles, leather and substitutes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1354
+msgid "Chemicals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1355
+msgid "Fertilizer plants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1356
+msgid "Cement/lime/plaster"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1357
+msgid "Energy manufacturing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1358
+msgid "Pharmaceutical production"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1359
+msgid "Basic metal industries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1360
+msgid "Non-ferrous metal industries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1361
+msgid "Engineering"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1362
+msgid "Transport equipment industry"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1363
+msgid "Technological research and development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1364
+msgid "Mineral/mining policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1365
+msgid "Mineral prospection and exploration"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1366
+msgid "Coal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1367
+msgid "Oil and gas"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1368
+msgid "Ferrous metals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1369
+msgid "Nonferrous metals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1370
+msgid "Precious metals/materials"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1371
+msgid "Industrial minerals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1372
+msgid "Fertilizer minerals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1373
+msgid "Offshore minerals"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1374
+msgid "Construction policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1375
+msgid "Trade policy and administrative Management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1376
+msgid "Trade facilitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1377
+msgid "Regional trade agreements (RTAs)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1378
+msgid "Multilateral trade negotiations"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1379
+msgid "Trade-related adjustment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1380
+msgid "Trade education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1381
+msgid "Tourism policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1382
+msgid "Environmental policy and administrative management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1383
+msgid "Biosphere protection"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1384
+msgid "Bio-diversity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1385
+msgid "Site preservation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1386
+msgid "Flood prevention/control"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1387
+msgid "Environmental education/ training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1388
+msgid "Environmental research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1389
+msgid "Multisector aid"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1390
+msgid "Urban development and management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1391
+msgid "Urban land policy and management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1392
+msgid "Urban development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1393
+#: akvo/codelists/store/codelists_v202.py:1395
+msgid "Rural development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1394
+msgid "Rural land policy and management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1396
+msgid "Non-agricultural alternative development"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1397
+msgid "Multisector education/training"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1398
+msgid "Research/scientific institutions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1399
+msgid "General budget support-related aid"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1400
+msgid "Food aid/Food security programmes"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1401
+msgid "Import support (capital goods)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1402
+msgid "Import support (commodities)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1403
+msgid "Action relating to debt"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1404
+msgid "Debt forgiveness"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1405
+msgid "Relief of multilateral debt"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1406
+msgid "Rescheduling and refinancing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1407
+msgid "Debt for development swap"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1408
+msgid "Other debt swap"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1409
+msgid "Debt buy-back"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1410
+msgid "Material relief assistance and services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1411
+msgid "Emergency food aid"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1412
+msgid "Relief co-ordination; protection and support services"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1413
+#: akvo/codelists/store/codelists_v202.py:2085
+msgid "Reconstruction relief and rehabilitation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1414
+#: akvo/codelists/store/codelists_v202.py:2086
+msgid "Disaster prevention and preparedness"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1415
+msgid "Administrative costs (non-sector allocable)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1416
+msgid "Support to national NGOs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1417
+msgid "Support to international NGOs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1418
+msgid "Support to local and regional NGOs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1419
+msgid "Refugees in donor countries (non-sector allocable)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1420
+msgid "Sectors not specified"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1421
+msgid "Promotion of development awareness (non-sector allocable)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1459
+msgid "Pre- and post-project impact appraisal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1460
+msgid "Objectives / Purpose of activity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1461
+msgid "Intended ultimate beneficiaries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1462
+#: akvo/templates/project_main.html:174
+msgid "Conditions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1463
+#: akvo/templates/partials/widgets/project_funding.html:5
+#: akvo/templates/widgets/project_list.html:40
+msgid "Budget"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1464
+msgid "Summary information about contract"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1465
+msgid "Review of project performance and evaluation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1466
+msgid "Results, outcomes and outputs"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1467
+msgid "Memorandum of understanding (If agreed by all parties)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1468
+msgid "Tender"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1469
+msgid "Contract"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1470
+msgid "Activity web page"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1471
+msgid "Annual report"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1472
+msgid "Institutional Strategy paper"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1473
+msgid "Country strategy paper"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1474
+msgid "Aid Allocation Policy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1475
+msgid "Procurement Policy and Procedure"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1476
+msgid "Institutional Audit Report"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1477
+msgid "Country Audit Report"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1478
+msgid "Exclusions Policy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1479
+msgid "Institutional Evaluation Report"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1480
+msgid "Country Evaluation Report"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1481
+msgid "Sector strategy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1482
+msgid "Thematic strategy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1483
+msgid "Country-level Memorandum of Understanding"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1484
+msgid "Evaluations policy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1485
+msgid "General Terms and Conditions"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1486
+msgid "Organisation web page"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1487
+msgid "Country/Region web page"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1488
+msgid "Sector web page"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1502
+msgid "Emergency"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1503
+msgid "Appeal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2002
+#: akvo/templates/results_base.html:49
+msgid "Output"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2002
+msgid ""
+"Results of the activity that came about as a direct effect of your work and "
+"specific, what is done, and what communities are reached. For example, X "
+"number of individuals."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2003
+#: akvo/templates/results_base.html:50
+msgid "Outcome"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2003
+msgid ""
+"Results of the activity that produce an effect on the overall communities or "
+"issues you serve. For example lower rate of infection after a vaccination "
+"programme."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2004
+#: akvo/templates/results_base.html:51
+msgid "Impact"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2004
+msgid ""
+"The long term effects of the outcomes, that lead to larger, over arching "
+"results, such as improved life-expectancy."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2005
+#: akvo/codelists/store/codelists_v202.py:2335
+#: akvo/codelists/store/codelists_v202.py:2400
+#: akvo/templates/results_base.html:52
+msgid "Other"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2005
+msgid "Another type of result, not specified above."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2011
+#: akvo/templates/myrsr/project_editor/project_editor.html:167
+msgid "Government"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2012
+#: akvo/templates/myrsr/project_editor/project_editor.html:168
+msgid "Other Public Sector"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2013
+#: akvo/templates/myrsr/project_editor/project_editor.html:169
+msgid "International NGO"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2014
+#: akvo/templates/myrsr/project_editor/project_editor.html:170
+msgid "National NGO"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2015
+#: akvo/templates/myrsr/project_editor/project_editor.html:171
+msgid "Regional NGO"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2016
+#: akvo/templates/myrsr/project_editor/project_editor.html:172
+msgid "Public Private Partnership"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2017
+#: akvo/templates/myrsr/project_editor/project_editor.html:173
+msgid "Multilateral"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2018
+#: akvo/templates/myrsr/project_editor/project_editor.html:174
+msgid "Foundation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2019
+#: akvo/templates/myrsr/project_editor/project_editor.html:175
+msgid "Private Sector"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2020
+#: akvo/templates/myrsr/project_editor/project_editor.html:176
+msgid "Academic, Training and Research"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2048
+msgid "Education, level unspecified"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2049
+msgid "Basic education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2051
+msgid "Post-secondary education"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2052
+msgid "Health, general"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2053
+msgid "Basic health"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2054
+msgid "POPULATION POLICIES/ PROGRAMMES AND REPRODUCTIVE HEALTH"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2055
+msgid "WATER AND SANITATION"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2056
+msgid "Government and civil society, general"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2057
+msgid "Conflict prevention and resolution, peace and security"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2058
+msgid "OTHER SOCIAL INFRASTRUCTURE AND SERVICES"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2059
+msgid "TRANSPORT AND STORAGE"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2060
+msgid "COMMUNICATIONS"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2061
+msgid "ENERGY GENERATION AND SUPPLY"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2062
+msgid "Energy generation, distribution and efficiency – general"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2063
+msgid "Energy generation, renewable sources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2064
+msgid "Energy generation, non-renewable sources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2067
+msgid "Heating, cooling and energy distribution"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2068
+msgid "BANKING AND FINANCIAL SERVICES"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2069
+msgid "BUSINESS AND OTHER SERVICES"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2070
+msgid "AGRICULTURE"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2071
+msgid "FORESTRY"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2072
+msgid "FISHING"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2073
+msgid "INDUSTRY"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2074
+msgid "MINERAL RESOURCES AND MINING"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2075
+msgid "CONSTRUCTION"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2076
+msgid "TRADE POLICY AND REGULATIONS AND TRADE- RELATED ADJUSTMENT"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2077
+msgid "TOURISM"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2078
+msgid "General environmental protection"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2079
+msgid "Other multisector"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2081
+msgid "Developmental food aid/Food security assistance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2082
+msgid "Other commodity assistance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2084
+msgid "Emergency Response"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2087
+msgid "ADMINISTRATIVE COSTS OF DONORS"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2088
+msgid "SUPPORT TO NON- GOVERNMENTAL ORGANISATIONS (NGOs)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2089
+msgid "REFUGEES IN DONOR COUNTRIES"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2090
+msgid "UNALLOCATED/ UNSPECIFIED"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2096
+msgid "OECD DAC CRS Purpose Codes (5 digit)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2096
+msgid "The sector reported corresponds to an OECD DAC CRS 5-digit purpose code"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2097
+msgid "OECD DAC CRS Purpose Codes (3 digit)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2097
+msgid "The sector reported corresponds to an OECD DAC CRS 3-digit purpose code"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2098
+msgid "Classification of the Functions of Government (UN)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2098
+msgid ""
+"The sector reported corresponds to the UN Classification of the Functions of "
+"Government (CoFoG)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2099
+msgid ""
+"Statistical classification of economic activities in the European Community"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2099
+msgid ""
+"The sector reported corresponds to the statistical classifications of "
+"economic activities in the European Community"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2100
+msgid "National Taxonomy for Exempt Entities (USA)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2100
+msgid ""
+"The sector reported corresponds to the National Taxonomy for Exempt Entities "
+"(NTEE) - USA"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2101
+msgid "AidData"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2101
+msgid "The sector reported corresponds to AidData classifications"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2102
+msgid "SDG Goal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2102
+msgid ""
+"A value from the top-level list of UN sustainable development goals (SDGs) "
+"(e.g. ‘1’)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2103
+msgid "SDG Target"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2103
+msgid ""
+"A value from the second-level list of UN sustainable development goals "
+"(SDGs) (e.g. ‘1.1’)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2104
+msgid "SDG Indicator"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2104
+msgid ""
+"A value from the second-level list of UN sustainable development (SDG) "
+"indicators"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2105
+msgid "Humanitarian Global Clusters (Inter-Agency Standing Committee)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2105
+msgid ""
+"The sector reported corresponds to an Inter-Agency Standard Committee "
+"Humanitarian Global Cluster code"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2106
+#: akvo/codelists/store/codelists_v202.py:2343
+#: akvo/codelists/store/codelists_v202.py:2356
+#: akvo/codelists/store/codelists_v202.py:2399
+msgid "Reporting Organisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2106
+msgid ""
+"The sector reported corresponds to a sector vocabulary maintained by the "
+"reporting organisation for this activity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2107
+msgid "Reporting Organisation 2"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2107
+msgid ""
+"The sector reported corresponds to a sector vocabulary maintained by the "
+"reporting organisation for this activity (if they are referencing more than "
+"one)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2146
+msgid "Afar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2147
+msgid "Abkhazian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2148
+msgid "Avestan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2149
+msgid "Afrikaans"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2150
+msgid "Akan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2151
+msgid "Amharic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2152
+msgid "Aragonese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2153
+msgid "Arabic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2154
+msgid "Assamese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2155
+msgid "Avaric"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2156
+msgid "Aymara"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2157
+msgid "Azerbaijani"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2158
+msgid "Bashkir"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2159
+msgid "Belarusian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2160
+msgid "Bulgarian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2161
+msgid "Bihari languages"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2162
+msgid "Bislama"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2163
+msgid "Bambara"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2164
+msgid "Bengali"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2165
+msgid "Tibetan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2166
+msgid "Breton"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2167
+msgid "Bosnian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2168
+msgid "Catalan; Valencian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2169
+msgid "Chechen"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2170
+msgid "Chamorro"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2171
+msgid "Corsican"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2172
+msgid "Cree"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2173
+msgid "Czech"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2174
+msgid "Chuvash"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2175
+msgid "Welsh"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2176
+msgid "Danish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2177 akvo/rsr/models/project.py:74
+msgid "German"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2178
+msgid "Divehi; Dhivehi; Maldivian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2179
+msgid "Dzongkha"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2180
+msgid "Ewe"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2181
+msgid "Greek"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2182 akvo/rsr/models/project.py:75
+msgid "English"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2183
+msgid "Esperanto"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2184
+msgid "Spanish; Castilian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2185
+msgid "Estonian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2186
+msgid "Basque"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2187
+msgid "Persian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2188
+msgid "Fulah"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2189
+msgid "Finnish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2190
+msgid "Fijian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2191
+msgid "Faroese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2192 akvo/rsr/models/project.py:77
+msgid "French"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2193
+msgid "Western Frisian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2194
+msgid "Irish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2195
+msgid "Gaelic; Scottish Gaelic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2196
+msgid "Galician"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2197
+#: akvo/codelists/store/codelists_v202.py:2532
+msgid "Guarani"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2198
+msgid "Gujarati"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2199
+msgid "Manx"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2200
+msgid "Hausa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2201
+msgid "Hebrew"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2202
+msgid "Hindi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2203
+msgid "Hiri Motu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2204
+msgid "Croatian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2205
+msgid "Haitian; Haitian Creole"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2206
+msgid "Hungarian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2207
+msgid "Armenian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2208
+msgid "Herero"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2209
+msgid "Indonesian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2210
+msgid "Igbo"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2211
+msgid "Sichuan Yi; Nuosu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2212
+msgid "Inupiaq"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2213
+msgid "Ido"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2214
+msgid "Icelandic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2215
+msgid "Italian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2216
+msgid "Inuktitut"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2217
+msgid "Japanese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2218
+msgid "Javanese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2219
+msgid "Georgian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2220
+msgid "Kongo"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2221
+msgid "Kikuyu; Gikuyu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2222
+msgid "Kuanyama; Kwanyama"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2223
+msgid "Kazakh"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2224
+msgid "Kalaallisut; Greenlandic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2225
+msgid "Central Khmer"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2226
+msgid "Kannada"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2227
+msgid "Korean"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2228
+msgid "Kanuri"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2229
+msgid "Kashmiri"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2230
+msgid "Kurdish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2231
+msgid "Komi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2232
+msgid "Cornish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2233
+msgid "Kirghiz; Kyrgyz"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2234
+msgid "Latin"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2235
+msgid "Luxembourgish; Letzeburgesch"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2236
+msgid "Ganda"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2237
+msgid "Limburgan; Limburger; Limburgish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2238
+msgid "Lingala"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2239
+msgid "Lao"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2240
+msgid "Lithuanian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2241
+msgid "Luba-Katanga"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2242
+msgid "Latvian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2243
+msgid "Malagasy"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2244
+msgid "Marshallese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2245
+msgid "Maori"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2246
+msgid "Macedonian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2247
+msgid "Malayalam"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2248
+msgid "Mongolian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2249
+msgid "Marathi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2250
+msgid "Malay"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2251
+msgid "Maltese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2252
+msgid "Burmese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2253 akvo/rsr/iso3166.py:165
+msgid "Nauru"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2254
+msgid "BokmĂĽl, Norwegian; Norwegian BokmĂĽl"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2255
+msgid "Ndebele, North; North Ndebele"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2256
+msgid "Nepali"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2257
+msgid "Ndonga"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2258
+msgid "Dutch; Flemish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2259
+msgid "Norwegian Nynorsk; Nynorsk, Norwegian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2260
+msgid "Norwegian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2261
+msgid "Ndebele, South; South Ndebele"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2262
+msgid "Navajo; Navaho"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2263
+msgid "Chichewa; Chewa; Nyanja"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2264
+msgid "Occitan (post 1500)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2265
+msgid "Ojibwa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2266
+msgid "Oromo"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2267
+msgid "Oriya"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2268
+msgid "Ossetian; Ossetic"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2269
+msgid "Panjabi; Punjabi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2270
+msgid "Pali"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2271
+msgid "Polish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2272
+msgid "Pushto; Pashto"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2273
+msgid "Portuguese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2274
+msgid "Quechua"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2275
+msgid "Romansh"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2276
+msgid "Rundi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2277
+msgid "Romanian; Moldavian; Moldovan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2278 akvo/rsr/models/project.py:79
+msgid "Russian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2279
+msgid "Kinyarwanda"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2280
+msgid "Sanskrit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2281
+msgid "Sardinian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2282
+msgid "Sindhi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2283
+msgid "Northern Sami"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2284
+msgid "Sango"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2285
+msgid "Sinhala; Sinhalese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2286
+msgid "Slovak"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2287
+msgid "Slovenian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2288
+msgid "Samoan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2289
+msgid "Shona"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2290
+msgid "Somali"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2291
+msgid "Albanian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2292
+msgid "Serbian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2293
+msgid "Swati"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2294
+msgid "Sotho, Southern"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2295
+msgid "Sundanese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2296
+msgid "Swedish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2297
+msgid "Swahili"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2298
+msgid "Tamil"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2299
+msgid "Telugu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2300
+msgid "Tajik"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2301
+msgid "Thai"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2302
+msgid "Tigrinya"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2303
+msgid "Turkmen"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2304
+msgid "Tagalog"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2305
+msgid "Tswana"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2306
+msgid "Tonga (Tonga Islands)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2307
+msgid "Turkish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2308
+msgid "Tsonga"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2309
+msgid "Tatar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2310
+msgid "Twi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2311
+msgid "Tahitian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2312
+msgid "Uighur; Uyghur"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2313
+msgid "Ukrainian"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2314
+msgid "Urdu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2315
+msgid "Uzbek"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2316
+msgid "Venda"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2317
+msgid "Vietnamese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2318
+msgid "VolapĂźk"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2319
+msgid "Walloon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2320
+msgid "Wolof"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2321
+msgid "Xhosa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2322
+msgid "Yiddish"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2323
+msgid "Yoruba"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2324
+msgid "Zhuang; Chuang"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2325
+msgid "Chinese"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2326
+msgid "Zulu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2332
+msgid "Equal Principal Payments (EPP)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2332
+#: akvo/codelists/store/codelists_v202.py:2333
+#: akvo/codelists/store/codelists_v202.py:2334
+#: akvo/codelists/store/codelists_v202.py:2335
+msgid "As required and defined by CRS++ reporting format Column 44"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2333
+msgid "Annuity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2334
+msgid "Lump sum"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2341
+msgid "Glide"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2342
+msgid "Humanitarian Plan"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2349
+msgid "WHO Registry"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2350
+msgid "Sphere Handbook"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2351
+msgid "US Foreign Assistance Framework"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2352
+msgid "World Bank World Development Indicators"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2353
+msgid "UN Millennium Development Goals Indicators"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2354
+msgid "UNOCHA Humanitarian Response Indicators"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2355
+msgid "HIV/AIDS Indicator Registry"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2362
+msgid "Money is disbursed through central Ministry of Finance or Treasury"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2363
+msgid ""
+"Money is disbursed directly to the implementing institution and managed "
+"through a separate bank account"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2364
+msgid ""
+"Aid in kind: Donors utilise third party agencies, e.g. NGOs or management "
+"companies"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2365
+msgid "Aid in kind: Donors manage funds themselves"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2379
+msgid "Administrative Region"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2379
+msgid ""
+"The designated geographic location is an administrative region (state, "
+"county, province, district, municipality etc.)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2380
+msgid "Populated Place"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2380
+msgid ""
+"The designated geographic location is a populated place (town, village, farm "
+"etc.)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2381
+msgid "Structure"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2381
+msgid ""
+"The designated geopgraphic location is a structure (such as a school or a "
+"clinic)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2382
+msgid "Other Topographical Feature"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2382
+msgid ""
+"The designated geographic location is a topographical feature, such as a "
+"mountain, a river, a forest"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2396
+msgid "IATI"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2396
+msgid "The budget identifier reported uses IATI budget identifier categories"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2397
+msgid "Country Chart of Accounts"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2397
+msgid ""
+"The budget identifier reported corresponds to the recipient country chart of "
+"accounts"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2398
+msgid "Other Country System"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2398
+msgid ""
+"The budget identifier reported corresponds to a recipient country system "
+"other than the chart of accounts"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2399
+msgid ""
+"The budget identifier reported corresponds to categories that are specific "
+"to the reporting organisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2400
+msgid ""
+"The budget identifier reported uses a different vocabulary, not specified in "
+"the codelist "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2415
+msgid "UAE Dirham"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2416
+msgid "Afghani"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2417
+msgid "Lek"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2418
+msgid "Armenian Dram"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2419
+msgid "Netherlands Antillian Guilder"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2420
+msgid "Kwanza"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2421
+msgid "Argentine Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2422
+msgid "Australian Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2423
+msgid "Aruban Guilder"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2424
+msgid "Azerbaijanian Manat"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2425
+msgid "Convertible Marks"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2426
+msgid "Barbados Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2427
+msgid "Taka"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2428
+msgid "Bulgarian Lev"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2429
+msgid "Bahraini Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2430
+msgid "Burundi Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2431
+msgid "Bermudian Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2432
+msgid "Brunei Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2433
+msgid "Boliviano"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2434
+msgid "Mvdol"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2435
+msgid "Brazilian Real"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2436
+msgid "Bahamian Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2437
+msgid "Ngultrum"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2438
+msgid "Pula"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2439
+msgid "Belarussian Ruble"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2440
+msgid "Belize Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2441
+msgid "Canadian Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2442
+msgid "Congolese Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2443
+msgid "Swiss Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2444
+msgid "Unidades de fomento"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2445
+msgid "Chilean Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2446
+msgid "Yuan Renminbi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2447
+msgid "Colombian Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2448
+msgid "Unidad de Valor Real"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2449
+msgid "Costa Rican Colon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2450
+msgid "Peso Convertible"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2451
+msgid "Cuban Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2452
+msgid "Cape Verde Escudo"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2453
+msgid "Czech Koruna"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2454
+msgid "Djibouti Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2455
+msgid "Danish Krone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2456
+msgid "Dominican Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2457
+msgid "Algerian Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2458
+msgid "Kroon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2459
+msgid "Egyptian Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2460
+msgid "Nakfa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2461
+msgid "Ethiopian Birr"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2462
+msgid "Euro"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2463
+msgid "Fiji Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2464
+msgid "Falkland Islands Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2465
+msgid "Pound Sterling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2466
+msgid "Lari"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2467
+msgid "Cedi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2468
+msgid "Gibraltar Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2469
+msgid "Dalasi"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2470
+msgid "Guinea Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2471
+msgid "Quetzal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2472
+msgid "Guyana Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2473
+msgid "Hong Kong Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2474
+msgid "Lempira"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2475
+msgid "Kuna"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2476
+msgid "Gourde"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2477
+msgid "Forint"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2478
+msgid "Rupiah"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2479
+msgid "New Israeli Sheqel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2480
+msgid "Indian Rupee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2481
+msgid "Iraqi Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2482
+msgid "Iranian Rial"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2483
+msgid "Iceland Krona"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2484
+msgid "Jamaican Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2485
+msgid "Jordanian Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2486
+msgid "Yen"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2487
+msgid "Kenyan Shilling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2488
+msgid "Som"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2489
+msgid "Riel"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2490
+msgid "Comoro Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2491
+msgid "North Korean Won"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2492
+msgid "Won"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2493
+msgid "Kuwaiti Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2494
+msgid "Cayman Islands Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2495
+msgid "Tenge"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2496
+msgid "Kip"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2497
+msgid "Lebanese Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2498
+msgid "Sri Lanka Rupee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2499
+msgid "Liberian Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2500
+msgid "Loti"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2501
+msgid "Lithuanian Litas"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2502
+msgid "Latvian Lats"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2503
+msgid "Libyan Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2504
+msgid "Moroccan Dirham"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2505
+msgid "Moldovan Leu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2506
+msgid "Malagasy Ariary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2507
+msgid "Denar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2508
+msgid "Kyat"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2509
+msgid "Tugrik"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2510
+msgid "Pataca"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2511
+msgid "Ouguiya"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2512
+msgid "Mauritius Rupee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2513
+msgid "Rufiyaa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2514
+msgid "Malawi Kwacha"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2515
+msgid "Mexican Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2516
+msgid "Mexican Unidad de Inversion (UDI)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2517
+msgid "Malaysian Ringgit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2518
+msgid "Metical"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2519
+msgid "Namibia Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2520
+msgid "Naira"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2521
+msgid "Cordoba Oro"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2522
+msgid "Norwegian Krone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2523
+msgid "Nepalese Rupee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2524
+msgid "New Zealand Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2525
+msgid "Rial Omani"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2526
+msgid "Balboa"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2527
+msgid "Nuevo Sol"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2528
+msgid "Kina"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2529
+msgid "Philippine Peso"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2530
+msgid "Pakistan Rupee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2531
+msgid "Zloty"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2533
+msgid "Qatari Rial"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2534
+msgid "Romanian Leu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2535
+msgid "Serbian Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2536
+msgid "Russian Ruble"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2537
+msgid "Rwanda Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2538
+msgid "Saudi Riyal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2539
+msgid "Solomon Islands Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2540
+msgid "Seychelles Rupee"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2541
+msgid "Sudanese Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2542
+msgid "Swedish Krona"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2543
+msgid "Singapore Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2544
+msgid "Saint Helena Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2545
+msgid "Leone"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2546
+msgid "Somali Shilling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2547
+msgid "South Sudanese Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2548
+msgid "Surinam Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2549
+msgid "Dobra"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2550
+msgid "El Salvador Colon"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2551
+msgid "Syrian Pound"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2552
+msgid "Lilangeni"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2553
+msgid "Baht"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2554
+msgid "Somoni"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2555
+msgid "Manat"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2556
+msgid "Tunisian Dinar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2557
+msgid "Paanga"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2558
+msgid "Turkish Lira"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2559
+msgid "Trinidad and Tobago Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2560
+msgid "New Taiwan Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2561
+msgid "Tanzanian Shilling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2562
+msgid "Hryvnia"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2563
+msgid "Uganda Shilling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2564
+msgid "US Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2565
+msgid "US Dollar (Next day)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2566
+msgid "US Dollar (Same day)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2567
+msgid "Uruguay Peso en Unidades Indexadas"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2568
+msgid "Peso Uruguayo"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2569
+msgid "Uzbekistan Sum"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2570
+msgid "Bolivar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2571
+msgid "Dong"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2572
+msgid "Vatu"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2573
+msgid "Tala"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2574
+msgid "CFA Franc BEAC"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2575
+msgid "Bitcoin"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2576
+msgid "East Caribbean Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2577
+msgid "International Monetary Fund (IMF) Special Drawing Right (SDR)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2578
+msgid "CFA Franc BCEAO"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2579
+msgid "CFP Franc"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2580
+msgid "Yemeni Rial"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2581
+msgid "Rand"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2582
+msgid "Zambian Kwacha"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2583
+msgid "Zimbabwe Dollar"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2589
+msgid "ODA"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2589
+msgid "Official Development Assistance"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2590
+msgid "OOF"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2590
+msgid "Other Official Flows"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2591
+msgid "Non-export credit OOF"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2591
+msgid "Other Official Flows, excl. export credits."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2592
+msgid "Officially supported export credits"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2592
+msgid ""
+"Officially supported export credits. Covers both official direct export "
+"credits and private export credits under official guarantee or insurance."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2593
+msgid "Private grants"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2593
+msgid ""
+"made by NGOs and other civil society organisations (e.e. philantropic "
+"foundations) based in the reporting DAC country"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2594
+msgid "Private market"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2595
+msgid "Private Foreign Direct Investment"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2595
+msgid "Private Foreign Direct Investment."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2596
+msgid "Other Private flows at market terms"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2596
+msgid ""
+"Private long-term (i.e. over one-year maturity) capital transactions made by "
+"residents of DAC countries."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2597
+msgid "Non flow"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2597
+msgid "e.g. GNI"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2598
+msgid "Other flows"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2598
+msgid "e.g. non-ODA component of peacebuilding operations)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2925
+msgid "Global Admininistrative Unit Layers"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2926
+msgid "UN Second Administrative Level Boundary Project"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2926
+msgid ""
+"Note: the unsalb.org website is no longer accessible, and public access to "
+"the boundaries resources has been removed http://www.ungiwg.org/content/"
+"united-nations-international-and-administrative-boundaries-resources"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2927
+msgid "Global Administrative Areas"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2928
+msgid "ISO Country (3166-1 alpha-2)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2929
+msgid "Geonames"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2930
+msgid "OpenStreetMap"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2930
+msgid ""
+"Note: the code should be formed by prefixing the relevant OpenStreetMap ID "
+"with node/ way/ or relation/ as appropriate, e.g. node/1234567"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2943
+msgid "Free standing technical cooperation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2943
+msgid "Free standing technical cooperation (Col 24 in CRS++ Reporting format)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2944
+msgid "Programme-based approach"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2944
+msgid "Programme-based approach (Col 25 in CRS++ Reporting format)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2945
+msgid "Investment project"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2945
+msgid "Investment project (Col 26 in CRS++ Reporting format)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2946
+msgid "Associated financing"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2946
+msgid "Associated financing (Col 27 in CRS++ Reporting format)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2964
+msgid "Indicative"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2964
+msgid "A non-binding estimate for the described budget."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2965
+msgid "Committed"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2965
+msgid "A binding agreement for the described budget."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3395
+msgid "Parent"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3395
+msgid ""
+"An activity that contains sub-activities (sub-components) which are reported "
+"separately to IATI"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3396
+msgid "Child"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3396
+msgid ""
+"A sub-activity (or sub-component) that sits within a larger activity "
+"(parent) which is also reported to IATI"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3397
+msgid "Sibling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3397
+msgid ""
+"A sub-activity (or sub-component) that is related to another sub-activity "
+"with the same parent "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3398
+msgid "Co-funded"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3398
+msgid "An activity that receives funding from more than one organisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3399
+msgid "Third Party"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3399
+msgid ""
+"A report by another organisation on the same activity you are reporting "
+"(excluding activities reported as part of a financial transaction - e.g. "
+"provider-activity-id or a co-funded activity, using code 4)"
 msgstr ""
 
 #: akvo/rest/fields.py:61
@@ -1864,10 +9405,6 @@ msgstr ""
 
 #: akvo/rsr/iso3166.py:164
 msgid "Namibia"
-msgstr ""
-
-#: akvo/rsr/iso3166.py:165
-msgid "Nauru"
 msgstr ""
 
 #: akvo/rsr/iso3166.py:166
@@ -4911,10 +12448,6 @@ msgid ""
 "more detailed information."
 msgstr ""
 
-#: akvo/rsr/models/location.py:147
-msgid "reach"
-msgstr ""
-
 #: akvo/rsr/models/location.py:148
 msgid ""
 "Does this location describe where the activity takes place or where the "
@@ -5960,28 +13493,12 @@ msgstr ""
 msgid "Lower Sub Activity"
 msgstr ""
 
-#: akvo/rsr/models/project.py:74
-msgid "German"
-msgstr ""
-
-#: akvo/rsr/models/project.py:75
-msgid "English"
-msgstr ""
-
 #: akvo/rsr/models/project.py:76
 msgid "Spanish"
 msgstr ""
 
-#: akvo/rsr/models/project.py:77
-msgid "French"
-msgstr ""
-
 #: akvo/rsr/models/project.py:78
 msgid "Dutch"
-msgstr ""
-
-#: akvo/rsr/models/project.py:79
-msgid "Russian"
 msgstr ""
 
 #: akvo/rsr/models/project.py:90
@@ -5995,12 +13512,6 @@ msgstr ""
 #: akvo/rsr/models/project.py:92 akvo/templates/partials/project_budget.html:5
 #: akvo/templates/partials/project_budget.html:7
 msgid "Complete"
-msgstr ""
-
-#: akvo/rsr/models/project.py:93 akvo/templates/organisation_main.html:166
-#: akvo/templates/partials/widgets/project_status.html:21
-#: akvo/templates/widgets/project_list.html:74
-msgid "Cancelled"
 msgstr ""
 
 #: akvo/rsr/models/project.py:131
@@ -8982,46 +16493,6 @@ msgstr ""
 msgid "This field is mandatory"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:167
-msgid "Government"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:168
-msgid "Other Public Sector"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:169
-msgid "International NGO"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:170
-msgid "National NGO"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:171
-msgid "Regional NGO"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:172
-msgid "Public Private Partnership"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:173
-msgid "Multilateral"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:174
-msgid "Foundation"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:175
-msgid "Private Sector"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:176
-msgid "Academic, Training and Research"
-msgstr ""
-
 #: akvo/templates/myrsr/project_editor/project_editor.html:177
 msgid "Website"
 msgstr ""
@@ -9959,34 +17430,6 @@ msgstr ""
 msgid "Projects in RSR"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:126
-#: akvo/templates/partials/widgets/project_status.html:5
-#: akvo/templates/widgets/project_list.html:70
-msgid "Pipeline/identification"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:136
-#: akvo/templates/partials/widgets/project_status.html:9
-#: akvo/templates/widgets/project_list.html:71
-msgid "Implementation"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:146
-#: akvo/templates/partials/widgets/project_status.html:13
-#: akvo/templates/widgets/project_list.html:72
-msgid "Completion"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:156
-msgid "Post-completion"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:176
-#: akvo/templates/partials/widgets/project_status.html:25
-#: akvo/templates/widgets/project_list.html:75
-msgid "Suspended"
-msgstr ""
-
 #: akvo/templates/organisation_main.html:186
 msgid "Total projects"
 msgstr ""
@@ -10117,11 +17560,6 @@ msgstr ""
 
 #: akvo/templates/partials/widgets/header.html:6
 msgid "powered by"
-msgstr ""
-
-#: akvo/templates/partials/widgets/project_funding.html:5
-#: akvo/templates/widgets/project_list.html:40
-msgid "Budget"
 msgstr ""
 
 #: akvo/templates/partials/widgets/project_funding.html:9
@@ -10321,10 +17759,6 @@ msgstr ""
 
 #: akvo/templates/project_main.html:173
 msgid "Humanitarian scopes"
-msgstr ""
-
-#: akvo/templates/project_main.html:174
-msgid "Conditions"
 msgstr ""
 
 #: akvo/templates/project_main.html:175
@@ -10989,30 +18423,6 @@ msgstr ""
 
 #: akvo/templates/results_base.html:48
 msgid "Indicator period(s)"
-msgstr ""
-
-#: akvo/templates/results_base.html:49
-msgid "Output"
-msgstr ""
-
-#: akvo/templates/results_base.html:50
-msgid "Outcome"
-msgstr ""
-
-#: akvo/templates/results_base.html:51
-msgid "Impact"
-msgstr ""
-
-#: akvo/templates/results_base.html:52
-msgid "Other"
-msgstr ""
-
-#: akvo/templates/results_base.html:53
-msgid "Unit"
-msgstr ""
-
-#: akvo/templates/results_base.html:54
-msgid "Percentage"
 msgstr ""
 
 #: akvo/templates/results_base.html:55
