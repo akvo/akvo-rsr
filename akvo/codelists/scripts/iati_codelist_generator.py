@@ -223,7 +223,9 @@ def data_to_strings(data):
         for row in codelist['rows']:
             fields = []
             for field in codelist['fields']:
-                if field in translated_codelists.get(codelist['name'], []):
+                text = row.get(field, u'')
+                # don't tag empty strings for translation
+                if field in translated_codelists.get(codelist['name'], []) and text:
                     template = I18N_BIT
                 else:
                     template = UNICODE_BIT
