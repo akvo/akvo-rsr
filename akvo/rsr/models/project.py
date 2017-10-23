@@ -795,14 +795,8 @@ class Project(TimestampsMixin, models.Model):
             )
 
         def all_updates(self):
-            "return ProjectUpdates for self, newest first"
-            # from ..models import ProjectUpdate
-            # qs = ProjectUpdate.objects.none()
-            # for project in self:
-            #     qs = qs | project.project_updates.all()
-            # return qs
-            return ProjectUpdate.objects.filter(project__in=self).order_by('-id')
-            # return self.project_updates.all()
+            """Return ProjectUpdates for self, newest first."""
+            return ProjectUpdate.objects.filter(project__in=self).distinct().order_by('-id')
 
         # The following 8 methods return organisation querysets
         def _partners(self, role=None):
