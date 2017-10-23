@@ -26,21 +26,19 @@ from .organisation import _page_organisations
 ###############################################################################
 
 
-def _all_updates():
-    """
-    Return all project updates.
-    """
-    return ProjectUpdate.objects.exclude(project__is_public=False).order_by('-id')
-
-
-def _all_projects():
-    """Return all active projects."""
+def _public_projects():
+    """Return all public projects."""
     return Project.objects.public().published().select_related('project_updates')
+
+
+def _all_updates():
+    """Return all updates on public projects."""
+    return _public_projects().all_updates()
 
 
 def _page_updates(page):
     """Dig out the list or project updates to use."""
-    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _public_projects()
     keyword_projects = apply_keywords(page, projects)
     return keyword_projects.all_updates()
 
