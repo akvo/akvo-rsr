@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 
+from .utils import check_project_viewing_permissions
 from ..filters import (build_choices, ProjectUpdateFilter,
                        remove_empty_querydict_items)
 from ..models import ProjectUpdate, Project
@@ -110,6 +111,7 @@ def directory(request):
 def main(request, project_id, update_id):
     """The projectupdate main view."""
     project = get_object_or_404(Project, pk=project_id)
+    check_project_viewing_permissions(request.user, project)
     update = get_object_or_404(
         ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
     )
