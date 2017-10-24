@@ -86,15 +86,15 @@ CODELIST_TEMPLATE = u"""
 UNICODE_BIT = u'u"{}"'
 I18N_BIT = u'_(u"{}")'
 
+
 def pythonify_codelist_name(codelist_name):
-    "Turn OrganisationType into ORGANISATION_TYPE"
+    """Turn OrganisationType into ORGANISATION_TYPE"""
     bits = re.findall('[A-Z][^A-Z]*', codelist_name)
     return '_'.join(bits).upper().replace("-", "_")
 
 
 def prettify_country_name(country):
-    """ ALL CAPS IS UGLY!
-    """
+    """ALL CAPS IS UGLY!"""
     country = country.lower()
     bits = []
     previous = ''
@@ -190,19 +190,40 @@ def generate_codelists_data(version):
 
     data = []
     for name in codelist_names:
+        if name in ["IATIOrganisationIdentifier", ]:
+            # Ignore some names which are not codelists
+            continue
+
         url = codelist_url_template.format(name)
         result = requests.get(url)
-        if result.status_code == 200 and len(result.text) > 0:
-            print "Gathering data for {}...".format(name)
-            if name not in ["IATIOrganisationIdentifier", ]:
-                if name == "Country":
-                    codelist_dict = codelist_data(
-                        result, version, {'field': 'name', 'func': prettify_country_name})
-                else:
-                    codelist_dict = codelist_data(result, version)
-                codelist_dict['url'] = url
-                codelist_dict['name'] = name
-                data.append(codelist_dict)
+        if not result.status_code == 200 or not len(result.text) > 0:
+            # Couldn't fetch the result from the IATI site
+            continue
+
+        print "Gathering data for {}...".format(name)
+        if name == "Country":
+            codelist_dict = codelist_data(
+                result, version, {'field': 'name', 'func': prettify_country_name})
+        else:
+            codelist_dict = codelist_data(result, version)
+
+        # HACK: Backward compatibility hacks for some apparent hand-made
+        # changes to the codelist file.
+        # FIXME: Remove these hacks when updating the IATI standard version
+        if name == 'FinanceType':
+            codelist_dict['fields'].remove('description')
+            for row in codelist_dict['rows'][::]:
+                row.pop('description', None)
+                if len(row['category']) > 3:
+                    codelist_dict['rows'].remove(row)
+        elif name == 'CollaborationType':
+            row = codelist_dict['rows'][-1]
+            row['name'] = re.sub('\(.*\)', '', row['name']).strip()
+
+        codelist_dict['url'] = url
+        codelist_dict['name'] = name
+        data.append(codelist_dict)
+
     return data
 
 
