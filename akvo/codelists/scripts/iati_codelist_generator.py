@@ -8,14 +8,11 @@ See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/cod
 """
 
 import argparse
-import collections
 import re
 import requests
 import sys
 
 from xml.etree import ElementTree
-
-Bit = collections.namedtuple('Bit', 'type value')
 
 # Modify this list to add new versions
 VERSIONS = {
