@@ -333,3 +333,4 @@ if __name__ == '__main__':
         iati_file.write(u'from django.utils.translation import ugettext_lazy as _\n\n')
         iati_file.writelines(u'codelist_list = [\n    "{}"\n]\n'.format(u'",\n    "'.join(identifiers)))
         iati_file.write(codelists)
+        iati_file.write('\n')
