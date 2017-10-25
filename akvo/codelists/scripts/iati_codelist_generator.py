@@ -11,6 +11,7 @@ import argparse
 import re
 import requests
 import sys
+import tempfile
 
 from xml.etree import ElementTree
 
@@ -263,9 +264,50 @@ def data_to_strings(data):
     return codelists
 
 
+def get_translation_pairs(version, lang):
+    codelist_url_template, _ = get_codelists(version, VERSIONS[version])
+    translations = []
+    for name, fields in sorted(translated_codelists.items()):
+        url = codelist_url_template.format(name)
+        result = requests.get(url)
+        if not result.status_code == 200 or not len(result.text) > 0:
+            # Couldn't fetch the result from the IATI site
+            continue
+
+        tree = ElementTree.fromstring(result.text.encode('utf-8'))
+        items = (
+            tree if version in ["1.01", "1.02", "1.03"] else
+            tree.find('codelist-items').findall('codelist-item')
+        )
+
+        lang_attr = '{http://www.w3.org/XML/1998/namespace}lang'
+        for item in items:
+            for field in fields:
+                values = item.findall(field)
+                if len(values) <= 1:
+                    continue
+                values = {
+                    value.get(lang_attr, 'en'): value.text for value in values
+                }
+                if lang in values:
+                    translations.append((values['en'], values[lang]))
+
+    return translations
+
+
+def get_translation_csv(version, lang='fr'):
+    print 'Getting translations for {}'.format(lang)
+    translations = get_translation_pairs(version, lang=lang)
+    with open(tempfile.mktemp('.csv'), 'w')  as f:
+        for translation_pair in translations:
+            f.write( u'"{}","{}"\n'.format(*translation_pair).encode('utf8'))
+    print 'Translations csv written to {}'.format(f.name)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--version", help="version, e.g. '1.01' (required)", required=True)
+    parser.add_argument("-t", "--translate", help="translation language code e.g. 'fr'")
     args = parser.parse_args()
 
     # Version has to be one of the allowed versions
@@ -274,6 +316,10 @@ if __name__ == '__main__':
         for version in VERSIONS.keys():
             print "- %s" % version
         sys.exit(0)
+
+    if args.translate:
+        get_translation_csv(args.version, args.translate)
+        sys.exit(9)
 
     data_dict = generate_codelists_data(args.version)
     identifiers = [pythonify_codelist_name(data['name']) for data in data_dict]
