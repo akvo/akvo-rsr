@@ -202,16 +202,18 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
             </a>
           </h2>
           <dl class="dl-horizontal">
-            <dt>{% trans 'Total updates' %}</dt>
-            <dd>
-              {% if organisation.published_projects.all_updates.count %}
-                <a href="{% url 'update-directory' %}?partner={{ organisation.id }}">
-                  {{ organisation.published_projects.all_updates.count }}
-                </a>
-              {% else %}
-                {{ organisation.published_projects.all_updates.count }}
-              {% endif %}
-            </dd>
+              <dt>{% trans 'Total updates' %}</dt>
+              <dd>
+                  {% with update_count=organisation.public_updates.count %}
+                    {% if  update_count %}
+                      <a href="{% url 'update-directory' %}?partner={{ organisation.id }}">
+                        {{ update_count }}
+                      </a>
+                    {% else %}
+                      {{ update_count }}
+                    {% endif %}
+                  {% endwith %}
+              </dd>
           </dl>
         </div>
         <div class="col-md-4">

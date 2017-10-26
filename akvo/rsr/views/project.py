@@ -20,6 +20,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from lxml import etree
 
 from akvo.rsr.models import IndicatorPeriodData
+from .utils import check_project_viewing_permissions
 from ..forms import ProjectUpdateForm
 from ..filters import (create_project_filter_class, remove_empty_querydict_items)
 from ..models import Project, ProjectUpdate
@@ -142,18 +143,6 @@ def directory(request):
 # Project main
 ###############################################################################
 
-def _check_project_viewing_permissions(user, project):
-    """
-    Checks if the user can view a project, otherwise raises a PermissionDenied exception.
-
-    A user can view any public project, but when a project is private or not published the user
-    should be logged in and able to make changes to the project (e.g. be an admin of the project).
-    """
-    if not ((project.is_public and project.is_published()) or
-            user.has_perm('rsr.view_project', project)):
-        raise PermissionDenied
-
-
 def _get_carousel_data(project, updates):
     photos = []
     if project.current_image:
@@ -254,7 +243,7 @@ def main(request, project_id, template="project_main.html"):
     project = get_object_or_404(Project, pk=project_id)
 
     # Permissions
-    _check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request.user, project)
 
     # Updates
     updates = project.project_updates.prefetch_related('user').order_by('-created_at')
@@ -308,7 +297,7 @@ def hierarchy(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
-    _check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request.user, project)
 
     if not project.has_relations():
         raise Http404
@@ -398,7 +387,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     project = get_object_or_404(Project, id=project_id)
 
     # Permissions
-    _check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request.user, project)
 
     # Check if user is allowed to place updates for this project
     allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
