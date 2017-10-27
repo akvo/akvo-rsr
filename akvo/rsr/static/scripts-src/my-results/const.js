@@ -103,6 +103,7 @@ export const API_LIMIT = 100,
     },
     // UI state
     SELECTED_PERIODS = "selectedPeriods",
+    SELECTED_UPDATES = "selectedUpdates",
     UPDATE_FORMS = "updateForms",
     UPDATE_FORM_DISPLAY = "updateFormDisplay", // boolean, keeping track if the update form is open
     REPORT_FORM_DISPLAY = "reportFormDisplay", // boolean, keeping track if the narrative report form is open

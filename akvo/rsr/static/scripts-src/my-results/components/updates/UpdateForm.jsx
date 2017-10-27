@@ -35,7 +35,9 @@ import {
     isNewUpdate,
     isNumeric,
     getAncestor,
-    computePercentage
+    computePercentage,
+    pruneUpdateForPATCH,
+    pruneUpdateForPOST
 } from "../../utils.js";
 
 import AlertFactory from "../alertContainer";
@@ -759,33 +761,6 @@ DisaggregatedValueInput.propTypes = {
     onChange: PropTypes.func.isRequired
 };
 
-const pruneForPATCH = update => {
-    // Only include the listed fields when PATCHing an update
-    // currently the list mimics the old MyResults data
-    const fields = [
-        "value",
-        "narrative",
-        "numerator",
-        "denominator",
-        "text",
-        "status",
-        "_file",
-        "_photo",
-        "approved_by",
-        "disaggregations"
-    ];
-    return fields.reduce((acc, f) => {
-        return Object.assign(acc, { [f]: update[f] });
-    }, {});
-};
-
-const pruneForPOST = update => {
-    // Delete the listed fields when POSTing an update
-    let updateForPOST = Object.assign({}, update);
-    delete updateForPOST["user_details"];
-    return updateForPOST;
-};
-
 @connect(store => {
     return {
         user: store.models.user.objects[store.models.user.ids[0]],
@@ -1161,14 +1136,14 @@ export default class UpdateForm extends React.Component {
         if (isNewUpdate(update)) {
             saveUpdateToBackend(
                 endpoints.updates_and_comments(),
-                pruneForPOST(update),
+                pruneUpdateForPOST(update),
                 this.props.collapseId,
                 callbacksFactory(update.id, _("update_not_created"))
             );
         } else {
             updateUpdateToBackend(
                 endpoints.update_and_comments(update.id),
-                pruneForPATCH(update),
+                pruneUpdateForPATCH(update),
                 this.props.collapseId,
                 callbacksFactory(update.id, _("update_not_saved"))
             );

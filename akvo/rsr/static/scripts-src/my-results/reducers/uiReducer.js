@@ -34,6 +34,7 @@ const uiState = {
     activeFilter: undefined, //indicates if a filter is currently in force
     visibleKeys: undefined,
     [c.SELECTED_PERIODS]: [], //list of periods that are currently checked, used for bulk actions
+    [c.SELECTED_UPDATES]: [], //list of updates that are currently checked, used for bulk actions
     [c.UPDATE_FORM_DISPLAY]: false, // keeping track if the indicator update form is open
     [c.REPORT_FORM_DISPLAY]: false // keeping track if the narrative report form is open
 };

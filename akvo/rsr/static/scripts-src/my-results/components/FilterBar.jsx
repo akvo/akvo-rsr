@@ -18,7 +18,11 @@ import {
     updateFormClose
 } from "../actions/ui-actions";
 
-import { lockSelectedPeriods, unlockSelectedPeriods } from "../actions/model-actions";
+import {
+    lockSelectedPeriods,
+    unlockSelectedPeriods,
+    approveSelectedUpdates
+} from "../actions/model-actions";
 
 import * as c from "../const";
 
@@ -59,6 +63,21 @@ const PeriodLockingButtons = ({ user, disabled }) => {
                 onClick={unlockSelectedPeriods}
                 label={_("unlock_selected")}
                 disabled={disabled}
+            />
+        </div>
+    ) : (
+        <div className="col-xs-6" />
+    );
+};
+
+const ApproveUpdatesButton = ({ user, activeFilter }) => {
+    return userIsMEManager(user) && activeFilter == c.FILTER_SHOW_PENDING ? (
+        <div className="col-xs-6">
+            <ToggleButton
+                onClick={() => {
+                    approveSelectedUpdates(user.ids[0]);
+                }}
+                label={_("approve_updates")}
             />
         </div>
     ) : (
@@ -263,6 +282,10 @@ export default class FilterBar extends React.Component {
                                         <PeriodLockingButtons
                                             user={this.props.user}
                                             disabled={buttonDisabled}
+                                        />
+                                        <ApproveUpdatesButton
+                                            user={this.props.user}
+                                            activeFilter={this.props.ui.activeFilter}
                                         />
                                     </div>
                                 </div>

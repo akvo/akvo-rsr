@@ -16,10 +16,9 @@ import * as alertActions from "../../actions/alert-actions";
 
 import { collapseChange } from "../../actions/collapse-actions";
 
-import { uiHideMode, updateFormOpen } from "../../actions/ui-actions";
+import { uiHideMode, updateFormOpen, updateSelectToggle } from "../../actions/ui-actions";
 
 import * as c from "../../const.js";
-
 import {
     getPeriodsChildrenIds,
     getUpdatesForApprovedPeriods,
@@ -294,6 +293,7 @@ QualitativeUpdate.propTypes = {
     return {
         page: store.page,
         [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
+        [c.SELECTED_UPDATES]: store.ui[c.SELECTED_UPDATES],
         activeFilter: store.ui.activeFilter,
         user: store.models.user.objects[store.models.user.ids[0]]
     };
@@ -352,9 +352,29 @@ class UpdateHeader extends React.Component {
         }
     }
 
+    toggleCheckbox(e) {
+        e.stopPropagation();
+        const updateId = parseInt(e.target.id);
+        updateSelectToggle(updateId);
+    }
+
     render() {
-        let editUpdateButton;
-        const { updateFormDisplay, update } = this.props;
+        let editUpdateButton, selectUpdate;
+        const { updateFormDisplay, update, activeFilter } = this.props;
+        const isChecked = new Set(this.props[c.SELECTED_UPDATES]).has(update.id);
+
+        if (this.props.user.isMEManager && activeFilter == c.FILTER_SHOW_PENDING) {
+            selectUpdate = (
+                <span>
+                    <input
+                        id={update.id}
+                        type="checkbox"
+                        checked={isChecked ? "checked" : ""}
+                        onChange={this.toggleCheckbox}
+                    />
+                </span>
+            );
+        }
 
         if (this.showEditButton()) {
             let className;
@@ -374,6 +394,7 @@ class UpdateHeader extends React.Component {
         }
         return (
             <div className="UpdateHead">
+                {selectUpdate}
                 <span className="updateName">
                     <UserInfo user_details={update.user_details} />
                 </span>

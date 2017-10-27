@@ -516,6 +516,33 @@ export const disaggregationsToDisplayData = (disaggregationIds, disaggregations,
     );
 };
 
+export const pruneUpdateForPATCH = update => {
+    // Only include the listed fields when PATCHing an update
+    // currently the list mimics the old MyResults data
+    const fields = [
+        "value",
+        "narrative",
+        "numerator",
+        "denominator",
+        "text",
+        "status",
+        "_file",
+        "_photo",
+        "approved_by",
+        "disaggregations"
+    ];
+    return fields.reduce((acc, f) => {
+        return Object.assign(acc, { [f]: update[f] });
+    }, {});
+};
+
+export const pruneUpdateForPOST = update => {
+    // Delete the listed fields when POSTing an update
+    let updateForPOST = Object.assign({}, update);
+    delete updateForPOST["user_details"];
+    return updateForPOST;
+};
+
 // Decimal rounding function (from MDN)
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
 (function() {

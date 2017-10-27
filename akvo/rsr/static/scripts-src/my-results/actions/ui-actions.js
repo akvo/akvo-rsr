@@ -16,10 +16,24 @@ export function periodSelectReset() {
     });
 }
 
+export function updateSelectReset() {
+    store.dispatch({
+        type: c.UI_ID_RESET,
+        payload: { element: c.SELECTED_UPDATES }
+    });
+}
+
 export function periodSelectToggle(id) {
     store.dispatch({
         type: c.UI_ID_TOGGLE,
         payload: { element: c.SELECTED_PERIODS, id: id }
+    });
+}
+
+export function updateSelectToggle(id) {
+    store.dispatch({
+        type: c.UI_ID_TOGGLE,
+        payload: { element: c.SELECTED_UPDATES, id: id }
     });
 }
 
