@@ -10,10 +10,14 @@ import store from "../store"
 import * as c from "../const"
 import {
     getCookie,
-    endpoints
-} from "../utils"
+    endpoints,
+    pruneUpdateForPATCH,
+} from "../utils";
 
-import { periodSelectReset } from "./ui-actions"
+import {
+    periodSelectReset,
+    updateSelectReset,
+} from "./ui-actions";
 
 //TODO: refactor backend-calling functions, currently lots of overlap functionality that can be extracted
 
@@ -430,14 +434,29 @@ function periodLockingParams(locked) {
     patchMultiple(c.OBJECTS_PERIODS, data, periodSelectReset);
 }
 
+function approveAllSelectedUpdates(userId) {
+    const selectedUpdates = store.getState().ui[c.SELECTED_UPDATES];
+    const data = selectedUpdates.map((id) => {
+        const update = store.getState().models.updates.objects[id];
+        const pruned_update = pruneUpdateForPATCH(update);
+        pruned_update.status = c.UPDATE_STATUS_APPROVED;
+        pruned_update.approved_by = userId;
+        return {url: endpoints.update_and_comments(id), data: pruned_update};
+    });
+    patchMultiple(c.OBJECTS_UPDATES, data, updateSelectReset);
+}
+
 
 export function lockSelectedPeriods() {
     periodLockingParams(true)
 }
 
-
 export function unlockSelectedPeriods() {
     periodLockingParams(false)
+}
+
+export function approveSelectedUpdates(userId) {
+    approveAllSelectedUpdates(userId);
 }
 
 
