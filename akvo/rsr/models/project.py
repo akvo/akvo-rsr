@@ -1343,15 +1343,34 @@ class Project(TimestampsMixin, models.Model):
             self.add_reference(child_indicator, reference)
 
     def add_period(self, indicator, period):
-        get_model('rsr', 'IndicatorPeriod').objects.create(
+        """Add a new period to the indicator as a child of period.
+
+        NOTE: There can only be one child for a period, per indicator. This
+        method automatically updates the existing one, if there is one.
+
+        """
+        IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
+        child_period, created = IndicatorPeriod.objects.update_or_create(
             indicator=indicator,
             parent_period=period,
-            period_start=period.period_start,
-            period_end=period.period_end,
-            target_value=period.target_value,
-            target_comment=period.target_comment,
-            actual_comment=period.actual_comment
+            defaults=dict(
+                period_start=period.period_start,
+                period_end=period.period_end,
+            )
         )
+
+        # Only copy the target value and comments if the child has no values
+        # (in case the child period is new). Afterwards, it is possible to
+        # adjust these values (update the target for the child, for instance)
+        # and then these values should not be overwritten.
+        if not child_period.target_value and period.target_value:
+            child_period.target_value = period.target_value
+        if not child_period.target_comment and period.target_comment:
+            child_period.target_comment = period.target_comment
+        if not child_period.actual_comment and period.actual_comment:
+            child_period.actual_comment = period.actual_comment
+
+        child_period.save()
 
     def add_reference(self, indicator, reference):
         get_model('rsr', 'IndicatorReference').objects.create(

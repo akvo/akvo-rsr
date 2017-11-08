@@ -67,16 +67,16 @@ class ResultsFrameworkTestCase(TestCase):
         )
 
         # Create results framework
-        self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1", )
-        indicator = Indicator.objects.create(result=self.result, title="Indicator #1", measure="1", )
+        self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1")
+        self.indicator = Indicator.objects.create(result=self.result, title="Indicator #1", measure="1")
         self.period = IndicatorPeriod.objects.create(
-            indicator=indicator,
+            indicator=self.indicator,
             period_start=datetime.date.today(),
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
         self.reference = IndicatorReference.objects.create(
-            indicator=indicator,
+            indicator=self.indicator,
             reference='ABC',
             vocabulary='1',
         )
@@ -104,16 +104,88 @@ class ResultsFrameworkTestCase(TestCase):
         """Test that new indicators are cloned in children that have imported results."""
         # Given
         # # Child project has already imported results from parent.
-        result = self.parent_project.results.first()
+        result = self.result
 
         # When
-        Indicator.objects.create(result=result, title="Indicator #2", measure="1")
+        parent_indicator = Indicator.objects.create(result=result, title="Indicator #2", measure="1")
 
         # Then
         self.assertEqual(
-            Indicator.objects.filter(result__project=self.parent_project).count(),
+            Indicator.objects.filter(result=result).count(),
             Indicator.objects.filter(result__project=self.child_project).count()
         )
+
+    def test_new_period_cloned_to_child(self):
+        """Test that new periods are cloned in children that have imported results."""
+        # Given
+        # # Child project has already imported results from parent.
+        indicator = self.indicator
+
+        # When
+        parent_period = IndicatorPeriod.objects.create(
+            indicator=indicator,
+            period_start=datetime.date.today() - datetime.timedelta(days=10),
+            period_end=datetime.date.today() + datetime.timedelta(days=10),
+        )
+
+        # Then
+        self.assertEqual(
+            IndicatorPeriod.objects.filter(indicator=indicator).count(),
+            IndicatorPeriod.objects.filter(indicator__in=indicator.child_indicators.all()).count()
+        )
+        child_period = IndicatorPeriod.objects.get(indicator__result__project=self.child_project,
+                                                   parent_period=parent_period)
+        self.assertEqual(child_period.period_start, parent_period.period_start)
+        self.assertEqual(child_period.period_end, parent_period.period_end)
+        self.assertEqual(child_period.target_value, parent_period.target_value)
+        self.assertEqual(child_period.target_comment, parent_period.target_comment)
+        self.assertEqual(child_period.actual_comment, parent_period.actual_comment)
+
+    def test_child_period_state_updates_after_change(self):
+        """Test that updating period propagates to children."""
+        # Given
+        self.period.period_start = datetime.datetime.today() + datetime.timedelta(days=30)
+        self.period.period_end = datetime.datetime.today() + datetime.timedelta(days=300)
+        # # these properties were not set previously, and hence should be updated
+        self.period.target_comment = "Target comment"
+        self.period.actual_comment = "Actual comment"
+
+        # When
+        self.period.save()
+
+        # Then
+        parent_period = IndicatorPeriod.objects.get(id=self.period.pk)
+        child_period = self.period.child_periods.first()
+        self.assertEqual(child_period.period_start, parent_period.period_start)
+        self.assertEqual(child_period.period_end, parent_period.period_end)
+        self.assertEqual(child_period.target_comment, parent_period.target_comment)
+        self.assertEqual(child_period.actual_comment, parent_period.actual_comment)
+
+    def test_child_period_state_not_overwritten_after_change(self):
+        """Test that changes made to child period are not overwritten."""
+        # Given
+        child_period = self.period.child_periods.first()
+        target_value = "300"
+        comment = "NEW COMMENT"
+        child_period.target_value = target_value
+        child_period.target_comment = comment
+        child_period.actual_comment = comment
+        child_period.save()
+
+        # When
+        self.period.target_value = "10"
+        self.period.target_comment = "PARENT " + comment
+        self.period.actual_comment = "PARENT " + comment
+        self.period.save()
+
+        # Then
+        parent_period = IndicatorPeriod.objects.get(id=self.period.pk)
+        child_period = self.period.child_periods.first()
+        self.assertEqual(child_period.period_start, parent_period.period_start)
+        self.assertEqual(child_period.period_end, parent_period.period_end)
+        self.assertEqual(child_period.target_value, target_value)
+        self.assertEqual(child_period.target_comment, comment)
+        self.assertEqual(child_period.actual_comment, comment)
 
     def test_import_does_not_create_deleted_indicators(self):
         """Test that import does not create indicators that have been deleted from child."""
@@ -321,23 +393,6 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2.save()
         self.assertEqual(child_2_period.actual_value, "50.0")
         self.assertEqual(parent_indicator.periods.first().actual_value, "60.0")
-
-    def test_import_state_after_change(self):
-        # Given
-        self.assertEqual(1, self.period.child_periods.count())
-        child_period = IndicatorPeriod.objects.filter(
-            indicator__result__project=self.child_project
-        ).first()
-
-        # When
-        self.period.period_start = datetime.date.today() + datetime.timedelta(days=-10)
-        self.period.save()
-
-        # Then
-        self.assertEqual(1, self.period.child_periods.count())
-        # Re-fetch the child here otherwise period_start will be stale
-        child_period = self.period.child_periods.first()
-        self.assertEqual(child_period.period_start, self.period.period_start)
 
     def test_delete_recreate_child_indicator_period_link_to_parent(self):
         # Given
