@@ -1324,17 +1324,21 @@ class Project(TimestampsMixin, models.Model):
             self.add_indicator(child_result, indicator)
 
     def add_indicator(self, result, indicator):
-        child_indicator = get_model('rsr', 'Indicator').objects.create(
+        Indicator = get_model('rsr', 'Indicator')
+        child_indicator, created = Indicator.objects.update_or_create(
             result=result,
             parent_indicator=indicator,
-            title=indicator.title,
-            measure=indicator.measure,
-            ascending=indicator.ascending,
-            description=indicator.description,
-            baseline_year=indicator.baseline_year,
-            baseline_value=indicator.baseline_value,
-            baseline_comment=indicator.baseline_comment
+            defaults=dict(
+                title=indicator.title,
+                measure=indicator.measure,
+                ascending=indicator.ascending,
+            )
         )
+        fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        self._update_fields_if_not_child_updated(indicator, child_indicator, fields)
+
+        if not created:
+            return
 
         for period in indicator.periods.all():
             self.add_period(child_indicator, period)
@@ -1358,19 +1362,8 @@ class Project(TimestampsMixin, models.Model):
                 period_end=period.period_end,
             )
         )
-
-        # Only copy the target value and comments if the child has no values
-        # (in case the child period is new). Afterwards, it is possible to
-        # adjust these values (update the target for the child, for instance)
-        # and then these values should not be overwritten.
-        if not child_period.target_value and period.target_value:
-            child_period.target_value = period.target_value
-        if not child_period.target_comment and period.target_comment:
-            child_period.target_comment = period.target_comment
-        if not child_period.actual_comment and period.actual_comment:
-            child_period.actual_comment = period.actual_comment
-
-        child_period.save()
+        fields = ['target_value', 'target_comment', 'actual_comment']
+        self._update_fields_if_not_child_updated(period, child_period, fields)
 
     def add_reference(self, indicator, reference):
         get_model('rsr', 'IndicatorReference').objects.create(
@@ -1379,6 +1372,15 @@ class Project(TimestampsMixin, models.Model):
             vocabulary=reference.vocabulary,
             vocabulary_uri=reference.vocabulary_uri,
         )
+
+    def _update_fields_if_not_child_updated(self, parent, child, fields):
+        """Copy the specified fields from parent to child, when empty on the child."""
+        for field in fields:
+            parent_value = getattr(parent, field)
+            if not getattr(child, field) and parent_value:
+                setattr(child, field, parent_value)
+
+        child.save()
 
     def has_results(self):
         for result in self.results.all():

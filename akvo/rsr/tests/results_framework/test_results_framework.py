@@ -68,7 +68,12 @@ class ResultsFrameworkTestCase(TestCase):
 
         # Create results framework
         self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1")
-        self.indicator = Indicator.objects.create(result=self.result, title="Indicator #1", measure="1")
+        self.indicator = Indicator.objects.create(
+            result=self.result,
+            title="Indicator #1",
+            measure="1",
+            description='This is the best indicator',
+        )
         self.period = IndicatorPeriod.objects.create(
             indicator=self.indicator,
             period_start=datetime.date.today(),
@@ -107,13 +112,89 @@ class ResultsFrameworkTestCase(TestCase):
         result = self.result
 
         # When
-        parent_indicator = Indicator.objects.create(result=result, title="Indicator #2", measure="1")
+        parent_indicator = Indicator.objects.create(
+            result=result,
+            title="Indicator #2",
+            measure="1",
+            description='Second best indicator',
+            baseline_year='2017',
+            baseline_value='value',
+            baseline_comment='comment',
+        )
 
         # Then
         self.assertEqual(
             Indicator.objects.filter(result=result).count(),
             Indicator.objects.filter(result__project=self.child_project).count()
         )
+        parent_indicator = Indicator.objects.get(id=parent_indicator.id)
+        child_indicator = Indicator.objects.get(result__project=self.child_project,
+                                                parent_indicator=parent_indicator)
+        self.assertEqual(child_indicator.title, parent_indicator.title)
+        self.assertEqual(child_indicator.measure, parent_indicator.measure)
+        self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
+        self.assertEqual(child_indicator.description, parent_indicator.description)
+        self.assertEqual(child_indicator.baseline_year, parent_indicator.baseline_year)
+        self.assertEqual(child_indicator.baseline_value, parent_indicator.baseline_value)
+        self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
+
+    def test_child_indicator_state_updates_after_change(self):
+        """Test that updating indicator propagates to children."""
+
+        # Given
+        self.indicator.tile = "Indicator #200"
+        self.indicator.measure = "2"
+        # # these properties were not set already, and hence should be updated too
+        self.indicator.baseline_year = 2010
+        self.indicator.baseline_value = 'value',
+        self.indicator.baseline_comment = 'comment'
+
+        # When
+        self.indicator.save()
+
+        # Then
+        parent_indicator = Indicator.objects.get(id=self.indicator.id)
+        child_indicator = Indicator.objects.get(result__project=self.child_project,
+                                                parent_indicator=parent_indicator)
+        self.assertEqual(child_indicator.title, parent_indicator.title)
+        self.assertEqual(child_indicator.measure, parent_indicator.measure)
+        self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
+        self.assertEqual(child_indicator.description, parent_indicator.description)
+        self.assertEqual(child_indicator.baseline_year, parent_indicator.baseline_year)
+        self.assertEqual(child_indicator.baseline_value, parent_indicator.baseline_value)
+        self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
+
+    def test_child_indicator_state_not_overwritten_after_change(self):
+        """Test that updating indicator doesn't overwrite child indicators."""
+
+        # Given
+        child_indicator = Indicator.objects.get(result__project=self.child_project,
+                                                parent_indicator=self.indicator)
+        new_value = 'NEW VALUE'
+        child_indicator.baseline_value = new_value
+        child_indicator.baseline_comment = new_value
+        child_indicator.baseline_year = 2002
+        child_indicator.description = new_value
+        child_indicator.save()
+
+        # When
+        self.indicator.baseline_year = 2010
+        self.indicator.baseline_value = 'value',
+        self.indicator.baseline_comment = 'comment'
+        self.indicator.description = 'description'
+        self.indicator.save()
+
+        # Then
+        parent_indicator = Indicator.objects.get(id=self.indicator.id)
+        child_indicator = Indicator.objects.get(result__project=self.child_project,
+                                                parent_indicator=parent_indicator)
+        self.assertEqual(child_indicator.title, parent_indicator.title)
+        self.assertEqual(child_indicator.measure, parent_indicator.measure)
+        self.assertEqual(child_indicator.ascending, parent_indicator.ascending)
+        self.assertEqual(child_indicator.description, new_value)
+        self.assertEqual(child_indicator.baseline_year, 2002)
+        self.assertEqual(child_indicator.baseline_value, new_value)
+        self.assertEqual(child_indicator.baseline_comment, new_value)
 
     def test_new_period_cloned_to_child(self):
         """Test that new periods are cloned in children that have imported results."""
@@ -146,7 +227,7 @@ class ResultsFrameworkTestCase(TestCase):
         # Given
         self.period.period_start = datetime.datetime.today() + datetime.timedelta(days=30)
         self.period.period_end = datetime.datetime.today() + datetime.timedelta(days=300)
-        # # these properties were not set previously, and hence should be updated
+        # # these properties were not set already, and hence should be updated too
         self.period.target_comment = "Target comment"
         self.period.actual_comment = "Actual comment"
 
