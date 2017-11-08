@@ -3231,12 +3231,12 @@ main.results-page {
           margin: 20px 0 40px 0; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .statusMeta {
           display: none; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment {
           margin-bottom: 10px; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment span {
             width: calc(100% - 40px);
             display: block; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue:first-child span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue:first-child span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment:first-child span {
             display: inline; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
           display: none; }
