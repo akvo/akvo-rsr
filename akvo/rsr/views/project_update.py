@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 
+from .utils import check_project_viewing_permissions
 from ..filters import (build_choices, ProjectUpdateFilter,
                        remove_empty_querydict_items)
 from ..models import ProjectUpdate, Project
@@ -26,21 +27,19 @@ from .organisation import _page_organisations
 ###############################################################################
 
 
-def _all_updates():
-    """
-    Return all project updates.
-    """
-    return ProjectUpdate.objects.exclude(project__is_public=False).order_by('-id')
-
-
-def _all_projects():
-    """Return all active projects."""
+def _public_projects():
+    """Return all public projects."""
     return Project.objects.public().published().select_related('project_updates')
+
+
+def _all_updates():
+    """Return all updates on public projects."""
+    return _public_projects().all_updates()
 
 
 def _page_updates(page):
     """Dig out the list or project updates to use."""
-    projects = org_projects(page.organisation) if page.partner_projects else _all_projects()
+    projects = org_projects(page.organisation) if page.partner_projects else _public_projects()
     keyword_projects = apply_keywords(page, projects)
     return keyword_projects.all_updates()
 
@@ -112,6 +111,7 @@ def directory(request):
 def main(request, project_id, update_id):
     """The projectupdate main view."""
     project = get_object_or_404(Project, pk=project_id)
+    check_project_viewing_permissions(request.user, project)
     update = get_object_or_404(
         ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
     )

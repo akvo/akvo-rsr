@@ -487,11 +487,7 @@ def user_management(request):
         employments_array.append(employment_dict)
 
     organisations_list = list(organisations.values('id', 'name'))
-
-    roles_list = []
-    for role in roles:
-        roles_dict = {'id': role.id, 'name': role.name}
-        roles_list.append(roles_dict)
+    roles_list = list(roles.values('id', 'name').order_by('name'))
 
     context = {}
     if employments_array:

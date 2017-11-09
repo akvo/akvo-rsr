@@ -4044,3 +4044,15 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAndRenderReact();
     }
 });
+
+function expandSection() {
+    if (location.hash.indexOf('#step') < 0) {return;}
+    var stepInput = document.querySelector(location.hash);
+    if (!stepInput) {return;}
+    stepInput.parentElement.firstElementChild.click();
+    stepInput.parentElement.firstElementChild.scrollIntoView();
+};
+
+window.onload = function(){
+    expandSection();
+}

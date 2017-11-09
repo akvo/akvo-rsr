@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-17 14:14+0200\n"
+"POT-Creation-Date: 2017-10-19 17:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -713,6 +713,315 @@ msgstr ""
 #: akvo/rsr/models/organisation_budget.py:123
 #: akvo/rsr/models/policy_marker.py:47
 msgid "vocabulary"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:272
+#: akvo/templates/results_base.html:53
+msgid "Unit"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:272
+msgid "The indicator is measured in units."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:273
+#: akvo/templates/results_base.html:54
+msgid "Percentage"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:273
+msgid "The indicator is measured in percentages"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:279
+msgid "General Enquiries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:280
+msgid "Project Management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:281
+msgid "Financial Management"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:282
+msgid "Communications"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1126
+#: akvo/templates/organisation_main.html:126
+#: akvo/templates/partials/widgets/project_status.html:5
+#: akvo/templates/widgets/project_list.html:70
+msgid "Pipeline/identification"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1126
+msgid "The activity is being scoped or planned "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1127
+#: akvo/templates/organisation_main.html:136
+#: akvo/templates/partials/widgets/project_status.html:9
+#: akvo/templates/widgets/project_list.html:71
+msgid "Implementation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1127
+msgid "The activity is currently being implemented"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1128
+#: akvo/templates/organisation_main.html:146
+#: akvo/templates/partials/widgets/project_status.html:13
+#: akvo/templates/widgets/project_list.html:72
+msgid "Completion"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1128
+msgid "Physical activity is complete or the final disbursement has been made."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1129
+#: akvo/templates/organisation_main.html:156
+msgid "Post-completion"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1129
+msgid ""
+"Physical activity is complete or the final disbursement has been made, but "
+"the activity remains open pending financial sign off or M&E"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1130 akvo/rsr/models/project.py:93
+#: akvo/templates/organisation_main.html:166
+#: akvo/templates/partials/widgets/project_status.html:21
+#: akvo/templates/widgets/project_list.html:74
+msgid "Cancelled"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1130
+msgid "The activity has been cancelled"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1131
+#: akvo/templates/organisation_main.html:176
+#: akvo/templates/partials/widgets/project_status.html:25
+#: akvo/templates/widgets/project_list.html:75
+msgid "Suspended"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:1131
+msgid "The activity has been temporarily suspended"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2002
+#: akvo/templates/results_base.html:49
+msgid "Output"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2002
+msgid ""
+"Results of the activity that came about as a direct effect of your work and "
+"specific, what is done, and what communities are reached. For example, X "
+"number of individuals."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2003
+#: akvo/templates/results_base.html:50
+msgid "Outcome"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2003
+msgid ""
+"Results of the activity that produce an effect on the overall communities or "
+"issues you serve. For example lower rate of infection after a vaccination "
+"programme."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2004
+#: akvo/templates/results_base.html:51
+msgid "Impact"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2004
+msgid ""
+"The long term effects of the outcomes, that lead to larger, over arching "
+"results, such as improved life-expectancy."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2005
+#: akvo/templates/results_base.html:52
+msgid "Other"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2005
+msgid "Another type of result, not specified above."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2096
+msgid "OECD DAC CRS Purpose Codes (5 digit)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2096
+msgid "The sector reported corresponds to an OECD DAC CRS 5-digit purpose code"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2097
+msgid "OECD DAC CRS Purpose Codes (3 digit)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2097
+msgid "The sector reported corresponds to an OECD DAC CRS 3-digit purpose code"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2098
+msgid "Classification of the Functions of Government (UN)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2098
+msgid ""
+"The sector reported corresponds to the UN Classification of the Functions of "
+"Government (CoFoG)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2099
+msgid ""
+"Statistical classification of economic activities in the European Community"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2099
+msgid ""
+"The sector reported corresponds to the statistical classifications of "
+"economic activities in the European Community"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2100
+msgid "National Taxonomy for Exempt Entities (USA)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2100
+msgid ""
+"The sector reported corresponds to the National Taxonomy for Exempt Entities "
+"(NTEE) - USA"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2101
+msgid "AidData"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2101
+msgid "The sector reported corresponds to AidData classifications"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2102
+msgid "SDG Goal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2102
+msgid ""
+"A value from the top-level list of UN sustainable development goals (SDGs) "
+"(e.g. ‘1’)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2103
+msgid "SDG Target"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2103
+msgid ""
+"A value from the second-level list of UN sustainable development goals "
+"(SDGs) (e.g. ‘1.1’)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2104
+msgid "SDG Indicator"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2104
+msgid ""
+"A value from the second-level list of UN sustainable development (SDG) "
+"indicators"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2105
+msgid "Humanitarian Global Clusters (Inter-Agency Standing Committee)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2105
+msgid ""
+"The sector reported corresponds to an Inter-Agency Standard Committee "
+"Humanitarian Global Cluster code"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2106
+msgid "Reporting Organisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2106
+msgid ""
+"The sector reported corresponds to a sector vocabulary maintained by the "
+"reporting organisation for this activity"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2107
+msgid "Reporting Organisation 2"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:2107
+msgid ""
+"The sector reported corresponds to a sector vocabulary maintained by the "
+"reporting organisation for this activity (if they are referencing more than "
+"one)"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3395
+msgid "Parent"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3395
+msgid ""
+"An activity that contains sub-activities (sub-components) which are reported "
+"separately to IATI"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3396
+msgid "Child"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3396
+msgid ""
+"A sub-activity (or sub-component) that sits within a larger activity "
+"(parent) which is also reported to IATI"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3397
+msgid "Sibling"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3397
+msgid ""
+"A sub-activity (or sub-component) that is related to another sub-activity "
+"with the same parent "
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3398
+msgid "Co-funded"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3398
+msgid "An activity that receives funding from more than one organisation"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3399
+msgid "Third Party"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:3399
+msgid ""
+"A report by another organisation on the same activity you are reporting "
+"(excluding activities reported as part of a financial transaction - e.g. "
+"provider-activity-id or a co-funded activity, using code 4)"
 msgstr ""
 
 #: akvo/rest/fields.py:61
@@ -5997,12 +6306,6 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-#: akvo/rsr/models/project.py:93 akvo/templates/organisation_main.html:166
-#: akvo/templates/partials/widgets/project_status.html:21
-#: akvo/templates/widgets/project_list.html:74
-msgid "Cancelled"
-msgstr ""
-
 #: akvo/rsr/models/project.py:131
 msgid "project title"
 msgstr ""
@@ -9959,34 +10262,6 @@ msgstr ""
 msgid "Projects in RSR"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:126
-#: akvo/templates/partials/widgets/project_status.html:5
-#: akvo/templates/widgets/project_list.html:70
-msgid "Pipeline/identification"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:136
-#: akvo/templates/partials/widgets/project_status.html:9
-#: akvo/templates/widgets/project_list.html:71
-msgid "Implementation"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:146
-#: akvo/templates/partials/widgets/project_status.html:13
-#: akvo/templates/widgets/project_list.html:72
-msgid "Completion"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:156
-msgid "Post-completion"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:176
-#: akvo/templates/partials/widgets/project_status.html:25
-#: akvo/templates/widgets/project_list.html:75
-msgid "Suspended"
-msgstr ""
-
 #: akvo/templates/organisation_main.html:186
 msgid "Total projects"
 msgstr ""
@@ -10989,30 +11264,6 @@ msgstr ""
 
 #: akvo/templates/results_base.html:48
 msgid "Indicator period(s)"
-msgstr ""
-
-#: akvo/templates/results_base.html:49
-msgid "Output"
-msgstr ""
-
-#: akvo/templates/results_base.html:50
-msgid "Outcome"
-msgstr ""
-
-#: akvo/templates/results_base.html:51
-msgid "Impact"
-msgstr ""
-
-#: akvo/templates/results_base.html:52
-msgid "Other"
-msgstr ""
-
-#: akvo/templates/results_base.html:53
-msgid "Unit"
-msgstr ""
-
-#: akvo/templates/results_base.html:54
-msgid "Percentage"
 msgstr ""
 
 #: akvo/templates/results_base.html:55

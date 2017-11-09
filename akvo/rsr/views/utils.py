@@ -7,6 +7,8 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from django.core.exceptions import PermissionDenied
+
 
 def apply_keywords(page, project_qs):
     """Apply keywords.
@@ -22,8 +24,22 @@ def apply_keywords(page, project_qs):
         return project_qs.filter(keywords__in=page.keywords.all())
 
 
+def check_project_viewing_permissions(user, project):
+    """Checks if the user can view a project, otherwise raises PermissionDenied.
+
+    A user can view any public project, but when a project is private or not
+    published the user should be logged in and able to make changes to the
+    project (e.g. be an admin of the project).
+
+    """
+
+    if not ((project.is_public and project.is_published()) or
+            user.has_perm('rsr.view_project', project)):
+        raise PermissionDenied
+
+
 def org_projects(organisation):
-    """."""
+    """Published projects of an organisation."""
     return organisation.published_projects().select_related(
         'partners',
         'categories',
