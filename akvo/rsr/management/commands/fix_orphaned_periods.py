@@ -7,41 +7,9 @@
 import sys
 
 from django.core.management.base import BaseCommand
+from django.db.models import Count
 
 from ...models import Indicator, IndicatorPeriod
-
-
-INDICATORS = [
-    # Child, Parent
-    (20552, 16726),
-    (14910, 14855),
-]
-
-
-PERIODS = [
-    # Orphaned periods
-    # Child, Parent
-    (16521, 16522),
-    (16519, 16520),
-    (23471, 17821),
-    (23472, 17821),
-
-    # Orphaned indicators, hence periods
-    (26220, 18201),
-    (14972, 14917),
-]
-
-
-# Unable to figure out parent for the following
-# #######################
-# period id: 26081, indicator id: 20414
-# project id: 4272
-# result title: u'25. Community groups exist with a recognisable voice/representation of women and marginalized groups'
-# #######################
-# period id: 12721, indicator id: 12939
-# project id: 4145
-# result title: u'Partners have access to Akvo RSR'
-# extra child indicator, no corresponding parent (can be ignored?)
 
 
 def pprint_period_lineage(period):
@@ -55,9 +23,43 @@ def pprint_period_lineage(period):
     print '#' * 20
 
 
+def find_orphaned_indicators():
+    """Find indicators which are orphaned, whose parents can be deduced."""
+
+    # Indicators with no parent, but whose indicators have parents
+    indicators = Indicator.objects.filter(parent_indicator=None)\
+                                  .exclude(result__parent_result=None)
+
+    # Indicators with no siblings
+    indicators = indicators.annotate(siblings=Count('result__indicators')).filter(siblings=1)
+
+    # Indicators whose results's parents have a single child
+    indicators = indicators.annotate(parent_siblings=Count('result__parent_result__indicators'))\
+                           .filter(parent_siblings=1).distinct()
+
+    return list(indicators.values_list('id', 'result__parent_result__indicators'))
+
+
+def find_orphaned_periods():
+    """Find periods which are orphaned, whose parents can be deduced."""
+
+    # Periods with no parent, but whose indicators have parents
+    periods = IndicatorPeriod.objects.filter(parent_period=None)\
+                                     .exclude(indicator__parent_indicator=None)
+
+    # Periods with no siblings
+    periods = periods.annotate(siblings=Count('indicator__periods')).filter(siblings=1)
+
+    # Periods whose indicator's parents have a single child
+    periods = periods.annotate(parent_siblings=Count('indicator__parent_indicator__periods'))\
+                     .filter(parent_siblings=1).distinct()
+
+    return list(periods.values_list('id', 'indicator__parent_indicator__periods'))
+
+
 class Command(BaseCommand):
 
-    args = '[<indicator|indicator_period> <child_id> <parent_id>]'
+    args = '<indicator|indicator_period> [<child_id> <parent_id>]'
     help = 'Script for fixing orphaned indicators and periods'
 
     def handle(self, *args, **options):
@@ -65,9 +67,13 @@ class Command(BaseCommand):
         # parse options
         verbosity = int(options['verbosity'])
 
-        if len(args) == 0:
-            indicators = INDICATORS
-            periods = PERIODS
+        if len(args) == 1 and args[0] == 'indicator':
+            indicators = find_orphaned_indicators()
+            periods = []
+
+        elif len(args) == 1 and args[0] == 'indicator_period':
+            indicators = []
+            periods = find_orphaned_periods()
 
         elif len(args) == 3 and args[0] == 'indicator':
             indicators = [(int(args[1]), int(args[2]))]

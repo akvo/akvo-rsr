@@ -369,9 +369,11 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
 
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
+        const hasComment = update._comment !== undefined || update._meta !== undefined;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE;
+                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE ||
+                    action === c.UPDATE_ACTION_SAVE && !hasComment;
                 switch (measure) {
                     case c.MEASURE_UNIT: {
                         disabled = disabled && !(update.value !== null && update.value !== "");

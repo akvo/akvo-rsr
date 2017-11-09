@@ -4719,6 +4719,7 @@ main.results-page {
 
                                     .row {
                                         .UpdateBody {
+                                            width: calc(100% - 20px);
                                             .update-photo, .update-attachment {
                                                 padding: 0 40px;
                                                 width: calc(100% - 20px);
@@ -4734,7 +4735,7 @@ main.results-page {
                                                 display: none;
                                             }
 
-                                            .updateValue {
+                                            .updateValue, .updateValueComment {
                                                 margin-bottom: 10px;
 
                                                 span {
