@@ -72,6 +72,7 @@ def create_periods():
                 indicator_id=indicator_id,
                 period_start=datetime(*period_start),
                 period_end=datetime(*period_end),
+                target_value='0',
             )
 
     # Add periods to outcomes
@@ -91,6 +92,7 @@ def create_periods():
                 indicator_id=indicator_id,
                 period_start=datetime(*period_start),
                 period_end=datetime(*period_end),
+                target_value='0',
             )
 
 
