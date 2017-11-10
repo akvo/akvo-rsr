@@ -9,6 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from copy import deepcopy
 
 import django_filters
+from django import forms
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
@@ -260,12 +261,16 @@ def create_project_filter_class(request, projects):
     return ProjectFilter
 
 
+class ChoiceMethodFilter(django_filters.MethodFilter):
+    field_class = forms.ChoiceField
+
+
 class ProjectUpdateFilter(django_filters.FilterSet):
 
-    partner = django_filters.ChoiceFilter(
+    partner = ChoiceMethodFilter(
         choices=get_orgs(),
         label=_(u'organisation'),
-        name='user__organisations__id')
+        action='partner_updates')
 
     sector = django_filters.ChoiceFilter(
         initial=_('All'),
@@ -281,6 +286,15 @@ class ProjectUpdateFilter(django_filters.FilterSet):
     class Meta:
         model = ProjectUpdate
         fields = ['partner', 'sector', 'title', ]
+
+    def partner_updates(self, qs, value):
+        """Updates made by users of org in projects where org is a partner."""
+
+        if value in ([], (), {}, None, ''):
+            return qs
+
+        return qs.filter(user__organisations__id=value)\
+                 .filter(project__partners__id=value).distinct()
 
 
 class OrganisationFilter(django_filters.FilterSet):

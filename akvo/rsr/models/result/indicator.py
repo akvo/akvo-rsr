@@ -89,37 +89,20 @@ class Indicator(models.Model):
 
     def save(self, *args, **kwargs):
         """Update the values of child indicators, if a parent indicator is updated."""
-        # Update the values for an existing indicator
-        if self.pk:
-            for child_indicator in self.child_indicators.all():
-                # Always copy title, measure and ascending. They should be the same as the parent.
-                child_indicator.title = self.title
-                child_indicator.measure = self.measure
-                child_indicator.ascending = self.ascending
 
-                # Only copy the description and baseline if the child has none (e.g. new)
-                fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
-                for field in fields:
-                    parent_field_value = getattr(self, field)
-                    if not getattr(child_indicator, field) and parent_field_value:
-                        setattr(child_indicator, field, parent_field_value)
+        if not self.pk and Indicator.objects.filter(result_id=self.result.id).exists():
+            prev_indicator = Indicator.objects.filter(result_id=self.result.id).reverse()[0]
+            if prev_indicator.order:
+                self.order = prev_indicator.order + 1
 
-                child_indicator.save()
-
-            if self.type != QUALITATIVE:
-                IndicatorLabel.objects.filter(indicator=self).delete()
-
-        # Create a new indicator when it's added
-        else:
-            for child_result in self.result.child_results.all():
-                child_result.project.add_indicator(child_result, self)
-
-            if Indicator.objects.filter(result_id=self.result.id).exists():
-                prev_indicator = Indicator.objects.filter(result_id=self.result.id).reverse()[0]
-                if prev_indicator.order:
-                    self.order = prev_indicator.order + 1
+        # HACK: Delete IndicatorLabels on non-qualitative indicators
+        if self.pk and self.type != QUALITATIVE:
+            IndicatorLabel.objects.filter(indicator=self).delete()
 
         super(Indicator, self).save(*args, **kwargs)
+
+        for child_result in self.result.child_results.all():
+            child_result.project.add_indicator(child_result, self)
 
     def clean(self):
         validation_errors = {}
