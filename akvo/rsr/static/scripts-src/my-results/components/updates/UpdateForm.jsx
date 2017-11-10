@@ -10,6 +10,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
+import {Tooltip} from 'react-lightweight-tooltip';
 
 import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
@@ -69,12 +70,19 @@ UpdateAlert.propTypes = {
 };
 
 
-const QuantitativeHeader = ({targetValue}) => {
+const QuantitativeHeader = ({targetValue, targetComment}) => {
+    const comment = targetComment ?
+        <Tooltip content={targetComment}>
+            <span className="glyphicon glyphicon-info-sign info-icon"></span>
+        </Tooltip>
+    :
+        undefined;
     return (
         <div>
             <div className="targetLabel">
                 {_('target_value')}: <span>{targetValue}</span>
             </div>
+            {comment}
         </div>
     )
 };
@@ -431,7 +439,7 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
     return (
         <div className="update-container">
             <div className="update-entry-container edit-in-progress">
-                <QuantitativeHeader targetValue={period.target_value}/>
+                <QuantitativeHeader targetValue={period.target_value} targetComment={period.target_comment}/>
                 <QuantitativeActualValueInput update={update}
                                               onChange={self.onChange}
                                               onClose={self.props.onClose}
