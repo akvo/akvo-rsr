@@ -17,9 +17,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Akvo RSR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-19 17:06+0200\n"
-"PO-Revision-Date: 2017-11-08 17:17+0000\n"
-"Last-Translator: Wendemi ILBOUDO <wendemi@akvo.org>\n"
+"POT-Creation-Date: 2017-10-13 10:15+0200\n"
+"PO-Revision-Date: 2017-10-17 07:15+0000\n"
+"Last-Translator: Gabriel von Heijne\n"
 "Language-Team: French (http://www.transifex.com/akvo-foundation/akvo-rsr/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -503,7 +503,7 @@ msgid "humanitarian scope vocabularies"
 msgstr "Les vocabulaires de portée humanitaire"
 
 #: akvo/codelists/models/indicator_measure.py:24
-#: akvo/rsr/models/result/indicator.py:49
+#: akvo/rsr/models/result/indicator.py:48
 msgid "indicator measure"
 msgstr "indicateur de mesure"
 
@@ -725,317 +725,6 @@ msgstr "versions"
 msgid "vocabulary"
 msgstr "vocabulaire"
 
-#: akvo/codelists/store/codelists_v202.py:272
-#: akvo/templates/results_base.html:53
-msgid "Unit"
-msgstr "Unité"
-
-#: akvo/codelists/store/codelists_v202.py:272
-msgid "The indicator is measured in units."
-msgstr "L'indicateur est mesuré en unité."
-
-#: akvo/codelists/store/codelists_v202.py:273
-#: akvo/templates/results_base.html:54
-msgid "Percentage"
-msgstr "Pourcentage"
-
-#: akvo/codelists/store/codelists_v202.py:273
-msgid "The indicator is measured in percentages"
-msgstr "L'indicateur est mesuré en pourcentage"
-
-#: akvo/codelists/store/codelists_v202.py:279
-msgid "General Enquiries"
-msgstr "Les renseignements généraux"
-
-#: akvo/codelists/store/codelists_v202.py:280
-msgid "Project Management"
-msgstr "Gestion de projet"
-
-#: akvo/codelists/store/codelists_v202.py:281
-msgid "Financial Management"
-msgstr "Gestion financière"
-
-#: akvo/codelists/store/codelists_v202.py:282
-msgid "Communications"
-msgstr "Communication"
-
-#: akvo/codelists/store/codelists_v202.py:1126
-#: akvo/templates/organisation_main.html:126
-#: akvo/templates/partials/widgets/project_status.html:5
-#: akvo/templates/widgets/project_list.html:70
-msgid "Pipeline/identification"
-msgstr "Développement/identification"
-
-#: akvo/codelists/store/codelists_v202.py:1126
-msgid "The activity is being scoped or planned "
-msgstr "L'activité est en cours de définition ou est planifiée"
-
-#: akvo/codelists/store/codelists_v202.py:1127
-#: akvo/templates/organisation_main.html:136
-#: akvo/templates/partials/widgets/project_status.html:9
-#: akvo/templates/widgets/project_list.html:71
-msgid "Implementation"
-msgstr "Mise en oeuvre"
-
-#: akvo/codelists/store/codelists_v202.py:1127
-msgid "The activity is currently being implemented"
-msgstr "L'activité est en cours d'exécution"
-
-#: akvo/codelists/store/codelists_v202.py:1128
-#: akvo/templates/organisation_main.html:146
-#: akvo/templates/partials/widgets/project_status.html:13
-#: akvo/templates/widgets/project_list.html:72
-msgid "Completion"
-msgstr "Achèvement"
-
-#: akvo/codelists/store/codelists_v202.py:1128
-msgid "Physical activity is complete or the final disbursement has been made."
-msgstr "L'activité est terminée ou le dernier décaissement a été effectué."
-
-#: akvo/codelists/store/codelists_v202.py:1129
-#: akvo/templates/organisation_main.html:156
-msgid "Post-completion"
-msgstr "Après-achèvement"
-
-#: akvo/codelists/store/codelists_v202.py:1129
-msgid ""
-"Physical activity is complete or the final disbursement has been made, but "
-"the activity remains open pending financial sign off or M&E"
-msgstr "L'activité est terminée ou le décaissement final a été effectué, cependant, l'activité reste ouverte en attente d'approbation financière ou de Suivi & Evaluation."
-
-#: akvo/codelists/store/codelists_v202.py:1130 akvo/rsr/models/project.py:93
-#: akvo/templates/organisation_main.html:166
-#: akvo/templates/partials/widgets/project_status.html:21
-#: akvo/templates/widgets/project_list.html:74
-msgid "Cancelled"
-msgstr "Annulé(s)"
-
-#: akvo/codelists/store/codelists_v202.py:1130
-msgid "The activity has been cancelled"
-msgstr "L'activité a été annulée"
-
-#: akvo/codelists/store/codelists_v202.py:1131
-#: akvo/templates/organisation_main.html:176
-#: akvo/templates/partials/widgets/project_status.html:25
-#: akvo/templates/widgets/project_list.html:75
-msgid "Suspended"
-msgstr "Suspendu"
-
-#: akvo/codelists/store/codelists_v202.py:1131
-msgid "The activity has been temporarily suspended"
-msgstr "L'activité a été temporairement suspendue"
-
-#: akvo/codelists/store/codelists_v202.py:2002
-#: akvo/templates/results_base.html:49
-msgid "Output"
-msgstr "Output"
-
-#: akvo/codelists/store/codelists_v202.py:2002
-msgid ""
-"Results of the activity that came about as a direct effect of your work and "
-"specific, what is done, and what communities are reached. For example, X "
-"number of individuals."
-msgstr "Les résultats de l'activité qui sont apparus comme un effet direct de votre travail, en spécifique, ce qui est fait, les communautés atteintes. Par exemple, X nombre d'individus."
-
-#: akvo/codelists/store/codelists_v202.py:2003
-#: akvo/templates/results_base.html:50
-msgid "Outcome"
-msgstr "Outcome"
-
-#: akvo/codelists/store/codelists_v202.py:2003
-msgid ""
-"Results of the activity that produce an effect on the overall communities or"
-" issues you serve. For example lower rate of infection after a vaccination "
-"programme."
-msgstr "Les résultats de l'activité qui produisent un effet sur l'ensemble des communautés ou des problèmes que vous résolvez. Par exemple taux d'infection inférieur après un programme de vaccination."
-
-#: akvo/codelists/store/codelists_v202.py:2004
-#: akvo/templates/results_base.html:51
-msgid "Impact"
-msgstr "Impact"
-
-#: akvo/codelists/store/codelists_v202.py:2004
-msgid ""
-"The long term effects of the outcomes, that lead to larger, over arching "
-"results, such as improved life-expectancy."
-msgstr "Les effets des résultats à long terme, qui conduisent à de plus importants résultats, les plus élevés, tels que l'amélioration de l'espérance de vie."
-
-#: akvo/codelists/store/codelists_v202.py:2005
-#: akvo/templates/results_base.html:52
-msgid "Other"
-msgstr "Autre"
-
-#: akvo/codelists/store/codelists_v202.py:2005
-msgid "Another type of result, not specified above."
-msgstr "Autre type de résultat, non spécifié ci-dessus."
-
-#: akvo/codelists/store/codelists_v202.py:2096
-msgid "OECD DAC CRS Purpose Codes (5 digit)"
-msgstr "Objectif des codes OECD DAC CRS (5 chiffres)"
-
-#: akvo/codelists/store/codelists_v202.py:2096
-msgid ""
-"The sector reported corresponds to an OECD DAC CRS 5-digit purpose code"
-msgstr "Le secteur rapporté correspond à un objectif de code OCDE DAC CRS à 5 chiffres"
-
-#: akvo/codelists/store/codelists_v202.py:2097
-msgid "OECD DAC CRS Purpose Codes (3 digit)"
-msgstr "Objectif des codes OECD DAC CRS (3 chiffres)"
-
-#: akvo/codelists/store/codelists_v202.py:2097
-msgid ""
-"The sector reported corresponds to an OECD DAC CRS 3-digit purpose code"
-msgstr "Le secteur rapporté correspond à un objectif de code OCDE DAC CRS à 3 chiffres"
-
-#: akvo/codelists/store/codelists_v202.py:2098
-msgid "Classification of the Functions of Government (UN)"
-msgstr "Classification des fonctions du gouvernement (ONU)"
-
-#: akvo/codelists/store/codelists_v202.py:2098
-msgid ""
-"The sector reported corresponds to the UN Classification of the Functions of"
-" Government (CoFoG)"
-msgstr "Le secteur rapporté correspond à la classification des fonctions du gouvernement des Nations Unies (CoFoG)"
-
-#: akvo/codelists/store/codelists_v202.py:2099
-msgid ""
-"Statistical classification of economic activities in the European Community"
-msgstr "Classification statistique des activités économiques dans la Communauté européenne"
-
-#: akvo/codelists/store/codelists_v202.py:2099
-msgid ""
-"The sector reported corresponds to the statistical classifications of "
-"economic activities in the European Community"
-msgstr "Le secteur rapporté correspond aux classifications statistiques des activités économiques dans la Communauté européenne"
-
-#: akvo/codelists/store/codelists_v202.py:2100
-msgid "National Taxonomy for Exempt Entities (USA)"
-msgstr "La taxonomie nationale pour les entités exonérées (États-Unis)"
-
-#: akvo/codelists/store/codelists_v202.py:2100
-msgid ""
-"The sector reported corresponds to the National Taxonomy for Exempt Entities"
-" (NTEE) - USA"
-msgstr "Le secteur rapporté correspond à la taxonomie nationale pour les entités exonérées (NTEE) - États-Unis"
-
-#: akvo/codelists/store/codelists_v202.py:2101
-msgid "AidData"
-msgstr "Les données d'aide"
-
-#: akvo/codelists/store/codelists_v202.py:2101
-msgid "The sector reported corresponds to AidData classifications"
-msgstr "Le secteur rapporté correspond aux classifications des données d'aide"
-
-#: akvo/codelists/store/codelists_v202.py:2102
-msgid "SDG Goal"
-msgstr "Le but de l'ODD"
-
-#: akvo/codelists/store/codelists_v202.py:2102
-msgid ""
-"A value from the top-level list of UN sustainable development goals (SDGs) "
-"(e.g. ‘1’)"
-msgstr "Une valeur du niveau supérieur de la liste des objectifs de développement durable (ODD) de l'ONU (par exemple: «1»)"
-
-#: akvo/codelists/store/codelists_v202.py:2103
-msgid "SDG Target"
-msgstr "La cible de l'ODD"
-
-#: akvo/codelists/store/codelists_v202.py:2103
-msgid ""
-"A value from the second-level list of UN sustainable development goals "
-"(SDGs) (e.g. ‘1.1’)"
-msgstr "Une valeur du deuxième niveau de la liste des objectifs de développement durable (ODD) de l'ONU (par exemple: ‘1.1’)"
-
-#: akvo/codelists/store/codelists_v202.py:2104
-msgid "SDG Indicator"
-msgstr "L'indicateur de l'ODD"
-
-#: akvo/codelists/store/codelists_v202.py:2104
-msgid ""
-"A value from the second-level list of UN sustainable development (SDG) "
-"indicators"
-msgstr "Une valeur du deuxième niveau des indicateurs de développement durable (ODD) de l'ONU"
-
-#: akvo/codelists/store/codelists_v202.py:2105
-msgid "Humanitarian Global Clusters (Inter-Agency Standing Committee)"
-msgstr "Les Clusters humanitaires mondiaux (Comité Permanent d'Inter-organisations)"
-
-#: akvo/codelists/store/codelists_v202.py:2105
-msgid ""
-"The sector reported corresponds to an Inter-Agency Standard Committee "
-"Humanitarian Global Cluster code"
-msgstr "Le secteur rapporté correspond à un code du Cluster Humanitaire mondial du Comité d'Inter-organisation"
-
-#: akvo/codelists/store/codelists_v202.py:2106
-msgid "Reporting Organisation"
-msgstr "Organisation de Suivi"
-
-#: akvo/codelists/store/codelists_v202.py:2106
-msgid ""
-"The sector reported corresponds to a sector vocabulary maintained by the "
-"reporting organisation for this activity"
-msgstr "Le secteur rapporté correspond à un vocabulaire sectoriel entretenu par l'organisation de rapportage de cette activité"
-
-#: akvo/codelists/store/codelists_v202.py:2107
-msgid "Reporting Organisation 2"
-msgstr "Organisation de rapportage 2"
-
-#: akvo/codelists/store/codelists_v202.py:2107
-msgid ""
-"The sector reported corresponds to a sector vocabulary maintained by the "
-"reporting organisation for this activity (if they are referencing more than "
-"one)"
-msgstr "Le secteur rapporté correspond à un vocabulaire sectoriel entretenu par l'organisation de rapportage de cette activité (si elles font référence à plus d'un)"
-
-#: akvo/codelists/store/codelists_v202.py:3395
-msgid "Parent"
-msgstr "Parent"
-
-#: akvo/codelists/store/codelists_v202.py:3395
-msgid ""
-"An activity that contains sub-activities (sub-components) which are reported"
-" separately to IATI"
-msgstr "Une activité qui a des sous-activités (sous-composantes) qui sont rapportées séparément à l'IITA"
-
-#: akvo/codelists/store/codelists_v202.py:3396
-msgid "Child"
-msgstr "Enfant"
-
-#: akvo/codelists/store/codelists_v202.py:3396
-msgid ""
-"A sub-activity (or sub-component) that sits within a larger activity "
-"(parent) which is also reported to IATI"
-msgstr "Une sous-activité (ou sous-composante) qui se trouve dans une activité plus grande (parent) qui est également rapportée selon IATI"
-
-#: akvo/codelists/store/codelists_v202.py:3397
-msgid "Sibling"
-msgstr "Frères"
-
-#: akvo/codelists/store/codelists_v202.py:3397
-msgid ""
-"A sub-activity (or sub-component) that is related to another sub-activity "
-"with the same parent "
-msgstr "Une sous-activité (ou sous-composante) liée à une autre sous-activité avec le même parent"
-
-#: akvo/codelists/store/codelists_v202.py:3398
-msgid "Co-funded"
-msgstr "Co-financée"
-
-#: akvo/codelists/store/codelists_v202.py:3398
-msgid "An activity that receives funding from more than one organisation"
-msgstr "Une activité qui reçoit des financements de la part de plus d'une organisation"
-
-#: akvo/codelists/store/codelists_v202.py:3399
-msgid "Third Party"
-msgstr "Tierce personne"
-
-#: akvo/codelists/store/codelists_v202.py:3399
-msgid ""
-"A report by another organisation on the same activity you are reporting "
-"(excluding activities reported as part of a financial transaction - e.g. "
-"provider-activity-id or a co-funded activity, using code 4)"
-msgstr "Un rapport d'une autre organisation sur la même activité que vous êtes entrain de rapporter (excluant les activités rapportées dans le cadre d'une transaction financière - par exemple: identifiant d'activité de fournisseur ou activité cofinancée, en utilisant le code 4)"
-
 #: akvo/rest/fields.py:61
 msgid "Please upload a valid image."
 msgstr "Merci de télécharger un fichier image utilisable."
@@ -1053,31 +742,31 @@ msgstr "Ancien mot de passe erroné."
 msgid "Passwords do not match."
 msgstr "Les mots de passe ne correspondent pas."
 
-#: akvo/rest/views/project_editor.py:89
+#: akvo/rest/views/project_editor.py:87
 msgid "Project editor, changed: "
 msgstr "L'éditeur de projet, a changé"
 
-#: akvo/rest/views/project_editor.py:199
+#: akvo/rest/views/project_editor.py:197
 msgid "It is not allowed to use a comma, use a period to denote decimals."
 msgstr "Il n'est pas permis d'utiliser une virgule, utilisez un point pour indiquer les décimales."
 
-#: akvo/rest/views/project_editor.py:410
+#: akvo/rest/views/project_editor.py:408
 msgid "There can be only one reporting organisation"
 msgstr "Il ne peut y avoir qu'une seule organisation déclarante"
 
-#: akvo/rest/views/project_editor.py:814
+#: akvo/rest/views/project_editor.py:812
 msgid "Project editor, added: validation set"
 msgstr "Éditeur de projet, ajouté: ensemble de validation"
 
-#: akvo/rest/views/project_editor.py:842
+#: akvo/rest/views/project_editor.py:840
 msgid "Project editor, deleted: validation set"
 msgstr "Éditeur de projet, supprimé: ensemble de validation"
 
-#: akvo/rest/views/project_editor.py:870
+#: akvo/rest/views/project_editor.py:868
 msgid "Project editor, deleted: keyword"
 msgstr "Editeur de projet, supprimé: mot-clé"
 
-#: akvo/rest/views/project_editor.py:915
+#: akvo/rest/views/project_editor.py:913
 msgid "Project editor, added project"
 msgstr "Éditeur de projet, projet ajouté"
 
@@ -1266,7 +955,7 @@ msgstr "Les transactions concernent les transferts de fonds effectifs entre les 
 
 #: akvo/rsr/admin.py:933 akvo/templates/myrsr/project_editor/section_5.html:45
 #: akvo/templates/project_main.html:19 akvo/templates/project_main.html:163
-#: akvo/templates/results_base.html:41
+#: akvo/templates/results_base.html:123
 msgid "Results"
 msgstr "Résultats"
 
@@ -1418,7 +1107,7 @@ msgstr "Tout"
 #: akvo/rsr/models/iati_export.py:39 akvo/rsr/models/iati_import_job.py:71
 #: akvo/rsr/models/organisation_budget.py:72 akvo/rsr/models/project.py:134
 #: akvo/rsr/models/project.py:137
-#: akvo/rsr/models/result/indicator_period_data.py:60
+#: akvo/rsr/models/result/indicator_period_data.py:62
 #: akvo/templates/myrsr/my_iati.html:84
 #: akvo/templates/project_directory.html:216
 msgid "status"
@@ -3999,7 +3688,7 @@ msgstr "noms des benchmarks"
 #: akvo/rsr/models/budget_item.py:23 akvo/rsr/models/iati_import.py:111
 #: akvo/rsr/models/keyword.py:23
 #: akvo/rsr/models/organisation_indicator_label.py:19
-#: akvo/rsr/models/result/indicator_label.py:16
+#: akvo/rsr/models/result/indicator_label.py:18
 msgid "label"
 msgstr "libellé"
 
@@ -4495,7 +4184,7 @@ msgstr "Sélectionnez le type de champ personnalisé. Texte affichera une zone d
 #: akvo/rsr/models/employment.py:30 akvo/rsr/models/iati_export.py:35
 #: akvo/rsr/models/iati_import.py:117 akvo/rsr/models/project_comment.py:18
 #: akvo/rsr/models/project_update.py:39
-#: akvo/rsr/models/result/indicator_period_data.py:50
+#: akvo/rsr/models/result/indicator_period_data.py:52
 #: akvo/rsr/models/result/indicator_period_data_comment.py:23
 #: akvo/rsr/models/user.py:109
 msgid "user"
@@ -4510,7 +4199,7 @@ msgid "The permissions group for this user's employment."
 msgstr "Les permissions groupe pour l'emploi de cet utilisateur."
 
 #: akvo/rsr/models/employment.py:35
-#: akvo/rsr/models/result/indicator_period_data.py:29
+#: akvo/rsr/models/result/indicator_period_data.py:30
 msgid "approved"
 msgstr "approuvé"
 
@@ -5024,7 +4713,7 @@ msgid "field"
 msgstr "champ"
 
 #: akvo/rsr/models/iati_import_log.py:117 akvo/rsr/models/project_update.py:42
-#: akvo/rsr/models/result/indicator_period_data.py:62
+#: akvo/rsr/models/result/indicator_period_data.py:64
 msgid "text"
 msgstr "texte"
 
@@ -5416,7 +5105,7 @@ msgid "(20 characters)."
 msgstr "(20 caractères)."
 
 #: akvo/rsr/models/organisation.py:139 akvo/rsr/models/project_update.py:34
-#: akvo/rsr/models/result/indicator_period_data.py:44
+#: akvo/rsr/models/result/indicator_period_data.py:46
 msgid "mobile"
 msgstr "mobile"
 
@@ -6324,6 +6013,12 @@ msgstr "Actif(s)"
 msgid "Complete"
 msgstr "Terminé"
 
+#: akvo/rsr/models/project.py:93 akvo/templates/organisation_main.html:166
+#: akvo/templates/partials/widgets/project_status.html:21
+#: akvo/templates/widgets/project_list.html:74
+msgid "Cancelled"
+msgstr "Annulé(s)"
+
 #: akvo/rsr/models/project.py:131
 msgid "project title"
 msgstr "titre du projet"
@@ -6363,7 +6058,7 @@ msgid ""
 msgstr "Entrer une brève description du projet. La description doit expliquer (400 caractères) <br>- Pourquoi le projet est mis en oeuvre ; <br>- Où il se situe ; <br>- Qui va en bénéficier et/ou y participer ;<br> - Ce qu'il propose d'accomplir spécifiquement ; <br> - Comment ces objectifs spécifiques vont être atteints."
 
 #: akvo/rsr/models/project.py:171 akvo/rsr/models/project_update.py:47
-#: akvo/rsr/models/result/indicator_period_data.py:63
+#: akvo/rsr/models/result/indicator_period_data.py:65
 msgid "photo"
 msgstr "photo"
 
@@ -6901,7 +6596,7 @@ msgid "project editor validations"
 msgstr "les validations de l'éditeur du projet"
 
 #: akvo/rsr/models/project_update.py:31
-#: akvo/rsr/models/result/indicator_period_data.py:43
+#: akvo/rsr/models/result/indicator_period_data.py:45
 msgid "web"
 msgstr "web"
 
@@ -6953,7 +6648,7 @@ msgid "video credit"
 msgstr "mention de source de la vidéo"
 
 #: akvo/rsr/models/project_update.py:60
-#: akvo/rsr/models/result/indicator_period_data.py:65
+#: akvo/rsr/models/result/indicator_period_data.py:67
 msgid "update method"
 msgstr "méthode de mise à jour"
 
@@ -7180,7 +6875,7 @@ msgstr "narration qualitative"
 
 #: akvo/rsr/models/result/disaggregation.py:39
 #: akvo/rsr/models/result/indicator_period.py:50
-#: akvo/rsr/models/result/indicator_period_data.py:69
+#: akvo/rsr/models/result/indicator_period_data.py:71
 msgid "numerator for indicator"
 msgstr "numérateur de l'indicateur"
 
@@ -7190,7 +6885,7 @@ msgstr "Le numérateur pour une valeur de pourcentage"
 
 #: akvo/rsr/models/result/disaggregation.py:45
 #: akvo/rsr/models/result/indicator_period.py:56
-#: akvo/rsr/models/result/indicator_period_data.py:75
+#: akvo/rsr/models/result/indicator_period_data.py:77
 msgid "denominator for indicator"
 msgstr "dénominateur de l'indicateur"
 
@@ -7206,45 +6901,45 @@ msgstr "la valeur désagrégée"
 msgid "disaggregated values"
 msgstr "les valeurs désagrégées"
 
-#: akvo/rsr/models/result/indicator.py:28
+#: akvo/rsr/models/result/indicator.py:27
 msgid "Quantitative"
 msgstr "Quantitatif"
 
-#: akvo/rsr/models/result/indicator.py:29
+#: akvo/rsr/models/result/indicator.py:28
 msgid "Qualitative"
 msgstr "Qualitatif"
 
-#: akvo/rsr/models/result/indicator.py:32 akvo/rsr/models/result/result.py:158
+#: akvo/rsr/models/result/indicator.py:31 akvo/rsr/models/result/result.py:158
 msgid "result"
 msgstr "résultat"
 
-#: akvo/rsr/models/result/indicator.py:35
+#: akvo/rsr/models/result/indicator.py:34
 msgid "parent indicator"
 msgstr "l'indicateur parent"
 
-#: akvo/rsr/models/result/indicator.py:38
+#: akvo/rsr/models/result/indicator.py:37
 msgid "indicator title"
 msgstr "titre de l'indicateur"
 
-#: akvo/rsr/models/result/indicator.py:39
+#: akvo/rsr/models/result/indicator.py:38
 msgid ""
 "Within each result indicators can be defined. Indicators should be items "
 "that can be counted and evaluated as the project continues and is completed."
 msgstr "Pour chaque résultat, les indicateurs peuvent être définis. Les indicateurs sont à priori des éléments quantifiables qui peuvent être évalués au fur et à mesure que le projet se poursuit ainsi qu'à la fin du projet. "
 
-#: akvo/rsr/models/result/indicator.py:46
+#: akvo/rsr/models/result/indicator.py:45
 msgid "indicator type"
 msgstr "type de l'indicateur "
 
-#: akvo/rsr/models/result/indicator.py:51
+#: akvo/rsr/models/result/indicator.py:50
 msgid "Choose how the indicator will be measured (in percentage or units)."
 msgstr "Choisissez comment l'indicateur sera mesuré (en pourcentage ou en unités)."
 
-#: akvo/rsr/models/result/indicator.py:54
+#: akvo/rsr/models/result/indicator.py:53
 msgid "ascending"
 msgstr "ascendant"
 
-#: akvo/rsr/models/result/indicator.py:55
+#: akvo/rsr/models/result/indicator.py:54
 msgid ""
 "Choose ascending if the target value of the indicator is higher than the "
 "baseline value (eg. people with access to sanitation). Choose descending if "
@@ -7252,92 +6947,92 @@ msgid ""
 "people with diarrhea)."
 msgstr "Choisissez croissant si la valeur cible de l'indicateur est supérieure à la valeur de référence (Ex: Personnes ayant accès à l'assainissement). Choisissez décroissant si la valeur cible de l'indicateur est inférieure à la valeur de référence (Ex: Personnes atteintes de diarrhée)."
 
-#: akvo/rsr/models/result/indicator.py:60
+#: akvo/rsr/models/result/indicator.py:59
 msgid "indicator description"
 msgstr "description de l'indicateur"
 
-#: akvo/rsr/models/result/indicator.py:61
+#: akvo/rsr/models/result/indicator.py:60
 msgid "You can provide further information of the indicator here."
 msgstr "Vous pouvez fournir de plus amples informations sur l'indicateur ici."
 
-#: akvo/rsr/models/result/indicator.py:64
+#: akvo/rsr/models/result/indicator.py:63
 msgid "baseline year"
 msgstr "année de référence"
 
-#: akvo/rsr/models/result/indicator.py:65
+#: akvo/rsr/models/result/indicator.py:64
 msgid "The year the baseline value was taken."
 msgstr "L'année où la valeur de référence a été prise."
 
-#: akvo/rsr/models/result/indicator.py:68
+#: akvo/rsr/models/result/indicator.py:67
 msgid "baseline value"
 msgstr "valeur de référence"
 
-#: akvo/rsr/models/result/indicator.py:69
+#: akvo/rsr/models/result/indicator.py:68
 msgid "The value of the baseline at the start of the project."
 msgstr "La valeur de la référence au démarrage du projet."
 
-#: akvo/rsr/models/result/indicator.py:72
+#: akvo/rsr/models/result/indicator.py:71
 msgid "baseline comment"
 msgstr "observation référence"
 
-#: akvo/rsr/models/result/indicator.py:73
+#: akvo/rsr/models/result/indicator.py:72
 msgid ""
 "Here you can provide extra information on the baseline value, if needed."
 msgstr "Ici, vous pouvez fournir des informations supplémentaires sur la valeur de référence, si nécessaire."
 
-#: akvo/rsr/models/result/indicator.py:75
+#: akvo/rsr/models/result/indicator.py:74
 msgid "indicator order"
 msgstr "l'ordre des indicateurs"
 
-#: akvo/rsr/models/result/indicator.py:77
+#: akvo/rsr/models/result/indicator.py:76
 msgid "default indicator periods"
 msgstr "les périodes de l'indicateur par défaut"
 
-#: akvo/rsr/models/result/indicator.py:78
+#: akvo/rsr/models/result/indicator.py:77
 msgid "Determines whether periods of indicator are used by default."
 msgstr "Il détermine si les périodes de l'indicateur sont utilisés par défaut."
 
-#: akvo/rsr/models/result/indicator.py:82
+#: akvo/rsr/models/result/indicator.py:81
 msgid "No indicator title"
 msgstr "Aucun titre d'indicateur"
 
-#: akvo/rsr/models/result/indicator.py:86
+#: akvo/rsr/models/result/indicator.py:85
 msgid "period(s)"
 msgstr "période(s)"
 
-#: akvo/rsr/models/result/indicator.py:133
+#: akvo/rsr/models/result/indicator.py:129
 msgid ""
 "It is not possible to update the result of this indicator, because it is "
 "linked to a parent result."
 msgstr "Il est impossible de mettre à jour le résultat de cet indicateur, car il est relié à un résultat parent."
 
-#: akvo/rsr/models/result/indicator.py:137
+#: akvo/rsr/models/result/indicator.py:133
 msgid ""
 "It is not possible to update the title of this indicator, because it is "
 "linked to a parent result."
 msgstr "Il est impossible de mettre à jour le titre de cet indicateur, car il est relié à un résultat parent."
 
-#: akvo/rsr/models/result/indicator.py:141
+#: akvo/rsr/models/result/indicator.py:137
 msgid ""
 "It is not possible to update the measure of this indicator, because it is "
 "linked to a parent result."
 msgstr "Il est impossible de mettre à jour la mesure de cet indicateur, car il est relié à un résultat parent."
 
-#: akvo/rsr/models/result/indicator.py:145
+#: akvo/rsr/models/result/indicator.py:141
 msgid ""
 "It is not possible to update the ascending value of this indicator, because "
 "it is linked to a parent result."
 msgstr "Il est impossible de mettre à jour la valeur ascendante de cet indicateur, car il est relié à un résultat parent."
 
-#: akvo/rsr/models/result/indicator.py:218
+#: akvo/rsr/models/result/indicator.py:214
 #: akvo/rsr/models/result/indicator_dimension.py:16
-#: akvo/rsr/models/result/indicator_label.py:14
+#: akvo/rsr/models/result/indicator_label.py:16
 #: akvo/rsr/models/result/indicator_period.py:19
 #: akvo/rsr/models/result/indicator_reference.py:19
 msgid "indicator"
 msgstr "indicateur"
 
-#: akvo/rsr/models/result/indicator.py:219
+#: akvo/rsr/models/result/indicator.py:215
 msgid "indicators"
 msgstr "indicateurs"
 
@@ -7370,11 +7065,11 @@ msgstr "la dimension de l'indicateur"
 msgid "indicator dimensions"
 msgstr "les dimensions de l'indicateur"
 
-#: akvo/rsr/models/result/indicator_label.py:27
+#: akvo/rsr/models/result/indicator_label.py:29
 msgid "indicator label"
 msgstr "l'étiquette de l'indicateur"
 
-#: akvo/rsr/models/result/indicator_label.py:28
+#: akvo/rsr/models/result/indicator_label.py:30
 msgid "indicator labels"
 msgstr "les étiquettes de l'indicateur"
 
@@ -7429,12 +7124,12 @@ msgid ""
 msgstr "Ici, vous pouvez fournir des informations supplémentaires sur la valeur réelle, si nécessaire (par exemple, pourquoi la valeur réelle est différente de la valeur cible)."
 
 #: akvo/rsr/models/result/indicator_period.py:53
-#: akvo/rsr/models/result/indicator_period_data.py:72
+#: akvo/rsr/models/result/indicator_period_data.py:74
 msgid "The numerator for a calculated percentage"
 msgstr "Le numérateur pour un pourcentage calculé"
 
 #: akvo/rsr/models/result/indicator_period.py:59
-#: akvo/rsr/models/result/indicator_period_data.py:78
+#: akvo/rsr/models/result/indicator_period_data.py:80
 msgid "The denominator for a calculated percentage"
 msgstr "Le dénominateur pour un pourcentage calculé"
 
@@ -7474,7 +7169,7 @@ msgstr "Il est impossible de mettre à jour la période de fin de cet indicateur
 #: akvo/rsr/models/result/indicator_period.py:465
 #: akvo/rsr/models/result/indicator_period_actual_dimension.py:16
 #: akvo/rsr/models/result/indicator_period_actual_location.py:16
-#: akvo/rsr/models/result/indicator_period_data.py:47
+#: akvo/rsr/models/result/indicator_period_data.py:49
 #: akvo/rsr/models/result/indicator_period_target_dimension.py:16
 #: akvo/rsr/models/result/indicator_period_target_location.py:16
 msgid "indicator period"
@@ -7519,75 +7214,81 @@ msgid "indicator period actual locations"
 msgstr "les emplacements réels de la période de l'indicateur"
 
 #: akvo/rsr/models/result/indicator_period_data.py:26
+#: akvo/templates/myrsr/my_iati.html:94
+#: akvo/templates/myrsr/project_editor/partials/related_object_header.html:7
+msgid "new"
+msgstr "Nouveau"
+
+#: akvo/rsr/models/result/indicator_period_data.py:27
 msgid "draft"
 msgstr "brouillon"
 
-#: akvo/rsr/models/result/indicator_period_data.py:27
+#: akvo/rsr/models/result/indicator_period_data.py:28
 msgid "pending approval"
 msgstr "approbation en attente"
 
-#: akvo/rsr/models/result/indicator_period_data.py:28
+#: akvo/rsr/models/result/indicator_period_data.py:29
 msgid "return for revision"
 msgstr "retour pour la révision"
 
-#: akvo/rsr/models/result/indicator_period_data.py:53
+#: akvo/rsr/models/result/indicator_period_data.py:55
 msgid "approved by"
 msgstr "approuvé par"
 
-#: akvo/rsr/models/result/indicator_period_data.py:57
+#: akvo/rsr/models/result/indicator_period_data.py:59
 msgid "quantitative indicator value"
 msgstr "la valeur de l'indicateur quantitatif"
 
-#: akvo/rsr/models/result/indicator_period_data.py:58
+#: akvo/rsr/models/result/indicator_period_data.py:60
 msgid "qualitative indicator narrative"
 msgstr "la narration de l'indicateur qualitatif"
 
-#: akvo/rsr/models/result/indicator_period_data.py:59
+#: akvo/rsr/models/result/indicator_period_data.py:61
 msgid "period actual value"
 msgstr "période de la valeur réelle"
 
-#: akvo/rsr/models/result/indicator_period_data.py:64
+#: akvo/rsr/models/result/indicator_period_data.py:66
 msgid "file"
 msgstr "fichier"
 
-#: akvo/rsr/models/result/indicator_period_data.py:83
-#: akvo/rsr/models/result/indicator_period_data.py:84
+#: akvo/rsr/models/result/indicator_period_data.py:85
+#: akvo/rsr/models/result/indicator_period_data.py:86
 #: akvo/rsr/models/result/indicator_period_data_comment.py:21
 msgid "indicator period data"
 msgstr "les données de la période de l'indicateur"
 
-#: akvo/rsr/models/result/indicator_period_data.py:129
+#: akvo/rsr/models/result/indicator_period_data.py:130
 msgid "Indicator period must be part of a published project to add data to it"
 msgstr "La période de l'indicateur doit faire partie d'un projet publié pour pouvoir y ajouter des données"
 
-#: akvo/rsr/models/result/indicator_period_data.py:135
+#: akvo/rsr/models/result/indicator_period_data.py:136
 msgid ""
 "Indicator period must be part of an RSR Impact project to add data to it"
 msgstr "La période de l'indicateur doit faire partie d'un impact de projet RSR pour y ajouter des données"
 
-#: akvo/rsr/models/result/indicator_period_data.py:141
+#: akvo/rsr/models/result/indicator_period_data.py:142
 msgid "Indicator period must be unlocked to add data to it"
 msgstr "La période de l'indicateur doit être déverrouillée pour y ajouter des données"
 
-#: akvo/rsr/models/result/indicator_period_data.py:148
+#: akvo/rsr/models/result/indicator_period_data.py:149
 msgid ""
 "Indicator period has an average aggregate of the child projects. Disable "
 "aggregations to add data to it"
 msgstr "La période de l'indicateur a un agrégat moyen des projets enfants. Désactiver les agrégations pour y ajouter des données"
 
-#: akvo/rsr/models/result/indicator_period_data.py:157
+#: akvo/rsr/models/result/indicator_period_data.py:158
 msgid "Not allowed to change indicator period in a data update"
 msgstr "Non autorisé à changer la période de l'indicateur dans une mise à jour de donnés"
 
-#: akvo/rsr/models/result/indicator_period_data.py:163
+#: akvo/rsr/models/result/indicator_period_data.py:164
 msgid "Narrative field should be empty in quantitative indicators"
 msgstr "Le champ narratif devrait être vide au niveau des indicateurs quantitatifs"
 
-#: akvo/rsr/models/result/indicator_period_data.py:169
+#: akvo/rsr/models/result/indicator_period_data.py:170
 msgid "Only numeric values are allowed in quantitative indicators"
 msgstr "Seules les valeurs numériques sont autorisées au niveau des indicateurs quantitatifs"
 
-#: akvo/rsr/models/result/indicator_period_data.py:174
+#: akvo/rsr/models/result/indicator_period_data.py:175
 msgid "Value field should be empty in qualitative indicators"
 msgstr "Le champ de valeur devrait être vide au niveau des indicateurs quantitatifs"
 
@@ -8575,11 +8276,6 @@ msgstr "Ici"
 msgid "create a new"
 msgstr "Créer un nouveau"
 
-#: akvo/templates/myrsr/my_iati.html:94
-#: akvo/templates/myrsr/project_editor/partials/related_object_header.html:7
-msgid "new"
-msgstr "Nouveau"
-
 #: akvo/templates/myrsr/my_iati.html:95
 msgid "your organisation has no IATI exports yet"
 msgstr "Votre organisation n'a pas encore d'exportations IATI"
@@ -8640,11 +8336,11 @@ msgstr "Tout cacher"
 msgid "all checks completed successfully"
 msgstr "Toutes les vérifications ont été réalisées avec succès"
 
-#: akvo/templates/myrsr/my_iati.html:115 akvo/templates/results_base.html:104
+#: akvo/templates/myrsr/my_iati.html:115 akvo/templates/results_base.html:134
 msgid "Unknown date"
 msgstr "Date inconnue"
 
-#: akvo/templates/myrsr/my_iati.html:116 akvo/templates/results_base.html:109
+#: akvo/templates/myrsr/my_iati.html:116 akvo/templates/results_base.html:55
 msgid "and"
 msgstr "Et"
 
@@ -8812,6 +8508,7 @@ msgstr "Type"
 #: akvo/templates/project_directory.html:159
 #: akvo/templates/project_main.html:135
 #: akvo/templates/project_main_tabs/summary.html:46
+#: akvo/templates/results_base.html:127
 #: akvo/templates/widgets/project_list.html:30
 msgid "Status"
 msgstr "État"
@@ -8835,7 +8532,7 @@ msgstr "Voir"
 
 #: akvo/templates/myrsr/my_projects.html:73
 #: akvo/templates/myrsr/my_projects.html:75
-#: akvo/templates/results_base.html:89
+#: akvo/templates/results_base.html:78
 msgid "Edit"
 msgstr "Modifier"
 
@@ -9067,7 +8764,7 @@ msgstr "Êtes-vous sûre?"
 #: akvo/templates/myrsr/project_editor/fields/boolean_input.html:14
 #: akvo/templates/myrsr/project_editor/fields/custom_field_input.html:29
 #: akvo/templates/myrsr/project_editor/project_editor.html:137
-#: akvo/templates/results_base.html:97
+#: akvo/templates/results_base.html:145
 msgid "Yes"
 msgstr "Oui"
 
@@ -9075,11 +8772,11 @@ msgstr "Oui"
 #: akvo/templates/myrsr/project_editor/fields/boolean_input.html:15
 #: akvo/templates/myrsr/project_editor/fields/custom_field_input.html:30
 #: akvo/templates/myrsr/project_editor/project_editor.html:138
-#: akvo/templates/results_base.html:98
+#: akvo/templates/results_base.html:99
 msgid "No"
 msgstr "Non"
 
-#: akvo/templates/myrsr/my_updates.html:94 akvo/templates/results_base.html:91
+#: akvo/templates/myrsr/my_updates.html:94 akvo/templates/results_base.html:74
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -9111,7 +8808,7 @@ msgstr "Document téléchargé"
 
 #: akvo/templates/myrsr/project_editor/partials/save_row.html:10
 #: akvo/templates/myrsr/project_editor/project_editor.html:130
-#: akvo/templates/results_base.html:92
+#: akvo/templates/results_base.html:125
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -9281,7 +8978,7 @@ msgstr "Type de l'organisation"
 #: akvo/templates/myrsr/project_editor/project_editor.html:163
 #: akvo/templates/project_directory.html:229
 #: akvo/templates/project_main.html:81 akvo/templates/project_main.html:86
-#: akvo/templates/results_base.html:90
+#: akvo/templates/results_base.html:63
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -9626,7 +9323,7 @@ msgid ""
 msgstr "Cochez cette case si vous souhaitez indiquer un projet similaire qui n'est pas présent dans RSR. En lieu et place, vous aurez la possibilité de remplir l'identifiant IATI de l'activité du projet."
 
 #: akvo/templates/myrsr/project_editor/related_objects/result_input.html:32
-#: akvo/templates/project_main.html:164 akvo/templates/results_base.html:43
+#: akvo/templates/project_main.html:164 akvo/templates/results_base.html:88
 msgid "Indicators"
 msgstr "Indicateurs"
 
@@ -10060,7 +9757,7 @@ msgid "Are you sure you want to approve"
 msgstr "Etes vous sûr de vouloir approuver"
 
 #: akvo/templates/myrsr/user_management.html:71
-#: akvo/templates/results_base.html:95
+#: akvo/templates/results_base.html:56
 msgid "Approve"
 msgstr "Approuver"
 
@@ -10273,6 +9970,34 @@ msgstr "Voir le dernier fichier IITA"
 msgid "Projects in RSR"
 msgstr "Projets en RSR"
 
+#: akvo/templates/organisation_main.html:126
+#: akvo/templates/partials/widgets/project_status.html:5
+#: akvo/templates/widgets/project_list.html:70
+msgid "Pipeline/identification"
+msgstr "Développement/identification"
+
+#: akvo/templates/organisation_main.html:136
+#: akvo/templates/partials/widgets/project_status.html:9
+#: akvo/templates/widgets/project_list.html:71
+msgid "Implementation"
+msgstr "Mise en oeuvre"
+
+#: akvo/templates/organisation_main.html:146
+#: akvo/templates/partials/widgets/project_status.html:13
+#: akvo/templates/widgets/project_list.html:72
+msgid "Completion"
+msgstr "Achèvement"
+
+#: akvo/templates/organisation_main.html:156
+msgid "Post-completion"
+msgstr "Après-achèvement"
+
+#: akvo/templates/organisation_main.html:176
+#: akvo/templates/partials/widgets/project_status.html:25
+#: akvo/templates/widgets/project_list.html:75
+msgid "Suspended"
+msgstr "Suspendu"
+
 #: akvo/templates/organisation_main.html:186
 msgid "Total projects"
 msgstr "Nombre total de projets"
@@ -10463,6 +10188,7 @@ msgid "No sectors"
 msgstr "Aucun secteur"
 
 #: akvo/templates/project_directory.html:166
+#: akvo/templates/results_base.html:102
 msgid "No updates"
 msgstr "Pas de mises à jour"
 
@@ -10548,7 +10274,7 @@ msgstr "Durabilité"
 msgid "Target group"
 msgstr "groupe cible"
 
-#: akvo/templates/project_main.html:79 akvo/templates/results_base.html:96
+#: akvo/templates/project_main.html:79 akvo/templates/results_base.html:75
 msgid "Are you sure you want to delete this update?"
 msgstr "Etes-vous sûr de vouloir supprimer cette mise à jour?"
 
@@ -10572,7 +10298,7 @@ msgstr "Dates et statuts de l'activité"
 msgid "Planned"
 msgstr "Prévu"
 
-#: akvo/templates/project_main.html:137 akvo/templates/results_base.html:69
+#: akvo/templates/project_main.html:137 akvo/templates/results_base.html:41
 msgid "Actual"
 msgstr "Réel"
 
@@ -10620,7 +10346,7 @@ msgstr "Les documents"
 msgid "Document categories"
 msgstr "Les catégories de document"
 
-#: akvo/templates/project_main.html:189 akvo/templates/results_base.html:59
+#: akvo/templates/project_main.html:189 akvo/templates/results_base.html:90
 msgid "Loading"
 msgstr "Chargement"
 
@@ -11223,6 +10949,158 @@ msgid "[Akvo RSR] %(user_name)s has requested to join %(organisation_name)s"
 msgstr "[Akvo RSR] %(user_name)s a demandé à rejoindre %(organisation_name)s"
 
 #: akvo/templates/results_base.html:42
+msgid "Actual comment"
+msgstr "Commentaire réel"
+
+#: akvo/templates/results_base.html:43
+msgid "Actual value"
+msgstr "Valeur réelle"
+
+#: akvo/templates/results_base.html:44
+msgid "Actual value comment"
+msgstr "Commentaire sur la valeur réelle"
+
+#: akvo/templates/results_base.html:45
+msgid "This is the total of all indicator updates for this period"
+msgstr "Ceci est le total de toutes les mises à jour de l'indicateur pour cette session"
+
+#: akvo/templates/results_base.html:46
+msgid "Actual value is required for updates"
+msgstr "La valeur réelle est exigée pour les mises à jour"
+
+#: akvo/templates/results_base.html:47
+msgid "Add a note"
+msgstr "Ajouter une note"
+
+#: akvo/templates/results_base.html:48
+msgid "Add a note to the update"
+msgstr "Ajouter une note à la mise à jour"
+
+#: akvo/templates/results_base.html:49
+msgid "Add image"
+msgstr "Ajouter une image"
+
+#: akvo/templates/results_base.html:50
+msgid "Insert reporting value"
+msgstr "Insérez la valeur de rapport"
+
+#: akvo/templates/results_base.html:51
+msgid "Add indicators"
+msgstr "Ajouter des indicateurs"
+
+#: akvo/templates/results_base.html:52
+msgid "Add to actual value"
+msgstr "Ajouter à la valeur réelle"
+
+#: akvo/templates/results_base.html:53
+msgid "Adding new update"
+msgstr "Ajout de nouvelle mise à jour"
+
+#: akvo/templates/results_base.html:54
+msgid "Aggregate actual value:"
+msgstr "Agrégez la valeur réelle:"
+
+#: akvo/templates/results_base.html:57
+msgid "Approved"
+msgstr "Approuvé"
+
+#: akvo/templates/results_base.html:58
+msgid "Approved on"
+msgstr "Approuvé le"
+
+#: akvo/templates/results_base.html:59
+msgid "Attach file"
+msgstr "Joindre un fichier"
+
+#: akvo/templates/results_base.html:60
+msgid "Back"
+msgstr "Précédent"
+
+#: akvo/templates/results_base.html:61
+msgid "Baseline value"
+msgstr "Valeur de référence"
+
+#: akvo/templates/results_base.html:62
+msgid "Baseline year"
+msgstr "Année de référence"
+
+#: akvo/templates/results_base.html:64
+msgid ""
+"This period is an average of the child projects, disable aggregations to "
+"place updates on this period"
+msgstr "Cette période est une moyenne des projets enfants, désactivez les agrégations pour mettre à jour cette période "
+
+#: akvo/templates/results_base.html:65
+msgid "Change image"
+msgstr "Changer l'image"
+
+#: akvo/templates/results_base.html:66
+msgid "Child project"
+msgstr "Projet enfant"
+
+#: akvo/templates/results_base.html:67
+msgid "Comment"
+msgstr "Commentaire"
+
+#: akvo/templates/results_base.html:68
+msgid "Couldn't save comment, please try again"
+msgstr "Impossible d'enregistrer le commentaire, veuillez réessayer"
+
+#: akvo/templates/results_base.html:69
+msgid ""
+"Add a comment to provide additional background information for this update"
+msgstr "Ajoutez un commentaire pour fournir des informations complémentaires pour cette mise à jour."
+
+#: akvo/templates/results_base.html:70
+#: akvo/templates/results_framework/approve_update_message.html:33
+#: akvo/templates/results_framework/approved_message.html:33
+#: akvo/templates/results_framework/revise_update_message.html:33
+msgid "Comments"
+msgstr "Commentaires"
+
+#: akvo/templates/results_base.html:71
+msgid ""
+"There was a connection error. Please check your internet connection and "
+"refresh the page."
+msgstr "Une erreur de connexion est survenue. Vérifiez votre connexion internet et acualisez la page s'il vous plait."
+
+#: akvo/templates/results_base.html:72
+msgid "Current"
+msgstr "Courant"
+
+#: akvo/templates/results_base.html:73
+msgid "Created on"
+msgstr "créé le"
+
+#: akvo/templates/results_base.html:76
+msgid "Denominator"
+msgstr "Dénominateur"
+
+#: akvo/templates/results_base.html:77
+msgid "Disaggregations"
+msgstr "Désagrégations"
+
+#: akvo/templates/results_base.html:79
+msgid "Please enter a comment text"
+msgstr "Veuillez entrer un  texte de commentaire"
+
+#: akvo/templates/results_base.html:80
+msgid "Filter periods"
+msgstr "Filtrer les périodes"
+
+#: akvo/templates/results_base.html:81
+msgid "Full view"
+msgstr "Vue complète"
+
+#: akvo/templates/results_base.html:82
+msgid "An error occurred"
+msgstr "Une erreur est survenue"
+
+#: akvo/templates/results_base.html:83
+msgid "Impact"
+msgstr "Impact"
+
+#: akvo/templates/results_base.html:84
 #: akvo/templates/results_framework/approve_update_message.html:27
 #: akvo/templates/results_framework/approve_update_message.txt:10
 #: akvo/templates/results_framework/approved_message.html:27
@@ -11232,35 +11110,115 @@ msgstr "[Akvo RSR] %(user_name)s a demandé à rejoindre %(organisation_name)s"
 msgid "Indicator"
 msgstr "Indicateur"
 
-#: akvo/templates/results_base.html:44
-msgid "This result has no indicators yet"
-msgstr "Ce résultat n'a pas encore d'indicateurs"
-
-#: akvo/templates/results_base.html:45
-msgid "Find out more about adding indicators to the results framework"
-msgstr "En savoir plus sur l'ajout des indicateurs dans la structuration des resultats"
-
-#: akvo/templates/results_base.html:46
-msgid "Add indicators"
-msgstr "Ajouter des indicateurs"
-
-#: akvo/templates/results_base.html:47
+#: akvo/templates/results_base.html:85
 msgid "Indicator period"
 msgstr "Durée de l'indicateur"
 
-#: akvo/templates/results_base.html:48
+#: akvo/templates/results_base.html:86
 msgid "Indicator period(s)"
 msgstr "Durée (s) de l'indicateur"
 
-#: akvo/templates/results_base.html:55
-msgid "Baseline year"
-msgstr "Année de référence"
+#: akvo/templates/results_base.html:87
+msgid "Indicator reporting"
+msgstr "Rapport de l'indicateur"
 
-#: akvo/templates/results_base.html:56
-msgid "Baseline value"
-msgstr "Valeur de référence"
+#: akvo/templates/results_base.html:89
+msgid "Fill in a value to add to the actual value"
+msgstr "Remplissez pour ajouter une valeur à la valeur réelle"
 
-#: akvo/templates/results_base.html:57
+#: akvo/templates/results_base.html:91
+msgid "Lock status change failed, please try again"
+msgstr "Échec de changement du statut de verrouillage, veuillez réessayer"
+
+#: akvo/templates/results_base.html:92
+msgid "Lock period"
+msgstr "Verrouiller période"
+
+#: akvo/templates/results_base.html:93
+msgid "Lock selected"
+msgstr "Verrouillage sélectionné"
+
+#: akvo/templates/results_base.html:94
+msgid "Locked"
+msgstr "Verrouillé"
+
+#: akvo/templates/results_base.html:95
+msgid "Find out more about adding indicators to the results framework"
+msgstr "En savoir plus sur l'ajout des indicateurs dans la structuration des resultats"
+
+#: akvo/templates/results_base.html:96
+msgid "Nameless indicator"
+msgstr "Indicateur sans nom"
+
+#: akvo/templates/results_base.html:97
+msgid "Needs reporting"
+msgstr "Notification des besoins"
+
+#: akvo/templates/results_base.html:98
+msgid "New total for this period"
+msgstr "Total actualisé pour cette session"
+
+#: akvo/templates/results_base.html:100
+msgid "This result has no indicators yet"
+msgstr "Ce résultat n'a pas encore d'indicateurs"
+
+#: akvo/templates/results_base.html:101
+msgid "No results"
+msgstr "Aucun résultat"
+
+#: akvo/templates/results_base.html:103
+msgid "This period has no updates yet"
+msgstr "Cette session n'a pas encore de mises à jour"
+
+#: akvo/templates/results_base.html:104
+msgid "Notes are disabled until the update is saved"
+msgstr "Les notifications sont désactivées jusqu'à ce que la mise à jour soit sauvegardée"
+
+#: akvo/templates/results_base.html:105
+msgid "Number of pending updates"
+msgstr "Nombre de mises à jour en attente"
+
+#: akvo/templates/results_base.html:106
+msgid "Numerator"
+msgstr "Numérateur"
+
+#: akvo/templates/results_base.html:107
+msgid "Only numeric values are accepted"
+msgstr "Seules les valeurs numériques sont acceptées"
+
+#: akvo/templates/results_base.html:108
+msgid "Other"
+msgstr "Autre"
+
+#: akvo/templates/results_base.html:109
+msgid "others"
+msgstr "Autres"
+
+#: akvo/templates/results_base.html:110
+msgid "Outcome"
+msgstr "Outcome"
+
+#: akvo/templates/results_base.html:111
+msgid "Output"
+msgstr "Output"
+
+#: akvo/templates/results_base.html:112
+msgid "Overview"
+msgstr "Aperçu"
+
+#: akvo/templates/results_base.html:113
+msgid "Parent project"
+msgstr "Projet parent"
+
+#: akvo/templates/results_base.html:114
+msgid "Pending approval"
+msgstr "En attente d'approbation"
+
+#: akvo/templates/results_base.html:115
+msgid "Percentage"
+msgstr "Pourcentage"
+
+#: akvo/templates/results_base.html:116
 #: akvo/templates/results_framework/approve_update_message.html:28
 #: akvo/templates/results_framework/approve_update_message.txt:11
 #: akvo/templates/results_framework/approved_message.html:28
@@ -11270,289 +11228,97 @@ msgstr "Valeur de référence"
 msgid "Period"
 msgstr "Période"
 
-#: akvo/templates/results_base.html:58
-msgid "Back"
-msgstr "Précédent"
-
-#: akvo/templates/results_base.html:60
-msgid "Number of pending updates"
-msgstr "Nombre de mises à jour en attente"
-
-#: akvo/templates/results_base.html:61
-msgid "Lock period"
-msgstr "Verrouiller période"
-
-#: akvo/templates/results_base.html:62
-msgid "Unlock period"
-msgstr "Déverrouiller période"
-
-#: akvo/templates/results_base.html:63
-msgid "Unlocking period"
-msgstr "En attente de déverrouillage"
-
-#: akvo/templates/results_base.html:64
+#: akvo/templates/results_base.html:117
 msgid "Period locked"
 msgstr "période verrouillée"
 
-#: akvo/templates/results_base.html:65
+#: akvo/templates/results_base.html:118
 msgid "Period unlocked"
 msgstr "période déverouillée"
 
-#: akvo/templates/results_base.html:66
-msgid "Parent project"
-msgstr "Projet parent"
-
-#: akvo/templates/results_base.html:67
-msgid "Child project"
-msgstr "Projet enfant"
-
-#: akvo/templates/results_base.html:68
-msgid "Request update"
-msgstr "Demande de mise à jour"
-
-#: akvo/templates/results_base.html:70
-msgid "Actual value"
-msgstr "Valeur réelle"
-
-#: akvo/templates/results_base.html:71
-msgid "This is the total of all indicator updates for this period"
-msgstr "Ceci est le total de toutes les mises à jour de l'indicateur pour cette session"
-
-#: akvo/templates/results_base.html:72
-msgid "Target"
-msgstr "Cible"
-
-#: akvo/templates/results_base.html:73
-msgid "Target value"
-msgstr "Valeur cible"
-
-#: akvo/templates/results_base.html:74
-msgid "Target comment"
-msgstr "Commentaire cible"
-
-#: akvo/templates/results_base.html:75
-msgid "Actual comment"
-msgstr "Commentaire réel"
-
-#: akvo/templates/results_base.html:76
-msgid "Current"
-msgstr "Courant"
-
-#: akvo/templates/results_base.html:77
-msgid "Add to actual value"
-msgstr "Ajouter à la valeur réelle"
-
-#: akvo/templates/results_base.html:78
-msgid "Fill in a value to add to the actual value"
-msgstr "Remplissez pour ajouter une valeur à la valeur réelle"
-
-#: akvo/templates/results_base.html:79
-msgid "Actual value comment"
-msgstr "Commentaire sur la valeur réelle"
-
-#: akvo/templates/results_base.html:80
-msgid ""
-"Add a comment to provide additional background information for this update"
-msgstr "Ajoutez un commentaire pour fournir des informations complémentaires pour cette mise à jour."
-
-#: akvo/templates/results_base.html:81
-msgid "New total for this period"
-msgstr "Total actualisé pour cette session"
-
-#: akvo/templates/results_base.html:82
-msgid "Actual total for this period (after this update)"
-msgstr "Total réel pour cette session (après cette mise à jour)"
-
-#: akvo/templates/results_base.html:83
-msgid "Indicator Update"
-msgstr "La mise à jour de l'indicateur"
-
-#: akvo/templates/results_base.html:84
-msgid "Indicator Updates"
-msgstr "Les mises à jour de l'indicateur"
-
-#: akvo/templates/results_base.html:85
-msgid "This period has no updates yet"
-msgstr "Cette session n'a pas encore de mises à jour"
-
-#: akvo/templates/results_base.html:86
-msgid ""
-"This period is an average of the child projects, disable aggregations to "
-"place updates on this period"
-msgstr "Cette période est une moyenne des projets enfants, désactivez les agrégations pour mettre à jour cette période "
-
-#: akvo/templates/results_base.html:87
-msgid "Insert reporting value"
-msgstr "Insérez la valeur de rapport"
-
-#: akvo/templates/results_base.html:88
-msgid "Adding new update"
-msgstr "Ajout de nouvelle mise à jour"
-
-#: akvo/templates/results_base.html:93
-msgid "Submit for approval"
-msgstr "Soumettre pour approbation"
-
-#: akvo/templates/results_base.html:94
-msgid "Return for revision"
-msgstr "Renvoyer pour révision"
-
-#: akvo/templates/results_base.html:99
-msgid "Add image"
-msgstr "Ajouter une image"
-
-#: akvo/templates/results_base.html:100
-msgid "Change image"
-msgstr "Changer l'image"
-
-#: akvo/templates/results_base.html:101
-msgid "Click to remove image"
-msgstr "Cliquer pour supprimer l'image"
-
-#: akvo/templates/results_base.html:102
-msgid "Attach file"
-msgstr "Joindre un fichier"
-
-#: akvo/templates/results_base.html:103
+#: akvo/templates/results_base.html:119
 msgid "Remove file"
 msgstr "Supprimer le fichier"
 
-#: akvo/templates/results_base.html:105
-msgid "Comment"
-msgstr "Commentaire"
-
-#: akvo/templates/results_base.html:106
-#: akvo/templates/results_framework/approve_update_message.html:33
-#: akvo/templates/results_framework/approved_message.html:33
-#: akvo/templates/results_framework/revise_update_message.html:33
-msgid "Comments"
-msgstr "Commentaires"
-
-#: akvo/templates/results_base.html:107
-msgid "Add a note"
-msgstr "Ajouter une note"
-
-#: akvo/templates/results_base.html:108
-msgid "Add a note to the update"
-msgstr "Ajouter une note à la mise à jour"
-
-#: akvo/templates/results_base.html:110
-msgid "others"
-msgstr "Autres"
-
-#: akvo/templates/results_base.html:111
-msgid "An error occurred"
-msgstr "Une erreur est survenue"
-
-#: akvo/templates/results_base.html:112
-msgid ""
-"There was a connection error. Please check your internet connection and "
-"refresh the page."
-msgstr "Une erreur de connexion est survenue. Vérifiez votre connexion internet et acualisez la page s'il vous plait."
-
-#: akvo/templates/results_base.html:114
-msgid "Only numeric values are accepted"
-msgstr "Seules les valeurs numériques sont acceptées"
-
-#: akvo/templates/results_base.html:115
-msgid "Actual value is required for updates"
-msgstr "La valeur réelle est exigée pour les mises à jour"
-
-#: akvo/templates/results_base.html:116
-msgid "Couldn't create update, please try again"
-msgstr "Impossible d'effectuer la mise à jour, veuillez réessayer"
-
-#: akvo/templates/results_base.html:117
-msgid "Couldn't save update"
-msgstr "Impossible d'enregistrer la mise à jour"
-
-#: akvo/templates/results_base.html:118
-msgid "Couldn't delete update, please try again"
-msgstr "Impossible de supprimer la mise à jour, veuillez réessayer"
-
-#: akvo/templates/results_base.html:119
-msgid "Full view"
-msgstr "Vue complète"
-
 #: akvo/templates/results_base.html:120
-msgid "Overview"
-msgstr "Aperçu"
+msgid "Click to remove image"
+msgstr "Cliquer pour supprimer l'image"
 
 #: akvo/templates/results_base.html:121
-msgid "Needs reporting"
-msgstr "Notification des besoins"
+msgid "Request update"
+msgstr "Demande de mise à jour"
 
 #: akvo/templates/results_base.html:122
-msgid "Pending approval"
-msgstr "En attente d'approbation"
-
-#: akvo/templates/results_base.html:123
-msgid "Approved"
-msgstr "Approuvé"
-
-#: akvo/templates/results_base.html:124
-msgid "Approved on"
-msgstr "Approuvé le"
-
-#: akvo/templates/results_base.html:125
-msgid "Created on"
-msgstr "créé le"
-
-#: akvo/templates/results_base.html:126
 msgid "Reset filter"
 msgstr "Réinitialiser le filtre"
 
-#: akvo/templates/results_base.html:127
+#: akvo/templates/results_base.html:124
+msgid "Return for revision"
+msgstr "Renvoyer pour révision"
+
+#: akvo/templates/results_base.html:126
 msgid "Select period(s)"
 msgstr "Sélectionnez la ou les période(s)"
 
 #: akvo/templates/results_base.html:128
-msgid "Lock selected"
-msgstr "Verrouillage sélectionné"
+msgid "Submit for approval"
+msgstr "Soumettre pour approbation"
 
 #: akvo/templates/results_base.html:129
-msgid "Unlock selected"
-msgstr "Déverrouiller sélectionné"
+msgid "Target"
+msgstr "Cible"
 
 #: akvo/templates/results_base.html:130
-msgid "Filter periods"
-msgstr "Filtrer les périodes"
+msgid "Target comment"
+msgstr "Commentaire cible"
 
 #: akvo/templates/results_base.html:131
-msgid "Indicator reporting"
-msgstr "Rapport de l'indicateur"
+msgid "Target value"
+msgstr "Valeur cible"
 
 #: akvo/templates/results_base.html:132
-msgid "Couldn't save comment, please try again"
-msgstr "Impossible d'enregistrer le commentaire, veuillez réessayer"
+msgid "Actual total for this period (after this update)"
+msgstr "Total réel pour cette session (après cette mise à jour)"
 
 #: akvo/templates/results_base.html:133
-msgid "Please enter a comment text"
-msgstr "Veuillez entrer un  texte de commentaire"
-
-#: akvo/templates/results_base.html:134
-msgid "Notes are disabled until the update is saved"
-msgstr "Les notifications sont désactivées jusqu'à ce que la mise à jour soit sauvegardée"
+msgid "Unit"
+msgstr "Unité"
 
 #: akvo/templates/results_base.html:135
-msgid "Nameless indicator"
-msgstr "Indicateur sans nom"
+msgid "Unlock period"
+msgstr "Déverrouiller période"
 
 #: akvo/templates/results_base.html:136
-msgid "Aggregate actual value:"
-msgstr "Agrégez la valeur réelle:"
-
-#: akvo/templates/results_base.html:137
-msgid "Lock status change failed, please try again"
-msgstr "Échec de changement du statut de verrouillage, veuillez réessayer"
-
-#: akvo/templates/results_base.html:138
-msgid "Locked"
-msgstr "Verrouillé"
-
-#: akvo/templates/results_base.html:139
 msgid "Unlocked"
 msgstr "Déverrouillé"
+
+#: akvo/templates/results_base.html:137
+msgid "Unlocking period"
+msgstr "En attente de déverrouillage"
+
+#: akvo/templates/results_base.html:138
+msgid "Indicator Update"
+msgstr "La mise à jour de l'indicateur"
+
+#: akvo/templates/results_base.html:139
+msgid "Couldn't create update, please try again"
+msgstr "Impossible d'effectuer la mise à jour, veuillez réessayer"
+
+#: akvo/templates/results_base.html:140
+msgid "Couldn't delete update, please try again"
+msgstr "Impossible de supprimer la mise à jour, veuillez réessayer"
+
+#: akvo/templates/results_base.html:141
+msgid "Couldn't save update"
+msgstr "Impossible d'enregistrer la mise à jour"
+
+#: akvo/templates/results_base.html:143
+msgid "Update value"
+msgstr "Actualiser la valeur"
+
+#: akvo/templates/results_base.html:144
+msgid "Indicator Updates"
+msgstr "Les mises à jour de l'indicateur"
 
 #: akvo/templates/results_framework/approve_update_message.html:22
 #: akvo/templates/results_framework/approve_update_message.txt:4
