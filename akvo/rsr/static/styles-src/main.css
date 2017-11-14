@@ -2810,6 +2810,12 @@ div.iatiFilters {
 .fa-paperclip, .fa-camera {
   margin-right: 0.3em; }
 
+/* Registration */
+#id_hp_title {
+  display: none;
+  position: absolute;
+  top: -9999px; }
+
 /* Results Framework */
 header[role="banner"] {
   display: block;
