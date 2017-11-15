@@ -202,6 +202,7 @@ class Indicator(models.Model):
         verbose_name_plural = _(u'indicators')
         unique_together = ('result', 'parent_indicator')
 
+
 # Add default indicator periods if necessary
 @receiver(post_save, sender=Indicator, dispatch_uid='add_default_periods')
 def add_default_periods(sender, instance, created, **kwargs):
