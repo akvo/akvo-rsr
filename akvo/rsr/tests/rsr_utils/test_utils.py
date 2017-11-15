@@ -147,7 +147,7 @@ class GeneralUtilsTestCase(TestCase):
 
     def test_codelist_choices_true(self):
         """
-        Test calling codelist_choices(<codelist>, False)
+        Test calling codelist_choices(<codelist>, True)
         """
         # snippet of FINANCE_TYPE codelist
         codelist_1 = (
@@ -184,7 +184,7 @@ class GeneralUtilsTestCase(TestCase):
 
     def test_codelist_choices_false(self):
         """
-        Test calling codelist_choices(<codelist>, True)
+        Test calling codelist_choices(<codelist>, False)
         """
         # snippet of FINANCE_TYPE codelist
         codelist_1 = (
