@@ -284,16 +284,29 @@ def codelist_choices(codelist, show_code=True):
     :param show_code: Show the code (e.g. '1 - ..') in front of the name, True by default
     :return: List of tuples with available choices, tuples in the form of (code, name)
     """
-    name_index = 0
-    for index, header in enumerate(codelist[0]):
-        if header == 'name':
-            name_index = index
-            break
 
-    if name_index > 0 and show_code:
-        return [(cl[0], '%s - %s' % (cl[0], cl[name_index])) for cl in codelist[1:]]
+    fields = codelist[0]
+
+    try:
+        name_index = fields.index('name')
+    except:
+        name_index = None
+
+    # the code field has to exist or we're in trouble
+    code_index = fields.index('code')
+
+    list_items = codelist[1:]
+
+    if name_index is not None and show_code:
+        return [
+            (item[code_index], u'{} - {}'.format(item[code_index], item[name_index]))
+            for item in list_items
+        ]
     else:
-        return [(cl[0], cl[name_index]) for cl in codelist[1:]]
+        return [
+            (item[code_index], item[name_index] if name_index is not None else item[code_index])
+            for item in list_items
+        ]
 
 
 def codelist_value(model, instance, field, version=settings.IATI_VERSION):
