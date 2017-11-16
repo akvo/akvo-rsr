@@ -444,3 +444,4 @@ class IndicatorPeriod(models.Model):
         verbose_name = _(u'indicator period')
         verbose_name_plural = _(u'indicator periods')
         ordering = ['period_start']
+        unique_together = ('indicator', 'parent_period')
