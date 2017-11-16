@@ -70,10 +70,12 @@ class Command(BaseCommand):
         if len(args) == 1 and args[0] == 'indicator':
             indicators = find_orphaned_indicators()
             periods = []
+            self.stdout.write('Fixing {} orphaned indicators'.format(len(indicators)))
 
         elif len(args) == 1 and args[0] == 'indicator_period':
             indicators = []
             periods = find_orphaned_periods()
+            self.stdout.write('Fixing {} orphaned periods'.format(len(periods)))
 
         elif len(args) == 3 and args[0] == 'indicator':
             indicators = [(int(args[1]), int(args[2]))]
@@ -95,7 +97,7 @@ class Command(BaseCommand):
             child_indicator.parent_indicator = parent_indicator
             child_indicator.save()
             # Any additional missing data is taken care of by saving the parent.
-            parent_indicator.save()
+            # parent_indicator.save()
 
             if verbosity > 1:
                 self.stdout.write('{} indicator made parent of {}'.format(parent_id, child_id))
@@ -110,8 +112,7 @@ class Command(BaseCommand):
             child_period.parent_period = parent_period
             child_period.save()
             # Any additional missing data is taken care of by saving the parent.
-            parent_period.save()
-            pprint_period_lineage(child_period)
+            # parent_period.save()
             if parent_period.indicator.periods.count() != child_period.indicator.periods.count():
                 print 'No. of periods mismatch with parent :: '
                 pprint_period_lineage(parent_period)

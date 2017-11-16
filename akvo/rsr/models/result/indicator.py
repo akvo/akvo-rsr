@@ -200,6 +200,7 @@ class Indicator(models.Model):
         ordering = ['order', 'id']
         verbose_name = _(u'indicator')
         verbose_name_plural = _(u'indicators')
+        unique_together = ('result', 'parent_indicator')
 
 
 # Add default indicator periods if necessary

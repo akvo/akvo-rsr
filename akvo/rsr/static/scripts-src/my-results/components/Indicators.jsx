@@ -82,17 +82,30 @@ const IndicatorContent = ({indicator}) => {
             </li>
         </ul>
     ): undefined;
+    const baselineYear = indicator.baseline_year ?
+        <li className="baseline-year">
+            {_('baseline_year')}: <span>{indicator.baseline_year}</span>
+        </li>
+    :
+        undefined;
+    const baselineValue = indicator.baseline_value ?
+        <li className="baseline-value">
+            {_('baseline_value')}: <span>{indicator.baseline_value}</span>
+        </li>
+    :
+        undefined;
+
     return (
         <div className="indicatorInfo">
             {description}
-            <ul>
-                <li className="baseline-year">
-                    {_('baseline_year')}: <span>{indicator.baseline_year}</span>
-                </li>
-                <li className="baseline-value">
-                    {_('baseline_value')}: <span>{indicator.baseline_value}</span>
-                </li>
-            </ul>
+            {(baselineYear || baselineValue) ?
+                <ul>
+                    {baselineYear}
+                    {baselineValue}
+                </ul>
+            :
+                undefined
+            }
         </div>
     )
 };

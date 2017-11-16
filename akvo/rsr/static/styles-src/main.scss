@@ -4063,6 +4063,13 @@ div.iatiFilters {
     margin-right: 0.3em;
 }
 
+/* Registration */
+#id_hp_title {
+    display: none;
+    position: absolute;
+    top: -9999px;
+}
+
 /* Results Framework */
 
 header[role="banner"] {
@@ -4426,7 +4433,7 @@ main.results-page {
                                     padding-left: 7px;
 
                                     &:nth-of-type(2) {
-                                        display: none;
+                                        display: block;
                                     }
 
                                     li {

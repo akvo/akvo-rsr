@@ -2810,6 +2810,12 @@ div.iatiFilters {
 .fa-paperclip, .fa-camera {
   margin-right: 0.3em; }
 
+/* Registration */
+#id_hp_title {
+  display: none;
+  position: absolute;
+  top: -9999px; }
+
 /* Results Framework */
 header[role="banner"] {
   display: block;
@@ -3037,7 +3043,7 @@ main.results-page {
             color: rgba(32, 32, 36, 0.4);
             padding-left: 7px; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul:nth-of-type(2) {
-              display: none; }
+              display: block; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul li {
               display: inline; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
