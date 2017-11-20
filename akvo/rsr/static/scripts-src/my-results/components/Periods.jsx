@@ -73,6 +73,14 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                            const periodStart = displayDate(period.period_start);
                            const periodEnd = displayDate(period.period_end);
                            const periodDate = `${periodStart} - ${periodEnd}`;
+                           const lockStatus = period.locked ?
+                               <i title={_('locked')}
+                                  className="fa fa-lock"
+                                  aria-hidden="true"/>
+                           :
+                               <i title={_('unlocked')}
+                                  className="fa fa-unlock-alt"
+                                  aria-hidden="true"/>;
                            let periodSelect;
                            if (user.isMEManager && showLockButton) {
                                periodSelect = <PeriodSelect id={period.id}
@@ -97,6 +105,7 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                                                <span>Actual:</span> {actualValue}
                                            </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
+                                       <li>{lockStatus}</li>
                                    </ul>
                                </span>
                            )
