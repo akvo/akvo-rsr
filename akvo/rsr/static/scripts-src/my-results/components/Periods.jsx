@@ -69,7 +69,7 @@ PeriodSelect.propTypes = {
 
 
 const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQualitative,
-                       newUpdateButton, delUpdateAlert, formOpen, showLockButton}) => {
+                       newUpdateButton, delUpdateAlert, formOpen, isPublic, showLockButton}) => {
                            const periodStart = displayDate(period.period_start);
                            const periodEnd = displayDate(period.period_end);
                            const periodDate = `${periodStart} - ${periodEnd}`;
@@ -105,7 +105,7 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                                                <span>Actual:</span> {actualValue}
                                            </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
-                                       <li>{lockStatus}</li>
+                                       {isPublic?undefined:<li>{lockStatus}</li>}
                                    </ul>
                                </span>
                            )
@@ -250,6 +250,7 @@ export default class Periods extends React.Component {
                                       newUpdateButton={newUpdateButton}
                                       delUpdateAlert={delUpdateAlert}
                                       formOpen={formOpen}
+                                      isPublic={page.mode.public}
                                       showLockButton={showLockButton}/>}
                            key={id}
                            showArrow={!page.mode.public}
