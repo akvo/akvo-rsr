@@ -334,7 +334,7 @@ function tree(model, parentId) {
 }
 
 
-function flatten(arr) {
+export function flatten(arr) {
     // Flatten an array of arrays
     return arr.reduce(
         (acc, val) => acc.concat(
