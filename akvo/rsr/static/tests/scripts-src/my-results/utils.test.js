@@ -15,9 +15,9 @@ let expect = chai.expect;
 
 describe("function distinct", () => {
   it('expect to return an array with unique values', () => {
-    const uniqueArray = [...new Set(uniqueArray)],
-          otherArray = [...new Set(otherArray)];
-    expect(utils.distinct(uniqueArray)).to.not.equal(otherArray);
+    const arrayWithDuplicates = [1,2,3,4,4],
+          uniqueArray = [1,2,3,4];
+    expect(utils.distinct(arrayWithDuplicates)).to.deep.equal(uniqueArray);
   });
 });
 
@@ -71,6 +71,10 @@ describe("arrowFunction isNewUpdate", () => {
     const newUpdate = {id: 'new-', name: 'update'};
     expect(utils.isNewUpdate(newUpdate)).to.be.true;
   });
+  it('expect to return true if we pas a string starting with "new-"', () => {
+    const newString = "new-17";
+    expect(utils.isNewUpdate(newString)).to.be.true;
+  });
   it('expect to return false if the update is not new', () => {
     const notNewUpdate = {id: '4', name: 'update'};
     expect(utils.isNewUpdate(notNewUpdate)).to.be.false;
@@ -113,12 +117,13 @@ describe("function flatten", () => {
 });
 
 describe("function fieldValueOrSpinner", () => {
-  it('expect to return key value from object, if objects defined', () => {
+  it('expect to return an object with a key "value" from object, if objects defined', () => {
     const object = {a: 1, b: 2};
-    let field;
+    const field = 'b';
     expect(utils.fieldValueOrSpinner(object, field)).to.have.key('value');
+    expect(utils.fieldValueOrSpinner(object, field)).to.deep.equal({value: 2});
   });
-  it('expect to return key icon, if objects not defined', () => {
+  it('expect to return an object with a key "icon", if objects not defined', () => {
     let object,
         field;
     expect(utils.fieldValueOrSpinner(object, field)).to.have.key('icon');
@@ -141,6 +146,19 @@ describe("function setHash", () => {
     // console.log('hash set = ' + hash);
     global.window = window;
   });
+
+    it('expect to set hash if hash is defined. take 2', () => {
+        const window = global.widow;
+            global.window = {
+                location: {}
+            };
+            console.log("global.window: " + JSON.stringify(global.window));
+            const hash = 'setHash';
+            utils.setHash(hash);
+            console.log("global.window: " + JSON.stringify(global.window));
+            global.window = window;
+    });
+
   it('expect to set an empty hash if hash is undefined', () => {
     global.window = {
             location: {
@@ -162,6 +180,7 @@ describe("function computePercentage", () => {
   it('computes the percentage of numbers', () => {
   const numerator = 20;
   const denominator = 20;
+  // here you can do a few more tests, with bad input for example, I think computePercentage can handle it!
   expect(utils.computePercentage(numerator, denominator)).to.equal(100);
   expect(utils.computePercentage(numerator, denominator)).not.to.equal(10);
   });
