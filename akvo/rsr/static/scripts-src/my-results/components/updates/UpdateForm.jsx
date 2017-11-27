@@ -78,15 +78,12 @@ const toolTipStyle = {
     cursor: 'help',
   },
   tooltip: {
-    position: 'absolute',
     zIndex: '99',
     background: 'white',
     marginBottom: '10px',
     padding: '5px',
-    WebkitTransform: 'translate(-75% , 100px)',
-    msTransform: 'translate(-75% , 100px)',
-    OTransform: 'translate(-75% , 100px)',
-    transform: 'translate(-77% , 125px)',
+    top: '20px',
+    left: '75px',
   },
   content: {
     color: '#000',
