@@ -62,15 +62,17 @@ export const ToggleButton = ({
     label,
     style,
     disabled,
-    icon
+    icon,
+    hidden
 }) => {
     const buttonStyle = Object.assign({}, style ? style : {});
-    return (
+    return hidden ? null : (
         <button
             onClick={onClick}
             className={className}
             style={buttonStyle}
             disabled={disabled}
+            hidden={hidden}
             id={id}
         >
             {icon}
@@ -83,6 +85,7 @@ ToggleButton.propTypes = {
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     style: PropTypes.object,
     disabled: PropTypes.bool,
+    hidden: PropTypes.bool,
     icon: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 

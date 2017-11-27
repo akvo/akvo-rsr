@@ -1415,6 +1415,13 @@ class Project(TimestampsMixin, models.Model):
     def has_indicator_labels(self):
         return self.indicator_labels().count() > 0
 
+    def using_single_update(self):
+        # HACK: May be add a flag to organisations to enable this. But,
+        # currently it's only EUTF, and I'm not sure we really want to have
+        # this mode of operation in place, forever.
+        EUTF = 3394
+        return EUTF in set(self.all_partners().values_list('id', flat=True))
+
     def toggle_aggregate_children(self, aggregate):
         """
         If aggregation to children is turned off,

@@ -51,9 +51,9 @@ const InteractiveLabel = ({ label, selector }) => {
     return <ButtonLabel label={label} value={value} icon={icon} />;
 };
 
-const PeriodLockingButtons = ({ user, disabled }) => {
+const PeriodLockingButtons = ({ user, disabled, hidden }) => {
     return userIsMEManager(user) ? (
-        <div className="col-xs-6">
+        <div hidden={hidden} className="col-xs-6">
             <ToggleButton
                 onClick={lockSelectedPeriods}
                 label={_("lock_selected")}
@@ -182,10 +182,16 @@ export default class FilterBar extends React.Component {
         );
         const buttonDisabled = !this.props.ui.allFetched;
 
+        const heading = page.mode && page.mode.public ? "View" : _("indicator_reporting");
+
+        const using_single_update = page.project && page.project.using_single_update;
+
+        const public_view = page.mode && page.mode.public;
+
         return (
             // TODO: this is a hideously ugly hack to show the filterbar in two modes depending on
             // if we're on the results page or the project page. Needs refactoring!
-            page.mode && page.mode.public ? (
+            public_view ? (
                 <header role="banner" className="periodMenuBar">
                     <nav>
                         <div className={"periodBtns"}>
@@ -236,6 +242,7 @@ export default class FilterBar extends React.Component {
                                         <h5>{_("indicator_reporting")}</h5>
                                         <div className="col-xs-12">
                                             <ToggleButton
+                                                hidden={using_single_update}
                                                 onClick={callbacks.needReporting}
                                                 label={needReportingLabel}
                                                 disabled={buttonDisabled}
@@ -252,6 +259,7 @@ export default class FilterBar extends React.Component {
                                                 )}
                                             />
                                             <ToggleButton
+                                                hidden={using_single_update}
                                                 onClick={callbacks.showApproved}
                                                 label={approvedUpdateLabel}
                                                 disabled={buttonDisabled}
@@ -264,8 +272,11 @@ export default class FilterBar extends React.Component {
                                 </div>
                                 <div className={"periodBulkAct col-sm-6"}>
                                     <div className={"row"}>
-                                        <h5>{_("filter_periods")}</h5>
-                                        <div className="col-xs-6">
+                                        <h5 hidden={using_single_update}>
+                                            {" "}
+                                            {_("filter_periods")}{" "}
+                                        </h5>
+                                        <div hidden={using_single_update} className="col-xs-6">
                                             <Select
                                                 options={selectOptions}
                                                 value={this.state.selectedOption}
@@ -280,6 +291,7 @@ export default class FilterBar extends React.Component {
                                             />
                                         </div>
                                         <PeriodLockingButtons
+                                            hidden={using_single_update}
                                             user={this.props.user}
                                             disabled={buttonDisabled}
                                         />

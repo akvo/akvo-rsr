@@ -20,7 +20,8 @@
             {{ partner.id }}
             {% if not forloop.last %} , {% endif %}
             {% endfor %}
-        ]
+        ],
+        "using_single_update": {% if project.using_single_update %} true {% else %} false {% endif %}
     }
 </script>
 
