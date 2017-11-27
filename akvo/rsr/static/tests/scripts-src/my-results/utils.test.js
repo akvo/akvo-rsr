@@ -154,20 +154,23 @@ describe("function setHash", () => {
             global.window = {
                 location: {}
             };
-            console.log("global.window: " + JSON.stringify(global.window));
-            const hash = 'setHash';
-            utils.setHash(hash);
-            console.log("global.window: " + JSON.stringify(global.window));
-            global.window = window;
+        console.log("global.window: " + JSON.stringify(global.window));
+        const hash = 'setHash';
+        utils.setHash(hash);
+        console.log("global.window: " + JSON.stringify(global.window));
+        expect(JSON.stringify(global.window)).to.equal('{"location":{"hash":"#setHash"}}');
+        global.window = window;
     });
-    it('expect to set an empty hash if hash is undefined', () => {
-        global.window = {
+    it('expect to set an empty string if hash is undefined', () => {
+        const window = global.window;
+            global.window = {
                 location: {}
-                }
+            };
+        console.log("global.window: " + JSON.stringify(global.window));
         let hash;
-        expect(utils.setHash(hash)).to.satisfy(function(returnSetHash) {
-            return global.window = { location: { hash : ''}};
-        });
+        utils.setHash(hash);
+        console.log("global.window: " + JSON.stringify(global.window));
+        expect(JSON.stringify(global.window)).to.equal('{"location":{"hash":""}}');
         global.window = window;
     });
 });
