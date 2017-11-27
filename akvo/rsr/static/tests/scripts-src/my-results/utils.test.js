@@ -9,6 +9,7 @@
 import chai from 'chai'
 import React from 'react'
 import * as utils from '../../../scripts-src/my-results/utils'
+import * as c from '../../../scripts-src/my-results/const'
 import {shallow} from 'enzyme'
 
 let expect = chai.expect;
@@ -24,7 +25,7 @@ describe("function distinct", () => {
 describe("function identicalArrays", () => {
     it('returns true if two arrays are identical', () => {
         const arr1 = [1,2,3],
-            arr2 = [1,2,3];
+              arr2 = [1,2,3];
         expect(utils.identicalArrays(arr1, arr2)).to.equal(true);
     });
 });
@@ -89,6 +90,23 @@ describe("function collapseId", () => {
   });
 });
 
+// requires that the function tested is changed to an exported function
+describe("function childModelName", () => {
+  it('expect to return child model name', () => {
+    const model = c.OBJECTS_RESULTS,
+          child = c.OBJECTS_INDICATORS;
+    expect(utils.childModelName(model)).to.equal(child);
+  });
+});
+
+describe("function parentModelName", () => {
+  it('expect to return parent model name', () => {
+    const model = c.OBJECTS_INDICATORS,
+          parent = c.OBJECTS_RESULTS;
+    expect(utils.parentModelName(model)).to.equal(parent);
+  });
+});
+
 describe("function levelAbove", () => {
   it('expect to compare index of array to decide that level is above', () => {
     const models = [1, 2],
@@ -100,9 +118,9 @@ describe("function levelAbove", () => {
 
 describe("function levelBelow", () => {
   it('expect to compare index of array to decide that level is below', () => {
-    const models = [1, 2];
-    const model = models[0];
-    const compare = models[1];
+    const models = [1, 2],
+          model = models[0],
+          compare = models[1];
     expect(utils.levelBelow(model, compare)).to.equal(model > compare);
   });
 });
@@ -133,17 +151,12 @@ describe("function fieldValueOrSpinner", () => {
 describe("function setHash", () => {
   it('expect to set hash if hash is defined', () => {
     global.window = {
-            location: {
-              }
+            location: {}
             }
     const hash = 'setHash';
-    // console.log('hash to set = ' + hash);
-    // console.log('hash before set: ' + global.window.location.hash);
     expect(utils.setHash(hash)).to.satisfy(function(returnSetHash) {
       return global.window.location.hash;
     });
-    // console.log('hash after set: ' + global.window.location.hash);
-    // console.log('hash set = ' + hash);
     global.window = window;
   });
 
@@ -161,27 +174,35 @@ describe("function setHash", () => {
 
   it('expect to set an empty hash if hash is undefined', () => {
     global.window = {
-            location: {
-              }
+            location: {}
             }
     let hash;
-    // console.log('hash to set = ' + hash);
-    // console.log('hash before set: ' + global.window.location.hash);
     expect(utils.setHash(hash)).to.satisfy(function(returnSetHash) {
       return global.window = { location: { hash : ''}};
     });
-    // nconsole.log('hash after set: ' + global.window.location.hash);
-    // console.log('hash set = ' + hash);
     global.window = window;
   });
 });
 
 describe("function computePercentage", () => {
-  it('computes the percentage of numbers', () => {
-  const numerator = 20;
-  const denominator = 20;
-  // here you can do a few more tests, with bad input for example, I think computePercentage can handle it!
+  it('computes the percentage of integer numbers', () => {
+  const numerator = 20,
+        denominator = 20;
   expect(utils.computePercentage(numerator, denominator)).to.equal(100);
-  expect(utils.computePercentage(numerator, denominator)).not.to.equal(10);
+  });
+  it('computes the percentage of decimal numbers', () => {
+  const numerator = 88.7,
+        denominator = 8.87;
+  expect(utils.computePercentage(numerator, denominator)).to.equal(1000);
+  });
+  it('computes the percentage of decimal and integer numbers', () => {
+  const numerator = 47.79,
+        denominator = 531;
+  expect(utils.computePercentage(numerator, denominator)).to.equal(9);
+  });
+  it('expect to return 0 if the denominator is 0', () => {
+  const numerator = 88,
+        denominator = 0;
+  expect(utils.computePercentage(numerator, denominator)).to.equal(0);
   });
 });
