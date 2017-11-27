@@ -69,10 +69,54 @@ UpdateAlert.propTypes = {
     close: PropTypes.func.isRequired,
 };
 
+const toolTipStyle = {
+  wrapper: {
+    position: 'relative',
+    display: 'inline-block',
+    zIndex: '98',
+    color: '#555',
+    cursor: 'help',
+  },
+  tooltip: {
+    position: 'absolute',
+    zIndex: '99',
+    background: '#000',
+    marginBottom: '10px',
+    padding: '5px',
+    WebkitTransform: 'translate(-75% , 100px)',
+    msTransform: 'translate(-75% , 100px)',
+    OTransform: 'translate(-75% , 100px)',
+    transform: 'translate(-77% , 125px)',
+  },
+  content: {
+    background: '#000',
+    color: '#fff',
+    fontSize: '.8em',
+    padding: '.3em 1em',
+    whiteSpace: 'wrap',
+  },
+  arrow: {
+    position: 'absolute',
+    width: '0',
+    height: '0',
+    top: '-5px',
+    left: '30%',
+    marginLeft: '0px',
+    borderBottom: 'solid #000 5px',
+    borderLeft: 'solid transparent 5px',
+    borderRight: 'solid transparent 5px',
+  },
+  gap: {
+    position: 'absolute',
+    width: '100%',
+    height: '20px',
+    bottom: '-20px',
+  },
+};
 
 const QuantitativeHeader = ({targetValue, targetComment}) => {
     const comment = targetComment ?
-        <Tooltip content={targetComment}>
+        <Tooltip content={targetComment} styles={toolTipStyle}>
             <span className="glyphicon glyphicon-info-sign info-icon"></span>
         </Tooltip>
     :
@@ -437,7 +481,7 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
     const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
     return (
-        <div className="update-container">
+        <div className="update-container quantitativeUpdate">
             <div className="update-entry-container edit-in-progress">
                 <QuantitativeHeader targetValue={period.target_value} targetComment={period.target_comment}/>
                 <QuantitativeActualValueInput update={update}
