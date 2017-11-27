@@ -15,11 +15,11 @@ import {shallow} from 'enzyme'
 let expect = chai.expect;
 
 describe("function distinct", () => {
-  it('expect to return an array with unique values', () => {
-    const arrayWithDuplicates = [1,2,3,4,4],
-          uniqueArray = [1,2,3,4];
-    expect(utils.distinct(arrayWithDuplicates)).to.deep.equal(uniqueArray);
-  });
+    it('expect to return an array with unique values', () => {
+        const arrayWithDuplicates = [1,2,3,4,4],
+              uniqueArray = [1,2,3,4];
+        expect(utils.distinct(arrayWithDuplicates)).to.deep.equal(uniqueArray);
+    });
 });
 
 describe("function identicalArrays", () => {
@@ -31,136 +31,125 @@ describe("function identicalArrays", () => {
 });
 
 describe("function isEmpty", () => {
-  it('expect to return true if empty', () => {
-    const object = {},
-          string = '',
-          array = [];
-    expect(utils.isEmpty(object)).to.be.true;
-    expect(utils.isEmpty(string)).to.be.true;
-    expect(utils.isEmpty(array)).to.be.true;
-  });
-  it('expect to return false if not empty', () =>{
-    const stringWithValue = 'value';
-    expect(utils.isEmpty(stringWithValue)).to.be.false;
-  });
+    it('expect to return true if empty', () => {
+        const object = {},
+              string = '',
+              array = [];
+        expect(utils.isEmpty(object)).to.be.true;
+        expect(utils.isEmpty(string)).to.be.true;
+        expect(utils.isEmpty(array)).to.be.true;
+    });
+    it('expect to return false if not empty', () =>{
+        const stringWithValue = 'value';
+        expect(utils.isEmpty(stringWithValue)).to.be.false;
+    });
 });
 
 describe("function isNumeric", () => {
-  it('expect to return true if value is numeric', () => {
-    const number = 55;
-    expect(utils.isNumeric(number)).to.be.true;
-  });
-  it('expect to return false if values not numeric', () => {
-    const string = 'noNumeric';
-    expect(utils.isNumeric(string)).to.be.false;
-  });
+    it('expect to return true if value is numeric', () => {
+        const number = 55;
+        expect(utils.isNumeric(number)).to.be.true;
+    });
+    it('expect to return false if values not numeric', () => {
+        const string = 'noNumeric';
+        expect(utils.isNumeric(string)).to.be.false;
+    });
 });
 
 describe("function idsToActiveKey", () => {
-  it('expect to return IDs as an array of strings', () => {
-    const ids = [1, 2, 3, 4];
-    expect(utils.idsToActiveKey(ids)).to.satisfy(function(array) {
-      return array.every(function(item) {
-        return typeof item === 'string';
-      })
+    it('expect to return IDs as an array of strings', () => {
+        const ids = [1, 2, 3, 4];
+        expect(utils.idsToActiveKey(ids)).to.satisfy(function(array) {
+            return array.every(function(item) {
+                return typeof item === 'string';
+            })
+        });
     });
-  });
 });
 
 describe("arrowFunction isNewUpdate", () => {
-  it('expect to return true if the update is new', () => {
-    const newUpdate = {id: 'new-', name: 'update'};
-    expect(utils.isNewUpdate(newUpdate)).to.be.true;
-  });
-  it('expect to return true if we pas a string starting with "new-"', () => {
-    const newString = "new-17";
-    expect(utils.isNewUpdate(newString)).to.be.true;
-  });
-  it('expect to return false if the update is not new', () => {
-    const notNewUpdate = {id: '4', name: 'update'};
-    expect(utils.isNewUpdate(notNewUpdate)).to.be.false;
-  });
+    it('expect to return true if the update is new', () => {
+        const newUpdate = {id: 'new-', name: 'update'};
+        expect(utils.isNewUpdate(newUpdate)).to.be.true;
+    });
+    it('expect to return true if we pas a string starting with "new-"', () => {
+        const newString = "new-17";
+        expect(utils.isNewUpdate(newString)).to.be.true;
+    });
+    it('expect to return false if the update is not new', () => {
+        const notNewUpdate = {id: '4', name: 'update'};
+        expect(utils.isNewUpdate(notNewUpdate)).to.be.false;
+    });
 });
 
 describe("function collapseId", () => {
-  it('expect to create an collapsedId from the model name and parent object id', () => {
-    const model = 'model2',
-          id = 200;
-    expect(utils.collapseId(model, id)).to.equal('model2-200');
-  });
+    it('expect to create an collapsedId from the model name and parent object id', () => {
+        const model = 'model2',
+              id = 200;
+        expect(utils.collapseId(model, id)).to.equal('model2-200');
+    });
 });
 
 // requires that the function tested is changed to an exported function
 describe("function childModelName", () => {
-  it('expect to return child model name', () => {
-    const model = c.OBJECTS_RESULTS,
-          child = c.OBJECTS_INDICATORS;
-    expect(utils.childModelName(model)).to.equal(child);
-  });
+    it('expect to return child model name', () => {
+        const model = c.OBJECTS_RESULTS,
+              child = c.OBJECTS_INDICATORS;
+        expect(utils.childModelName(model)).to.equal(child);
+    });
 });
 
 describe("function parentModelName", () => {
-  it('expect to return parent model name', () => {
-    const model = c.OBJECTS_INDICATORS,
-          parent = c.OBJECTS_RESULTS;
-    expect(utils.parentModelName(model)).to.equal(parent);
-  });
+    it('expect to return parent model name', () => {
+        const model = c.OBJECTS_INDICATORS,
+              parent = c.OBJECTS_RESULTS;
+        expect(utils.parentModelName(model)).to.equal(parent);
+    });
 });
 
 describe("function levelAbove", () => {
-  it('expect to compare index of array to decide that level is above', () => {
-    const models = [1, 2],
-          model = models[1],
-          compare = models[0];
-    expect(utils.levelAbove(model, compare)).to.equal(model < compare);
-  });
+    it('expect to compare index of array to decide that level is above', () => {
+        const models = [1, 2],
+              model = models[1],
+              compare = models[0];
+        expect(utils.levelAbove(model, compare)).to.equal(model < compare);
+    });
 });
 
 describe("function levelBelow", () => {
-  it('expect to compare index of array to decide that level is below', () => {
-    const models = [1, 2],
-          model = models[0],
-          compare = models[1];
-    expect(utils.levelBelow(model, compare)).to.equal(model > compare);
-  });
+    it('expect to compare index of array to decide that level is below', () => {
+        const models = [1, 2],
+              model = models[0],
+              compare = models[1];
+        expect(utils.levelBelow(model, compare)).to.equal(model > compare);
+    });
 });
 
 // requires that the function tested is changed to an exported function
 describe("function flatten", () => {
-  it('expect to return an flatten array of arrays', () => {
-    const arrayOfArrays = [[1, 2], [3, 4], [5, 6]],
-          arrayFlatten = [1, 2, 3, 4, 5, 6];
-      expect(utils.flatten(arrayOfArrays)).to.deep.equal(arrayFlatten);
-  });
+    it('expect to return an flatten array of arrays', () => {
+        const arrayOfArrays = [[1, 2], [3, 4], [5, 6]],
+              arrayFlatten = [1, 2, 3, 4, 5, 6];
+        expect(utils.flatten(arrayOfArrays)).to.deep.equal(arrayFlatten);
+    });
 });
 
 describe("function fieldValueOrSpinner", () => {
-  it('expect to return an object with a key "value" from object, if objects defined', () => {
-    const object = {a: 1, b: 2};
-    const field = 'b';
-    expect(utils.fieldValueOrSpinner(object, field)).to.have.key('value');
-    expect(utils.fieldValueOrSpinner(object, field)).to.deep.equal({value: 2});
-  });
-  it('expect to return an object with a key "icon", if objects not defined', () => {
-    let object,
-        field;
-    expect(utils.fieldValueOrSpinner(object, field)).to.have.key('icon');
-   });
+    it('expect to return an object with a key "value" from object, if objects defined', () => {
+        const object = {a: 1, b: 2},
+              field = 'b';
+        expect(utils.fieldValueOrSpinner(object, field)).to.have.key('value');
+        expect(utils.fieldValueOrSpinner(object, field)).to.deep.equal({value: 2});
+    });
+    it('expect to return an object with a key "icon", if objects not defined', () => {
+        let object,
+            field;
+        expect(utils.fieldValueOrSpinner(object, field)).to.have.key('icon');
+    });
 });
 
 describe("function setHash", () => {
-  it('expect to set hash if hash is defined', () => {
-    global.window = {
-            location: {}
-            }
-    const hash = 'setHash';
-    expect(utils.setHash(hash)).to.satisfy(function(returnSetHash) {
-      return global.window.location.hash;
-    });
-    global.window = window;
-  });
-
-    it('expect to set hash if hash is defined. take 2', () => {
+    it('expect to set hash if hash is defined', () => {
         const window = global.widow;
             global.window = {
                 location: {}
@@ -171,38 +160,37 @@ describe("function setHash", () => {
             console.log("global.window: " + JSON.stringify(global.window));
             global.window = window;
     });
-
-  it('expect to set an empty hash if hash is undefined', () => {
-    global.window = {
-            location: {}
-            }
-    let hash;
-    expect(utils.setHash(hash)).to.satisfy(function(returnSetHash) {
-      return global.window = { location: { hash : ''}};
+    it('expect to set an empty hash if hash is undefined', () => {
+        global.window = {
+                location: {}
+                }
+        let hash;
+        expect(utils.setHash(hash)).to.satisfy(function(returnSetHash) {
+            return global.window = { location: { hash : ''}};
+        });
+        global.window = window;
     });
-    global.window = window;
-  });
 });
 
 describe("function computePercentage", () => {
-  it('computes the percentage of integer numbers', () => {
-  const numerator = 20,
-        denominator = 20;
-  expect(utils.computePercentage(numerator, denominator)).to.equal(100);
-  });
-  it('computes the percentage of decimal numbers', () => {
-  const numerator = 88.7,
-        denominator = 8.87;
-  expect(utils.computePercentage(numerator, denominator)).to.equal(1000);
-  });
-  it('computes the percentage of decimal and integer numbers', () => {
-  const numerator = 47.79,
-        denominator = 531;
-  expect(utils.computePercentage(numerator, denominator)).to.equal(9);
-  });
-  it('expect to return 0 if the denominator is 0', () => {
-  const numerator = 88,
-        denominator = 0;
-  expect(utils.computePercentage(numerator, denominator)).to.equal(0);
-  });
+    it('computes the percentage of integer numbers', () => {
+        const numerator = 20,
+              denominator = 20;
+        expect(utils.computePercentage(numerator, denominator)).to.equal(100);
+    });
+    it('computes the percentage of decimal numbers', () => {
+        const numerator = 88.7,
+              denominator = 8.87;
+        expect(utils.computePercentage(numerator, denominator)).to.equal(1000);
+    });
+    it('computes the percentage of decimal and integer numbers', () => {
+        const numerator = 47.79,
+              denominator = 531;
+        expect(utils.computePercentage(numerator, denominator)).to.equal(9);
+    });
+    it('expect to return 0 if the denominator is 0', () => {
+        const numerator = 88,
+              denominator = 0;
+        expect(utils.computePercentage(numerator, denominator)).to.equal(0);
+    });
 });
