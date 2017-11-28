@@ -3361,6 +3361,9 @@ main.results-page {
     display: none; }
   .update-container.qualitativeUpdate textarea#narrative {
     min-height: 220px !important; }
+  .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
+    z-index: 999;
+    top: -60px !important; }
   .update-container.quantitativeUpdate .targetLabel + div {
     top: -1.35em;
     left: 27%; }

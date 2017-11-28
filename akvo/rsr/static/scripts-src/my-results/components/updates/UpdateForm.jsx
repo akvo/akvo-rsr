@@ -184,7 +184,7 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
             <div>
                 <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
-                              className="btn btn-default btn-xs"/>
+                              className="btn btn-default btn-xs closingBtn"/>
                 <input className="form-control"
                        readOnly={readOnly}
                        id="value"

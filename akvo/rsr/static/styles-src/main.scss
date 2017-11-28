@@ -4249,6 +4249,14 @@ main.results-page {
         }
     }
     &.quantitativeUpdate {
+        .update-entry-container {
+            &.edit-in-progress {
+                .closingBtn {
+                    z-index: 999;
+                    top: -60px !important;
+                }
+            }
+        }
         .targetLabel {
             & + div {
                 top: -1.35em;
