@@ -27,7 +27,7 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getMEManagerDefaultKeys,
+    getResultsDefaultKeys,
     getNeedReportingPeriods,
     getPendingUpdates,
 } from "../selectors";
@@ -78,7 +78,7 @@ const PeriodLockingButtons = ({user, disabled}) => {
         pendingUpdates: getPendingUpdates(store),
         approvedPeriods: getApprovedPeriods(store),
         needReportingPeriods: getNeedReportingPeriods(store),
-        MEManagerDefaultKeys: getMEManagerDefaultKeys(store),
+        ResultsDefaultKeys: getResultsDefaultKeys(store),
     }
 })
 export default class FilterBar extends React.Component {
@@ -101,12 +101,12 @@ export default class FilterBar extends React.Component {
 
     createToggleKeys() {
         const open = this.openResults();
-        let MEManagerKeys;
+        let resultsKeys;
         if (userIsMEManager(this.props.user)) {
-            MEManagerKeys = this.props.MEManagerDefaultKeys;
+            resultsKeys = this.props.ResultsDefaultKeys;
         }
         // construct the array of Collapse activeKeys for the sub-tree
-        return toggleTree(c.OBJECTS_RESULTS, c.OBJECTS_RESULTS, open, MEManagerKeys);
+        return toggleTree(c.OBJECTS_RESULTS, c.OBJECTS_RESULTS, open, resultsKeys);
     }
 
     toggleAll() {
@@ -121,17 +121,12 @@ export default class FilterBar extends React.Component {
     openResults() {
         // Determine if we should open the full tree or close it
         const activeKey = this.props.keys["results-results"];
-        if (userIsMEManager(this.props.user)) {
-            const keys = this.props.keys;
-            // if activeKey is identical to the MEManagerDefaultKeys selector we are at the "closed"
-            // closed view for an M&E manager
-            const openCollapses = Object.keys(keys).filter(key => keys[key].length !== 0);
-            return identicalArrays(activeKey, this.props.MEManagerDefaultKeys) &&
-                openCollapses.length === 1;
-        } else {
-            // otherwise open only if the whole tree is closed
-            return activeKey === undefined || activeKey.length === 0;
-        }
+        const keys = this.props.keys;
+        // if activeKey is identical to the ResultsDefaultKeys selector we are at the "closed"
+        // closed view for an M&E manager
+        const openCollapses = Object.keys(keys).filter(key => keys[key].length !== 0);
+        return identicalArrays(activeKey, this.props.ResultsDefaultKeys) &&
+            openCollapses.length === 1;
     }
 
     filterButtonClass(button) {

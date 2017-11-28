@@ -187,6 +187,7 @@ const QuantitativeUpdateBody = ({update, dimensions, disaggregations}) => {
                 {approvedOn}
             </div>
             <UpdateStatus update={update} />
+            <UpdateAttachments update={update} />
         </div>
     )
 };

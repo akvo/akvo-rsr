@@ -382,18 +382,10 @@ export const getUpdatesForPendingApprovalPeriods = createSelector(
 );
 
 
-export const getMEManagerDefaultKeys = createSelector(
+export const getResultsDefaultKeys = createSelector(
     /*
         Just an array of IDs as string, used to set the top collapse (for Results) to all open
      */
     [getResultIds],
     resultIds => idsToActiveKey(resultIds)
-);
-
-export const getPublicViewDefaultKeys = createSelector(
-    /*
-        Just an array of IDs as string, used for the default view on the project page Results tab
-     */
-    [getIndicatorIds],
-    indicatorIds => idsToActiveKey(indicatorIds)
 );
