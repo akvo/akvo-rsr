@@ -49,9 +49,20 @@ class BaseLocation(models.Model):
         location_target.save()
 
     def save(self, *args, **kwargs):
+        get_country = False
+        if not self.pk:
+            get_country = True
+
+        else:
+            original = self._meta.model.objects.get(id=self.pk)
+            if original.latitude != self.latitude or original.longitude != self.longitude:
+                get_country = True
+
         # Set a country based on the latitude and longitude if possible
-        if self.country is None:
+        if get_country:
             self.country = self.get_country_from_lat_lon()
+            if 'update_fields' in kwargs and 'country' not in kwargs['update_fields']:
+                kwargs['update_fields'].append('country')
 
         super(BaseLocation, self).save(*args, **kwargs)
 
@@ -212,6 +223,7 @@ class ProjectLocation(BaseLocation):
 
     def iati_designation_unicode(self):
         return unicode(self.iati_designation())
+
 
 # Over-riding fields doesn't work in Django < 1.10, and hence this hack.
 ProjectLocation._meta.get_field('country').help_text = _(
