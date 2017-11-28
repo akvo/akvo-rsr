@@ -69,10 +69,18 @@ PeriodSelect.propTypes = {
 
 
 const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQualitative,
-                       newUpdateButton, delUpdateAlert, formOpen, showLockButton}) => {
+                       newUpdateButton, delUpdateAlert, formOpen, isPublic, showLockButton}) => {
                            const periodStart = displayDate(period.period_start);
                            const periodEnd = displayDate(period.period_end);
                            const periodDate = `${periodStart} - ${periodEnd}`;
+                           const lockStatus = period.locked ?
+                               <i title={_('locked')}
+                                  className="fa fa-lock"
+                                  aria-hidden="true"/>
+                           :
+                               <i title={_('unlocked')}
+                                  className="fa fa-unlock-alt"
+                                  aria-hidden="true"/>;
                            let periodSelect;
                            if (user.isMEManager && showLockButton) {
                                periodSelect = <PeriodSelect id={period.id}
@@ -97,6 +105,7 @@ const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQ
                                                <span>Actual:</span> {actualValue}
                                            </li>}
                                        <li>{newUpdateButton}{delUpdateAlert}</li>
+                                       {isPublic?undefined:<li>{lockStatus}</li>}
                                    </ul>
                                </span>
                            )
@@ -241,6 +250,7 @@ export default class Periods extends React.Component {
                                       newUpdateButton={newUpdateButton}
                                       delUpdateAlert={delUpdateAlert}
                                       formOpen={formOpen}
+                                      isPublic={page.mode.public}
                                       showLockButton={showLockButton}/>}
                            key={id}
                            showArrow={!page.mode.public}
