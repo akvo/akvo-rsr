@@ -514,6 +514,45 @@ export function computePercentage(numerator, denominator) {
     }
 }
 
+
+export const filterUpdatesByStatus = (updates, ids, status) => {
+    return ids.filter(
+        id => status.indexOf(updates[id].status) > -1
+    )
+};
+
+
+export const disaggregationsToDisplayData = (disaggregationIds, disaggregations, dimensions)=> {
+    /* maps a number of disaggregations to the following format:
+        {
+            Flavor: {
+                Vanilla: 5,
+                Chocolate: 7,
+            },
+            Color: {
+                Red: 3,
+                Black: 7,
+                Blue: 6
+            },
+        }
+    */
+    return disaggregationIds && disaggregationIds.reduce((acc, id) => {
+        const disaggregation = disaggregations[id];
+        const dimension = dimensions[disaggregation.dimension];
+        return update(acc, {
+                [dimension.name]: {$apply: value =>
+                    update(value || {}, {
+                        [dimension.value]:
+                            {$apply: disagg =>
+                                (disagg || 0) + parseInt(disaggregation.value)}
+                    })
+                }
+            }
+        )
+    }, {})
+};
+
+
 // Decimal rounding function (from MDN)
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
 (function() {

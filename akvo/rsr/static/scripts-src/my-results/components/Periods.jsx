@@ -8,11 +8,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Collapse, { Panel } from "rc-collapse";
 import { connect } from "react-redux"
-import update  from 'immutability-helper';
+import update from 'immutability-helper';
+
 
 import * as alertActions from "../actions/alert-actions"
 import * as collapseActions from "../actions/collapse-actions"
-import { updateModelToBackend } from "../actions/model-actions"
 
 import { periodSelectToggle, } from "../actions/ui-actions"
 
@@ -22,11 +22,12 @@ import {
     getPeriodsActualValue,
     getIndicatorsChildrenIds,
     getPeriodsChildrenIds,
+    getIndicatorsDimensionIds,
+    getPeriodsApprovedDisaggregationIds,
 } from "../selectors";
 
 import {
     displayDate,
-    endpoints,
     collapseId,
     createToggleKeys,
     getAncestor,
@@ -34,12 +35,13 @@ import {
 
 
 import AlertFactory from "./alertContainer"
-import { ToggleButton } from "./common"
+import { DisaggregationsDisplay } from "./common"
 import { NewUpdateButton } from "./updates/UpdateForm";
 import Updates from "./updates/Updates";
 
 import {
     _,
+    disaggregationsToDisplayData,
     hideMe,
 } from "../utils";
 
@@ -68,53 +70,126 @@ PeriodSelect.propTypes = {
 };
 
 
-const PeriodHeader = ({period, actualValue, user, toggleCheckbox, isChecked, isQualitative,
-                       newUpdateButton, delUpdateAlert, formOpen, showLockButton}) => {
-                           const periodStart = displayDate(period.period_start);
-                           const periodEnd = displayDate(period.period_end);
-                           const periodDate = `${periodStart} - ${periodEnd}`;
-                           let periodSelect;
-                           if (user.isMEManager && showLockButton) {
-                               periodSelect = <PeriodSelect id={period.id}
-                                                            toggleCheckbox={toggleCheckbox}
-                                                            isChecked={isChecked}/>;
-                           }
-                           return (
-                               <span className="periodWrap">
-                                   <ul className={formOpen ? "formOpen" : ""}>
-                                       <li>{periodSelect}</li>
-                                       <li>{periodDate}</li>
-                                       {isQualitative ?
-                                           undefined
-                                       :
-                                           <li className="targetValue">
-                                               <span>Target:</span> {period.target_value}
-                                           </li>}
-                                       {isQualitative ?
-                                           undefined
-                                       :
-                                           <li className="actualValue">
-                                               <span>Actual:</span> {actualValue}
-                                           </li>}
-                                       <li>{newUpdateButton}{delUpdateAlert}</li>
-                                   </ul>
-                               </span>
-                           )
-                       };
-PeriodHeader.propTypes = {
-    period: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
-    toggleCheckbox: PropTypes.func.isRequired,
-    isChecked: PropTypes.bool.isRequired,
-};
-
-
 const DeleteUpdateAlert = ({message, close}) => (
     <div className='alert delete-update-alert'>
         {message}
         <button className="btn btn-sm btn-default" onClick={close}>X</button>
     </div>
 );
+
+
+@connect((store) => {
+    return {
+        page: store.page,
+        updates: store.models.updates,
+        dimensions: store.models.dimensions.objects,
+        disaggregations: store.models.disaggregations.objects,
+        user: store.models.user.ids && store.models.user.ids.length > 0 ?
+              store.models.user.objects[store.models.user.ids[0]] : {},
+        ui: store.ui,
+        periodsActualValue: getPeriodsActualValue(store),
+        periodChildrenIds: getPeriodsChildrenIds(store),
+        periodDisaggregationIds: getPeriodsApprovedDisaggregationIds(store),
+        dimensionIds: getIndicatorsDimensionIds(store),
+    }
+}, {...alertActions, ...collapseActions})
+class PeriodHeader extends React.Component {
+// actualValue, user, isChecked, isQualitative, newUpdateButton,
+// delUpdateAlert, formOpen, showLockButton
+    static propTypes = {
+        period: PropTypes.object.isRequired,
+        toggleCheckbox: PropTypes.func.isRequired,
+    };
+
+    render() {
+        const showNewUpdateButton = (page, period, ui, indicator) => {
+            if (page.mode.public) {
+                return false;
+            }
+            if (period.locked) {
+                return false;
+            }
+            if (ui.updateFormDisplay ||
+                ui.activeFilter !== c.FILTER_NEED_REPORTING && ui.activeFilter !== undefined) {
+                return false;
+            }
+            if (indicator.measure === c.MEASURE_PERCENTAGE &&
+                    this.props.periodChildrenIds[period.id].length >= 1) {
+                return false;
+            }
+            return true;
+        };
+
+        const {
+            period, toggleCheckbox, page, ui, user, periodsActualValue, periodChildrenIds,
+            disaggregations, dimensions, periodDisaggregationIds
+        } = this.props;
+
+        const actualValue = periodsActualValue[period.id];
+        const isChecked = new Set(ui[c.SELECTED_PERIODS]).has(period.id);
+        const formOpen = periodChildrenIds[period.id].indexOf(
+            this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
+        ) > -1;
+        const indicator = getAncestor(c.OBJECTS_PERIODS, period.id, c.OBJECTS_INDICATORS);
+        const isQualitative = indicator.type === c.INDICATOR_QUALITATIVE;
+        const periodStart = displayDate(period.period_start);
+        const periodEnd = displayDate(period.period_end);
+        const periodDate = `${periodStart} - ${periodEnd}`;
+        const showLockButton = ui.activeFilter !== c.FILTER_NEED_REPORTING &&
+                               ui.activeFilter !== c.FILTER_SHOW_PENDING;
+
+        let periodSelect;
+        if (user.isMEManager && showLockButton) {
+            periodSelect = <PeriodSelect id={period.id}
+                                         toggleCheckbox={toggleCheckbox}
+                                         isChecked={isChecked}/>;
+        }
+
+        let newUpdateButton, delUpdateAlert;
+        if (showNewUpdateButton(page, period, ui, indicator)){
+            newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
+            // TODO: fix for new updates. The alert won't render since the temp update
+            // object gets deleted when saving.
+            // Possible solution: add an alert action and reducer instead of using callback
+            const DelUpdateAlert = AlertFactory(
+                {alertName: 'DeleteUpdateAlert-' + period.id}
+            )(DeleteUpdateAlert);
+            delUpdateAlert = <DelUpdateAlert />;
+        }
+
+        const disaggregationData = disaggregationsToDisplayData(
+            periodDisaggregationIds[period.id],
+            disaggregations,
+            dimensions
+        );
+
+        return (
+            <span className="periodWrap">
+                <ul className={formOpen ? "formOpen" : ""}>
+                    <li>{periodSelect}</li>
+                    <li>{periodDate}</li>
+                    {isQualitative ?
+                        undefined
+                    :
+                        <li className="targetValue">
+                            <span>Target:</span> {period.target_value}
+                        </li>}
+                    {isQualitative ?
+                        undefined
+                    :
+                        <li className="actualValue">
+                            <span>Actual:</span> {actualValue}
+                        </li>}
+                    <li>{newUpdateButton}{delUpdateAlert}</li>
+                </ul>
+                {isQualitative || !page.mode.public?
+                    undefined
+                :
+                    <DisaggregationsDisplay disaggregationData={disaggregationData}/>}
+           </span>
+        )
+    }
+}
 
 
 @connect((store) => {
@@ -182,66 +257,49 @@ export default class Periods extends React.Component {
     }
 
     renderPanels(periodIds) {
-        const showNewUpdateButton = (page, period, ui, indicator) => {
-            if (page.mode.public) {
-                return false;
-            }
-            if (period.locked) {
-                return false;
-            }
-            if (ui.updateFormDisplay ||
-                ui.activeFilter !== c.FILTER_NEED_REPORTING && ui.activeFilter !== undefined) {
-                return false;
-            }
-            if (indicator.measure === c.MEASURE_PERCENTAGE &&
-                    this.props.periodChildrenIds[period.id].length >= 1) {
-                return false;
-            }
-            return true;
-        };
-
         return (periodIds.map(
             (id) => {
                 const {parentId, ui, page} = this.props;
                 const period = this.props.periods.objects[id];
-                const actualValue = this.props.actualValue[id];
+                // const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
-                const formOpen = this.props.periodChildrenIds[id].indexOf(
-                    this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
-                ) > -1;
+                // const formOpen = this.props.periodChildrenIds[id].indexOf(
+                //     this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
+                // ) > -1;
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
-                const indicator = getAncestor(c.OBJECTS_PERIODS, id, c.OBJECTS_INDICATORS);
+                // const indicator = getAncestor(c.OBJECTS_PERIODS, id, c.OBJECTS_INDICATORS);
 
-                let newUpdateButton, delUpdateAlert;
-                if (showNewUpdateButton(page, period, ui, indicator)){
-                    newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
-                    // TODO: fix for new updates. The alert won't render since the temp update
-                    // object gets deleted when saving.
-                    // Possible solution: add an alert action and reducer instead of using callback
-                    const DelUpdateAlert = AlertFactory(
-                        {alertName: 'DeleteUpdateAlert-' + period.id}
-                    )(DeleteUpdateAlert);
-                    delUpdateAlert = <DelUpdateAlert />;
-                }
+                // let newUpdateButton, delUpdateAlert;
+                // if (showNewUpdateButton(page, period, ui, indicator)){
+                //     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
+                //     // TODO: fix for new updates. The alert won't render since the temp update
+                //     // object gets deleted when saving.
+                //     // Possible solution: add an alert action and reducer instead of using callback
+                //     const DelUpdateAlert = AlertFactory(
+                //         {alertName: 'DeleteUpdateAlert-' + period.id}
+                //     )(DeleteUpdateAlert);
+                //     delUpdateAlert = <DelUpdateAlert />;
+                // }
 
                 let className = this.hideMe(id) ? 'hidePanel' : '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
-                const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
-                                       this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
+                // const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
+                //                        this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
                 return (
                     <Panel header={
                         <PeriodHeader period={period}
-                                      actualValue={actualValue}
-                                      user={this.props.user}
+                                      // actualValue={actualValue}
+                                      // user={this.props.user}
                                       toggleCheckbox={this.toggleCheckbox}
-                                      isChecked={isChecked}
-                                      isQualitative={indicator.type === c.INDICATOR_QUALITATIVE}
-                                      newUpdateButton={newUpdateButton}
-                                      delUpdateAlert={delUpdateAlert}
-                                      formOpen={formOpen}
-                                      showLockButton={showLockButton}/>}
+                                      // isChecked={isChecked}
+                                      // isQualitative={indicator.type === c.INDICATOR_QUALITATIVE}
+                                      // newUpdateButton={newUpdateButton}
+                                      // delUpdateAlert={delUpdateAlert}
+                                      // formOpen={formOpen}
+                                      // showLockButton={showLockButton}
+                        />}
                            key={id}
                            showArrow={!page.mode.public}
                            disabled={page.mode.public}

@@ -23,11 +23,10 @@ import {
     getUpdatesForApprovedPeriods,
     getUpdatesForNeedReportingPeriods,
     getUpdatesForPendingApprovalPeriods,
-    getUpdatesDisaggregationObjects,
-    getIndicatorsDimensionIds,
+    getUpdatesDisaggregationIds,
 } from "../../selectors";
 import {
-    closeNodes,
+    closeNodes, disaggregationsToDisplayData, filterUpdatesByStatus,
     fullUpdateVisibility,
     hideMe, openNodes
 } from "../../utils";
@@ -38,7 +37,7 @@ import {
     collapseId,
 } from '../../utils.js';
 
-import { ToggleButton } from "../common"
+import {DisaggregationsDisplay, ToggleButton} from "../common"
 import Comments from "../Comments"
 
 
@@ -170,7 +169,7 @@ const ShowDisaggregations = ({dimensions, disaggregations, isQualitative}) => {
     );
 };
 
-const QuantitativeUpdateBody = ({update, dimensions, disaggregations}) => {
+const QuantitativeUpdateBody = ({update, disaggregationIds, dimensions, disaggregations}) => {
     const {user_details, approver_details} = update;
     const approvedOn = update.status === c.UPDATE_STATUS_APPROVED ?
                        <TimestampInfo update={update}
@@ -178,10 +177,20 @@ const QuantitativeUpdateBody = ({update, dimensions, disaggregations}) => {
                                       label={_('approved_on') + ':'} />
     :
                        undefined;
+    // sort to uphold order defined by creation of dimensions in the project editor
+    // TODO: selectors.getUpdatesDisaggregationIds() could be updated to handle the sorting
+    disaggregationIds = disaggregationIds.sort(
+        (a, b) => disaggregations[a].dimension - disaggregations[b].dimension
+    );
+    const disaggregationData = disaggregationsToDisplayData(
+        disaggregationIds,
+        disaggregations,
+        dimensions
+    );
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
-            <ShowDisaggregations dimensions={dimensions} disaggregations={disaggregations}/>
+            <DisaggregationsDisplay disaggregationData={disaggregationData}/>}
             <div className="timestamp-info-container">
                 <TimestampInfo update={update} user={user_details} label={_('created_on') + ':'} />
                 {approvedOn}
@@ -208,7 +217,7 @@ UpdateValue.propTypes = {
 };
 
 
-const QualitativeUpdateBody = ({period, update, dimensions, disaggregations}) => {
+const QualitativeUpdateBody = (period, update) => {
     const {user_details, approver_details} = update;
     const approvedOn = update.status === c.UPDATE_STATUS_APPROVED ?
                        <TimestampInfo update={update}
@@ -219,7 +228,6 @@ const QualitativeUpdateBody = ({period, update, dimensions, disaggregations}) =>
     return (
         <div className="UpdateBody">
             <UpdateNarrative period={period} update={update} />
-            <ShowDisaggregations dimensions={dimensions} disaggregations={disaggregations} isQualitative={true}/>
             <TimestampInfo update={update} user={user_details} label={_('created_on') + ':'} />
             {approvedOn}
             <UpdateStatus update={update} />
@@ -248,13 +256,16 @@ UserInfo.propTypes = {
     user_details: PropTypes.object.isRequired,
 };
 
-const QuantitativeUpdate = ({id, update, dimensions, disaggregations, periodLocked, collapseId}) => {
+
+const QuantitativeUpdate = (
+    {id, update, disaggregationIds, disaggregations, dimensions, periodLocked, collapseId}) => {
     return (
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={periodLocked}
                           collapseId={collapseId}/>
             <div className="row">
                 <QuantitativeUpdateBody update={update}
+                                        disaggregationIds={disaggregationIds}
                                         dimensions={dimensions}
                                         disaggregations={disaggregations}/>
                 <Comments parentId={id} inForm={false}/>
@@ -271,15 +282,12 @@ QuantitativeUpdate.propTypes = {
 };
 
 
-const QualitativeUpdate = ({id, period, update, dimensions, disaggregations, collapseId}) => {
+const QualitativeUpdate = ({id, period, update, collapseId}) => {
     return (
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={period.locked} collapseId={collapseId}/>
             <div className="row">
-                <QualitativeUpdateBody period={period}
-                                       update={update}
-                                       dimensions={dimensions}
-                                       disaggregations={disaggregations}/>
+                <QualitativeUpdateBody period={period} update={update}/>
                 <Comments parentId={id} inForm={false}/>
                 <hr className="delicate"/>
             </div>
@@ -391,9 +399,9 @@ class UpdateHeader extends React.Component {
         updates: store.models.updates,
         keys: store.keys,
         ui: store.ui,
-        disaggregations: getUpdatesDisaggregationObjects(store),
-        dimension_ids: getIndicatorsDimensionIds(store),
-        dimensions: store.models.dimensions,
+        updatesDisaggregationIds: getUpdatesDisaggregationIds(store),
+        disaggregations: store.models.disaggregations.objects,
+        dimensions: store.models.dimensions.objects,
         periodChildrenIds: getPeriodsChildrenIds(store),
         needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
         pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),
@@ -443,26 +451,20 @@ export default class Updates extends React.Component {
         const pending = [c.UPDATE_STATUS_PENDING];
         const approved = [c.UPDATE_STATUS_APPROVED];
 
-        const filterUpdatesByStatus = (ids, status) => {
-            return ids.filter(
-                id => status.indexOf(updates[id].status) > -1
-            )
-        };
-
         if (page.mode && page.mode.public) {
             updateIds = [];
         } else {
             switch(this.props.ui.activeFilter) {
                 case c.FILTER_NEED_REPORTING: {
-                    updateIds = filterUpdatesByStatus(updateIds, needReporting);
+                    updateIds = filterUpdatesByStatus(updates, updateIds, needReporting);
                     break;
                 }
                 case c.FILTER_SHOW_PENDING: {
-                    updateIds = filterUpdatesByStatus(updateIds, pending);
+                    updateIds = filterUpdatesByStatus(updates, updateIds, pending);
                     break;
                 }
                 case c.FILTER_SHOW_APPROVED: {
-                    updateIds = filterUpdatesByStatus(updateIds, approved);
+                    updateIds = filterUpdatesByStatus(updates, updateIds, approved);
                     break;
                 }
             }
@@ -475,36 +477,31 @@ export default class Updates extends React.Component {
         let actualValue = 0;
         return (updateIds.map(
             (id) => {
+                const {period, updatesDisaggregationIds, disaggregations, dimensions} = this.props;
                 const indicator = this.props.indicators.objects[this.props.indicatorId];
                 const update = this.props.updates.objects[id];
                 // Calculate running total of numeric update values
                 const value = parseInt(update.value);
-                const dimensions = this.props.dimension_ids[indicator.id].map(
-                    (id) => {return this.props.dimensions.objects[id]}
-                );
-                const disaggregations = this.props.disaggregations[update.id];
-
                 if (value && update.status == c.UPDATE_STATUS_APPROVED) {
                     actualValue += value;
                 }
                 update.actual_value = actualValue;
                 switch(indicator.type) {
-                    case 1: {
+                    case c.INDICATOR_QUANTATIVE: {
                         return <QuantitativeUpdate key={id}
                                                    id={id}
                                                    update={update}
-                                                   dimensions={dimensions}
+                                                   disaggregationIds={updatesDisaggregationIds[id]}
                                                    disaggregations={disaggregations}
+                                                   dimensions={dimensions}
                                                    periodLocked={this.props.period.locked}
                                                    collapseId={this.state.collapseId}/>
                     }
-                    case 2: {
+                    case c.INDICATOR_QUALITATIVE: {
                         return <QualitativeUpdate key={id}
                                                   id={id}
                                                   update={update}
-                                                  dimensions={dimensions}
-                                                  disaggregations={disaggregations}
-                                                  period={this.props.period}
+                                                  period={period}
                                                   collapseId={this.state.collapseId}/>
                     }
                 }
