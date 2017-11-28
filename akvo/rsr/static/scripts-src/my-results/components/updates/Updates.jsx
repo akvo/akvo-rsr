@@ -190,12 +190,13 @@ const QuantitativeUpdateBody = ({update, disaggregationIds, dimensions, disaggre
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
-            <DisaggregationsDisplay disaggregationData={disaggregationData}/>}
+            <DisaggregationsDisplay disaggregationData={disaggregationData}/>
             <div className="timestamp-info-container">
                 <TimestampInfo update={update} user={user_details} label={_('created_on') + ':'} />
                 {approvedOn}
             </div>
             <UpdateStatus update={update} />
+            <UpdateAttachments update={update} />
         </div>
     )
 };

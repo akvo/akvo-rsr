@@ -10,6 +10,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
+import {Tooltip} from 'react-lightweight-tooltip';
 
 import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
@@ -68,13 +69,62 @@ UpdateAlert.propTypes = {
     close: PropTypes.func.isRequired,
 };
 
+const toolTipStyle = {
+  wrapper: {
+    position: 'relative',
+    display: 'inline-block',
+    zIndex: '98',
+    color: 'black',
+    cursor: 'help',
+  },
+  tooltip: {
+    zIndex: '99',
+    background: 'white',
+    marginBottom: '10px',
+    padding: '5px',
+    top: '20px',
+    left: '75px',
+  },
+  content: {
+    color: '#000',
+    background: '#fff',
+    border: '1px solid  #ccc',
+    fontSize: '.8em',
+    padding: '.3em 1em',
+    whiteSpace: 'wrap',
+  },
+  arrow: {
+    position: 'absolute',
+    width: '0',
+    height: '0',
+    top: '-5px',
+    left: '30%',
+    marginLeft: '0px',
+    borderBottom: 'solid #000 5px',
+    borderLeft: 'solid transparent 5px',
+    borderRight: 'solid transparent 5px',
+  },
+  gap: {
+    position: 'absolute',
+    width: '100%',
+    height: '20px',
+    bottom: '-20px',
+  },
+};
 
-const QuantitativeHeader = ({targetValue}) => {
+const QuantitativeHeader = ({targetValue, targetComment}) => {
+    const comment = targetComment ?
+        <Tooltip content={targetComment} styles={toolTipStyle}>
+            <span className="glyphicon glyphicon-info-sign info-icon"></span>
+        </Tooltip>
+    :
+        undefined;
     return (
         <div>
             <div className="targetLabel">
                 {_('target_value')}: <span>{targetValue}</span>
             </div>
+            {comment}
         </div>
     )
 };
@@ -134,7 +184,7 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
             <div>
                 <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
-                              className="btn btn-default btn-xs"/>
+                              className="btn btn-default btn-xs closingBtn"/>
                 <input className="form-control"
                        readOnly={readOnly}
                        id="value"
@@ -429,9 +479,9 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
     const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
     return (
-        <div className="update-container">
+        <div className="update-container quantitativeUpdate">
             <div className="update-entry-container edit-in-progress">
-                <QuantitativeHeader targetValue={period.target_value}/>
+                <QuantitativeHeader targetValue={period.target_value} targetComment={period.target_comment}/>
                 <QuantitativeActualValueInput update={update}
                                               onChange={self.onChange}
                                               onClose={self.props.onClose}

@@ -290,16 +290,8 @@ export default class Periods extends React.Component {
                 return (
                     <Panel header={
                         <PeriodHeader period={period}
-                                      // actualValue={actualValue}
-                                      // user={this.props.user}
-                                      toggleCheckbox={this.toggleCheckbox}
-                                      // isChecked={isChecked}
-                                      // isQualitative={indicator.type === c.INDICATOR_QUALITATIVE}
-                                      // newUpdateButton={newUpdateButton}
-                                      // delUpdateAlert={delUpdateAlert}
-                                      // formOpen={formOpen}
-                                      // showLockButton={showLockButton}
-                        />}
+                                      toggleCheckbox={this.toggleCheckbox}/>}
+
                            key={id}
                            showArrow={!page.mode.public}
                            disabled={page.mode.public}

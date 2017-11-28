@@ -18,6 +18,7 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              IndicatorPeriodActualDimension, IndicatorPeriodActualLocation,
                              IndicatorPeriodTargetDimension, IndicatorPeriodTargetLocation,
                              IndicatorReference)
+from akvo.rsr.models.result.utils import QUALITATIVE
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -410,6 +411,13 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             baseline_value="1",
             baseline_comment="Comment"
         )
+        # Create a qualitative indicator
+        Indicator.objects.create(
+            result=result,
+            title="Qualitative indicator",
+            description="Indicator Description",
+            type=QUALITATIVE,
+        )
         IndicatorReference.objects.create(
             indicator=indicator,
             vocabulary="1",
@@ -494,6 +502,9 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertXpathsExist(root_test, (indicator_description_xpath,))
         indicators = root_test.xpath(indicator_description_xpath)
         self.assertEqual(indicators[0].text, 'Indicator Description')
+
+        # Test qualitative indicator is not included
+        self.assertEqual(1, len(indicators))
 
     def test_different_complete_project_export(self):
         """
