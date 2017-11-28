@@ -10,11 +10,7 @@ import React from 'react';
 import * as c from "./const"
 import store from "./store"
 
-import {
-    collapseChange,
-    collapseRecordState,
-    resetKeys,
-} from "./actions/collapse-actions";
+import {collapseChange, collapseRecordState, resetKeys,} from "./actions/collapse-actions";
 
 import {updateModel} from "./actions/model-actions";
 import keyBy from 'lodash/keyBy';
@@ -23,7 +19,7 @@ import update from 'immutability-helper';
 
 // Note: this function used to be a method of the App class, but the the transpiling messes something
 // up the result being the the update function from immuatbility-helper can't be found/called
-export function createNewDisaggregations(update_id, dimensions, disaggregations){
+export function createNewDisaggregations(update_id, dimensions, disaggregations) {
     const dimension_disaggregations = keyBy(disaggregations, 'dimension');
     let changedDisaggregations = disaggregations;
     dimensions.forEach((dimension) => {
@@ -31,7 +27,7 @@ export function createNewDisaggregations(update_id, dimensions, disaggregations)
             const disaggregation = {
                 'update': update_id,
                 'dimension': dimension.id,
-                'id': 'new-'+dimension.id,
+                'id': 'new-' + dimension.id,
                 'value': '',
                 'numerator': '',
                 'denominator': '',
@@ -58,7 +54,7 @@ export function identicalArrays(array1, array2) {
             (array1.length == array2.length) &&
             array1.every((element, index) => (element === array2[index]))
         )
-    } catch(e) {
+    } catch (e) {
         return false;
     }
 }
@@ -66,6 +62,7 @@ export function identicalArrays(array1, array2) {
 
 // From https://stackoverflow.com/questions/4994201/is-object-empty
 var hasOwnProperty = Object.prototype.hasOwnProperty;
+
 export function isEmpty(obj) {
 
     // null and undefined are "empty"
@@ -73,8 +70,8 @@ export function isEmpty(obj) {
 
     // Assume if it has a length property with a non-zero value
     // that that property is correct.
-    if (obj.length > 0)    return false;
-    if (obj.length === 0)  return true;
+    if (obj.length > 0) return false;
+    if (obj.length === 0) return true;
 
     // If it isn't an object at this point
     // it is empty, but it can't be anything *but* empty
@@ -94,12 +91,13 @@ export function isEmpty(obj) {
 
 // From https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/1830844#1830844
 export function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 
 // global holding the month's translation strings
 let months;
+
 export function displayDate(dateString) {
     // Display a dateString like "25 Jan 2016"
     // read from the DOM once
@@ -137,29 +135,29 @@ export function getCookie(name) {
 // Object holds callback URL functions as values, most of them called with an id parameter
 // Usage: endpoints.result(17) -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
 export const endpoints = {
-        "result": (id) => `/rest/v1/result/${id}/?format=json`,
-        "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
-        "indicators": (id) =>
-            `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
-        "dimensions": (id) =>
-            `/rest/v1/indicator_dimension/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
-        "periods": (id) =>
-            `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
-        "updates": (id) =>
-            `/rest/v1/indicator_period_data/?format=json&limit=${c.API_LIMIT}&period__indicator__result__project=${id}`,
-        "disaggregations": (id) =>
-            `/rest/v1/disaggregation/?format=json&limit=${c.API_LIMIT}&update__period__indicator__result__project=${id}`,
-        "comments": (id) =>
-            `/rest/v1/indicator_period_data_comment/?format=json&limit=${c.API_LIMIT}&data__period__indicator__result__project=${id}`,
-        "post_comment": () =>
-            "/rest/v1/indicator_period_data_comment/?format=json",
-        "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,
-        "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
-        "updates_and_comments": () =>
-            `/rest/v1/indicator_period_data_framework/?format=json&limit=${c.API_LIMIT}`,
-        "user": (id) => `/rest/v1/user/${id}/?format=json`,
-        "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
-        "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
+    "result": (id) => `/rest/v1/result/${id}/?format=json`,
+    "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
+    "indicators": (id) =>
+        `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
+    "dimensions": (id) =>
+        `/rest/v1/indicator_dimension/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
+    "periods": (id) =>
+        `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
+    "updates": (id) =>
+        `/rest/v1/indicator_period_data/?format=json&limit=${c.API_LIMIT}&period__indicator__result__project=${id}`,
+    "disaggregations": (id) =>
+        `/rest/v1/disaggregation/?format=json&limit=${c.API_LIMIT}&update__period__indicator__result__project=${id}`,
+    "comments": (id) =>
+        `/rest/v1/indicator_period_data_comment/?format=json&limit=${c.API_LIMIT}&data__period__indicator__result__project=${id}`,
+    "post_comment": () =>
+        "/rest/v1/indicator_period_data_comment/?format=json",
+    "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,
+    "update_and_comments": (id) => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
+    "updates_and_comments": () =>
+        `/rest/v1/indicator_period_data_framework/?format=json&limit=${c.API_LIMIT}`,
+    "user": (id) => `/rest/v1/user/${id}/?format=json`,
+    "partnerships": (id) => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
+    "file_upload": (id) => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
 
 
@@ -177,7 +175,7 @@ export const findChildren = (parentId, childModel) => {
     const parentField = c.PARENT_FIELD[childModel];
     const model = store.getState().models[childModel];
     if (model && model.ids) {
-        const { ids, objects } = model;
+        const {ids, objects} = model;
         const filteredIds = ids.filter(
             // if parentField is undefined return all ids (This applies to Result)
             id => parentField ? objects[id][parentField] === parentId : true
@@ -195,7 +193,7 @@ export const findChildrenFromCurrentState = (modelsState, parentId, childModel) 
     const parentField = c.PARENT_FIELD[childModel];
     const model = modelsState[childModel];
     if (model && model.ids) {
-        const { ids, objects } = model;
+        const {ids, objects} = model;
         const filteredIds = ids.filter(
             // if parentField is undefined return all ids (This applies to Result)
             id => parentField ? objects[id][parentField] === parentId : true
@@ -245,7 +243,7 @@ export function collapseId(model, id) {
 function childModelName(model) {
     try {
         return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) + 1];
-    } catch(e) {
+    } catch (e) {
         return undefined;
     }
 }
@@ -254,7 +252,7 @@ function childModelName(model) {
 export function parentModelName(model) {
     try {
         return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) - 1];
-    } catch(e) {
+    } catch (e) {
         return undefined;
     }
 }
@@ -283,7 +281,7 @@ export function hideMe(model, parentId, objectId) {
         // otherwise, find the parent collapse, check that it's in ui.visibleKeys
         const parentCollapse = ui.visibleKeys[collapseId(model, parentId)];
         // if we have a parent, check if I'm one of the open panels
-        const mePresent = parentCollapse && parentCollapse.find((id)=> id === String(objectId));
+        const mePresent = parentCollapse && parentCollapse.find((id) => id === String(objectId));
         // hide me if I'm not present and this.props.ui.hide is not false
         return !mePresent;
     }
@@ -296,7 +294,7 @@ export function fullUpdateVisibility(update, activeFilter) {
     // to be interacted with
     // returns true if the update should be fully visible
     let visible;
-    switch(activeFilter) {
+    switch (activeFilter) {
         case c.FILTER_NEED_REPORTING: {
             visible = [c.UPDATE_STATUS_NEW, c.UPDATE_STATUS_DRAFT, c.UPDATE_STATUS_REVISION];
             break;
@@ -339,7 +337,7 @@ function flatten(arr) {
     return arr.reduce(
         (acc, val) => acc.concat(
             Array.isArray(val) ? flatten(val) : val),
-            []
+        []
     );
 }
 
@@ -405,16 +403,16 @@ function lineage(model, id) {
 
 
 export function getAncestor(model, id, ancestorModel) {
-  // return the specified ancestor object for an object given the ancestorModel
-  while (model && model != ancestorModel) {
-    const parentModel = parentModelName(model);
-    const storeModel = store.getState().models[model];
-    if (storeModel.objects) {
-      const parentId = storeModel.objects[id][c.PARENT_FIELD[model]];
-      return getAncestor(parentModel, parentId, ancestorModel);
+    // return the specified ancestor object for an object given the ancestorModel
+    while (model && model != ancestorModel) {
+        const parentModel = parentModelName(model);
+        const storeModel = store.getState().models[model];
+        if (storeModel.objects) {
+            const parentId = storeModel.objects[id][c.PARENT_FIELD[model]];
+            return getAncestor(parentModel, parentId, ancestorModel);
+        }
     }
-  }
-  return store.getState().models[model].objects[id];
+    return store.getState().models[model].objects[id];
 }
 
 
@@ -443,7 +441,10 @@ export function closeNodes(model, ids) {
     const storeModel = store.getState().models[model];
     // Construct a list of collapse keys, based on ids
     const collapseIds = ids.map((id) => {
-        const parent_id = parentModelName(model)?storeModel.objects[id][c.PARENT_FIELD[model]]:model;
+        const parent_id = parentModelName(model) ?
+            storeModel.objects[id][c.PARENT_FIELD[model]]
+        :
+            model;
         return collapseId(model, parent_id);
     });
     // Collapse/close all children of the collected collapse keys
@@ -482,7 +483,7 @@ export function fieldValueOrSpinner(obj, field) {
     if (obj) {
         return {value: obj[field]};
     } else {
-        return {icon: <i className="fa fa-spin fa-spinner" />};
+        return {icon: <i className="fa fa-spin fa-spinner"/>};
     }
 }
 
@@ -522,30 +523,33 @@ export const filterUpdatesByStatus = (updates, ids, status) => {
 };
 
 
-export const disaggregationsToDisplayData = (disaggregationIds, disaggregations, dimensions)=> {
-    /* maps a number of disaggregations to the following format:
-        {
-            Flavor: {
-                Vanilla: 5,
-                Chocolate: 7,
-            },
-            Color: {
-                Red: 3,
-                Black: 7,
-                Blue: 6
-            },
-        }
-    */
+export const disaggregationsToDisplayData = (disaggregationIds, disaggregations, dimensions) => {
+    /*  maps a number of disaggregations to the following format:
+            {
+                Flavor: {
+                    Vanilla: 5,
+                    Chocolate: 7,
+                },
+                Color: {
+                    Red: 3,
+                    Black: 7,
+                    Blue: 6
+                },
+            }
+        which is used as input to components/common/DisaggregationsDisplay */
     return disaggregationIds && disaggregationIds.reduce((acc, id) => {
         const disaggregation = disaggregations[id];
         const dimension = dimensions[disaggregation.dimension];
         return update(acc, {
-                [dimension.name]: {$apply: value =>
-                    update(value || {}, {
-                        [dimension.value]:
-                            {$apply: disagg =>
-                                (disagg || 0) + parseInt(disaggregation.value)}
-                    })
+                [dimension.name]: {
+                    $apply: value =>
+                        update(value || {}, {
+                            [dimension.value]:
+                                {
+                                    $apply: disagg =>
+                                        (disagg || 0) + parseInt(disaggregation.value)
+                                }
+                        })
                 }
             }
         )
@@ -555,42 +559,42 @@ export const disaggregationsToDisplayData = (disaggregationIds, disaggregations,
 
 // Decimal rounding function (from MDN)
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
-(function() {
-  /**
-   * Decimal adjustment of a number.
-   *
-   * @param {String}  type  The type of adjustment.
-   * @param {Number}  value The number.
-   * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
-   * @returns {Number} The adjusted value.
-   */
-  function decimalAdjust(type, value, exp) {
-    // If the exp is undefined or zero...
-    if (typeof exp === 'undefined' || +exp === 0) {
-      return Math[type](value);
+(function () {
+    /**
+     * Decimal adjustment of a number.
+     *
+     * @param {String}  type  The type of adjustment.
+     * @param {Number}  value The number.
+     * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+     * @returns {Number} The adjusted value.
+     */
+    function decimalAdjust(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // If the value is negative...
+        if (value < 0) {
+            return -decimalAdjust(type, -value, exp);
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
     }
-    value = +value;
-    exp = +exp;
-    // If the value is not a number or the exp is not an integer...
-    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-      return NaN;
-    }
-    // If the value is negative...
-    if (value < 0) {
-      return -decimalAdjust(type, -value, exp);
-    }
-    // Shift
-    value = value.toString().split('e');
-    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-    // Shift back
-    value = value.toString().split('e');
-    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-  }
 
-  // Decimal round
-  if (!Math.round10) {
-    Math.round10 = function(value, exp) {
-      return decimalAdjust('round', value, exp);
-    };
-  }
+    // Decimal round
+    if (!Math.round10) {
+        Math.round10 = function (value, exp) {
+            return decimalAdjust('round', value, exp);
+        };
+    }
 })();

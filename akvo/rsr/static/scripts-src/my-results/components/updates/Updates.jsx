@@ -16,8 +16,14 @@ import keyBy from 'lodash/keyBy';
 import * as alertActions from "../../actions/alert-actions"
 
 import { collapseChange } from "../../actions/collapse-actions"
-import {uiHideMode, updateFormOpen} from "../../actions/ui-actions"
+
+import {
+    uiHideMode,
+    updateFormOpen
+} from "../../actions/ui-actions"
+
 import  * as c from '../../const.js';
+
 import {
     getPeriodsChildrenIds,
     getUpdatesForApprovedPeriods,
@@ -25,11 +31,16 @@ import {
     getUpdatesForPendingApprovalPeriods,
     getUpdatesDisaggregationIds,
 } from "../../selectors";
+
 import {
-    closeNodes, disaggregationsToDisplayData, filterUpdatesByStatus,
+    closeNodes,
+    disaggregationsToDisplayData,
+    filterUpdatesByStatus,
     fullUpdateVisibility,
-    hideMe, openNodes
+    hideMe,
+    openNodes
 } from "../../utils";
+
 import {
     displayDate,
     _,
@@ -37,7 +48,11 @@ import {
     collapseId,
 } from '../../utils.js';
 
-import {DisaggregationsDisplay, ToggleButton} from "../common"
+import {
+    DisaggregationsDisplay,
+    ToggleButton
+} from "../common"
+
 import Comments from "../Comments"
 
 
@@ -85,7 +100,7 @@ TimestampInfo.propTypes = {
 
 
 const UpdateValue =({update}) => {
-    const {value, actual_value, text} = update;
+    const {value, text} = update;
     return (
         <ul className="valueMeta">
             <li className="updateValue">Update value: <span>{value}</span></li>
@@ -137,37 +152,6 @@ UpdateAttachments.propTypes = {
     update: PropTypes.object.isRequired
 };
 
-const ShowDisaggregations = ({dimensions, disaggregations, isQualitative}) => {
-    if (dimensions.length == 0) {
-        return (<div></div>);
-    }
-    const grouped_dimensions = groupBy(dimensions, 'name'),
-          dimension_disaggregations = keyBy(disaggregations, 'dimension'),
-          heading = <h5>Disaggregations</h5>,
-          disaggregation_data = Object.entries(grouped_dimensions).map(([name, values]) => {
-              const dimension_values = values.map(({id, value}) => {
-                  const disaggregation = dimension_disaggregations[id],
-                        disaggregation_value =
-                            disaggregation ?
-                            (isQualitative? disaggregation.narrative : disaggregation.value) : "";
-                  return (<li key={value}>{value}: {disaggregation_value}</li>);
-              });
-              return (
-                  <div key={name}>
-                      <span>{name}</span>
-                      <ul>{dimension_values}</ul>
-                  </div>
-              )
-          });
-    return (
-        <ul className="showDisaggregations">
-            <li>
-                {heading}
-                {disaggregation_data}
-            </li>
-        </ul>
-    );
-};
 
 const QuantitativeUpdateBody = ({update, disaggregationIds, dimensions, disaggregations}) => {
     const {user_details, approver_details} = update;
@@ -243,11 +227,12 @@ QualitativeUpdateBody.propTypes = {
 
 
 const UserInfo = ({user_details}) => {
-    const organisation = user_details.approved_organisations.length ?
-                         user_details.approved_organisations[0].name
-:
-                         null;
-    const userName = user_details.first_name +" "+ user_details.last_name;
+    const {approved_organisations, first_name, last_name} = user_details;
+    const organisation = approved_organisations.length ?
+        approved_organisations[0].name
+    :
+        null;
+    const userName = first_name + " " + last_name;
 
     return (
         <span><span>{userName}</span> {organisation ? " at " + organisation: ''}</span>
@@ -278,6 +263,9 @@ const QuantitativeUpdate = (
 QuantitativeUpdate.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number,]).isRequired,
     update: PropTypes.object.isRequired,
+    disaggregationIds: PropTypes.array,
+    disaggregations: PropTypes.object,
+    dimensions: PropTypes.object,
     periodLocked: PropTypes.bool.isRequired,
     collapseId: PropTypes.string.isRequired,
 };

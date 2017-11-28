@@ -94,8 +94,6 @@ const DeleteUpdateAlert = ({message, close}) => (
     }
 }, {...alertActions, ...collapseActions})
 class PeriodHeader extends React.Component {
-// actualValue, user, isChecked, isQualitative, newUpdateButton,
-// delUpdateAlert, formOpen, showLockButton
     static propTypes = {
         period: PropTypes.object.isRequired,
         toggleCheckbox: PropTypes.func.isRequired,
@@ -261,37 +259,17 @@ export default class Periods extends React.Component {
             (id) => {
                 const {parentId, ui, page} = this.props;
                 const period = this.props.periods.objects[id];
-                // const actualValue = this.props.actualValue[id];
                 const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
-                // const formOpen = this.props.periodChildrenIds[id].indexOf(
-                //     this.props.ui[c.UPDATE_FORM_DISPLAY] || 0
-                // ) > -1;
                 const needsReporting =
                     !period.locked && period._meta && period._meta.children.ids.length == 0;
 
-                // const indicator = getAncestor(c.OBJECTS_PERIODS, id, c.OBJECTS_INDICATORS);
-
-                // let newUpdateButton, delUpdateAlert;
-                // if (showNewUpdateButton(page, period, ui, indicator)){
-                //     newUpdateButton = <NewUpdateButton period={period} user={this.props.user}/>;
-                //     // TODO: fix for new updates. The alert won't render since the temp update
-                //     // object gets deleted when saving.
-                //     // Possible solution: add an alert action and reducer instead of using callback
-                //     const DelUpdateAlert = AlertFactory(
-                //         {alertName: 'DeleteUpdateAlert-' + period.id}
-                //     )(DeleteUpdateAlert);
-                //     delUpdateAlert = <DelUpdateAlert />;
-                // }
-
                 let className = this.hideMe(id) ? 'hidePanel' : '';
                 className += isChecked ? ' periodSelected' : needsReporting ? ' needsReporting' : '';
-                // const showLockButton = this.props.ui.activeFilter !== c.FILTER_NEED_REPORTING &&
-                //                        this.props.ui.activeFilter !== c.FILTER_SHOW_PENDING;
+
                 return (
                     <Panel header={
                         <PeriodHeader period={period}
                                       toggleCheckbox={this.toggleCheckbox}/>}
-
                            key={id}
                            showArrow={!page.mode.public}
                            disabled={page.mode.public}
@@ -312,10 +290,6 @@ export default class Periods extends React.Component {
         } else if (periodIds.length > 0) {
             return (
                 <div className={c.OBJECTS_PERIODS}>
-                    {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
-                    {/*<ToggleButton onClick={this.toggleAll}*/}
-                     {/*label="++"*/}
-                     {/*disabled={!this.props.ui.allFetched}/>*/}
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periodIds)}
                     </Collapse>

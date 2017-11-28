@@ -9,15 +9,14 @@
     Use "reselect" to create memoized data transformations
  */
 
-import update from 'immutability-helper';
 import { createSelector } from "reselect"
 
 import * as c from "./const";
 
 import {
+    computePercentage,
     idsToActiveKey,
     isEmpty,
-    computePercentage,
 } from "./utils";
 
 
