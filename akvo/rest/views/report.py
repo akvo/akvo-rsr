@@ -23,8 +23,9 @@ def reports(request):
     reports = Report.objects.all()
     if not is_admin:
         # Show only those reports that the user is allowed to see
+        approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
         reports = reports.filter(
-            Q(organisations=None) | Q(organisations__in=user.approved_organisations())
+            Q(organisations=None) | Q(organisations__in=approved_orgs)
         ).distinct()
 
     # FIXME: Use a viewset instead?
