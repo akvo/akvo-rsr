@@ -144,13 +144,6 @@ class BudgetItem(models.Model):
         return str(self.iati_currency())
 
     def iati_status(self):
-
-        if self.status:
-            # DEBUG ###
-            import pdb
-            pdb.set_trace()
-            # DEBUG ###
-
         return codelist_value(BudgetStatus, self, 'status')
 
     def iati_status_unicode(self):
