@@ -20,11 +20,11 @@ from akvo.utils import codelist_choices, codelist_value, get_country
 
 class BaseLocation(models.Model):
     latitude = LatitudeField(
-        _(u'latitude'), null=True, blank=True, db_index=True, default=0,
+        _(u'latitude'), null=True, blank=True, db_index=True, default=None,
         help_text=_(u'Use a period to denote decimals.')
     )
     longitude = LongitudeField(
-        _(u'longitude'), null=True, blank=True, db_index=True, default=0,
+        _(u'longitude'), null=True, blank=True, db_index=True, default=None,
         help_text=_(u'Use a period to denote decimals.')
     )
     city = ValidXMLCharField(_(u'city'), blank=True, max_length=255)
@@ -59,7 +59,7 @@ class BaseLocation(models.Model):
                 get_country = True
 
         # Set a country based on the latitude and longitude if possible
-        if get_country:
+        if get_country and self.latitude is not None and self.longitude is not None:
             self.country = self.get_country_from_lat_lon()
             if 'update_fields' in kwargs and 'country' not in kwargs['update_fields']:
                 kwargs['update_fields'].append('country')
