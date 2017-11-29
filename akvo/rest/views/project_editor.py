@@ -348,10 +348,12 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
         # Retrieve object and set new value of field
         obj = Model.objects.get(pk=int(obj_id))
         setattr(obj, field, obj_data)
+        print "*** 01 ***"
     except (Model.DoesNotExist, ValueError) as e:
         # If object does not exist or 'obj_id' is not an integer, add an error and do not process
         # the object
         errors = add_error(errors, str(e), field_name)
+        print "*** 02 ***"
         return changes, errors, rel_objects
 
     try:
@@ -359,6 +361,7 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
         obj.full_clean(exclude=['primary_location',
                                 'primary_organisation',
                                 'last_update'])
+        print "*** 03 ***"
     except ValidationError as e:
         if field in dict(e).keys():
             # Since we save the object per field, display the (first) error of this field on the
@@ -368,10 +371,12 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
             # Somewhere else in the model a validation error occurred (or a combination of fields).
             # We display this nonetheless and do not save the field.
             errors = add_error(errors, str(e), field_name)
+        print "*** 04 ***"
     except Exception as e:
         # Just in case any other error will occur, this will also be displayed underneath the field
         # in the project editor.
         errors = add_error(errors, str(e), field_name)
+        print "*** 05 ***"
     else:
         # No validation errors. Save the field and append the changes to the changes list.
         # In case of a non-Project object, add the object to the related objects list, so that the
@@ -380,7 +385,9 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
         changes = add_changes(changes, obj, field, field_name, orig_data)
         if not (related_obj_id in rel_objects.keys() or isinstance(obj, Project)):
             rel_objects[related_obj_id] = obj.pk
+        print "*** 06 ***"
     finally:
+        print "*** 07 ***"
         return changes, errors, rel_objects
 
 
@@ -885,6 +892,7 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def project_editor_organisation_logo(request, pk=None):
+
     org = Organisation.objects.get(pk=pk)
     user = request.user
 
@@ -894,11 +902,14 @@ def project_editor_organisation_logo(request, pk=None):
     data = request.data
     errors, changes, rel_objects = [], [], {}
 
+    print "foo"
     if 'logo' in data.keys():
+        print "bar"
         changes, errors, rel_objects = update_object(
             Organisation, pk, 'logo', data['logo'], '', '', changes, errors,
             rel_objects, 'rsr_organisation.' + str(pk)
         )
+    print "baz"
 
     return Response({'errors': errors})
 

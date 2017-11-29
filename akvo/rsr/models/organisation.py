@@ -39,6 +39,7 @@ ORG_TYPES = (
 
 
 def image_path(instance, file_name):
+    print instance.id, file_name
     return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
 
 
