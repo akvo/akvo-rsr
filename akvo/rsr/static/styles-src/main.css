@@ -3204,9 +3204,9 @@ main.results-page {
       top: 16px !important;
       right: 10px !important;
       background: url(../images/arrowUpDown.png) no-repeat top center !important; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul {
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap.periodHeader {
       padding: 5px 10px; }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul li {
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap.periodHeader li {
         display: inline; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
       background: url(../images/arrowUpDown.png) no-repeat bottom center !important; }
