@@ -163,7 +163,7 @@ class PeriodHeader extends React.Component {
 
         return (
             <span className="periodWrap">
-                <ul className={formOpen ? "formOpen" : ""}>
+                <ul className={formOpen ? "periodHeader formOpen" : "periodHeader"}>
                     <li>{periodSelect}</li>
                     <li>{periodDate}</li>
                     {isQualitative ?

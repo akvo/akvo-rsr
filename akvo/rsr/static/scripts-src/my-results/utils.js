@@ -536,7 +536,10 @@ export const disaggregationsToDisplayData = (disaggregationIds, disaggregations,
                     Blue: 6
                 },
             }
-        which is used as input to components/common/DisaggregationsDisplay */
+        which is used as input to components/common/DisaggregationsDisplay
+        see https://github.com/kolodny/immutability-helper#autovivification for some insight
+        into the use uf update() below
+    */
     return disaggregationIds && disaggregationIds.reduce((acc, id) => {
         const disaggregation = disaggregations[id];
         const dimension = dimensions[disaggregation.dimension];

@@ -3844,49 +3844,61 @@ main.results-page {
                         .newUpdate {
                             @include smallButton($btnColor, white);
                         }
-                        ul {
-                            padding: 5px 10px;
-                            cursor: pointer;
-                            background-color: white;
-                            margin-bottom: 0;
-                            min-height: 40px !important;
-                            @include transition(background-color 0.2s linear);
-                            &:hover {
+                        ul{
+                            &.periodHeader {
                                 padding: 5px 10px;
-                                background-color: rgba($akvoPurple, 0.1);
-                            }
-                            &.formOpen {
-                                padding: 5px 10px;
-                                background-color: rgba($akvoPurple, 0.1);
-                            }
-                            li {
-                                display: inline;
-                                margin-right: 10px;
-                                padding-left: 35px;
-                                &:nth-child(1) {
-                                    padding-left: 0px;
+                                cursor: pointer;
+                                background-color: white;
+                                margin-bottom: 0;
+                                min-height: 40px !important;
+                                @include transition(background-color 0.2s linear);
+                                &:hover {
+                                    padding: 5px 10px;
+                                    background-color: rgba($akvoPurple, 0.1);
                                 }
-                                &:nth-child(2) {
-                                    padding-left: 0px;
+                                &.formOpen {
+                                    padding: 5px 10px;
+                                    background-color: rgba($akvoPurple, 0.1);
                                 }
-                                &:nth-child(3), &:nth-child(4) {
-                                    span {
-                                        color: rgba($akvoBlack, 0.4);
+                                li {
+                                    display: inline;
+                                    margin-right: 10px;
+                                    padding-left: 35px;
+                                    &:nth-child(1) {
+                                        padding-left: 0px;
                                     }
-                                    &.targetValue, &.actualValue {
-                                        font-variant: small-caps;
+                                    &:nth-child(2) {
+                                        padding-left: 0px;
                                     }
-                                }
-                                &:nth-child(5) {
-                                    margin-right: 0px;
-                                    padding-left: 75px;
-                                    div {
-                                        display: inline;
-                                        &.lock-toggle-alert {
-                                            background: white;
-                                            @include border-radius(3px);
-                                            padding: 5px 7px;
+                                    &:nth-child(3), &:nth-child(4) {
+                                        span {
+                                            color: rgba($akvoBlack, 0.4);
+                                        }
+                                        &.targetValue, &.actualValue {
+                                            font-variant: small-caps;
+                                        }
+                                    }
+                                    &:nth-child(5) {
+                                        margin-right: 0px;
+                                        padding-left: 75px;
+                                        div {
+                                            display: inline;
+                                            &.lock-toggle-alert {
+                                                background: white;
+                                                @include border-radius(3px);
+                                                padding: 5px 7px;
+                                                button {
+                                                    background: transparent;
+                                                    border: none;
+                                                    color: $anchorLink;
+                                                    &:hover {
+                                                        background: $rsrBlue;
+                                                        color: white;
+                                                    }
+                                                }
+                                            }
                                             button {
+                                                margin: 0px 0 0 25px;
                                                 background: transparent;
                                                 border: none;
                                                 color: $anchorLink;
@@ -3896,22 +3908,33 @@ main.results-page {
                                                 }
                                             }
                                         }
-                                        button {
-                                            margin: 0px 0 0 25px;
-                                            background: transparent;
-                                            border: none;
-                                            color: $anchorLink;
-                                            &:hover {
-                                                background: $rsrBlue;
-                                                color: white;
-                                            }
-                                        }
+                                    }
+                                    .lockToggle {
+                                        float: right;
+                                        margin-right: 25px;
                                     }
                                 }
-                                .lockToggle {
-                                    float: right;
-                                    margin-right: 25px;
+                            }
+                        }
+                        .showDisaggregations {
+                            padding-left: 40px;
+                            margin: 25px auto;
+                            h5 {
+                                color: rgba($akvoBlack, 0.5);
+                            }
+                            div {
+                                display: inline-block;
+                                margin-left: 20px;
+                                &.first-of-type {
+                                    margin-left: 0;
                                 }
+                                vertical-align: top;
+                            }
+                            ul {
+                                padding-left: 20px;
+                            }
+                            li {
+                                list-style-type: none;
                             }
                         }
                     }
@@ -4054,10 +4077,14 @@ main.results-page {
                                                 }
                                                 div {
                                                     display: inline-block;
-                                                    margin-left: 10px;
+                                                    margin-left: 20px;
                                                     &.first-of-type {
                                                         margin-left: 0;
                                                     }
+                                                    vertical-align: top;
+                                                }
+                                                ul {
+                                                    padding-left: 20px;
                                                 }
                                             }
                                         }
