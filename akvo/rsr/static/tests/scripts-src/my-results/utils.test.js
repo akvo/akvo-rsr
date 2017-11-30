@@ -57,14 +57,14 @@ describe("function isNumeric", () => {
 });
 
 describe("function getCookie", () => {
-    it('returns the cookies name', () => {
+    it('returns the value of a named cookie', () => {
         const document = global.document;
             global.document = {
                 cookie: 'name=value; otherName=otherValue'
             };
-         let name = 'name',
+        let name = 'name',
             otherName = 'otherName';
-         const value = 'value',
+        const value = 'value',
             otherValue = 'otherValue';
          expect(utils.getCookie(name)).to.equal(value);
          expect(utils.getCookie(otherName)).to.equal(otherValue);
@@ -139,6 +139,7 @@ describe("function levelBelow", () => {
     });
 });
 
+// TODO: update test so we test the full functionality of fullUpdateVisibility()
 describe("function fullUpdateVisibility", () => {
     it('expect to return false if an update have filters and should not be full visible', () => {
         const filter = c.FILTER_NEED_REPORTING,
