@@ -3388,9 +3388,11 @@ main.results-page {
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
     z-index: 999;
     top: -60px !important; }
-  .update-container.quantitativeUpdate .targetLabel + div {
-    top: -1.35em;
-    left: 27%; }
+  .update-container.quantitativeUpdate .targetLabel {
+    margin-left: 25px; }
+    .update-container.quantitativeUpdate .targetLabel + div {
+      top: -1.35em;
+      left: 27%; }
   .update-container .update-entry-container {
     padding: 0 0 10px 0;
     position: relative; }

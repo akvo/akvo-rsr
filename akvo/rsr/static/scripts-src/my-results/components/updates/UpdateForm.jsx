@@ -76,6 +76,7 @@ const toolTipStyle = {
     zIndex: '98',
     color: 'black',
     cursor: 'help',
+    left: '0',
   },
   tooltip: {
     zIndex: '99',
@@ -83,7 +84,7 @@ const toolTipStyle = {
     marginBottom: '10px',
     padding: '5px',
     top: '20px',
-    left: '75px',
+    left: '165px',
   },
   content: {
     color: '#000',
@@ -98,7 +99,7 @@ const toolTipStyle = {
     width: '0',
     height: '0',
     top: '-5px',
-    left: '30%',
+    left: '11px',
     marginLeft: '0px',
     borderBottom: 'solid #000 5px',
     borderLeft: 'solid transparent 5px',
@@ -111,8 +112,11 @@ const toolTipStyle = {
     bottom: '-20px',
   },
 };
-
+const targetLabelStyle = {
+  marginLeft: '25px',
+}
 const QuantitativeHeader = ({targetValue, targetComment}) => {
+
     const comment = targetComment ?
         <Tooltip content={targetComment} styles={toolTipStyle}>
             <span className="glyphicon glyphicon-info-sign info-icon"></span>
@@ -121,7 +125,7 @@ const QuantitativeHeader = ({targetValue, targetComment}) => {
         undefined;
     return (
         <div>
-            <div className="targetLabel">
+            <div className="targetLabel" styles={targetLabelStyle}>
                 {_('target_value')}: <span>{targetValue}</span>
             </div>
             {comment}

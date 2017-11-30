@@ -3844,7 +3844,7 @@ main.results-page {
                         .newUpdate {
                             @include smallButton($btnColor, white);
                         }
-                        ul{
+                        ul {
                             &.periodHeader {
                                 padding: 5px 10px;
                                 cursor: pointer;
@@ -4292,6 +4292,7 @@ main.results-page {
             }
         }
         .targetLabel {
+            margin-left: 25px;
             & + div {
                 top: -1.35em;
                 left: 27%;
