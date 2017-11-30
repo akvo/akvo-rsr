@@ -8,18 +8,18 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 
-from akvo.rsr.models import (
-    Employment, Indicator, Organisation, Partnership, Project, Result, User, BudgetItem,
-    BudgetItemLabel, OrganisationIndicatorLabel, IndicatorLabel
-)
-from akvo.rsr.templatetags.project_editor import choices
-from akvo.utils import check_auth_groups, DjangoModel
-
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
 from akvo.rest.views.project_editor import add_error, split_key
+from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
+from akvo.rsr.models import (
+    BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
+    OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
+)
+from akvo.rsr.templatetags.project_editor import choices
+from akvo.utils import check_auth_groups, DjangoModel
 
 
 class BaseReorderTestCase(object):
@@ -489,3 +489,76 @@ class ChoicesTestCase(TestCase):
             ids,
             [label1.pk, label2.pk]
         )
+
+
+class ProjectLocationTestCase(TestCase):
+    """Test that creating and updating project locations works correctly."""
+
+    def setUp(self):
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.project = Project.objects.create(title='New Project')
+        self.create_countries()
+        username, password = self.create_user()
+        self.c.login(username=username, password=password)
+
+    def test_correct_country_new_location(self):
+        # Given
+        latitude, longitude = ('8.98075182', '38.797958')  # Ethiopia
+        id_ = self.project.id
+        url = '/rest/v1/project/{}/project_editor/?format=json'.format(self.project.id)
+        data = {
+            'rsr_projectlocation.latitude.{}_new-1'.format(id_): latitude,
+            'rsr_projectlocation.longitude.{}_new-1'.format(id_): longitude
+        }
+
+        # When
+        response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        location = ProjectLocation.objects.get(location_target=id_)
+        self.assertEqual(location.latitude, float(latitude))
+        self.assertEqual(location.longitude, float(longitude))
+        self.assertEqual(location.country.iso_code, u'et')
+
+    def test_updated_lat_lng_change_country(self):
+        # Given
+        latitude, longitude = ('8.98075182', '38.797958')  # Ethiopia
+        location = ProjectLocation.objects.create(location_target=self.project,
+                                                  latitude=latitude,
+                                                  longitude=longitude)
+        id_ = self.project.id
+        url = '/rest/v1/project/{}/project_editor/?format=json'.format(id_)
+        # Move the location to Ghana
+        new_longitude = '0'
+        data = {
+            'rsr_projectlocation.longitude.{}'.format(location.id): new_longitude
+        }
+
+        # When
+        response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        location = ProjectLocation.objects.get(location_target=id_)
+        self.assertEqual(location.latitude, float(latitude))
+        self.assertEqual(location.longitude, float(new_longitude))
+        self.assertEqual(location.country.iso_code, u'gh')
+
+    @staticmethod
+    def create_countries():
+        """Populate the DB with countries."""
+        for iso_code, _ in ISO_3166_COUNTRIES:
+            Country.objects.get_or_create(
+                iso_code=iso_code,
+                defaults=Country.fields_from_iso_code(iso_code)
+            )
+
+    @staticmethod
+    def create_user():
+        username = email = 'username'
+        password = 'password'
+        user = User.objects.create_user(username, email, password)
+        user.is_active = user.is_admin = user.is_superuser = True
+        user.save()
+        return username, password
