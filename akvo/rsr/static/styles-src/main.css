@@ -3387,7 +3387,7 @@ main.results-page {
     min-height: 220px !important; }
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
     z-index: 999;
-    top: -60px !important; }
+    top: -42px !important; }
   .update-container.quantitativeUpdate .targetLabel {
     margin-left: 25px; }
     .update-container.quantitativeUpdate .targetLabel + div {
