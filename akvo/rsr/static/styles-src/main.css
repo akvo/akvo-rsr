@@ -3204,9 +3204,9 @@ main.results-page {
       top: 16px !important;
       right: 10px !important;
       background: url(../images/arrowUpDown.png) no-repeat top center !important; }
-    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul {
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap.periodHeader {
       padding: 5px 10px; }
-      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap ul li {
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header span.periodWrap.periodHeader li {
         display: inline; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-header[aria-expanded="true"] .arrow {
       background: url(../images/arrowUpDown.png) no-repeat bottom center !important; }
@@ -3387,10 +3387,12 @@ main.results-page {
     min-height: 220px !important; }
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
     z-index: 999;
-    top: -60px !important; }
-  .update-container.quantitativeUpdate .targetLabel + div {
-    top: -1.35em;
-    left: 27%; }
+    top: -42px !important; }
+  .update-container.quantitativeUpdate .targetLabel {
+    margin-left: 25px; }
+    .update-container.quantitativeUpdate .targetLabel + div {
+      top: -1.35em;
+      left: 27%; }
   .update-container .update-entry-container {
     padding: 0 0 10px 0;
     position: relative; }

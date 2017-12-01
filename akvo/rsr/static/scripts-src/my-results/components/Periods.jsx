@@ -133,11 +133,16 @@ class PeriodHeader extends React.Component {
         const periodStart = displayDate(period.period_start);
         const periodEnd = displayDate(period.period_end);
         const periodDate = `${periodStart} - ${periodEnd}`;
-        const showLockButton = ui.activeFilter !== c.FILTER_NEED_REPORTING &&
+        const showLockCheckbox = ui.activeFilter !== c.FILTER_NEED_REPORTING &&
                                ui.activeFilter !== c.FILTER_SHOW_PENDING;
 
+        const lockStatus = period.locked ?
+            <i title={_('locked')} className="fa fa-lock" aria-hidden="true"/>
+        :
+            <i title={_('unlocked')} className="fa fa-unlock-alt" aria-hidden="true"/>;
+
         let periodSelect;
-        if (user.isMEManager && showLockButton) {
+        if (user.isMEManager && showLockCheckbox) {
             periodSelect = <PeriodSelect id={period.id}
                                          toggleCheckbox={toggleCheckbox}
                                          isChecked={isChecked}/>;
@@ -179,6 +184,7 @@ class PeriodHeader extends React.Component {
                             <span>Actual:</span> {actualValue}
                         </li>}
                     <li>{newUpdateButton}{delUpdateAlert}</li>
+                    {page.mode.public ? undefined : <li>{lockStatus}</li>}
                 </ul>
                 {isQualitative || !page.mode.public?
                     undefined

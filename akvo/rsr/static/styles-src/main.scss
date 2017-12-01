@@ -3844,7 +3844,7 @@ main.results-page {
                         .newUpdate {
                             @include smallButton($btnColor, white);
                         }
-                        ul{
+                        ul {
                             &.periodHeader {
                                 padding: 5px 10px;
                                 cursor: pointer;
@@ -3972,7 +3972,7 @@ main.results-page {
                     }
                     span {
                         &.periodWrap {
-                            ul {
+                            &.periodHeader {
                                 padding: 5px 10px;
                                 li {
                                     display: inline;
@@ -4287,11 +4287,12 @@ main.results-page {
             &.edit-in-progress {
                 .closingBtn {
                     z-index: 999;
-                    top: -60px !important;
+                    top: -42px !important;
                 }
             }
         }
         .targetLabel {
+            margin-left: 25px;
             & + div {
                 top: -1.35em;
                 left: 27%;
