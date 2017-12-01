@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Akvo Foundation</property>
+    <property name="comments">Last changed in RSR issue 2905</property>
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
@@ -209,6 +210,18 @@ function akvoDateRange(date1, date2){
                     <text-property name="displayName">period_end</text-property>
                     <text-property name="heading">period_end</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">numerator</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">numerator</text-property>
+                    <text-property name="heading">numerator</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">denominator</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">denominator</text-property>
+                    <text-property name="heading">denominator</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -309,6 +322,16 @@ function akvoDateRange(date1, date2){
                         <property name="position">17</property>
                         <property name="name">period_end</property>
                         <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">numerator</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">denominator</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -433,10 +456,24 @@ function akvoDateRange(date1, date2){
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">numerator</property>
+                    <property name="nativeName">numerator</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">denominator</property>
+                    <property name="nativeName">denominator</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select rsr_result.title,
- rsr_result.id as result_pk,
- rsr_result.order as result_order,
+            <xml-property name="queryText"><![CDATA[select r.title,
+ r.id as result_pk,
+ r.order as result_order,
  rsr_indicator.title as indicator_title,
  rsr_indicator.id as indicator_pk,
  rsr_indicator.baseline_year,
@@ -450,11 +487,13 @@ function akvoDateRange(date1, date2){
  rsr_indicatorperiod.target_value,
  rsr_indicatorperiod.target_comment,
  rsr_indicatorperiod.period_start,
- rsr_indicatorperiod.period_end
-from rsr_result
-left join rsr_indicator on result_id=rsr_result.id
+ rsr_indicatorperiod.period_end,
+ rsr_indicatorperiod.numerator,
+ rsr_indicatorperiod.denominator
+from rsr_result r
+left join rsr_indicator on result_id=r.id
 left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
-where rsr_result.project_id = ?
+where r.project_id = ?
 order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorperiod.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4433,13 +4472,13 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 <structure>
                     <property name="name">actual_fmt</property>
                     <text-property name="displayName">actual_fmt</text-property>
-                    <expression name="expression" type="javascript">isNaN(parseFloat(dataSetRow["actual_value"]))&#13;
+                    <expression name="expression" type="javascript">dataSetRow["measure"]  == "2" &amp;&amp; dataSetRow["numerator"]  != null &amp;&amp; dataSetRow["denominator"] != null &amp;&amp; dataSetRow["denominator"] != 0.0  &#13;
+?&#13;
+Formatter.format(Number(dataSetRow["numerator"])/Number(dataSetRow["denominator"]),"#,##0{RoundingMode=HALF_UP}")+"%"&#13;
+:&#13;
+isNaN(parseFloat(dataSetRow["actual_value"]))&#13;
 ?&#13;
 dataSetRow["actual_value"]&#13;
-:&#13;
-dataSetRow["measure"]  == "2"&#13;
-?&#13;
-Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}")+"%"&#13;
 :&#13;
 Formatter.format(Number(dataSetRow["actual_value"]),"#,##0{RoundingMode=HALF_UP}")</expression>
                     <property name="dataType">string</property>
@@ -4464,6 +4503,20 @@ Formatter.format(Number(dataSetRow["target_value"]),"#,##0{RoundingMode=HALF_UP}
                     <text-property name="displayName">measure</text-property>
                     <expression name="expression" type="javascript">dataSetRow["measure"]</expression>
                     <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">numerator</property>
+                    <text-property name="displayName">numerator</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["numerator"]</expression>
+                    <property name="dataType">float</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">denominator</property>
+                    <text-property name="displayName">denominator</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["denominator"]</expression>
+                    <property name="dataType">float</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
