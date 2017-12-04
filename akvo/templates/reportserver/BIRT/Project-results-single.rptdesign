@@ -79,6 +79,40 @@ function akvoDateRange(date1, date2){
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="StartDate" id="322">
+            <text-property name="promptText">Start Date</text-property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1900-01-01</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Custom</property>
+                <property name="pattern">yyyy-MM-dd</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="EndDate" id="323">
+            <text-property name="promptText">End Date</text-property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">2099-12-31</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Custom</property>
+                <property name="pattern">yyyy-MM-dd</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="RSR-readonly" id="49">
@@ -232,6 +266,26 @@ function akvoDateRange(date1, date2){
                     <property name="nativeDataType">4</property>
                     <property name="position">1</property>
                     <expression name="defaultValue" type="javascript">2849</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">startdate</property>
+                    <property name="paramName">StartDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">enddate</property>
+                    <property name="paramName">EndDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">3</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -474,30 +528,62 @@ function akvoDateRange(date1, date2){
             <xml-property name="queryText"><![CDATA[select r.title,
  r.id as result_pk,
  r.order as result_order,
- rsr_indicator.title as indicator_title,
- rsr_indicator.id as indicator_pk,
- rsr_indicator.baseline_year,
- rsr_indicator.baseline_comment,
- rsr_indicator.baseline_value,
- rsr_indicator.order as indicator_order,
- rsr_indicator.measure,
- rsr_indicatorperiod.id as indicatorperiod_pk,
- rsr_indicatorperiod.actual_value,
- rsr_indicatorperiod.actual_comment,
- rsr_indicatorperiod.target_value,
- rsr_indicatorperiod.target_comment,
- rsr_indicatorperiod.period_start,
- rsr_indicatorperiod.period_end,
- rsr_indicatorperiod.numerator,
- rsr_indicatorperiod.denominator
+ i.title as indicator_title,
+ i.id as indicator_pk,
+ i.baseline_year,
+ i.baseline_comment,
+ i.baseline_value,
+ i.order as indicator_order,
+ i.measure,
+ p.id as indicatorperiod_pk,
+ p.actual_value,
+ p.actual_comment,
+ p.target_value,
+ p.target_comment,
+ p.period_start,
+ p.period_end,
+ p.numerator,
+ p.denominator
 from rsr_result r
-left join rsr_indicator on result_id=r.id
-left join rsr_indicatorperiod on indicator_id=rsr_indicator.id
-where r.project_id = ?
-order by result_order, result_pk, indicator_order, indicator_pk, rsr_indicatorperiod.period_start]]></xml-property>
+left join rsr_indicator i on result_id=r.id
+left join rsr_indicatorperiod p on indicator_id=i.id
+where r.project_id = ? and p.period_start >= ? and p.period_end <= ?
+order by result_order, result_pk, indicator_order, indicator_pk, p.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>3</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
