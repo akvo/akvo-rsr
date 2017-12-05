@@ -223,6 +223,10 @@ rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin
 rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 
+rules.add_perm('rsr.add_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
+
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)
 
