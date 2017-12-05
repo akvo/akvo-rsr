@@ -45,7 +45,7 @@ from .result import (Disaggregation, Indicator, IndicatorDimension,
                      IndicatorPeriodActualDimension,
                      IndicatorPeriodTargetDimension,
                      IndicatorPeriodActualLocation,
-                     IndicatorPeriodTargetLocation)
+                     IndicatorPeriodTargetLocation, NarrativeReport)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -124,8 +124,7 @@ __all__ = [
     'Keyword',
     'LegacyData',
     'Link',
-    'ProjectLocation',
-    'ProjectUpdateLocation',
+    'NarrativeReport',
     'Organisation',
     'OrganisationAccount',
     'OrganisationCountryBudget',
@@ -144,6 +143,8 @@ __all__ = [
     'OrganisationTotalBudget',
     'OrganisationTotalBudgetLine',
     'OrganisationTotalExpenditure',
+    'ProjectLocation',
+    'ProjectUpdateLocation',
     'PartnerSite',
     'Partnership',
     'PlannedDisbursement',
