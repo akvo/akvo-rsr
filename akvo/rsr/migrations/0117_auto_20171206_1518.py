@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='NarrativeReport',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('description', akvo.rsr.fields.ValidXMLCharField(help_text='The text of the narrative report.', max_length=2000, verbose_name='narrative report description', blank=True)),
+                ('text', akvo.rsr.fields.ValidXMLTextField(help_text='The text of the narrative report.', verbose_name='narrative report text', blank=True)),
                 ('published', models.BooleanField(default=False, verbose_name='locked')),
                 ('period_start', models.DateField(help_text='The start date of the reporting period for this narrative report.', verbose_name='period start')),
                 ('period_end', models.DateField(help_text='The end date of the reporting period for this narrative report.', verbose_name='period end')),
