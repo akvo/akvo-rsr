@@ -51,6 +51,7 @@ from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationTotalExpenditureViewSet,
                                   OrganisationExpenseLineViewSet)
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
+from .organisation_indicator_label import OrganisationIndicatorLabelViewSet
 from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
@@ -155,6 +156,7 @@ __all__ = [
     'OrganisationCountryBudgetLineViewSet',
     'OrganisationCustomFieldViewSet',
     'OrganisationExpenseLineViewSet',
+    'OrganisationIndicatorLabelViewSet',
     'OrganisationRecipientOrgBudgetViewSet',
     'OrganisationRecipientOrgBudgetLineViewSet',
     'OrganisationRegionBudgetViewSet',
