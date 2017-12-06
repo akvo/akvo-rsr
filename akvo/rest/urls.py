@@ -51,6 +51,7 @@ router.register(r'internal_organisation_id',
 router.register(r'keyword', views.KeywordViewSet)
 router.register(r'legacy_data', views.LegacyDataViewSet)
 router.register(r'link', views.LinkViewSet)
+router.register(r'narrative_report', views.NarrativeReportViewSet)
 router.register(r'organisation', views.OrganisationViewSet)
 router.register(r'organisation_country_budget', views.OrganisationCountryBudgetViewSet)
 router.register(r'organisation_country_budget_line', views.OrganisationCountryBudgetLineViewSet)

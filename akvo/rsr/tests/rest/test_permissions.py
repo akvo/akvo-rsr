@@ -174,6 +174,11 @@ class PermissionFilteringTestCase(TestCase):
                 M.IndicatorPeriodTargetDimension.objects.create(period=period)
                 # indicator period target location
                 M.IndicatorPeriodTargetLocation.objects.create(period=period)
+                # narrative report
+                M.NarrativeReport.objects.create(period_start="2017-10-01",
+                                                 period_end="2017-12-01",
+                                                 category=label,
+                                                 project=project)
 
                 # Per-project per-user objects
                 for user in organisation.all_users():
@@ -530,6 +535,12 @@ class PermissionFilteringTestCase(TestCase):
 
         # one partnership per project per org
         model_map[M.Partnership] = {
+            'group_count': group_count(8, 4, 6, 4),
+            'project_relation': 'project__'
+        }
+
+        # one narrative per project
+        model_map[M.NarrativeReport] = {
             'group_count': group_count(8, 4, 6, 4),
             'project_relation': 'project__'
         }
