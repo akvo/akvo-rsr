@@ -50,7 +50,7 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(username, email, password, False, False, False, **extra_fields)
 
     def create_superuser(self, username, email, password, **extra_fields):
-        return self._create_user(username, email, password, True, True, False, **extra_fields)
+        return self._create_user(username, email, password, True, True, True, **extra_fields)
 
     def __getattr__(self, attr, *args):
         try:
@@ -102,7 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', ]
 
     class Meta:
         app_label = 'rsr'
