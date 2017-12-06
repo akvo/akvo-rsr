@@ -1366,7 +1366,10 @@ class Project(TimestampsMixin, models.Model):
 
         """
         IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
-        child_period, created = IndicatorPeriod.objects.update_or_create(
+        child_period, created = IndicatorPeriod.objects.select_related(
+            'indicator',
+            'indicator__result',
+        ).update_or_create(
             indicator=indicator,
             parent_period=period,
             defaults=dict(

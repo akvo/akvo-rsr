@@ -102,7 +102,12 @@ class IndicatorPeriod(models.Model):
 
         super(IndicatorPeriod, self).save(*args, **kwargs)
 
-        for child_indicator in self.indicator.child_indicators.all():
+        child_indicators = self.indicator.child_indicators.select_related(
+            'result',
+            'result__project',
+        )
+
+        for child_indicator in child_indicators.all():
             child_indicator.result.project.add_period(child_indicator, self)
 
         # If the actual value has changed, the period has a parent period and aggregations are on,
