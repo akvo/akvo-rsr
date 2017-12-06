@@ -8,7 +8,8 @@
 
 import React from "react";
 import {connect} from "react-redux";
-
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import 'react-tabs/style/react-tabs.css';
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
@@ -136,6 +137,7 @@ export default class App extends React.Component {
         }
 
         const projectId = project.id;
+        const primaryOrganisationId = project.primaryOrganisationId;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
         fetchModel('dimensions', projectId, activateToggleAll);
@@ -143,6 +145,8 @@ export default class App extends React.Component {
         fetchModel('updates', projectId, activateToggleAll);
         fetchModel('disaggregations', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);
+        fetchModel('reports', projectId, activateToggleAll);
+        fetchModel('categories', primaryOrganisationId, activateToggleAll);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -348,14 +352,25 @@ export default class App extends React.Component {
         return (
             <section className="results liveView">
                 <FilterBar callbacks={callbacks}/>
-                <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
-                    <article className={updateForm ? 'shared' : 'full'}>
-                        {results}
-                    </article>
-                    <aside className={updateForm ? 'open' : 'closed'}>
-                        {updateForm}
-                    </aside>
-                </main>
+                <Tabs>
+                    <TabList>
+                        <Tab>Results</Tab>
+                        <Tab>Narrative reports</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
+                            <article className={updateForm ? 'shared' : 'full'}>
+                                {results}
+                            </article>
+                            <aside className={updateForm ? 'open' : 'closed'}>
+                                {updateForm}
+                            </aside>
+                        </main>
+                    </TabPanel>
+                    <TabPanel>
+                        <h2>Narrative!</h2>
+                    </TabPanel>
+                </Tabs>
             </section>
         );
     }

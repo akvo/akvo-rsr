@@ -30,6 +30,7 @@
     "react-redux-alerts": "^1.5.8",
     "react-select": "^1.0.0-rc.3",
     "react-sweet-progress": "^1.1.0",
+    "react-tabs": "^2.1.1",
     "redux": "^3.6.0",
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.2.0",

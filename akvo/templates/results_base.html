@@ -13,7 +13,8 @@
 {# Project id's #}
 <script type="application/json" id="project">
     {
-        "id": {{ project.pk }}
+        "id": {{ project.pk }},
+        "primaryOrganisationId": {{ project.primary_organisation.pk }}
     }
 </script>
 
