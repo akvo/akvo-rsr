@@ -10,6 +10,7 @@ import React from "react";
 import {connect} from "react-redux";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import 'react-tabs/style/react-tabs.css';
+import { Markdown } from 'react-showdown';
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
@@ -53,6 +54,7 @@ import {
 } from "../utils"
 
 import FilterBar from "./FilterBar";
+import Reports from "./Reports";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
 import UpdateForm from "./updates/UpdateForm";
@@ -83,6 +85,7 @@ const modifyUser = (isMEManager) => {
         indicators: store.models.indicators,
         periods: store.models.periods,
         updates: store.models.updates,
+        reports: store.models.reports,
         disaggregations: getUpdatesDisaggregationObjects(store),
         dimension_ids: getIndicatorsDimensionIds(store),
         dimensions: store.models.dimensions,
@@ -368,7 +371,7 @@ export default class App extends React.Component {
                         </main>
                     </TabPanel>
                     <TabPanel>
-                        <h2>Narrative!</h2>
+                        <Reports/>
                     </TabPanel>
                 </Tabs>
             </section>

@@ -160,7 +160,7 @@ export function selectPeriodByDates(periodStart, periodEnd) {
 }
 
 
-export function selectablePeriods(periodIds) {
+export function selectablePeriods(periodIds, showCount=true) {
     // Create an array with the set of Period start and end dates. Used to select all periods with
     // common dates
     // const periodIds = store.getState().models[OBJECTS_PERIODS].ids;
@@ -192,9 +192,13 @@ export function selectablePeriods(periodIds) {
             const periodStartDisplay = displayDate(periodStart);
             const periodEndDisplay = displayDate(periodEnd);
             const dateCount = dateMap[datePair];
+            const label = showCount ?
+                `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
+            :
+                `${periodStartDisplay} - ${periodEndDisplay}`;
             return {
                 value: selectPeriodByDates.bind(null, periodStart, periodEnd),
-                label: `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
+                label
             };
         });
         // Label for the options

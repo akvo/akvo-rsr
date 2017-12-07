@@ -62,6 +62,7 @@ export const
     OBJECTS_COMMENTS = 'comments',
     OBJECTS_DISAGGREGATIONS = 'disaggregations',
     OBJECTS_USER = 'user',
+    OBJECTS_REPORTS = 'narrativeReports',
 
     // List of the models used in the accordion, in hierarchy order
     MODELS_LIST = [
