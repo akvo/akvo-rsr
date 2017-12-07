@@ -351,13 +351,13 @@ export default class App extends React.Component {
 
         return (
             <section className="results liveView">
-                <FilterBar callbacks={callbacks}/>
                 <Tabs>
                     <TabList>
                         <Tab>Results</Tab>
                         <Tab>Narrative reports</Tab>
                     </TabList>
                     <TabPanel>
+                        <FilterBar callbacks={callbacks}/>
                         <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
                             <article className={updateForm ? 'shared' : 'full'}>
                                 {results}
