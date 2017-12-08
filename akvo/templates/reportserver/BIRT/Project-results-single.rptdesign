@@ -547,7 +547,9 @@ function akvoDateRange(date1, date2){
 from rsr_result r
 left join rsr_indicator i on result_id=r.id
 left join rsr_indicatorperiod p on indicator_id=i.id
-where r.project_id = ? and p.period_start >= ? and p.period_end <= ?
+where r.project_id = ?
+  and (p.period_start is null or p.period_start >= ?)
+  and (p.period_end   is null or p.period_end <= ?)
 order by result_order, result_pk, indicator_order, indicator_pk, p.period_start]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4169,6 +4171,10 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 </cell>
             </row>
         </grid>
+        <text-data id="324">
+            <expression name="valueExpr">"Selected are periods with dates: " + params["StartDate"].value + " -- " + params["EndDate"].value</expression>
+            <property name="contentType">html</property>
+        </text-data>
         <grid id="123">
             <property name="backgroundColor">#EDEFE1</property>
             <property name="marginTop">8pt</property>
