@@ -85,6 +85,8 @@ class Indicator(models.Model):
             indicator_unicode += u' - %s %s' % (unicode(self.periods.count()),
                                                 _(u'period(s)'))
 
+        indicator_unicode += u' - %s' % dict(self.INDICATOR_TYPES)[self.type]
+
         return indicator_unicode
 
     def save(self, *args, **kwargs):
