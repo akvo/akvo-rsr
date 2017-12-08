@@ -16,4 +16,3 @@ class OrganisationIndicatorLabelViewSet(PublicProjectViewSet):
     """
     queryset = OrganisationIndicatorLabel.objects.all()
     serializer_class = OrganisationIndicatorLabelSerializer
-
