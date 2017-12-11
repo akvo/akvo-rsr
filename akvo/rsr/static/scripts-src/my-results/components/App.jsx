@@ -140,7 +140,7 @@ export default class App extends React.Component {
         }
 
         const projectId = project.id;
-        const primaryOrganisationId = project.primaryOrganisationId;
+        const projectPartners = project.projectPartners;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
         fetchModel('dimensions', projectId, activateToggleAll);
@@ -149,7 +149,7 @@ export default class App extends React.Component {
         fetchModel('disaggregations', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);
         fetchModel('reports', projectId, activateToggleAll);
-        fetchModel('categories', primaryOrganisationId, activateToggleAll);
+        fetchModel('categories', projectPartners, activateToggleAll);
     }
 
     componentWillReceiveProps(nextProps) {

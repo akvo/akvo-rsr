@@ -152,7 +152,7 @@ export const endpoints = {
     "reports": (id) =>
         `/rest/v1/narrative_report/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     "categories": (id) =>
-        `/rest/v1/organisation_indicator_label/?format=json&limit=${c.API_LIMIT}&organisation=${id}`,
+        `/rest/v1/organisation_indicator_label/?format=json&limit=${c.API_LIMIT}&filter={'organisation__in':${id}}`,
     "post_comment": () =>
         "/rest/v1/indicator_period_data_comment/?format=json",
     "period": (id) => `/rest/v1/indicator_period/${id}/?format=json`,

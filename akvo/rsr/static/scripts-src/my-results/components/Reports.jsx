@@ -41,7 +41,7 @@ class ReportsBar extends React.Component {
 
     render() {
         const {periods} = this.props;
-        const selectOptions = selectablePeriods(periods && periods.ids, false);
+        const selectOptions = selectablePeriods(periods && periods.ids, this.selectChange, false);
 
         return (
             <header role="banner" className="periodMenuBar">

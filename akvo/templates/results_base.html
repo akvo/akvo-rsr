@@ -14,7 +14,12 @@
 <script type="application/json" id="project">
     {
         "id": {{ project.pk }},
-        "primaryOrganisationId": {{ project.primary_organisation.pk }}
+        "partners": [
+            {% for partner in project.all_partners %}
+            {{ partner.id }}
+            {% if not forloop.last %} , {% endif %}
+            {% endfor %}
+        ]
     }
 </script>
 
