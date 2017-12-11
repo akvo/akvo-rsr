@@ -160,7 +160,20 @@ export function selectPeriodByDates(periodStart, periodEnd) {
 }
 
 
-export function selectablePeriods(periodIds, showCount=true) {
+function datePairs(ids) {
+    if (ids) {
+        const periods = store.getState().models[c.OBJECTS_PERIODS].objects;
+        return ids.map(id => {
+            const periodStart = periods[id].period_start;
+            const periodEnd = periods[id].period_end;
+            return `${periodStart}:${periodEnd}`;
+        });
+    }
+    return [];
+}
+
+
+export function selectablePeriods(periodIds, callback, showCount=true) {
     // Create an array with the set of Period start and end dates. Used to select all periods with
     // common dates
     // const periodIds = store.getState().models[OBJECTS_PERIODS].ids;
@@ -168,15 +181,10 @@ export function selectablePeriods(periodIds, showCount=true) {
     // dates = ["2016-05-01:2016-12-31", "2017-01-01:2017-06-30",...]
     const optionStyle = {color: 'black'};
     if (periodIds && periodIds.length > 0) {
-        const dates = periodIds.map((id) => {
-            const period = store.getState().models[c.OBJECTS_PERIODS].objects[id];
-            const periodStart = period.period_start;
-            const periodEnd = period.period_end;
-            return `${periodStart}:${periodEnd}`;
-        });
+        const pairs = datePairs(periodIds);
         // Calculate how many we have of each date pair.
         // dateMap = {2016-05-01:2016-12-31: 4, 2017-01-01:2017-06-30: 3, ...}
-        let dateMap = dates.reduce(function(acc, date) {
+        let dateMap = pairs.reduce(function(acc, date) {
             acc[date] = (acc[date] || 0) + 1;
             return acc;
         }, {});
@@ -187,7 +195,7 @@ export function selectablePeriods(periodIds, showCount=true) {
         //     {label: "1 Jan 2017 - 20 Jun 2017 (3)", value: selectPeriodByDates.bind(null, "2017-01-01", "2017-06-30")},
         //     ...
         // ]
-        const periodDates = distinct(dates).map((datePair) => {
+        const periodDates = distinct(pairs).map((datePair) => {
             const [periodStart, periodEnd] = datePair.split(':');
             const periodStartDisplay = displayDate(periodStart);
             const periodEndDisplay = displayDate(periodEnd);
@@ -197,7 +205,7 @@ export function selectablePeriods(periodIds, showCount=true) {
             :
                 `${periodStartDisplay} - ${periodEndDisplay}`;
             return {
-                value: selectPeriodByDates.bind(null, periodStart, periodEnd),
+                value: callback.bind(null, periodStart, periodEnd),
                 label
             };
         });

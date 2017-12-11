@@ -14,7 +14,7 @@ import "react-select/dist/react-select.css";
 
 import {
     noHide,
-    selectablePeriods,
+    selectablePeriods, selectPeriodByDates,
     updateFormClose,
 } from "../actions/ui-actions";
 
@@ -141,9 +141,9 @@ export default class FilterBar extends React.Component {
     }
 
     render() {
-        const {page, callbacks} = this.props;
+        const {page, callbacks, periods} = this.props;
         const openCloseLabel = this.openResults() ? _('overview') : _('full_view');
-        const selectOptions = selectablePeriods(this.props.periods && this.props.periods.ids);
+        const selectOptions = selectablePeriods(periods && periods.ids, selectPeriodByDates);
         //TODO: investigate if we can use the React life cycle methods to not render until the
         // translation stings are in place
         const needReportingLabel = <InteractiveLabel label={_("needs_reporting") || ""}
