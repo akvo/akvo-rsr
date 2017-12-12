@@ -67,10 +67,12 @@ const ReportingPeriodHeader = ({period_start, period_end}) => {
 }
 
 const ReportHeader = ({categories, report}) => {
-    const style = {marginRight: '10px'};
+    const category_style = {marginRight: '10px'};
+    const status_style = {float: 'right', marginRight: '20px'};
     return (
         <div>
-            <span style={style}>{categories.objects[report.category].label}</span>
+            <span style={category_style}>{categories.objects[report.category].label}</span>
+            <span style={status_style}>{report.published?_("approved"):_("draft")}</span>
         </div>
     )
 };

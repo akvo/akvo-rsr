@@ -27,7 +27,7 @@ class NarrativeReport(models.Model):
         help_text=_(u'The text of the narrative report.')
     )
 
-    published = models.BooleanField(_(u'locked'), default=False)
+    published = models.BooleanField(_(u'published'), default=False)
 
     period_start = models.DateField(
         _(u'period start'),
