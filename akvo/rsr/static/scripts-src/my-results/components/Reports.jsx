@@ -12,12 +12,13 @@ import {Markdown} from 'react-showdown';
 import {
     _,
     collapseId,
-    displayDate
+    displayDate,
+    distinct
 } from "../utils";
 import * as c from "../const";
 import {collapseChange} from "../actions/collapse-actions";
 import Collapse, { Panel } from 'rc-collapse';
-import {selectablePeriods} from "../actions/ui-actions";
+import {datePairs,selectablePeriods} from "../actions/ui-actions";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 
@@ -57,24 +58,34 @@ class ReportsBar extends React.Component {
     }
 }
 
+const ReportingPeriodHeader = ({period_start, period_end}) => {
+    return (
+        <div>
+            <span>{"Narrative summary for " + period_start + " - " + period_end}</span>
+        </div>
+    )
+}
 
 const ReportHeader = ({categories, report}) => {
     const style = {marginRight: '10px'};
     return (
         <div>
             <span style={style}>{categories.objects[report.category].label}</span>
-            <span>
-                {displayDate(report.period_start)} - {displayDate(report.period_end)}
-            </span>
         </div>
     )
 };
-
 
 const Report = ({report}) => {
     return <Markdown markup={report.text}/>
 };
 
+const filterReports = (reports, period_start, period_end) => {
+    const ids = reports.ids.filter((id) => {
+        const report = reports.objects[id];
+        return report.period_start === period_start && report.period_end === period_end;
+    });
+    return ids.map((id) => {return reports.objects[id];});
+};
 
 @connect((store) => {
     return {
@@ -98,16 +109,30 @@ export default class Reports extends React.Component {
         collapseChange(this.state.collapseId, activeKey);
     }
 
-    renderPanels(ids) {
-        const {categories, reports} = this.props;
-        return (ids.map(
-            (id) => {
-                const report = reports.objects[id];
-                return (
-                    <Panel header={<ReportHeader categories={categories} report={report}/>}
-                           key={id}>
+    renderReports(reports, categories) {
+        return reports.map((report) => {
+            return (
+                <Collapse key={report.id}>
+                    <Panel header={<ReportHeader categories={categories} report={report}/>}>
                         <Report report={report}/>
                     </Panel>
+                </Collapse>
+            );
+        });
+    }
+
+    renderPanels(ids) {
+        const {categories, reports} = this.props;
+        const pairs = distinct(datePairs(ids, c.OBJECTS_REPORTS));
+        return (pairs.map(
+            (pair) => {
+                const [period_start, period_end] = pair.split(':');
+                const period_reports = filterReports(reports, period_start, period_end);
+                return (
+                        <Panel header={<ReportingPeriodHeader period_start={period_start} period_end={period_end}/>}
+                               key={pair}>
+                            {this.renderReports(period_reports, categories)}
+                        </Panel>
                 )
             }
         ))

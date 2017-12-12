@@ -160,9 +160,9 @@ export function selectPeriodByDates(periodStart, periodEnd) {
 }
 
 
-function datePairs(ids) {
+export function datePairs(ids, model_name) {
     if (ids) {
-        const periods = store.getState().models[c.OBJECTS_PERIODS].objects;
+        const periods = store.getState().models[model_name].objects;
         return ids.map(id => {
             const periodStart = periods[id].period_start;
             const periodEnd = periods[id].period_end;
@@ -181,7 +181,7 @@ export function selectablePeriods(periodIds, callback, showCount=true) {
     // dates = ["2016-05-01:2016-12-31", "2017-01-01:2017-06-30",...]
     const optionStyle = {color: 'black'};
     if (periodIds && periodIds.length > 0) {
-        const pairs = datePairs(periodIds);
+        const pairs = datePairs(periodIds, c.OBJECTS_PERIODS);
         // Calculate how many we have of each date pair.
         // dateMap = {2016-05-01:2016-12-31: 4, 2017-01-01:2017-06-30: 3, ...}
         let dateMap = pairs.reduce(function(acc, date) {
