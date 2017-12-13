@@ -28,10 +28,19 @@ import Select from "react-select";
 import "react-select/dist/react-select.css";
 
 
-const ReportingPeriodHeader = ({period_start, period_end}) => {
+const ReportingPeriodHeader = ({period_start, period_end, onCreate}) => {
     return (
         <div>
             <span>{"Narrative summary for " + period_start + " - " + period_end}</span>
+            {
+                onCreate == undefined ?
+                undefined
+                :
+                <button className="btn btn-sm btn-default"
+                        onClick={onCreate}>
+                    {_("create_narrative_summary")}
+                </button>
+            }
         </div>
     )
 }
@@ -85,6 +94,7 @@ export class ReportForm extends React.Component {
         const summary = Object.assign({}, this.props.report);
         Object.assign(summary, {text, category});
         if (published) {summary.published = published};
+        if (summary.id == 'new') {delete summary.id};
         return summary;
     }
 
@@ -116,8 +126,8 @@ export class ReportForm extends React.Component {
         };
         const setCategory = (category) => {
             this.setState({category: category.id});
-            // FIXME: Need some kind of redraw here?
         };
+        // FIXME: Show only categories for which there are no reports already
         const categoryOptions = categories.ids.map((id) => {return this.props.categories.objects[id]});
         const reportCategory = categories.objects[this.state.category];
         return (
@@ -155,6 +165,7 @@ const filterReports = (reports, period_start, period_end) => {
         categories: store.models.categories,
         reports: store.models.reports,
         periods: store.models.periods,
+        project: store.page.project.id,
         reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY],
     }
 })
@@ -163,6 +174,7 @@ export default class Reports extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.state = {collapseId: collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS)};
+        this.createSummary = this.createSummary.bind(this);
     }
 
     activeKey() {
@@ -190,6 +202,16 @@ export default class Reports extends React.Component {
         reportFormToggle(report.id);
     }
 
+    createSummary(e, period_start, period_end){
+        e.stopPropagation();
+        console.log(period_start, period_end);
+        const id = 'new';
+        const {reports, project} = this.props;
+        const report = {id, period_start, period_end, project};
+        reports.objects[report.id] = report
+        this.editSummary(report);
+    }
+
     renderPanels(ids) {
         const {categories, reports} = this.props;
         const pairs = distinct(datePairs(ids, c.OBJECTS_PERIODS));
@@ -197,9 +219,16 @@ export default class Reports extends React.Component {
             (pair) => {
                 const [period_start, period_end] = pair.split(':');
                 const period_reports = filterReports(reports, period_start, period_end);
+                const onCreate = pair === this.activeKey() ?
+                                 ((e) => {return this.createSummary(e, period_start, period_end)}) :
+                                 undefined;
+                const header = (
+                    <ReportingPeriodHeader period_start={period_start}
+                                           period_end={period_end}
+                                           onCreate={onCreate}/>
+                )
                 return (
-                    <Panel header={<ReportingPeriodHeader period_start={period_start} period_end={period_end}/>}
-                           key={pair}>
+                    <Panel header={header} key={pair}>
                         {this.renderReports(period_reports, categories)}
                     </Panel>
                 )
@@ -213,7 +242,7 @@ export default class Reports extends React.Component {
         const periodIds = periods.ids;
 
         const reportsDisplay = (
-            <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
+            <Collapse accordion={true} activeKey={this.activeKey()} onChange={this.collapseChange}>
                 {this.renderPanels(periodIds)}
             </Collapse>
         );
