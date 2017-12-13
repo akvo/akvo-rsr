@@ -66,16 +66,22 @@ const Report = ({report}) => {
     return <Markdown markup={report.text}/>
 };
 
+// FIXME: Handle permissions!
 export class ReportForm extends React.Component {
     constructor(props) {
         super(props);
         const {report} = this.props;
         const {text, category} = report;
-        this.state = {reactMde: {text, selection: null}, category};
+        this.state = {
+            reactMde: {text, selection: null},
+            show_editor: true,
+            category
+        };
         this.saveSummary = this.saveSummary.bind(this);
         this.approveSummary = this.approveSummary.bind(this);
         this.createSummary = this.createSummary.bind(this);
         this.summaryToBackend = this.summaryToBackend.bind(this);
+        this.toggleEditorPreview = this.toggleEditorPreview.bind(this);
     }
 
     closeForm() {
@@ -119,6 +125,8 @@ export class ReportForm extends React.Component {
         }
     }
 
+    toggleEditorPreview(){ this.setState({show_editor: !this.state.show_editor}); }
+
     render() {
         const {categories, reports, report} = this.props;
         const setText = (reactMde) => {this.setState({reactMde})};
@@ -129,6 +137,7 @@ export class ReportForm extends React.Component {
             .map((id) => {return this.props.categories.objects[id]})
             .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
         const reportCategory = categories.objects[this.state.category];
+        const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
         return (
             <div>
                 <h2>{report.period_start} - {report.period_end}</h2>
@@ -145,9 +154,15 @@ export class ReportForm extends React.Component {
                             searchable={false}
                             clearable={false}/>
                     <ReactMde value={this.state.reactMde}
+                              visibility={{
+                                  textarea: this.state.show_editor,
+                                  toolbar: this.state.show_editor,
+                                  preview: !this.state.show_editor,
+                              }}
                               onChange={setText}
                               commands={ReactMdeCommands.getDefaultCommands()}/>
                     <div>
+                        <button className="btn btn-sm btn-default" onClick={this.toggleEditorPreview}>{previewButtonText}</button>
                         <button className="btn btn-sm btn-default" onClick={this.saveSummary}>{_("save")}</button>
                         <button className="btn btn-sm btn-default" onClick={this.approveSummary}>{_("approve")}</button>
                     </div>
