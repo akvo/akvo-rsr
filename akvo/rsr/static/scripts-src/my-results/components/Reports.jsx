@@ -119,16 +119,18 @@ export class ReportForm extends React.Component {
     }
 
     render() {
-        const {categories} = this.props;
+        const {categories, reports, report} = this.props;
         const setText = (e) => {
             const text = e.target.value;
             this.setState({text});
         };
-        const setCategory = (category) => {
-            this.setState({category: category.id});
-        };
-        // FIXME: Show only categories for which there are no reports already
-        const categoryOptions = categories.ids.map((id) => {return this.props.categories.objects[id]});
+        const setCategory = (category) => {this.setState({category: category.id})};
+        const reportedCategories = new Set(reports.map((report)=>{return report.category}));
+        const categoryOptions = categories
+            .ids
+            .map((id) => {return this.props.categories.objects[id]})
+            .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
+
         const reportCategory = categories.objects[this.state.category];
         return (
             <div>
@@ -247,11 +249,11 @@ export default class Reports extends React.Component {
             </Collapse>
         );
         const noPeriods = (<p>No reporting periods</p>);
-        const reportForm = (
-            <ReportForm report={reports.objects[reportFormDisplay]}
-                        categories={categories}/>
-        );
-
+        const reportForm = (reportFormDisplay) => {
+            const report = reports.objects[reportFormDisplay];
+            const period_reports = filterReports(reports, report.period_start, report.period_end);
+            return (<ReportForm report={report} reports={period_reports} categories={categories}/>);
+        }
         if (!reports.fetched || !periods.fetched) {
             return (
                 <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
@@ -259,7 +261,9 @@ export default class Reports extends React.Component {
         } else {
             return (
                 <div className={c.OBJECTS_REPORTS}>
-                    {reportFormDisplay?reportForm:(periodIds.length > 0? reportsDisplay: noPeriods)}
+                    {reportFormDisplay?
+                     reportForm(reportFormDisplay):
+                     (periodIds.length > 0? reportsDisplay: noPeriods)}
                 </div>
             );
         }
