@@ -65,6 +65,14 @@ export function updateFormClose() {
 }
 
 
+export function reportFormToggle(id) {
+    store.dispatch({
+        type: c.UI_FLAG_TOGGLE,
+        payload: {element: c.REPORT_FORM_DISPLAY, id}
+    });
+}
+
+
 export function activateToggleAll() {
     // Have we fetched all models? Include current user info too.
     const allFetched = c.MODELS_LIST.concat([c.OBJECTS_USER]).every(

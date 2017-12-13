@@ -13,50 +13,20 @@ import {
     _,
     collapseId,
     displayDate,
-    distinct
+    distinct,
+    endpoints,
 } from "../utils";
 import * as c from "../const";
 import {collapseChange} from "../actions/collapse-actions";
+import {updateModelToBackend, saveModelToBackend} from "../actions/model-actions";
 import Collapse, { Panel } from 'rc-collapse';
-import {datePairs,selectablePeriods} from "../actions/ui-actions";
+import {
+    datePairs,
+    reportFormToggle,
+} from "../actions/ui-actions";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 
-
-@connect((store) => {
-    return {
-        periods: store.models.periods,
-    }
-})
-class ReportsBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.selectChange = this.selectChange.bind(this);
-        this.state = {selectedOption: undefined,}
-    }
-
-    selectChange(e) {
-        this.setState({selectedOption: e});
-        e.value();
-    }
-
-    render() {
-        const {periods} = this.props;
-        const selectOptions = selectablePeriods(periods && periods.ids, this.selectChange, false);
-
-        return (
-            <header role="banner" className="periodMenuBar">
-                <Select options={selectOptions}
-                        value={this.state.selectedOption}
-                        multi={false}
-                        placeholder={_("select_periods")}
-                        searchable={false}
-                        clearable={false}
-                        onChange={this.selectChange}/>
-            </header>
-        )
-    }
-}
 
 const ReportingPeriodHeader = ({period_start, period_end}) => {
     return (
@@ -66,12 +36,17 @@ const ReportingPeriodHeader = ({period_start, period_end}) => {
     )
 }
 
-const ReportHeader = ({categories, report}) => {
+const ReportHeader = ({categories, report, onClick}) => {
     const category_style = {marginRight: '10px'};
     const status_style = {float: 'right', marginRight: '20px'};
+    const clickHandler = (e) => {
+        e.stopPropagation();
+        return onClick(report);
+    };
     return (
         <div>
             <span style={category_style}>{categories.objects[report.category].label}</span>
+            <button className="btn btn-sm btn-default" onClick={clickHandler}>{_("edit")}</button>
             <span style={status_style}>{report.published?_("approved"):_("draft")}</span>
         </div>
     )
@@ -80,6 +55,91 @@ const ReportHeader = ({categories, report}) => {
 const Report = ({report}) => {
     return <Markdown markup={report.text}/>
 };
+
+export class ReportForm extends React.Component {
+    constructor(props) {
+        super(props);
+        const {report} = this.props;
+        const {text, category} = report;
+        this.state = {text, category};
+        this.saveSummary = this.saveSummary.bind(this);
+        this.approveSummary = this.approveSummary.bind(this);
+        this.createSummary = this.createSummary.bind(this);
+        this.summaryToBackend = this.summaryToBackend.bind(this);
+    }
+
+    closeForm() {
+        reportFormToggle();
+    }
+
+    saveSummary() {
+        this.summaryToBackend();
+    }
+
+    approveSummary() {
+        this.summaryToBackend(true);
+    }
+
+    createSummary(published) {
+        const {text, category} = this.state;
+        const summary = Object.assign({}, this.props.report);
+        Object.assign(summary, {text, category});
+        if (published) {summary.published = published};
+        return summary;
+    }
+
+    summaryToBackend(published){
+        const callbacks = {
+            [c.UPDATE_MODEL_FULFILLED]: this.closeForm,
+            /* FIXME: Handle failure, correctly!*/
+            /* [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
+             *     this, commentAlertName, _("comment_not_saved")
+             * )*/
+        };
+        const summary = this.createSummary(published);
+        if (summary.id) {
+            updateModelToBackend(
+                c.OBJECTS_REPORTS, endpoints.update_report(summary.id), summary, null, callbacks
+            );
+        } else {
+            saveModelToBackend(
+                c.OBJECTS_REPORTS, endpoints.save_report(), summary, null, callbacks
+            );
+        }
+    }
+
+    render() {
+        const {categories} = this.props;
+        const setText = (e) => {
+            const text = e.target.value;
+            this.setState({text});
+        };
+        const setCategory = (category) => {
+            this.setState({category: category.id});
+            // FIXME: Need some kind of redraw here?
+        };
+        const categoryOptions = categories.ids.map((id) => {return this.props.categories.objects[id]});
+        const reportCategory = categories.objects[this.state.category];
+        return (
+            <div>
+                <button className="btn btn-sm btn-default" onClick={this.closeForm}>{"x"}</button>
+                <Select options={categoryOptions}
+                        value={reportCategory}
+                        onChange={setCategory}
+                        multi={false}
+                        placeholder={_("select_category")}
+                        searchable={false}
+                        clearable={false}/>
+                {/* FIXME: Change to a markdown area */}
+                <textarea defaultValue={this.state.text} onChange={setText}/>
+                <div>
+                    <button className="btn btn-sm btn-default" onClick={this.saveSummary}>{_("save")}</button>
+                    <button className="btn btn-sm btn-default" onClick={this.approveSummary}>{_("approve")}</button>
+                </div>
+            </div>
+        );
+    }
+}
 
 const filterReports = (reports, period_start, period_end) => {
     const ids = reports.ids.filter((id) => {
@@ -94,6 +154,7 @@ const filterReports = (reports, period_start, period_end) => {
         keys: store.keys,
         categories: store.models.categories,
         reports: store.models.reports,
+        reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY],
     }
 })
 export default class Reports extends React.Component {
@@ -113,14 +174,19 @@ export default class Reports extends React.Component {
 
     renderReports(reports, categories) {
         return reports.map((report) => {
+            const header = (<ReportHeader categories={categories} report={report} onClick={this.editSummary}/>);
             return (
                 <Collapse key={report.id}>
-                    <Panel header={<ReportHeader categories={categories} report={report}/>}>
+                    <Panel header={header}>
                         <Report report={report}/>
                     </Panel>
                 </Collapse>
             );
         });
+    }
+
+    editSummary(report) {
+        reportFormToggle(report.id);
     }
 
     renderPanels(ids) {
@@ -131,10 +197,10 @@ export default class Reports extends React.Component {
                 const [period_start, period_end] = pair.split(':');
                 const period_reports = filterReports(reports, period_start, period_end);
                 return (
-                        <Panel header={<ReportingPeriodHeader period_start={period_start} period_end={period_end}/>}
-                               key={pair}>
-                            {this.renderReports(period_reports, categories)}
-                        </Panel>
+                    <Panel header={<ReportingPeriodHeader period_start={period_start} period_end={period_end}/>}
+                           key={pair}>
+                        {this.renderReports(period_reports, categories)}
+                    </Panel>
                 )
             }
         ))
@@ -142,29 +208,30 @@ export default class Reports extends React.Component {
 
     render() {
         // Special case, always get all Results
-        const {reports} = this.props;
+        const {categories, reports, reportFormDisplay} = this.props;
         const reportIds = reports.ids;
+
+        const reportsDisplay = (
+            <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
+                {this.renderPanels(reportIds)}
+            </Collapse>
+        );
+        const noReports = (<p>No narrative summaries</p>);
+        const reportForm = (
+            <ReportForm report={reports.objects[reportFormDisplay]}
+                        categories={categories}/>
+        );
 
         if (!reports.fetched) {
             return (
                 <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
-        } else if (reportIds.length > 0) {
-            return (
-                <div className={c.OBJECTS_REPORTS}>
-                    <ReportsBar/>
-                    <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                        {this.renderPanels(reportIds)}
-                    </Collapse>
-                </div>
-            );
         } else {
             return (
-                <div className="emptyData">
-                     <p>No narrative summaries</p>
+                <div className={c.OBJECTS_REPORTS}>
+                    {reportFormDisplay?reportForm:(reportIds.length > 0? reportsDisplay: noReports)}
                 </div>
             );
         }
     }
-
 }

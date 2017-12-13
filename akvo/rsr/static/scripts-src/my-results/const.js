@@ -104,6 +104,7 @@ export const
     SELECTED_PERIODS = 'selectedPeriods',
     UPDATE_FORMS = 'updateForms',
     UPDATE_FORM_DISPLAY = 'updateFormDisplay', // boolean, keeping track if the update form is open
+    REPORT_FORM_DISPLAY = 'reportFormDisplay', // boolean, keeping track if the narrative report form is open
 
     // Alerts
     INITIALIZE_ALERT = 'INITIALIZE_ALERT',

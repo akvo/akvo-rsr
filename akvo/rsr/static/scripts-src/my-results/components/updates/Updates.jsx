@@ -367,7 +367,7 @@ class UpdateHeader extends React.Component {
             }
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
-                                             label={_('edit_indicator_value')}
+                                             label={_('edit')}
                                              disabled={updateFormDisplay !== false}/>;
         }
         return (
