@@ -154,6 +154,7 @@ const filterReports = (reports, period_start, period_end) => {
         keys: store.keys,
         categories: store.models.categories,
         reports: store.models.reports,
+        periods: store.models.periods,
         reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY],
     }
 })
@@ -191,7 +192,7 @@ export default class Reports extends React.Component {
 
     renderPanels(ids) {
         const {categories, reports} = this.props;
-        const pairs = distinct(datePairs(ids, c.OBJECTS_REPORTS));
+        const pairs = distinct(datePairs(ids, c.OBJECTS_PERIODS));
         return (pairs.map(
             (pair) => {
                 const [period_start, period_end] = pair.split(':');
@@ -208,28 +209,28 @@ export default class Reports extends React.Component {
 
     render() {
         // Special case, always get all Results
-        const {categories, reports, reportFormDisplay} = this.props;
-        const reportIds = reports.ids;
+        const {categories, reports, periods, reportFormDisplay} = this.props;
+        const periodIds = periods.ids;
 
         const reportsDisplay = (
             <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
-                {this.renderPanels(reportIds)}
+                {this.renderPanels(periodIds)}
             </Collapse>
         );
-        const noReports = (<p>No narrative summaries</p>);
+        const noPeriods = (<p>No reporting periods</p>);
         const reportForm = (
             <ReportForm report={reports.objects[reportFormDisplay]}
                         categories={categories}/>
         );
 
-        if (!reports.fetched) {
+        if (!reports.fetched || !periods.fetched) {
             return (
                 <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
             );
         } else {
             return (
                 <div className={c.OBJECTS_REPORTS}>
-                    {reportFormDisplay?reportForm:(reportIds.length > 0? reportsDisplay: noReports)}
+                    {reportFormDisplay?reportForm:(periodIds.length > 0? reportsDisplay: noPeriods)}
                 </div>
             );
         }
