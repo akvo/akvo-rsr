@@ -8,8 +8,15 @@ The RSR projects used as test cases were #2849 and its parent project #2081.
 
 
 ## Deployment to reportserver
-The reports have one parameter, ID, which is created on the RS as a Dataset parameter, key=ID, BIRT, query="select id from rsr_project order by id desc"
+Most reports have one parameter, ID, which is created on the RS as a Dataset parameter, key=ID, BIRT, query="select id from rsr_project order by id desc"
 
+Results report also have two Date parameters, EndDate and StartDate.
+
+### Font deployment
+If a report requires a font that is not yet installed:
+ 1. The ttf files should be put in /usr/share/fonts/truetype
+ 2. Refresh the font cache with "sudo fc-cache -f -v"
+ 3. Restart the reportserver with "sudo /etc/init.d/tomcat7 restart"
 
 
 ## Access by URL
