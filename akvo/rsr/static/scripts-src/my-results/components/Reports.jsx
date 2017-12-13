@@ -137,6 +137,7 @@ export class ReportForm extends React.Component {
             .map((id) => {return this.props.categories.objects[id]})
             .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
         const reportCategory = categories.objects[this.state.category];
+        const disableSave = (reportCategory === undefined || !this.state.reactMde.text);
         const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
         return (
             <div>
@@ -162,9 +163,15 @@ export class ReportForm extends React.Component {
                               onChange={setText}
                               commands={ReactMdeCommands.getDefaultCommands()}/>
                     <div>
-                        <button className="btn btn-sm btn-default" onClick={this.toggleEditorPreview}>{previewButtonText}</button>
-                        <button className="btn btn-sm btn-default" onClick={this.saveSummary}>{_("save")}</button>
-                        <button className="btn btn-sm btn-default" onClick={this.approveSummary}>{_("approve")}</button>
+                        <button className="btn btn-sm btn-default" onClick={this.toggleEditorPreview}>
+                            {previewButtonText}
+                        </button>
+                        <button className="btn btn-sm btn-default" onClick={this.saveSummary} disabled={disableSave}>
+                            {_("save")}
+                        </button>
+                        <button className="btn btn-sm btn-default" onClick={this.approveSummary} disabled={disableSave}>
+                            {_("approve")}
+                        </button>
                     </div>
                 </div>
             </div>
