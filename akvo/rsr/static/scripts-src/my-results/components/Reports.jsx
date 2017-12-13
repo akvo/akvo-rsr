@@ -26,7 +26,8 @@ import {
 } from "../actions/ui-actions";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
-
+import ReactMde, { ReactMdeCommands } from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const ReportingPeriodHeader = ({period_start, period_end, onCreate}) => {
     return (
@@ -70,7 +71,7 @@ export class ReportForm extends React.Component {
         super(props);
         const {report} = this.props;
         const {text, category} = report;
-        this.state = {text, category};
+        this.state = {reactMde: {text, selection: null}, category};
         this.saveSummary = this.saveSummary.bind(this);
         this.approveSummary = this.approveSummary.bind(this);
         this.createSummary = this.createSummary.bind(this);
@@ -90,7 +91,7 @@ export class ReportForm extends React.Component {
     }
 
     createSummary(published) {
-        const {text, category} = this.state;
+        const {reactMde: {text}, category} = this.state;
         const summary = Object.assign({}, this.props.report);
         Object.assign(summary, {text, category});
         if (published) {summary.published = published};
@@ -120,33 +121,36 @@ export class ReportForm extends React.Component {
 
     render() {
         const {categories, reports, report} = this.props;
-        const setText = (e) => {
-            const text = e.target.value;
-            this.setState({text});
-        };
+        const setText = (reactMde) => {this.setState({reactMde})};
         const setCategory = (category) => {this.setState({category: category.id})};
         const reportedCategories = new Set(reports.map((report)=>{return report.category}));
         const categoryOptions = categories
             .ids
             .map((id) => {return this.props.categories.objects[id]})
             .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
-
         const reportCategory = categories.objects[this.state.category];
         return (
             <div>
-                <button className="btn btn-sm btn-default" onClick={this.closeForm}>{"x"}</button>
-                <Select options={categoryOptions}
-                        value={reportCategory}
-                        onChange={setCategory}
-                        multi={false}
-                        placeholder={_("select_category")}
-                        searchable={false}
-                        clearable={false}/>
-                {/* FIXME: Change to a markdown area */}
-                <textarea defaultValue={this.state.text} onChange={setText}/>
+                <h2>{report.period_start} - {report.period_end}</h2>
                 <div>
-                    <button className="btn btn-sm btn-default" onClick={this.saveSummary}>{_("save")}</button>
-                    <button className="btn btn-sm btn-default" onClick={this.approveSummary}>{_("approve")}</button>
+                    <p>Show period results here!</p>
+                </div>
+                <div>
+                    <button className="btn btn-sm btn-default" onClick={this.closeForm}>{"x"}</button>
+                    <Select options={categoryOptions}
+                            value={reportCategory}
+                            onChange={setCategory}
+                            multi={false}
+                            placeholder={_("select_category")}
+                            searchable={false}
+                            clearable={false}/>
+                    <ReactMde value={this.state.reactMde}
+                              onChange={setText}
+                              commands={ReactMdeCommands.getDefaultCommands()}/>
+                    <div>
+                        <button className="btn btn-sm btn-default" onClick={this.saveSummary}>{_("save")}</button>
+                        <button className="btn btn-sm btn-default" onClick={this.approveSummary}>{_("approve")}</button>
+                    </div>
                 </div>
             </div>
         );
