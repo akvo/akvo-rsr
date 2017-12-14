@@ -531,6 +531,11 @@ export const filterUpdatesByStatus = (updates, ids, status) => {
 };
 
 
+export const isResultsKey = (key) => {
+    return c.MODELS_LIST.some(model => key.startsWith(model));
+};
+
+
 export const disaggregationsToDisplayData = (disaggregationIds, disaggregations, dimensions) => {
     /*  maps a number of disaggregations to the following format:
             {

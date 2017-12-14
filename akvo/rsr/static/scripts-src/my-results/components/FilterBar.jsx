@@ -35,8 +35,10 @@ import {
 import {
     _,
     fieldValueOrSpinner,
-    identicalArrays, toggleTree,
+    identicalArrays,
+    toggleTree,
     userIsMEManager,
+    isResultsKey,
 } from "../utils";
 
 import {
@@ -124,7 +126,7 @@ export default class FilterBar extends React.Component {
         const keys = this.props.keys;
         // if activeKey is identical to the ResultsDefaultKeys selector we are at the "closed"
         // closed view for an M&E manager
-        const openCollapses = Object.keys(keys).filter(key => keys[key].length !== 0);
+        const openCollapses = Object.keys(keys).filter(key => isResultsKey(key) && keys[key].length !== 0);
         return identicalArrays(activeKey, this.props.ResultsDefaultKeys) &&
             openCollapses.length === 1;
     }
