@@ -27,11 +27,15 @@ import Collapse, { Panel } from 'rc-collapse';
 import {
     datePairs,
     reportFormToggle,
+    selectPeriodByDates,
+    periodSelectReset,
 } from "../actions/ui-actions";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 import ReactMde, { ReactMdeCommands } from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
+import Results from "./Results";
+
 
 const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
     return (
@@ -163,10 +167,7 @@ export class ReportForm extends React.Component {
         return (
             <div>
                 <h2>{report.period_start} - {report.period_end}</h2>
-                <div>
-                    <p>Show period results here!</p>
-                </div>
-                <div>
+                <article className="shared">
                     <button className="btn btn-sm btn-default" onClick={this.closeForm}>{"x"}</button>
                     <Select options={categoryOptions}
                             value={reportCategory}
@@ -197,7 +198,10 @@ export class ReportForm extends React.Component {
                             {_("approve")}
                         </button>
                     </div>
-                </div>
+                </article>
+                <aside className="open">
+                    <Results parentId="results"/>
+                </aside>
             </div>
         );
     }
@@ -251,6 +255,11 @@ export default class Reports extends React.Component {
     }
 
     editSummary(report) {
+        const {period_start, period_end} = report;
+        // filter periods;
+        selectPeriodByDates(period_start, period_end);
+        periodSelectReset();
+        // Show report editing form
         reportFormToggle(report.id);
     }
 
