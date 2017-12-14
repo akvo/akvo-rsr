@@ -183,6 +183,13 @@ export function updateModelToBackend(model, url, data, collapseId, callbacks) {
     modifyModelToBackend(model, 'PATCH', url, data, dispatchData, callbacks);
 }
 
+export function deleteModelFromBackend(model, url, data, collapseId, callbacks) {
+    const dispatchData = {
+        type: c.DELETE_FROM_MODEL,
+        payload: {model: model, object: data, collapseId}
+    };
+    modifyModelToBackend(c.OBJECTS_UPDATES, 'DELETE', url, data, dispatchData, callbacks);
+}
 
 export function deleteUpdateFromBackend(url, data, collapseId, callbacks) {
     const dispatchData = {

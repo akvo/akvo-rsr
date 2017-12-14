@@ -18,7 +18,11 @@ import {
 } from "../utils";
 import * as c from "../const";
 import {collapseChange} from "../actions/collapse-actions";
-import {updateModelToBackend, saveModelToBackend} from "../actions/model-actions";
+import {
+    updateModelToBackend,
+    saveModelToBackend,
+    deleteModelFromBackend
+} from "../actions/model-actions";
 import Collapse, { Panel } from 'rc-collapse';
 import {
     datePairs,
@@ -80,6 +84,7 @@ export class ReportForm extends React.Component {
         this.saveSummary = this.saveSummary.bind(this);
         this.approveSummary = this.approveSummary.bind(this);
         this.createSummary = this.createSummary.bind(this);
+        this.deleteSummary = this.deleteSummary.bind(this);
         this.summaryToBackend = this.summaryToBackend.bind(this);
         this.toggleEditorPreview = this.toggleEditorPreview.bind(this);
     }
@@ -103,6 +108,20 @@ export class ReportForm extends React.Component {
         if (published) {summary.published = published};
         if (summary.id == 'new') {delete summary.id};
         return summary;
+    }
+
+    deleteSummary(){
+        const {report} = this.props;
+        const callbacks = {
+            /* FIXME: Handle failure, correctly!*/
+            /* [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
+             *     this, commentAlertName, _("comment_not_saved")
+             * )*/
+        };
+        this.closeForm();
+        deleteModelFromBackend(
+            c.OBJECTS_REPORTS, endpoints.update_report(report.id), report, null, callbacks
+        );
     }
 
     summaryToBackend(published){
@@ -137,6 +156,7 @@ export class ReportForm extends React.Component {
             .map((id) => {return this.props.categories.objects[id]})
             .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
         const reportCategory = categories.objects[this.state.category];
+        const disableDelete = report.id === 'new';
         const disableSave = (reportCategory === undefined || !this.state.reactMde.text);
         const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
         return (
@@ -165,6 +185,9 @@ export class ReportForm extends React.Component {
                     <div>
                         <button className="btn btn-sm btn-default" onClick={this.toggleEditorPreview}>
                             {previewButtonText}
+                        </button>
+                        <button className="btn btn-sm btn-default" onClick={this.deleteSummary} disabled={disableDelete}>
+                            {_("delete")}
                         </button>
                         <button className="btn btn-sm btn-default" onClick={this.saveSummary} disabled={disableSave}>
                             {_("save")}
