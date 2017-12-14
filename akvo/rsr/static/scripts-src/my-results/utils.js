@@ -152,7 +152,7 @@ export const endpoints = {
     "reports": (id) =>
         `/rest/v1/narrative_report/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     "update_report": (id) =>
-        `/rest/v1/narrative_report/${id}?format=json`,
+        `/rest/v1/narrative_report/${id}/?format=json`,
     "save_report": (id) =>
         `/rest/v1/narrative_report/?format=json`,
     "categories": (id) =>
