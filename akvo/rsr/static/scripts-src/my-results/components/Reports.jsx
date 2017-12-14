@@ -33,10 +33,11 @@ import "react-select/dist/react-select.css";
 import ReactMde, { ReactMdeCommands } from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
-const ReportingPeriodHeader = ({period_start, period_end, onCreate}) => {
+const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
     return (
         <div>
-            <span>{"Narrative summary for " + period_start + " - " + period_end}</span>
+            <span>{`${_("narrative_summary_for")} ${period_start} - ${period_end}`}</span>
+            <span>{`(${count})`}</span>
             {
                 onCreate == undefined ?
                 undefined
@@ -276,6 +277,7 @@ export default class Reports extends React.Component {
                 const header = (
                     <ReportingPeriodHeader period_start={period_start}
                                            period_end={period_end}
+                                           count={period_reports.length}
                                            onCreate={onCreate}/>
                 )
                 return (
