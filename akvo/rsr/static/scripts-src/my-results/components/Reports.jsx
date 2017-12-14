@@ -40,7 +40,7 @@ import Results from "./Results";
 const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
     return (
         <div>
-            <span>{`${_("narrative_summary_for")} ${period_start} - ${period_end}`}</span>
+            <span>{`${_("narrative_summary_for")} ${displayDate(period_start)} - ${displayDate(period_end)}`}</span>
             <span>{`(${count})`}</span>
             {
                 onCreate == undefined ?
@@ -166,7 +166,7 @@ export class ReportForm extends React.Component {
         const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
         return (
             <div>
-                <h2>{report.period_start} - {report.period_end}</h2>
+                <h2>{displayDate(report.period_start)} - {displayDate(report.period_end)}</h2>
                 <article className="shared">
                     <button className="btn btn-sm btn-default" onClick={this.closeForm}>{"x"}</button>
                     <Select options={categoryOptions}
