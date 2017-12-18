@@ -7,6 +7,7 @@
 
 
 import React from "react";
+import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {Markdown} from 'react-showdown';
 import {
@@ -35,6 +36,10 @@ import "react-select/dist/react-select.css";
 import ReactMde, { ReactMdeCommands } from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import Results from "./Results";
+
+// Alerts
+import AlertFactory from "./alertContainer"
+import * as alertActions from "../actions/alert-actions"
 
 
 const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
@@ -75,16 +80,19 @@ const Report = ({report}) => {
     return <Markdown markup={report.text}/>
 };
 
-// FIXME: Handle permissions!
+
+@connect((store) => {return {}}, alertActions)
 export class ReportForm extends React.Component {
     constructor(props) {
         super(props);
         const {report} = this.props;
         const {text, category} = report;
+        const alertName = 'ReportAlert';
         this.state = {
             reactMde: {text, selection: null},
             show_editor: true,
-            category
+            alertName,
+            category,
         };
         this.saveSummary = this.saveSummary.bind(this);
         this.approveSummary = this.approveSummary.bind(this);
@@ -117,11 +125,11 @@ export class ReportForm extends React.Component {
 
     deleteSummary(){
         const {report} = this.props;
+        const {alertName} = this.state;
         const callbacks = {
-            /* FIXME: Handle failure, correctly!*/
-            /* [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
-             *     this, commentAlertName, _("comment_not_saved")
-             * )*/
+            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                this, alertName, _("summary_not_deleted")
+            )
         };
         this.closeForm();
         deleteModelFromBackend(
@@ -130,12 +138,12 @@ export class ReportForm extends React.Component {
     }
 
     summaryToBackend(published){
+        const {alertName} = this.state;
         const callbacks = {
             [c.UPDATE_MODEL_FULFILLED]: this.closeForm,
-            /* FIXME: Handle failure, correctly!*/
-            /* [c.UPDATE_MODEL_REJECTED]: createAlert.bind(
-             *     this, commentAlertName, _("comment_not_saved")
-             * )*/
+            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
+                this, alertName, _("summary_not_saved")
+            )
         };
         const summary = this.createSummary(published);
         if (summary.id) {
@@ -215,6 +223,17 @@ const filterReports = (reports, period_start, period_end) => {
     return ids.map((id) => {return reports.objects[id];});
 };
 
+const ReportAlert = ({message, close}) => (
+    <div className='reports-alert'>
+        {message}
+        <button className="btn btn-sm btn-default" onClick={close}>X</button>
+    </div>
+);
+ReportAlert.propTypes = {
+    message: PropTypes.string.isRequired,
+    close: PropTypes.func.isRequired,
+};
+
 @connect((store) => {
     return {
         keys: store.keys,
@@ -229,7 +248,11 @@ export default class Reports extends React.Component {
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
-        this.state = {collapseId: collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS)};
+        const alertName = 'ReportAlert';
+        this.state = {
+                  ReportAlert: AlertFactory({alertName})(ReportAlert),
+                  collapseId: collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS)
+        };
         this.createSummary = this.createSummary.bind(this);
     }
 
@@ -321,6 +344,7 @@ export default class Reports extends React.Component {
         } else {
             return (
                 <div className={c.OBJECTS_REPORTS}>
+                    {<this.state.ReportAlert/>}
                     {reportFormDisplay?
                      reportForm(reportFormDisplay):
                      (periodIds.length > 0? reportsDisplay: noPeriods)}
