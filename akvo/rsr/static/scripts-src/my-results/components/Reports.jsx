@@ -94,6 +94,7 @@ export class ReportForm extends React.Component {
             alertName,
             category,
         };
+        this.closeForm = this.closeForm.bind(this);
         this.saveSummary = this.saveSummary.bind(this);
         this.approveSummary = this.approveSummary.bind(this);
         this.createSummary = this.createSummary.bind(this);
@@ -104,6 +105,11 @@ export class ReportForm extends React.Component {
 
     closeForm() {
         reportFormToggle();
+        // HACK: Displaying the results in the edit view resets the keys! We
+        // manually expand the correct period, again.
+        const {period_start, period_end} = this.props.report;
+        const activeKey = `${period_start}:${period_end}`
+        collapseChange(collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS), activeKey);
     }
 
     saveSummary() {
