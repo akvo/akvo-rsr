@@ -4604,6 +4604,9 @@ main.results-page {
     .rc-collapse-content-box {
         .rc-collapse-item-active {
             background: white !important;
+            p {
+                padding: 0 10px;
+            }
         }
     }
     h3 {
