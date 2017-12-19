@@ -4569,3 +4569,43 @@ main.results-page {
 .form-button {
     margin-right: 5px;
 }
+
+.reports {
+    position: relative;
+    h3 {
+        margin: 10px 0 20px;
+    }
+    .createSummaryBtn {
+        margin-left: 15px;
+        @include button($btnColor, white);
+    }
+    h2 {
+        margin: 30px 0;
+    }
+    &:after {
+        content: ".";
+        visibility: hidden;
+        display: block;
+        height: 0;
+        clear: both;
+    }
+    article {
+        float: right;
+        width: calc(50% - 10px);
+        padding: 20px 15px 25px 15px;
+        margin-top: 5px;
+        margin-left: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        overflow: scroll;
+        position: relative;
+        > button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+    }
+    aside {
+        float: left;
+        width: 50%;
+    }
+}

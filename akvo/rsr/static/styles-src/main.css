@@ -3600,3 +3600,60 @@ main.results-page {
 
 .form-button {
   margin-right: 5px; }
+
+.reports {
+  position: relative; }
+  .reports h3 {
+    margin: 10px 0 20px; }
+  .reports .createSummaryBtn {
+    margin-left: 15px;
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: #4ec1ea;
+    color: white !important;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-align: center; }
+    .reports .createSummaryBtn:hover {
+      background: #20b1e5;
+      color: white; }
+    .reports .createSummaryBtn.disabled {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+      .reports .createSummaryBtn.disabled:hover {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
+  .reports h2 {
+    margin: 30px 0; }
+  .reports:after {
+    content: ".";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both; }
+  .reports article {
+    float: right;
+    width: calc(50% - 10px);
+    padding: 20px 15px 25px 15px;
+    margin-top: 5px;
+    margin-left: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: scroll;
+    position: relative; }
+    .reports article > button {
+      position: absolute;
+      top: 5px;
+      right: 5px; }
+  .reports aside {
+    float: left;
+    width: 50%; }

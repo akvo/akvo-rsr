@@ -51,7 +51,7 @@ const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
                 onCreate == undefined ?
                 undefined
                 :
-                <button className="btn btn-sm btn-default"
+                <button className="btn btn-sm btn-default createSummaryBtn"
                         onClick={onCreate}>
                     {_("create_narrative_summary")}
                 </button>
@@ -182,7 +182,8 @@ export class ReportForm extends React.Component {
             <div>
                 <h2>{displayDate(report.period_start)} - {displayDate(report.period_end)}</h2>
                 <article className="shared">
-                    <button className="btn btn-sm btn-default" onClick={this.closeForm}>{"x"}</button>
+                    <button className="btn btn-xs btn-default closingBtn" onClick={this.closeForm}>{"x"}</button>
+                    <h3>New narrative summary</h3>
                     <Select options={categoryOptions}
                             value={reportCategory}
                             onChange={setCategory}
