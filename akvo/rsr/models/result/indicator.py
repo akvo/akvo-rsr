@@ -64,8 +64,14 @@ class Indicator(models.Model):
         _(u'baseline year'), blank=True, null=True, max_length=4,
         help_text=_(u'The year the baseline value was taken.')
     )
-    baseline_value = ValidXMLCharField(
-        _(u'baseline value'), blank=True, max_length=200,
+    # baseline_value = ValidXMLCharField(
+    #     _(u'baseline value'), blank=True, max_length=200,
+    #     help_text=_(u'The value of the baseline at the start of the project.')
+    # )
+    baseline_value = models.DecimalField(
+        _(u'baseline value'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
         help_text=_(u'The value of the baseline at the start of the project.')
     )
     baseline_comment = ValidXMLCharField(
