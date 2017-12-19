@@ -4601,6 +4601,11 @@ main.results-page {
             }
         }
     }
+    .rc-collapse-content-box {
+        .rc-collapse-item-active {
+            background: white !important;
+        }
+    }
     h3 {
         margin: 10px 0 20px;
         font-size: 18px;

@@ -3616,6 +3616,8 @@ main.results-page {
         padding: 30px 5px; }
       .reports .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
         margin-left: 10px; }
+  .reports .rc-collapse-content-box .rc-collapse-item-active {
+    background: white !important; }
   .reports h3 {
     margin: 10px 0 20px;
     font-size: 18px; }
