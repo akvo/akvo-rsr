@@ -1470,6 +1470,9 @@ function setMeasureVisibility(indicatorTypeSelect) {
     // hide measure fields for qualitative indicators
     if (indicatorTypeSelect.value === '2') {
         elAddClass(measureRow, 'hidden');
+        // HACK: To deal with mandatory fields, we set indicator measure to be
+        // Unit for qualitative indicators automatically.
+        measureRow.querySelector('select').selectedIndex = 1;
     } else {
         elRemoveClass(measureRow, 'hidden');
     }
