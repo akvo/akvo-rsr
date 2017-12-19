@@ -199,18 +199,15 @@ export class ReportForm extends React.Component {
                               }}
                               onChange={setText}
                               commands={ReactMdeCommands.getDefaultCommands()}/>
-                    <div>
-                        <button className="btn btn-sm btn-default" onClick={this.toggleEditorPreview}>
-                            {previewButtonText}
-                        </button>
-                        <button className="btn btn-sm btn-default" onClick={this.deleteSummary} disabled={disableDelete}>
+                    <div className="menuAction">
+                        <button className="btn btn-xs btn-delete deleteBtn" onClick={this.deleteSummary} disabled={disableDelete}>
                             {_("delete")}
                         </button>
-                        <button className="btn btn-sm btn-default" onClick={this.saveSummary} disabled={disableSave}>
-                            {_("save")}
-                        </button>
-                        <button className="btn btn-sm btn-default" onClick={this.approveSummary} disabled={disableSave}>
+                        <button className="btn btn-xs btn-default" onClick={this.approveSummary} disabled={disableSave}>
                             {_("approve")}
+                        </button>
+                        <button className="btn btn-xs btn-default" onClick={this.saveSummary} disabled={disableSave}>
+                            {_("save")}
                         </button>
                     </div>
                 </article>

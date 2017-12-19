@@ -3536,6 +3536,13 @@ main.results-page {
     > button {
         display: none;
     }
+    .react-tabs {
+        ul {
+            li {
+                border-radius: 0;
+            }
+        }
+    }
     .rc-collapse {
         border-radius: 3px;
         .rc-collapse-anim-active {
@@ -4497,6 +4504,7 @@ main.results-page {
 
 .periodMenuBar {
     box-sizing: border-box;
+    margin-top: 20px;
     @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
     * {
         box-sizing: border-box;
@@ -4570,10 +4578,32 @@ main.results-page {
     margin-right: 5px;
 }
 
+/********************* Narrative report ***************************/
+
 .reports {
     position: relative;
+    .rc-collapse {
+        margin-top: 20px;
+        .rc-collapse-item {
+            padding: 15px 5px;
+            transition: padding 0.1s ease-in;
+            &.rc-collapse-item-active {
+                padding: 30px 5px;
+            }
+            .rc-collapse-header {
+                div {
+                    span {
+                        &:nth-of-type(2) {
+                            margin-left: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
     h3 {
         margin: 10px 0 20px;
+        font-size: 18px;
     }
     .createSummaryBtn {
         margin-left: 15px;
@@ -4581,6 +4611,7 @@ main.results-page {
     }
     h2 {
         margin: 30px 0;
+        font-size: 20px;
     }
     &:after {
         content: ".";
@@ -4598,14 +4629,69 @@ main.results-page {
         border: 1px solid rgba(0, 0, 0, 0.1);
         overflow: scroll;
         position: relative;
+        .Select {
+            margin: 15px auto 25px;
+        }
         > button {
             position: absolute;
             top: 5px;
             right: 5px;
         }
+        .menuAction {
+            margin-top: 10px;
+            button {
+                background: $akvoBlack;
+                color: white;
+                &:first-of-type {
+                    left: 0px;
+                }
+                &:nth-of-type(2), &:nth-of-type(3) {
+                    float: right;
+                }
+                &:hover {
+                    background: $akvoPurple;
+                }
+                &.deleteBtn {
+                    background: $akvoTvRed !important;
+                    color: white;
+                    border-color: $akvoTvRed;
+                    &:hover {
+                        background: rgba($akvoTvRed, 0.5);
+                    }
+                }
+            }
+        }
     }
     aside {
         float: left;
         width: 50%;
+        &.open {
+            .rc-collapse {
+                margin-top: 0px;
+                .rc-collapse-item {
+                    padding: 15px 5px;
+                    &.rc-collapse-item-active {
+                        padding: 15px 5px;
+                    }
+                    .rc-collapse-header {
+                        div {
+                            span {
+                                &:nth-of-type(2) {
+                                    margin-left: 10px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        input[type=checkbox] {
+            display: none;
+        }
+        .updates {
+            button {
+                display: none;
+            }
+        }
     }
 }
