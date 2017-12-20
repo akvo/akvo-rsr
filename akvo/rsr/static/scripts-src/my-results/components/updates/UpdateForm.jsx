@@ -52,6 +52,9 @@ import {
 import Comments from "../Comments";
 import {closeNodes, openNodes} from "../../utils";
 
+import ReactMde, { ReactMdeCommands } from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
+
 
 // If the update is approved only M&E managers are allowed to delete
 const isAllowedToDelete = (user, update) =>
@@ -208,27 +211,66 @@ QuantitativeActualValueInput.propTypes = {
     isPercentage: PropTypes.bool.isRequired,
 };
 
+class QualitativeActualValueInput extends React.Component {
+    constructor(props) {
+        super(props);
+        const {narrative} = this.props.update;
+        this.state = {
+            reactMde: {text: narrative, selection: null},
+            show_editor: true,
+        };
+        this.toggleEditor = this.toggleEditor.bind(this);
+    }
 
-const QualitativeActualValueInput = ({update, onClose, onChange, hideTarget}) => {
-    return (
-        <div className="">
-            <div>
-                {hideTarget ?
-                    <label htmlFor="actualValue">{_('narrative_reporting')}</label>
-                :
-                    <label htmlFor="actualValue">{_('actual')}</label>
+    toggleEditor () {
+        const {show_editor} = this.state;
+        this.setState({show_editor: !show_editor})
+    }
+
+    render () {
+        const {update, onClose, onChange, hideTarget} = this.props;
+        const editorChange = (reactMde) => {
+            this.setState({reactMde});
+            // HACK: Create fake event
+            const e = {
+                preventDefault: () => {},
+                target: {
+                    id: "narrative",
+                    value: reactMde.text
                 }
-                <ToggleButton onClick={onClose} label="X"
-                              className="btn btn-default btn-xs"/>
-                <textarea className="form-control"
-                          id="narrative"
-                          value={update.narrative}
-                          onChange={onChange}
-                          placeholder={_('input_placeholder')}>
-                </textarea>
+            }
+            onChange(e);
+        }
+        const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
+        return (
+            <div className="">
+                <div>
+                    {hideTarget ?
+                     <label htmlFor="actualValue">{_('narrative_reporting')}</label>
+                     :
+                     <label htmlFor="actualValue">{_('actual')}</label>
+                    }
+                    <ToggleButton onClick={onClose} label="X"
+                                  className="btn btn-default btn-xs"/>
+                    <ReactMde value={this.state.reactMde}
+                              textAreaProps={{
+                                  id: "narrative",
+                                  className: "form-control",
+                                  placeholder: _('input_placeholder')}}
+                              visibility={{
+                                  textarea: this.state.show_editor,
+                                  toolbar: this.state.show_editor,
+                                  preview: !this.state.show_editor,
+                              }}
+                              onChange={editorChange}
+                              commands={ReactMdeCommands.getDefaultCommands()}/>
+                    <ToggleButton label={previewButtonText}
+                                  onClick={this.toggleEditor}
+                                  className="btn btn-default btn-xs"/>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 };
 QualitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
