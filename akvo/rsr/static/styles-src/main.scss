@@ -3543,6 +3543,131 @@ main.results-page {
             }
         }
     }
+    /********************* Narrative report ***************************/
+    .reports {
+        position: relative;
+        .rc-collapse {
+            margin-top: 20px;
+            .rc-collapse-item {
+                padding: 15px 5px;
+                transition: padding 0.1s ease-in;
+                &.rc-collapse-item-active {
+                    padding: 30px 5px;
+                }
+                .rc-collapse-header {
+                    div {
+                        span {
+                            &:nth-of-type(2) {
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .rc-collapse-content-box {
+            .rc-collapse-item-active {
+                background: white !important;
+                p {
+                    padding: 0 10px;
+                }
+            }
+        }
+        h3 {
+            margin: 10px 0 20px;
+            font-size: 18px;
+        }
+        .createSummaryBtn {
+            margin-left: 15px;
+            @include button($btnColor, white);
+        }
+        h2 {
+            margin: 30px 0;
+            font-size: 20px;
+        }
+        &:after {
+            content: ".";
+            visibility: hidden;
+            display: block;
+            height: 0;
+            clear: both;
+        }
+        article {
+            float: right;
+            width: calc(50% - 10px);
+            padding: 20px 15px 25px 15px;
+            margin-top: 5px;
+            margin-left: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            overflow: scroll;
+            position: relative;
+            .Select {
+                margin: 15px auto 25px;
+            }
+            > button {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+            }
+            .menuAction {
+                margin-top: 10px;
+                button {
+                    background: $akvoBlack;
+                    color: white;
+                    &:first-of-type {
+                        left: 0px;
+                    }
+                    &:nth-of-type(2), &:nth-of-type(3) {
+                        float: right;
+                    }
+                    &:hover {
+                        background: $akvoPurple;
+                    }
+                    &.deleteBtn {
+                        background: $akvoTvRed !important;
+                        color: white;
+                        border-color: $akvoTvRed;
+                        &:hover {
+                            background: rgba($akvoTvRed, 0.5);
+                        }
+                    }
+                }
+            }
+        }
+        aside {
+            float: left;
+            width: 50%;
+            &.open {
+                .rc-collapse {
+                    margin-top: 0px;
+                    .rc-collapse-item {
+                        padding: 15px 5px;
+                        &.rc-collapse-item-active {
+                            padding: 15px 5px;
+                        }
+                        .rc-collapse-header {
+                            div {
+                                span {
+                                    &:nth-of-type(2) {
+                                        margin-left: 10px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            input[type=checkbox] {
+                display: none;
+            }
+            .updates {
+                button {
+                    display: none;
+                }
+            }
+        }
+    }
+    /**************************** end Narrative reports *************************/
     .rc-collapse {
         border-radius: 3px;
         .rc-collapse-anim-active {
@@ -4576,130 +4701,4 @@ main.results-page {
 
 .form-button {
     margin-right: 5px;
-}
-
-/********************* Narrative report ***************************/
-
-.reports {
-    position: relative;
-    .rc-collapse {
-        margin-top: 20px;
-        .rc-collapse-item {
-            padding: 15px 5px;
-            transition: padding 0.1s ease-in;
-            &.rc-collapse-item-active {
-                padding: 30px 5px;
-            }
-            .rc-collapse-header {
-                div {
-                    span {
-                        &:nth-of-type(2) {
-                            margin-left: 10px;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .rc-collapse-content-box {
-        .rc-collapse-item-active {
-            background: white !important;
-            p {
-                padding: 0 10px;
-            }
-        }
-    }
-    h3 {
-        margin: 10px 0 20px;
-        font-size: 18px;
-    }
-    .createSummaryBtn {
-        margin-left: 15px;
-        @include button($btnColor, white);
-    }
-    h2 {
-        margin: 30px 0;
-        font-size: 20px;
-    }
-    &:after {
-        content: ".";
-        visibility: hidden;
-        display: block;
-        height: 0;
-        clear: both;
-    }
-    article {
-        float: right;
-        width: calc(50% - 10px);
-        padding: 20px 15px 25px 15px;
-        margin-top: 5px;
-        margin-left: 5px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        overflow: scroll;
-        position: relative;
-        .Select {
-            margin: 15px auto 25px;
-        }
-        > button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-        }
-        .menuAction {
-            margin-top: 10px;
-            button {
-                background: $akvoBlack;
-                color: white;
-                &:first-of-type {
-                    left: 0px;
-                }
-                &:nth-of-type(2), &:nth-of-type(3) {
-                    float: right;
-                }
-                &:hover {
-                    background: $akvoPurple;
-                }
-                &.deleteBtn {
-                    background: $akvoTvRed !important;
-                    color: white;
-                    border-color: $akvoTvRed;
-                    &:hover {
-                        background: rgba($akvoTvRed, 0.5);
-                    }
-                }
-            }
-        }
-    }
-    aside {
-        float: left;
-        width: 50%;
-        &.open {
-            .rc-collapse {
-                margin-top: 0px;
-                .rc-collapse-item {
-                    padding: 15px 5px;
-                    &.rc-collapse-item-active {
-                        padding: 15px 5px;
-                    }
-                    .rc-collapse-header {
-                        div {
-                            span {
-                                &:nth-of-type(2) {
-                                    margin-left: 10px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        input[type=checkbox] {
-            display: none;
-        }
-        .updates {
-            button {
-                display: none;
-            }
-        }
-    }
 }

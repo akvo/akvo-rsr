@@ -2868,13 +2868,117 @@ main.results-page {
 
 .results {
   background: white;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  /********************* Narrative report ***************************/
+  /**************************** end Narrative reports *************************/ }
   .results * {
     box-sizing: border-box; }
   .results > button {
     display: none; }
   .results .react-tabs ul li {
     border-radius: 0; }
+  .results .reports {
+    position: relative; }
+    .results .reports .rc-collapse {
+      margin-top: 20px; }
+      .results .reports .rc-collapse .rc-collapse-item {
+        padding: 15px 5px;
+        transition: padding 0.1s ease-in; }
+        .results .reports .rc-collapse .rc-collapse-item.rc-collapse-item-active {
+          padding: 30px 5px; }
+        .results .reports .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
+          margin-left: 10px; }
+    .results .reports .rc-collapse-content-box .rc-collapse-item-active {
+      background: white !important; }
+      .results .reports .rc-collapse-content-box .rc-collapse-item-active p {
+        padding: 0 10px; }
+    .results .reports h3 {
+      margin: 10px 0 20px;
+      font-size: 18px; }
+    .results .reports .createSummaryBtn {
+      margin-left: 15px;
+      /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+      display: inline-block;
+      padding: 5px 8px;
+      background-color: #4ec1ea;
+      color: white !important;
+      text-decoration: none;
+      cursor: pointer;
+      -moz-border-radius: 3px;
+      -o-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      border: 1px solid transparent;
+      text-align: center; }
+      .results .reports .createSummaryBtn:hover {
+        background: #20b1e5;
+        color: white; }
+      .results .reports .createSummaryBtn.disabled {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
+        .results .reports .createSummaryBtn.disabled:hover {
+          cursor: not-allowed;
+          background-color: rgba(128, 128, 128, 0.1) !important;
+          color: rgba(128, 128, 128, 0.4) !important;
+          border: 1px solid transparent; }
+    .results .reports h2 {
+      margin: 30px 0;
+      font-size: 20px; }
+    .results .reports:after {
+      content: ".";
+      visibility: hidden;
+      display: block;
+      height: 0;
+      clear: both; }
+    .results .reports article {
+      float: right;
+      width: calc(50% - 10px);
+      padding: 20px 15px 25px 15px;
+      margin-top: 5px;
+      margin-left: 5px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      overflow: scroll;
+      position: relative; }
+      .results .reports article .Select {
+        margin: 15px auto 25px; }
+      .results .reports article > button {
+        position: absolute;
+        top: 5px;
+        right: 5px; }
+      .results .reports article .menuAction {
+        margin-top: 10px; }
+        .results .reports article .menuAction button {
+          background: #202024;
+          color: white; }
+          .results .reports article .menuAction button:first-of-type {
+            left: 0px; }
+          .results .reports article .menuAction button:nth-of-type(2), .results .reports article .menuAction button:nth-of-type(3) {
+            float: right; }
+          .results .reports article .menuAction button:hover {
+            background: #2c2a74; }
+          .results .reports article .menuAction button.deleteBtn {
+            background: #ee3124 !important;
+            color: white;
+            border-color: #ee3124; }
+            .results .reports article .menuAction button.deleteBtn:hover {
+              background: rgba(238, 49, 36, 0.5); }
+    .results .reports aside {
+      float: left;
+      width: 50%; }
+      .results .reports aside.open .rc-collapse {
+        margin-top: 0px; }
+        .results .reports aside.open .rc-collapse .rc-collapse-item {
+          padding: 15px 5px; }
+          .results .reports aside.open .rc-collapse .rc-collapse-item.rc-collapse-item-active {
+            padding: 15px 5px; }
+          .results .reports aside.open .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
+            margin-left: 10px; }
+      .results .reports aside input[type=checkbox] {
+        display: none; }
+      .results .reports aside .updates button {
+        display: none; }
   .results .rc-collapse {
     border-radius: 3px; }
     .results .rc-collapse .rc-collapse-anim-active {
@@ -3603,107 +3707,3 @@ main.results-page {
 
 .form-button {
   margin-right: 5px; }
-
-/********************* Narrative report ***************************/
-.reports {
-  position: relative; }
-  .reports .rc-collapse {
-    margin-top: 20px; }
-    .reports .rc-collapse .rc-collapse-item {
-      padding: 15px 5px;
-      transition: padding 0.1s ease-in; }
-      .reports .rc-collapse .rc-collapse-item.rc-collapse-item-active {
-        padding: 30px 5px; }
-      .reports .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
-        margin-left: 10px; }
-  .reports .rc-collapse-content-box .rc-collapse-item-active {
-    background: white !important; }
-    .reports .rc-collapse-content-box .rc-collapse-item-active p {
-      padding: 0 10px; }
-  .reports h3 {
-    margin: 10px 0 20px;
-    font-size: 18px; }
-  .reports .createSummaryBtn {
-    margin-left: 15px;
-    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
-    display: inline-block;
-    padding: 5px 8px;
-    background-color: #4ec1ea;
-    color: white !important;
-    text-decoration: none;
-    cursor: pointer;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    text-align: center; }
-    .reports .createSummaryBtn:hover {
-      background: #20b1e5;
-      color: white; }
-    .reports .createSummaryBtn.disabled {
-      cursor: not-allowed;
-      background-color: rgba(128, 128, 128, 0.1) !important;
-      color: rgba(128, 128, 128, 0.4) !important;
-      border: 1px solid transparent; }
-      .reports .createSummaryBtn.disabled:hover {
-        cursor: not-allowed;
-        background-color: rgba(128, 128, 128, 0.1) !important;
-        color: rgba(128, 128, 128, 0.4) !important;
-        border: 1px solid transparent; }
-  .reports h2 {
-    margin: 30px 0;
-    font-size: 20px; }
-  .reports:after {
-    content: ".";
-    visibility: hidden;
-    display: block;
-    height: 0;
-    clear: both; }
-  .reports article {
-    float: right;
-    width: calc(50% - 10px);
-    padding: 20px 15px 25px 15px;
-    margin-top: 5px;
-    margin-left: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    overflow: scroll;
-    position: relative; }
-    .reports article .Select {
-      margin: 15px auto 25px; }
-    .reports article > button {
-      position: absolute;
-      top: 5px;
-      right: 5px; }
-    .reports article .menuAction {
-      margin-top: 10px; }
-      .reports article .menuAction button {
-        background: #202024;
-        color: white; }
-        .reports article .menuAction button:first-of-type {
-          left: 0px; }
-        .reports article .menuAction button:nth-of-type(2), .reports article .menuAction button:nth-of-type(3) {
-          float: right; }
-        .reports article .menuAction button:hover {
-          background: #2c2a74; }
-        .reports article .menuAction button.deleteBtn {
-          background: #ee3124 !important;
-          color: white;
-          border-color: #ee3124; }
-          .reports article .menuAction button.deleteBtn:hover {
-            background: rgba(238, 49, 36, 0.5); }
-  .reports aside {
-    float: left;
-    width: 50%; }
-    .reports aside.open .rc-collapse {
-      margin-top: 0px; }
-      .reports aside.open .rc-collapse .rc-collapse-item {
-        padding: 15px 5px; }
-        .reports aside.open .rc-collapse .rc-collapse-item.rc-collapse-item-active {
-          padding: 15px 5px; }
-        .reports aside.open .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
-          margin-left: 10px; }
-    .reports aside input[type=checkbox] {
-      display: none; }
-    .reports aside .updates button {
-      display: none; }
