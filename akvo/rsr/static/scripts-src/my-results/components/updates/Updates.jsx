@@ -55,6 +55,8 @@ import {
 
 import Comments from "../Comments"
 
+import {Markdown} from 'react-showdown';
+
 
 function displayName(user) {
     return user.last_name ?
@@ -192,8 +194,8 @@ QuantitativeUpdateBody.propTypes = {
 const UpdateNarrative =({period, update}) => {
     return (
         <ul className="valueMeta">
-            <li className="updateValue">Target: <span>{period.target_value}</span></li>
-            <li className="updateValue">Actual: <span>{update.narrative}</span></li>
+            <li className="updateValue">Target: <Markdown markup={period.target_value}/></li>
+            <li className="updateValue">Actual: <Markdown markup={update.narrative}/></li>
         </ul>
     )
 };
