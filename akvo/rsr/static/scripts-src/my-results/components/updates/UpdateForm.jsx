@@ -209,11 +209,15 @@ QuantitativeActualValueInput.propTypes = {
 };
 
 
-const QualitativeActualValueInput = ({update, onClose, onChange}) => {
+const QualitativeActualValueInput = ({update, onClose, onChange, hideTarget}) => {
     return (
         <div className="">
             <div>
-                <label htmlFor="actualValue">{_('actual')}</label>
+                {hideTarget ?
+                    <label htmlFor="actualValue">{_('narrative_reporting')}</label>
+                :
+                    <label htmlFor="actualValue">{_('actual')}</label>
+                }
                 <ToggleButton onClick={onClose} label="X"
                               className="btn btn-default btn-xs"/>
                 <textarea className="form-control"
@@ -522,14 +526,19 @@ QuantitativeUpdateForm.propTypes = {
 };
 
 
-const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disaggregations}) => {
+const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disaggregations, hideTarget}) => {
     return (
         <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
-                <QualitativeHeader targetValue={period.target_value}/>
+                {hideTarget ?
+                    undefined
+                :
+                    <QualitativeHeader targetValue={period.target_value} hideTarget={hideTarget}/>
+                }
                 <QualitativeActualValueInput update={update}
                                              onClose={self.props.onClose}
-                                             onChange={self.onChange}/>
+                                             onChange={self.onChange}
+                                             hideTarget={hideTarget}/>
                 {<self.state.UpdateAlert/>}
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
@@ -702,6 +711,7 @@ const pruneForPOST = (update) => {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
         ui: store.ui,
+        primaryOrganisationId: store.page.project.primaryOrganisationId,
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
@@ -1088,7 +1098,10 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {dimensions, disaggregations, indicator, period, update} = this.props;
+        const {
+            dimensions, disaggregations, indicator, period, update, primaryOrganisationId
+        } = this.props;
+        const hideTarget = primaryOrganisationId === c.IUCN_ORG_ID;
         switch(indicator.type) {
             case c.INDICATOR_QUANTATIVE: {
                 return <QuantitativeUpdateForm period={period}
@@ -1104,7 +1117,8 @@ export default class UpdateForm extends React.Component {
                                               dimensions={dimensions}
                                               disaggregations={disaggregations}
                                               self={this}
-                                              measure={c.MEASURE_QUALITATIVE}/>
+                                              measure={c.MEASURE_QUALITATIVE}
+                                              hideTarget={hideTarget}/>
             }
         }
     }

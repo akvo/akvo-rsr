@@ -160,5 +160,8 @@ export const
     // Indicator measures (Includes the proposed qualitative measure type)
     MEASURE_UNIT = "1",
     MEASURE_PERCENTAGE = "2",
-    MEASURE_QUALITATIVE = "3"
+    MEASURE_QUALITATIVE = "3",
+
+    // IUCN organisation ID. Used to determine if we hide some UI elements
+    IUCN_ORG_ID = 3257
 ;

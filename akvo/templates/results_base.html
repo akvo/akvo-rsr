@@ -13,7 +13,14 @@
 {# Project id's #}
 <script type="application/json" id="project">
     {
-        "id": {{ project.pk }}
+        "id": {{ project.pk }},
+        "primaryOrganisationId": {{ project.primary_organisation.pk }},
+        "partners": [
+            {% for partner in project.all_partners %}
+            {{ partner.id }}
+            {% if not forloop.last %} , {% endif %}
+            {% endfor %}
+        ]
     }
 </script>
 
@@ -69,6 +76,7 @@
         "actual": "{% trans 'Actual'|escapejs %}",
         "actual_value": "{% trans 'Actual value'|escapejs %}",
         "actual_value_info": "{% trans 'This is the total of all indicator updates for this period'|escapejs %}",
+        "narrative_reporting": "{% trans 'Narrative reporting'|escapejs %}",
         "target": "{% trans 'Target'|escapejs %}",
         "target_value": "{% trans 'Target value'|escapejs %}",
         "target_comment": "{% trans 'Target comment'|escapejs %}",
