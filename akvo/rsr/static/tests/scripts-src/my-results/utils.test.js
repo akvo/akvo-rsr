@@ -10,22 +10,22 @@ import chai from 'chai'
 import React from 'react'
 import * as utils from '../../../scripts-src/my-results/utils'
 import * as c from '../../../scripts-src/my-results/const'
-import {shallow} from 'enzyme'
+import { shallow } from 'enzyme'
 
 let expect = chai.expect;
 
 describe("function distinct", () => {
     it('expect to return an array with unique values', () => {
-        const arrayWithDuplicates = [1,2,3,4,4],
-            uniqueArray = [1,2,3,4];
+        const arrayWithDuplicates = [1, 2, 3, 4, 4],
+            uniqueArray = [1, 2, 3, 4];
         expect(utils.distinct(arrayWithDuplicates)).to.deep.equal(uniqueArray);
     });
 });
 
 describe("function identicalArrays", () => {
     it('returns true if two arrays are identical', () => {
-        const arr1 = [1,2,3],
-            arr2 = [1,2,3];
+        const arr1 = [1, 2, 3],
+            arr2 = [1, 2, 3];
         expect(utils.identicalArrays(arr1, arr2)).to.equal(true);
     });
 });
@@ -39,7 +39,7 @@ describe("function isEmpty", () => {
         expect(utils.isEmpty(string)).to.be.true;
         expect(utils.isEmpty(array)).to.be.true;
     });
-    it('expect to return false if not empty', () =>{
+    it('expect to return false if not empty', () => {
         const stringWithValue = 'value';
         expect(utils.isEmpty(stringWithValue)).to.be.false;
     });
@@ -56,28 +56,50 @@ describe("function isNumeric", () => {
     });
 });
 
+describe("function displayDate", () => {
+    it('expect to display an date string like "29 Nov 2017" when given a dateString', () => {
+        const document = global.document;
+        global.document = {
+            getElementById: function () {
+                return {
+                    'innerHTML': '["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]'
+                };
+            }
+        };
+        const dateString = '2017-11-29T13:30',
+            testDate = '29 Nov 2017';
+        expect(utils.displayDate(dateString)).to.equal(testDate);
+        global.document = document;
+    });
+    it('expect to return an string "Unknown date" if no dateString where given', () => {
+        const dateString = '',
+            testDate = 'Unknown date';
+        expect(utils.displayDate(dateString)).to.equal(testDate);
+    });
+});
+
 describe("function getCookie", () => {
     it('returns the value of a named cookie', () => {
         const document = global.document;
-            global.document = {
-                cookie: 'name=value; otherName=otherValue'
-            };
+        global.document = {
+            cookie: 'name=value; otherName=otherValue'
+        };
         let name = 'name',
             otherName = 'otherName';
         const value = 'value',
             otherValue = 'otherValue';
-         expect(utils.getCookie(name)).to.equal(value);
-         expect(utils.getCookie(otherName)).to.equal(otherValue);
-         expect(utils.getCookie(name)).to.not.equal(otherValue);
-         global.document = document;
-     });
+        expect(utils.getCookie(name)).to.equal(value);
+        expect(utils.getCookie(otherName)).to.equal(otherValue);
+        expect(utils.getCookie(name)).to.not.equal(otherValue);
+        global.document = document;
+    });
 });
 
 describe("function idsToActiveKey", () => {
     it('expect to return IDs as an array of strings', () => {
         const ids = [1, 2, 3, 4];
-        expect(utils.idsToActiveKey(ids)).to.satisfy(function(array) {
-            return array.every(function(item) {
+        expect(utils.idsToActiveKey(ids)).to.satisfy(function (array) {
+            return array.every(function (item) {
                 return typeof item === 'string';
             })
         });
@@ -86,15 +108,15 @@ describe("function idsToActiveKey", () => {
 
 describe("arrowFunction isNewUpdate", () => {
     it('expect to return true if the update is new', () => {
-        const newUpdate = {id: 'new-', name: 'update'};
+        const newUpdate = { id: 'new-', name: 'update' };
         expect(utils.isNewUpdate(newUpdate)).to.be.true;
     });
-    it('expect to return true if we pas a string starting with "new-"', () => {
+    it('expect to return true if we pass a string starting with "new-"', () => {
         const newString = "new-17";
         expect(utils.isNewUpdate(newString)).to.be.true;
     });
     it('expect to return false if the update is not new', () => {
-        const notNewUpdate = {id: '4', name: 'update'};
+        const notNewUpdate = { id: '4', name: 'update' };
         expect(utils.isNewUpdate(notNewUpdate)).to.be.false;
     });
 });
@@ -157,17 +179,17 @@ describe("function fullUpdateVisibility", () => {
 describe("function flatten", () => {
     it('expect to return an flatten array of a nested original', () => {
         const arrayOfArrays = [[1, 2], [3, 4], [5, 6]],
-            flatArray= [1, 2, 3, 4, 5, 6];
+            flatArray = [1, 2, 3, 4, 5, 6];
         expect(utils.flatten(arrayOfArrays)).to.deep.equal(flatArray);
     });
 });
 
 describe("function fieldValueOrSpinner", () => {
     it('expect to return an object with a key "value" from object, if objects defined', () => {
-        const object = {a: 1, b: 2},
+        const object = { a: 1, b: 2 },
             field = 'b';
         expect(utils.fieldValueOrSpinner(object, field)).to.have.key('value');
-        expect(utils.fieldValueOrSpinner(object, field)).to.deep.equal({value: 2});
+        expect(utils.fieldValueOrSpinner(object, field)).to.deep.equal({ value: 2 });
     });
     it('expect to return an object with a key "icon", if objects not defined', () => {
         let object,
@@ -179,9 +201,9 @@ describe("function fieldValueOrSpinner", () => {
 describe("function setHash", () => {
     it('expect to set hash if hash is defined', () => {
         const window = global.window;
-            global.window = {
-                location: {}
-            };
+        global.window = {
+            location: {}
+        };
         const hash = 'setHash';
         utils.setHash(hash);
         expect(JSON.stringify(global.window)).to.equal('{"location":{"hash":"#setHash"}}');
@@ -189,9 +211,9 @@ describe("function setHash", () => {
     });
     it('expect to set an empty string if hash is undefined', () => {
         const window = global.window;
-            global.window = {
-                location: {}
-            };
+        global.window = {
+            location: {}
+        };
         let hash;
         utils.setHash(hash);
         expect(JSON.stringify(global.window)).to.equal('{"location":{"hash":""}}');
