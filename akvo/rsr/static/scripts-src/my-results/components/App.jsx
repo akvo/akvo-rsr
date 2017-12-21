@@ -358,7 +358,7 @@ export default class App extends React.Component {
                     <Tabs>
                         <TabList>
                             <Tab>Results</Tab>
-                            <Tab>Narrative reports</Tab>
+                            <Tab>Narrative summaries</Tab>
                         </TabList>
                         <TabPanel>
                             <FilterBar callbacks={callbacks}/>

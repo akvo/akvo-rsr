@@ -97,6 +97,12 @@ img {
     }
 }
 
+.fixed {
+    position: fixed;
+    top: 20px;
+    z-index: 99999;
+}
+
 time {
     color: $flowOrange;
 }

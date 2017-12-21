@@ -120,6 +120,11 @@ img {
   .noStyleUl li {
     padding: 0; }
 
+.fixed {
+  position: fixed;
+  top: 20px;
+  z-index: 99999; }
+
 time {
   color: #de8929; }
 
