@@ -3616,6 +3616,9 @@ main.results-page {
             border: 1px solid rgba(0, 0, 0, 0.1);
             overflow: scroll;
             position: relative;
+            textarea {
+                min-height: 340px;
+            }
             .Select {
                 margin: 15px auto 25px;
             }
