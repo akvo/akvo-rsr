@@ -28,7 +28,7 @@ import {
     activateToggleAll,
     selectPeriodByDates,
     filterPeriods,
-    updateFormClose,
+    updateFormClose, noHide,
 } from "../actions/ui-actions";
 
 import * as c from "../const"
@@ -311,6 +311,12 @@ export default class App extends React.Component {
     //     return changedDisaggregations;
     // }
 
+    onSelectTab(index) {
+        if (index === 1) {
+            noHide();
+        }
+    }
+
     render() {
         const callbacks = {
             needReporting: this.needReporting,
@@ -355,7 +361,7 @@ export default class App extends React.Component {
         return (
             page.mode && page.mode.show_narrative_reports ? (
                 <section className="results liveView">
-                    <Tabs>
+                    <Tabs onSelect={this.onSelectTab}>
                         <TabList>
                             <Tab>Results</Tab>
                             <Tab>Narrative summaries</Tab>
