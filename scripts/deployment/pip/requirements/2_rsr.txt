@@ -51,6 +51,7 @@ django-embed-video==0.11
 # Database requirements
 South==0.8.4
 psycopg2==2.6.2
+django-pgviews==0.5.3
 
 # App container
 gunicorn==18.0

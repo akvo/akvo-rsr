@@ -14,9 +14,9 @@ import { createSelector } from "reselect"
 import * as c from "./const";
 
 import {
+    computePercentage,
     idsToActiveKey,
     isEmpty,
-    computePercentage,
 } from "./utils";
 
 
@@ -86,7 +86,6 @@ export const getResultsChildrenIds = createSelector(
     children => children
 );
 
-
 export const getIndicatorsChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for indicators and period children
     getChildrenFactory(c.OBJECTS_PERIODS),
@@ -127,6 +126,43 @@ export const getUpdatesDisaggregationObjects = createSelector(
         }, {});
     }
 );
+
+
+export const getApprovedUpdateIds = createSelector(
+    [getUpdateIds, getUpdateObjects],
+    (updateIds, updates) => updateIds.filter(id => updates[id].status === c.UPDATE_STATUS_APPROVED)
+);
+
+
+
+export const getPeriodsApprovedDisaggregationIds = createSelector(
+    /*
+        Return an object with the structure
+        {
+            [periodId1]: [disaggregationId1, disaggregationId2, ...],
+            [periodId2]: [disaggregationId3, disaggregationId4, ...],
+            ...
+        }
+        Used to find all disaggregations for approved updates for a period
+     */
+    [
+        getPeriodsChildrenIds, getUpdatesDisaggregationIds, getApprovedUpdateIds, getUpdateObjects,
+        getDisaggregationObjects
+    ],
+    (periodsChildrenIds, updateDisaggregationIds, approvedUpdateIds, updates, disaggregations) => {
+        return periodsChildrenIds && Object.keys(periodsChildrenIds).reduce(
+            (obj, periodId) => obj = {...obj, [periodId]: periodsChildrenIds[periodId].reduce(
+                (arr, updateId) => arr = arr.concat(
+                    updateDisaggregationIds[updateId].filter(
+                        disaggId => disaggregations[disaggId].update === updateId &&
+                            approvedUpdateIds.indexOf(updateId) > -1
+                    )
+                // sort on dimension to keep the order of dimensions defined in the project editor
+                ), []).sort((a, b) => disaggregations[a].dimension - disaggregations[b].dimension)
+            }, {});
+    }
+);
+
 
 export const getPeriodsActualValue = createSelector(
     /*
@@ -206,6 +242,7 @@ export const getIndicatorsAggregateActualValue = createSelector(
             }, {});
     }
 );
+
 
 export const getIndicatorsAggregateTargetValue = createSelector(
     /*
@@ -382,18 +419,10 @@ export const getUpdatesForPendingApprovalPeriods = createSelector(
 );
 
 
-export const getMEManagerDefaultKeys = createSelector(
+export const getResultsDefaultKeys = createSelector(
     /*
         Just an array of IDs as string, used to set the top collapse (for Results) to all open
      */
     [getResultIds],
     resultIds => idsToActiveKey(resultIds)
-);
-
-export const getPublicViewDefaultKeys = createSelector(
-    /*
-        Just an array of IDs as string, used for the default view on the project page Results tab
-     */
-    [getIndicatorIds],
-    indicatorIds => idsToActiveKey(indicatorIds)
 );

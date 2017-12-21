@@ -42,9 +42,10 @@ IndicatorHeaderPeriodCount.propTypes = {
 
 
 const IndicatorHeader = (
-        {indicator, periodCount, aggregateActualValue, aggregateCompletionPercentage}) => {
+        {indicator, periodCount, aggregateActualValue, aggregateCompletionPercentage, hideType}) => {
     const title = indicator.title.length > 0 ? indicator.title : _("nameless_indicator");
-    const type = indicator.type === 1 ? 'Quantitative' : 'Qualitative';
+    // hideType indicates that we should hide the type label. This is a one-off hack for IUCN
+    const type = indicator.type === 1 ? 'Quantitative' : hideType ? undefined : 'Qualitative';
     // Don't show progress bar if there's no target value (aggregateCompletionPercentage is NaN)
     const progress_bar = aggregateCompletionPercentage !== aggregateCompletionPercentage ? undefined : (
         // Limit percentage to 100 for progress bar to work correctly
@@ -82,17 +83,30 @@ const IndicatorContent = ({indicator}) => {
             </li>
         </ul>
     ): undefined;
+    const baselineYear = indicator.baseline_year ?
+        <li className="baseline-year">
+            {_('baseline_year')}: <span>{indicator.baseline_year}</span>
+        </li>
+    :
+        undefined;
+    const baselineValue = indicator.baseline_value ?
+        <li className="baseline-value">
+            {_('baseline_value')}: <span>{indicator.baseline_value}</span>
+        </li>
+    :
+        undefined;
+
     return (
         <div className="indicatorInfo">
             {description}
-            <ul>
-                <li className="baseline-year">
-                    {_('baseline_year')}: <span>{indicator.baseline_year}</span>
-                </li>
-                <li className="baseline-value">
-                    {_('baseline_value')}: <span>{indicator.baseline_value}</span>
-                </li>
-            </ul>
+            {(baselineYear || baselineValue) ?
+                <ul>
+                    {baselineYear}
+                    {baselineValue}
+                </ul>
+            :
+                undefined
+            }
         </div>
     )
 };
@@ -107,6 +121,7 @@ IndicatorContent.propTypes = {
         periods: store.models.periods,
         keys: store.keys,
         ui: store.ui,
+        primaryOrganisationId: store.page.project.primaryOrganisationId,
         resultChildrenIds: getResultsChildrenIds(store),
         indicatorsChildrenIds: getIndicatorsChildrenIds(store),
         aggregateActualValue: getIndicatorsAggregateActualValue(store),
@@ -153,6 +168,7 @@ export default class Indicators extends React.Component {
                 const indicator = this.props.indicators.objects[id];
                 const className = this.hideMe(id) ? 'hidePanel' : '';
                 const periods = this.props.indicatorsChildrenIds[id];
+                const hideType = this.props.primaryOrganisationId === c.IUCN_ORG_ID;
                 return (
                     <Panel header={<IndicatorHeader
                                         indicator={indicator}
@@ -162,7 +178,8 @@ export default class Indicators extends React.Component {
                                         }
                                         aggregateCompletionPercentage={
                                             this.props.aggregateCompletionPercentage[id]
-                                        }/>}
+                                        }
+                                        hideType={hideType}/>}
                            className={className}
                            key={id}>
                         <IndicatorContent indicator={indicator}/>

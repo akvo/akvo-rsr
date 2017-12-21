@@ -20,11 +20,11 @@ from akvo.utils import codelist_choices, codelist_value, get_country
 
 class BaseLocation(models.Model):
     latitude = LatitudeField(
-        _(u'latitude'), null=True, blank=True, db_index=True, default=0,
+        _(u'latitude'), null=True, blank=True, db_index=True, default=None,
         help_text=_(u'Use a period to denote decimals.')
     )
     longitude = LongitudeField(
-        _(u'longitude'), null=True, blank=True, db_index=True, default=0,
+        _(u'longitude'), null=True, blank=True, db_index=True, default=None,
         help_text=_(u'Use a period to denote decimals.')
     )
     city = ValidXMLCharField(_(u'city'), blank=True, max_length=255)
@@ -33,6 +33,20 @@ class BaseLocation(models.Model):
     address_2 = ValidXMLCharField(_(u'address 2'), max_length=255, blank=True)
     postcode = ValidXMLCharField(_(u'postal code'), max_length=10, blank=True)
     country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'country'))
+
+    def __unicode__(self):
+        return u'{0}, {1}, {2}{3}'.format(
+            u'{0}: {1}'.format(
+                _(u'Latitude'),
+                unicode(self.latitude) if self.latitude else _(u'No latitude specified')),
+            u'{0}: {1}'.format(
+                _(u'Longitude'),
+                unicode(self.longitude) if self.longitude else _(u'No longitude specified')),
+            u'{0}: {1}'.format(
+                _(u'Country'),
+                unicode(self.country.name) if self.country else _(u'No country specified')),
+            u' ({0})'.format(self.name) if getattr(self, 'name', None) else u''
+        )
 
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)
@@ -49,9 +63,20 @@ class BaseLocation(models.Model):
         location_target.save()
 
     def save(self, *args, **kwargs):
+        get_country = False
+        if not self.pk:
+            get_country = True
+
+        else:
+            original = self._meta.model.objects.get(id=self.pk)
+            if original.latitude != self.latitude or original.longitude != self.longitude:
+                get_country = True
+
         # Set a country based on the latitude and longitude if possible
-        if self.country is None:
+        if get_country and self.latitude is not None and self.longitude is not None:
             self.country = self.get_country_from_lat_lon()
+            if 'update_fields' in kwargs and 'country' not in kwargs['update_fields']:
+                kwargs['update_fields'].append('country')
 
         super(BaseLocation, self).save(*args, **kwargs)
 
@@ -166,17 +191,6 @@ class ProjectLocation(BaseLocation):
                     u'LocationType/</a>.')
     )
 
-    def __unicode__(self):
-        return u'{0}, {1}{2}'.format(
-            u'{0}: {1}'.format(
-                _(u'Latitude'),
-                unicode(self.latitude) if self.latitude else _(u'No latitude specified')),
-            u'{0}: {1}'.format(
-                _(u'Longitude'),
-                unicode(self.longitude) if self.longitude else _(u'No longitude specified')),
-            u' ({0})'.format(self.name) if self.name else u''
-        )
-
     def iati_country(self):
         return codelist_value(Country, self, 'country')
 
@@ -212,6 +226,7 @@ class ProjectLocation(BaseLocation):
 
     def iati_designation_unicode(self):
         return unicode(self.iati_designation())
+
 
 # Over-riding fields doesn't work in Django < 1.10, and hence this hack.
 ProjectLocation._meta.get_field('country').help_text = _(

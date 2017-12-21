@@ -38,6 +38,7 @@
     "parcelify": "^2.2.0",
     "rc-collapse": "^1.6.10",
     "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "react-dom": "^15.4.1",
+    "react-lightweight-tooltip": "^1.0.0"
   }
 }

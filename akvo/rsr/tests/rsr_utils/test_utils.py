@@ -12,7 +12,8 @@ from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
                         custom_get_or_create_country, right_now_in_akvo,
-                        pagination, filter_query_string, codelist_name, get_country)
+                        pagination, filter_query_string, codelist_name, get_country,
+                        codelist_choices)
 
 from django.core import mail
 from django.http.request import QueryDict
@@ -143,6 +144,95 @@ class GeneralUtilsTestCase(TestCase):
         sector = Sector.objects.create(project=self.project, sector_code='140')
         name = codelist_name(CodelistSector, sector, 'sector_code', version='16')
         self.assertEqual(name, '140')
+
+    def test_codelist_choices_true(self):
+        """
+        Test calling codelist_choices(<codelist>, True)
+        """
+        # snippet of FINANCE_TYPE codelist
+        codelist_1 = (
+            (u"code", u"name", u"description"),
+            (u"1", u"Global", u"The activity scope is global"),
+            (u"2", u"Regional", u"The activity scope is a supranational region"),
+            (u"3", u"Multi-national",
+             u"The activity scope covers multiple countries, that don't constitute a region"),
+            (u"4", u"National", u"The activity scope covers one country"),
+        )
+        choices_with_code_1 = [
+            (u"1", u"1 - Global",),
+            (u"2", u"2 - Regional",),
+            (u"3", u"3 - Multi-national",),
+            (u"4", u"4 - National",),
+        ]
+        codelist_2 = (
+            (u"category", u"code", u"name"),
+            (u"100", u"110", u"Standard grant"),
+            (u"100", u"111", u"Subsidies to national private investors"),
+            (u"100", u"210", u"Interest subsidy"),
+            (u"200", u"211", u"Interest subsidy to national private exporters"),
+        )
+        choices_with_code_2 = [
+            (u"110", u"110 - Standard grant"),
+            (u"111", u"111 - Subsidies to national private investors"),
+            (u"210", u"210 - Interest subsidy"),
+            (u"211", u"211 - Interest subsidy to national private exporters"),
+        ]
+        generated_choices_with_code_1 = codelist_choices(codelist_1)
+        self.assertEqual(choices_with_code_1, generated_choices_with_code_1)
+        generated_choices_with_code_2 = codelist_choices(codelist_2)
+        self.assertEqual(choices_with_code_2, generated_choices_with_code_2)
+
+    def test_codelist_choices_false(self):
+        """
+        Test calling codelist_choices(<codelist>, False)
+        """
+        # snippet of FINANCE_TYPE codelist
+        codelist_1 = (
+            (u"code", u"name", u"description"),
+            (u"1", u"Global", u"The activity scope is global"),
+            (u"2", u"Regional", u"The activity scope is a supranational region"),
+            (u"3", u"Multi-national",
+             u"The activity scope covers multiple countries, that don't constitute a region"),
+            (u"4", u"National", u"The activity scope covers one country"),
+        )
+        choices_1 = [
+            (u"1", u"Global",),
+            (u"2", u"Regional",),
+            (u"3", u"Multi-national",),
+            (u"4", u"National",),
+        ]
+        codelist_2 = (
+            (u"category", u"code", u"name"),
+            (u"100", u"110", u"Standard grant"),
+            (u"100", u"111", u"Subsidies to national private investors"),
+            (u"100", u"210", u"Interest subsidy"),
+            (u"200", u"211", u"Interest subsidy to national private exporters"),
+        )
+        choices_2 = [
+            (u"110", u"Standard grant"),
+            (u"111", u"Subsidies to national private investors"),
+            (u"210", u"Interest subsidy"),
+            (u"211", u"Interest subsidy to national private exporters"),
+        ]
+        codelist_3 = (
+            (u"category", u"code"),
+            (u"application", u"application/1d-interleaved-parityfec"),
+            (u"application", u"application/3gpdash-qoe-report+xml"),
+            (u"application", u"application/3gpp-ims+xml"),
+            (u"application", u"application/A2L"),
+        )
+        choices_with_code_3 = [
+            (u"application/1d-interleaved-parityfec", u"application/1d-interleaved-parityfec"),
+            (u"application/3gpdash-qoe-report+xml", u"application/3gpdash-qoe-report+xml"),
+            (u"application/3gpp-ims+xml", u"application/3gpp-ims+xml"),
+            (u"application/A2L", u"application/A2L"),
+        ]
+        generated_choices_1 = codelist_choices(codelist_1, False)
+        self.assertEqual(choices_1, generated_choices_1)
+        generated_choices_2 = codelist_choices(codelist_2, False)
+        self.assertEqual(choices_2, generated_choices_2)
+        generated_choices_with_code_3 = codelist_choices(codelist_3)
+        self.assertEqual(choices_with_code_3, generated_choices_with_code_3)
 
     def test_countries(self):
         """Test retrieving country name from (lat, long)."""

@@ -1470,6 +1470,9 @@ function setMeasureVisibility(indicatorTypeSelect) {
     // hide measure fields for qualitative indicators
     if (indicatorTypeSelect.value === '2') {
         elAddClass(measureRow, 'hidden');
+        // HACK: To deal with mandatory fields, we set indicator measure to be
+        // Unit for qualitative indicators automatically.
+        measureRow.querySelector('select').selectedIndex = 1;
     } else {
         elRemoveClass(measureRow, 'hidden');
     }
@@ -4044,3 +4047,15 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAndRenderReact();
     }
 });
+
+function expandSection() {
+    if (location.hash.indexOf('#step') < 0) {return;}
+    var stepInput = document.querySelector(location.hash);
+    if (!stepInput) {return;}
+    stepInput.parentElement.firstElementChild.click();
+    stepInput.parentElement.firstElementChild.scrollIntoView();
+};
+
+window.onload = function(){
+    expandSection();
+}

@@ -10,6 +10,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux"
 import update from 'immutability-helper';
+import {Tooltip} from 'react-lightweight-tooltip';
 
 import * as alertActions from "../../actions/alert-actions"
 import { addKey } from "../../actions/collapse-actions"
@@ -68,13 +69,66 @@ UpdateAlert.propTypes = {
     close: PropTypes.func.isRequired,
 };
 
+const toolTipStyle = {
+  wrapper: {
+    position: 'relative',
+    display: 'inline-block',
+    zIndex: '98',
+    color: 'black',
+    cursor: 'help',
+    left: '0',
+  },
+  tooltip: {
+    zIndex: '99',
+    background: 'white',
+    marginBottom: '10px',
+    padding: '5px',
+    top: '20px',
+    left: '165px',
+  },
+  content: {
+    color: '#000',
+    background: '#fff',
+    border: '1px solid  #ccc',
+    fontSize: '.8em',
+    padding: '.3em 1em',
+    whiteSpace: 'wrap',
+  },
+  arrow: {
+    position: 'absolute',
+    width: '0',
+    height: '0',
+    top: '-6px',
+    left: '4px',
+    marginLeft: '0px',
+    borderBottom: 'solid #000 5px',
+    borderLeft: 'solid transparent 5px',
+    borderRight: 'solid transparent 5px',
+  },
+  gap: {
+    position: 'absolute',
+    width: '100%',
+    height: '20px',
+    bottom: '-20px',
+  },
+};
+const targetLabelStyle = {
+  marginLeft: '25px',
+}
+const QuantitativeHeader = ({targetValue, targetComment}) => {
 
-const QuantitativeHeader = ({targetValue}) => {
+    const comment = targetComment ?
+        <Tooltip content={targetComment} styles={toolTipStyle}>
+            <span className="glyphicon glyphicon-info-sign info-icon"></span>
+        </Tooltip>
+    :
+        undefined;
     return (
         <div>
-            <div className="targetLabel">
+            <div className="targetLabel" styles={targetLabelStyle}>
                 {_('target_value')}: <span>{targetValue}</span>
             </div>
+            {comment}
         </div>
     )
 };
@@ -134,7 +188,7 @@ const QuantitativeActualValueInput = ({update, onChange, onClose, isPercentage})
             <div>
                 <label htmlFor="actualValue">{label}</label>
                 <ToggleButton onClick={onClose} label="X"
-                              className="btn btn-default btn-xs"/>
+                              className="btn btn-default btn-xs closingBtn"/>
                 <input className="form-control"
                        readOnly={readOnly}
                        id="value"
@@ -155,11 +209,15 @@ QuantitativeActualValueInput.propTypes = {
 };
 
 
-const QualitativeActualValueInput = ({update, onClose, onChange}) => {
+const QualitativeActualValueInput = ({update, onClose, onChange, hideTarget}) => {
     return (
         <div className="">
             <div>
-                <label htmlFor="actualValue">{_('actual')}</label>
+                {hideTarget ?
+                    <label htmlFor="actualValue">{_('narrative_reporting')}</label>
+                :
+                    <label htmlFor="actualValue">{_('actual')}</label>
+                }
                 <ToggleButton onClick={onClose} label="X"
                               className="btn btn-default btn-xs"/>
                 <textarea className="form-control"
@@ -369,9 +427,11 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
 
     function getActionButtons(role, updateStatus, icon) {
         let btnKey = 0;
+        const hasComment = update._comment !== undefined || update._meta !== undefined;
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
-                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE;
+                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE ||
+                    action === c.UPDATE_ACTION_SAVE && !hasComment;
                 switch (measure) {
                     case c.MEASURE_UNIT: {
                         disabled = disabled && !(update.value !== null && update.value !== "");
@@ -427,9 +487,9 @@ const QuantitativeUpdateForm = ({period, update, measure, self, dimensions, disa
     const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
     return (
-        <div className="update-container">
+        <div className="update-container quantitativeUpdate">
             <div className="update-entry-container edit-in-progress">
-                <QuantitativeHeader targetValue={period.target_value}/>
+                <QuantitativeHeader targetValue={period.target_value} targetComment={period.target_comment}/>
                 <QuantitativeActualValueInput update={update}
                                               onChange={self.onChange}
                                               onClose={self.props.onClose}
@@ -466,14 +526,19 @@ QuantitativeUpdateForm.propTypes = {
 };
 
 
-const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disaggregations}) => {
+const QualitativeUpdateForm = ({period, update, measure, self, dimensions, disaggregations, hideTarget}) => {
     return (
         <div className="update-container qualitativeUpdate">
             <div className="update-entry-container edit-in-progress">
-                <QualitativeHeader targetValue={period.target_value}/>
+                {hideTarget ?
+                    undefined
+                :
+                    <QualitativeHeader targetValue={period.target_value} hideTarget={hideTarget}/>
+                }
                 <QualitativeActualValueInput update={update}
                                              onClose={self.props.onClose}
-                                             onChange={self.onChange}/>
+                                             onChange={self.onChange}
+                                             hideTarget={hideTarget}/>
                 {<self.state.UpdateAlert/>}
                 <Attachments update={update}
                              onChange={self.attachmentsChange}
@@ -646,6 +711,7 @@ const pruneForPOST = (update) => {
         user: store.models.user.objects[store.models.user.ids[0]],
         updates: store.models.updates,
         ui: store.ui,
+        primaryOrganisationId: store.page.project.primaryOrganisationId,
     }
 }, alertActions)
 export default class UpdateForm extends React.Component {
@@ -1032,7 +1098,10 @@ export default class UpdateForm extends React.Component {
     }
 
     render() {
-        const {dimensions, disaggregations, indicator, period, update} = this.props;
+        const {
+            dimensions, disaggregations, indicator, period, update, primaryOrganisationId
+        } = this.props;
+        const hideTarget = primaryOrganisationId === c.IUCN_ORG_ID;
         switch(indicator.type) {
             case c.INDICATOR_QUANTATIVE: {
                 return <QuantitativeUpdateForm period={period}
@@ -1048,7 +1117,8 @@ export default class UpdateForm extends React.Component {
                                               dimensions={dimensions}
                                               disaggregations={disaggregations}
                                               self={this}
-                                              measure={c.MEASURE_QUALITATIVE}/>
+                                              measure={c.MEASURE_QUALITATIVE}
+                                              hideTarget={hideTarget}/>
             }
         }
     }

@@ -1324,17 +1324,30 @@ class Project(TimestampsMixin, models.Model):
             self.add_indicator(child_result, indicator)
 
     def add_indicator(self, result, indicator):
-        child_indicator = get_model('rsr', 'Indicator').objects.create(
+        """Add a new indicator to the result as a child of the specified indicator.
+
+        NOTE: There can only be one child for an indicator, per result. This
+        method automatically updates an existing child indicator, if present.
+
+        It also triggers the creation of periods, dimensions and references on
+        the indicator, if the indicator is being created and not updated.
+
+        """
+        Indicator = get_model('rsr', 'Indicator')
+        child_indicator, created = Indicator.objects.update_or_create(
             result=result,
             parent_indicator=indicator,
-            title=indicator.title,
-            measure=indicator.measure,
-            ascending=indicator.ascending,
-            description=indicator.description,
-            baseline_year=indicator.baseline_year,
-            baseline_value=indicator.baseline_value,
-            baseline_comment=indicator.baseline_comment
+            defaults=dict(
+                title=indicator.title,
+                measure=indicator.measure,
+                ascending=indicator.ascending,
+            )
         )
+        fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        self._update_fields_if_not_child_updated(indicator, child_indicator, fields)
+
+        if not created:
+            return
 
         for period in indicator.periods.all():
             self.add_period(child_indicator, period)
@@ -1342,15 +1355,36 @@ class Project(TimestampsMixin, models.Model):
         for reference in indicator.references.all():
             self.add_reference(child_indicator, reference)
 
+        for dimension in indicator.dimensions.all():
+            self.add_dimension(child_indicator, dimension)
+
     def add_period(self, indicator, period):
-        get_model('rsr', 'IndicatorPeriod').objects.create(
+        """Add a new period to the indicator as a child of period.
+
+        NOTE: There can only be one child for a period, per indicator. This
+        method automatically updates the existing one, if there is one.
+
+        """
+        IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
+        child_period, created = IndicatorPeriod.objects.select_related(
+            'indicator',
+            'indicator__result',
+        ).update_or_create(
             indicator=indicator,
             parent_period=period,
-            period_start=period.period_start,
-            period_end=period.period_end,
-            target_value=period.target_value,
-            target_comment=period.target_comment,
-            actual_comment=period.actual_comment
+            defaults=dict(
+                period_start=period.period_start,
+                period_end=period.period_end,
+            )
+        )
+        fields = ['target_value', 'target_comment', 'actual_comment']
+        self._update_fields_if_not_child_updated(period, child_period, fields)
+
+    def add_dimension(self, indicator, dimension):
+        get_model('rsr', 'IndicatorDimension').objects.create(
+            indicator=indicator,
+            name=dimension.name,
+            value=dimension.value,
         )
 
     def add_reference(self, indicator, reference):
@@ -1360,6 +1394,15 @@ class Project(TimestampsMixin, models.Model):
             vocabulary=reference.vocabulary,
             vocabulary_uri=reference.vocabulary_uri,
         )
+
+    def _update_fields_if_not_child_updated(self, parent, child, fields):
+        """Copy the specified fields from parent to child, when empty on the child."""
+        for field in fields:
+            parent_value = getattr(parent, field)
+            if not getattr(child, field) and parent_value:
+                setattr(child, field, parent_value)
+
+        child.save()
 
     def has_results(self):
         for result in self.results.all():

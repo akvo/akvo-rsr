@@ -39,6 +39,7 @@ from .internal_organisation_id import InternalOrganisationIDSerializer
 from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
+from .narrative_report import NarrativeReportSerializer
 from .organisation import OrganisationSerializer, OrganisationBasicSerializer
 from .organisation_budget import (OrganisationCountryBudgetSerializer,
                                   OrganisationCountryBudgetLineSerializer,
@@ -141,6 +142,7 @@ __all__ = [
     'MapOrganisationLocationSerializer',
     'MapProjectLocationSerializer',
     'MapProjectUpdateLocationSerializer',
+    'NarrativeReportSerializer',
     'OrganisationSerializer',
     'OrganisationBasicSerializer',
     'OrganisationCountryBudgetLineSerializer',

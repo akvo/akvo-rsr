@@ -38,6 +38,7 @@ from .internal_organisation_id import InternalOrganisationIDViewSet
 from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
+from .narrative_report import NarrativeReportViewSet
 from .organisation import OrganisationViewSet
 from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationTotalBudgetLineViewSet,
@@ -147,6 +148,7 @@ __all__ = [
     'MapOrganisationLocationViewSet',
     'MapProjectLocationViewSet',
     'MapProjectUpdateLocationViewSet',
+    'NarrativeReportViewSet',
     'OrganisationViewSet',
     'OrganisationLocationViewSet',
     'OrganisationCountryBudgetViewSet',

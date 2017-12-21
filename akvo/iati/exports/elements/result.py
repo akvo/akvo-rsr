@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.rsr.models.result.utils import QUANTITATIVE
+
 
 def result(project):
     """
@@ -37,7 +39,7 @@ def result(project):
                 narrative_element = etree.SubElement(description_element, "narrative")
                 narrative_element.text = res.description
 
-            for indicator in res.indicators.all():
+            for indicator in res.indicators.filter(type=QUANTITATIVE):
                 if indicator.measure or indicator.ascending is not None or indicator.title or \
                         indicator.description or indicator.references.all() or \
                         indicator.baseline_year or indicator.baseline_value or \

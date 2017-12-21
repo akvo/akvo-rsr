@@ -24,7 +24,6 @@ import {setPageData} from "../actions/page-actions";
 import {
     activateFilterCSS,
     activateToggleAll,
-    filterActive,
     selectPeriodByDates,
     filterPeriods,
     updateFormClose,
@@ -34,7 +33,7 @@ import * as c from "../const"
 
 import {
     getApprovedPeriods,
-    getMEManagerDefaultKeys,
+    getResultsDefaultKeys,
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
@@ -91,8 +90,7 @@ const modifyUser = (isMEManager) => {
         needReportingPeriods: getNeedReportingPeriods(store),
         pendingApprovalPeriods: getPendingApprovalPeriods(store),
         approvedPeriods: getApprovedPeriods(store),
-        MEManagerDefaultKeys: getMEManagerDefaultKeys(store),
-        publicViewDefaultKeys: getPublicViewDefaultKeys(store),
+        ResultsDefaultKeys: getResultsDefaultKeys(store),
     }
 })
 export default class App extends React.Component {
@@ -176,18 +174,8 @@ export default class App extends React.Component {
         };
 
         const setInitialView = () => {
-            // set the initial state of the Results panels to open if the user is an M&E manager or
-            // this is the public view
-            if (nextProps.ui.allFetched && !this.state.initialViewSet) {
-                if (nextProps.page.mode && nextProps.page.mode.public) {
-                    openNodes(c.OBJECTS_INDICATORS, this.props.publicViewDefaultKeys);
-                    this.setState({initialViewSet: true});
-                }
-                if (userIsMEManager(this.props.user)) {
-                    collapseChange(resultsCollapseID, this.props.MEManagerDefaultKeys);
-                    this.setState({initialViewSet: true});
-                }
-            }
+            collapseChange(resultsCollapseID, this.props.ResultsDefaultKeys);
+            this.setState({initialViewSet: true});
         };
 
         const prepareUpdateForm = () => {

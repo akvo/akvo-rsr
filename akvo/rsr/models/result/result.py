@@ -157,3 +157,4 @@ class Result(models.Model):
         ordering = ['order', 'id']
         verbose_name = _(u'result')
         verbose_name_plural = _(u'results')
+        unique_together = ('project', 'parent_result')

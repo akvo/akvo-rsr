@@ -10,6 +10,50 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
+import {
+    isEmpty,
+} from "../utils";
+
+
+export const DisaggregationsDisplay = ({disaggregationData}) => {
+    /*
+    disaggregationData = {
+        Flavor: {
+            Vanilla: 5,
+            Chocolate: 7,
+        },
+        Color: {
+            Red: 3,
+            Black: 7,
+            Blue: 6
+        }
+    }
+    */
+    const disaggregationDisplayData = Object.entries(disaggregationData).map(([name, values]) => {
+        const dimensionValues = Object.entries(values).map(
+            ([dimensionValue, data]) =>
+                <li key={dimensionValue}>{dimensionValue}: {data}</li>
+        );
+        return (
+            <div key={name}>
+                <span>{name}</span>
+                <ul>{dimensionValues}</ul>
+            </div>
+        )
+    });
+    if (!isEmpty(disaggregationData)) {
+      return (
+          <ul className="showDisaggregations">
+              <li>
+                  <h5>Disaggregations</h5>
+                  {disaggregationDisplayData}
+              </li>
+          </ul>
+      );
+    }
+    return null;
+};
+
 
 export const ToggleButton = (
         {onClick, id, className='btn btn-sm btn-default', label, style, disabled, icon}) => {

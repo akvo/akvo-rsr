@@ -94,37 +94,21 @@ class IndicatorPeriod(models.Model):
             percentage = calculate_percentage(self.numerator, self.denominator)
             self.actual_value = str(percentage)
 
-        # When the general information of a parent period is updated, this information should also
-        # be reflected in the child periods.
         if self.pk:
-            for child_period in self.child_periods.all():
-                # Always copy period start and end. They should be the same as the parent.
-                child_period.period_start = self.period_start
-                child_period.period_end = self.period_end
-
-                # Only copy the target value and comments if the child has no values (in case the
-                # child period is new). Afterwards, it is possible to adjust these values (update
-                # the target for the child, for instance) and then these values should not be
-                # overwritten.
-                if not child_period.target_value and self.target_value:
-                    child_period.target_value = self.target_value
-                if not child_period.target_comment and self.target_comment:
-                    child_period.target_comment = self.target_comment
-
-                child_period.save()
-
             # Check if the actual value has changed
             orig_period = IndicatorPeriod.objects.get(pk=self.pk)
             if orig_period.actual_value != self.actual_value:
                 actual_value_changed = True
 
-        # In case the period is new and the period's indicator does have child indicators, the (new)
-        # period should also be copied to the child indicator.
-        else:
-            for child_indicator in self.indicator.child_indicators.all():
-                child_indicator.result.project.add_period(child_indicator, self)
-
         super(IndicatorPeriod, self).save(*args, **kwargs)
+
+        child_indicators = self.indicator.child_indicators.select_related(
+            'result',
+            'result__project',
+        )
+
+        for child_indicator in child_indicators.all():
+            child_indicator.result.project.add_period(child_indicator, self)
 
         # If the actual value has changed, the period has a parent period and aggregations are on,
         # then the the parent should be updated as well
@@ -465,3 +449,4 @@ class IndicatorPeriod(models.Model):
         verbose_name = _(u'indicator period')
         verbose_name_plural = _(u'indicator periods')
         ordering = ['period_start']
+        unique_together = ('indicator', 'parent_period')
