@@ -45,8 +45,8 @@ import * as alertActions from "../actions/alert-actions"
 const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
     return (
         <div>
-            <span>{`${_("narrative_summary_for")} ${displayDate(period_start)} - ${displayDate(period_end)}`}</span>
-            <span>{`(${count})`}</span>
+            <span>{`${_("narrative_summary_for")}`} <span className="narrativePeriod">{`${displayDate(period_start)} - ${displayDate(period_end)}`}</span></span>
+            <span className="narrativeCount" >{`(${count})`}</span>
             {
                 onCreate == undefined ?
                 undefined
@@ -71,7 +71,7 @@ const ReportHeader = ({categories, report, onClick}) => {
         <div>
             <span style={category_style}>{categories.objects[report.category].label}</span>
             <button className="btn btn-sm btn-default" onClick={clickHandler}>{_("edit")}</button>
-            <span style={status_style}>{report.published?_("approved"):_("draft")}</span>
+            <span style={status_style} className="narrativeStatus">{report.published?_("approved"):_("draft")}</span>
         </div>
     )
 };
@@ -183,7 +183,7 @@ export class ReportForm extends React.Component {
                 <h2>{displayDate(report.period_start)} - {displayDate(report.period_end)}</h2>
                 <article className="shared">
                     <button className="btn btn-xs btn-default closingBtn" onClick={this.closeForm}>{"x"}</button>
-                    <h3>New narrative summary</h3>
+                    <h3>Narrative summary</h3>
                     <Select options={categoryOptions}
                             value={reportCategory}
                             onChange={setCategory}

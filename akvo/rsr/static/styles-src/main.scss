@@ -3552,6 +3552,15 @@ main.results-page {
     /********************* Narrative report ***************************/
     .reports {
         position: relative;
+        .narrativeStatus {
+            color: $rsrGreen;
+        }
+        .narrativePeriod {
+            font-weight: bold;
+        }
+        .narrativeCount {
+            color: $newResultColor;
+        }
         .rc-collapse {
             margin-top: 20px;
             .rc-collapse-item {
@@ -3643,6 +3652,9 @@ main.results-page {
         aside {
             float: left;
             width: 50%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            height: calc(100vh - 300px);
             &.open {
                 .rc-collapse {
                     margin-top: 0px;

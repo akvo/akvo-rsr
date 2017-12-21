@@ -2884,6 +2884,12 @@ main.results-page {
     border-radius: 0; }
   .results .reports {
     position: relative; }
+    .results .reports .narrativeStatus {
+      color: #00a79d; }
+    .results .reports .narrativePeriod {
+      font-weight: bold; }
+    .results .reports .narrativeCount {
+      color: #646363; }
     .results .reports .rc-collapse {
       margin-top: 20px; }
       .results .reports .rc-collapse .rc-collapse-item {
@@ -2971,7 +2977,10 @@ main.results-page {
               background: rgba(238, 49, 36, 0.5); }
     .results .reports aside {
       float: left;
-      width: 50%; }
+      width: 50%;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      height: calc(100vh - 300px); }
       .results .reports aside.open .rc-collapse {
         margin-top: 0px; }
         .results .reports aside.open .rc-collapse .rc-collapse-item {
