@@ -2954,6 +2954,8 @@ main.results-page {
       position: relative; }
       .results .reports article textarea {
         min-height: 340px; }
+      .results .reports article .react-mde {
+        min-height: 380px; }
       .results .reports article .Select {
         margin: 15px auto 25px; }
       .results .reports article > button {

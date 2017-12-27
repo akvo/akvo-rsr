@@ -223,6 +223,9 @@ export class ReportForm extends React.Component {
                         <button className="btn btn-xs btn-default" onClick={this.saveSummary} disabled={disableSave}>
                             {_("save")}
                         </button>
+                        <button className="btn btn-xs btn-default" onClick={this.toggleEditorPreview} disabled={disableSave}>
+                            {previewButtonText}
+                        </button>
                     </div>
                 </article>
                 <aside className="open">
