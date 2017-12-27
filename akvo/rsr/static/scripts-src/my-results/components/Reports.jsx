@@ -103,6 +103,13 @@ export class ReportForm extends React.Component {
         this.toggleEditorPreview = this.toggleEditorPreview.bind(this);
     }
 
+    componentDidMount() {
+        // filter periods;
+        const {period_start, period_end} = this.props.report;
+        selectPeriodByDates(period_start, period_end);
+        periodSelectReset();
+    }
+
     closeForm() {
         reportFormToggle();
         // HACK: Displaying the results in the edit view resets the keys! We
@@ -283,9 +290,6 @@ export default class Reports extends React.Component {
 
     editSummary(report) {
         const {period_start, period_end} = report;
-        // filter periods;
-        selectPeriodByDates(period_start, period_end);
-        periodSelectReset();
         // Show report editing form
         reportFormToggle(report.id);
     }

@@ -28,7 +28,7 @@ import {
     activateToggleAll,
     selectPeriodByDates,
     filterPeriods,
-    updateFormClose, noHide,
+    updateFormClose,
 } from "../actions/ui-actions";
 
 import * as c from "../const"
@@ -286,34 +286,6 @@ export default class App extends React.Component {
             } else {
                 updateModel(c.OBJECTS_UPDATES, originalUpdate);
             }
-        }
-    }
-
-    // createNewDisaggregations(update_id, dimensions, disaggregations){
-    //     const dimension_disaggregations = keyBy(disaggregations, 'dimension');
-    //     let changedDisaggregations = disaggregations;
-    //     dimensions.forEach((dimension) => {
-    //         if (dimension_disaggregations[dimension.id] === undefined) {
-    //             const disaggregation = {
-    //                 'update': update_id,
-    //                 'dimension': dimension.id,
-    //                 'id': 'new-'+dimension.id,
-    //                 'value': '',
-    //                 'numerator': '',
-    //                 'denominator': '',
-    //                 'narrative': '',
-    //             };
-    //             changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
-    //             /* disaggregations.push(disaggregation)*/
-    //             updateModel('disaggregations', disaggregation);
-    //         }
-    //     });
-    //     return changedDisaggregations;
-    // }
-
-    onSelectTab(index) {
-        if (index === 1) {
-            noHide();
         }
     }
 
