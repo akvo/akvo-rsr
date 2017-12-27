@@ -16,6 +16,7 @@ import {
     displayDate,
     distinct,
     endpoints,
+    setHash,
 } from "../utils";
 import * as c from "../const";
 import {collapseChange} from "../actions/collapse-actions";
@@ -30,6 +31,7 @@ import {
     reportFormToggle,
     selectPeriodByDates,
     periodSelectReset,
+    noHide,
 } from "../actions/ui-actions";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
@@ -108,6 +110,11 @@ export class ReportForm extends React.Component {
         const {period_start, period_end} = this.props.report;
         selectPeriodByDates(period_start, period_end);
         periodSelectReset();
+        setHash();
+    }
+
+    componentWillUnmount() {
+        noHide();
     }
 
     closeForm() {
