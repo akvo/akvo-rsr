@@ -3516,6 +3516,13 @@ main.results-page {
     min-height: 220px !important; }
   .update-container.qualitativeUpdate .react-mde {
     min-height: 250px; }
+  .update-container.qualitativeUpdate .react-mde-dropdown {
+    z-index: 99999;
+    transform: translateX(84%) !important; }
+  .update-container.qualitativeUpdate .react-mde-dropdown::before {
+    transform: translateX(-122%) !important; }
+  .update-container.qualitativeUpdate .react-mde-dropdown::after {
+    transform: translateX(-147%) !important; }
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
     z-index: 999;
     top: -42px !important; }

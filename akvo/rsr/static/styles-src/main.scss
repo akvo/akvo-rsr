@@ -4447,6 +4447,18 @@ main.results-page {
         .react-mde {
             min-height: 250px;
         }
+        // React mde dropdown gets messed up for unknown reasons!
+        .react-mde-dropdown {
+            z-index: 99999;
+            transform: translateX(84%) !important;
+        }
+        .react-mde-dropdown::before {
+            transform: translateX(-122%) !important;
+        }
+        .react-mde-dropdown::after {
+            transform: translateX(-147%) !important;
+        }
+
     }
     &.quantitativeUpdate {
         .update-entry-container {
