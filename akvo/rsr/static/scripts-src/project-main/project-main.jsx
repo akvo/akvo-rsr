@@ -334,16 +334,20 @@ function renderReactComponents() {
     }
 
     function renderCarousel() {
-        ReactDOM.render(
-            React.createElement(CarouselInstance, {
-                source: JSON.parse(document.getElementById("akvo-rsr-carousel").innerHTML)
-            }),
-            document.getElementById('carousel')
-        );
+        var source=JSON.parse(document.getElementById("akvo-rsr-carousel").innerHTML);
+        ReactDOM.render(<CarouselInstance source={source} />,
+                        document.getElementById('carousel'));
     }
 
     renderAccordion();
     renderCarousel();
+
+    // HACK: Re-render carousel when we switch to the summary tab
+    var summary_tab = document.querySelector('#summary-tab');
+    summary_tab.addEventListener('click', function () {
+        ReactDOM.unmountComponentAtNode(document.querySelector('#carousel'));
+        renderCarousel();
+    });
 }
 
 function readMoreOnClicks() {
