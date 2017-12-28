@@ -320,7 +320,7 @@ function renderReactComponents() {
                     React.createElement(CarouselItem, {key: photo.url}, photoLink, carouselCaption)
                 );
             });
-            return (React.createElement(Carousel, null, photos));
+            return (React.createElement(Carousel, {controls: this.props.source.photos.length > 1}, photos));
         }
     });
 
