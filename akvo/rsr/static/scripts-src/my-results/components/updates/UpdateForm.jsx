@@ -29,7 +29,9 @@ import * as c from '../../const.js';
 
 import {
     updateFormOpen,
-    updateFormClose, uiHideMode,
+    updateFormClose,
+    uiHideMode,
+    updateMarkdownPreviewToggle,
 } from "../../actions/ui-actions"
 
 import {
@@ -211,24 +213,23 @@ QuantitativeActualValueInput.propTypes = {
     isPercentage: PropTypes.bool.isRequired,
 };
 
+@connect((store) => {
+    return {
+        showing_preview: store.ui[c.SHOWING_UPDATE_MARKDOWN_PREVIEW],
+    }
+})
 class QualitativeActualValueInput extends React.Component {
     constructor(props) {
         super(props);
         const {narrative} = this.props.update;
         this.state = {
             reactMde: {text: narrative, selection: null},
-            show_editor: true,
         };
-        this.toggleEditor = this.toggleEditor.bind(this);
-    }
-
-    toggleEditor () {
-        const {show_editor} = this.state;
-        this.setState({show_editor: !show_editor})
     }
 
     render () {
-        const {update, onClose, onChange, hideTarget} = this.props;
+        const {update, onClose, onChange, hideTarget, showing_preview} = this.props;
+        const show_editor = !showing_preview;
         const editorChange = (reactMde) => {
             this.setState({reactMde});
             // HACK: Create fake event
@@ -241,7 +242,6 @@ class QualitativeActualValueInput extends React.Component {
             }
             onChange(e);
         }
-        const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
         return (
             <div className="">
                 <div>
@@ -258,15 +258,12 @@ class QualitativeActualValueInput extends React.Component {
                                   className: "form-control",
                                   placeholder: _('input_placeholder')}}
                               visibility={{
-                                  textarea: this.state.show_editor,
-                                  toolbar: this.state.show_editor,
-                                  preview: !this.state.show_editor,
+                                  textarea: show_editor,
+                                  toolbar: show_editor,
+                                  preview: showing_preview,
                               }}
                               onChange={editorChange}
                               commands={ReactMdeCommands.getDefaultCommands()}/>
-                    <ToggleButton label={previewButtonText}
-                                  onClick={this.toggleEditor}
-                                  className="btn btn-default btn-xs"/>
                 </div>
             </div>
         )
@@ -380,38 +377,38 @@ class ImageUpload extends React.Component {
         if (update._photo && update._photo != 'delete') {
             imageName = <div>{update._photo.file.name}</div>
             // Existing, unmodified update
-        } else if (update.photo_url) {
-            imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
-        }
-        if (imageName) {
-            removeImage =
-                <div className="col-xs-3 update-photo">
-                    <div className="image-container">
-                        <a onClick={this.clearInput}>
-                            <img src={update._photo ? update._photo.img: update.photo_url}/>
-                            <div id="removeImage" className="image-overlay text-center">
-                                {_('remove_image')}
-                            </div>
-                        </a>
+            } else if (update.photo_url) {
+                imageName = <div>{decodeURIComponent(update.photo_url.split('/').pop())}</div>
+            }
+            if (imageName) {
+                removeImage =
+                    <div className="col-xs-3 update-photo">
+                        <div className="image-container">
+                            <a onClick={this.clearInput}>
+                                <img src={update._photo ? update._photo.img: update.photo_url}/>
+                                <div id="removeImage" className="image-overlay text-center">
+                                    {_('remove_image')}
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                </div>
-        }
+            }
 
-        return (
-        <div>
-            {removeImage}
-            <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
-                             ref={input => this.input = input}>
-                <label className="imageUpload">
-                    <a>
-                        <i className="fa fa-camera"/>
-                        {removeImage ? _('change_image') : _('add_image')}
-                    </a>
-                </label>
-            </FileReaderInput>
-            {imageName}
-        </div>
-        );
+            return (
+            <div>
+                {removeImage}
+                <FileReaderInput as="url" id="updatePhoto" onChange={this.props.onChange}
+                                 ref={input => this.input = input}>
+                    <label className="imageUpload">
+                        <a>
+                            <i className="fa fa-camera"/>
+                            {removeImage ? _('change_image') : _('add_image')}
+                        </a>
+                    </label>
+                </FileReaderInput>
+                {imageName}
+            </div>
+            );
     }
 }
 
@@ -465,55 +462,70 @@ UpdateActionButton.propTypes = {
 };
 
 
-const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => {
+@connect((store) => {
+    return {
+        showing_preview: store.ui[c.SHOWING_UPDATE_MARKDOWN_PREVIEW],
+    }
+})
+class UpdateFormButtons extends React.Component {
 
-    function getActionButtons(role, updateStatus, icon) {
-        let btnKey = 0;
-        const hasComment = update._comment !== undefined || update._meta !== undefined;
-        return c.UPDATE_BUTTONS[role][updateStatus].map(
-            action => {
-                let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE ||
-                    action === c.UPDATE_ACTION_SAVE && !hasComment;
-                switch (measure) {
-                    case c.MEASURE_UNIT: {
-                        disabled = disabled && !(update.value !== null && update.value !== "");
-                        break;
+    render () {
+        const {user, update, measure, changing, updateActions, showing_preview} = this.props;
+
+        function getActionButtons(role, updateStatus, icon) {
+            let btnKey = 0;
+            const hasComment = update._comment !== undefined || update._meta !== undefined;
+            return c.UPDATE_BUTTONS[role][updateStatus].map(
+                action => {
+                    let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE ||
+                                   action === c.UPDATE_ACTION_SAVE && !hasComment;
+                    switch (measure) {
+                        case c.MEASURE_UNIT: {
+                            disabled = disabled && !(update.value !== null && update.value !== "");
+                            break;
+                        }
+                        case c.MEASURE_PERCENTAGE: {
+                            disabled = disabled &&
+                                       (
+                                           !(update.numerator !== undefined && update.numerator !== "") ||
+                                           !(update.denominator!== undefined && update.denominator !== "")
+                                       );
+                            break;
+                        }
+                        case c.MEASURE_QUALITATIVE: {
+                            disabled = disabled &&
+                                       !(update.narrative !== null && update.narrative !== "");
+                            break;
+                        }
                     }
-                    case c.MEASURE_PERCENTAGE: {
-                        disabled = disabled &&
-                                   (
-                                       !(update.numerator !== undefined && update.numerator !== "") ||
-                                       !(update.denominator!== undefined && update.denominator !== "")
-                                   );
-                        break;
-                    }
-                    case c.MEASURE_QUALITATIVE: {
-                        disabled = disabled &&
-                                   !(update.narrative !== null && update.narrative !== "");
-                        break;
-                    }
+
+                    return <UpdateActionButton key={++btnKey}
+                                               action={action}
+                                               icon={icon}
+                                               updateActions={updateActions}
+                                               disabled={disabled}/>
                 }
+            )
+        }
 
-                return <UpdateActionButton key={++btnKey}
-                                           action={action}
-                                           icon={icon}
-                                           updateActions={updateActions}
-                                           disabled={disabled}/>
-            }
+        const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
+        const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
+        const actionButtons = getActionButtons(role, update.status, icon);
+        const previewButtonText = showing_preview ? _("edit") : _("preview");
+
+        return (
+            <div className="menuAction">
+                <ul className="nav-pills bottomRow navbar-right">
+                    {measure == c.MEASURE_QUALITATIVE
+                     ? <ToggleButton label={previewButtonText}
+                                     onClick={updateMarkdownPreviewToggle}
+                                     className="btn btn-default btn-xs" />
+                     : undefined}
+                    {actionButtons}
+                </ul>
+            </div>
         )
     }
-
-    const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
-    const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
-    const actionButtons = getActionButtons(role, update.status, icon);
-
-    return (
-        <div className="menuAction">
-            <ul className="nav-pills bottomRow navbar-right">
-                {actionButtons}
-            </ul>
-        </div>
-    )
 };
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,

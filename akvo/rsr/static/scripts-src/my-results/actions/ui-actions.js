@@ -72,6 +72,13 @@ export function reportFormToggle(id) {
     });
 }
 
+export function updateMarkdownPreviewToggle() {
+    store.dispatch({
+        type: c.UI_FLAG_TOGGLE,
+        payload: {element: c.SHOWING_UPDATE_MARKDOWN_PREVIEW, id: true}
+    });
+}
+
 
 export function activateToggleAll() {
     // Have we fetched all models? Include current user info too.

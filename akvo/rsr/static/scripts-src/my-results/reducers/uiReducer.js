@@ -37,6 +37,7 @@ const uiState = {
     [c.SELECTED_PERIODS]: [], //list of periods that are currently checked, used for bulk actions
     [c.UPDATE_FORM_DISPLAY]: false, // keeping track if the indicator update form is open
     [c.REPORT_FORM_DISPLAY]: false, // keeping track if the narrative report form is open
+    [c.SHOWING_UPDATE_MARKDOWN_PREVIEW]: false // boolean to keep track of editor/preview mode
 };
 
 export default function uiReducer(state=uiState, action) {
