@@ -108,6 +108,7 @@ class PeriodHeader extends React.Component {
                 return false;
             }
             if (ui.updateFormDisplay ||
+                ui.reportFormDisplay ||
                 ui.activeFilter !== c.FILTER_NEED_REPORTING && ui.activeFilter !== undefined) {
                 return false;
             }

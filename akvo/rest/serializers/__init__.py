@@ -54,6 +54,7 @@ from .organisation_budget import (OrganisationCountryBudgetSerializer,
 from .organisation_document import (OrganisationDocumentCategorySerializer,
                                     OrganisationDocumentCountrySerializer,
                                     OrganisationDocumentSerializer)
+from organisation_indicator_label import OrganisationIndicatorLabelSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
@@ -152,6 +153,7 @@ __all__ = [
     'OrganisationDocumentCountrySerializer',
     'OrganisationDocumentSerializer',
     'OrganisationExpenseLineSerializer',
+    'OrganisationIndicatorLabelSerializer',
     'OrganisationLocationSerializer',
     'OrganisationRecipientOrgBudgetLineSerializer',
     'OrganisationRecipientOrgBudgetSerializer',

@@ -448,5 +448,5 @@ class IndicatorPeriod(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period')
         verbose_name_plural = _(u'indicator periods')
-        ordering = ['period_start']
+        ordering = ['period_start', 'period_end']
         unique_together = ('indicator', 'parent_period')
