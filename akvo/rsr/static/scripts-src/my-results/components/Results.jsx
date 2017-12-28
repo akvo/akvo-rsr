@@ -46,7 +46,7 @@ ResultHeaderIndicatorCount.propTypes = {
 };
 
 
-const ResultHeader = ({result, indicatorCount=0}) => {
+const ResultHeader = ({result, indicatorCount=0, showIndicatorCount}) => {
     const renderResultType = (result) => {
         // Show the result type, if available
         switch (result.type) {
@@ -68,7 +68,12 @@ const ResultHeader = ({result, indicatorCount=0}) => {
             <h5>{result.title}</h5>
             <div>
                 {renderResultType(result)}
-                <ResultHeaderIndicatorCount count={indicatorCount} />
+                {/* hack hiding the indicator count for IUCN */}
+                {showIndicatorCount ?
+                    <ResultHeaderIndicatorCount count={indicatorCount} />
+                :
+                    undefined
+                }
             </div>
         </span>
     )
@@ -85,6 +90,7 @@ ResultHeader.propTypes = {
         keys: store.keys,
         ui: store.ui,
         resultChildrenIds: getResultsChildrenIds(store),
+        primaryOrganisationId: store.page.project.primaryOrganisationId,
     }
 })
 export default class Results extends React.Component {
@@ -128,10 +134,12 @@ export default class Results extends React.Component {
                 const result = this.props.results.objects[id];
                 const indicatorCount =
                     this.props.resultChildrenIds[id] && this.props.resultChildrenIds[id].length || 0;
+                const showIndicatorCount = this.props.primaryOrganisationId !== c.IUCN_ORG_ID;
                 const className = this.hideMe(id) ? 'hidePanel' : '';
                 return (
                     <Panel header={<ResultHeader result={result}
-                                                 indicatorCount={indicatorCount}/>}
+                                                 indicatorCount={indicatorCount}
+                                                 showIndicatorCount={showIndicatorCount}/>}
                            className={className}
                            key={id}>
                         <Indicators parentId={id}/>

@@ -248,7 +248,7 @@ export function collapseId(model, id) {
 }
 
 
-function childModelName(model) {
+export function childModelName(model) {
     try {
         return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) + 1];
     } catch (e) {
@@ -340,7 +340,7 @@ function tree(model, parentId) {
 }
 
 
-function flatten(arr) {
+export function flatten(arr) {
     // Flatten an array of arrays
     return arr.reduce(
         (acc, val) => acc.concat(

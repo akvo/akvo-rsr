@@ -202,7 +202,7 @@ UpdateValue.propTypes = {
 };
 
 
-const QualitativeUpdateBody = (period, update) => {
+const QualitativeUpdateBody = ({period, update}) => {
     const {user_details, approver_details} = update;
     const approvedOn = update.status === c.UPDATE_STATUS_APPROVED ?
                        <TimestampInfo update={update}
