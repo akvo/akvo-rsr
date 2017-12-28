@@ -442,6 +442,8 @@ const UpdateActionButton = ({action, updateActions, icon, disabled}) => {
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
         [c.UPDATE_ACTION_RETURN]: _('return_for_revision'),
         [c.UPDATE_ACTION_APPROVE]: _('approve'),
+        [c.UPDATE_ACTION_PREVIEW]: _('preview'),
+        [c.UPDATE_ACTION_EDIT]: _('edit'),
     };
     return (
         <li role="presentation" className={action}>
@@ -475,7 +477,16 @@ class UpdateFormButtons extends React.Component {
         function getActionButtons(role, updateStatus, icon) {
             let btnKey = 0;
             const hasComment = update._comment !== undefined || update._meta !== undefined;
-            return c.UPDATE_BUTTONS[role][updateStatus].map(
+            let update_buttons = c.UPDATE_BUTTONS[role][updateStatus];
+            if (measure == c.MEASURE_QUALITATIVE) {
+                const markdown_button = showing_preview ? c.UPDATE_ACTION_EDIT: c.UPDATE_ACTION_PREVIEW;
+                const delete_index = update_buttons.indexOf(c.UPDATE_ACTION_DELETE) + 1;
+                // Insert markdown button after the delete button
+                update_buttons = [...update_buttons.slice(0, delete_index),
+                                  markdown_button,
+                                  ...update_buttons.slice(delete_index)];
+            }
+            return update_buttons.map(
                 action => {
                     let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE ||
                                    action === c.UPDATE_ACTION_SAVE && !hasComment;
@@ -511,16 +522,10 @@ class UpdateFormButtons extends React.Component {
         const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
         const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
         const actionButtons = getActionButtons(role, update.status, icon);
-        const previewButtonText = showing_preview ? _("edit") : _("preview");
 
         return (
             <div className="menuAction">
                 <ul className="nav-pills bottomRow navbar-right">
-                    {measure == c.MEASURE_QUALITATIVE
-                     ? <ToggleButton label={previewButtonText}
-                                     onClick={updateMarkdownPreviewToggle}
-                                     className="btn btn-default btn-xs" />
-                     : undefined}
                     {actionButtons}
                 </ul>
             </div>
@@ -988,12 +993,27 @@ export default class UpdateForm extends React.Component {
     updateActionsHandler(e) {
         //The id of the button is used to indicate the action taken
         const action = e.target.id;
-        if (action === c.UPDATE_ACTION_DELETE) {
-            this.deleteUpdate();
-        } else {
-            this.saveUpdate(action);
-        }
+        switch (action) {
+            case c.UPDATE_ACTION_DELETE: {
+                this.deleteUpdate();
+                break;
+            }
 
+            case c.UPDATE_ACTION_EDIT: {
+                updateMarkdownPreviewToggle();
+                break;
+            }
+
+            case c.UPDATE_ACTION_PREVIEW: {
+                updateMarkdownPreviewToggle();
+                break;
+            }
+
+            default: {
+                console.log("save", action, "ACTION....");
+                this.saveUpdate(action);
+            }
+        }
     }
 
     saveUpdate(action) {
