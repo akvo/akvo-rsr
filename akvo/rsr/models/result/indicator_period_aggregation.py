@@ -20,14 +20,14 @@ ACTUAL_VALUE_SQL = """
         sum((update.numerator) :: BIGINT) AS numerator,
         sum((update.denominator) :: BIGINT) AS denominator
     FROM
-        rsr_indicatorperiod period, 
-        rsr_indicator indicator, 
+        rsr_indicatorperiod period,
+        rsr_indicator indicator,
         rsr_indicatorperioddata "update"
-    WHERE 
+    WHERE
         (
-            (((indicator.id = period.indicator_id) AND 
+            (((indicator.id = period.indicator_id) AND
             (period.id = update.period_id)) AND
-            ((update.status) :: TEXT = 'A' :: TEXT)) AND 
+            ((update.status) :: TEXT = 'A' :: TEXT)) AND
             ((update.value) :: TEXT ~ '^\d+$' :: TEXT)
         )
     GROUP BY period.id, indicator.measure;
@@ -98,5 +98,3 @@ class PeriodDisaggregation(pg.View):
         app_label = 'rsr'
         db_table = 'rsr_indicator_period_disaggregation'
         managed = False
-
-
