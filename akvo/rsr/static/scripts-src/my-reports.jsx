@@ -27,6 +27,16 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 
+
+var parameter_needed = function(report, parameter) {
+    for (var i = 0; i < report.parameters.length; i++) {
+        if (report.parameters[i] === parameter) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
@@ -59,7 +69,14 @@ function initReact() {
         },
 
         checkAllFilled: function() {
-            return this.props.report !== null && (this.props.organisation !== null || this.props.project !== null) && this.props.format !== null;
+            return (
+                this.props.report !== null &&
+                // Ensure org/project is selected if it's a required parameter
+                (!parameter_needed(this.props.report, 'organisation') || this.props.organisation !== null) &&
+                (!parameter_needed(this.props.report, 'project') || this.props.project !== null) &&
+                // Ensure valid format for the report is selected
+                this.props.report.formats.map(function(x){return x.name}).indexOf(this.props.format) > -1
+            );
         },
 
         updateHelpText: function() {
@@ -155,12 +172,15 @@ function initReact() {
                     return false;
                 }
 
-                var radioInput;
-                if (!thisFormatsList.props.downloading) {
-                    radioInput = <input className="format-radio" type="radio" aria-label="label1"/>;
-                } else {
-                    radioInput = <input className="format-radio" type="radio" aria-label="label1" disabled/>;
-                }
+                var radioInput = function (format) {
+                    return (
+                        <input className="format-radio"
+                               type="radio"
+                               aria-label="label1"
+                               checked={thisFormatsList.props.format == format.name}
+                               disabled={thisFormatsList.props.downloading} />
+                    );
+                };
 
                 if (formatNeeded()) {
                     var formatId = 'format-' + format.name;
@@ -169,7 +189,7 @@ function initReact() {
                         <div className="col-sm-4" id={formatId} key={format.name}>
                             <div className="input-group" onClick={handleClick}>
                             <span className="input-group-addon">
-                                {radioInput}
+                                {radioInput(format)}
                             </span>
                                 <div className="form-control">
                                     <i className={formatIcon}/>&nbsp;&nbsp;
@@ -198,13 +218,13 @@ function initReact() {
             if (this.props.report !== null) {
                 return (
                     <div id="choose-format">
-                        <label>{i18n.report_format}</label>
-                        {React.createElement(FormatsList, {
-                            report: this.props.report,
-                            formatOptions: this.props.formatOptions,
-                            setFormat: this.props.setFormat,
-                            downloading: this.props.downloading
-                        })}
+                    <label>{i18n.report_format}</label>
+                    <FormatsList
+                        report={this.props.report}
+                        formatOptions={this.props.formatOptions}
+                        format={this.props.format}
+                        setFormat={this.props.setFormat}
+                        downloading={this.props.downloading}/>
                     </div>
                 );
             } else {
@@ -257,17 +277,8 @@ function initReact() {
     });
 
     var SelectProject = React.createClass({
-        parameterNeeded: function(report) {
-            for (var i = 0; i < report.parameters.length; i++) {
-                if (report.parameters[i] === 'project') {
-                    return true;
-                }
-            }
-            return false;
-        },
-
         render: function() {
-            if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
+            if (this.props.report !== null && parameter_needed(this.props.report, 'project')) {
                 return (
                     <div id="choose-project">
                         <label>{i18n.project}</label>
@@ -329,17 +340,9 @@ function initReact() {
     });
 
     var SelectOrganisation = React.createClass({
-        parameterNeeded: function(report) {
-            for (var i = 0; i < report.parameters.length; i++) {
-                if (report.parameters[i] === 'organisation') {
-                    return true;
-                }
-            }
-            return false;
-        },
 
         render: function() {
-            if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
+            if (this.props.report !== null && parameter_needed(this.props.report, 'organisation')) {
                 return (
                     <div id="choose-organisation">
                         <label>{i18n.organisation}</label>
@@ -544,7 +547,7 @@ function initReact() {
 
         setReport: function(report) {
             this.setState({
-                report: report
+                report: report,
             });
         },
 
@@ -576,41 +579,30 @@ function initReact() {
             return (
                 <div id="my-reports">
                     <h3>{i18n.my_reports}</h3>
-                    {React.createElement(SelectReport, {
-                        reportOptions: this.state.reportOptions,
-                        userOptions: this.state.userOptions,
-                        setReport: this.setReport,
-                        downloading: this.state.downloading
-                    })}
-                    {React.createElement(SelectOrganisation, {
-                        report: this.state.report,
-                        organisationOptions: this.state.organisationOptions,
-                        setOrganisation: this.setOrganisation,
-                        downloading: this.state.downloading
-                    })}
-                    {React.createElement(SelectProject, {
-                        report: this.state.report,
-                        projectOptions: this.state.projectOptions,
-                        setProject: this.setProject,
-                        downloading: this.state.downloading
-                    })}
-                    {React.createElement(SelectFormat, {
-                        report: this.state.report,
-                        formatOptions: this.state.formatOptions,
-                        setFormat: this.setFormat,
-                        downloading: this.state.downloading
-                    })}
-                    {React.createElement(DownloadNotice, {
-                        visible: this.state.downloading
-                    })}
-                    {React.createElement(DownloadButton, {
-                        report: this.state.report,
-                        organisation: this.state.organisation,
-                        project: this.state.project,
-                        format: this.state.format,
-                        downloading: this.state.downloading,
-                        setDownload: this.setDownload
-                    })}
+                    <SelectReport reportOptions={this.state.reportOptions}
+                                  userOption={this.state.userOptions}
+                                  setReport={this.setReport}
+                                  downloading={this.state.downloading} />
+                    <SelectOrganisation organisationOptions={this.state.organisationOptions}
+                                        report={this.state.report}
+                                        setOrganisation={this.setOrganisation}
+                                        downloading={this.state.downloading} />
+                    <SelectProject projectOptions={this.state.projectOptions}
+                                   report={this.state.report}
+                                   setProject={this.setProject}
+                                   downloading={this.state.downloading} />
+                    <SelectFormat formatOptions={this.state.formatOptions}
+                                  format={this.state.format}
+                                  report={this.state.report}
+                                  setFormat={this.setFormat}
+                                  downloading={this.state.downloading} />
+                    <DownloadNotice visible={this.state.downloading} />
+                    <DownloadButton report={this.state.report}
+                                    organisation={this.state.organisation}
+                                    project={this.state.project}
+                                    format={this.state.format}
+                                    downloading={this.state.downloading}
+                                    setDownload={this.setDownload} />
                 </div>
             );
         }
