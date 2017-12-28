@@ -194,8 +194,12 @@ QuantitativeUpdateBody.propTypes = {
 const UpdateNarrative =({period, update}) => {
     return (
         <ul className="valueMeta">
-            <li className="updateValue">Target: <Markdown markup={period.target_value}/></li>
-            <li className="updateValue">Actual: <Markdown markup={update.narrative}/></li>
+            <li className="updateValue">Target:
+                <div className="markdown"> <Markdown markup={period.target_value}/> </div>
+            </li>
+            <li className="updateValue">Actual:
+                <div className="markdown"><Markdown markup={update.narrative}/></div>
+            </li>
         </ul>
     )
 };

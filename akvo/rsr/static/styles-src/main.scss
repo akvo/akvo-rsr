@@ -4344,6 +4344,12 @@ main.results-page {
                                             list-style-type: none;
                                         }
                                         .timestamp-info-container {}
+                                        .markdown {
+                                            ul {
+                                                list-style-type: initial;
+                                            }
+                                            cursor: auto;
+                                        }
                                     }
                                 }
                                 .arrow {}

@@ -3461,6 +3461,10 @@ main.results-page {
         pointer-events: none !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody ul {
       list-style-type: none; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .markdown {
+      cursor: auto; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .markdown ul {
+        list-style-type: initial; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active {
       border: 1px solid white !important;
       background: rgba(255, 255, 255, 0.5) !important; }
