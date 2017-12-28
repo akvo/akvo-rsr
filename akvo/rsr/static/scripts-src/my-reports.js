@@ -29,6 +29,9 @@ var csrftoken = getCookie('csrftoken');
 
 
 var parameter_needed = function(report, parameter) {
+    if (report == null) {
+        return false;
+    }
     for (var i = 0; i < report.parameters.length; i++) {
         if (report.parameters[i] === parameter) {
             return true;
@@ -276,28 +279,18 @@ function initReact() {
         }
     });
 
-    var SelectProject = React.createClass({displayName: "SelectProject",
-        render: function() {
-            if (this.props.report !== null && parameter_needed(this.props.report, 'project')) {
-                return (
-                    React.createElement("div", {id: "choose-project"}, 
-                        React.createElement("label", null, i18n.project), 
-                        React.createElement("div", {className: "project-typeahead"}, 
-                            React.createElement(ProjectTypeahead, {
-                                projectOptions: this.props.projectOptions,
-                                setProject: this.props.setProject,
-                                downloading: this.props.downloading
-                            })
-                        )
-                    )
-                );
-            } else {
-                return (
-                    React.createElement("span", null)
-                );
-            }
-        }
-    });
+    var SelectProject = function(props) {
+        return (
+            React.createElement("div", {id: "choose-project"}, 
+                React.createElement("label", null, i18n.project), 
+                React.createElement("div", {className: "project-typeahead"}, 
+                    React.createElement(ProjectTypeahead, {projectOptions: props.projectOptions, 
+                                      setProject: props.setProject, 
+                                      downloading: props.downloading})
+                )
+            )
+        );
+    };
 
     var OrganisationTypeahead = React.createClass({displayName: "OrganisationTypeahead",
         getInitialState: function() {
@@ -339,29 +332,18 @@ function initReact() {
         }
     });
 
-    var SelectOrganisation = React.createClass({displayName: "SelectOrganisation",
-
-        render: function() {
-            if (this.props.report !== null && parameter_needed(this.props.report, 'organisation')) {
-                return (
-                    React.createElement("div", {id: "choose-organisation"}, 
-                        React.createElement("label", null, i18n.organisation), 
-                        React.createElement("div", {className: "org-typeahead"}, 
-                            React.createElement(OrganisationTypeahead, {
-                                organisationOptions: this.props.organisationOptions,
-                                setOrganisation: this.props.setOrganisation,
-                                downloading: this.props.downloading
-                            })
-                        )
-                    )
-                );
-            } else {
-                return (
-                    React.createElement("span", null)
-                );
-            }
-        }
-    });
+    var SelectOrganisation = function(props) {
+        return (
+            React.createElement("div", {id: "choose-organisation"}, 
+                React.createElement("label", null, i18n.organisation), 
+                React.createElement("div", {className: "org-typeahead"}, 
+                    React.createElement(OrganisationTypeahead, {organisationOptions: props.organisationOptions, 
+                                           setOrganisation: props.setOrganisation, 
+                                           downloading: props.downloading})
+                )
+            )
+        );
+    };
 
     var ReportOption = React.createClass({displayName: "ReportOption",
         handleClick: function() {
@@ -442,21 +424,17 @@ function initReact() {
         }
     });
 
-    var SelectReport = React.createClass({displayName: "SelectReport",
-        render: function() {
-            return (
-                React.createElement("div", {id: "choose-report-template"}, 
-                    React.createElement("label", null, i18n.report_type), 
-                    React.createElement(ReportsDropdown, {
-                        userOptions: this.props.userOptions,
-                        reportOptions: this.props.reportOptions,
-                        setReport: this.props.setReport,
-                        downloading: this.props.downloading
-                    })
-                )
-            );
-        }
-    });
+    var SelectReport = function(props) {
+        return (
+            React.createElement("div", {id: "choose-report-template"}, 
+                React.createElement("label", null, i18n.report_type), 
+                React.createElement(ReportsDropdown, {userOptions: props.userOptions, 
+                                 reportOptions: props.reportOptions, 
+                                 setReport: props.setReport, 
+                                 downloading: props.downloading})
+            )
+        );
+    };
 
     var MyReportsApp  = React.createClass({displayName: "MyReportsApp",
         getInitialState: function() {
@@ -583,14 +561,18 @@ function initReact() {
                                   userOption: this.state.userOptions, 
                                   setReport: this.setReport, 
                                   downloading: this.state.downloading}), 
-                    React.createElement(SelectOrganisation, {organisationOptions: this.state.organisationOptions, 
-                                        report: this.state.report, 
-                                        setOrganisation: this.setOrganisation, 
-                                        downloading: this.state.downloading}), 
-                    React.createElement(SelectProject, {projectOptions: this.state.projectOptions, 
-                                   report: this.state.report, 
-                                   setProject: this.setProject, 
-                                   downloading: this.state.downloading}), 
+                    parameter_needed(this.state.report, 'organisation')
+                     ? (React.createElement(SelectOrganisation, {organisationOptions: this.state.organisationOptions, 
+                                            report: this.state.report, 
+                                            setOrganisation: this.setOrganisation, 
+                                            downloading: this.state.downloading}))
+                     : undefined, 
+                    parameter_needed(this.state.report, 'project')
+                     ? (React.createElement(SelectProject, {projectOptions: this.state.projectOptions, 
+                                       report: this.state.report, 
+                                       setProject: this.setProject, 
+                                       downloading: this.state.downloading}))
+                     : undefined, 
                     React.createElement(SelectFormat, {formatOptions: this.state.formatOptions, 
                                   format: this.state.format, 
                                   report: this.state.report, 

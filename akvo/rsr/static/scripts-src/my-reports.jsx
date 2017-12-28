@@ -29,6 +29,9 @@ var csrftoken = getCookie('csrftoken');
 
 
 var parameter_needed = function(report, parameter) {
+    if (report == null) {
+        return false;
+    }
     for (var i = 0; i < report.parameters.length; i++) {
         if (report.parameters[i] === parameter) {
             return true;
@@ -276,28 +279,18 @@ function initReact() {
         }
     });
 
-    var SelectProject = React.createClass({
-        render: function() {
-            if (this.props.report !== null && parameter_needed(this.props.report, 'project')) {
-                return (
-                    <div id="choose-project">
-                        <label>{i18n.project}</label>
-                        <div className="project-typeahead">
-                            {React.createElement(ProjectTypeahead, {
-                                projectOptions: this.props.projectOptions,
-                                setProject: this.props.setProject,
-                                downloading: this.props.downloading
-                            })}
-                        </div>
-                    </div>
-                );
-            } else {
-                return (
-                    <span />
-                );
-            }
-        }
-    });
+    var SelectProject = function(props) {
+        return (
+            <div id="choose-project">
+                <label>{i18n.project}</label>
+                <div className="project-typeahead">
+                    <ProjectTypeahead projectOptions={props.projectOptions}
+                                      setProject={props.setProject}
+                                      downloading={props.downloading} />
+                </div>
+            </div>
+        );
+    };
 
     var OrganisationTypeahead = React.createClass({
         getInitialState: function() {
@@ -339,29 +332,18 @@ function initReact() {
         }
     });
 
-    var SelectOrganisation = React.createClass({
-
-        render: function() {
-            if (this.props.report !== null && parameter_needed(this.props.report, 'organisation')) {
-                return (
-                    <div id="choose-organisation">
-                        <label>{i18n.organisation}</label>
-                        <div className="org-typeahead">
-                            {React.createElement(OrganisationTypeahead, {
-                                organisationOptions: this.props.organisationOptions,
-                                setOrganisation: this.props.setOrganisation,
-                                downloading: this.props.downloading
-                            })}
-                        </div>
-                    </div>
-                );
-            } else {
-                return (
-                    <span />
-                );
-            }
-        }
-    });
+    var SelectOrganisation = function(props) {
+        return (
+            <div id="choose-organisation">
+                <label>{i18n.organisation}</label>
+                <div className="org-typeahead">
+                    <OrganisationTypeahead organisationOptions={props.organisationOptions}
+                                           setOrganisation={props.setOrganisation}
+                                           downloading={props.downloading} />
+                </div>
+            </div>
+        );
+    };
 
     var ReportOption = React.createClass({
         handleClick: function() {
@@ -442,21 +424,17 @@ function initReact() {
         }
     });
 
-    var SelectReport = React.createClass({
-        render: function() {
-            return (
-                <div id="choose-report-template">
-                    <label>{i18n.report_type}</label>
-                    {React.createElement(ReportsDropdown, {
-                        userOptions: this.props.userOptions,
-                        reportOptions: this.props.reportOptions,
-                        setReport: this.props.setReport,
-                        downloading: this.props.downloading
-                    })}
-                </div>
-            );
-        }
-    });
+    var SelectReport = function(props) {
+        return (
+            <div id="choose-report-template">
+                <label>{i18n.report_type}</label>
+                <ReportsDropdown userOptions={props.userOptions}
+                                 reportOptions={props.reportOptions}
+                                 setReport={props.setReport}
+                                 downloading={props.downloading} />
+            </div>
+        );
+    };
 
     var MyReportsApp  = React.createClass({
         getInitialState: function() {
@@ -583,14 +561,18 @@ function initReact() {
                                   userOption={this.state.userOptions}
                                   setReport={this.setReport}
                                   downloading={this.state.downloading} />
-                    <SelectOrganisation organisationOptions={this.state.organisationOptions}
-                                        report={this.state.report}
-                                        setOrganisation={this.setOrganisation}
-                                        downloading={this.state.downloading} />
-                    <SelectProject projectOptions={this.state.projectOptions}
-                                   report={this.state.report}
-                                   setProject={this.setProject}
-                                   downloading={this.state.downloading} />
+                    {parameter_needed(this.state.report, 'organisation')
+                     ? (<SelectOrganisation organisationOptions={this.state.organisationOptions}
+                                            report={this.state.report}
+                                            setOrganisation={this.setOrganisation}
+                                            downloading={this.state.downloading} />)
+                     : undefined}
+                    {parameter_needed(this.state.report, 'project')
+                     ? (<SelectProject projectOptions={this.state.projectOptions}
+                                       report={this.state.report}
+                                       setProject={this.setProject}
+                                       downloading={this.state.downloading} />)
+                     : undefined}
                     <SelectFormat formatOptions={this.state.formatOptions}
                                   format={this.state.format}
                                   report={this.state.report}
