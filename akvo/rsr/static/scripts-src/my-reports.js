@@ -40,6 +40,14 @@ var parameter_needed = function(report, parameter) {
     return false;
 }
 
+var get_display_value = function(id, options) {
+    if (id == null) {
+        return null;
+    }
+    var values = options.filter(function(option){return option.id == id});
+    return values.length > 0 ? values[0].displayOption : null;
+}
+
 function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
@@ -265,14 +273,15 @@ function initReact() {
             return (
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement(Typeahead, {
-                        placeholder: this.state.placeholder,
-                        maxVisible: 10,
-                        options: this.props.projectOptions,
-                        onOptionSelected: this.selectProject,
-                        displayOption: 'displayOption',
-                        filterOption: 'filterOption',
-                        inputProps: {disabled: this.state.disabled},
-                        customClasses: {input: 'form-control'}
+                         placeholder: this.state.placeholder,
+                         maxVisible: 10,
+                         value: get_display_value(this.props.projectId, this.props.projectOptions),
+                         options: this.props.projectOptions,
+                         onOptionSelected: this.selectProject,
+                         displayOption: 'displayOption',
+                         filterOption: 'filterOption',
+                         inputProps: {disabled: this.state.disabled},
+                         customClasses: {input: 'form-control'}
                     })
                 )
             );
@@ -284,7 +293,8 @@ function initReact() {
             React.createElement("div", {id: "choose-project"}, 
                 React.createElement("label", null, i18n.project), 
                 React.createElement("div", {className: "project-typeahead"}, 
-                    React.createElement(ProjectTypeahead, {projectOptions: props.projectOptions, 
+                    React.createElement(ProjectTypeahead, {projectId: props.project, 
+                                      projectOptions: props.projectOptions, 
                                       setProject: props.setProject, 
                                       downloading: props.downloading})
                 )
@@ -318,14 +328,15 @@ function initReact() {
             return (
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement(Typeahead, {
-                        placeholder: this.state.placeholder,
-                        maxVisible: 10,
-                        options: this.props.organisationOptions,
-                        onOptionSelected: this.selectOrg,
-                        displayOption: 'displayOption',
-                        filterOption: 'filterOption',
-                        inputProps: {disabled: this.state.disabled},
-                        customClasses: {input: 'form-control'}
+                         placeholder: this.state.placeholder,
+                         maxVisible: 10,
+                         value: get_display_value(this.props.orgId, this.props.organisationOptions),
+                         options: this.props.organisationOptions,
+                         onOptionSelected: this.selectOrg,
+                         displayOption: 'displayOption',
+                         filterOption: 'filterOption',
+                         inputProps: {disabled: this.state.disabled},
+                         customClasses: {input: 'form-control'}
                     })
                 )
             );
@@ -337,7 +348,8 @@ function initReact() {
             React.createElement("div", {id: "choose-organisation"}, 
                 React.createElement("label", null, i18n.organisation), 
                 React.createElement("div", {className: "org-typeahead"}, 
-                    React.createElement(OrganisationTypeahead, {organisationOptions: props.organisationOptions, 
+                    React.createElement(OrganisationTypeahead, {orgId: props.organisation, 
+                                           organisationOptions: props.organisationOptions, 
                                            setOrganisation: props.setOrganisation, 
                                            downloading: props.downloading})
                 )
@@ -564,11 +576,13 @@ function initReact() {
                     parameter_needed(this.state.report, 'organisation')
                      ? (React.createElement(SelectOrganisation, {organisationOptions: this.state.organisationOptions, 
                                             report: this.state.report, 
+                                            organisation: this.state.organisation, 
                                             setOrganisation: this.setOrganisation, 
                                             downloading: this.state.downloading}))
                      : undefined, 
                     parameter_needed(this.state.report, 'project')
                      ? (React.createElement(SelectProject, {projectOptions: this.state.projectOptions, 
+                                       project: this.state.project, 
                                        report: this.state.report, 
                                        setProject: this.setProject, 
                                        downloading: this.state.downloading}))
