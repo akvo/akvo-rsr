@@ -4438,6 +4438,9 @@ main.results-page {
         textarea#narrative {
             min-height: 220px !important;
         }
+        .react-mde {
+            min-height: 250px;
+        }
     }
     &.quantitativeUpdate {
         .update-entry-container {
