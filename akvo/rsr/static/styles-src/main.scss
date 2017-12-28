@@ -3581,6 +3581,19 @@ main.results-page {
                 }
             }
         }
+        .indicatorProgress {
+            display: none !important;
+        }
+        .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
+            display: inline-block;
+            max-width: 95%;
+            ul {
+                li:nth-of-type(3) {
+                    display: block;
+                    margin-left: 0px;
+                }
+            }
+        }
         .rc-collapse-content-box {
             .rc-collapse-item-active {
                 background: white !important;
@@ -3639,7 +3652,7 @@ main.results-page {
                     &:first-of-type {
                         left: 0px;
                     }
-                    &:nth-of-type(2), &:nth-of-type(3) {
+                    &:nth-of-type(2), &:nth-of-type(3),  &:nth-of-type(4) {
                         float: right;
                     }
                     &:hover {
