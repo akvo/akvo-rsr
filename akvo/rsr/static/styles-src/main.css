@@ -2900,6 +2900,14 @@ main.results-page {
           padding: 30px 5px; }
         .results .reports .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
           margin-left: 10px; }
+    .results .reports .indicatorProgress {
+      display: none !important; }
+    .results .reports .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
+      display: inline-block;
+      max-width: 95%; }
+      .results .reports .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li:nth-of-type(3) {
+        display: block;
+        margin-left: 0px; }
     .results .reports .rc-collapse-content-box .rc-collapse-item-active {
       background: white !important; }
       .results .reports .rc-collapse-content-box .rc-collapse-item-active p {
@@ -2970,7 +2978,7 @@ main.results-page {
           color: white; }
           .results .reports article .menuAction button:first-of-type {
             left: 0px; }
-          .results .reports article .menuAction button:nth-of-type(2), .results .reports article .menuAction button:nth-of-type(3) {
+          .results .reports article .menuAction button:nth-of-type(2), .results .reports article .menuAction button:nth-of-type(3), .results .reports article .menuAction button:nth-of-type(4) {
             float: right; }
           .results .reports article .menuAction button:hover {
             background: #2c2a74; }

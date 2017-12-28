@@ -47,7 +47,7 @@ import * as alertActions from "../actions/alert-actions"
 const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
     return (
         <div>
-            <span>{`${_("narrative_summary_for")}`} <span className="narrativePeriod">{`${displayDate(period_start)} - ${displayDate(period_end)}`}</span></span>
+            <span>{_("narrative_summaries")}: <span className="narrativePeriod">{`${displayDate(period_start)} - ${displayDate(period_end)}`}</span></span>
             <span className="narrativeCount" >{`(${count})`}</span>
             {
                 onCreate == undefined ?
@@ -217,6 +217,7 @@ export class ReportForm extends React.Component {
                         <button className="btn btn-xs btn-delete deleteBtn" onClick={this.deleteSummary} disabled={disableDelete}>
                             {_("delete")}
                         </button>
+
                         <button className="btn btn-xs btn-default" onClick={this.approveSummary} disabled={disableSave}>
                             {_("approve")}
                         </button>
