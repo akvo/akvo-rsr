@@ -3490,7 +3490,7 @@ main {
         overflow-y: scroll;
     }
     article.shared {
-        width: 70%;
+        width: 50%;
         overflow-x: hidden;
         overflow-y: scroll;
     }
@@ -3498,9 +3498,9 @@ main {
         display: none;
     }
     aside.open {
-        width: calc(30% - 5px);
+        width: calc(50% - 10px);
         padding: 0px 5px 5px 5px;
-        display: flex;
+        display: block;
         margin-top: 5px;
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -4444,25 +4444,14 @@ main.results-page {
         .react-mde {
             min-height: 250px;
         }
-        // React mde dropdown gets messed up for unknown reasons!
-        .react-mde-dropdown {
-            z-index: 99999;
-            transform: translateX(84%) !important;
-        }
-        .react-mde-dropdown::before {
-            transform: translateX(-122%) !important;
-        }
-        .react-mde-dropdown::after {
-            transform: translateX(-147%) !important;
-        }
-
     }
     &.quantitativeUpdate {
         .update-entry-container {
             &.edit-in-progress {
                 .closingBtn {
                     z-index: 999;
-                    top: -42px !important;
+                    top: -20px !important;
+                    right: -5px !important;
                 }
             }
         }
@@ -4492,12 +4481,11 @@ main.results-page {
             }
             div {
                 width: 100%;
-                position: relative;
                 label[for="actualValue"] + button {
                     position: absolute;
                     font-weight: bold;
-                    top: -35px;
-                    right: 0;
+                    top: -20px;
+                    right: -5px;
                     background: transparent;
                 }
             }

@@ -218,6 +218,7 @@ export class MarkdownEditor extends React.Component {
                     </button>
                 </div>
                 <ReactMde value={this.state.reactMde}
+                          textAreaProps={this.props.textAreaProps}
                           visibility={{
                               textarea: this.state.show_editor,
                               toolbar: this.state.show_editor,
@@ -232,5 +233,6 @@ export class MarkdownEditor extends React.Component {
 MarkdownEditor.propTypes = {
     text: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    textAreaProps: PropTypes.object,
     show_preview: PropTypes.boolean,
 };

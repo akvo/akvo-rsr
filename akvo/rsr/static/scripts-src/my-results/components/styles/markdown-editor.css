@@ -7,6 +7,7 @@
 
 .mde-header {
     float: right;
+    width: auto !important;
 }
 
 .mde-preview {
