@@ -1,0 +1,26 @@
+/*
+    Akvo RSR is covered by the GNU Affero General Public License.
+    See more details in the license.txt file located at the root folder of the
+    Akvo RSR module. For additional details on the GNU license please see
+    < http://www.gnu.org/licenses/agpl.html >.
+*/
+
+.mde-header {
+    float: right;
+}
+
+.mde-preview {
+    margin-top: 36px;
+    margin-bottom: 0px;
+    min-height: 342px;
+}
+
+.markdown-editor-buttons {
+    position: relative;
+    top: 30px;
+    margin-top: -30px;
+}
+
+.markdown-editor-buttons > button {
+    margin-right: 2px;
+}
