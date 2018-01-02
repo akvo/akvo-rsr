@@ -48,9 +48,9 @@ class PeriodActualValueTestCase(TestCase):
         approved = IndicatorPeriodData.STATUS_APPROVED_CODE
 
         # When
-        IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value="17.1")
+        IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value=17.1)
         IndicatorPeriodData.objects.create(period=period, user=user, status=approved,
-                                           value="4711.2")
+                                           value=4711.2)
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
@@ -64,27 +64,12 @@ class PeriodActualValueTestCase(TestCase):
         draft = IndicatorPeriodData.STATUS_DRAFT_CODE
 
         # When
-        IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value="17")
-        IndicatorPeriodData.objects.create(period=period, user=user, status=draft, value="4711")
+        IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value=17)
+        IndicatorPeriodData.objects.create(period=period, user=user, status=draft, value=4711)
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
         self.assertEquals(actual_value.value, 17)
-
-    # def test_actual_value_with_two_updates_but_only_one_numeric(self):
-    #     # Given
-    #     period = self.period
-    #     user = self.user
-    #     approved = IndicatorPeriodData.STATUS_APPROVED_CODE
-    #
-    #     # When
-    #     IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value="17")
-    #     IndicatorPeriodData.objects.create(period=period, user=user, status=approved,
-    #                                        value="All the things!")
-    #
-    #     # Then
-    #     actual_value = PeriodActualValue.objects.get(period=period)
-    #     self.assertEquals(actual_value.value, 17)
 
     def test_actual_value_percentages_with_two_updates(self):
         # Given
@@ -94,9 +79,9 @@ class PeriodActualValueTestCase(TestCase):
 
         # When
         IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value=None,
-                                           numerator="3.14", denominator="17")
+                                           numerator=3.14, denominator=17)
         IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value=None,
-                                           numerator="47.11", denominator="4711")
+                                           numerator=47.11, denominator=4711)
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
@@ -146,10 +131,10 @@ class PeriodDisaggregationTestCase(TestCase):
             indicator=self.indicator, name="Color", value="Red"
         )
         self.update1 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value="17.11"
+            period=self.period, user=self.user, value=17.11
         )
         self.update2 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value="47.89"
+            period=self.period, user=self.user, value=47.89
         )
         #  set up PG views
         vs = ViewSyncer()
