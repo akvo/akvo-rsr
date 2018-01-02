@@ -12,29 +12,29 @@ from django_pgviews import view as pg
 ACTUAL_VALUE_SQL = """
     SELECT
         -- row_number() OVER... creates an artificial "pk" column, without which Django will protest
-        row_number()
-        OVER (ORDER BY period.id) AS id,
+        row_number() OVER (ORDER BY period.id) AS id,
         period.id AS period_id,
         indicator.measure as measure,
-        sum((update.value) :: BIGINT) AS value,
-        sum((update.numerator) :: BIGINT) AS numerator,
-        sum((update.denominator) :: BIGINT) AS denominator
+        sum((update.value) :: DECIMAL(20,2)) AS value,
+        sum((update.numerator) :: DECIMAL(20,2)) AS numerator,
+        sum((update.denominator) :: DECIMAL(20,2)) AS denominator
     FROM
-        rsr_indicatorperiod period, 
-        rsr_indicator indicator, 
-        rsr_indicatorperioddata "update"
-    WHERE 
+        rsr_indicatorperiod period,
+        rsr_indicator indicator,
+        rsr_indicatorperioddata update
+    WHERE
         (
-            (((indicator.id = period.indicator_id) AND 
+            (((indicator.id = period.indicator_id) AND
             (period.id = update.period_id)) AND
-            ((update.status) :: TEXT = 'A' :: TEXT)) AND 
-            ((update.value) :: TEXT ~ '^\d+$' :: TEXT)
+            ((update.status) :: TEXT = 'A' :: TEXT)) AND
+            ((update.value) :: TEXT ~ '^\d+\.?\d{0,2}$' :: TEXT OR update.value IS NULL)
         )
     GROUP BY period.id, indicator.measure;
 """
 
 
 class PeriodActualValue(pg.View):
+    # on_delete=models.DO_NOTHING is needed to prevent problems with PG trying to delete views' data
     period = models.ForeignKey('IndicatorPeriod', on_delete=models.DO_NOTHING)
     measure = models.CharField(max_length=1)
     value = models.IntegerField()
@@ -53,33 +53,39 @@ DISAGG_SQL = """
     WITH aggregated_disaggs AS (
         SELECT
             dimension_id,
-            sum(("value") :: BIGINT) AS value,
-            sum((numerator) :: BIGINT) AS numerator,
-            sum((denominator) :: BIGINT) AS denominator
+            sum(("value") :: DECIMAL(20,2)) AS value,
+            sum((numerator) :: DECIMAL(20,2)) AS numerator,
+            sum((denominator) :: DECIMAL(20,2)) AS denominator
         FROM
             rsr_disaggregation
         GROUP BY
             dimension_id
+    ),
+    period_disaggs AS (
+        SELECT DISTINCT
+            indicator.id AS indicator_id,
+            period.id AS period_id,
+            dimension.name AS dimension_name,
+            dimension.value AS dimension_value,
+            agg.value,
+            agg.numerator,
+            agg.denominator
+        FROM
+            rsr_indicator indicator,
+            rsr_indicatorperiod period,
+            rsr_indicatorperioddata update,
+            aggregated_disaggs agg,
+            rsr_indicatordimension dimension
+        WHERE
+            indicator.id = period.indicator_id AND
+            period.id = update.period_id AND
+            indicator.id = dimension.indicator_id AND
+            dimension.id = agg.dimension_id
     )
-    SELECT DISTINCT
-        indicator.id AS indicator_id,
-        period.id AS period_id,
-        dimension.name AS dimension_name,
-        dimension.value AS dimension_value,
-        agg.value,
-        agg.numerator,
-        agg.denominator
-    FROM
-        rsr_indicator indicator,
-        rsr_indicatorperiod period,
-        rsr_indicatorperioddata update,
-        aggregated_disaggs agg,
-        rsr_indicatordimension dimension
-    WHERE
-        indicator.id = period.indicator_id AND
-        period.id = update.period_id AND
-        indicator.id = dimension.indicator_id AND
-        dimension.id = agg.dimension_id
+    SELECT
+        row_number() OVER (ORDER BY indicator_id) AS id,
+        *
+    FROM period_disaggs
 """
 
 
@@ -98,5 +104,3 @@ class PeriodDisaggregation(pg.View):
         app_label = 'rsr'
         db_table = 'rsr_indicator_period_disaggregation'
         managed = False
-
-
