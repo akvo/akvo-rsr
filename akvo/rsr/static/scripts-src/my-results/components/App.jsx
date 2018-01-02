@@ -8,7 +8,9 @@
 
 import React from "react";
 import {connect} from "react-redux";
-
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import 'react-tabs/style/react-tabs.css';
+import { Markdown } from 'react-showdown';
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
@@ -52,6 +54,7 @@ import {
 } from "../utils"
 
 import FilterBar from "./FilterBar";
+import Reports from "./Reports";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
 import UpdateForm from "./updates/UpdateForm";
@@ -82,6 +85,7 @@ const modifyUser = (isMEManager) => {
         indicators: store.models.indicators,
         periods: store.models.periods,
         updates: store.models.updates,
+        reports: store.models.reports,
         disaggregations: getUpdatesDisaggregationObjects(store),
         dimension_ids: getIndicatorsDimensionIds(store),
         dimensions: store.models.dimensions,
@@ -136,6 +140,7 @@ export default class App extends React.Component {
         }
 
         const projectId = project.id;
+        const projectPartners = project.projectPartners;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
         fetchModel('dimensions', projectId, activateToggleAll);
@@ -143,6 +148,8 @@ export default class App extends React.Component {
         fetchModel('updates', projectId, activateToggleAll);
         fetchModel('disaggregations', projectId, activateToggleAll);
         fetchModel('comments', projectId, activateToggleAll);
+        fetchModel('reports', projectId, activateToggleAll);
+        fetchModel('categories', projectPartners, activateToggleAll);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -282,28 +289,6 @@ export default class App extends React.Component {
         }
     }
 
-    // createNewDisaggregations(update_id, dimensions, disaggregations){
-    //     const dimension_disaggregations = keyBy(disaggregations, 'dimension');
-    //     let changedDisaggregations = disaggregations;
-    //     dimensions.forEach((dimension) => {
-    //         if (dimension_disaggregations[dimension.id] === undefined) {
-    //             const disaggregation = {
-    //                 'update': update_id,
-    //                 'dimension': dimension.id,
-    //                 'id': 'new-'+dimension.id,
-    //                 'value': '',
-    //                 'numerator': '',
-    //                 'denominator': '',
-    //                 'narrative': '',
-    //             };
-    //             changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
-    //             /* disaggregations.push(disaggregation)*/
-    //             updateModel('disaggregations', disaggregation);
-    //         }
-    //     });
-    //     return changedDisaggregations;
-    // }
-
     render() {
         const callbacks = {
             needReporting: this.needReporting,
@@ -346,17 +331,42 @@ export default class App extends React.Component {
         }
 
         return (
-            <section className="results liveView">
-                <FilterBar callbacks={callbacks}/>
-                <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
-                    <article className={updateForm ? 'shared' : 'full'}>
-                        {results}
-                    </article>
-                    <aside className={updateForm ? 'open' : 'closed'}>
-                        {updateForm}
-                    </aside>
-                </main>
-            </section>
+            page.mode && page.mode.show_narrative_reports ? (
+                <section className="results liveView">
+                    <Tabs onSelect={this.onSelectTab}>
+                        <TabList>
+                            <Tab>Results</Tab>
+                            <Tab>Narrative summaries</Tab>
+                        </TabList>
+                        <TabPanel>
+                            <FilterBar callbacks={callbacks}/>
+                            <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
+                                <article className={updateForm ? 'shared' : 'full'}>
+                                    {results}
+                                </article>
+                                <aside className={updateForm ? 'open' : 'closed'}>
+                                    {updateForm}
+                                </aside>
+                            </main>
+                        </TabPanel>
+                        <TabPanel>
+                            <Reports/>
+                        </TabPanel>
+                    </Tabs>
+                </section>
+            ) : (
+                <section className="results liveView">
+                    <FilterBar callbacks={callbacks}/>
+                    <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
+                        <article className={updateForm ? 'shared' : 'full'}>
+                            {results}
+                        </article>
+                        <aside className={updateForm ? 'open' : 'closed'}>
+                            {updateForm}
+                        </aside>
+                    </main>
+                </section>
+            )
         );
     }
 }

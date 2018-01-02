@@ -14,7 +14,7 @@ import "react-select/dist/react-select.css";
 
 import {
     noHide,
-    selectablePeriods,
+    selectablePeriods, selectPeriodByDates,
     updateFormClose,
 } from "../actions/ui-actions";
 
@@ -35,8 +35,10 @@ import {
 import {
     _,
     fieldValueOrSpinner,
-    identicalArrays, toggleTree,
+    identicalArrays,
+    toggleTree,
     userIsMEManager,
+    isResultsKey,
 } from "../utils";
 
 import {
@@ -124,7 +126,7 @@ export default class FilterBar extends React.Component {
         const keys = this.props.keys;
         // if activeKey is identical to the ResultsDefaultKeys selector we are at the "closed"
         // closed view for an M&E manager
-        const openCollapses = Object.keys(keys).filter(key => keys[key].length !== 0);
+        const openCollapses = Object.keys(keys).filter(key => isResultsKey(key) && keys[key].length !== 0);
         return identicalArrays(activeKey, this.props.ResultsDefaultKeys) &&
             openCollapses.length === 1;
     }
@@ -141,9 +143,9 @@ export default class FilterBar extends React.Component {
     }
 
     render() {
-        const {page, callbacks} = this.props;
+        const {page, callbacks, periods} = this.props;
         const openCloseLabel = this.openResults() ? _('overview') : _('full_view');
-        const selectOptions = selectablePeriods(this.props.periods && this.props.periods.ids);
+        const selectOptions = selectablePeriods(periods && periods.ids, selectPeriodByDates);
         //TODO: investigate if we can use the React life cycle methods to not render until the
         // translation stings are in place
         const needReportingLabel = <InteractiveLabel label={_("needs_reporting") || ""}

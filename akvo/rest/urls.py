@@ -57,6 +57,7 @@ router.register(r'organisation_country_budget', views.OrganisationCountryBudgetV
 router.register(r'organisation_country_budget_line', views.OrganisationCountryBudgetLineViewSet)
 router.register(r'organisation_custom_field', views.OrganisationCustomFieldViewSet)
 router.register(r'organisation_expense_line', views.OrganisationExpenseLineViewSet)
+router.register(r'organisation_indicator_label', views.OrganisationIndicatorLabelViewSet)
 router.register(r'organisation_location', views.OrganisationLocationViewSet)
 router.register(r'organisation_map_location', views.MapOrganisationLocationViewSet)
 router.register(r'organisation_region_budget', views.OrganisationRegionBudgetViewSet)
