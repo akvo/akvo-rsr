@@ -5,6 +5,7 @@
 {% block title %}{% trans 'MyRSR - My IATI' %}{% endblock title %}
 
 {% block myrsr_main %}
+    <div class="col-sm-6 col-xs-12">
     <h3>
         {% trans "My IATI" %}{% if selected_org %} {% trans "for" %} {{ selected_org.long_name }}{% endif %}
     </h3>
@@ -56,6 +57,7 @@
             <div id="newIATIExport"></div>
         {% endif %}
     {% endif %}
+</div>
 {% endblock myrsr_main %}
 
 {% block js %}

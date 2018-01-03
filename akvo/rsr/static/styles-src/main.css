@@ -1051,14 +1051,13 @@ footer .navbar {
     font-size: 14px; }
 
 /* GENERIC STRUCTURE and TEXT STYLES */
-.touch-navbar {
-  margin-top: -10px; }
-  @media only screen and (max-width: 768px) {
-    .touch-navbar {
-      margin-top: -15px; } }
-  @media only screen and (min-width: 768px) and (max-width: 1024px) {
-    .touch-navbar {
-      margin-top: -20px; } }
+@media only screen and (max-width: 768px) {
+  .touch-navbar {
+    margin-top: -15px; } }
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .touch-navbar {
+    margin-top: -20px; } }
 
 .center-text {
   text-align: center; }
@@ -1082,12 +1081,20 @@ h4.detailedInfo {
 .progress-bar-info {
   background-color: #e1edc3; }
 
-/* LISTINGS */
 #map {
-  height: 400px; }
+  position: relative;
+  height: calc(100vh - 409px); }
   @media only screen and (max-width: 568px) {
     #map {
       display: none; } }
+  #map .rsr_map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; }
 
 #map-warning {
   margin-top: -30px;
@@ -1112,8 +1119,6 @@ h4.detailedInfo {
     /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
             color: white;*/
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.4s ease-in;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1231,21 +1236,28 @@ h4.detailedInfo {
     margin-right: -200px; }
 
 #search-filter {
-  background-color: #241F20; }
+  margin-top: -10px;
+  padding: 20px 0;
+  background: rgba(32, 32, 36, 0.05); }
   @media only screen and (max-width: 768px) {
     #search-filter {
       padding-bottom: 0; } }
-  #search-filter #search {
-    color: #fff;
-    text-align: center; }
-    @media only screen and (max-width: 768px) {
-      #search-filter #search {
-        padding-bottom: 0; } }
-    #search-filter #search button {
-      padding-top: 5px;
-      padding-bottom: 5px; }
-  #search-filter p {
-    color: #a5dfff; }
+  @media only screen and (max-width: 768px) {
+    #search-filter #search {
+      padding-bottom: 0; } }
+  #search-filter #search .form-group input {
+    width: 350px; }
+  #search-filter #search .form-group button {
+    padding-top: 7px;
+    padding-bottom: 5px; }
+  #search-filter #search .sortList {
+    display: inline-block;
+    margin-right: 15px; }
+  #search-filter #search p {
+    display: inline-block; }
+  #search-filter #search button {
+    padding-top: 5px;
+    padding-bottom: 5px; }
   #search-filter div#filter {
     background: #383334;
     text-align: center; }
@@ -1254,7 +1266,7 @@ h4.detailedInfo {
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 .main-list li {
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   list-style-type: none;
   padding: 15px 0;
   -moz-border-radius: 3px;
@@ -1312,36 +1324,42 @@ h4.detailedInfo {
   text-overflow: ellipsis;
   white-space: normal; }
 
-.main-list.projects ul li {
-  border: thin solid rgba(44, 42, 116, 0);
-  -moz-transition: all 0.2s ease-in;
-  -o-transition: all 0.2s ease-in;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in; }
-  .main-list.projects ul li h1 a {
-    color: #2c2a74; }
-    .main-list.projects ul li h1 a:hover {
-      color: #ca8142; }
-  .main-list.projects ul li .projectSubT {
-    margin-bottom: 0; }
-  .main-list.projects ul li:nth-child(2n+1) {
-    background: rgba(30, 28, 79, 0.05);
-    border: thin solid rgba(44, 42, 116, 0.05); }
-  .main-list.projects ul li .projectLocation {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list.projects ul li:hover {
-    background: rgba(44, 42, 116, 0.1);
-    border: thin solid rgba(44, 42, 116, 0.3); }
-  .main-list.projects ul li .donateButton {
-    text-align: left; }
-    @media only screen and (max-width: 992px) {
-      .main-list.projects ul li .donateButton a {
-        margin-top: 0.6em; } }
-    @media only screen and (max-width: 768px) {
-      .main-list.projects ul li .donateButton a {
-        margin-top: 1em; } }
-    .main-list.projects ul li .donateButton .totalBudgetLabel {
-      width: initial; }
+.main-list.projects {
+  margin-top: 50px; }
+  .main-list.projects ul {
+    max-height: calc(100vh - 409px);
+    overflow-y: scroll;
+    padding-left: 15px; }
+    .main-list.projects ul li {
+      border: thin solid rgba(44, 42, 116, 0);
+      -moz-transition: all 0.2s ease-in;
+      -o-transition: all 0.2s ease-in;
+      -webkit-transition: all 0.2s ease-in;
+      transition: all 0.2s ease-in; }
+      .main-list.projects ul li h1 a {
+        color: #2c2a74; }
+        .main-list.projects ul li h1 a:hover {
+          color: #ca8142; }
+      .main-list.projects ul li .projectSubT {
+        margin-bottom: 0; }
+      .main-list.projects ul li:nth-child(2n+1) {
+        background: rgba(44, 42, 116, 0);
+        border: thin solid rgba(44, 42, 116, 0); }
+      .main-list.projects ul li .projectLocation {
+        color: rgba(32, 32, 36, 0.5); }
+      .main-list.projects ul li:hover {
+        background: rgba(44, 42, 116, 0.05);
+        border: thin solid rgba(44, 42, 116, 0.1); }
+      .main-list.projects ul li .donateButton {
+        text-align: left; }
+        @media only screen and (max-width: 992px) {
+          .main-list.projects ul li .donateButton a {
+            margin-top: 0.6em; } }
+        @media only screen and (max-width: 768px) {
+          .main-list.projects ul li .donateButton a {
+            margin-top: 1em; } }
+        .main-list.projects ul li .donateButton .totalBudgetLabel {
+          width: initial; }
 
 .main-list.updates ul li {
   border: thin solid rgba(0, 167, 157, 0);
@@ -1361,8 +1379,8 @@ h4.detailedInfo {
     .main-list.updates ul li h1 a:hover {
       color: #ca8142; }
   .main-list.updates ul li:nth-child(2n+1) {
-    background: rgba(0, 116, 109, 0.05);
-    border: thin solid rgba(0, 167, 157, 0.1); }
+    background: rgba(0, 167, 157, 0);
+    border: thin solid rgba(0, 167, 157, 0); }
   .main-list.updates ul li .projectLocation {
     color: rgba(32, 32, 36, 0.5); }
   .main-list.updates ul li:hover {
@@ -1402,8 +1420,8 @@ h4.detailedInfo {
     .main-list.organisations ul li h1 a:hover {
       color: #ca8142; }
   .main-list.organisations ul li:nth-child(2n+1) {
-    background: rgba(238, 49, 36, 0.05);
-    border: thin solid rgba(238, 49, 36, 0.05); }
+    background: rgba(238, 49, 36, 0);
+    border: thin solid rgba(238, 49, 36, 0); }
   .main-list.organisations ul li:hover {
     background: rgba(238, 49, 36, 0.1);
     border: thin solid rgba(238, 49, 36, 0.35); }
