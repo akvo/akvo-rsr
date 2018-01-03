@@ -2,35 +2,61 @@
 {% load addparam bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
-  <section id="map" class="touch-navbar">
-    {% coll_map map_projects '100%' '100%' %}
-  </section>
-  {% if not rsr_page.all_maps %}
-    <div id="map-warning" class="text-center">{% trans 'This map only shows the projects listed on this page.' %}</div>
-  {% endif %}
+
   <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
     <section id="search-filter">
       <div class="container-fluid">
-          <div id="search-view" style="position: relative; top: -61px;">
-              <!-- A hack to bring the search bar into view without being covered by the top nav bar -->
-          </div>
-        <div id="search" class="verticalPadding">
-          <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
-          <div class="form-inline" role="form">
-            <div class="form-group">
-              <div class="input-group">
-                {% bootstrap_field filter.form.title_or_subtitle field_class='search-query' show_label=False %}
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" onclick="advanced_filter_form.preSubmitHack()">
-                        {% trans "Search" %} &#8250;
-                    </button>
-                </span>
+        <div id="search-view" style="position: relative; top: -61px;">
+            <!-- A hack to bring the search bar into view without being covered by the top nav bar -->
+        </div>
+
+        <div id="search" class="verticalPadding row">
+          <div class="col-md-6">
+            <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+            <div class="form-inline" role="form">
+              <div class="form-group">
+                <div class="input-group">
+                  {% bootstrap_field filter.form.title_or_subtitle field_class='search-query' show_label=False %}
+                  <span class="input-group-btn">
+                      <button class="btn btn-primary" onclick="advanced_filter_form.preSubmitHack()">
+                          {% trans "Search" %} &#8250;
+                      </button>
+                  </span>
+                </div>
+                <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
               </div>
-              <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
+              {% if q %}
+              <div><a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a></div>
+              {% endif %}
             </div>
-            {% if q %}
-            <div><a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a></div>
-            {% endif %}
+          </div>
+          <div class="col-md-6">
+              <div class="sortList">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="sortByButton" data-toggle="dropdown" aria-expanded="true">
+                    {% trans "Sort by" %}
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="sortByDropdown">
+                    <li role="presentation"{% if sorting = "-last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-last_modified_at">{% trans "Latest modified" %}</a></li>
+                    <li role="presentation"{% if sorting = "last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="last_modified_at">{% trans "Oldest modified" %}</a></li>
+                    <li role="presentation"{% if sorting = "title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="title">{% trans "Title (A-Z)" %}</a></li>
+                    <li role="presentation"{% if sorting = "-title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-title">{% trans "Title (Z-A)" %}</a></li>
+                    <li role="presentation"{% if sorting = "budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="budget">{% trans "Total budget (low-high)" %}</a></li>
+                    <li role="presentation"{% if sorting = "-budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-budget">{% trans "Total budget (high-low)" %}</a></li>
+                  </ul>
+                </div>
+              </div>
+              <p class="verticalPadding">
+              {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+                  Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
+              {% endblocktrans %}
+                  | View
+                  {% for page_number, page_size in page_info|slice:"1:" %}
+                      <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
+                  {% endfor %}
+                  projects
+              </p>
           </div>
         </div>
       </div>
@@ -40,141 +66,138 @@
     <input style="display: none;" name="limit" value="{{limit}}"/>
   </form>
 
-  <div class="container">
-    <div class="row center-text">
-      <p class="verticalPadding emTxt">
-      {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-          Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
-      {% endblocktrans %}
-          | View
-          {% for page_number, page_size in page_info|slice:"1:" %}
-              <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
-          {% endfor %}
-          projects
-      </p>
-    </div>
-      {% include 'navigation/pagination-sort.html' %}
-
-  </div>
-
   <section class="main-list projects">
-    <ul class="container">
-      {% for project in page %}
-        <li class="row">
-          <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
-            <a href="{% url 'project-main' project.id %}">
-              {% img project 200 200 project.title %}
-            </a>
-          </div>
-          <div class="col-lg-4 col-sm-3 col-xs-7">
-            <h1><a href="{% url 'project-main' project.id %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
-            <p class="projectSubT">{{project.subtitle}}</p>
-            <p class="projectLocation"><i class="fa fa-map-marker"></i>
-                {% for country in project.countries %}
-                    {{ country }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    {% trans 'No project locations or recipient countries specified' %}
-                {% endfor %}
-            </p>
-            {% if project.primary_organisation %}
-              <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
-              <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="false"></div>
-            {% endif %}
-            <div class="visible-xs-block hidden-sm">
-              <p>
-              {% if project.iati_status %}
-              <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
-              {% endif %}
-              {% if project.last_update %}
-              <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.event_date|date:"d-M-Y"}}</a><br>
-              {% endif %}
-              <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% if project.has_multiple_budget_currencies %}
-              {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}}  {{project.currency}}
-                  <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
-              {% else %}
-              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}}  {{project.currency}}
-              {% endif %}
-              {% if project.accepts_donations %}
-              <br>
-              <span class="donateButton">
-                <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
-              </span>
-              {% endif %}
-              </p>
-            </div>
-          </div>
-          <div class="hidden-xs visible-sm">
-            <p>
-              {% if project.sectors.all %}
-                <span class="detailedInfo">{% trans "Sectors" %}</span>
-                {% for sector in project.sectors.all %}
-                  {% if sector.sector_code|length == 3 %}
-                    <a href="{% url 'project-directory' %}?sector={{sector.sector_code}}">{{sectors_dict|get_item:sector.sector_code|title}}</a>&nbsp;
-                  {% endif %}
-                {% endfor %}
-                <br/>
-              {% endif %}
-              {% if project.iati_status %}
-              <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
-              {% endif %}
-              {% if project.last_update %}
-              <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.event_date|date:"d-M-Y"}}</a><br>
-              {% endif %}
-              <span class="detailedInfo">{% trans "Finance" %}</span>
-              {% if project.has_multiple_budget_currencies %}
-              {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}} {{project.currency}}
-                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
-              {% else %}
-              {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}} {{project.currency}}
-              {% endif %}
-              {% if project.accepts_donations %}
-              <br>
-              <span class="donateButton">
-                <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
-              </span>
-              {% endif %}
-            </p>
-          </div>
-          <div class="col-sm-3 hidden-xs hidden-sm">
-            <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
-              <p>
-                {% if not project.sectors.all %}
-                  {% trans 'No sectors' %}
-                {% else %}
-                  {# KB: Small hack with two for loops to display the 3-digit sectors first #}
-                  {% for sector in project.sectors.all %}
-                    {% if sector.sector_code|length == 3 %}
-                      <a href="{% url 'project-directory' %}?sector={{sector.sector_code}}">{{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}</a><br/>
+    <div class="container-fluid">
+      <div  class="row">
+        <div class="col-sm-6 projectListUl">
+            <ul>
+              {% for project in page %}
+                <li class="row">
+                  <div class="col-lg-2 col-sm-3 col-xs-5 thumbImg">
+                    <a href="{% url 'project-main' project.id %}">
+                      {% img project 200 200 project.title %}
+                    </a>
+                  </div>
+                  <div class="col-lg-4 col-sm-3 col-xs-7">
+                    <h1><a href="{% url 'project-main' project.id %}"><i class="fa fa-folder-o"></i> {{project.title}}</a></h1>
+                    <p class="projectSubT">{{project.subtitle}}</p>
+                    <p class="projectLocation"><i class="fa fa-map-marker"></i>
+                        {% for country in project.countries %}
+                            {{ country }}{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            {% trans 'No project locations or recipient countries specified' %}
+                        {% endfor %}
+                    </p>
+                    {% if project.primary_organisation %}
+                      <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{project.primary_organisation}}</a>
+                      <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="false"></div>
                     {% endif %}
-                  {% endfor %}
-                  {% for sector in project.sectors.all %}
-                    {% if sector.sector_code|length == 5 %}
-                      {{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}<br/>
+                    <div class="visible-xs-block hidden-sm">
+                      <p>
+                      {% if project.iati_status %}
+                      <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
+                      {% endif %}
+                      {% if project.last_update %}
+                      <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
+                      {% endif %}
+                      <span class="detailedInfo">{% trans "Finance" %}</span>
+                      {% if project.has_multiple_budget_currencies %}
+                      {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}}  {{project.currency}}
+                          <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+                      {% else %}
+                      {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}}  {{project.currency}}
+                      {% endif %}
+                      {% if project.accepts_donations %}
+                      <br>
+                      <span class="donateButton">
+                        <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
+                      </span>
+                      {% endif %}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="hidden-xs visible-sm">
+                    <p>
+                      {% if project.sectors.all %}
+                        <span class="detailedInfo">{% trans "Sectors" %}</span>
+                        {% for sector in project.sectors.all %}
+                          {% if sector.sector_code|length == 3 %}
+                            <a href="{% url 'project-directory' %}?sector={{sector.sector_code}}">{{sectors_dict|get_item:sector.sector_code|title}}</a>&nbsp;
+                          {% endif %}
+                        {% endfor %}
+                        <br/>
+                      {% endif %}
+                      {% if project.iati_status %}
+                      <span class="detailedInfo">{% trans "Status" %}</span> {{project.show_plain_status}}<br>
+                      {% endif %}
+                      {% if project.last_update %}
+                      <span class="detailedInfo">{% trans "Latest update" %}</span> <a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a><br>
+                      {% endif %}
+                      <span class="detailedInfo">{% trans "Finance" %}</span>
+                      {% if project.has_multiple_budget_currencies %}
+                      {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}} {{project.currency}}
+                        <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+                      {% else %}
+                      {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}} {{project.currency}}
+                      {% endif %}
+                      {% if project.accepts_donations %}
+                      <br>
+                      <span class="donateButton">
+                        <a onClick="showDonatePopup('{{ project.donate_url }}')" target="_blank" class="btn btn-primary">{% trans "Donate" %}</a>
+                      </span>
+                      {% endif %}
+                    </p>
+                  </div>
+                  <div class="col-sm-3 hidden-xs hidden-sm">
+                    <h4 class="detailedInfo">{% trans "Sectors" %}</h4>
+                      <p>
+                        {% if not project.sectors.all %}
+                          {% trans 'No sectors' %}
+                        {% else %}
+                          {# KB: Small hack with two for loops to display the 3-digit sectors first #}
+                          {% for sector in project.sectors.all %}
+                            {% if sector.sector_code|length == 3 %}
+                              <a href="{% url 'project-directory' %}?sector={{sector.sector_code}}">{{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}</a><br/>
+                            {% endif %}
+                          {% endfor %}
+                          {% for sector in project.sectors.all %}
+                            {% if sector.sector_code|length == 5 %}
+                              {{sector.sector_code}} - {{sectors_dict|get_item:sector.sector_code|title}}<br/>
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      </p>
+                    {% if project.iati_status %}
+                    <h4 class="detailedInfo">{% trans "Status" %}</h4>
                     {% endif %}
-                  {% endfor %}
-                {% endif %}
-              </p>
-            {% if project.iati_status %}
-            <h4 class="detailedInfo">{% trans "Status" %}</h4>
+                    <p class="complete">{{project.show_plain_status}}</p>
+                    <h4 class="detailedInfo">{% trans "Latest update" %}</h4>
+                    {% if project.last_update %}
+                    <p><a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.created_at|date:"d-M-Y"}}</a></p>
+                    {% else %}
+                    <p>{% trans 'No updates' %}</p>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-3 hidden-xs hidden-sm">
+                    <h4 class="detailedInfo">{% trans "Finance" %}</h4>
+                    {% include "partials/project_budget.html" with project=project %}
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <section id="map" class="touch-navbar">
+              {% coll_map map_projects '100%' '100%' %}
+            </section>
+            {% if not rsr_page.all_maps %}
+              <div id="map-warning" class="text-center">{% trans 'This map only shows the projects listed on this page.' %}</div>
             {% endif %}
-            <p class="complete">{{project.show_plain_status}}</p>
-            <h4 class="detailedInfo">{% trans "Latest update" %}</h4>
-            {% if project.last_update %}
-            <p><a href="{% url 'update-main' project.pk project.last_update.pk %}"><i class="fa fa-calendar-o"></i> {{project.last_update.event_date|date:"d-M-Y"}}</a></p>
-            {% else %}
-            <p>{% trans 'No updates' %}</p>
-            {% endif %}
-          </div>
-          <div class="col-md-3 hidden-xs hidden-sm">
-            <h4 class="detailedInfo">{% trans "Finance" %}</h4>
-            {% include "partials/project_budget.html" with project=project %}
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+        </div>
+      </div>
+    </div>
   </section>
-  <div class="container">
+  <div class="container-fluid">
        {% include 'navigation/pagination.html' %}
   </div>
 {% endblock %}

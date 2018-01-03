@@ -1,6 +1,6 @@
 {% load l10n %}
 
-<div class= "rsr_map" id="{{ map_id }}" style="width:{{width}};height:{{height}};"></div>
+<div class= "rsr_map" id="{{ map_id }}"></div>
 <script>
  var {{ map_id }} = {
    locations: [{% for location in locations %}
