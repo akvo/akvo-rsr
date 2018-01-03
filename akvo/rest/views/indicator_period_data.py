@@ -37,11 +37,14 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorPeriodData.objects.select_related(
         'period',
+        'period__indicator',
+        'period__indicator__result',
+        'period__indicator__result__project',
         'user',
         'approved_by',
     ).prefetch_related(
         'comments',
-        'comments__user'
+        'comments__user',
     ).all()
     serializer_class = IndicatorPeriodDataFrameworkSerializer
     project_relation = 'period__indicator__result__project__'
