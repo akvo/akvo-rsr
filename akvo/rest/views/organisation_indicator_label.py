@@ -8,10 +8,10 @@
 from akvo.rsr.models import OrganisationIndicatorLabel
 
 from ..serializers import OrganisationIndicatorLabelSerializer
-from ..viewsets import PublicProjectViewSet
+from ..viewsets import BaseRSRViewSet
 
 
-class OrganisationIndicatorLabelViewSet(PublicProjectViewSet):
+class OrganisationIndicatorLabelViewSet(BaseRSRViewSet):
     """
     """
     queryset = OrganisationIndicatorLabel.objects.all()
