@@ -140,7 +140,7 @@ export default class App extends React.Component {
         }
 
         const projectId = project.id;
-        const projectPartners = project.projectPartners;
+        const projectPartners = project.partners;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
         fetchModel('dimensions', projectId, activateToggleAll);
