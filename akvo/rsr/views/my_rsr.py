@@ -98,7 +98,7 @@ def my_updates(request):
 
     :param request; A Django request.
     """
-    updates = request.user.updates().select_related('project')
+    updates = request.user.updates().select_related('project', 'user')
 
     q = request.GET.get('q')
     if q:

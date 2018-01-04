@@ -417,19 +417,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         The org_list is a list of approved organisations of the original user. Based on this,
         the original user will have the option to approve / delete the employment.
         """
-        employments = Employment.objects.filter(user=self)
 
-        employments_array = []
-        for employment in employments:
-            employment_obj = employment.to_dict(org_list)
-            employments_array.append(employment_obj)
+        employments = Employment.objects.filter(user=self).select_related(
+            'user', 'organisation', 'group'
+        )
+        employments = [employment.to_dict(org_list) for employment in employments]
 
         return dict(
             id=self.pk,
             email=self.email,
             first_name=self.first_name,
             last_name=self.last_name,
-            employments=employments_array,
+            employments=employments,
         )
 
     def has_role_in_org(self, org, group):
