@@ -31,26 +31,26 @@ class Command(BaseCommand):
         for dec in decs:
             dec_impl = set(
                 Partnership.objects
-                    .filter(project=dec)
-                    .filter(iati_organisation_role=field_partner)
-                    .values_list('organisation__id', flat=True)
+                .filter(project=dec)
+                .filter(iati_organisation_role=field_partner)
+                .values_list('organisation__id', flat=True)
             )
             ctr_impl = set()
             for ctr in dec.children_all():
                 ctr_impl = ctr_impl | set(
                     Partnership.objects
-                        .filter(project=ctr)
-                        .filter(iati_organisation_role=field_partner)
-                        .values_list('organisation__id', flat=True)
+                    .filter(project=ctr)
+                    .filter(iati_organisation_role=field_partner)
+                    .values_list('organisation__id', flat=True)
                 )
             # Find the intersection of the two sets.
             # These are field partners that appear both in the DEC and the CTR
             both_levels = dec_impl & ctr_impl
             to_be_removed = (
                 Partnership.objects
-                    .filter(project=dec)
-                    .filter(iati_organisation_role=field_partner)
-                    .filter(organisation_id__in=both_levels)
+                .filter(project=dec)
+                .filter(iati_organisation_role=field_partner)
+                .filter(organisation_id__in=both_levels)
             )
             for partner in to_be_removed:
                 org = Organisation.objects.get(pk=partner.organisation.pk)
