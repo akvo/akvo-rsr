@@ -10,7 +10,12 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
+import ReactMde, {ReactMdeCommands} from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
+import './styles/markdown-editor.css';
+
 import {
+    _,
     isEmpty,
 } from "../utils";
 
@@ -169,3 +174,65 @@ export class FileReaderInput extends React.Component {
     </div>
   }
 }
+
+// Markdown Editor to be used in the results framework
+export class MarkdownEditor extends React.Component {
+    constructor(props) {
+        super(props);
+        const {text, show_preview} = this.props;
+        this.state = {
+            reactMde: {text, selection: null},
+            show_editor: !show_preview,
+        };
+        this.showEditor = this.showEditor.bind(this);
+        this.showPreview = this.showPreview.bind(this);
+        this.onChange = this.onChange.bind(this);
+    }
+
+    showEditor() {
+        this.setState({show_editor: true});
+    }
+
+    showPreview() {
+        this.setState({show_editor: false});
+    }
+
+    onChange (reactMde) {
+        const {text, selection} = reactMde;
+        this.setState({reactMde})
+        this.props.onChange(text, selection);
+    }
+
+    render() {
+        const {show_editor} = this.state;
+        const editClass = show_editor?'active': ''
+        const previewClass = !show_editor?'active': ''
+        return (
+            <div>
+                <div className="markdown-editor-buttons">
+                    <button className={`btn btn-xs btn-default ${editClass}`} onClick={this.showEditor}>
+                        {_("write")}
+                    </button>
+                    <button className={`btn btn-xs btn-default ${previewClass}`} onClick={this.showPreview}>
+                        {_("preview")}
+                    </button>
+                </div>
+                <ReactMde value={this.state.reactMde}
+                          textAreaProps={this.props.textAreaProps}
+                          visibility={{
+                              textarea: this.state.show_editor,
+                              toolbar: this.state.show_editor,
+                              preview: !this.state.show_editor,
+                          }}
+                          onChange={this.onChange}
+                          commands={ReactMdeCommands.getDefaultCommands()} />
+            </div>
+        );
+    }
+}
+MarkdownEditor.propTypes = {
+    text: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    textAreaProps: PropTypes.object,
+    show_preview: PropTypes.boolean,
+};

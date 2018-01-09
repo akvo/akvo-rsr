@@ -34,6 +34,20 @@ class BaseLocation(models.Model):
     postcode = ValidXMLCharField(_(u'postal code'), max_length=10, blank=True)
     country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'country'))
 
+    def __unicode__(self):
+        return u'{0}, {1}, {2}{3}'.format(
+            u'{0}: {1}'.format(
+                _(u'Latitude'),
+                unicode(self.latitude) if self.latitude else _(u'No latitude specified')),
+            u'{0}: {1}'.format(
+                _(u'Longitude'),
+                unicode(self.longitude) if self.longitude else _(u'No longitude specified')),
+            u'{0}: {1}'.format(
+                _(u'Country'),
+                unicode(self.country.name) if self.country else _(u'No country specified')),
+            u' ({0})'.format(self.name) if getattr(self, 'name', None) else u''
+        )
+
     def delete(self, *args, **kwargs):
         super(BaseLocation, self).delete(*args, **kwargs)
 
@@ -176,17 +190,6 @@ class ProjectLocation(BaseLocation):
                     u'LocationType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'LocationType/</a>.')
     )
-
-    def __unicode__(self):
-        return u'{0}, {1}{2}'.format(
-            u'{0}: {1}'.format(
-                _(u'Latitude'),
-                unicode(self.latitude) if self.latitude else _(u'No latitude specified')),
-            u'{0}: {1}'.format(
-                _(u'Longitude'),
-                unicode(self.longitude) if self.longitude else _(u'No longitude specified')),
-            u' ({0})'.format(self.name) if self.name else u''
-        )
 
     def iati_country(self):
         return codelist_value(Country, self, 'country')

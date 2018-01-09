@@ -164,7 +164,7 @@ def pre_process_data(key, data, errors):
     # Text data does not need pre-processing
     if isinstance(model_field, (EmailField, ProjectLimitedTextField, URLField, ValidXMLCharField,
                                 ValidXMLTextField)):
-        return data, errors
+        return data.strip(), errors
 
     # Dates should be converted to a datetime object, or None if empty
     if isinstance(model_field, DateField):

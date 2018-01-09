@@ -45,7 +45,7 @@ from .result import (Disaggregation, Indicator, IndicatorDimension,
                      IndicatorPeriodActualDimension,
                      IndicatorPeriodTargetDimension,
                      IndicatorPeriodActualLocation,
-                     IndicatorPeriodTargetLocation)
+                     IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -124,8 +124,7 @@ __all__ = [
     'Keyword',
     'LegacyData',
     'Link',
-    'ProjectLocation',
-    'ProjectUpdateLocation',
+    'NarrativeReport',
     'Organisation',
     'OrganisationAccount',
     'OrganisationCountryBudget',
@@ -144,8 +143,11 @@ __all__ = [
     'OrganisationTotalBudget',
     'OrganisationTotalBudgetLine',
     'OrganisationTotalExpenditure',
+    'ProjectLocation',
+    'ProjectUpdateLocation',
     'PartnerSite',
     'Partnership',
+    'PeriodActualValue',
     'PlannedDisbursement',
     'PolicyMarker',
     'Project',
@@ -221,6 +223,10 @@ rules.add_perm('rsr.delete_disaggregation', is_rsr_admin | is_org_admin | is_org
 rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
+
+rules.add_perm('rsr.add_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.delete_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
 
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)

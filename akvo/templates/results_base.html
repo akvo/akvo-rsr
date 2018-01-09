@@ -13,7 +13,14 @@
 {# Project id's #}
 <script type="application/json" id="project">
     {
-        "id": {{ project.pk }}
+        "id": {{ project.pk }},
+        "primaryOrganisationId": {{ project.primary_organisation.pk }},
+        "partners": [
+            {% for partner in project.all_partners %}
+            {{ partner.id }}
+            {% if not forloop.last %} , {% endif %}
+            {% endfor %}
+        ]
     }
 </script>
 
@@ -69,6 +76,7 @@
         "actual": "{% trans 'Actual'|escapejs %}",
         "actual_value": "{% trans 'Actual value'|escapejs %}",
         "actual_value_info": "{% trans 'This is the total of all indicator updates for this period'|escapejs %}",
+        "narrative_reporting": "{% trans 'Narrative reporting'|escapejs %}",
         "target": "{% trans 'Target'|escapejs %}",
         "target_value": "{% trans 'Target value'|escapejs %}",
         "target_comment": "{% trans 'Target comment'|escapejs %}",
@@ -86,10 +94,11 @@
         "cant_place_updates": "{% trans 'This period is an average of the child projects, disable aggregations to place updates on this period'|escapejs %}",
         "add_indicator_value": "{% trans 'Insert reporting value'|escapejs %}",
         "adding_update": "{% trans 'Adding new update'|escapejs %}",
-        "edit_indicator_value": "{% trans 'Edit'|escapejs %}",
+        "edit": "{% trans 'Edit'|escapejs %}",
         "cancel": "{% trans 'Cancel'|escapejs %}",
         "delete": "{% trans 'Delete'|escapejs %}",
         "save": "{% trans 'Save'|escapejs %}",
+        "write": "{% trans 'Write'|escapejs %}",
         "submit_for_approval": "{% trans 'Submit for approval'|escapejs %}",
         "return_for_revision": "{% trans 'Return for revision'|escapejs %}",
         "approve": "{% trans 'Approve'|escapejs %}",
@@ -120,6 +129,13 @@
         "overview": "{% trans "Overview"|escapejs %}",
         "needs_reporting": "{% trans "Needs reporting"|escapejs %}",
         "pending_approval": "{% trans "Pending approval"|escapejs %}",
+        "draft": "{% trans "Draft"|escapejs %}",
+        "create_narrative_summary": "{% trans "Create Narrative Summary"|escapejs %}",
+        "narrative_summaries": "{% trans "Narrative summaries"|escapejs %}",
+        "summary_not_saved": "{% trans "Couldn't save Narrative summary, please try again"|escapejs %}",
+        "summary_not_deleted": "{% trans "Couldn't delete Narrative summary, please try again"|escapejs %}",
+        "select_category": "{% trans "Select Category"|escapejs %}",
+        "preview": "{% trans "Preview"|escapejs %}",
         "approved": "{% trans "Approved"|escapejs %}",
         "approved_on": "{% trans "Approved on"|escapejs %}",
         "created_on": "{% trans "Created on"|escapejs %}",

@@ -546,6 +546,9 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
         filter(group__in=[admins_group, me_managers_group])
     # Can we unlock and approve?
     user_is_me_manager = user.is_superuser or user.is_admin or user.me_manager_for_project(project)
+    show_narrative_reports = project.partners.filter(
+        id__in=settings.NARRATIVE_REPORTS_BETA_ORGS
+    ).exists()
 
     context = {
         'project': project,
@@ -554,6 +557,7 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
         'user_is_me_manager': 'true' if user_is_me_manager else 'false',
         'me_managers': me_managers.exists(),
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
+        'show_narrative_reports': 'true' if show_narrative_reports else 'false',
     }
 
     return render(request, template, context)
