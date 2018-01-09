@@ -150,13 +150,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         return all updates created by the user or by organisation users if requesting user is admin
         """
         if self.is_superuser or self.is_admin:
-            return ProjectUpdate.objects.all().order_by('-created_at')
+            return ProjectUpdate.objects.all()
         else:
             admin_employment_orgs = self.get_admin_employment_orgs()
             if admin_employment_orgs:
-                return admin_employment_orgs.all_updates().order_by('-created_at')
+                return admin_employment_orgs.all_updates()
             else:
-                return ProjectUpdate.objects.filter(user=self).order_by('-created_at')
+                return ProjectUpdate.objects.filter(user=self)
 
     def can_edit_update(self, update):
         is_admin = self.is_admin or self.is_superuser

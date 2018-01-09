@@ -7,6 +7,8 @@ Forms and validation code for user registration and updating.
 
 """
 
+import datetime
+
 from django import forms
 
 from django.contrib.auth import get_user_model
@@ -275,6 +277,11 @@ class UserOrganisationForm(forms.Form):
         request.user.organisations.add(self.cleaned_data['organisation'])
 
 
+class DateInput(forms.DateInput):
+    """Override to change the input_type."""
+    input_type = 'date'
+
+
 class ProjectUpdateForm(forms.ModelForm):
     """Form representing a ProjectUpdate."""
 
@@ -289,6 +296,10 @@ class ProjectUpdateForm(forms.ModelForm):
         'placeholder': _(u'Description'),
     }))
     language = forms.ChoiceField(choices=settings.LANGUAGES, initial='en')
+    event_date = forms.DateField(
+        initial=datetime.datetime.now().date(),
+        widget=DateInput(),
+    )
     photo = forms.ImageField(required=False,
                              widget=forms.FileInput(attrs={
                                  'class': 'input',
@@ -331,8 +342,9 @@ class ProjectUpdateForm(forms.ModelForm):
 
     class Meta:
         model = ProjectUpdate
-        fields = ('title', 'text', 'language', 'photo', 'photo_caption', 'photo_credit',
-                  'video', 'video_caption', 'video_credit')
+        fields = ('title', 'text', 'language', 'event_date', 'photo',
+                  'photo_caption', 'photo_credit', 'video', 'video_caption',
+                  'video_credit')
 
     def clean_video(self):
         data = self.cleaned_data['video']

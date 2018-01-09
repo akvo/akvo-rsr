@@ -1228,7 +1228,7 @@ class ProjectUpdateLocationInline(admin.StackedInline):
 
 class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.ModelAdmin):
 
-    list_display = ('project', 'user', 'text', 'language', 'created_at', 'img',)
+    list_display = ('title', 'project', 'user', 'text', 'language', 'event_date', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
     inlines = (ProjectUpdateLocationInline,)
@@ -1240,7 +1240,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
             'fields': ('project', 'user', 'update_method', 'created_at', 'last_modified_at'),
         }),
         (_(u'Content'), {
-            'fields': ('title', 'text', 'language', ),
+            'fields': ('title', 'text', 'language', 'event_date', ),
         }),
         (_(u'Image and video'), {
             'fields': ('photo', 'photo_caption', 'photo_credit', 'video', 'video_caption',
@@ -1256,6 +1256,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
         """
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+
 
 admin.site.register(get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 

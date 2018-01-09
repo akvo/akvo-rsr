@@ -28,7 +28,7 @@ class Command(BaseCommand):
         for project in Project.objects.all().prefetch_related(
             Prefetch(
                 "project_updates",
-                queryset=ProjectUpdate.objects.all().order_by('-created_at'),
+                queryset=ProjectUpdate.objects.all(),
             )
         ):
             try:

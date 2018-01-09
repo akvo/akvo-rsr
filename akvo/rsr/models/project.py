@@ -785,18 +785,9 @@ class Project(TimestampsMixin, models.Model):
                 ['Sanitation']
             )
 
-        def latest_update_fields(self):
-            # used in project_list view
-            # cheating slightly, counting on that both id and time are the largest
-            # for the latest update
-            return self.annotate(
-                latest_update_id=Max('project_updates__id'),
-                latest_update_date=Max('project_updates__created_at')
-            )
-
         def all_updates(self):
             """Return ProjectUpdates for self, newest first."""
-            return ProjectUpdate.objects.filter(project__in=self).distinct().order_by('-id')
+            return ProjectUpdate.objects.filter(project__in=self).distinct()
 
         # The following 8 methods return organisation querysets
         def _partners(self, role=None):
@@ -855,7 +846,7 @@ class Project(TimestampsMixin, models.Model):
 
     def updates_desc(self):
         """ProjectUpdate list for self, newest first."""
-        return self.project_updates.select_related('user').order_by('-created_at')
+        return self.project_updates.select_related('user')
 
     def latest_update(self):
         """

@@ -246,7 +246,7 @@ def main(request, project_id, template="project_main.html"):
     check_project_viewing_permissions(request.user, project)
 
     # Updates
-    updates = project.project_updates.prefetch_related('user').order_by('-created_at')
+    updates = project.project_updates.prefetch_related('user')
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
@@ -424,6 +424,9 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
             pass
     else:
         updateform = form_class(instance=update)
+
+    for field in updateform:
+        print field
 
     context = {
         'project': project,

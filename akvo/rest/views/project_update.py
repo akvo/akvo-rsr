@@ -33,6 +33,7 @@ class ProjectUpdateViewSet(PublicProjectViewSet):
         We don't use the default filter_fields, because Up filters on
         datetime for last_modified_at, and they only support a date, not datetime.
         """
+        # FIXME: Add filter for event_date?
         created_at__gt = validate_date(self.request.query_params.get('created_at__gt', None))
         if created_at__gt is not None:
             self.queryset = self.queryset.filter(created_at__gt=created_at__gt)
