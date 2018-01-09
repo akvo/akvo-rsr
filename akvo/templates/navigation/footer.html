@@ -10,6 +10,18 @@
                     <li><a href="https://github.com/akvo/akvo-rsr">{% trans 'Source code' %}</a></li>
                     <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">{% trans 'API' %}</a></li>
                     <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">{% trans 'Terms of service' %}</a></li>
+                            <li class="navUpdate">
+          <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
+             href="{% url 'update-directory' %}">
+            {% trans "All updates" %}
+          </a>
+        </li>
+        <li class="navOrganisation">
+          <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
+             href="{% url 'organisation-directory' %}">
+            {% trans "All organisations" %}
+          </a>
+        </li>
                     <li class="akvoLogo"><a href="http://akvo.org">Akvo.org</a></li>
                     <li class="uiFeedback">
                         {# Javascript will generate the support feedback email, as to reduce spam #}
@@ -19,6 +31,61 @@
                         {# </a> #}
                         <script type="text/javascript">document.write(String.fromCharCode(60,47,97,62));</script>
                     </li>
+                    {% if not rsr_page or not rsr_page.google_translation %}
+        <li>
+          <div class="dropdown langDropdown">
+            <button class=" dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
+              <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              {% get_language_info_list for LANGUAGES as languages %}
+              {% for language in languages %}
+                {% if not language.code == LANGUAGE_CODE %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+        {% else %}
+          <li>
+            <div class="dropdown langDropdown">
+              <div id="google_translate_element"></div>
+              <script type="text/javascript">
+                function googleTranslateElementInit() {
+                  new google.translate.TranslateElement(
+                    {
+                      pageLanguage: '{{LANGUAGE_CODE}}',
+                      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                      autoDisplay: false,
+                      multilanguagePage: true
+                    },
+                    'google_translate_element');
+                }
+                </script>
+                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                <script type="text/javascript">
+                  /* Add class name to body when translation widget clicked so we can pad to create
+                  ** room for translation bar. */
+                  var el = document.querySelector('#google_translate_element');
+                  el.addEventListener('click', function() {
+                    var body = document.querySelector('body');
+                    if (body.classList) {
+                      if (!body.classList.contains('translationBarActive')) {
+                        body.classList.add('translationBarActive');
+                      }
+                    } else {
+                      var classList = body.getAttribute('class');
+                      if (classList.indexOf('translationBarActive') === -1) {
+                        body.setAttribute('class', classList + ' ' + 'translationBarActive');
+                      }
+                    }
+                  });
+                </script>
+            </div>
+          </li>
+        {% endif %}
                 </ul>
             </div>
         </div>
