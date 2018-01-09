@@ -54,7 +54,12 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         related_name='approved_period_updates', blank=True, null=True,
     )
     # TODO: migrate value field to DecimalField
-    value = ValidXMLCharField(_(u'quantitative indicator value'), max_length=300, blank=True, null=True)
+    # value = ValidXMLCharField(_(u'quantitative indicator value'), max_length=300, blank=True, null=True)
+    value = models.DecimalField(
+        _('quantitative indicator value'),
+        max_digits=20, decimal_places=2,
+        null=True, blank=True,
+    )
     narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
