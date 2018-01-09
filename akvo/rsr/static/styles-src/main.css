@@ -403,17 +403,6 @@ nav.navbar-fixed-top {
         @media only screen and (max-width: 1024px) {
           nav.navbar-fixed-top .navbar-nav li a.active {
             background: rgba(202, 129, 66, 0.1); } }
-      nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
-        margin-right: 15px;
-        background-color: transparent;
-        border-color: transparent; }
-        nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn:hover {
-          color: #ca8142; }
-        @media only screen and (max-width: 1024px) {
-          nav.navbar-fixed-top .navbar-nav li a.addUpdateBtn {
-            width: 95%;
-            padding: 10px 5%;
-            margin: 0 auto 10px auto; } }
     nav.navbar-fixed-top .navbar-nav li.navProject .active {
       background: rgba(169, 104, 48, 0.05);
       border: thin solid rgba(202, 129, 66, 0);
@@ -434,46 +423,6 @@ nav.navbar-fixed-top {
         -webkit-border-radius: 3px;
         border-radius: 3px;
         color: #ca8142; }
-    nav.navbar-fixed-top .navbar-nav li.navUpdate .active {
-      background: rgba(169, 104, 48, 0.05);
-      border: thin solid rgba(202, 129, 66, 0);
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      color: #ca8142;
-      -moz-transition: all 0.2s linear;
-      -o-transition: all 0.2s linear;
-      -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear; }
-      nav.navbar-fixed-top .navbar-nav li.navUpdate .active:hover {
-        background: rgba(169, 104, 48, 0);
-        border: thin solid rgba(202, 129, 66, 0);
-        -moz-border-radius: 3px;
-        -o-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        color: #ca8142; }
-    nav.navbar-fixed-top .navbar-nav li.navOrganisation .active {
-      background: rgba(169, 104, 48, 0.05);
-      border: thin solid rgba(202, 129, 66, 0);
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      color: #ca8142;
-      -moz-transition: all 0.2s linear;
-      -o-transition: all 0.2s linear;
-      -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear; }
-      nav.navbar-fixed-top .navbar-nav li.navOrganisation .active:hover {
-        background: rgba(169, 104, 48, 0);
-        border: thin solid rgba(202, 129, 66, 0);
-        -moz-border-radius: 3px;
-        -o-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        color: #ca8142; }
   nav.navbar-fixed-top .navbar-nav.navbar-right li {
     margin-right: 2px; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
@@ -482,47 +431,54 @@ nav.navbar-fixed-top {
     nav.navbar-fixed-top .navbar-nav.navbar-right li a {
       padding-left: 5px;
       padding-right: 5px; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle {
+        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+        display: inline-block;
+        padding: 5px 8px;
+        background-color: #2c2a74;
+        color: #2c2a74 !important;
+        text-decoration: none;
+        cursor: pointer;
+        -moz-border-radius: 3px;
+        -o-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        text-align: center;
+        background-color: transparent;
+        color: #2c2a74 !important;
+        border: 1px solid #2c2a74;
+        box-shadow: none !important;
+        margin-top: 10px; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
+          background: #1e1c4f;
+          color: white; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
+          cursor: not-allowed;
+          background-color: rgba(128, 128, 128, 0.1) !important;
+          color: rgba(128, 128, 128, 0.4) !important;
+          border: 1px solid transparent; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
+            cursor: not-allowed;
+            background-color: rgba(128, 128, 128, 0.1) !important;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid transparent; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
+          color: white !important;
+          border: none;
+          border: 1px solid #428bca;
+          background-color: #428bca; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
+          cursor: not-allowed;
+          color: rgba(128, 128, 128, 0.4) !important;
+          border: 1px solid rgba(128, 128, 128, 0.4); }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
+            cursor: not-allowed;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid rgba(128, 128, 128, 0.4); }
       @media only screen and (max-width: 1024px) {
         nav.navbar-fixed-top .navbar-nav.navbar-right li a {
           padding: 10px 15px; } }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li a.active {
-        background: rgba(202, 129, 66, 0.1);
-        color: #ca8142; }
-    nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
-      margin-top: 10px; }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .btn-default {
-        border-color: transparent; }
-      @media only screen and (max-width: 768px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown {
-          padding-left: 15px;
-          padding-right: 15px; } }
-      @media only screen and (max-width: 1024px) and (min-width: 768px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
-          position: initial;
-          float: none; } }
-      @media only screen and (max-width: 768px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu {
-          background-color: #FFF;
-          border: 1px solid rgba(0, 0, 0, 0.14902);
-          box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-          -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a {
-            color: #428bca;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            border: thin solid transparent; }
-            nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a:hover {
-              color: #ca8142; }
-            nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
-              color: #72742a;
-              font-weight: bold;
-              background: rgba(202, 129, 66, 0.1);
-              -moz-border-radius: 3px;
-              -o-border-radius: 3px;
-              -webkit-border-radius: 3px;
-              border-radius: 3px; } }
-      @media only screen and (max-width: 768px) and (max-width: 1024px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li .langDropdown .dropdown-menu a.active {
-          background: rgba(202, 129, 66, 0.1); } }
 
 .navbar .active {
   color: #2A6297; }
@@ -979,11 +935,7 @@ footer .navbar {
     padding-top: 10px;
     padding-bottom: 10px; }
     footer .navbar #footer-body ul.nav li a {
-      display: block;
-      -moz-border-radius: 5px;
-      -o-border-radius: 5px;
-      -webkit-border-radius: 5px;
-      border-radius: 5px; }
+      display: block; }
       footer .navbar #footer-body ul.nav li a:hover {
         background-color: rgba(255, 255, 255, 0.1); }
       footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
@@ -1004,6 +956,44 @@ footer .navbar {
             footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
               background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
               background-size: 80px auto; } }
+    footer .navbar #footer-body ul.nav li div.langDropdown {
+      margin-top: 10px;
+      background-color: transparent !important;
+      border-color: transparent !important; }
+      footer .navbar #footer-body ul.nav li div.langDropdown .btn-default {
+        background-color: transparent !important;
+        border-color: transparent; }
+      @media only screen and (max-width: 768px) {
+        footer .navbar #footer-body ul.nav li div.langDropdown {
+          padding-left: 15px;
+          padding-right: 15px; } }
+      @media only screen and (max-width: 1024px) and (min-width: 768px) {
+        footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
+          position: initial;
+          float: none; } }
+      @media only screen and (max-width: 768px) {
+        footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
+          background-color: transparent !important;
+          border: 1px solid rgba(0, 0, 0, 0.14902);
+          box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+          -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+          footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a {
+            color: #428bca;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            border: thin solid transparent; }
+            footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a:hover {
+              color: #ca8142; }
+            footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a.active {
+              color: #72742a;
+              font-weight: bold;
+              background: rgba(202, 129, 66, 0.1);
+              -moz-border-radius: 3px;
+              -o-border-radius: 3px;
+              -webkit-border-radius: 3px;
+              border-radius: 3px; } }
+      @media only screen and (max-width: 768px) and (max-width: 1024px) {
+        footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a.active {
+          background: rgba(202, 129, 66, 0.1); } }
 
 #footer-body {
   text-align: center;

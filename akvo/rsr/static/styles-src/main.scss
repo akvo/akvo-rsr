@@ -427,51 +427,8 @@ nav.navbar-fixed-top {
                         background: rgba($anchorLinkHover, 0.1);
                     }
                 }
-                &.addUpdateBtn {
-                    margin-right: 15px;
-                    background-color: transparent;
-                    border-color: transparent;
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                    @include responsive(tablets) {
-                        width: 95%;
-                        padding: 10px 5%;
-                        margin: 0 auto 10px auto;
-                    }
-                }
             }
             &.navProject {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
-            &.navUpdate {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
-            &.navOrganisation {
                 .active {
                     background: darken(rgba($anchorLinkHover, 0.05), 10%);
                     border: thin solid rgba($anchorLinkHover, 0);
@@ -499,54 +456,16 @@ nav.navbar-fixed-top {
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
+                    &.areaToggle {
+                        @include btnOutline($akvoPurple, $akvoPurple);
+                        box-shadow: none !important;
+                        margin-top: 10px;
+                    }
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
 
-                    &.active {
-                        background: rgba($anchorLinkHover, 0.1);
-                        color: $anchorLinkHover;
-                    }
-                }
-                .langDropdown {
-                    .btn-default {
-                        border-color: transparent;
-                    }
-                    margin-top: 10px;
-                    @include responsive(small-max-screens) {
-                        padding-left: 15px;
-                        padding-right: 15px;
-                    }
-
-                    .dropdown-menu {
-                        @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
-                            position: initial;
-                            float: none;
-                        }
-                        @include responsive(small-max-screens) {
-                            background-color: #FFF;
-                            border: 1px solid rgba(0, 0, 0, 0.14902);
-                            box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-                            -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-                            a {
-                                color: $anchorLink;
-                                font-family: $titleFont;
-                                border: thin solid transparent;
-                                &:hover {
-                                    color: $anchorLinkHover;
-                                }
-                                &.active {
-                                    color: complement($rsrBlue);
-                                    font-weight: bold;
-                                    background: rgba($anchorLinkHover, 0.1);
-                                    @include border-radius(3px);
-                                    @include responsive(tablets) {
-                                        background: rgba($anchorLinkHover, 0.1);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    &.active {}
                 }
             }
         }
@@ -1119,7 +1038,6 @@ footer {
                     padding-bottom: 10px;
                     a {
                         display: block;
-                        @include border-radius(5px);
                         &:hover {
                             background-color: rgba(white, 0.1);
                         }
@@ -1141,6 +1059,49 @@ footer {
                                 &:hover {
                                     background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
                                     background-size: 80px auto;
+                                }
+                            }
+                        }
+                    }
+                    div.langDropdown {
+                        margin-top: 10px;
+                        background-color: transparent !important;
+                        border-color: transparent !important;
+                        .btn-default {
+                            background-color: transparent !important;
+                            border-color: transparent;
+                        }
+                        @include responsive(small-max-screens) {
+                            padding-left: 15px;
+                            padding-right: 15px;
+                        }
+
+                        .dropdown-menu {
+                            @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
+                                position: initial;
+                                float: none;
+                            }
+                            @include responsive(small-max-screens) {
+                                background-color: transparent !important;
+                                border: 1px solid rgba(0, 0, 0, 0.14902);
+                                box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                a {
+                                    color: $anchorLink;
+                                    font-family: $titleFont;
+                                    border: thin solid transparent;
+                                    &:hover {
+                                        color: $anchorLinkHover;
+                                    }
+                                    &.active {
+                                        color: complement($rsrBlue);
+                                        font-weight: bold;
+                                        background: rgba($anchorLinkHover, 0.1);
+                                        @include border-radius(3px);
+                                        @include responsive(tablets) {
+                                            background: rgba($anchorLinkHover, 0.1);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -4428,7 +4389,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
