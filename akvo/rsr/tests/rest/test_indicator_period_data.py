@@ -132,7 +132,7 @@ class IndicatorPeriodDataTestCase(TestCase):
                                data=json.dumps(data),
                                content_type='application/json')
         period_data_id = json.loads(response.content)['id']
-        value = 10
+        value = "10.00"
 
         # When
         data.update({'value': value})
@@ -142,7 +142,7 @@ class IndicatorPeriodDataTestCase(TestCase):
 
         # Then
         self.assertEqual(200, response.status_code)
-        self.assertEqual(str(value), json.loads(response.content)['value'])
+        self.assertEqual(value, json.loads(response.content)['value'])
 
     def test_create_disaggregated_update(self):
         """Test that creating an update with disaggregation works."""
@@ -150,7 +150,7 @@ class IndicatorPeriodDataTestCase(TestCase):
         # Given
         self.c.login(username=self.username, password=self.password)
         url = '/rest/v1/indicator_period_data_framework/?format=json'
-        value = 10
+        value = "10.00"
         disaggregations = [{
             'dimension': self.dimension.id,
             'value': value
@@ -170,7 +170,7 @@ class IndicatorPeriodDataTestCase(TestCase):
         # Then
         self.assertEqual(201, response.status_code)
         content = json.loads(response.content)
-        self.assertEqual(str(value), content['value'])
+        self.assertEqual(value, content['value'])
         self.assertEqual(1, len(content['disaggregations']))
         self.assertEqual(float(value), float(content['disaggregations'][0]['value']))
 
@@ -198,7 +198,7 @@ class IndicatorPeriodDataTestCase(TestCase):
                                data=json.dumps(data),
                                content_type='application/json')
         update_id = json.loads(response.content)['id']
-        new_value = 12
+        new_value = "12.00"
 
         # When
         disaggregations[0]['value'] = data['value'] = new_value
@@ -209,7 +209,7 @@ class IndicatorPeriodDataTestCase(TestCase):
         # Then
         self.assertEqual(200, response.status_code)
         content = json.loads(response.content)
-        self.assertEqual(str(new_value), content['value'])
+        self.assertEqual(new_value, content['value'])
         self.assertEqual(1, len(content['disaggregations']))
         self.assertEqual(float(new_value), float(content['disaggregations'][0]['value']))
 

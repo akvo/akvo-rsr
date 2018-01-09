@@ -304,18 +304,18 @@ class ResultsFrameworkTestCase(TestCase):
 
         indicator_update.status = "A"
         indicator_update.save()
-        self.assertEqual(self.period.actual_value, "10")
+        self.assertEqual(self.period.actual_value, "10.00")
 
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
             value="5"
         )
-        self.assertEqual(self.period.actual_value, "10")
+        self.assertEqual(self.period.actual_value, "10.00")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(self.period.actual_value, "15")
+        self.assertEqual(self.period.actual_value, "15.00")
 
     def test_edit_and_delete_updates(self):
         """
@@ -330,11 +330,11 @@ class ResultsFrameworkTestCase(TestCase):
 
         indicator_update.status = "A"
         indicator_update.save()
-        self.assertEqual(self.period.actual_value, "10")
+        self.assertEqual(self.period.actual_value, "10.00")
 
         indicator_update.value = "11"
         indicator_update.save()
-        self.assertEqual(self.period.actual_value, "11")
+        self.assertEqual(self.period.actual_value, "11.00")
 
         indicator_update.delete()
         self.assertEqual(self.period.actual_value, "0")
@@ -353,7 +353,7 @@ class ResultsFrameworkTestCase(TestCase):
 
         indicator_update.status = "A"
         indicator_update.save()
-        self.assertEqual(self.period.actual_value, "10")
+        self.assertEqual(self.period.actual_value, "10.00")
 
         child_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.child_project).first()
@@ -361,17 +361,17 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            value="15"
+            value=15
         )
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(child_period.actual_value, "15")
+        self.assertEqual(child_period.actual_value, "15.00")
 
         parent_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.parent_project).first()
-        self.assertEqual(parent_period.actual_value, "25")
+        self.assertEqual(parent_period.actual_value, "25.00")
 
     def test_update_without_aggregations(self):
         """
@@ -381,13 +381,13 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update = IndicatorPeriodData.objects.create(
             user=self.user,
             period=self.period,
-            value="10"
+            value=10
         )
         self.assertEqual(self.period.actual_value, "")
 
         indicator_update.status = "A"
         indicator_update.save()
-        self.assertEqual(self.period.actual_value, "10")
+        self.assertEqual(self.period.actual_value, "10.00")
 
         parent_project = self.period.indicator.result.project
         parent_project.aggregate_children = False
@@ -399,17 +399,17 @@ class ResultsFrameworkTestCase(TestCase):
         indicator_update_2 = IndicatorPeriodData.objects.create(
             user=self.user,
             period=child_period,
-            value="15"
+            value=15
         )
         self.assertEqual(child_period.actual_value, "")
 
         indicator_update_2.status = "A"
         indicator_update_2.save()
-        self.assertEqual(child_period.actual_value, "15")
+        self.assertEqual(child_period.actual_value, "15.00")
 
         parent_period = IndicatorPeriod.objects.filter(
             indicator__result__project=self.parent_project).first()
-        self.assertEqual(parent_period.actual_value, "10")
+        self.assertEqual(parent_period.actual_value, "10.00")
 
     def test_updates_with_percentages(self):
         """

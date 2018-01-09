@@ -219,10 +219,7 @@ class PermissionFilteringTestCase(TestCase):
             if isinstance(obj, type) and issubclass(obj, PublicProjectViewSet)
         ]
         view_set_models = {view_set.queryset.model for view_set in view_sets}
-        # HACK: Some models are not associated with Projects, we exclude
-        # checking for permissions for them...
-        exception_models = {M.OrganisationIndicatorLabel}
-        missing_models = view_set_models - set(model_map.keys()) - exception_models
+        missing_models = view_set_models - set(model_map.keys())
         assert not missing_models, '{} are missing from model_map'.format(missing_models)
 
     @staticmethod
