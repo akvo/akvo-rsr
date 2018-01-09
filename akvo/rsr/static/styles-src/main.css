@@ -2838,15 +2838,15 @@ main {
     overflow-x: hidden;
     overflow-y: scroll; }
   main article.shared {
-    width: 70%;
+    width: 50%;
     overflow-x: hidden;
     overflow-y: scroll; }
   main aside.closed {
     display: none; }
   main aside.open {
-    width: calc(30% - 5px);
+    width: calc(50% - 10px);
     padding: 0px 5px 5px 5px;
-    display: flex;
+    display: block;
     margin-top: 5px;
     margin-left: 5px;
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -2963,8 +2963,6 @@ main.results-page {
       position: relative; }
       .results .reports article textarea {
         min-height: 340px; }
-      .results .reports article .react-mde {
-        min-height: 380px; }
       .results .reports article .Select {
         margin: 15px auto 25px; }
       .results .reports article > button {
@@ -3469,6 +3467,10 @@ main.results-page {
         pointer-events: none !important; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody ul {
       list-style-type: none; }
+    .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .markdown {
+      cursor: auto; }
+      .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates div.UpdateBody .markdown ul {
+        list-style-type: initial; }
     .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates.rc-collapse-item-active {
       border: 1px solid white !important;
       background: rgba(255, 255, 255, 0.5) !important; }
@@ -3518,9 +3520,12 @@ main.results-page {
     display: none; }
   .update-container.qualitativeUpdate textarea#narrative {
     min-height: 220px !important; }
+  .update-container.qualitativeUpdate .react-mde {
+    min-height: 250px; }
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
     z-index: 999;
-    top: -42px !important; }
+    top: -20px !important;
+    right: -5px !important; }
   .update-container.quantitativeUpdate .targetLabel {
     margin-left: 25px; }
     .update-container.quantitativeUpdate .targetLabel + div {
@@ -3539,13 +3544,12 @@ main.results-page {
       margin-bottom: 10px;
       display: none; }
     .update-container .update-entry-container.edit-in-progress div {
-      width: 100%;
-      position: relative; }
+      width: 100%; }
       .update-container .update-entry-container.edit-in-progress div label[for="actualValue"] + button {
         position: absolute;
         font-weight: bold;
-        top: -35px;
-        right: 0;
+        top: -20px;
+        right: -5px;
         background: transparent; }
     .update-container .update-entry-container.edit-in-progress .disaggregationFields {
       width: 100%;

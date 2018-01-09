@@ -9,7 +9,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {Markdown} from 'react-showdown';
 import {
     _,
     collapseId,
@@ -35,9 +34,11 @@ import {
 } from "../actions/ui-actions";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
-import ReactMde, { ReactMdeCommands } from 'react-mde';
-import 'react-mde/lib/styles/css/react-mde-all.css';
 import Results from "./Results";
+
+// Markdown
+import {Markdown} from 'react-showdown';
+import {MarkdownEditor} from "./common";
 
 // Alerts
 import AlertFactory from "./alertContainer"
@@ -91,8 +92,7 @@ export class ReportForm extends React.Component {
         const {text, category} = report;
         const alertName = 'ReportAlert';
         this.state = {
-            reactMde: {text, selection: null},
-            show_editor: true,
+            text: text,
             alertName,
             category,
         };
@@ -102,7 +102,6 @@ export class ReportForm extends React.Component {
         this.createSummary = this.createSummary.bind(this);
         this.deleteSummary = this.deleteSummary.bind(this);
         this.summaryToBackend = this.summaryToBackend.bind(this);
-        this.toggleEditorPreview = this.toggleEditorPreview.bind(this);
     }
 
     componentDidMount() {
@@ -135,7 +134,7 @@ export class ReportForm extends React.Component {
     }
 
     createSummary(published) {
-        const {reactMde: {text}, category} = this.state;
+        const {text, category} = this.state;
         const summary = Object.assign({}, this.props.report);
         Object.assign(summary, {text, category});
         if (published) {summary.published = published};
@@ -177,11 +176,9 @@ export class ReportForm extends React.Component {
         }
     }
 
-    toggleEditorPreview(){ this.setState({show_editor: !this.state.show_editor}); }
-
     render() {
         const {categories, reports, report} = this.props;
-        const setText = (reactMde) => {this.setState({reactMde})};
+        const setText = (text) => {this.setState({text: text})};
         const setCategory = (category) => {this.setState({category: category.id})};
         const reportedCategories = new Set(reports.map((report)=>{return report.category}));
         const categoryOptions = categories
@@ -190,8 +187,7 @@ export class ReportForm extends React.Component {
             .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
         const reportCategory = categories.objects[this.state.category];
         const disableDelete = report.id === 'new';
-        const disableSave = (reportCategory === undefined || !this.state.reactMde.text);
-        const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
+        const disableSave = (reportCategory === undefined || !this.state.text);
         return (
             <div>
                 <h2>{displayDate(report.period_start)} - {displayDate(report.period_end)}</h2>
@@ -205,14 +201,7 @@ export class ReportForm extends React.Component {
                             placeholder={_("select_category")}
                             searchable={false}
                             clearable={false}/>
-                    <ReactMde value={this.state.reactMde}
-                              visibility={{
-                                  textarea: this.state.show_editor,
-                                  toolbar: this.state.show_editor,
-                                  preview: !this.state.show_editor,
-                              }}
-                              onChange={setText}
-                              commands={ReactMdeCommands.getDefaultCommands()}/>
+                    <MarkdownEditor text={this.state.text} onChange={setText}/>
                     <div className="menuAction">
                         <button className="btn btn-xs btn-delete deleteBtn" onClick={this.deleteSummary} disabled={disableDelete}>
                             {_("delete")}
@@ -223,9 +212,6 @@ export class ReportForm extends React.Component {
                         </button>
                         <button className="btn btn-xs btn-default" onClick={this.saveSummary} disabled={disableSave}>
                             {_("save")}
-                        </button>
-                        <button className="btn btn-xs btn-default" onClick={this.toggleEditorPreview} disabled={disableSave}>
-                            {previewButtonText}
                         </button>
                     </div>
                 </article>

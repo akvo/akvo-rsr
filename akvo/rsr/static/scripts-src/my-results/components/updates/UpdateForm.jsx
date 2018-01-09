@@ -47,6 +47,7 @@ import AlertFactory from "../alertContainer"
 import {
     FileReaderInput,
     ToggleButton,
+    MarkdownEditor
 } from '../common';
 
 import Comments from "../Comments";
@@ -208,27 +209,51 @@ QuantitativeActualValueInput.propTypes = {
     isPercentage: PropTypes.bool.isRequired,
 };
 
+class QualitativeActualValueInput extends React.Component {
+    constructor(props) {
+        super(props);
+        const {narrative} = this.props.update;
+        this.state = {
+            text: narrative,
+        };
+    }
 
-const QualitativeActualValueInput = ({update, onClose, onChange, hideTarget}) => {
-    return (
-        <div className="">
-            <div>
-                {hideTarget ?
-                    <label htmlFor="actualValue">{_('narrative_reporting')}</label>
-                :
-                    <label htmlFor="actualValue">{_('actual')}</label>
+    render () {
+        const {update, onClose, onChange, hideTarget} = this.props;
+        const editorChange = (text) => {
+            // HACK: Create fake event
+            const e = {
+                preventDefault: () => {},
+                target: {
+                    id: "narrative",
+                    value: text
                 }
-                <ToggleButton onClick={onClose} label="X"
-                              className="btn btn-default btn-xs"/>
-                <textarea className="form-control"
-                          id="narrative"
-                          value={update.narrative}
-                          onChange={onChange}
-                          placeholder={_('input_placeholder')}>
-                </textarea>
+            }
+            onChange(e);
+        }
+        const previewButtonText = this.state.show_editor ? _("preview") : _("edit");
+        const textAreaProps = {
+            id: "narrative",
+            className: "form-control",
+            placeholder: _('input_placeholder')
+        }
+        return (
+            <div className="">
+                <div>
+                    {hideTarget ?
+                     <label htmlFor="actualValue">{_('narrative_reporting')}</label>
+                     :
+                     <label htmlFor="actualValue">{_('actual')}</label>
+                    }
+                    <ToggleButton onClick={onClose} label="X"
+                                  className="btn btn-default btn-xs"/>
+                    <MarkdownEditor textAreaProps={textAreaProps}
+                                    text={update.narrative}
+                                    onChange={editorChange} />
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 };
 QualitativeActualValueInput.propTypes = {
     update: PropTypes.object.isRequired,
@@ -403,6 +428,8 @@ const UpdateActionButton = ({action, updateActions, icon, disabled}) => {
         [c.UPDATE_ACTION_SUBMIT]: _('submit_for_approval'),
         [c.UPDATE_ACTION_RETURN]: _('return_for_revision'),
         [c.UPDATE_ACTION_APPROVE]: _('approve'),
+        [c.UPDATE_ACTION_PREVIEW]: _('preview'),
+        [c.UPDATE_ACTION_EDIT]: _('edit'),
     };
     return (
         <li role="presentation" className={action}>
@@ -431,7 +458,7 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
         return c.UPDATE_BUTTONS[role][updateStatus].map(
             action => {
                 let disabled = action !== c.UPDATE_ACTION_SAVE &&  action !== c.UPDATE_ACTION_DELETE ||
-                    action === c.UPDATE_ACTION_SAVE && !hasComment;
+                               action === c.UPDATE_ACTION_SAVE && !hasComment;
                 switch (measure) {
                     case c.MEASURE_UNIT: {
                         disabled = disabled && !(update.value !== null && update.value !== "");
@@ -457,10 +484,8 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
                                            icon={icon}
                                            updateActions={updateActions}
                                            disabled={disabled}/>
-            }
-        )
+            })
     }
-
     const role = user.isMEManager ? c.ROLE_ME_MANAGER : c.ROLE_PROJECT_EDITOR;
     const icon = changing ? <i className="fa fa-spin fa-spinner form-button" /> : undefined;
     const actionButtons = getActionButtons(role, update.status, icon);
@@ -472,7 +497,7 @@ const UpdateFormButtons = ({user, update, measure, changing, updateActions}) => 
             </ul>
         </div>
     )
-};
+}
 UpdateFormButtons.propTypes = {
     user: PropTypes.object.isRequired,
     update: PropTypes.object.isRequired,
@@ -934,12 +959,27 @@ export default class UpdateForm extends React.Component {
     updateActionsHandler(e) {
         //The id of the button is used to indicate the action taken
         const action = e.target.id;
-        if (action === c.UPDATE_ACTION_DELETE) {
-            this.deleteUpdate();
-        } else {
-            this.saveUpdate(action);
-        }
+        switch (action) {
+            case c.UPDATE_ACTION_DELETE: {
+                this.deleteUpdate();
+                break;
+            }
 
+            case c.UPDATE_ACTION_EDIT: {
+                updateMarkdownPreviewToggle();
+                break;
+            }
+
+            case c.UPDATE_ACTION_PREVIEW: {
+                updateMarkdownPreviewToggle();
+                break;
+            }
+
+            default: {
+                console.log("save", action, "ACTION....");
+                this.saveUpdate(action);
+            }
+        }
     }
 
     saveUpdate(action) {

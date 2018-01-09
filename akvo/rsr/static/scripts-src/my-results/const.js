@@ -24,6 +24,8 @@ export const
     UPDATE_ACTION_SUBMIT = 'submitUpdate',
     UPDATE_ACTION_RETURN = 'returnUpdate',
     UPDATE_ACTION_APPROVE = 'approveUpdate',
+    UPDATE_ACTION_PREVIEW = 'previewUpdate',
+    UPDATE_ACTION_EDIT = 'editUpdate',
 
     // matrix determining what buttons to show depending on user role and update state
     UPDATE_BUTTONS = {
