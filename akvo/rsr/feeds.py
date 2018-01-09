@@ -208,7 +208,7 @@ class ProjectUpdates(UpdateFeed):
 
     def items(self, obj):
         # Limited to 25 items to prevent gateway timeouts.
-        return ProjectUpdate.objects.filter(project__id=obj.id).order_by('-id')[:25]
+        return ProjectUpdate.objects.filter(project__id=obj.id)[:25]
 
 
 class OrganisationUpdates(UpdateFeed):
@@ -256,7 +256,7 @@ class AllProjectUpdates(UpdateFeed):
 
     def items(self):
         # Limited to 25 items to prevent gateway timeouts.
-        return ProjectUpdate.objects.select_related().order_by('-id')[:25]
+        return ProjectUpdate.objects.all()[:25]
 
     def item_title(self, item):
         return _(

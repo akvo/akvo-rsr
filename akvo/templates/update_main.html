@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-md-7 col-xs-12">
                     <h2><i class="fa fa-camera-retro"></i> {{update.title}}</h2>
-                    <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{update.created_at|date:"d-M-Y"}}</div>
+                    <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{update.event_date|date:"d-M-Y"}}</div>
                     <div class="post-info media">
                         <div class="media-body">
                             <p>
@@ -35,7 +35,7 @@
 
                         {% if update.photo %}
                         <figure>
-                            <a href="{{update.photo.url}}" target="_blank">{% img update 600 450 update.title %}</a>                          
+                            <a href="{{update.photo.url}}" target="_blank">{% img update 600 450 update.title %}</a>
                           <figcaption>
                             {% if update.photo_caption %}
                                 <h6>"{{ update.photo_caption }}"{% if update.photo_credit %}</h6>{% endif %}
@@ -74,7 +74,7 @@
                                     {% endwith %}
                                 {% endif %}
                             </div>
-                            <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.created_at|date:"d-M-Y"}}</div>
+                            <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.event_date|date:"d-M-Y"}}</div>
                         </div>
                     </div>
                 {% endfor %}
