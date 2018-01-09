@@ -29,29 +29,23 @@ class IndicatorPeriod(models.Model):
         _(u'period end'), null=True, blank=True,
         help_text=_(u'The end date of the reporting period for this indicator.')
     )
-    # target_value = ValidXMLCharField(
-    #     _(u'target value'), blank=True, max_length=50,
-    #     help_text=_(u'The target value for the above period.')
-    # )
-    target_value = models.DecimalField(
-        _(u'target value'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
+    target_value = ValidXMLCharField(
+        _(u'target value'), blank=True, max_length=50,
         help_text=_(u'The target value for the above period.')
     )
     target_comment = ValidXMLCharField(
         _(u'target value comment'), blank=True, max_length=2000,
         help_text=_(u'Here you can provide extra information on the target value, if needed.')
     )
-    # actual_value = ValidXMLCharField(
-    #     _(u'actual value'), blank=True, max_length=50,
-    #     help_text=_(u'A record of the achieved result for this period.')
-    # )
-    # actual_comment = ValidXMLCharField(
-    #     _(u'actual value comment'), blank=True, max_length=2000,
-    #     help_text=_(u'Here you can provide extra information on the actual value, if needed '
-    #                 u'(for instance, why the actual value differs from the target value).')
-    # )
+    actual_value = ValidXMLCharField(
+        _(u'actual value'), blank=True, max_length=50,
+        help_text=_(u'A record of the achieved result for this period.')
+    )
+    actual_comment = ValidXMLCharField(
+        _(u'actual value comment'), blank=True, max_length=2000,
+        help_text=_(u'Here you can provide extra information on the actual value, if needed '
+                    u'(for instance, why the actual value differs from the target value).')
+    )
     numerator = models.DecimalField(
         _(u'numerator for indicator'),
         max_digits=20, decimal_places=2,
@@ -76,16 +70,16 @@ class IndicatorPeriod(models.Model):
         else:
             period_unicode += u' - %s' % _(u'No end date')
 
-        # if self.actual_value or self.target_value:
-        #     period_unicode += u' ('
-        #
-        #     if self.actual_value and self.target_value:
-        #         period_unicode += u'actual: %s / target: %s)' % (unicode(self.actual_value),
-        #                                                          unicode(self.target_value))
-        #     elif self.actual_value:
-        #         period_unicode += u'actual: %s)' % unicode(self.actual_value)
-        #     else:
-        #         period_unicode += u'target: %s)' % unicode(self.target_value)
+        if self.actual_value or self.target_value:
+            period_unicode += u' ('
+
+            if self.actual_value and self.target_value:
+                period_unicode += u'actual: %s / target: %s)' % (unicode(self.actual_value),
+                                                                 unicode(self.target_value))
+            elif self.actual_value:
+                period_unicode += u'actual: %s)' % unicode(self.actual_value)
+            else:
+                period_unicode += u'target: %s)' % unicode(self.target_value)
 
         return period_unicode
 

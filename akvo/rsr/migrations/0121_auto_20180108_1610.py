@@ -16,24 +16,6 @@ class Migration(migrations.Migration):
             options={'ordering': ['period_start', 'period_end'], 'verbose_name': 'indicator period', 'verbose_name_plural': 'indicator periods'},
         ),
         migrations.RemoveField(
-            model_name='indicator',
-            name='baseline_value',
-        ),
-        migrations.RenameField(
-            model_name='indicator',
-            old_name='new_baseline_value',
-            new_name='baseline_value'
-        ),
-        migrations.RemoveField(
-            model_name='indicatorperiod',
-            name='target_value',
-        ),
-        migrations.RenameField(
-            model_name='indicatorperiod',
-            old_name='new_target_value',
-            new_name='target_value'
-        ),
-        migrations.RemoveField(
             model_name='indicatorperioddata',
             name='value',
         ),
