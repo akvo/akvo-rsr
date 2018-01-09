@@ -71,20 +71,20 @@ class PeriodActualValueTestCase(TestCase):
         actual_value = PeriodActualValue.objects.get(period=period)
         self.assertEquals(actual_value.value, 17)
 
-    def test_actual_value_with_two_updates_but_only_one_numeric(self):
-        # Given
-        period = self.period
-        user = self.user
-        approved = IndicatorPeriodData.STATUS_APPROVED_CODE
-
-        # When
-        IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value="17")
-        IndicatorPeriodData.objects.create(period=period, user=user, status=approved,
-                                           value="All the things!")
-
-        # Then
-        actual_value = PeriodActualValue.objects.get(period=period)
-        self.assertEquals(actual_value.value, 17)
+    # def test_actual_value_with_two_updates_but_only_one_numeric(self):
+    #     # Given
+    #     period = self.period
+    #     user = self.user
+    #     approved = IndicatorPeriodData.STATUS_APPROVED_CODE
+    #
+    #     # When
+    #     IndicatorPeriodData.objects.create(period=period, user=user, status=approved, value="17")
+    #     IndicatorPeriodData.objects.create(period=period, user=user, status=approved,
+    #                                        value="All the things!")
+    #
+    #     # Then
+    #     actual_value = PeriodActualValue.objects.get(period=period)
+    #     self.assertEquals(actual_value.value, 17)
 
     def test_actual_value_percentages_with_two_updates(self):
         # Given

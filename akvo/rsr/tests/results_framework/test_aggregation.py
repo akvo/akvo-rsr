@@ -157,7 +157,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(increment * 2), period.actual_value)
+        self.assertEqual(Decimal(increment * 2), Decimal(period.actual_value))
 
     def test_should_aggregate_update_str_negative_data(self):
         # Given
@@ -170,8 +170,9 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(original + increment), period.actual_value)
+        self.assertEqual(Decimal(original + increment), Decimal(period.actual_value))
 
+    @unittest.skip('IndicatorPeriodData.value must be numeric')
     def test_should_replace_with_non_numeric_update_data(self):
         # Given
         value = '2'
@@ -183,7 +184,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(new_value), period.actual_value)
+        self.assertEqual(Decimal(new_value), Decimal(period.actual_value))
 
     # Single child tests
 
@@ -204,7 +205,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(child_value), period.actual_value)
+        self.assertEqual(Decimal(child_value), Decimal(period.actual_value))
 
     def test_should_not_aggregate_child_period_value(self):
         # Given
@@ -244,7 +245,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(value * 2), period.actual_value)
+        self.assertEqual(Decimal(value * 2), Decimal(period.actual_value))
 
     def test_should_not_aggregate_excluded_child_period_values(self):
         # Given
@@ -263,7 +264,7 @@ class UnitAggregationTestCase(TestCase):
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
-        self.assertEqual(unicode(value), period.actual_value)
+        self.assertEqual(Decimal(value), Decimal(period.actual_value))
 
 
 class PercentageAggregationTestCase(UnitAggregationTestCase):
