@@ -1205,6 +1205,12 @@ class UserAdmin(DjangoUserAdmin):
 admin.site.register(get_user_model(), UserAdmin)
 
 
+class NarrativeReportAdmin(admin.ModelAdmin):
+    list_display = (u'project', u'category', u'published',)
+
+admin.site.register(get_model('rsr', 'narrativereport'), NarrativeReportAdmin)
+
+
 class ProjectCommentAdmin(admin.ModelAdmin):
     list_display = ('project', 'user', 'comment', 'created_at', )
     list_filter = ('project', 'created_at', )

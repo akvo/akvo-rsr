@@ -38,6 +38,7 @@ from .internal_organisation_id import InternalOrganisationIDViewSet
 from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
+from .narrative_report import NarrativeReportViewSet
 from .organisation import OrganisationViewSet
 from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationTotalBudgetLineViewSet,
@@ -50,6 +51,7 @@ from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationTotalExpenditureViewSet,
                                   OrganisationExpenseLineViewSet)
 from .organisation_location import OrganisationLocationViewSet, MapOrganisationLocationViewSet
+from .organisation_indicator_label import OrganisationIndicatorLabelViewSet
 from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
@@ -147,12 +149,14 @@ __all__ = [
     'MapOrganisationLocationViewSet',
     'MapProjectLocationViewSet',
     'MapProjectUpdateLocationViewSet',
+    'NarrativeReportViewSet',
     'OrganisationViewSet',
     'OrganisationLocationViewSet',
     'OrganisationCountryBudgetViewSet',
     'OrganisationCountryBudgetLineViewSet',
     'OrganisationCustomFieldViewSet',
     'OrganisationExpenseLineViewSet',
+    'OrganisationIndicatorLabelViewSet',
     'OrganisationRecipientOrgBudgetViewSet',
     'OrganisationRecipientOrgBudgetLineViewSet',
     'OrganisationRegionBudgetViewSet',

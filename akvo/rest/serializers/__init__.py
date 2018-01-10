@@ -39,6 +39,7 @@ from .internal_organisation_id import InternalOrganisationIDSerializer
 from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
+from .narrative_report import NarrativeReportSerializer
 from .organisation import OrganisationSerializer, OrganisationBasicSerializer
 from .organisation_budget import (OrganisationCountryBudgetSerializer,
                                   OrganisationCountryBudgetLineSerializer,
@@ -53,6 +54,7 @@ from .organisation_budget import (OrganisationCountryBudgetSerializer,
 from .organisation_document import (OrganisationDocumentCategorySerializer,
                                     OrganisationDocumentCountrySerializer,
                                     OrganisationDocumentSerializer)
+from organisation_indicator_label import OrganisationIndicatorLabelSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     MapOrganisationLocationSerializer)
 from .partner_site import PartnerSiteSerializer
@@ -141,6 +143,7 @@ __all__ = [
     'MapOrganisationLocationSerializer',
     'MapProjectLocationSerializer',
     'MapProjectUpdateLocationSerializer',
+    'NarrativeReportSerializer',
     'OrganisationSerializer',
     'OrganisationBasicSerializer',
     'OrganisationCountryBudgetLineSerializer',
@@ -150,6 +153,7 @@ __all__ = [
     'OrganisationDocumentCountrySerializer',
     'OrganisationDocumentSerializer',
     'OrganisationExpenseLineSerializer',
+    'OrganisationIndicatorLabelSerializer',
     'OrganisationLocationSerializer',
     'OrganisationRecipientOrgBudgetLineSerializer',
     'OrganisationRecipientOrgBudgetSerializer',

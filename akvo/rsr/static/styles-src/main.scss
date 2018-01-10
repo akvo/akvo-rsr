@@ -2,6 +2,7 @@
 
             Title:   Akvo RSR v3
             Author:  Loic Sans & Gabriel Brady, akvo.org
+            LICENSE: GNU Affero General Public License
 
 /*---------------------------------------------------------------------------------*/
 
@@ -95,6 +96,12 @@ img {
     li {
         padding: 0;
     }
+}
+
+.fixed {
+    position: fixed;
+    top: 20px;
+    z-index: 99999;
 }
 
 time {
@@ -3483,7 +3490,7 @@ main {
         overflow-y: scroll;
     }
     article.shared {
-        width: 70%;
+        width: 50%;
         overflow-x: hidden;
         overflow-y: scroll;
     }
@@ -3491,9 +3498,9 @@ main {
         display: none;
     }
     aside.open {
-        width: calc(30% - 5px);
+        width: calc(50% - 10px);
         padding: 0px 5px 5px 5px;
-        display: flex;
+        display: block;
         margin-top: 5px;
         margin-left: 5px;
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -3536,6 +3543,166 @@ main.results-page {
     > button {
         display: none;
     }
+    .react-tabs {
+        ul {
+            li {
+                border-radius: 0;
+            }
+        }
+    }
+    /********************* Narrative report ***************************/
+    .reports {
+        position: relative;
+        .narrativeStatus {
+            color: $rsrGreen;
+        }
+        .narrativePeriod {
+            font-weight: bold;
+        }
+        .narrativeCount {
+            color: $newResultColor;
+        }
+        .rc-collapse {
+            margin-top: 20px;
+            .rc-collapse-item {
+                padding: 15px 5px;
+                transition: padding 0.1s ease-in;
+                &.rc-collapse-item-active {
+                    padding: 30px 5px;
+                }
+                .rc-collapse-header {
+                    div {
+                        span {
+                            &:nth-of-type(2) {
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .indicatorProgress {
+            display: none !important;
+        }
+        .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
+            display: inline-block;
+            max-width: 95%;
+            ul {
+                li:nth-of-type(3) {
+                    display: block;
+                    margin-left: 0px;
+                }
+            }
+        }
+        .rc-collapse-content-box {
+            .rc-collapse-item-active {
+                background: white !important;
+                p {
+                    padding: 0 10px;
+                }
+            }
+        }
+        h3 {
+            margin: 10px 0 20px;
+            font-size: 18px;
+        }
+        .createSummaryBtn {
+            margin-left: 15px;
+            @include button($btnColor, white);
+        }
+        h2 {
+            margin: 30px 0;
+            font-size: 20px;
+        }
+        &:after {
+            content: ".";
+            visibility: hidden;
+            display: block;
+            height: 0;
+            clear: both;
+        }
+        article {
+            float: right;
+            width: calc(50% - 10px);
+            padding: 20px 15px 25px 15px;
+            margin-top: 5px;
+            margin-left: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            overflow: scroll;
+            position: relative;
+            textarea {
+                min-height: 340px;
+            }
+            .Select {
+                margin: 15px auto 25px;
+            }
+            > button {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+            }
+            .menuAction {
+                margin-top: 10px;
+                button {
+                    background: $akvoBlack;
+                    color: white;
+                    &:first-of-type {
+                        left: 0px;
+                    }
+                    &:nth-of-type(2), &:nth-of-type(3),  &:nth-of-type(4) {
+                        float: right;
+                    }
+                    &:hover {
+                        background: $akvoPurple;
+                    }
+                    &.deleteBtn {
+                        background: $akvoTvRed !important;
+                        color: white;
+                        border-color: $akvoTvRed;
+                        &:hover {
+                            background: rgba($akvoTvRed, 0.5);
+                        }
+                    }
+                }
+            }
+        }
+        aside {
+            float: left;
+            width: 50%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            height: calc(100vh - 300px);
+            &.open {
+                .rc-collapse {
+                    margin-top: 0px;
+                    .rc-collapse-item {
+                        padding: 15px 5px;
+                        &.rc-collapse-item-active {
+                            padding: 15px 5px;
+                        }
+                        .rc-collapse-header {
+                            div {
+                                span {
+                                    &:nth-of-type(2) {
+                                        margin-left: 10px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            input[type=checkbox] {
+                display: none;
+            }
+            .updates {
+                button {
+                    display: none;
+                }
+            }
+        }
+    }
+    /**************************** end Narrative reports *************************/
     .rc-collapse {
         border-radius: 3px;
         .rc-collapse-anim-active {
@@ -4187,6 +4354,12 @@ main.results-page {
                                             list-style-type: none;
                                         }
                                         .timestamp-info-container {}
+                                        .markdown {
+                                            ul {
+                                                list-style-type: initial;
+                                            }
+                                            cursor: auto;
+                                        }
                                     }
                                 }
                                 .arrow {}
@@ -4252,7 +4425,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
@@ -4281,13 +4454,17 @@ main.results-page {
         textarea#narrative {
             min-height: 220px !important;
         }
+        .react-mde {
+            min-height: 250px;
+        }
     }
     &.quantitativeUpdate {
         .update-entry-container {
             &.edit-in-progress {
                 .closingBtn {
                     z-index: 999;
-                    top: -42px !important;
+                    top: -20px !important;
+                    right: -5px !important;
                 }
             }
         }
@@ -4317,12 +4494,11 @@ main.results-page {
             }
             div {
                 width: 100%;
-                position: relative;
                 label[for="actualValue"] + button {
                     position: absolute;
                     font-weight: bold;
-                    top: -35px;
-                    right: 0;
+                    top: -20px;
+                    right: -5px;
                     background: transparent;
                 }
             }
@@ -4497,6 +4673,7 @@ main.results-page {
 
 .periodMenuBar {
     box-sizing: border-box;
+    margin-top: 20px;
     @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
     * {
         box-sizing: border-box;

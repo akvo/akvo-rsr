@@ -55,6 +55,8 @@ import {
 
 import Comments from "../Comments"
 
+import {Markdown} from 'react-showdown';
+
 
 function displayName(user) {
     return user.last_name ?
@@ -192,8 +194,12 @@ QuantitativeUpdateBody.propTypes = {
 const UpdateNarrative =({period, update}) => {
     return (
         <ul className="valueMeta">
-            <li className="updateValue">Target: <span>{period.target_value}</span></li>
-            <li className="updateValue">Actual: <span>{update.narrative}</span></li>
+            <li className="updateValue">Target:
+                <div className="markdown"> <Markdown markup={period.target_value}/> </div>
+            </li>
+            <li className="updateValue">Actual:
+                <div className="markdown"><Markdown markup={update.narrative}/></div>
+            </li>
         </ul>
     )
 };
@@ -202,7 +208,7 @@ UpdateValue.propTypes = {
 };
 
 
-const QualitativeUpdateBody = (period, update) => {
+const QualitativeUpdateBody = ({period, update}) => {
     const {user_details, approver_details} = update;
     const approvedOn = update.status === c.UPDATE_STATUS_APPROVED ?
                        <TimestampInfo update={update}
@@ -367,7 +373,7 @@ class UpdateHeader extends React.Component {
             }
             editUpdateButton = <ToggleButton onClick={this.formToggle}
                                              className={className}
-                                             label={_('edit_indicator_value')}
+                                             label={_('edit')}
                                              disabled={updateFormDisplay !== false}/>;
         }
         return (

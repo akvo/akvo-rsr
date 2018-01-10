@@ -34,8 +34,9 @@ const uiState = {
     // part of the currently open collapse keys
     activeFilter: undefined, //indicates if a filter is currently in force
     visibleKeys: undefined,
-    [c.SELECTED_PERIODS]: [], //list if periods that are currently checked, used for bulk actions
-    [c.UPDATE_FORM_DISPLAY]: false, //list of currently open indicator update forms
+    [c.SELECTED_PERIODS]: [], //list of periods that are currently checked, used for bulk actions
+    [c.UPDATE_FORM_DISPLAY]: false, // keeping track if the indicator update form is open
+    [c.REPORT_FORM_DISPLAY]: false, // keeping track if the narrative report form is open
 };
 
 export default function uiReducer(state=uiState, action) {

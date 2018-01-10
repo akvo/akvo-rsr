@@ -24,6 +24,8 @@ export const
     UPDATE_ACTION_SUBMIT = 'submitUpdate',
     UPDATE_ACTION_RETURN = 'returnUpdate',
     UPDATE_ACTION_APPROVE = 'approveUpdate',
+    UPDATE_ACTION_PREVIEW = 'previewUpdate',
+    UPDATE_ACTION_EDIT = 'editUpdate',
 
     // matrix determining what buttons to show depending on user role and update state
     UPDATE_BUTTONS = {
@@ -62,6 +64,7 @@ export const
     OBJECTS_COMMENTS = 'comments',
     OBJECTS_DISAGGREGATIONS = 'disaggregations',
     OBJECTS_USER = 'user',
+    OBJECTS_REPORTS = 'reports',
 
     // List of the models used in the accordion, in hierarchy order
     MODELS_LIST = [
@@ -103,6 +106,7 @@ export const
     SELECTED_PERIODS = 'selectedPeriods',
     UPDATE_FORMS = 'updateForms',
     UPDATE_FORM_DISPLAY = 'updateFormDisplay', // boolean, keeping track if the update form is open
+    REPORT_FORM_DISPLAY = 'reportFormDisplay', // boolean, keeping track if the narrative report form is open
 
     // Alerts
     INITIALIZE_ALERT = 'INITIALIZE_ALERT',
@@ -160,5 +164,8 @@ export const
     // Indicator measures (Includes the proposed qualitative measure type)
     MEASURE_UNIT = "1",
     MEASURE_PERCENTAGE = "2",
-    MEASURE_QUALITATIVE = "3"
+    MEASURE_QUALITATIVE = "3",
+
+    // IUCN organisation ID. Used to determine if we hide some UI elements
+    IUCN_ORG_ID = 3257
 ;
