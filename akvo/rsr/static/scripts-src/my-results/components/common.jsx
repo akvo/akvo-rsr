@@ -234,5 +234,5 @@ MarkdownEditor.propTypes = {
     text: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     textAreaProps: PropTypes.object,
-    show_preview: PropTypes.boolean,
+    show_preview: PropTypes.bool,
 };

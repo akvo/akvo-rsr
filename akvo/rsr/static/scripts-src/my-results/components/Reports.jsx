@@ -295,8 +295,9 @@ export default class Reports extends React.Component {
         e.stopPropagation();
         console.log(period_start, period_end);
         const id = 'new';
+        const text = '';
         const {reports, project} = this.props;
-        const report = {id, period_start, period_end, project};
+        const report = {id, period_start, period_end, project, text};
         reports.objects[report.id] = report
         this.editSummary(report);
     }
