@@ -99,7 +99,7 @@ $('#id_photo').bind('change', function() {
 
     var parent = $(this).parent(),
         help_block = parent.find('.help-block'),
-        help_text = '{% trans "Please upload an image of 2 MB or less." %}';
+        help_text = '{% trans "Please upload an image of 2 MB or less."|escapejs %}';
 
     // Disable/Enable submit, add/remove error class
     if (size > (max_size * megabyte)) {
@@ -114,7 +114,7 @@ $('#id_photo').bind('change', function() {
     if (this.files.length == 0) {
         help_block.text(help_text);
     } else {
-        help_block.text(help_text + ' ' + '{% trans "Your image size: "%}' + Math.round(size/megabyte * 1000)/1000 + ' MB');
+        help_block.text(help_text + ' ' + '{% trans "Your image size: "|escapejs %}' + Math.round(size/megabyte * 1000)/1000 + ' MB');
     }
 });
 
