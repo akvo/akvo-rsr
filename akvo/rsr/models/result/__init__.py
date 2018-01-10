@@ -10,7 +10,7 @@ from .indicator_dimension import IndicatorDimension
 from .indicator_label import IndicatorLabel
 from .indicator_period import IndicatorPeriod
 from .indicator_period_actual_dimension import IndicatorPeriodActualDimension
-from .indicator_period_aggregation import PeriodActualValue
+from .indicator_period_aggregation import PeriodActualValue, PeriodDisaggregation
 from .indicator_period_actual_location import IndicatorPeriodActualLocation
 from .indicator_period_data import IndicatorPeriodData
 from .indicator_period_data_comment import IndicatorPeriodDataComment
@@ -35,5 +35,6 @@ __all__ = [
     'IndicatorReference',
     'NarrativeReport',
     'PeriodActualValue',
+    'PeriodDisaggregation',
     'Result',
 ]
