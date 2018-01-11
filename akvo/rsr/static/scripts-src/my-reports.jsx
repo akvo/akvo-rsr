@@ -83,10 +83,18 @@ function initReact() {
             return (
                 this.props.report !== null &&
                 // Ensure org/project is selected if it's a required parameter
-                (!parameter_needed(this.props.report, 'organisation') || this.props.organisation !== null) &&
-                (!parameter_needed(this.props.report, 'project') || this.props.project !== null) &&
+                (
+                    !parameter_needed(this.props.report, 'organisation') ||
+                    this.props.organisation !== null
+                ) &&
+                (
+                    !parameter_needed(this.props.report, 'project') ||
+                    this.props.project !== null
+                ) &&
                 // Ensure valid format for the report is selected
-                this.props.report.formats.map(function(x){return x.name}).indexOf(this.props.format) > -1
+                this.props.report.formats.map(
+                    function(x) {return x.name}
+                ).indexOf(this.props.format) > -1
             );
         },
 
@@ -118,7 +126,9 @@ function initReact() {
             } else {
                 return (
                     <span>
-                        <button type="button" className="btn btn-primary disabled pointerEvents" onClick={this.updateHelpText}>
+                        <button type="button"
+                                className="btn btn-primary disabled pointerEvents"
+                                onClick={this.updateHelpText}>
                             <i className="fa fa-download" /> {i18n.download_report}
                         </button>
                         {this.state.helpText &&
@@ -138,7 +148,9 @@ function initReact() {
             if (this.props.visible) {
                 return (
                     <div className="alert alert-success" role="alert">
-                        <i className="fa fa-spinner fa-spin"> </i> <strong>{i18n.generating_report}</strong> {i18n.available_shortly}
+                        <i className="fa fa-spinner fa-spin"> </i>
+                        <strong>{i18n.generating_report}</strong>
+                        {i18n.available_shortly}
                     </div>
                 );
             } else {
@@ -405,19 +417,34 @@ function initReact() {
                     );
                 });
             } else {
-                reportsData = <li><a href="#"><i className="fa fa-spin fa-spinner" /> Loading...</a></li>;
+                reportsData = <li>
+                    <a href="#"><i className="fa fa-spin fa-spinner" /> Loading...</a>
+                </li>;
             }
-            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? <span className="not-selected">{this.state.buttonText}</span> : <span>{this.state.buttonText}</span>;
+            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ?
+                <span className="not-selected">{this.state.buttonText}</span>
+            :
+                <span>{this.state.buttonText}</span>;
             var button;
             if (!this.props.downloading) {
-                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                button = <button className="btn btn-default dropdown-toggle"
+                                 type="button"
+                                 id="select-report-type"
+                                 data-toggle="dropdown"
+                                 aria-haspopup="true"
+                                 aria-expanded="true">
                             {buttonDisplay}
                             <div className="caret-indicator">
                                 <i className="fa fa-sort" />
                             </div>
                         </button>;
             } else {
-                button = <button className="btn btn-default dropdown-toggle" type="button" id="select-report-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled>
+                button = <button className="btn btn-default dropdown-toggle"
+                                 type="button" id="select-report-type"
+                                 data-toggle="dropdown"
+                                 aria-haspopup="true"
+                                 aria-expanded="true"
+                                 disabled>
                             {buttonDisplay}
                             <div className="caret-indicator">
                                 <i className="fa fa-sort" />
@@ -482,7 +509,9 @@ function initReact() {
                     if (processCallback === undefined) {
                         newState[stateKey] = JSON.parse(xmlHttp.responseText).results;
                     } else {
-                        newState[stateKey] = processCallback(JSON.parse(xmlHttp.responseText).results);
+                        newState[stateKey] = processCallback(
+                            JSON.parse(xmlHttp.responseText).results
+                        );
                     }
                     thisApp.setState(newState);
                 }

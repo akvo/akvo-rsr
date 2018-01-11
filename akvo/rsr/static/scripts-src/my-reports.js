@@ -83,10 +83,18 @@ function initReact() {
             return (
                 this.props.report !== null &&
                 // Ensure org/project is selected if it's a required parameter
-                (!parameter_needed(this.props.report, 'organisation') || this.props.organisation !== null) &&
-                (!parameter_needed(this.props.report, 'project') || this.props.project !== null) &&
+                (
+                    !parameter_needed(this.props.report, 'organisation') ||
+                    this.props.organisation !== null
+                ) &&
+                (
+                    !parameter_needed(this.props.report, 'project') ||
+                    this.props.project !== null
+                ) &&
                 // Ensure valid format for the report is selected
-                this.props.report.formats.map(function(x){return x.name}).indexOf(this.props.format) > -1
+                this.props.report.formats.map(
+                    function(x) {return x.name}
+                ).indexOf(this.props.format) > -1
             );
         },
 
@@ -118,7 +126,9 @@ function initReact() {
             } else {
                 return (
                     React.createElement("span", null, 
-                        React.createElement("button", {type: "button", className: "btn btn-primary disabled pointerEvents", onClick: this.updateHelpText}, 
+                        React.createElement("button", {type: "button", 
+                                className: "btn btn-primary disabled pointerEvents", 
+                                onClick: this.updateHelpText}, 
                             React.createElement("i", {className: "fa fa-download"}), " ", i18n.download_report
                         ), 
                         this.state.helpText &&
@@ -138,7 +148,9 @@ function initReact() {
             if (this.props.visible) {
                 return (
                     React.createElement("div", {className: "alert alert-success", role: "alert"}, 
-                        React.createElement("i", {className: "fa fa-spinner fa-spin"}, " "), " ", React.createElement("strong", null, i18n.generating_report), " ", i18n.available_shortly
+                        React.createElement("i", {className: "fa fa-spinner fa-spin"}, " "), 
+                        React.createElement("strong", null, i18n.generating_report), 
+                        i18n.available_shortly
                     )
                 );
             } else {
@@ -405,19 +417,34 @@ function initReact() {
                     );
                 });
             } else {
-                reportsData = React.createElement("li", null, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " Loading..."));
+                reportsData = React.createElement("li", null, 
+                    React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " Loading...")
+                );
             }
-            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? React.createElement("span", {className: "not-selected"}, this.state.buttonText) : React.createElement("span", null, this.state.buttonText);
+            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ?
+                React.createElement("span", {className: "not-selected"}, this.state.buttonText)
+            :
+                React.createElement("span", null, this.state.buttonText);
             var button;
             if (!this.props.downloading) {
-                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", type: "button", id: "select-report-type", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true"}, 
+                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", 
+                                 type: "button", 
+                                 id: "select-report-type", 
+                                 "data-toggle": "dropdown", 
+                                 "aria-haspopup": "true", 
+                                 "aria-expanded": "true"}, 
                             buttonDisplay, 
                             React.createElement("div", {className: "caret-indicator"}, 
                                 React.createElement("i", {className: "fa fa-sort"})
                             )
                         );
             } else {
-                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", type: "button", id: "select-report-type", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true", disabled: true}, 
+                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", 
+                                 type: "button", id: "select-report-type", 
+                                 "data-toggle": "dropdown", 
+                                 "aria-haspopup": "true", 
+                                 "aria-expanded": "true", 
+                                 disabled: true}, 
                             buttonDisplay, 
                             React.createElement("div", {className: "caret-indicator"}, 
                                 React.createElement("i", {className: "fa fa-sort"})
@@ -482,7 +509,9 @@ function initReact() {
                     if (processCallback === undefined) {
                         newState[stateKey] = JSON.parse(xmlHttp.responseText).results;
                     } else {
-                        newState[stateKey] = processCallback(JSON.parse(xmlHttp.responseText).results);
+                        newState[stateKey] = processCallback(
+                            JSON.parse(xmlHttp.responseText).results
+                        );
                     }
                     thisApp.setState(newState);
                 }
