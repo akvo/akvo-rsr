@@ -13,13 +13,13 @@ def set_event_date(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0119_auto_20180104_1310'),
+        ('rsr', '0121_auto_20180108_1610'),
     ]
 
     operations = [
         migrations.AlterModelOptions(
             name='projectupdate',
-            options={'ordering': ['-event_date', '-id'], 'get_latest_by': 'created_at', 'verbose_name': 'project update', 'verbose_name_plural': 'project updates'},
+            options={'ordering': ['-event_date', '-id'], 'get_latest_by': 'event_date', 'verbose_name': 'project update', 'verbose_name_plural': 'project updates'},
         ),
         migrations.AddField(
             model_name='projectupdate',
