@@ -63,17 +63,16 @@ class UserManagementTestCase(TestCase):
         group = Group.objects.get(name='Users')
         email = 'rsr-tests-email@akvo.org'
         user = self._create_user(email=email, password=self.user_password)
-        new_group = Group.objects.get(name='Admins')
         Employment.objects.create(user=user, organisation_id=self.org.id, group=group)
 
+        # When
+        new_group = Group.objects.get(name='Admins')
         user_data = json.dumps({
             'organisation': self.org.id,
             'group': new_group.id,
             'email': email
         })
         data = {'user_data': user_data}
-
-        # When
         response = self.c.post('/rest/v1/invite_user/?format=json', data)
 
         # Then
