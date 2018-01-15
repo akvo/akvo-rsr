@@ -410,6 +410,8 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         raise PermissionDenied
 
     if request.method == 'POST':
+        if not allow_update:
+            raise PermissionDenied
         updateform = form_class(request.POST, request.FILES, instance=update)
         if updateform.is_valid():
             if update:
