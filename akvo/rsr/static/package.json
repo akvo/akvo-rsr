@@ -56,6 +56,7 @@
     "ignore-styles": "^5.0.1",
     "json-loader": "^0.5.7",
     "mocha": "^3.4.2",
+    "prettier": "^1.10.2",
     "react-test-renderer": "^15.6.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.14.0"

@@ -1,16 +1,11 @@
 #!/bin/sh
-#
-# Called by git-commit with no arguments. The hook should
-# exit with non-zero status after issuing an appropriate message if
-# it wants to stop the commit.
+jsfiles=$(git diff --cached --name-only --diff-filter=ACM "*.js" "*.jsx" | tr '\n' ' ')
+[ -z "$jsfiles" ] && exit 0
 
+# Prettify all staged .js files
+echo "$jsfiles" | xargs ./akvo/rsr/static/node_modules/.bin/prettier --write
 
+# Add back the modified/prettified files to staging
+echo "$jsfiles" | xargs git add
 
-# --- Command line
-
-#echo 'In update pre-commit'
-
-exec python `pwd`'/akvo/scripts/asset_manager/packer.py'
-
-# --- Finished
 exit 0
