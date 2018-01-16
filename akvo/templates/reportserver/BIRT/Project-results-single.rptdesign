@@ -135,8 +135,8 @@ function akvoDateRange(date1, date2){
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:1234/rsr</property>
-            <property name="odaUser">rsr</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YnlwMGNndE1SQU13Y2JubzIxY3hWYm14cFM0TkxSaThuQkNScklNZQ==</encrypted-property>
+            <property name="odaUser">rsr_readonly</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">cmVtb25zdHJhdGluZ3JvZGVudA==</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -4172,6 +4172,7 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 </cell>
             </row>
             <row id="325">
+                <property name="verticalAlign">top</property>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
