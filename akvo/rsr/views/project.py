@@ -425,9 +425,6 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     else:
         updateform = form_class(instance=update)
 
-    for field in updateform:
-        print field
-
     context = {
         'project': project,
         'updates': updates,
