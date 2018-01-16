@@ -326,8 +326,8 @@ class ProjectUpdateForm(forms.ModelForm):
         'maxlength': '75',
         'placeholder': _(u'Video credit'),
     }))
-    latitude = forms.FloatField(widget=forms.HiddenInput())
-    longitude = forms.FloatField(widget=forms.HiddenInput())
+    latitude = forms.FloatField(initial=0, widget=forms.HiddenInput())
+    longitude = forms.FloatField(initial=0, widget=forms.HiddenInput())
 
     class Meta:
         model = ProjectUpdate
