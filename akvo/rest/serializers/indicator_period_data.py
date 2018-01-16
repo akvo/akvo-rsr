@@ -73,7 +73,14 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             )
             serializer.update(disaggregation_instance, serializer.validated_data)
 
-        return instance
+        return instance._meta.model.objects.select_related(
+            'period',
+            'user',
+            'approved_by',
+        ).prefetch_related(
+            'comments',
+            'disaggregations',
+        ).get(id=instance.id)
 
     def is_valid(self, raise_exception=False):
         # HACK to allow nested posting...
