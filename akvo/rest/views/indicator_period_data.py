@@ -41,7 +41,6 @@ class IndicatorPeriodDataFrameworkViewSet(PublicProjectViewSet):
         'approved_by',
     ).prefetch_related(
         'comments',
-        'comments__user',
         'disaggregations',
     ).all()
     serializer_class = IndicatorPeriodDataFrameworkSerializer
