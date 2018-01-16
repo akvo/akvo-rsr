@@ -3,6 +3,7 @@
     <property name="author">Akvo Foundation</property>
     <property name="comments">Last changed in RSR issue 2905</property>
     <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <text-property name="title">Results report 2018-01-16</text-property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -4170,11 +4171,41 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                     </text-data>
                 </cell>
             </row>
+            <row id="325">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">params["StartDate"].value.toString() == "1900-01-01"&#13;
+&amp;&amp;&#13;
+params["EndDate"].value.toString() == "2099-12-31"</expression>
+                    </structure>
+                </list-property>
+                <cell id="326">
+                    <label id="330">
+                        <text-property name="text">Selected periods:</text-property>
+                    </label>
+                </cell>
+                <cell id="327">
+                    <text-data id="331">
+                        <property name="textAlign">center</property>
+                        <expression name="valueExpr">Formatter.format(params["StartDate"].value, "d-MMM-yyyy")</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
+                </cell>
+                <cell id="328">
+                    <label id="333">
+                        <text-property name="text"> -- </text-property>
+                    </label>
+                </cell>
+                <cell id="329">
+                    <text-data id="332">
+                        <property name="textAlign">center</property>
+                        <expression name="valueExpr">Formatter.format(params["EndDate"].value, "d-MMM-yyyy")</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
+                </cell>
+            </row>
         </grid>
-        <text-data id="324">
-            <expression name="valueExpr">"Selected are periods with dates: " + params["StartDate"].value + " -- " + params["EndDate"].value</expression>
-            <property name="contentType">html</property>
-        </text-data>
         <grid id="123">
             <property name="backgroundColor">#EDEFE1</property>
             <property name="marginTop">8pt</property>
