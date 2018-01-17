@@ -21,11 +21,10 @@
         updateFormDisplay: Boolean determining the visibility of the update form
  */
 
-import update from 'immutability-helper';
+import update from "immutability-helper";
 
-import * as c from "../const"
-import {distinct} from "../utils";
-
+import * as c from "../const";
+import { distinct } from "../utils";
 
 const uiState = {
     allFetched: false, // allFetched becomes true when all models have been fetched from the backend
@@ -35,97 +34,98 @@ const uiState = {
     activeFilter: undefined, //indicates if a filter is currently in force
     visibleKeys: undefined,
     [c.SELECTED_PERIODS]: [], //list of periods that are currently checked, used for bulk actions
-    [c.UPDATE_FORM_DISPLAY]: false, // keeping track if the indicator update form is open
-    [c.REPORT_FORM_DISPLAY]: false, // keeping track if the narrative report form is open
+    [c.SELECTED_UPDATES]: [], //list of updates that are currently checked, used for bulk actions
+    [c.UPDATE_FORM_DISPLAY]: false, //list of currently open indicator update forms
+    [c.REPORT_FORM_DISPLAY]: false // keeping track if the narrative report form is open
 };
 
-export default function uiReducer(state=uiState, action) {
-    switch(action.type) {
-
+export default function uiReducer(state = uiState, action) {
+    switch (action.type) {
         case c.UI_ID_RESET: {
-            const {element} = action.payload;
-            return {...state, [element]: []};
+            const { element } = action.payload;
+            return { ...state, [element]: [] };
         }
 
         case c.UI_ID_TOGGLE: {
-            const {element, id} = action.payload;
+            const { element, id } = action.payload;
             // Make a set of the state[element] array
             let newState = new Set(state[element]);
             if (newState.has(id)) {
-                newState.delete(id)
+                newState.delete(id);
             } else {
-                newState.add(id)
+                newState.add(id);
             }
             // Put back the values as an array.
-            return {...state, [element]: [...newState]};
+            return { ...state, [element]: [...newState] };
         }
 
         case c.UI_ID_TRUE: {
-            const {element, id} = action.payload;
-            return {...state, [element]: [...new Set(state[element]).add(id)]};
+            const { element, id } = action.payload;
+            return { ...state, [element]: [...new Set(state[element]).add(id)] };
         }
 
         case c.UI_ID_FALSE: {
-            const {element, id} = action.payload;
+            const { element, id } = action.payload;
             //Set.delete() doesn't return the modified set, se we have to create the set and only
             // then call delete(). BAH!
             const elementSet = new Set(state[element]);
             elementSet.delete(id);
-            return {...state, [element]: [...elementSet]};
+            return { ...state, [element]: [...elementSet] };
         }
 
         case c.UI_FLAG_TOGGLE: {
-            const {element, id} = action.payload;
-            return state[element] ?
-                {...state, [element]: false}
-            :
-                {...state, [element]: id};
+            const { element, id } = action.payload;
+            return state[element] ? { ...state, [element]: false } : { ...state, [element]: id };
         }
 
         case c.UI_FLAG_TRUE: {
-            const {element, id} = action.payload;
-            return {...state, [element]: id};
+            const { element, id } = action.payload;
+            return { ...state, [element]: id };
         }
 
         case c.UI_FLAG_FALSE: {
-            const {element} = action.payload;
-            return {...state, [element]: false};
+            const { element } = action.payload;
+            return { ...state, [element]: false };
         }
 
         case c.UI_HIDE: {
-            const {mode} = action.payload;
-            return {...state, hide: mode};
+            const { mode } = action.payload;
+            return { ...state, hide: mode };
         }
 
         case c.ALL_MODELS_FETCHED: {
-            return {...state, allFetched: true};
+            return { ...state, allFetched: true };
         }
 
         case c.SET_PERIOD_DATES: {
-            return {...state, periodDates: action.payload};
+            return { ...state, periodDates: action.payload };
         }
 
         case c.UI_FILTER_BUTTON_ACTIVE: {
-            const {button} = action.payload;
-            return {...state, activeFilter: button};
+            const { button } = action.payload;
+            return { ...state, activeFilter: button };
         }
 
         case c.KEYS_COPY_TO_VISIBLE: {
-            const {keys} = action.payload;
-            return {...state, visibleKeys: keys};
+            const { keys } = action.payload;
+            return { ...state, visibleKeys: keys };
         }
 
         case c.UPDATE_MODEL_FULFILLED: {
-            const {collapseId, object} = action.payload;
+            const { collapseId, object } = action.payload;
             // if collapseId isn't supplied we don't have to update keys
             const visibleKeys = state.visibleKeys;
             if (collapseId && visibleKeys) {
                 const key = object.id.toString();
                 if (visibleKeys[collapseId]) {
-                    const newVisibleKeys = distinct(update(visibleKeys[collapseId], {$push: [key]}));
-                    return update(state, {visibleKeys: {$merge: {[collapseId]: newVisibleKeys}}});
+                    const newVisibleKeys = distinct(
+                        update(visibleKeys[collapseId], { $push: [key] })
+                    );
+                    return update(state, {
+                        visibleKeys: { $merge: { [collapseId]: newVisibleKeys } }
+                    });
                 } else {
-                    return update(state, {visibleKeys: {$merge: {[collapseId]: [key]}}});
+                    return update(state, { visibleKeys: { $merge: { [collapseId]: [key] } } });
                 }
             }
             return state;
@@ -133,12 +133,11 @@ export default function uiReducer(state=uiState, action) {
 
         case c.UPDATE_MODEL_DELETE_FULFILLED: {
             // make sure the update form is closed when the update is deleted
-            const {model} = action.payload;
+            const { model } = action.payload;
             if (model === c.OBJECTS_UPDATES) {
-                return {...state, [c.UPDATE_FORM_DISPLAY]: false};
+                return { ...state, [c.UPDATE_FORM_DISPLAY]: false };
             }
         }
-
     }
     return state;
 }
