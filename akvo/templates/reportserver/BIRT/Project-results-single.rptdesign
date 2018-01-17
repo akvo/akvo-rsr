@@ -3856,6 +3856,7 @@ reportContext.setGlobalVariable("show_bars",true);
         </text-data>
         <grid id="299">
             <property name="marginLeft">8pt</property>
+            <property name="height">1.8020833333333333in</property>
             <property name="width">3.7083333333333335in</property>
             <property name="dataSet">Project</property>
             <list-property name="boundDataColumns">
@@ -4172,7 +4173,6 @@ reportContext.setGlobalVariable("planned_end",this.getRowData().getExpressionVal
                 </cell>
             </row>
             <row id="325">
-                <property name="verticalAlign">top</property>
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
@@ -4194,9 +4194,10 @@ params["EndDate"].value.toString() == "2099-12-31"</expression>
                     </text-data>
                 </cell>
                 <cell id="328">
-                    <label id="333">
-                        <text-property name="text"> -- </text-property>
-                    </label>
+                    <text-data id="336">
+                        <expression name="valueExpr">" -- "</expression>
+                        <property name="contentType">html</property>
+                    </text-data>
                 </cell>
                 <cell id="329">
                     <text-data id="332">
