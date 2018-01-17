@@ -22,6 +22,7 @@ PROJECT_UPDATE_XML = """
   <user>1</user>
   <photo_credit>Da credz</photo_credit>
   <language>en</language>
+  <event_date>2018-01-16</event_date>
   <photo_caption>Da caption</photo_caption>
   <title>Foo</title>
   <project>4</project>
