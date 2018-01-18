@@ -21,6 +21,9 @@ class Command(BaseCommand):
         make_option('-k', '--keyword',
                     action='store', dest='keyword',
                     help='Keyword to use for filtering Indicator Periods'),
+        make_option('-o', '--organisation',
+                    action='store', dest='organisation',
+                    help='Organisation to use for filtering Indicator Periods'),
     )
 
     def handle(self, *args, **options):
@@ -28,21 +31,30 @@ class Command(BaseCommand):
         # parse options
         verbosity = int(options['verbosity'])
         keyword = options['keyword']
+        organisation = options['organisation']
+        filter_by = keyword or organisation
 
-        if not len(args) == 1 or args[0].lower() not in ('lock', 'unlock') or not keyword:
-            print 'Usage: {} {} {} --keyword KEYWORD'.format(sys.argv[0], sys.argv[1], self.args)
+        if not len(args) == 1 or args[0].lower() not in ('lock', 'unlock') or not filter_by:
+            print 'Usage: {} {} {} <-k KEYWORD|-o ORG_ID>'.format(
+                sys.argv[0], sys.argv[1], self.args
+            )
             sys.exit(1)
 
         action = args[0].lower()
 
-        try:
-            keyword = Keyword.objects.get(label=keyword)
-        except Keyword.DoesNotExist:
-            print 'Keyword does not exist'
-            sys.exit(1)
+        if keyword is not None:
+            try:
+                keyword = Keyword.objects.get(label=keyword)
+            except Keyword.DoesNotExist:
+                print 'Keyword does not exist'
+                sys.exit(1)
+            else:
+                projects = Project.objects.filter(keywords__in=[keyword])
+        else:
+            projects = Project.objects.filter(partners__exact=organisation)
 
-        projects = Project.objects.filter(keywords__in=[keyword])
-        indicator_periods = IndicatorPeriod.objects.filter(indicator__result__project_id__in=projects)
+        print 'Modifying indicator periods on {} projects'.format(projects.count())
+        indicator_periods = IndicatorPeriod.objects.filter(indicator__result__project__in=projects)
         count = indicator_periods.count()
         if count == 0:
             print 'No indicator periods found to {}'.format(action)
