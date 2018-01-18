@@ -175,6 +175,11 @@ class Organisation(TimestampsMixin, models.Model):
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
+    use_single_period_workflow = models.BooleanField(
+        default=False,
+        help_text=_(u'Enable if the Organisation uses a single indicator period for the entire project,'
+                    u'and makes updates on it.'),
+    )
     # TODO: Should be removed
     can_become_reporting = models.BooleanField(
         _(u'Reportable'),

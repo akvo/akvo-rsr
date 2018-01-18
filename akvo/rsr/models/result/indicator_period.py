@@ -84,6 +84,11 @@ class IndicatorPeriod(models.Model):
         return period_unicode
 
     def save(self, *args, **kwargs):
+
+        # Create an unlocked period, if using single period workflow
+        if not self.pk and self.locked and self.indicator.result.project.using_single_period():
+            self.locked = False
+
         actual_value_changed = False
 
         if (

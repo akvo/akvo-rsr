@@ -184,7 +184,7 @@ export default class FilterBar extends React.Component {
 
         const heading = page.mode && page.mode.public ? "View" : _("indicator_reporting");
 
-        const using_single_update = page.project && page.project.using_single_update;
+        const using_single_period = page.project && page.project.using_single_period;
 
         const public_view = page.mode && page.mode.public;
 
@@ -242,7 +242,7 @@ export default class FilterBar extends React.Component {
                                         <h5>{_("indicator_reporting")}</h5>
                                         <div className="col-xs-12">
                                             <ToggleButton
-                                                hidden={using_single_update}
+                                                hidden={using_single_period}
                                                 onClick={callbacks.needReporting}
                                                 label={needReportingLabel}
                                                 disabled={buttonDisabled}
@@ -259,7 +259,7 @@ export default class FilterBar extends React.Component {
                                                 )}
                                             />
                                             <ToggleButton
-                                                hidden={using_single_update}
+                                                hidden={using_single_period}
                                                 onClick={callbacks.showApproved}
                                                 label={approvedUpdateLabel}
                                                 disabled={buttonDisabled}
@@ -272,11 +272,11 @@ export default class FilterBar extends React.Component {
                                 </div>
                                 <div className={"periodBulkAct col-sm-6"}>
                                     <div className={"row"}>
-                                        <h5 hidden={using_single_update}>
+                                        <h5 hidden={using_single_period}>
                                             {" "}
                                             {_("filter_periods")}{" "}
                                         </h5>
-                                        <div hidden={using_single_update} className="col-xs-6">
+                                        <div hidden={using_single_period} className="col-xs-6">
                                             <Select
                                                 options={selectOptions}
                                                 value={this.state.selectedOption}
@@ -291,7 +291,7 @@ export default class FilterBar extends React.Component {
                                             />
                                         </div>
                                         <PeriodLockingButtons
-                                            hidden={using_single_update}
+                                            hidden={using_single_period}
                                             user={this.props.user}
                                             disabled={buttonDisabled}
                                         />
