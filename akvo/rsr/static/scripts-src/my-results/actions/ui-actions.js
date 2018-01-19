@@ -5,78 +5,63 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
-import * as c from "../const"
-import store from "../store"
-import {
-    closeNodes,
-    displayDate,
-    distinct,
-    openNodes,
-    setHash,
-} from "../utils"
-
+import * as c from "../const";
+import store from "../store";
+import { closeNodes, displayDate, distinct, openNodes, setHash } from "../utils";
 
 export function periodSelectReset() {
     store.dispatch({
         type: c.UI_ID_RESET,
-        payload: {element: c.SELECTED_PERIODS}
-    })
+        payload: { element: c.SELECTED_PERIODS }
+    });
 }
-
 
 export function periodSelectToggle(id) {
     store.dispatch({
         type: c.UI_ID_TOGGLE,
-        payload: {element: c.SELECTED_PERIODS, id: id}
-    })
+        payload: { element: c.SELECTED_PERIODS, id: id }
+    });
 }
-
 
 export function periodSelectCheck(id) {
     store.dispatch({
         type: UI_ID_TRUE,
-        payload: {element: c.SELECTED_PERIODS, id: id}
-    })
+        payload: { element: c.SELECTED_PERIODS, id: id }
+    });
 }
-
 
 export function updateFormToggle(id) {
     store.dispatch({
         type: c.UI_FLAG_TOGGLE,
-        payload: {element: c.UPDATE_FORM_DISPLAY, id}
-    })
+        payload: { element: c.UPDATE_FORM_DISPLAY, id }
+    });
 }
-
 
 export function updateFormOpen(id) {
     store.dispatch({
         type: c.UI_FLAG_TRUE,
-        payload: {element: c.UPDATE_FORM_DISPLAY, id}
-    })
+        payload: { element: c.UPDATE_FORM_DISPLAY, id }
+    });
 }
-
 
 export function updateFormClose() {
     store.dispatch({
         type: c.UI_FLAG_FALSE,
-        payload: {element: c.UPDATE_FORM_DISPLAY}
+        payload: { element: c.UPDATE_FORM_DISPLAY }
     });
 }
-
 
 export function reportFormToggle(id) {
     store.dispatch({
         type: c.UI_FLAG_TOGGLE,
-        payload: {element: c.REPORT_FORM_DISPLAY, id}
+        payload: { element: c.REPORT_FORM_DISPLAY, id }
     });
 }
-
 
 export function activateToggleAll() {
     // Have we fetched all models? Include current user info too.
     const allFetched = c.MODELS_LIST.concat([c.OBJECTS_USER]).every(
-        (model) => store.getState().models[model].fetched
+        model => store.getState().models[model].fetched
     );
     if (allFetched) {
         store.dispatch({
@@ -86,60 +71,53 @@ export function activateToggleAll() {
     }
 }
 
-
 function checkSelected(element, ids) {
-    ids.map((id) => {
+    ids.map(id => {
         store.dispatch({
             type: c.UI_ID_TRUE,
-            payload: {element, id}
-        })
-    })
+            payload: { element, id }
+        });
+    });
 }
-
 
 export function uiHideMode(mode) {
     store.dispatch({
         type: c.UI_HIDE,
-        payload: {mode}
-    })
+        payload: { mode }
+    });
 }
-
 
 export function activateFilterCSS(button) {
     store.dispatch({
         type: c.UI_FILTER_BUTTON_ACTIVE,
-        payload: {button}
-    })
+        payload: { button }
+    });
 }
-
 
 export function deactivateFilter() {
     store.dispatch({
         type: c.UI_FILTER_BUTTON_ACTIVE,
-        payload: {button: undefined}
-    })
+        payload: { button: undefined }
+    });
 }
-
 
 export function noHide() {
     uiHideMode(false);
     deactivateFilter();
 }
 
-
-export function showUpdates(updateIds,openForm=false,collapse=false) {
+export function showUpdates(updateIds, openForm = false, collapse = false) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
     updateFormClose();
     if (openForm) {
-        updateIds.map((id) => updateFormOpen(id));
+        updateIds.map(id => updateFormOpen(id));
     }
     openNodes(c.OBJECTS_UPDATES, updateIds, true);
     if (collapse) {
         closeNodes(c.OBJECTS_UPDATES, updateIds);
     }
 }
-
 
 function checkAndShowPeriods(ids) {
     periodSelectReset();
@@ -149,24 +127,22 @@ function checkAndShowPeriods(ids) {
     openNodes(c.OBJECTS_PERIODS, ids, true);
 }
 
-
 export function filterPeriods(periodIds) {
     periodSelectReset();
     uiHideMode(c.OBJECTS_PERIODS);
     openNodes(c.OBJECTS_PERIODS, periodIds, true);
 }
 
-
 export function selectPeriodByDates(periodStart, periodEnd) {
     const periods = store.getState().models[c.OBJECTS_PERIODS];
-    const filteredIds = periods.ids.filter((id) => (
-        periods.objects[id].period_start === periodStart &&
-        periods.objects[id].period_end === periodEnd
-    ));
+    const filteredIds = periods.ids.filter(
+        id =>
+            periods.objects[id].period_start === periodStart &&
+            periods.objects[id].period_end === periodEnd
+    );
     checkAndShowPeriods(filteredIds);
-    setHash(c.SELECTED_PERIODS + ':' + periodStart + ':' + periodEnd);
+    setHash(c.SELECTED_PERIODS + ":" + periodStart + ":" + periodEnd);
 }
-
 
 export function datePairs(ids, model_name) {
     if (ids) {
@@ -180,14 +156,13 @@ export function datePairs(ids, model_name) {
     return [];
 }
 
-
-export function selectablePeriods(periodIds, callback, showCount=true) {
+export function selectablePeriods(periodIds, callback, showCount = true) {
     // Create an array with the set of Period start and end dates. Used to select all periods with
     // common dates
     // const periodIds = store.getState().models[OBJECTS_PERIODS].ids;
     // Create a list of start/end dates as strings to be able to apply Set to the list.
     // dates = ["2016-05-01:2016-12-31", "2017-01-01:2017-06-30",...]
-    const optionStyle = {color: 'black'};
+    const optionStyle = { color: "black" };
     if (periodIds && periodIds.length > 0) {
         const pairs = datePairs(periodIds, c.OBJECTS_PERIODS);
         // Calculate how many we have of each date pair.
@@ -203,15 +178,14 @@ export function selectablePeriods(periodIds, callback, showCount=true) {
         //     {label: "1 Jan 2017 - 20 Jun 2017 (3)", value: selectPeriodByDates.bind(null, "2017-01-01", "2017-06-30")},
         //     ...
         // ]
-        const periodDates = distinct(pairs).map((datePair) => {
-            const [periodStart, periodEnd] = datePair.split(':');
+        const periodDates = distinct(pairs).map(datePair => {
+            const [periodStart, periodEnd] = datePair.split(":");
             const periodStartDisplay = displayDate(periodStart);
             const periodEndDisplay = displayDate(periodEnd);
             const dateCount = dateMap[datePair];
-            const label = showCount ?
-                `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
-            :
-                `${periodStartDisplay} - ${periodEndDisplay}`;
+            const label = showCount
+                ? `${periodStartDisplay} - ${periodEndDisplay} (${dateCount})`
+                : `${periodStartDisplay} - ${periodEndDisplay}`;
             return {
                 value: callback.bind(null, periodStart, periodEnd),
                 label
@@ -220,5 +194,5 @@ export function selectablePeriods(periodIds, callback, showCount=true) {
         // Label for the options
         return periodDates;
     }
-    return  [];
+    return [];
 }
