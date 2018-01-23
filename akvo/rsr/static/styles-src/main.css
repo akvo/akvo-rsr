@@ -486,6 +486,11 @@ nav.navbar-fixed-top {
         @media only screen and (max-width: 1024px) {
           nav.navbar-fixed-top .navbar-nav.navbar-right li a {
             padding: 10px 15px; } }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li div.userDropdown {
+        margin-top: 10px; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li div.userDropdown li a {
+          padding-right: 20px;
+          padding-left: 20px; }
 
 .navbar .active {
   color: #2A6297; }
