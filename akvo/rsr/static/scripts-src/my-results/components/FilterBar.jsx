@@ -242,7 +242,6 @@ export default class FilterBar extends React.Component {
                                         <h5>{_("indicator_reporting")}</h5>
                                         <div className="col-xs-12">
                                             <ToggleButton
-                                                hidden={using_single_period}
                                                 onClick={callbacks.needReporting}
                                                 label={needReportingLabel}
                                                 disabled={buttonDisabled}
@@ -259,7 +258,6 @@ export default class FilterBar extends React.Component {
                                                 )}
                                             />
                                             <ToggleButton
-                                                hidden={using_single_period}
                                                 onClick={callbacks.showApproved}
                                                 label={approvedUpdateLabel}
                                                 disabled={buttonDisabled}
