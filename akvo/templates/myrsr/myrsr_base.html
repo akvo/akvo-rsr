@@ -19,7 +19,6 @@
                                 {% if can_manage_projects %}
                                     <li><a href="{% url 'my_results_select' %}" class="{% if '/myrsr/results/' in current_path or '/myrsr/new_results/' in current_path %}active{% endif %}">{% trans 'My results' %}</a></li>
                                 {% endif %}
-                                <li><a href="{% url 'my_details' %}"  class="{% if '/myrsr/details/' in current_path %}active{% endif %}">{% trans 'My details' %}</a></li>
                             </ul>
                         </nav>
                     {% endwith %}
