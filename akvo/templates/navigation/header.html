@@ -1,4 +1,4 @@
-{% load i18n bootstrap3 rsr_utils %}
+{% load i18n bootstrap3 rsr_utils rules %}
 
 {% url 'index' as index_url %}
 
@@ -26,14 +26,26 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
-      <ul class="nav navbar-nav">
-        <li class="navProject hidden">
-          <a class="{% if 'projects' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'project-directory' %}">
-            {% trans "All projects" %}
-          </a>
-        </li>
-      </ul>
+        <ul class="nav navbar-nav">
+            {% has_perm 'rsr.user_management' user as can_manage_users %}
+            {% if can_manage_users %}
+            <li class="navUserManagement">
+                <a class="{% if 'user_management' in request.path %}active{% endif %}"
+                   href="{% url 'user_management' %}">
+                    {% trans "User management" %}
+                </a>
+            </li>
+            {% endif %}
+            {% has_perm 'rsr.project_management' user as can_manage_projects %}
+            {% if can_manage_projects %}
+            <li class="navIati">
+                <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
+                   href="{% url 'my_iati' %}">
+                    {% trans "IATI" %}
+                </a>
+            </li>
+            {% endif %}
+        </ul>
 
       <ul class="nav navbar-nav navbar-right">
         {% if not user.username %}
@@ -46,7 +58,7 @@
         </li>
         <li><a href="{% url 'sign_out' %}"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
-        
+
       </ul>
     </div>
   </div>
