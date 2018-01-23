@@ -51,22 +51,37 @@
         {% if not user.username %}
           <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
           <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
-        {% else %}
-        <li>
-            <a class="btn areaToggle"
-               href="{% if 'myrsr' in request.path %}
-                      {% url 'project-directory' %}
-                      {% else %}
-                      {% url 'my_rsr' %}
-                      {% endif %}">
-                {% if 'myrsr' in request.path %}
-                {% trans 'RSR Live Site' %}
-                {% else %}
-                {% trans 'RSR Admin' %}
+          {% else %}
+          <li>
+              <div class="dropdown userDropdown">
+                  <button class="btn btn-default dropdown-toggle" id="user-dropdown-menu" type="button" data-toggle="dropdown" aria-expanded="false">
+                      {{ user.get_full_name }}
+                      <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="user-dropdown-menu">
+                      <li role="presentation">
+                          <a href="{% url 'my_details' %}"></i> {% trans 'My details' %}</a>
+                      </li>
+                      <li role="presentation">
+                          <a role="menuitem" href="{% url 'sign_out' %}"></i> {% trans 'Sign out' %}</a>
+                      </li>
+                  </ul>
+              </div>
+          </li>
+          <li>
+              <a class="btn areaToggle"
+                 href="{% if 'myrsr' in request.path %}
+                        {% url 'project-directory' %}
+                        {% else %}
+                        {% url 'my_rsr' %}
+                        {% endif %}">
+                  {% if 'myrsr' in request.path %}
+                  {% trans 'RSR Live Site' %}
+                  {% else %}
+                  {% trans 'RSR Admin' %}
                 {% endif %}
             </a>
         </li>
-        <li><a href="{% url 'sign_out' %}"></i> {% trans 'Sign out' %}</a></li>
         {% endif %}
 
       </ul>
