@@ -18,10 +18,6 @@
                                 <li><a href="{% url 'my_reports' %}" class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">{% trans 'My reports' %}</a></li>
                                 {% if can_manage_projects %}
                                     <li><a href="{% url 'my_results_select' %}" class="{% if '/myrsr/results/' in current_path or '/myrsr/new_results/' in current_path %}active{% endif %}">{% trans 'My results' %}</a></li>
-                                    <li><a href="{% url 'my_iati' %}" class="{% if '/myrsr/iati/' in current_path %}active{% endif %}">{% trans "My IATI" %}</a></li>
-                                {% endif %}
-                                {% if can_change_employments %}
-                                    <li class="usrMgt"><a href="{% url 'user_management' %}" class="{% if '/myrsr/user_management/' in current_path %}active{% endif %}">{% trans 'User management' %}</a></li>
                                 {% endif %}
                                 <li><a href="{% url 'my_details' %}"  class="{% if '/myrsr/details/' in current_path %}active{% endif %}">{% trans 'My details' %}</a></li>
                             </ul>
