@@ -6,6 +6,8 @@
 
 from akvo.rsr.models.result.utils import QUALITATIVE
 
+DGIS_VALIDATION_SET_ID = 3
+
 
 def results(project):
     """
@@ -19,6 +21,8 @@ def results(project):
     """
     checks = []
     all_checks_passed = True
+
+    DGIS_PROJECT = project.validations.filter(pk=DGIS_VALIDATION_SET_ID).count() == 1
 
     for result in project.results.all():
         if not result.type:
@@ -44,11 +48,27 @@ def results(project):
                 checks.append((u'error', u'indicator (id: %s) has no title specified' %
                                str(indicator.pk)))
 
-            if (indicator.baseline_value and not indicator.baseline_year) or \
-                    (not indicator.baseline_value and indicator.baseline_year):
+            if (not indicator.baseline_value and
+                    (indicator.baseline_year or indicator.baseline_comment)):
                 all_checks_passed = False
-                checks.append((u'error', u'indicator (id: %s) baseline has no value or year '
-                                         u'specified' % str(indicator.pk)))
+                if DGIS_PROJECT:
+                    checks.append((u'warning', u'indicator (id: %s) baseline has no value '
+                                               u'specified, however the value of "N/A" has been '
+                                               u'set for the attribute' % str(indicator.pk)))
+                else:
+                    checks.append((u'error', u'indicator (id: %s) baseline has no value specified' %
+                                   str(indicator.pk)))
+
+            if (not indicator.baseline_year and
+                    (indicator.baseline_value or indicator.baseline_comment)):
+                all_checks_passed = False
+                if DGIS_PROJECT:
+                    checks.append((u'warning', u'indicator (id: %s) baseline has no year '
+                                               u'specified, however the value of "N/A" has been '
+                                               u'set for the attribute' % str(indicator.pk)))
+                else:
+                    checks.append((u'error', u'indicator (id: %s) baseline has no year specified' %
+                                   str(indicator.pk)))
 
             for reference in indicator.references.all():
                 if not reference.reference:
@@ -84,21 +104,33 @@ def results(project):
                     checks.append((u'error', u'indicator period (id: %s) has a start date '
                                              u'later than the end date' % str(period.pk)))
 
-                if not period.target_value and (period.target_comment or
-                                                period.target_locations.all() or
-                                                period.target_dimensions.all()):
-                    all_checks_passed = False
-                    checks.append((u'error', u'indicator period (id: %s) has no target value, but '
-                                             u'does have a target comment, target location(s) or '
-                                             u'target dimension(s)' % str(period.pk)))
+                if not period.target_value:
+                    if DGIS_PROJECT:
+                        all_checks_passed = False
+                        checks.append((u'warning', u'indicator period (id: %s) has no target value '
+                                                   u'specified. The value "N/A" has been set for '
+                                                   u'the target value attribute' % str(indicator.pk)))
+                    elif (period.target_comment or period.target_locations.all() or
+                          period.target_dimensions.all()):
+                        all_checks_passed = False
+                        checks.append((u'error', u'indicator period (id: %s) has no target value, '
+                                                 u'but does have a target comment, target '
+                                                 u'location(s) or target dimension(s)' %
+                                       str(period.pk)))
 
-                if not period.actual_value and (period.actual_comment or
-                                                period.actual_locations.all() or
-                                                period.actual_dimensions.all()):
-                    all_checks_passed = False
-                    checks.append((u'error', u'indicator period (id: %s) has no actual value, but '
-                                             u'does have an actual comment, actual location(s) or '
-                                             u'actual dimension(s)' % str(period.pk)))
+                if not period.actual_value:
+                    if DGIS_PROJECT:
+                        all_checks_passed = False
+                        checks.append((u'warning', u'indicator period (id: %s) has no actual value '
+                                                   u'specified. The value "N/A" has been set for '
+                                                   u'the actual value attribute' % str(indicator.pk)))
+                    elif (period.actual_comment or period.actual_locations.all() or
+                          period.actual_dimensions.all()):
+                        all_checks_passed = False
+                        checks.append((u'error', u'indicator period (id: %s) has no actual value, '
+                                                 u'but does have a actual comment, actual '
+                                                 u'location(s) or actual dimension(s)' %
+                                       str(period.pk)))
 
     if project.results.all() and all_checks_passed:
         checks.append((u'success', u'has valid result(s)'))
