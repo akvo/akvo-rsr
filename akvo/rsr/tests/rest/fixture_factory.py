@@ -209,6 +209,7 @@ class ProjectUpdateFactory(DjangoModelFactory):
     user = factory.Iterator(User.objects.all())
     title = factory.Sequence(lambda x: 'Project Update - {}'.format(x))
     locations = factory.RelatedFactory(ProjectUpdateLocationFactory, 'location_target')
+    event_date = factory.fuzzy.FuzzyDate(datetime.date(2000, 1, 1), datetime.date(2020, 1, 1))
 
 
 class ResultFactory(DjangoModelFactory):

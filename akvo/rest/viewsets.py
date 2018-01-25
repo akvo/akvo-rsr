@@ -155,7 +155,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
             queryset = public_objects
 
         # Otherwise, check to which objects the user has (change) permission
-        elif private_objects:
+        elif private_objects.exists():
             permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
             filter_ = user.get_permission_filter(permission, project_relation)
             queryset = public_objects | private_objects.filter(filter_).distinct()
