@@ -51,6 +51,8 @@ def typeahead_organisation(request):
         # Project editor - all organizations
         organisations = Organisation.objects.all()
 
+    organisations = organisations.values('id', 'name', 'long_name')
+
     return Response(
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))

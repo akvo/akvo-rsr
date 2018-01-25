@@ -4,18 +4,16 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import datetime
 
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from django_counter.models import ViewCounter
-
-from sorl.thumbnail.fields import ImageField
 from embed_video.fields import EmbedVideoField
+from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path, to_gmt
-
 from ..fields import ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
@@ -42,6 +40,11 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     text = ValidXMLTextField(_(u'text'), blank=True)
     language = ValidXMLCharField(max_length=2, choices=settings.LANGUAGES, default='en',
                                  help_text=_(u'The language of the update'))
+    event_date = models.DateField(help_text=_(u'The date of the corresponding event'),
+                                  verbose_name=_(u'event date'),
+                                  default=datetime.date.today,
+                                  blank=True,
+                                  db_index=True)
     primary_location = models.ForeignKey('ProjectUpdateLocation', null=True, blank=True,
                                          on_delete=models.SET_NULL)
     photo = ImageField(_(u'photo'), blank=True, upload_to=image_path,
@@ -66,10 +69,10 @@ class ProjectUpdate(TimestampsMixin, models.Model):
 
     class Meta:
         app_label = 'rsr'
-        get_latest_by = "created_at"
+        get_latest_by = 'event_date'
         verbose_name = _(u'project update')
         verbose_name_plural = _(u'project updates')
-        ordering = ['-id', ]
+        ordering = ['-event_date', '-id']
 
     def img(self, value=''):
         try:

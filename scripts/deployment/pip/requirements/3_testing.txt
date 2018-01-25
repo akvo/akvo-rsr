@@ -17,3 +17,8 @@ flake8==3.0.4
 
 # django_perf_rec
 django_perf_rec==2.0.0
+
+# Modules for mocking
+mock==2.0.0
+pbr==3.1.1
+funcsigs==1.0.2

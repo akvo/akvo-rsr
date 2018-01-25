@@ -267,12 +267,12 @@ const assignAttachmentURLs = (responses, update, newUpdate) => {
         if (update._file == 'delete') {
             newUpdate.file_url = newUpdate.file = '';
         } else {
-            newUpdate.file_url = responses[0].file;
+            newUpdate.file_url = newUpdate.file = responses[0].file;
         }
         if (update._photo == 'delete') {
             newUpdate.photo_url = newUpdate.photo = '';
         } else {
-            newUpdate.photo_url = responses[1].photo;
+            newUpdate.photo_url = newUpdate.photo = responses[1].photo;
         }
     }
     // if we only have one attachment we need to figure out if it's a photo or a file
@@ -283,9 +283,9 @@ const assignAttachmentURLs = (responses, update, newUpdate) => {
             newUpdate.photo_url = newUpdate.photo = '';
         } else {
             if (responses[0].photo) {
-                newUpdate.photo_url = responses[0].photo;
+                newUpdate.photo_url = newUpdate.photo = responses[0].photo;
             } else {
-                newUpdate.file_url = responses[0].file;
+                newUpdate.file_url = newUpdate.file = responses[0].file;
             }
         }
     }

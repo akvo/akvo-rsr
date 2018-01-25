@@ -98,7 +98,7 @@ def my_updates(request):
 
     :param request; A Django request.
     """
-    updates = request.user.updates().select_related('project')
+    updates = request.user.updates().select_related('project', 'user')
 
     q = request.GET.get('q')
     if q:
@@ -274,7 +274,7 @@ def project_editor(request, project_id):
             'primary_organisation',
         ).get(pk=project_id)
     except Project.DoesNotExist:
-        return Http404
+        raise Http404('No project exists with the given id.')
 
     if (not request.user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED) and not \
             (request.user.is_superuser or request.user.is_admin):

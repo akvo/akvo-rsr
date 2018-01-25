@@ -7,15 +7,12 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.signing import TimestampSigner
 from django.core.validators import validate_email
 from django.db import IntegrityError
-from django.utils.encoding import force_unicode
 
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -26,6 +23,14 @@ from akvo.utils import rsr_send_mail
 from ...rsr.models import Employment, Organisation
 
 
+def valid_email(email_address):
+    try:
+        validate_email(email_address)
+        return True
+    except ValidationError:
+        return False
+
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
 def invite_user(request):
@@ -34,21 +39,16 @@ def invite_user(request):
 
     :param request; request.data is a JSON string containing email, organisation and group data
     """
-    def valid_email(email_address):
-        try:
-            validate_email(email_address)
-            return True
-        except ValidationError:
-            return False
 
-    user, group, organisation = request.user, None, None
+    user = request.user
     if not user.has_perm('rsr.user_management'):
         return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
 
     # Check if all information is present, and if the organisation and group exist
     data, missing_data = request.data.get('user_data'), []
     if not data:
-        return Response({'missing_data': missing_data.append(['email', 'organisation', 'group'])},
+        missing_data.append('email', 'organisation', 'group')
+        return Response({'missing_data': missing_data},
                         status=status.HTTP_400_BAD_REQUEST)
     else:
         data = json.loads(data)
@@ -83,12 +83,14 @@ def invite_user(request):
     if missing_data:
         return Response({'missing_data': missing_data}, status=status.HTTP_400_BAD_REQUEST)
 
+    User = get_user_model()
+
     # Check if the user already exists, based on the email address
     try:
-        invited_user = get_user_model().objects.get(email=email)
-    except get_user_model().DoesNotExist:
+        invited_user = User.objects.get(email=email)
+    except User.DoesNotExist:
         try:
-            invited_user = get_user_model().objects.create_user(username=email, email=email)
+            invited_user = User.objects.create_user(username=email, email=email)
         except IntegrityError:
             return Response({'error': 'Trying to create a user that already exists'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -96,45 +98,40 @@ def invite_user(request):
     if invited_user.is_active:
         # For active users, we know their email address is correct so we approve their new
         # employment immediately. They'll get a mail that their employment is approved.
-        if Employment.objects.filter(user=invited_user,
-                                     organisation=organisation,
-                                     group=group).exists():
-            employment = Employment.objects.get(user=invited_user, organisation=organisation,
-                                                group=group)
-            if not employment.is_approved:
-                # Approve the employment
-                employment.approve(user)
-            else:
-                # Employment already exists and is already approved
-                return Response('Employment already exists', status=status.HTTP_200_OK)
+
+        employment, created = Employment.objects.get_or_create(
+            user=invited_user,
+            organisation=organisation,
+            group=group,
+            # NOTE: Create approved employment to avoid sending 'organisation request' mail
+            defaults=dict(is_approved=True)
+        )
+
+        if created:
+            # HACK: We force approve to log, instead of manually logging.
+            # Creating an unapproved employment, to start with, isn't ideal
+            # since this would send approval requests to a bunch of users with
+            # the permissions to approve.
+            employment.is_approved = False
+            employment.approve(user)
+
+        elif not employment.is_approved:
+            # Approve the existing unapproved employment
+            employment.approve(user)
 
         else:
-            employment = Employment.objects.create(
-                user=invited_user, organisation=organisation, group=group, is_approved=True
-            )
+            return Response('Employment already exists', status=status.HTTP_200_OK)
 
-            # Manual log the approval.
-            # We can't use approve(), since then we would first need to create an employment that
-            # is not approved, which will in turn send a 'organisation request' email.
-            LogEntry.objects.log_action(
-                user_id=user.pk,
-                content_type_id=ContentType.objects.get_for_model(Employment).pk,
-                object_id=employment.pk,
-                object_repr=force_unicode(employment),
-                action_flag=CHANGE,
-                change_message=u'Changed is_approved, outside of admin.'
-            )
     else:
-        # Inactive users, need an activation email.
-        employment, empl_created = Employment.objects.get_or_create(
-            user=invited_user, organisation=organisation
+        # Create an unapproved employment for inactive users
+        employment, _ = Employment.objects.get_or_create(
+            user=invited_user,
+            organisation=organisation,
+            group=group,
         )
-        employment.group = group
-        employment.save()
 
-        token_value = TimestampSigner().sign(email)
-        token = token_value.split(':')[2]
-        token_date = token_value.split(':')[1]
+        # Send an activation email
+        _, token_date, token = TimestampSigner().sign(email).split(':')
 
         rsr_send_mail(
             [email],

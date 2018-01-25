@@ -27,6 +27,27 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 
+
+var parameter_needed = function(report, parameter) {
+    if (report == null) {
+        return false;
+    }
+    for (var i = 0; i < report.parameters.length; i++) {
+        if (report.parameters[i] === parameter) {
+            return true;
+        }
+    }
+    return false;
+}
+
+var get_display_value = function(id, options) {
+    if (id == null) {
+        return null;
+    }
+    var values = options.filter(function(option){return option.id == id});
+    return values.length > 0 ? values[0].displayOption : null;
+}
+
 function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
@@ -59,7 +80,22 @@ function initReact() {
         },
 
         checkAllFilled: function() {
-            return this.props.report !== null && (this.props.organisation !== null || this.props.project !== null) && this.props.format !== null;
+            return (
+                this.props.report !== null &&
+                // Ensure org/project is selected if it's a required parameter
+                (
+                    !parameter_needed(this.props.report, 'organisation') ||
+                    this.props.organisation !== null
+                ) &&
+                (
+                    !parameter_needed(this.props.report, 'project') ||
+                    this.props.project !== null
+                ) &&
+                // Ensure valid format for the report is selected
+                this.props.report.formats.map(
+                    function(x) {return x.name}
+                ).indexOf(this.props.format) > -1
+            );
         },
 
         updateHelpText: function() {
@@ -90,7 +126,9 @@ function initReact() {
             } else {
                 return (
                     React.createElement("span", null, 
-                        React.createElement("button", {type: "button", className: "btn btn-primary disabled pointerEvents", onClick: this.updateHelpText}, 
+                        React.createElement("button", {type: "button", 
+                                className: "btn btn-primary disabled pointerEvents", 
+                                onClick: this.updateHelpText}, 
                             React.createElement("i", {className: "fa fa-download"}), " ", i18n.download_report
                         ), 
                         this.state.helpText &&
@@ -110,7 +148,9 @@ function initReact() {
             if (this.props.visible) {
                 return (
                     React.createElement("div", {className: "alert alert-success", role: "alert"}, 
-                        React.createElement("i", {className: "fa fa-spinner fa-spin"}, " "), " ", React.createElement("strong", null, i18n.generating_report), " ", i18n.available_shortly
+                        React.createElement("i", {className: "fa fa-spinner fa-spin"}, " "), 
+                        React.createElement("strong", null, i18n.generating_report), 
+                        i18n.available_shortly
                     )
                 );
             } else {
@@ -155,12 +195,15 @@ function initReact() {
                     return false;
                 }
 
-                var radioInput;
-                if (!thisFormatsList.props.downloading) {
-                    radioInput = React.createElement("input", {className: "format-radio", type: "radio", "aria-label": "label1"});
-                } else {
-                    radioInput = React.createElement("input", {className: "format-radio", type: "radio", "aria-label": "label1", disabled: true});
-                }
+                var radioInput = function (format) {
+                    return (
+                        React.createElement("input", {className: "format-radio", 
+                               type: "radio", 
+                               "aria-label": "label1", 
+                               checked: thisFormatsList.props.format == format.name, 
+                               disabled: thisFormatsList.props.downloading})
+                    );
+                };
 
                 if (formatNeeded()) {
                     var formatId = 'format-' + format.name;
@@ -169,7 +212,7 @@ function initReact() {
                         React.createElement("div", {className: "col-sm-4", id: formatId, key: format.name}, 
                             React.createElement("div", {className: "input-group", onClick: handleClick}, 
                             React.createElement("span", {className: "input-group-addon"}, 
-                                radioInput
+                                radioInput(format)
                             ), 
                                 React.createElement("div", {className: "form-control"}, 
                                     React.createElement("i", {className: formatIcon}), "  ", 
@@ -198,13 +241,13 @@ function initReact() {
             if (this.props.report !== null) {
                 return (
                     React.createElement("div", {id: "choose-format"}, 
-                        React.createElement("label", null, i18n.report_format), 
-                        React.createElement(FormatsList, {
-                            report: this.props.report,
-                            formatOptions: this.props.formatOptions,
-                            setFormat: this.props.setFormat,
-                            downloading: this.props.downloading
-                        })
+                    React.createElement("label", null, i18n.report_format), 
+                    React.createElement(FormatsList, {
+                        report: this.props.report, 
+                        formatOptions: this.props.formatOptions, 
+                        format: this.props.format, 
+                        setFormat: this.props.setFormat, 
+                        downloading: this.props.downloading})
                     )
                 );
             } else {
@@ -242,51 +285,34 @@ function initReact() {
             return (
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement(Typeahead, {
-                        placeholder: this.state.placeholder,
-                        maxVisible: 10,
-                        options: this.props.projectOptions,
-                        onOptionSelected: this.selectProject,
-                        displayOption: 'displayOption',
-                        filterOption: 'filterOption',
-                        inputProps: {disabled: this.state.disabled},
-                        customClasses: {input: 'form-control'}
+                         placeholder: this.state.placeholder,
+                         maxVisible: 10,
+                         value: get_display_value(this.props.projectId, this.props.projectOptions),
+                         options: this.props.projectOptions,
+                         onOptionSelected: this.selectProject,
+                         displayOption: 'displayOption',
+                         filterOption: 'filterOption',
+                         inputProps: {disabled: this.state.disabled},
+                         customClasses: {input: 'form-control'}
                     })
                 )
             );
         }
     });
 
-    var SelectProject = React.createClass({displayName: "SelectProject",
-        parameterNeeded: function(report) {
-            for (var i = 0; i < report.parameters.length; i++) {
-                if (report.parameters[i] === 'project') {
-                    return true;
-                }
-            }
-            return false;
-        },
-
-        render: function() {
-            if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
-                return (
-                    React.createElement("div", {id: "choose-project"}, 
-                        React.createElement("label", null, i18n.project), 
-                        React.createElement("div", {className: "project-typeahead"}, 
-                            React.createElement(ProjectTypeahead, {
-                                projectOptions: this.props.projectOptions,
-                                setProject: this.props.setProject,
-                                downloading: this.props.downloading
-                            })
-                        )
-                    )
-                );
-            } else {
-                return (
-                    React.createElement("span", null)
-                );
-            }
-        }
-    });
+    var SelectProject = function(props) {
+        return (
+            React.createElement("div", {id: "choose-project"}, 
+                React.createElement("label", null, i18n.project), 
+                React.createElement("div", {className: "project-typeahead"}, 
+                    React.createElement(ProjectTypeahead, {projectId: props.project, 
+                                      projectOptions: props.projectOptions, 
+                                      setProject: props.setProject, 
+                                      downloading: props.downloading})
+                )
+            )
+        );
+    };
 
     var OrganisationTypeahead = React.createClass({displayName: "OrganisationTypeahead",
         getInitialState: function() {
@@ -314,51 +340,34 @@ function initReact() {
             return (
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement(Typeahead, {
-                        placeholder: this.state.placeholder,
-                        maxVisible: 10,
-                        options: this.props.organisationOptions,
-                        onOptionSelected: this.selectOrg,
-                        displayOption: 'displayOption',
-                        filterOption: 'filterOption',
-                        inputProps: {disabled: this.state.disabled},
-                        customClasses: {input: 'form-control'}
+                         placeholder: this.state.placeholder,
+                         maxVisible: 10,
+                         value: get_display_value(this.props.orgId, this.props.organisationOptions),
+                         options: this.props.organisationOptions,
+                         onOptionSelected: this.selectOrg,
+                         displayOption: 'displayOption',
+                         filterOption: 'filterOption',
+                         inputProps: {disabled: this.state.disabled},
+                         customClasses: {input: 'form-control'}
                     })
                 )
             );
         }
     });
 
-    var SelectOrganisation = React.createClass({displayName: "SelectOrganisation",
-        parameterNeeded: function(report) {
-            for (var i = 0; i < report.parameters.length; i++) {
-                if (report.parameters[i] === 'organisation') {
-                    return true;
-                }
-            }
-            return false;
-        },
-
-        render: function() {
-            if (this.props.report !== null && this.parameterNeeded(this.props.report)) {
-                return (
-                    React.createElement("div", {id: "choose-organisation"}, 
-                        React.createElement("label", null, i18n.organisation), 
-                        React.createElement("div", {className: "org-typeahead"}, 
-                            React.createElement(OrganisationTypeahead, {
-                                organisationOptions: this.props.organisationOptions,
-                                setOrganisation: this.props.setOrganisation,
-                                downloading: this.props.downloading
-                            })
-                        )
-                    )
-                );
-            } else {
-                return (
-                    React.createElement("span", null)
-                );
-            }
-        }
-    });
+    var SelectOrganisation = function(props) {
+        return (
+            React.createElement("div", {id: "choose-organisation"}, 
+                React.createElement("label", null, i18n.organisation), 
+                React.createElement("div", {className: "org-typeahead"}, 
+                    React.createElement(OrganisationTypeahead, {orgId: props.organisation, 
+                                           organisationOptions: props.organisationOptions, 
+                                           setOrganisation: props.setOrganisation, 
+                                           downloading: props.downloading})
+                )
+            )
+        );
+    };
 
     var ReportOption = React.createClass({displayName: "ReportOption",
         handleClick: function() {
@@ -408,19 +417,34 @@ function initReact() {
                     );
                 });
             } else {
-                reportsData = React.createElement("li", null, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " Loading..."));
+                reportsData = React.createElement("li", null, 
+                    React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-spin fa-spinner"}), " Loading...")
+                );
             }
-            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ? React.createElement("span", {className: "not-selected"}, this.state.buttonText) : React.createElement("span", null, this.state.buttonText);
+            var buttonDisplay = this.state.buttonText === i18n.select_a_report_type ?
+                React.createElement("span", {className: "not-selected"}, this.state.buttonText)
+            :
+                React.createElement("span", null, this.state.buttonText);
             var button;
             if (!this.props.downloading) {
-                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", type: "button", id: "select-report-type", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true"}, 
+                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", 
+                                 type: "button", 
+                                 id: "select-report-type", 
+                                 "data-toggle": "dropdown", 
+                                 "aria-haspopup": "true", 
+                                 "aria-expanded": "true"}, 
                             buttonDisplay, 
                             React.createElement("div", {className: "caret-indicator"}, 
                                 React.createElement("i", {className: "fa fa-sort"})
                             )
                         );
             } else {
-                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", type: "button", id: "select-report-type", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true", disabled: true}, 
+                button = React.createElement("button", {className: "btn btn-default dropdown-toggle", 
+                                 type: "button", id: "select-report-type", 
+                                 "data-toggle": "dropdown", 
+                                 "aria-haspopup": "true", 
+                                 "aria-expanded": "true", 
+                                 disabled: true}, 
                             buttonDisplay, 
                             React.createElement("div", {className: "caret-indicator"}, 
                                 React.createElement("i", {className: "fa fa-sort"})
@@ -439,21 +463,17 @@ function initReact() {
         }
     });
 
-    var SelectReport = React.createClass({displayName: "SelectReport",
-        render: function() {
-            return (
-                React.createElement("div", {id: "choose-report-template"}, 
-                    React.createElement("label", null, i18n.report_type), 
-                    React.createElement(ReportsDropdown, {
-                        userOptions: this.props.userOptions,
-                        reportOptions: this.props.reportOptions,
-                        setReport: this.props.setReport,
-                        downloading: this.props.downloading
-                    })
-                )
-            );
-        }
-    });
+    var SelectReport = function(props) {
+        return (
+            React.createElement("div", {id: "choose-report-template"}, 
+                React.createElement("label", null, i18n.report_type), 
+                React.createElement(ReportsDropdown, {userOptions: props.userOptions, 
+                                 reportOptions: props.reportOptions, 
+                                 setReport: props.setReport, 
+                                 downloading: props.downloading})
+            )
+        );
+    };
 
     var MyReportsApp  = React.createClass({displayName: "MyReportsApp",
         getInitialState: function() {
@@ -489,7 +509,9 @@ function initReact() {
                     if (processCallback === undefined) {
                         newState[stateKey] = JSON.parse(xmlHttp.responseText).results;
                     } else {
-                        newState[stateKey] = processCallback(JSON.parse(xmlHttp.responseText).results);
+                        newState[stateKey] = processCallback(
+                            JSON.parse(xmlHttp.responseText).results
+                        );
                     }
                     thisApp.setState(newState);
                 }
@@ -544,7 +566,7 @@ function initReact() {
 
         setReport: function(report) {
             this.setState({
-                report: report
+                report: report,
             });
         },
 
@@ -576,41 +598,36 @@ function initReact() {
             return (
                 React.createElement("div", {id: "my-reports"}, 
                     React.createElement("h3", null, i18n.my_reports), 
-                    React.createElement(SelectReport, {
-                        reportOptions: this.state.reportOptions,
-                        userOptions: this.state.userOptions,
-                        setReport: this.setReport,
-                        downloading: this.state.downloading
-                    }), 
-                    React.createElement(SelectOrganisation, {
-                        report: this.state.report,
-                        organisationOptions: this.state.organisationOptions,
-                        setOrganisation: this.setOrganisation,
-                        downloading: this.state.downloading
-                    }), 
-                    React.createElement(SelectProject, {
-                        report: this.state.report,
-                        projectOptions: this.state.projectOptions,
-                        setProject: this.setProject,
-                        downloading: this.state.downloading
-                    }), 
-                    React.createElement(SelectFormat, {
-                        report: this.state.report,
-                        formatOptions: this.state.formatOptions,
-                        setFormat: this.setFormat,
-                        downloading: this.state.downloading
-                    }), 
-                    React.createElement(DownloadNotice, {
-                        visible: this.state.downloading
-                    }), 
-                    React.createElement(DownloadButton, {
-                        report: this.state.report,
-                        organisation: this.state.organisation,
-                        project: this.state.project,
-                        format: this.state.format,
-                        downloading: this.state.downloading,
-                        setDownload: this.setDownload
-                    })
+                    React.createElement(SelectReport, {reportOptions: this.state.reportOptions, 
+                                  userOption: this.state.userOptions, 
+                                  setReport: this.setReport, 
+                                  downloading: this.state.downloading}), 
+                    parameter_needed(this.state.report, 'organisation')
+                     ? (React.createElement(SelectOrganisation, {organisationOptions: this.state.organisationOptions, 
+                                            report: this.state.report, 
+                                            organisation: this.state.organisation, 
+                                            setOrganisation: this.setOrganisation, 
+                                            downloading: this.state.downloading}))
+                     : undefined, 
+                    parameter_needed(this.state.report, 'project')
+                     ? (React.createElement(SelectProject, {projectOptions: this.state.projectOptions, 
+                                       project: this.state.project, 
+                                       report: this.state.report, 
+                                       setProject: this.setProject, 
+                                       downloading: this.state.downloading}))
+                     : undefined, 
+                    React.createElement(SelectFormat, {formatOptions: this.state.formatOptions, 
+                                  format: this.state.format, 
+                                  report: this.state.report, 
+                                  setFormat: this.setFormat, 
+                                  downloading: this.state.downloading}), 
+                    React.createElement(DownloadNotice, {visible: this.state.downloading}), 
+                    React.createElement(DownloadButton, {report: this.state.report, 
+                                    organisation: this.state.organisation, 
+                                    project: this.state.project, 
+                                    format: this.state.format, 
+                                    downloading: this.state.downloading, 
+                                    setDownload: this.setDownload})
                 )
             );
         }
