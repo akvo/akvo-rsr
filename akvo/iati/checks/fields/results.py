@@ -6,7 +6,7 @@
 
 from akvo.rsr.models.result.utils import QUALITATIVE
 
-DGIS_VALIDATION_SET_ID = 3
+DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
 
 
 def results(project):
@@ -22,7 +22,7 @@ def results(project):
     checks = []
     all_checks_passed = True
 
-    DGIS_PROJECT = project.validations.filter(pk=DGIS_VALIDATION_SET_ID).count() == 1
+    DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
 
     for result in project.results.all():
         if not result.type:

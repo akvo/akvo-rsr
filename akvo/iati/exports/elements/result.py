@@ -8,7 +8,7 @@ from lxml import etree
 
 from akvo.rsr.models.result.utils import QUANTITATIVE
 
-DGIS_VALIDATION_SET_ID = 3
+DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
 NOT_AVAILABLE = u"N/A"
 
 
@@ -21,7 +21,7 @@ def result(project):
     """
     result_elements = []
 
-    DGIS_PROJECT = project.validations.filter(pk=DGIS_VALIDATION_SET_ID).count() == 1
+    DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
 
     for res in project.results.all():
         if res.type or res.aggregation_status is not None or res.title or res.description or \
