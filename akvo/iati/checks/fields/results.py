@@ -48,25 +48,25 @@ def results(project):
                 checks.append((u'error', u'indicator (id: %s) has no title specified' %
                                str(indicator.pk)))
 
-            if (not indicator.baseline_value and
-                    (indicator.baseline_year or indicator.baseline_comment)):
-                all_checks_passed = False
+            if not indicator.baseline_value:
                 if DGIS_PROJECT:
+                    all_checks_passed = False
                     checks.append((u'warning', u'indicator (id: %s) baseline has no value '
                                                u'specified, however the value of "N/A" has been '
                                                u'set for the attribute' % str(indicator.pk)))
-                else:
+                elif indicator.baseline_year or indicator.baseline_comment:
+                    all_checks_passed = False
                     checks.append((u'error', u'indicator (id: %s) baseline has no value specified' %
                                    str(indicator.pk)))
 
-            if (not indicator.baseline_year and
-                    (indicator.baseline_value or indicator.baseline_comment)):
-                all_checks_passed = False
+            if not indicator.baseline_year:
                 if DGIS_PROJECT:
+                    all_checks_passed = False
                     checks.append((u'warning', u'indicator (id: %s) baseline has no year '
                                                u'specified, however the value of "N/A" has been '
                                                u'set for the attribute' % str(indicator.pk)))
-                else:
+                elif indicator.baseline_value or indicator.baseline_comment:
+                    all_checks_passed = False
                     checks.append((u'error', u'indicator (id: %s) baseline has no year specified' %
                                    str(indicator.pk)))
 
