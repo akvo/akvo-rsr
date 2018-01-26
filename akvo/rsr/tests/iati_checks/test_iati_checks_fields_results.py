@@ -52,8 +52,6 @@ class IatiChecksFieldsReultsTestCase(TestCase):
             base_image_path = '/home/travis/build/akvo/akvo-rsr/'
         self.image_path = base_image_path + 'akvo/rsr/tests/iati_export/test_image.jpg'
 
-
-
     def test_iati_checks_fields_results_with_dgis_validation(self):
         """
         Test the checks of results for a project that uses the DGIS validation set.
