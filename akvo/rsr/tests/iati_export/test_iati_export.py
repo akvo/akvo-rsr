@@ -17,7 +17,7 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              Transaction, TransactionSector, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodActualDimension, IndicatorPeriodActualLocation,
                              IndicatorPeriodTargetDimension, IndicatorPeriodTargetLocation,
-                             IndicatorReference)
+                             IndicatorReference, ProjectEditorValidationSet)
 from akvo.rsr.models.result.utils import QUALITATIVE
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -42,6 +42,12 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         - A user.
         """
 
+        # Set test image path
+        base_image_path = '/var/akvo/rsr/code/'
+        if 'TRAVIS' in os.environ:
+            base_image_path = '/home/travis/build/akvo/akvo-rsr/'
+        self.image_path = base_image_path + 'akvo/rsr/tests/iati_export/test_image.jpg'
+
         # Create organisation
         self.reporting_org = Organisation.objects.create(
             name="Test Organisation Export",
@@ -58,16 +64,6 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             password="password"
         )
 
-        # Set test image path
-        base_image_path = '/var/akvo/rsr/code/'
-        if 'TRAVIS' in os.environ:
-            base_image_path = '/home/travis/build/akvo/akvo-rsr/'
-        self.image_path = base_image_path + 'akvo/rsr/tests/iati_export/test_image.jpg'
-
-    def test_complete_project_export(self):
-        """
-        Test the export of a fully filled project.
-        """
         # Create project
         project = Project.objects.create(
             title="Test project for IATI export",
@@ -393,9 +389,17 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             text="WASH",
         )
 
+        self.project = project
+        self.related_project = related_project
+
+    def test_complete_project_export(self):
+        """
+        Test the export of a fully filled project.
+        """
+
         # Add results framework
         result = Result.objects.create(
-            project=project,
+            project=self.project,
             type="1",
             aggregation_status=True,
             title="Title",
@@ -459,7 +463,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         )
 
         # Add a project to the IATI export
-        iati_export.projects.add(project)
+        iati_export.projects.add(self.project)
 
         # Remove folder
         media_root = '/var/akvo/rsr/mediaroot/'
@@ -489,7 +493,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
                                            './iati-activity/title'))
 
         # Test related activities are listed only once
-        related_activity_id = related_project.iati_activity_id
+        related_activity_id = self.related_project.iati_activity_id
         attributes = {'ref': related_activity_id, 'type': RelatedProject.PROJECT_RELATION_PARENT}
         related_activities = root_test.xpath(
             './iati-activity/related-activity[@ref="{}"]'.format(related_activity_id)
@@ -506,6 +510,124 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         # Test qualitative indicator is not included
         self.assertEqual(1, len(indicators))
 
+    def test_dgis_validated_project_export(self):
+        """
+        Test the export of a fully filled project using the DGIS validation set.
+        """
+        validation = ProjectEditorValidationSet.objects.create(
+            name="DGIS IATI", description="DGIS IATI"
+        )
+        self.project.validations.add(validation)
+
+        # Add results framework
+        result = Result.objects.create(
+            project=self.project,
+            type="1",
+            aggregation_status=True,
+            title="Title",
+            description="Description",
+        )
+        indicator = Indicator.objects.create(
+            result=result,
+            measure="1",
+            ascending=True,
+            title="Title",
+            description="Indicator Description",
+        )
+        # Create a qualitative indicator
+        Indicator.objects.create(
+            result=result,
+            title="Qualitative indicator",
+            description="Indicator Description",
+            type=QUALITATIVE,
+        )
+        IndicatorReference.objects.create(
+            indicator=indicator,
+            vocabulary="1",
+            reference="ref",
+            vocabulary_uri="http://akvo.org/",
+        )
+        period = IndicatorPeriod.objects.create(
+            indicator=indicator,
+            period_start=datetime.date.today(),
+            period_end=datetime.date.today() + datetime.timedelta(days=1),
+            target_comment="Comment",
+            actual_comment="Comment",
+        )
+        IndicatorPeriodTargetLocation.objects.create(
+            period=period,
+            location="loc",
+        )
+        IndicatorPeriodActualLocation.objects.create(
+            period=period,
+            location="loc",
+        )
+        IndicatorPeriodTargetDimension.objects.create(
+            period=period,
+            name="Name",
+            value="Value",
+        )
+        IndicatorPeriodActualDimension.objects.create(
+            period=period,
+            name="Name",
+            value="Value",
+        )
+
+        # Create IATI export
+        iati_export = IatiExport.objects.create(
+            reporting_organisation=self.reporting_org,
+            user=self.user
+        )
+
+        # Add a project to the IATI export
+        iati_export.projects.add(self.project)
+
+        # Remove folder
+        media_root = '/var/akvo/rsr/mediaroot/'
+        directory = 'db/org/%s/iati/' % str(self.reporting_org.pk)
+        if os.path.exists(media_root + directory):
+            shutil.rmtree(media_root + directory)
+
+        # Run IATI export
+        iati_export.create_iati_file()
+
+        # In order to easily access the XML file, generate the IATI file again
+        tmp_iati_xml = IatiXML(iati_export.projects.all(), iati_export.version, iati_export)
+        iati_xml = etree.tostring(tmp_iati_xml.iati_activities)
+
+        # Perform checks on IATI export
+        self.assertEqual(iati_export.status, 3)
+        self.assertNotEqual(iati_export.iati_file, '')
+
+        # Perform checks on IATI XML file
+        root_test = self.assertXmlDocument(iati_xml)
+        self.assertXmlNode(root_test, tag='iati-activities')
+        self.assertXmlHasAttribute(root_test, 'generated-datetime')
+        self.assertXmlHasAttribute(root_test, 'version')
+        self.assertXpathsExist(root_test, ('./iati-activity',
+                                           './iati-activity/iati-identifier',
+                                           './iati-activity/reporting-org',
+                                           './iati-activity/title'))
+
+        # Test indicator has baseline
+        indicator_baseline_xpath = './iati-activity/result/indicator/baseline'
+        self.assertXpathsExist(root_test, (indicator_baseline_xpath,))
+        baseline = root_test.xpath(indicator_baseline_xpath)
+        self.assertEqual(baseline[0].attrib["year"], u"N/A")
+        self.assertEqual(baseline[0].attrib["value"], u"N/A")
+
+        # Test period has target value
+        period_target_xpath = './iati-activity/result/indicator/period/target'
+        self.assertXpathsExist(root_test, (period_target_xpath,))
+        target = root_test.xpath(period_target_xpath)
+        self.assertEqual(target[0].attrib["value"], u"N/A")
+
+        # Test period has actual value
+        period_actual_xpath = './iati-activity/result/indicator/period/actual'
+        self.assertXpathsExist(root_test, (period_actual_xpath,))
+        actual = root_test.xpath(period_actual_xpath)
+        self.assertEqual(actual[0].attrib["value"], u"N/A")
+
     def test_different_complete_project_export(self):
         """
         Test the export of a fully filled project with different settings.
@@ -514,7 +636,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         project = Project.objects.create(
             title="Test project for IATI export",
             subtitle="Test project for IATI export (subtitle)",
-            iati_activity_id="NL-KVK-1234567890-1234",
+            iati_activity_id="NL-KVK-1234567890-123456",
             language="en",
             hierarchy=1,
             humanitarian=True,
