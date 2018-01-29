@@ -445,8 +445,18 @@ nav.navbar-fixed-top {
             }
         }
         &.navbar-right {
+            margin-top: 10px;
             li {
                 margin-right: 2px;
+                &:nth-child(1) {
+                    margin-right: 10px;
+                    .userDropdown {
+                        margin-top: 2px;
+                        button {
+                            border-color: transparent;
+                        }
+                    }
+                }
                 &:nth-child(2) {
                     a {
                         padding-left: 10px;
@@ -459,7 +469,6 @@ nav.navbar-fixed-top {
                     &.areaToggle {
                         @include btnOutline($akvoPurple, $akvoPurple);
                         box-shadow: none !important;
-                        margin-top: 10px;
                     }
                     @include responsive(tablets) {
                         padding: 10px 15px;

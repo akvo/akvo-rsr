@@ -423,62 +423,69 @@ nav.navbar-fixed-top {
         -webkit-border-radius: 3px;
         border-radius: 3px;
         color: #ca8142; }
-  nav.navbar-fixed-top .navbar-nav.navbar-right li {
-    margin-right: 2px; }
-    nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
-      padding-left: 10px;
-      padding-right: 10px; }
-    nav.navbar-fixed-top .navbar-nav.navbar-right li a {
-      padding-left: 5px;
-      padding-right: 5px; }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle {
-        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
-        display: inline-block;
-        padding: 5px 8px;
-        background-color: #2c2a74;
-        color: #2c2a74 !important;
-        text-decoration: none;
-        cursor: pointer;
-        -moz-border-radius: 3px;
-        -o-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        border: 1px solid transparent;
-        text-align: center;
-        background-color: transparent;
-        color: #2c2a74 !important;
-        border: 1px solid #2c2a74;
-        box-shadow: none !important;
-        margin-top: 10px; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
-          background: #1e1c4f;
-          color: white; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
-          cursor: not-allowed;
-          background-color: rgba(128, 128, 128, 0.1) !important;
-          color: rgba(128, 128, 128, 0.4) !important;
-          border: 1px solid transparent; }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
+  nav.navbar-fixed-top .navbar-nav.navbar-right {
+    margin-top: 10px; }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li {
+      margin-right: 2px; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) {
+        margin-right: 10px; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown {
+          margin-top: 2px; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown button {
+            border-color: transparent; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
+        padding-left: 10px;
+        padding-right: 10px; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li a {
+        padding-left: 5px;
+        padding-right: 5px; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle {
+          /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+          display: inline-block;
+          padding: 5px 8px;
+          background-color: #2c2a74;
+          color: #2c2a74 !important;
+          text-decoration: none;
+          cursor: pointer;
+          -moz-border-radius: 3px;
+          -o-border-radius: 3px;
+          -webkit-border-radius: 3px;
+          border-radius: 3px;
+          border: 1px solid transparent;
+          text-align: center;
+          background-color: transparent;
+          color: #2c2a74 !important;
+          border: 1px solid #2c2a74;
+          box-shadow: none !important; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
+            background: #1e1c4f;
+            color: white; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
             cursor: not-allowed;
             background-color: rgba(128, 128, 128, 0.1) !important;
             color: rgba(128, 128, 128, 0.4) !important;
             border: 1px solid transparent; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
-          color: white !important;
-          border: none;
-          border: 1px solid #428bca;
-          background-color: #428bca; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
-          cursor: not-allowed;
-          color: rgba(128, 128, 128, 0.4) !important;
-          border: 1px solid rgba(128, 128, 128, 0.4); }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
+            nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
+              cursor: not-allowed;
+              background-color: rgba(128, 128, 128, 0.1) !important;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid transparent; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
+            color: white !important;
+            border: none;
+            border: 1px solid #428bca;
+            background-color: #428bca; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
             cursor: not-allowed;
             color: rgba(128, 128, 128, 0.4) !important;
             border: 1px solid rgba(128, 128, 128, 0.4); }
-      @media only screen and (max-width: 1024px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li a {
-          padding: 10px 15px; } }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
+              cursor: not-allowed;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid rgba(128, 128, 128, 0.4); }
+        @media only screen and (max-width: 1024px) {
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a {
+            padding: 10px 15px; } }
 
 .navbar .active {
   color: #2A6297; }
