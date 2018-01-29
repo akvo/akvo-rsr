@@ -4,8 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-import argparse
-
 from django.core.management.base import BaseCommand
 
 from ...models import Indicator, IndicatorPeriod
@@ -13,9 +11,10 @@ from ...models import Indicator, IndicatorPeriod
 QUANTITATIVE = 1
 RESULT_TYPE_OUTCOME = u"2"
 
+
 class Command(BaseCommand):
-    help = """ 
-    Script that replaces indicator periods for a project if it doesn't have exactly 9 periods. 
+    help = """
+    Script that replaces indicator periods for a project if it doesn't have exactly 9 periods.
     The new periods have the following start and end dates:
         2017-07-01", "2017-12-31"
         2018-01-01", "2018-06-30"
@@ -28,7 +27,7 @@ class Command(BaseCommand):
         2021-07-01", "2021-12-31"
 
     Only results of type "outcome" will be changed in this way.
-    
+
     NOTE: this is a custom command for OneDrop.
     """
 
