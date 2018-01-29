@@ -69,7 +69,6 @@ UpdateAlert.propTypes = {
     message: PropTypes.string.isRequired,
     close: PropTypes.func.isRequired,
 };
-
 const toolTipStyle = {
   wrapper: {
     position: 'relative',
@@ -85,7 +84,8 @@ const toolTipStyle = {
     marginBottom: '10px',
     padding: '5px',
     top: '20px',
-    left: '165px',
+    left: '50%',
+    transform: 'translateX(-50%)',
   },
   content: {
     color: '#000',
