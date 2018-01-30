@@ -424,50 +424,6 @@ class IndicatorPeriod(models.Model):
         return max(self.percent_accomplishment, 100) if self.percent_accomplishment else None
 
     @property
-    def actual(self):
-        """
-        Returns the actual value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return the baseline value, which is a calculated value.
-        """
-        try:
-            return Decimal(self.actual_value)
-        except (InvalidOperation, TypeError):
-            return self.actual_value if self.actual_value else self.baseline
-
-    @property
-    def target(self):
-        """
-        Returns the target value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return just the target value.
-        """
-        try:
-            return Decimal(self.target_value)
-        except (InvalidOperation, TypeError):
-            return self.target_value
-
-    @property
-    def baseline(self):
-        """
-        Returns the baseline value of the indicator. The baseline is a calculated value:
-
-        - If the period has no previous periods, then it's the baseline value of the indicator
-        - If the period has a previous period, then it's the actual value of that period
-
-        When this baseline value is empty, it returns 0. Otherwise (e.g. 'Available') it just
-        returns the baseline value.
-        """
-        previous_period = self.adjacent_period(False)
-        baseline = self.indicator.baseline_value if not previous_period else previous_period.actual
-
-        if not baseline:
-            return Decimal(0)
-        else:
-            try:
-                return Decimal(baseline)
-            except (InvalidOperation, TypeError):
-                return baseline
-
-    @property
     def approved_updates(self):
         return self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
 
