@@ -9,8 +9,6 @@ from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 
-from decimal import Decimal, InvalidOperation
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -167,23 +165,6 @@ class Indicator(models.Model):
         Indicates whether this indicator has children.
         """
         return self.child_indicators.count() > 0
-
-    @property
-    def last_updated(self):
-        from akvo.rsr.models import ProjectUpdate
-        period_updates = ProjectUpdate.objects.filter(indicator_period__indicator=self)
-        return period_updates.order_by('-created_at')[0].time_gmt if period_updates else None
-
-    @property
-    def baseline(self):
-        """
-        Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
-        it'll return None.
-        """
-        try:
-            return Decimal(self.baseline_value)
-        except (InvalidOperation, TypeError):
-            return None
 
     @property
     def children_aggregate_percentage(self):
