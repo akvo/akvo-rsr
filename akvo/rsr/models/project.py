@@ -6,7 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -20,8 +20,6 @@ from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
-
-from django_counter.models import ViewCounter
 
 from sorl.thumbnail.fields import ImageField
 
@@ -42,7 +40,6 @@ from ..mixins import TimestampsMixin
 from .country import Country
 from .iati_check import IatiCheck
 from .result import IndicatorPeriod
-from .link import Link
 from .models_utils import OrganisationsQuerySetManager, QuerySetManager
 from .organisation import Organisation
 from .partnership import Partnership
@@ -426,7 +423,7 @@ class Project(TimestampsMixin, models.Model):
             ('post_updates', u'Can post updates'),
         )
 
-    def save(self, last_updated=False, *args, **kwargs):
+    def save(self, *args, **kwargs):
         # Strip title of any trailing or leading spaces
         if self.title:
             self.title = self.title.strip()
@@ -589,11 +586,6 @@ class Project(TimestampsMixin, models.Model):
     # End new API
 
     @property
-    def view_count(self):
-        counter = ViewCounter.objects.get_for_object(self)
-        return counter.count or 0
-
-    @property
     def reporting_partner(self):
         """ In some cases we need the partnership object instead of the organisation to be able to
             access is_secondary_reporter
@@ -721,18 +713,6 @@ class Project(TimestampsMixin, models.Model):
             '''
             return self.aggregate(budget=Sum('budget'),)['budget'] or 0
 
-        def funds_sum(self):
-            ''' aggregates the funds of all the projects in the QS
-                n.b. non-chainable, doesn't return a QS
-            '''
-            return self.aggregate(funds=Sum('funds'),)['funds'] or 0
-
-        def funds_needed_sum(self):
-            ''' aggregates the funds of all the projects in the QS
-                n.b. non-chainable, doesn't return a QS
-            '''
-            return self.aggregate(funds_needed=Sum('funds_needed'),)['funds_needed'] or 0
-
         def get_largest_value_sum(self, benchmarkname, cats=None):
             if cats:
                 # filter finds largest "benchmarkname" value in benchmarks for categories in cats
@@ -750,40 +730,6 @@ class Project(TimestampsMixin, models.Model):
             return result.annotate(max_value=Max('benchmarks__value')).aggregate(
                 Sum('max_value')
             )['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
-
-        def get_planned_water_calc(self):
-            "how many will get improved water"
-            return self.status_not_cancelled().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Water']
-            ) - self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Water']
-            )
-
-        def get_planned_sanitation_calc(self):
-            "how many will get improved sanitation"
-            return self.status_not_cancelled().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Sanitation']
-            ) - self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Sanitation']
-            )
-
-        def get_actual_water_calc(self):
-            "how many have gotten improved water"
-            return self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Water']
-            )
-
-        def get_actual_sanitation_calc(self):
-            "how many have gotten improved sanitation"
-            return self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Sanitation']
-            )
 
         def all_updates(self):
             """Return ProjectUpdates for self, newest first."""
@@ -931,18 +877,6 @@ class Project(TimestampsMixin, models.Model):
             return ''
     show_map.allow_tags = True
 
-    def connected_to_user(self, user):
-        '''
-        Test if a user is connected to self through an organisation
-        '''
-        try:
-            for organisation in user.organisations.all():
-                if self in organisation.all_projects():
-                    return True
-        except:
-            pass
-        return False
-
     def is_published(self):
         if self.publishingstatus:
             return self.publishingstatus.status == PublishingStatus.STATUS_PUBLISHED
@@ -976,12 +910,6 @@ class Project(TimestampsMixin, models.Model):
                     return False
 
         return True
-
-    def akvopedia_links(self):
-        return self.links.filter(kind=Link.LINK_AKVOPEDIA)
-
-    def external_links(self):
-        return self.links.filter(kind=Link.LINK_EXTRNAL)
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
@@ -1023,24 +951,6 @@ class Project(TimestampsMixin, models.Model):
         from .focus_area import FocusArea
         return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
     focus_areas.allow_tags = True
-
-    def areas_and_categories(self):
-        from .focus_area import FocusArea
-        from .category import Category
-        area_objs = FocusArea.objects.filter(
-            categories__projects__exact=self
-        ).distinct().order_by('name')
-        areas = []
-        for area_obj in area_objs:
-            area = {'area': area_obj}
-            area['categories'] = []
-            for cat_obj in Category.objects.filter(
-                    focus_area=area_obj,
-                    projects=self
-            ).order_by('name'):
-                area['categories'] += [cat_obj.name]
-            areas += [area]
-        return areas
 
     # shortcuts to linked orgs for a single project
     def _partners(self, role=None):
@@ -1116,15 +1026,6 @@ class Project(TimestampsMixin, models.Model):
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
-
-    def show_status_large(self):
-        "Show the current project status with background"
-        return mark_safe(
-            "<span class='status_large' style='background-color:%s; color:inherit; "
-            "display:inline-block;'>%s</span>" % (
-                self.STATUSES_COLORS[self.iati_status], codelist_name(ActivityStatus, self, 'iati_status')
-            )
-        )
 
     def iati_project_scope(self):
         return codelist_value(ActivityScope, self, 'project_scope')
@@ -1395,18 +1296,6 @@ class Project(TimestampsMixin, models.Model):
 
         child.save()
 
-    def has_results(self):
-        for result in self.results.all():
-            if result.title or result.type or result.aggregation_status or result.description:
-                return True
-        return False
-
-    def has_indicators(self):
-        for result in self.results.all():
-            if result.indicators.all():
-                return True
-        return False
-
     def indicator_labels(self):
         return get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
             organisation=self.all_partners()
@@ -1414,56 +1303,6 @@ class Project(TimestampsMixin, models.Model):
 
     def has_indicator_labels(self):
         return self.indicator_labels().count() > 0
-
-    def toggle_aggregate_children(self, aggregate):
-        """
-        If aggregation to children is turned off,
-
-        :param aggregate; Boolean, indicating if aggregation is turned on (True) or off (False)
-        """
-        for result in self.results.all():
-            for indicator in result.indicators.all():
-                if indicator.is_parent_indicator():
-                    for period in indicator.periods.all():
-                        if indicator.measure == '2':
-                            self.update_parents(period, period.child_periods_average(), 1)
-                        else:
-                            sign = 1 if aggregate else -1
-                            self.update_parents(period, period.child_periods_sum(), sign)
-
-    def toggle_aggregate_to_parent(self, aggregate):
-        """ Add/subtract child indicator period values from parent if aggregation is toggled """
-        for result in self.results.all():
-            for indicator in result.indicators.all():
-                if indicator.is_child_indicator():
-                    for period in indicator.periods.all():
-                        parent = period.parent_period
-                        if parent and period.actual_value:
-                            if indicator.measure == '2':
-                                self.update_parents(parent, parent.child_periods_average(), 1)
-                            else:
-                                sign = 1 if aggregate else -1
-                                self.update_parents(parent, period.actual_value, sign)
-
-    def update_parents(self, update_period, difference, sign):
-        """ Update parent indicator periods if they exist and allow aggregation """
-        try:
-            if update_period.indicator.measure == '2':
-                update_period.actual_value = str(Decimal(difference))
-            else:
-                update_period.actual_value = str(
-                    Decimal(update_period.actual_value) + sign * Decimal(difference))
-            update_period.save()
-
-            parent_period = update_period.parent_period
-            if parent_period and parent_period.indicator.result.project.aggregate_children:
-                if update_period.indicator.measure == '2':
-                    self.update_parents(parent_period, parent_period.child_periods_average(), 1)
-                else:
-                    self.update_parents(parent_period, difference, sign)
-
-        except (InvalidOperation, TypeError):
-            pass
 
 
 @receiver(post_save, sender=Project)
@@ -1490,7 +1329,7 @@ def update_denormalized_project(sender, **kwargs):
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
-    project.save(last_updated=True)
+    project.save()
 
 
 @receiver(post_delete, sender=ProjectUpdate)
@@ -1506,4 +1345,4 @@ def rewind_last_update(sender, **kwargs):
         project.last_update = project.updates_desc()[0]
     except IndexError:
         project.last_update = None
-    project.save(last_updated=True)
+    project.save()
