@@ -33,7 +33,11 @@
                     </li>
                     {% if not rsr_page or not rsr_page.google_translation %}
         <li>
-          <div class="dropdown langDropdown">
+          <div class="dropup langDropdown">
+            <button class=" dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
+              <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
+              <span class="caret"></span>
+            </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               {% get_language_info_list for LANGUAGES as languages %}
               {% for language in languages %}
