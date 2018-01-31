@@ -1016,30 +1016,28 @@ footer .navbar {
         footer .navbar #footer-body ul.nav li div.langDropdown {
           padding-left: 15px;
           padding-right: 15px; } }
-      @media only screen and (max-width: 1024px) and (min-width: 768px) {
-        footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
-          position: initial;
-          float: none; } }
-      @media only screen and (max-width: 768px) {
-        footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
-          background-color: white !important;
-          border: 1px solid rgba(0, 0, 0, 0.14902);
-          box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-          -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
-          footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a {
-            color: #428bca;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            border: thin solid transparent; }
-            footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a:hover {
-              color: #ca8142; }
-            footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a.active {
-              color: #72742a;
-              font-weight: bold;
-              background: rgba(202, 129, 66, 0.1);
-              -moz-border-radius: 3px;
-              -o-border-radius: 3px;
-              -webkit-border-radius: 3px;
-              border-radius: 3px; } }
+      footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
+        position: absolute; }
+        @media only screen and (max-width: 768px) {
+          footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
+            background-color: white !important;
+            border: 1px solid rgba(0, 0, 0, 0.14902);
+            box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+            -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+            footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a {
+              color: #428bca;
+              font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+              border: thin solid transparent; }
+              footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a:hover {
+                color: #ca8142; }
+              footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a.active {
+                color: #72742a;
+                font-weight: bold;
+                background: rgba(202, 129, 66, 0.1);
+                -moz-border-radius: 3px;
+                -o-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                border-radius: 3px; } }
       @media only screen and (max-width: 768px) and (max-width: 1024px) {
         footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu a.active {
           background: rgba(202, 129, 66, 0.1); } }
