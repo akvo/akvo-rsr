@@ -452,8 +452,40 @@ nav.navbar-fixed-top {
                     margin-right: 10px;
                     .userDropdown {
                         margin-top: 2px;
-                        button {
+                        background-color: transparent !important;
+                        border-color: transparent !important;
+                        .btn-default {
+                            background-color: transparent !important;
                             border-color: transparent;
+                        }
+                        .dropdown-menu {
+                            @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
+                                position: initial;
+                                float: none;
+                            }
+                            @include responsive(small-max-screens) {
+                                background-color: #fff !important;
+                                border: 1px solid rgba(0, 0, 0, 0.14902);
+                                box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                a {
+                                    color: $anchorLink;
+                                    font-family: $titleFont;
+                                    border: thin solid transparent;
+                                    &:hover {
+                                        color: $anchorLinkHover;
+                                    }
+                                    &.active {
+                                        color: complement($rsrBlue);
+                                        font-weight: bold;
+                                        background: rgba($anchorLinkHover, 0.1);
+                                        @include border-radius(3px);
+                                        @include responsive(tablets) {
+                                            background: rgba($anchorLinkHover, 0.1);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

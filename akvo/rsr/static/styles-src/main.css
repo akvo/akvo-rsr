@@ -430,9 +430,39 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) {
         margin-right: 10px; }
         nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown {
-          margin-top: 2px; }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown button {
+          margin-top: 2px;
+          background-color: transparent !important;
+          border-color: transparent !important; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default {
+            background-color: transparent !important;
             border-color: transparent; }
+          @media only screen and (max-width: 1024px) and (min-width: 768px) {
+            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
+              position: initial;
+              float: none; } }
+          @media only screen and (max-width: 768px) {
+            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
+              background-color: #fff !important;
+              border: 1px solid rgba(0, 0, 0, 0.14902);
+              box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+              -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+              nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a {
+                color: #428bca;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                border: thin solid transparent; }
+                nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a:hover {
+                  color: #ca8142; }
+                nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a.active {
+                  color: #72742a;
+                  font-weight: bold;
+                  background: rgba(202, 129, 66, 0.1);
+                  -moz-border-radius: 3px;
+                  -o-border-radius: 3px;
+                  -webkit-border-radius: 3px;
+                  border-radius: 3px; } }
+      @media only screen and (max-width: 768px) and (max-width: 1024px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a.active {
+          background: rgba(202, 129, 66, 0.1); } }
       nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
         padding-left: 10px;
         padding-right: 10px; }
