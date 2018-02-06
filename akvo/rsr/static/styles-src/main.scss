@@ -571,7 +571,7 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 0 25px 0;
+    padding: 10px 20px 25px 20px;
 }
 
 .navContainer {
@@ -1046,6 +1046,13 @@ body > footer {
 }
 
 footer {
+    .dropdown-menu {
+        position: absolute !important;
+        top: -420%;
+        right: 0;
+        left: inherit;
+        background-color: white !important;
+    }
     .navbar {
         background: $akvoBlack;
         @include border-radius(0);
@@ -1100,7 +1107,7 @@ footer {
                                 float: none;
                             }
                             @include responsive(small-max-screens) {
-                                background-color: transparent !important;
+                                background-color: white !important;
                                 border: 1px solid rgba(0, 0, 0, 0.14902);
                                 box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
                                 -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
@@ -4407,7 +4414,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }

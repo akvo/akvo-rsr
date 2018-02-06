@@ -547,7 +547,7 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .btnHeader {
-  padding: 10px 0 25px 0; }
+  padding: 10px 20px 25px 20px; }
 
 .navContainer {
   background: rgba(57, 102, 128, 0.1);
@@ -937,6 +937,13 @@ div.paginationWrap {
 body > footer {
   margin-top: 1em; }
 
+footer .dropdown-menu {
+  position: absolute !important;
+  top: -420%;
+  right: 0;
+  left: inherit;
+  background-color: white !important; }
+
 footer .navbar {
   background: #202024;
   -moz-border-radius: 0;
@@ -985,7 +992,7 @@ footer .navbar {
           float: none; } }
       @media only screen and (max-width: 768px) {
         footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
-          background-color: transparent !important;
+          background-color: white !important;
           border: 1px solid rgba(0, 0, 0, 0.14902);
           box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
           -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
