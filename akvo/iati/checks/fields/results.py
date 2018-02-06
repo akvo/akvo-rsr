@@ -11,11 +11,6 @@ DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
 
 def results(project):
     """
-    Check if result has a type, title and at least one indicator.
-    Check if indicator has a measure and title.
-    Check if indicator baseline has year and value.
-    Check if indicator period has a start and end date, and start before end.
-
     :param project: Project object
     :return: All checks passed boolean, [Check results]
     """
@@ -109,7 +104,7 @@ def results(project):
                         all_checks_passed = False
                         checks.append((u'warning', u'indicator period (id: %s) has no target value '
                                                    u'specified. The value "N/A" has been set for '
-                                                   u'the target value attribute' % str(indicator.pk)))
+                                                   u'the target value attribute' % str(period.pk)))
                     elif (period.target_comment or period.target_locations.all() or
                           period.target_dimensions.all()):
                         all_checks_passed = False
@@ -123,7 +118,7 @@ def results(project):
                         all_checks_passed = False
                         checks.append((u'warning', u'indicator period (id: %s) has no actual value '
                                                    u'specified. The value "N/A" has been set for '
-                                                   u'the actual value attribute' % str(indicator.pk)))
+                                                   u'the actual value attribute' % str(period.pk)))
                     elif (period.actual_comment or period.actual_locations.all() or
                           period.actual_dimensions.all()):
                         all_checks_passed = False
