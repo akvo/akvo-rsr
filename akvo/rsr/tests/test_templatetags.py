@@ -17,6 +17,7 @@ class TemplateTagsTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.tearDownClass()
         MANDATORY = ProjectEditorValidation.MANDATORY_ACTION
         HIDDEN = ProjectEditorValidation.HIDDEN_ACTION
         validation1 = [
