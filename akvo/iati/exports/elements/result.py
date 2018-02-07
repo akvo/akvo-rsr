@@ -8,6 +8,9 @@ from lxml import etree
 
 from akvo.rsr.models.result.utils import QUANTITATIVE
 
+DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
+NOT_AVAILABLE = u"N/A"
+
 
 def result(project):
     """
@@ -17,6 +20,8 @@ def result(project):
     :return: A list of Etree elements
     """
     result_elements = []
+
+    DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
 
     for res in project.results.all():
         if res.type or res.aggregation_status is not None or res.title or res.description or \
@@ -75,15 +80,19 @@ def result(project):
                             if reference.vocabulary_uri:
                                 reference_element.attrib['indicator-uri'] = reference.vocabulary_uri
 
-                    if indicator.baseline_year or indicator.baseline_value or \
+                    if DGIS_PROJECT or indicator.baseline_year or indicator.baseline_value or \
                             indicator.baseline_comment:
                             baseline_element = etree.SubElement(indicator_element, "baseline")
 
                             if indicator.baseline_year:
                                 baseline_element.attrib['year'] = str(indicator.baseline_year)
+                            elif DGIS_PROJECT:
+                                baseline_element.attrib['year'] = NOT_AVAILABLE
 
                             if indicator.baseline_value:
                                 baseline_element.attrib['value'] = indicator.baseline_value
+                            elif DGIS_PROJECT:
+                                baseline_element.attrib['value'] = NOT_AVAILABLE
 
                             if indicator.baseline_comment:
                                 comment_element = etree.SubElement(baseline_element, "comment")
@@ -107,12 +116,15 @@ def result(project):
                                 period_end_element = etree.SubElement(period_element, "period-end")
                                 period_end_element.attrib['iso-date'] = str(period.period_end)
 
-                            if period.target_value or period.target_locations.all() or \
-                                    period.target_dimensions.all() or period.target_comment:
+                            if (DGIS_PROJECT or period.target_value or
+                                    period.target_locations.all() or
+                                    period.target_dimensions.all() or period.target_comment):
                                 target_element = etree.SubElement(period_element, "target")
 
                                 if period.target_value:
                                     target_element.attrib['value'] = period.target_value
+                                elif DGIS_PROJECT:
+                                    target_element.attrib['value'] = NOT_AVAILABLE
 
                                 for target_location in period.target_locations.all():
                                     target_location_element = etree.SubElement(target_element,
@@ -138,12 +150,15 @@ def result(project):
                                                                          "narrative")
                                     narrative_element.text = period.target_comment
 
-                            if period.actual_value or period.actual_locations.all() or \
-                                    period.actual_dimensions.all() or period.actual_comment:
+                            if (DGIS_PROJECT or period.actual_value or
+                                    period.actual_locations.all() or
+                                    period.actual_dimensions.all() or period.actual_comment):
                                 actual_element = etree.SubElement(period_element, "actual")
 
                                 if period.actual_value:
                                     actual_element.attrib['value'] = period.actual_value
+                                elif DGIS_PROJECT:
+                                    actual_element.attrib['value'] = NOT_AVAILABLE
 
                                 for actual_location in period.actual_locations.all():
                                     actual_location_element = etree.SubElement(actual_element,
