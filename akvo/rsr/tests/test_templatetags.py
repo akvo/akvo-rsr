@@ -67,7 +67,6 @@ class TemplateTagsTestCase(TestCase):
         id_1, id_2 = ProjectEditorValidationSet.objects.values_list('id', flat=True)
         cls.ids = {'id_1': id_1, 'id_2': id_2}
 
-
     @classmethod
     def tearDownClass(cls):
         ProjectEditorValidation.objects.all().delete()
