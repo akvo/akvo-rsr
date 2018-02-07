@@ -64,6 +64,12 @@ class TemplateTagsTestCase(TestCase):
 
         cls.validations = ProjectEditorValidation.objects.all()
 
+    @classmethod
+    def tearDownClass(cls):
+        ProjectEditorValidation.objects.all().delete()
+        ProjectEditorValidationSet.objects.all().delete()
+        cls.validations = None
+
     def _indications(self, field):
         return mandatory_or_hidden(self.validations, field).strip()
 
