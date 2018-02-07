@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from django.test import TestCase
 
 from akvo.rsr.models import ProjectEditorValidation, ProjectEditorValidationSet
-from akvo.rsr.templatetags.project_editor import mandatory_or_hidden
+from akvo.rsr.templatetags.project_editor import mandatory_or_hidden, invalidate_validation_cache
 
 
 class TemplateTagsTestCase(TestCase):
@@ -70,6 +70,7 @@ class TemplateTagsTestCase(TestCase):
         ProjectEditorValidation.objects.all().delete()
         ProjectEditorValidationSet.objects.all().delete()
         cls.validations = None
+        invalidate_validation_cache()
 
     def _indications(self, field):
         return mandatory_or_hidden(self.validations, field).strip()
