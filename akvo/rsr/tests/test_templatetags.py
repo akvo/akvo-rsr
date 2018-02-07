@@ -64,6 +64,9 @@ class TemplateTagsTestCase(TestCase):
                 )
 
         cls.validations = ProjectEditorValidation.objects.all()
+        id_1, id_2 = ProjectEditorValidationSet.objects.values_list('id', flat=True)
+        cls.ids = {'id_1': id_1, 'id_2': id_2}
+
 
     @classmethod
     def tearDownClass(cls):
@@ -80,7 +83,9 @@ class TemplateTagsTestCase(TestCase):
 
     def test_current_image_field(self):
         field = 'rsr_project.current_image.2'
-        expected_indications = 'mandatory-1 mandatory-1 mandatory-1-or-test_image'
+        expected_indications = (
+            'mandatory-{id_1} mandatory-{id_1} mandatory-{id_1}-or-test_image'.format(**self.ids)
+        )
         self.assertIndications(field, expected_indications)
 
     def test_current_image(self):
@@ -90,30 +95,30 @@ class TemplateTagsTestCase(TestCase):
 
     def test_title(self):
         field = 'rsr_project.title.2'
-        expected_indications = 'mandatory-1 mandatory-2'
+        expected_indications = 'mandatory-{id_1} mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_date_start(self):
         field = 'rsr_project.date_start_planned.2'
         expected_indications = (
-            'mandatory-1 mandatory-1-or-date_start_actual '
-            'mandatory-2 mandatory-2-or-date_start_actual'
-        )
+            'mandatory-{id_1} mandatory-{id_1}-or-date_start_actual '
+            'mandatory-{id_2} mandatory-{id_2}-or-date_start_actual'
+        ).format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_partnership_iati_organisation_role(self):
         field = 'rsr_partnership.iati_organisation_role.1099'
-        expected_indications = 'mandatory-1 mandatory-2'
+        expected_indications = 'mandatory-{id_1} mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_transaction_type(self):
         field = 'rsr_transaction.transaction_type.11'
-        expected_indications = 'mandatory-2'
+        expected_indications = 'mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_projectdocument_url(self):
         field = 'rsr_projectdocument.url.2_new-0'
-        expected_indications = 'mandatory-2 mandatory-2-or-document'
+        expected_indications = 'mandatory-{id_2} mandatory-{id_2}-or-document'.format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_planned_disbursement_currency(self):
@@ -123,12 +128,12 @@ class TemplateTagsTestCase(TestCase):
 
     def test_planned_disbursement_value(self):
         field = 'rsr_planneddisbursement.value.2_new-0'
-        expected_indications = 'mandatory-2'
+        expected_indications = 'mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_subtitle(self):
         field = 'rsr_project.subtitle.2'
-        expected_indications = 'mandatory-1'
+        expected_indications = 'mandatory-{id_1}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
 
     def test_update_subtitle_validation(self):
@@ -139,5 +144,5 @@ class TemplateTagsTestCase(TestCase):
             action=1,
             validation_set=self.validation2
         )
-        expected_indications = 'mandatory-1 mandatory-2'
+        expected_indications = 'mandatory-{id_1} mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
