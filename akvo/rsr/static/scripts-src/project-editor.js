@@ -47,6 +47,7 @@ var localStorageResponses = localStorage.getItem(localStorageName);
 var partials = [
     'related-project', 'humanitarian-scope', 'budget-item', 'condition', 'contact-information',
     'country-budget-item', 'document', 'document-category', 'indicator', 'indicator-dimension',
+    'dimension-name', 'dimension-value', 'indicator-dimension-name',
     'indicator-label', 'indicator-period', 'indicator-reference', 'indicator-period-actual-dimension',
     'indicator-period-actual-location', 'indicator-period-target-dimension',
     'indicator-period-target-location', 'link', 'partner', 'planned-disbursement', 'policy-marker',
@@ -770,15 +771,20 @@ function deleteItem(itemId, itemType) {
     /* Delete an item through the API, and remove the associated related object div. */
 
     var relatedObjDiv = document.getElementById(itemType + '.' + itemId);
-    var form = findAncestorByTag(relatedObjDiv, 'form');
 
-    var request = new XMLHttpRequest();
+    var url;
     if (itemType === 'keyword') {
-        request.open('DELETE', '/rest/v1/project/' + defaultValues.project_id + '/remove_keyword/' + itemId + '/?format=json', true);
+        url = '/rest/v1/project/' + defaultValues.project_id +
+              '/remove_keyword/' + itemId + '/?format=json';
+    } else if (itemType === 'indicator_dimension') {
+        url = '/rest/v1/indicator/' + itemId.split(".")[0] +
+              '/remove_dimension/' + itemId.split(".")[1] + '/?format=json';
     } else {
-        request.open('DELETE', '/rest/v1/' + itemType + '/' + itemId + '/?format=json', true);
+        url = '/rest/v1/' + itemType + '/' + itemId + '/?format=json';
     }
 
+    var request = new XMLHttpRequest();
+    request.open('DELETE', url, true);
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -850,7 +856,7 @@ function setRemovePartial(node) {
         // Id will be in the form of 'related_project.1234' or 'related_project.1234_new-0'
         var idArray = parentDiv.getAttributeNode("id").value.split(".");
         var apiEndpoint = idArray[0];
-        var objId = idArray[1];
+        var objId = idArray.slice(1).join(".");
 
         if (objId.indexOf("new") > -1) {
             // New object, not saved to the DB, so partial can be directly deleted
@@ -1613,9 +1619,10 @@ function addPartial(partialName, partialContainer) {
             ['result', 'indicator', 'indicator-period', 'indicator-period-actual-location'],
             ['result', 'indicator', 'indicator-period', 'indicator-period-target-dimension'],
             ['result', 'indicator', 'indicator-period', 'indicator-period-target-location'],
-            ['result', 'indicator', 'indicator-dimension'],
+            ['result', 'indicator', 'indicator-dimension-name'],
             ['result', 'indicator', 'indicator-label'],
             ['result', 'indicator', 'indicator-reference'],
+            ['dimension-name', 'dimension-value'],
             ['transaction', 'transaction-sector'],
             ['project-location', 'location-administrative'],
             ['document', 'document-category'],

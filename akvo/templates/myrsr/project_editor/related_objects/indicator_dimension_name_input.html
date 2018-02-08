@@ -1,0 +1,41 @@
+{% load i18n project_editor %}
+
+<div class="dimension-name-item parent" id="indicator_dimension.{{ indicator_id_string }}.{{ dimension_name|obj_id }}">
+  {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension_name %}
+  <div class="hide-partial {% if dimension_name.pk %}hidden{% endif %}">
+    <div class="row">
+      <div class="col-md-6">
+        {% include manytomany_input with obj=dimension_name field='name' filter_field='project' filter_value=project_id_string%}
+
+{#        {% with obj_field_id=dimension_name|field_id:'name' obj_value=dimension_name|manytomany_value %}#}
+{#          obj_field_id: {{ obj_field_id }} obj_value: {{ obj_value }} indicator_id_string {{ indicator_id_string }}#}
+{#          <div class="form-group">#}
+{#            <div class="select-group control">#}
+{#              <select name="{{ obj_field_id }}"#}
+{#                      id="{{ obj_field_id }}"#}
+{#                      class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"#}
+{#                      saved-value="{{ obj_value }}"#}
+{#                      {% if disabled %}disabled{% endif %}>#}
+{#                {% if not not_empty %}#}
+{#                  <option value=""{% if not obj_value %} selected="selected"{% endif %}></option>#}
+{#                {% endif %}#}
+{#                {% for choice in dimension_name|manytomany_choices:'name' %}#}
+{#                  <option value="{{ choice.0 }}"{% if dimension_name|manytomany_value == choice.0 %}#}
+{#                          selected="selected"{% endif %}>{{ choice.1 }}</option>#}
+{#                {% endfor %}#}
+{#              </select>#}
+{#              <label for="{{ obj_field_id }}" class="control-label">#}
+{#                {{ dimension_name|field_name:'name' }}#}
+{#              </label>#}
+{#            </div>#}
+{#            {% if dimension_name|help_text:'name' %}#}
+{#              <p class="help-block hidden">{{ dimension_name|help_text:'name'|safe }}</p>#}
+{#            {% endif %}#}
+{#          </div>#}
+{#        {% endwith %}#}
+
+
+      </div>
+    </div>
+  </div>
+</div>

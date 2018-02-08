@@ -26,6 +26,9 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country,
                              ProjectDocument, ProjectDocumentCategory,
                              ProjectEditorValidationSet, ProjectLocation,
                              Result, Transaction, TransactionSector)
+from akvo.rsr.models.result.indicator_dimension import (
+    IndicatorDimensionName, IndicatorDimensionValue
+)
 from akvo.utils import DjangoModel
 
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
@@ -53,6 +56,7 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
     IndicatorDimension: (Indicator, 'indicator'),
+    IndicatorDimensionValue: (IndicatorDimensionName, 'name'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
     IndicatorPeriodTargetDimension: (IndicatorPeriod, 'period'),
@@ -68,6 +72,7 @@ RELATED_OBJECTS_MAPPING = {
 MANY_TO_MANY_FIELDS = {
     # Special mapping for many to many fields
     Keyword: 'keywords',
+    IndicatorDimensionName: 'dimension_names',
 }
 
 
@@ -467,10 +472,28 @@ def project_editor(request, pk=None):
             related_obj_id = ''.join(
                 [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
             )
-
-            if Model in MANY_TO_MANY_FIELDS.keys():
-                # This field is a many to many field, which need special handling
+            if Model == Keyword:
                 m2m_relation = getattr(project, MANY_TO_MANY_FIELDS[Model])
+                try:
+                    m2m_object = Model.objects.get(pk=int(obj_data))
+                    if len(key_parts.ids) == 1:
+                        # If there already was an appointed object in the many to many relation,
+                        # remove the old object first
+                        old_m2m_object = Model.objects.get(pk=int(key_parts.ids[0]))
+                        if old_m2m_object in m2m_relation.all():
+                            m2m_relation.remove(old_m2m_object)
+                    # Add the new many to many object to the project
+                    m2m_relation.add(m2m_object)
+                    changes = add_changes(changes, m2m_object, key_parts.field, key, obj_data)
+                    if related_obj_id not in rel_objects.keys():
+                        rel_objects[related_obj_id] = obj_data
+                except Model.DoesNotExist as e:
+                    errors = add_error(errors, str(e), key)
+                data.pop(key, None)
+
+            elif Model == IndicatorDimensionName and len(key_parts.ids) > 2:
+                indicator = Indicator.objects.get(pk=int(key_parts.ids[2]))
+                m2m_relation = getattr(indicator, MANY_TO_MANY_FIELDS[Model])
                 try:
                     m2m_object = Model.objects.get(pk=int(obj_data))
                     if len(key_parts.ids) == 1:
@@ -875,6 +898,35 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
             object_repr=project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=change_message
+        )
+
+    return Response({})
+
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimension_pk=None):
+
+    indicator = Indicator.objects.get(pk=indicator_pk)
+    dimension = IndicatorDimensionName.objects.get(pk=dimension_pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', indicator.result.project):
+        return HttpResponseForbidden()
+
+    if dimension in indicator.dimension_names.all():
+        indicator.dimension_names.remove(dimension)
+
+        change_message = u'%s %s.' % (_(u'Project editor, relation removed: indicator dimension'),
+                                      dimension.__unicode__())
+
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(indicator).pk,
+            object_id=indicator.pk,
+            object_repr=indicator.__unicode__(),
             action_flag=CHANGE,
             change_message=change_message
         )

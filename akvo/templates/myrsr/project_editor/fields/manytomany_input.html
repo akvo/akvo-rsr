@@ -11,7 +11,8 @@
                 {% if not not_empty %}
                     <option value=""{% if not obj_value %} selected="selected"{% endif %}></option>
                 {% endif %}
-                {% for choice in obj|manytomany_choices:field %}
+                {% manytomany_choices obj field filter_field filter_value as choices %}
+                {% for choice in choices %}
                     <option value="{{ choice.0 }}"{% if obj|manytomany_value == choice.0 %} selected="selected"{% endif %}>{{ choice.1 }}</option>
                 {% endfor %}
             </select>
