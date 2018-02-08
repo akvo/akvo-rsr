@@ -24,6 +24,8 @@ from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
 from .indicator_dimension import IndicatorDimensionViewSet
+from .indicator_dimension_name import IndicatorDimensionNameViewSet
+from .indicator_dimension_value import IndicatorDimensionValueViewSet
 from .indicator_label import IndicatorLabelViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
@@ -69,7 +71,8 @@ from .project_editor import (project_editor,
                              project_editor_add_validation,
                              project_editor_remove_validation,
                              project_editor_remove_keyword,
-                             project_editor_organisation_logo)
+                             project_editor_organisation_logo,
+                             project_editor_remove_indicator_dimension,)
 from .project_comment import ProjectCommentViewSet
 from .project_document import ProjectDocumentViewSet, ProjectDocumentCategoryViewSet
 from .project_condition import ProjectConditionViewSet
@@ -130,6 +133,8 @@ __all__ = [
     'IatiExportViewSet',
     'IndicatorViewSet',
     'IndicatorDimensionViewSet',
+    'IndicatorDimensionNameViewSet',
+    'IndicatorDimensionValueViewSet',
     'IndicatorFrameworkViewSet',
     'IndicatorLabelViewSet',
     'IndicatorPeriodActualDimensionViewSet',
@@ -199,6 +204,7 @@ __all__ = [
     'project_editor_import_results',
     'project_editor_import_indicator',
     'project_editor_organisation_logo',
+    'project_editor_remove_indicator_dimension',
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
