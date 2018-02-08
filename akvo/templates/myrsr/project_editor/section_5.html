@@ -72,6 +72,27 @@
                     </div>
                 </div>
 
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimensionname" }}">
+                    <h5>{% trans 'Dimension' %}</h5>
+                    <div class="dimension-name-container" id="dimension-name-container">
+                        {% with proejct_id_string=proejct.pk|default:"new-0"|stringformat:"s" %}
+                            {% for dimension_name in project.dimension_names.all %}
+                                {% include "myrsr/project_editor/related_objects/dimension_name_input.html" %}
+                            {% empty %}
+                                {% include "myrsr/project_editor/related_objects/dimension_name_input.html" with dimension_name='IndicatorDimensionName.'|add:project_id_string %}
+                            {% endfor %}
+                        {% endwith %}
+                        <div class="row form-group">
+                            <div class="col-md-12 text-center add-object-link">
+                                <a href="#" class="add-dimension-name">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                    {% trans 'Add another dimension' %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_projectcondition" }}">
                     <h5>{% trans 'Project conditions' %}</h5>
                     <div class="condition-container" id="condition-container">

@@ -316,6 +316,8 @@ def project_editor(request, project_id):
             'links',
             'documents',
             'keywords',
+            'dimension_names',
+            'dimension_names__dimension_values',
         ).select_related(
             'publishingstatus',
             'primary_organisation',
