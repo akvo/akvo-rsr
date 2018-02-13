@@ -1,8 +1,8 @@
 /*
- Akvo RSR is covered by the GNU Affero General Public License.
- See more details in the license.txt file located at the root folder of the
- Akvo RSR module. For additional details on the GNU license please see
- < http://www.gnu.org/licenses/agpl.html >.
+   Akvo RSR is covered by the GNU Affero General Public License.
+   See more details in the license.txt file located at the root folder of the
+   Akvo RSR module. For additional details on the GNU license please see
+   < http://www.gnu.org/licenses/agpl.html >.
  */
 
 
@@ -55,6 +55,7 @@ import {
 
 import FilterBar from "./FilterBar";
 import Reports from "./Reports";
+import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
 import UpdateForm from "./updates/UpdateForm";
@@ -297,9 +298,9 @@ export default class App extends React.Component {
         };
 
         const results = this.props.ui.allFetched ?
-            <Results parentId="results"/>
-        :
-            <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
+                        <Results parentId="results"/>
+:
+                        <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
         const {page, disaggregations, updates, periods, indicators} = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
@@ -325,48 +326,41 @@ export default class App extends React.Component {
                             onClose={this.onClose}
                             originalUpdate={this.state.originalUpdate}
                             collapseId={collapseId(
-                                             c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
-                                        )}/>
+                                    c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
+                            )}/>
             )
         }
+        const show_reports = page.mode && page.mode.show_narrative_reports;
 
         return (
-            page.mode && page.mode.show_narrative_reports ? (
-                <section className="results liveView">
-                    <Tabs onSelect={this.onSelectTab}>
-                        <TabList>
-                            <Tab>Results</Tab>
-                            <Tab>Narrative summaries</Tab>
-                        </TabList>
-                        <TabPanel>
-                            <FilterBar callbacks={callbacks}/>
-                            <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
-                                <article className={updateForm ? 'shared' : 'full'}>
-                                    {results}
-                                </article>
-                                <aside className={updateForm ? 'open' : 'closed'}>
-                                    {updateForm}
-                                </aside>
-                            </main>
-                        </TabPanel>
-                        <TabPanel>
-                            <Reports/>
-                        </TabPanel>
-                    </Tabs>
-                </section>
-            ) : (
-                <section className="results liveView">
-                    <FilterBar callbacks={callbacks}/>
-                    <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
-                        <article className={updateForm ? 'shared' : 'full'}>
-                            {results}
-                        </article>
-                        <aside className={updateForm ? 'open' : 'closed'}>
-                            {updateForm}
-                        </aside>
-                    </main>
-                </section>
-            )
+            <section className="results liveView">
+                <Tabs onSelect={this.onSelectTab}>
+
+                    <TabList>
+                        <Tab>Results</Tab>
+                        { show_reports ? (<Tab>Narrative summaries</Tab>) : undefined }
+                        <Tab>RSR updates</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <FilterBar callbacks={callbacks}/>
+                        <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
+                            <article className={updateForm ? 'shared' : 'full'}>
+                                {results}
+                            </article>
+                            <aside className={updateForm ? 'open' : 'closed'}>
+                                {updateForm}
+                            </aside>
+                        </main>
+                    </TabPanel>
+                    { show_reports ? (
+                          <TabPanel>
+                              <Reports/>
+                          </TabPanel>): undefined}
+                    <TabPanel>
+                        <RSRUpdates/>
+                    </TabPanel>
+                </Tabs>
+            </section>
         );
     }
 }
