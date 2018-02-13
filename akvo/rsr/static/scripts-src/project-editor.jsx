@@ -2987,10 +2987,8 @@ function toggleSection(node) {
         if (formBlock.className.indexOf('hidden') > -1) {
             formBlock.className = formBlock.className.replace('hidden', '');
             inputStep.checked = true;
-            setTimeout(function () {
-                div.scrollIntoView();
-                window.scrollBy(0, -100);
-            }, 1);
+            div.scrollIntoView();
+            window.scrollBy(0, -100);
             for (var i=0; i < allFormBlocks.length; i++) {
                 if (allFormBlocks[i] !== formBlock && allFormBlocks[i].className.indexOf('hidden') === -1) {
                     allFormBlocks[i].className += ' hidden';
@@ -3997,6 +3995,8 @@ function initApp() {
     setAllSectionsChangeListener();
 
     setLocalStorage();
+
+    expandAccordion(true);
 }
 
 var loadJS = function(url, implementationCode, location){
@@ -4096,7 +4096,3 @@ function expandAccordion(highlight) {
         }
     }
 };
-
-window.onload = function(){
-    expandAccordion(true);
-}
