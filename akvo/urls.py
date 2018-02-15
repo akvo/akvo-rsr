@@ -103,6 +103,11 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/$',
         'akvo.rsr.views.my_rsr.my_rsr', name='my_rsr'),
 
+    url(r'^myrsr/project/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.my_results',
+        kwargs=dict(template='myrsr/project.html'),
+        name='project-edit'),
+
     url(r'^myrsr/details/$',
         'akvo.rsr.views.my_rsr.my_details', name='my_details'),
 
