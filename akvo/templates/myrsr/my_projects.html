@@ -47,11 +47,11 @@
           {% has_perm 'rsr.change_project' user project as can_edit_project %}
           <tr class="{% if not project.is_published %}notPublished{% elif not project.is_public %}isPrivate{% endif %}">
             <td class="media">
-              <a class="pull-left" href="{% if can_edit_project and not project.iati_status in project.EDIT_DISABLED %}{% url 'project_editor' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
+              <a class="pull-left" href="{% if can_edit_project and not project.iati_status in project.EDIT_DISABLED %}{% url 'project-edit' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
                 {% img project 64 64 project.title %}
               </a>
               <div class="media-body">
-                <a href="{% if can_edit_project and not project.iati_status in project.EDIT_DISABLED %}{% url 'project_editor' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
+                <a href="{% if can_edit_project and not project.iati_status in project.EDIT_DISABLED %}{% url 'project-edit' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
                   <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
                 <p class="small">{{ project.subtitle }}</p>
