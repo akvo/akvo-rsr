@@ -44,6 +44,12 @@
                     {% trans "IATI" %}
                 </a>
             </li>
+            <li class="navReports">
+                <a href="{% url 'my_reports' %}"
+                   class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
+                    {% trans 'Reports' %}
+                </a>
+            </li>
             {% endif %}
         </ul>
 
