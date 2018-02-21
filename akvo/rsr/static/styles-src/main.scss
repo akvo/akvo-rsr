@@ -527,6 +527,7 @@ nav.navbar-fixed-top {
 }
 
 .navbar {
+    margin-bottom: 0 !important;
     .active {
         color: #2A6297;
     }
@@ -1216,7 +1217,7 @@ h4.detailedInfo {
 
 #map {
     position: relative;
-    height: calc(100vh - 409px);
+    height: calc(100vh - 450px);
     @include responsive(xtra-small-max-screens) {
         display: none;
     }
@@ -1554,9 +1555,9 @@ h4.detailedInfo {
         @include noWrapBlockTxt;
     }
     &.projects {
-        margin-top: 20px;
+        margin-top: 10px;
         ul {
-            max-height: calc(100vh - 409px);
+            max-height: calc(100vh - 450px);
             overflow-y: scroll;
             padding-left: 15px;
             li {
@@ -2548,10 +2549,6 @@ section.projectPartners {
 }
 
 /* Display currency totals right-aligned */
-
-.currencyAmount {
-    text-align: right;
-}
 
 dd {
     &.currencyAmount {
@@ -3572,11 +3569,11 @@ main {
 }
 
 main.project-page {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 400px);
 }
 
 main.results-page {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 400px);
 }
 
 .resultProjectTitle {
