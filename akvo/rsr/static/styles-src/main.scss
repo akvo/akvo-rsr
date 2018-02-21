@@ -370,6 +370,10 @@ nav.navbar-fixed-top {
             }
         }
     }
+    & + .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
     .navbar-brand {
         float: left;
         font-size: 18px;
@@ -610,13 +614,6 @@ nav.navbar-fixed-top {
     background: rgba($primary5, 0.1);
     margin: -20px 0 10px 0;
     padding-top: 10px;
-}
-
-.myRsrPg {
-    h3 {
-        display: inline-block;
-        margin-top: 20px;
-    }
 }
 
 .choose-report-template {
@@ -1353,6 +1350,12 @@ h4.detailedInfo {
 
 .advanced-filter {
     display: inline-block;
+    label {
+        margin-top: 5px !important;
+    }
+    .bootstrap-typeahead-input {
+        margin-right: 1px;
+    }
 }
 
 #sidebar-wrapper {
@@ -1415,14 +1418,26 @@ h4.detailedInfo {
     }
 }
 
+.sortContainer {
+    background-color: rgba($akvoBlack, 0.1);
+    .colorChange {
+        max-width: 80%;
+        margin: 10px auto 0 auto;
+    }
+}
+
 #search-filter {
     margin-top: -10px;
-    padding: 20px 0;
     background: rgba($akvoBlack, 0.05);
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
 
+    .searchBar {
+        max-width: 80%;
+        margin: 10px auto 0 auto;
+        @include noWrapTxt;
+    }
     #search {
         @include responsive(small-max-screens) {
             padding-bottom: 0;
@@ -1537,7 +1552,7 @@ h4.detailedInfo {
         @include noWrapBlockTxt;
     }
     &.projects {
-        margin-top: 50px;
+        margin-top: 20px;
         ul {
             max-height: calc(100vh - 409px);
             overflow-y: scroll;
@@ -3579,6 +3594,27 @@ main.results-page {
     }
 }
 
+.myRsrPg {
+    h3 {
+        display: inline-block;
+        margin-top: 20px;
+    }
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    ol {
+        &.breadcrumb {
+            padding: 15px !important;
+            background-color: none !important;
+            font-size: 1.1em;
+            >li+li:before {
+                padding: 0 5px;
+                color: #ccc;
+                content: "\003e";
+            }
+        }
+    }
+}
+
 .results {
     background: white;
     box-sizing: border-box;
@@ -3591,7 +3627,7 @@ main.results-page {
     .react-tabs {
         ul {
             li {
-                border-radius: 0;
+                border-radius: 5px 5px 0 0;
             }
         }
     }
@@ -4470,7 +4506,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }

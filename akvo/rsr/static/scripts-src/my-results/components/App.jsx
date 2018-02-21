@@ -335,7 +335,7 @@ export default class App extends React.Component {
 
         return (
             <section className="results liveView">
-                <a className="pull-right btn btn-default" href={`../../project_editor/${projectId}/`}>Edit project</a>
+                <a className="pull-right" href={`../../project_editor/${projectId}/`}>Edit project</a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         <Tab>Results</Tab>
