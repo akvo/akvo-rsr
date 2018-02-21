@@ -525,21 +525,22 @@ nav.navbar-fixed-top {
           padding-right: 20px;
           padding-left: 20px; }
 
-.navbar .active {
-  color: #2A6297; }
-
-.navbar .container {
-  /* nav menu overflows to two lines in spanish and french unless container width
+.navbar {
+  margin-bottom: 0 !important; }
+  .navbar .active {
+    color: #2A6297; }
+  .navbar .container {
+    /* nav menu overflows to two lines in spanish and french unless container width
         is increased slightly just above the threshold for switching to dropdown */ }
-  @media only screen and (max-width: 1200px) and (min-width: 1024px) {
-    .navbar .container {
-      min-width: 1000px; } }
-  .navbar .container .navbar-collapse.in {
-    /*  Allow language dropdown menu to extend the height of the nav container.
+    @media only screen and (max-width: 1200px) and (min-width: 1024px) {
+      .navbar .container {
+        min-width: 1000px; } }
+    .navbar .container .navbar-collapse.in {
+      /*  Allow language dropdown menu to extend the height of the nav container.
                     Otherwise, we get a scrollbar in the nav area on small screens */ }
-    @media only screen and (max-width: 768px) {
-      .navbar .container .navbar-collapse.in {
-        overflow-y: initial; } }
+      @media only screen and (max-width: 768px) {
+        .navbar .container .navbar-collapse.in {
+          overflow-y: initial; } }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .navbar-header {
@@ -1082,7 +1083,7 @@ h4.detailedInfo {
 
 #map {
   position: relative;
-  height: calc(100vh - 409px); }
+  height: calc(100vh - 450px); }
   @media only screen and (max-width: 568px) {
     #map {
       display: none; } }
@@ -1255,10 +1256,11 @@ h4.detailedInfo {
       padding-bottom: 0; } }
   #search-filter .searchBar {
     max-width: 80%;
-    margin: 10px auto 0 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; }
+    margin: 10px auto 0 auto; }
+    #search-filter .searchBar p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; }
   @media only screen and (max-width: 768px) {
     #search-filter #search {
       padding-bottom: 0; } }
@@ -1342,9 +1344,9 @@ h4.detailedInfo {
   white-space: normal; }
 
 .main-list.projects {
-  margin-top: 20px; }
+  margin-top: 10px; }
   .main-list.projects ul {
-    max-height: calc(100vh - 409px);
+    max-height: calc(100vh - 450px);
     overflow-y: scroll;
     padding-left: 15px; }
     .main-list.projects ul li {
@@ -2071,9 +2073,6 @@ section.projectPartners .row {
     margin-right: auto; } }
 
 /* Display currency totals right-aligned */
-.currencyAmount {
-  text-align: right; }
-
 dd.currencyAmount {
   margin-left: auto; }
 
@@ -2929,10 +2928,10 @@ main {
     position: relative; }
 
 main.project-page {
-  height: calc(100vh - 300px); }
+  height: calc(100vh - 400px); }
 
 main.results-page {
-  height: calc(100vh - 300px); }
+  height: calc(100vh - 400px); }
 
 .resultProjectTitle {
   margin: 15px 0 25px 0; }
