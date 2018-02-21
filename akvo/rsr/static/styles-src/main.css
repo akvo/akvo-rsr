@@ -1181,6 +1181,9 @@ h4.detailedInfo {
         font-weight: bold;
         color: #ca8142; } }
 
+.advanced-filter {
+  display: inline-block; }
+
 #sidebar-wrapper {
   z-index: 99999;
   position: absolute;

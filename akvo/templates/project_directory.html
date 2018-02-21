@@ -11,7 +11,7 @@
         </div>
 
         <div id="search" class="verticalPadding row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <p>{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
             <div class="form-inline" role="form">
               <div class="form-group">
@@ -23,45 +23,46 @@
                       </button>
                   </span>
                 </div>
-                <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
+                <div>
+                    <div class="sortList">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="sortByButton" data-toggle="dropdown" aria-expanded="true">
+                                {% trans "Sort by" %}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="sortByDropdown">
+                                <li role="presentation"{% if sorting = "-last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-last_modified_at">{% trans "Latest modified" %}</a></li>
+                                <li role="presentation"{% if sorting = "last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="last_modified_at">{% trans "Oldest modified" %}</a></li>
+                                <li role="presentation"{% if sorting = "title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="title">{% trans "Title (A-Z)" %}</a></li>
+                                <li role="presentation"{% if sorting = "-title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-title">{% trans "Title (Z-A)" %}</a></li>
+                                <li role="presentation"{% if sorting = "budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="budget">{% trans "Total budget (low-high)" %}</a></li>
+                                <li role="presentation"{% if sorting = "-budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-budget">{% trans "Total budget (high-low)" %}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="verticalPadding">
+                        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+                        Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
+                        {% endblocktrans %}
+                        | View
+                        {% for page_number, page_size in page_info|slice:"1:" %}
+                        <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
+                        {% endfor %}
+                        projects
+                    </p>
+                </div>
               </div>
               {% if q %}
               <div><a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a></div>
               {% endif %}
             </div>
           </div>
-          <div class="col-md-6">
-              <div class="sortList">
-                <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="sortByButton" data-toggle="dropdown" aria-expanded="true">
-                    {% trans "Sort by" %}
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="sortByDropdown">
-                    <li role="presentation"{% if sorting = "-last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-last_modified_at">{% trans "Latest modified" %}</a></li>
-                    <li role="presentation"{% if sorting = "last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="last_modified_at">{% trans "Oldest modified" %}</a></li>
-                    <li role="presentation"{% if sorting = "title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="title">{% trans "Title (A-Z)" %}</a></li>
-                    <li role="presentation"{% if sorting = "-title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-title">{% trans "Title (Z-A)" %}</a></li>
-                    <li role="presentation"{% if sorting = "budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="budget">{% trans "Total budget (low-high)" %}</a></li>
-                    <li role="presentation"{% if sorting = "-budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-budget">{% trans "Total budget (high-low)" %}</a></li>
-                  </ul>
-                </div>
-              </div>
-              <p class="verticalPadding">
-              {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-                  Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
-              {% endblocktrans %}
-                  | View
-                  {% for page_number, page_size in page_info|slice:"1:" %}
-                      <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>
-                  {% endfor %}
-                  projects
-              </p>
-          </div>
+          <div class="col-md-8" id="filter-wrapper"></div>
+        </div>
+        <div class="row">
         </div>
       </div>
     </section>
-    <div id="wrapper"></div>
     <!-- hidden input field to keep the page limit when using the filters -->
     <input style="display: none;" name="limit" value="{{limit}}"/>
   </form>

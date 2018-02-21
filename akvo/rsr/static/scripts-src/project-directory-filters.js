@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var filtersWrapper = document.getElementById('wrapper'),
+var filtersWrapper = document.getElementById('filter-wrapper'),
     options_cache = {};
 
 
@@ -20,7 +20,7 @@ var Filter = React.createClass({displayName: "Filter",
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
-            React.createElement("div", null, 
+            React.createElement("div", {className: "advanced-filter"}, 
                 React.createElement("label", null, this.props.display_name), 
                 React.createElement(Typeahead, {
                     ref: "typeahead", 
@@ -87,28 +87,13 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             )
         );
         return (
-            React.createElement("aside", {id: "sidebar-wrapper"}, 
-                React.createElement("div", {id: "filter"}, 
-                    this.props.filters.map(create_filter, this), 
-                    React.createElement("div", null, 
-                        React.createElement("nav", {id: "advanced-filter-nav"}, 
-                            React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
-                                React.createElement("li", null, 
-                                    React.createElement("a", {className: "showFilters text-center", 
-                                       id: "apply-filter", 
-                                       onClick: this.submitForm}, 
-                                        this.props.i18n.apply_filter_text
-                                    )
-                                ), 
-                                React.createElement("li", null, 
-                                    React.createElement("a", {className: "showFilters menu-toggle text-center", onClick: this.toggleForm}, 
-                                        React.createElement("i", {className: "fa fa-toggle-off"}), 
-                                        React.createElement("span", null, " ", this.props.i18n.close_this_text)
-                                    )
-                                ), 
-                                React.createElement("li", {id: "advanced-filter-status"}, 
-                                    project_count
-                                )
+            React.createElement("div", null, 
+                this.props.filters.map(create_filter, this), 
+                React.createElement("div", null, 
+                    React.createElement("nav", {id: "advanced-filter-nav"}, 
+                        React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
+                            React.createElement("li", {id: "advanced-filter-status"}, 
+                                project_count
                             )
                         )
                     )

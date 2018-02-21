@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var filtersWrapper = document.getElementById('wrapper'),
+var filtersWrapper = document.getElementById('filter-wrapper'),
     options_cache = {};
 
 
@@ -20,7 +20,7 @@ var Filter = React.createClass({
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
-            <div>
+            <div className="advanced-filter">
                 <label>{this.props.display_name}</label>
                 <Typeahead
                     ref='typeahead'
@@ -87,33 +87,18 @@ var FilterForm = React.createClass({
             </p>
         );
         return (
-            <aside id="sidebar-wrapper">
-                <div id="filter">
-                    {this.props.filters.map(create_filter, this)}
-                    <div>
-                        <nav id="advanced-filter-nav">
-                            <ul className="nav nav-pills nav-stacked">
-                                <li>
-                                    <a className="showFilters text-center"
-                                       id="apply-filter"
-                                       onClick={this.submitForm}>
-                                        {this.props.i18n.apply_filter_text}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a className="showFilters menu-toggle text-center" onClick={this.toggleForm}>
-                                        <i className="fa fa-toggle-off"></i>
-                                        <span> {this.props.i18n.close_this_text}</span>
-                                    </a>
-                                </li>
-                                <li id="advanced-filter-status">
-                                    {project_count}
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+            <div>
+                {this.props.filters.map(create_filter, this)}
+                <div>
+                    <nav id="advanced-filter-nav">
+                        <ul className="nav nav-pills nav-stacked">
+                            <li id="advanced-filter-status">
+                                {project_count}
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-            </aside>
+            </div>
         );
     },
     /* Event handlers */
