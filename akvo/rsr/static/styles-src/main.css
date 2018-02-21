@@ -2965,14 +2965,19 @@ main.results-page {
 .results {
   background: white;
   box-sizing: border-box;
+  position: relative;
   /********************* Narrative report ***************************/
   /**************************** end Narrative reports *************************/ }
   .results * {
     box-sizing: border-box; }
   .results > button {
     display: none; }
-  .results .react-tabs ul li {
-    border-radius: 5px 5px 0 0; }
+  .results .react-tabs ul.react-tabs__tab-list {
+    border-bottom: 1px solid rgba(32, 32, 36, 0.1) !important; }
+    .results .react-tabs ul.react-tabs__tab-list li {
+      border-radius: 5px 5px 0 0;
+      border: 1px solid rgba(32, 32, 36, 0.1) !important;
+      border-bottom: 1px solid rgba(32, 32, 36, 0) !important; }
   .results .reports {
     position: relative; }
     .results .reports .narrativeStatus {

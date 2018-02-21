@@ -1436,7 +1436,9 @@ h4.detailedInfo {
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
-        @include noWrapTxt;
+        p {
+            @include noWrapTxt;
+        }
     }
     #search {
         @include responsive(small-max-screens) {
@@ -3618,6 +3620,7 @@ main.results-page {
 .results {
     background: white;
     box-sizing: border-box;
+    position: relative;
     * {
         box-sizing: border-box;
     }
@@ -3625,9 +3628,12 @@ main.results-page {
         display: none;
     }
     .react-tabs {
-        ul {
+        ul.react-tabs__tab-list {
+            border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;
             li {
                 border-radius: 5px 5px 0 0;
+                border: 1px solid rgba($akvoBlack, 0.1) !important;
+                border-bottom: 1px solid rgba($akvoBlack, 0) !important;
             }
         }
     }
