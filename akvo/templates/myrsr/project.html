@@ -2,13 +2,15 @@
 
 {% load pipeline i18n %}
 
-{% block title %}{% trans 'MyRSR - My Results' %}{% endblock title %}
+{% block title %}{{ project.title }}{% endblock title %}
 
 {% block myrsr_main %}
-    <h4 class="resultProjectTitle" id="resultProjectTitle">
-        {{ project.title }}
-    </h4>
-    {% if not project.is_impact_project %}
+
+<ol class="breadcrumb">
+    <li><a href="{% url 'my_projects' %}">{% trans "My projects" %}</a></li>
+    <li class="active">{{ project.title }}</li>
+</ol>
+{% if not project.is_impact_project %}
         <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
     {% elif not project.results.all %}
         <div id="draft" class="">{% trans 'This project has no results.' %}</div>
