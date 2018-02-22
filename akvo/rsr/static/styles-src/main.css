@@ -1299,9 +1299,11 @@ h4.detailedInfo {
   .main-list li div h4:first-of-type {
     margin-top: 0; }
   .main-list li .thumbImg {
-    height: 100%; }
+    height: 150px;
+    overflow-y: hidden; }
     .main-list li .thumbImg img {
-      width: 100%; }
+      width: 100%;
+      max-width: 350px; }
   .main-list li .projectLocation {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 0; }
