@@ -252,7 +252,7 @@ var FilterForm = React.createClass({
 
 document.addEventListener('DOMContentLoaded', function() {
     var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
-    var filters = ['keyword', 'location', 'organisation', 'sector'];
+    var filters = ['location', 'organisation', 'sector', 'keyword'];
     var url = '/rest/v1/typeaheads/project_filters';
 
     ReactDOM.render(
