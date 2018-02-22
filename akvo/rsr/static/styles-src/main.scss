@@ -503,7 +503,7 @@ nav.navbar-fixed-top {
                     padding-left: 5px;
                     padding-right: 5px;
                     &.areaToggle {
-                        @include btnOutline($akvoPurple, $akvoPurple);
+                        @include button($akvoPurple, white);
                         box-shadow: none !important;
                     }
                     @include responsive(tablets) {
@@ -1218,7 +1218,7 @@ h4.detailedInfo {
 #map {
     position: relative;
     height: calc(100vh - 450px);
-    @include responsive(xtra-small-max-screens) {
+    @include responsive(small-max-screens) {
         display: none;
     }
 
@@ -1234,7 +1234,7 @@ h4.detailedInfo {
 }
 
 #map-warning {
-    @include responsive(xtra-small-max-screens) {
+    @include responsive(small-max-screens) {
         display: none;
     }
 
@@ -1429,7 +1429,6 @@ h4.detailedInfo {
 
 #search-filter {
     margin-top: -10px;
-    background: rgba($akvoBlack, 0.05);
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
@@ -1482,8 +1481,16 @@ h4.detailedInfo {
         margin-bottom: 50px;
         list-style-type: none;
         padding: 15px 0;
+        display: inline;
+        width: 32%;
+        float: left;
+        min-height: 315px;
         @include border-radius(3px);
         background: white;
+        margin-right: 2%;
+        &:nth-child(3n+3) {
+            margin-right: 0;
+        }
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
@@ -1580,25 +1587,6 @@ h4.detailedInfo {
                 }
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrBlue, 0.05), 0%);
-                    border: thin solid rgba($rsrBlue, 0.1);
-                }
-                .donateButton {
-                    text-align: left;
-                    a {
-                        @include responsive(mediums-max-screens) {
-                            margin-top: 0.6em;
-                        }
-
-                        @include responsive(small-max-screens) {
-                            margin-top: 1em;
-                        }
-                    }
-                    .totalBudgetLabel {
-                        width: initial;
-                    }
                 }
             }
         }
@@ -3603,8 +3591,9 @@ main.results-page {
     ol {
         &.breadcrumb {
             padding: 15px !important;
-            background-color: none !important;
+            background-color: white !important;
             font-size: 1.1em;
+            margin-top: -10px;
             >li+li:before {
                 padding: 0 5px;
                 color: #ccc;
