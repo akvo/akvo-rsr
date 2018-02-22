@@ -10,12 +10,76 @@ import { connect } from "react-redux";
 import { _, getCookie } from "../utils";
 import { MarkdownEditor } from "./common";
 
-@connect(store => {
-    return {
-        project: store.page.project.id
-    };
-})
 export default class RSRUpdates extends React.Component {
+    render() {
+        return (
+            <div className="row">
+                <RSRUpdateList project={this.props.project} />
+                <RSRUpdateForm project={this.props.project} />
+            </div>
+        );
+    }
+}
+
+const RSRUpdate = ({ update }) => {
+    return (
+        <div className="row">
+            <div className="col-md-2">
+                <img src={update.photo} />
+            </div>
+            <div className="col-md-10">
+                <a href={update.absolute_url}>
+                    <h6>{update.title}</h6>
+                </a>
+            </div>
+        </div>
+    );
+};
+
+class RSRUpdateList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            updates: [],
+            loading: true
+        };
+    }
+    componentDidMount() {
+        const api_endpoint = ({ project }) => {
+            return `/rest/v1/project_update/?project=${project}&format=json`;
+        };
+        const self = this;
+        fetch(api_endpoint(this.props))
+            .then(function(response) {
+                self.setState({ loading: false });
+                if (response.status == 200) {
+                    return response.json();
+                }
+            })
+            .then(function(data) {
+                if (data === undefined) {
+                    return;
+                }
+                self.setState({ updates: data.results });
+            });
+    }
+    render() {
+        let updates;
+        if (this.state.loading) {
+            updates = "Loading...";
+        } else if (this.state.updates.length == 0) {
+            updates = "No updates";
+        } else {
+            updates = this.state.updates.map(function(update) {
+                console.log(update);
+                return <RSRUpdate key={update.id} update={update} />;
+            });
+        }
+        return <div className="col-md-5 hidden-sm-down">{updates}</div>;
+    }
+}
+
+class RSRUpdateForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -57,7 +121,7 @@ export default class RSRUpdates extends React.Component {
     }
     render() {
         const { project } = this.props;
-        const { oversize_image, photo_help_text, photo_image_size_text, text } = this.state;
+        const { oversize_image, photo_help_text, photo_image_size_text, description } = this.state;
         const url = `../../../project/${project}/add_update/`;
         const photoClass = oversize_image ? "form-group has-error" : "form-group";
         const helpText = oversize_image
@@ -98,7 +162,7 @@ export default class RSRUpdates extends React.Component {
 
                     <div className="form-group">
                         <MarkdownEditor
-                            text={text}
+                            text={description}
                             textAreaProps={textAreaProps}
                             onChange={this.setText}
                         />
