@@ -12,7 +12,7 @@
 
         <div id="search" class="verticalPadding row searchBar">
           <div class="col-lg-4">
-            <p class="">{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
+            <p class="hidden">{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
             <div class="form-inline" role="form">
               <div class="form-group">
                 <div class="input-group">
@@ -29,6 +29,7 @@
           <div class="col-lg-8 text-right" id="filter-wrapper">
             {% if q %}
               <div>
+                <p class="">{% trans "Refine the project search" %}</p>
                 <a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a>
               </div>
             {% endif %}
