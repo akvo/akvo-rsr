@@ -43,14 +43,13 @@
         </tr>
         </thead>
         {% for project in page %}
-          {% has_perm 'rsr.change_project' user project as can_edit_project %}
           <tr class="{% if not project.is_published %}notPublished{% elif not project.is_public %}isPrivate{% endif %}">
             <td class="media">
-              <a class="pull-left" href="{% if can_edit_project and not project.iati_status in project.EDIT_DISABLED %}{% url 'project-edit' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
+                <a class="pull-left" href="{% project_edit_link project user %}">
                 {% img project 64 64 project.title %}
               </a>
               <div class="media-body">
-                <a href="{% project_edit_link project can_edit_project %}">
+                <a href="{% project_edit_link project user %}">
                   <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
                 <p class="small">{{ project.subtitle }}</p>
@@ -63,7 +62,7 @@
             </td>
             <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
             <td class="projectStatus">{{ project.show_status }}</td>
-            
+
           </tr>
         {% endfor %}
       </table>
