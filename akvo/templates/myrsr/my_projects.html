@@ -62,7 +62,7 @@
               {% endif %}
             </td>
             <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
-            <td>{{ project.show_status }}</td>
+            <td class="projectStatus">{{ project.show_status }}</td>
             
           </tr>
         {% endfor %}

@@ -777,6 +777,12 @@ div.update-confirm-container {
     }
 }
 
+.projectStatus {
+    span {
+        color: $akvoBlack !important;
+    }
+}
+
 .myProjectList,
 #updates,
 #user_table {
@@ -785,16 +791,24 @@ div.update-confirm-container {
             background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
             th {
-                padding-top: 15px;
-                padding-bottom: 15px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+                td {
+                    padding-top: 40px;
+                    padding-bottom: 50px;
+                }
             }
         }
     }
     tbody {
         tr {
             background: white !important;
+            td {
+                border: none;
+                padding-top: 40px;
+                padding-bottom: 50px;
+            }
             &.notPublished {
-                background: rgba($primary4, 0.15) !important;
                 td {
                     position: relative;
                     padding-top: 40px;
@@ -816,7 +830,6 @@ div.update-confirm-container {
                 background: rgba($progressNot, 0.1) !important;
                 td {
                     position: relative;
-                    padding-top: 40px;
                     .privatePjt {
                         position: absolute;
                         top: 7px;
@@ -830,11 +843,6 @@ div.update-confirm-container {
                         font-weight: 600;
                     }
                 }
-            }
-            td {
-                padding-top: 30px;
-                padding-bottom: 30px;
-                border: none;
             }
         }
     }
@@ -1234,6 +1242,7 @@ h4.detailedInfo {
 }
 
 #map-warning {
+    display: none;
     @include responsive(small-max-screens) {
         display: none;
     }
@@ -1351,6 +1360,7 @@ h4.detailedInfo {
 
 .advanced-filter {
     display: inline-block;
+    text-align: right;
     label {
         margin-top: 5px !important;
     }
@@ -2261,6 +2271,15 @@ ul.typeahead-selector {
         ul.typeahead-container {
             margin: -15px 0 0 0;
         }
+    }
+}
+
+#filter-wrapper {
+    @media (min-width: 1200px) {
+        text-align: left;
+    }
+    @media (min-width: 1200px) {
+        text-align: right;
     }
 }
 

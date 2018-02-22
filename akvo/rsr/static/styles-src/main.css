@@ -684,6 +684,9 @@ div.update-confirm-container {
         .indicator-period-list tbody.indicator-period tr td.actions-td .btn-default:hover {
           background: #2c2a74; }
 
+.projectStatus span {
+  color: #202024 !important; }
+
 .myProjectList thead tr,
 #updates thead tr,
 #user_table thead tr {
@@ -692,38 +695,45 @@ div.update-confirm-container {
   .myProjectList thead tr th,
   #updates thead tr th,
   #user_table thead tr th {
-    padding-top: 15px;
-    padding-bottom: 15px; }
+    padding-top: 25px;
+    padding-bottom: 25px; }
+    .myProjectList thead tr th td,
+    #updates thead tr th td,
+    #user_table thead tr th td {
+      padding-top: 40px;
+      padding-bottom: 50px; }
 
 .myProjectList tbody tr,
 #updates tbody tr,
 #user_table tbody tr {
   background: white !important; }
-  .myProjectList tbody tr.notPublished,
-  #updates tbody tr.notPublished,
-  #user_table tbody tr.notPublished {
-    background: rgba(153, 153, 153, 0.15) !important; }
-    .myProjectList tbody tr.notPublished td,
-    #updates tbody tr.notPublished td,
-    #user_table tbody tr.notPublished td {
-      position: relative;
-      padding-top: 40px; }
-      .myProjectList tbody tr.notPublished td .unplubishedPjt,
-      #updates tbody tr.notPublished td .unplubishedPjt,
-      #user_table tbody tr.notPublished td .unplubishedPjt {
-        position: absolute;
-        top: 7px;
-        left: 8px;
-        padding: 3px;
-        display: inline-block;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        color: #ee3124;
-        border: 1px solid #ee3124;
-        font-size: 80%;
-        font-weight: 600; }
+  .myProjectList tbody tr td,
+  #updates tbody tr td,
+  #user_table tbody tr td {
+    border: none;
+    padding-top: 40px;
+    padding-bottom: 50px; }
+  .myProjectList tbody tr.notPublished td,
+  #updates tbody tr.notPublished td,
+  #user_table tbody tr.notPublished td {
+    position: relative;
+    padding-top: 40px; }
+    .myProjectList tbody tr.notPublished td .unplubishedPjt,
+    #updates tbody tr.notPublished td .unplubishedPjt,
+    #user_table tbody tr.notPublished td .unplubishedPjt {
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      padding: 3px;
+      display: inline-block;
+      -moz-border-radius: 2px;
+      -o-border-radius: 2px;
+      -webkit-border-radius: 2px;
+      border-radius: 2px;
+      color: #ee3124;
+      border: 1px solid #ee3124;
+      font-size: 80%;
+      font-weight: 600; }
   .myProjectList tbody tr.isPrivate,
   #updates tbody tr.isPrivate,
   #user_table tbody tr.isPrivate {
@@ -731,8 +741,7 @@ div.update-confirm-container {
     .myProjectList tbody tr.isPrivate td,
     #updates tbody tr.isPrivate td,
     #user_table tbody tr.isPrivate td {
-      position: relative;
-      padding-top: 40px; }
+      position: relative; }
       .myProjectList tbody tr.isPrivate td .privatePjt,
       #updates tbody tr.isPrivate td .privatePjt,
       #user_table tbody tr.isPrivate td .privatePjt {
@@ -749,12 +758,6 @@ div.update-confirm-container {
         border: 1px solid #ee3124;
         font-size: 80%;
         font-weight: 600; }
-  .myProjectList tbody tr td,
-  #updates tbody tr td,
-  #user_table tbody tr td {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    border: none; }
 
 .myProjectList div.projectListMenu ul,
 #updates div.projectListMenu ul,
@@ -1081,6 +1084,7 @@ h4.detailedInfo {
     height: 100%; }
 
 #map-warning {
+  display: none;
   margin-top: -30px;
   z-index: 99;
   opacity: 0.8;
@@ -1166,7 +1170,8 @@ h4.detailedInfo {
         color: #ca8142; } }
 
 .advanced-filter {
-  display: inline-block; }
+  display: inline-block;
+  text-align: right; }
   .advanced-filter label {
     margin-top: 5px !important; }
   .advanced-filter .bootstrap-typeahead-input {
@@ -1856,6 +1861,14 @@ ul.typeahead-selector {
 
 #filterForm #org-filter-container ul.typeahead-container {
   margin: -15px 0 0 0; }
+
+@media (min-width: 1200px) {
+  #filter-wrapper {
+    text-align: left; } }
+
+@media (min-width: 1200px) {
+  #filter-wrapper {
+    text-align: right; } }
 
 /* Organisation Page */
 .organisationDetail .organisationHeader {
