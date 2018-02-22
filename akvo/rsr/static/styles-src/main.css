@@ -3820,4 +3820,5 @@ main.results-page {
   margin-right: 5px; }
 
 .supporthero-button {
-  bottom: 50px !important; }
+  bottom: 50px !important;
+  top: unset !important; }
