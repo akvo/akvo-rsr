@@ -11,5 +11,7 @@ from django.http import HttpResponseRedirect
 
 
 def index(request):
-    """."""
-    return HttpResponseRedirect(reverse('project-directory', args=[]))
+    """Redirect user to project directory or My RSR."""
+
+    redirect_url = 'project-directory' if request.user.is_anonymous() else 'my_rsr'
+    return HttpResponseRedirect(reverse(redirect_url, args=[]))
