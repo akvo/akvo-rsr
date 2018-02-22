@@ -1631,112 +1631,7 @@ h4.detailedInfo {
             }
         }
     }
-    &.updates {
-        ul {
-            li {
-                border: thin solid rgba($rsrGreen, 0);
-                @include transition(all 0.2s ease-in);
-                .orgName {}
-                .projectTitle {
-                    color: rgba($anchorLink, 1);
-                    i {
-                        font-size: 1.1em;
-                        color: rgba($anchorLink, 1);
-                    }
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                }
-                h1 {
-                    a {
-                        color: $rsrGreen;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0), 0%);
-                    border: thin solid rgba($rsrGreen, 0);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrGreen, 0.1), 0%);
-                    border: thin solid rgba($rsrGreen, 0.35);
-                }
-                .excerpt {
-                    li {
-                        background: none;
-                        border: none;
-                        transition: none;
-                        list-style-type: initial;
-                        margin: initial;
-                        padding: initial;
-                    }
-                }
-            }
-        }
-    }
-    &.organisations {
-        ul {
-            li {
-                border: thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);
-                i {
-                    font-size: 1.1em;
-                }
-                .projectLocation {}
-                .projectTitle {
-                    display: block;
-                    margin: 0 0 3px 0;
-                }
-                span.userFullName {
-                    margin: 0 0 0px 0;
-                }
-                .upDateTime {
-                    margin-top: 10px;
-                }
-                .orgType {}
-                .additionalInfo {
-                    div {
-                        color: rgba($akvoBlack, 0.5);
-                        span {
-                            margin-left: 5px;
-                        }
-                    }
-                }
-                .socialInfo {
-                    p {
-                        color: rgba($akvoBlack, 0.5);
-                    }
-                }
-                h1 {
-                    a {
-                        color: $akvoTvRed;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($akvoTvRed, 0), 0);
-                    border: thin solid rgba($akvoTvRed, 0);
-                }
-                &:hover {
-                    background: darken(rgba($akvoTvRed, 0.1), 0%);
-                    border: thin solid rgba($akvoTvRed, 0.35);
-                }
-                img {
-                    transition: all 0.2s ease-in;
-                }
-            }
-        }
-    }
 }
-
-/* PROJECT */
 
 header {
     &.projectHeader {
@@ -3655,6 +3550,9 @@ main.results-page {
             background-color: white !important;
             font-size: 1.1em;
             margin-top: -10px;
+            a.liveView {
+                margin-left: 50px;
+            }
             >li+li:before {
                 padding: 0 5px;
                 color: #ccc;

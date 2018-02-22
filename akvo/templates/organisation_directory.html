@@ -71,9 +71,9 @@
                     </a>
                   </div>
                   <div>
-                    <h1><a href="{% url 'organisation-main' o.id %}"><i class="fa fa-users"></i> {{o.name}}</a></h1>
-                    {% if o.iati_org_id %}<div class="orgIatiId"><i class="fa fa-key"></i> {{o.iati_org_id}}</div>{% endif %}
-                    <div class="orgType"><i class="fa fa-tag"></i> {{o.iati_org_type}}</div>
+                    <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
+                    {% if o.iati_org_id %}<div class="orgIatiId">{{o.iati_org_id}}</div>{% endif %}
+                    <div class="orgType">{{o.iati_org_type}}</div>
                     <div class="projectLocation"><i class="fa fa-map-marker"></i>
                       {% for country in o.organisation_countries %}
                           {{ country }}{% if not forloop.last %}, {% endif %}
@@ -84,7 +84,7 @@
                   </div>
                   <div class="hidden-xs hidden-sm additionalInfo">
                     <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
-                    <div class=""><i class="fa fa-folder-o"></i> <span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
+                    <div class=""><span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
                     <div class=""><span>{{o.all_users.count}} {% trans "users" %}</span></div>
                     <div class=""><span>{{o.all_updates.count}} {% trans "updates" %}</span></div>
                   </div>

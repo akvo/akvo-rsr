@@ -1387,74 +1387,6 @@ h4.detailedInfo {
       .main-list.projects ul li .projectLocation {
         color: rgba(32, 32, 36, 0.5); }
 
-.main-list.updates ul li {
-  border: thin solid rgba(0, 167, 157, 0);
-  -moz-transition: all 0.2s ease-in;
-  -o-transition: all 0.2s ease-in;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in; }
-  .main-list.updates ul li .projectTitle {
-    color: #428bca; }
-    .main-list.updates ul li .projectTitle i {
-      font-size: 1.1em;
-      color: #428bca; }
-    .main-list.updates ul li .projectTitle:hover {
-      color: #ca8142; }
-  .main-list.updates ul li h1 a {
-    color: #00a79d; }
-    .main-list.updates ul li h1 a:hover {
-      color: #ca8142; }
-  .main-list.updates ul li:nth-child(2n+1) {
-    background: rgba(0, 167, 157, 0);
-    border: thin solid rgba(0, 167, 157, 0); }
-  .main-list.updates ul li .projectLocation {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list.updates ul li:hover {
-    background: rgba(0, 167, 157, 0.1);
-    border: thin solid rgba(0, 167, 157, 0.35); }
-  .main-list.updates ul li .excerpt li {
-    background: none;
-    border: none;
-    transition: none;
-    list-style-type: initial;
-    margin: initial;
-    padding: initial; }
-
-.main-list.organisations ul li {
-  border: thin solid rgba(238, 49, 36, 0);
-  -moz-transition: all 0.2s ease-in;
-  -o-transition: all 0.2s ease-in;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in; }
-  .main-list.organisations ul li i {
-    font-size: 1.1em; }
-  .main-list.organisations ul li .projectTitle {
-    display: block;
-    margin: 0 0 3px 0; }
-  .main-list.organisations ul li span.userFullName {
-    margin: 0 0 0px 0; }
-  .main-list.organisations ul li .upDateTime {
-    margin-top: 10px; }
-  .main-list.organisations ul li .additionalInfo div {
-    color: rgba(32, 32, 36, 0.5); }
-    .main-list.organisations ul li .additionalInfo div span {
-      margin-left: 5px; }
-  .main-list.organisations ul li .socialInfo p {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list.organisations ul li h1 a {
-    color: #ee3124; }
-    .main-list.organisations ul li h1 a:hover {
-      color: #ca8142; }
-  .main-list.organisations ul li:nth-child(2n+1) {
-    background: rgba(238, 49, 36, 0);
-    border: thin solid rgba(238, 49, 36, 0); }
-  .main-list.organisations ul li:hover {
-    background: rgba(238, 49, 36, 0.1);
-    border: thin solid rgba(238, 49, 36, 0.35); }
-  .main-list.organisations ul li img {
-    transition: all 0.2s ease-in; }
-
-/* PROJECT */
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
@@ -2982,6 +2914,8 @@ main.results-page {
     background-color: white !important;
     font-size: 1.1em;
     margin-top: -10px; }
+    .myRsrPg ol.breadcrumb a.liveView {
+      margin-left: 50px; }
     .myRsrPg ol.breadcrumb > li + li:before {
       padding: 0 5px;
       color: #ccc;
