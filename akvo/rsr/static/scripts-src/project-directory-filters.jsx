@@ -21,7 +21,6 @@ var Filter = React.createClass({
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
             <div className="advanced-filter">
-                <label>{this.props.display_name}</label>
                 <Typeahead
                     ref='typeahead'
                     name={this.props.name}
@@ -30,9 +29,11 @@ var Filter = React.createClass({
                     onChange={this.onChange}
                     filterBy={['filterBy']}
                     label='label'
-                    clearButton={true}
+                    highlightOnlyResult={true}
+                    placeholder={this.props.display_name}
                     disabled={this.props.disabled}
                 />
+                <span className="caret"></span>
             </div>
         );
     },
