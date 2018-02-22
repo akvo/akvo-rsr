@@ -336,7 +336,7 @@ label {
 nav.navbar-fixed-top {
   background-color: rgba(255, 255, 255, 0.95);
   border: none;
-  padding: 5px 0;
+  padding: 5px 40px;
   -moz-border-radius: 0;
   -o-border-radius: 0;
   -webkit-border-radius: 0;
@@ -690,7 +690,6 @@ div.update-confirm-container {
 .myProjectList thead tr,
 #updates thead tr,
 #user_table thead tr {
-  background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
   .myProjectList thead tr th,
   #updates thead tr th,
@@ -1296,7 +1295,7 @@ h4.detailedInfo {
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 .main-list li {
-  margin-bottom: 50px;
+  margin-bottom: 5px;
   list-style-type: none;
   padding: 15px 0;
   display: inline;
@@ -1323,15 +1322,16 @@ h4.detailedInfo {
     margin-bottom: 0; }
   .main-list li h1 {
     margin-top: 0;
-    font-size: 1.3em; }
+    font-size: 1.15em; }
   .main-list li div h4:first-of-type {
     margin-top: 0; }
   .main-list li .thumbImg {
-    height: 150px;
+    height: 110px;
     overflow-y: hidden; }
     .main-list li .thumbImg img {
       width: 100%;
-      max-width: 350px; }
+      max-width: 350px;
+      margin-top: -35px; }
   .main-list li .projectLocation {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 0; }

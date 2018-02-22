@@ -356,7 +356,7 @@ label {
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    padding: 5px 0;
+    padding: 5px 40px;
     @include border-radius(0);
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
     button.navbar-toggle {
@@ -788,7 +788,6 @@ div.update-confirm-container {
 #user_table {
     thead {
         tr {
-            background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
             th {
                 padding-top: 25px;
@@ -1516,7 +1515,7 @@ h4.detailedInfo {
 
 .main-list {
     li {
-        margin-bottom: 50px;
+        margin-bottom: 5px;
         list-style-type: none;
         padding: 15px 0;
         display: inline;
@@ -1541,17 +1540,18 @@ h4.detailedInfo {
         }
         h1 {
             margin-top: 0;
-            font-size: 1.3em;
+            font-size: 1.15em;
         }
         div h4:first-of-type {
             margin-top: 0;
         }
         .thumbImg {
-            height: 150px;
+            height: 110px;
             overflow-y: hidden;
             img {
                 width: 100%;
                 max-width: 350px;
+                margin-top: -35px;
             }
         }
         .projectLocation {

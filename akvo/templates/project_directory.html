@@ -46,10 +46,7 @@
       <div  class="row">
         <div class="col-sm-8">        
           <p class="text-center">
-            {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
-            {% endblocktrans %}
-            | View
+             View
             {% for page_number, page_size in page_info|slice:"1:" %}
             <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>  
             {% endfor %}
