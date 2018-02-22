@@ -1171,6 +1171,12 @@ h4.detailedInfo {
     margin-top: 5px !important; }
   .advanced-filter .bootstrap-typeahead-input {
     margin-right: 1px; }
+  .advanced-filter .bootstrap-typeahead-input-main {
+    margin-right: 20px; }
+  .advanced-filter .caret {
+    position: relative;
+    top: -26px;
+    left: -10px; }
 
 #sidebar-wrapper {
   z-index: 99999;

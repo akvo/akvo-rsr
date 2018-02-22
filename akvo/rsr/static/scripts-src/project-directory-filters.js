@@ -21,7 +21,6 @@ var Filter = React.createClass({displayName: "Filter",
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
             React.createElement("div", {className: "advanced-filter"}, 
-                React.createElement("label", null, this.props.display_name), 
                 React.createElement(Typeahead, {
                     ref: "typeahead", 
                     name: this.props.name, 
@@ -30,9 +29,11 @@ var Filter = React.createClass({displayName: "Filter",
                     onChange: this.onChange, 
                     filterBy: ['filterBy'], 
                     label: "label", 
-                    clearButton: true, 
+                    highlightOnlyResult: true, 
+                    placeholder: this.props.display_name, 
                     disabled: this.props.disabled}
-                )
+                ), 
+                React.createElement("span", {className: "caret"})
             )
         );
     },

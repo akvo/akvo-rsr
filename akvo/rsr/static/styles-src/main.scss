@@ -1357,6 +1357,14 @@ h4.detailedInfo {
     .bootstrap-typeahead-input {
         margin-right: 1px;
     }
+    .bootstrap-typeahead-input-main {
+        margin-right: 20px;
+    }
+    .caret {
+        position: relative;
+        top: -26px;
+        left: -10px;
+    }
 }
 
 #sidebar-wrapper {
@@ -4500,7 +4508,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }
