@@ -1509,9 +1509,11 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 100%;
+            height: 150px;
+            overflow-y: hidden;
             img {
                 width: 100%;
+                max-width: 350px;
             }
         }
         .projectLocation {
