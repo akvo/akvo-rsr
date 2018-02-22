@@ -50,7 +50,7 @@
                 {% img project 64 64 project.title %}
               </a>
               <div class="media-body">
-                <a href="{% if can_edit_project and not project.iati_status in project.EDIT_DISABLED %}{% url 'project-edit' project.pk %}{% else %}{% url 'project-main' project.id %}{% endif %}">
+                <a href="{% project_edit_link project can_edit_project %}">
                   <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
                 <p class="small">{{ project.subtitle }}</p>

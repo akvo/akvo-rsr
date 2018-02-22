@@ -72,3 +72,17 @@ def vid_img(context, obj, width, height, alt):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+@register.simple_tag
+def project_edit_link(project, can_edit_project):
+    """Return the project edit link based on project status and user permissions."""
+    if can_edit_project and project.iati_status not in project.EDIT_DISABLED:
+        if project.publishingstatus.status == project.publishingstatus.STATUS_PUBLISHED:
+            view_name = 'project-edit'
+        else:
+            view_name = 'project_editor'
+    else:
+        view_name = 'project-main'
+    from django.core.urlresolvers import reverse
+    return reverse(view_name, args=[project.pk])
