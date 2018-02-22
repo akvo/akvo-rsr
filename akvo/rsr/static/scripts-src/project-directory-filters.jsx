@@ -83,13 +83,13 @@ var FilterForm = React.createClass({
             );
         };
         var project_count = this.state.disabled?(<a>{this.props.i18n.loading_text}</a>):(
-            <p>{this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text}
+            <p>{this.state.project_count + ' ' + this.props.i18n.projects_text + ' ' + this.props.i18n.found_text}
             </p>
         );
         return (
             <div>
                 {this.props.filters.map(create_filter, this)}
-                <div>
+                <div className="projectCountTxt">
                     <nav id="advanced-filter-nav">
                         <ul className="nav nav-pills nav-stacked">
                             <li id="advanced-filter-status">

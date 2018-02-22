@@ -1103,6 +1103,8 @@ h4.detailedInfo {
 
 .searchContainer {
   position: relative; }
+  .searchContainer #search input.form-control {
+    border-color: #ccc; }
   .searchContainer #search .showFilters {
     /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
@@ -1141,11 +1143,26 @@ h4.detailedInfo {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   margin-bottom: 15px; }
-  @media only screen and (max-width: 768px) {
-    .paginationWrap .pagination li a,
-    .paginationWrap .pagination li span {
-      padding: 10px 16px;
-      font-size: 18px; } }
+  .paginationWrap .pagination li a,
+  .paginationWrap .pagination li span {
+    border-color: transparent; }
+    @media only screen and (max-width: 768px) {
+      .paginationWrap .pagination li a,
+      .paginationWrap .pagination li span {
+        padding: 10px 16px;
+        font-size: 18px; } }
+    .paginationWrap .pagination li a:hover,
+    .paginationWrap .pagination li span:hover {
+      background: transparent; }
+  .paginationWrap .pagination li.active a,
+  .paginationWrap .pagination li.active span {
+    font-weight: bold;
+    color: #ca8142;
+    background-color: transparent; }
+    .paginationWrap .pagination li.active a:hover,
+    .paginationWrap .pagination li.active span:hover {
+      background: transparent;
+      border-color: transparent; }
   .paginationWrap .sortList {
     display: inline-block;
     padding-left: 0;
@@ -1259,7 +1276,7 @@ h4.detailedInfo {
     #search-filter #search {
       padding-bottom: 0; } }
   #search-filter #search .form-group input {
-    width: 350px; }
+    width: 250px; }
   #search-filter #search .form-group button {
     padding-top: 7px;
     padding-bottom: 5px; }
@@ -1862,13 +1879,23 @@ ul.typeahead-selector {
 #filterForm #org-filter-container ul.typeahead-container {
   margin: -15px 0 0 0; }
 
-@media (min-width: 1200px) {
+@media (max-width: 1200px) {
   #filter-wrapper {
     text-align: left; } }
 
 @media (min-width: 1200px) {
   #filter-wrapper {
     text-align: right; } }
+
+#filter-wrapper > div {
+  display: flex; }
+  #filter-wrapper > div div:not(.advanced-filter) {
+    display: block !important; }
+
+.projectCountTxt {
+  position: absolute;
+  top: 40px;
+  left: 22px; }
 
 /* Organisation Page */
 .organisationDetail .organisationHeader {

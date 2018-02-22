@@ -83,13 +83,13 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             );
         };
         var project_count = this.state.disabled?(React.createElement("a", null, this.props.i18n.loading_text)):(
-            React.createElement("p", null, this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text
+            React.createElement("p", null, this.state.project_count + ' ' + this.props.i18n.projects_text + ' ' + this.props.i18n.found_text
             )
         );
         return (
             React.createElement("div", null, 
                 this.props.filters.map(create_filter, this), 
-                React.createElement("div", null, 
+                React.createElement("div", {className: "projectCountTxt"}, 
                     React.createElement("nav", {id: "advanced-filter-nav"}, 
                         React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
                             React.createElement("li", {id: "advanced-filter-status"}, 

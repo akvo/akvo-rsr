@@ -1264,6 +1264,9 @@ h4.detailedInfo {
 .searchContainer {
     position: relative;
     #search {
+        input.form-control {
+            border-color: #ccc;
+        }
         .showFilters {
             /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
@@ -1310,9 +1313,26 @@ h4.detailedInfo {
         li {
             a,
             span {
+                border-color: transparent;
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
+                }
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+            &.active {
+                a,
+                span {
+                    font-weight: bold;
+                    color: $anchorLinkHover;
+                    background-color: transparent;
+                    &:hover {
+                        background: transparent;
+                        border-color: transparent;
+                    }
                 }
             }
         }
@@ -1465,7 +1485,7 @@ h4.detailedInfo {
 
         .form-group {
             input {
-                width: 350px;
+                width: 250px;
             }
             button {
                 padding-top: 7px;
@@ -2275,12 +2295,24 @@ ul.typeahead-selector {
 }
 
 #filter-wrapper {
-    @media (min-width: 1200px) {
+    @media (max-width: 1200px) {
         text-align: left;
     }
     @media (min-width: 1200px) {
         text-align: right;
     }
+    & > div {
+        display: flex;
+        div:not(.advanced-filter) {
+            display: block !important;
+        }
+    }
+}
+
+.projectCountTxt {
+    position: absolute;
+    top: 40px;
+    left: 22px;
 }
 
 /* Organisation Page */

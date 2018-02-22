@@ -15,7 +15,7 @@
             <p class="hidden">{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
             <div class="form-inline" role="form">
               <div class="form-group">
-                <div class="input-group">
+                  <div class="input-group">
                   {% bootstrap_field filter.form.title_or_subtitle field_class='search-query' show_label=False %}
                   <span class="input-group-btn">
                       <button class="btn btn-primary" onclick="advanced_filter_form.preSubmitHack()">
@@ -26,9 +26,9 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-8 col-md-12" id="filter-wrapper">
+          <div class="col-lg-7 col-md-12 col-lg-offset-1" id="filter-wrapper">
             {% if q %}
-              <div>
+              <div> 
                 <p class="">{% trans "Refine the project search" %}</p>
                 <a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a>
               </div>
@@ -56,7 +56,7 @@
             projects
           </p>
         </div>
-        <div class="col-sm-8 projectListUl">
+        <div class="col-sm-7 projectListUl">
             <ul>
               {% for project in page %}
                 <li>
@@ -80,7 +80,7 @@
               {% endfor %}
             </ul>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <section id="map" class="touch-navbar">
               {% coll_map map_projects '100%' '100%' %}
             </section>
