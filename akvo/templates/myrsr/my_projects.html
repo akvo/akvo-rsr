@@ -40,7 +40,6 @@
           <th>{% trans "Project" %}</th>
           <th>{% trans "Type" %}</th>
           <th>{% trans "Status" %}</th>
-          <th class="text-right">{% trans "Actions" %}</th>
         </tr>
         </thead>
         {% for project in page %}
@@ -64,32 +63,7 @@
             </td>
             <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
             <td>{{ project.show_status }}</td>
-            <td>
-              <div class="projectListMenu text-right">
-              <ul class="nav">
-                <li><a href="{% url 'project-main' project.pk %}">{% trans 'View' %}</a></li>
-                {% if can_edit_project %}
-                  {% if not project.iati_status in project.EDIT_DISABLED or request.user.is_superuser or request.user.is_admin %}
-                    <li><a href="{% url 'project_editor' project.pk %}">{% trans 'Edit' %}</a></li>
-                  {% else %}
-                    <li> <a class="addUpdate disabled" title="{% trans "Can't edit a completed or cancelled project" %}"> {% trans 'Edit' %} </a></li>
-                  {% endif %}
-                  {% if project.is_impact_project and project.is_published and not project.iati_status in project.EDIT_DISABLED %}
-                    <li><a href="{% url 'my_results' project.pk %}">{% trans 'Results data' %}</a></li>
-                  {% else %}
-                    <li><a class="addUpdate disabled" title="{% trans "Can't update an unpublished, cancelled or completed project" %}">{% trans 'Results data' %}</a></li>
-                  {% endif %}
-                {% endif %}
-                {% if project.is_published and not project.iati_status in project.EDIT_DISABLED %}
-                  <li><a href="{% url 'add-update' project.pk %}">{% trans 'Update' %}</a></li>
-                {% elif project.iati_status in project.EDIT_DISABLED %}
-                  <li> <a class="addUpdate disabled" title="{% trans "Can't update a completed or cancelled project" %}"> {% trans "Update" %} </a></li>
-                {% else %}
-                 <li> <a class="addUpdate disabled" title="{% trans "Can't update an unpublished project" %}"> {% trans "Update" %} </a></li>
-                 </ul>
-                {% endif %}
-              </div>
-            </td>
+            
           </tr>
         {% endfor %}
       </table>
