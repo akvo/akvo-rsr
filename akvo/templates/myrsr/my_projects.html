@@ -52,7 +52,7 @@
                 <a href="{% project_edit_link project user %}">
                   <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
                 </a>
-                <p class="small">{{ project.subtitle }}</p>
+                <p>{{ project.subtitle }}</p>
               </div>
               {% if not project.is_published %}
                 <span class="unplubishedPjt">{% trans 'Unpublished' %}</span>

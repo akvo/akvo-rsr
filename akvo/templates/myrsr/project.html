@@ -9,7 +9,7 @@
 <ol class="breadcrumb">
     <li><a href="{% url 'my_projects' %}">{% trans "My projects" %}</a></li>
     <li class="active">{{ project.title }}</li>
-    <a href="{% url 'project-main' project.pk %}" class="text-right liveView">{% trans 'View public project' %}</a>
+    <a href="{% url 'project-main' project.pk %}" class="text-right liveView btn btn-default">{% trans 'View public project' %}</a>
 </ol>
 {% if not project.is_impact_project %}
         <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>

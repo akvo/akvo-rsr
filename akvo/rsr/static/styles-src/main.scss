@@ -1546,7 +1546,7 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 110px;
+            height: 130px;
             overflow-y: hidden;
             img {
                 width: 100%;
@@ -3571,6 +3571,9 @@ main.results-page {
     }
     > button {
         display: none;
+    }
+    .editBtn {
+        @include btnOutline($akvoPurple, $akvoPurple);
     }
     .react-tabs {
         ul.react-tabs__tab-list {
