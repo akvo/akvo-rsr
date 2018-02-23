@@ -1555,6 +1555,7 @@ h4.detailedInfo {
         .thumbImg {
             height: 130px;
             overflow-y: hidden;
+            position: relative;
             img {
                 width: 100%;
                 max-width: 350px;

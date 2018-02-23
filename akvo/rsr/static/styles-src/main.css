@@ -1333,7 +1333,8 @@ h4.detailedInfo {
     margin-top: 0; }
   .main-list li .thumbImg {
     height: 130px;
-    overflow-y: hidden; }
+    overflow-y: hidden;
+    position: relative; }
     .main-list li .thumbImg img {
       width: 100%;
       max-width: 350px;
