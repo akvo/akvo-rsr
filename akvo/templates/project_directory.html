@@ -11,11 +11,11 @@
         </div>
 
         <div id="search" class="verticalPadding row searchBar">
-          <div class="col-lg-4">
+          <div class="col-lg-4 col-md-12">
             <p class="hidden">{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
             <div class="form-inline" role="form">
               <div class="form-group">
-                <div class="input-group">
+                  <div class="input-group">
                   {% bootstrap_field filter.form.title_or_subtitle field_class='search-query' show_label=False %}
                   <span class="input-group-btn">
                       <button class="btn btn-primary" onclick="advanced_filter_form.preSubmitHack()">
@@ -26,9 +26,9 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-8 text-right" id="filter-wrapper">
+          <div class="col-lg-7 col-md-12 col-lg-offset-1" id="filter-wrapper">
             {% if q %}
-              <div>
+              <div> 
                 <p class="">{% trans "Refine the project search" %}</p>
                 <a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a>
               </div>
@@ -46,17 +46,14 @@
       <div  class="row">
         <div class="col-sm-8">        
           <p class="text-center">
-            {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
-            {% endblocktrans %}
-            | View
+             View
             {% for page_number, page_size in page_info|slice:"1:" %}
             <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>  
             {% endfor %}
             projects
           </p>
         </div>
-        <div class="col-sm-8 projectListUl">
+        <div class="col-sm-7 projectListUl">
             <ul>
               {% for project in page %}
                 <li>
@@ -80,7 +77,7 @@
               {% endfor %}
             </ul>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <section id="map" class="touch-navbar">
               {% coll_map map_projects '100%' '100%' %}
             </section>

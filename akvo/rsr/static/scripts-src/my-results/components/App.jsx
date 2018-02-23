@@ -334,13 +334,13 @@ export default class App extends React.Component {
         const projectId = dataFromElement('project').id;
 
         return (
-            <section className="results liveView">
-                <a className="pull-right" href={`../../project_editor/${projectId}/`}>Edit project</a>
+            <section className="results">
+                <a className="pull-right btn btn-default editBtn" href={`../../project_editor/${projectId}/`}><i class="fa fa-pencil-square-o"></i> Edit project</a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         <Tab>Results</Tab>
                         { show_reports ? (<Tab>Narrative summaries</Tab>) : undefined }
-                        <Tab>RSR updates</Tab>
+                        <Tab>Add an update</Tab>
                     </TabList>
                     <TabPanel>
                         <FilterBar callbacks={callbacks}/>

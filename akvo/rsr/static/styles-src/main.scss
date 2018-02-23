@@ -356,7 +356,7 @@ label {
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    padding: 5px 0;
+    padding: 5px 40px;
     @include border-radius(0);
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
     button.navbar-toggle {
@@ -777,24 +777,37 @@ div.update-confirm-container {
     }
 }
 
+.projectStatus {
+    span {
+        color: $akvoBlack !important;
+    }
+}
+
 .myProjectList,
 #updates,
 #user_table {
     thead {
         tr {
-            background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
             th {
-                padding-top: 15px;
-                padding-bottom: 15px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+                td {
+                    padding-top: 40px;
+                    padding-bottom: 50px;
+                }
             }
         }
     }
     tbody {
         tr {
             background: white !important;
+            td {
+                border: none;
+                padding-top: 40px;
+                padding-bottom: 50px;
+            }
             &.notPublished {
-                background: rgba($primary4, 0.15) !important;
                 td {
                     position: relative;
                     padding-top: 40px;
@@ -816,7 +829,6 @@ div.update-confirm-container {
                 background: rgba($progressNot, 0.1) !important;
                 td {
                     position: relative;
-                    padding-top: 40px;
                     .privatePjt {
                         position: absolute;
                         top: 7px;
@@ -830,11 +842,6 @@ div.update-confirm-container {
                         font-weight: 600;
                     }
                 }
-            }
-            td {
-                padding-top: 30px;
-                padding-bottom: 30px;
-                border: none;
             }
         }
     }
@@ -973,7 +980,7 @@ div.paginationWrap {
     }
 
     .media {
-        width: 39%;
+        width: 59%;
         > a {
             min-width: 80px;
         }
@@ -1234,6 +1241,7 @@ h4.detailedInfo {
 }
 
 #map-warning {
+    display: none;
     @include responsive(small-max-screens) {
         display: none;
     }
@@ -1255,6 +1263,9 @@ h4.detailedInfo {
 .searchContainer {
     position: relative;
     #search {
+        input.form-control {
+            border-color: #ccc;
+        }
         .showFilters {
             /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
@@ -1301,9 +1312,26 @@ h4.detailedInfo {
         li {
             a,
             span {
+                border-color: transparent;
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
+                }
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+            &.active {
+                a,
+                span {
+                    font-weight: bold;
+                    color: $anchorLinkHover;
+                    background-color: transparent;
+                    &:hover {
+                        background: transparent;
+                        border-color: transparent;
+                    }
                 }
             }
         }
@@ -1351,6 +1379,7 @@ h4.detailedInfo {
 
 .advanced-filter {
     display: inline-block;
+    text-align: right;
     label {
         margin-top: 5px !important;
     }
@@ -1455,7 +1484,7 @@ h4.detailedInfo {
 
         .form-group {
             input {
-                width: 350px;
+                width: 250px;
             }
             button {
                 padding-top: 7px;
@@ -1486,7 +1515,7 @@ h4.detailedInfo {
 
 .main-list {
     li {
-        margin-bottom: 50px;
+        margin-bottom: 5px;
         list-style-type: none;
         padding: 15px 0;
         display: inline;
@@ -1511,17 +1540,18 @@ h4.detailedInfo {
         }
         h1 {
             margin-top: 0;
-            font-size: 1.3em;
+            font-size: 1.15em;
         }
         div h4:first-of-type {
             margin-top: 0;
         }
         .thumbImg {
-            height: 150px;
+            height: 130px;
             overflow-y: hidden;
             img {
                 width: 100%;
                 max-width: 350px;
+                margin-top: -35px;
             }
         }
         .projectLocation {
@@ -1601,112 +1631,7 @@ h4.detailedInfo {
             }
         }
     }
-    &.updates {
-        ul {
-            li {
-                border: thin solid rgba($rsrGreen, 0);
-                @include transition(all 0.2s ease-in);
-                .orgName {}
-                .projectTitle {
-                    color: rgba($anchorLink, 1);
-                    i {
-                        font-size: 1.1em;
-                        color: rgba($anchorLink, 1);
-                    }
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                }
-                h1 {
-                    a {
-                        color: $rsrGreen;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0), 0%);
-                    border: thin solid rgba($rsrGreen, 0);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrGreen, 0.1), 0%);
-                    border: thin solid rgba($rsrGreen, 0.35);
-                }
-                .excerpt {
-                    li {
-                        background: none;
-                        border: none;
-                        transition: none;
-                        list-style-type: initial;
-                        margin: initial;
-                        padding: initial;
-                    }
-                }
-            }
-        }
-    }
-    &.organisations {
-        ul {
-            li {
-                border: thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);
-                i {
-                    font-size: 1.1em;
-                }
-                .projectLocation {}
-                .projectTitle {
-                    display: block;
-                    margin: 0 0 3px 0;
-                }
-                span.userFullName {
-                    margin: 0 0 0px 0;
-                }
-                .upDateTime {
-                    margin-top: 10px;
-                }
-                .orgType {}
-                .additionalInfo {
-                    div {
-                        color: rgba($akvoBlack, 0.5);
-                        span {
-                            margin-left: 5px;
-                        }
-                    }
-                }
-                .socialInfo {
-                    p {
-                        color: rgba($akvoBlack, 0.5);
-                    }
-                }
-                h1 {
-                    a {
-                        color: $akvoTvRed;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($akvoTvRed, 0), 0);
-                    border: thin solid rgba($akvoTvRed, 0);
-                }
-                &:hover {
-                    background: darken(rgba($akvoTvRed, 0.1), 0%);
-                    border: thin solid rgba($akvoTvRed, 0.35);
-                }
-                img {
-                    transition: all 0.2s ease-in;
-                }
-            }
-        }
-    }
 }
-
-/* PROJECT */
 
 header {
     &.projectHeader {
@@ -2262,6 +2187,27 @@ ul.typeahead-selector {
             margin: -15px 0 0 0;
         }
     }
+}
+
+#filter-wrapper {
+    @media (max-width: 1200px) {
+        text-align: left;
+    }
+    @media (min-width: 1200px) {
+        text-align: right;
+    }
+    & > div {
+        display: flex;
+        div:not(.advanced-filter) {
+            display: block !important;
+        }
+    }
+}
+
+.projectCountTxt {
+    position: absolute;
+    top: 40px;
+    left: 22px;
 }
 
 /* Organisation Page */
@@ -3596,14 +3542,17 @@ main.results-page {
         display: inline-block;
         margin-top: 20px;
     }
-    padding-right: 20px !important;
-    padding-left: 20px !important;
+    padding-right: 50px !important;
+    padding-left: 50px !important;
     ol {
         &.breadcrumb {
             padding: 15px !important;
             background-color: white !important;
             font-size: 1.1em;
             margin-top: -10px;
+            a.liveView {
+                margin-left: 50px;
+            }
             >li+li:before {
                 padding: 0 5px;
                 color: #ccc;
@@ -3622,6 +3571,9 @@ main.results-page {
     }
     > button {
         display: none;
+    }
+    .editBtn {
+        @include btnOutline($akvoPurple, $akvoPurple);
     }
     .react-tabs {
         ul.react-tabs__tab-list {
@@ -4832,4 +4784,5 @@ main.results-page {
 
 .supporthero-button {
     bottom: 50px !important;
+    top: unset !important;
 }

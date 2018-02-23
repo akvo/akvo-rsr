@@ -3,16 +3,10 @@
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 {% block maincontent %}
 
-<section id="map" class="touch-navbar orgMap">
-  {% coll_map map_organisations '100%' '100%' %}
-</section>
-{% if not rsr_page.all_maps %}
-  <div id="map-warning" class="text-center">{% trans 'This map only shows the organisations listed on this page.' %}</div>
-{% endif %}
 <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
   <section id="search-filter">
     <div class="container-fluid">
-      <div id="search" class="verticalPadding">
+      <div id="search" class="verticalPadding row searchBar">
         <p>{% trans "Refine the organisation list below by searching by name, organisation or sector" %}</p>
         <div class="form-inline" role="form">
           <div class="form-group">
@@ -22,11 +16,11 @@
                 <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
               </span>
             </div>
-            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
+            <a class="btn showFilters menu-toggle">{% trans 'Advanced filters' %}</a>
           </div>
         </div>
         {% if q %}
-        <div><a href="{% url 'organisation-directory' %}" class="btn"><i class="fa fa-times"></i> {% trans 'Reset all filters' %}</a></div>
+        <div><a href="{% url 'organisation-directory' %}" class="btn"> {% trans 'Reset all filters' %}</a></div>
         {% endif %}
       </div>
     </div>
@@ -62,51 +56,58 @@
         {% endblocktrans %}
         </p>
   </div>
-  <div class="row">
-        {% include 'navigation/pagination.html' %}
-  </div>
 </div>
 
-<section class="main-list organisations">
-  <ul class="container">
-    {% for o in page %}
-      <li class="row">
-        <div class="col-lg-2 col-sm-3 col-xs-5">
-          <a href="{% url 'organisation-main' o.id %}">
-            {% img o 165 165 o.name %}
-          </a>
-        </div>
-        <div class="col-lg-4 col-sm-3 col-xs-7">
-          <h1><a href="{% url 'organisation-main' o.id %}"><i class="fa fa-users"></i> {{o.name}}</a></h1>
-          {% if o.iati_org_id %}<div class="orgIatiId"><i class="fa fa-key"></i> {{o.iati_org_id}}</div>{% endif %}
-          <div class="orgType"><i class="fa fa-tag"></i> {{o.iati_org_type}}</div>
-          <div class="projectLocation"><i class="fa fa-map-marker"></i>
-            {% for country in o.organisation_countries %}
-                {{ country }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                {% trans 'No countries specified' %}
-            {% endfor %}
+<section class="main-list projects">
+  <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-7  projectListUl">
+            <ul class="">
+              {% for o in page %}
+                <li>
+                  <div>
+                    <a href="{% url 'organisation-main' o.id %}">
+                      {% img o 165 165 o.name %}
+                    </a>
+                  </div>
+                  <div>
+                    <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
+                    {% if o.iati_org_id %}<div class="orgIatiId">{{o.iati_org_id}}</div>{% endif %}
+                    <div class="orgType">{{o.iati_org_type}}</div>
+                    <div class="projectLocation"><i class="fa fa-map-marker"></i>
+                      {% for country in o.organisation_countries %}
+                          {{ country }}{% if not forloop.last %}, {% endif %}
+                      {% empty %}
+                          {% trans 'No countries specified' %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="hidden-xs hidden-sm additionalInfo">
+                    <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
+                    <div class=""><span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
+                    <div class=""><span>{{o.all_users.count}} {% trans "users" %}</span></div>
+                    <div class=""><span>{{o.all_updates.count}} {% trans "updates" %}</span></div>
+                  </div>
+                  {% if o.facebook or o.twitter or o.linkedin %}
+                    <div class="hidden-xs hidden-sm socialInfo">
+                      <h4 class="detailedInfo">{% trans "Social Media" %}</h4>
+                      <p>
+                      {% if o.facebook %}<i class="fa fa-facebook-square"></i> <a href="{{o.facebook}}">Facebook</a><br>{% endif %}
+                      {% if o.twitter %}<i class="fa fa-twitter-square"></i> <a href="{{o.twitter}}">Twitter</a><br>{% endif %}
+                      {% if o.linkedin %}<i class="fa fa-linkedin-square"></i> <a href="{{o.linkedin}}">LinkedIn</a>{% endif %}
+                      </p>
+                    </div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
           </div>
+        <div class="col-sm-5">
+          <section id="map" class="touch-navbar orgMap">
+            {% coll_map map_organisations '100%' '100%' %}
+          </section>
         </div>
-        <div class="col-sm-3 hidden-xs hidden-sm additionalInfo">
-          <h4 class="detailedInfo">{% trans "Additional Information" %}</h4>
-          <div class=""><i class="fa fa-folder-o"></i> <span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
-          <div class=""><i class="fa fa-user"></i> <span>{{o.all_users.count}} {% trans "users" %}</span></div>
-          <div class=""><i class="fa fa-camera-retro"></i> <span>{{o.all_updates.count}} {% trans "updates" %}</span></div>
-        </div>
-        {% if o.facebook or o.twitter or o.linkedin %}
-          <div class="col-md-3 hidden-xs hidden-sm socialInfo">
-            <h4 class="detailedInfo">{% trans "Social Media" %}</h4>
-            <p>
-            {% if o.facebook %}<i class="fa fa-facebook-square"></i> <a href="{{o.facebook}}">Facebook</a><br>{% endif %}
-            {% if o.twitter %}<i class="fa fa-twitter-square"></i> <a href="{{o.twitter}}">Twitter</a><br>{% endif %}
-            {% if o.linkedin %}<i class="fa fa-linkedin-square"></i> <a href="{{o.linkedin}}">LinkedIn</a>{% endif %}
-            </p>
-          </div>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
+    </div>
 </section>
 </div>
 <div class="container-fluid">

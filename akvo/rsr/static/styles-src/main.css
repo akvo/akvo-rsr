@@ -336,7 +336,7 @@ label {
 nav.navbar-fixed-top {
   background-color: rgba(255, 255, 255, 0.95);
   border: none;
-  padding: 5px 0;
+  padding: 5px 40px;
   -moz-border-radius: 0;
   -o-border-radius: 0;
   -webkit-border-radius: 0;
@@ -684,46 +684,55 @@ div.update-confirm-container {
         .indicator-period-list tbody.indicator-period tr td.actions-td .btn-default:hover {
           background: #2c2a74; }
 
+.projectStatus span {
+  color: #202024 !important; }
+
 .myProjectList thead tr,
 #updates thead tr,
 #user_table thead tr {
-  background-color: rgba(32, 32, 36, 0.05);
   border-bottom: none; }
   .myProjectList thead tr th,
   #updates thead tr th,
   #user_table thead tr th {
-    padding-top: 15px;
-    padding-bottom: 15px; }
+    padding-top: 25px;
+    padding-bottom: 25px; }
+    .myProjectList thead tr th td,
+    #updates thead tr th td,
+    #user_table thead tr th td {
+      padding-top: 40px;
+      padding-bottom: 50px; }
 
 .myProjectList tbody tr,
 #updates tbody tr,
 #user_table tbody tr {
   background: white !important; }
-  .myProjectList tbody tr.notPublished,
-  #updates tbody tr.notPublished,
-  #user_table tbody tr.notPublished {
-    background: rgba(153, 153, 153, 0.15) !important; }
-    .myProjectList tbody tr.notPublished td,
-    #updates tbody tr.notPublished td,
-    #user_table tbody tr.notPublished td {
-      position: relative;
-      padding-top: 40px; }
-      .myProjectList tbody tr.notPublished td .unplubishedPjt,
-      #updates tbody tr.notPublished td .unplubishedPjt,
-      #user_table tbody tr.notPublished td .unplubishedPjt {
-        position: absolute;
-        top: 7px;
-        left: 8px;
-        padding: 3px;
-        display: inline-block;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        color: #ee3124;
-        border: 1px solid #ee3124;
-        font-size: 80%;
-        font-weight: 600; }
+  .myProjectList tbody tr td,
+  #updates tbody tr td,
+  #user_table tbody tr td {
+    border: none;
+    padding-top: 40px;
+    padding-bottom: 50px; }
+  .myProjectList tbody tr.notPublished td,
+  #updates tbody tr.notPublished td,
+  #user_table tbody tr.notPublished td {
+    position: relative;
+    padding-top: 40px; }
+    .myProjectList tbody tr.notPublished td .unplubishedPjt,
+    #updates tbody tr.notPublished td .unplubishedPjt,
+    #user_table tbody tr.notPublished td .unplubishedPjt {
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      padding: 3px;
+      display: inline-block;
+      -moz-border-radius: 2px;
+      -o-border-radius: 2px;
+      -webkit-border-radius: 2px;
+      border-radius: 2px;
+      color: #ee3124;
+      border: 1px solid #ee3124;
+      font-size: 80%;
+      font-weight: 600; }
   .myProjectList tbody tr.isPrivate,
   #updates tbody tr.isPrivate,
   #user_table tbody tr.isPrivate {
@@ -731,8 +740,7 @@ div.update-confirm-container {
     .myProjectList tbody tr.isPrivate td,
     #updates tbody tr.isPrivate td,
     #user_table tbody tr.isPrivate td {
-      position: relative;
-      padding-top: 40px; }
+      position: relative; }
       .myProjectList tbody tr.isPrivate td .privatePjt,
       #updates tbody tr.isPrivate td .privatePjt,
       #user_table tbody tr.isPrivate td .privatePjt {
@@ -749,12 +757,6 @@ div.update-confirm-container {
         border: 1px solid #ee3124;
         font-size: 80%;
         font-weight: 600; }
-  .myProjectList tbody tr td,
-  #updates tbody tr td,
-  #user_table tbody tr td {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    border: none; }
 
 .myProjectList div.projectListMenu ul,
 #updates div.projectListMenu ul,
@@ -861,7 +863,7 @@ div.paginationWrap {
     border: none; } }
 
 .table-responsive .media {
-  width: 39%; }
+  width: 59%; }
   .table-responsive .media > a {
     min-width: 80px; }
   .table-responsive .media .media-body p {
@@ -1081,6 +1083,7 @@ h4.detailedInfo {
     height: 100%; }
 
 #map-warning {
+  display: none;
   margin-top: -30px;
   z-index: 99;
   opacity: 0.8;
@@ -1099,6 +1102,8 @@ h4.detailedInfo {
 
 .searchContainer {
   position: relative; }
+  .searchContainer #search input.form-control {
+    border-color: #ccc; }
   .searchContainer #search .showFilters {
     /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
@@ -1137,11 +1142,26 @@ h4.detailedInfo {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   margin-bottom: 15px; }
-  @media only screen and (max-width: 768px) {
-    .paginationWrap .pagination li a,
-    .paginationWrap .pagination li span {
-      padding: 10px 16px;
-      font-size: 18px; } }
+  .paginationWrap .pagination li a,
+  .paginationWrap .pagination li span {
+    border-color: transparent; }
+    @media only screen and (max-width: 768px) {
+      .paginationWrap .pagination li a,
+      .paginationWrap .pagination li span {
+        padding: 10px 16px;
+        font-size: 18px; } }
+    .paginationWrap .pagination li a:hover,
+    .paginationWrap .pagination li span:hover {
+      background: transparent; }
+  .paginationWrap .pagination li.active a,
+  .paginationWrap .pagination li.active span {
+    font-weight: bold;
+    color: #ca8142;
+    background-color: transparent; }
+    .paginationWrap .pagination li.active a:hover,
+    .paginationWrap .pagination li.active span:hover {
+      background: transparent;
+      border-color: transparent; }
   .paginationWrap .sortList {
     display: inline-block;
     padding-left: 0;
@@ -1166,7 +1186,8 @@ h4.detailedInfo {
         color: #ca8142; } }
 
 .advanced-filter {
-  display: inline-block; }
+  display: inline-block;
+  text-align: right; }
   .advanced-filter label {
     margin-top: 5px !important; }
   .advanced-filter .bootstrap-typeahead-input {
@@ -1254,7 +1275,7 @@ h4.detailedInfo {
     #search-filter #search {
       padding-bottom: 0; } }
   #search-filter #search .form-group input {
-    width: 350px; }
+    width: 250px; }
   #search-filter #search .form-group button {
     padding-top: 7px;
     padding-bottom: 5px; }
@@ -1274,7 +1295,7 @@ h4.detailedInfo {
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
 .main-list li {
-  margin-bottom: 50px;
+  margin-bottom: 5px;
   list-style-type: none;
   padding: 15px 0;
   display: inline;
@@ -1301,15 +1322,16 @@ h4.detailedInfo {
     margin-bottom: 0; }
   .main-list li h1 {
     margin-top: 0;
-    font-size: 1.3em; }
+    font-size: 1.15em; }
   .main-list li div h4:first-of-type {
     margin-top: 0; }
   .main-list li .thumbImg {
-    height: 150px;
+    height: 130px;
     overflow-y: hidden; }
     .main-list li .thumbImg img {
       width: 100%;
-      max-width: 350px; }
+      max-width: 350px;
+      margin-top: -35px; }
   .main-list li .projectLocation {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 0; }
@@ -1365,74 +1387,6 @@ h4.detailedInfo {
       .main-list.projects ul li .projectLocation {
         color: rgba(32, 32, 36, 0.5); }
 
-.main-list.updates ul li {
-  border: thin solid rgba(0, 167, 157, 0);
-  -moz-transition: all 0.2s ease-in;
-  -o-transition: all 0.2s ease-in;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in; }
-  .main-list.updates ul li .projectTitle {
-    color: #428bca; }
-    .main-list.updates ul li .projectTitle i {
-      font-size: 1.1em;
-      color: #428bca; }
-    .main-list.updates ul li .projectTitle:hover {
-      color: #ca8142; }
-  .main-list.updates ul li h1 a {
-    color: #00a79d; }
-    .main-list.updates ul li h1 a:hover {
-      color: #ca8142; }
-  .main-list.updates ul li:nth-child(2n+1) {
-    background: rgba(0, 167, 157, 0);
-    border: thin solid rgba(0, 167, 157, 0); }
-  .main-list.updates ul li .projectLocation {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list.updates ul li:hover {
-    background: rgba(0, 167, 157, 0.1);
-    border: thin solid rgba(0, 167, 157, 0.35); }
-  .main-list.updates ul li .excerpt li {
-    background: none;
-    border: none;
-    transition: none;
-    list-style-type: initial;
-    margin: initial;
-    padding: initial; }
-
-.main-list.organisations ul li {
-  border: thin solid rgba(238, 49, 36, 0);
-  -moz-transition: all 0.2s ease-in;
-  -o-transition: all 0.2s ease-in;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in; }
-  .main-list.organisations ul li i {
-    font-size: 1.1em; }
-  .main-list.organisations ul li .projectTitle {
-    display: block;
-    margin: 0 0 3px 0; }
-  .main-list.organisations ul li span.userFullName {
-    margin: 0 0 0px 0; }
-  .main-list.organisations ul li .upDateTime {
-    margin-top: 10px; }
-  .main-list.organisations ul li .additionalInfo div {
-    color: rgba(32, 32, 36, 0.5); }
-    .main-list.organisations ul li .additionalInfo div span {
-      margin-left: 5px; }
-  .main-list.organisations ul li .socialInfo p {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list.organisations ul li h1 a {
-    color: #ee3124; }
-    .main-list.organisations ul li h1 a:hover {
-      color: #ca8142; }
-  .main-list.organisations ul li:nth-child(2n+1) {
-    background: rgba(238, 49, 36, 0);
-    border: thin solid rgba(238, 49, 36, 0); }
-  .main-list.organisations ul li:hover {
-    background: rgba(238, 49, 36, 0.1);
-    border: thin solid rgba(238, 49, 36, 0.35); }
-  .main-list.organisations ul li img {
-    transition: all 0.2s ease-in; }
-
-/* PROJECT */
 header.projectHeader {
   margin-bottom: 0;
   padding: 15px 0;
@@ -1856,6 +1810,24 @@ ul.typeahead-selector {
 
 #filterForm #org-filter-container ul.typeahead-container {
   margin: -15px 0 0 0; }
+
+@media (max-width: 1200px) {
+  #filter-wrapper {
+    text-align: left; } }
+
+@media (min-width: 1200px) {
+  #filter-wrapper {
+    text-align: right; } }
+
+#filter-wrapper > div {
+  display: flex; }
+  #filter-wrapper > div div:not(.advanced-filter) {
+    display: block !important; }
+
+.projectCountTxt {
+  position: absolute;
+  top: 40px;
+  left: 22px; }
 
 /* Organisation Page */
 .organisationDetail .organisationHeader {
@@ -2932,8 +2904,8 @@ main.results-page {
       color: white; }
 
 .myRsrPg {
-  padding-right: 20px !important;
-  padding-left: 20px !important; }
+  padding-right: 50px !important;
+  padding-left: 50px !important; }
   .myRsrPg h3 {
     display: inline-block;
     margin-top: 20px; }
@@ -2942,6 +2914,8 @@ main.results-page {
     background-color: white !important;
     font-size: 1.1em;
     margin-top: -10px; }
+    .myRsrPg ol.breadcrumb a.liveView {
+      margin-left: 50px; }
     .myRsrPg ol.breadcrumb > li + li:before {
       padding: 0 5px;
       color: #ccc;
@@ -2957,6 +2931,49 @@ main.results-page {
     box-sizing: border-box; }
   .results > button {
     display: none; }
+  .results .editBtn {
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: #2c2a74;
+    color: #2c2a74 !important;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-align: center;
+    background-color: transparent;
+    color: #2c2a74 !important;
+    border: 1px solid #2c2a74; }
+    .results .editBtn:hover {
+      background: #1e1c4f;
+      color: white; }
+    .results .editBtn.disabled {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+      .results .editBtn.disabled:hover {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
+    .results .editBtn:hover {
+      color: white !important;
+      border: none;
+      border: 1px solid #428bca;
+      background-color: #428bca; }
+    .results .editBtn.disabled {
+      cursor: not-allowed;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid rgba(128, 128, 128, 0.4); }
+      .results .editBtn.disabled:hover {
+        cursor: not-allowed;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid rgba(128, 128, 128, 0.4); }
   .results .react-tabs ul.react-tabs__tab-list {
     border-bottom: 1px solid rgba(32, 32, 36, 0.1) !important; }
     .results .react-tabs ul.react-tabs__tab-list li {
@@ -3820,4 +3837,5 @@ main.results-page {
   margin-right: 5px; }
 
 .supporthero-button {
-  bottom: 50px !important; }
+  bottom: 50px !important;
+  top: unset !important; }

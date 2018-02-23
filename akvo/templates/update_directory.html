@@ -3,16 +3,10 @@
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
 
-<section id="map" class="touch-navbar">
-    {% coll_map map_updates '100%' '100%' %}
-</section>
-{% if not rsr_page.all_maps %}
-  <div id="map-warning" class="text-center">{% trans 'This map only shows the updates listed on this page.' %}</div>
-{% endif %}
 <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
   <section id="search-filter">
     <div class="container-fluid">
-      <div id="search" class="verticalPadding">
+      <div id="search" class="verticalPadding row searchBar">
         <p>{% trans "Refine the update list below by searching by name, organisation or sector" %}</p>
         <div class="form-inline" role="form">
           <div class="form-group">
@@ -64,44 +58,52 @@
         {% endblocktrans %}
         </p>
   </div>
-  <div class="row">
-        {% include 'navigation/pagination.html' %}
-  </div>
 </div>
 
-    <section class="main-list updates">
-      <ul class="container">
-        {% for u in page %}
-        <li class="row updateAsset">
-          <div class="col-sm-3 col-md-2 col-xs-4">
-            <a href="{% url 'update-main' u.project.id u.id %}">
-              {% if u.video %}
-                {% vid_img u 160 160 u.title %}
-              {% else %}
-                {% img u 160 160 u.title %}
-              {% endif %}
-            </a>
-          </div>
-          <div class="col-sm-4 col-md-4 col-xs-8">
-            <h1><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h1>
-            <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-            <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
-                {% if u.user.employers.all %}
-                  {% with org=u.user.employers.all.0.organisation %}
-                    <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
-                  {% endwith %}
+    <section class="main-list projects">
+    <div class="container-fluid">
+      <div  class="row">
+        <div class="col-sm-7 projectListUl">
+        <ul>
+          {% for u in page %}
+          <li class="updateAsset">
+            <div class="">
+              <a href="{% url 'update-main' u.project.id u.id %}">
+                {% if u.video %}
+                  {% vid_img u 160 160 u.title %}
+                {% else %}
+                  {% img u 160 160 u.title %}
                 {% endif %}
+              </a>
             </div>
-            <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.event_date|date:"d-M-Y"}}</div>
-          </div>
-          <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
-            {% autoescape off %}
-              {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
-            {% endautoescape %}
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
+            <div class="">
+              <h1><a href="{% url 'update-main' u.project.id u.id %}"> {{u.title}}</a></h1>
+              <a href="{% url 'project-main' u.project.pk %}" class="projectTitle">{{u.project.title}}</a>
+              <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
+                  {% if u.user.employers.all %}
+                    {% with org=u.user.employers.all.0.organisation %}
+                      <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>
+                    {% endwith %}
+                  {% endif %}
+              </div>
+              <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
+            </div>
+            <div class="excerpt hidden-xs">
+              {% autoescape off %}
+                {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
+              {% endautoescape %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-sm-5">
+        <section id="map" class="touch-navbar">
+            {% coll_map map_updates '100%' '100%' %}
+        </section>
+      </div>
+      </div>
+    </div>
     </section>
 
 <div class="container">
