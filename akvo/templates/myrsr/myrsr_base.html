@@ -6,8 +6,6 @@
     {% has_perm 'rsr.project_management' user as can_manage_projects %}
     {% has_perm 'rsr.change_employment' user as can_change_employments %}
     <div class="container-fluid myRsrPg">
-        <div class="row">
             {% block myrsr_main %}{% endblock myrsr_main %}
-        </div>
     </div>
 {% endblock maincontent %}
