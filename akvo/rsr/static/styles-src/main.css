@@ -992,18 +992,24 @@ footer .navbar {
               background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
               background-size: 80px auto; } }
     footer .navbar #footer-body ul.nav li div.langDropdown {
-      margin-top: 10px;
+      margin-top: 13px;
       background-color: transparent !important;
-      border-color: transparent !important; }
+      border-color: transparent !important;
+      color: white !important; }
       footer .navbar #footer-body ul.nav li div.langDropdown .btn-default {
         background-color: transparent !important;
         border-color: transparent; }
+      footer .navbar #footer-body ul.nav li div.langDropdown button {
+        background-color: transparent !important;
+        border-color: transparent !important; }
       @media only screen and (max-width: 768px) {
         footer .navbar #footer-body ul.nav li div.langDropdown {
           padding-left: 15px;
           padding-right: 15px; } }
       footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
-        position: absolute; }
+        position: absolute;
+        background-color: transparent !important;
+        border-color: transparent !important; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
             background-color: white !important;
@@ -1375,10 +1381,12 @@ h4.detailedInfo {
       -o-transition: all 0.2s ease-in;
       -webkit-transition: all 0.2s ease-in;
       transition: all 0.2s ease-in; }
-      .main-list.projects ul li h1 a {
-        color: #2c2a74; }
-        .main-list.projects ul li h1 a:hover {
-          color: #ca8142; }
+      .main-list.projects ul li h1 {
+        margin-top: 5px; }
+        .main-list.projects ul li h1 a {
+          color: #2c2a74; }
+          .main-list.projects ul li h1 a:hover {
+            color: #ca8142; }
       .main-list.projects ul li .projectSubT {
         margin-bottom: 0; }
       .main-list.projects ul li:nth-child(2n+1) {
