@@ -396,9 +396,8 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav li a:hover {
         color: #ca8142; }
       nav.navbar-fixed-top .navbar-nav li a.active {
-        color: #00a79d;
-        font-weight: bold;
-        background: rgba(202, 129, 66, 0.1);
+        color: #72cdff;
+        background: transparent;
         -moz-border-radius: 3px;
         -o-border-radius: 3px;
         -webkit-border-radius: 3px;
@@ -417,7 +416,8 @@ nav.navbar-fixed-top {
       -moz-transition: all 0.2s linear;
       -o-transition: all 0.2s linear;
       -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear; }
+      transition: all 0.2s linear;
+      cursor: text; }
       nav.navbar-fixed-top .navbar-nav li.navProject .active:hover {
         background: rgba(169, 104, 48, 0);
         border: thin solid rgba(202, 129, 66, 0);
@@ -1337,7 +1337,10 @@ h4.detailedInfo {
     .main-list li .thumbImg img {
       width: 100%;
       max-width: 350px;
-      margin-top: -35px; }
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); }
   .main-list li .projectLocation {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 0; }

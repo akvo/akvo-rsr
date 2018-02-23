@@ -423,9 +423,8 @@ nav.navbar-fixed-top {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: $rsrGreen;
-                    font-weight: bold;
-                    background: rgba($anchorLinkHover, 0.1);
+                    color: $rsrBlue2;
+                    background: transparent;
                     @include border-radius(3px);
                     @include responsive(tablets) {
                         background: rgba($anchorLinkHover, 0.1);
@@ -439,6 +438,7 @@ nav.navbar-fixed-top {
                     @include border-radius(3px);
                     color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
+                    cursor: text;
                     &:hover {
                         background: darken(rgba($anchorLinkHover, 0), 10%);
                         border: thin solid rgba($anchorLinkHover, 0);
@@ -1558,7 +1558,10 @@ h4.detailedInfo {
             img {
                 width: 100%;
                 max-width: 350px;
-                margin-top: -35px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
             }
         }
         .projectLocation {
