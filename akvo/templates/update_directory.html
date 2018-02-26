@@ -63,8 +63,8 @@
     <section class="main-list projects">
     <div class="container-fluid">
       <div  class="row">
-        <div class="col-sm-7 projectListUl">
-        <ul>
+        <div class="col-sm-7 ">
+        <ul class="projectListUl">
           {% for u in page %}
           <li class="updateAsset">
             <div class="thumbImg">
@@ -97,6 +97,8 @@
           </li>
           {% endfor %}
         </ul>
+                {% include 'navigation/pagination.html' %}
+
       </div>
       <div class="col-sm-5">
         <section id="map" class="touch-navbar">
@@ -109,7 +111,6 @@
 
 <div class="container">
     <div class="row">
-        {% include 'navigation/pagination.html' %}
     </div>
 </div>
 {% endblock %}

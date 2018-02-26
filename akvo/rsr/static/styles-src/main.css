@@ -1073,21 +1073,6 @@ h4.detailedInfo {
 .progress-bar-info {
   background-color: #e1edc3; }
 
-#map {
-  position: relative;
-  height: calc(100vh - 450px); }
-  @media only screen and (max-width: 768px) {
-    #map {
-      display: none; } }
-  #map .rsr_map {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; }
-
 #map-warning {
   display: none;
   margin-top: -30px;
@@ -1148,26 +1133,28 @@ h4.detailedInfo {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   margin-bottom: 15px; }
-  .paginationWrap .pagination li a,
-  .paginationWrap .pagination li span {
-    border-color: transparent; }
-    @media only screen and (max-width: 768px) {
-      .paginationWrap .pagination li a,
-      .paginationWrap .pagination li span {
-        padding: 10px 16px;
-        font-size: 18px; } }
-    .paginationWrap .pagination li a:hover,
-    .paginationWrap .pagination li span:hover {
-      background: transparent; }
-  .paginationWrap .pagination li.active a,
-  .paginationWrap .pagination li.active span {
-    font-weight: bold;
-    color: #ca8142;
-    background-color: transparent; }
-    .paginationWrap .pagination li.active a:hover,
-    .paginationWrap .pagination li.active span:hover {
-      background: transparent;
+  .paginationWrap .pagination {
+    margin: 0 auto; }
+    .paginationWrap .pagination li a,
+    .paginationWrap .pagination li span {
       border-color: transparent; }
+      @media only screen and (max-width: 768px) {
+        .paginationWrap .pagination li a,
+        .paginationWrap .pagination li span {
+          padding: 10px 16px;
+          font-size: 18px; } }
+      .paginationWrap .pagination li a:hover,
+      .paginationWrap .pagination li span:hover {
+        background: transparent; }
+    .paginationWrap .pagination li.active a,
+    .paginationWrap .pagination li.active span {
+      font-weight: bold;
+      color: #ca8142;
+      background-color: transparent; }
+      .paginationWrap .pagination li.active a:hover,
+      .paginationWrap .pagination li.active span:hover {
+        background: transparent;
+        border-color: transparent; }
   .paginationWrap .sortList {
     display: inline-block;
     padding-left: 0;
@@ -1300,78 +1287,67 @@ h4.detailedInfo {
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
-.main-list li {
-  margin-bottom: 5px;
-  list-style-type: none;
-  padding: 15px 0;
-  display: inline;
-  width: 32%;
-  float: left;
-  min-height: 315px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background: white;
-  margin-right: 2%; }
-  .main-list li:nth-child(3n+3) {
-    margin-right: 0; }
-  .main-list li img {
-    border: 1px solid rgba(32, 32, 36, 0.05);
-    -moz-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
-    -o-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
-    -webkit-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
-    box-shadow: 0 0 2px rgba(202, 129, 66, 0); }
-  .main-list li:nth-child(2n+1) {
-    background: #eeeeee; }
-  .main-list li:last-child {
-    margin-bottom: 0; }
-  .main-list li h1 {
-    margin-top: 0;
-    font-size: 1.15em; }
-  .main-list li div h4:first-of-type {
-    margin-top: 0; }
-  .main-list li .thumbImg {
-    height: 130px;
-    overflow-y: hidden;
-    position: relative; }
-    .main-list li .thumbImg img {
-      width: 100%;
-      max-width: 350px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); }
-  .main-list li .projectLocation {
-    color: rgba(32, 32, 36, 0.5);
-    margin-top: 0; }
-  .main-list li .projectTitle {
-    display: block;
-    margin: 0 0 3px 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; }
-    .main-list li .projectTitle span {
-      color: #202024 !important; }
-  .main-list li span.userFullName {
-    color: rgba(32, 32, 36, 0.5);
-    margin: 0 0 0px 0; }
-  .main-list li .upDateTime {
-    color: rgba(32, 32, 36, 0.5);
-    margin-top: 10px; }
-  .main-list li .orgType {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list li .orgIatiId {
-    color: rgba(32, 32, 36, 0.5); }
-  .main-list li .additionalInfo div span {
-    margin-left: 5px; }
-  @media only screen and (max-width: 768px) {
-    .main-list li dl.dl-horizontal dd {
-      margin-left: 100px; } }
-  @media only screen and (max-width: 1200px) {
-    .main-list li dl.dl-horizontal dd {
-      margin-left: 0px;
-      display: block; } }
+.main-list li img {
+  border: 1px solid rgba(32, 32, 36, 0.05);
+  -moz-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
+  -o-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
+  -webkit-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
+  box-shadow: 0 0 2px rgba(202, 129, 66, 0); }
+
+.main-list li:nth-child(2n+1) {
+  background: #eeeeee; }
+
+.main-list li:last-child {
+  margin-bottom: 0; }
+
+.main-list li h1 {
+  margin-top: 0;
+  font-size: 1.15em; }
+
+.main-list li div h4:first-of-type {
+  margin-top: 0; }
+
+.main-list li .thumbImg {
+  height: 130px;
+  overflow-y: hidden;
+  position: relative; }
+  .main-list li .thumbImg img {
+    width: 100%;
+    max-width: 350px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); }
+
+.main-list li .projectLocation {
+  color: rgba(32, 32, 36, 0.5);
+  margin-top: 0; }
+
+.main-list li .projectTitle {
+  display: block;
+  margin: 0 0 3px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+  .main-list li .projectTitle span {
+    color: #202024 !important; }
+
+.main-list li span.userFullName {
+  color: rgba(32, 32, 36, 0.5);
+  margin: 0 0 0px 0; }
+
+.main-list li .upDateTime {
+  color: rgba(32, 32, 36, 0.5);
+  margin-top: 10px; }
+
+.main-list li .orgType {
+  color: rgba(32, 32, 36, 0.5); }
+
+.main-list li .orgIatiId {
+  color: rgba(32, 32, 36, 0.5); }
+
+.main-list li .additionalInfo div span {
+  margin-left: 5px; }
 
 .main-list .excerpt {
   overflow: hidden;
@@ -1380,28 +1356,57 @@ h4.detailedInfo {
 
 .main-list.projects {
   margin-top: 10px; }
-  .main-list.projects ul {
-    max-height: calc(100vh - 450px);
+  .main-list.projects #map {
+    position: relative;
+    height: calc(100vh - 310px); }
+    @media only screen and (max-width: 768px) {
+      .main-list.projects #map {
+        display: none; } }
+    .main-list.projects #map .rsr_map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 100%;
+      height: 100%; }
+  .main-list.projects ul.projectListUl {
+    max-height: calc(100vh - 370px);
     overflow-y: scroll;
     padding-left: 15px; }
-    .main-list.projects ul li {
+    .main-list.projects ul.projectListUl li {
+      margin-bottom: 5px;
+      list-style-type: none;
+      padding: 15px 0;
+      display: inline;
+      width: 32%;
+      float: left;
+      min-height: 315px;
+      -moz-border-radius: 3px;
+      -o-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      background: white;
+      margin-right: 2%;
       border: thin solid rgba(44, 42, 116, 0);
       -moz-transition: all 0.2s ease-in;
       -o-transition: all 0.2s ease-in;
       -webkit-transition: all 0.2s ease-in;
       transition: all 0.2s ease-in; }
-      .main-list.projects ul li h1 {
+      .main-list.projects ul.projectListUl li:nth-child(3n+3) {
+        margin-right: 0; }
+      .main-list.projects ul.projectListUl li h1 {
         margin-top: 5px; }
-        .main-list.projects ul li h1 a {
+        .main-list.projects ul.projectListUl li h1 a {
           color: #2c2a74; }
-          .main-list.projects ul li h1 a:hover {
+          .main-list.projects ul.projectListUl li h1 a:hover {
             color: #ca8142; }
-      .main-list.projects ul li .projectSubT {
+      .main-list.projects ul.projectListUl li .projectSubT {
         margin-bottom: 0; }
-      .main-list.projects ul li:nth-child(2n+1) {
+      .main-list.projects ul.projectListUl li:nth-child(2n+1) {
         background: rgba(44, 42, 116, 0);
         border: thin solid rgba(44, 42, 116, 0); }
-      .main-list.projects ul li .projectLocation {
+      .main-list.projects ul.projectListUl li .projectLocation {
         color: rgba(32, 32, 36, 0.5); }
 
 header.projectHeader {
