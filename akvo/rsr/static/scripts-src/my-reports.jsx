@@ -636,7 +636,7 @@ function initReact() {
     // Initialize the 'My reports' app
     ReactDOM.render(
         React.createElement(MyReportsApp),
-        document.getElementById('container')
+        document.getElementById('container-fluid')
     );
 }
 
