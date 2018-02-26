@@ -79,7 +79,7 @@
             <div class="">
               <h1><a href="{% url 'update-main' u.project.id u.id %}"> {{u.title}}</a></h1>
                 <div><a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><span class="small">Project: </span> {{u.project.title}}</a></div>
-                <div><span class="small">Created by: </span><span class="userFullName">{ {u.user.first_name}} {{u.user.last_name}}</span></div>
+                <div><span class="small">Created by: </span><span class="userFullName">{{u.user.first_name}} {{u.user.last_name}}</span></div>
                  <div><span class="small">Org: </span>{% if u.user.employers.all %}
                       {% with org=u.user.employers.all.0.organisation %}
                         <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>

@@ -718,7 +718,7 @@ div.update-confirm-container {
 }
 
 #createProject {
-    margin: -5px 0 0 25px;
+    margin: 18px 0 0 0;
     background: $akvoBlack;
     color: white;
     border: none;
@@ -1541,19 +1541,16 @@ h4.detailedInfo {
         }
         .projectTitle {
             display: block;
-            margin: 0 0 3px 0;
             @include noWrapTxt;
             span {
                 color: $akvoBlack !important;
             }
         }
         span.userFullName {
-            color: rgba($akvoBlack, 0.5);
             margin: 0 0 0px 0;
         }
         .upDateTime {
             color: rgba($akvoBlack, 0.5);
-            margin-top: 10px;
         }
         .orgType {
             color: rgba($akvoBlack, 0.5);
@@ -3573,6 +3570,9 @@ main.results-page {
     }
     > button {
         display: none;
+    }
+    #update {
+        padding-top: 25px;
     }
     .editBtn {
         @include btnOutline($akvoPurple, $akvoPurple);
