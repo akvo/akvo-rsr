@@ -53,8 +53,8 @@
             projects
           </p>
         </div>
-        <div class="col-sm-7 projectListUl">
-            <ul>
+        <div class="col-sm-7">
+            <ul class="projectListUl">
               {% for project in page %}
                 <li>
                   <div class="thumbImg">
@@ -75,7 +75,8 @@
                   </div>
                 </li>
               {% endfor %}
-            </ul>
+            </ul>       
+            {% include 'navigation/pagination.html' %}
         </div>
         <div class="col-sm-5">
             <section id="map" class="touch-navbar">
@@ -88,9 +89,7 @@
       </div>
     </div>
   </section>
-  <div class="container-fluid">
-       {% include 'navigation/pagination.html' %}
-  </div>
+
 {% endblock %}
 
 {% block js %}
