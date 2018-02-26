@@ -396,9 +396,8 @@ nav.navbar-fixed-top {
       nav.navbar-fixed-top .navbar-nav li a:hover {
         color: #ca8142; }
       nav.navbar-fixed-top .navbar-nav li a.active {
-        color: #00a79d;
-        font-weight: bold;
-        background: rgba(202, 129, 66, 0.1);
+        color: #72cdff;
+        background: transparent;
         -moz-border-radius: 3px;
         -o-border-radius: 3px;
         -webkit-border-radius: 3px;
@@ -417,7 +416,8 @@ nav.navbar-fixed-top {
       -moz-transition: all 0.2s linear;
       -o-transition: all 0.2s linear;
       -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear; }
+      transition: all 0.2s linear;
+      cursor: text; }
       nav.navbar-fixed-top .navbar-nav li.navProject .active:hover {
         background: rgba(169, 104, 48, 0);
         border: thin solid rgba(202, 129, 66, 0);
@@ -992,18 +992,24 @@ footer .navbar {
               background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
               background-size: 80px auto; } }
     footer .navbar #footer-body ul.nav li div.langDropdown {
-      margin-top: 10px;
+      margin-top: 13px;
       background-color: transparent !important;
-      border-color: transparent !important; }
+      border-color: transparent !important;
+      color: white !important; }
       footer .navbar #footer-body ul.nav li div.langDropdown .btn-default {
         background-color: transparent !important;
         border-color: transparent; }
+      footer .navbar #footer-body ul.nav li div.langDropdown button {
+        background-color: transparent !important;
+        border-color: transparent !important; }
       @media only screen and (max-width: 768px) {
         footer .navbar #footer-body ul.nav li div.langDropdown {
           padding-left: 15px;
           padding-right: 15px; } }
       footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
-        position: absolute; }
+        position: absolute;
+        background-color: transparent !important;
+        border-color: transparent !important; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
             background-color: white !important;
@@ -1327,11 +1333,15 @@ h4.detailedInfo {
     margin-top: 0; }
   .main-list li .thumbImg {
     height: 130px;
-    overflow-y: hidden; }
+    overflow-y: hidden;
+    position: relative; }
     .main-list li .thumbImg img {
       width: 100%;
       max-width: 350px;
-      margin-top: -35px; }
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); }
   .main-list li .projectLocation {
     color: rgba(32, 32, 36, 0.5);
     margin-top: 0; }
@@ -1375,10 +1385,12 @@ h4.detailedInfo {
       -o-transition: all 0.2s ease-in;
       -webkit-transition: all 0.2s ease-in;
       transition: all 0.2s ease-in; }
-      .main-list.projects ul li h1 a {
-        color: #2c2a74; }
-        .main-list.projects ul li h1 a:hover {
-          color: #ca8142; }
+      .main-list.projects ul li h1 {
+        margin-top: 5px; }
+        .main-list.projects ul li h1 a {
+          color: #2c2a74; }
+          .main-list.projects ul li h1 a:hover {
+            color: #ca8142; }
       .main-list.projects ul li .projectSubT {
         margin-bottom: 0; }
       .main-list.projects ul li:nth-child(2n+1) {
