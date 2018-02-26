@@ -1091,7 +1091,7 @@ footer {
         background-color: white !important;
     }
     .navbar {
-        background: $akvoBlack;
+        border-top: 1px solid rgba($akvoBlack, 0.2);
         @include border-radius(0);
         #footer-body {
             ul.nav {
@@ -1106,21 +1106,21 @@ footer {
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
-                            background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
+                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
                             text-indent: -9999px;
-                            background-size: 70px 42px;
+                            background-size: 92%;
                             &:hover {
-                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
+                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
                                 text-indent: -9999px;
-                                background-size: 70px 42px;
+                                background-size: 92%;
                             }
                             @include responsive(small-max-screens) {
                                 width: 100%;
-                                background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
-                                background-size: 80px auto;
+                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                background-size: 92%;
                                 &:hover {
-                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
-                                    background-size: 80px auto;
+                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                    background-size: 92%;
                                 }
                             }
                         }
@@ -1129,7 +1129,7 @@ footer {
                         margin-top: 13px;
                         background-color: transparent !important;
                         border-color: transparent !important;
-                        color: white !important;
+                        color: $akvoBlack !important;
                         .btn-default {
                             background-color: transparent !important;
                             border-color: transparent;
@@ -1572,6 +1572,10 @@ h4.detailedInfo {
         .projectTitle {
             display: block;
             margin: 0 0 3px 0;
+            @include noWrapTxt;
+            span {
+                color: $akvoBlack !important;
+            }
         }
         span.userFullName {
             color: rgba($akvoBlack, 0.5);

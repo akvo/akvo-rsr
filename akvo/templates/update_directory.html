@@ -67,28 +67,29 @@
         <ul>
           {% for u in page %}
           <li class="updateAsset">
-            <div class="">
+            <div class="thumbImg">
               <a href="{% url 'update-main' u.project.id u.id %}">
                 {% if u.video %}
                   {% vid_img u 160 160 u.title %}
                 {% else %}
-                  {% img u 160 160 u.title %}
+                  {% img u 350 150 u.title %}
                 {% endif %}
               </a>
             </div>
             <div class="">
               <h1><a href="{% url 'update-main' u.project.id u.id %}"> {{u.title}}</a></h1>
-              <a href="{% url 'project-main' u.project.pk %}" class="projectTitle">{{u.project.title}}</a>
-              <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
-                  {% if u.user.employers.all %}
-                    {% with org=u.user.employers.all.0.organisation %}
-                      <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>
-                    {% endwith %}
-                  {% endif %}
+                <div><a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><span class="small">Project: </span> {{u.project.title}}</a></div>
+                <div><span class="small">Created by: </span><span class="userFullName">{ {u.user.first_name}} {{u.user.last_name}}</span></div>
+                 <div><span class="small">Org: </span>{% if u.user.employers.all %}
+                      {% with org=u.user.employers.all.0.organisation %}
+                        <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>
+                      {% endwith %}
+                    {% endif %}
+                </div>            
               </div>
-              <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
-            </div>
-            <div class="excerpt hidden-xs">
+
+                <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
+            <div class="excerpt hidden">
               {% autoescape off %}
                 {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
               {% endautoescape %}
