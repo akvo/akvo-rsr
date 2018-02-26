@@ -961,7 +961,7 @@ footer .dropdown-menu {
   background-color: white !important; }
 
 footer .navbar {
-  background: #202024;
+  border-top: 1px solid rgba(32, 32, 36, 0.2);
   -moz-border-radius: 0;
   -o-border-radius: 0;
   -webkit-border-radius: 0;
@@ -976,26 +976,26 @@ footer .navbar {
       footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
         margin: 0;
         width: 70px;
-        background: rgba(255, 255, 255, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
+        background: rgba(255, 255, 255, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
         text-indent: -9999px;
-        background-size: 70px 42px; }
+        background-size: 92%; }
         footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
-          background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
+          background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
           text-indent: -9999px;
-          background-size: 70px 42px; }
+          background-size: 92%; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li a[href="http://akvo.org"] {
             width: 100%;
-            background: rgba(255, 255, 255, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
-            background-size: 80px auto; }
+            background: rgba(255, 255, 255, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
+            background-size: 92%; }
             footer .navbar #footer-body ul.nav li a[href="http://akvo.org"]:hover {
-              background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
-              background-size: 80px auto; } }
+              background: rgba(255, 255, 255, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
+              background-size: 92%; } }
     footer .navbar #footer-body ul.nav li div.langDropdown {
       margin-top: 13px;
       background-color: transparent !important;
       border-color: transparent !important;
-      color: white !important; }
+      color: #202024 !important; }
       footer .navbar #footer-body ul.nav li div.langDropdown .btn-default {
         background-color: transparent !important;
         border-color: transparent; }
@@ -1347,7 +1347,12 @@ h4.detailedInfo {
     margin-top: 0; }
   .main-list li .projectTitle {
     display: block;
-    margin: 0 0 3px 0; }
+    margin: 0 0 3px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+    .main-list li .projectTitle span {
+      color: #202024 !important; }
   .main-list li span.userFullName {
     color: rgba(32, 32, 36, 0.5);
     margin: 0 0 0px 0; }
