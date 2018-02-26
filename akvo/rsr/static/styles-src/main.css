@@ -646,7 +646,7 @@ div.update-confirm-container {
   margin-bottom: 25px; }
 
 #createProject {
-  margin: -5px 0 0 25px;
+  margin: 18px 0 0 0;
   background: #202024;
   color: white;
   border: none; }
@@ -1325,7 +1325,6 @@ h4.detailedInfo {
 
 .main-list li .projectTitle {
   display: block;
-  margin: 0 0 3px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
@@ -1333,12 +1332,10 @@ h4.detailedInfo {
     color: #202024 !important; }
 
 .main-list li span.userFullName {
-  color: rgba(32, 32, 36, 0.5);
   margin: 0 0 0px 0; }
 
 .main-list li .upDateTime {
-  color: rgba(32, 32, 36, 0.5);
-  margin-top: 10px; }
+  color: rgba(32, 32, 36, 0.5); }
 
 .main-list li .orgType {
   color: rgba(32, 32, 36, 0.5); }
@@ -2953,6 +2950,8 @@ main.results-page {
     box-sizing: border-box; }
   .results > button {
     display: none; }
+  .results #update {
+    padding-top: 25px; }
   .results .editBtn {
     /* use @extend .button on any element (a or button) or use directly in markup class="button" */
     display: inline-block;

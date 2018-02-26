@@ -3,7 +3,7 @@
 {% block title %}{% trans "MyRSR - my projects" %}{% endblock %}
 {% block myrsr_main %}
 <div class="row">
-      <div class="col-sm-6"><h3>{% trans "My projects" %}</h3>
+      <div class="col-sm-6"><h3 class="hidden">{% trans "My projects" %}</h3>
         <button class="btn btn-default btn-sm" id="createProject"
                 {% if not user.can_create_project %}disabled{% endif %}>
           <i class="fa fa-plus"></i> {% trans 'Add a new project' %}</button>
@@ -40,7 +40,7 @@
       <table class="table table-striped table-responsive myProjectList">
         <thead>
         <tr>
-          <th>{% trans "Project" %}</th>
+          <th>{% trans "Projects" %}</th>
           <th>{% trans "Type" %}</th>
           <th>{% trans "Status" %}</th>
         </tr>

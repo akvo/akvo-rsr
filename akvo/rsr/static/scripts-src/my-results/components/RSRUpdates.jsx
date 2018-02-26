@@ -74,7 +74,7 @@ export default class RSRUpdates extends React.Component {
 
         return (
             <div className="col-md-7 col-xs-12" id="update">
-                <h2>Add an update</h2>
+                <h2 className="hidden">Add an update</h2>
                 <form method="post" action={url} id="updateForm" encType="multipart/form-data">
                     <input
                         name="csrfmiddlewaretoken"
