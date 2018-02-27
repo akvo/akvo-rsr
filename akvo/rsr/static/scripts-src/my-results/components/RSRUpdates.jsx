@@ -24,12 +24,12 @@ export default class RSRUpdates extends React.Component {
 const RSRUpdate = ({ update }) => {
     return (
         <div className="row">
-            <div className="col-md-2">
+            <div className="col-md-4 updateImg">
                 <img src={update.photo} />
             </div>
-            <div className="col-md-10">
+            <div className="col-md-8">
                 <a href={update.absolute_url}>
-                    <h6>{update.title}</h6>
+                    <h5>{update.title}</h5>
                 </a>
             </div>
         </div>
@@ -75,7 +75,7 @@ class RSRUpdateList extends React.Component {
                 return <RSRUpdate key={update.id} update={update} />;
             });
         }
-        return <div className="col-md-5 hidden-sm-down">{updates}</div>;
+        return <div className="col-md-5 hidden-sm-down updateList"><h3>Previous updates</h3>{updates}</div>;
     }
 }
 
