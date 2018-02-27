@@ -3001,6 +3001,23 @@ main.results-page {
       border-radius: 5px 5px 0 0;
       border: 1px solid rgba(32, 32, 36, 0.1) !important;
       border-bottom: 1px solid rgba(32, 32, 36, 0) !important; }
+  .results .updateList {
+    max-height: calc(100vh - 370px);
+    overflow-y: scroll; }
+    .results .updateList .updateImg {
+      height: 130px;
+      overflow-y: hidden;
+      position: relative; }
+      .results .updateList .updateImg img {
+        width: 100%;
+        max-width: 350px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); }
+    .results .updateList h3 {
+      margin-top: 0;
+      display: block; }
   .results .reports {
     position: relative; }
     .results .reports .narrativeStatus {

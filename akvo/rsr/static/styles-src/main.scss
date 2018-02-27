@@ -3587,6 +3587,27 @@ main.results-page {
             }
         }
     }
+    .updateList {
+        max-height: calc(100vh - 370px);
+        overflow-y: scroll;
+        .updateImg {
+            height: 130px;
+            overflow-y: hidden;
+            position: relative;
+            img {
+                width: 100%;
+                max-width: 350px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        h3 {
+            margin-top: 0;
+            display: block;
+        }
+    }
     /********************* Narrative report ***************************/
     .reports {
         position: relative;
