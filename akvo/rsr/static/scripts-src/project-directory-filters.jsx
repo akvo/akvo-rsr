@@ -118,14 +118,6 @@ var FilterForm = React.createClass({
         }
         this.setState({ selected: update }, this.fetchFilterOptions);
     },
-    submitForm: function() {
-        this.preSubmitHack();
-        this.setState({ disabled: true });
-        document.getElementById("filterForm").submit();
-    },
-    toggleForm: function() {
-        document.querySelector(".menu-toggle").click();
-    },
 
     /* Helper methods */
     cacheAllOptions: function() {
