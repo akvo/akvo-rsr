@@ -161,20 +161,10 @@ def typeahead_project_filters(request):
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
 
     # Get the relevant data for typeaheads based on filtered projects.
-    keywords = projects.keywords().values('id', 'label')
-
     locations = [
         {'id': choice[0], 'name': choice[1]}
         for choice in location_choices(projects)
     ]
-
-    valid_statuses = dict(codelist_choices(ACTIVITY_STATUS))
-    status = [
-        {'id': status, 'name': valid_statuses[status]}
-        for status in set(projects.values_list('iati_status', flat=True))
-        if status in valid_statuses
-    ]
-
     organisations = projects.all_partners().values('id', 'name', 'long_name')
 
     # FIXME: Currently only vocabulary 2 is supported (as was the case with
@@ -187,8 +177,6 @@ def typeahead_project_filters(request):
     response = {
         'project_count': projects.count(),
         'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
-        'keyword': TypeaheadKeywordSerializer(keywords, many=True).data,
-        'status': sorted(status, key=lambda x: x['id']),
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,
     }
