@@ -16,7 +16,6 @@
                 <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
               </span>
             </div>
-            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
           </div>
           {% if q %}
           <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> {% trans 'Reset all filters' %}</a></div>
@@ -85,7 +84,7 @@
                         <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>
                       {% endwith %}
                     {% endif %}
-                </div>            
+                </div>
               </div>
 
                 <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
@@ -143,6 +142,4 @@
             "updates_text": "{% trans 'Updates'|escapejs %}"
         }
     </script>
-
-    {% javascript 'update_directory' %}
 {% endblock js %}
