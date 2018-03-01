@@ -58,7 +58,8 @@ export const
     OBJECTS_APP = 'app',
     OBJECTS_RESULTS = 'results',
     OBJECTS_INDICATORS = 'indicators',
-    OBJECTS_DIMENSIONS = 'dimensions',
+    OBJECTS_DIMENSION_NAMES = 'dimension_names',
+    OBJECTS_DIMENSION_VALUES = 'dimension_values',
     OBJECTS_PERIODS = 'periods',
     OBJECTS_UPDATES = 'updates',
     OBJECTS_COMMENTS = 'comments',
@@ -84,7 +85,8 @@ export const
     PARENT_FIELD = {
         [OBJECTS_RESULTS]: null,
         [OBJECTS_INDICATORS]: 'result',
-        [OBJECTS_DIMENSIONS]: 'indicator',
+        [OBJECTS_DIMENSION_NAMES]: 'project',
+        [OBJECTS_DIMENSION_VALUES]: 'name',
         [OBJECTS_PERIODS]: 'indicator',
         [OBJECTS_UPDATES]: 'period',
         [OBJECTS_DISAGGREGATIONS]: 'update',
@@ -95,7 +97,6 @@ export const
     CHILD_OBJECTS = {
         [OBJECTS_RESULTS]: OBJECTS_INDICATORS,
         [OBJECTS_INDICATORS]: OBJECTS_PERIODS,
-        [OBJECTS_DIMENSIONS]: null,
         [OBJECTS_PERIODS]: OBJECTS_UPDATES,
         [OBJECTS_UPDATES]: OBJECTS_COMMENTS,
         [OBJECTS_COMMENTS]: null,

@@ -21,12 +21,15 @@ import {
 
 
 // Input selectors for models
+// TODO: can these mappings be created programmatically? They're getting awfully many...
 const getResultIds = (store) => store.models.results.ids;
 const getResultObjects = (store) => store.models.results.objects;
 const getIndicatorIds = (store) => store.models.indicators.ids;
 const getIndicatorObjects = (store) => store.models.indicators.objects;
-const getDimensionIds = (store) => store.models.dimensions.ids;
-const getDimensionObjects = (store) => store.models.dimensions.objects;
+const getDimensionNameIds = (store) => store.models.dimension_names.ids;
+const getDimensionNameObjects = (store) => store.models.dimension_names.objects;
+const getDimensionValueIds = (store) => store.models.dimension_values.ids;
+const getDimensionValueObjects = (store) => store.models.dimension_values.objects;
 const getPeriodIds = (store) => store.models.periods.ids;
 const getPeriodObjects = (store) => store.models.periods.objects;
 const getUpdateIds = (store) => store.models.updates.ids;
@@ -42,10 +45,14 @@ const getChildrenFactory = model => {
     const modelSelectors = {
         // {childModelName: [parentIds, parentSelector, childrenIds, childrenSelector]}
         [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
-        [c.OBJECTS_DIMENSIONS]: [getIndicatorIds, getIndicatorObjects, getDimensionIds, getDimensionObjects],
+        [c.OBJECTS_DIMENSION_VALUES]: [
+            getDimensionNameIds, getDimensionNameObjects, getDimensionValueIds, getDimensionValueObjects
+        ],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
-        [c.OBJECTS_DISAGGREGATIONS]: [getUpdateIds, getUpdateObjects, getDisaggregationIds, getDisaggregationObjects],
+        [c.OBJECTS_DISAGGREGATIONS]: [
+            getUpdateIds, getUpdateObjects, getDisaggregationIds, getDisaggregationObjects
+        ],
         [c.OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
     };
     return createSelector(
@@ -92,9 +99,9 @@ export const getIndicatorsChildrenIds = createSelector(
     children => children
 );
 
-export const getIndicatorsDimensionIds = createSelector(
-    // Same structure as getResultsChildrenIds but for indicators and dimension children
-    getChildrenFactory(c.OBJECTS_DIMENSIONS),
+export const getDimensionNameValueIds = createSelector(
+    // Same structure as getResultsChildrenIds but for dimension_names and dimension_values
+    getChildrenFactory(c.OBJECTS_DIMENSION_VALUES),
     children => children
 );
 

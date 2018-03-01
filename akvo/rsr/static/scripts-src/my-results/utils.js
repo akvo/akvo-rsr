@@ -10,7 +10,11 @@ import React from 'react';
 import * as c from "./const"
 import store from "./store"
 
-import {collapseChange, collapseRecordState, resetKeys,} from "./actions/collapse-actions";
+import {
+    collapseChange,
+    collapseRecordState,
+    resetKeys,
+} from "./actions/collapse-actions";
 
 import {updateModel} from "./actions/model-actions";
 import keyBy from 'lodash/keyBy';
@@ -19,24 +23,27 @@ import update from 'immutability-helper';
 
 // Note: this function used to be a method of the App class, but the the transpiling messes something
 // up the result being the the update function from immuatbility-helper can't be found/called
-export function createNewDisaggregations(update_id, dimensions, disaggregations) {
-    const dimension_disaggregations = keyBy(disaggregations, 'dimension');
+export function createNewDisaggregations(update_id, dimensionsNameAndValueIds, disaggregations) {
+    const dimension_disaggregations = keyBy(disaggregations, 'dimension_value');
     let changedDisaggregations = disaggregations;
-    dimensions.forEach((dimension) => {
-        if (dimension_disaggregations[dimension.id] === undefined) {
-            const disaggregation = {
-                'update': update_id,
-                'dimension': dimension.id,
-                'id': 'new-' + dimension.id,
-                'value': '',
-                'numerator': '',
-                'denominator': '',
-                'narrative': '',
-            };
-            changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
-            /* disaggregations.push(disaggregation)*/
-            updateModel('disaggregations', disaggregation);
-        }
+    dimensionsNameAndValueIds.forEach(({dimensionNameId, dimensionValueIds}) => {
+        dimensionValueIds.forEach(dimensionValueId => {
+            if (dimension_disaggregations[dimensionValueId] === undefined) {
+                const disaggregation = {
+                    'update': update_id,
+                    'dimension_name': dimensionNameId,
+                    'dimension_value': dimensionValueId,
+                    // TODO: Are the IDs sure to be unique?
+                    'id': 'new-' + dimensionValueId,
+                    'value': '',
+                    'numerator': '',
+                    'denominator': '',
+                    'narrative': '',
+                };
+                changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
+                updateModel('disaggregations', disaggregation);
+            }
+        })
     });
     return changedDisaggregations;
 }
@@ -139,8 +146,10 @@ export const endpoints = {
     "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     "indicators": (id) =>
         `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
-    "dimensions": (id) =>
-        `/rest/v1/indicator_dimension/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
+    "dimension_names": (id) =>
+        `/rest/v1/dimension_name/?format=json&limit=${c.API_LIMIT}&project=${id}`,
+    "dimension_values": (id) =>
+        `/rest/v1/dimension_value/?format=json&limit=${c.API_LIMIT}&name__project=${id}`,
     "periods": (id) =>
         `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
     "updates": (id) =>
@@ -536,7 +545,9 @@ export const isResultsKey = (key) => {
 };
 
 
-export const disaggregationsToDisplayData = (disaggregationIds, disaggregations, dimensions) => {
+export const disaggregationsToDisplayData = (
+    disaggregationIds, disaggregations, dimensionNames, dimensionValues
+) => {
     /*  maps a number of disaggregations to the following format:
             {
                 Flavor: {
@@ -551,16 +562,17 @@ export const disaggregationsToDisplayData = (disaggregationIds, disaggregations,
             }
         which is used as input to components/common/DisaggregationsDisplay
         see https://github.com/kolodny/immutability-helper#autovivification for some insight
-        into the use uf update() below
+        into the use of update() below
     */
-    return disaggregationIds && disaggregationIds.reduce((acc, id) => {
+    return disaggregationIds && disaggregationIds.length > 0 && disaggregationIds.reduce((acc, id) => {
         const disaggregation = disaggregations[id];
-        const dimension = dimensions[disaggregation.dimension];
+        const dimensionValue = dimensionValues[disaggregation.dimension_value];
+        const dimensionName = dimensionNames[dimensionValue.name];
         return update(acc, {
-                [dimension.name]: {
+                [dimensionName.name]: {
                     $apply: value =>
                         update(value || {}, {
-                            [dimension.value]:
+                            [dimensionValue.value]:
                                 {
                                     $apply: disagg =>
                                         (disagg || 0) + parseInt(disaggregation.value)

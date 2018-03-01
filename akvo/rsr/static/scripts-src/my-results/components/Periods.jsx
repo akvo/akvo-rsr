@@ -22,7 +22,6 @@ import {
     getPeriodsActualValue,
     getIndicatorsChildrenIds,
     getPeriodsChildrenIds,
-    getIndicatorsDimensionIds,
     getPeriodsApprovedDisaggregationIds,
 } from "../selectors";
 
@@ -82,7 +81,8 @@ const DeleteUpdateAlert = ({message, close}) => (
     return {
         page: store.page,
         updates: store.models.updates,
-        dimensions: store.models.dimensions.objects,
+        dimensionNames: store.models.dimension_names.objects,
+        dimensionValues: store.models.dimension_values.objects,
         disaggregations: store.models.disaggregations.objects,
         user: store.models.user.ids && store.models.user.ids.length > 0 ?
               store.models.user.objects[store.models.user.ids[0]] : {},
@@ -90,7 +90,6 @@ const DeleteUpdateAlert = ({message, close}) => (
         periodsActualValue: getPeriodsActualValue(store),
         periodChildrenIds: getPeriodsChildrenIds(store),
         periodDisaggregationIds: getPeriodsApprovedDisaggregationIds(store),
-        dimensionIds: getIndicatorsDimensionIds(store),
     }
 }, {...alertActions, ...collapseActions})
 class PeriodHeader extends React.Component {
@@ -121,7 +120,7 @@ class PeriodHeader extends React.Component {
 
         const {
             period, toggleCheckbox, page, ui, user, periodsActualValue, periodChildrenIds,
-            disaggregations, dimensions, periodDisaggregationIds
+            disaggregations, periodDisaggregationIds, dimensionNames, dimensionValues
         } = this.props;
 
         const actualValue = periodsActualValue[period.id];
@@ -164,7 +163,8 @@ class PeriodHeader extends React.Component {
         const disaggregationData = disaggregationsToDisplayData(
             periodDisaggregationIds[period.id],
             disaggregations,
-            dimensions
+            dimensionNames,
+            dimensionValues
         );
 
         return (
