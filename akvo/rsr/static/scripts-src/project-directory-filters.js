@@ -237,7 +237,6 @@ var TextSearch = React.createClass({displayName: "TextSearch",
         this.setState({ value: nextProps.text || "" });
     },
     onChange: function(e) {
-        console.log(e.target.value);
         this.setState({ value: e.target.value });
     },
     onEnter: function(e) {
@@ -514,7 +513,6 @@ var App = React.createClass({displayName: "App",
             }),
             url = queries.length > 0 ? "?" + queries.join("&") : "./";
 
-        console.log("pushing", state);
         window.history.pushState(state, document.title + " " + title.join(", "), url);
     },
     updateState: function(options, mountedNow) {
