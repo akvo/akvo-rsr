@@ -64,6 +64,9 @@ var Project = React.createClass({displayName: "Project",
                         React.createElement("a", {href: project.url}, project.title)
                     ), 
                     React.createElement("p", {className: "projectSubT"}, project.subtitle), 
+                    React.createElement("p", {className: "projectOrg"}, 
+                        React.createElement("a", {href: project.organisation_url}, project.organisation)
+                    ), 
                     React.createElement("p", {className: "projectLocation"}, 
                         React.createElement("i", {className: "fa fa-map-marker"}), 
                         countries

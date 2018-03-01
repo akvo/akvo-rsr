@@ -182,7 +182,10 @@ def typeahead_project_filters(request):
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
 
     # Pre-fetch related fields to make things faster
-    projects = projects.select_related('primary_location').prefetch_related(
+    projects = projects.select_related(
+        'primary_location',
+        'primary_organisation',
+    ).prefetch_related(
         'locations',
         'locations__country',
         'recipient_countries',

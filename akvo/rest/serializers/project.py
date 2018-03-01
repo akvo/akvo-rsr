@@ -49,17 +49,19 @@ class ProjectSerializer(BaseRSRSerializer):
 
 class ProjectListingSerializer(serializers.ModelSerializer):
 
-    url = serializers.ReadOnlyField(source='get_absolute_url')
-    image = serializers.SerializerMethodField()
-    countries = serializers.SerializerMethodField()
+    id = serializers.ReadOnlyField()
+    title = serializers.ReadOnlyField()
+    subtitle = serializers.ReadOnlyField()
     latitude = serializers.ReadOnlyField(source='primary_location.latitude')
     longitude = serializers.ReadOnlyField(source='primary_location.longitude')
+    image = serializers.SerializerMethodField()
+    countries = serializers.SerializerMethodField()
+    url = serializers.ReadOnlyField(source='get_absolute_url')
+    organisation = serializers.ReadOnlyField(source='primary_organisation.name')
+    organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
 
     class Meta:
         model = Project
-        fields = (
-            'id', 'title', 'subtitle', 'latitude', 'longitude', 'image', 'countries', 'url'
-        )
 
     def get_countries(self, project):
         return map(lambda x: unicode(x), project.countries())
