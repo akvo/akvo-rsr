@@ -36,6 +36,12 @@ var Filter = React.createClass({displayName: "Filter",
             )
         );
     },
+    componentWillReceiveProps: function(nextProps) {
+        // Clear the typeaheads, when selections have been removed programmatically
+        if (this.props.selected.length > 0 && nextProps.selected.length == 0) {
+            this.refs.typeahead.getInstance().clear();
+        }
+    },
     onChange: function(values) {
         this.props.onChange(this.props.name, values);
         if (values.length > 0) {
