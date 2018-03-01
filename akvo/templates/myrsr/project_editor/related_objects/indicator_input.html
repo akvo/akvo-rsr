@@ -92,7 +92,6 @@
             <!-- *NOTE*: Just hiding the related container above doesn't work, because the
                  javascript to deduce hidden fields from validation sets removes that hidden tag,
                  once the page loads. This child needs to be hidden to prevent that.  -->
-          indicator.dimension_names.all: {{ indicator.dimension_names.all }}
           <div class="indicator-dimension-name-container {% if indicator.type == 2 %} hidden {% endif %}" id="indicator-dimension-container">
             {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
               {% for dimension_name in indicator.dimension_names.all %}

@@ -1247,8 +1247,8 @@ class Project(TimestampsMixin, models.Model):
         for reference in indicator.references.all():
             self.add_reference(child_indicator, reference)
 
-        for dimension in indicator.dimensions.all():
-            self.add_dimension(child_indicator, dimension)
+        for dimension_name in indicator.dimension_names.all():
+            self.add_dimension_name(child_indicator, dimension_name)
 
     def add_period(self, indicator, period):
         """Add a new period to the indicator as a child of period.
@@ -1272,12 +1272,8 @@ class Project(TimestampsMixin, models.Model):
         fields = ['target_value', 'target_comment', 'actual_comment']
         self._update_fields_if_not_child_updated(period, child_period, fields)
 
-    def add_dimension(self, indicator, dimension):
-        get_model('rsr', 'IndicatorDimension').objects.create(
-            indicator=indicator,
-            name=dimension.name,
-            value=dimension.value,
-        )
+    def add_dimension_name(self, indicator, dimension_name):
+        indicator.dimension_names.add(dimension_name)
 
     def add_reference(self, indicator, reference):
         get_model('rsr', 'IndicatorReference').objects.create(

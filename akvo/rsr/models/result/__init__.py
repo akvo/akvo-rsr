@@ -6,7 +6,7 @@
 
 from .disaggregation import Disaggregation
 from .indicator import Indicator
-from .indicator_dimension import IndicatorDimension, IndicatorDimensionName, IndicatorDimensionValue
+from .indicator_dimension import IndicatorDimensionName, IndicatorDimensionValue
 from .indicator_label import IndicatorLabel
 from .indicator_period import IndicatorPeriod
 from .indicator_period_actual_dimension import IndicatorPeriodActualDimension
@@ -23,7 +23,6 @@ from .result import Result
 __all__ = [
     'Disaggregation',
     'Indicator',
-    'IndicatorDimension',
     'IndicatorDimensionName',
     'IndicatorDimensionValue',
     'IndicatorLabel',
