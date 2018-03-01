@@ -73,7 +73,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
             serializer.is_valid(raise_exception=True)
             disaggregation_instance, _ = instance.disaggregations.get_or_create(
                 update=instance,
-                dimension=serializer.validated_data['dimension'],
+                dimension_value=serializer.validated_data['dimension_value'],
             )
             serializer.update(disaggregation_instance, serializer.validated_data)
 
