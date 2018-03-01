@@ -41,6 +41,20 @@ const initialModels = {
         objects: undefined,
         ids: undefined
     },
+    dimension_names: {
+        fetched: false,
+        changing: false,
+        changed: false,
+        objects: undefined,
+        ids: undefined
+    },
+    dimension_values: {
+        fetched: false,
+        changing: false,
+        changed: false,
+        objects: undefined,
+        ids: undefined
+    },
     periods: {
         fetched: false,
         changing: false,
