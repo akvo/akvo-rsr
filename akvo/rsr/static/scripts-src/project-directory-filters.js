@@ -267,7 +267,19 @@ var TextSearch = React.createClass({displayName: "TextSearch",
 
 var SearchBar = React.createClass({displayName: "SearchBar",
     render: function() {
+        var get_selection = function(filter_name) {
+            var options = this.props.options,
+                id = this.props.selected[filter_name],
+                dropdown_field = this.props.filters.indexOf(filter_name) > -1,
+                find_function = function(option) {
+                    return option.id == id;
+                },
+                selection = dropdown_field ? options[filter_name].find(find_function) : id,
+                selection_clone = dropdown_field ? trim_label(Object.assign({}, selection)) : id;
+            return dropdown_field ? (_.isEmpty(selection_clone) ? [] : [selection_clone]) : id;
+        };
         var create_filter = function(filter_name) {
+            var selection = get_selection.call(this, filter_name);
             return (
                 React.createElement(Filter, {
                     ref: filter_name, 
@@ -275,7 +287,7 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                     options: this.props.options[filter_name], 
                     name: filter_name, 
                     display_name: this.props.i18n[filter_name + "_text"], 
-                    selected: this.props.initial_selection[filter_name] || [], 
+                    selected: selection, 
                     onChange: this.props.onChange, 
                     disabled: this.props.disabled}
                 )
@@ -323,7 +335,6 @@ var App = React.createClass({displayName: "App",
         var state = {
             options: options,
             selected: this.getStateFromUrl(),
-            initial_selection: {},
             disabled: true,
             projects: []
         };
@@ -350,8 +361,7 @@ var App = React.createClass({displayName: "App",
                     project_count: this.state.project_count, 
                     i18n: this.props.i18n, 
                     options: this.state.options, 
-                    selected: this.state.selected, 
-                    initial_selection: this.state.initial_selection}
+                    selected: this.state.selected}
                 ), 
                 React.createElement(ProjectDirectory, {
                     onChange: this.onFilterChange, 
@@ -379,7 +389,7 @@ var App = React.createClass({displayName: "App",
         this.updateHistory(update);
     },
     resetFilters: function() {
-        this.setState({ selected: {}, initial_selection: {} }, this.fetchData);
+        this.setState({ selected: {} }, this.fetchData);
         this.updateHistory({});
     },
 
@@ -484,23 +494,6 @@ var App = React.createClass({displayName: "App",
         }
         return options;
     },
-    setInitialSelectionState: function(options) {
-        // NOTE: This function should always be called after process options,
-        // since it needs the processed options
-        var initial_selection = {};
-        var set_initial_selection = function(key) {
-            var id = this.state.selected[key],
-                dropdown_field = this.props.dropdown_filters.indexOf(key) > -1,
-                find_function = function(option) {
-                    return option.id == id;
-                },
-                selection = dropdown_field ? options[key].find(find_function) : id,
-                selection_clone = dropdown_field ? Object.assign({}, selection) : id;
-            initial_selection[key] = dropdown_field ? [trim_label(selection_clone)] : id;
-        };
-        Object.keys(this.state.selected).map(set_initial_selection, this);
-        this.setState({ initial_selection: initial_selection });
-    },
     updateHistory: function(state) {
         // Update the browser URL
         var queries = _.pairs(state).map(function(q) {
@@ -525,9 +518,6 @@ var App = React.createClass({displayName: "App",
             project_count: options.project_count,
             projects: options.projects
         });
-        if (mountedNow) {
-            this.setInitialSelectionState(options);
-        }
     }
 });
 
