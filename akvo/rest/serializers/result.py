@@ -21,6 +21,7 @@ class ResultSerializer(ResultRawSerializer):
 
     project_title = serializers.ReadOnlyField(source='project.title')
     type_label = serializers.ReadOnlyField(source='iati_type_unicode')
+    # TODO: remove the two following fields, they're performance hogs!
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
 

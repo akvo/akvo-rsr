@@ -14,6 +14,6 @@ from ..viewsets import PublicProjectViewSet
 class DisaggregationViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Disaggregation.objects.all()
+    queryset = Disaggregation.objects.select_related('dimension_value__name')
     serializer_class = DisaggregationSerializer
     project_relation = 'dimension__indicator__result__project__'
