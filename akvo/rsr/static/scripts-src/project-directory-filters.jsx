@@ -509,14 +509,11 @@ var App = React.createClass({
                 var key = q[0],
                     val = q[1];
                 return key + ": " + encodeURI(val);
-            });
+            }),
+            url = queries.length > 0 ? "?" + queries.join("&") : "./";
 
         console.log("pushing", state);
-        window.history.pushState(
-            state,
-            document.title + " " + title.join(", "),
-            "?" + queries.join("&")
-        );
+        window.history.pushState(state, document.title + " " + title.join(", "), url);
     },
     updateState: function(options, mountedNow) {
         this.setState({
