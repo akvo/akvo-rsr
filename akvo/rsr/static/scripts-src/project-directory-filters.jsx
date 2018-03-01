@@ -278,6 +278,15 @@ var SearchBar = React.createClass({
                 />
             );
         };
+        var reset_button = _.isEmpty(this.props.selected) ? (
+            undefined
+        ) : (
+            <span className="pull-right">
+                <a className="btn" onClick={this.props.resetFilters}>
+                    X {this.props.i18n.reset_filters_text}
+                </a>
+            </span>
+        );
         return (
             <section id="search-filter" className="container-fluid">
                 <div id="search" className="row searchBar">
@@ -288,7 +297,10 @@ var SearchBar = React.createClass({
                         onChange={this.props.onChange}
                     />
                     <div id="filter-wrapper">
-                        <div>{this.props.filters.map(create_filter, this)}</div>
+                        <div>
+                            {this.props.filters.map(create_filter, this)}
+                            {reset_button}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -327,6 +339,7 @@ var App = React.createClass({
         return (
             <div>
                 <SearchBar
+                    resetFilters={this.resetFilters}
                     onChange={this.onFilterChange}
                     filters={this.props.dropdown_filters}
                     disabled={this.state.disabled}
@@ -361,6 +374,10 @@ var App = React.createClass({
         }
         this.setState({ selected: update }, this.fetchData);
         this.updateHistory(update);
+    },
+    resetFilters: function() {
+        this.setState({ selected: {}, initial_selection: {} }, this.fetchData);
+        this.updateHistory({});
     },
 
     /* Helper methods */

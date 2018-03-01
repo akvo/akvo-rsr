@@ -278,6 +278,15 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                 )
             );
         };
+        var reset_button = _.isEmpty(this.props.selected) ? (
+            undefined
+        ) : (
+            React.createElement("span", {className: "pull-right"}, 
+                React.createElement("a", {className: "btn", onClick: this.props.resetFilters}, 
+                    "X ", this.props.i18n.reset_filters_text
+                )
+            )
+        );
         return (
             React.createElement("section", {id: "search-filter", className: "container-fluid"}, 
                 React.createElement("div", {id: "search", className: "row searchBar"}, 
@@ -288,7 +297,10 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                         onChange: this.props.onChange}
                     ), 
                     React.createElement("div", {id: "filter-wrapper"}, 
-                        React.createElement("div", null, this.props.filters.map(create_filter, this))
+                        React.createElement("div", null, 
+                            this.props.filters.map(create_filter, this), 
+                            reset_button
+                        )
                     )
                 )
             )
@@ -327,6 +339,7 @@ var App = React.createClass({displayName: "App",
         return (
             React.createElement("div", null, 
                 React.createElement(SearchBar, {
+                    resetFilters: this.resetFilters, 
                     onChange: this.onFilterChange, 
                     filters: this.props.dropdown_filters, 
                     disabled: this.state.disabled, 
@@ -361,6 +374,10 @@ var App = React.createClass({displayName: "App",
         }
         this.setState({ selected: update }, this.fetchData);
         this.updateHistory(update);
+    },
+    resetFilters: function() {
+        this.setState({ selected: {}, initial_selection: {} }, this.fetchData);
+        this.updateHistory({});
     },
 
     /* Helper methods */
