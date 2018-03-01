@@ -13,7 +13,8 @@ from rest_framework.response import Response
 
 from akvo.codelists.models import Country, Version
 from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
-from akvo.rest.serializers import (TypeaheadCountrySerializer,
+from akvo.rest.serializers import (ProjectListingSerializer,
+                                   TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer,
@@ -127,6 +128,7 @@ def _create_filters_query(request):
     status_param = _int_or_none(request.GET.get('status'))
     organisation_param = _int_or_none(request.GET.get('organisation'))
     sector_param = _int_or_none(request.GET.get('sector'))
+    title_or_subtitle_param = request.GET.get('title_or_subtitle')
 
     keyword_filter = Q(keywords__id=keyword_param) if keyword_param else None
     location_filter = get_m49_filter(location_param) if location_param else None
@@ -136,11 +138,30 @@ def _create_filters_query(request):
         Q(sectors__sector_code=sector_param, sectors__vocabulary='2')
         if sector_param else None
     )
+    title_or_subtitle_filter = (
+        Q(title__icontains=title_or_subtitle_param) | Q(subtitle__icontains=title_or_subtitle_param)
+    ) if title_or_subtitle_param else None
     all_filters = [
-        keyword_filter, location_filter, status_filter, organisation_filter, sector_filter
+        keyword_filter,
+        location_filter,
+        status_filter,
+        organisation_filter,
+        sector_filter,
+        title_or_subtitle_filter
     ]
     filters = filter(None, all_filters)
     return reduce(lambda x, y: x & y, filters) if filters else None
+
+
+def _get_projects_for_page(projects, request):
+    """Return projects to be shown on the current page"""
+    limit = _int_or_none(request.GET.get('limit')) or settings.PROJECT_DIRECTORY_PAGE_SIZES[0]
+    limit = min(limit, settings.PROJECT_DIRECTORY_PAGE_SIZES[-1])
+    max_page_number = 1 + projects.count()/limit
+    page_number = min(max_page_number, _int_or_none(request.GET.get('page')) or 1)
+    start = (page_number - 1) * limit
+    end = page_number * limit
+    return projects[start:end]
 
 
 @api_view(['GET'])
@@ -160,6 +181,13 @@ def typeahead_project_filters(request):
     filter_ = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
 
+    # Pre-fetch related fields to make things faster
+    projects = projects.select_related('primary_location').prefetch_related(
+        'locations',
+        'locations__country',
+        'recipient_countries',
+    ).distinct().order_by('-last_modified_at')
+
     # Get the relevant data for typeaheads based on filtered projects.
     locations = [
         {'id': choice[0], 'name': choice[1]}
@@ -174,11 +202,15 @@ def typeahead_project_filters(request):
         vocabulary='2', sector_code__in=valid_sectors
     ).values('sector_code').distinct()
 
+    page_projects = _get_projects_for_page(projects, request)
+
     response = {
         'project_count': projects.count(),
+        'projects': ProjectListingSerializer(page_projects, many=True).data,
         'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,
+        'limit': settings.PROJECT_DIRECTORY_PAGE_SIZES,
     }
 
     return Response(response)
