@@ -123,9 +123,11 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                                 }, this)
                             ), 
                             React.createElement("div", {className: "row container-fluid"}, 
-                                React.createElement("ul", {className: "pagination col-xs-3"}, 
-                                    React.createElement("li", null, 
-                                        React.createElement("span", null, project_count_text)
+                                React.createElement("div", {className: "verticalPadding col-xs-3"}, 
+                                    React.createElement("h3", null, 
+                                        React.createElement("span", {className: "label label-info"}, 
+                                            project_count_text
+                                        )
                                     )
                                 ), 
                                 React.createElement(Pagination, {
@@ -169,7 +171,7 @@ var PageLimitDropdown = React.createClass({displayName: "PageLimitDropdown",
                 : this.props.i18n.page_limit_text;
 
         return (
-            React.createElement("div", {className: "pagination col-sm-3 hidden-xs"}, 
+            React.createElement("div", {className: "verticalPadding col-sm-3 hidden-xs"}, 
                 React.createElement("div", {className: "pull-right"}, 
                     React.createElement(DropdownButton, {
                         dropup: true, 

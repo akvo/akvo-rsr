@@ -123,11 +123,13 @@ var ProjectDirectory = React.createClass({
                                 }, this)}
                             </ul>
                             <div className="row container-fluid">
-                                <ul className="pagination col-xs-3">
-                                    <li>
-                                        <span>{project_count_text}</span>
-                                    </li>
-                                </ul>
+                                <div className="verticalPadding col-xs-3">
+                                    <h3>
+                                        <span className="label label-info">
+                                            {project_count_text}
+                                        </span>
+                                    </h3>
+                                </div>
                                 <Pagination
                                     onChange={this.props.onChange}
                                     page={this.props.page}
@@ -169,7 +171,7 @@ var PageLimitDropdown = React.createClass({
                 : this.props.i18n.page_limit_text;
 
         return (
-            <div className="pagination col-sm-3 hidden-xs">
+            <div className="verticalPadding col-sm-3 hidden-xs">
                 <div className="pull-right">
                     <DropdownButton
                         dropup
