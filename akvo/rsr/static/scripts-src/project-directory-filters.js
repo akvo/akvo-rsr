@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var filtersWrapper = document.getElementById('wrapper'),
+var filtersWrapper = document.getElementById('filter-wrapper'),
     options_cache = {};
 
 
@@ -20,8 +20,7 @@ var Filter = React.createClass({displayName: "Filter",
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
-            React.createElement("div", null, 
-                React.createElement("label", null, this.props.display_name), 
+            React.createElement("div", {className: "advanced-filter"}, 
                 React.createElement(Typeahead, {
                     ref: "typeahead", 
                     name: this.props.name, 
@@ -30,9 +29,11 @@ var Filter = React.createClass({displayName: "Filter",
                     onChange: this.onChange, 
                     filterBy: ['filterBy'], 
                     label: "label", 
-                    clearButton: true, 
+                    highlightOnlyResult: true, 
+                    placeholder: this.props.display_name, 
                     disabled: this.props.disabled}
-                )
+                ), 
+                React.createElement("span", {className: "caret"})
             )
         );
     },
@@ -48,7 +49,6 @@ var FilterForm = React.createClass({displayName: "FilterForm",
         var options = {
             "keyword": [],
             "location": [],
-            "status": [],
             "organisation": [],
             "sector": [],
         };
@@ -83,32 +83,17 @@ var FilterForm = React.createClass({displayName: "FilterForm",
             );
         };
         var project_count = this.state.disabled?(React.createElement("a", null, this.props.i18n.loading_text)):(
-            React.createElement("p", null, this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text
+            React.createElement("p", null, this.state.project_count + ' ' + this.props.i18n.projects_text + ' ' + this.props.i18n.found_text
             )
         );
         return (
-            React.createElement("aside", {id: "sidebar-wrapper"}, 
-                React.createElement("div", {id: "filter"}, 
-                    this.props.filters.map(create_filter, this), 
-                    React.createElement("div", null, 
-                        React.createElement("nav", {id: "advanced-filter-nav"}, 
-                            React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
-                                React.createElement("li", null, 
-                                    React.createElement("a", {className: "showFilters text-center", 
-                                       id: "apply-filter", 
-                                       onClick: this.submitForm}, 
-                                        this.props.i18n.apply_filter_text
-                                    )
-                                ), 
-                                React.createElement("li", null, 
-                                    React.createElement("a", {className: "showFilters menu-toggle text-center", onClick: this.toggleForm}, 
-                                        React.createElement("i", {className: "fa fa-toggle-off"}), 
-                                        React.createElement("span", null, " ", this.props.i18n.close_this_text)
-                                    )
-                                ), 
-                                React.createElement("li", {id: "advanced-filter-status"}, 
-                                    project_count
-                                )
+            React.createElement("div", null, 
+                this.props.filters.map(create_filter, this), 
+                React.createElement("div", {className: "projectCountTxt"}, 
+                    React.createElement("nav", {id: "advanced-filter-nav"}, 
+                        React.createElement("ul", {className: "nav nav-pills nav-stacked"}, 
+                            React.createElement("li", {id: "advanced-filter-status"}, 
+                                project_count
                             )
                         )
                     )
@@ -267,7 +252,7 @@ var FilterForm = React.createClass({displayName: "FilterForm",
 
 document.addEventListener('DOMContentLoaded', function() {
     var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
-    var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
+    var filters = ['location', 'organisation', 'sector', 'keyword'];
     var url = '/rest/v1/typeaheads/project_filters';
 
     ReactDOM.render(

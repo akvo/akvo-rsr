@@ -5,7 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var filtersWrapper = document.getElementById('wrapper'),
+var filtersWrapper = document.getElementById('filter-wrapper'),
     options_cache = {};
 
 
@@ -20,8 +20,7 @@ var Filter = React.createClass({
     render: function(){
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
         return (
-            <div>
-                <label>{this.props.display_name}</label>
+            <div className="advanced-filter">
                 <Typeahead
                     ref='typeahead'
                     name={this.props.name}
@@ -30,9 +29,11 @@ var Filter = React.createClass({
                     onChange={this.onChange}
                     filterBy={['filterBy']}
                     label='label'
-                    clearButton={true}
+                    highlightOnlyResult={true}
+                    placeholder={this.props.display_name}
                     disabled={this.props.disabled}
                 />
+                <span className="caret"></span>
             </div>
         );
     },
@@ -48,7 +49,6 @@ var FilterForm = React.createClass({
         var options = {
             "keyword": [],
             "location": [],
-            "status": [],
             "organisation": [],
             "sector": [],
         };
@@ -83,37 +83,22 @@ var FilterForm = React.createClass({
             );
         };
         var project_count = this.state.disabled?(<a>{this.props.i18n.loading_text}</a>):(
-            <p>{this.props.i18n.search_text + ' ' + this.state.project_count + ' ' + this.props.i18n.projects_text}
+            <p>{this.state.project_count + ' ' + this.props.i18n.projects_text + ' ' + this.props.i18n.found_text}
             </p>
         );
         return (
-            <aside id="sidebar-wrapper">
-                <div id="filter">
-                    {this.props.filters.map(create_filter, this)}
-                    <div>
-                        <nav id="advanced-filter-nav">
-                            <ul className="nav nav-pills nav-stacked">
-                                <li>
-                                    <a className="showFilters text-center"
-                                       id="apply-filter"
-                                       onClick={this.submitForm}>
-                                        {this.props.i18n.apply_filter_text}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a className="showFilters menu-toggle text-center" onClick={this.toggleForm}>
-                                        <i className="fa fa-toggle-off"></i>
-                                        <span> {this.props.i18n.close_this_text}</span>
-                                    </a>
-                                </li>
-                                <li id="advanced-filter-status">
-                                    {project_count}
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+            <div>
+                {this.props.filters.map(create_filter, this)}
+                <div className="projectCountTxt">
+                    <nav id="advanced-filter-nav">
+                        <ul className="nav nav-pills nav-stacked">
+                            <li id="advanced-filter-status">
+                                {project_count}
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-            </aside>
+            </div>
         );
     },
     /* Event handlers */
@@ -267,7 +252,7 @@ var FilterForm = React.createClass({
 
 document.addEventListener('DOMContentLoaded', function() {
     var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
-    var filters = ['keyword', 'location', 'status', 'organisation', 'sector'];
+    var filters = ['location', 'organisation', 'sector', 'keyword'];
     var url = '/rest/v1/typeaheads/project_filters';
 
     ReactDOM.render(

@@ -33,6 +33,21 @@ function cap(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function make_link(message, project_id) {
+    var id = message.match(/id: (\d+)/),
+        obj = message.match(/(result|indicator|indicator period) \(id:/);
+    if (id === null || obj === null) {
+        return cap(message);
+    }
+    id = id[1];
+    obj = obj[1];
+    if (obj === "indicator period") {
+        obj = "indicator_period";
+    }
+    var url = "../project_editor/" + project_id + '/#' + obj + '.' + id;
+    return <a href={url} target="_blank">{cap(message)}</a>;
+}
+
 /* General API call function, retries 5 times by default and will retrieve all pages */
 function apiCall(method, url, data, followPages, successCallback, retries) {
     var xmlHttp = new XMLHttpRequest();
@@ -260,9 +275,9 @@ function loadComponents() {
                     checksText += errorLength + ' ' + errorText;
                     allErrors = this.props.project.checks_errors.map(function(check) {
                         return (
-                            <span>- {cap(i18n.error)}: {cap(check)}<br/></span>
+                            <span>- {cap(i18n.error)}: {make_link(check, this.props.project.id)}<br/></span>
                         );
-                    });
+                    }, this);
                 }
                 if (warningLength > 0) {
                     var warningText = warningLength === 1 ? i18n.warning : i18n.warnings;
@@ -272,9 +287,9 @@ function loadComponents() {
                     checksText += warningLength + ' ' + warningText;
                     allWarnings = this.props.project.checks_warnings.map(function(check) {
                         return (
-                            <span>- {cap(i18n.warning)}: {cap(check)}<br/></span>
+                            <span>- {cap(i18n.warning)}: {make_link(check, this.props.project.id)}<br/></span>
                         );
-                    });
+                    }, this);
                 }
 
                 if (this.state.openChecks) {

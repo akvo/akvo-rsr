@@ -356,7 +356,7 @@ label {
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    padding: 5px 0;
+    padding: 5px 40px;
     @include border-radius(0);
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
     button.navbar-toggle {
@@ -369,6 +369,10 @@ nav.navbar-fixed-top {
                 background: $rsrBlue;
             }
         }
+    }
+    & + .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
     }
     .navbar-brand {
         float: left;
@@ -419,25 +423,11 @@ nav.navbar-fixed-top {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: $rsrGreen;
-                    font-weight: bold;
-                    background: rgba($anchorLinkHover, 0.1);
+                    color: $rsrBlue2;
+                    background: transparent;
                     @include border-radius(3px);
                     @include responsive(tablets) {
                         background: rgba($anchorLinkHover, 0.1);
-                    }
-                }
-                &.addUpdateBtn {
-                    margin-right: 15px;
-                    background-color: transparent;
-                    border-color: transparent;
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                    @include responsive(tablets) {
-                        width: 95%;
-                        padding: 10px 5%;
-                        margin: 0 auto 10px auto;
                     }
                 }
             }
@@ -448,36 +438,7 @@ nav.navbar-fixed-top {
                     @include border-radius(3px);
                     color: $anchorLinkHover;
                     @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
-            &.navUpdate {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
-            &.navOrganisation {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
+                    cursor: text;
                     &:hover {
                         background: darken(rgba($anchorLinkHover, 0), 10%);
                         border: thin solid rgba($anchorLinkHover, 0);
@@ -488,8 +449,50 @@ nav.navbar-fixed-top {
             }
         }
         &.navbar-right {
+            margin-top: 10px;
             li {
                 margin-right: 2px;
+                &:nth-child(1) {
+                    margin-right: 10px;
+                    .userDropdown {
+                        margin-top: 2px;
+                        background-color: transparent !important;
+                        border-color: transparent !important;
+                        .btn-default {
+                            background-color: transparent !important;
+                            border-color: transparent;
+                        }
+                        .dropdown-menu {
+                            @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
+                                position: initial;
+                                float: none;
+                            }
+                            @include responsive(small-max-screens) {
+                                background-color: #fff !important;
+                                border: 1px solid rgba(0, 0, 0, 0.14902);
+                                box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                a {
+                                    color: $anchorLink;
+                                    font-family: $titleFont;
+                                    border: thin solid transparent;
+                                    &:hover {
+                                        color: $anchorLinkHover;
+                                    }
+                                    &.active {
+                                        color: complement($rsrBlue);
+                                        font-weight: bold;
+                                        background: rgba($anchorLinkHover, 0.1);
+                                        @include border-radius(3px);
+                                        @include responsive(tablets) {
+                                            background: rgba($anchorLinkHover, 0.1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 &:nth-child(2) {
                     a {
                         padding-left: 10px;
@@ -499,52 +502,22 @@ nav.navbar-fixed-top {
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
+                    &.areaToggle {
+                        @include button($akvoPurple, white);
+                        box-shadow: none !important;
+                    }
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
 
-                    &.active {
-                        background: rgba($anchorLinkHover, 0.1);
-                        color: $anchorLinkHover;
-                    }
+                    &.active {}
                 }
-                .langDropdown {
-                    .btn-default {
-                        border-color: transparent;
-                    }
+                div.userDropdown {
                     margin-top: 10px;
-                    @include responsive(small-max-screens) {
-                        padding-left: 15px;
-                        padding-right: 15px;
-                    }
-
-                    .dropdown-menu {
-                        @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
-                            position: initial;
-                            float: none;
-                        }
-                        @include responsive(small-max-screens) {
-                            background-color: #FFF;
-                            border: 1px solid rgba(0, 0, 0, 0.14902);
-                            box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-                            -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-                            a {
-                                color: $anchorLink;
-                                font-family: $titleFont;
-                                border: thin solid transparent;
-                                &:hover {
-                                    color: $anchorLinkHover;
-                                }
-                                &.active {
-                                    color: complement($rsrBlue);
-                                    font-weight: bold;
-                                    background: rgba($anchorLinkHover, 0.1);
-                                    @include border-radius(3px);
-                                    @include responsive(tablets) {
-                                        background: rgba($anchorLinkHover, 0.1);
-                                    }
-                                }
-                            }
+                    li {
+                        a {
+                            padding-right: 20px;
+                            padding-left: 20px;
                         }
                     }
                 }
@@ -554,6 +527,7 @@ nav.navbar-fixed-top {
 }
 
 .navbar {
+    margin-bottom: 0 !important;
     .active {
         color: #2A6297;
     }
@@ -634,20 +608,13 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 0 25px 0;
+    padding: 10px 20px 25px 20px;
 }
 
 .navContainer {
     background: rgba($primary5, 0.1);
     margin: -20px 0 10px 0;
     padding-top: 10px;
-}
-
-.myRsrPg {
-    h3 {
-        display: inline-block;
-        margin-top: 20px;
-    }
 }
 
 .choose-report-template {
@@ -751,7 +718,7 @@ div.update-confirm-container {
 }
 
 #createProject {
-    margin: -5px 0 0 25px;
+    margin: 18px 0 0 0;
     background: $akvoBlack;
     color: white;
     border: none;
@@ -810,24 +777,37 @@ div.update-confirm-container {
     }
 }
 
+.projectStatus {
+    span {
+        color: $akvoBlack !important;
+    }
+}
+
 .myProjectList,
 #updates,
 #user_table {
     thead {
         tr {
-            background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
             th {
-                padding-top: 15px;
-                padding-bottom: 15px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+                td {
+                    padding-top: 40px;
+                    padding-bottom: 50px;
+                }
             }
         }
     }
     tbody {
         tr {
             background: white !important;
+            td {
+                border: none;
+                padding-top: 40px;
+                padding-bottom: 50px;
+            }
             &.notPublished {
-                background: rgba($primary4, 0.15) !important;
                 td {
                     position: relative;
                     padding-top: 40px;
@@ -849,7 +829,6 @@ div.update-confirm-container {
                 background: rgba($progressNot, 0.1) !important;
                 td {
                     position: relative;
-                    padding-top: 40px;
                     .privatePjt {
                         position: absolute;
                         top: 7px;
@@ -863,11 +842,6 @@ div.update-confirm-container {
                         font-weight: 600;
                     }
                 }
-            }
-            td {
-                padding-top: 30px;
-                padding-bottom: 30px;
-                border: none;
             }
         }
     }
@@ -1006,7 +980,7 @@ div.paginationWrap {
     }
 
     .media {
-        width: 39%;
+        width: 59%;
         > a {
             min-width: 80px;
         }
@@ -1109,8 +1083,15 @@ body > footer {
 }
 
 footer {
+    .dropdown-menu {
+        position: absolute !important;
+        top: -420%;
+        right: 0;
+        left: inherit;
+        background-color: white !important;
+    }
     .navbar {
-        background: $akvoBlack;
+        border-top: 1px solid rgba($akvoBlack, 0.2);
         @include border-radius(0);
         #footer-body {
             ul.nav {
@@ -1119,28 +1100,74 @@ footer {
                     padding-bottom: 10px;
                     a {
                         display: block;
-                        @include border-radius(5px);
                         &:hover {
                             background-color: rgba(white, 0.1);
                         }
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
-                            background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
+                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
                             text-indent: -9999px;
-                            background-size: 70px 42px;
+                            background-size: 92%;
                             &:hover {
-                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
+                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
                                 text-indent: -9999px;
-                                background-size: 70px 42px;
+                                background-size: 92%;
                             }
                             @include responsive(small-max-screens) {
                                 width: 100%;
-                                background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
-                                background-size: 80px auto;
+                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                background-size: 92%;
                                 &:hover {
-                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
-                                    background-size: 80px auto;
+                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                    background-size: 92%;
+                                }
+                            }
+                        }
+                    }
+                    div.langDropdown {
+                        margin-top: 13px;
+                        background-color: transparent !important;
+                        border-color: transparent !important;
+                        color: $akvoBlack !important;
+                        .btn-default {
+                            background-color: transparent !important;
+                            border-color: transparent;
+                        }
+                        button {
+                            background-color: transparent !important;
+                            border-color: transparent !important;
+                        }
+                        @include responsive(small-max-screens) {
+                            padding-left: 15px;
+                            padding-right: 15px;
+                        }
+
+                        .dropdown-menu {
+                            position: absolute;
+                            background-color: transparent !important;
+                            border-color: transparent !important;
+                            @include responsive(small-max-screens) {
+                                background-color: white !important;
+                                border: 1px solid rgba(0, 0, 0, 0.14902);
+                                box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                a {
+                                    color: $anchorLink;
+                                    font-family: $titleFont;
+                                    border: thin solid transparent;
+                                    &:hover {
+                                        color: $anchorLinkHover;
+                                    }
+                                    &.active {
+                                        color: complement($rsrBlue);
+                                        font-weight: bold;
+                                        background: rgba($anchorLinkHover, 0.1);
+                                        @include border-radius(3px);
+                                        @include responsive(tablets) {
+                                            background: rgba($anchorLinkHover, 0.1);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1164,7 +1191,6 @@ footer {
 /* GENERIC STRUCTURE and TEXT STYLES */
 
 .touch-navbar {
-    margin-top: -10px;
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
@@ -1203,17 +1229,9 @@ h4.detailedInfo {
     background-color: $secondary1;
 }
 
-/* LISTINGS */
-
-#map {
-    height: 400px;
-    @include responsive(xtra-small-max-screens) {
-        display: none;
-    }
-}
-
 #map-warning {
-    @include responsive(xtra-small-max-screens) {
+    display: none;
+    @include responsive(small-max-screens) {
         display: none;
     }
 
@@ -1234,12 +1252,13 @@ h4.detailedInfo {
 .searchContainer {
     position: relative;
     #search {
+        input.form-control {
+            border-color: #ccc;
+        }
         .showFilters {
             /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
             color: white;*/
-            color: white;
-            border: 1px solid rgba(white, 0.2);
             transition: all 0.4s ease-in;
             @include noWrapTxt;
             &:hover {
@@ -1279,12 +1298,30 @@ h4.detailedInfo {
     @include border-radius(3px);
     margin-bottom: 15px;
     .pagination {
+        margin: 0 auto;
         li {
             a,
             span {
+                border-color: transparent;
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
+                }
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+            &.active {
+                a,
+                span {
+                    font-weight: bold;
+                    color: $anchorLinkHover;
+                    background-color: transparent;
+                    &:hover {
+                        background: transparent;
+                        border-color: transparent;
+                    }
                 }
             }
         }
@@ -1327,6 +1364,25 @@ h4.detailedInfo {
                 }
             }
         }
+    }
+}
+
+.advanced-filter {
+    display: inline-block;
+    text-align: right;
+    label {
+        margin-top: 5px !important;
+    }
+    .bootstrap-typeahead-input {
+        margin-right: 1px;
+    }
+    .bootstrap-typeahead-input-main {
+        margin-right: 20px;
+    }
+    .caret {
+        position: relative;
+        top: -26px;
+        left: -10px;
     }
 }
 
@@ -1390,26 +1446,52 @@ h4.detailedInfo {
     }
 }
 
+.sortContainer {
+    background-color: rgba($akvoBlack, 0.1);
+    .colorChange {
+        max-width: 80%;
+        margin: 10px auto 0 auto;
+    }
+}
+
 #search-filter {
+    margin-top: -10px;
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
 
+    .searchBar {
+        max-width: 80%;
+        margin: 10px auto 0 auto;
+        p {
+            @include noWrapTxt;
+        }
+    }
     #search {
-        color: #fff;
-        text-align: center;
         @include responsive(small-max-screens) {
             padding-bottom: 0;
         }
 
+        .form-group {
+            input {
+                width: 250px;
+            }
+            button {
+                padding-top: 7px;
+                padding-bottom: 5px;
+            }
+        }
+        .sortList {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        p {
+            display: inline-block;
+        }
         button {
             padding-top: 5px;
             padding-bottom: 5px;
         }
-    }
-    background-color: #241F20;
-    p {
-        color: lighten($rsrBlue2, 10%);
     }
     div#filter {
         background: darken(rgba(#383334, 1), 0%);
@@ -1423,11 +1505,6 @@ h4.detailedInfo {
 
 .main-list {
     li {
-        margin-bottom: 30px;
-        list-style-type: none;
-        padding: 15px 0;
-        @include border-radius(3px);
-        background: white;
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
@@ -1440,15 +1517,22 @@ h4.detailedInfo {
         }
         h1 {
             margin-top: 0;
-            font-size: 1.3em;
+            font-size: 1.15em;
         }
         div h4:first-of-type {
             margin-top: 0;
         }
         .thumbImg {
-            height: 100%;
+            height: 130px;
+            overflow-y: hidden;
+            position: relative;
             img {
                 width: 100%;
+                max-width: 350px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
             }
         }
         .projectLocation {
@@ -1457,15 +1541,16 @@ h4.detailedInfo {
         }
         .projectTitle {
             display: block;
-            margin: 0 0 3px 0;
+            @include noWrapTxt;
+            span {
+                color: $akvoBlack !important;
+            }
         }
         span.userFullName {
-            color: rgba($akvoBlack, 0.5);
             margin: 0 0 0px 0;
         }
         .upDateTime {
             color: rgba($akvoBlack, 0.5);
-            margin-top: 10px;
         }
         .orgType {
             color: rgba($akvoBlack, 0.5);
@@ -1480,28 +1565,49 @@ h4.detailedInfo {
                 }
             }
         }
-        dl {
-            &.dl-horizontal {
-                dd {
-                    @include responsive(small-max-screens) {
-                        margin-left: 100px;
-                    }
-
-                    @include responsive(wide-max-screens) {
-                        margin-left: 0px;
-                        display: block;
-                    }
-                }
-            }
-        }
     }
     .excerpt {
         @include noWrapBlockTxt;
     }
     &.projects {
-        ul {
+        margin-top: 10px;
+        #map {
+            position: relative;
+            height: calc(100vh - 310px);
+            @include responsive(small-max-screens) {
+                display: none;
+            }
+
+            .rsr_map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+        ul.projectListUl {
+            max-height: calc(100vh - 370px);
+            overflow-y: scroll;
+            padding-left: 15px;
             li {
+                margin-bottom: 5px;
+                list-style-type: none;
+                padding: 15px 0;
+                display: inline;
+                width: 32%;
+                float: left;
+                min-height: 315px;
+                @include border-radius(3px);
+                background: white;
+                margin-right: 2%;
+                &:nth-child(3n+3) {
+                    margin-right: 0;
+                }
                 h1 {
+                    margin-top: 5px;
                     a {
                         color: $rsrBlue;
                         &:hover {
@@ -1515,140 +1621,16 @@ h4.detailedInfo {
                     margin-bottom: 0;
                 }
                 &:nth-child(2n+1) {
-                    background: darken(rgba($rsrBlue, 0.05), 10%);
-                    border: thin solid rgba($rsrBlue, 0.05);
+                    background: darken(rgba($rsrBlue, 0), 0%);
+                    border: thin solid rgba($rsrBlue, 0);
                 }
                 .projectLocation {
                     color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrBlue, 0.1), 0%);
-                    border: thin solid rgba($rsrBlue, 0.3);
-                }
-                .donateButton {
-                    text-align: left;
-                    a {
-                        @include responsive(mediums-max-screens) {
-                            margin-top: 0.6em;
-                        }
-
-                        @include responsive(small-max-screens) {
-                            margin-top: 1em;
-                        }
-                    }
-                    .totalBudgetLabel {
-                        width: initial;
-                    }
-                }
-            }
-        }
-    }
-    &.updates {
-        ul {
-            li {
-                border: thin solid rgba($rsrGreen, 0);
-                @include transition(all 0.2s ease-in);
-                .orgName {}
-                .projectTitle {
-                    color: rgba($anchorLink, 1);
-                    i {
-                        font-size: 1.1em;
-                        color: rgba($anchorLink, 1);
-                    }
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                }
-                h1 {
-                    a {
-                        color: $rsrGreen;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border: thin solid rgba($rsrGreen, 0.1);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrGreen, 0.1), 0%);
-                    border: thin solid rgba($rsrGreen, 0.35);
-                }
-                .excerpt {
-                    li {
-                        background: none;
-                        border: none;
-                        transition: none;
-                        list-style-type: initial;
-                        margin: initial;
-                        padding: initial;
-                    }
-                }
-            }
-        }
-    }
-    &.organisations {
-        ul {
-            li {
-                border: thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);
-                i {
-                    font-size: 1.1em;
-                }
-                .projectLocation {}
-                .projectTitle {
-                    display: block;
-                    margin: 0 0 3px 0;
-                }
-                span.userFullName {
-                    margin: 0 0 0px 0;
-                }
-                .upDateTime {
-                    margin-top: 10px;
-                }
-                .orgType {}
-                .additionalInfo {
-                    div {
-                        color: rgba($akvoBlack, 0.5);
-                        span {
-                            margin-left: 5px;
-                        }
-                    }
-                }
-                .socialInfo {
-                    p {
-                        color: rgba($akvoBlack, 0.5);
-                    }
-                }
-                h1 {
-                    a {
-                        color: $akvoTvRed;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($akvoTvRed, 0.05), 0);
-                    border: thin solid rgba($akvoTvRed, 0.05);
-                }
-                &:hover {
-                    background: darken(rgba($akvoTvRed, 0.1), 0%);
-                    border: thin solid rgba($akvoTvRed, 0.35);
-                }
-                img {
-                    transition: all 0.2s ease-in;
                 }
             }
         }
     }
 }
-
-/* PROJECT */
 
 header {
     &.projectHeader {
@@ -2206,6 +2188,27 @@ ul.typeahead-selector {
     }
 }
 
+#filter-wrapper {
+    @media (max-width: 1200px) {
+        text-align: left;
+    }
+    @media (min-width: 1200px) {
+        text-align: right;
+    }
+    & > div {
+        display: flex;
+        div:not(.advanced-filter) {
+            display: block !important;
+        }
+    }
+}
+
+.projectCountTxt {
+    position: absolute;
+    top: 40px;
+    left: 22px;
+}
+
 /* Organisation Page */
 
 .organisationDetail {
@@ -2489,10 +2492,6 @@ section.projectPartners {
 }
 
 /* Display currency totals right-aligned */
-
-.currencyAmount {
-    text-align: right;
-}
 
 dd {
     &.currencyAmount {
@@ -2950,6 +2949,9 @@ body {
         margin-top: 10px;
         margin-bottom: 10px;
         transition: background 0.1s linear;
+    }
+    div.error-highlight {
+        background: lightgoldenrodyellow;
     }
     div.partial-header {
         font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -3510,11 +3512,11 @@ main {
 }
 
 main.project-page {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 400px);
 }
 
 main.results-page {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 400px);
 }
 
 .resultProjectTitle {
@@ -3534,20 +3536,76 @@ main.results-page {
     }
 }
 
+.myRsrPg {
+    h3 {
+        display: inline-block;
+        margin-top: 20px;
+    }
+    padding-right: 50px !important;
+    padding-left: 50px !important;
+    ol {
+        &.breadcrumb {
+            padding: 15px !important;
+            background-color: white !important;
+            font-size: 1.1em;
+            margin-top: -10px;
+            a.liveView {
+                margin-left: 50px;
+            }
+            >li+li:before {
+                padding: 0 5px;
+                color: #ccc;
+                content: "\003e";
+            }
+        }
+    }
+}
+
 .results {
     background: white;
     box-sizing: border-box;
+    position: relative;
     * {
         box-sizing: border-box;
     }
     > button {
         display: none;
     }
+    #update {
+        padding-top: 25px;
+    }
+    .editBtn {
+        @include btnOutline($akvoPurple, $akvoPurple);
+    }
     .react-tabs {
-        ul {
+        ul.react-tabs__tab-list {
+            border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;
             li {
-                border-radius: 0;
+                border-radius: 5px 5px 0 0;
+                border: 1px solid rgba($akvoBlack, 0.1) !important;
+                border-bottom: 1px solid rgba($akvoBlack, 0) !important;
             }
+        }
+    }
+    .updateList {
+        max-height: calc(100vh - 370px);
+        overflow-y: scroll;
+        .updateImg {
+            height: 130px;
+            overflow-y: hidden;
+            position: relative;
+            img {
+                width: 100%;
+                max-width: 350px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        h3 {
+            margin-top: 0;
+            display: block;
         }
     }
     /********************* Narrative report ***************************/
@@ -4425,7 +4483,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -4745,4 +4803,9 @@ main.results-page {
 
 .form-button {
     margin-right: 5px;
+}
+
+.supporthero-button {
+    bottom: 50px !important;
+    top: unset !important;
 }

@@ -1,9 +1,9 @@
-{% load i18n bootstrap3 rsr_utils %}
+{% load i18n bootstrap3 rsr_utils rules %}
 
 {% url 'index' as index_url %}
 
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-  <div class="container">
+  <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsed">
@@ -26,101 +26,76 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
-      <ul class="nav navbar-nav">
-        <li class="navProject">
-          <a class="{% if 'projects' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'project-directory' %}">
-            {% trans "All projects" %}
-          </a>
-        </li>
-        <li class="navUpdate">
-          <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'update-directory' %}">
-            {% trans "All updates" %}
-          </a>
-        </li>
-        <li class="navOrganisation">
-          <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'organisation-directory' %}">
-            {% trans "All organisations" %}
-          </a>
-        </li>
-      </ul>
+        <ul class="nav navbar-nav">
+            {% has_perm 'rsr.user_management' user as can_manage_users %}
+            {% if can_manage_users %}
+            <li class="navUserManagement">
+                <a class="{% if 'user_management' in request.path %}active{% endif %}"
+                   href="{% url 'user_management' %}">
+                    {% trans "User management" %}
+                </a>
+            </li>
+            {% endif %}
+            {% has_perm 'rsr.project_management' user as can_manage_projects %}
+            {% if can_manage_projects %}
+            <li class="navIati">
+                <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
+                   href="{% url 'my_iati' %}">
+                    {% trans "IATI" %}
+                </a>
+            </li>
+            <li class="navReports">
+                <a href="{% url 'my_reports' %}"
+                   class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
+                    {% trans 'Reports' %}
+                </a>
+            </li>
+            {% endif %}
+        </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        {% if not '/myrsr/projects/' in request.get_full_path %}
-          <li>
-              <a href="{% if project and project.publishingstatus.status == "published" %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
-                 class="addUpdateBtn">
-                <i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}
-              </a>
-          </li>
-        {% endif %}
         {% if not user.username %}
           <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
           <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
-        {% else %}
-        <li>
-          <a class="{% if 'myrsr' in request.path %}active{% endif %}"
-             href="{% url 'my_rsr' %}"><i class="fa fa-user"></i> {% trans 'MyRSR' %}</a>
-        </li>
-        <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
-        {% endif %}
-        {% if not rsr_page or not rsr_page.google_translation %}
-        <li>
-          <div class="dropdown langDropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-              {% get_language_info_list for LANGUAGES as languages %}
-              {% for language in languages %}
-                {% if not language.code == LANGUAGE_CODE %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-        </li>
-        {% else %}
+          {% else %}
           <li>
-            <div class="dropdown langDropdown">
-              <div id="google_translate_element"></div>
-              <script type="text/javascript">
-                function googleTranslateElementInit() {
-                  new google.translate.TranslateElement(
-                    {
-                      pageLanguage: '{{LANGUAGE_CODE}}',
-                      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                      autoDisplay: false,
-                      multilanguagePage: true
-                    },
-                    'google_translate_element');
-                }
-                </script>
-                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-                <script type="text/javascript">
-                  /* Add class name to body when translation widget clicked so we can pad to create
-                  ** room for translation bar. */
-                  var el = document.querySelector('#google_translate_element');
-                  el.addEventListener('click', function() {
-                    var body = document.querySelector('body');
-                    if (body.classList) {
-                      if (!body.classList.contains('translationBarActive')) {
-                        body.classList.add('translationBarActive');
-                      }
-                    } else {
-                      var classList = body.getAttribute('class');
-                      if (classList.indexOf('translationBarActive') === -1) {
-                        body.setAttribute('class', classList + ' ' + 'translationBarActive');
-                      }
-                    }
-                  });
-                </script>
-            </div>
+              <div class="dropdown userDropdown">
+                  <button class="btn btn-default dropdown-toggle" id="user-dropdown-menu" type="button" data-toggle="dropdown" aria-expanded="false">
+                      {{ user.get_full_name }}
+                      <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="user-dropdown-menu">
+                      <li role="presentation">
+                          <a href="{% url 'my_details' %}">{% trans 'My details' %}</a>
+                      </li>
+                      <li role="presentation">
+                          <a role="menuitem" href="{% url 'sign_out' %}">{% trans 'Sign out' %}</a>
+                      </li>
+                      <li>
+                        <a role="menuitem" href="{% url 'my_rsr' %}">
+                          {% trans 'RSR Admin' %}
+                        </a>
+
+                      </li>
+                  </ul>
+              </div>
           </li>
+          <li>
+              <a class="btn areaToggle"
+                 href="{% if 'myrsr' in request.path %}
+                        {% url 'project-directory' %}
+                        {% else %}
+                        {% url 'my_rsr' %}
+                        {% endif %}">
+                  {% if 'myrsr' in request.path %}
+                  {% trans 'RSR Live Site' %}
+                  {% else %}
+                  {% trans 'RSR Admin' %}
+                {% endif %}
+            </a>
+        </li>
         {% endif %}
+
       </ul>
     </div>
   </div>

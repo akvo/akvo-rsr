@@ -5,7 +5,7 @@
 {% block title %}{% trans 'MyRSR - User management' %}{% endblock %}
 
 {% block myrsr_main %}
-<div class="col-sm-6">
+<div class="col-sm-6 col-xs-8">
     <h3>{% trans 'User management' %}</h3>
     {% has_perm 'rsr.change_employment' user as can_change_employments %}
     {% if not can_change_employments %}
@@ -15,7 +15,7 @@
     {% else %}
         <div id="invite_button"></div>
             </div>
-        <div class="col-sm-6 btnHeader text-right">
+        <div class="col-sm-6 col-xs-8 col-xs-offset-1 col-sm-offset-0 btnHeader text-right">
             <form class="navbar-form" role="search">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search" name="q" id="search" {% if q_search %}value="{{ q_search }}"{% endif %}>
