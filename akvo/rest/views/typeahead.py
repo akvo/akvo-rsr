@@ -147,10 +147,9 @@ def _create_filters_query(request):
         status_filter,
         organisation_filter,
         sector_filter,
-        title_or_subtitle_filter
     ]
     filters = filter(None, all_filters)
-    return reduce(lambda x, y: x & y, filters) if filters else None
+    return reduce(lambda x, y: x & y, filters) if filters else None, title_or_subtitle_filter
 
 
 def _get_projects_for_page(projects, request):
@@ -178,8 +177,21 @@ def typeahead_project_filters(request):
     projects = page.projects() if page else Project.objects.all().public().published()
 
     # Filter projects based on query parameters
-    filter_ = _create_filters_query(request)
+    filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
+    # NOTE: The text filter is handled differently/separately from the other filters.
+    # The text filter allows users to enter free form text, which could result in no
+    # projects being found for the given text. Other fields only allow selecting from
+    # a list of options, and for every combination that is shown to users and
+    # selectable by them, at least one project exists.
+    # When no projects are returned for a given search string, if the text search is
+    # not handled separately, the options for all the other filters are empty, and
+    # this causes the filters to get cleared automatically. This is very weird UX.
+    projects_text_filtered = (
+        projects.filter(text_filter) if text_filter is not None else projects
+    )
+    if projects_text_filtered.exists():
+        projects = projects_text_filtered
 
     # Pre-fetch related fields to make things faster
     projects = projects.select_related(
@@ -189,9 +201,10 @@ def typeahead_project_filters(request):
         'locations',
         'locations__country',
         'recipient_countries',
-    ).distinct().order_by('-last_modified_at')
+    )
 
-    # Get the relevant data for typeaheads based on filtered projects.
+    # Get the relevant data for typeaheads based on filtered projects (minus
+    # text filtering, if no projects were found)
     locations = [
         {'id': choice[0], 'name': choice[1]}
         for choice in location_choices(projects)
@@ -205,11 +218,13 @@ def typeahead_project_filters(request):
         vocabulary='2', sector_code__in=valid_sectors
     ).values('sector_code').distinct()
 
-    page_projects = _get_projects_for_page(projects, request)
+    # NOTE: We use projects_text_filtered for displaying projects
+    count = projects_text_filtered.count()
+    display_projects = _get_projects_for_page(projects_text_filtered, request)
 
     response = {
-        'project_count': projects.count(),
-        'projects': ProjectListingSerializer(page_projects, many=True).data,
+        'project_count': count,
+        'projects': ProjectListingSerializer(display_projects, many=True).data,
         'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,
