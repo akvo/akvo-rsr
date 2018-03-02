@@ -22,11 +22,9 @@ from lxml import etree
 from akvo.rsr.models import IndicatorPeriodData
 from .utils import check_project_viewing_permissions
 from ..forms import ProjectUpdateForm
-from ..filters import (create_project_filter_class, remove_empty_querydict_items)
 from ..models import Project, ProjectUpdate
-from ...utils import pagination, filter_query_string
+from ...utils import pagination
 from ...iati.exports.iati_export import IatiXML
-from akvo.codelists.models import SectorCategory, Sector, Version
 
 
 ###############################################################################

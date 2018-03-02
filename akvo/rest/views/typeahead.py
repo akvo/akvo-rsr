@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from akvo.codelists.models import Country, Version
-from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
+from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
 from akvo.rest.serializers import (ProjectListingSerializer,
                                    TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
@@ -156,7 +156,7 @@ def _get_projects_for_page(projects, request):
     """Return projects to be shown on the current page"""
     limit = _int_or_none(request.GET.get('limit')) or settings.PROJECT_DIRECTORY_PAGE_SIZES[0]
     limit = min(limit, settings.PROJECT_DIRECTORY_PAGE_SIZES[-1])
-    max_page_number = 1 + projects.count()/limit
+    max_page_number = 1 + projects.count() / limit
     page_number = min(max_page_number, _int_or_none(request.GET.get('page')) or 1)
     start = (page_number - 1) * limit
     end = page_number * limit
