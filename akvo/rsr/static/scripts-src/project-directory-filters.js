@@ -8,16 +8,12 @@
 var projectDirectory = document.getElementById("project-directory"),
     options_cache = {};
 
-var trim_label = function(obj) {
-    if (obj.hasOwnProperty("label")) {
-        obj.label = obj.label.trim();
-    }
-    return obj;
-};
-
 var Filter = React.createClass({displayName: "Filter",
     render: function() {
         var Typeahead = ReactBootstrapTypeahead.Typeahead;
+        var show_indented = function(item) {
+            return "\u00A0".repeat(item.indent) + item.label;
+        };
         return (
             React.createElement("div", {className: "advanced-filter"}, 
                 React.createElement(Typeahead, {
@@ -30,7 +26,8 @@ var Filter = React.createClass({displayName: "Filter",
                     labelKey: "label", 
                     highlightOnlyResult: true, 
                     placeholder: this.props.display_name, 
-                    disabled: this.props.disabled}
+                    disabled: this.props.disabled, 
+                    renderMenuItemChildren: show_indented}
                 ), 
                 React.createElement("span", {className: "caret"})
             )
@@ -44,9 +41,6 @@ var Filter = React.createClass({displayName: "Filter",
     },
     onChange: function(values) {
         this.props.onChange(this.props.name, values);
-        if (values.length > 0) {
-            trim_label(values[0]);
-        }
     }
 });
 
@@ -280,7 +274,7 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                     return option.id == id;
                 },
                 selection = dropdown_field ? options[filter_name].find(find_function) : id,
-                selection_clone = dropdown_field ? trim_label(Object.assign({}, selection)) : id;
+                selection_clone = dropdown_field ? Object.assign({}, selection) : id;
             return dropdown_field ? (_.isEmpty(selection_clone) ? [] : [selection_clone]) : id;
         };
         var create_filter = function(filter_name) {
@@ -429,7 +423,7 @@ var App = React.createClass({displayName: "App",
                 .then(self.parseResponse)
                 .then(function(options) {
                     if (options) {
-                        self.updateState(options, mountedNow);
+                        self.updateState(self.processOptions(options), mountedNow);
                         self.cacheOptions(url, options);
                         if (mountedNow) {
                             self.cacheAllOptions();
@@ -485,11 +479,13 @@ var App = React.createClass({displayName: "App",
             // Check various fields depending on type of options
             // NOTE: name always appears after long_name, since we
             // prefer long_name for organisations
-            var label = item.label || item.long_name || item.name || "";
+            var label = item.label || item.long_name || item.name || "",
+                spaces = label.match(/\s+/i);
             // Stringify the id;
             item.id = String(item.id);
-            item.filterBy = (label + " " + item.id).trim();
-            item.label = label;
+            item.filterBy = label.trim() + " " + item.id;
+            item.indent = parseInt((spaces ? spaces[0].length : 0) / 4) * 4;
+            item.label = label.trim();
         };
         for (var key in options) {
             if (this.isFilter(key, true)) {
@@ -517,7 +513,7 @@ var App = React.createClass({displayName: "App",
     },
     updateState: function(options, mountedNow) {
         this.setState({
-            options: this.processOptions(options),
+            options: options,
             disabled: false,
             project_count: options.project_count,
             projects: options.projects
