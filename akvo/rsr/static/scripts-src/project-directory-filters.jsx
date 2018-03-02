@@ -343,7 +343,7 @@ var App = React.createClass({
         var app = this;
         this.fetchData(true);
         window.onpopstate = function(popstate) {
-            if (!_.isEmpty(popstate.state) && popstate.state != app.state.selected) {
+            if (!_.isEqual(app.state.selected, popstate.state)) {
                 app.setState({ selected: popstate.state }, app.fetchData);
             }
         };
@@ -389,7 +389,6 @@ var App = React.createClass({
     },
     resetFilters: function() {
         this.setState({ selected: {} }, this.fetchData);
-        this.updateHistory({});
     },
 
     /* Helper methods */
@@ -496,6 +495,10 @@ var App = React.createClass({
         return options;
     },
     updateHistory: function(state) {
+        if (_.isEqual(state, history.state)) {
+            // Don't update if current state is same as new state
+            return;
+        }
         // Update the browser URL
         var queries = _.pairs(state).map(function(q) {
                 var key = q[0],
