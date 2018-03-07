@@ -347,8 +347,22 @@ export default class App extends React.Component {
         }
         const show_reports = page.mode && page.mode.show_narrative_reports;
         const projectId = dataFromElement("project").id;
+        const results_tab = (
+            <div>
+                <FilterBar callbacks={callbacks} />
+                <main
+                    role="main"
+                    className={page.mode && page.mode.public ? "project-page" : "results-page"}
+                >
+                    <article className={updateForm ? "shared" : "full"}>{results}</article>
+                    <aside className={updateForm ? "open" : "closed"}>{updateForm}</aside>
+                </main>
+            </div>
+        );
 
-        return (
+        return page.mode && page.mode.public ? (
+            results_tab
+        ) : (
             <section className="results">
                 <a
                     className="pull-right btn btn-default editBtn"
@@ -362,18 +376,7 @@ export default class App extends React.Component {
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
                         <Tab>Add an update</Tab>
                     </TabList>
-                    <TabPanel>
-                        <FilterBar callbacks={callbacks} />
-                        <main
-                            role="main"
-                            className={
-                                page.mode && page.mode.public ? "project-page" : "results-page"
-                            }
-                        >
-                            <article className={updateForm ? "shared" : "full"}>{results}</article>
-                            <aside className={updateForm ? "open" : "closed"}>{updateForm}</aside>
-                        </main>
-                    </TabPanel>
+                    <TabPanel>{results_tab}</TabPanel>
                     {show_reports ? (
                         <TabPanel>
                             <Reports />
