@@ -506,32 +506,14 @@ def user_management(request):
 
 
 @login_required
-def my_results_select(request):
-    """
-    My results section without a project selected. Only accessible to M&E Managers, Admins and
-    Project editors.
+def my_project(request, project_id, template='myrsr/my_project.html'):
+    """Project results, updates and reports CRUD view
 
-    :param request; A Django HTTP request and context
-    """
-    user = request.user
-    me_managers = Group.objects.get(name='M&E Managers')
-    admins = Group.objects.get(name='Admins')
-    project_editors = Group.objects.get(name='Project Editors')
-
-    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
-            user.in_group(admins) or user.in_group(project_editors)):
-        raise PermissionDenied
-
-    return render(request, 'myrsr/my_results_select.html', {})
-
-
-@login_required
-def my_results(request, project_id, template='myrsr/my_results.html'):
-    """
-    My results section. Only accessible to M&E Managers, Admins and Project editors.
+    Only accessible to M&E Managers, Admins and Project editors.
 
     :param request; A Django HTTP request and context
     :param project_id; The ID of the project
+
     """
     project = get_object_or_404(Project, pk=project_id)
     user = request.user
