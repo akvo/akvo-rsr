@@ -68,7 +68,7 @@ DISAGG_SQL = """
         SELECT DISTINCT
             indicator.id AS indicator_id,
             period.id AS period_id,
-            dimensionname.name AS dimension_name,
+            dimension.name AS dimension,
             dimensionvalue.value AS dimension_value,
             agg.value,
             agg.numerator,
@@ -76,16 +76,16 @@ DISAGG_SQL = """
         FROM
             rsr_indicator indicator,
             rsr_indicatorperiod period,
-            rsr_indicator_dimension_names indicator_dimensions,
+            rsr_indicator_dimensions indicator_dimensions,
             aggregated_disaggs agg,
-            rsr_indicatordimensionname dimensionname,
-            rsr_indicatordimensionvalue dimensionvalue
+            rsr_dimension dimension,
+            rsr_dimensionvalue dimensionvalue
         WHERE
             indicator.id = period.indicator_id AND
             period.id = agg.period_id AND
             dimensionvalue.id = agg.dimension_value_id AND
-            dimensionname.id = dimensionvalue.name_id AND
-            indicator_dimensions.indicatordimensionname_id = dimensionname.id AND
+            dimension.id = dimensionvalue.dimension_id AND
+            indicator_dimensions.dimension_id = dimension.id AND
             indicator_dimensions.indicator_id = indicator.id
     )
     SELECT
@@ -98,7 +98,7 @@ DISAGG_SQL = """
 class PeriodDisaggregation(pg.View):
     indicator = models.ForeignKey('Indicator', on_delete=models.DO_NOTHING)
     period = models.ForeignKey('IndicatorPeriod', on_delete=models.DO_NOTHING)
-    dimension_name = models.CharField(max_length=100)
+    dimension = models.CharField(max_length=100)
     dimension_value = models.CharField(max_length=100)
     value = models.IntegerField()
     numerator = models.IntegerField()

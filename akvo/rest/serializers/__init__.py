@@ -33,8 +33,8 @@ from .indicator_period_dimension import (IndicatorPeriodActualDimensionSerialize
                                          IndicatorPeriodTargetDimensionSerializer)
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
-from .indicator_dimension_name import IndicatorDimensionNameSerializer
-from .indicator_dimension_value import IndicatorDimensionValueSerializer
+from .dimension import DimensionSerializer
+from .dimension_value import DimensionValueSerializer
 from .indicator_reference import IndicatorReferenceSerializer
 from .internal_organisation_id import InternalOrganisationIDSerializer
 from .keyword import KeywordSerializer

@@ -67,6 +67,12 @@ def is_org_admin(user, obj):
                 except:
                     pass
                 try:
+                    if obj.dimension.project and obj.dimension.project in \
+                            employment.organisation.all_projects():
+                        return True
+                except:
+                    pass
+                try:
                     if obj.indicator.result.project and obj.indicator.result.project in \
                             employment.organisation.all_projects():
                         return True
@@ -212,6 +218,12 @@ def is_organisation_or_user_owned(user, employment, obj):
             pass
         try:
             if obj.result.project and obj.result.project in \
+                    employment.organisation.all_projects():
+                return True
+        except:
+            pass
+        try:
+            if obj.dimension.project and obj.dimension.project in \
                     employment.organisation.all_projects():
                 return True
         except:

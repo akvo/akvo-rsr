@@ -26,8 +26,8 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country,
                              ProjectDocument, ProjectDocumentCategory,
                              ProjectEditorValidationSet, ProjectLocation,
                              Result, Transaction, TransactionSector)
-from akvo.rsr.models.result.indicator_dimension import (
-    IndicatorDimensionName, IndicatorDimensionValue
+from akvo.rsr.models.result.dimension import (
+    Dimension, DimensionValue
 )
 from akvo.utils import DjangoModel
 
@@ -55,7 +55,7 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorLabel: (Indicator, 'indicator'),
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
-    IndicatorDimensionValue: (IndicatorDimensionName, 'name'),
+    DimensionValue: (Dimension, 'dimension'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
     IndicatorPeriodTargetDimension: (IndicatorPeriod, 'period'),
@@ -71,7 +71,7 @@ RELATED_OBJECTS_MAPPING = {
 MANY_TO_MANY_FIELDS = {
     # Special mapping for many to many fields
     Keyword: 'keywords',
-    IndicatorDimensionName: 'dimension_names',
+    Dimension: 'dimensions',
 }
 
 
@@ -490,7 +490,7 @@ def project_editor(request, pk=None):
                     errors = add_error(errors, str(e), key)
                 data.pop(key, None)
 
-            elif Model == IndicatorDimensionName and len(key_parts.ids) > 2:
+            elif Model == Dimension and len(key_parts.ids) > 2:
                 indicator = Indicator.objects.get(pk=int(key_parts.ids[2]))
                 m2m_relation = getattr(indicator, MANY_TO_MANY_FIELDS[Model])
                 try:
@@ -909,14 +909,14 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
 def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimension_pk=None):
 
     indicator = Indicator.objects.get(pk=indicator_pk)
-    dimension = IndicatorDimensionName.objects.get(pk=dimension_pk)
+    dimension = Dimension.objects.get(pk=dimension_pk)
     user = request.user
 
     if not user.has_perm('rsr.change_project', indicator.result.project):
         return HttpResponseForbidden()
 
-    if dimension in indicator.dimension_names.all():
-        indicator.dimension_names.remove(dimension)
+    if dimension in indicator.dimensions.all():
+        indicator.dimensions.remove(dimension)
 
         change_message = u'%s %s.' % (_(u'Project editor, relation removed: indicator dimension'),
                                       dimension.__unicode__())

@@ -10,9 +10,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-class IndicatorDimensionName(models.Model):
-    project = models.ForeignKey('Project', verbose_name=u'project', related_name='dimension_names')
-    # indicators: related name of Indicator.dimension_names ManyToManyField
+class Dimension(models.Model):
+    project = models.ForeignKey('Project', verbose_name=u'project', related_name='dimensions')
+    # indicators: related name of Indicator.dimensions ManyToManyField
     name = ValidXMLCharField(
         _(u'dimension name'), max_length=100,
         help_text=_(u'The name of a category to be used when disaggregating (e.g "Age").'))
@@ -25,8 +25,8 @@ class IndicatorDimensionName(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator dimension name')
-        verbose_name_plural = _(u'indicator dimension names')
+        verbose_name = _(u'dimension')
+        verbose_name_plural = _(u'dimensions')
         ordering = ['id']
         unique_together = ('project', 'name')
 
@@ -34,19 +34,19 @@ class IndicatorDimensionName(models.Model):
         return self.name
 
 
-class IndicatorDimensionValue(models.Model):
-    name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
-                             related_name='dimension_values')
+class DimensionValue(models.Model):
+    dimension = models.ForeignKey(Dimension, verbose_name=u'dimension',
+                                  related_name='dimension_values')
     value = ValidXMLCharField(
         _(u'dimension value'), max_length=100,
         help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator dimension value')
-        verbose_name_plural = _(u'indicator dimension values')
+        verbose_name = _(u'dimension value')
+        verbose_name_plural = _(u'dimension values')
         ordering = ['id']
-        unique_together = ('name', 'value')
+        unique_together = ('dimension', 'value')
 
     def __unicode__(self):
-        return u'{} - {}'.format(self.name, self.value)
+        return u'{} - {}'.format(self.dimension, self.value)

@@ -26,12 +26,12 @@ import update from 'immutability-helper';
 export function createNewDisaggregations(update_id, dimensionsNameAndValueIds, disaggregations) {
     const dimension_disaggregations = keyBy(disaggregations, 'dimension_value');
     let changedDisaggregations = disaggregations;
-    dimensionsNameAndValueIds.forEach(({dimensionNameId, dimensionValueIds}) => {
+    dimensionsNameAndValueIds.forEach(({dimensionId, dimensionValueIds}) => {
         dimensionValueIds.forEach(dimensionValueId => {
             if (dimension_disaggregations[dimensionValueId] === undefined) {
                 const disaggregation = {
                     'update': update_id,
-                    'dimension_name': dimensionNameId,
+                    'dimension': dimensionId,
                     'dimension_value': dimensionValueId,
                     // TODO: Are the IDs sure to be unique?
                     'id': 'new-' + dimensionValueId,
@@ -146,10 +146,10 @@ export const endpoints = {
     "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     "indicators": (id) =>
         `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
-    "dimension_names": (id) =>
-        `/rest/v1/dimension_name/?format=json&limit=${c.API_LIMIT}&project=${id}`,
+    "dimensions": (id) =>
+        `/rest/v1/dimension/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     "dimension_values": (id) =>
-        `/rest/v1/dimension_value/?format=json&limit=${c.API_LIMIT}&name__project=${id}`,
+        `/rest/v1/dimension_value/?format=json&limit=${c.API_LIMIT}&dimension__project=${id}`,
     "periods": (id) =>
         `/rest/v1/indicator_period/?format=json&limit=${c.API_LIMIT}&indicator__result__project=${id}`,
     "updates": (id) =>
@@ -546,7 +546,7 @@ export const isResultsKey = (key) => {
 
 
 export const disaggregationsToDisplayData = (
-    disaggregationIds, disaggregations, dimensionNames, dimensionValues
+    disaggregationIds, disaggregations, dimensions, dimensionValues
 ) => {
     /*  maps a number of disaggregations to the following format:
             {
@@ -567,9 +567,9 @@ export const disaggregationsToDisplayData = (
     return disaggregationIds && disaggregationIds.length > 0 && disaggregationIds.reduce((acc, id) => {
         const disaggregation = disaggregations[id];
         const dimensionValue = dimensionValues[disaggregation.dimension_value];
-        const dimensionName = dimensionNames[dimensionValue.name];
+        const dimension = dimensions[dimensionValue.dimension];
         return update(acc, {
-                [dimensionName.name]: {
+                [dimension.name]: {
                     $apply: value =>
                         update(value || {}, {
                             [dimensionValue.value]:

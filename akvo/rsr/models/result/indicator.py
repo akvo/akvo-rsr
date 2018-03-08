@@ -75,7 +75,7 @@ class Indicator(models.Model):
         _(u'default indicator periods'), default=False, blank=True,
         help_text=_(u'Determines whether periods of indicator are used by default.')
     )
-    dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name=u'indicators')
+    dimensions = models.ManyToManyField('Dimension', related_name=u'indicators')
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')

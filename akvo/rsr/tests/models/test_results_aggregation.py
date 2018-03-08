@@ -12,8 +12,8 @@ from django.contrib.auth import get_user_model
 from django_pgviews.models import ViewSyncer
 
 from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result,
-                             PeriodActualValue, Disaggregation, IndicatorDimensionName,
-                             IndicatorDimensionValue)
+                             PeriodActualValue, Disaggregation, Dimension,
+                             DimensionValue)
 from akvo.rsr.models.result.indicator_period_aggregation import PeriodDisaggregation
 
 User = get_user_model()
@@ -122,28 +122,28 @@ class PeriodDisaggregationTestCase(TestCase):
         self.indicator = Indicator.objects.create(result=self.result, title='Test Indicator')
         self.period = IndicatorPeriod.objects.create(indicator=self.indicator,
                                                      actual_comment='initial actual comment')
-        self.dimension_name1 = IndicatorDimensionName.objects.create(
+        self.dimension1 = Dimension.objects.create(
             project=self.project,
             name="Flavor"
         )
-        self.dimension_name2 = IndicatorDimensionName.objects.create(
+        self.dimension2 = Dimension.objects.create(
             project=self.project,
             name="Color"
         )
-        self.dimension_value1 = IndicatorDimensionValue.objects.create(
-            name=self.dimension_name1,
+        self.dimension_value1 = DimensionValue.objects.create(
+            dimension=self.dimension1,
             value="Vanilla"
         )
-        self.dimension_value2 = IndicatorDimensionValue.objects.create(
-            name=self.dimension_name1,
+        self.dimension_value2 = DimensionValue.objects.create(
+            dimension=self.dimension1,
             value="Chocolate"
         )
-        self.dimension_value3 = IndicatorDimensionValue.objects.create(
-            name=self.dimension_name2,
+        self.dimension_value3 = DimensionValue.objects.create(
+            dimension=self.dimension2,
             value="Red"
         )
-        self.indicator.dimension_names.add(self.dimension_name1)
-        self.indicator.dimension_names.add(self.dimension_name2)
+        self.indicator.dimensions.add(self.dimension1)
+        self.indicator.dimensions.add(self.dimension2)
         self.update1 = IndicatorPeriodData.objects.create(
             period=self.period, user=self.user, value=17.11
         )
@@ -188,9 +188,9 @@ class PeriodDisaggregationTestCase(TestCase):
             indicator=indicator, period=period
         )
         # Then
-        vanilla = period_disaggregations.get(dimension_name="Flavor", dimension_value="Vanilla")
-        chocolate = period_disaggregations.get(dimension_name="Flavor", dimension_value="Chocolate")
-        red = period_disaggregations.get(dimension_name="Color", dimension_value="Red")
+        vanilla = period_disaggregations.get(dimension="Flavor", dimension_value="Vanilla")
+        chocolate = period_disaggregations.get(dimension="Flavor", dimension_value="Chocolate")
+        red = period_disaggregations.get(dimension="Color", dimension_value="Red")
         self.assertEquals(vanilla.value, Decimal("42.67"))
         self.assertEquals(chocolate.value, Decimal("22.33"))
         self.assertEquals(red.value, Decimal("23.45"))
@@ -221,8 +221,8 @@ class PeriodDisaggregationTestCase(TestCase):
             indicator=indicator, period=period
         )
         # Then
-        vanilla = period_disaggregations.get(dimension_name="Flavor", dimension_value="Vanilla")
-        chocolate = period_disaggregations.get(dimension_name="Flavor", dimension_value="Chocolate")
+        vanilla = period_disaggregations.get(dimension="Flavor", dimension_value="Vanilla")
+        chocolate = period_disaggregations.get(dimension="Flavor", dimension_value="Chocolate")
         self.assertEquals(vanilla.numerator, Decimal("5.86"))
         self.assertEquals(vanilla.denominator, Decimal("51"))
         self.assertEquals(chocolate.numerator, Decimal("4.76"))

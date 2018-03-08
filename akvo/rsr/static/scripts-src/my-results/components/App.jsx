@@ -39,13 +39,14 @@ import {
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
-    getDimensionNameValueIds,
     getUpdatesDisaggregationIds,
+    getDimensionsChildrenIds,
 } from "../selectors";
 
 import {
     _,
-    collapseId, createNewDisaggregations,
+    collapseId,
+    createNewDisaggregations,
     identicalArrays,
     isNewUpdate,
     setHash,
@@ -86,9 +87,9 @@ const modifyUser = (isMEManager) => {
         updates: store.models.updates,
         reports: store.models.reports,
         disaggregationObjects: getUpdatesDisaggregationObjects(store),
-        dimensionNames: store.models.dimension_names,
+        dimensions: store.models.dimensions,
         dimensionValues: store.models.dimension_values,
-        dimensionNameValueIds: getDimensionNameValueIds(store),
+        dimensionsAndValueIds: getDimensionsChildrenIds(store),
         disaggregations: store.models.disaggregations,
         updateDisaggregationIds: getUpdatesDisaggregationIds(store),
         user: store.models.user,
@@ -145,7 +146,7 @@ export default class App extends React.Component {
         const projectPartners = project.partners;
         fetchModel('results', projectId, activateToggleAll);
         fetchModel('indicators', projectId, activateToggleAll);
-        fetchModel('dimension_names', projectId, activateToggleAll);
+        fetchModel('dimensions', projectId, activateToggleAll);
         fetchModel('dimension_values', projectId, activateToggleAll);
         fetchModel('periods', projectId, activateToggleAll);
         fetchModel('updates', projectId, activateToggleAll);
@@ -200,18 +201,18 @@ export default class App extends React.Component {
                 originalUpdate = {...updates.objects[updateFormDisplay]};
                 this.setState({originalUpdate});
                 const {
-                    disaggregationObjects, periods, indicators, dimensionNameValueIds
+                    disaggregationObjects, periods, indicators, dimensionsAndValueIds
                 } = nextProps;
                 const update = updates.objects[updateFormDisplay];
                 const period = periods.objects[update.period];
                 const indicator = indicators.objects[period.indicator];
-                const dimensionsNameAndValueIds = indicator.dimension_names.reduce(
-                    (acc, dimensionNameId) => {
+                const dimensionsNameAndValueIds = indicator.dimensions.reduce(
+                    (acc, dimensionId) => {
                         // NOTE: acc.push() _has_ to be made separately from return acc, if you do
                         // both at the same time an int (1) is returned instead!
                         acc.push({
-                            dimensionNameId,
-                            dimensionValueIds: dimensionNameValueIds[dimensionNameId]
+                            dimensionId,
+                            dimensionValueIds: dimensionsAndValueIds[dimensionId]
                         });
                         return acc;
                     }, []
@@ -316,7 +317,7 @@ export default class App extends React.Component {
                         <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
 
         const {
-            page, dimensionNames, dimensionValues, disaggregations, updateDisaggregationIds,
+            page, dimensions, dimensionValues, disaggregations, updateDisaggregationIds,
             updates, periods, indicators,
         } = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
@@ -349,13 +350,13 @@ export default class App extends React.Component {
             */
             let dimensionsAndDisaggs = [];
             if (updateDisaggregationIds[update.id].length > 0) {
-                dimensionsAndDisaggs = indicator.dimension_names.map(
-                    dimensionNameId => ({
-                        ...dimensionNames.objects[dimensionNameId],
+                dimensionsAndDisaggs = indicator.dimensions.map(
+                    dimensionId => ({
+                        ...dimensions.objects[dimensionId],
                         // NOTE: we're only populating dimensionValues with dimension values that
                         // actually have a disaggregation, not all existing dimension values
                         dimensionValues: updateDisaggregationIds[update.id].filter(
-                            disaggId => disaggregations.objects[disaggId].dimension_name === dimensionNameId
+                            disaggId => disaggregations.objects[disaggId].dimension === dimensionId
                         ).map(
                             disaggId => ({
                                 ...dimensionValues.objects[
@@ -364,7 +365,7 @@ export default class App extends React.Component {
                             })
                         ),
                         disaggregations: updateDisaggregationIds[update.id].filter(
-                            disaggId => disaggregations.objects[disaggId].dimension_name === dimensionNameId
+                            disaggId => disaggregations.objects[disaggId].dimension === dimensionId
                         ).map(
                             disaggId => ({...disaggregations.objects[disaggId]})
                         ),

@@ -382,7 +382,7 @@ class UpdateHeader extends React.Component {
         updatesDisaggregationIds: getUpdatesDisaggregationIds(store),
         disaggregations: store.models.disaggregations.objects,
         dimensions: store.models.dimensions.objects,
-        dimensionNames: store.models.dimension_names.objects,
+        dimensions: store.models.dimensions.objects,
         dimensionValues: store.models.dimension_values.objects,
         periodChildrenIds: getPeriodsChildrenIds(store),
         needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
@@ -461,7 +461,7 @@ export default class Updates extends React.Component {
             (id) => {
                 const {
                     period, indicators, updates, updatesDisaggregationIds, disaggregations,
-                    dimensionNames, dimensionValues,
+                    dimensions, dimensionValues,
                 } = this.props;
                 const indicator = indicators.objects[this.props.indicatorId];
                 const update = updates.objects[id];
@@ -481,7 +481,7 @@ export default class Updates extends React.Component {
                         const disaggregationData = disaggregationsToDisplayData(
                             disaggregationIds,
                             disaggregations,
-                            dimensionNames,
+                            dimensions,
                             dimensionValues
                         );
 

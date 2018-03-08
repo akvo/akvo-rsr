@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import IndicatorDimensionName
+from akvo.rsr.models import Dimension
 
-from ..serializers import IndicatorDimensionNameSerializer
+from ..serializers import DimensionSerializer
 from ..viewsets import PublicProjectViewSet
 
 
-class IndicatorDimensionNameViewSet(PublicProjectViewSet):
+class DimensionViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorDimensionName.objects.all()
-    serializer_class = IndicatorDimensionNameSerializer
+    queryset = Dimension.objects.all()
+    serializer_class = DimensionSerializer
     project_relation = 'indicator__result__project__'

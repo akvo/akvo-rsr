@@ -26,8 +26,8 @@ const getResultIds = (store) => store.models.results.ids;
 const getResultObjects = (store) => store.models.results.objects;
 const getIndicatorIds = (store) => store.models.indicators.ids;
 const getIndicatorObjects = (store) => store.models.indicators.objects;
-const getDimensionNameIds = (store) => store.models.dimension_names.ids;
-const getDimensionNameObjects = (store) => store.models.dimension_names.objects;
+const getDimensionIds = (store) => store.models.dimensions.ids;
+const getDimensionObjects = (store) => store.models.dimensions.objects;
 const getDimensionValueIds = (store) => store.models.dimension_values.ids;
 const getDimensionValueObjects = (store) => store.models.dimension_values.objects;
 const getPeriodIds = (store) => store.models.periods.ids;
@@ -46,7 +46,7 @@ const getChildrenFactory = model => {
         // {childModelName: [parentIds, parentSelector, childrenIds, childrenSelector]}
         [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
         [c.OBJECTS_DIMENSION_VALUES]: [
-            getDimensionNameIds, getDimensionNameObjects, getDimensionValueIds, getDimensionValueObjects
+            getDimensionIds, getDimensionObjects, getDimensionValueIds, getDimensionValueObjects
         ],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
@@ -99,11 +99,6 @@ export const getIndicatorsChildrenIds = createSelector(
     children => children
 );
 
-export const getDimensionNameValueIds = createSelector(
-    // Same structure as getResultsChildrenIds but for dimension_names and dimension_values
-    getChildrenFactory(c.OBJECTS_DIMENSION_VALUES),
-    children => children
-);
 
 export const getPeriodsChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for periods and update children
@@ -132,6 +127,13 @@ export const getUpdatesDisaggregationObjects = createSelector(
             return {...acc, [update_id]: disaggregationIds.map((id) => disaggregationObjects[id])};
         }, {});
     }
+);
+
+
+export const getDimensionsChildrenIds = createSelector(
+    // Same structure as getResultsChildrenIds but for dimensions and dimension_values
+    getChildrenFactory(c.OBJECTS_DIMENSION_VALUES),
+    children => children
 );
 
 

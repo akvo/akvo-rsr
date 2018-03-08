@@ -81,7 +81,7 @@ const DeleteUpdateAlert = ({message, close}) => (
     return {
         page: store.page,
         updates: store.models.updates,
-        dimensionNames: store.models.dimension_names.objects,
+        dimensions: store.models.dimensions.objects,
         dimensionValues: store.models.dimension_values.objects,
         disaggregations: store.models.disaggregations.objects,
         user: store.models.user.ids && store.models.user.ids.length > 0 ?
@@ -120,7 +120,7 @@ class PeriodHeader extends React.Component {
 
         const {
             period, toggleCheckbox, page, ui, user, periodsActualValue, periodChildrenIds,
-            disaggregations, periodDisaggregationIds, dimensionNames, dimensionValues
+            disaggregations, periodDisaggregationIds, dimensions, dimensionValues
         } = this.props;
 
         const actualValue = periodsActualValue[period.id];
@@ -163,7 +163,7 @@ class PeriodHeader extends React.Component {
         const disaggregationData = disaggregationsToDisplayData(
             periodDisaggregationIds[period.id],
             disaggregations,
-            dimensionNames,
+            dimensions,
             dimensionValues
         );
 

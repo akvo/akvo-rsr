@@ -13,11 +13,9 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
-from akvo.rsr.models import (
-    Project, Organisation, Partnership, User,
-    Employment, Result, Indicator, IndicatorPeriod,
-    IndicatorDimension, IndicatorPeriodData
-)
+from akvo.rsr.models import (Project, Organisation, Partnership, User, Employment, Result,
+                             Indicator, IndicatorPeriod, Dimension, DimensionValue,
+                             IndicatorPeriodData,)
 
 from akvo.utils import check_auth_groups
 
@@ -152,7 +150,7 @@ class IndicatorPeriodDataTestCase(TestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         value = "10.00"
         disaggregations = [{
-            'dimension': self.dimension.id,
+            'dimension_value': self.dimension_value.id,
             'value': value
         }]
         data = {
@@ -182,9 +180,8 @@ class IndicatorPeriodDataTestCase(TestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         value = 10
         disaggregations = [{
-            'dimension': self.dimension.id,
-            'value': value,
-            'update': None
+            'dimension_value': self.dimension_value.id,
+            'value': value
         }]
         data = {
             'period': self.period.id,
@@ -380,9 +377,12 @@ class IndicatorPeriodDataTestCase(TestCase):
             title='Indicator 1',
             result=self.result
         )
-        self.dimension = IndicatorDimension.objects.create(
-            indicator=self.indicator,
+        self.dimension = Dimension.objects.create(
+            project=self.project,
             name='Gender',
+        )
+        self.dimension_value = DimensionValue.objects.create(
+            dimension=self.dimension,
             value='Female',
         )
         self.period = IndicatorPeriod.objects.create(

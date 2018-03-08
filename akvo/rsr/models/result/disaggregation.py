@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator_dimension import IndicatorDimensionValue
+from dimension import DimensionValue
 from indicator_period_data import IndicatorPeriodData
 
 from akvo.rsr.fields import ValidXMLTextField
@@ -19,7 +19,7 @@ class Disaggregation(TimestampsMixin, models.Model):
 
     # TODO: rename to dimension_axis of simply axis?
     dimension_value = models.ForeignKey(
-        IndicatorDimensionValue, null=True, related_name='disaggregations'
+        DimensionValue, null=True, related_name='disaggregations'
     )
 
     update = models.ForeignKey(IndicatorPeriodData,

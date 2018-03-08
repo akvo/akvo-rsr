@@ -269,8 +269,8 @@ def project_editor(request, project_id):
             'links',
             'documents',
             'keywords',
-            'dimension_names',
-            'dimension_names__dimension_values',
+            'dimensions',
+            'dimensions__dimension_values',
         ).select_related(
             'publishingstatus__status',
             'primary_organisation',

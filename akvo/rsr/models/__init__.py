@@ -40,7 +40,7 @@ from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
 from .result import (Disaggregation, Indicator,
-                     IndicatorDimensionName, IndicatorDimensionValue,
+                     Dimension, DimensionValue,
                      IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
                      IndicatorPeriodDataComment, IndicatorReference,
                      IndicatorPeriodActualDimension,
@@ -111,8 +111,8 @@ __all__ = [
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
-    'IndicatorDimensionName',
-    'IndicatorDimensionValue',
+    'Dimension',
+    'DimensionValue',
     'IndicatorLabel',
     'IndicatorPeriod',
     'IndicatorPeriodActualDimension',

@@ -13,10 +13,10 @@ from akvo.rsr.models import Disaggregation
 
 class DisaggregationSerializer(BaseRSRSerializer):
 
-    dimension_name = serializers.SerializerMethodField()
+    dimension = serializers.SerializerMethodField()
 
-    def get_dimension_name(self, obj):
-        return obj.dimension_value.name.pk
+    def get_dimension(self, obj):
+        return obj.dimension_value.dimension.pk
 
     class Meta:
         model = Disaggregation

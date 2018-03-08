@@ -30,7 +30,6 @@ const initialModels = {
     results: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     indicators: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     dimensions: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
-    dimension_names: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     dimension_values: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     periods: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},
     updates: {fetched: false, changing: false, changed: false, objects: undefined, ids: undefined},

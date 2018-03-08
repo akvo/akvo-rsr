@@ -57,19 +57,19 @@
                     </div>
                 </div>
 
-                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimensionname" }}">
+                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_dimension" }}">
                     <h5>{% trans 'Dimension' %}</h5>
-                    <div class="dimension-name-container" id="dimension-name-container">
+                    <div class="dimension-container" id="dimension-container">
                         {% with proejct_id_string=proejct.pk|default:"new-0"|stringformat:"s" %}
-                            {% for dimension_name in project.dimension_names.all %}
-                                {% include "myrsr/project_editor/related_objects/dimension_name_input.html" %}
+                            {% for dimension in project.dimensions.all %}
+                                {% include "myrsr/project_editor/related_objects/dimension_input.html" %}
                             {% empty %}
-                                {% include "myrsr/project_editor/related_objects/dimension_name_input.html" with dimension_name='IndicatorDimensionName.'|add:project_id_string %}
+                                {% include "myrsr/project_editor/related_objects/dimension_input.html" with dimension='Dimension.'|add:project_id_string %}
                             {% endfor %}
                         {% endwith %}
                         <div class="row form-group">
                             <div class="col-md-12 text-center add-object-link">
-                                <a href="#" class="add-dimension-name">
+                                <a href="#" class="add-dimension">
                                     <span class="glyphicon glyphicon-plus"></span>
                                     {% trans 'Add another dimension' %}
                                 </a>
