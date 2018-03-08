@@ -1115,7 +1115,7 @@ class Project(TimestampsMixin, models.Model):
 
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
+        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name')
 
     def show_status_large(self):
         "Show the current project status with background"
