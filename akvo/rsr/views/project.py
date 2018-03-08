@@ -9,7 +9,6 @@ Akvo RSR module. For additional details on the GNU license please see
 
 import json
 from datetime import datetime
-from sorl.thumbnail import get_thumbnail
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -20,6 +19,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from lxml import etree
 
 from akvo.rsr.models import IndicatorPeriodData
+from akvo.utils import get_thumbnail
 from .utils import check_project_viewing_permissions
 from ..forms import ProjectUpdateForm
 from ..models import Project, ProjectUpdate

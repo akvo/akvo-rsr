@@ -12,10 +12,11 @@ import logging
 import os
 from django import template
 from django.conf import settings
-from sorl.thumbnail import get_thumbnail
+
 
 from akvo.rsr.models import (Project, Organisation, ProjectUpdate,
                              ProjectLocation, ProjectUpdateLocation)
+from akvo.utils import get_thumbnail
 
 register = template.Library()
 logger = logging.getLogger(__name__)
