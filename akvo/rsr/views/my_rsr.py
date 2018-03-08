@@ -22,6 +22,7 @@ from tastypie.models import ApiKey
 from akvo.codelists.models import Country, Version
 from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
 from akvo.rsr.models import IndicatorPeriodData
+from .utils import toJSBoolean
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
@@ -536,10 +537,10 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
         'project': project,
         'user': user,
         # turn it into JSON boolean
-        'user_is_me_manager': 'true' if user_is_me_manager else 'false',
+        'user_is_me_manager': toJSBoolean(user_is_me_manager),
         'me_managers': me_managers.exists(),
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
-        'show_narrative_reports': 'true' if show_narrative_reports else 'false',
+        'show_narrative_reports': toJSBoolean(show_narrative_reports),
     }
 
     return render(request, template, context)
