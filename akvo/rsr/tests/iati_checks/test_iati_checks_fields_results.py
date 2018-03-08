@@ -64,7 +64,7 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertEquals(len(checks), 3)
         self.assertIn(u'has no type specified', checks[0][1])
         self.assertIn(u'has no title specified', checks[1][1])
-        self.assertIn(u'has no indicator', checks[2][1])
+        self.assertIn(u'has no quantitative indicator', checks[2][1])
 
     def test_iati_checks_fields_results_indicator_error(self):
         # Given an indicator missing title, measure and baseline year and value

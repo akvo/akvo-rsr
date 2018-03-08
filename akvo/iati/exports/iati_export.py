@@ -114,6 +114,8 @@ class IatiXML(object):
         :param iati_export: IatiExport Django object
         :param excluded_elements: List of fieldnames that should be ignored when exporting
         """
+        from akvo.rsr.models import IatiExport
+
         self.projects = projects
         self.version = version
         self.iati_export = iati_export
@@ -139,5 +141,5 @@ class IatiXML(object):
             # Update IATI activity export's status to indicate that export has finished
             iati_activity_export = getattr(self, 'iati_activity_export', None)
             if iati_activity_export:
-                iati_activity_export.status = 2
+                iati_activity_export.status = IatiExport.STATUS_IN_PROGRESS
                 iati_activity_export.save(update_fields=['status'])
