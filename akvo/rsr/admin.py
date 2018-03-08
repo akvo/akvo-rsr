@@ -1528,6 +1528,7 @@ admin.site.register(get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodData
 
 class ReportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Report')
+    save_as = True
 
 admin.site.register(get_model('rsr', 'Report'), ReportAdmin)
 
