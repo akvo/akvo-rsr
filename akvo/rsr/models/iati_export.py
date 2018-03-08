@@ -19,15 +19,18 @@ def file_path(self, filename):
     return 'db/organisation/%s/iati/%s' % (str(self.reporting_organisation.pk), filename)
 
 
-STATUS_CODE = {
-    1: _(u'pending'),
-    2: _(u'in progress'),
-    3: _(u'completed'),
-    4: _(u'cancelled')
-}
-
-
 class IatiExport(TimestampsMixin, models.Model):
+    STATUS_PENDING = 1
+    STATUS_IN_PROGRESS = 2
+    STATUS_COMPLETED = 3
+    STATUS_CANCELLED = 4
+    STATUS_CODE = {
+        STATUS_PENDING: _(u'pending'),
+        STATUS_IN_PROGRESS: _(u'in progress'),
+        STATUS_COMPLETED: _(u'completed'),
+        STATUS_CANCELLED: _(u'cancelled')
+    }
+
     reporting_organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'reporting organisation'), related_name='iati_exports'
     )
@@ -36,7 +39,7 @@ class IatiExport(TimestampsMixin, models.Model):
     )
     projects = models.ManyToManyField('Project', verbose_name=_(u'projects'))
     version = ValidXMLCharField(_(u'version'), max_length=4, default='2.02')
-    status = models.PositiveSmallIntegerField(_(u'status'), default=1)
+    status = models.PositiveSmallIntegerField(_(u'status'), default=STATUS_PENDING)
     iati_file = models.FileField(_(u'IATI file'), blank=True, upload_to=file_path)
     is_public = models.BooleanField(_(u'public'), default=True)
 
@@ -52,16 +55,16 @@ class IatiExport(TimestampsMixin, models.Model):
             return u'%s' % _(u'IATI export for unknown organisation')
 
     def show_status(self):
-        if self.status not in STATUS_CODE.keys():
+        if self.status not in self.STATUS_CODE.keys():
             return _(u'unknown status')
         else:
-            return STATUS_CODE[self.status].title()
+            return self.STATUS_CODE[self.status].title()
 
     def update_status(self, status_code):
         """
         Update the status of this IATI export.
 
-        :param status_code; Integer in STATUS_CODE keys
+        :param status_code; Integer in self.STATUS_CODE keys
         """
         self.status = status_code
         self.save(update_fields=['status'])
@@ -79,8 +82,7 @@ class IatiExport(TimestampsMixin, models.Model):
         """
         Create an IATI XML file.
         """
-        # Set status to 'In progress'
-        self.update_status(2)
+        self.update_status(self.STATUS_IN_PROGRESS)
 
         # Retrieve all projects
         projects = self.projects.all()
@@ -93,18 +95,15 @@ class IatiExport(TimestampsMixin, models.Model):
                     datetime.utcnow().strftime("%Y%m%d-%H%M%S") + '.xml')
                 )
 
-                # All done, so update the status to 'Completed'
-                self.update_status(3)
+                self.update_status(self.STATUS_COMPLETED)
             except:
-                # Something went wrong, so update the status to 'Cancelled'
-                self.update_status(4)
+                self.update_status(self.STATUS_CANCELLED)
         else:
-            # No projects, so update the status to 'Cancelled'
-            self.update_status(4)
+            self.update_status(self.STATUS_CANCELLED)
 
     def processed_projects(self):
         """
         Find the number of processed projects of this IATI export. Generally, for completed
         exports, this number will be the same as the number of total projects.
         """
-        return self.iati_activity_exports.filter(status=2).count()
+        return self.iati_activity_exports.filter(status=self.STATUS_IN_PROGRESS).count()
