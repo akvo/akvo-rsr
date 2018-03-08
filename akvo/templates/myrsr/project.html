@@ -11,16 +11,12 @@
     <li class="active">{{ project.title }}</li>
     <a href="{% url 'project-main' project.pk %}" class="text-right liveView btn btn-default hidden">{% trans 'View public project' %}</a>
 </ol>
-{% if not project.is_impact_project %}
-        <div id="draft" class="">{% trans 'This is not an RSR Impact project, it is not possible to place updates on this project.' %}</div>
-    {% elif not project.results.all %}
-        <div id="draft" class="">{% trans 'This project has no results.' %}</div>
-    {% else %}
-        {% if not me_managers %}
-            <div id="draft" class="">{% trans 'There are no M&E managers for this project. No one will be able to approve data updates.' %}</div>
-        {% endif %}
-        <div id="new-results-framework"></div>
-    {% endif %}
+
+{% if not me_managers %}
+<div id="draft" class="">{% trans 'There are no M&E managers for this project. No one will be able to approve data updates.' %}</div>
+{% endif %}
+<div id="new-results-framework"></div>
+
 {% endblock myrsr_main %}
 
 {% block js %}

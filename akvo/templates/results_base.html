@@ -20,7 +20,8 @@
             {{ partner.id }}
             {% if not forloop.last %} , {% endif %}
             {% endfor %}
-        ]
+        ],
+        "has_results": {% if project.results.exists %}true{% else %}false{% endif %}
     }
 </script>
 
@@ -157,7 +158,7 @@
         "photo_image_size_text": "{% trans "Your image size: "|escapejs %}"
     }
 </script>
-{% if project.results.all %}
-    {% javascript 'vendors.bundle' %}
-    {% javascript 'bundle' %}
-{% endif %}
+
+
+{% javascript 'vendors.bundle' %}
+{% javascript 'bundle' %}
