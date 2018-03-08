@@ -5,12 +5,11 @@
    < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
 import React from "react";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import 'react-tabs/style/react-tabs.css';
-import { Markdown } from 'react-showdown';
+import "react-tabs/style/react-tabs.css";
+import { Markdown } from "react-showdown";
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import {
@@ -18,20 +17,20 @@ import {
     fetchModel,
     fetchUser,
     testFetchModel,
-    updateModel,
+    updateModel
 } from "../actions/model-actions";
 
-import {setPageData} from "../actions/page-actions";
+import { setPageData } from "../actions/page-actions";
 
 import {
     activateFilterCSS,
     activateToggleAll,
     selectPeriodByDates,
     filterPeriods,
-    updateFormClose,
+    updateFormClose
 } from "../actions/ui-actions";
 
-import * as c from "../const"
+import * as c from "../const";
 
 import {
     getApprovedPeriods,
@@ -40,18 +39,19 @@ import {
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
     getIndicatorsDimensionIds,
-    getPublicViewDefaultKeys,
+    getPublicViewDefaultKeys
 } from "../selectors";
 
 import {
     _,
-    collapseId, createNewDisaggregations,
+    collapseId,
+    createNewDisaggregations,
     identicalArrays,
     isNewUpdate,
     openNodes,
     setHash,
-    userIsMEManager,
-} from "../utils"
+    userIsMEManager
+} from "../utils";
 
 import FilterBar from "./FilterBar";
 import Reports from "./Reports";
@@ -60,27 +60,24 @@ import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
 import UpdateForm from "./updates/UpdateForm";
 
-
 // The collapseID for the top collapse is always the same
-const resultsCollapseID = 'results-results';
+const resultsCollapseID = "results-results";
 
-
-const dataFromElement = (elementName) => {
+const dataFromElement = elementName => {
     return JSON.parse(document.getElementById(elementName).innerHTML);
 };
 
-
-const modifyUser = (isMEManager) => {
-    return (data) => {
+const modifyUser = isMEManager => {
+    return data => {
         // maintain compatibility with existing updates JSON
         data.approved_organisations = [data.organisation];
         data.isMEManager = isMEManager;
         // transform to common JSON data shape so normalize works in modelsReducer
-        return {results: data};
+        return { results: data };
     };
 };
 
-@connect((store) => {
+@connect(store => {
     return {
         page: store.page,
         indicators: store.models.indicators,
@@ -95,8 +92,8 @@ const modifyUser = (isMEManager) => {
         needReportingPeriods: getNeedReportingPeriods(store),
         pendingApprovalPeriods: getPendingApprovalPeriods(store),
         approvedPeriods: getApprovedPeriods(store),
-        ResultsDefaultKeys: getResultsDefaultKeys(store),
-    }
+        ResultsDefaultKeys: getResultsDefaultKeys(store)
+    };
 })
 export default class App extends React.Component {
     constructor(props) {
@@ -115,51 +112,56 @@ export default class App extends React.Component {
             // is the update form open?
             updateFormDisplay: false,
             // if it is, keep track of the original update, used when cancelling edits
-            originalUpdate: undefined,
-        }
+            originalUpdate: undefined
+        };
     }
 
     componentDidMount() {
-        const project = dataFromElement('project');
-        const mode = dataFromElement('mode');
-        const strings = dataFromElement('translation-texts');
-        this.props.dispatch(setPageData({project, mode, strings}));
+        const project = dataFromElement("project");
+        const mode = dataFromElement("mode");
+        const strings = dataFromElement("translation-texts");
+        this.props.dispatch(setPageData({ project, mode, strings }));
 
-        const userId = dataFromElement('endpoint-data').userID;
+        const userId = dataFromElement("endpoint-data").userID;
         if (userId) {
-            const isMEManager = dataFromElement('endpoint-data').isMEManager;
-            fetchModel('user', userId, activateToggleAll, modifyUser(isMEManager));
+            const isMEManager = dataFromElement("endpoint-data").isMEManager;
+            fetchModel("user", userId, activateToggleAll, modifyUser(isMEManager));
         } else {
             this.props.dispatch({
                 type: c.FETCH_MODEL_FULFILLED,
                 payload: {
-                    model: 'user', data: {results: {
-                        id: 0,
-                        first_name: "Anonymous",
-                        last_name: "User",
-                        isMEManager: false}}}});
+                    model: "user",
+                    data: {
+                        results: {
+                            id: 0,
+                            first_name: "Anonymous",
+                            last_name: "User",
+                            isMEManager: false
+                        }
+                    }
+                }
+            });
         }
 
         const projectId = project.id;
         const projectPartners = project.partners;
-        fetchModel('results', projectId, activateToggleAll);
-        fetchModel('indicators', projectId, activateToggleAll);
-        fetchModel('dimensions', projectId, activateToggleAll);
-        fetchModel('periods', projectId, activateToggleAll);
-        fetchModel('updates', projectId, activateToggleAll);
-        fetchModel('disaggregations', projectId, activateToggleAll);
-        fetchModel('comments', projectId, activateToggleAll);
-        fetchModel('reports', projectId, activateToggleAll);
-        fetchModel('categories', projectPartners, activateToggleAll);
+        fetchModel("results", projectId, activateToggleAll);
+        fetchModel("indicators", projectId, activateToggleAll);
+        fetchModel("dimensions", projectId, activateToggleAll);
+        fetchModel("periods", projectId, activateToggleAll);
+        fetchModel("updates", projectId, activateToggleAll);
+        fetchModel("disaggregations", projectId, activateToggleAll);
+        fetchModel("comments", projectId, activateToggleAll);
+        fetchModel("reports", projectId, activateToggleAll);
+        fetchModel("categories", projectPartners, activateToggleAll);
     }
 
     componentWillReceiveProps(nextProps) {
-
         const checkUrlFilter = () => {
             // Check if a filter should be applied based on URL fragment
             if (this.state.hash && nextProps.ui.allFetched) {
                 const hash = this.state.hash;
-                switch(hash) {
+                switch (hash) {
                     case c.FILTER_NEED_REPORTING: {
                         this.needReporting();
                         break;
@@ -174,38 +176,42 @@ export default class App extends React.Component {
                     }
                 }
                 if (hash.startsWith(c.SELECTED_PERIODS)) {
-                    const [_, periodStart, periodEnd] = hash.split(':');
+                    const [_, periodStart, periodEnd] = hash.split(":");
                     selectPeriodByDates(periodStart, periodEnd);
                 }
-                this.setState({hash: undefined});
+                this.setState({ hash: undefined });
             }
         };
 
         const setInitialView = () => {
             collapseChange(resultsCollapseID, this.props.ResultsDefaultKeys);
-            this.setState({initialViewSet: true});
+            this.setState({ initialViewSet: true });
         };
 
         const prepareUpdateForm = () => {
             // set state for if update form is visible, and if so store the original update
-            const {updates, ui} = nextProps;
-            const updateFormDisplay = ui && ui[c.UPDATE_FORM_DISPLAY] && updates && updates.ids.find(
-                id => id === ui[c.UPDATE_FORM_DISPLAY]
-            );
-            this.setState({updateFormDisplay});
+            const { updates, ui } = nextProps;
+            const updateFormDisplay =
+                ui &&
+                ui[c.UPDATE_FORM_DISPLAY] &&
+                updates &&
+                updates.ids.find(id => id === ui[c.UPDATE_FORM_DISPLAY]);
+            this.setState({ updateFormDisplay });
             let originalUpdate;
             if (updateFormDisplay && updateFormDisplay !== this.state.updateFormDisplay) {
-                originalUpdate = {...updates.objects[updateFormDisplay]};
-                this.setState({originalUpdate});
-                const {disaggregations, periods, indicators} = nextProps;
+                originalUpdate = { ...updates.objects[updateFormDisplay] };
+                this.setState({ originalUpdate });
+                const { disaggregations, periods, indicators } = nextProps;
                 const update = updates.objects[updateFormDisplay];
                 const period = periods.objects[update.period];
                 const indicator = indicators.objects[period.indicator];
-                const dimensions = this.props.dimension_ids[indicator.id].map(
-                    (id) => {return this.props.dimensions.objects[id]}
-                );
+                const dimensions = this.props.dimension_ids[indicator.id].map(id => {
+                    return this.props.dimensions.objects[id];
+                });
                 createNewDisaggregations(
-                    updateFormDisplay, dimensions, disaggregations[updateFormDisplay]
+                    updateFormDisplay,
+                    dimensions,
+                    disaggregations[updateFormDisplay]
                 );
             }
         };
@@ -217,16 +223,18 @@ export default class App extends React.Component {
                 // when ui.updateFormDisplay changes to false, the form is closing and we need to
                 // redraw the accordion since it is closed except for the current update when the
                 // form is opened
-                this.props.ui.updateFormDisplay !== nextProps.ui.updateFormDisplay &&
-                               nextProps.ui.updateFormDisplay === false ||
-                               this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
-                               !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
-                               !identicalArrays(this.props.pendingApprovalPeriods,
-                                                nextProps.pendingApprovalPeriods) ||
-                               !identicalArrays(this.props.approvedPeriods, nextProps.approvedPeriods);
+                (this.props.ui.updateFormDisplay !== nextProps.ui.updateFormDisplay &&
+                    nextProps.ui.updateFormDisplay === false) ||
+                this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
+                !identicalArrays(this.props.needReportingPeriods, nextProps.needReportingPeriods) ||
+                !identicalArrays(
+                    this.props.pendingApprovalPeriods,
+                    nextProps.pendingApprovalPeriods
+                ) ||
+                !identicalArrays(this.props.approvedPeriods, nextProps.approvedPeriods);
 
             if (redraw()) {
-                switch(nextProps.ui.activeFilter) {
+                switch (nextProps.ui.activeFilter) {
                     case c.FILTER_NEED_REPORTING: {
                         filterPeriods(nextProps.needReportingPeriods);
                         break;
@@ -240,12 +248,13 @@ export default class App extends React.Component {
                         break;
                     }
                 }
-                if (this.state.updateFormDisplay &&
+                if (
+                    this.state.updateFormDisplay &&
                     (this.props.ui.activeFilter !== nextProps.ui.activeFilter ||
-                     !nextProps.ui.activeFilter))
-                    {
-                        this.onClose(false);
-                    }
+                        !nextProps.ui.activeFilter)
+                ) {
+                    this.onClose(false);
+                }
             }
         };
 
@@ -253,7 +262,7 @@ export default class App extends React.Component {
         setInitialView();
         prepareUpdateForm();
         checkRedraw();
-    };
+    }
 
     manageButtonsAndHash(element) {
         /*
@@ -263,14 +272,14 @@ export default class App extends React.Component {
         activateFilterCSS(element);
         setHash(element);
         updateFormClose();
-        this.setState({selectedOption: undefined});
+        this.setState({ selectedOption: undefined });
     }
 
     showPending() {
         this.manageButtonsAndHash(c.FILTER_SHOW_PENDING);
     }
 
-    showApproved(set=true) {
+    showApproved(set = true) {
         this.manageButtonsAndHash(c.FILTER_SHOW_APPROVED);
     }
 
@@ -278,7 +287,7 @@ export default class App extends React.Component {
         this.manageButtonsAndHash(c.FILTER_NEED_REPORTING);
     }
 
-    onClose(update=true) {
+    onClose(update = true) {
         updateFormClose();
         if (update) {
             const originalUpdate = this.state.originalUpdate;
@@ -294,71 +303,90 @@ export default class App extends React.Component {
         const callbacks = {
             needReporting: this.needReporting,
             showPending: this.showPending,
-            showApproved: this.showApproved,
+            showApproved: this.showApproved
         };
 
-        const results = this.props.ui.allFetched ?
-                        <Results parentId="results"/>
-:
-                        <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>;
+        const results = this.props.ui.allFetched ? (
+            <Results parentId="results" />
+        ) : (
+            <p className="loading">
+                Loading <i className="fa fa-spin fa-spinner" />
+            </p>
+        );
 
-        const {page, disaggregations, updates, periods, indicators} = this.props;
+        const { page, disaggregations, updates, periods, indicators } = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
         // ui.updateFormDisplay has a value, but also that that value is among the current list of
         // updates
-        const {updateFormDisplay} = this.state;
+        const { updateFormDisplay } = this.state;
         let updateForm = undefined;
         if (updateFormDisplay) {
             const update = updates.objects[updateFormDisplay];
             const period = periods.objects[update.period];
             const indicator = indicators.objects[period.indicator];
-            const dimensions = this.props.dimension_ids[indicator.id].map(
-                (id) => {return this.props.dimensions.objects[id]}
-            );
+            const dimensions = this.props.dimension_ids[indicator.id].map(id => {
+                return this.props.dimensions.objects[id];
+            });
             updateForm = (
-                <UpdateForm indicator={indicator}
-                            period={period}
-                            update={update}
-                            disaggregations={disaggregations[updateFormDisplay]}
-                            dimensions={dimensions}
-                            onClose={this.onClose}
-                            originalUpdate={this.state.originalUpdate}
-                            collapseId={collapseId(
-                                    c.OBJECTS_UPDATES, update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
-                            )}/>
-            )
+                <UpdateForm
+                    indicator={indicator}
+                    period={period}
+                    update={update}
+                    disaggregations={disaggregations[updateFormDisplay]}
+                    dimensions={dimensions}
+                    onClose={this.onClose}
+                    originalUpdate={this.state.originalUpdate}
+                    collapseId={collapseId(
+                        c.OBJECTS_UPDATES,
+                        update[c.PARENT_FIELD[c.OBJECTS_UPDATES]]
+                    )}
+                />
+            );
         }
         const show_reports = page.mode && page.mode.show_narrative_reports;
-        const projectId = dataFromElement('project').id;
+        const projectId = dataFromElement("project").id;
+        const has_results = dataFromElement("project").has_results;
+        const results_tab = (
+            <div>
+                <FilterBar callbacks={callbacks} />
+                <main
+                    role="main"
+                    className={page.mode && page.mode.public ? "project-page" : "results-page"}
+                >
+                    <article className={updateForm ? "shared" : "full"}>{results}</article>
+                    <aside className={updateForm ? "open" : "closed"}>{updateForm}</aside>
+                </main>
+            </div>
+        );
 
-        return (
+        return page.mode && page.mode.public ? (
+            results_tab
+        ) : (
             <section className="results">
-                <a className="pull-right btn btn-default editBtn" href={`../../project_editor/${projectId}/`}><i class="fa fa-pencil-square-o"></i> Edit project</a>
+                <a
+                    className="pull-right btn btn-default editBtn"
+                    href={`../../project_editor/${projectId}/`}
+                >
+                    <i class="fa fa-pencil-square-o" /> Edit project
+                </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
-                        <Tab>Results</Tab>
-                        { show_reports ? (<Tab>Narrative summaries</Tab>) : undefined }
+                        {has_results ? <Tab>Results</Tab> : undefined}
+                        {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
                         <Tab>Add an update</Tab>
                     </TabList>
+                    {has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
+                    {show_reports ? (
+                        <TabPanel>
+                            <Reports />
+                        </TabPanel>
+                    ) : (
+                        undefined
+                    )}
                     <TabPanel>
-                        <FilterBar callbacks={callbacks}/>
-                        <main role="main" className={page.mode && page.mode.public ? 'project-page' : 'results-page'}>
-                            <article className={updateForm ? 'shared' : 'full'}>
-                                {results}
-                            </article>
-                            <aside className={updateForm ? 'open' : 'closed'}>
-                                {updateForm}
-                            </aside>
-                        </main>
-                    </TabPanel>
-                    { show_reports ? (
-                          <TabPanel>
-                              <Reports/>
-                          </TabPanel>): undefined}
-                    <TabPanel>
-                        <RSRUpdates project={projectId}/>
+                        <RSRUpdates project={projectId} />
                     </TabPanel>
                 </Tabs>
             </section>

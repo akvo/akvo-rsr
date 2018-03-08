@@ -103,10 +103,8 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/$',
         'akvo.rsr.views.my_rsr.my_rsr', name='my_rsr'),
 
-    url(r'^myrsr/project/(?P<project_id>\d+)/$',
-        'akvo.rsr.views.my_rsr.my_results',
-        kwargs=dict(template='myrsr/project.html'),
-        name='project-edit'),
+    url(r'^myrsr/my_project/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.my_project', name='project-edit'),
 
     url(r'^myrsr/details/$',
         'akvo.rsr.views.my_rsr.my_details', name='my_details'),
@@ -125,12 +123,6 @@ urlpatterns = i18n_patterns(
 
     url(r'^myrsr/reports/$',
         'akvo.rsr.views.my_rsr.my_reports', name='my_reports'),
-
-    url(r'^myrsr/results/$',
-        'akvo.rsr.views.my_rsr.my_results_select', name='my_results_select'),
-
-    url(r'^myrsr/results/(?P<project_id>\d+)/$',
-        'akvo.rsr.views.my_rsr.my_results', name='my_results'),
 
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
