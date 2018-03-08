@@ -65,8 +65,8 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
                                default=STATUS_DRAFT_CODE)
     text = ValidXMLTextField(_(u'text'), blank=True)
-    photo = ImageField(_(u'photo'), blank=True, upload_to=image_path)
-    file = models.FileField(_(u'file'), blank=True, upload_to=file_path)
+    photo = ImageField(_(u'photo'), blank=True, upload_to=image_path, max_length=255)
+    file = models.FileField(_(u'file'), blank=True, upload_to=file_path, max_length=255)
     update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
 
