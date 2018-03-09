@@ -113,6 +113,27 @@ var ProjectDirectory = React.createClass({
             <section className="main-list projects">
                 <div className="container-fluid">
                     <div className="row">
+                        {this.props.disabled ? (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    width: "100%",
+                                    height: "calc(100vh - 300px)",
+                                    background: "white",
+                                    margin: "auto",
+                                    padding: "20px",
+                                    opacity: "0.9",
+                                    zIndex: "100000",
+                                    textAlign: "center"
+                                }}
+                            >
+                                <div style={{ marginTop: "calc(25vh)" }}>
+                                    <i className="fa fa-spin fa-spinner" />
+                                </div>
+                            </div>
+                        ) : (
+                            undefined
+                        )}
                         <div className="col-sm-7">
                             <ul className="projectListUl">
                                 {this.props.projects.map(function(project) {
@@ -370,6 +391,7 @@ var App = React.createClass({
                     projects={this.state.projects}
                     project_count={this.state.project_count}
                     i18n={this.props.i18n}
+                    disabled={this.state.disabled}
                 />
             </div>
         );

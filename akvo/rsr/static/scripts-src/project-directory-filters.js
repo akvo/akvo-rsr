@@ -113,6 +113,27 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
             React.createElement("section", {className: "main-list projects"}, 
                 React.createElement("div", {className: "container-fluid"}, 
                     React.createElement("div", {className: "row"}, 
+                        this.props.disabled ? (
+                            React.createElement("div", {
+                                style: {
+                                    position: "absolute",
+                                    width: "100%",
+                                    height: "calc(100vh - 300px)",
+                                    background: "white",
+                                    margin: "auto",
+                                    padding: "20px",
+                                    opacity: "0.9",
+                                    zIndex: "100000",
+                                    textAlign: "center"
+                                }
+                            }, 
+                                React.createElement("div", {style: { marginTop: "calc(25vh)"}}, 
+                                    React.createElement("i", {className: "fa fa-spin fa-spinner"})
+                                )
+                            )
+                        ) : (
+                            undefined
+                        ), 
                         React.createElement("div", {className: "col-sm-7"}, 
                             React.createElement("ul", {className: "projectListUl"}, 
                                 this.props.projects.map(function(project) {
@@ -369,7 +390,8 @@ var App = React.createClass({displayName: "App",
                     limit: this.state.selected.limit || 15, 
                     projects: this.state.projects, 
                     project_count: this.state.project_count, 
-                    i18n: this.props.i18n}
+                    i18n: this.props.i18n, 
+                    disabled: this.state.disabled}
                 )
             )
         );
