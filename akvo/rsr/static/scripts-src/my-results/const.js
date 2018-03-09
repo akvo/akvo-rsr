@@ -67,11 +67,11 @@ export const
     OBJECTS_REPORTS = 'reports',
 
     // List of the models used in the accordion, in hierarchy order
-    MODELS_LIST = [
+    RESULTS_MODELS_LIST = [
         OBJECTS_RESULTS, OBJECTS_INDICATORS, OBJECTS_PERIODS, OBJECTS_UPDATES, OBJECTS_COMMENTS
     ],
 
-    // Lookup of slicing index for models when slicing MODELS_LIST
+    // Lookup of slicing index for models when slicing RESULTS_MODELS_LIST
     MODEL_INDEX = {
         [OBJECTS_RESULTS]: 0,
         [OBJECTS_INDICATORS]: 1,
@@ -101,6 +101,11 @@ export const
         [OBJECTS_COMMENTS]: null,
         [OBJECTS_DISAGGREGATIONS]: null,
     },
+
+    // List of all models fetched from the RSR API
+    ALL_MODELS_LIST = [
+        OBJECTS_DIMENSIONS, OBJECTS_DISAGGREGATIONS, OBJECTS_USER, OBJECTS_REPORTS
+    ].concat(RESULTS_MODELS_LIST),
 
     // UI state
     SELECTED_PERIODS = 'selectedPeriods',
