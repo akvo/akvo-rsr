@@ -32,3 +32,8 @@ class ResultsFrameworkSerializer(ResultRawSerializer):
     project_title = serializers.ReadOnlyField(source='project.title')
     parent_project = serializers.ReadOnlyField()
     child_projects = serializers.ReadOnlyField()
+
+
+class ResultSerializerV2(ResultRawSerializer):
+
+    project_title = serializers.ReadOnlyField(source='project.title')

@@ -149,12 +149,8 @@ urlpatterns += patterns(
     url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
         'akvo.rsr.views.organisation.iati_org', name='org-iati'),
 
-    # TastyPie API
-    # (r'^api/', include(named_api('v1').urls)),
-    (r'^api/v1/', include('akvo.rest.urls')),
-
     # Django Rest Framework urls
-    (r'^rest/v1/', include('akvo.rest.urls')),
+    (r'^rest/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 
     # RSS
