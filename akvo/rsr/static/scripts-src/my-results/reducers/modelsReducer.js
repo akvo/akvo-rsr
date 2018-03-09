@@ -40,7 +40,7 @@ const initialModels = {
 
 const assignChildren = (state, model) => {
     // For model and it's children...
-    return c.MODELS_LIST.slice(c.MODEL_INDEX[model]).reduce(
+    return c.RESULTS_MODELS_LIST.slice(c.MODEL_INDEX[model]).reduce(
         (acc, model) => {
             return {...acc,
                 // ...update all objects in models[model].objects...
