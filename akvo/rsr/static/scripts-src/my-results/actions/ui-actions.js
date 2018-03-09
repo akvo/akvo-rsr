@@ -75,7 +75,7 @@ export function reportFormToggle(id) {
 
 export function activateToggleAll() {
     // Have we fetched all models? Include current user info too.
-    const allFetched = c.MODELS_LIST.concat([c.OBJECTS_USER]).every(
+    const allFetched = c.ALL_MODELS_LIST.every(
         (model) => store.getState().models[model].fetched
     );
     if (allFetched) {
