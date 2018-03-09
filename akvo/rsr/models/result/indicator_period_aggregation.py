@@ -52,12 +52,16 @@ class PeriodActualValue(pg.View):
 DISAGG_SQL = """
     WITH aggregated_disaggs AS (
         SELECT
-            dimension_id,
-            sum(("value") :: DECIMAL(20,2)) AS value,
-            sum((numerator) :: DECIMAL(20,2)) AS numerator,
-            sum((denominator) :: DECIMAL(20,2)) AS denominator
+            disagg.dimension_id AS dimension_id,
+            sum((disagg.value) :: DECIMAL(20,2)) AS value,
+            sum((disagg.numerator) :: DECIMAL(20,2)) AS numerator,
+            sum((disagg.denominator) :: DECIMAL(20,2)) AS denominator
         FROM
-            rsr_disaggregation
+            rsr_disaggregation disagg,
+            rsr_indicatorperioddata "update"
+        WHERE
+            update.status = 'A' AND
+            disagg.update_id = update.id
         GROUP BY
             dimension_id
     ),

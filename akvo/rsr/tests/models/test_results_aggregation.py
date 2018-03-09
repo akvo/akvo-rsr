@@ -131,10 +131,13 @@ class PeriodDisaggregationTestCase(TestCase):
             indicator=self.indicator, name="Color", value="Red"
         )
         self.update1 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=17.11
+            period=self.period, user=self.user, value=17.11, status='A'
         )
         self.update2 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=47.89
+            period=self.period, user=self.user, value=47.89, status='A'
+        )
+        self.update3 = IndicatorPeriodData.objects.create(
+            period=self.period, user=self.user, value=88.88, status='D'
         )
         #  set up PG views
         vs = ViewSyncer()
@@ -150,6 +153,7 @@ class PeriodDisaggregationTestCase(TestCase):
         period = self.period
         update1 = self.update1
         update2 = self.update2
+        update3 = self.update3
         dimension1 = self.dimension1
         dimension2 = self.dimension2
         dimension3 = self.dimension3
@@ -162,13 +166,20 @@ class PeriodDisaggregationTestCase(TestCase):
             dimension=dimension2, update=update1, value=6.01
         )
         Disaggregation.objects.create(
+            dimension=dimension3, update=update1, value=23.45
+        )
+        Disaggregation.objects.create(
             dimension=dimension1, update=update2, value=31.57
         )
         Disaggregation.objects.create(
             dimension=dimension2, update=update2, value=16.32
         )
+        # Note the following disaggregation are for draft updates and should not be included in the SUM
         Disaggregation.objects.create(
-            dimension=dimension3, update=update1, value=23.45
+            dimension=dimension1, update=update3, value=12.34
+        )
+        Disaggregation.objects.create(
+            dimension=dimension2, update=update3, value=47.11
         )
         period_disaggregations = PeriodDisaggregation.objects.filter(
             indicator=indicator, period=period
