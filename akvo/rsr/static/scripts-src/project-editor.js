@@ -2987,10 +2987,8 @@ function toggleSection(node) {
         if (formBlock.className.indexOf('hidden') > -1) {
             formBlock.className = formBlock.className.replace('hidden', '');
             inputStep.checked = true;
-            setTimeout(function () {
-                div.scrollIntoView();
-                window.scrollBy(0, -100);
-            }, 1);
+            div.scrollIntoView();
+            window.scrollBy(0, -100);
             for (var i=0; i < allFormBlocks.length; i++) {
                 if (allFormBlocks[i] !== formBlock && allFormBlocks[i].className.indexOf('hidden') === -1) {
                     allFormBlocks[i].className += ' hidden';
@@ -3997,6 +3995,8 @@ function initApp() {
     setAllSectionsChangeListener();
 
     setLocalStorage();
+
+    expandAccordion(true);
 }
 
 var loadJS = function(url, implementationCode, location){
@@ -4048,14 +4048,51 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function expandSection() {
-    if (location.hash.indexOf('#step') < 0) {return;}
-    var stepInput = document.querySelector(location.hash);
-    if (!stepInput) {return;}
-    stepInput.parentElement.firstElementChild.click();
-    stepInput.parentElement.firstElementChild.scrollIntoView();
+function expandAccordion(highlight) {
+    if (!location.hash || location.hash === "") {
+        return;
+    } else if (location.hash.indexOf('#step') == 0) {
+        // Expand the specified section, if we can.
+        var stepInput = document.querySelector(location.hash);
+        if (!stepInput) {return;}
+        stepInput.parentElement.firstElementChild.click();
+        stepInput.parentElement.firstElementChild.scrollIntoView();
+        location.hash = "";
+    } else if (location.hash.indexOf('#result.') == 0) {
+        // Expand result
+        var hash = location.hash,
+            result = document.getElementById(location.hash.substring(1));
+        location.hash = '#stepFive';
+        expandAccordion();
+        result.querySelector('.hide-partial-click').click();
+        if (highlight){
+            result.classList.add('error-highlight');
+            result.scrollIntoView();
+            location.hash = hash;
+        }
+    } else if (location.hash.indexOf('#indicator.') == 0) {
+        // Expand indicator
+        var hash = location.hash,
+            indicator = document.getElementById(location.hash.substring(1));
+        location.hash = '#' + findAncestorByClass(indicator, 'parent').getAttribute('id');
+        expandAccordion();
+        indicator.querySelector('.hide-partial-click').click();
+        if (highlight){
+            indicator.classList.add('error-highlight');
+            indicator.scrollIntoView();
+            location.hash = hash;
+        }
+    } else if (location.hash.indexOf('#indicator_period.') == 0) {
+        // Expand indicator_period
+        var hash = location.hash,
+            period = document.getElementById(location.hash.substring(1));
+        location.hash = '#' + findAncestorByClass(period, 'parent').getAttribute('id');
+        expandAccordion();
+        period.querySelector('.hide-partial-click').click();
+        if (highlight){
+            period.classList.add('error-highlight');
+            period.scrollIntoView();
+            location.hash = hash;
+        }
+    }
 };
-
-window.onload = function(){
-    expandSection();
-}

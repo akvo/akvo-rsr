@@ -250,7 +250,7 @@ export function collapseId(model, id) {
 
 export function childModelName(model) {
     try {
-        return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) + 1];
+        return c.RESULTS_MODELS_LIST[c.RESULTS_MODELS_LIST.indexOf(model) + 1];
     } catch (e) {
         return undefined;
     }
@@ -259,7 +259,7 @@ export function childModelName(model) {
 
 export function parentModelName(model) {
     try {
-        return c.MODELS_LIST[c.MODELS_LIST.indexOf(model) - 1];
+        return c.RESULTS_MODELS_LIST[c.RESULTS_MODELS_LIST.indexOf(model) - 1];
     } catch (e) {
         return undefined;
     }
@@ -532,7 +532,7 @@ export const filterUpdatesByStatus = (updates, ids, status) => {
 
 
 export const isResultsKey = (key) => {
-    return c.MODELS_LIST.some(model => key.startsWith(model));
+    return c.RESULTS_MODELS_LIST.some(model => key.startsWith(model));
 };
 
 
