@@ -40,7 +40,7 @@ def get_issues(milestone):
 
 
 def format_issue(issue):
-    return '- {title} [#{number}]({url})'.format(**issue)
+    return '- {title} [#{number}]({html_url})'.format(**issue)
 
 
 def format_issues(issues):
