@@ -149,6 +149,9 @@ urlpatterns += patterns(
     url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
         'akvo.rsr.views.organisation.iati_org', name='org-iati'),
 
+    # Legacy TastyPie API emulation
+    (r'^api/', include('akvo.rest.urls')),
+
     # Django Rest Framework urls
     (r'^rest/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
