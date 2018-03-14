@@ -5,14 +5,13 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
 import { combineReducers } from "redux";
 
-import modelsReducer from "./modelsReducer"
-import collapseReducer from "./collapseReducer"
-import pageReducer from "./pageReducer"
-import uiReducer from "./uiReducer"
-import alertReducer from "./alertReducer"
+import modelsReducer from "./modelsReducer";
+import collapseReducer from "./collapseReducer";
+import pageReducer from "./pageReducer";
+import uiReducer from "./uiReducer";
+import alertReducer from "./alertReducer";
 
 /*
     The store has four top level keys, each managed by one reducer.
@@ -42,7 +41,7 @@ const reducer = combineReducers({
     keys: collapseReducer,
     page: pageReducer,
     ui: uiReducer,
-    alerts: alertReducer,
+    alerts: alertReducer
 });
 
 export default reducer;

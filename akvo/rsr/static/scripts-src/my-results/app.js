@@ -5,20 +5,20 @@
  < http://www.gnu.org/licenses/agpl.html >.
  */
 
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 
-import React from "react"
-import ReactDOM from "react-dom"
-import { Provider } from "react-redux"
+import App from "./components/App";
+import store from "./store";
 
-import App from "./components/App"
-import store from "./store"
+const newResultsFramework = document.getElementById("new-results-framework");
 
-
-const newResultsFramework = document.getElementById('new-results-framework');
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     ReactDOM.render(
         <Provider store={store}>
-            <App/>
-        </Provider>, newResultsFramework);
+            <App />
+        </Provider>,
+        newResultsFramework
+    );
 });
