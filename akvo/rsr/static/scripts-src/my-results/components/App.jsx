@@ -55,6 +55,7 @@ import {
 
 import FilterBar from "./FilterBar";
 import NarrativeReports from "./NarrativeReports";
+import Reports from "./Reports";
 import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
@@ -154,6 +155,7 @@ export default class App extends React.Component {
         fetchModel("comments", projectId, activateToggleAll);
         fetchModel("narrative_reports", projectId, activateToggleAll);
         fetchModel("categories", projectPartners, activateToggleAll);
+        fetchModel("reports", projectId, activateToggleAll);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -369,12 +371,13 @@ export default class App extends React.Component {
                     className="pull-right btn btn-default editBtn"
                     href={`../../project_editor/${projectId}/`}
                 >
-                    <i class="fa fa-pencil-square-o" /> Edit project
+                    <i className="fa fa-pencil-square-o" /> Edit project
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {has_results ? <Tab>Results</Tab> : undefined}
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
+                        <Tab>Reports</Tab>
                         <Tab>Add an update</Tab>
                     </TabList>
                     {has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
@@ -385,6 +388,9 @@ export default class App extends React.Component {
                     ) : (
                         undefined
                     )}
+                    <TabPanel>
+                        <Reports project={projectId} />
+                    </TabPanel>
                     <TabPanel>
                         <RSRUpdates project={projectId} />
                     </TabPanel>
