@@ -54,7 +54,7 @@ import {
 } from "../utils";
 
 import FilterBar from "./FilterBar";
-import Reports from "./Reports";
+import NarrativeReports from "./NarrativeReports";
 import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
 import { collapseChange } from "../actions/collapse-actions";
@@ -152,7 +152,7 @@ export default class App extends React.Component {
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
         fetchModel("comments", projectId, activateToggleAll);
-        fetchModel("reports", projectId, activateToggleAll);
+        fetchModel("narrative_reports", projectId, activateToggleAll);
         fetchModel("categories", projectPartners, activateToggleAll);
     }
 
@@ -380,7 +380,7 @@ export default class App extends React.Component {
                     {has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (
                         <TabPanel>
-                            <Reports />
+                            <NarrativeReports />
                         </TabPanel>
                     ) : (
                         undefined

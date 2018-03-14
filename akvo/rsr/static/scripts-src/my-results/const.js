@@ -64,7 +64,7 @@ export const API_LIMIT = 100,
     OBJECTS_COMMENTS = "comments",
     OBJECTS_DISAGGREGATIONS = "disaggregations",
     OBJECTS_USER = "user",
-    OBJECTS_REPORTS = "reports",
+    OBJECTS_NARRATIVE_REPORTS = "narrative_reports",
     // List of the models used in the accordion, in hierarchy order
     RESULTS_MODELS_LIST = [
         OBJECTS_RESULTS,
@@ -106,7 +106,7 @@ export const API_LIMIT = 100,
         OBJECTS_DIMENSIONS,
         OBJECTS_DISAGGREGATIONS,
         OBJECTS_USER,
-        OBJECTS_REPORTS
+        OBJECTS_NARRATIVE_REPORTS
     ].concat(RESULTS_MODELS_LIST),
     // UI state
     SELECTED_PERIODS = "selectedPeriods",

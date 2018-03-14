@@ -121,7 +121,10 @@ export class ReportForm extends React.Component {
         // manually expand the correct period, again.
         const { period_start, period_end } = this.props.report;
         const activeKey = `${period_start}:${period_end}`;
-        collapseChange(collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS), activeKey);
+        collapseChange(
+            collapseId(c.OBJECTS_NARRATIVE_REPORTS, c.OBJECTS_NARRATIVE_REPORTS),
+            activeKey
+        );
     }
 
     saveSummary() {
@@ -157,8 +160,8 @@ export class ReportForm extends React.Component {
         };
         this.closeForm();
         deleteModelFromBackend(
-            c.OBJECTS_REPORTS,
-            endpoints.update_report(report.id),
+            c.OBJECTS_NARRATIVE_REPORTS,
+            endpoints.update_narrative_report(report.id),
             report,
             null,
             callbacks
@@ -178,16 +181,16 @@ export class ReportForm extends React.Component {
         const summary = this.createSummary(published);
         if (summary.id) {
             updateModelToBackend(
-                c.OBJECTS_REPORTS,
-                endpoints.update_report(summary.id),
+                c.OBJECTS_NARRATIVE_REPORTS,
+                endpoints.update_narrative_report(summary.id),
                 summary,
                 null,
                 callbacks
             );
         } else {
             saveModelToBackend(
-                c.OBJECTS_REPORTS,
-                endpoints.save_report(),
+                c.OBJECTS_NARRATIVE_REPORTS,
+                endpoints.save_narrative_report(),
                 summary,
                 null,
                 callbacks
@@ -196,7 +199,7 @@ export class ReportForm extends React.Component {
     }
 
     render() {
-        const { categories, reports, report } = this.props;
+        const { categories, narrative_reports, report } = this.props;
         const setText = text => {
             this.setState({ text: text });
         };
@@ -204,7 +207,7 @@ export class ReportForm extends React.Component {
             this.setState({ category: category.id });
         };
         const reportedCategories = new Set(
-            reports.map(report => {
+            narrative_reports.map(report => {
                 return report.category;
             })
         );
@@ -271,13 +274,13 @@ export class ReportForm extends React.Component {
     }
 }
 
-const filterReports = (reports, period_start, period_end) => {
-    const ids = reports.ids.filter(id => {
-        const report = reports.objects[id];
+const filterReports = (narrative_reports, period_start, period_end) => {
+    const ids = narrative_reports.ids.filter(id => {
+        const report = narrative_reports.objects[id];
         return report.period_start === period_start && report.period_end === period_end;
     });
     return ids.map(id => {
-        return reports.objects[id];
+        return narrative_reports.objects[id];
     });
 };
 
@@ -298,20 +301,20 @@ ReportAlert.propTypes = {
     return {
         keys: store.keys,
         categories: store.models.categories,
-        reports: store.models.reports,
+        narrative_reports: store.models.narrative_reports,
         periods: store.models.periods,
         project: store.page.project.id,
         reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY]
     };
 })
-export default class Reports extends React.Component {
+export default class NarrativeReports extends React.Component {
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         const alertName = "ReportAlert";
         this.state = {
             ReportAlert: AlertFactory({ alertName })(ReportAlert),
-            collapseId: collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS)
+            collapseId: collapseId(c.OBJECTS_NARRATIVE_REPORTS, c.OBJECTS_NARRATIVE_REPORTS)
         };
         this.createSummary = this.createSummary.bind(this);
     }
@@ -324,8 +327,8 @@ export default class Reports extends React.Component {
         collapseChange(this.state.collapseId, activeKey);
     }
 
-    renderReports(reports, categories) {
-        return reports.map(report => {
+    renderReports(narrative_reports, categories) {
+        return narrative_reports.map(report => {
             const header = (
                 <ReportHeader categories={categories} report={report} onClick={this.editSummary} />
             );
@@ -350,18 +353,18 @@ export default class Reports extends React.Component {
         console.log(period_start, period_end);
         const id = "new";
         const text = "";
-        const { reports, project } = this.props;
+        const { narrative_reports, project } = this.props;
         const report = { id, period_start, period_end, project, text };
-        reports.objects[report.id] = report;
+        narrative_reports.objects[report.id] = report;
         this.editSummary(report);
     }
 
     renderPanels(ids) {
-        const { categories, reports } = this.props;
+        const { categories, narrative_reports } = this.props;
         const pairs = distinct(datePairs(ids, c.OBJECTS_PERIODS));
         return pairs.map(pair => {
             const [period_start, period_end] = pair.split(":");
-            const period_reports = filterReports(reports, period_start, period_end);
+            const period_reports = filterReports(narrative_reports, period_start, period_end);
             const onCreate =
                 pair === this.activeKey()
                     ? e => {
@@ -386,7 +389,7 @@ export default class Reports extends React.Component {
 
     render() {
         // Special case, always get all Results
-        const { categories, reports, periods, reportFormDisplay } = this.props;
+        const { categories, narrative_reports, periods, reportFormDisplay } = this.props;
         const periodIds = periods.ids;
 
         const reportsDisplay = (
@@ -396,11 +399,21 @@ export default class Reports extends React.Component {
         );
         const noPeriods = <p>No reporting periods</p>;
         const reportForm = reportFormDisplay => {
-            const report = reports.objects[reportFormDisplay];
-            const period_reports = filterReports(reports, report.period_start, report.period_end);
-            return <ReportForm report={report} reports={period_reports} categories={categories} />;
+            const report = narrative_reports.objects[reportFormDisplay];
+            const period_reports = filterReports(
+                narrative_reports,
+                report.period_start,
+                report.period_end
+            );
+            return (
+                <ReportForm
+                    report={report}
+                    narrative_reports={period_reports}
+                    categories={categories}
+                />
+            );
         };
-        if (!reports.fetched || !periods.fetched) {
+        if (!narrative_reports.fetched || !periods.fetched) {
             return (
                 <p className="loading">
                     Loading <i className="fa fa-spin fa-spinner" />
@@ -408,7 +421,7 @@ export default class Reports extends React.Component {
             );
         } else {
             return (
-                <div className={c.OBJECTS_REPORTS}>
+                <div className={c.OBJECTS_NARRATIVE_REPORTS}>
                     {<this.state.ReportAlert />}
                     {reportFormDisplay
                         ? reportForm(reportFormDisplay)
