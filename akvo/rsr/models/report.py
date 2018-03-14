@@ -68,3 +68,6 @@ class Report(models.Model):
             )
 
         super(Report, self).clean(*args, **kwargs)
+
+    class Meta:
+        ordering = ('name',)
