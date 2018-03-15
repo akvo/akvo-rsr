@@ -136,7 +136,7 @@ export function getCookie(name) {
 // Usage: endpoints.result(17) -> "http://rsr.akvo.org/rest/v1/result/17/?format=json"
 export const endpoints = {
     "result": (id) => `/rest/v1/result/${id}/?format=json`,
-    "results": (id) => `/rest/v1/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
+    "results": (id) => `/rest/v2/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     "indicators": (id) =>
         `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
     "dimensions": (id) =>

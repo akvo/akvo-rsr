@@ -88,7 +88,8 @@ from .recipient_country import RecipientCountrySerializer, RecipientCountryRawSe
 from .region import RecipientRegionSerializer, RecipientRegionRawSerializer
 from .report import ReportSerializer, ReportFormatSerializer
 from .related_project import RelatedProjectSerializer, RelatedProjectRawSerializer
-from .result import ResultSerializer, ResultsFrameworkSerializer, ResultRawSerializer
+from .result import (ResultSerializer, ResultsFrameworkSerializer, ResultRawSerializer,
+                     ResultSerializerV2)
 from .sector import SectorSerializer, SectorRawSerializer
 from .transaction import (TransactionSerializer, TransactionSectorSerializer,
                           TransactionRawSerializer, TransactionRawDeepSerializer)
@@ -204,6 +205,7 @@ __all__ = [
     'ReportSerializer',
     'ReportFormatSerializer',
     'ResultSerializer',
+    'ResultSerializerV2',
     'ResultRawSerializer',
     'ResultsFrameworkSerializer',
     'SectorSerializer',
