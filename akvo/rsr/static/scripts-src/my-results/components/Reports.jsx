@@ -136,9 +136,9 @@ class Report extends React.Component {
             </div>
         );
         return (
-            <div className="col-xs-4" onClick={this.onClick}>
+            <div className="col-xs-4">
                 <div className="panel panel-default">
-                    <div className="panel-heading">
+                    <div className="panel-heading" onClick={this.toggleDescription}>
                         <h3 className="panel-title">{report.title}</h3>
                     </div>
                     <div className="panel-body">
