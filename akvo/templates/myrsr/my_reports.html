@@ -16,7 +16,7 @@
         {
             "base_url": "//{{ request.META.HTTP_HOST }}",
             "formats": "{% url 'report_formats_api' %}",
-            "user": "{% url 'user-detail' request.user.pk %}",
+            "user": "{% url 'user-detail' 'v1' request.user.pk %}",
             "user_organisations": "{% url 'user_organisations_typeahead' %}",
             "user_projects": "{% url 'user_projects_typeahead' %}",
             "reports": "{% url 'reports_api' %}"
