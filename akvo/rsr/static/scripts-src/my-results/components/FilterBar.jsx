@@ -8,13 +8,14 @@
 
 import * as React from "react";
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
 
 import {
     noHide,
-    selectablePeriods, selectPeriodByDates,
+    selectablePeriods,
+    selectPeriodByDates,
     updateFormClose,
 } from "../actions/ui-actions";
 
@@ -45,17 +46,17 @@ import {
     ButtonLabel,
     ToggleButton,
 } from "./common";
-import {collapseChange} from "../actions/collapse-actions";
+import { collapseChange } from "../actions/collapse-actions";
 
 
-const InteractiveLabel = ({label, selector}) => {
+const InteractiveLabel = ({ label, selector }) => {
     let value, icon;
-    ({value, icon} = fieldValueOrSpinner(selector, 'length'));
+    ({ value, icon } = fieldValueOrSpinner(selector, 'length'));
     return <ButtonLabel label={label} value={value} icon={icon}/>;
 };
 
 
-const PeriodLockingButtons = ({user, disabled}) => {
+const PeriodLockingButtons = ({ user, disabled }) => {
     return userIsMEManager(user) ?
         <div className="col-xs-6">
             <ToggleButton onClick={lockSelectedPeriods}
@@ -64,8 +65,7 @@ const PeriodLockingButtons = ({user, disabled}) => {
             <ToggleButton onClick={unlockSelectedPeriods}
                           label={_("unlock_selected")}
                           disabled={disabled}/>
-        </div>
-    :
+        </div> :
         <div className="col-xs-6">
         </div>;
 };
@@ -93,22 +93,22 @@ export default class FilterBar extends React.Component {
         this.selectChange = this.selectChange.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.openResults = this.openResults.bind(this);
-        this.state = {selectedOption: undefined,}
+        this.state = { selectedOption: undefined, }
     }
 
     selectChange(e) {
-        this.setState({selectedOption: e});
+        this.setState({ selectedOption: e });
         e.value();
     }
 
     createToggleKeys() {
         const open = this.openResults();
         let resultsKeys;
-        if (userIsMEManager(this.props.user)) {
+        if(userIsMEManager(this.props.user)) {
             resultsKeys = this.props.ResultsDefaultKeys;
         }
         // construct the array of Collapse activeKeys for the sub-tree
-        return toggleTree(c.OBJECTS_RESULTS, c.OBJECTS_RESULTS, open, resultsKeys);
+        return toggleTree(open, resultsKeys);
     }
 
     toggleAll() {
@@ -133,8 +133,7 @@ export default class FilterBar extends React.Component {
 
     filterButtonClass(button) {
         return this.props.ui.activeFilter === button ?
-            'btn btn-sm btn-default filterActive'
-        :
+            'btn btn-sm btn-default filterActive' :
             'btn btn-sm btn-default';
     }
 
@@ -143,7 +142,7 @@ export default class FilterBar extends React.Component {
     }
 
     render() {
-        const {page, callbacks, periods} = this.props;
+        const { page, callbacks, periods } = this.props;
         const openCloseLabel = this.openResults() ? _('overview') : _('full_view');
         const selectOptions = selectablePeriods(periods && periods.ids, selectPeriodByDates);
         //TODO: investigate if we can use the React life cycle methods to not render until the
@@ -156,11 +155,11 @@ export default class FilterBar extends React.Component {
                                                       selector={this.props.approvedPeriods}/>;
         const buttonDisabled = !this.props.ui.allFetched;
 
-        return (
+        return(
             // TODO: this is a hideously ugly hack to show the filterbar in two modes depending on
             // if we're on the results page or the project page. Needs refactoring!
             page.mode && page.mode.public ?
-                <header role="banner" className="periodMenuBar">
+            <header role="banner" className="periodMenuBar">
                     <nav>
                         <div className={'periodBtns'}>
                             <div className={'row'}>
@@ -191,9 +190,8 @@ export default class FilterBar extends React.Component {
                             </div>
                         </div>
                     </nav>
-                </header>
-            :
-                <header role="banner" className="periodMenuBar">
+                </header> :
+            <header role="banner" className="periodMenuBar">
                     <nav>
                         <div className={'periodBtns'}>
                             <div className={'row'}>
