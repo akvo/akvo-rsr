@@ -13,6 +13,9 @@ from rest_framework import routers
 # Wire up our API using automatic URL routing.
 router = routers.DefaultRouter()
 
+# NOTE: any url template tags targeting API endpoints need to include the version as the first
+# parameter. Example: {% url 'project_extra-detail' 'v1' project.id 'json' %}
+
 router.register(r'(?P<version>(v1))/administrative_location', views.AdministrativeLocationViewSet)
 router.register(r'(?P<version>(v1))/benchmark', views.BenchmarkViewSet)
 router.register(r'(?P<version>(v1))/benchmark_name', views.BenchmarknameViewSet)
@@ -112,7 +115,7 @@ router.register(r'(?P<version>(v1))/user', views.UserViewSet)
 
 # Additionally, we include URLs for non-viewsets (functional views).
 # NOTE: if versions is to be added to one of the views below, the view function needs to include
-# version in its parameters
+# version in its parameters.
 
 urlpatterns = patterns(
     '',
