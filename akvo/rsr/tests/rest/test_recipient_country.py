@@ -36,6 +36,7 @@ class RecipientCountryTestCase(TestCase):
 
         # Given
         project = Project.objects.create(title="REST test project")
+        project.publish()
         recipient_country = RecipientCountry.objects.create(
             project=project,
             country="CI",

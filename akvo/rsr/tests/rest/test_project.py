@@ -23,12 +23,14 @@ class RestProjectTestCase(TestCase):
         """
         For all tests, we at least need two projects in the database. And a client.
         """
-        Project.objects.create(
+        project = Project.objects.create(
             title="REST test project",
         )
+        project.publish()
         self.project = Project.objects.create(
             title="REST test project 2",
         )
+        self.project.publish()
 
         # Create organisation
         self.reporting_org = Organisation.objects.create(
