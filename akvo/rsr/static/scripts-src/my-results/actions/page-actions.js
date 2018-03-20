@@ -5,13 +5,11 @@
     < http://www.gnu.org/licenses/agpl.html >.
 */
 
-
-import * as c from "../const"
-
+import * as c from "../const";
 
 export function setPageData(data) {
     return {
         type: c.PAGE_SET_DATA,
-        payload: {data}
-    }
+        payload: { data }
+    };
 }

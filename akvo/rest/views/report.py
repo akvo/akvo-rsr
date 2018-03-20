@@ -10,29 +10,33 @@ from rest_framework.response import Response
 
 from akvo.rsr.models import Report, ReportFormat
 from ..serializers import ReportSerializer, ReportFormatSerializer
+from ..viewsets import BaseRSRViewSet
 
 
-@api_view(['GET'])
-def reports(request):
-    """
-    A view for displaying all report information, sorted by title.
-    """
+class ReportViewSet(BaseRSRViewSet):
+    """Viewset providing Result data."""
 
-    user = request.user
-    is_admin = user.is_active and (user.is_superuser or user.is_admin)
-    reports = Report.objects.all()
-    if not is_admin:
-        # Show only those reports that the user is allowed to see
-        approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
-        reports = reports.filter(
-            Q(organisations=None) | Q(organisations__in=approved_orgs)
-        ).distinct()
+    queryset = Report.objects.prefetch_related(
+        'organisations',
+        'formats',
+    )
+    serializer_class = ReportSerializer
 
-    # FIXME: Use a viewset instead?
-    return Response({
-        'count': reports.count(),
-        'results': [ReportSerializer(r).data for r in reports.order_by('title')],
-    })
+    def get_queryset(self):
+        """
+        Allow custom filter for sync_owner, since this field has been replaced by the
+        reporting org partnership.
+        """
+        reports = super(ReportViewSet, self).get_queryset()
+        user = self.request.user
+        is_admin = user.is_active and (user.is_superuser or user.is_admin)
+        if not is_admin:
+            # Show only those reports that the user is allowed to see
+            approved_orgs = user.approved_organisations() if not user.is_anonymous() else []
+            reports = reports.filter(
+                Q(organisations=None) | Q(organisations__in=approved_orgs)
+            ).distinct()
+        return reports
 
 
 @api_view(['GET'])

@@ -5,30 +5,27 @@
  < http://www.gnu.org/licenses/agpl.html >.
  */
 
+import * as c from "../const";
 
-import * as c from "../const"
-
-const initialState = {isVisible: false, message: ''};
+const initialState = { isVisible: false, message: "" };
 
 const behaviors = {
     [c.CREATE_ALERT](state, action) {
-        const {alertMessage} = action;
-        return {isVisible: true, message: alertMessage};
+        const { alertMessage } = action;
+        return { isVisible: true, message: alertMessage };
     },
     [c.DISMISS_ALERT](state, action) {
         return initialState;
     }
 };
 
-
 const reducer = (state, action) => {
     const behavior = behaviors[action.type];
     return behavior ? behavior(state, action) : state;
 };
 
-
 const alertReducer = (state = {}, action = {}) => {
-    const {type, alertName} = action;
+    const { type, alertName } = action;
     if (state === undefined) return state;
     if (type === c.INITIALIZE_ALERT) {
         return {
@@ -37,16 +34,18 @@ const alertReducer = (state = {}, action = {}) => {
         };
     }
     if (type === c.DISMISS_ALL_ALERTS) {
-        return Object.keys(state).reduce((acc, alert) =>
-                Object.assign({}, acc, {[alert]: initialState}),
-            {});
+        return Object.keys(state).reduce(
+            (acc, alert) => Object.assign({}, acc, { [alert]: initialState }),
+            {}
+        );
     }
 
     if (state[alertName] === undefined) return state;
     if (type === c.DESTROY_ALERT) {
-        return Object.keys(state).reduce((acc, alert) =>
-                alert === alertName ? acc : {...acc, [alert]: state[alert]},
-            {});
+        return Object.keys(state).reduce(
+            (acc, alert) => (alert === alertName ? acc : { ...acc, [alert]: state[alert] }),
+            {}
+        );
     }
     return Object.assign({}, state, {
         [alertName]: reducer(state[alertName], action)

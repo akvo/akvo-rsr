@@ -5,12 +5,10 @@
     < http://www.gnu.org/licenses/agpl.html >.
 */
 
+import * as c from "../const";
 
-import * as c from "../const"
-
-
-export default function pageReducer(state={}, action) {
-    switch(action.type) {
+export default function pageReducer(state = {}, action) {
+    switch (action.type) {
         case c.PAGE_SET_DATA: {
             return action.payload.data;
         }

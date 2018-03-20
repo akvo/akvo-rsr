@@ -106,6 +106,7 @@ router.register(r'(?P<version>(v1))/recipient_organisation_budget_line',
                 views.OrganisationRecipientOrgBudgetLineViewSet)
 router.register(r'(?P<version>(v1))/recipient_region', views.RecipientRegionViewSet)
 router.register(r'(?P<version>(v1))/related_project', views.RelatedProjectViewSet)
+router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, base_name='reports_api')
 router.register(r'(?P<version>(v1|v2))/result', views.ResultsViewSet)
 router.register(r'(?P<version>(v1))/results_framework', views.ResultsFrameworkViewSet)
 router.register(r'(?P<version>(v1))/sector', views.SectorViewSet)
@@ -221,9 +222,6 @@ urlpatterns += patterns(
 # My reports
 urlpatterns += patterns(
     '',
-    url(r'v1/reports/$',
-        views.reports,
-        name='reports_api'),
     url(r'v1/report_formats/$',
         views.report_formats,
         name='report_formats_api'),

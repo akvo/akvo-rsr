@@ -54,6 +54,7 @@ import {
 } from "../utils";
 
 import FilterBar from "./FilterBar";
+import NarrativeReports from "./NarrativeReports";
 import Reports from "./Reports";
 import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
@@ -152,8 +153,9 @@ export default class App extends React.Component {
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
         fetchModel("comments", projectId, activateToggleAll);
-        fetchModel("reports", projectId, activateToggleAll);
+        fetchModel("narrative_reports", projectId, activateToggleAll);
         fetchModel("categories", projectPartners, activateToggleAll);
+        fetchModel("reports", projectId, activateToggleAll);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -369,22 +371,26 @@ export default class App extends React.Component {
                     className="pull-right btn btn-default editBtn"
                     href={`../../project_editor/${projectId}/`}
                 >
-                    <i class="fa fa-pencil-square-o" /> Edit project
+                    <i className="fa fa-pencil-square-o" /> Edit project
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {has_results ? <Tab>Results</Tab> : undefined}
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
+                        <Tab>Reports</Tab>
                         <Tab>Add an update</Tab>
                     </TabList>
                     {has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (
                         <TabPanel>
-                            <Reports />
+                            <NarrativeReports />
                         </TabPanel>
                     ) : (
                         undefined
                     )}
+                    <TabPanel>
+                        <Reports project={projectId} />
+                    </TabPanel>
                     <TabPanel>
                         <RSRUpdates project={projectId} />
                     </TabPanel>
