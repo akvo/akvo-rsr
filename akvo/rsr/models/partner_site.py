@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from akvo.rsr.validators import hostname_validator
 from akvo.utils import rsr_show_keywords
 
 from ..fields import NullCharField, ValidXMLCharField, ValidXMLTextField
@@ -51,12 +52,12 @@ class PartnerSite(TimestampsMixin, models.Model):
         'Organisation', verbose_name=_(u'organisation'),
         help_text=_('Select your organisation from the drop-down list.'))
     notes = ValidXMLTextField(verbose_name=_(u'Akvo page notes'), blank=True, default='')
-    hostname = ValidXMLCharField(
+    hostname = models.CharField(
         _(u'hostname'), max_length=50, unique=True, help_text=_(
             u'<p>Your hostname is used in the default web address of your Akvo page. '
             u'The web address created from  the hostname <em>myorganisation</em> would be '
             u'<em>http://myorganisation.akvoapp.org/</em>.</p>'
-        )
+        ), validators=[hostname_validator]
     )
     cname = NullCharField(
         _(u'CNAME'), max_length=100, unique=True, blank=True, null=True, help_text=_(
