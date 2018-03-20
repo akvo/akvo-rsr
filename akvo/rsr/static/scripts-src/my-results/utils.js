@@ -340,19 +340,15 @@ export function toggleTree(open, MEManagerKeys) {
     const modelsList = c.RESULTS_MODELS_LIST;
     const models = modelsList.slice(1);
     const fullTree = models.map((model) => {
-        const ids = store.getState().models[model].ids;
-        const childKeys = ids.map((id) => {
-            const parentModel = parentModelName(model);
-            const parentId = store.getState().models[model].objects[id][c.PARENT_FIELD[model]];
-            const keys = store.getState().models[parentModel].objects[parentId]._meta.children.ids;
-            return { activeKey: open ? idsToActiveKey(keys) : [], collapseId: collapseId(model, parentId) };
+        const parentModel = parentModelName(model);
+        const ids = store.getState().models[parentModel].ids;
+        const childKeys = ids.filter(
+            id => store.getState().models[parentModel].objects[id]._meta.children.ids.length > 0
+        ).map((id) => {
+            const keys = store.getState().models[parentModel].objects[id]._meta.children.ids;
+            return { activeKey: open ? idsToActiveKey(keys) : [], collapseId: collapseId(model, id) };
         });
-        return childKeys.reduce((acc, obj) => {
-            if(!acc.filter((duplicate) => obj.collapseId === duplicate.collapseId)[0]) {
-                acc.push(obj);
-            }
-            return acc;
-        }, []);
+        return childKeys;
     });
     return flatten(fullTree);
 }
