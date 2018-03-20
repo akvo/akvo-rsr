@@ -303,7 +303,7 @@ ReportAlert.propTypes = {
         categories: store.models.categories,
         narrative_reports: store.models.narrative_reports,
         periods: store.models.periods,
-        project: store.page.project.id,
+        projectId: store.page.project.id,
         reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY]
     };
 })
@@ -353,8 +353,8 @@ export default class NarrativeReports extends React.Component {
         console.log(period_start, period_end);
         const id = "new";
         const text = "";
-        const { narrative_reports, project } = this.props;
-        const report = { id, period_start, period_end, project, text };
+        const { narrative_reports, projectId } = this.props;
+        const report = { id, period_start, period_end, project: projectId, text };
         narrative_reports.objects[report.id] = report;
         this.editSummary(report);
     }

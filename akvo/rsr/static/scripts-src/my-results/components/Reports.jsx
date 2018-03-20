@@ -18,12 +18,12 @@ import "react-datepicker/dist/react-datepicker.css";
 @connect(store => {
     return {
         reports: store.models.reports,
-        project: store.page.project.id
+        projectId: store.page.project.id
     };
 })
 export default class Reports extends React.Component {
     render() {
-        const { project, reports } = this.props;
+        const { projectId, reports } = this.props;
         const row_count = Math.round(Math.ceil(reports.ids.length / 3)),
             row_indexes = Array.from(Array(row_count).keys()),
             col_indexes = Array.from(Array(3).keys());
@@ -40,7 +40,7 @@ export default class Reports extends React.Component {
                                 }
                                 return (
                                     <Report
-                                        project={project}
+                                        projectId={projectId}
                                         report={reports.objects[id]}
                                         key={id}
                                     />
@@ -72,10 +72,10 @@ class Report extends React.Component {
     }
 
     downloadReport(format) {
-        const { report: { url }, project } = this.props;
+        const { report: { url }, projectId } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
-        download_url = url.replace("{format}", format).replace("{project}", project);
+        download_url = url.replace("{format}", format).replace("{project}", projectId);
         if (this.state.date_selection) {
             if (end_date && start_date && start_date > end_date) {
                 // Swap start and end dates if end date is before start date
@@ -108,7 +108,7 @@ class Report extends React.Component {
     }
 
     render() {
-        const { project, report } = this.props;
+        const { report } = this.props;
         const { show_description, date_selection, start_date, end_date } = this.state;
         const formats = report.formats.map(format => {
             const { icon, name, display_name } = format;
