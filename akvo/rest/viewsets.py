@@ -8,6 +8,7 @@ from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
 
+from akvo.rsr.models import PublishingStatus
 from akvo.rest.models import TastyTokenAuthentication
 
 from rest_framework import authentication, filters, permissions, viewsets
@@ -152,7 +153,10 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
         # In case of an anonymous user, only return the public objects
         if user.is_anonymous():
-            queryset = public_objects
+            unpublished_exclude = project_relation + 'publishingstatus__status'
+            queryset = public_objects.exclude(
+                **{unpublished_exclude: PublishingStatus.STATUS_UNPUBLISHED}
+            ).distinct()
 
         # Otherwise, check to which objects the user has (change) permission
         elif private_objects.exists():

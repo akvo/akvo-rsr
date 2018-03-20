@@ -240,89 +240,88 @@ class PermissionFilteringTestCase(TestCase):
 
         model_map = {}
 
-        # 4 projects per organisation
-        #   2 public, 2 private
+        # 2 orgs -> (2 public, 2 private) projects -> (1 published, 1 unpublished)
         model_map[M.Project] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': ''
         }
 
         # one condition per project
         model_map[M.ProjectCondition] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one benchmark per project
         model_map[M.Benchmark] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # FIXME: Using change_* permission for viewsets is kinda weird. For
         # instance, ProjectComments made by a non-privileged on private
-        # projects is not visible to them, because of this! group_count(56, 28, 42, 30)
-        # therefore becomes group_count(56, 28, 42, 28)
+        # projects is not visible to them, because of this! group_count(56, 14, 42, 30)
+        # therefore becomes group_count(56, 14, 42, 28)
         # one benchmarkname per benchmark
         model_map[M.Benchmarkname] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'benchmark__project__'
         }
 
         # one budget item per projct
         model_map[M.BudgetItem] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one country budget item per project
         model_map[M.CountryBudgetItem] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one crs per project
         # FIXME: change_* wierdness.
         model_map[M.CrsAdd] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'project__'
         }
 
         # one per project
         # FIXME: change_* wierdness.
         model_map[M.CrsAddOtherFlag] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'crs__project__'
         }
 
         # one fss per project
         # FIXME: change_* wierdness.
         model_map[M.Fss] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'project__'
         }
 
         # on fss forecast per fss
         model_map[M.FssForecast] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'fss__project__'
         }
 
         # one goal
         model_map[M.Goal] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one legacy data item per project
         model_map[M.LegacyData] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one link per project
         model_map[M.Link] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
@@ -330,93 +329,93 @@ class PermissionFilteringTestCase(TestCase):
         # FIXME: change_* permissions weirdness: admins can't see
         # humanitarian_scope of private projects
         model_map[M.HumanitarianScope] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'project__'
         }
 
         # FIXME: change_* wierdness.
         model_map[M.ProjectComment] = {
-            'group_count': group_count(56, 28, 42, 28),
+            'group_count': group_count(56, 14, 42, 28),
             'project_relation': 'project__'
         }
 
         # one contact per project
         model_map[M.ProjectContact] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one custom field per project
         model_map[M.ProjectCustomField] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one document per project
         model_map[M.ProjectDocument] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one document category per document
         # FIXME: admins also can't see private document categories??
         model_map[M.ProjectDocumentCategory] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'document__project__'
         }
 
         # one location per project
         model_map[M.ProjectLocation] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'location_target__'
         }
 
         # one administrative location per project
         model_map[M.AdministrativeLocation] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'location__location_target__'
         }
 
         # 7 project updates group_count(for each user in each group) per project
         # Every non-privileged user will also be able to see their update
         model_map[M.ProjectUpdate] = {
-            'group_count': group_count(56, 28, 42, 30),
+            'group_count': group_count(56, 14, 42, 30),
             'project_relation': 'project__'
         }
 
         # one location per update - only admin users are allowed to edit
         model_map[M.ProjectUpdateLocation] = {
-            'group_count': group_count(56, 28, 28, 28),
+            'group_count': group_count(56, 14, 28, 28),
             'project_relation': 'location_target__project__'
         }
 
         # one recipient country per project
         model_map[M.RecipientCountry] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one recipient region per project
         model_map[M.RecipientRegion] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one related_project per project
         model_map[M.RelatedProject] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one planned disbursement per project
         model_map[M.PlannedDisbursement] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one policy marker per project
         model_map[M.PolicyMarker] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
@@ -425,91 +424,91 @@ class PermissionFilteringTestCase(TestCase):
         # FIXME: permissions for admins group and other editors group_count(m&e,
         # project_editor)  differ. hence, the tuple weirdness
         model_map[M.PublishingStatus] = {
-            'group_count': group_count(8, 4, (6, 4), 4),
+            'group_count': group_count(8, 2, (6, 4), 4),
             'project_relation': 'project__'
         }
 
         # one sector per project
         model_map[M.Sector] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one transaction per project
         model_map[M.Transaction] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one transaction sector per transaction
         # FIXME: change_* permissions weirdness
         model_map[M.TransactionSector] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'transaction__project__'
         }
 
         # one result per project
         model_map[M.Result] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one indicator per result
         model_map[M.Indicator] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'result__project__'
         }
 
         # one indicator dimension per indicator
         model_map[M.IndicatorDimension] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'indicator__result__project__'
         }
 
         # one label per indicator
         model_map[M.IndicatorLabel] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'indicator__result__project__'
         }
 
         # one reference per indicator
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorReference] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'indicator__result__project__'
         }
 
         # one indicator period per indicator
         model_map[M.IndicatorPeriod] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'indicator__result__project__'
         }
 
         # one indicator period actual dimension per period
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodActualDimension] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
         }
 
         # one indicator period actual location per period
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodActualLocation] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
         }
 
         # one indicator period target dimension per period
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodTargetDimension] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
         }
 
         # one indicator period target location per period
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodTargetLocation] = {
-            'group_count': group_count(8, 4, 4, 4),
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
         }
 
@@ -517,31 +516,31 @@ class PermissionFilteringTestCase(TestCase):
         # FIXME: IndicatorPeriodData entries on private projects are not visible to non
         # privileged users?! Weirdness because of using change_* permission
         model_map[M.IndicatorPeriodData] = {
-            'group_count': group_count(56, 28, 42, 28),
+            'group_count': group_count(56, 14, 42, 28),
             'project_relation': 'period__indicator__result__project__'
         }
 
         # one disaggregation created per user per indicator period update
         model_map[M.Disaggregation] = {
-            'group_count': group_count(56, 28, 42, 28),
+            'group_count': group_count(56, 14, 42, 28),
             'project_relation': 'update__period__indicator__result__project__'
         }
 
         # one comment per indicator period data
         model_map[M.IndicatorPeriodDataComment] = {
-            'group_count': group_count(56, 28, 42, 28),
+            'group_count': group_count(56, 14, 42, 28),
             'project_relation': 'data__period__indicator__result__project__'
         }
 
         # one partnership per project per org
         model_map[M.Partnership] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
         # one narrative per project
         model_map[M.NarrativeReport] = {
-            'group_count': group_count(8, 4, 6, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 
