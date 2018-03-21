@@ -29,5 +29,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_start_end_dates_report_url, remove_start_end_dates_report_url)
+        migrations.RunPython(add_start_end_dates_report_url, remove_start_end_dates_report_url),
+
+        migrations.AlterModelOptions(
+            name='report',
+            options={'ordering': ('name',)},
+        ),
+
     ]
