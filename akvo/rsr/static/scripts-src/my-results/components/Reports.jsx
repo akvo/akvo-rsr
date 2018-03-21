@@ -18,13 +18,14 @@ import "react-datepicker/dist/react-datepicker.css";
 @connect(store => {
     return {
         reports: store.models.reports,
-        projectId: store.page.project.id
+        project: store.page.project
     };
 })
 export default class Reports extends React.Component {
     render() {
-        const { projectId, reports } = this.props;
-        const row_count = Math.round(Math.ceil(reports.ids.length / 3)),
+        const { project, reports } = this.props;
+        const report_count = reports && reports.ids && reports.ids.length || 0;
+        const row_count = Math.round(Math.ceil(report_count / 3)),
             row_indexes = Array.from(Array(row_count).keys()),
             col_indexes = Array.from(Array(3).keys());
         return (
@@ -40,7 +41,7 @@ export default class Reports extends React.Component {
                                 }
                                 return (
                                     <Report
-                                        projectId={projectId}
+                                        projectId={project.id}
                                         report={reports.objects[id]}
                                         key={id}
                                     />
@@ -72,10 +73,10 @@ class Report extends React.Component {
     }
 
     downloadReport(format) {
-        const { report: { url }, projectId } = this.props;
+        const { report: { url }, project } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
-        download_url = url.replace("{format}", format).replace("{project}", projectId);
+        download_url = url.replace("{format}", format).replace("{project}", project.id);
         if (this.state.date_selection) {
             if (end_date && start_date && start_date > end_date) {
                 // Swap start and end dates if end date is before start date
