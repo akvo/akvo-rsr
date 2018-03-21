@@ -275,7 +275,7 @@ export class ReportForm extends React.Component {
 }
 
 const filterReports = (narrative_reports, period_start, period_end) => {
-    const ids = narrative_reports.ids.filter(id => {
+    const ids = narrative_reports && narrative_reports.ids.filter(id => {
         const report = narrative_reports.objects[id];
         return report.period_start === period_start && report.period_end === period_end;
     });
@@ -303,7 +303,7 @@ ReportAlert.propTypes = {
         categories: store.models.categories,
         narrative_reports: store.models.narrative_reports,
         periods: store.models.periods,
-        projectId: store.page.project.id,
+        project: store.page.project,
         reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY]
     };
 })
@@ -353,8 +353,8 @@ export default class NarrativeReports extends React.Component {
         console.log(period_start, period_end);
         const id = "new";
         const text = "";
-        const { narrative_reports, projectId } = this.props;
-        const report = { id, period_start, period_end, project: projectId, text };
+        const { narrative_reports, project } = this.props;
+        const report = { id, period_start, period_end, project: project.id, text };
         narrative_reports.objects[report.id] = report;
         this.editSummary(report);
     }
