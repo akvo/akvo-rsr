@@ -8,7 +8,7 @@ import akvo.rsr.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0124_auto_20180309_0923'),
+        ('rsr', '0125_auto_20180315_0829'),
     ]
 
     operations = [
