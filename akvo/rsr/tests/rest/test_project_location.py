@@ -24,6 +24,7 @@ class ProjectLocationTest(TestCase):
         # Given
         country_name = u"Côte D'ivoire"
         project = Project.objects.create()
+        project.publish()
         country = Country.objects.create(name=country_name, iso_code='CI')
         ProjectLocation.objects.create(location_target=project, country=country)
         url = '/rest/v1/project_location/'

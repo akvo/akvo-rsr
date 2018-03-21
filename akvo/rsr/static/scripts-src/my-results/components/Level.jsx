@@ -5,21 +5,19 @@
    < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import Collapse, {Panel} from 'rc-collapse';
-import update  from 'immutability-helper';
+import React from "react";
+import PropTypes from "prop-types";
+import Collapse, { Panel } from "rc-collapse";
+import update from "immutability-helper";
 
-import {identicalArrays} from '../utils.js'
+import { identicalArrays } from "../utils.js";
 
-const ToggleButton = ({onClick, label}) => {
+const ToggleButton = ({ onClick, label }) => {
     return (
-        <a onClick={onClick}
-            className={'btn btn-sm btn-default'}
-            >
+        <a onClick={onClick} className={"btn btn-sm btn-default"}>
             {label}
         </a>
-    )
+    );
 };
 
 ToggleButton.propTypes = {
@@ -28,15 +26,13 @@ ToggleButton.propTypes = {
 };
 
 const PROPAGATE_NO = false,
-      PROPAGATE_OPEN = 'open',
-      PROPAGATE_CLOSE = 'close';
+    PROPAGATE_OPEN = "open",
+    PROPAGATE_CLOSE = "close";
 
 export function level(Header, Content) {
-
     function itemIDsArray(items) {
         // Return an array with item IDs as as stings, the same format as Collapse.activeKey
-        if (items)
-            return items.map((item) => item.id.toString());
+        if (items) return items.map(item => item.id.toString());
         return [];
     }
 
@@ -47,7 +43,7 @@ export function level(Header, Content) {
             if (props.propagate == PROPAGATE_OPEN && this.props.items) {
                 activeKey = itemIDsArray(this.props.items);
             }
-            this.state = {activeKey: activeKey, propagate: props.propagate || PROPAGATE_NO};
+            this.state = { activeKey: activeKey, propagate: props.propagate || PROPAGATE_NO };
 
             this.onChange = this.onChange.bind(this);
             this.openAll = this.openAll.bind(this);
@@ -62,22 +58,20 @@ export function level(Header, Content) {
 
         onChange(activeKey) {
             // Keep track of open panels
-            this.setState({activeKey});
+            this.setState({ activeKey });
         }
 
-        openAll(setPropagate=false) {
+        openAll(setPropagate = false) {
             const items = this.props.items;
-            const nextState = {activeKey: itemIDsArray(items)};
+            const nextState = { activeKey: itemIDsArray(items) };
             if (setPropagate) {
                 nextState.propagate = PROPAGATE_OPEN;
             }
-            this.setState(
-                nextState
-            );
+            this.setState(nextState);
         }
 
-        closeAll(setPropagate=false) {
-            const nextState = {activeKey: []};
+        closeAll(setPropagate = false) {
+            const nextState = { activeKey: [] };
             if (setPropagate) {
                 nextState.propagate = PROPAGATE_CLOSE;
             }
@@ -104,7 +98,9 @@ export function level(Header, Content) {
             // Combine activeKey with props.newKeys to create a new activeKey
             // Currently used in Period to open a new update form when it's created
             if (nextProps.newKeys) {
-                this.setState({activeKey: update(this.state.activeKey, {$push: nextProps.newKeys})})
+                this.setState({
+                    activeKey: update(this.state.activeKey, { $push: nextProps.newKeys })
+                });
             }
             if (nextProps.propagate) {
                 if (nextProps.propagate == PROPAGATE_OPEN) {
@@ -116,34 +112,38 @@ export function level(Header, Content) {
         }
 
         renderPanels(items, propagate, props) {
-            return (
-                items.map(
-                    function(item) {
-                        // Note: I've tried to have the Panel in the respective Content components
-                        // and render <Content /> here, but it seems Panel doesn't like being
-                        // separated from Collapse by any component between them so I gave up
-                        return (
-                            <Panel header={<Header item={item} {...props}/>} key={item.id}>
-                                <Content key={item.id} item={item} propagate={propagate} callbacks={props.callbacks}/>
-                            </Panel>
-                        )
-                    }
-                )
-            )
+            return items.map(function(item) {
+                // Note: I've tried to have the Panel in the respective Content components
+                // and render <Content /> here, but it seems Panel doesn't like being
+                // separated from Collapse by any component between them so I gave up
+                return (
+                    <Panel header={<Header item={item} {...props} />} key={item.id}>
+                        <Content
+                            key={item.id}
+                            item={item}
+                            propagate={propagate}
+                            callbacks={props.callbacks}
+                        />
+                    </Panel>
+                );
+            });
         }
 
         render() {
             const items = this.props.items;
             if (!items) {
-                console.log(this.constructor.name + " " + this._reactInternalInstance._debugID + " loading...");
-                return (
-                    <p>Loading...</p>
+                console.log(
+                    this.constructor.name +
+                        " " +
+                        this._reactInternalInstance._debugID +
+                        " loading..."
                 );
+                return <p>Loading...</p>;
             } else if (items.length > 0) {
                 return (
                     <div>
-                        <ToggleButton onClick={this.togglePanels.bind(this, false)} label="+"/>
-                        <ToggleButton onClick={this.toggleAll} label="++"/>
+                        <ToggleButton onClick={this.togglePanels.bind(this, false)} label="+" />
+                        <ToggleButton onClick={this.toggleAll} label="++" />
                         <Collapse activeKey={this.state.activeKey} onChange={this.onChange}>
                             {this.renderPanels(
                                 items,
@@ -154,10 +154,8 @@ export function level(Header, Content) {
                     </div>
                 );
             } else {
-                return (
-                    <p>No items</p>
-                );
+                return <p>No items</p>;
             }
         }
-    }
+    };
 }

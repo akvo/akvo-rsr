@@ -9,68 +9,84 @@
     Use "reselect" to create memoized data transformations
  */
 
-import { createSelector } from "reselect"
+import { createSelector } from "reselect";
 
 import * as c from "./const";
 
-import {
-    computePercentage,
-    idsToActiveKey,
-    isEmpty,
-} from "./utils";
-
+import { computePercentage, idsToActiveKey, isEmpty } from "./utils";
 
 // Input selectors for models
-const getResultIds = (store) => store.models.results.ids;
-const getResultObjects = (store) => store.models.results.objects;
-const getIndicatorIds = (store) => store.models.indicators.ids;
-const getIndicatorObjects = (store) => store.models.indicators.objects;
-const getDimensionIds = (store) => store.models.dimensions.ids;
-const getDimensionObjects = (store) => store.models.dimensions.objects;
-const getPeriodIds = (store) => store.models.periods.ids;
-const getPeriodObjects = (store) => store.models.periods.objects;
-const getUpdateIds = (store) => store.models.updates.ids;
-const getUpdateObjects = (store) => store.models.updates.objects;
-const getDisaggregationIds = (store) => store.models.disaggregations.ids;
-const getDisaggregationObjects = (store) => store.models.disaggregations.objects;
-const getCommentIds = (store) => store.models.comments.ids;
-const getCommentObjects = (store) => store.models.comments.objects;
-const getUser = (store) => store.models.user;
-
+const getResultIds = store => store.models.results.ids;
+const getResultObjects = store => store.models.results.objects;
+const getIndicatorIds = store => store.models.indicators.ids;
+const getIndicatorObjects = store => store.models.indicators.objects;
+const getDimensionIds = store => store.models.dimensions.ids;
+const getDimensionObjects = store => store.models.dimensions.objects;
+const getPeriodIds = store => store.models.periods.ids;
+const getPeriodObjects = store => store.models.periods.objects;
+const getUpdateIds = store => store.models.updates.ids;
+const getUpdateObjects = store => store.models.updates.objects;
+const getDisaggregationIds = store => store.models.disaggregations.ids;
+const getDisaggregationObjects = store => store.models.disaggregations.objects;
+const getCommentIds = store => store.models.comments.ids;
+const getCommentObjects = store => store.models.comments.objects;
+const getUser = store => store.models.user;
 
 const getChildrenFactory = model => {
     const modelSelectors = {
         // {childModelName: [parentIds, parentSelector, childrenIds, childrenSelector]}
-        [c.OBJECTS_INDICATORS]: [getResultIds, getResultObjects, getIndicatorIds, getIndicatorObjects],
-        [c.OBJECTS_DIMENSIONS]: [getIndicatorIds, getIndicatorObjects, getDimensionIds, getDimensionObjects],
+        [c.OBJECTS_INDICATORS]: [
+            getResultIds,
+            getResultObjects,
+            getIndicatorIds,
+            getIndicatorObjects
+        ],
+        [c.OBJECTS_DIMENSIONS]: [
+            getIndicatorIds,
+            getIndicatorObjects,
+            getDimensionIds,
+            getDimensionObjects
+        ],
         [c.OBJECTS_PERIODS]: [getIndicatorIds, getIndicatorObjects, getPeriodIds, getPeriodObjects],
         [c.OBJECTS_UPDATES]: [getPeriodIds, getPeriodObjects, getUpdateIds, getUpdateObjects],
-        [c.OBJECTS_DISAGGREGATIONS]: [getUpdateIds, getUpdateObjects, getDisaggregationIds, getDisaggregationObjects],
-        [c.OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects],
+        [c.OBJECTS_DISAGGREGATIONS]: [
+            getUpdateIds,
+            getUpdateObjects,
+            getDisaggregationIds,
+            getDisaggregationObjects
+        ],
+        [c.OBJECTS_COMMENTS]: [getUpdateIds, getUpdateObjects, getCommentIds, getCommentObjects]
     };
     return createSelector(
         [
-            modelSelectors[model][0], modelSelectors[model][1], modelSelectors[model][2],
+            modelSelectors[model][0],
+            modelSelectors[model][1],
+            modelSelectors[model][2],
             modelSelectors[model][3]
         ],
         (parentIds, parentObjects, childIds, childObjects) => {
             if (parentIds && parentObjects && childIds && childObjects) {
-                return parentIds && parentObjects && parentIds.reduce(
-                    (acc, parentId) => {
-                        return {...acc,
-                            [parentId]: childIds && childObjects && childIds.filter(
-                                id =>  childObjects[id][c.PARENT_FIELD[model]] === parentId
-                            )
-                        }
-                    }, {}
-                )
+                return (
+                    parentIds &&
+                    parentObjects &&
+                    parentIds.reduce((acc, parentId) => {
+                        return {
+                            ...acc,
+                            [parentId]:
+                                childIds &&
+                                childObjects &&
+                                childIds.filter(
+                                    id => childObjects[id][c.PARENT_FIELD[model]] === parentId
+                                )
+                        };
+                    }, {})
+                );
             } else {
                 return {};
             }
         }
     );
 };
-
 
 export const getResultsChildrenIds = createSelector(
     /*
@@ -104,7 +120,6 @@ export const getPeriodsChildrenIds = createSelector(
     children => children
 );
 
-
 export const getUpdatesChildrenIds = createSelector(
     // Same structure as getResultsChildrenIds but for updates and comment children
     getChildrenFactory(c.OBJECTS_COMMENTS),
@@ -121,19 +136,22 @@ export const getUpdatesDisaggregationObjects = createSelector(
     // Same structure as getResultsChildrenIds but for updates and disaggregation children
     [getUpdatesDisaggregationIds, getDisaggregationObjects],
     (updateDisaggregationIds, disaggregationObjects) => {
-        return Object.entries(updateDisaggregationIds).reduce((acc, [update_id, disaggregationIds]) => {
-            return {...acc, [update_id]: disaggregationIds.map((id) => disaggregationObjects[id])};
-        }, {});
+        return Object.entries(updateDisaggregationIds).reduce(
+            (acc, [update_id, disaggregationIds]) => {
+                return {
+                    ...acc,
+                    [update_id]: disaggregationIds.map(id => disaggregationObjects[id])
+                };
+            },
+            {}
+        );
     }
 );
-
 
 export const getApprovedUpdateIds = createSelector(
     [getUpdateIds, getUpdateObjects],
     (updateIds, updates) => updateIds.filter(id => updates[id].status === c.UPDATE_STATUS_APPROVED)
 );
-
-
 
 export const getPeriodsApprovedDisaggregationIds = createSelector(
     /*
@@ -146,23 +164,42 @@ export const getPeriodsApprovedDisaggregationIds = createSelector(
         Used to find all disaggregations for approved updates for a period
      */
     [
-        getPeriodsChildrenIds, getUpdatesDisaggregationIds, getApprovedUpdateIds, getUpdateObjects,
+        getPeriodsChildrenIds,
+        getUpdatesDisaggregationIds,
+        getApprovedUpdateIds,
+        getUpdateObjects,
         getDisaggregationObjects
     ],
     (periodsChildrenIds, updateDisaggregationIds, approvedUpdateIds, updates, disaggregations) => {
-        return periodsChildrenIds && Object.keys(periodsChildrenIds).reduce(
-            (obj, periodId) => obj = {...obj, [periodId]: periodsChildrenIds[periodId].reduce(
-                (arr, updateId) => arr = arr.concat(
-                    updateDisaggregationIds[updateId].filter(
-                        disaggId => disaggregations[disaggId].update === updateId &&
-                            approvedUpdateIds.indexOf(updateId) > -1
-                    )
-                // sort on dimension to keep the order of dimensions defined in the project editor
-                ), []).sort((a, b) => disaggregations[a].dimension - disaggregations[b].dimension)
-            }, {});
+        return (
+            periodsChildrenIds &&
+            Object.keys(periodsChildrenIds).reduce(
+                (obj, periodId) =>
+                    (obj = {
+                        ...obj,
+                        [periodId]: periodsChildrenIds[periodId]
+                            .reduce(
+                                (arr, updateId) =>
+                                    (arr = arr.concat(
+                                        updateDisaggregationIds[updateId].filter(
+                                            disaggId =>
+                                                disaggregations[disaggId].update === updateId &&
+                                                approvedUpdateIds.indexOf(updateId) > -1
+                                        )
+                                        // sort on dimension to keep the order of dimensions defined in the project editor
+                                    )),
+                                []
+                            )
+                            .sort(
+                                (a, b) =>
+                                    disaggregations[a].dimension - disaggregations[b].dimension
+                            )
+                    }),
+                {}
+            )
+        );
     }
 );
-
 
 export const getPeriodsActualValue = createSelector(
     /*
@@ -171,31 +208,40 @@ export const getPeriodsActualValue = createSelector(
      */
     [getPeriodIds, getPeriodObjects, getUpdateObjects, getPeriodsChildrenIds],
     (periodIds, periodObjects, updateObjects, childUpdateIds) => {
-        return periodIds && updateObjects && !isEmpty(childUpdateIds) && periodIds.reduce((acc, periodId) => {
-            const actualValue = childUpdateIds[periodId].filter(
-                (updateId) => updateObjects[updateId].status == c.UPDATE_STATUS_APPROVED
-            ).reduce(
-                // Actual value is calculated by adding all approved updates with numerical data
-                (acc, updateId) => {
-                    const value = parseInt(updateObjects[updateId].value);
-                    // If value is NaN then value !== value returns true!
-                    if (!(value !== value)) {
-                        return acc + value;
-                    }
-                    return acc;
-                }, 0
-            );
-          // We allow users to set an actual value on periods directly from the
-          // project editor. When there are no updates, over which we can
-          // aggregate, this value should be used as the actual value. Also, the
-          // UI only allows actual values to be numbers, so we try and convert
-          // it to a number.
-          const periodActualValue = (parseFloat(periodObjects[periodId].actual_value)||0);
-          return {...acc, [periodId]: (childUpdateIds[periodId].length > 0)?actualValue:periodActualValue};
-        }, {});
+        return (
+            periodIds &&
+            updateObjects &&
+            !isEmpty(childUpdateIds) &&
+            periodIds.reduce((acc, periodId) => {
+                const actualValue = childUpdateIds[periodId]
+                    .filter(updateId => updateObjects[updateId].status == c.UPDATE_STATUS_APPROVED)
+                    .reduce(
+                        // Actual value is calculated by adding all approved updates with numerical data
+                        (acc, updateId) => {
+                            const value = parseInt(updateObjects[updateId].value);
+                            // If value is NaN then value !== value returns true!
+                            if (!(value !== value)) {
+                                return acc + value;
+                            }
+                            return acc;
+                        },
+                        0
+                    );
+                // We allow users to set an actual value on periods directly from the
+                // project editor. When there are no updates, over which we can
+                // aggregate, this value should be used as the actual value. Also, the
+                // UI only allows actual values to be numbers, so we try and convert
+                // it to a number.
+                const periodActualValue = parseFloat(periodObjects[periodId].actual_value) || 0;
+                return {
+                    ...acc,
+                    [periodId]:
+                        childUpdateIds[periodId].length > 0 ? actualValue : periodActualValue
+                };
+            }, {})
+        );
     }
 );
-
 
 export const getIndicatorsAggregateActualValue = createSelector(
     /*
@@ -205,44 +251,52 @@ export const getIndicatorsAggregateActualValue = createSelector(
             indicatorId2: <aggregateActualValue2>,...
         }
      */
-    [getIndicatorIds, getIndicatorObjects, getIndicatorsChildrenIds, getPeriodObjects, getPeriodsActualValue],
+    [
+        getIndicatorIds,
+        getIndicatorObjects,
+        getIndicatorsChildrenIds,
+        getPeriodObjects,
+        getPeriodsActualValue
+    ],
     (indicatorIDs, indicatorObjects, childPeriodIds, periodObjects, actualValue) => {
-        return indicatorIDs && indicatorObjects && childPeriodIds && !isEmpty(actualValue) && indicatorIDs.reduce(
-            (acc, indicatorId) => {
+        return (
+            indicatorIDs &&
+            indicatorObjects &&
+            childPeriodIds &&
+            !isEmpty(actualValue) &&
+            indicatorIDs.reduce((acc, indicatorId) => {
                 let aggregateValue;
                 if (indicatorObjects[indicatorId].measure === c.MEASURE_PERCENTAGE) {
                     // Computed aggregate percentage -> (sum of all numerators) * 100 / (last/latest denominator)
-                    const numerator = childPeriodIds[indicatorId].reduce(
-                        (sum, periodId) => {
-                            return sum + (parseFloat(periodObjects[periodId].numerator)||0);
-                        }, 0);
-                    const childPeriods = childPeriodIds[indicatorId].map((id) => {
+                    const numerator = childPeriodIds[indicatorId].reduce((sum, periodId) => {
+                        return sum + (parseFloat(periodObjects[periodId].numerator) || 0);
+                    }, 0);
+                    const childPeriods = childPeriodIds[indicatorId].map(id => {
                         return periodObjects[id];
                     });
-                    const latestPeriod = (periods) => {
+                    const latestPeriod = periods => {
                         periods.sort((period1, period2) => {
-                            return period1.period_end < period2.period_end?1:-1;
+                            return period1.period_end < period2.period_end ? 1 : -1;
                         });
                         return periods[0];
                     };
-                    const denominator = (childPeriods.length == 0) ?
-                        0
-                    :
-                        (childPeriods.length == 1) ?
-                            childPeriods[0].denominator
-                        :
-                            latestPeriod(childPeriods).denominator;
+                    const denominator =
+                        childPeriods.length == 0
+                            ? 0
+                            : childPeriods.length == 1
+                              ? childPeriods[0].denominator
+                              : latestPeriod(childPeriods).denominator;
                     aggregateValue = computePercentage(numerator, denominator);
                 } else {
                     aggregateValue = childPeriodIds[indicatorId].reduce((sum, periodId) => {
                         return sum + actualValue[periodId];
                     }, 0);
                 }
-                return {...acc, [indicatorId]: aggregateValue};
-            }, {});
+                return { ...acc, [indicatorId]: aggregateValue };
+            }, {})
+        );
     }
 );
-
 
 export const getIndicatorsAggregateTargetValue = createSelector(
     /*
@@ -254,21 +308,25 @@ export const getIndicatorsAggregateTargetValue = createSelector(
     */
     [getIndicatorIds, getIndicatorsChildrenIds, getPeriodObjects],
     (indicatorIDs, childPeriodIds, periodObjects) => {
-        return indicatorIDs && childPeriodIds && periodObjects && indicatorIDs.reduce((acc, indicatorId) => {
-            const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
-                const target_value = parseInt(periodObjects[periodId].target_value);
-                // If target_value is NaN then target_value !== target_value returns true!
-                if (!(target_value !== target_value)) {
-                    return acc + target_value;
-                } else {
-                    return acc;
-                }
-            }, 0);
-            return {...acc, [indicatorId]: aggregateValue};
-        }, {});
+        return (
+            indicatorIDs &&
+            childPeriodIds &&
+            periodObjects &&
+            indicatorIDs.reduce((acc, indicatorId) => {
+                const aggregateValue = childPeriodIds[indicatorId].reduce((acc, periodId) => {
+                    const target_value = parseInt(periodObjects[periodId].target_value);
+                    // If target_value is NaN then target_value !== target_value returns true!
+                    if (!(target_value !== target_value)) {
+                        return acc + target_value;
+                    } else {
+                        return acc;
+                    }
+                }, 0);
+                return { ...acc, [indicatorId]: aggregateValue };
+            }, {})
+        );
     }
 );
-
 
 export const getIndicatorsAggregateCompletionPercentage = createSelector(
     /*
@@ -282,13 +340,13 @@ export const getIndicatorsAggregateCompletionPercentage = createSelector(
     (indicatorIDs, targetValue, actualValue) => {
         return indicatorIDs.reduce((acc, indicatorId) => {
             const target = targetValue[indicatorId],
-                  actual = actualValue[indicatorId],
-                  completion = (target != undefined && target > 0) ? Math.round(actual * 100/target): NaN;
-            return {...acc, [indicatorId]: completion};
+                actual = actualValue[indicatorId],
+                completion =
+                    target != undefined && target > 0 ? Math.round(actual * 100 / target) : NaN;
+            return { ...acc, [indicatorId]: completion };
         }, {});
     }
 );
-
 
 export const getPendingUpdates = createSelector(
     /*
@@ -296,14 +354,18 @@ export const getPendingUpdates = createSelector(
      */
     [getUpdateIds, getPeriodObjects, getUpdateObjects],
     (updateIds, periodObjects, updateObjects) => {
-        return updateIds && periodObjects && updateObjects && updateIds.filter(id =>
-            (
-                updateObjects[id].status === c.UPDATE_STATUS_PENDING
-            ) && periodObjects[updateObjects[id].period].locked == false
+        return (
+            updateIds &&
+            periodObjects &&
+            updateObjects &&
+            updateIds.filter(
+                id =>
+                    updateObjects[id].status === c.UPDATE_STATUS_PENDING &&
+                    periodObjects[updateObjects[id].period].locked == false
+            )
         );
     }
 );
-
 
 export const getApprovedUpdates = createSelector(
     /*
@@ -311,27 +373,30 @@ export const getApprovedUpdates = createSelector(
      */
     [getUpdateIds, getPeriodObjects, getUpdateObjects],
     (updateIds, periodObjects, updateObjects) => {
-        return updateIds && periodObjects && updateObjects && updateIds.filter((id) =>
-            updateObjects[id].status === c.UPDATE_STATUS_APPROVED &&
-            periodObjects[updateObjects[id].period].locked == false
+        return (
+            updateIds &&
+            periodObjects &&
+            updateObjects &&
+            updateIds.filter(
+                id =>
+                    updateObjects[id].status === c.UPDATE_STATUS_APPROVED &&
+                    periodObjects[updateObjects[id].period].locked == false
+            )
         );
     }
 );
 
-
 export const getLockedPeriods = createSelector(
     [getPeriodIds, getPeriodObjects],
     (periodIds, periodObjects) =>
-        periodIds && periodObjects && periodIds.filter((id) => periodObjects[id].locked === true)
+        periodIds && periodObjects && periodIds.filter(id => periodObjects[id].locked === true)
 );
-
 
 export const getUnlockedPeriods = createSelector(
     [getPeriodIds, getPeriodObjects],
     (periodIds, periodObjects) =>
-        periodIds && periodObjects && periodIds.filter((id) => periodObjects[id].locked === false)
+        periodIds && periodObjects && periodIds.filter(id => periodObjects[id].locked === false)
 );
-
 
 export const getApprovedPeriods = createSelector(
     /*
@@ -340,13 +405,15 @@ export const getApprovedPeriods = createSelector(
      */
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
-        unlockedPeriods && updateObjects && unlockedPeriods.filter(
-            id => periodChildren[id].filter(
-                updateId => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
-            ).length > 0
+        unlockedPeriods &&
+        updateObjects &&
+        unlockedPeriods.filter(
+            id =>
+                periodChildren[id].filter(
+                    updateId => updateObjects[updateId].status === c.UPDATE_STATUS_APPROVED
+                ).length > 0
         )
 );
-
 
 export const getUpdatesForApprovedPeriods = createSelector(
     /*
@@ -355,11 +422,11 @@ export const getUpdatesForApprovedPeriods = createSelector(
      */
     [getUpdateIds, getUpdateObjects, getApprovedPeriods],
     (updateIds, updateObjects, periodIds) =>
-        updateIds && updateObjects && periodIds && updateIds.filter(
-            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
-        )
+        updateIds &&
+        updateObjects &&
+        periodIds &&
+        updateIds.filter(updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1)
 );
-
 
 export const getNeedReportingPeriods = createSelector(
     /*
@@ -368,15 +435,19 @@ export const getNeedReportingPeriods = createSelector(
      */
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
-        unlockedPeriods && updateObjects && unlockedPeriods.filter(
-            id => isEmpty(periodChildren[id]) || periodChildren[id].filter(
-                updateId => updateObjects[updateId].status === c.UPDATE_STATUS_DRAFT ||
-                            updateObjects[updateId].status === c.UPDATE_STATUS_NEW ||
-                            updateObjects[updateId].status === c.UPDATE_STATUS_REVISION
-            ).length > 0
+        unlockedPeriods &&
+        updateObjects &&
+        unlockedPeriods.filter(
+            id =>
+                isEmpty(periodChildren[id]) ||
+                periodChildren[id].filter(
+                    updateId =>
+                        updateObjects[updateId].status === c.UPDATE_STATUS_DRAFT ||
+                        updateObjects[updateId].status === c.UPDATE_STATUS_NEW ||
+                        updateObjects[updateId].status === c.UPDATE_STATUS_REVISION
+                ).length > 0
         )
 );
-
 
 export const getUpdatesForNeedReportingPeriods = createSelector(
     /*
@@ -385,11 +456,11 @@ export const getUpdatesForNeedReportingPeriods = createSelector(
      */
     [getUpdateIds, getUpdateObjects, getNeedReportingPeriods],
     (updateIds, updateObjects, periodIds) =>
-        updateIds && updateObjects && periodIds && updateIds.filter(
-            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
-        )
+        updateIds &&
+        updateObjects &&
+        periodIds &&
+        updateIds.filter(updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1)
 );
-
 
 export const getPendingApprovalPeriods = createSelector(
     /*
@@ -398,13 +469,15 @@ export const getPendingApprovalPeriods = createSelector(
      */
     [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
     (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
-        unlockedPeriods && updateObjects && unlockedPeriods.filter(
-            id => periodChildren[id].filter(
-                updateId => updateObjects[updateId].status === c.UPDATE_STATUS_PENDING
-            ).length > 0
+        unlockedPeriods &&
+        updateObjects &&
+        unlockedPeriods.filter(
+            id =>
+                periodChildren[id].filter(
+                    updateId => updateObjects[updateId].status === c.UPDATE_STATUS_PENDING
+                ).length > 0
         )
 );
-
 
 export const getUpdatesForPendingApprovalPeriods = createSelector(
     /*
@@ -413,11 +486,11 @@ export const getUpdatesForPendingApprovalPeriods = createSelector(
      */
     [getUpdateIds, getUpdateObjects, getPendingApprovalPeriods],
     (updateIds, updateObjects, periodIds) =>
-        updateIds && updateObjects && periodIds && updateIds.filter(
-            updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1
-        )
+        updateIds &&
+        updateObjects &&
+        periodIds &&
+        updateIds.filter(updateId => periodIds.indexOf(updateObjects[updateId].period) !== -1)
 );
-
 
 export const getResultsDefaultKeys = createSelector(
     /*

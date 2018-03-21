@@ -30,3 +30,11 @@ def string_validator(value):
     match = re.search(RESTRICTED_CHARACTERS, value)
     if match:
         raise ValidationError(match.group(0) + ' ' + _(u'is not an allowed character'))
+
+
+def hostname_validator(value):
+    if re.search(u'[^a-zA-Z0-9-]', value) is not None or value[0] == '-' or value[-1] == '-':
+        # https://tools.ietf.org/html/rfc1035
+        raise ValidationError(
+            'Only alpha numeric characters and hyphen are allowed. '
+            'Hostnames cannot start or end with a hyphen')

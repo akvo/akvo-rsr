@@ -40,10 +40,12 @@ class RestProjectUpdateTestCase(TestCase):
         # Create projects
         Project.objects.create(
             title="REST test project",
-        )
+        ).publish()
+
         self.project = Project.objects.create(
             title="REST test project 2",
         )
+        self.project.publish()
 
         # Create active (super)user
         self.user = User.objects.create_superuser(

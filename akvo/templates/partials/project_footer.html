@@ -31,7 +31,7 @@
                 <p><span class="detailedInfo"><i class="fa fa-cloud-download"></i> {% trans "Export data" %}:</span></p>
                 <p>
                     <a href="{% url 'rss_project_updates' project.id %}">{% trans "RSS" %}</a><br/>
-                    <a href="{% url 'project_extra-detail' project.id 'json' %}">{% trans "JSON" %}</a>
+                    <a href="{% url 'project_extra-detail' 'v1' project.id 'json' %}">{% trans "JSON" %}</a>
                 </p>
             </div>
         </div>

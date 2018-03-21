@@ -6,7 +6,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.rsr.models import Result
-from ..serializers import ResultSerializer, ResultsFrameworkSerializer
+from ..serializers import ResultSerializer, ResultsFrameworkSerializer, ResultSerializerV2
 from ..viewsets import PublicProjectViewSet
 
 
@@ -14,7 +14,11 @@ class ResultsViewSet(PublicProjectViewSet):
     """Results resource."""
 
     queryset = Result.objects.all().select_related('project')
-    serializer_class = ResultSerializer
+
+    def get_serializer_class(self):
+        if self.request.version == 'v2':
+            return ResultSerializerV2
+        return ResultSerializer
 
 
 class ResultsFrameworkViewSet(PublicProjectViewSet):

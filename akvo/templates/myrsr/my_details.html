@@ -88,8 +88,8 @@
     <script type="application/json" id="user-request-link">
         {
             "link": "{% url 'user_request_organisation' user.id %}",
-            "org_rest_link": "{% url 'organisation-list' %}",
-            "country_rest_link": "{% url 'country-list' %}"
+            "org_rest_link": "{% url 'organisation-list' 'v1' %}",
+            "country_rest_link": "{% url 'country-list' 'v1' %}"
         }
     </script>
 

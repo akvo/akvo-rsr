@@ -5,21 +5,19 @@
  < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
 import React from "react";
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import * as alertActions from "../actions/alert-actions";
 
 const defaultState = {
     isVisible: false,
-    message: ''
+    message: ""
 };
 
-
 const AlertFactory = config => WrappedComponent => {
-    const {alertName} = config;
+    const { alertName } = config;
 
     class AlertContainer extends React.Component {
         componentDidMount() {
@@ -37,9 +35,7 @@ const AlertFactory = config => WrappedComponent => {
 
         render() {
             if (!this.props.isVisible) return false;
-            return (
-                <WrappedComponent message={this.props.message} close={(e) => this.close(e)}/>
-            );
+            return <WrappedComponent message={this.props.message} close={e => this.close(e)} />;
         }
     }
 
@@ -53,10 +49,9 @@ const AlertFactory = config => WrappedComponent => {
     }
 
     function mapDispatchToProps(dispatch) {
-        return {actions: bindActionCreators(alertActions, dispatch)};
+        return { actions: bindActionCreators(alertActions, dispatch) };
     }
     return connect(mapStateToProps, mapDispatchToProps)(AlertContainer);
-
 };
 
 export default AlertFactory;

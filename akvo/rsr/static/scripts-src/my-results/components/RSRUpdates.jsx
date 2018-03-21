@@ -75,7 +75,12 @@ class RSRUpdateList extends React.Component {
                 return <RSRUpdate key={update.id} update={update} />;
             });
         }
-        return <div className="col-md-5 hidden-sm-down updateList"><h3>Previous updates</h3>{updates}</div>;
+        return (
+            <div className="col-md-5 hidden-sm-down updateList">
+                <h3>Previous updates</h3>
+                {updates}
+            </div>
+        );
     }
 }
 

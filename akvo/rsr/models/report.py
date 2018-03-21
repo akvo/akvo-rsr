@@ -14,7 +14,7 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 
 
 PARAMETER_REGEX = re.compile('{(.*?)}')
-ALLOWED_PARAMETERS = {'project', 'organisation', 'format'}
+ALLOWED_PARAMETERS = {'project', 'organisation', 'format', 'start_date', 'end_date'}
 MANDATORY_PARAMETERS = {'format'}
 
 
@@ -68,3 +68,6 @@ class Report(models.Model):
             )
 
         super(Report, self).clean(*args, **kwargs)
+
+    class Meta:
+        ordering = ('name',)

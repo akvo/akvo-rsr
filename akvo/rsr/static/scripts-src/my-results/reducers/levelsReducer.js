@@ -5,19 +5,22 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
 // Note: this is currently not used and is far from ready.
 // It's another way of managing cascading Collapse state
 
 const initialLevels = {
-    results: false, indicators: false, periods: false, updates: false, comments: false
+    results: false,
+    indicators: false,
+    periods: false,
+    updates: false,
+    comments: false
 };
-export const levelsReducer = (state=initialLevels, action) => {
+export const levelsReducer = (state = initialLevels, action) => {
     // Changes levels state that in turn controls the full opening and closing of collapse levels
-    switch(action.type) {
+    switch (action.type) {
         case CASCADE_OPEN: {
             const openLevels = getLevelsBelow(action.payload.model);
-            state = {...state, levels: openLevels};
+            state = { ...state, levels: openLevels };
             break;
         }
         case CASCADE_CLOSE: {
@@ -31,4 +34,4 @@ export const levelsReducer = (state=initialLevels, action) => {
         }
     }
     return state;
-}
+};
