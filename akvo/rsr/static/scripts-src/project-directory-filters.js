@@ -423,7 +423,7 @@ var App = React.createClass({displayName: "App",
                 .then(self.parseResponse)
                 .then(function(options) {
                     if (options) {
-                        self.cacheOptions(url, options);
+                        self.cacheOptions(url, self.processOptions(options));
                     }
                 });
         }
@@ -444,8 +444,9 @@ var App = React.createClass({displayName: "App",
                 .then(self.parseResponse)
                 .then(function(options) {
                     if (options) {
-                        self.updateState(self.processOptions(options), mountedNow);
-                        self.cacheOptions(url, options);
+                        var processedOptions = self.processOptions(options);
+                        self.updateState(processedOptions, mountedNow);
+                        self.cacheOptions(url, processedOptions);
                         if (mountedNow) {
                             self.cacheAllOptions();
                         }
