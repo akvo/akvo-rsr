@@ -60,7 +60,7 @@ def results(project):
                 if DGIS_PROJECT:
                     all_checks_passed = False
                     checks.append((u'warning', u'indicator (id: %s) baseline has no year '
-                                               u'specified, however the value of "N/A" has been '
+                                               u'specified, however the value of "1" has been '
                                                u'set for the attribute' % str(indicator.pk)))
                 elif indicator.baseline_value or indicator.baseline_comment:
                     all_checks_passed = False
