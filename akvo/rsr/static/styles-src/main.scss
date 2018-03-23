@@ -3558,6 +3558,68 @@ main.results-page {
     }
 }
 
+.rsrReports {
+    * {
+        box-sizing: border-box;
+    }
+    padding-top: 20px;
+    .rsrReport {
+        min-height: 250px;
+        margin-bottom: 20px;
+        position: relative;
+        .reportContainer {
+            border: 1px solid rgba($akvoBlack, 0.1);
+            border-top: 2px solid rgba($akvoBlack, 0.1);
+            min-height: 300px;
+            padding: 30px 70px 5px 70px;
+        }
+        .reportDscr {
+            padding: 10px 0;
+        }
+        .options {
+            text-align: center;
+            .reportDate {
+                margin: 0 auto;
+                background-color: rgba($akvoBlack, 0.05);
+                text-align: left;
+                padding: 10px 15px 20px 15px;
+                border-radius: 6px;
+                &:after {
+                    content: "";
+                    display: table;
+                    clear: both;
+                }
+                .startDate {
+                    float: left;
+                    width: 49.5%;
+                    position: relative;
+                    div {
+                        width: 100%;
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+                .endDate {
+                    float: right;
+                    width: 49.5%;
+                    position: relative;
+                    div {
+                        width: 100%;
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+            .reportDown {
+                margin: 15px auto 0;
+                @include btnOutline($akvoPurple, $akvoPurple);
+            }
+        }
+    }
+}
+
 .results {
     background: white;
     box-sizing: border-box;
@@ -4480,7 +4542,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
