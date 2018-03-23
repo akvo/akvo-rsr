@@ -24,12 +24,12 @@ import "react-datepicker/dist/react-datepicker.css";
 export default class Reports extends React.Component {
     render() {
         const { project, reports } = this.props;
-        const report_count = reports && reports.ids && reports.ids.length || 0;
+        const report_count = (reports && reports.ids && reports.ids.length) || 0;
         const row_count = Math.round(Math.ceil(report_count / 3)),
             row_indexes = Array.from(Array(row_count).keys()),
             col_indexes = Array.from(Array(3).keys());
         return (
-            <div>
+            <div className="rsrReports">
                 {row_indexes.map(row => {
                     return (
                         <div className="row" key={row}>
@@ -73,10 +73,11 @@ class Report extends React.Component {
     }
 
     downloadReport(format) {
-        const { report: { url }, project } = this.props;
+        const { report: { url }, projectId } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
-        download_url = url.replace("{format}", format).replace("{project}", project.id);
+        download_url = url.replace("{format}", format).replace("{project}", projectId);
+        console.log(download_url);
         if (this.state.date_selection) {
             if (end_date && start_date && start_date > end_date) {
                 // Swap start and end dates if end date is before start date
@@ -125,39 +126,33 @@ class Report extends React.Component {
             );
         });
         const date_selectors = (
-            <div>
-                <div>
+            <div className="reportDate">
+                <div className="startDate">
                     <div>Start Date</div>
                     <DatePicker onChange={this.setStartDate} selected={start_date} />
                 </div>
-                <div>
+                <div className="endDate">
                     <div>End Date</div>
                     <DatePicker onChange={this.setEndDate} selected={end_date} />
                 </div>
             </div>
         );
         return (
-            <div className="col-xs-4">
-                <div className="panel panel-default">
-                    <div className="panel-heading" onClick={this.toggleDescription}>
-                        <h3 className="panel-title">{report.title}</h3>
+            <div className="rsrReport col-sm-6 col-md-4">
+                <div className="reportContainer">
+                    <div className="">
+                        <h3 className="">{report.title}</h3>
                     </div>
-                    <div className="panel-body">
-                        {show_description ? (
-                            <div onClick={this.toggleDescription}>{report.description}</div>
-                        ) : (
-                            <div>
-                                {date_selection ? date_selectors : undefined}
-                                {formats}
-                            </div>
-                        )}
+                    <div className="reportDscr">{report.description}</div>
+                    <div className="options">
+                        {date_selection ? date_selectors : undefined}
+                        {formats}
                     </div>
                 </div>
             </div>
         );
     }
 }
-
 class ReportFormatButton extends React.Component {
     constructor(props) {
         super(props);
@@ -166,6 +161,7 @@ class ReportFormatButton extends React.Component {
 
     onClick(e) {
         e.stopPropagation();
+        console.log(e);
         this.props.download(this.props.format_name);
     }
 
@@ -174,7 +170,7 @@ class ReportFormatButton extends React.Component {
         const icon_class = `fa fa-${icon}`,
             text = `Download ${display_name}`;
         return (
-            <button className="btn btn-default" onClick={this.onClick}>
+            <button className="btn btn-default reportDown" onClick={this.onClick}>
                 <i className={icon_class} />
                 <span>&nbsp;&nbsp;</span>
                 <span>{text}</span>
