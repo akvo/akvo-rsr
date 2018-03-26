@@ -71,9 +71,21 @@
                                             <br/>
                                             <span class="detailedInfo">{% trans 'End date' %}</span>
                                             <span class="detailedPoint">
-                                              {{project.date_end_actual|date:"d-M-Y"}}
+                                                {{project.date_end_actual|date:"d-M-Y"}}
                                             </span>
                                         {% endif %}
+                                        <br/>
+                                        <span class="detailedInfo">{% trans "Finance" %}</span>
+                                        <span class="detailedPoint">
+                                            {% if project.has_multiple_budget_currencies %}
+                                                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="{% trans 'Only includes funds in project currency' %}"></span>
+                                                {% widthratio project.funds project.get_budget_project_currency 100 %}% {% trans "of" %} {{project.get_budget_project_currency|floatformat:0|intcomma}}
+                                            {% else %}
+                                                {% widthratio project.funds project.budget 100 %}% {% trans "of" %} {{project.budget|floatformat:0|intcomma}}
+                                            {% endif %}
+                                            {{project.currency}}
+                                        </span>
+
                                     </li>
                                 {% endif %}
                                 {% if project.has_relations %}
