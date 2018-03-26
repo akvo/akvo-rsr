@@ -113,7 +113,7 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertEquals(u'warning', checks[0][0])
         self.assertIn(u'no value specified, however the value of "N/A"', checks[0][1])
         self.assertEquals(u'warning', checks[1][0])
-        self.assertIn(u'no year specified, however the value of "N/A"', checks[1][1])
+        self.assertIn(u'no year specified, however the value of "1"', checks[1][1])
 
     def test_iati_checks_fields_results_period_pass(self):
         # Given

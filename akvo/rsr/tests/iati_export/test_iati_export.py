@@ -613,7 +613,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         indicator_baseline_xpath = './iati-activity/result/indicator/baseline'
         self.assertXpathsExist(root_test, (indicator_baseline_xpath,))
         baseline = root_test.xpath(indicator_baseline_xpath)
-        self.assertEqual(baseline[0].attrib["year"], u"N/A")
+        self.assertEqual(baseline[0].attrib["year"], u"1")
         self.assertEqual(baseline[0].attrib["value"], u"N/A")
 
         # Test period has target value
