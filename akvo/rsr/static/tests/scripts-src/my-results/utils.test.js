@@ -16,28 +16,14 @@ import { mock } from "../../../scripts-src/my-results/store";
 const middlewares = [];
 const mockStore = configureStore(middlewares);
 
-let expect = chai.expect;
+// This allows us to test non-exported functions
+// See: https://medium.com/@macsikora/how-to-test-private-functions-of-es6-module-fb8c1345b25f
+const rewire = require('rewire')
+const utilsRewire = rewire('../../../scripts-src/my-results/utils')
+const lineage = utilsRewire.__get__('lineage')
+const lineageKeys = utilsRewire.__get__('lineageKeys')
 
-describe("function _", () => {
-    const store = mockStore({
-        page: {
-            strings: {
-                actual: "Actual",
-                actual_comment: "Actual comment"
-            }
-        }
-    });
-    beforeEach(() => {
-        mock(store);
-    });
-    afterEach(() => {
-        mock();
-    });
-    it("it translates!", () => {
-        expect(utils._("actual")).to.equal("Actual");
-        expect(utils._("actual_comment")).to.equal("Actual comment");
-    });
-});
+let expect = chai.expect;
 
 describe("function distinct", () => {
     it('expect to return an array with unique values', () => {
@@ -117,6 +103,27 @@ describe("function getCookie", () => {
         expect(utils.getCookie(otherName)).to.equal(otherValue);
         expect(utils.getCookie(name)).to.not.equal(otherValue);
         global.document = document;
+    });
+});
+
+describe("function _", () => {
+    const store = mockStore({
+        page: {
+            strings: {
+                actual: "Actual",
+                actual_comment: "Actual comment"
+            }
+        }
+    });
+    beforeEach(() => {
+        mock(store);
+    });
+    afterEach(() => {
+        mock();
+    });
+    it("it translates!", () => {
+        expect(utils._("actual")).to.equal("Actual");
+        expect(utils._("actual_comment")).to.equal("Actual comment");
     });
 });
 
@@ -206,6 +213,105 @@ describe("function flatten", () => {
         const arrayOfArrays = [[1, 2], [3, 4], [5, 6]],
             flatArray = [1, 2, 3, 4, 5, 6];
         expect(utils.flatten(arrayOfArrays)).to.deep.equal(flatArray);
+    });
+});
+
+describe("function lineage", () => {
+    const store = mockStore({
+        models: {
+            results: {
+                objects: { 100: { id: 100 }, 101: { id: 101 } }
+            },
+            indicators: {
+                objects: { 200: { id: 200, result: 100 }, 201: { id: 201, result: 101 } }
+            },
+            periods: {
+                objects: { 400: { id: 400, indicator: 200 }, 401: { id: 401, indicator: 201 } }
+            },
+            updates: {
+                objects: { 500: { id: 500, period: 400 }, 501: { id: 501, period: 401 } }
+            },
+            comments: {
+                objects: { 600: { id: 600, data: 500 }, 601: { id: 601, data: 501 } }
+            }
+        }
+    });
+    beforeEach(() => {
+        mock(store);
+    });
+    afterEach(() => {
+        mock();
+    });
+    it("returns a model with id and its ancestors with ids as an array of objects", () => {
+        const model = 'comments',
+            id = 600,
+            arrayOfModels = [
+                { model: 'comments', id: 600 },
+                { model: 'updates', id: 500 },
+                { model: 'periods', id: 400 },
+                { model: 'indicators', id: 200 },
+                { model: 'results', id: 100 }];
+        expect(lineage(model, id)).to.deep.equal(arrayOfModels);
+    });
+    it("return a model with id as an array of a singel object if theres no ancestors", () => {
+        const model = 'results',
+            id = 100,
+            arrayOfModel = [{ model: 'results', id: 100 }];
+        expect(lineage(model, id)).to.deep.equal(arrayOfModel);
+    });
+});
+
+describe("function getAncestor", () => {
+    const store = mockStore({
+        models: {
+            results: { objects: { 100: { id: 100 } } },
+            indicators: { objects: { 200: { id: 200, result: 100 } } },
+            periods: { objects: { 400: { id: 400, indicator: 200 } } },
+        }
+    });
+    beforeEach(() => {
+        mock(store);
+    });
+    afterEach(() => {
+        mock();
+    });
+    it("returns a specified ancestor object for an object given the ancestorModel", () => {
+        const model = 'periods',
+            id = 400,
+            ancestorModel = 'indicators',
+            ancestorObject = { id: 200, result: 100 };
+        expect(utils.getAncestor(model, id, ancestorModel)).to.deep.equal(ancestorObject);
+        expect(utils.getAncestor("indicators", 200, "results")).to.deep.equal({ id: 100 });
+    });
+});
+
+describe("function lineageKeys", () => {
+    const store = mockStore({
+        models: {
+            results: {
+                objects: { 100: { id: 100 }, 101: { id: 101 } }
+            },
+            indicators: {
+                objects: { 200: { id: 200, result: 100 }, 201: { id: 201, result: 101 } }
+            },
+            periods: {
+                objects: { 400: { id: 400, indicator: 200 }, 401: { id: 401, indicator: 201 } }
+            }
+        }
+    });
+    beforeEach(() => {
+        mock(store);
+    });
+    afterEach(() => {
+        mock();
+    });
+    it("return an array of collapse activeKey keys for the model and its ancestors", () => {
+        const model = 'periods',
+            id = 401,
+            keys = [{ 'results-results': [101] },
+                { 'indicators-101': [201] },
+                { 'periods-201': [401] }];
+        expect(lineageKeys(model, id)).to.deep.equal(keys);
     });
 });
 
