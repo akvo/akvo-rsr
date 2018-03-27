@@ -198,8 +198,10 @@ class Partnership(models.Model):
 
     def clean(self):
         # Don't allow multiple reporting organisations
+        Project = models.get_model('rsr', 'project')
+        project = Project.objects.get(id=self.project_id)
         if self.iati_organisation_role == self.IATI_REPORTING_ORGANISATION:
-            reporting_orgs = self.project.partnerships.filter(
+            reporting_orgs = project.partnerships.filter(
                 iati_organisation_role=self.IATI_REPORTING_ORGANISATION
             )
 
@@ -220,5 +222,7 @@ class Partnership(models.Model):
     def set_primary_organisation(self):
         # Check which organisation should be set to the primary organisation of the project
         # This is done to get better performance on the project list page
-        self.project.primary_organisation = self.project.find_primary_organisation()
-        self.project.save(update_fields=['primary_organisation'])
+        Project = models.get_model('rsr', 'project')
+        project = Project.objects.get(id=self.project_id)
+        project.primary_organisation = project.find_primary_organisation()
+        project.save(update_fields=['primary_organisation'])
