@@ -4,7 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.conf import settings
 from rest_framework import serializers
+from sorl.thumbnail import get_thumbnail
 
 from akvo.rsr.models import Project
 
@@ -43,6 +45,32 @@ class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project
+
+
+class ProjectListingSerializer(serializers.ModelSerializer):
+
+    id = serializers.ReadOnlyField()
+    title = serializers.ReadOnlyField()
+    subtitle = serializers.ReadOnlyField()
+    latitude = serializers.ReadOnlyField(source='primary_location.latitude')
+    longitude = serializers.ReadOnlyField(source='primary_location.longitude')
+    image = serializers.SerializerMethodField()
+    countries = serializers.SerializerMethodField()
+    url = serializers.ReadOnlyField(source='get_absolute_url')
+    organisation = serializers.ReadOnlyField(source='primary_organisation.name')
+    organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
+
+    class Meta:
+        model = Project
+
+    def get_countries(self, project):
+        return map(lambda x: unicode(x), project.countries())
+
+    def get_image(self, project):
+        geometry = '350x150'
+        image = get_thumbnail(project.current_image, geometry, crop='center', quality=99)
+        local_dev = settings.RSR_DOMAIN == 'rsr.localdev.akvo.org'
+        return image.url if image and not local_dev else "//placehold.it/{}".format(geometry)
 
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):

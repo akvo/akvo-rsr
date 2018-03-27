@@ -16,12 +16,6 @@
             {% trans "All updates" %}
           </a>
         </li>
-        <li class="navOrganisation">
-          <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'organisation-directory' %}">
-            {% trans "All organisations" %}
-          </a>
-        </li>
                     <li class="akvoLogo"><a href="http://akvo.org">Akvo.org</a></li>
                     <li class="uiFeedback">
                         {# Javascript will generate the support feedback email, as to reduce spam #}

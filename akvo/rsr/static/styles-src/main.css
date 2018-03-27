@@ -1843,11 +1843,6 @@ ul.typeahead-selector {
   #filter-wrapper > div div:not(.advanced-filter) {
     display: block !important; }
 
-.projectCountTxt {
-  position: absolute;
-  top: 40px;
-  left: 22px; }
-
 /* Organisation Page */
 .organisationDetail .organisationHeader {
   background: rgba(32, 32, 36, 0.05); }
