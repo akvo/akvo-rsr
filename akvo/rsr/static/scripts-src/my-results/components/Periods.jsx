@@ -25,7 +25,7 @@ import {
     getPeriodsApprovedDisaggregationIds
 } from "../selectors";
 
-import { displayDate, collapseId, createToggleKeys, getAncestor } from "../utils.js";
+import { displayDate, collapseId, getAncestor } from "../utils.js";
 
 import AlertFactory from "./alertContainer";
 import { DisaggregationsDisplay } from "./common";
@@ -49,7 +49,7 @@ const PeriodSelect = ({ id, toggleCheckbox, isChecked }) => {
     // NOTE: the onChange event handler can't be used here because it fires too late and the event
     // for opening/closing the collapse panel will be triggered. However when using the onClick
     // handler React complains that the component isn't managed correctly, thus the noop onChange.
-    return (
+    return(
         <input
             id={id}
             type="checkbox"
@@ -81,18 +81,16 @@ const DeleteUpdateAlert = ({ message, close }) => (
             updates: store.models.updates,
             dimensions: store.models.dimensions.objects,
             disaggregations: store.models.disaggregations.objects,
-            user:
-                store.models.user.ids && store.models.user.ids.length > 0
-                    ? store.models.user.objects[store.models.user.ids[0]]
-                    : {},
+            user: store.models.user.ids && store.models.user.ids.length > 0 ?
+                store.models.user.objects[store.models.user.ids[0]] :
+                {},
             ui: store.ui,
             periodsActualValue: getPeriodsActualValue(store),
             periodChildrenIds: getPeriodsChildrenIds(store),
             periodDisaggregationIds: getPeriodsApprovedDisaggregationIds(store),
             dimensionIds: getIndicatorsDimensionIds(store)
         };
-    },
-    { ...alertActions, ...collapseActions }
+    }, { ...alertActions, ...collapseActions }
 )
 class PeriodHeader extends React.Component {
     static propTypes = {
@@ -102,20 +100,20 @@ class PeriodHeader extends React.Component {
 
     render() {
         const showNewUpdateButton = (page, period, ui, indicator) => {
-            if (page.mode.public) {
+            if(page.mode.public) {
                 return false;
             }
-            if (period.locked) {
+            if(period.locked) {
                 return false;
             }
-            if (
+            if(
                 ui.updateFormDisplay ||
                 ui.reportFormDisplay ||
                 (ui.activeFilter !== c.FILTER_NEED_REPORTING && ui.activeFilter !== undefined)
             ) {
                 return false;
             }
-            if (
+            if(
                 indicator.measure === c.MEASURE_PERCENTAGE &&
                 this.props.periodChildrenIds[period.id].length >= 1
             ) {
@@ -157,7 +155,7 @@ class PeriodHeader extends React.Component {
         );
 
         let periodSelect;
-        if (user.isMEManager && showLockCheckbox) {
+        if(user.isMEManager && showLockCheckbox) {
             periodSelect = (
                 <PeriodSelect
                     id={period.id}
@@ -168,7 +166,7 @@ class PeriodHeader extends React.Component {
         }
 
         let newUpdateButton, delUpdateAlert;
-        if (showNewUpdateButton(page, period, ui, indicator)) {
+        if(showNewUpdateButton(page, period, ui, indicator)) {
             newUpdateButton = <NewUpdateButton period={period} user={this.props.user} />;
             // TODO: fix for new updates. The alert won't render since the temp update
             // object gets deleted when saving.
@@ -185,7 +183,7 @@ class PeriodHeader extends React.Component {
             dimensions
         );
 
-        return (
+        return(
             <span className="periodWrap">
                 <ul className={formOpen ? "periodHeader formOpen" : "periodHeader"}>
                     <li>{periodSelect}</li>
@@ -226,17 +224,15 @@ class PeriodHeader extends React.Component {
             page: store.page,
             periods: store.models.periods,
             keys: store.keys,
-            user:
-                store.models.user.ids && store.models.user.ids.length > 0
-                    ? store.models.user.objects[store.models.user.ids[0]]
-                    : {},
+            user: store.models.user.ids && store.models.user.ids.length > 0 ?
+                store.models.user.objects[store.models.user.ids[0]] :
+                {},
             ui: store.ui,
             indicatorChildrenIds: getIndicatorsChildrenIds(store),
             periodChildrenIds: getPeriodsChildrenIds(store),
             actualValue: getPeriodsActualValue(store)
         };
-    },
-    { ...alertActions, ...collapseActions }
+    }, { ...alertActions, ...collapseActions }
 )
 export default class Periods extends React.Component {
     static propTypes = {
@@ -247,7 +243,6 @@ export default class Periods extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.openNewForm = this.openNewForm.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
         this.hideMe = this.hideMe.bind(this);
         // concatenate this model's name with parent's ID
@@ -256,8 +251,7 @@ export default class Periods extends React.Component {
 
     openNewForm(newKey, data) {
         // Add the key for a new update to the list of open panels
-        this.setState(
-            { newKeys: update(this.state.newKeys, { $push: [newKey] }) },
+        this.setState({ newKeys: update(this.state.newKeys, { $push: [newKey] }) },
             // Only when the activeKey state is committed do we update the updates model
             this.props.callbacks.updateModel(c.OBJECTS_UPDATES, data)
         );
@@ -269,13 +263,6 @@ export default class Periods extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-    }
-
-    toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_PERIODS, this.activeKey());
-        keys.map(collapse => {
-            collapseChange(collapse.collapseId, collapse.activeKey);
-        });
     }
 
     toggleCheckbox(e) {
@@ -290,51 +277,50 @@ export default class Periods extends React.Component {
 
     renderPanels(periodIds) {
         return periodIds.map(id => {
-            const { parentId, ui, page } = this.props;
-            const period = this.props.periods.objects[id];
-            const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
-            const needsReporting =
-                !period.locked && period._meta && period._meta.children.ids.length == 0;
+                const { parentId, ui, page } = this.props;
+                const period = this.props.periods.objects[id];
+                const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
+                const needsReporting = !period.locked && period._meta && period._meta.children.ids.length == 0;
 
-            let className = this.hideMe(id) ? "hidePanel" : "";
-            className += isChecked ? " periodSelected" : needsReporting ? " needsReporting" : "";
+                let className = this.hideMe(id) ? "hidePanel" : "";
+                className += isChecked ? " periodSelected" : needsReporting ? " needsReporting" : "";
 
-            return (
-                <Panel
-                    header={<PeriodHeader period={period} toggleCheckbox={this.toggleCheckbox} />}
-                    key={id}
-                    showArrow={!page.mode.public}
-                    disabled={page.mode.public}
-                    className={className}
-                >
-                    <Updates indicatorId={parentId} period={period} />
-                </Panel>
+                return(
+                    <Panel
+                    header={<PeriodHeader period={period} toggleCheckbox={this.toggleCheckbox} />
+                }
+                key = { id }
+                showArrow = {!page.mode.public }
+                disabled = { page.mode.public }
+                className = { className } >
+                    <Updates indicatorId={parentId} period={period} /> <
+                    /Panel>
             );
         });
-    }
+}
 
-    render() {
-        const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
-        if (!this.props.periods.fetched) {
-            return (
-                <p className="loading">
+render() {
+    const periodIds = this.props.indicatorChildrenIds[this.props.parentId];
+    if(!this.props.periods.fetched) {
+        return(
+            <p className="loading">
                     Loading <i className="fa fa-spin fa-spinner" />
                 </p>
-            );
-        } else if (periodIds.length > 0) {
-            return (
-                <div className={c.OBJECTS_PERIODS}>
+        );
+    } else if(periodIds.length > 0) {
+        return(
+            <div className={c.OBJECTS_PERIODS}>
                     <Collapse activeKey={this.activeKey()} onChange={this.collapseChange}>
                         {this.renderPanels(periodIds)}
                     </Collapse>
                 </div>
-            );
-        } else {
-            return (
-                <div className="emptyData">
+        );
+    } else {
+        return(
+            <div className="emptyData">
                     <p>No periods</p>
                 </div>
-            );
-        }
+        );
     }
+}
 }

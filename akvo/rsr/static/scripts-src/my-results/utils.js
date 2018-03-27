@@ -316,7 +316,7 @@ export function flatten(arr) {
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatten(val) : val), []);
 }
 
-export function toggleTree(open, MEManagerKeys) {
+export function toggleTree(open) {
     const modelsList = c.RESULTS_MODELS_LIST;
     const models = modelsList.slice(1);
     const fullTree = models.map((model) => {

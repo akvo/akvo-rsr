@@ -37,7 +37,7 @@ import {
     openNodes
 } from "../../utils";
 
-import { displayDate, _, createToggleKeys, collapseId } from "../../utils.js";
+import { displayDate, _, collapseId } from "../../utils.js";
 
 import { DisaggregationsDisplay, ToggleButton } from "../common";
 
@@ -46,14 +46,14 @@ import Comments from "../Comments";
 import { Markdown } from "react-showdown";
 
 function displayName(user) {
-    return user.last_name
-        ? user.first_name ? user.first_name + " " + user.last_name : user.last_name
-        : user.first_name ? user.first_name : user.email;
+    return user.last_name ?
+        user.first_name ? user.first_name + " " + user.last_name : user.last_name :
+        user.first_name ? user.first_name : user.email;
 }
 
 const TimestampInfo = ({ update, user, label }) => {
     //TODO: tranlsate! Will need some refactoring to handle possible different word sequences
-    return (
+    return(
         <ul>
             <li className="approverMeta">
                 {label}
@@ -79,7 +79,7 @@ TimestampInfo.propTypes = {
 
 const UpdateValue = ({ update }) => {
     const { value, text } = update;
-    return (
+    return(
         <ul className="valueMeta">
             <li className="updateValue">
                 Update value: <span>{value}</span>
@@ -95,7 +95,7 @@ UpdateValue.propTypes = {
 };
 
 const UpdateStatus = ({ update }) => {
-    return (
+    return(
         <ul>
             <li className="statusMeta">
                 Status:
@@ -129,7 +129,7 @@ const UpdateAttachments = ({ update }) => {
     ) : (
         undefined
     );
-    return (
+    return(
         <div>
             {photo_container}
             {file_container}
@@ -158,7 +158,7 @@ const QuantitativeUpdateBody = ({ update, disaggregationIds, dimensions, disaggr
         disaggregations,
         dimensions
     );
-    return (
+    return(
         <div className="UpdateBody">
             <UpdateValue update={update} />
             <DisaggregationsDisplay disaggregationData={disaggregationData} />
@@ -176,7 +176,7 @@ QuantitativeUpdateBody.propTypes = {
 };
 
 const UpdateNarrative = ({ period, update }) => {
-    return (
+    return(
         <ul className="valueMeta">
             <li className="updateValue">
                 Target:
@@ -206,7 +206,7 @@ const QualitativeUpdateBody = ({ period, update }) => {
         ) : (
             undefined
         );
-    return (
+    return(
         <div className="UpdateBody">
             <UpdateNarrative period={period} update={update} />
             <TimestampInfo update={update} user={user_details} label={_("created_on") + ":"} />
@@ -226,7 +226,7 @@ const UserInfo = ({ user_details }) => {
     const organisation = approved_organisations.length ? approved_organisations[0].name : null;
     const userName = first_name + " " + last_name;
 
-    return (
+    return(
         <span>
             <span>{userName}</span> {organisation ? " at " + organisation : ""}
         </span>
@@ -245,7 +245,7 @@ const QuantitativeUpdate = ({
     periodLocked,
     collapseId
 }) => {
-    return (
+    return(
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={periodLocked} collapseId={collapseId} />
             <div className="row">
@@ -272,7 +272,7 @@ QuantitativeUpdate.propTypes = {
 };
 
 const QualitativeUpdate = ({ id, period, update, collapseId }) => {
-    return (
+    return(
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={period.locked} collapseId={collapseId} />
             <div className="row">
@@ -324,28 +324,28 @@ class UpdateHeader extends React.Component {
         // Only show the Edit update button if the period is unlocked, the update is shown in the
         // relevant filter and the user can edit at this time
         const { page, update, activeFilter } = this.props;
-        if (page.mode.public) {
+        if(page.mode.public) {
             return false;
         }
         const show = fullUpdateVisibility(update, activeFilter);
-        if (!show) {
+        if(!show) {
             return false;
         }
-        if (this.props.periodLocked) {
+        if(this.props.periodLocked) {
             return false;
         }
         // M&E manager
-        if (this.props.user.isMEManager) {
+        if(this.props.user.isMEManager) {
             // M&E manager can always edit updates
             return true;
             // Project editor
         } else {
             // Can't edit other's updates
-            if (this.props.user.id !== update.user) {
+            if(this.props.user.id !== update.user) {
                 return false;
             }
             // Can't update submitted or approved
-            return (
+            return(
                 update.status !== c.UPDATE_STATUS_PENDING &&
                 update.status !== c.UPDATE_STATUS_APPROVED
             );
@@ -356,9 +356,9 @@ class UpdateHeader extends React.Component {
         let editUpdateButton;
         const { updateFormDisplay, update } = this.props;
 
-        if (this.showEditButton()) {
+        if(this.showEditButton()) {
             let className;
-            if (updateFormDisplay) {
+            if(updateFormDisplay) {
                 className = "btn btn-sm btn-default editingForm";
             } else {
                 className = "btn btn-sm btn-default";
@@ -372,7 +372,7 @@ class UpdateHeader extends React.Component {
                 />
             );
         }
-        return (
+        return(
             <div className="UpdateHead">
                 <span className="updateName">
                     <UserInfo user_details={update.user_details} />
@@ -409,7 +409,6 @@ export default class Updates extends React.Component {
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
         this.hideMe = this.hideMe.bind(this);
         this.state = { collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id) };
     }
@@ -421,13 +420,6 @@ export default class Updates extends React.Component {
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
         // noHide();
-    }
-
-    toggleAll() {
-        const keys = createToggleKeys(this.props.period.id, c.OBJECTS_UPDATES, this.activeKey());
-        keys.map(collapse => {
-            collapseChange(collapse.collapseId, collapse.activeKey);
-        });
     }
 
     hideMe(id) {
@@ -446,22 +438,25 @@ export default class Updates extends React.Component {
         const pending = [c.UPDATE_STATUS_PENDING];
         const approved = [c.UPDATE_STATUS_APPROVED];
 
-        if (page.mode && page.mode.public) {
+        if(page.mode && page.mode.public) {
             updateIds = [];
         } else {
-            switch (this.props.ui.activeFilter) {
-                case c.FILTER_NEED_REPORTING: {
-                    updateIds = filterUpdatesByStatus(updates, updateIds, needReporting);
-                    break;
-                }
-                case c.FILTER_SHOW_PENDING: {
-                    updateIds = filterUpdatesByStatus(updates, updateIds, pending);
-                    break;
-                }
-                case c.FILTER_SHOW_APPROVED: {
-                    updateIds = filterUpdatesByStatus(updates, updateIds, approved);
-                    break;
-                }
+            switch(this.props.ui.activeFilter) {
+                case c.FILTER_NEED_REPORTING:
+                    {
+                        updateIds = filterUpdatesByStatus(updates, updateIds, needReporting);
+                        break;
+                    }
+                case c.FILTER_SHOW_PENDING:
+                    {
+                        updateIds = filterUpdatesByStatus(updates, updateIds, pending);
+                        break;
+                    }
+                case c.FILTER_SHOW_APPROVED:
+                    {
+                        updateIds = filterUpdatesByStatus(updates, updateIds, approved);
+                        break;
+                    }
             }
         }
 
@@ -476,14 +471,15 @@ export default class Updates extends React.Component {
             const update = this.props.updates.objects[id];
             // Calculate running total of numeric update values
             const value = parseInt(update.value);
-            if (value && update.status == c.UPDATE_STATUS_APPROVED) {
+            if(value && update.status == c.UPDATE_STATUS_APPROVED) {
                 actualValue += value;
             }
             update.actual_value = actualValue;
-            switch (indicator.type) {
-                case c.INDICATOR_QUANTATIVE: {
-                    return (
-                        <QuantitativeUpdate
+            switch(indicator.type) {
+                case c.INDICATOR_QUANTATIVE:
+                    {
+                        return(
+                            <QuantitativeUpdate
                             key={id}
                             id={id}
                             update={update}
@@ -493,19 +489,20 @@ export default class Updates extends React.Component {
                             periodLocked={this.props.period.locked}
                             collapseId={this.state.collapseId}
                         />
-                    );
-                }
-                case c.INDICATOR_QUALITATIVE: {
-                    return (
-                        <QualitativeUpdate
+                        );
+                    }
+                case c.INDICATOR_QUALITATIVE:
+                    {
+                        return(
+                            <QualitativeUpdate
                             key={id}
                             id={id}
                             update={update}
                             period={period}
                             collapseId={this.state.collapseId}
                         />
-                    );
-                }
+                        );
+                    }
             }
         });
     }
@@ -515,13 +512,13 @@ export default class Updates extends React.Component {
         const { page } = this.props;
 
         // const toggleKey = createToggleKey(ids, this.activeKey());
-        if (!this.props.updates.fetched) {
-            return (
+        if(!this.props.updates.fetched) {
+            return(
                 <p className="loading">
                     Loading <i className="fa fa-spin fa-spinner" />
                 </p>
             );
-        } else if (updateIds.length > 0) {
+        } else if(updateIds.length > 0) {
             return <div className={c.OBJECTS_UPDATES}>{this.renderPanels(updateIds)}</div>;
         } else {
             return page.mode && page.mode.public ? null : (

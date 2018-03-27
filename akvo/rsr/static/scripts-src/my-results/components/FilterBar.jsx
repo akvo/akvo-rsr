@@ -97,7 +97,7 @@ export default class FilterBar extends React.Component {
         e.value();
     }
 
-    createToggleKeys() {
+    toggleTree() {
         const open = this.openResults();
         let resultsKeys;
         if(userIsMEManager(this.props.user)) {
@@ -108,7 +108,7 @@ export default class FilterBar extends React.Component {
     }
 
     toggleAll() {
-        const keys = this.createToggleKeys();
+        const keys = this.toggleTree();
         keys.map(collapse => {
             collapseChange(collapse.collapseId, collapse.activeKey);
         });
