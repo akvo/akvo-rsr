@@ -55,7 +55,7 @@ class TypeaheadSectorSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
     # Lookup attribute for sector names. Not a serialized attribute.
-    sectors = dict(codelist_choices(SECTOR_CATEGORY))
+    sectors = dict(codelist_choices(SECTOR_CATEGORY, show_code=False))
 
     def get_id(self, obj):
         return obj['sector_code']

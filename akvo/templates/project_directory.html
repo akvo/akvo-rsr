@@ -6,33 +6,9 @@
   <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
     <section id="search-filter">
       <div class="container-fluid">
-        <div id="search-view" style="position: relative; top: -61px;">
-            <!-- A hack to bring the search bar into view without being covered by the top nav bar -->
-        </div>
-
         <div id="search" class="verticalPadding row searchBar">
           <div class="col-lg-4 col-md-12">
             <p class="hidden">{% trans "Refine the project list below by searching by name, organisation or sector" %}</p>
-            <div class="form-inline" role="form">
-              <div class="form-group">
-                  <div class="input-group">
-                  {% bootstrap_field filter.form.title_or_subtitle field_class='search-query' show_label=False %}
-                  <span class="input-group-btn">
-                      <button class="btn btn-primary" onclick="advanced_filter_form.preSubmitHack()">
-                          {% trans "Search" %} &#8250;
-                      </button>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-7 col-md-12 col-lg-offset-1" id="filter-wrapper">
-            {% if q %}
-              <div> 
-                <p class="">{% trans "Refine the project search" %}</p>
-                <a href="{% url 'project-directory' %}" class="btn"><i class="fa fa-times"></i>  {% trans 'Reset all filters' %}</a>
-              </div>
-            {% endif %}
           </div>
         </div>
       </div>
@@ -41,65 +17,12 @@
     <input style="display: none;" name="limit" value="{{limit}}"/>
   </form>
 
-  <section class="main-list projects">
-    <div class="container-fluid">
-      <div  class="row">
-        <div class="col-sm-8">        
-          <p class="text-center">
-             View
-            {% for page_number, page_size in page_info|slice:"1:" %}
-            <a class="btn pageSize" href="{% addparam 'limit' page_size 'page' page_number %}">{{page_size}}</a>  
-            {% endfor %}
-            projects
-          </p>
-        </div>
-        <div class="col-sm-7">
-            <ul class="projectListUl">
-              {% for project in page %}
-                <li>
-                  <div class="thumbImg">
-                    <a href="{% url 'project-main' project.id %}">
-                      {% img project 350 150 project.title %}
-                    </a>
-                  </div>
-                  <div class="">
-                    <h1><a href="{% url 'project-main' project.id %}">{{project.title}}</a></h1>
-                    <p class="projectSubT">{{project.subtitle}}</p>
-                    <p class="projectLocation"><i class="fa fa-map-marker"></i>
-                        {% for country in project.countries %}
-                            {{ country }}{% if not forloop.last %}, {% endif %}
-                        {% empty %}
-                            {% trans 'No location specified' %}
-                        {% endfor %}
-                    </p>
-                  </div>
-                </li>
-              {% endfor %}
-            </ul>       
-            {% include 'navigation/pagination.html' %}
-        </div>
-        <div class="col-sm-5">
-            <section id="map" class="touch-navbar">
-              {% coll_map map_projects '100%' '100%' %}
-            </section>
-            {% if not rsr_page.all_maps %}
-              <div id="map-warning" class="text-center">{% trans 'This map only shows the projects listed on this page.' %}</div>
-            {% endif %}
-        </div>
-      </div>
-    </div>
-  </section>
+  <div id="project-directory"></div>
 
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
-
-    {# Twitter Typeahead #}
-    <script id="typeahead"
-            src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.js"
-            integrity="sha256-9PktWqeso0y5/rAR0iDepG9qzPITS+ccSjYHU9vMCf4="
-            crossorigin="anonymous"></script>
 
     {# Google Maps API #}
     <script src="//maps.google.com/maps/api/js"></script>
@@ -112,7 +35,7 @@
 
     <script type="application/javascript">
         AKVO_RSR.typeahead = {};
-        AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
+     /* AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);*/
     </script>
 
     {# Translation strings #}
@@ -129,8 +52,9 @@
         "status_text": "{% trans 'status'|escapejs %}",
         "organisation_text": "{% trans 'organisation'|escapejs %}",
         "sector_text": "{% trans 'sector'|escapejs %}",
-        "apply_filter_text": "{% trans 'Apply filter'|escapejs %}",
-        "close_this_text": "{% trans 'Close this'|escapejs %}"
+        "reset_filters_text": "{% trans 'Reset filters'|escapejs %}",
+        "no_location_text": "{% trans 'No location specified'|escapejs %}",
+        "page_limit_text": "{% trans '# of projects'|escapejs %}"
         }
     </script>
 
@@ -171,7 +95,6 @@
     {% endfor %}
 
     {% javascript 'project_directory_filters' %}
-    {% javascript 'project_directory' %}
     {% javascript 'more_partners' %}
     {% javascript 'donate_popup' %}
 
