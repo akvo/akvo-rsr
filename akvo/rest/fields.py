@@ -16,8 +16,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.fields import ImageField
-from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail.parsers import ThumbnailParseError
+
+from akvo.utils import get_thumbnail
 
 
 class NonNullCharField(serializers.CharField):
@@ -134,25 +135,29 @@ class Base64ImageField(ImageField):
             # no size specification matching the name found; give up
             return None
 
-        if value:
-            default_width = '191'  # width of update images on akvo.org/seeithappen
-            try:
-                default_thumb = get_thumbnail(value, default_width, quality=99)
-                request = self.context['request']
-            except (ThumbnailParseError, IOError, KeyError):
-                return None
+        if not value:
+            return None
 
-            # look for name(s) of thumb(s)
-            image_thumb_name = request.GET.get('image_thumb_name')
-            if image_thumb_name:
-                names = image_thumb_name.split(',')
-                thumbs = {u'original': value.url, u'default': default_thumb.url}
-                for name in names:
-                    thumb = get_thumb(request, name)
-                    if thumb is not None:
-                        thumbs[name] = thumb.url
-                return thumbs
-            return default_thumb.url
+        default_width = '191'  # width of update images on akvo.org/seeithappen
+        try:
+            default_thumb = get_thumbnail(value, default_width, quality=99)
+            request = self.context['request']
+        except (ThumbnailParseError, IOError, KeyError):
+            return None
+
+        # look for name(s) of thumbnail(s)
+        image_thumb_name = request.GET.get('image_thumb_name')
+        if image_thumb_name:
+            names = image_thumb_name.split(',')
+            thumbnails = {u'original': value.url, u'default': default_thumb.url}
+            for name in names:
+                thumbnail = get_thumb(request, name)
+                if thumbnail is not None:
+                    thumbnails[name] = thumbnail.url
+        else:
+            thumbnails = default_thumb.url
+
+        return thumbnails
 
     def get_file_extension(self, filename, decoded_file):
         extension = imghdr.what(filename, decoded_file)

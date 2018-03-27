@@ -4,11 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from django.conf import settings
 from rest_framework import serializers
-from sorl.thumbnail import get_thumbnail
 
 from akvo.rsr.models import Project
+from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
 
@@ -69,8 +68,7 @@ class ProjectListingSerializer(serializers.ModelSerializer):
     def get_image(self, project):
         geometry = '350x150'
         image = get_thumbnail(project.current_image, geometry, crop='center', quality=99)
-        local_dev = settings.RSR_DOMAIN == 'rsr.localdev.akvo.org'
-        return image.url if image and not local_dev else "//placehold.it/{}".format(geometry)
+        return image.url if image is not None else ''
 
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):
