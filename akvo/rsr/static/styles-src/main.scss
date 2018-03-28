@@ -1569,6 +1569,48 @@ h4.detailedInfo {
     .excerpt {
         @include noWrapBlockTxt;
     }
+    &.orgList {
+        ul.projectListUl {
+            overflow-y: scroll;
+            padding-left: 15px;
+            li {
+                margin-bottom: 5px;
+                list-style-type: none;
+                padding: 15px 0;
+                display: inline;
+                width: 32%;
+                float: left;
+                min-height: 345px;
+                @include border-radius(3px);
+                background: white;
+                margin-right: 2%;
+                &:nth-child(3n+3) {
+                    margin-right: 0;
+                }
+                h1 {
+                    margin-top: 5px;
+                    a {
+                        color: $rsrBlue;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
+                border: thin solid rgba($rsrBlue, 0);
+                @include transition(all 0.2s ease-in);
+                .projectSubT {
+                    margin-bottom: 0;
+                }
+                &:nth-child(2n+1) {
+                    background: darken(rgba($rsrBlue, 0), 0%);
+                    border: thin solid rgba($rsrBlue, 0);
+                }
+                .projectLocation {
+                    color: rgba($akvoBlack, 0.5);
+                }
+            }
+        }
+    }
     &.projects {
         margin-top: 10px;
         #map {
@@ -1599,7 +1641,7 @@ h4.detailedInfo {
                 display: inline;
                 width: 32%;
                 float: left;
-                min-height: 315px;
+                min-height: 345px;
                 @include border-radius(3px);
                 background: white;
                 margin-right: 2%;
@@ -4483,7 +4525,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
