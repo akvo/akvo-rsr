@@ -15,7 +15,7 @@ import {
     noHide,
     selectablePeriods,
     selectPeriodByDates,
-    updateFormClose,
+    updateFormClose
 } from "../actions/ui-actions";
 
 import { lockSelectedPeriods, unlockSelectedPeriods } from "../actions/model-actions";
@@ -100,7 +100,7 @@ export default class FilterBar extends React.Component {
     toggleTree() {
         const open = this.openResults();
         let resultsKeys;
-        if(userIsMEManager(this.props.user)) {
+        if (userIsMEManager(this.props.user)) {
             resultsKeys = this.props.ResultsDefaultKeys;
         }
         // construct the array of Collapse activeKeys for the sub-tree
@@ -125,15 +125,15 @@ export default class FilterBar extends React.Component {
         const openCollapses = Object.keys(keys).filter(
             key => isResultsKey(key) && keys[key].length !== 0
         );
-        return(
+        return (
             identicalArrays(activeKey, this.props.ResultsDefaultKeys) && openCollapses.length === 1
         );
     }
 
     filterButtonClass(button) {
-        return this.props.ui.activeFilter === button ?
-            "btn btn-sm btn-default filterActive" :
-            "btn btn-sm btn-default";
+        return this.props.ui.activeFilter === button
+            ? "btn btn-sm btn-default filterActive"
+            : "btn btn-sm btn-default";
     }
 
     filterSelectClass(select) {
@@ -163,7 +163,7 @@ export default class FilterBar extends React.Component {
         );
         const buttonDisabled = !this.props.ui.allFetched;
 
-        return(
+        return (
             // TODO: this is a hideously ugly hack to show the filterbar in two modes depending on
             // if we're on the results page or the project page. Needs refactoring!
             page.mode && page.mode.public ? (

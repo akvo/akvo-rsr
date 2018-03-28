@@ -29,7 +29,7 @@ import Periods from "./Periods";
 
 const IndicatorHeaderPeriodCount = ({ count }) => {
     const periodText = count == 1 ? "period" : "periods";
-    return(
+    return (
         <li>
             {" "}
             {count} {periodText}
@@ -65,7 +65,7 @@ const IndicatorHeader = ({
                 />
             </li>
         );
-    return(
+    return (
         <span className="indicatorTitle">
             <ul>
                 <li>{title}</li>
@@ -109,7 +109,7 @@ const IndicatorContent = ({ indicator }) => {
         undefined
     );
 
-    return(
+    return (
         <div className="indicatorInfo">
             {description}
             {baselineYear || baselineValue ? (
@@ -167,12 +167,12 @@ export default class Indicators extends React.Component {
 
     renderPanels(indicatorIds) {
         return indicatorIds.map(id => {
-                const indicator = this.props.indicators.objects[id];
-                const className = this.hideMe(id) ? "hidePanel" : "";
-                const periods = this.props.indicatorsChildrenIds[id];
-                const hideType = this.props.primaryOrganisationId === c.IUCN_ORG_ID;
-                return(
-                    <Panel
+            const indicator = this.props.indicators.objects[id];
+            const className = this.hideMe(id) ? "hidePanel" : "";
+            const periods = this.props.indicatorsChildrenIds[id];
+            const hideType = this.props.primaryOrganisationId === c.IUCN_ORG_ID;
+            return (
+                <Panel
                     header={
                         <IndicatorHeader
                             indicator={indicator}
@@ -183,29 +183,28 @@ export default class Indicators extends React.Component {
                             }
                             hideType={hideType}
                         />
-                }
-                className = { className }
-                key = { id } >
-                    <IndicatorContent indicator={indicator} /> <
-                    Periods parentId = { id }
-                /> <
-                /Panel>
+                    }
+                    className={className}
+                    key={id}
+                >
+                    <IndicatorContent indicator={indicator} /> <Periods parentId={id} />{" "}
+                </Panel>
             );
         });
-}
+    }
 
-render() {
-    const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
+    render() {
+        const indicatorIds = this.props.resultChildrenIds[this.props.parentId];
 
-    if(!this.props.indicators.fetched) {
-        return(
-            <p className="loading">
+        if (!this.props.indicators.fetched) {
+            return (
+                <p className="loading">
                     Loading <i className="fa fa-spin fa-spinner" />
                 </p>
-        );
-    } else if(indicatorIds.length > 0) {
-        return(
-            <div className={c.OBJECTS_INDICATORS}>
+            );
+        } else if (indicatorIds.length > 0) {
+            return (
+                <div className={c.OBJECTS_INDICATORS}>
                     {/*<ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+"/>*/}
                     {/*<ToggleButton onClick={this.toggleAll} label="++"*/}
                     {/*disabled={!this.props.ui.allFetched}/>*/}
@@ -213,13 +212,13 @@ render() {
                         {this.renderPanels(indicatorIds)}
                     </Collapse>
                 </div>
-        );
-    } else {
-        return(
-            <div className="emptyData">
+            );
+        } else {
+            return (
+                <div className="emptyData">
                     <p>No indicators</p>
                 </div>
-        );
+            );
+        }
     }
-}
 }

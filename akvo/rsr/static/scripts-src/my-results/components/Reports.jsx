@@ -24,7 +24,7 @@ import "react-datepicker/dist/react-datepicker.css";
 export default class Reports extends React.Component {
     render() {
         const { project, reports } = this.props;
-        const report_count = reports && reports.ids && reports.ids.length || 0;
+        const report_count = (reports && reports.ids && reports.ids.length) || 0;
         const row_count = Math.round(Math.ceil(report_count / 3)),
             row_indexes = Array.from(Array(row_count).keys()),
             col_indexes = Array.from(Array(3).keys());

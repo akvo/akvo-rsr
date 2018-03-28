@@ -21,12 +21,12 @@ import Indicators from "./Indicators";
 
 const ResultHeaderIndicatorCount = ({ count }) => {
     let indicatorText;
-    if(count == 1) {
+    if (count == 1) {
         indicatorText = _("indicator");
     } else {
         indicatorText = _("indicators");
     }
-    return(
+    return (
         <span className="result-indicator-count">
             <i className="fa fa-tachometer" />
             <span className="indicator-count inlined">
@@ -43,7 +43,7 @@ ResultHeaderIndicatorCount.propTypes = {
 const ResultHeader = ({ result, indicatorCount = 0, showIndicatorCount }) => {
     const renderResultType = result => {
         // Show the result type, if available
-        switch(result.type) {
+        switch (result.type) {
             case "1":
                 return <span className="indicatorType">{_("output")}</span>;
             case "2":
@@ -57,7 +57,7 @@ const ResultHeader = ({ result, indicatorCount = 0, showIndicatorCount }) => {
         }
     };
 
-    return(
+    return (
         <span className="resultTitle">
             <h5>{result.title}</h5>
             <div>
@@ -114,43 +114,44 @@ export default class Results extends React.Component {
 
     renderPanels(ids) {
         return ids.map(id => {
-                const result = this.props.results.objects[id];
-                const indicatorCount =
-                    (this.props.resultChildrenIds[id] && this.props.resultChildrenIds[id].length) || 0;
-                const showIndicatorCount = this.props.primaryOrganisationId !== c.IUCN_ORG_ID;
-                const className = this.hideMe(id) ? "hidePanel" : "";
-                return(
-                    <Panel
+            const result = this.props.results.objects[id];
+            const indicatorCount =
+                (this.props.resultChildrenIds[id] && this.props.resultChildrenIds[id].length) || 0;
+            const showIndicatorCount = this.props.primaryOrganisationId !== c.IUCN_ORG_ID;
+            const className = this.hideMe(id) ? "hidePanel" : "";
+            return (
+                <Panel
                     header={
                         <ResultHeader
                             result={result}
                             indicatorCount={indicatorCount}
                             showIndicatorCount={showIndicatorCount}
                         />
-                }
-                className = { className }
-                key = { id } >
-                    <Indicators parentId={id} /> <
-                    /Panel>
+                    }
+                    className={className}
+                    key={id}
+                >
+                    <Indicators parentId={id} />{" "}
+                </Panel>
             );
         });
-}
+    }
 
-render() {
-    // Special case, always get all Results
-    const results = this.props.results;
-    const resultIds = results.ids;
-    const toggleKey = createToggleKey(resultIds, this.activeKey());
+    render() {
+        // Special case, always get all Results
+        const results = this.props.results;
+        const resultIds = results.ids;
+        const toggleKey = createToggleKey(resultIds, this.activeKey());
 
-    if(!results.fetched) {
-        return(
-            <p className="loading">
+        if (!results.fetched) {
+            return (
+                <p className="loading">
                     Loading <i className="fa fa-spin fa-spinner" />
                 </p>
-        );
-    } else if(resultIds.length > 0) {
-        return(
-            <div className={c.OBJECTS_RESULTS}>
+            );
+        } else if (resultIds.length > 0) {
+            return (
+                <div className={c.OBJECTS_RESULTS}>
                     <ToggleButton onClick={this.collapseChange.bind(this, toggleKey)} label="+" />
                     <ToggleButton
                         onClick={this.toggleAll}
@@ -161,13 +162,13 @@ render() {
                         {this.renderPanels(resultIds)}
                     </Collapse>
                 </div>
-        );
-    } else {
-        return(
-            <div className="emptyData">
+            );
+        } else {
+            return (
+                <div className="emptyData">
                     <p>No results</p>
                 </div>
-        );
+            );
+        }
     }
-}
 }
