@@ -87,3 +87,7 @@ xmlunittest==0.3.2
 
 # Country detection
 Shapely==1.5.7
+
+# DRF CSV endpoints
+djangorestframework-csv==2.1.0
+unicodecsv==0.14.1
