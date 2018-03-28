@@ -1580,7 +1580,7 @@ h4.detailedInfo {
                 display: inline;
                 width: 32%;
                 float: left;
-                min-height: 345px;
+                min-height: 255px;
                 @include border-radius(3px);
                 background: white;
                 margin-right: 2%;
@@ -1598,16 +1598,6 @@ h4.detailedInfo {
                 }
                 border: thin solid rgba($rsrBlue, 0);
                 @include transition(all 0.2s ease-in);
-                .projectSubT {
-                    margin-bottom: 0;
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrBlue, 0), 0%);
-                    border: thin solid rgba($rsrBlue, 0);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
             }
         }
     }
@@ -3579,6 +3569,9 @@ main.results-page {
 }
 
 .myRsrPg {
+    + footer {
+        display: none;
+    }
     h3 {
         display: inline-block;
         margin-top: 20px;

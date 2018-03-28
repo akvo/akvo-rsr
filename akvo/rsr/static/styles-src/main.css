@@ -1361,7 +1361,7 @@ h4.detailedInfo {
     display: inline;
     width: 32%;
     float: left;
-    min-height: 345px;
+    min-height: 255px;
     -moz-border-radius: 3px;
     -o-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -1381,13 +1381,6 @@ h4.detailedInfo {
         color: #2c2a74; }
         .main-list.orgList ul.projectListUl li h1 a:hover {
           color: #ca8142; }
-    .main-list.orgList ul.projectListUl li .projectSubT {
-      margin-bottom: 0; }
-    .main-list.orgList ul.projectListUl li:nth-child(2n+1) {
-      background: rgba(44, 42, 116, 0);
-      border: thin solid rgba(44, 42, 116, 0); }
-    .main-list.orgList ul.projectListUl li .projectLocation {
-      color: rgba(32, 32, 36, 0.5); }
 
 .main-list.projects {
   margin-top: 10px; }
@@ -2963,6 +2956,8 @@ main.results-page {
 .myRsrPg {
   padding-right: 50px !important;
   padding-left: 50px !important; }
+  .myRsrPg + footer {
+    display: none; }
   .myRsrPg h3 {
     display: inline-block;
     margin-top: 20px; }

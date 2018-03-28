@@ -1,6 +1,6 @@
 {% load i18n bootstrap3 rsr_utils rules %}
 
-{% url 'project-directory' as project_directory %}
+{% url 'index' as index_url %}
 
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container-fluid">
@@ -13,7 +13,7 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand" href="{% firstof rsr_page.return_url project_directory %}">
+      <a class="navbar-brand" href="{% firstof rsr_page.return_url index_url %}">
         {% if rsr_page.logo %}
           {% img rsr_page 125 60 organisation.name %}
         {% elif rsr_page.organisation %}
