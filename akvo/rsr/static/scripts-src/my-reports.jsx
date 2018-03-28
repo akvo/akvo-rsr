@@ -406,16 +406,21 @@ function initReact() {
             var reportsData,
                 thisReportsDropdown = this;
             if (this.props.reportOptions.length > 0 && this.props.userOptions !== null) {
-                reportsData = this.props.reportOptions.map(function (report) {
-                    return (
-                        <li key={report.name}>
-                            {React.createElement(ReportOption, {
-                                 report: report,
-                                 selectReport: thisReportsDropdown.selectReport
-                            })}
-                        </li>
-                    );
-                });
+                reportsData = this.props.reportOptions
+                    // remove reports which have project as a parameter, before creating dropdown options
+                    .filter(function(report) {
+                        return report.parameters.indexOf("project") == -1;
+                    })
+                    .map(function(report) {
+                        return (
+                            <li key={report.name}>
+                                {React.createElement(ReportOption, {
+                                    report: report,
+                                    selectReport: thisReportsDropdown.selectReport
+                                })}
+                            </li>
+                        );
+                    });
             } else {
                 reportsData = <li>
                     <a href="#"><i className="fa fa-spin fa-spinner" /> Loading...</a>
