@@ -5,14 +5,39 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+import chai from "chai";
+import React from "react";
+import configureStore from "redux-mock-store";
 
-import chai from 'chai'
-import React from 'react'
-import * as utils from '../../../scripts-src/my-results/utils'
-import * as c from '../../../scripts-src/my-results/const'
-import { shallow } from 'enzyme'
+import * as utils from "../../../scripts-src/my-results/utils";
+import * as c from "../../../scripts-src/my-results/const";
+import { mock } from "../../../scripts-src/my-results/store";
+
+const middlewares = [];
+const mockStore = configureStore(middlewares);
 
 let expect = chai.expect;
+
+describe("function _", () => {
+    const store = mockStore({
+        page: {
+            strings: {
+                actual: "Actual",
+                actual_comment: "Actual comment"
+            }
+        }
+    });
+    beforeEach(() => {
+        mock(store);
+    });
+    afterEach(() => {
+        mock();
+    });
+    it("it translates!", () => {
+        expect(utils._("actual")).to.equal("Actual");
+        expect(utils._("actual_comment")).to.equal("Actual comment");
+    });
+});
 
 describe("function distinct", () => {
     it('expect to return an array with unique values', () => {
