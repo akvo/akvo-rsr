@@ -44,8 +44,7 @@ function setup_sentry(){
             Raven.setUserContext({email: user_email});
         }
     }
-};
-
+}
 
 $(document).ready(function() {
 
@@ -116,12 +115,13 @@ $(document).ready(function() {
   // Maps
   // Find each element of class rsr_map (from the coll_map template tag)
   // and render map with data from related js object
-  _.forEach(document.getElementsByClassName('rsr_map'), function( node ) {
+  render_map = function ( node, mapConfig ) {
 
     var mapId = node.id,
-        mapConfig = window[mapId],
         disableDefaultUI = false,
         draggable = true;
+
+    mapConfig = mapConfig || window[mapId];
 
     if ( !mapConfig.dynamic ) {
       disableDefaultUI = true;
@@ -139,7 +139,7 @@ $(document).ready(function() {
         draggable: draggable
       },
 
-      locations: window[mapId].locations,
+      locations: mapConfig.locations,
       load: function() {
         var map = new google.maps.Map( this.canvas, this.options ),
             bounds = new google.maps.LatLngBounds(),
@@ -208,6 +208,7 @@ $(document).ready(function() {
       }
     };
     gMap.load();
-  });
+  }
+  _.forEach(document.getElementsByClassName('rsr_map'), render_map);
 
 });

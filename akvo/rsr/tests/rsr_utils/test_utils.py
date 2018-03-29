@@ -13,7 +13,7 @@ from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filenam
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
                         custom_get_or_create_country, right_now_in_akvo,
                         pagination, filter_query_string, codelist_name, get_country,
-                        codelist_choices)
+                        codelist_choices, get_placeholder_thumbnail)
 
 from django.core import mail
 from django.http.request import QueryDict
@@ -252,3 +252,42 @@ class GeneralUtilsTestCase(TestCase):
 
         for (lat, lon), country in LOCATIONS:
             self.assertEqual(country, get_country(lat, lon)[0])
+
+    def test_placeholder_thumbnail_w_x_h(self):
+        """Test for the placeholder thumbnail with both width and height."""
+
+        # Given
+        geometry_string = '350x150'
+        image_path = '/media/db/test.img'
+
+        # When
+        url = get_placeholder_thumbnail(image_path, geometry_string)
+
+        # Then
+        self.assertEqual('//placehold.it/350x150', url.url)
+
+    def test_placeholder_thumbnail_w_only(self):
+        """Test for the placeholder thumbnail with only width."""
+
+        # Given
+        geometry_string = '350'
+        image_path = '/media/db/test.img'
+
+        # When
+        url = get_placeholder_thumbnail(image_path, geometry_string)
+
+        # Then
+        self.assertEqual('//placehold.it/350x350', url.url)
+
+    def test_placeholder_thumbnail_h_only(self):
+        """Test for the placeholder thumbnail with only height."""
+
+        # Given
+        geometry_string = 'x150'
+        image_path = '/media/db/test.img'
+
+        # When
+        url = get_placeholder_thumbnail(image_path, geometry_string)
+
+        # Then
+        self.assertEqual('//placehold.it/150x150', url.url)

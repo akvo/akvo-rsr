@@ -37,7 +37,7 @@
             </li>
             {% endif %}
             {% has_perm 'rsr.project_management' user as can_manage_projects %}
-            {% if can_manage_projects %}
+            {% if can_manage_projects and 'myrsr/projects' in request.path %}
             <li class="navIati">
                 <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
                    href="{% url 'my_iati' %}">

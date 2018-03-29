@@ -12,8 +12,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from akvo.codelists.models import Country, Version
-from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
-from akvo.rest.serializers import (TypeaheadCountrySerializer,
+from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
+from akvo.rest.serializers import (ProjectListingSerializer,
+                                   TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer,
@@ -127,6 +128,7 @@ def _create_filters_query(request):
     status_param = _int_or_none(request.GET.get('status'))
     organisation_param = _int_or_none(request.GET.get('organisation'))
     sector_param = _int_or_none(request.GET.get('sector'))
+    title_or_subtitle_param = request.GET.get('title_or_subtitle')
 
     keyword_filter = Q(keywords__id=keyword_param) if keyword_param else None
     location_filter = get_m49_filter(location_param) if location_param else None
@@ -136,11 +138,29 @@ def _create_filters_query(request):
         Q(sectors__sector_code=sector_param, sectors__vocabulary='2')
         if sector_param else None
     )
+    title_or_subtitle_filter = (
+        Q(title__icontains=title_or_subtitle_param) | Q(subtitle__icontains=title_or_subtitle_param)
+    ) if title_or_subtitle_param else None
     all_filters = [
-        keyword_filter, location_filter, status_filter, organisation_filter, sector_filter
+        keyword_filter,
+        location_filter,
+        status_filter,
+        organisation_filter,
+        sector_filter,
     ]
     filters = filter(None, all_filters)
-    return reduce(lambda x, y: x & y, filters) if filters else None
+    return reduce(lambda x, y: x & y, filters) if filters else None, title_or_subtitle_filter
+
+
+def _get_projects_for_page(projects, request):
+    """Return projects to be shown on the current page"""
+    limit = _int_or_none(request.GET.get('limit')) or settings.PROJECT_DIRECTORY_PAGE_SIZES[0]
+    limit = min(limit, settings.PROJECT_DIRECTORY_PAGE_SIZES[-1])
+    max_page_number = 1 + projects.count() / limit
+    page_number = min(max_page_number, _int_or_none(request.GET.get('page')) or 1)
+    start = (page_number - 1) * limit
+    end = page_number * limit
+    return projects[start:end]
 
 
 @api_view(['GET'])
@@ -157,24 +177,38 @@ def typeahead_project_filters(request):
     projects = page.projects() if page else Project.objects.all().public().published()
 
     # Filter projects based on query parameters
-    filter_ = _create_filters_query(request)
+    filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
+    # NOTE: The text filter is handled differently/separately from the other filters.
+    # The text filter allows users to enter free form text, which could result in no
+    # projects being found for the given text. Other fields only allow selecting from
+    # a list of options, and for every combination that is shown to users and
+    # selectable by them, at least one project exists.
+    # When no projects are returned for a given search string, if the text search is
+    # not handled separately, the options for all the other filters are empty, and
+    # this causes the filters to get cleared automatically. This is very weird UX.
+    projects_text_filtered = (
+        projects.filter(text_filter) if text_filter is not None else projects
+    )
+    if projects_text_filtered.exists():
+        projects = projects_text_filtered
 
-    # Get the relevant data for typeaheads based on filtered projects.
-    keywords = projects.keywords().values('id', 'label')
+    # Pre-fetch related fields to make things faster
+    projects = projects.select_related(
+        'primary_location',
+        'primary_organisation',
+    ).prefetch_related(
+        'locations',
+        'locations__country',
+        'recipient_countries',
+    )
 
+    # Get the relevant data for typeaheads based on filtered projects (minus
+    # text filtering, if no projects were found)
     locations = [
         {'id': choice[0], 'name': choice[1]}
         for choice in location_choices(projects)
     ]
-
-    valid_statuses = dict(codelist_choices(ACTIVITY_STATUS))
-    status = [
-        {'id': status, 'name': valid_statuses[status]}
-        for status in set(projects.values_list('iati_status', flat=True))
-        if status in valid_statuses
-    ]
-
     organisations = projects.all_partners().values('id', 'name', 'long_name')
 
     # FIXME: Currently only vocabulary 2 is supported (as was the case with
@@ -184,13 +218,17 @@ def typeahead_project_filters(request):
         vocabulary='2', sector_code__in=valid_sectors
     ).values('sector_code').distinct()
 
+    # NOTE: We use projects_text_filtered for displaying projects
+    count = projects_text_filtered.count()
+    display_projects = _get_projects_for_page(projects_text_filtered, request)
+
     response = {
-        'project_count': projects.count(),
+        'project_count': count,
+        'projects': ProjectListingSerializer(display_projects, many=True).data,
         'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
-        'keyword': TypeaheadKeywordSerializer(keywords, many=True).data,
-        'status': sorted(status, key=lambda x: x['id']),
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,
+        'limit': settings.PROJECT_DIRECTORY_PAGE_SIZES,
     }
 
     return Response(response)
