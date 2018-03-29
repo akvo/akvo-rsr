@@ -44,9 +44,10 @@
       <table class="table table-striped table-responsive myProjectList">
         <thead>
         <tr>
-          <th>{% trans "Projects" %}</th>
-          <th>{% trans "Type" %}</th>
-          <th>{% trans "Status" %}</th>
+            <th>{% trans "Projects" %}</th>
+            <th>{% trans "Project Location" %}</th>
+            <th>{% trans "Relationship" %}</th>
+            <th>{% trans "End date (planned)" %}</th>
         </tr>
         </thead>
         {% for project in page %}
@@ -67,9 +68,14 @@
                 <span class="privatePjt">{% trans 'Private' %}</span>
               {% endif %}
             </td>
-            <td><i class="fa fa-tag"></i> {% for validation in project.validations.all %}{{ validation.name }}{% if not forloop.last %} + {% endif %}{% endfor %} {% trans 'project' %}</td>
-            <td class="projectStatus">{{ project.show_status }}</td>
-
+            <td>
+                {{ project.primary_location.country }}
+            </td>
+            <td>
+                <span class="label label-info">{% if project.children_all.exists %}Parent{% endif %}</span>
+                <span class="label label-default">{% if project.parents_all.exists %}Child{% endif %}</span>
+            </td>
+            <td>{{ project.date_end_planned }}</td>
           </tr>
         {% endfor %}
       </table>
