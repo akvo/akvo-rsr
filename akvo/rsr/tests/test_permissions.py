@@ -186,6 +186,22 @@ class PermissionsTestCase(TestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_organisationlocation', location))
 
+    def test_org_user_permissions(self):
+        user = self.users[0]
+
+        # None object permissions
+        self.assertTrue(user.has_perm('rsr.view_project', None))
+
+        # Project Update permissions
+        for i, project_update in enumerate(self.project_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        for i, project in enumerate(self.projects):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.view_project', project))
+            self.assertFalse(user.has_perm('rsr.change_project', project))
+
     @staticmethod
     def create_user(email, is_active=True, is_admin=False, is_superuser=False):
         """Create a user with the given email."""
