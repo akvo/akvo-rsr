@@ -202,6 +202,23 @@ class PermissionsTestCase(TestCase):
             test(user.has_perm('rsr.view_project', project))
             self.assertFalse(user.has_perm('rsr.change_project', project))
 
+    def test_org_enumerator_permissions(self):
+        user = self.users[0]
+
+        # Change Users employment to Enumerators employment
+        employment = user.employers.first()
+        group = Group.objects.get(name='Enumerators')
+        employment.group = group
+        employment.save()
+
+        # Assert user all Users group permissions
+        self.test_org_user_permissions()
+
+        # Can add indicator
+        project = self.projects[0]
+        self.assertTrue(user.has_perm('rsr.add_indicatorperioddata', project))
+        self.assertTrue(user.has_perm('rsr.change_indicatorperioddata', project))
+
     @staticmethod
     def create_user(email, is_active=True, is_admin=False, is_superuser=False):
         """Create a user with the given email."""

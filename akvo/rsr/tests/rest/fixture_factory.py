@@ -331,9 +331,28 @@ class EmploymentFactory(DjangoModelFactory):
     class Meta:
         model = 'rsr.Employment'
 
-    user = factory.Iterator(User.objects.all())
-    organisation = factory.Iterator(Organisation.objects.all())
-    group = factory.Sequence(lambda x: Group.objects.get(id=Group.objects.order_by('id').values_list('id', flat=True)[x % Group.objects.count()]))
+    # We have 3 sequences, and we try to create a nested loop structure using that.
+    # We have 6 groups, 3 orgs and 5 users.
+    # Each user has 6 employments - 2 employments per org with different groups
+
+    _users = User.objects.all()
+    _organisations = Organisation.objects.all()
+    _groups = Group.objects.all().order_by('id')
+
+    @factory.sequence
+    def user(n):
+        index = n / len(EmploymentFactory._groups)
+        return EmploymentFactory._users[index]
+
+    @factory.sequence
+    def organisation(n):
+        index = (n % len(EmploymentFactory._groups)) / 2
+        return EmploymentFactory._organisations[index]
+
+    @factory.sequence
+    def group(n):
+        index = n % len(EmploymentFactory._groups)
+        return EmploymentFactory._groups[index]
 
 
 class KeywordFactory(DjangoModelFactory):
@@ -470,7 +489,7 @@ def populate_test_data(seed=42):
             country_info = Country.fields_from_iso_code(country_code)
             country, created = Country.objects.get_or_create(**country_info)
 
-    EmploymentFactory.create_batch(15)
+    EmploymentFactory.create_batch(30)
 
     KeywordFactory.create_batch(20)
     for keyword in Keyword.objects.all():
