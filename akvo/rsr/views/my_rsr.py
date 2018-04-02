@@ -22,7 +22,6 @@ from tastypie.models import ApiKey
 from akvo.codelists.models import Country, Version
 from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
 from akvo.rsr.models import IndicatorPeriodData
-from .utils import toJSBoolean
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
@@ -510,7 +509,9 @@ def user_management(request):
 def my_project(request, project_id, template='myrsr/my_project.html'):
     """Project results, updates and reports CRUD view
 
-    Only accessible to M&E Managers, Admins and Project editors.
+    The page allows adding updates, creating reports, adding/changing results
+    and narrative reports. So, this page should be visible to any org user, but
+    tabs are shown based on the permissions of the user.
 
     :param request; A Django HTTP request and context
     :param project_id; The ID of the project
@@ -519,8 +520,13 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
     project = get_object_or_404(Project, pk=project_id)
     user = request.user
 
-    if not user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED \
-            or not project.is_published():
+    # FIXME: Can reports be generated on EDIT_DISABLED projects?
+    if project.iati_status in Project.EDIT_DISABLED:
+        raise PermissionDenied
+
+    # Adding an update is the action that requires least privileges - the view
+    # is shown if a user can add updates to the project.
+    if not user.has_perm('rsr.add_projectupdate') or not project.is_published():
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')
@@ -531,16 +537,18 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
     user_is_me_manager = user.is_superuser or user.is_admin or user.me_manager_for_project(project)
     show_narrative_reports = project.partners.filter(
         id__in=settings.NARRATIVE_REPORTS_BETA_ORGS
-    ).exists()
+    ).exists() and user.has_perm('rsr.add_narrativereport', project)
+    show_results = user.has_perm('rsr.add_indicatorperioddata', project)
 
     context = {
         'project': project,
         'user': user,
-        # turn it into JSON boolean
-        'user_is_me_manager': toJSBoolean(user_is_me_manager),
         'me_managers': me_managers.exists(),
+        # JSON data for the client-side JavaScript
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
-        'show_narrative_reports': toJSBoolean(show_narrative_reports),
+        'user_is_me_manager': json.dumps(user_is_me_manager),
+        'show_narrative_reports': json.dumps(show_narrative_reports),
+        'show_results': json.dumps(show_results),
     }
 
     return render(request, template, context)
