@@ -1480,8 +1480,8 @@ h4.detailedInfo {
         .form-group {
             input {
                 width: 250px;
-                padding-top: 5px;
-                padding-bottom: 5px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
             }
             button {
                 padding-top: 7px;
