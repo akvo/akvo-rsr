@@ -1252,6 +1252,10 @@ h4.detailedInfo {
     max-width: 80%;
     margin: 10px auto 0 auto; }
 
+.label-info {
+  font-weight: normal;
+  font-size: 0.8em; }
+
 #search-filter {
   margin-top: -10px; }
   @media only screen and (max-width: 768px) {
@@ -1268,7 +1272,9 @@ h4.detailedInfo {
     #search-filter #search {
       padding-bottom: 0; } }
   #search-filter #search .form-group input {
-    width: 250px; }
+    width: 250px;
+    padding-top: 5px;
+    padding-bottom: 5px; }
   #search-filter #search .form-group button {
     padding-top: 7px;
     padding-bottom: 5px; }
@@ -1308,7 +1314,7 @@ h4.detailedInfo {
   margin-top: 0; }
 
 .main-list li .thumbImg {
-  height: 130px;
+  height: 110px;
   overflow-y: hidden;
   position: relative; }
   .main-list li .thumbImg img {
@@ -1357,7 +1363,7 @@ h4.detailedInfo {
   .main-list.orgList ul.projectListUl li {
     margin-bottom: 5px;
     list-style-type: none;
-    padding: 15px 0;
+    padding: 0 0 15px 0;
     display: inline;
     width: 32%;
     float: left;
@@ -1405,7 +1411,7 @@ h4.detailedInfo {
     .main-list.projects ul.projectListUl li {
       margin-bottom: 5px;
       list-style-type: none;
-      padding: 15px 0;
+      padding: 0 0 15px 0;
       display: inline;
       width: 32%;
       float: left;

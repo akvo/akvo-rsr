@@ -1454,6 +1454,11 @@ h4.detailedInfo {
     }
 }
 
+.label-info {
+    font-weight: normal;
+    font-size: 0.8em;
+}
+
 #search-filter {
     margin-top: -10px;
     @include responsive(small-max-screens) {
@@ -1475,6 +1480,8 @@ h4.detailedInfo {
         .form-group {
             input {
                 width: 250px;
+                padding-top: 5px;
+                padding-bottom: 5px;
             }
             button {
                 padding-top: 7px;
@@ -1523,7 +1530,7 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 130px;
+            height: 110px;
             overflow-y: hidden;
             position: relative;
             img {
@@ -1576,7 +1583,7 @@ h4.detailedInfo {
             li {
                 margin-bottom: 5px;
                 list-style-type: none;
-                padding: 15px 0;
+                padding: 0 0 15px 0;
                 display: inline;
                 width: 32%;
                 float: left;
@@ -1627,7 +1634,7 @@ h4.detailedInfo {
             li {
                 margin-bottom: 5px;
                 list-style-type: none;
-                padding: 15px 0;
+                padding: 0 0 15px 0;
                 display: inline;
                 width: 32%;
                 float: left;
@@ -2235,8 +2242,7 @@ ul.typeahead-selector {
     }
 }
 
-.projectCountTxt {
-}
+.projectCountTxt {}
 
 /* Organisation Page */
 
