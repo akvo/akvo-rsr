@@ -403,7 +403,7 @@ def user_management(request):
 
     org_admin = user.approved_employments().filter(group__name='Admins').exists() or \
         user.is_admin or user.is_superuser
-    groups = ['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
+    groups = settings.REQUIRED_AUTH_GROUPS
 
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
@@ -450,13 +450,7 @@ def user_management(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, employments, 10)
 
-    all_groups = [
-        Group.objects.get(name='Users'),
-        Group.objects.get(name='User Managers'),
-        Group.objects.get(name='Project Editors'),
-        Group.objects.get(name='M&E Managers'),
-        Group.objects.get(name='Admins')
-    ]
+    all_groups = [Group.objects.get(name=name) for name in settings.REQUIRED_AUTH_GROUPS]
 
     employments_array = []
     for employment in page:
