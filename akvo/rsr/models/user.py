@@ -379,7 +379,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         employments = self.employers.all().exclude(is_approved=False)
         if group_names is not None:
-            employments.filter(group__name__in=group_names)
+            employments = employments.filter(group__name__in=group_names)
         return employments.select_related('organisation', 'group', 'user')
 
     def can_create_project(self):
