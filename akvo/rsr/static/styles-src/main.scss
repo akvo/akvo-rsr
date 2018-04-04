@@ -1293,6 +1293,37 @@ h4.detailedInfo {
     margin-top: 20px;
 }
 
+.pgWrap {
+    .pagination {
+        li {
+            a,
+            span {
+                border-color: transparent;
+                @include responsive(small-max-screens) {
+                    padding: 10px 16px;
+                    font-size: 18px;
+                }
+
+                &:hover {
+                    background: transparent;
+                }
+            }
+            &.active {
+                a,
+                span {
+                    font-weight: bold;
+                    color: $anchorLinkHover;
+                    background-color: transparent;
+                    &:hover {
+                        background: transparent;
+                        border-color: transparent;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .paginationWrap {
     background: rgba(58, 58, 58, 0);
     @include border-radius(3px);
@@ -1533,6 +1564,7 @@ h4.detailedInfo {
             height: 110px;
             overflow-y: hidden;
             position: relative;
+            background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
                 max-width: 350px;
@@ -3547,11 +3579,11 @@ main {
 }
 
 main.project-page {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 260px);
 }
 
 main.results-page {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 140px);
 }
 
 .resultProjectTitle {
@@ -3572,6 +3604,7 @@ main.results-page {
 }
 
 .myRsrPg {
+    height: calc(100vh + 120px);
     + footer {
         display: none;
     }
@@ -3583,10 +3616,12 @@ main.results-page {
     padding-left: 50px !important;
     ol {
         &.breadcrumb {
-            padding: 15px !important;
             background-color: white !important;
-            font-size: 1.1em;
+            font-size: 0.9em;
             margin-top: -10px;
+            margin-bottom: 0;
+            padding-top: 5px;
+            padding-left: 0;
             a.liveView {
                 margin-left: 50px;
             }
@@ -3674,9 +3709,7 @@ main.results-page {
     #update {
         padding-top: 25px;
     }
-    .editBtn {
-        @include btnOutline($akvoPurple, $akvoPurple);
-    }
+    .editBtn {}
     .react-tabs {
         ul.react-tabs__tab-list {
             border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;
@@ -4831,8 +4864,9 @@ main.results-page {
 
 .periodMenuBar {
     box-sizing: border-box;
-    margin-top: 20px;
-    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
+    margin-top: 0px;
+    @include box-shadow(0 0px 0px rgba(0, 0, 0, 0.2));
+    border: 1px solid #ECECEC;
     * {
         box-sizing: border-box;
     }
@@ -4842,10 +4876,12 @@ main.results-page {
     .btn {
         margin-right: 10px;
     }
-    .periodOverview {
-        .overviewBtn {
-            margin: 10px 0 0 5px;
-        }
+    .overviewBtn {
+        margin: 5px 0 0 5px;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-bottom: 1px solid white;
+        color: $anchorLink;
     }
     .loading {
         margin-top: 20px;
@@ -4853,11 +4889,12 @@ main.results-page {
         font-size: 120%;
     }
     .periodBtns {
-        padding: 10px;
-        background: rgba($akvoBlack, 0.05);
+        padding: 3px 10px 0;
+        //background: rgba($akvoBlack, 0.05);
         .periodBulkAct {
             h5 {
                 padding-left: 15px;
+                font-size: 0.9em;
             }
             button {
                 background: $akvoBlack;
@@ -4873,12 +4910,14 @@ main.results-page {
         .periodFilter {
             h5 {
                 padding-left: 15px;
+                font-size: 0.9em;
             }
             padding-top: 10px;
             padding-bottom: 10px;
             button {
                 border: none;
                 color: #428bca;
+                @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
                 &.filterActive {
                     border: 1px solid rgba($primary6, 0.5) !important;
                     background: rgba($primary6, 1) !important;

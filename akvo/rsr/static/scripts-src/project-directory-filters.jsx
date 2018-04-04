@@ -148,11 +148,9 @@ var ProjectDirectory = React.createClass({
                             </ul>
                             <div className="row container-fluid">
                                 <div className="verticalPadding col-xs-3">
-                                    <h3>
-                                        <span className="label label-info">
-                                            {project_count_text}
-                                        </span>
-                                    </h3>
+                                    <span className="label label-info">
+                                        {project_count_text}
+                                    </span>
                                 </div>
                                 <Pagination
                                     onChange={this.props.onChange}
@@ -231,7 +229,7 @@ var Pagination = React.createClass({
     render: function() {
         var Pagination = ReactBootstrap.Pagination;
         return (
-            <div className="center-text col-xs-6">
+            <div className="center-text col-xs-6 pgWrap">
                 <Pagination
                     boundaryLinks={true}
                     activePage={parseInt(this.props.page)}

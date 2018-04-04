@@ -27,15 +27,6 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
         <ul class="nav navbar-nav">
-            {% has_perm 'rsr.user_management' user as can_manage_users %}
-            {% if can_manage_users %}
-            <li class="navUserManagement">
-                <a class="{% if 'user_management' in request.path %}active{% endif %}"
-                   href="{% url 'user_management' %}">
-                    {% trans "User management" %}
-                </a>
-            </li>
-            {% endif %}
             {% has_perm 'rsr.project_management' user as can_manage_projects %}
             {% if can_manage_projects and 'myrsr/projects' in request.path %}
             <li class="navIati">
@@ -75,7 +66,14 @@
                         <a role="menuitem" href="{% url 'my_rsr' %}">
                           {% trans 'RSR Admin' %}
                         </a>
-
+                      </li>
+                      <li>
+                        {% has_perm 'rsr.user_management' user as can_manage_users %}
+                        {% if can_manage_users %}
+                            <a href="{% url 'user_management' %}">
+                                {% trans "User management" %}
+                            </a>
+                        {% endif %}
                       </li>
                   </ul>
               </div>

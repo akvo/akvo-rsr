@@ -368,7 +368,7 @@ export default class App extends React.Component {
         ) : (
             <section className="results">
                 <a
-                    className="pull-right btn btn-default editBtn"
+                    className="pull-right editBtn"
                     href={`../../project_editor/${projectId}/`}
                 >
                     <i className="fa fa-pencil-square-o" /> Edit project

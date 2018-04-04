@@ -148,10 +148,8 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                             ), 
                             React.createElement("div", {className: "row container-fluid"}, 
                                 React.createElement("div", {className: "verticalPadding col-xs-3"}, 
-                                    React.createElement("h3", null, 
-                                        React.createElement("span", {className: "label label-info"}, 
-                                            project_count_text
-                                        )
+                                    React.createElement("span", {className: "label label-info"}, 
+                                        project_count_text
                                     )
                                 ), 
                                 React.createElement(Pagination, {
@@ -231,7 +229,7 @@ var Pagination = React.createClass({displayName: "Pagination",
     render: function() {
         var Pagination = ReactBootstrap.Pagination;
         return (
-            React.createElement("div", {className: "center-text col-xs-6"}, 
+            React.createElement("div", {className: "center-text col-xs-6 pgWrap"}, 
                 React.createElement(Pagination, {
                     boundaryLinks: true, 
                     activePage: parseInt(this.props.page), 

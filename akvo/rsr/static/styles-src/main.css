@@ -1126,6 +1126,28 @@ h4.detailedInfo {
   color: rgba(44, 42, 116, 0.5);
   margin-top: 20px; }
 
+.pgWrap .pagination li a,
+.pgWrap .pagination li span {
+  border-color: transparent; }
+  @media only screen and (max-width: 768px) {
+    .pgWrap .pagination li a,
+    .pgWrap .pagination li span {
+      padding: 10px 16px;
+      font-size: 18px; } }
+  .pgWrap .pagination li a:hover,
+  .pgWrap .pagination li span:hover {
+    background: transparent; }
+
+.pgWrap .pagination li.active a,
+.pgWrap .pagination li.active span {
+  font-weight: bold;
+  color: #ca8142;
+  background-color: transparent; }
+  .pgWrap .pagination li.active a:hover,
+  .pgWrap .pagination li.active span:hover {
+    background: transparent;
+    border-color: transparent; }
+
 .paginationWrap {
   background: rgba(58, 58, 58, 0);
   -moz-border-radius: 3px;
@@ -1316,7 +1338,8 @@ h4.detailedInfo {
 .main-list li .thumbImg {
   height: 110px;
   overflow-y: hidden;
-  position: relative; }
+  position: relative;
+  background-color: rgba(32, 32, 36, 0.05); }
   .main-list li .thumbImg img {
     width: 100%;
     max-width: 350px;
@@ -2936,10 +2959,10 @@ main {
     position: relative; }
 
 main.project-page {
-  height: calc(100vh - 400px); }
+  height: calc(100vh - 260px); }
 
 main.results-page {
-  height: calc(100vh - 400px); }
+  height: calc(100vh - 140px); }
 
 .resultProjectTitle {
   margin: 15px 0 25px 0; }
@@ -2955,6 +2978,7 @@ main.results-page {
       color: white; }
 
 .myRsrPg {
+  height: calc(100vh + 120px);
   padding-right: 50px !important;
   padding-left: 50px !important; }
   .myRsrPg + footer {
@@ -2963,10 +2987,12 @@ main.results-page {
     display: inline-block;
     margin-top: 20px; }
   .myRsrPg ol.breadcrumb {
-    padding: 15px !important;
     background-color: white !important;
-    font-size: 1.1em;
-    margin-top: -10px; }
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 0;
+    padding-top: 5px;
+    padding-left: 0; }
     .myRsrPg ol.breadcrumb a.liveView {
       margin-left: 50px; }
     .myRsrPg ol.breadcrumb > li + li:before {
@@ -3074,49 +3100,6 @@ main.results-page {
     display: none; }
   .results #update {
     padding-top: 25px; }
-  .results .editBtn {
-    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
-    display: inline-block;
-    padding: 5px 8px;
-    background-color: #2c2a74;
-    color: #2c2a74 !important;
-    text-decoration: none;
-    cursor: pointer;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    text-align: center;
-    background-color: transparent;
-    color: #2c2a74 !important;
-    border: 1px solid #2c2a74; }
-    .results .editBtn:hover {
-      background: #1e1c4f;
-      color: white; }
-    .results .editBtn.disabled {
-      cursor: not-allowed;
-      background-color: rgba(128, 128, 128, 0.1) !important;
-      color: rgba(128, 128, 128, 0.4) !important;
-      border: 1px solid transparent; }
-      .results .editBtn.disabled:hover {
-        cursor: not-allowed;
-        background-color: rgba(128, 128, 128, 0.1) !important;
-        color: rgba(128, 128, 128, 0.4) !important;
-        border: 1px solid transparent; }
-    .results .editBtn:hover {
-      color: white !important;
-      border: none;
-      border: 1px solid #428bca;
-      background-color: #428bca; }
-    .results .editBtn.disabled {
-      cursor: not-allowed;
-      color: rgba(128, 128, 128, 0.4) !important;
-      border: 1px solid rgba(128, 128, 128, 0.4); }
-      .results .editBtn.disabled:hover {
-        cursor: not-allowed;
-        color: rgba(128, 128, 128, 0.4) !important;
-        border: 1px solid rgba(128, 128, 128, 0.4); }
   .results .react-tabs ul.react-tabs__tab-list {
     border-bottom: 1px solid rgba(32, 32, 36, 0.1) !important; }
     .results .react-tabs ul.react-tabs__tab-list li {
@@ -3939,31 +3922,36 @@ main.results-page {
 
 .periodMenuBar {
   box-sizing: border-box;
-  margin-top: 20px;
-  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  -o-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); }
+  margin-top: 0px;
+  -moz-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ECECEC; }
   .periodMenuBar * {
     box-sizing: border-box; }
   .periodMenuBar .results-bar-titles {
     display: none; }
   .periodMenuBar .btn {
     margin-right: 10px; }
-  .periodMenuBar .periodOverview .overviewBtn {
-    margin: 10px 0 0 5px; }
+  .periodMenuBar .overviewBtn {
+    margin: 5px 0 0 5px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-bottom: 1px solid white;
+    color: #428bca; }
   .periodMenuBar .loading {
     margin-top: 20px;
     margin-left: 5px;
     font-size: 120%; }
   .periodMenuBar .periodBtns {
-    padding: 10px;
-    background: rgba(32, 32, 36, 0.05); }
+    padding: 3px 10px 0; }
     .periodMenuBar .periodBtns .periodBulkAct {
       padding-top: 10px;
       padding-bottom: 10px; }
       .periodMenuBar .periodBtns .periodBulkAct h5 {
-        padding-left: 15px; }
+        padding-left: 15px;
+        font-size: 0.9em; }
       .periodMenuBar .periodBtns .periodBulkAct button {
         background: #202024;
         color: white; }
@@ -3974,10 +3962,15 @@ main.results-page {
       padding-top: 10px;
       padding-bottom: 10px; }
       .periodMenuBar .periodBtns .periodFilter h5 {
-        padding-left: 15px; }
+        padding-left: 15px;
+        font-size: 0.9em; }
       .periodMenuBar .periodBtns .periodFilter button {
         border: none;
-        color: #428bca; }
+        color: #428bca;
+        -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        -o-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); }
         .periodMenuBar .periodBtns .periodFilter button.filterActive {
           border: 1px solid rgba(107, 134, 141, 0.5) !important;
           background: #6b868d !important;

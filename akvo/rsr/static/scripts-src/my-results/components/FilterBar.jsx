@@ -267,15 +267,15 @@ export default class FilterBar extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className={"row"}>
-                                <div className="col-xs-12">
-                                    <ToggleButton
-                                        onClick={this.toggleAll}
-                                        label={openCloseLabel}
-                                        disabled={buttonDisabled}
-                                        className="overviewBtn btn btn-sm btn-default"
-                                    />
-                                </div>
+                        </div>
+                        <div className={"row"}>
+                            <div className="col-xs-12">
+                                <ToggleButton
+                                    onClick={this.toggleAll}
+                                    label={openCloseLabel}
+                                    disabled={buttonDisabled}
+                                    className="overviewBtn"
+                                />
                             </div>
                         </div>
                     </nav>
