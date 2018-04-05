@@ -353,7 +353,7 @@ rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_p
 rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_iatiexport', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.delete_iatiexport', is_rsr_admin | is_org_admin)
 
