@@ -78,13 +78,6 @@ def get_item(dictionary, key):
 @register.simple_tag
 def project_edit_link(project, user):
     """Return the project edit link based on project status and user permissions."""
-    can_edit_project = user.has_perm('rsr.change_project')
-    project_disabled = project.iati_status in project.EDIT_DISABLED
     published = project.publishingstatus.status == project.publishingstatus.STATUS_PUBLISHED
-
-    if can_edit_project and not project_disabled:
-        view_name = 'project-edit' if published else 'project_editor'
-    else:
-        view_name = 'project-main'
-
+    view_name = 'project-edit' if published else 'project_editor'
     return reverse(view_name, args=[project.pk])

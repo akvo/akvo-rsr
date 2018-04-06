@@ -335,7 +335,7 @@ class PermissionFilteringTestCase(TestCase):
 
         # FIXME: change_* wierdness.
         model_map[M.ProjectComment] = {
-            'group_count': group_count(56, 14, 42, 28),
+            'group_count': group_count(64, 16, 48, 32),
             'project_relation': 'project__'
         }
 
@@ -376,16 +376,16 @@ class PermissionFilteringTestCase(TestCase):
             'project_relation': 'location__location_target__'
         }
 
-        # 7 project updates group_count(for each user in each group) per project
+        # 8 project updates group_count(for each user in each group) per project
         # Every non-privileged user will also be able to see their update
         model_map[M.ProjectUpdate] = {
-            'group_count': group_count(56, 14, 42, 30),
+            'group_count': group_count(64, 16, 48, (48, 34)),
             'project_relation': 'project__'
         }
 
         # one location per update - only admin users are allowed to edit
         model_map[M.ProjectUpdateLocation] = {
-            'group_count': group_count(56, 14, 28, 28),
+            'group_count': group_count(64, 16, 32, 32),
             'project_relation': 'location_target__project__'
         }
 
@@ -516,19 +516,19 @@ class PermissionFilteringTestCase(TestCase):
         # FIXME: IndicatorPeriodData entries on private projects are not visible to non
         # privileged users?! Weirdness because of using change_* permission
         model_map[M.IndicatorPeriodData] = {
-            'group_count': group_count(56, 14, 42, 28),
+            'group_count': group_count(64, 16, 48, (48, 32)),
             'project_relation': 'period__indicator__result__project__'
         }
 
         # one disaggregation created per user per indicator period update
         model_map[M.Disaggregation] = {
-            'group_count': group_count(56, 14, 42, 28),
+            'group_count': group_count(64, 16, 48, 32),
             'project_relation': 'update__period__indicator__result__project__'
         }
 
         # one comment per indicator period data
         model_map[M.IndicatorPeriodDataComment] = {
-            'group_count': group_count(56, 14, 42, 28),
+            'group_count': group_count(64, 16, 48, 32),
             'project_relation': 'data__period__indicator__result__project__'
         }
 
@@ -585,10 +585,10 @@ class PermissionFilteringTestCase(TestCase):
             self.assertPermissions(user, count, filtered_queryset)
 
     def test_logged_in_user(self):
-        from akvo.rest.viewsets import PublicProjectViewSet
         m_e = Group.objects.get(name='M&E Managers')
         p_e = Group.objects.get(name='Project Editors')
         admins = Group.objects.get(name='Admins')
+        enumerators = Group.objects.get(name='Enumerators')
         for user in User.objects.filter(is_admin=False, is_superuser=False):
             if user.in_group(m_e) or user.in_group(p_e) or user.in_group(admins):
                 user_type = 'editor'
@@ -603,7 +603,10 @@ class PermissionFilteringTestCase(TestCase):
                 # than users in the other 'editor' groups - Project Editor or
                 # M&E Managers.  Hence, the tuple weirdness.
                 if isinstance(count, tuple):
-                    count = count[0] if user.in_group(admins) else count[1]
+                    if user_type == 'editor':
+                        count = count[0] if user.in_group(admins) else count[1]
+                    else:
+                        count = count[0] if user.in_group(enumerators) else count[1]
 
                 self.assertPermissions(user, count, filtered_queryset)
 

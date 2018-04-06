@@ -528,6 +528,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         orgs = self.get_user_manager_employment_orgs()
         return Project.objects.of_partners(orgs).distinct()
 
+    def enumerator_projects(self):
+        """Return all projects where user is an enumerator."""
+
+        orgs = self.approved_employments(group_names=['Enumerators']).organisations()
+        return Project.objects.of_partners(orgs).distinct()
+
     def get_permission_filter(self, permission, project_relation):
         """Convert a rules permission predicate into a queryset filter using Q objects.
 
@@ -550,6 +556,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             ),
             'is_org_me_manager': Q(
                 **{project_filter_name: self.me_manager_projects()}
+            ),
+            'is_org_enumerator': (
+                Q(**{project_filter_name: self.enumerator_projects()})
             ),
             'is_org_user_manager': (
                 Q(**{project_filter_name: self.user_manager_projects()}) & Q(user=self)
