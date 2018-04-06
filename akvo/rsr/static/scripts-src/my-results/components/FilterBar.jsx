@@ -99,12 +99,8 @@ export default class FilterBar extends React.Component {
 
     toggleTree() {
         const open = this.openResults();
-        let resultsKeys;
-        if (userIsMEManager(this.props.user)) {
-            resultsKeys = this.props.ResultsDefaultKeys;
-        }
         // construct the array of Collapse activeKeys for the sub-tree
-        return toggleTree(open, resultsKeys);
+        return toggleTree(open);
     }
 
     toggleAll() {

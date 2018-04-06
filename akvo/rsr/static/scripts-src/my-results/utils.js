@@ -173,24 +173,6 @@ export function _(s) {
     return strings && strings[s];
 }
 
-export const findChildren = (parentId, childModel) => {
-    //TODO: remove when _meta.children is fully used
-    // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
-    // Return object with array of filtered ids and array of corresponding filtered objects
-    const parentField = c.PARENT_FIELD[childModel];
-    const model = store.getState().models[childModel];
-    if (model && model.ids) {
-        const { ids, objects } = model;
-        const filteredIds = ids.filter(
-            // if parentField is undefined return all ids (This applies to Result)
-            id => (parentField ? objects[id][parentField] === parentId : true)
-        );
-        const filteredObjects = filteredIds.map(id => objects[id]);
-        return { ids: filteredIds, [childModel]: filteredObjects };
-    }
-    return { ids: [], [childModel]: undefined };
-};
-
 export const findChildrenFromCurrentState = (modelsState, parentId, childModel) => {
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
@@ -332,14 +314,6 @@ export function toggleTree(open) {
         return childKeys;
     });
     return flatten(fullTree);
-}
-
-export function openResults(activeKey, isMEManager) {
-    if (isMEManager) {
-        return isMEManagerDefaultKeys(activeKey);
-    } else {
-        return activeKey == undefined || activeKey.length == 0;
-    }
 }
 
 function lineage(model, id) {
