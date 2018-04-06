@@ -304,8 +304,10 @@ def update_project_funding(sender, **kwargs):
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
         try:
-            kwargs['instance'].project.update_funds()
-            kwargs['instance'].project.update_funds_needed()
+            Project = get_model('rsr', 'project')
+            project = Project.objects.get(id=kwargs['instance'].project_id)
+            project.update_funds()
+            project.update_funds_needed()
         except ObjectDoesNotExist:
             # this happens when a project is deleted, and thus any invoices linked to it go the
             # same way.

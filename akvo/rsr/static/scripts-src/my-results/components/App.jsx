@@ -348,6 +348,7 @@ export default class App extends React.Component {
             );
         }
         const show_reports = page.mode && page.mode.show_narrative_reports;
+        const show_results = page.mode && page.mode.show_results;
         const projectId = dataFromElement("project").id;
         const has_results = dataFromElement("project").has_results;
         const results_tab = (
@@ -375,12 +376,12 @@ export default class App extends React.Component {
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
-                        {has_results ? <Tab>Results</Tab> : undefined}
+                        {show_results && has_results ? <Tab>Results</Tab> : undefined}
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
                         <Tab>Reports</Tab>
                         <Tab>Add an update</Tab>
                     </TabList>
-                    {has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
+                    {show_results && has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (
                         <TabPanel>
                             <NarrativeReports />
