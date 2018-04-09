@@ -3644,8 +3644,7 @@ main.results-page {
         margin-bottom: 20px;
         position: relative;
         .reportContainer {
-            border: 1px solid rgba($akvoBlack, 0.1);
-            border-top: 2px solid rgba($akvoBlack, 0.1);
+            box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
             min-height: 300px;
             padding: 30px 70px 5px 70px;
         }

@@ -72,8 +72,8 @@
                 {{ project.primary_location.country }}
             </td>
             <td>
-                <span class="label label-info">{% if project.children_all.exists %}Parent{% endif %}</span>
-                <span class="label label-default">{% if project.parents_all.exists %}Child{% endif %}</span>
+                <span>{% if project.children_all.exists %}Parent{% endif %}</span>
+                <span>{% if project.parents_all.exists %}Child{% endif %}</span>
             </td>
             <td>{{ project.date_end_planned }}</td>
           </tr>
