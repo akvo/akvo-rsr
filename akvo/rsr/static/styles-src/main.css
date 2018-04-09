@@ -1388,7 +1388,7 @@ h4.detailedInfo {
     list-style-type: none;
     padding: 0 0 15px 0;
     display: inline;
-    width: 32%;
+    width: 24.5%;
     float: left;
     min-height: 255px;
     -moz-border-radius: 3px;
@@ -1396,13 +1396,13 @@ h4.detailedInfo {
     -webkit-border-radius: 3px;
     border-radius: 3px;
     background: white;
-    margin-right: 2%;
+    margin-right: 0.66%;
     border: thin solid rgba(44, 42, 116, 0);
     -moz-transition: all 0.2s ease-in;
     -o-transition: all 0.2s ease-in;
     -webkit-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in; }
-    .main-list.orgList ul.projectListUl li:nth-child(3n+3) {
+    .main-list.orgList ul.projectListUl li:nth-child(4n+4) {
       margin-right: 0; }
     .main-list.orgList ul.projectListUl li h1 {
       margin-top: 5px; }

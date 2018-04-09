@@ -1617,13 +1617,13 @@ h4.detailedInfo {
                 list-style-type: none;
                 padding: 0 0 15px 0;
                 display: inline;
-                width: 32%;
+                width: 24.5%;
                 float: left;
                 min-height: 255px;
                 @include border-radius(3px);
                 background: white;
-                margin-right: 2%;
-                &:nth-child(3n+3) {
+                margin-right: 0.66%;
+                &:nth-child(4n+4) {
                     margin-right: 0;
                 }
                 h1 {
