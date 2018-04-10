@@ -11,12 +11,12 @@
                     <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">{% trans 'API' %}</a></li>
                     <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">{% trans 'Terms of service' %}</a></li>
                     
-                    <li>
+<!--                     <li>
                        <a class="{% if 'projects' in request.path and 'myrsr' not in request.path %}active{% endif %}"
                         href="{% url 'project-directory' %}">
                          {% trans "All projects" %}
                        </a>
-                    </li>
+                    </li> -->
                     <li class="navUpdate">
                       <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
                          href="{% url 'update-directory' %}">

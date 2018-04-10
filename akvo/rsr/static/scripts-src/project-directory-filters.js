@@ -263,6 +263,7 @@ var TextSearch = React.createClass({displayName: "TextSearch",
     render: function() {
         return (
             React.createElement("div", {className: "form-inline col-lg-4 col-md-6", role: "form"}, 
+                React.createElement("p", {className: "pgTitle"}, "Projects:"), 
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement("div", {className: "input-group"}, 
                         React.createElement("input", {

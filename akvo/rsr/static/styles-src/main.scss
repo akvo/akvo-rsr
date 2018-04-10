@@ -1499,8 +1499,14 @@ h4.detailedInfo {
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
+        position: relative;
         p {
             @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top:-23px;
+            display: inline-block;
         }
     }
     #search {

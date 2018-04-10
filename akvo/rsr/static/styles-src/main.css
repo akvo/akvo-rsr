@@ -1285,11 +1285,16 @@ h4.detailedInfo {
       padding-bottom: 0; } }
   #search-filter .searchBar {
     max-width: 80%;
-    margin: 10px auto 0 auto; }
+    margin: 10px auto 0 auto;
+    position: relative; }
     #search-filter .searchBar p {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; }
+    #search-filter .searchBar .pgTitle {
+      position: absolute;
+      top: -23px;
+      display: inline-block; }
   @media only screen and (max-width: 768px) {
     #search-filter #search {
       padding-bottom: 0; } }
