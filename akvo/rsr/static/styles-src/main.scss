@@ -3651,58 +3651,81 @@ main.results-page {
     }
     padding-top: 20px;
     .rsrReport {
-        min-height: 250px;
+        min-height: 230px;
         margin-bottom: 20px;
         position: relative;
         .reportContainer {
             box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
-            min-height: 300px;
+            min-height: 230px;
             padding: 30px 70px 5px 70px;
-        }
-        .reportDscr {
-            padding: 10px 0;
-        }
-        .options {
-            text-align: center;
-            .reportDate {
-                margin: 0 auto;
-                background-color: rgba($akvoBlack, 0.05);
-                text-align: left;
-                padding: 10px 15px 20px 15px;
-                border-radius: 6px;
-                &:after {
-                    content: "";
-                    display: table;
-                    clear: both;
-                }
-                .startDate {
-                    float: left;
-                    width: 49.5%;
-                    position: relative;
-                    div {
-                        width: 100%;
-                        input {
-                            width: 100%;
+
+            .reportDscr {
+                padding: 10px 0;
+            }
+            .options {
+                text-align: center;
+                button {
+                    &:nth-child(2) {
+                        margin-left: 15px;
+                        }
+                    &.reportDown {
+                        margin: 15px auto 0;
+                        @include btnOutline($akvoPurple, $akvoPurple);
                         }
                     }
-                }
-                .endDate {
-                    float: right;
-                    width: 49.5%;
-                    position: relative;
-                    div {
-                        width: 100%;
-                        input {
-                            width: 100%;
+                    .reportDate {
+                        margin: 0 auto;
+                        background-color: rgba($akvoBlack, 0.05);
+                        text-align: left;
+                        padding: 10px 15px 20px 15px;
+                        border-radius: 6px;
+                        &:after {
+                            content: "";
+                            display: table;
+                            clear: both;
+                        }
+                        .startDate {
+                            float: left;
+                            width: 49.5%;
+                            position: relative;
+                            div {
+                                width: 100%;
+                                input {
+                                    width: 100%;
+                                }
+                            }
+                        }
+                        .endDate {
+                            float: right;
+                            width: 49.5%;
+                            position: relative;
+                            div {
+                                width: 100%;
+                                input {
+                                    width: 100%;
+                                }
+                            }
                         }
                     }
-                }
-            }
-            .reportDown {
-                margin: 15px auto 0;
-                @include btnOutline($akvoPurple, $akvoPurple);
+
+                }            
+        &:hover {
+                box-shadow: 0 0 10px rgba($rsrBlue2, 0.4);
+                .options {
+                    text-align: center;
+                    button {
+                        &.reportDown {
+                            margin: 15px auto 0;
+                            @include button($rsrBlue2, white);
+                        }
+                        &:nth-child(2) {
+                            margin-left: 15px;
+                        }
+                    }
+                } 
             }
         }
+
     }
 }
 
