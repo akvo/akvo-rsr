@@ -295,12 +295,11 @@ export function flatten(arr) {
 }
 
 export function toggleTree(open) {
-    const modelsList = c.RESULTS_MODELS_LIST;
-    const models = modelsList.slice(1);
+    const models = c.RESULTS_MODELS_LIST.slice(1);
     const fullTree = models.map(model => {
         const parentModel = parentModelName(model);
         const ids = store.getState().models[parentModel].ids;
-        const childKeys = ids
+        return ids
             .filter(
                 id => store.getState().models[parentModel].objects[id]._meta.children.ids.length > 0
             )
@@ -311,7 +310,6 @@ export function toggleTree(open) {
                     collapseId: collapseId(model, id)
                 };
             });
-        return childKeys;
     });
     return flatten(fullTree);
 }
