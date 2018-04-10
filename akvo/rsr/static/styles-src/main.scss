@@ -1540,6 +1540,11 @@ h4.detailedInfo {
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
+.dropup {
+    button {
+        border: none;
+    }
+}
 
 .main-list {
     li {

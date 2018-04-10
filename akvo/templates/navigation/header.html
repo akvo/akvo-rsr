@@ -62,11 +62,11 @@
                       <li role="presentation">
                           <a role="menuitem" href="{% url 'sign_out' %}">{% trans 'Sign out' %}</a>
                       </li>
-                      <li>
+<!--                       <li>
                         <a role="menuitem" href="{% url 'my_rsr' %}">
                           {% trans 'RSR Admin' %}
                         </a>
-                      </li>
+                      </li> -->
                       <li>
                         {% has_perm 'rsr.user_management' user as can_manage_users %}
                         {% if can_manage_users %}

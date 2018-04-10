@@ -262,7 +262,7 @@ var TextSearch = React.createClass({
     },
     render: function() {
         return (
-            <div className="form-inline col-lg-4 col-md-12" role="form">
+            <div className="form-inline col-lg-4 col-md-6" role="form">
                 <div className="form-group">
                     <div className="input-group">
                         <input

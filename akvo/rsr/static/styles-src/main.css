@@ -1315,6 +1315,9 @@ h4.detailedInfo {
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
+.dropup button {
+  border: none; }
+
 .main-list li img {
   border: 1px solid rgba(32, 32, 36, 0.05);
   -moz-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
