@@ -8,6 +8,7 @@
 import chai from "chai";
 import React from "react";
 import configureStore from "redux-mock-store";
+import rewire from "rewire";
 
 import * as utils from "../../../scripts-src/my-results/utils";
 import * as c from "../../../scripts-src/my-results/const";
@@ -18,7 +19,6 @@ const mockStore = configureStore(middlewares);
 
 // This allows us to test non-exported functions
 // See: https://medium.com/@macsikora/how-to-test-private-functions-of-es6-module-fb8c1345b25f
-const rewire = require('rewire')
 const utilsRewire = rewire('../../../scripts-src/my-results/utils')
 const lineage = utilsRewire.__get__('lineage')
 const lineageKeys = utilsRewire.__get__('lineageKeys')
