@@ -3106,7 +3106,7 @@ main.results-page {
             display: inline-block;
             padding: 5px 8px;
             background-color: #72cdff;
-            color: white !important;
+            color: #72cdff !important;
             text-decoration: none;
             cursor: pointer;
             -moz-border-radius: 3px;
@@ -3114,7 +3114,10 @@ main.results-page {
             -webkit-border-radius: 3px;
             border-radius: 3px;
             border: 1px solid transparent;
-            text-align: center; }
+            text-align: center;
+            background-color: transparent;
+            color: #72cdff !important;
+            border: 1px solid #72cdff; }
             .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover {
               background: #3fbbff;
               color: white; }
@@ -3128,6 +3131,46 @@ main.results-page {
                 background-color: rgba(128, 128, 128, 0.1) !important;
                 color: rgba(128, 128, 128, 0.4) !important;
                 border: 1px solid transparent; }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover {
+              color: white !important;
+              border: none;
+              border: 1px solid #428bca;
+              background-color: #428bca; }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown.disabled {
+              cursor: not-allowed;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid rgba(128, 128, 128, 0.4); }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown.disabled:hover {
+                cursor: not-allowed;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid rgba(128, 128, 128, 0.4); }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover {
+              /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+              display: inline-block;
+              padding: 5px 8px;
+              background-color: #3fbbff;
+              color: white !important;
+              text-decoration: none;
+              cursor: pointer;
+              -moz-border-radius: 3px;
+              -o-border-radius: 3px;
+              -webkit-border-radius: 3px;
+              border-radius: 3px;
+              border: 1px solid transparent;
+              text-align: center; }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover:hover {
+                background: #0ca9ff;
+                color: white; }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover.disabled {
+                cursor: not-allowed;
+                background-color: rgba(128, 128, 128, 0.1) !important;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid transparent; }
+                .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover.disabled:hover {
+                  cursor: not-allowed;
+                  background-color: rgba(128, 128, 128, 0.1) !important;
+                  color: rgba(128, 128, 128, 0.4) !important;
+                  border: 1px solid transparent; }
           .rsrReports .rsrReport .reportContainer:hover .options button:nth-child(2) {
             margin-left: 15px; }
 

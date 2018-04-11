@@ -3716,7 +3716,10 @@ main.results-page {
                     button {
                         &.reportDown {
                             margin: 15px auto 0;
-                            @include button($rsrBlue2, white);
+                            @include btnOutline($rsrBlue2, $rsrBlue2);
+                            &:hover {
+                                @include button(darken($rsrBlue2, 10%), white);
+                            }
                         }
                         &:nth-child(2) {
                             margin-left: 15px;
