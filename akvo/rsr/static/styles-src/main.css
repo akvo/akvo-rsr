@@ -1411,7 +1411,7 @@ h4.detailedInfo {
     -o-transition: all 0.2s ease-in;
     -webkit-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in; }
-    .main-list.orgList ul.projectListUl li div {
+    .main-list.orgList ul.projectListUl li > div:first-child {
       min-height: 130px; }
     .main-list.orgList ul.projectListUl li:nth-child(4n+4) {
       margin-right: 0; }
@@ -3033,7 +3033,7 @@ main.results-page {
         padding: 10px 0; }
       .rsrReports .rsrReport .reportContainer .options {
         text-align: center; }
-        .rsrReports .rsrReport .reportContainer .options button:nth-child(2) {
+        .rsrReports .rsrReport .reportContainer .options button:nth-of-type(2) {
           margin-left: 15px; }
         .rsrReports .rsrReport .reportContainer .options button.reportDown {
           margin: 15px auto 0;
@@ -3180,7 +3180,7 @@ main.results-page {
                   background-color: rgba(128, 128, 128, 0.1) !important;
                   color: rgba(128, 128, 128, 0.4) !important;
                   border: 1px solid transparent; }
-          .rsrReports .rsrReport .reportContainer:hover .options button:nth-child(2) {
+          .rsrReports .rsrReport .reportContainer:hover .options button:nth-of-type(2) {
             margin-left: 15px; }
 
 .results {
