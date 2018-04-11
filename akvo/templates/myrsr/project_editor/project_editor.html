@@ -12,7 +12,7 @@
     <!--*************************************** Project editor header **********************************************-->
     <div class="row">
         <div class="col-md-4">
-            <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated info-icon-special" toggleid="editorHelptext"></span></h3>
+            <h3>{{project.title}} - {% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated info-icon-special" toggleid="editorHelptext"></span></h3>
         </div>
         <div class="col-md-4">
             <a href="{% url 'project-main' project.pk %}" target="_blank">
