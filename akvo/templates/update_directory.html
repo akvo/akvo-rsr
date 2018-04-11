@@ -7,10 +7,11 @@
   <section id="search-filter">
     <div class="container-fluid">
       <div id="search" class="verticalPadding row searchBar  text-center">
-        <p>{% trans "Refine the update list below by searching by name, organisation or sector" %}</p>
         <div class="form-inline" role="form">
           <div class="form-group">
             <div class="input-group">
+           <p class="upLabelSearch">Updates:</p>
+
               {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
@@ -90,7 +91,7 @@
             <div class="col-xs-3">
                 <p class="emTxt">
                     <h5>
-                        <span class="label label-info">
+                        <span class="label label-info updateTotal">
 
                             {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
                             {{ start_index }} - {{ end_index }} of {{ paginator_count }} updates

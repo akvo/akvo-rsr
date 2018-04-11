@@ -1276,8 +1276,15 @@ h4.detailedInfo {
 
 .label-info {
   font-weight: normal; }
-  .label-info.projectTotal {
-    margin-left: 15px; }
+  .label-info.projectTotal, .label-info.updateTotal {
+    margin-left: 15px;
+    font-size: 1em;
+    background-color: transparent;
+    color: #202024; }
+
+.upLabelSearch {
+  top: -20px;
+  position: absolute; }
 
 #search-filter {
   margin-top: -10px; }

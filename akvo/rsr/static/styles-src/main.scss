@@ -1487,11 +1487,17 @@ h4.detailedInfo {
 
 .label-info {
     font-weight: normal;
-    &.projectTotal {
+    &.projectTotal, &.updateTotal {
         margin-left: 15px;
+        font-size: 1em;
+        background-color: transparent;
+        color: $akvoBlack;
     }
 }
-
+.upLabelSearch {
+    top: -20px;
+    position: absolute;
+}
 #search-filter {
     margin-top: -10px;
     @include responsive(small-max-screens) {
@@ -3627,7 +3633,7 @@ main.project-page {
 }
 
 main.results-page {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 140px);    
 }
 
 .resultProjectTitle {
