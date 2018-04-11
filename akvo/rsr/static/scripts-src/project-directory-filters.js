@@ -122,7 +122,6 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                                     background: "white",
                                     margin: "auto",
                                     padding: "20px",
-                                    opacity: "0.9",
                                     zIndex: "100000",
                                     textAlign: "center"
                                 }
