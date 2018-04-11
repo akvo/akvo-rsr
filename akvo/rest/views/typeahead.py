@@ -220,7 +220,9 @@ def typeahead_project_filters(request):
 
     # NOTE: We use projects_text_filtered for displaying projects
     count = projects_text_filtered.count()
-    display_projects = _get_projects_for_page(projects_text_filtered, request)
+    display_projects = _get_projects_for_page(projects_text_filtered, request).select_related(
+        'primary_organisation'
+    )
 
     response = {
         'project_count': count,
