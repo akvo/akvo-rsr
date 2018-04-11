@@ -17,16 +17,16 @@
                       </a>
                   </div>
                   <div class="col-sm-4 col-md-4 col-xs-8">
-                    <h1><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h1>
-                    <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-                    <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
+                    <h1><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h1>
+                    <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"> {{u.project.title}}</a>
+                    <div><span class="userFullName">{{u.user.first_name}} {{u.user.last_name}}</span><br/>
                         {% if u.user.approved_organisations %}
                           {% with org=u.user.approved_organisations.0 %}
-                            <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
+                            <a href="{% url 'organisation-main' org.pk %}" class="orgName"> {{org.long_name}}</a>
                           {% endwith %}
                         {% endif %}
                     </div>
-                    <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.event_date|date:"d-M-Y"}}</div>
+                    <div class="upDateTime">{{u.event_date|date:"d-M-Y"}}</div>
                   </div>
                   <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
                     {% autoescape off %}

@@ -12,17 +12,6 @@
 {% block myrsr_main %}
     <div class="col-sm-6 col-xs-12" id="profile">
         <h3>{% trans 'My details' %}</h3>
-        <div class="usrAvatar">
-            {% img user 100 100 user.get_full_name %}
-        </div>
-        <p>
-            <form method="POST" action="" id="avatarForm" enctype="multipart/form-data">
-                {% csrf_token %}
-                {% for field in avatarform %}
-                    {% bootstrap_field field layout='inline' %}
-                {% endfor %}
-            </form>
-        </p>
         <form method="" action="" id="profileForm">
             {% csrf_token %}
             {% for field in profileform %}

@@ -1560,9 +1560,7 @@ h4.detailedInfo {
             border: 1px solid rgba($akvoBlack, 0.05);
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
         }
-        &:nth-child(2n+1) {
-            background: rgb(238, 238, 238);
-        }
+
         &:last-child {
             margin-bottom: 0;
         }
@@ -1852,8 +1850,19 @@ header {
         margin-top: 60px;
     }
     &.updates {
-        .updateAsset:first-child {
-            margin-top: 25px;
+        ul {
+            list-style-type: none;
+            .updateAsset {
+                margin: 25px 0 50px;
+                h1 {
+                    a {
+                        color: #00a79d;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }  
+            }
         }
     }
 }
@@ -2384,15 +2393,18 @@ ul.typeahead-selector {
     h2 {
         color: $rsrGreen;
         margin-top: 0;
+        font-size: 1.3em;
     }
     .asideUpList {
         .row {
+            margin-bottom: 15px;
             padding: 15px 0;
-            &:nth-of-type(2n+1) {
-                background-color: rgba($rsrGreen, 0.1);
-            }
+
             h5 {
                 margin-top: 0;
+                a {
+                    color: #00a79d;
+                }
             }
         }
     }

@@ -1331,9 +1331,6 @@ h4.detailedInfo {
   -webkit-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
   box-shadow: 0 0 2px rgba(202, 129, 66, 0); }
 
-.main-list li:nth-child(2n+1) {
-  background: #eeeeee; }
-
 .main-list li:last-child {
   margin-bottom: 0; }
 
@@ -1576,8 +1573,14 @@ header.projectHeader {
 .project-tab.partners {
   margin-top: 60px; }
 
-.project-tab.updates .updateAsset:first-child {
-  margin-top: 25px; }
+.project-tab.updates ul {
+  list-style-type: none; }
+  .project-tab.updates ul .updateAsset {
+    margin: 25px 0 50px; }
+    .project-tab.updates ul .updateAsset h1 a {
+      color: #00a79d; }
+      .project-tab.updates ul .updateAsset h1 a:hover {
+        color: #ca8142; }
 
 div.projectTopRow {
   position: relative;
@@ -1981,14 +1984,16 @@ ul.typeahead-selector {
 /* Update Page */
 .updateMain h2 {
   color: #00a79d;
-  margin-top: 0; }
+  margin-top: 0;
+  font-size: 1.3em; }
 
 .updateMain .asideUpList .row {
+  margin-bottom: 15px;
   padding: 15px 0; }
-  .updateMain .asideUpList .row:nth-of-type(2n+1) {
-    background-color: rgba(0, 167, 157, 0.1); }
   .updateMain .asideUpList .row h5 {
     margin-top: 0; }
+    .updateMain .asideUpList .row h5 a {
+      color: #00a79d; }
 
 /* Donate Page*/
 .projectDonate {

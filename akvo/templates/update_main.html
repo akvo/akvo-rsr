@@ -12,9 +12,6 @@
                     <div class="post-info media">
                         <div class="media-body">
                             <p>
-                            {% if update.user.avatar %}
-                                {% img update.user 50 50 update.user.get_full_name %}
-                            {% endif %}
                             <span class="userFullName">{{update.user.first_name}} {{update.user.last_name}}</span> {% trans 'via' %} {{update.get_update_method_display}}
                             </p>
                         </div>
