@@ -27,7 +27,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
         <ul class="nav navbar-nav">
-           
+
         </ul>
 
       <ul class="nav navbar-nav navbar-right">
@@ -46,12 +46,7 @@
                           <a href="{% url 'my_details' %}">{% trans 'My details' %}</a>
                       </li>
 
-<!--                       <li>
-                        <a role="menuitem" href="{% url 'my_rsr' %}">
-                          {% trans 'RSR Admin' %}
-                        </a>
-                      </li> -->
-                      <li>
+                      <li role="presentation">
                         {% has_perm 'rsr.user_management' user as can_manage_users %}
                         {% if can_manage_users %}
                             <a href="{% url 'user_management' %}">
@@ -60,20 +55,18 @@
                         {% endif %}
                       </li>
                        {% has_perm 'rsr.project_management' user as can_manage_projects %}
-                        {% if can_manage_projects and 'myrsr/projects' in request.path %}
-                        <li class="navIati">
+                        <li role="presentation" class="navIati">
                             <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
                                href="{% url 'my_iati' %}">
                                 {% trans "IATI" %}
                             </a>
                         </li>
-                        <li class="navReports">
+                        <li role="presentation" class="navReports">
                             <a href="{% url 'my_reports' %}"
                                class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
                                 {% trans 'Organisation Reports' %}
                             </a>
                         </li>
-                        {% endif %}
                       <li role="presentation">
                           <a role="menuitem" href="{% url 'sign_out' %}">{% trans 'Sign out' %}</a>
                       </li>
