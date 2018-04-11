@@ -1275,8 +1275,9 @@ h4.detailedInfo {
     margin: 10px auto 0 auto; }
 
 .label-info {
-  font-weight: normal;
-  font-size: 0.8em; }
+  font-weight: normal; }
+  .label-info.projectTotal {
+    margin-left: 15px; }
 
 #search-filter {
   margin-top: -10px; }
@@ -1398,7 +1399,7 @@ h4.detailedInfo {
     display: inline;
     width: 24.5%;
     float: left;
-    min-height: 255px;
+    min-height: 235px;
     -moz-border-radius: 3px;
     -o-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -1410,12 +1411,8 @@ h4.detailedInfo {
     -o-transition: all 0.2s ease-in;
     -webkit-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in; }
-    .main-list.orgList ul.projectListUl li.updateAsset h1 {
-      margin-top: 5px; }
-      .main-list.orgList ul.projectListUl li.updateAsset h1 a {
-        color: #00a79d; }
-        .main-list.orgList ul.projectListUl li.updateAsset h1 a:hover {
-          color: #ca8142; }
+    .main-list.orgList ul.projectListUl li div {
+      min-height: 130px; }
     .main-list.orgList ul.projectListUl li:nth-child(4n+4) {
       margin-right: 0; }
     .main-list.orgList ul.projectListUl li h1 {
@@ -1452,7 +1449,7 @@ h4.detailedInfo {
       display: inline;
       width: 32%;
       float: left;
-      min-height: 345px;
+      min-height: 285px;
       -moz-border-radius: 3px;
       -o-border-radius: 3px;
       -webkit-border-radius: 3px;
@@ -1464,6 +1461,12 @@ h4.detailedInfo {
       -o-transition: all 0.2s ease-in;
       -webkit-transition: all 0.2s ease-in;
       transition: all 0.2s ease-in; }
+      .main-list.projects ul.projectListUl li.updateAsset h1 {
+        margin-top: 5px; }
+        .main-list.projects ul.projectListUl li.updateAsset h1 a {
+          color: #00a79d; }
+          .main-list.projects ul.projectListUl li.updateAsset h1 a:hover {
+            color: #ca8142; }
       .main-list.projects ul.projectListUl li:nth-child(3n+3) {
         margin-right: 0; }
       .main-list.projects ul.projectListUl li h1 {

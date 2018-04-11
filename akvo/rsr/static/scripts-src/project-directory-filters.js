@@ -148,7 +148,7 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                             ), 
                             React.createElement("div", {className: "row container-fluid"}, 
                                 React.createElement("div", {className: "verticalPadding col-xs-3"}, 
-                                    React.createElement("span", {className: "label label-info"}, 
+                                    React.createElement("span", {className: "label label-info projectTotal"}, 
                                         project_count_text
                                     )
                                 ), 

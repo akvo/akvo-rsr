@@ -148,7 +148,7 @@ var ProjectDirectory = React.createClass({
                             </ul>
                             <div className="row container-fluid">
                                 <div className="verticalPadding col-xs-3">
-                                    <span className="label label-info">
+                                    <span className="label label-info projectTotal">
                                         {project_count_text}
                                     </span>
                                 </div>

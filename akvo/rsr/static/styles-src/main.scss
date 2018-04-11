@@ -1487,7 +1487,9 @@ h4.detailedInfo {
 
 .label-info {
     font-weight: normal;
-    font-size: 0.8em;
+    &.projectTotal {
+        margin-left: 15px;
+    }
 }
 
 #search-filter {
@@ -1630,21 +1632,18 @@ h4.detailedInfo {
                 display: inline;
                 width: 24.5%;
                 float: left;
-                min-height: 255px;
+                min-height: 235px;
                 @include border-radius(3px);
                 background: white;
                 margin-right: 0.66%;
-                &.updateAsset {
-                h1 {
-                    margin-top: 5px;
+                div {                            
+                    min-height: 130px;
                     a {
-                        color: #00a79d;
-                        &:hover {
-                            color: $anchorLinkHover;
+                        img {
+
                         }
                     }
-                }                
-            }
+                }
                 &:nth-child(4n+4) {
                     margin-right: 0;
                 }
@@ -1692,10 +1691,21 @@ h4.detailedInfo {
                 display: inline;
                 width: 32%;
                 float: left;
-                min-height: 345px;
+                min-height: 285px;
                 @include border-radius(3px);
                 background: white;
                 margin-right: 2%;
+                &.updateAsset {
+                    h1 {
+                        margin-top: 5px;
+                        a {
+                            color: #00a79d;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
+                        }
+                    }                
+                }
                 &:nth-child(3n+3) {
                     margin-right: 0;
                 }
