@@ -3027,12 +3027,11 @@ main.results-page {
   .rsrReports * {
     box-sizing: border-box; }
   .rsrReports .rsrReport {
-    min-height: 230px;
     margin-bottom: 20px;
     position: relative; }
     .rsrReports .rsrReport .reportContainer {
       box-shadow: 0 0 5px rgba(32, 32, 36, 0.1);
-      min-height: 230px;
+      min-height: 270px;
       padding: 30px 70px 5px 70px; }
       .rsrReports .rsrReport .reportContainer .reportDscr {
         padding: 10px 0; }
