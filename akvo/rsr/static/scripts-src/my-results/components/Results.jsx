@@ -14,7 +14,7 @@ import { collapseChange } from "../actions/collapse-actions";
 import * as c from "../const.js";
 import { getResultsChildrenIds } from "../selectors";
 
-import { _, createToggleKey, collapseId, cascadeIds, createToggleKeys, hideMe } from "../utils";
+import { _, createToggleKey, collapseId, cascadeIds, hideMe } from "../utils";
 
 import { ToggleButton } from "./common";
 import Indicators from "./Indicators";
@@ -94,7 +94,6 @@ export default class Results extends React.Component {
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
         this.hideMe = this.hideMe.bind(this);
         // Note that there is only one Collapse component for Results, so the collapseID will always
         // be "results-results"
@@ -107,13 +106,6 @@ export default class Results extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-    }
-
-    toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_RESULTS, this.activeKey());
-        keys.map(collapse => {
-            collapseChange(collapse.collapseId, collapse.activeKey);
-        });
     }
 
     hideMe(id) {
@@ -139,7 +131,7 @@ export default class Results extends React.Component {
                     className={className}
                     key={id}
                 >
-                    <Indicators parentId={id} />
+                    <Indicators parentId={id} />{" "}
                 </Panel>
             );
         });

@@ -173,24 +173,6 @@ export function _(s) {
     return strings && strings[s];
 }
 
-export const findChildren = (parentId, childModel) => {
-    //TODO: remove when _meta.children is fully used
-    // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
-    // Return object with array of filtered ids and array of corresponding filtered objects
-    const parentField = c.PARENT_FIELD[childModel];
-    const model = store.getState().models[childModel];
-    if (model && model.ids) {
-        const { ids, objects } = model;
-        const filteredIds = ids.filter(
-            // if parentField is undefined return all ids (This applies to Result)
-            id => (parentField ? objects[id][parentField] === parentId : true)
-        );
-        const filteredObjects = filteredIds.map(id => objects[id]);
-        return { ids: filteredIds, [childModel]: filteredObjects };
-    }
-    return { ids: [], [childModel]: undefined };
-};
-
 export const findChildrenFromCurrentState = (modelsState, parentId, childModel) => {
     // Filter childModel based on equality of FK field (parentField) with parent id (props.parentId)
     // Return object with array of filtered ids and array of corresponding filtered objects
@@ -307,62 +289,29 @@ export function fullUpdateVisibility(update, activeFilter) {
     return visible.indexOf(update.status) > -1;
 }
 
-function tree(model, parentId) {
-    // Construct a tree representation of the subtree of data with object model[parentId] as root
-    //TODO: refactor, we shouldn't need findChildren here
-    const ids = findChildren(parentId, model).ids;
-    const childModel = childModelName(model);
-    const children = ids.map(cId => {
-        return tree(childModel, cId);
-    });
-    if (children.length > 0) {
-        return { id: parentId, model: model, children: children };
-    } else {
-        return { id: parentId };
-    }
-}
-
 export function flatten(arr) {
     // Flatten an array of arrays
     return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatten(val) : val), []);
 }
 
-function keysList(node, open, MEManagerKeys) {
-    // "Disassemble" the tree representation of the data from tree() and return a list of objects.
-    // Each object holds the collapseID of the corresponding Collapse and its activeKey
-    const key = {
-        collapseId: collapseId(node.model, node.id),
-        activeKey: open
-            ? idsToActiveKey(node.children.map(child => child.id.toString()))
-            : MEManagerKeys || []
-    };
-    const children = node.children.filter(child => child.model !== undefined);
-    const childKeys = children.map(node => keysList(node, open));
-    return flatten([key].concat(childKeys));
-}
-
-export function toggleTree(model, id, open, MEManagerKeys) {
-    const fullTree = tree(model, id);
-    return keysList(fullTree, open, MEManagerKeys);
-}
-
-export function openResults(activeKey, isMEManager) {
-    if (isMEManager) {
-        return isMEManagerDefaultKeys(activeKey);
-    } else {
-        return activeKey == undefined || activeKey.length == 0;
-    }
-}
-
-export function createToggleKeys(parentId, model, activeKey) {
-    // get all child nodes
-    //TODO: refactor, we shouldn't need findChildren here
-    // const childIds = findChildren(parentId, model).ids;
-    // determine if we should open or close
-    const fullyOpenKey = idsToActiveKey(childIds);
-    const open = openResults(activeKey);
-    // construct the array of Collapse activeKeys for the sub-tree
-    return toggleTree(model, parentId, open);
+export function toggleTree(open) {
+    const models = c.RESULTS_MODELS_LIST.slice(1);
+    const fullTree = models.map(model => {
+        const parentModel = parentModelName(model);
+        const ids = store.getState().models[parentModel].ids;
+        return ids
+            .filter(
+                id => store.getState().models[parentModel].objects[id]._meta.children.ids.length > 0
+            )
+            .map(id => {
+                const keys = store.getState().models[parentModel].objects[id]._meta.children.ids;
+                return {
+                    activeKey: open ? idsToActiveKey(keys) : [],
+                    collapseId: collapseId(model, id)
+                };
+            });
+    });
+    return flatten(fullTree);
 }
 
 function lineage(model, id) {
@@ -396,7 +345,9 @@ function lineageKeys(model, id) {
     const reversedLineage = lineage(model, id).reverse();
     let parentId = c.OBJECTS_RESULTS;
     return reversedLineage.reduce((keys, obj) => {
-        const key = keys.concat({ [collapseId(obj.model, parentId)]: [obj.id] });
+        const key = keys.concat({
+            [collapseId(obj.model, parentId)]: [obj.id]
+        });
         parentId = obj.id;
         return key;
     }, []);
@@ -432,7 +383,9 @@ export function openNodes(model, ids) {
 
     const mergedKeys = individualKeys.reduce((keys, key) => {
         const keyName = Object.keys(key)[0];
-        return Object.assign(keys, { [keyName]: (keys[keyName] || []).concat(key[keyName]) });
+        return Object.assign(keys, {
+            [keyName]: (keys[keyName] || []).concat(key[keyName])
+        });
     }, {});
     resetKeys();
     Object.keys(mergedKeys).map(key => {

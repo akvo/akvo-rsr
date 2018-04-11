@@ -275,10 +275,12 @@ export class ReportForm extends React.Component {
 }
 
 const filterReports = (narrative_reports, period_start, period_end) => {
-    const ids = narrative_reports && narrative_reports.ids.filter(id => {
-        const report = narrative_reports.objects[id];
-        return report.period_start === period_start && report.period_end === period_end;
-    });
+    const ids =
+        narrative_reports &&
+        narrative_reports.ids.filter(id => {
+            const report = narrative_reports.objects[id];
+            return report.period_start === period_start && report.period_end === period_end;
+        });
     return ids.map(id => {
         return narrative_reports.objects[id];
     });
