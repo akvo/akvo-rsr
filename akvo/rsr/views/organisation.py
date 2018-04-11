@@ -67,7 +67,7 @@ def directory(request):
 
     # Build page
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, f.qs.distinct(), 10)
+    page, paginator, page_range = pagination(page, f.qs.distinct(), 12)
 
     # Get organisations to be displayed on the map
     if request.rsr_page and request.rsr_page.all_maps:
