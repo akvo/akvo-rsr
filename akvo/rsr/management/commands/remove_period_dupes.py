@@ -7,6 +7,8 @@
 import tablib
 
 from django.core.management.base import BaseCommand
+from optparse import make_option
+
 from ...models import Indicator, IndicatorPeriod
 
 
@@ -22,16 +24,24 @@ def has_no_data(period):
 
 
 class Command(BaseCommand):
+    help = ("Script that lists indicator periods that share the same indicator, have the same "
+            "period_start and period_end and has no other data. When deleting, there will always "
+            "be one period left with a particular set of dates.\n\n"
+            "The script will also list periods that are duplicates as per above, but have data "
+            "added to them. They will never be deleted.\n\n"
+            "Use the --delete option to actually delete the duplicates listed")
+
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '--delete',
+            action='store_true',
+            dest='delete',
+            default=False,
+            help='Actually delete period duplicates'),
+    )
 
     def handle(self, *args, **options):
-        """
-        Script that deletes indicator periods that share the same indicator, have the same
-        period_start and period_end and has no other data. There will always be one period left
-        with a particular set of dates.
 
-        The script will also list periods that are duplicates as per above, but have data added to
-        them
-        """
         problem_periods = tablib.Dataset()
         problem_periods.headers = [
             'Project ID',
@@ -88,8 +98,11 @@ class Command(BaseCommand):
         else:
             print u"No problems"
         if len(deleted_dupes.dict):
-            IndicatorPeriod.objects.filter(pk__in=deleted_dupes['Period ID']).delete()
-            print u"Deletions:"
+            if options['delete']:
+                IndicatorPeriod.objects.filter(pk__in=deleted_dupes['Period ID']).delete()
+                print u"Deletions:"
+            else:
+                print u"To be deleted:"
             print deleted_dupes.export('tsv')
         else:
             print u"No duplicates found"
