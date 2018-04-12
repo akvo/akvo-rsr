@@ -170,12 +170,13 @@ def is_org_me_manager(user, obj):
 def is_org_user(user, obj):
     if not user.is_authenticated():
         return False
-    if not obj:
+    employments = user.approved_employments(group_names=[USER_GROUP_NAME])
+    has_employments = employments.exists()
+    if obj is None and has_employments:
         return True
     if isinstance(obj, ProjectUpdate):
         return obj.user == user
     if isinstance(obj, Project):
-        employments = user.approved_employments(group_names=[USER_GROUP_NAME])
         return obj in employments.organisations().all_projects()
     return False
 
@@ -184,15 +185,16 @@ def is_org_user(user, obj):
 def is_org_enumerator(user, obj):
     if not user.is_authenticated():
         return False
-    if obj is None:
+    employments = user.approved_employments(group_names=[ENUMERATOR_GROUP_NAME])
+    has_employments = employments.exists()
+    if obj is None and has_employments:
         return True
     if isinstance(obj, ProjectUpdate):
         return obj.user == user
     if isinstance(obj, IndicatorPeriodData):
-        # Show only own updates or approved updates of others
+        # Fetch the corresponding project for the indicator update
         obj = Project.objects.get(results__indicators__periods__data__in=[obj.id])
     if isinstance(obj, Project):
-        employments = user.approved_employments(group_names=[ENUMERATOR_GROUP_NAME])
         return obj in employments.organisations().all_projects()
     return False
 
