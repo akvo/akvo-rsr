@@ -25,7 +25,7 @@ import {
     getPeriodsApprovedDisaggregationIds
 } from "../selectors";
 
-import { displayDate, collapseId, createToggleKeys, getAncestor } from "../utils.js";
+import { displayDate, collapseId, getAncestor } from "../utils.js";
 
 import AlertFactory from "./alertContainer";
 import { DisaggregationsDisplay } from "./common";
@@ -247,7 +247,6 @@ export default class Periods extends React.Component {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
         this.openNewForm = this.openNewForm.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
         this.hideMe = this.hideMe.bind(this);
         // concatenate this model's name with parent's ID
@@ -269,13 +268,6 @@ export default class Periods extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-    }
-
-    toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_PERIODS, this.activeKey());
-        keys.map(collapse => {
-            collapseChange(collapse.collapseId, collapse.activeKey);
-        });
     }
 
     toggleCheckbox(e) {
@@ -307,7 +299,7 @@ export default class Periods extends React.Component {
                     disabled={page.mode.public}
                     className={className}
                 >
-                    <Updates indicatorId={parentId} period={period} />
+                    <Updates indicatorId={parentId} period={period} />{" "}
                 </Panel>
             );
         });

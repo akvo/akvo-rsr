@@ -37,7 +37,7 @@ import {
     openNodes
 } from "../../utils";
 
-import { displayDate, _, createToggleKeys, collapseId } from "../../utils.js";
+import { displayDate, _, collapseId } from "../../utils.js";
 
 import { DisaggregationsDisplay, ToggleButton } from "../common";
 
@@ -409,7 +409,6 @@ export default class Updates extends React.Component {
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
         this.hideMe = this.hideMe.bind(this);
         this.state = { collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id) };
     }
@@ -421,13 +420,6 @@ export default class Updates extends React.Component {
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
         // noHide();
-    }
-
-    toggleAll() {
-        const keys = createToggleKeys(this.props.period.id, c.OBJECTS_UPDATES, this.activeKey());
-        keys.map(collapse => {
-            collapseChange(collapse.collapseId, collapse.activeKey);
-        });
     }
 
     hideMe(id) {

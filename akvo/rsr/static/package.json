@@ -40,6 +40,7 @@
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.0",
+    "rewire": "^3.0.2",
     "showdown": "^1.8.4"
   },
   "devDependencies": {

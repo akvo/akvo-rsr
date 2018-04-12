@@ -23,7 +23,7 @@ import {
 
 import { collapseChange } from "../actions/collapse-actions";
 
-import { _, collapseId, createToggleKeys, hideMe } from "../utils";
+import { _, collapseId, hideMe } from "../utils";
 
 import Periods from "./Periods";
 
@@ -148,7 +148,6 @@ export default class Indicators extends React.Component {
     constructor(props) {
         super(props);
         this.collapseChange = this.collapseChange.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
         this.hideMe = this.hideMe.bind(this);
         // concatenate this model's name with parent's ID
         this.state = { collapseId: collapseId(c.OBJECTS_INDICATORS, this.props.parentId) };
@@ -160,13 +159,6 @@ export default class Indicators extends React.Component {
 
     collapseChange(activeKey) {
         collapseChange(this.state.collapseId, activeKey);
-    }
-
-    toggleAll() {
-        const keys = createToggleKeys(this.props.parentId, c.OBJECTS_INDICATORS, this.activeKey());
-        keys.map(collapse => {
-            collapseChange(collapse.collapseId, collapse.activeKey);
-        });
     }
 
     hideMe(id) {
@@ -195,8 +187,7 @@ export default class Indicators extends React.Component {
                     className={className}
                     key={id}
                 >
-                    <IndicatorContent indicator={indicator} />
-                    <Periods parentId={id} />
+                    <IndicatorContent indicator={indicator} /> <Periods parentId={id} />{" "}
                 </Panel>
             );
         });
