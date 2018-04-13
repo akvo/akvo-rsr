@@ -392,11 +392,15 @@ describe("function computePercentage", () => {
 
 describe("function isResultsKey", () => {
     it('expect key to be true if model is found in the results models list', () => {
-        const key = 'results-results';
+        const key = 'results-results',
+            key2 = 'indicators-1';
         expect(utils.isResultsKey(key)).to.be.true;
+        expect(utils.isResultsKey(key2)).to.be.true;
     });
     it('expect key to be false if model is not found in the results models list', () => {
-        const key = 'result-result';
+        const key = 'result-results',
+            key2 = 'indicator-1';
         expect(utils.isResultsKey(key)).to.be.false;
+        expect(utils.isResultsKey(key2)).to.be.false;
     });
 });
