@@ -138,6 +138,21 @@ describe("function idsToActiveKey", () => {
     });
 });
 
+describe("function createToggleKey", () => {
+    it('creates an activeKey array, if identical with allOpen panels are open and we close', () => {
+        const activeKey = ['1', '2', '3'],
+            ids = ['1', '2', '3'],
+            closePanels = [];
+        expect(utils.createToggleKey(ids, activeKey)).to.deep.equal(closePanels);
+    });
+    it('creates an activeKey array, if not identical with allOpen panels are closed and we open', () => {
+        const activeKey = ['1'],
+            ids = ['1', '2', '3'],
+            openPanels = ['1', '2', '3'];
+        expect(utils.createToggleKey(ids, activeKey)).to.deep.equal(openPanels);
+    });
+});
+
 describe("arrowFunction isNewUpdate", () => {
     it('expect to return true if the update is new', () => {
         const newUpdate = { id: 'new-', name: 'update' };
@@ -372,5 +387,16 @@ describe("function computePercentage", () => {
         const numerator = 88,
             denominator = 0;
         expect(utils.computePercentage(numerator, denominator)).to.equal(0);
+    });
+});
+
+describe("function isResultsKey", () => {
+    it('expect key to be true if model is found in the results models list', () => {
+        const key = 'results-results';
+        expect(utils.isResultsKey(key)).to.be.true;
+    });
+    it('expect key to be false if model is not found in the results models list', () => {
+        const key = 'result-result';
+        expect(utils.isResultsKey(key)).to.be.false;
     });
 });
