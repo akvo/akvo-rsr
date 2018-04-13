@@ -108,6 +108,7 @@ class PermissionsTestCase(TestCase):
 
         # No object
         self.assertTrue(user.has_perm('rsr.change_project', None))
+        self.assertTrue(user.has_perm('rsr.change_partnersite'))
 
         # Organisation permissions
         for i, org in enumerate(self.orgs):

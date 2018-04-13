@@ -234,6 +234,9 @@ class Transaction(models.Model):
 
 
 class TransactionSector(models.Model):
+
+    project_relation = 'transactions__sectors__in'
+
     transaction = models.ForeignKey(
         'Transaction', verbose_name=_(u'transaction'), related_name='sectors'
     )

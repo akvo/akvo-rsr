@@ -24,6 +24,8 @@ from .utils import PERCENTAGE_MEASURE, QUALITATIVE, QUANTITATIVE
 
 
 class Indicator(models.Model):
+    project_relation = 'results__indicators__in'
+
     INDICATOR_TYPES = (
         (QUANTITATIVE, _('Quantitative')),
         (QUALITATIVE, _('Qualitative')),
