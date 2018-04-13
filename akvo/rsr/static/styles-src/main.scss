@@ -1494,10 +1494,12 @@ h4.detailedInfo {
         color: $akvoBlack;
     }
 }
+
 .upLabelSearch {
     top: -20px;
     position: absolute;
 }
+
 #search-filter {
     margin-top: -10px;
     @include responsive(small-max-screens) {
@@ -1513,7 +1515,7 @@ h4.detailedInfo {
         }
         .pgTitle {
             position: absolute;
-            top:-23px;
+            top: -23px;
             display: inline-block;
         }
     }
@@ -1566,7 +1568,6 @@ h4.detailedInfo {
             border: 1px solid rgba($akvoBlack, 0.05);
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
         }
-
         &:last-child {
             margin-bottom: 0;
         }
@@ -1640,12 +1641,10 @@ h4.detailedInfo {
                 @include border-radius(3px);
                 background: white;
                 margin-right: 0.66%;
-                > div:first-child {                            
+                > div:first-child {
                     min-height: 130px;
                     a {
-                        img {
-
-                        }
+                        img {}
                     }
                 }
                 &:nth-child(4n+4) {
@@ -1708,7 +1707,7 @@ h4.detailedInfo {
                                 color: $anchorLinkHover;
                             }
                         }
-                    }                
+                    }
                 }
                 &:nth-child(3n+3) {
                     margin-right: 0;
@@ -1867,7 +1866,7 @@ header {
                             color: $anchorLinkHover;
                         }
                     }
-                }  
+                }
             }
         }
     }
@@ -2405,7 +2404,6 @@ ul.typeahead-selector {
         .row {
             margin-bottom: 15px;
             padding: 15px 0;
-
             h5 {
                 margin-top: 0;
                 a {
@@ -3633,7 +3631,7 @@ main.project-page {
 }
 
 main.results-page {
-    height: calc(100vh - 140px);    
+    height: calc(100vh - 140px);
 }
 
 .resultProjectTitle {
@@ -3654,10 +3652,7 @@ main.results-page {
 }
 
 .myRsrPg {
-    height: calc(100vh + 120px);
-    + footer {
-        display: none;
-    }
+
     h3 {
         display: inline-block;
         margin-top: 20px;
@@ -3696,7 +3691,6 @@ main.results-page {
             box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
             min-height: 270px;
             padding: 30px 70px 5px 70px;
-
             .reportDscr {
                 padding: 10px 0;
             }
@@ -3705,49 +3699,48 @@ main.results-page {
                 button {
                     &:nth-of-type(2) {
                         margin-left: 15px !important;
-                        }
+                    }
                     &.reportDown {
                         margin: 15px auto 0;
                         @include btnOutline($akvoPurple, $akvoPurple);
-                        }
                     }
-                    .reportDate {
-                        margin: 0 auto;
-                        background-color: rgba($akvoBlack, 0.05);
-                        text-align: left;
-                        padding: 10px 15px 20px 15px;
-                        border-radius: 6px;
-                        &:after {
-                            content: "";
-                            display: table;
-                            clear: both;
-                        }
-                        .startDate {
-                            float: left;
-                            width: 49.5%;
-                            position: relative;
-                            div {
+                }
+                .reportDate {
+                    margin: 0 auto;
+                    background-color: rgba($akvoBlack, 0.05);
+                    text-align: left;
+                    padding: 10px 15px 20px 15px;
+                    border-radius: 6px;
+                    &:after {
+                        content: "";
+                        display: table;
+                        clear: both;
+                    }
+                    .startDate {
+                        float: left;
+                        width: 49.5%;
+                        position: relative;
+                        div {
+                            width: 100%;
+                            input {
                                 width: 100%;
-                                input {
-                                    width: 100%;
-                                }
-                            }
-                        }
-                        .endDate {
-                            float: right;
-                            width: 49.5%;
-                            position: relative;
-                            div {
-                                width: 100%;
-                                input {
-                                    width: 100%;
-                                }
                             }
                         }
                     }
-
-                }            
-        &:hover {
+                    .endDate {
+                        float: right;
+                        width: 49.5%;
+                        position: relative;
+                        div {
+                            width: 100%;
+                            input {
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+            &:hover {
                 box-shadow: 0 0 10px rgba($rsrBlue2, 0.4);
                 .options {
                     text-align: center;
@@ -3759,14 +3752,13 @@ main.results-page {
                                 @include button(darken($rsrBlue2, 10%), white);
                             }
                         }
-                    &:nth-of-type(2) {
+                        &:nth-of-type(2) {
                             margin-left: 15px;
                         }
                     }
-                } 
+                }
             }
         }
-
     }
 }
 

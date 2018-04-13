@@ -3007,11 +3007,8 @@ main.results-page {
       color: white; }
 
 .myRsrPg {
-  height: calc(100vh + 120px);
   padding-right: 50px !important;
   padding-left: 50px !important; }
-  .myRsrPg + footer {
-    display: none; }
   .myRsrPg h3 {
     display: inline-block;
     margin-top: 20px; }
