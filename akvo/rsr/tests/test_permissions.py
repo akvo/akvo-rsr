@@ -10,7 +10,7 @@ from django.test import TestCase
 from akvo.rsr.models import (
     User, Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
-    AdministrativeLocation, ProjectLocation, OrganisationLocation
+    AdministrativeLocation, ProjectLocation, OrganisationLocation, UserPermissionedProjects
 )
 from akvo.utils import check_auth_groups
 
@@ -495,3 +495,69 @@ class PermissionsTestCase(TestCase):
     def make_employment(user, org, group_name):
         group = Group.objects.get(name=group_name)
         Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
+
+
+class UserPermissionedProjectsTestCase(TestCase):
+    """Testing that restricting permissions to projects per user works."""
+
+    def setUp(self):
+        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+
+        # Create organisation
+        self.org = Organisation.objects.create(name='org', long_name='org')
+
+        # Create three projects - two of which have the org as a partner
+        self.projects = []
+        for i in range(3):
+            project = Project.objects.create()
+            self.projects.append(project)
+            if i > 0:
+                Partnership.objects.create(organisation=self.org, project=project)
+
+        self.user = PermissionsTestCase.create_user('user@org.org')
+        group = Group.objects.get(name='Users')
+        Employment.objects.create(
+            user=self.user, organisation=self.org, group=group, is_approved=True
+        )
+
+    def test_should_view_all_org_projects(self):
+        # Given
+        user = self.user
+
+        # Then
+        for i, project in enumerate(self.projects):
+            if i == 0:
+                self.assertFalse(user.has_perm('rsr.view_project', project))
+            else:
+                self.assertTrue(user.has_perm('rsr.view_project', project))
+
+    def test_should_not_view_any_org_projects(self):
+        # Given
+        user = self.user
+
+        # When
+        # Create a permissioned entry with no projects in it
+        UserPermissionedProjects.objects.create(user=user)
+
+        # Then
+        for project in self.projects:
+            self.assertFalse(user.has_perm('rsr.view_project', project))
+
+    def test_should_view_only_permissioned_projects(self):
+        # Given
+        user = self.user
+
+        # When
+        # Assign permissions to all projects (including non org project!)
+        permissions = UserPermissionedProjects.objects.create(user=user)
+        for project in self.projects:
+            permissions.projects.add(project)
+
+        # Then
+        for i, project in enumerate(self.projects):
+            if i == 0:
+                # Non organisation project is not accessible, even if
+                # explicitly given permissions to.
+                self.assertFalse(user.has_perm('rsr.view_project', project))
+            else:
+                self.assertTrue(user.has_perm('rsr.view_project', project))

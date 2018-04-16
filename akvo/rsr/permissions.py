@@ -58,6 +58,7 @@ def _user_has_group_permissions(user, obj, group_names):
         try:
             permissioned_projects = UserPermissionedProjects.objects.get(user=user)
             projects = permissioned_projects.projects.values_list('id', flat=True)
+            projects = set(all_projects).intersection(projects)
         except UserPermissionedProjects.DoesNotExist:
             projects = all_projects
 
