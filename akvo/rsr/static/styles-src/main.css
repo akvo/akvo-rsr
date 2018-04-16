@@ -3009,6 +3009,8 @@ main.results-page {
 .myRsrPg {
   padding-right: 50px !important;
   padding-left: 50px !important; }
+  .myRsrPg + footer {
+    position: sticky; }
   .myRsrPg h3 {
     display: inline-block;
     margin-top: 20px; }

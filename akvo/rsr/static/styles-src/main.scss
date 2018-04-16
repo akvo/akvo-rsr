@@ -3652,7 +3652,9 @@ main.results-page {
 }
 
 .myRsrPg {
-
+    + footer {
+        position: sticky;
+    }
     h3 {
         display: inline-block;
         margin-top: 20px;
