@@ -82,6 +82,7 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
+from .user_permissioned_projects import UserPermissionedProjects
 
 __all__ = [
     'AdministrativeLocation',
@@ -172,6 +173,7 @@ __all__ = [
     'Transaction',
     'TransactionSector',
     'User',
+    'UserPermissionedProjects',
 ]
 
 # Permission rules

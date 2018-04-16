@@ -9,7 +9,7 @@ import rules
 from django.contrib.auth import get_user_model
 
 from .models import (Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate,
-                     IndicatorPeriodData)
+                     IndicatorPeriodData, UserPermissionedProjects)
 
 ADMIN_GROUP_NAME = 'Admins'
 ME_MANAGER_GROUP_NAME = 'M&E Managers'
@@ -55,7 +55,13 @@ def is_org_admin(user, obj):
 
     if id_:
         all_projects = employments.organisations().all_projects().values_list('id', flat=True)
-        return id_ in all_projects
+        try:
+            permissioned_projects = UserPermissionedProjects.objects.get(user=user)
+            projects = permissioned_projects.projects.values_list('id', flat=True)
+        except UserPermissionedProjects.DoesNotExist:
+            projects = all_projects
+
+        return id_ in projects
 
     all_users = employments.organisations().users().values_list('id', flat=True)
     if isinstance(obj, User):
