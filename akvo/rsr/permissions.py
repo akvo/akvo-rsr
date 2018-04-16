@@ -8,8 +8,8 @@ import rules
 
 from django.contrib.auth import get_user_model
 
-from .models import (Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate,
-                     IndicatorPeriodData, UserPermissionedProjects)
+from .models import (Employment, IatiExport, Organisation, PartnerSite,
+                     Project, ProjectUpdate, UserPermissionedProjects)
 
 ADMIN_GROUP_NAME = 'Admins'
 ME_MANAGER_GROUP_NAME = 'M&E Managers'
@@ -26,13 +26,12 @@ def is_rsr_admin(user):
     return False
 
 
-@rules.predicate
-def is_org_admin(user, obj):
+def _user_has_group_permissions(user, obj, group_names):
     User = get_user_model()
     if not user.is_authenticated():
         return False
 
-    employments = user.approved_employments(group_names=[ADMIN_GROUP_NAME])
+    employments = user.approved_employments(group_names=group_names)
     has_employments = employments.exists()
     if obj is None and has_employments:
         return True
@@ -55,6 +54,7 @@ def is_org_admin(user, obj):
 
     if id_:
         all_projects = employments.organisations().all_projects().values_list('id', flat=True)
+        # Check if the user permissions have been explicitly set for any projects
         try:
             permissioned_projects = UserPermissionedProjects.objects.get(user=user)
             projects = permissioned_projects.projects.values_list('id', flat=True)
@@ -89,86 +89,40 @@ def is_org_admin(user, obj):
 
 
 @rules.predicate
+def is_org_admin(user, obj):
+    group_names = [ADMIN_GROUP_NAME]
+    return _user_has_group_permissions(user, obj, group_names)
+
+
+@rules.predicate
 def is_org_user_manager(user, obj):
-    if not user.is_authenticated():
-        return False
-    for employment in user.approved_employments():
-        if employment.group.name == USER_MANAGER_GROUP_NAME:
-            if not obj:
-                return True
-            elif isinstance(obj, get_user_model()) and obj in employment.organisation.all_users():
-                return True
-            elif type(obj) == Employment and \
-                    obj.organisation in employment.organisation.content_owned_organisations():
-                return True
-            elif type(obj) == Project and obj in employment.organisation.all_projects():
-                return True
-            elif type(obj) == Organisation and \
-                    obj in employment.organisation.content_owned_organisations():
-                return True
-            elif isinstance(obj, ProjectUpdate) and obj.user == user:
-                return True
-    return False
+    group_names = [USER_MANAGER_GROUP_NAME]
+    return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 # FIXME: Bad name:: This is really checking if user is PE/M&E manager
 def is_org_project_editor(user, obj):
-    if not user.is_authenticated():
-        return False
     group_names = [PROJECT_EDITOR_GROUP_NAME, ME_MANAGER_GROUP_NAME]
-    for employment in user.approved_employments(group_names=group_names):
-        is_privileged = is_organisation_or_user_owned(user, employment, obj)
-        if is_privileged:
-            return True
-        else:
-            continue
-    return False
+    return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_me_manager(user, obj):
-    if not user.is_authenticated():
-        return False
     group_names = [ME_MANAGER_GROUP_NAME]
-    for employment in user.approved_employments(group_names=group_names):
-        is_privileged = is_organisation_or_user_owned(user, employment, obj)
-        if is_privileged:
-            return True
-        else:
-            continue
-    return False
+    return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_user(user, obj):
-    if not user.is_authenticated():
-        return False
-    if not obj:
-        return True
-    if isinstance(obj, ProjectUpdate):
-        return obj.user == user
-    if isinstance(obj, Project):
-        employments = user.approved_employments(group_names=[USER_GROUP_NAME])
-        return obj in employments.organisations().all_projects()
-    return False
+    group_names = [USER_GROUP_NAME]
+    return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_enumerator(user, obj):
-    if not user.is_authenticated():
-        return False
-    if obj is None:
-        return True
-    if isinstance(obj, ProjectUpdate):
-        return obj.user == user
-    if isinstance(obj, IndicatorPeriodData):
-        # Show only own updates or approved updates of others
-        obj = Project.objects.get(results__indicators__periods__data__in=[obj.id])
-    if isinstance(obj, Project):
-        employments = user.approved_employments(group_names=[ENUMERATOR_GROUP_NAME])
-        return obj in employments.organisations().all_projects()
-    return False
+    group_names = [ENUMERATOR_GROUP_NAME]
+    return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
@@ -180,68 +134,3 @@ def is_self(user, obj):
     if isinstance(obj, Employment) and obj.user == user:
         return True
     return False
-
-
-# FIXME: This method could be re-used in the other predicates too - for
-# instance, in is_org_admin, is_org_user_manager, if some of the rules defined
-# there are incorporated into this function.
-def is_organisation_or_user_owned(user, employment, obj):
-    if not obj:
-        return True
-    if isinstance(obj, Organisation):
-        if obj in employment.organisation.content_owned_organisations():
-            return True
-    elif isinstance(obj, Project) and obj in employment.organisation.all_projects():
-        return True
-    elif isinstance(obj, ProjectUpdate) and obj.user == user:
-        return True
-    else:
-        try:
-            if obj.project and obj.project in employment.organisation.all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if obj.result.project and obj.result.project in \
-                    employment.organisation.all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if obj.indicator.result.project and obj.indicator.result.project in \
-                    employment.organisation.all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if obj.period.indicator.result.project and \
-                obj.period.indicator.result.project in employment.organisation.\
-                    all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if obj.data.period.indicator.result.project and \
-                obj.data.period.indicator.result.project in employment.organisation.\
-                    all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if obj.location.location_target and obj.location.location_target in \
-                    employment.organisation.all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if obj.transaction.project and obj.transaction.project in \
-                    employment.organisation.all_projects():
-                return True
-        except Exception:
-            pass
-        try:
-            if isinstance(obj.location_target, Project) and \
-                    obj.location_target in employment.organisation.all_projects():
-                return True
-        except Exception:
-            pass

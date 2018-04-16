@@ -187,6 +187,248 @@ class PermissionsTestCase(TestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_organisationlocation', location))
 
+    def test_org_project_editor(self):
+        # Given
+        user = self.users[0]
+        self.make_org_project_editor(user, self.orgs[0])
+
+        # No object
+        self.assertTrue(user.has_perm('rsr.change_project', None))
+
+        # Organisation permissions
+        for i, org in enumerate(self.orgs):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_organisation', org))
+
+        # User (and related) permissions
+        for i, user_ in enumerate(self.users):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_user', user_))
+
+            # Employment permissions
+            employment = user_.approved_employments().first()
+            self.assertFalse(user.has_perm('rsr.change_employment', employment))
+
+        # Project (and related) permissions
+        for i, project in enumerate(self.projects):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_project', project))
+
+            # Project Status
+            self.assertFalse(user.has_perm('rsr.change_publishingstatus', project.publishingstatus))
+
+        # Project Update permissions
+        for i, project_update in enumerate(self.project_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        # Partner Site permissions
+        for i, partner_site in enumerate(self.partner_sites):
+            self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
+
+        # IatiExport permissions
+        for i, iati_export in enumerate(self.iati_exports):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            self.assertFalse(user.has_perm('rsr.change_iatiexport', iati_export))
+
+        # Result permissions
+        for i, result in enumerate(self.results):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_result', result))
+
+        # Indicator permissions
+        for i, indicator in enumerate(self.indicators):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicator', indicator))
+
+        # Indicator period permissions
+        for i, period in enumerate(self.indicator_periods):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatorperiod', period))
+
+        # IndicatorPeriodData permissions
+        for i, update in enumerate(self.indicator_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatorperioddata', update))
+
+        # IndicatorPeriodDataComment permissions
+        for i, comment in enumerate(self.indicator_update_comments):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatorperioddatacomment', comment))
+
+        # AdministrativeLocation permissons
+        for i, admin_location in enumerate(self.admin_locations):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_administrativelocation', admin_location))
+
+        # ProjectLocation permissions
+        for i, location in enumerate(self.project_locations):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectlocation', location))
+
+        # OrganisationLocation permissions
+        for i, location in enumerate(self.org_locations):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_organisationlocation', location))
+
+    def test_org_me_manager(self):
+        # Given
+        user = self.users[0]
+        self.make_org_me_manager(user, self.orgs[0])
+
+        # No object
+        self.assertTrue(user.has_perm('rsr.change_project', None))
+
+        # Organisation permissions
+        for i, org in enumerate(self.orgs):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_organisation', org))
+
+        # User (and related) permissions
+        for i, user_ in enumerate(self.users):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_user', user_))
+
+            # Employment permissions
+            employment = user_.approved_employments().first()
+            self.assertFalse(user.has_perm('rsr.change_employment', employment))
+
+        # Project (and related) permissions
+        for i, project in enumerate(self.projects):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_project', project))
+
+            # Project Status
+            self.assertFalse(user.has_perm('rsr.change_publishingstatus', project.publishingstatus))
+
+        # Project Update permissions
+        for i, project_update in enumerate(self.project_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        # Partner Site permissions
+        for i, partner_site in enumerate(self.partner_sites):
+            self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
+
+        # IatiExport permissions
+        for i, iati_export in enumerate(self.iati_exports):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            self.assertFalse(user.has_perm('rsr.change_iatiexport', iati_export))
+
+        # Result permissions
+        for i, result in enumerate(self.results):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_result', result))
+
+        # Indicator permissions
+        for i, indicator in enumerate(self.indicators):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicator', indicator))
+
+        # Indicator period permissions
+        for i, period in enumerate(self.indicator_periods):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatorperiod', period))
+
+        # IndicatorPeriodData permissions
+        for i, update in enumerate(self.indicator_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatorperioddata', update))
+
+        # IndicatorPeriodDataComment permissions
+        for i, comment in enumerate(self.indicator_update_comments):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatorperioddatacomment', comment))
+
+        # AdministrativeLocation permissons
+        for i, admin_location in enumerate(self.admin_locations):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_administrativelocation', admin_location))
+
+        # ProjectLocation permissions
+        for i, location in enumerate(self.project_locations):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectlocation', location))
+
+        # OrganisationLocation permissions
+        for i, location in enumerate(self.org_locations):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_organisationlocation', location))
+
+    def test_org_user_manager(self):
+        # Given
+        user = self.users[0]
+        self.make_org_user_manager(user, self.orgs[0])
+
+        # No object
+        self.assertFalse(user.has_perm('rsr.change_project', None))
+
+        # Organisation permissions
+        for i, org in enumerate(self.orgs):
+            self.assertFalse(user.has_perm('rsr.change_organisation', org))
+
+        # User (and related) permissions
+        for i, user_ in enumerate(self.users):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_user', user_))
+
+            # Employment permissions
+            employment = user_.approved_employments().first()
+            test = self.assertTrue if (employment.organisation == self.orgs[0]) else self.assertFalse
+            test(user.has_perm('rsr.change_employment', employment))
+
+        # Project (and related) permissions
+        for i, project in enumerate(self.projects):
+            self.assertFalse(user.has_perm('rsr.change_project', project))
+            # Project Status
+            self.assertFalse(user.has_perm('rsr.change_publishingstatus', project.publishingstatus))
+
+        # Project Update permissions
+        for i, project_update in enumerate(self.project_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        # Partner Site permissions
+        for i, partner_site in enumerate(self.partner_sites):
+            self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
+
+        # IatiExport permissions
+        for i, iati_export in enumerate(self.iati_exports):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            self.assertFalse(user.has_perm('rsr.change_iatiexport', iati_export))
+
+        # Result permissions
+        for i, result in enumerate(self.results):
+            self.assertFalse(user.has_perm('rsr.change_result', result))
+
+        # Indicator permissions
+        for i, indicator in enumerate(self.indicators):
+            self.assertFalse(user.has_perm('rsr.change_indicator', indicator))
+
+        # Indicator period permissions
+        for i, period in enumerate(self.indicator_periods):
+            self.assertFalse(user.has_perm('rsr.change_indicatorperiod', period))
+
+        # IndicatorPeriodData permissions
+        for i, update in enumerate(self.indicator_updates):
+            self.assertFalse(user.has_perm('rsr.change_indicatorperioddata', update))
+
+        # IndicatorPeriodDataComment permissions
+        for i, comment in enumerate(self.indicator_update_comments):
+            self.assertFalse(user.has_perm('rsr.change_indicatorperioddatacomment', comment))
+
+        # AdministrativeLocation permissons
+        for i, admin_location in enumerate(self.admin_locations):
+            self.assertFalse(user.has_perm('rsr.change_administrativelocation', admin_location))
+
+        # ProjectLocation permissions
+        for i, location in enumerate(self.project_locations):
+            self.assertFalse(user.has_perm('rsr.change_projectlocation', location))
+
+        # OrganisationLocation permissions
+        for i, location in enumerate(self.org_locations):
+            self.assertFalse(user.has_perm('rsr.change_organisationlocation', location))
+
     def test_org_user_permissions(self):
         user = self.users[0]
 
@@ -235,5 +477,21 @@ class PermissionsTestCase(TestCase):
 
     @staticmethod
     def make_org_admin(user, org):
-        group = Group.objects.get(name='Admins')
+        PermissionsTestCase.make_employment(user, org, 'Admins')
+
+    @staticmethod
+    def make_org_project_editor(user, org):
+        PermissionsTestCase.make_employment(user, org, 'Project Editors')
+
+    @staticmethod
+    def make_org_me_manager(user, org):
+        PermissionsTestCase.make_employment(user, org, 'M&E Managers')
+
+    @staticmethod
+    def make_org_user_manager(user, org):
+        PermissionsTestCase.make_employment(user, org, 'User Managers')
+
+    @staticmethod
+    def make_employment(user, org, group_name):
+        group = Group.objects.get(name=group_name)
         Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
