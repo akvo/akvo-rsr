@@ -33,7 +33,10 @@ def _user_has_group_permissions(user, obj, group_names):
 
     employments = user.approved_employments(group_names=group_names)
     has_employments = employments.exists()
-    if obj is None and has_employments:
+    if not has_employments:
+        return False
+
+    if obj is None:
         return True
 
     if isinstance(obj, ProjectUpdate):
