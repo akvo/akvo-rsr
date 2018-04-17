@@ -19,7 +19,6 @@ class IndicatorReference(models.Model):
 
     project_relation = 'results__indicators__references__in'
 
-
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
                                   related_name='references')
     reference = ValidXMLCharField(
