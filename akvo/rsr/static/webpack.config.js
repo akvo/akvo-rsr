@@ -13,7 +13,10 @@ var path = require("path");
 
 module.exports = {
     entry: {
-        app: './scripts-src/my-results/app.js',
+        // When working on one or the other apps, comment out the other while developing. Saves time
+        // on the transpiling ;-)
+        results: './scripts-src/my-results/app.js',
+        userProjects: './scripts-src/user-projects/app.js',
         vendors: [
             // NOTE: babel-polyfill always needs to be loaded before react and redux
             // https://github.com/facebook/react/issues/8379#issuecomment-316346239
@@ -22,8 +25,21 @@ module.exports = {
             'isomorphic-fetch',
         ]
     },
+    optimization: {
+		splitChunks: {
+			cacheGroups: {
+				commons: {
+					name: "commons",
+					chunks: "initial",
+					minChunks: 2,
+					minSize: 0
+				}
+			}
+		},
+		occurrenceOrder: true // To keep filename consistent between different modes (for example building only)
+	},
     output: {
-        filename: 'bundle.js',
+        filename: '[name]-bundle.js',
         path: path.resolve(__dirname, 'dist'),
     },
     devtool: '#inline-source-map',
