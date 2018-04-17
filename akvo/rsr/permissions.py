@@ -105,8 +105,7 @@ def is_org_user_manager(user, obj):
 
 
 @rules.predicate
-# FIXME: Bad name:: This is really checking if user is PE/M&E manager
-def is_org_project_editor(user, obj):
+def is_org_me_manager_or_project_editor(user, obj):
     group_names = [PROJECT_EDITOR_GROUP_NAME, ME_MANAGER_GROUP_NAME]
     return _user_has_group_permissions(user, obj, group_names)
 

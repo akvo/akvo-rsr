@@ -549,7 +549,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         permissions = {
             'is_rsr_admin': Q() if self.is_authenticated() and self.is_admin else Q(pk=None),
             'is_org_admin': Q(**{project_filter_name: self.admin_projects()}),
-            'is_org_project_editor': Q(
+            'is_org_me_manager_or_project_editor': Q(
                 **{project_filter_name: self.project_editor_me_manager_projects()}
             ),
             'is_org_me_manager': Q(
