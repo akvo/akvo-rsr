@@ -276,8 +276,9 @@ def project_editor(request, project_id):
     except Project.DoesNotExist:
         raise Http404('No project exists with the given id.')
 
-    if (not request.user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED) and not \
-            (request.user.is_superuser or request.user.is_admin):
+    if (not request.user.has_perm('rsr.change_project', project) or
+            project.iati_status in Project.EDIT_DISABLED) and not (
+            request.user.is_superuser or request.user.is_admin):
         raise PermissionDenied
 
     # Validations / progress bars
@@ -497,6 +498,14 @@ def user_management(request):
     context['q'] = filter_query_string(qs)
 
     return render(request, 'myrsr/user_management.html', context)
+
+
+@login_required
+def user_projects(request, user_id):
+    context = {
+        "user_id": user_id
+    }
+    return render(request, 'myrsr/user_projects.html', context)
 
 
 @login_required

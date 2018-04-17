@@ -660,18 +660,20 @@ function initReact() {
         }
     });
 
+
     var EmploymentRow = React.createClass({displayName: "EmploymentRow",
         render: function() {
             var employmentCell = React.createElement(Employment, {
                 key: this.props.employment.id,
                 employment: this.props.employment
             });
-
+            var user = this.props.employment.user;
             return (
                 React.createElement("tr", null, 
-                    React.createElement("td", null, this.props.employment.user.email), 
-                    React.createElement("td", null, this.props.employment.user.first_name), 
-                    React.createElement("td", null, this.props.employment.user.last_name), 
+                    React.createElement("td", null, user.email), 
+                    React.createElement("td", null, user.first_name), 
+                    React.createElement("td", null, user.last_name), 
+                    React.createElement("td", null, React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/'}, i18n.set_projects)), 
                     React.createElement("td", {className: "text-right"}, employmentCell)
                 )
             );
@@ -703,9 +705,11 @@ function initReact() {
             var emailCell = React.createElement('th', null, i18n.email_text);
             var firstNameCell = React.createElement('th', null, i18n.first_name_text);
             var lastNameCell = React.createElement('th', null, i18n.last_name_text);
+            var projectsCell = React.createElement('th', null, i18n.set_projects);
+
             var organisationCell = React.createElement('th', {className: "text-right"}, i18n.organisations_text);
 
-            var tableRow = React.createElement('tr', null, emailCell, firstNameCell, lastNameCell, organisationCell);
+            var tableRow = React.createElement('tr', null, emailCell, firstNameCell, lastNameCell, projectsCell, organisationCell);
             var tableHead = React.createElement('thead', null, tableRow);
             var tableBody = React.createElement('tbody', null, employments_table);
 

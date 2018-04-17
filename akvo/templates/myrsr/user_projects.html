@@ -1,0 +1,30 @@
+{% extends "myrsr/myrsr_base.html" %}
+
+{% load bootstrap3 pipeline i18n rules %}
+
+{% block title %}{% trans 'MyRSR - User projects management' %}{% endblock %}
+
+{% block myrsr_main %}
+  <div id="userProjects" class="col-sm-6 col-xs-8">
+
+  </div>
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+
+  <script type="application/json" id="user">
+      {
+        "id": {{ user_id }}
+      }
+  </script>
+
+  <script type="application/json" id="user-management-text">
+    {
+      "some_text": "{% trans 'Some text'|escapejs %}",
+    }
+  </script>
+
+  {% javascript 'vendors_bundle' %}
+  {% javascript 'user_projects_bundle' %}
+{% endblock js %}

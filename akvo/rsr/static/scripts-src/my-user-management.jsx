@@ -660,18 +660,20 @@ function initReact() {
         }
     });
 
+
     var EmploymentRow = React.createClass({
         render: function() {
             var employmentCell = React.createElement(Employment, {
                 key: this.props.employment.id,
                 employment: this.props.employment
             });
-
+            var user = this.props.employment.user;
             return (
                 <tr>
-                    <td>{this.props.employment.user.email}</td>
-                    <td>{this.props.employment.user.first_name}</td>
-                    <td>{this.props.employment.user.last_name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.first_name}</td>
+                    <td>{user.last_name}</td>
+                    <td><a href={'/myrsr/user_projects/' + user.id + '/'}>{i18n.set_projects}</a></td>
                     <td className="text-right">{employmentCell}</td>
                 </tr>
             );
@@ -703,9 +705,11 @@ function initReact() {
             var emailCell = React.createElement('th', null, i18n.email_text);
             var firstNameCell = React.createElement('th', null, i18n.first_name_text);
             var lastNameCell = React.createElement('th', null, i18n.last_name_text);
+            var projectsCell = React.createElement('th', null, i18n.set_projects);
+
             var organisationCell = React.createElement('th', {className: "text-right"}, i18n.organisations_text);
 
-            var tableRow = React.createElement('tr', null, emailCell, firstNameCell, lastNameCell, organisationCell);
+            var tableRow = React.createElement('tr', null, emailCell, firstNameCell, lastNameCell, projectsCell, organisationCell);
             var tableHead = React.createElement('thead', null, tableRow);
             var tableBody = React.createElement('tbody', null, employments_table);
 
