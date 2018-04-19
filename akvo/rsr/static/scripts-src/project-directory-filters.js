@@ -44,12 +44,12 @@ var Filter = React.createClass({displayName: "Filter",
     }
 });
 
-var changeNodeMarkerIcon = function(domNode, iconUrl, zIndex) {
+var changeNodeMarkerIcon = function(domNode, animation, zIndex) {
     var projectId = domNode.id;
     console.log(projectId);
     mapMarkers.forEach(function(marker) {
         if ("#" + projectId == marker.highlightId) {
-            marker.setIcon(iconUrl);
+            marker.setAnimation(animation);
             marker.setZIndex(zIndex);
         }
     });
@@ -57,10 +57,10 @@ var changeNodeMarkerIcon = function(domNode, iconUrl, zIndex) {
 
 var Project = React.createClass({displayName: "Project",
     highlightMarker: function() {
-        return changeNodeMarkerIcon(this.getDOMNode(), "/static/images/maps/redMarker.png", 500);
+        return changeNodeMarkerIcon(this.getDOMNode(), google.maps.Animation.BOUNCE, 500);
     },
     unHighlightMarker: function() {
-        return changeNodeMarkerIcon(this.getDOMNode(), "/static/images/maps/blueMarker.png", 100);
+        return changeNodeMarkerIcon(this.getDOMNode(), null, 100);
     },
     render: function() {
         var project = this.props.project,
