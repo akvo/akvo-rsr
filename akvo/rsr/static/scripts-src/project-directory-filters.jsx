@@ -44,23 +44,22 @@ var Filter = React.createClass({
     }
 });
 
-var changeNodeMarkerIcon = function(domNode, animation, zIndex) {
+var changeNodeMarkerIcon = function(domNode, animation) {
     var projectId = domNode.id;
     console.log(projectId);
     mapMarkers.forEach(function(marker) {
         if ("#" + projectId == marker.highlightId) {
             marker.setAnimation(animation);
-            marker.setZIndex(zIndex);
         }
     });
 };
 
 var Project = React.createClass({
     highlightMarker: function() {
-        return changeNodeMarkerIcon(this.getDOMNode(), google.maps.Animation.BOUNCE, 500);
+        return changeNodeMarkerIcon(this.getDOMNode(), google.maps.Animation.BOUNCE);
     },
     unHighlightMarker: function() {
-        return changeNodeMarkerIcon(this.getDOMNode(), null, 100);
+        return changeNodeMarkerIcon(this.getDOMNode(), null);
     },
     render: function() {
         var project = this.props.project,
