@@ -1460,11 +1460,17 @@ h4.detailedInfo {
       border-radius: 3px;
       background: white;
       margin-right: 2%;
+      -webkit-transition: all 4s linear;
+      -moz-transition: all 4s linear;
+      -o-transition: all 4s linear;
+      transition: all 4s linear;
       border: thin solid rgba(44, 42, 116, 0);
       -moz-transition: all 0.2s ease-in;
       -o-transition: all 0.2s ease-in;
       -webkit-transition: all 0.2s ease-in;
       transition: all 0.2s ease-in; }
+      .main-list.projects ul.projectListUl li.highlightProject {
+        background: lightyellow !important; }
       .main-list.projects ul.projectListUl li.updateAsset h1 {
         margin-top: 5px; }
         .main-list.projects ul.projectListUl li.updateAsset h1 a {

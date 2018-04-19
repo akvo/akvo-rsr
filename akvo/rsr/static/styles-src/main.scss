@@ -1698,6 +1698,13 @@ h4.detailedInfo {
                 @include border-radius(3px);
                 background: white;
                 margin-right: 2%;
+                -webkit-transition: all 4s linear;
+                -moz-transition: all 4s linear;
+                -o-transition: all 4s linear;
+                transition: all 4s linear;
+                &.highlightProject{
+                    background: lightyellow !important;
+                }
                 &.updateAsset {
                     h1 {
                         margin-top: 5px;
@@ -4684,7 +4691,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-                           
+
                             }
                         }
                     }

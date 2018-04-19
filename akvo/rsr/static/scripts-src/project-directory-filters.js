@@ -51,9 +51,10 @@ var Project = React.createClass({displayName: "Project",
                 " " +
                 (project.countries.length > 0
                     ? project.countries.join(", ")
-                    : this.props.i18n.no_location_text);
+                    : this.props.i18n.no_location_text),
+            element_id = "project-" + project.id;
         return (
-            React.createElement("li", null, 
+            React.createElement("li", {id: element_id}, 
                 React.createElement("div", {className: "thumbImg"}, 
                     React.createElement("a", {href: project.url}, 
                         React.createElement("img", {src: project.image, alt: project.title})
@@ -93,7 +94,8 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                 url: project.url,
                 text: project.title,
                 icon: "/static/images/maps/blueMarker.png",
-                image: project.image
+                image: project.image,
+                highlightId: "#project-" + project.id
             };
         }, this);
     },

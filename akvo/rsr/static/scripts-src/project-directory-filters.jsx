@@ -51,9 +51,10 @@ var Project = React.createClass({
                 " " +
                 (project.countries.length > 0
                     ? project.countries.join(", ")
-                    : this.props.i18n.no_location_text);
+                    : this.props.i18n.no_location_text),
+            element_id = "project-" + project.id;
         return (
-            <li>
+            <li id={element_id}>
                 <div className="thumbImg">
                     <a href={project.url}>
                         <img src={project.image} alt={project.title} />
@@ -93,7 +94,8 @@ var ProjectDirectory = React.createClass({
                 url: project.url,
                 text: project.title,
                 icon: "/static/images/maps/blueMarker.png",
-                image: project.image
+                image: project.image,
+                highlightId: "#project-" + project.id
             };
         }, this);
     },

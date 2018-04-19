@@ -167,7 +167,8 @@ $(document).ready(function() {
                         markerOpts = {
                             position: position,
                             icon: location.icon,
-                            map: map
+                            map: map,
+                            highlightId: location.highlightId
                         },
                         marker,
                         infoWindow,
@@ -185,11 +186,21 @@ $(document).ready(function() {
                     infoWindows.push(infoWindow);
                     if (mapConfig.dynamic) {
                         google.maps.event.addListener(marker, "click", function() {
-                            infoWindows.forEach(function(entry) {
-                                // Close any existing windows
-                                entry.close();
-                            });
-                            infoWindow.open(map, marker);
+                            if (marker.highlightId) {
+                                var project_selector = marker.highlightId,
+                                    project_div = document.querySelector(project_selector);
+                                project_div.scrollIntoView();
+                                project_div.classList.add("highlightProject");
+                                window.setTimeout(function() {
+                                    project_div.classList.remove("highlightProject");
+                                }, 1000);
+                            } else {
+                                infoWindows.forEach(function(entry) {
+                                    // Close any existing windows
+                                    entry.close();
+                                });
+                                infoWindow.open(map, marker);
+                            }
                         });
                     }
 
