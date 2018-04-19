@@ -44,7 +44,24 @@ var Filter = React.createClass({displayName: "Filter",
     }
 });
 
+var changeNodeMarkerIcon = function(domNode, iconUrl, zIndex) {
+    var projectId = domNode.id;
+    console.log(projectId);
+    mapMarkers.forEach(function(marker) {
+        if ("#" + projectId == marker.highlightId) {
+            marker.setIcon(iconUrl);
+            marker.setZIndex(zIndex);
+        }
+    });
+};
+
 var Project = React.createClass({displayName: "Project",
+    highlightMarker: function() {
+        return changeNodeMarkerIcon(this.getDOMNode(), "/static/images/maps/redMarker.png", 500);
+    },
+    unHighlightMarker: function() {
+        return changeNodeMarkerIcon(this.getDOMNode(), "/static/images/maps/blueMarker.png", 100);
+    },
     render: function() {
         var project = this.props.project,
             countries =
@@ -54,7 +71,11 @@ var Project = React.createClass({displayName: "Project",
                     : this.props.i18n.no_location_text),
             element_id = "project-" + project.id;
         return (
-            React.createElement("li", {id: element_id}, 
+            React.createElement("li", {
+                id: element_id, 
+                onMouseEnter: this.highlightMarker, 
+                onMouseLeave: this.unHighlightMarker
+            }, 
                 React.createElement("div", {className: "thumbImg"}, 
                     React.createElement("a", {href: project.url}, 
                         React.createElement("img", {src: project.image, alt: project.title})

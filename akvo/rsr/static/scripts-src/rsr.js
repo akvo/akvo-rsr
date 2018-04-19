@@ -161,6 +161,8 @@ $(document).ready(function() {
 
                 /* Keep track of infoWindows so we can close them as needed */
                 var infoWindows = [];
+                // Keep track of markers, so we can animate them on corresponding element hover
+                window.mapMarkers = [];
 
                 _(this.locations).forEach(function(location) {
                     var position = new google.maps.LatLng(location.latitude, location.longitude),
@@ -180,6 +182,7 @@ $(document).ready(function() {
 
                     // Setup marker
                     marker = new google.maps.Marker(markerOpts);
+                    window.mapMarkers.push(marker);
                     infoWindow = new google.maps.InfoWindow({
                         content: infoWinTempl(location)
                     });
