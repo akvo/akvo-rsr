@@ -7,7 +7,9 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Q
+from django.utils.cache import get_cache_key, _generate_cache_header_key
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -179,6 +181,7 @@ def typeahead_project_filters(request):
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
+    project_options = projects
     # NOTE: The text filter is handled differently/separately from the other filters.
     # The text filter allows users to enter free form text, which could result in no
     # projects being found for the given text. Other fields only allow selecting from
@@ -224,16 +227,46 @@ def typeahead_project_filters(request):
         'primary_organisation'
     )
 
+    # NOTE: We use the _get_cached_data function to individually cache small
+    # bits of data to avoid the response from never getting saved in the cache,
+    # because the response is larger than the max size of data that can be
+    # saved in the cache.
+    cached_projects = _get_cached_data(
+        request, 'projects', display_projects, ProjectListingSerializer
+    )
+    cached_project_options = _get_cached_data(
+        request, 'project_options', project_options, TypeaheadProjectSerializer
+    )
+    cached_organisations = _get_cached_data(
+        request, 'organisations', organisations, TypeaheadOrganisationSerializer
+    )
+
     response = {
         'project_count': count,
-        'projects': ProjectListingSerializer(display_projects, many=True).data,
-        'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
+        'projects': cached_projects,
+        'project_options': cached_project_options,
+        'organisation': cached_organisations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,
         'limit': settings.PROJECT_DIRECTORY_PAGE_SIZES,
     }
 
     return Response(response)
+
+
+def _get_cached_data(request, key_prefix, data, serializer):
+    """Function to get/set serialized data from the cache based on the request."""
+    cache_header_key = _generate_cache_header_key(key_prefix, request)
+    if cache.get(cache_header_key) is None:
+        cache.set(cache_header_key, [], None)
+
+    cache_key = get_cache_key(request, key_prefix)
+    cached_data = cache.get(cache_key, None)
+    if not cached_data:
+        cached_data = serializer(data, many=True).data
+        cache.set(cache_key, cached_data)
+
+    return cached_data
 
 
 @api_view(['GET'])
