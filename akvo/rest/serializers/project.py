@@ -61,6 +61,18 @@ class ProjectListingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
+        fields = (
+            'id',
+            'title',
+            'subtitle',
+            'latitude',
+            'longitude',
+            'image',
+            'countries',
+            'url',
+            'organisation',
+            'organisation_url',
+        )
 
     def get_countries(self, project):
         return map(lambda x: unicode(x), project.countries())
