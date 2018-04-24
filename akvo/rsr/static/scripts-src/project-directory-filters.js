@@ -27,7 +27,8 @@ var Filter = React.createClass({displayName: "Filter",
                     highlightOnlyResult: true, 
                     placeholder: this.props.display_name, 
                     disabled: this.props.disabled, 
-                    renderMenuItemChildren: show_indented}
+                    renderMenuItemChildren: show_indented, 
+                    maxResults: 10000}
                 ), 
                 React.createElement("span", {className: "caret"})
             )

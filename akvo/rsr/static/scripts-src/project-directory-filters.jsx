@@ -28,6 +28,7 @@ var Filter = React.createClass({
                     placeholder={this.props.display_name}
                     disabled={this.props.disabled}
                     renderMenuItemChildren={show_indented}
+                    maxResults={10000}
                 />
                 <span className="caret" />
             </div>
