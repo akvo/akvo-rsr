@@ -284,7 +284,6 @@ var TextSearch = React.createClass({
     render: function() {
         return (
             <div className="form-inline col-lg-4 col-md-6" role="form">
-                <p className="pgTitle">Projects:</p>
                 <div className="form-group">
                     <div className="input-group">
                         <input
@@ -292,6 +291,7 @@ var TextSearch = React.createClass({
                             onKeyUp={this.onEnter}
                             onChange={this.onChange}
                             value={this.state.value}
+                            placeholder="Projects"
                         />
                         <span className="input-group-btn">
                             <button className="btn btn-primary" onClick={this.onSubmit}>
