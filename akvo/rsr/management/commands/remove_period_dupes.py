@@ -42,24 +42,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        headers = [
+            'Project ID',
+            'Result ID',
+            'Result title',
+            'Indicator ID',
+            'Indicator title',
+            'Period ID',
+            'Period.period_start',
+            'Period.period_end',
+        ]
         problem_periods = tablib.Dataset()
-        problem_periods.headers = [
-            'Project ID',
-            'Result',
-            'Indicator',
-            'Period ID',
-            'Period.period_start',
-            'Period.period_end',
-        ]
+        problem_periods.headers = headers
         deleted_dupes = tablib.Dataset()
-        deleted_dupes.headers = [
-            'Project ID',
-            'Result',
-            'Indicator',
-            'Period ID',
-            'Period.period_start',
-            'Period.period_end',
-        ]
+        deleted_dupes.headers = headers
         for indicator in Indicator.objects.all():
             periods = IndicatorPeriod.objects.filter(indicator=indicator).select_related(
                 'indicator', 'indicator__result', 'indicator__result__project'
@@ -76,7 +72,9 @@ class Command(BaseCommand):
                         if len(dupes) - len(deletables) > 0:
                             problem_periods.append([
                                 period.indicator.result.project.pk,
+                                period.indicator.result.pk,
                                 period.indicator.result.title,
+                                period.indicator.pk,
                                 period.indicator.title,
                                 period.pk,
                                 period.period_start,
@@ -85,7 +83,9 @@ class Command(BaseCommand):
                         else:
                             deleted_dupes.append([
                                 period.indicator.result.project.pk,
+                                period.indicator.result.pk,
                                 period.indicator.result.title,
+                                period.indicator.pk,
                                 period.indicator.title,
                                 period.pk,
                                 period.period_start,
