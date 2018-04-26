@@ -7,7 +7,7 @@
 {% block myrsr_main %}
 
 <ol class="breadcrumb">
-    <li><a href="{% url 'my_projects' %}">{% trans "My projects" %}</a></li>
+    <li><a href="{% url 'my_projects' %}"><i class="fa fa-home"></i> {% trans "My projects" %}</a></li>
     <li class="active"><span>{{ project.title }}</span></li>
     <a href="{% url 'project-main' project.pk %}" class="text-right liveView btn btn-default hidden">{% trans 'View public project' %}</a>
 </ol>

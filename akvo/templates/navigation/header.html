@@ -40,6 +40,10 @@
           <li>
               <div class="dropdown userDropdown">
                   <button class="btn btn-default dropdown-toggle" id="user-dropdown-menu" type="button" data-toggle="dropdown" aria-expanded="false">
+                      <span class="userAvatar">{% if user.avatar %}
+                          {% img user 50 50 user.get_full_name %}
+                      {% endif %}
+                      </span>
                       {{ user.get_full_name }}
                       <span class="caret"></span>
                   </button>

@@ -406,8 +406,7 @@ nav.navbar-fixed-top {
       padding: 0;
       font-weight: normal; }
   nav.navbar-fixed-top .navbar-nav li {
-    font-weight: normal;
-    padding-top: 3px; }
+    font-weight: normal; }
     nav.navbar-fixed-top .navbar-nav li a {
       color: #2c2a74;
       border: thin solid transparent; }
@@ -449,14 +448,22 @@ nav.navbar-fixed-top {
     nav.navbar-fixed-top .navbar-nav.navbar-right li {
       margin-right: 2px; }
       nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) {
-        margin-right: 10px; }
+        margin-right: 15px; }
         nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown {
           margin-top: 2px;
           background-color: transparent !important;
           border-color: transparent !important; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default {
-            background-color: transparent !important;
-            border-color: transparent; }
+            margin-top: -5px;
+            padding: 3px 8px; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar {
+              width: 30px;
+              height: 30px;
+              margin-right: 10px; }
+              nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar img {
+                margin: 0;
+                width: 30px;
+                height: 30px; }
           @media only screen and (max-width: 1024px) and (min-width: 768px) {
             nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
               position: initial;
@@ -504,7 +511,9 @@ nav.navbar-fixed-top {
           border-radius: 3px;
           border: 1px solid transparent;
           text-align: center;
-          box-shadow: none !important; }
+          box-shadow: none !important;
+          padding: 8px 8px;
+          margin-top: -3px; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
             background: #1e1c4f;
             color: white; }
@@ -3058,17 +3067,18 @@ main.results-page {
     margin-top: 20px; }
   .myRsrPg ol.breadcrumb {
     background-color: white !important;
-    font-size: 0.9em;
-    margin-top: -10px;
-    margin-bottom: 0;
-    padding-top: 5px;
-    padding-left: 0; }
+    margin-top: 0px;
+    margin-bottom: 10px;
+    padding: 10px 0; }
     .myRsrPg ol.breadcrumb a.liveView {
       margin-left: 50px; }
     .myRsrPg ol.breadcrumb > li + li:before {
       padding: 0 5px;
       color: #ccc;
       content: "\003e"; }
+    .myRsrPg ol.breadcrumb li:first-of-type a i {
+      font-size: 120%;
+      font-weight: bold; }
 
 .rsrReports {
   padding-top: 20px; }
