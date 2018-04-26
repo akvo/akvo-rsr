@@ -387,6 +387,24 @@ nav.navbar-fixed-top {
           background-size: 175px auto;
           text-indent: -9999px;
           margin-top: 0; } }
+  nav.navbar-fixed-top .tagLine {
+    position: absolute;
+    left: 190px;
+    top: 20px; }
+    @media only screen and (max-width: 992px) {
+      nav.navbar-fixed-top .tagLine {
+        top: 20px;
+        left: 240px; }
+        nav.navbar-fixed-top .tagLine h2 {
+          font-size: 1.2em; } }
+    @media only screen and (max-width: 768px) {
+      nav.navbar-fixed-top .tagLine {
+        display: none; } }
+    nav.navbar-fixed-top .tagLine h2 {
+      font-size: 1.6em;
+      margin: 0;
+      padding: 0;
+      font-weight: normal; }
   nav.navbar-fixed-top .navbar-nav li {
     font-weight: normal;
     padding-top: 3px; }
@@ -565,7 +583,7 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .btnHeader {
-  padding: 10px 20px 25px 20px; }
+  padding: 10px 0px 0 20px; }
 
 .navContainer {
   background: rgba(57, 102, 128, 0.1);
@@ -686,6 +704,16 @@ div.update-confirm-container {
 
 .projectStatus span {
   color: #202024 !important; }
+
+.myProjectList thead th {
+  text-align: right; }
+  .myProjectList thead th:first-child {
+    text-align: left; }
+
+.myProjectList tr td {
+  text-align: right; }
+  .myProjectList tr td:first-child {
+    text-align: left; }
 
 .myProjectList thead tr,
 #updates thead tr,
@@ -1287,7 +1315,9 @@ h4.detailedInfo {
   position: absolute; }
 
 #search-filter {
-  margin-top: -10px; }
+  margin-top: -20px;
+  padding-top: 10px;
+  background: rgba(44, 42, 116, 0.05); }
   @media only screen and (max-width: 768px) {
     #search-filter {
       padding-bottom: 0; } }
@@ -1295,6 +1325,8 @@ h4.detailedInfo {
     max-width: 80%;
     margin: 10px auto 0 auto;
     position: relative; }
+    #search-filter .searchBar.updateSearch {
+      margin: 0px auto 0 auto; }
     #search-filter .searchBar p {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1349,7 +1381,7 @@ h4.detailedInfo {
   margin-top: 0; }
 
 .main-list li .thumbImg {
-  height: 110px;
+  height: 140px;
   overflow-y: hidden;
   position: relative;
   background-color: rgba(32, 32, 36, 0.05); }
@@ -1430,10 +1462,12 @@ h4.detailedInfo {
   margin-top: 10px; }
   .main-list.projects #map {
     position: relative;
-    height: calc(100vh - 310px); }
+    height: calc(100vh - 230px); }
     @media only screen and (max-width: 768px) {
       .main-list.projects #map {
         display: none; } }
+    .main-list.projects #map.updateMap {
+      height: calc(100vh - 240px); }
     .main-list.projects #map .rsr_map {
       position: absolute;
       top: 0;
@@ -1443,15 +1477,17 @@ h4.detailedInfo {
       width: 100%;
       height: 100%; }
   .main-list.projects ul.projectListUl {
-    max-height: calc(100vh - 370px);
+    max-height: calc(100vh - 310px);
     overflow-y: scroll;
     padding-left: 15px; }
+    .main-list.projects ul.projectListUl.updateDirectory {
+      max-height: calc(100vh - 310px) !important; }
     .main-list.projects ul.projectListUl li {
       margin-bottom: 5px;
       list-style-type: none;
       padding: 0 0 15px 0;
       display: inline;
-      width: 32%;
+      width: 49%;
       float: left;
       min-height: 285px;
       -moz-border-radius: 3px;
@@ -1477,7 +1513,7 @@ h4.detailedInfo {
           color: #00a79d; }
           .main-list.projects ul.projectListUl li.updateAsset h1 a:hover {
             color: #ca8142; }
-      .main-list.projects ul.projectListUl li:nth-child(3n+3) {
+      .main-list.projects ul.projectListUl li:nth-child(2n+2) {
         margin-right: 0; }
       .main-list.projects ul.projectListUl li h1 {
         margin-top: 5px; }

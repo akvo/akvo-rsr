@@ -6,7 +6,7 @@
 <form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
   <section id="search-filter">
     <div class="container-fluid">
-      <div id="search" class="verticalPadding row searchBar  text-center">
+      <div id="search" class="verticalPadding row searchBar  text-center updateSearch">
         <div class="form-inline" role="form">
           <div class="form-group">
             <div class="input-group">
@@ -53,7 +53,7 @@
     <div class="container-fluid">
       <div  class="row">
         <div class="col-sm-7 ">
-        <ul class="projectListUl">
+        <ul class="projectListUl updateDirectory">
           {% for u in page %}
           <li class="updateAsset">
             <div class="thumbImg">
@@ -87,7 +87,7 @@
           {% endfor %}
         </ul>
 
-        <div class="row container-fluid">
+        <div class="row container-fluid updatePagination">
             <div class="col-xs-3">
                 <p class="emTxt">
                     <h5>
@@ -107,7 +107,7 @@
 
       </div>
       <div class="col-sm-5">
-          <section id="map" class="touch-navbar">
+          <section id="map" class="touch-navbar updateMap">
               {% coll_map map_updates '100%' '100%' %}
           </section>
       </div>

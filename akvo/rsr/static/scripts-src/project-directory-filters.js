@@ -85,7 +85,6 @@ var Project = React.createClass({displayName: "Project",
                     React.createElement("h1", null, 
                         React.createElement("a", {href: project.url}, project.title)
                     ), 
-                    React.createElement("p", {className: "projectSubT"}, project.subtitle), 
                     React.createElement("p", {className: "projectOrg"}, 
                         React.createElement("a", {href: project.organisation_url}, project.organisation)
                     ), 

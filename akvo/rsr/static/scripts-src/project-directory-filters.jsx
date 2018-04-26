@@ -85,7 +85,6 @@ var Project = React.createClass({
                     <h1>
                         <a href={project.url}>{project.title}</a>
                     </h1>
-                    <p className="projectSubT">{project.subtitle}</p>
                     <p className="projectOrg">
                         <a href={project.organisation_url}>{project.organisation}</a>
                     </p>

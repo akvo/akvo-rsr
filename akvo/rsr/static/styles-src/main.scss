@@ -411,6 +411,29 @@ nav.navbar-fixed-top {
             }
         }
     }
+    .tagLine {
+        position: absolute;
+        left: 190px;
+        top: 20px;
+        @include responsive(mediums-max-screens) {
+            top: 20px;
+            left: 240px;
+            h2 {
+                font-size: 1.2em;
+            }
+        }
+
+        @include responsive(small-max-screens) {
+            display: none;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+        }
+    }
     .navbar-nav {
         li {
             font-weight: normal;
@@ -608,7 +631,7 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 20px 25px 20px;
+    padding: 10px 0px 0 20px;
 }
 
 .navContainer {
@@ -780,6 +803,25 @@ div.update-confirm-container {
 .projectStatus {
     span {
         color: $akvoBlack !important;
+    }
+}
+
+.myProjectList {
+    thead {
+        th {
+            text-align: right;
+            &:first-child {
+                text-align: left;
+            }
+        }
+    }
+    tr {
+        td {
+            text-align: right;
+            &:first-child {
+                text-align: left;
+            }
+        }
     }
 }
 
@@ -1501,7 +1543,9 @@ h4.detailedInfo {
 }
 
 #search-filter {
-    margin-top: -10px;
+    margin-top: -20px;
+    padding-top: 10px;
+    background: rgba($akvoPurple, 0.05);
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
@@ -1510,6 +1554,9 @@ h4.detailedInfo {
         max-width: 80%;
         margin: 10px auto 0 auto;
         position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
         p {
             @include noWrapTxt;
         }
@@ -1579,7 +1626,7 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 110px;
+            height: 140px;
             overflow-y: hidden;
             position: relative;
             background-color: rgba($akvoBlack, 0.05);
@@ -1668,11 +1715,14 @@ h4.detailedInfo {
         margin-top: 10px;
         #map {
             position: relative;
-            height: calc(100vh - 310px);
+            height: calc(100vh - 230px);
             @include responsive(small-max-screens) {
                 display: none;
             }
 
+            &.updateMap {
+                height: calc(100vh - 240px);
+            }
             .rsr_map {
                 position: absolute;
                 top: 0;
@@ -1684,15 +1734,18 @@ h4.detailedInfo {
             }
         }
         ul.projectListUl {
-            max-height: calc(100vh - 370px);
+            max-height: calc(100vh - 310px);
             overflow-y: scroll;
             padding-left: 15px;
+            &.updateDirectory {
+                max-height: calc(100vh - 310px) !important;
+            }
             li {
                 margin-bottom: 5px;
                 list-style-type: none;
                 padding: 0 0 15px 0;
                 display: inline;
-                width: 32%;
+                width: 49%;
                 float: left;
                 min-height: 285px;
                 @include border-radius(3px);
@@ -1702,7 +1755,7 @@ h4.detailedInfo {
                 -moz-transition: all 4s linear;
                 -o-transition: all 4s linear;
                 transition: all 4s linear;
-                &.highlightProject{
+                &.highlightProject {
                     background: lightyellow !important;
                 }
                 &.updateAsset {
@@ -1716,7 +1769,7 @@ h4.detailedInfo {
                         }
                     }
                 }
-                &:nth-child(3n+3) {
+                &:nth-child(2n+2) {
                     margin-right: 0;
                 }
                 h1 {
@@ -4691,7 +4744,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
