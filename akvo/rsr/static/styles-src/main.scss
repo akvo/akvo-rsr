@@ -3854,7 +3854,12 @@ main.results-page {
         padding-top: 25px;
         background: rgba(240, 240, 240, 0.5);
     }
-    .editBtn {}
+    .editBtn {
+        border: 1px solid rgba($akvoBlack, 0.1) !important;
+        border-bottom: 1px solid transparent !important;
+        padding: 7px 8px;
+        border-radius: 5px 5px 0 0;
+    }
     .react-tabs {
         ul.react-tabs__tab-list {
             border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;

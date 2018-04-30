@@ -3256,6 +3256,11 @@ main.results-page {
   .results #update {
     padding-top: 25px;
     background: rgba(240, 240, 240, 0.5); }
+  .results .editBtn {
+    border: 1px solid rgba(32, 32, 36, 0.1) !important;
+    border-bottom: 1px solid transparent !important;
+    padding: 7px 8px;
+    border-radius: 5px 5px 0 0; }
   .results .react-tabs ul.react-tabs__tab-list {
     border-bottom: 1px solid rgba(32, 32, 36, 0.1) !important; }
     .results .react-tabs ul.react-tabs__tab-list li {
