@@ -6,8 +6,7 @@ Akvo RSR is covered by the GNU Affero General Public License.
 See more details in the license.txt file located at the root folder of the Akvo RSR module.
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
-
-
+import datetime
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
@@ -17,9 +16,16 @@ from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
-)
+    RelatedProject, IndicatorPeriod, IndicatorReference)
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
+
+
+def create_user(username='username', email='user@name.com', password='password'):
+    user = User.objects.create_user(username, email, password)
+    user.is_active = user.is_admin = user.is_superuser = True
+    user.save()
+    return user, username, password
 
 
 class BaseReorderTestCase(object):
@@ -46,15 +52,7 @@ class BaseReorderTestCase(object):
         )
 
         # Create active user
-        self.username = 'username'
-        self.password = 'password'
-        self.user = User.objects.create_user(
-            username=self.username,
-            email="user.rest@test.akvo.org",
-            password=self.password,
-        )
-        self.user.is_active = True
-        self.user.save()
+        self.user, self.username, self.password = create_user()
 
         # Create employment
         Employment.objects.create(
@@ -495,11 +493,12 @@ class ProjectLocationTestCase(TestCase):
     """Test that creating and updating project locations works correctly."""
 
     def setUp(self):
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         self.project = Project.objects.create(title='New Project')
         self.create_countries()
-        username, password = self.create_user()
-        self.c.login(username=username, password=password)
+        self.user, self.username, self.password = create_user()
+
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.c.login(username=self.username, password=self.password)
 
     def test_correct_country_new_location(self):
         # Given
@@ -554,11 +553,95 @@ class ProjectLocationTestCase(TestCase):
                 defaults=Country.fields_from_iso_code(iso_code)
             )
 
-    @staticmethod
-    def create_user():
-        username = email = 'username'
-        password = 'password'
-        user = User.objects.create_user(username, email, password)
-        user.is_active = user.is_admin = user.is_superuser = True
-        user.save()
-        return username, password
+
+class DefaultPeriodsTestCase(TestCase):
+    """Test the adding and removal of default periods."""
+
+    def setUp(self):
+        self.user, self.username, self.password = create_user()
+
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.c.login(username=self.username, password=self.password)
+
+        self.parent_project = Project.objects.create(
+            title="Parent project", subtitle="Parent project (subtitle)"
+        )
+        self.parent_project.publish()
+
+        self.child_project1 = Project.objects.create(
+            title="Child project 1", subtitle="Child project 1 (subtitle)"
+        )
+        self.child_project1.publish()
+
+        self.child_project2 = Project.objects.create(
+            title="Child project 2", subtitle="Child project 2 (subtitle)"
+        )
+        self.child_project2.publish()
+
+        RelatedProject.objects.create(
+            project=self.parent_project, related_project=self.child_project1,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        RelatedProject.objects.create(
+            project=self.parent_project, related_project=self.child_project2,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        # Create results framework
+        self.result = Result.objects.create(
+            project=self.parent_project, title="Result #1", type="1"
+        )
+        self.indicator1 = Indicator.objects.create(
+            result=self.result, title="Indicator #1", measure="1"
+        )
+        today = datetime.date.today()
+        self.period1 = IndicatorPeriod.objects.create(
+            indicator=self.indicator1, period_start=today,
+            period_end=today + datetime.timedelta(days=1), target_value="100"
+        )
+        self.period2 = IndicatorPeriod.objects.create(
+            indicator=self.indicator1,
+            period_start=today + datetime.timedelta(days=1),
+            period_end=today + datetime.timedelta(days=2), target_value="200"
+        )
+        self.indicator2 = Indicator.objects.create(
+            result=self.result, title="Indicator #2", measure="1"
+        )
+        self.period3 = IndicatorPeriod.objects.create(
+            indicator=self.indicator2,
+            period_start=today + datetime.timedelta(days=3),
+            period_end=today + datetime.timedelta(days=4), target_value="300"
+        )
+        self.period4 = IndicatorPeriod.objects.create(
+            indicator=self.indicator2,
+            period_start=today + datetime.timedelta(days=5),
+            period_end=today + datetime.timedelta(days=6), target_value="400"
+        )
+
+        # Import results framework into child
+        self.import_status1, self.import_message1 = self.child_project1.import_results()
+        self.import_status2, self.import_message2 = self.child_project2.import_results()
+
+    def tearDown(self):
+        Project.objects.all().delete()
+        User.objects.all().delete()
+
+    def test_set_default_periods(self):
+        # Given
+        project_id = self.parent_project.pk
+        indicator_id = self.indicator1.pk
+        url = '/rest/v1/project/{}/default_periods/?format=json'.format(project_id)
+
+        # When
+        data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'true'}
+        response = self.c.post(url, data=data, follow=True)
+        data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'false'}
+        response = self.c.post(url, data=data, follow=True)
+        data = {'indicator_id': indicator_id, 'copy': 'true', 'set_default': 'true'}
+        response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        child_periods1 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project1)
+        self.assertEqual(child_periods1.count(), 4)
+        child_periods2 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project2)
+        self.assertEqual(child_periods2.count(), 4)

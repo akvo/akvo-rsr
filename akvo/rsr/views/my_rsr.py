@@ -10,7 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.forms.models import model_to_dict
@@ -299,10 +299,9 @@ def project_editor(request, project_id):
 
     # Check for default indicator
     results = Result.objects.filter(project_id=project)
-    default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True)
-    if default_indicator:
-        default_indicator = default_indicator[0].id
-    else:
+    try:
+        default_indicator = Indicator.objects.get(result_id__in=results, default_periods=True).pk
+    except ObjectDoesNotExist:
         default_indicator = '-1'
 
     context = {

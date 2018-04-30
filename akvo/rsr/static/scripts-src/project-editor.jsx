@@ -3247,7 +3247,9 @@ function submitDefaultPeriods(indicatorId, copy, setDefault) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
-            if (setDefault === true) {
+            console.log('submitDefaultPeriods response: ' + JSON.stringify(response));
+            // TODO: dispay error when there was an error
+            if (response.default_periods) {
                 defaultValues.default_indicator = indicatorId;
             } else {
                 defaultValues.default_indicator = "-1";
