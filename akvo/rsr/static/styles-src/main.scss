@@ -481,7 +481,8 @@ nav.navbar-fixed-top {
                         border-color: transparent !important;
                         .btn-default {
                             margin-top: -5px;
-                            padding: 3px 8px;
+                            padding: 3px 8px 3px 3px;
+                            border: 1px solid rgba($rsrBlue, 0.2) !important;
                             .userAvatar {
                                 width: 30px;
                                 height: 30px;
@@ -3851,6 +3852,7 @@ main.results-page {
     }
     #update {
         padding-top: 25px;
+        background: rgba(240, 240, 240, 0.5);
     }
     .editBtn {}
     .react-tabs {
@@ -3866,6 +3868,16 @@ main.results-page {
     .updateList {
         max-height: calc(100vh - 370px);
         overflow-y: scroll;
+        padding-top: 25px;
+        .row {
+            margin: 10px 0;
+            &:first-child {
+                margin-top: 0;
+            }
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
         .updateImg {
             height: 130px;
             overflow-y: hidden;
@@ -3882,6 +3894,14 @@ main.results-page {
         h3 {
             margin-top: 0;
             display: block;
+            margin-bottom: 20px;
+        }
+    }
+    .projectUpdateForm {
+        h3 {
+            margin-top: 0;
+            display: block;
+            margin-bottom: 20px;
         }
     }
     /********************* Narrative report ***************************/

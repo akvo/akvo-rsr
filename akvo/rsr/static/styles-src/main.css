@@ -453,7 +453,8 @@ nav.navbar-fixed-top {
         border-color: transparent !important; }
         nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default {
           margin-top: -5px;
-          padding: 3px 8px; }
+          padding: 3px 8px 3px 3px;
+          border: 1px solid rgba(44, 42, 116, 0.2) !important; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar {
             width: 30px;
             height: 30px;
@@ -3253,7 +3254,8 @@ main.results-page {
   .results > button {
     display: none; }
   .results #update {
-    padding-top: 25px; }
+    padding-top: 25px;
+    background: rgba(240, 240, 240, 0.5); }
   .results .react-tabs ul.react-tabs__tab-list {
     border-bottom: 1px solid rgba(32, 32, 36, 0.1) !important; }
     .results .react-tabs ul.react-tabs__tab-list li {
@@ -3262,7 +3264,14 @@ main.results-page {
       border-bottom: 1px solid rgba(32, 32, 36, 0) !important; }
   .results .updateList {
     max-height: calc(100vh - 370px);
-    overflow-y: scroll; }
+    overflow-y: scroll;
+    padding-top: 25px; }
+    .results .updateList .row {
+      margin: 10px 0; }
+      .results .updateList .row:first-child {
+        margin-top: 0; }
+      .results .updateList .row:last-child {
+        margin-bottom: 0; }
     .results .updateList .updateImg {
       height: 130px;
       overflow-y: hidden;
@@ -3276,7 +3285,12 @@ main.results-page {
         transform: translate(-50%, -50%); }
     .results .updateList h3 {
       margin-top: 0;
-      display: block; }
+      display: block;
+      margin-bottom: 20px; }
+  .results .projectUpdateForm h3 {
+    margin-top: 0;
+    display: block;
+    margin-bottom: 20px; }
   .results .narrative_reports {
     position: relative; }
     .results .narrative_reports .narrativeStatus {
