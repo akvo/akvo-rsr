@@ -413,11 +413,13 @@ nav.navbar-fixed-top {
     }
     .tagLine {
         position: absolute;
-        left: 190px;
         top: 20px;
+        left: 50%;
+        transform: translate(-50%, 0%);
         @include responsive(mediums-max-screens) {
             top: 20px;
-            left: 240px;
+            left: 50%;
+            transform: translate(-50%, 0%);
             h2 {
                 font-size: 1.2em;
             }
@@ -428,7 +430,7 @@ nav.navbar-fixed-top {
         }
 
         h2 {
-            font-size: 1.6em;
+            font-size: 1.4em;
             margin: 0;
             padding: 0;
             font-weight: normal;
@@ -1642,17 +1644,16 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 140px;
+            height: 160px;
             overflow-y: hidden;
             position: relative;
             background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
-                max-width: 350px;
                 position: absolute;
-                top: 50%;
+                top: 0%;
                 left: 50%;
-                transform: translate(-50%, -50%);
+                transform: translate(-50%, 0%);
             }
         }
         .projectLocation {

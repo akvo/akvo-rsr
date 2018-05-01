@@ -389,19 +389,21 @@ nav.navbar-fixed-top {
           margin-top: 0; } }
   nav.navbar-fixed-top .tagLine {
     position: absolute;
-    left: 190px;
-    top: 20px; }
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%, 0%); }
     @media only screen and (max-width: 992px) {
       nav.navbar-fixed-top .tagLine {
         top: 20px;
-        left: 240px; }
+        left: 50%;
+        transform: translate(-50%, 0%); }
         nav.navbar-fixed-top .tagLine h2 {
           font-size: 1.2em; } }
     @media only screen and (max-width: 768px) {
       nav.navbar-fixed-top .tagLine {
         display: none; } }
     nav.navbar-fixed-top .tagLine h2 {
-      font-size: 1.6em;
+      font-size: 1.4em;
       margin: 0;
       padding: 0;
       font-weight: normal; }
@@ -1393,17 +1395,16 @@ h4.detailedInfo {
   margin-top: 0; }
 
 .main-list li .thumbImg {
-  height: 140px;
+  height: 160px;
   overflow-y: hidden;
   position: relative;
   background-color: rgba(32, 32, 36, 0.05); }
   .main-list li .thumbImg img {
     width: 100%;
-    max-width: 350px;
     position: absolute;
-    top: 50%;
+    top: 0%;
     left: 50%;
-    transform: translate(-50%, -50%); }
+    transform: translate(-50%, 0%); }
 
 .main-list li .projectLocation {
   color: rgba(32, 32, 36, 0.5);
