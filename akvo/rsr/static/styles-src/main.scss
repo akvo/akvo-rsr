@@ -482,7 +482,12 @@ nav.navbar-fixed-top {
                         .btn-default {
                             margin-top: -5px;
                             padding: 3px 8px 3px 3px;
-                            border: 1px solid rgba($rsrBlue, 0.2) !important;
+                            border: 1px solid rgba($rsrBlue, 0.15) !important;
+                            background: rgba($rsrBlue, 0.1) !important;
+                            &:hover {
+                                border: 1px solid rgba($rsrBlue, 0.2) !important;
+                                background: white!important;
+                            }
                             .userAvatar {
                                 width: 30px;
                                 height: 30px;
@@ -3426,6 +3431,7 @@ div#my-reports {
             text-align: left;
             width: 100%;
             margin-bottom: 10px;
+
             .not-selected {
                 color: grey;
             }

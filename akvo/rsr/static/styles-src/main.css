@@ -454,7 +454,11 @@ nav.navbar-fixed-top {
         nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default {
           margin-top: -5px;
           padding: 3px 8px 3px 3px;
-          border: 1px solid rgba(44, 42, 116, 0.2) !important; }
+          border: 1px solid rgba(44, 42, 116, 0.15) !important;
+          background: rgba(44, 42, 116, 0.1) !important; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default:hover {
+            border: 1px solid rgba(44, 42, 116, 0.2) !important;
+            background: white !important; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar {
             width: 30px;
             height: 30px;
