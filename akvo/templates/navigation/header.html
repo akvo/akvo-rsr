@@ -13,7 +13,7 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand" href="{% firstof rsr_page.return_url index_url %}">
+      <a class="navbar-brand" href="{% url 'project-directory' %}">
         {% if rsr_page.logo %}
           {% img rsr_page 125 60 organisation.name %}
         {% elif rsr_page.organisation %}
@@ -81,17 +81,8 @@
           </li>
           <li>
               <a class="btn areaToggle"
-                 href="{% if 'myrsr' in request.path %}
-                        {% url 'project-directory' %}
-                        {% else %}
-                        {% url 'my_rsr' %}
-                        {% endif %}">
-                  {% if 'myrsr' in request.path %}
-                  {% trans 'RSR Live Site' %}
-                  {% else %}
-                  {% trans 'RSR Admin' %}
-                {% endif %}
-            </a>
+                 href="{% url 'my_rsr' %}">{% trans 'My projects' %}
+              </a>
         </li>
         {% endif %}
 

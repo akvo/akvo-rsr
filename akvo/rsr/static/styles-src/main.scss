@@ -484,11 +484,13 @@ nav.navbar-fixed-top {
                         .btn-default {
                             margin-top: -5px;
                             padding: 3px 8px 3px 3px;
-                            border: 1px solid rgba($rsrBlue, 0.15) !important;
-                            background: rgba($rsrBlue, 0.1) !important;
+                            border: 1px solid rgba($rsrBlue, 0) !important;
+                            background: rgba($anchorLink, 0.1) !important;
+                            color: $rsrBlue;
                             &:hover {
-                                border: 1px solid rgba($rsrBlue, 0.2) !important;
+                                border: 1px solid rgba($rsrBlue, 0) !important;
                                 background: white!important;
+                                color: rgba($rsrBlue, 1) !important;
                             }
                             .userAvatar {
                                 width: 30px;
@@ -497,7 +499,8 @@ nav.navbar-fixed-top {
                                 img {
                                     margin: 0;
                                     width: 30px;
-                                    height: 30px;
+                                    height: 30px;                                
+                                    border: 1px solid white;
                                 }
                             }
                         }
@@ -543,7 +546,7 @@ nav.navbar-fixed-top {
                     padding-right: 5px;
                     &.areaToggle {
                         margin-top: 5px;
-                        @include button($akvoPurple, white);
+                        @include button($anchorLink, white);
                         box-shadow: none !important;
                         padding: 8px 8px;
                     }
@@ -1773,7 +1776,7 @@ h4.detailedInfo {
                 -o-transition: all 4s linear;
                 transition: all 4s linear;
                 &.highlightProject {
-                    background: lightyellow !important;
+                    box-shadow: 0 0 5px rgba($akvoPurple, 1) !important;
                 }
                 &.updateAsset {
                     h1 {
@@ -3862,10 +3865,17 @@ main.results-page {
         background: rgba(240, 240, 240, 0.5);
     }
     .editBtn {
-        border: 1px solid rgba($akvoBlack, 0.1) !important;
+        border: 1px solid rgba($anchorLink, 0.1) !important;
+        background: $anchorLink;
+        color: white;
         border-bottom: 1px solid transparent !important;
         padding: 7px 8px;
         border-radius: 5px 5px 0 0;
+        &:hover {
+            background: #3071a9;        
+            color: white;        
+            border: 1px solid rgba($anchorLink, 0.1) !important;
+        }
     }
     .react-tabs {
         ul.react-tabs__tab-list {
