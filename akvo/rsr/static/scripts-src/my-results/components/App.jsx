@@ -389,10 +389,10 @@ export default class App extends React.Component {
                         undefined
                     )}
                     <TabPanel>
-                        <Reports project={projectId} />
+                        <RSRUpdates project={projectId} />
                     </TabPanel>
                     <TabPanel>
-                        <RSRUpdates project={projectId} />
+                        <Reports project={projectId} />
                     </TabPanel>
                 </Tabs>
             </section>
