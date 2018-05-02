@@ -7,6 +7,9 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import os
+
+from django.core.cache import cache
 from django.conf import settings
 from django.test import Client, TestCase
 
@@ -28,8 +31,13 @@ class ProjectTypeaheadTest(TestCase):
             hostname='akvo'
         )
 
+        self.image = os.path.join(settings.MEDIA_ROOT, 'test-image.png')
+        with open(self.image, 'w+b'):
+            pass
+
         for i in range(1, 6):
-            project = Project.objects.create(title='Project - {}'.format(i))
+            project = Project.objects.create(title='Project - {}'.format(i),
+                                             current_image=self.image)
             if i < 4:
                 publishing_status = project.publishingstatus
                 publishing_status.status = PublishingStatus.STATUS_PUBLISHED
@@ -45,6 +53,10 @@ class ProjectTypeaheadTest(TestCase):
 
         # Additional organisation for typeahead/organisations end-point
         self._create_organisation('UNICEF')
+
+    def tearDown(self):
+        os.remove(self.image)
+        cache.clear()
 
     def _create_client(self, host=None):
         """ Create and return a client with the given host."""
@@ -166,7 +178,7 @@ class ProjectTypeaheadTest(TestCase):
         self.partner_site.save()
         self.partner_site.keywords.add(keyword)
         project_title = '{} awesome project'.format(hostname)
-        project = Project.objects.create(title=project_title)
+        project = Project.objects.create(title=project_title, current_image=self.image)
         project.keywords.add(keyword)
         project.publish()
         url = '/rest/v1/typeaheads/project_filters?format=json'
