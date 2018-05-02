@@ -1219,6 +1219,23 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
+    def descendants(self):
+        "All child projects and all their children recursively"
+        family = Project.objects.filter(pk=self.pk)
+        family_count = 1
+        while True:
+            family = Project.objects.filter(
+                related_projects__related_project__in=family,
+                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
+            ) | Project.objects.filter(
+                related_to_projects__project__in=family,
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
+            ) | family
+            if family.distinct().count() > family_count:
+                family_count = family.distinct().count()
+            else:
+                return family.distinct()
+
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
