@@ -128,9 +128,7 @@ var ProjectDirectory = React.createClass({
     // FIXME: Need to have a better display when things are loading....
     render: function() {
         var project_count_text =
-            this.props.project_count != undefined
-                ? this.props.project_count + " " + this.props.i18n.projects_text
-                : this.props.i18n.loading_text;
+            this.props.project_count != undefined ? this.props.project_count + " " + this.props.i18n.projects_text : this.props.i18n.loading_text;
         return (
             <section className="main-list projects">
                 <div className="container-fluid">
@@ -155,8 +153,9 @@ var ProjectDirectory = React.createClass({
                         ) : (
                             undefined
                         )}
-                        <div className="col-sm-7">
-                            <ul className="projectListUl">
+                        <div className="col-sm-7 projectListUlcontain" id="projList">
+                            <p className="text-center">Here are all projects started by the most recent</p>
+                            <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
                                     return (
                                         <Project
@@ -167,24 +166,25 @@ var ProjectDirectory = React.createClass({
                                     );
                                 }, this)}
                             </ul>
-                            <div className="row container-fluid">
-                                <div className="verticalPadding col-xs-3">
-                                    <span className="label label-info projectTotal">
-                                        {project_count_text}
-                                    </span>
+                            <div className="container-fluid pageStatus text-center">
+                                <div className="row">
+                                    <div className="col-xs-6 col-xs-offset-3">
+                                        <span className="label label-info projectTotal">{project_count_text}
+                                        </span>
+                                    <Pagination
+                                        onChange={this.props.onChange}
+                                        page={this.props.page}
+                                        limit={this.props.limit}
+                                        project_count={this.props.project_count}
+                                    />
+                                    <PageLimitDropdown
+                                        i18n={this.props.i18n}
+                                        onChange={this.props.onChange}
+                                        limit={this.props.limit}
+                                        options={this.props.limitOptions} />
+                                    </div>
+
                                 </div>
-                                <Pagination
-                                    onChange={this.props.onChange}
-                                    page={this.props.page}
-                                    limit={this.props.limit}
-                                    project_count={this.props.project_count}
-                                />
-                                <PageLimitDropdown
-                                    i18n={this.props.i18n}
-                                    onChange={this.props.onChange}
-                                    limit={this.props.limit}
-                                    options={this.props.limitOptions}
-                                />
                             </div>
                         </div>
                         <div className="col-sm-5">
@@ -214,8 +214,8 @@ var PageLimitDropdown = React.createClass({
                 : this.props.i18n.page_limit_text;
 
         return (
-            <div className="verticalPadding col-sm-3 hidden-xs">
-                <div className="pull-right">
+            <div className="">
+                <div className="">
                     <DropdownButton
                         dropup
                         id="limit"
@@ -250,7 +250,7 @@ var Pagination = React.createClass({
     render: function() {
         var Pagination = ReactBootstrap.Pagination;
         return (
-            <div className="center-text col-xs-6 pgWrap">
+            <div className="center-text pgWrap ">
                 <Pagination
                     boundaryLinks={true}
                     activePage={parseInt(this.props.page)}

@@ -135,6 +135,11 @@ em {
   margin: 0 5px 0em 0em;
   font-style: italic; }
 
+.group:after {
+  content: "";
+  display: table;
+  clear: both; }
+
 div.morePartners {
   overflow: visible;
   display: inline-block; }
@@ -424,27 +429,6 @@ nav.navbar-fixed-top {
         @media only screen and (max-width: 1024px) {
           nav.navbar-fixed-top .navbar-nav li a.active {
             background: rgba(202, 129, 66, 0.1); } }
-    nav.navbar-fixed-top .navbar-nav li.navProject .active {
-      background: rgba(169, 104, 48, 0.05);
-      border: thin solid rgba(202, 129, 66, 0);
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      color: #ca8142;
-      -moz-transition: all 0.2s linear;
-      -o-transition: all 0.2s linear;
-      -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear;
-      cursor: text; }
-      nav.navbar-fixed-top .navbar-nav li.navProject .active:hover {
-        background: rgba(169, 104, 48, 0);
-        border: thin solid rgba(202, 129, 66, 0);
-        -moz-border-radius: 3px;
-        -o-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-radius: 3px;
-        color: #ca8142; }
   nav.navbar-fixed-top .navbar-nav.navbar-right li {
     margin-right: 2px; }
     nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) {
@@ -766,9 +750,9 @@ div.update-confirm-container {
     #updates tbody tr.notPublished td .unplubishedPjt,
     #user_table tbody tr.notPublished td .unplubishedPjt {
       position: absolute;
-      top: 7px;
-      left: 8px;
-      padding: 3px;
+      bottom: 49px;
+      left: 88px;
+      padding: 2px 3px;
       display: inline-block;
       -moz-border-radius: 2px;
       -o-border-radius: 2px;
@@ -778,75 +762,31 @@ div.update-confirm-container {
       border: 1px solid #ee3124;
       font-size: 80%;
       font-weight: 600; }
-  .myProjectList tbody tr.isPrivate,
-  #updates tbody tr.isPrivate,
-  #user_table tbody tr.isPrivate {
-    background: rgba(240, 173, 78, 0.1) !important; }
-    .myProjectList tbody tr.isPrivate td,
-    #updates tbody tr.isPrivate td,
-    #user_table tbody tr.isPrivate td {
-      position: relative; }
-      .myProjectList tbody tr.isPrivate td .privatePjt,
-      #updates tbody tr.isPrivate td .privatePjt,
-      #user_table tbody tr.isPrivate td .privatePjt {
-        position: absolute;
-        top: 7px;
-        left: 8px;
-        padding: 3px;
-        display: inline-block;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        color: #ee3124;
-        border: 1px solid #ee3124;
-        font-size: 80%;
-        font-weight: 600; }
-
-.myProjectList div.projectListMenu ul,
-#updates div.projectListMenu ul,
-#user_table div.projectListMenu ul {
-  margin-top: -10px; }
-  .myProjectList div.projectListMenu ul li,
-  #updates div.projectListMenu ul li,
-  #user_table div.projectListMenu ul li {
-    display: inline-block; }
-    @media only screen and (max-width: 992px) {
-      .myProjectList div.projectListMenu ul li,
-      #updates div.projectListMenu ul li,
-      #user_table div.projectListMenu ul li {
-        display: block; } }
-    .myProjectList div.projectListMenu ul li a:last-child,
-    #updates div.projectListMenu ul li a:last-child,
-    #user_table div.projectListMenu ul li a:last-child {
-      margin-right: 0; }
-  @media (min-width: 992px) {
-    .myProjectList div.projectListMenu ul,
-    #updates div.projectListMenu ul,
-    #user_table div.projectListMenu ul {
-      min-width: 340px; } }
+  .myProjectList tbody tr.isPrivate td,
+  #updates tbody tr.isPrivate td,
+  #user_table tbody tr.isPrivate td {
+    position: relative; }
+    .myProjectList tbody tr.isPrivate td .privatePjt,
+    #updates tbody tr.isPrivate td .privatePjt,
+    #user_table tbody tr.isPrivate td .privatePjt {
+      position: absolute;
+      bottom: 49px;
+      left: 88px;
+      padding: 2px 3px;
+      display: inline-block;
+      -moz-border-radius: 2px;
+      -o-border-radius: 2px;
+      -webkit-border-radius: 2px;
+      border-radius: 2px;
+      color: #ee3124;
+      border: 1px solid #ee3124;
+      font-size: 80%;
+      font-weight: 600; }
 
 .myProjectList a:last-child,
 #updates a:last-child,
 #user_table a:last-child {
   margin-right: 0; }
-
-.myProjectList a.addUpdate.disabled,
-#updates a.addUpdate.disabled,
-#user_table a.addUpdate.disabled {
-  background-color: #e6e6e6;
-  color: #cccccc;
-  pointer-events: initial;
-  cursor: not-allowed;
-  border: none;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
-  .myProjectList a.addUpdate.disabled:hover,
-  #updates a.addUpdate.disabled:hover,
-  #user_table a.addUpdate.disabled:hover {
-    text-decoration: none; }
 
 div.paginationWrap {
   clear: both; }
@@ -1171,79 +1111,51 @@ h4.detailedInfo {
   color: rgba(44, 42, 116, 0.5);
   margin-top: 20px; }
 
+.updatePagination {
+  margin-top: 40px; }
+
 .pgWrap .pagination li a,
-.pgWrap .pagination li span {
-  border-color: transparent; }
+.pgWrap .pagination li span, .pageStatus .pagination li a,
+.pageStatus .pagination li span, .paginationWrap .pagination li a,
+.paginationWrap .pagination li span {
+  margin-right: 1px;
+  color: #428bca;
+  border: 1px solid transparent;
+  cursor: pointer; }
   @media only screen and (max-width: 768px) {
     .pgWrap .pagination li a,
-    .pgWrap .pagination li span {
+    .pgWrap .pagination li span, .pageStatus .pagination li a,
+    .pageStatus .pagination li span, .paginationWrap .pagination li a,
+    .paginationWrap .pagination li span {
       padding: 10px 16px;
       font-size: 18px; } }
   .pgWrap .pagination li a:hover,
-  .pgWrap .pagination li span:hover {
-    background: transparent; }
+  .pgWrap .pagination li span:hover, .pageStatus .pagination li a:hover,
+  .pageStatus .pagination li span:hover, .paginationWrap .pagination li a:hover,
+  .paginationWrap .pagination li span:hover {
+    background: rgba(66, 139, 202, 0.1);
+    border: 1px solid #428bca; }
+    .pgWrap .pagination li a:hover span,
+    .pgWrap .pagination li span:hover span, .pageStatus .pagination li a:hover span,
+    .pageStatus .pagination li span:hover span, .paginationWrap .pagination li a:hover span,
+    .paginationWrap .pagination li span:hover span {
+      border: 1px solid rgba(66, 139, 202, 0);
+      background: rgba(66, 139, 202, 0); }
 
 .pgWrap .pagination li.active a,
-.pgWrap .pagination li.active span {
+.pgWrap .pagination li.active span, .pageStatus .pagination li.active a,
+.pageStatus .pagination li.active span, .paginationWrap .pagination li.active a,
+.paginationWrap .pagination li.active span {
   font-weight: bold;
   color: #ca8142;
-  background-color: transparent; }
+  background-color: transparent;
+  border: 1px solid #ca8142; }
   .pgWrap .pagination li.active a:hover,
-  .pgWrap .pagination li.active span:hover {
-    background: transparent;
+  .pgWrap .pagination li.active span:hover, .pageStatus .pagination li.active a:hover,
+  .pageStatus .pagination li.active span:hover, .paginationWrap .pagination li.active a:hover,
+  .paginationWrap .pagination li.active span:hover {
+    background: rgba(202, 129, 66, 0);
     border-color: transparent; }
-
-.paginationWrap {
-  background: rgba(58, 58, 58, 0);
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  margin-bottom: 15px; }
-  .paginationWrap .pagination {
-    margin: 0 auto; }
-    .paginationWrap .pagination li a,
-    .paginationWrap .pagination li span {
-      border-color: transparent; }
-      @media only screen and (max-width: 768px) {
-        .paginationWrap .pagination li a,
-        .paginationWrap .pagination li span {
-          padding: 10px 16px;
-          font-size: 18px; } }
-      .paginationWrap .pagination li a:hover,
-      .paginationWrap .pagination li span:hover {
-        background: transparent; }
-    .paginationWrap .pagination li.active a,
-    .paginationWrap .pagination li.active span {
-      font-weight: bold;
-      color: #ca8142;
-      background-color: transparent; }
-      .paginationWrap .pagination li.active a:hover,
-      .paginationWrap .pagination li.active span:hover {
-        background: transparent;
-        border-color: transparent; }
-  .paginationWrap .sortList {
-    display: inline-block;
-    padding-left: 0;
-    margin: 23px 0 0 0;
-    text-align: left; }
-    @media only screen and (max-width: 768px) {
-      .paginationWrap .sortList {
-        text-align: center;
-        margin: 20px auto; } }
-    .paginationWrap .sortList .dropdown .dropdown-menu li a {
-      color: #428bca; }
-    .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
-      font-weight: bold;
-      color: #ca8142; }
-    @media only screen and (max-width: 768px) {
-      .paginationWrap .sortList .dropdown .dropdown-menu li a {
-        color: #428bca;
-        padding-top: 10px;
-        padding-bottom: 10px; }
-      .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
-        font-weight: bold;
-        color: #ca8142; } }
 
 .advanced-filter {
   display: inline-block;
@@ -1319,10 +1231,12 @@ h4.detailedInfo {
     max-width: 80%;
     margin: 10px auto 0 auto; }
 
-.label-info {
+.pageStatus .pagination {
+  margin: 0 auto; }
+
+.pageStatus .label-info {
   font-weight: normal; }
-  .label-info.projectTotal, .label-info.updateTotal {
-    margin-left: 15px;
+  .pageStatus .label-info.projectTotal, .pageStatus .label-info.updateTotal {
     font-size: 1em;
     background-color: transparent;
     color: #202024; }
@@ -1492,58 +1406,57 @@ h4.detailedInfo {
       left: 0;
       width: 100%;
       height: 100%; }
-  .main-list.projects ul.projectListUl {
-    max-height: calc(100vh - 310px);
-    overflow-y: scroll;
-    padding-left: 15px; }
-    .main-list.projects ul.projectListUl.updateDirectory {
-      max-height: calc(100vh - 310px) !important; }
-    .main-list.projects ul.projectListUl li {
-      margin-bottom: 5px;
-      list-style-type: none;
-      padding: 0 0 15px 0;
-      display: inline;
-      width: 49%;
-      float: left;
-      min-height: 285px;
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      background: white;
-      margin-right: 2%;
-      -webkit-transition: all 4s linear;
-      -moz-transition: all 4s linear;
-      -o-transition: all 4s linear;
-      transition: all 4s linear;
-      border: thin solid rgba(44, 42, 116, 0);
-      -moz-transition: all 0.2s ease-in;
-      -o-transition: all 0.2s ease-in;
-      -webkit-transition: all 0.2s ease-in;
-      transition: all 0.2s ease-in; }
-      .main-list.projects ul.projectListUl li.highlightProject {
-        box-shadow: 0 0 5px #2c2a74 !important; }
-      .main-list.projects ul.projectListUl li.updateAsset h1 {
-        margin-top: 5px; }
-        .main-list.projects ul.projectListUl li.updateAsset h1 a {
-          color: #00a79d; }
-          .main-list.projects ul.projectListUl li.updateAsset h1 a:hover {
-            color: #ca8142; }
-      .main-list.projects ul.projectListUl li:nth-child(2n+2) {
-        margin-right: 0; }
-      .main-list.projects ul.projectListUl li h1 {
-        margin-top: 5px; }
-        .main-list.projects ul.projectListUl li h1 a {
-          color: #2c2a74; }
-          .main-list.projects ul.projectListUl li h1 a:hover {
-            color: #ca8142; }
-      .main-list.projects ul.projectListUl li .projectSubT {
-        margin-bottom: 0; }
-      .main-list.projects ul.projectListUl li:nth-child(2n+1) {
-        background: rgba(44, 42, 116, 0);
-        border: thin solid rgba(44, 42, 116, 0); }
-      .main-list.projects ul.projectListUl li .projectLocation {
-        color: rgba(32, 32, 36, 0.5); }
+  .main-list.projects .projectListUlcontain {
+    max-height: calc(100vh - 240px);
+    overflow-y: scroll; }
+    .main-list.projects .projectListUlcontain ul.projectListUl {
+      padding-left: 15px; }
+      .main-list.projects .projectListUlcontain ul.projectListUl li {
+        margin-bottom: 5px;
+        list-style-type: none;
+        padding: 0 0 15px 0;
+        display: inline;
+        width: 49%;
+        float: left;
+        min-height: 285px;
+        -moz-border-radius: 3px;
+        -o-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        background: white;
+        margin-right: 2%;
+        -webkit-transition: all 4s linear;
+        -moz-transition: all 4s linear;
+        -o-transition: all 4s linear;
+        transition: all 4s linear;
+        border: thin solid rgba(44, 42, 116, 0);
+        -moz-transition: all 0.2s ease-in;
+        -o-transition: all 0.2s ease-in;
+        -webkit-transition: all 0.2s ease-in;
+        transition: all 0.2s ease-in; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li.highlightProject {
+          box-shadow: 0 0 5px #2c2a74 !important; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 {
+          margin-top: 5px; }
+          .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 a {
+            color: #00a79d; }
+            .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 a:hover {
+              color: #ca8142; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n+2) {
+          margin-right: 0; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li h1 {
+          margin-top: 5px; }
+          .main-list.projects .projectListUlcontain ul.projectListUl li h1 a {
+            color: #2c2a74; }
+            .main-list.projects .projectListUlcontain ul.projectListUl li h1 a:hover {
+              color: #ca8142; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li .projectSubT {
+          margin-bottom: 0; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n+1) {
+          background: rgba(44, 42, 116, 0);
+          border: thin solid rgba(44, 42, 116, 0); }
+        .main-list.projects .projectListUlcontain ul.projectListUl li .projectLocation {
+          color: rgba(32, 32, 36, 0.5); }
 
 header.projectHeader {
   margin-bottom: 0;

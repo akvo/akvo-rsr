@@ -128,9 +128,7 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
     // FIXME: Need to have a better display when things are loading....
     render: function() {
         var project_count_text =
-            this.props.project_count != undefined
-                ? this.props.project_count + " " + this.props.i18n.projects_text
-                : this.props.i18n.loading_text;
+            this.props.project_count != undefined ? this.props.project_count + " " + this.props.i18n.projects_text : this.props.i18n.loading_text;
         return (
             React.createElement("section", {className: "main-list projects"}, 
                 React.createElement("div", {className: "container-fluid"}, 
@@ -155,8 +153,9 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                         ) : (
                             undefined
                         ), 
-                        React.createElement("div", {className: "col-sm-7"}, 
-                            React.createElement("ul", {className: "projectListUl"}, 
+                        React.createElement("div", {className: "col-sm-7 projectListUlcontain", id: "projList"}, 
+                            React.createElement("p", {className: "text-center"}, "Here are all projects started by the most recent"), 
+                            React.createElement("ul", {className: "projectListUl group"}, 
                                 this.props.projects.map(function(project) {
                                     return (
                                         React.createElement(Project, {
@@ -167,23 +166,24 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                                     );
                                 }, this)
                             ), 
-                            React.createElement("div", {className: "row container-fluid"}, 
-                                React.createElement("div", {className: "verticalPadding col-xs-3"}, 
-                                    React.createElement("span", {className: "label label-info projectTotal"}, 
-                                        project_count_text
+                            React.createElement("div", {className: "container-fluid pageStatus text-center"}, 
+                                React.createElement("div", {className: "row"}, 
+                                    React.createElement("div", {className: "col-xs-6 col-xs-offset-3"}, 
+                                        React.createElement("span", {className: "label label-info projectTotal"}, project_count_text
+                                        ), 
+                                    React.createElement(Pagination, {
+                                        onChange: this.props.onChange, 
+                                        page: this.props.page, 
+                                        limit: this.props.limit, 
+                                        project_count: this.props.project_count}
+                                    ), 
+                                    React.createElement(PageLimitDropdown, {
+                                        i18n: this.props.i18n, 
+                                        onChange: this.props.onChange, 
+                                        limit: this.props.limit, 
+                                        options: this.props.limitOptions})
                                     )
-                                ), 
-                                React.createElement(Pagination, {
-                                    onChange: this.props.onChange, 
-                                    page: this.props.page, 
-                                    limit: this.props.limit, 
-                                    project_count: this.props.project_count}
-                                ), 
-                                React.createElement(PageLimitDropdown, {
-                                    i18n: this.props.i18n, 
-                                    onChange: this.props.onChange, 
-                                    limit: this.props.limit, 
-                                    options: this.props.limitOptions}
+
                                 )
                             )
                         ), 
@@ -214,8 +214,8 @@ var PageLimitDropdown = React.createClass({displayName: "PageLimitDropdown",
                 : this.props.i18n.page_limit_text;
 
         return (
-            React.createElement("div", {className: "verticalPadding col-sm-3 hidden-xs"}, 
-                React.createElement("div", {className: "pull-right"}, 
+            React.createElement("div", {className: ""}, 
+                React.createElement("div", {className: ""}, 
                     React.createElement(DropdownButton, {
                         dropup: true, 
                         id: "limit", 
@@ -250,7 +250,7 @@ var Pagination = React.createClass({displayName: "Pagination",
     render: function() {
         var Pagination = ReactBootstrap.Pagination;
         return (
-            React.createElement("div", {className: "center-text col-xs-6 pgWrap"}, 
+            React.createElement("div", {className: "center-text pgWrap "}, 
                 React.createElement(Pagination, {
                     boundaryLinks: true, 
                     activePage: parseInt(this.props.page), 

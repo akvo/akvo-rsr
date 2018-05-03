@@ -52,8 +52,8 @@
     <section class="main-list projects">
     <div class="container-fluid">
       <div  class="row">
-        <div class="col-sm-7 ">
-        <ul class="projectListUl updateDirectory">
+        <div class="col-sm-7 projectListUlcontain">
+        <ul class="projectListUl updateDirectory group">
           {% for u in page %}
           <li class="updateAsset">
             <div class="thumbImg">
@@ -76,33 +76,27 @@
                     {% endif %}
                 </div>
               </div>
-
-                <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
-            <div class="excerpt hidden">
-              {% autoescape off %}
-                {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
-              {% endautoescape %}
-            </div>
+              <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
+              <div class="excerpt hidden">
+                {% autoescape off %}
+                  {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
+                {% endautoescape %}
+              </div>
           </li>
           {% endfor %}
         </ul>
 
-        <div class="row container-fluid updatePagination">
-            <div class="col-xs-3">
-                <p class="emTxt">
-                    <h5>
-                        <span class="label label-info updateTotal">
-
+        <div class="updatePagination">
+          <div class="row">
+            <div class="col-xs-6  col-xs-offset-3  text-center">
+              <span class="updateTotal">
                             {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
                             {{ start_index }} - {{ end_index }} of {{ paginator_count }} updates
                             {% endblocktrans %}
-                        </span>
-                    </h5>
-                </p>
+              </span>
+              {% include 'navigation/pagination.html' %}
             </div>
-            <div class="col-xs-6">
-            {% include 'navigation/pagination.html' %}
-            </div>
+          </div>
         </div>
 
       </div>

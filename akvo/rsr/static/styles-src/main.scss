@@ -114,7 +114,11 @@ em {
     margin: 0 5px 0em 0em;
     font-style: italic;
 }
-
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 div.morePartners {
     overflow: visible;
     display: inline-block;
@@ -452,22 +456,6 @@ nav.navbar-fixed-top {
                     @include border-radius(3px);
                     @include responsive(tablets) {
                         background: rgba($anchorLinkHover, 0.1);
-                    }
-                }
-            }
-            &.navProject {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    cursor: text;
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
                     }
                 }
             }
@@ -876,9 +864,9 @@ div.update-confirm-container {
                     padding-top: 40px;
                     .unplubishedPjt {
                         position: absolute;
-                        top: 7px;
-                        left: 8px;
-                        padding: 3px;
+                        bottom: 49px;
+                        left: 88px;
+                        padding:2px 3px;
                         display: inline-block;
                         @include border-radius(2px);
                         color: $akvoTvRed;
@@ -889,14 +877,13 @@ div.update-confirm-container {
                 }
             }
             &.isPrivate {
-                background: rgba($progressNot, 0.1) !important;
                 td {
                     position: relative;
                     .privatePjt {
                         position: absolute;
-                        top: 7px;
-                        left: 8px;
-                        padding: 3px;
+                        bottom: 49px;
+                        left: 88px;
+                        padding:2px 3px;
                         display: inline-block;
                         @include border-radius(2px);
                         color: $akvoTvRed;
@@ -908,47 +895,9 @@ div.update-confirm-container {
             }
         }
     }
-    div.projectListMenu {
-        ul {
-            margin-top: -10px;
-            li {
-                display: inline-block;
-                @include responsive(mediums-max-screens) {
-                    display: block;
-                }
-
-                @include responsive(small-max-screens) {}
-
-                a {
-                    &:last-child {
-                        margin-right: 0;
-                    }
-                }
-                @include responsive(wide-screens) {}
-
-                > a {}
-            }
-            @media (min-width: 992px) {
-                min-width: 340px;
-            }
-        }
-    }
     a {
         &:last-child {
             margin-right: 0;
-        }
-        &.addUpdate {
-            &.disabled {
-                background-color: lighten($primary4, 30%);
-                color: lighten($primary4, 20%);
-                pointer-events: initial;
-                cursor: not-allowed;
-                border: none;
-                @include border-radius(5px);
-                &:hover {
-                    text-decoration: none;
-                }
-            }
         }
     }
 }
@@ -1355,20 +1304,31 @@ h4.detailedInfo {
     color: rgba($akvoPurple, 0.5);
     margin-top: 20px;
 }
-
-.pgWrap {
+.updatePagination {
+    margin-top: 40px;
+}
+.pgWrap, .pageStatus, .paginationWrap {
     .pagination {
         li {
             a,
             span {
-                border-color: transparent;
+                margin-right: 1px;
+                color: $anchorLink;
+                border: 1px solid transparent;
+                cursor: pointer;
+
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
                 }
 
                 &:hover {
-                    background: transparent;
+                    background: rgba($anchorLink, 0.1);
+                    border: 1px solid rgba($anchorLink, 1);
+                    span {                   
+                        border: 1px solid rgba($anchorLink, 0);
+                        background: rgba($anchorLink, 0);
+                    }
                 }
             }
             &.active {
@@ -1376,9 +1336,10 @@ h4.detailedInfo {
                 span {
                     font-weight: bold;
                     color: $anchorLinkHover;
-                    background-color: transparent;
+                    background-color: transparent;                
+                    border: 1px solid $anchorLinkHover;
                     &:hover {
-                        background: transparent;
+                        background: rgba($anchorLinkHover, 0);
                         border-color: transparent;
                     }
                 }
@@ -1387,79 +1348,6 @@ h4.detailedInfo {
     }
 }
 
-.paginationWrap {
-    background: rgba(58, 58, 58, 0);
-    @include border-radius(3px);
-    margin-bottom: 15px;
-    .pagination {
-        margin: 0 auto;
-        li {
-            a,
-            span {
-                border-color: transparent;
-                @include responsive(small-max-screens) {
-                    padding: 10px 16px;
-                    font-size: 18px;
-                }
-
-                &:hover {
-                    background: transparent;
-                }
-            }
-            &.active {
-                a,
-                span {
-                    font-weight: bold;
-                    color: $anchorLinkHover;
-                    background-color: transparent;
-                    &:hover {
-                        background: transparent;
-                        border-color: transparent;
-                    }
-                }
-            }
-        }
-    }
-    .sortList {
-        display: inline-block;
-        padding-left: 0;
-        margin: 23px 0 0 0;
-        text-align: left;
-        @include responsive(small-max-screens) {
-            text-align: center;
-            margin: 20px auto;
-        }
-
-        .dropdown {
-            .dropdown-menu {
-                li {
-                    a {
-                        color: $anchorLink;
-                    }
-                    &.disabled {
-                        a {
-                            font-weight: bold;
-                            color: $anchorLinkHover;
-                        }
-                    }
-                    @include responsive(small-max-screens) {
-                        a {
-                            color: $anchorLink;
-                            padding-top: 10px;
-                            padding-bottom: 10px;
-                        }
-                        &.disabled {
-                            a {
-                                font-weight: bold;
-                                color: $anchorLinkHover;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 .advanced-filter {
     display: inline-block;
@@ -1547,17 +1435,19 @@ h4.detailedInfo {
         margin: 10px auto 0 auto;
     }
 }
-
-.label-info {
-    font-weight: normal;
-    &.projectTotal, &.updateTotal {
-        margin-left: 15px;
-        font-size: 1em;
-        background-color: transparent;
-        color: $akvoBlack;
+.pageStatus { 
+    .pagination {
+        margin: 0 auto;
+    }
+    .label-info {
+        font-weight: normal;
+        &.projectTotal, &.updateTotal {
+            font-size: 1em;
+            background-color: transparent;
+            color: $akvoBlack;
+        }
     }
 }
-
 .upLabelSearch {
     top: -20px;
     position: absolute;
@@ -1753,65 +1643,64 @@ h4.detailedInfo {
                 height: 100%;
             }
         }
-        ul.projectListUl {
-            max-height: calc(100vh - 310px);
+        .projectListUlcontain {                
+            max-height: calc(100vh - 240px);
             overflow-y: scroll;
-            padding-left: 15px;
-            &.updateDirectory {
-                max-height: calc(100vh - 310px) !important;
-            }
-            li {
-                margin-bottom: 5px;
-                list-style-type: none;
-                padding: 0 0 15px 0;
-                display: inline;
-                width: 49%;
-                float: left;
-                min-height: 285px;
-                @include border-radius(3px);
-                background: white;
-                margin-right: 2%;
-                -webkit-transition: all 4s linear;
-                -moz-transition: all 4s linear;
-                -o-transition: all 4s linear;
-                transition: all 4s linear;
-                &.highlightProject {
-                    box-shadow: 0 0 5px rgba($akvoPurple, 1) !important;
-                }
-                &.updateAsset {
+            ul.projectListUl {
+                padding-left: 15px;
+                li {
+                    margin-bottom: 5px;
+                    list-style-type: none;
+                    padding: 0 0 15px 0;
+                    display: inline;
+                    width: 49%;
+                    float: left;
+                    min-height: 285px;
+                    @include border-radius(3px);
+                    background: white;
+                    margin-right: 2%;
+                    -webkit-transition: all 4s linear;
+                    -moz-transition: all 4s linear;
+                    -o-transition: all 4s linear;
+                    transition: all 4s linear;
+                    &.highlightProject {
+                        box-shadow: 0 0 5px rgba($akvoPurple, 1) !important;
+                    }
+                    &.updateAsset {
+                        h1 {
+                            margin-top: 5px;
+                            a {
+                                color: #00a79d;
+                                &:hover {
+                                    color: $anchorLinkHover;
+                                }
+                            }
+                        }
+                    }
+                    &:nth-child(2n+2) {
+                        margin-right: 0;
+                    }
                     h1 {
                         margin-top: 5px;
                         a {
-                            color: #00a79d;
+                            color: $rsrBlue;
                             &:hover {
                                 color: $anchorLinkHover;
                             }
                         }
                     }
-                }
-                &:nth-child(2n+2) {
-                    margin-right: 0;
-                }
-                h1 {
-                    margin-top: 5px;
-                    a {
-                        color: $rsrBlue;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                border: thin solid rgba($rsrBlue, 0);
-                @include transition(all 0.2s ease-in);
-                .projectSubT {
-                    margin-bottom: 0;
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrBlue, 0), 0%);
                     border: thin solid rgba($rsrBlue, 0);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
+                    @include transition(all 0.2s ease-in);
+                    .projectSubT {
+                        margin-bottom: 0;
+                    }
+                    &:nth-child(2n+1) {
+                        background: darken(rgba($rsrBlue, 0), 0%);
+                        border: thin solid rgba($rsrBlue, 0);
+                    }
+                    .projectLocation {
+                        color: rgba($akvoBlack, 0.5);
+                    }
                 }
             }
         }
