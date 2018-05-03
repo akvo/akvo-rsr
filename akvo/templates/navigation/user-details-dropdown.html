@@ -1,0 +1,23 @@
+{% load i18n rsr_utils %}
+
+<li>
+    <div class="dropdown userDropdown">
+        <button class="btn btn-default dropdown-toggle" id="user-dropdown-menu" type="button" data-toggle="dropdown" aria-expanded="false">
+            <span class="userAvatar">
+                {% if user.avatar %}
+                    {% img user 50 50 user.get_full_name %}
+                {% endif %}
+            </span>
+            {{ user.get_full_name }}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="user-dropdown-menu">
+            <li role="presentation">
+                <a href="{% url 'my_details' %}">{% trans 'My details' %}</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" href="{% url 'sign_out' %}">{% trans 'Sign out' %}</a>
+            </li>
+        </ul>
+    </div>
+</li>

@@ -19,74 +19,56 @@
         {% elif rsr_page.organisation %}
           {% img rsr_page.organisation 125 60 rsr_page.organisation.name %}
         {% else %}
-          <h1>Akvo RSR</h1> {# Text is just a placeholder, svg from css #}
+            <h1>Akvo RSR</h1> {# Text is just a placeholder, svg from css #}
         {% endif %}
       </a>
     </div>
-    <div class="tagLine">
-      <h2>Monitor, report and share with ease</h2>
-    </div>
+    {% if '/myrsr/' in request.path %}
+        <ul class="nav navbar-nav">
+            <li role="presentation">
+                {% has_perm 'rsr.user_management' user as can_manage_users %}
+                {% if can_manage_users %}
+                    <a href="{% url 'user_management' %}">
+                        {% trans "User management" %}
+                    </a>
+                {% endif %}
+            </li>
+            {% has_perm 'rsr.project_management' user as can_manage_projects %}
+            <li role="presentation" class="navIati">
+                <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
+                   href="{% url 'my_iati' %}">
+                    {% trans "IATI" %}
+                </a>
+            </li>
+            <li role="presentation" class="navReports">
+                <a href="{% url 'my_reports' %}"
+                   class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
+                    {% trans 'Organisation Reports' %}
+                </a>
+            </li>
+        </ul>
+    {% else %}
+        <div class="tagLine">
+            <h2>Monitor, report and share with ease</h2>
+        </div>
+    {% endif %}
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
-        <ul class="nav navbar-nav">
-
+        <ul class="nav navbar-nav navbar-right">
+            {% if not user.is_authenticated %}
+                <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
+                <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
+            {% else %}
+                {% if '/myrsr/' in request.path %}
+                    {% include 'navigation/user-details-dropdown.html' %}
+                {% endif %}
+                <li>
+                    <a class="btn areaToggle"
+                       href="{% url 'my_rsr' %}">{% trans 'My projects' %}
+                    </a>
+                </li>
+            {% endif %}
         </ul>
-
-      <ul class="nav navbar-nav navbar-right">
-        {% if not user.username %}
-          <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
-          <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
-          {% else %}
-          <li>
-              <div class="dropdown userDropdown">
-                  <button class="btn btn-default dropdown-toggle" id="user-dropdown-menu" type="button" data-toggle="dropdown" aria-expanded="false">
-                      <span class="userAvatar">{% if user.avatar %}
-                          {% img user 50 50 user.get_full_name %}
-                      {% endif %}
-                      </span>
-                      {{ user.get_full_name }}
-                      <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="user-dropdown-menu">
-                      <li role="presentation">
-                          <a href="{% url 'my_details' %}">{% trans 'My details' %}</a>
-                      </li>
-
-                      <li role="presentation">
-                        {% has_perm 'rsr.user_management' user as can_manage_users %}
-                        {% if can_manage_users %}
-                            <a href="{% url 'user_management' %}">
-                                {% trans "User management" %}
-                            </a>
-                        {% endif %}
-                      </li>
-                       {% has_perm 'rsr.project_management' user as can_manage_projects %}
-                        <li role="presentation" class="navIati">
-                            <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
-                               href="{% url 'my_iati' %}">
-                                {% trans "IATI" %}
-                            </a>
-                        </li>
-                        <li role="presentation" class="navReports">
-                            <a href="{% url 'my_reports' %}"
-                               class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
-                                {% trans 'Organisation Reports' %}
-                            </a>
-                        </li>
-                      <li role="presentation">
-                          <a role="menuitem" href="{% url 'sign_out' %}">{% trans 'Sign out' %}</a>
-                      </li>
-                  </ul>
-              </div>
-          </li>
-          <li>
-              <a class="btn areaToggle"
-                 href="{% url 'my_rsr' %}">{% trans 'My projects' %}
-              </a>
-        </li>
-        {% endif %}
-
-      </ul>
     </div>
   </div>
 </nav>
