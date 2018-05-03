@@ -128,7 +128,11 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
     // FIXME: Need to have a better display when things are loading....
     render: function() {
         var project_count_text =
-            this.props.project_count != undefined ? this.props.project_count + " " + this.props.i18n.projects_text : this.props.i18n.loading_text;
+            this.props.project_count != undefined
+                ? this.props.project_count + " " + this.props.i18n.projects_text
+                : this.props.i18n.loading_text;
+        var filtered = this.props.filtered ? " filtered" : "";
+
         return (
             React.createElement("section", {className: "main-list projects"}, 
                 React.createElement("div", {className: "container-fluid"}, 
@@ -153,8 +157,11 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                         ) : (
                             undefined
                         ), 
-                        React.createElement("div", {className: "col-sm-7 projectListUlcontain", id: "projList"}, 
-                            React.createElement("p", {className: "text-center"}, "Here are all projects started by the most recent"), 
+
+                        React.createElement("div", {className: `col-sm-7 projectListUlcontain ${filtered}`, id: "projList"}, 
+                            React.createElement("p", {className: "text-center"}, 
+                                "Here are all projects started by the most recent"
+                            ), 
                             React.createElement("ul", {className: "projectListUl group"}, 
                                 this.props.projects.map(function(project) {
                                     return (
@@ -169,21 +176,22 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                             React.createElement("div", {className: "container-fluid pageStatus text-center"}, 
                                 React.createElement("div", {className: "row"}, 
                                     React.createElement("div", {className: "col-xs-6 col-xs-offset-3"}, 
-                                        React.createElement("span", {className: "label label-info projectTotal"}, project_count_text
+                                        React.createElement("span", {className: "label label-info projectTotal"}, 
+                                            project_count_text
                                         ), 
-                                    React.createElement(Pagination, {
-                                        onChange: this.props.onChange, 
-                                        page: this.props.page, 
-                                        limit: this.props.limit, 
-                                        project_count: this.props.project_count}
-                                    ), 
-                                    React.createElement(PageLimitDropdown, {
-                                        i18n: this.props.i18n, 
-                                        onChange: this.props.onChange, 
-                                        limit: this.props.limit, 
-                                        options: this.props.limitOptions})
+                                        React.createElement(Pagination, {
+                                            onChange: this.props.onChange, 
+                                            page: this.props.page, 
+                                            limit: this.props.limit, 
+                                            project_count: this.props.project_count}
+                                        ), 
+                                        React.createElement(PageLimitDropdown, {
+                                            i18n: this.props.i18n, 
+                                            onChange: this.props.onChange, 
+                                            limit: this.props.limit, 
+                                            options: this.props.limitOptions}
+                                        )
                                     )
-
                                 )
                             )
                         ), 
@@ -383,9 +391,11 @@ var App = React.createClass({displayName: "App",
             organisation: [],
             sector: []
         };
+        var urlState = this.getStateFromUrl();
         var state = {
             options: options,
-            selected: this.getStateFromUrl(),
+            selected: urlState,
+            filtered: Object.keys(urlState).length > 0,
             disabled: true,
             projects: [],
             project_options: []
@@ -424,7 +434,8 @@ var App = React.createClass({displayName: "App",
                     projects: this.state.projects, 
                     project_count: this.state.project_count, 
                     i18n: this.props.i18n, 
-                    disabled: this.state.disabled}
+                    disabled: this.state.disabled, 
+                    filtered: this.state.filtered}
                 )
             )
         );
@@ -439,11 +450,14 @@ var App = React.createClass({displayName: "App",
         } else {
             delete update[field_name];
         }
-        this.setState({ selected: update }, this.fetchData);
+        this.setState(
+            { selected: update, filtered: Object.keys(update).length > 0 },
+            this.fetchData
+        );
         this.updateHistory(update);
     },
     resetFilters: function() {
-        this.setState({ selected: {} }, this.fetchData);
+        this.setState({ selected: {}, filtered: false }, this.fetchData);
     },
 
     /* Helper methods */
