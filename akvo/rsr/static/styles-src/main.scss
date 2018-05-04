@@ -1639,7 +1639,9 @@ h4.detailedInfo {
                     -o-transition: all 4s linear;
                     transition: all 4s linear;
                     &.highlightProject {
-                        box-shadow: 0 0 5px rgba($akvoPurple, 1) !important;
+                        box-shadow: 0 0 12px rgba($rsrBlue2, 0.8) !important;
+                        background: rgba($rsrBlue2, 0.2) !important;
+                        transition: all 4s linear;
                     }
                     &.updateAsset {
                         h1 {
