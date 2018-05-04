@@ -752,19 +752,16 @@ div.update-confirm-container {
     .myProjectList tbody tr.notPublished td .unplubishedPjt,
     #updates tbody tr.notPublished td .unplubishedPjt,
     #user_table tbody tr.notPublished td .unplubishedPjt {
-      position: absolute;
-      bottom: 0px;
-      left: 88px;
       padding: 2px 3px;
       display: inline-block;
       -moz-border-radius: 2px;
       -o-border-radius: 2px;
       -webkit-border-radius: 2px;
       border-radius: 2px;
-      color: #ee3124;
-      border: 1px solid #ee3124;
+      color: #d9534f;
+      border: 1px solid #d9534f;
       font-size: 80%;
-      font-weight: 600; }
+      font-weight: 400; }
   .myProjectList tbody tr.isPrivate td,
   #updates tbody tr.isPrivate td,
   #user_table tbody tr.isPrivate td {
@@ -776,19 +773,16 @@ div.update-confirm-container {
     .myProjectList tbody tr.isPrivate td .privatePjt,
     #updates tbody tr.isPrivate td .privatePjt,
     #user_table tbody tr.isPrivate td .privatePjt {
-      position: absolute;
-      top: 0px;
-      left: 88px;
       padding: 2px 3px;
       display: inline-block;
       -moz-border-radius: 2px;
       -o-border-radius: 2px;
       -webkit-border-radius: 2px;
       border-radius: 2px;
-      color: #ee3124;
-      border: 1px solid #ee3124;
+      color: #d9534f;
+      border: 1px solid #d9534f;
       font-size: 80%;
-      font-weight: 600; }
+      font-weight: 400; }
 
 .myProjectList a:last-child,
 #updates a:last-child,

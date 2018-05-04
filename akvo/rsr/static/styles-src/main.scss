@@ -869,16 +869,13 @@ div.update-confirm-container {
                         }
                     }
                     .unplubishedPjt {
-                        position: absolute;
-                        bottom: 0px;
-                        left: 88px;
                         padding: 2px 3px;
                         display: inline-block;
                         @include border-radius(2px);
-                        color: $akvoTvRed;
-                        border: 1px solid $akvoTvRed;
+                        color: $progressWarning;
+                        border: 1px solid $progressWarning;
                         font-size: 80%;
-                        font-weight: 600;
+                        font-weight: 400;
                     }
                 }
             }
@@ -891,16 +888,13 @@ div.update-confirm-container {
                         }
                     }
                     .privatePjt {
-                        position: absolute;
-                        top: 0px;
-                        left: 88px;
                         padding: 2px 3px;
                         display: inline-block;
                         @include border-radius(2px);
-                        color: $akvoTvRed;
-                        border: 1px solid $akvoTvRed;
+                        color: $progressWarning;
+                        border: 1px solid $progressWarning;
                         font-size: 80%;
-                        font-weight: 600;
+                        font-weight: 400;
                     }
                 }
             }

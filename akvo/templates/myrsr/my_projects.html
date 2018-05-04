@@ -58,15 +58,14 @@
               </a>
               <div class="media-body">
                 <a href="{% project_edit_link project user %}">
-                  <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}</h4>
-                </a>
-                <p>{{ project.subtitle }}</p>
-              </div>
-              {% if not project.is_published %}
+                  <h4 class="media-heading">{% if project.title %}{{ project.title }}{% else %}&lt;{% trans 'Untitled project' %}&gt;{% endif %}               {% if not project.is_published %}
                 <span class="unplubishedPjt">{% trans 'Unpublished' %}</span>
               {% elif not project.is_public %}
                 <span class="privatePjt">{% trans 'Private' %}</span>
-              {% endif %}
+              {% endif %}</h4>
+                </a>
+                <p>{{ project.subtitle }}</p>
+              </div>
             </td>
             <td>
                 {{ project.primary_location.country }}
