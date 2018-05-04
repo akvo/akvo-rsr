@@ -135,6 +135,7 @@ function initReact() {
                                     }
                                     return (
                                         <Report
+                                            disabled={this.props.disabled}
                                             orgId={this.props.organisation}
                                             report={report}
                                             key={report.id}
@@ -161,7 +162,11 @@ function initReact() {
                 icon_class = `fa fa-${icon}`,
                 text = `Download ${display_name}`;
             return (
-                <button className="btn btn-default reportDown" onClick={this.onClick}>
+                <button
+                    className="btn btn-default reportDown"
+                    onClick={this.onClick}
+                    disabled={this.props.disabled}
+                >
                     <i className={icon_class} />
                     <span>&nbsp;&nbsp;</span>
                     <span>{text}</span>
@@ -186,6 +191,7 @@ function initReact() {
                         display_name = format.display_name;
                     return (
                         <ReportFormatButton
+                            disabled={this.props.disabled}
                             download={this.downloadReport}
                             icon={icon}
                             format_name={name}
@@ -299,14 +305,11 @@ function initReact() {
                         organisation={this.state.organisation}
                         setOrganisation={this.setOrganisation}
                     />
-                    {this.state.organisation ? (
-                        <Reports
-                            reports={this.state.reportOptions}
-                            organisation={this.state.organisation}
-                        />
-                    ) : (
-                        undefined
-                    )}
+                    <Reports
+                        reports={this.state.reportOptions}
+                        organisation={this.state.organisation}
+                        disabled={!this.state.organisation}
+                    />
                 </div>
             );
         }
