@@ -78,9 +78,9 @@ class ProjectListingSerializer(serializers.ModelSerializer):
         return map(lambda x: unicode(x), project.countries())
 
     def get_image(self, project):
-        geometry = '350x190'
+        geometry = '350x200'
         try:
-            image = get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
+            image = get_thumbnail(project.current_image, geometry, crop='top', quality=99)
         except Exception:
             image = None
         return image.url if image is not None else ''
