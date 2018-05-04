@@ -8,17 +8,17 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
 {% load i18n rsr_filters humanize rsr_utils maps %}
 {% block title %}{{ organisation.name }}{% endblock %}
 {% block maincontent %}
-  <div class="container-fluid organisationDetail">
+  <div class="container organisationDetail">
     <div class="row verticalPadding organisationHeader">
       <div class="col-sm-8">
         <div class="col-sm-12">
-          <h1><i class="fa fa-users"></i> {{ organisation.name }}
+          <h1>{{ organisation.name }}
             {% if organisation.long_name and not organisation.name == organisation.long_name %}
               <span class="h4">({{ organisation.long_name }})</span>
             {% endif %}
           </h1>
         </div>
-        <div class="col-sm-12 orgLogo text-center">
+        <div class="col-sm-12 orgLogo">
           {% if organisation.url %}
             <a href="{{ organisation.url }}" target="_blank">
               {% img organisation 350 250 organisation.name %}

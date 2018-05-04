@@ -114,11 +114,13 @@ em {
     margin: 0 5px 0em 0em;
     font-style: italic;
 }
+
 .group:after {
-  content: "";
-  display: table;
-  clear: both;
+    content: "";
+    display: table;
+    clear: both;
 }
+
 div.morePartners {
     overflow: visible;
     display: inline-block;
@@ -477,7 +479,7 @@ nav.navbar-fixed-top {
                             color: $rsrBlue;
                             &:hover {
                                 border: 1px solid rgba($rsrBlue, 0) !important;
-                                background: white!important;
+                                background: white !important;
                                 color: rgba($rsrBlue, 1) !important;
                             }
                             .userAvatar {
@@ -487,7 +489,7 @@ nav.navbar-fixed-top {
                                 img {
                                     margin: 0;
                                     width: 30px;
-                                    height: 30px;                                
+                                    height: 30px;
                                     border: 1px solid white;
                                 }
                             }
@@ -861,12 +863,16 @@ div.update-confirm-container {
             &.notPublished {
                 td {
                     position: relative;
-                    padding-top: 40px;
+                    .media-body {
+                        a {
+                            padding-top: 20px;
+                        }
+                    }
                     .unplubishedPjt {
                         position: absolute;
-                        bottom: 49px;
+                        bottom: 0px;
                         left: 88px;
-                        padding:2px 3px;
+                        padding: 2px 3px;
                         display: inline-block;
                         @include border-radius(2px);
                         color: $akvoTvRed;
@@ -879,11 +885,16 @@ div.update-confirm-container {
             &.isPrivate {
                 td {
                     position: relative;
+                    .media-body {
+                        a {
+                            padding-top: 20px;
+                        }
+                    }
                     .privatePjt {
                         position: absolute;
-                        bottom: 49px;
+                        top: 0px;
                         left: 88px;
-                        padding:2px 3px;
+                        padding: 2px 3px;
                         display: inline-block;
                         @include border-radius(2px);
                         color: $akvoTvRed;
@@ -1304,9 +1315,11 @@ h4.detailedInfo {
     color: rgba($akvoPurple, 0.5);
     margin-top: 20px;
 }
+
 .updatePagination {
     margin-top: 40px;
 }
+
 .pgWrap, .pageStatus, .paginationWrap {
     .pagination {
         li {
@@ -1316,7 +1329,6 @@ h4.detailedInfo {
                 color: $anchorLink;
                 border: 1px solid transparent;
                 cursor: pointer;
-
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
@@ -1325,7 +1337,7 @@ h4.detailedInfo {
                 &:hover {
                     background: rgba($anchorLink, 0.1);
                     border: 1px solid rgba($anchorLink, 1);
-                    span {                   
+                    span {
                         border: 1px solid rgba($anchorLink, 0);
                         background: rgba($anchorLink, 0);
                     }
@@ -1336,7 +1348,7 @@ h4.detailedInfo {
                 span {
                     font-weight: bold;
                     color: $anchorLinkHover;
-                    background-color: transparent;                
+                    background-color: transparent;
                     border: 1px solid $anchorLinkHover;
                     &:hover {
                         background: rgba($anchorLinkHover, 0);
@@ -1347,7 +1359,6 @@ h4.detailedInfo {
         }
     }
 }
-
 
 .advanced-filter {
     display: inline-block;
@@ -1369,47 +1380,7 @@ h4.detailedInfo {
 }
 
 #sidebar-wrapper {
-    z-index: 99999;
-    position: absolute;
-    left: 200px;
-    width: 0;
-    margin-left: -200px;
-    overflow-y: auto;
-    background: rgba(white, 0.9);
-    @include border-radius(0 0 5px 0);
-    @include transition(all 0.5s ease);
-    @include box-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
-    .showFilters {
-        &:hover {
-            color: $anchorLinkHover;
-        }
-        @include responsive(small-max-screens) {
-            padding-top: 20px;
-            padding-bottom: 20px;
-        }
-    }
-    div#filter {
-        padding: 5px 15px 15px 15px;
-        div {
-            .btn-group {
-                width: 100%;
-                border-top: 1px solid rgba($akvoBlack, 0.1);
-                padding: 5px 0;
-                select {
-                    border-color: rgba($akvoBlack, 0.2);
-                }
-                label {
-                    color: rgba($akvoBlack, 0.5);
-                    @include noWrapTxt;
-                }
-            }
-            &:nth-child(1) {
-                .btn-group {
-                    border-top: none;
-                }
-            }
-        }
-    }
+    display: none;
 }
 
 #page-content-wrapper {
@@ -1435,7 +1406,8 @@ h4.detailedInfo {
         margin: 10px auto 0 auto;
     }
 }
-.pageStatus { 
+
+.pageStatus {
     .pagination {
         margin: 0 auto;
     }
@@ -1448,6 +1420,7 @@ h4.detailedInfo {
         }
     }
 }
+
 .upLabelSearch {
     top: -20px;
     position: absolute;
@@ -1643,9 +1616,17 @@ h4.detailedInfo {
                 height: 100%;
             }
         }
-        .projectListUlcontain {                
+        .projectListUlcontain {
             max-height: calc(100vh - 240px);
             overflow-y: scroll;
+            p.listMsg {
+                font-size: 1.2em;
+            }
+            &.filtered {
+                p.listMsg {
+                    display: none;
+                }
+            }
             ul.projectListUl {
                 padding-left: 15px;
                 li {
@@ -2294,11 +2275,8 @@ ul.typeahead-selector {
 /* Organisation Page */
 
 .organisationDetail {
-    .organisationHeader {
-        background: rgba($akvoBlack, 0.05);
-    }
+    .organisationHeader {}
     .orgDescr {
-        background-color: rgba(lighten($akvoTvRed, 15%), 0);
         p {
             padding-left: 20px;
         }
@@ -2306,9 +2284,7 @@ ul.typeahead-selector {
     h1 {
         margin-top: 0;
         margin-bottom: 20px;
-        color: rgba($akvoTvRed, 1);
         padding-bottom: 10px;
-        border-bottom: 1px solid rgba($akvoTvRed, 0.05);
         position: relative;
         i {
             font-size: 0.75em;
@@ -3324,7 +3300,6 @@ div#my-reports {
             text-align: left;
             width: 100%;
             margin-bottom: 10px;
-
             .not-selected {
                 color: grey;
             }
@@ -3761,8 +3736,8 @@ main.results-page {
         padding: 7px 8px;
         border-radius: 5px 5px 0 0;
         &:hover {
-            background: #3071a9;        
-            color: white;        
+            background: #3071a9;
+            color: white;
             border: 1px solid rgba($anchorLink, 0.1) !important;
         }
     }

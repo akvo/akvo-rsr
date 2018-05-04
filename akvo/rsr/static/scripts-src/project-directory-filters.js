@@ -159,7 +159,7 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                         ), 
 
                         React.createElement("div", {className: `col-sm-7 projectListUlcontain ${filtered}`, id: "projList"}, 
-                            React.createElement("p", {className: "text-center"}, 
+                            React.createElement("p", {className: "text-center listMsg"}, 
                                 "Here are all projects started by the most recent"
                             ), 
                             React.createElement("ul", {className: "projectListUl group"}, 
