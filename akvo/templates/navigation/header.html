@@ -59,9 +59,7 @@
                 <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
                 <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
             {% else %}
-                {% if '/myrsr/' in request.path %}
-                    {% include 'navigation/user-details-dropdown.html' %}
-                {% endif %}
+                {% include 'navigation/user-details-dropdown.html' %}
                 <li>
                     <a class="btn areaToggle"
                        href="{% url 'my_rsr' %}">{% trans 'My projects' %}
