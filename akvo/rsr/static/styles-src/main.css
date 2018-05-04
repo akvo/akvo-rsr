@@ -2930,6 +2930,7 @@ main.results-page {
       color: white; }
 
 .myRsrPg {
+  min-height: calc(100vh - 160px);
   padding-right: 50px !important;
   padding-left: 50px !important; }
   .myRsrPg + footer {

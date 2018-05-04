@@ -3589,6 +3589,7 @@ main.results-page {
 }
 
 .myRsrPg {
+    min-height: calc(100vh - 160px);
     + footer {
         position: sticky;
     }
