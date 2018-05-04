@@ -135,6 +135,7 @@ function initReact() {
                                     }
                                     return (
                                         React.createElement(Report, {
+                                            disabled: this.props.disabled, 
                                             orgId: this.props.organisation, 
                                             report: report, 
                                             key: report.id}
@@ -161,7 +162,11 @@ function initReact() {
                 icon_class = `fa fa-${icon}`,
                 text = `Download ${display_name}`;
             return (
-                React.createElement("button", {className: "btn btn-default reportDown", onClick: this.onClick}, 
+                React.createElement("button", {
+                    className: "btn btn-default reportDown", 
+                    onClick: this.onClick, 
+                    disabled: this.props.disabled
+                }, 
                     React.createElement("i", {className: icon_class}), 
                     React.createElement("span", null, "  "), 
                     React.createElement("span", null, text)
@@ -186,6 +191,7 @@ function initReact() {
                         display_name = format.display_name;
                     return (
                         React.createElement(ReportFormatButton, {
+                            disabled: this.props.disabled, 
                             download: this.downloadReport, 
                             icon: icon, 
                             format_name: name, 
@@ -299,13 +305,10 @@ function initReact() {
                         organisation: this.state.organisation, 
                         setOrganisation: this.setOrganisation}
                     ), 
-                    this.state.organisation ? (
-                        React.createElement(Reports, {
-                            reports: this.state.reportOptions, 
-                            organisation: this.state.organisation}
-                        )
-                    ) : (
-                        undefined
+                    React.createElement(Reports, {
+                        reports: this.state.reportOptions, 
+                        organisation: this.state.organisation, 
+                        disabled: !this.state.organisation}
                     )
                 )
             );
