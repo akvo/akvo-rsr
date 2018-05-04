@@ -3148,7 +3148,7 @@ main.results-page {
       border: 1px solid rgba(32, 32, 36, 0.1) !important;
       border-bottom: 1px solid rgba(32, 32, 36, 0) !important; }
   .results .updateList {
-    max-height: calc(100vh - 370px);
+    max-height: calc(100vh - 160px);
     overflow-y: scroll;
     padding-top: 25px; }
     .results .updateList .row {

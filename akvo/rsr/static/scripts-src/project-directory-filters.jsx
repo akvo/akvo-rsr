@@ -160,7 +160,7 @@ var ProjectDirectory = React.createClass({
 
                         <div className={`col-sm-7 projectListUlcontain ${filtered}`} id="projList">
                             <p className="text-center listMsg">
-                                Here are all projects started by the most recent
+                                The most recent projects added to RSR
                             </p>
                             <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
