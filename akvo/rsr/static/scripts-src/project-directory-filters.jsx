@@ -158,7 +158,7 @@ var ProjectDirectory = React.createClass({
                             undefined
                         )}
 
-                        <div className={`col-sm-7 projectListUlcontain ${filtered}`} id="projList">
+                        <div className={"col-sm-7 projectListUlcontain " + filtered} id="projList">
                             <p className="text-center listMsg">
                                 Here are all projects started by the most recent
                             </p>
