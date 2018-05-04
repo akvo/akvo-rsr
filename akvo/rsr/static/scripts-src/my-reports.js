@@ -116,18 +116,18 @@ function initReact() {
 
     var Reports = React.createClass({displayName: "Reports",
         render: function() {
-            console.log(this.props);
             var reports = this.props.reports,
                 report_count = (reports && reports.length) || 0,
                 row_count = Math.round(Math.ceil(report_count / 3)),
                 row_indexes = Array.from(Array(row_count).keys()),
-                col_indexes = Array.from(Array(3).keys());
+                col_indexes = Array.from(Array(3).keys()),
+                self = this;
             return (
                 React.createElement("div", {className: "rsrReports"}, 
-                    row_indexes.map(row => {
+                    row_indexes.map(function(row) {
                         return (
                             React.createElement("div", {className: "row", key: row}, 
-                                col_indexes.map(col => {
+                                col_indexes.map(function(col) {
                                     var index = row * 3 + col,
                                         report = reports[index];
                                     if (report === undefined) {
@@ -135,8 +135,8 @@ function initReact() {
                                     }
                                     return (
                                         React.createElement(Report, {
-                                            disabled: this.props.disabled, 
-                                            orgId: this.props.organisation, 
+                                            disabled: self.props.disabled, 
+                                            orgId: self.props.organisation, 
                                             report: report, 
                                             key: report.id}
                                         )
@@ -159,8 +159,8 @@ function initReact() {
         render: function() {
             const icon = this.props.icon,
                 display_name = this.props.display_name,
-                icon_class = `fa fa-${icon}`,
-                text = `Download ${display_name}`;
+                icon_class = "fa fa-" + icon,
+                text = "Download " + display_name;
             return (
                 React.createElement("button", {
                     className: "btn btn-default reportDown", 
@@ -185,14 +185,15 @@ function initReact() {
 
         render: function() {
             var report = this.props.report,
-                formats = report.formats.map(format => {
+                self = this,
+                formats = report.formats.map(function(format) {
                     var icon = format.icon,
                         name = format.name,
                         display_name = format.display_name;
                     return (
                         React.createElement(ReportFormatButton, {
-                            disabled: this.props.disabled, 
-                            download: this.downloadReport, 
+                            disabled: self.props.disabled, 
+                            download: self.downloadReport, 
                             icon: icon, 
                             format_name: name, 
                             display_name: display_name, 

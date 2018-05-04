@@ -158,7 +158,7 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                             undefined
                         ), 
 
-                        React.createElement("div", {className: `col-sm-7 projectListUlcontain ${filtered}`, id: "projList"}, 
+                        React.createElement("div", {className: "col-sm-7 projectListUlcontain " + filtered, id: "projList"}, 
                             React.createElement("p", {className: "text-center listMsg"}, 
                                 "The most recent projects added to RSR"
                             ), 
