@@ -475,17 +475,16 @@ nav.navbar-fixed-top {
                             margin-top: -5px;
                             padding: 3px 8px 3px 3px;
                             border: 1px solid rgba($rsrBlue, 0) !important;
-                            background: rgba($anchorLink, 0.1) !important;
+                            background: rgba($anchorLink, 0) !important;
                             color: $rsrBlue;
                             &:hover {
                                 border: 1px solid rgba($rsrBlue, 0) !important;
                                 background: white !important;
-                                color: rgba($rsrBlue, 1) !important;
+                                color: $flowOrange !important;
                             }
                             .userAvatar {
                                 width: 30px;
                                 height: 30px;
-                                margin-right: 10px;
                                 img {
                                     margin: 0;
                                     width: 30px;
@@ -839,6 +838,7 @@ div.update-confirm-container {
 .myProjectList,
 #updates,
 #user_table {
+    font-size: 1.2em;
     thead {
         tr {
             border-bottom: none;
@@ -869,12 +869,10 @@ div.update-confirm-container {
                         }
                     }
                     .unplubishedPjt {
-                        padding: 2px 3px;
+                        padding: 0px 3px;
                         display: inline-block;
-                        @include border-radius(2px);
                         color: $progressWarning;
-                        border: 1px solid $progressWarning;
-                        font-size: 80%;
+                        font-size: 70%;
                         font-weight: 400;
                     }
                 }
@@ -888,12 +886,10 @@ div.update-confirm-container {
                         }
                     }
                     .privatePjt {
-                        padding: 2px 3px;
+                        padding: 0px 3px;
                         display: inline-block;
-                        @include border-radius(2px);
                         color: $progressWarning;
-                        border: 1px solid $progressWarning;
-                        font-size: 80%;
+                        font-size: 70%;
                         font-weight: 400;
                     }
                 }
@@ -1346,7 +1342,7 @@ h4.detailedInfo {
                     border: 1px solid $anchorLinkHover;
                     &:hover {
                         background: rgba($anchorLinkHover, 0);
-                        border-color: transparent;
+                        border: 1px solid $anchorLinkHover;
                     }
                 }
             }

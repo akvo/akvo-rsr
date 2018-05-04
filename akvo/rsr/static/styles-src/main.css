@@ -441,16 +441,15 @@ nav.navbar-fixed-top {
           margin-top: -5px;
           padding: 3px 8px 3px 3px;
           border: 1px solid rgba(44, 42, 116, 0) !important;
-          background: rgba(66, 139, 202, 0.1) !important;
+          background: rgba(66, 139, 202, 0) !important;
           color: #2c2a74; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default:hover {
             border: 1px solid rgba(44, 42, 116, 0) !important;
             background: white !important;
-            color: #2c2a74 !important; }
+            color: #de8929 !important; }
           nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar {
             width: 30px;
-            height: 30px;
-            margin-right: 10px; }
+            height: 30px; }
             nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar img {
               margin: 0;
               width: 30px;
@@ -716,78 +715,70 @@ div.update-confirm-container {
   .myProjectList tr td:first-child {
     text-align: left; }
 
-.myProjectList thead tr,
-#updates thead tr,
-#user_table thead tr {
-  border-bottom: none; }
-  .myProjectList thead tr th,
-  #updates thead tr th,
-  #user_table thead tr th {
-    padding-top: 25px;
-    padding-bottom: 25px; }
-    .myProjectList thead tr th td,
-    #updates thead tr th td,
-    #user_table thead tr th td {
+.myProjectList,
+#updates,
+#user_table {
+  font-size: 1.2em; }
+  .myProjectList thead tr,
+  #updates thead tr,
+  #user_table thead tr {
+    border-bottom: none; }
+    .myProjectList thead tr th,
+    #updates thead tr th,
+    #user_table thead tr th {
+      padding-top: 25px;
+      padding-bottom: 25px; }
+      .myProjectList thead tr th td,
+      #updates thead tr th td,
+      #user_table thead tr th td {
+        padding-top: 40px;
+        padding-bottom: 50px; }
+  .myProjectList tbody tr,
+  #updates tbody tr,
+  #user_table tbody tr {
+    background: white !important; }
+    .myProjectList tbody tr td,
+    #updates tbody tr td,
+    #user_table tbody tr td {
+      border: none;
       padding-top: 40px;
       padding-bottom: 50px; }
-
-.myProjectList tbody tr,
-#updates tbody tr,
-#user_table tbody tr {
-  background: white !important; }
-  .myProjectList tbody tr td,
-  #updates tbody tr td,
-  #user_table tbody tr td {
-    border: none;
-    padding-top: 40px;
-    padding-bottom: 50px; }
-  .myProjectList tbody tr.notPublished td,
-  #updates tbody tr.notPublished td,
-  #user_table tbody tr.notPublished td {
-    position: relative; }
-    .myProjectList tbody tr.notPublished td .media-body a,
-    #updates tbody tr.notPublished td .media-body a,
-    #user_table tbody tr.notPublished td .media-body a {
-      padding-top: 20px; }
-    .myProjectList tbody tr.notPublished td .unplubishedPjt,
-    #updates tbody tr.notPublished td .unplubishedPjt,
-    #user_table tbody tr.notPublished td .unplubishedPjt {
-      padding: 2px 3px;
-      display: inline-block;
-      -moz-border-radius: 2px;
-      -o-border-radius: 2px;
-      -webkit-border-radius: 2px;
-      border-radius: 2px;
-      color: #d9534f;
-      border: 1px solid #d9534f;
-      font-size: 80%;
-      font-weight: 400; }
-  .myProjectList tbody tr.isPrivate td,
-  #updates tbody tr.isPrivate td,
-  #user_table tbody tr.isPrivate td {
-    position: relative; }
-    .myProjectList tbody tr.isPrivate td .media-body a,
-    #updates tbody tr.isPrivate td .media-body a,
-    #user_table tbody tr.isPrivate td .media-body a {
-      padding-top: 20px; }
-    .myProjectList tbody tr.isPrivate td .privatePjt,
-    #updates tbody tr.isPrivate td .privatePjt,
-    #user_table tbody tr.isPrivate td .privatePjt {
-      padding: 2px 3px;
-      display: inline-block;
-      -moz-border-radius: 2px;
-      -o-border-radius: 2px;
-      -webkit-border-radius: 2px;
-      border-radius: 2px;
-      color: #d9534f;
-      border: 1px solid #d9534f;
-      font-size: 80%;
-      font-weight: 400; }
-
-.myProjectList a:last-child,
-#updates a:last-child,
-#user_table a:last-child {
-  margin-right: 0; }
+    .myProjectList tbody tr.notPublished td,
+    #updates tbody tr.notPublished td,
+    #user_table tbody tr.notPublished td {
+      position: relative; }
+      .myProjectList tbody tr.notPublished td .media-body a,
+      #updates tbody tr.notPublished td .media-body a,
+      #user_table tbody tr.notPublished td .media-body a {
+        padding-top: 20px; }
+      .myProjectList tbody tr.notPublished td .unplubishedPjt,
+      #updates tbody tr.notPublished td .unplubishedPjt,
+      #user_table tbody tr.notPublished td .unplubishedPjt {
+        padding: 0px 3px;
+        display: inline-block;
+        color: #d9534f;
+        font-size: 70%;
+        font-weight: 400; }
+    .myProjectList tbody tr.isPrivate td,
+    #updates tbody tr.isPrivate td,
+    #user_table tbody tr.isPrivate td {
+      position: relative; }
+      .myProjectList tbody tr.isPrivate td .media-body a,
+      #updates tbody tr.isPrivate td .media-body a,
+      #user_table tbody tr.isPrivate td .media-body a {
+        padding-top: 20px; }
+      .myProjectList tbody tr.isPrivate td .privatePjt,
+      #updates tbody tr.isPrivate td .privatePjt,
+      #user_table tbody tr.isPrivate td .privatePjt {
+        padding: 0px 3px;
+        display: inline-block;
+        color: #d9534f;
+        font-size: 70%;
+        font-weight: 400; }
+  .myProjectList a:last-child,
+  #updates a:last-child,
+  #user_table a:last-child {
+    margin-right: 0; }
 
 div.paginationWrap {
   clear: both; }
@@ -1156,7 +1147,7 @@ h4.detailedInfo {
   .pageStatus .pagination li.active span:hover, .paginationWrap .pagination li.active a:hover,
   .paginationWrap .pagination li.active span:hover {
     background: rgba(202, 129, 66, 0);
-    border-color: transparent; }
+    border: 1px solid #ca8142; }
 
 .advanced-filter {
   display: inline-block;
