@@ -185,12 +185,6 @@ var ProjectDirectory = React.createClass({
                                             limit={this.props.limit}
                                             project_count={this.props.project_count}
                                         />
-                                        <PageLimitDropdown
-                                            i18n={this.props.i18n}
-                                            onChange={this.props.onChange}
-                                            limit={this.props.limit}
-                                            options={this.props.limitOptions}
-                                        />
                                     </div>
                                 </div>
                             </div>
@@ -203,46 +197,6 @@ var ProjectDirectory = React.createClass({
                     </div>
                 </div>
             </section>
-        );
-    }
-});
-
-var PageLimitDropdown = React.createClass({
-    onSelect: function(e) {
-        e.preventDefault();
-        this.props.onChange("limit", e.target.text);
-    },
-    render: function() {
-        var DropdownButton = ReactBootstrap.DropdownButton,
-            MenuItem = ReactBootstrap.MenuItem,
-            options = this.props.options || [],
-            disabled = options.length == 0,
-            title = this.props.limit
-                ? this.props.i18n.page_limit_text + ": " + this.props.limit
-                : this.props.i18n.page_limit_text;
-
-        return (
-            <div className="">
-                <div className="">
-                    <DropdownButton
-                        dropup
-                        id="limit"
-                        bsStyle="default"
-                        title={title}
-                        onSelect={this.onSelect}
-                        disabled={disabled}
-                    >
-                        {options.map(function(option) {
-                            var active = option == this.props.limit;
-                            return (
-                                <MenuItem key={option} active={active}>
-                                    {option}
-                                </MenuItem>
-                            );
-                        }, this)}
-                    </DropdownButton>
-                </div>
-            </div>
         );
     }
 });
@@ -351,7 +305,9 @@ var SearchBar = React.createClass({
                 />
             );
         };
-        var reset_button = _.isEmpty(this.props.selected) ? (
+        var reset_button = _.isEmpty(
+            _.pick(this.props.selected, "location", "organisation", "sector", "title_or_subtitle")
+        ) ? (
             undefined
         ) : (
             <span className="pull-right">
