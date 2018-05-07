@@ -80,7 +80,7 @@ class ProjectListingSerializer(serializers.ModelSerializer):
     def get_image(self, project):
         geometry = '350x200'
         try:
-            image = get_thumbnail(project.current_image, geometry, crop='top', quality=99)
+            image = get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
         except Exception:
             image = None
         return image.url if image is not None else ''
