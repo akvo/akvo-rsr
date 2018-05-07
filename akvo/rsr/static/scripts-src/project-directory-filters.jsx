@@ -142,7 +142,7 @@ var ProjectDirectory = React.createClass({
                                 style={{
                                     position: "absolute",
                                     width: "100%",
-                                    height: "calc(100vh - 300px)",
+                                    height: "calc(100vh - 160px)",
                                     background: "white",
                                     margin: "auto",
                                     padding: "20px",
