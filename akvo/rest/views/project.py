@@ -270,16 +270,17 @@ def project_directory(request):
     # bits of data to avoid the response from never getting saved in the cache,
     # because the response is larger than the max size of data that can be
     # saved in the cache.
-    cached_projects = _get_cached_data(
+    cached_projects, showing_cached_projects = _get_cached_data(
         request, 'projects', display_projects, ProjectListingSerializer
     )
-    cached_organisations = _get_cached_data(
+    cached_organisations, _ = _get_cached_data(
         request, 'organisations', organisations, TypeaheadOrganisationSerializer
     )
 
     response = {
         'project_count': count,
         'projects': cached_projects,
+        'showing_cached_projects': showing_cached_projects,
         'organisation': cached_organisations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,
@@ -297,11 +298,13 @@ def _get_cached_data(request, key_prefix, data, serializer):
 
     cache_key = get_cache_key(request, key_prefix)
     cached_data = cache.get(cache_key, None)
+    cache_used = True
     if not cached_data:
+        cache_used = False
         cached_data = serializer(data, many=True).data
         cache.set(cache_key, cached_data)
 
-    return cached_data
+    return cached_data, cache_used
 
 
 def _get_projects_for_page(projects, request):
