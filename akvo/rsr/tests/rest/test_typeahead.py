@@ -24,12 +24,9 @@ class ProjectTypeaheadTest(TestCase):
             hostname='akvo'
         )
 
-        with open(self.image, 'w+b'):
-            pass
-
         for i in range(1, 6):
-            project = Project.objects.create(title='Project - {}'.format(i),
-                                             current_image=self.image)
+            project = Project.objects.create(title='Project - {}'.format(i))
+
             if i < 4:
                 publishing_status = project.publishingstatus
                 publishing_status.status = PublishingStatus.STATUS_PUBLISHED
