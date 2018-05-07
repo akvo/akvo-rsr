@@ -19,7 +19,6 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectUpSerializer,
                                    ProjectListingSerializer,
                                    TypeaheadOrganisationSerializer,
-                                   TypeaheadProjectSerializer,
                                    TypeaheadSectorSerializer,)
 from akvo.rsr.models import Project
 from akvo.rsr.filters import location_choices, get_m49_filter
@@ -222,7 +221,6 @@ def project_directory(request):
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
-    project_options = projects
     # NOTE: The text filter is handled differently/separately from the other filters.
     # The text filter allows users to enter free form text, which could result in no
     # projects being found for the given text. Other fields only allow selecting from
@@ -275,9 +273,6 @@ def project_directory(request):
     cached_projects = _get_cached_data(
         request, 'projects', display_projects, ProjectListingSerializer
     )
-    cached_project_options = _get_cached_data(
-        request, 'project_options', project_options, TypeaheadProjectSerializer
-    )
     cached_organisations = _get_cached_data(
         request, 'organisations', organisations, TypeaheadOrganisationSerializer
     )
@@ -285,7 +280,6 @@ def project_directory(request):
     response = {
         'project_count': count,
         'projects': cached_projects,
-        'project_options': cached_project_options,
         'organisation': cached_organisations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
         'location': locations,

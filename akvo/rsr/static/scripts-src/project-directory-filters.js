@@ -227,10 +227,31 @@ var Pagination = React.createClass({displayName: "Pagination",
 
 var TextSearch = React.createClass({displayName: "TextSearch",
     getInitialState: function() {
-        return { value: "" };
+        return {
+            value: "",
+            options: []
+        };
+    },
+    componentDidMount: function() {
+        var options = this.fetchOptions();
     },
     componentWillReceiveProps: function(nextProps) {
         this.setState({ value: nextProps.text || "" });
+    },
+    fetchOptions: function() {
+        var url = "/rest/v1/typeaheads/projects?format=json",
+            app = this;
+
+        fetch(url, {})
+            .then(function(response) {
+                if (response.status >= 200 && response.status < 300) {
+                    return response.json();
+                }
+            })
+            .then(function(options) {
+                app.setState({ options: options.results || [] });
+            });
+        return [];
     },
     onChange: function(projects) {
         var project = projects[0],
@@ -253,7 +274,7 @@ var TextSearch = React.createClass({displayName: "TextSearch",
                     React.createElement("div", {className: "input-group"}, 
                         React.createElement(Typeahead, {
                             name: this.props.name, 
-                            options: this.props.project_options, 
+                            options: this.state.options, 
                             onChange: this.onChange, 
                             onInputChange: this.onInputChange, 
                             filterBy: ["title", "subtitle"], 
@@ -323,7 +344,6 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                         text: this.props.selected.title_or_subtitle, 
                         i18n: this.props.i18n, 
                         projects: this.props.projects, 
-                        project_options: this.props.project_options, 
                         onChange: this.props.onChange}
                     ), 
                     React.createElement("div", {id: "filter-wrapper"}, 
@@ -353,8 +373,7 @@ var App = React.createClass({displayName: "App",
             selected: urlState,
             filtered: Object.keys(urlState).length > 0,
             disabled: true,
-            projects: [],
-            project_options: []
+            projects: []
         };
         return state;
     },
@@ -376,7 +395,6 @@ var App = React.createClass({displayName: "App",
                     filters: this.props.dropdown_filters, 
                     disabled: this.state.disabled, 
                     projects: this.state.projects, 
-                    project_options: this.state.project_options, 
                     project_count: this.state.project_count, 
                     i18n: this.props.i18n, 
                     options: this.state.options, 
@@ -447,7 +465,6 @@ var App = React.createClass({displayName: "App",
                 .then(self.parseResponse)
                 .then(function(options) {
                     if (options) {
-                        console.log(options);
                         var processedOptions = self.processOptions(options);
                         self.updateState(processedOptions, mountedNow);
                         self.cacheOptions(url, processedOptions);
@@ -546,8 +563,7 @@ var App = React.createClass({displayName: "App",
             options: options,
             disabled: false,
             project_count: options.project_count,
-            projects: options.projects,
-            project_options: options.project_options
+            projects: options.projects
         });
     }
 });
