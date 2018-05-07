@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import logging
+
 from rest_framework import serializers
 
 from akvo.rsr.models import Project
@@ -31,6 +33,9 @@ from .result import ResultRawSerializer
 from .sector import SectorRawSerializer
 from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
 from .rsr_serializer import BaseRSRSerializer
+
+
+logger = logging.getLogger(__name__)
 
 
 class ProjectSerializer(BaseRSRSerializer):
@@ -81,7 +86,10 @@ class ProjectListingSerializer(serializers.ModelSerializer):
         geometry = '350x200'
         try:
             image = get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
-        except Exception:
+        except Exception as e:
+            logger.error(
+                'Failed to get thumbnail for image %s with error: %s', project.current_image, e
+            )
             image = None
         return image.url if image is not None else ''
 
