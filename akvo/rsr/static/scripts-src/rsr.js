@@ -196,7 +196,7 @@ $(document).ready(function() {
                                 project_div.classList.add("highlightProject");
                                 window.setTimeout(function() {
                                     project_div.classList.remove("highlightProject");
-                                }, 5000);
+                                }, 2000);
                             } else {
                                 infoWindows.forEach(function(entry) {
                                     // Close any existing windows

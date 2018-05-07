@@ -1140,7 +1140,7 @@ footer {
                     }
                     div.langDropdown {
                         margin-top: 13px;
-                        background-color: transparent !important;
+                        background-color: white !important;
                         border-color: transparent !important;
                         color: $akvoBlack !important;
                         .btn-default {
@@ -1158,7 +1158,7 @@ footer {
 
                         .dropdown-menu {
                             position: absolute;
-                            background-color: transparent !important;
+                            background-color: white !important;
                             border-color: transparent !important;
                             @include responsive(small-max-screens) {
                                 background-color: white !important;
@@ -1611,6 +1611,7 @@ h4.detailedInfo {
             overflow-y: scroll;
             p.listMsg {
                 font-size: 1.2em;
+                text-align: center;
             }
             &.filtered {
                 p.listMsg {

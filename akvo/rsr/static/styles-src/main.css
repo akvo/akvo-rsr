@@ -970,7 +970,7 @@ footer .navbar {
               background-size: 92%; } }
     footer .navbar #footer-body ul.nav li div.langDropdown {
       margin-top: 13px;
-      background-color: transparent !important;
+      background-color: white !important;
       border-color: transparent !important;
       color: #202024 !important; }
       footer .navbar #footer-body ul.nav li div.langDropdown .btn-default {
@@ -985,7 +985,7 @@ footer .navbar {
           padding-right: 15px; } }
       footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
         position: absolute;
-        background-color: transparent !important;
+        background-color: white !important;
         border-color: transparent !important; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
@@ -1363,7 +1363,8 @@ h4.detailedInfo {
     max-height: calc(100vh - 240px);
     overflow-y: scroll; }
     .main-list.projects .projectListUlcontain p.listMsg {
-      font-size: 1.2em; }
+      font-size: 1.2em;
+      text-align: center; }
     .main-list.projects .projectListUlcontain.filtered p.listMsg {
       display: none; }
     .main-list.projects .projectListUlcontain ul.projectListUl {
