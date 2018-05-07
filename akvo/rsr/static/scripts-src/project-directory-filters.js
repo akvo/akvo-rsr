@@ -305,7 +305,9 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                 )
             );
         };
-        var reset_button = _.isEmpty(this.props.selected) ? (
+        var reset_button = _.isEmpty(
+            _.pick(this.props.selected, "location", "organisation", "sector", "title_or_subtitle")
+        ) ? (
             undefined
         ) : (
             React.createElement("span", {className: "pull-right"}, 
