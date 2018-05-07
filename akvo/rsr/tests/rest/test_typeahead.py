@@ -7,17 +7,10 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import os
-
-from django.core.cache import cache
 from django.conf import settings
 from django.test import Client, TestCase
 
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
-from akvo.rsr.models import (
-    Country, Keyword, Organisation, Partnership, PartnerSite, Project, ProjectLocation,
-    PublishingStatus, RecipientCountry
-)
+from akvo.rsr.models import Organisation, Partnership, PartnerSite, Project, PublishingStatus
 
 
 class ProjectTypeaheadTest(TestCase):
@@ -31,7 +24,6 @@ class ProjectTypeaheadTest(TestCase):
             hostname='akvo'
         )
 
-        self.image = os.path.join(settings.MEDIA_ROOT, 'test-image.png')
         with open(self.image, 'w+b'):
             pass
 
@@ -53,10 +45,6 @@ class ProjectTypeaheadTest(TestCase):
 
         # Additional organisation for typeahead/organisations end-point
         self._create_organisation('UNICEF')
-
-    def tearDown(self):
-        os.remove(self.image)
-        cache.clear()
 
     def _create_client(self, host=None):
         """ Create and return a client with the given host."""
@@ -167,82 +155,3 @@ class ProjectTypeaheadTest(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 2)
-
-    def test_should_show_keyword_projects_in_partner_site(self):
-        # Given
-        hostname = 'akvo'
-        host = '{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN)
-        partner_projects = False
-        keyword = Keyword.objects.create(label=hostname)
-        self.partner_site.partner_projects = partner_projects
-        self.partner_site.save()
-        self.partner_site.keywords.add(keyword)
-        project_title = '{} awesome project'.format(hostname)
-        project = Project.objects.create(title=project_title, current_image=self.image)
-        project.keywords.add(keyword)
-        project.publish()
-        url = '/rest/v1/typeaheads/project_filters?format=json'
-        client = self._create_client(host)
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        self.assertEqual(len(response.data['projects']), 1)
-        self.assertEqual(project_title, response.data['projects'][0]['title'])
-
-    def test_should_show_all_partner_projects(self):
-        # Given
-        hostname = 'akvo'
-        host = '{}.{}'.format(hostname, settings.AKVOAPP_DOMAIN)
-        url = '/rest/v1/typeaheads/project_filters?format=json'
-        client = self._create_client(host)
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        self.assertEqual(len(response.data['projects']), 1)
-        self.assertIn('Project - 1', response.data['projects'][0]['title'])
-
-    def test_should_show_all_country_projects(self):
-        # Given
-        titles = ['Project - {}'.format(i) for i in range(0, 6)]
-        projects = [None] + [Project.objects.get(title=title) for title in titles[1:]]
-        url = '/rest/v1/typeaheads/project_filters?format=json&location=262'
-        latitude, longitude = ('11.8948112', '42.5807153')
-        country_code = 'DJ'
-        # Add a Recipient Country - DJ
-        RecipientCountry.objects.create(project=projects[2], country=country_code)
-        # ProjectLocation in DJ
-        self.setup_country_objects()
-        project_location = ProjectLocation.objects.create(location_target=projects[3],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
-        project_location = ProjectLocation.objects.create(location_target=projects[4],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
-        project_location = ProjectLocation.objects.create(location_target=projects[5],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
-
-        # ProjectLocation with no country
-        ProjectLocation.objects.create(location_target=projects[3],
-                                       latitude=None,
-                                       longitude=None)
-        client = self._create_client()
-
-        # When
-        response = client.get(url, follow=True)
-
-        # Then
-        projects = response.data['projects']
-        self.assertEqual(len(projects), 2)
-        response_titles = {project['title'] for project in projects}
-        self.assertIn(titles[2], response_titles)
-        self.assertIn(titles[3], response_titles)
-        self.assertEqual(project_location.country.iso_code, country_code.lower())
-
-    def setup_country_objects(self):
-        for iso_code, name in ISO_3166_COUNTRIES:
-            Country.objects.create(name=name, iso_code=iso_code)

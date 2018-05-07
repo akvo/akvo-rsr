@@ -57,7 +57,7 @@ from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
-                      ProjectIatiExportViewSet, ProjectUpViewSet)
+                      ProjectIatiExportViewSet, ProjectUpViewSet, project_directory)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -95,7 +95,6 @@ from .typeahead import (typeahead_country,
                         typeahead_organisation,
                         typeahead_user_organisations,
                         typeahead_project,
-                        typeahead_project_filters,
                         typeahead_user_projects,
                         typeahead_impact_projects,
                         typeahead_projectupdate)
@@ -185,6 +184,7 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
+    'project_directory',
     'project_editor',
     'log_project_addition',
     'project_editor_upload_file',
@@ -212,7 +212,6 @@ __all__ = [
     'typeahead_organisation',
     'typeahead_user_organisations',
     'typeahead_project',
-    'typeahead_project_filters',
     'typeahead_user_projects',
     'typeahead_impact_projects',
     'typeahead_projectupdate',
