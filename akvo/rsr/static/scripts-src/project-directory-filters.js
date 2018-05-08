@@ -100,9 +100,12 @@ var Project = React.createClass({displayName: "Project",
 
 var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
     componentDidUpdate: function(prevProps) {
-        // Update map
+        // If projects changed
         if (this.props.projects != prevProps.projects) {
+            // Update map
             window.render_map(document.querySelector("#akvo_map_projects"), this.getMapConfig());
+            // Scroll the project list container to the top
+            ReactDOM.findDOMNode(this).querySelector("#projList").scrollTop = 0;
         }
     },
     getLocations: function() {
