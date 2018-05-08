@@ -15,6 +15,24 @@ import Results from "./Results";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+var sortReportIds = function(reports) {
+    if (!reports || !reports.ids) {
+        return;
+    }
+    var sorter = function(id1, id2) {
+        const a = reports.objects[id1].organisations.length,
+            b = reports.objects[id2].organisations.length;
+
+        if (a < b) {
+            return -1;
+        } else if (b < a) {
+            return 1;
+        }
+        return 0;
+    };
+    reports.ids.sort(sorter);
+};
+
 @connect(store => {
     return {
         reports: store.models.reports,
@@ -28,6 +46,8 @@ export default class Reports extends React.Component {
         const row_count = Math.round(Math.ceil(report_count / 3)),
             row_indexes = Array.from(Array(row_count).keys()),
             col_indexes = Array.from(Array(3).keys());
+        // Order reports so that organisation specific reports are listed at the end
+        sortReportIds(reports);
         return (
             <div className="rsrReports">
                 {row_indexes.map(row => {
