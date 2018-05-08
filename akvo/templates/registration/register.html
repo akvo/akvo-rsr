@@ -5,7 +5,7 @@
 {% block title %}{% trans 'Register your Akvo RSR account' %}{% endblock %}
 
 {% block maincontent %}
-<div class="container">
+<div class="container alignFooter">
     <h2 class="text-center verticalPadding">{% trans 'Register' %}</h2>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
@@ -19,7 +19,7 @@
                 {% endfor %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary center-block">
-                       <i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}
+                       {% trans 'Register' %}
                     </button>
                 {% endbuttons %}
             </form>

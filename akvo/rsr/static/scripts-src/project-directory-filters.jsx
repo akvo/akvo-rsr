@@ -288,7 +288,7 @@ var TextSearch = React.createClass({
 
                         <span className="input-group-btn">
                             <button className="btn btn-primary" onClick={this.onSubmit}>
-                                {this.props.i18n.search_text + " ›"}
+                                {this.props.i18n.search_text}
                             </button>
                         </span>
                     </div>

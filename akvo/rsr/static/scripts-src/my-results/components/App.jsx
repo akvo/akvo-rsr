@@ -372,7 +372,7 @@ export default class App extends React.Component {
                     className="pull-right editBtn"
                     href={`../../project_editor/${projectId}/`}
                 >
-                    <i className="fa fa-pencil-square-o" /> Edit project
+                    Edit project
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>

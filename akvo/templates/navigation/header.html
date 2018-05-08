@@ -56,8 +56,8 @@
     <div class="collapse navbar-collapse" id="navbar-collapsed">
         <ul class="nav navbar-nav navbar-right">
             {% if not user.is_authenticated %}
-                <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
-                <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
+                <li><a href="{% url 'register' %}">{% trans 'Register' %}</a></li>
+                <li><a href="{% url 'sign_in' %}">{% trans 'Sign in' %}</a></li>
             {% else %}
                 {% include 'navigation/user-details-dropdown.html' %}
                 <li>

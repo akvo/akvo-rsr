@@ -1383,18 +1383,18 @@ h4.detailedInfo {
         border-radius: 3px;
         background: white;
         margin-right: 2%;
-        -webkit-transition: all 4s linear;
-        -moz-transition: all 4s linear;
-        -o-transition: all 4s linear;
-        transition: all 4s linear;
+        -webkit-transition: all 2s linear;
+        -moz-transition: all 2s linear;
+        -o-transition: all 2s linear;
+        transition: all 2s linear;
         border: thin solid rgba(44, 42, 116, 0);
         -moz-transition: all 0.2s ease-in;
         -o-transition: all 0.2s ease-in;
         -webkit-transition: all 0.2s ease-in;
         transition: all 0.2s ease-in; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.highlightProject {
-          box-shadow: 0 0 12px rgba(114, 205, 255, 0.8) !important;
-          background: rgba(114, 205, 255, 0.2) !important;
+          box-shadow: 0 0 12px #64618c !important;
+          background: rgba(100, 97, 140, 0.2) !important;
           transition: all 4s linear; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 {
           margin-top: 5px; }
@@ -2929,6 +2929,9 @@ main.results-page {
     .resultProjectTitle button:hover {
       background: #2c2a74;
       color: white; }
+
+.alignFooter {
+  min-height: calc(100vh - 160px); }
 
 .myRsrPg {
   min-height: calc(100vh - 160px);
