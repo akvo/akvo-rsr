@@ -1236,6 +1236,35 @@ class Project(TimestampsMixin, models.Model):
             else:
                 return family.distinct()
 
+    def ancestor(self):
+        "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
+        parents = self.parents_all()
+        if parents and parents.count() == 1:
+            return parents[0].ancestor()
+        else:
+            return self
+
+    def uses_single_indicator_period(self):
+        "Return the settings name of the hierarchy if there is one"
+        ancestor = self.ancestor()
+        if ancestor:
+            pk = ancestor.pk
+            root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
+            root_ids = root_projects.keys()
+            if pk in root_ids:
+                return root_projects[pk]
+
+    def project_dates(self):
+        """ return the project start and end dates, preferably the actuals. If they are not set, use
+            the planned values and as a last resort look for the default values for a single period
+            project hierarchy.
+        """
+        start_date = (self.date_start_actual if self.date_start_actual
+                      else self.date_start_planned)
+        end_date = (self.date_end_actual if self.date_end_actual
+                    else self.date_end_planned)
+        return start_date, end_date
+
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
