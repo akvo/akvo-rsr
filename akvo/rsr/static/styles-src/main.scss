@@ -204,6 +204,12 @@ button.btn-primary {
     }
 }
 
+// Copy of Bootstrap .hidden Used to hide form elements that _should_ be included in the form data
+.invisible {
+    display: none!important;
+    visibility: hidden!important;
+}
+
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
 .tt-input,

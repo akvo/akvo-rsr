@@ -5,14 +5,14 @@
     <div class="hide-partial {% if period.pk %}hidden{% endif %}">
         <div class="row">
             <div class="col-md-6">
-                {% if period.is_child_period %}
+                {% if period.is_child_period or hierarchy_name %}
                     {% include date_input with obj=period field='period_start' disabled=True %}
                 {% else %}
                     {% include date_input with obj=period field='period_start' %}
                 {% endif %}
             </div>
             <div class="col-md-6">
-                {% if period.is_child_period %}
+                {% if period.is_child_period or hierarchy_name %}
                     {% include date_input with obj=period field='period_end' disabled=True %}
                 {% else %}
                     {% include date_input with obj=period field='period_end' %}

@@ -216,6 +216,10 @@ button.btn-primary {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
+.invisible {
+  display: none !important;
+  visibility: hidden !important; }
+
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input,
 .tt-hint {
