@@ -1547,6 +1547,7 @@ h4.detailedInfo {
         @include noWrapBlockTxt;
     }
     &.orgList {
+        padding-top: 20px;
         ul.projectListUl {
             overflow-y: scroll;
             padding-left: 15px;

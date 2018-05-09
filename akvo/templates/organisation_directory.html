@@ -24,17 +24,6 @@
     </div>
   </section>
 </form>
-
-<div class="container-fluid">
-  <div class="row center-text">
-        <p class="verticalPadding emTxt">
-        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} organisations
-        {% endblocktrans %}
-        </p>
-  </div>
-</div>
-
 <section class="main-list orgList">
   <div class="container-fluid">
         <div class="row">
@@ -80,6 +69,13 @@
 </section>
 </div>
 <div class="container-fluid">
+  <div class="row center-text">
+        <p class="verticalPadding emTxt">
+        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
+            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} organisations
+        {% endblocktrans %}
+        </p>
+  </div>
   <div class="row">
     {% include 'navigation/pagination.html' %}
   </div>
