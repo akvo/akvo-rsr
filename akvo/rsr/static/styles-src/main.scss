@@ -3641,18 +3641,31 @@ main.results-page {
             box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
             min-height: 270px;
             padding: 30px 70px 5px 70px;
+            @media only screen and (max-width: 1449px) {
+                padding: 30px 40px 5px 40px;
+            }
+            @media only screen and (max-width: 800px) {
+                padding: 30px 20px 5px 20px;
+            }   
             .reportDscr {
                 padding: 10px 0;
             }
             .options {
                 text-align: center;
                 button {
-                    &:nth-of-type(2) {
-                        margin-left: 15px !important;
-                    }
+
                     &.reportDown {
                         margin: 15px auto 0;
-                        @include btnOutline($akvoPurple, $akvoPurple);
+                        @include btnOutline($akvoPurple, $akvoPurple);                    
+                        &:nth-of-type(2) {
+                            margin-left: 15px;
+                            @media only screen and (max-width: 1440px) {
+                                margin-left: 0px;
+                            }
+                            @media only screen and (max-width: 800px) {
+                                margin-left: 15px;
+                            }                           
+                        }
                     }
                 }
                 .reportDate {
@@ -3704,6 +3717,12 @@ main.results-page {
                         }
                         &:nth-of-type(2) {
                             margin-left: 15px;
+                            @media only screen and (max-width: 1440px) {
+                                margin-left: 0px;
+                            }
+                            @media only screen and (max-width: 800px) {
+                                margin-left: 15px;
+                            }                           
                         }
                     }
                 }

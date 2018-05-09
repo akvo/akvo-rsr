@@ -158,7 +158,7 @@ class Report extends React.Component {
             </div>
         );
         return (
-            <div className="rsrReport col-sm-6 col-md-4">
+            <div className="rsrReport col-sm-6 col-md-4 col-xs-12">
                 <div className="reportContainer">
                     <div className="">
                         <h3 className="">{report.title}</h3>
