@@ -447,3 +447,11 @@ def fix_country_codes(data):
         fixed_data.append(country_json)
 
     return fixed_data
+
+
+def single_period_dates(name):
+    try:
+        config = settings.SINGLE_PERIOD_INDICATORS[name]
+        return config['start_date'], config['end_date']
+    except KeyError:
+        return None, None
