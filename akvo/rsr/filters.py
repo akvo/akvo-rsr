@@ -56,14 +56,13 @@ def walk(node):
         return (walk(node.pop()) + walk(node)) if node else []
 
 
-def get_m49_filter(value):
+def get_m49_filter(value, use_recipient_country=True):
     """Returns the location filter object based on value."""
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
     countries_lower = [c.lower() for c in countries]
-    filter_ = (
-        Q(recipient_countries__country__in=countries) |
-        Q(locations__country__iso_code__in=countries_lower)
-    )
+    filter_ = Q(locations__country__iso_code__in=countries_lower)
+    if use_recipient_country:
+        filter_ = (Q(recipient_countries__country__in=countries) | filter_)
     return filter_
 
 

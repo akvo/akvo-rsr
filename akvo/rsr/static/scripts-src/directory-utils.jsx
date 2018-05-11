@@ -178,10 +178,11 @@ var ProjectDirectory = React.createClass({
     // FIXME: Need to have a better display when things are loading....
     render: function() {
         var project_count_text =
-            this.props.project_count != undefined
-                ? this.props.project_count + " " + this.props.elements_text
-                : this.props.i18n.loading_text;
-        var filtered = this.props.filtered ? " filtered" : "";
+                this.props.project_count != undefined
+                    ? this.props.project_count + " " + this.props.elements_text
+                    : this.props.i18n.loading_text,
+            filtered = this.props.filtered ? " filtered" : "",
+            listMsg = "The most recent " + this.props.type.toLowerCase() + " added to RSR";
 
         return (
             <section className="main-list projects">
@@ -209,9 +210,7 @@ var ProjectDirectory = React.createClass({
                         )}
 
                         <div className={"col-sm-7 projectListUlcontain " + filtered} id="projList">
-                            <p className="text-center listMsg">
-                                The most recent projects added to RSR
-                            </p>
+                            <p className="text-center listMsg">{listMsg}</p>
                             <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
                                     if (this.props.type == "projects") {
