@@ -3405,7 +3405,7 @@ function setDatepickers() {
             inputNode.setAttribute("name", datepickerId);
             // Don't set saved-value for new periods. This way the period is instantiated as part of
             // saving the indicator
-            if (!newPeriod) {
+            if (newPeriod === 'false') {
                 inputNode.setAttribute("saved-value", inputValue);
             }
             if (disableInput === 'true') {
@@ -3465,7 +3465,10 @@ function checkUnsavedChangesForm(form) {
 
     var inputElements = form.querySelectorAll(INPUT_ELEMENTS.join());
     for (var j = 0; j < inputElements.length; j++) {
-        if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
+        if (inputElements[j].type !== 'checkbox' &&
+                // Don't include masquerade fields in form-changed checking
+                !inputElements[j].classList.contains('masquerade-field') &&
+                fieldChanged(inputElements[j])) {
             return true;
         }
     }
