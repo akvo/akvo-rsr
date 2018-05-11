@@ -122,9 +122,22 @@ var Update = React.createClass({
                     <h1>
                         <a href={project.url}>{project.title}</a>
                     </h1>
-                    <p className="projectOrg">
-                        <a href={project.organisation_url}>{project.organisation}</a>
-                    </p>
+                    <div>
+                        <a href="{project.project_url}" class="projectTitle">
+                            <span class="small">Project: </span> {project.project}
+                        </a>
+                    </div>
+                    <div>
+                        <span class="small">Created by: </span>
+                        <span class="userFullName">{project.user_fullname}</span>
+                    </div>
+                    <div>
+                        <span class="small">Org: </span>
+                        <a href="{project.organisation_url}" class="orgName">
+                            {project.organisation}
+                        </a>
+                    </div>
+                    <div class="upDateTime">{project.event_date}</div>
                 </div>
             </li>
         );
@@ -300,9 +313,16 @@ var TextSearch = React.createClass({
             });
         return [];
     },
+    getUrl: function(entry) {
+        if (entry.project) {
+            return "../project/" + entry.project + "/update/" + entry.id;
+        } else {
+            return "../project/" + entry.id;
+        }
+    },
     onChange: function(projects) {
         var project = projects[0],
-            url = "../project/" + project.id;
+            url = this.getUrl(project);
 
         window.location.href = url;
     },

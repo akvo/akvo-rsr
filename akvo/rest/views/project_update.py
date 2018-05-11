@@ -5,16 +5,20 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import ProjectUpdate
-
-from ..serializers import ProjectUpdateSerializer, ProjectUpdateExtraSerializer
-from ..viewsets import PublicProjectViewSet
+from re import match
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
-from re import match
+
+from akvo.rsr.models import Project, ProjectUpdate
+from akvo.rest.serializers import (
+    ProjectUpdateSerializer, ProjectUpdateDirectorySerializer, ProjectUpdateExtraSerializer
+)
+from akvo.rest.views.utils import get_qs_elements_for_page
+from akvo.rest.viewsets import PublicProjectViewSet
+from akvo.rsr.views.utils import apply_keywords, org_projects
 
 
 class ProjectUpdateViewSet(PublicProjectViewSet):
@@ -149,3 +153,50 @@ def upload_indicator_update_photo(request, pk=None):
         update.save(update_fields=['photo'])
 
     return Response(ProjectUpdateExtraSerializer(update).data)
+
+
+@api_view(['GET'])
+def update_directory(request):
+    """REST view for the project directory."""
+
+    # Fetch updates based on whether we are on Akvo site or RSR main site
+    page = request.rsr_page
+    all_updates = _all_updates() if not page else _page_updates(page)
+
+    display_updates = get_qs_elements_for_page(all_updates, request)
+    count = all_updates.count()
+
+    display_updates = display_updates.select_related(
+        'project',
+        'project__primary_location',
+        'project__primary_organisation',
+        'user',
+    ).prefetch_related(
+        'locations',
+    )
+
+    response = {
+        'project_count': count,
+        'projects': ProjectUpdateDirectorySerializer(display_updates, many=True).data,
+        'organisation': [],
+        'location': [],
+        'sector': [],
+    }
+    return Response(response)
+
+
+def _public_projects():
+    """Return all public projects."""
+    return Project.objects.public().published().select_related('project_updates')
+
+
+def _all_updates():
+    """Return all updates on public projects."""
+    return _public_projects().all_updates()
+
+
+def _page_updates(page):
+    """Dig out the list or project updates to use."""
+    projects = org_projects(page.organisation) if page.partner_projects else _public_projects()
+    keyword_projects = apply_keywords(page, projects)
+    return keyword_projects.all_updates()

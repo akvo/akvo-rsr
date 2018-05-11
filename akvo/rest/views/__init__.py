@@ -78,7 +78,8 @@ from .project_location import (ProjectLocationViewSet,
                                MapProjectLocationViewSet)
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,
-                             upload_indicator_update_photo)
+                             upload_indicator_update_photo,
+                             update_directory)
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
@@ -216,6 +217,7 @@ __all__ = [
     'typeahead_impact_projects',
     'typeahead_projectupdate',
     'update_details',
+    'update_directory',
     'upload_indicator_update_photo',
     'UserViewSet',
 ]

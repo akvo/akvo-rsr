@@ -122,9 +122,22 @@ var Update = React.createClass({displayName: "Update",
                     React.createElement("h1", null, 
                         React.createElement("a", {href: project.url}, project.title)
                     ), 
-                    React.createElement("p", {className: "projectOrg"}, 
-                        React.createElement("a", {href: project.organisation_url}, project.organisation)
-                    )
+                    React.createElement("div", null, 
+                        React.createElement("a", {href: "{project.project_url}", class: "projectTitle"}, 
+                            React.createElement("span", {class: "small"}, "Project: "), " ", project.project
+                        )
+                    ), 
+                    React.createElement("div", null, 
+                        React.createElement("span", {class: "small"}, "Created by: "), 
+                        React.createElement("span", {class: "userFullName"}, project.user_fullname)
+                    ), 
+                    React.createElement("div", null, 
+                        React.createElement("span", {class: "small"}, "Org: "), 
+                        React.createElement("a", {href: "{project.organisation_url}", class: "orgName"}, 
+                            project.organisation
+                        )
+                    ), 
+                    React.createElement("div", {class: "upDateTime"}, project.event_date)
                 )
             )
         );
@@ -300,9 +313,16 @@ var TextSearch = React.createClass({displayName: "TextSearch",
             });
         return [];
     },
+    getUrl: function(entry) {
+        if (entry.project) {
+            return "../project/" + entry.project + "/update/" + entry.id;
+        } else {
+            return "../project/" + entry.id;
+        }
+    },
     onChange: function(projects) {
         var project = projects[0],
-            url = "../project/" + project.id;
+            url = this.getUrl(project);
 
         window.location.href = url;
     },
