@@ -1638,8 +1638,8 @@ h4.detailedInfo {
                     padding: 5px;
                     @include transition(all 0.2s ease-in);
                     &.highlightProject {
-                        box-shadow: 0 0 12px rgba(77, 90, 130, 1) !important;
-                        background: rgba(77, 90, 130, 0.3) !important;
+                        box-shadow: 0 0 12px rgba(77, 90, 130, 0) !important;
+                        background: rgba(77, 90, 130, 0.15) !important;
                         transition: all 0.4s linear;
                     }
                     &.updateAsset {

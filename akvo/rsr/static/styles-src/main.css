@@ -1394,8 +1394,8 @@ h4.detailedInfo {
         -webkit-transition: all 0.2s ease-in;
         transition: all 0.2s ease-in; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.highlightProject {
-          box-shadow: 0 0 12px #4d5a82 !important;
-          background: rgba(77, 90, 130, 0.3) !important;
+          box-shadow: 0 0 12px rgba(77, 90, 130, 0) !important;
+          background: rgba(77, 90, 130, 0.15) !important;
           transition: all 0.4s linear; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 {
           margin-top: 5px; }
