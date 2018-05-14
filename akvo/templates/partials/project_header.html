@@ -8,12 +8,6 @@
                     <a href="{% url 'project-main' project.pk %}">{{project.title}}</a>
                     {% has_perm 'rsr.change_project' user project as can_edit_project %}
                 </h1>                    
-                {% if can_edit_project %}
-                  <a title="Edit Project" alt="Edit Project"
-                     href="{% url 'project_editor' project.pk %}">
-                     Edit project
-                  </a>
-                {% endif %}
                 <p>{{project.subtitle}}</p>
                 <div class="projectLocation">
                         <p class="small"><span class="glyphicon glyphicon-globe"></span>
