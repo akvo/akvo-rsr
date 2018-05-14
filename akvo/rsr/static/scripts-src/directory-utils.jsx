@@ -111,7 +111,8 @@ var Update = React.createClass({
             <li
                 id={element_id}
                 onMouseEnter={this.highlightMarker}
-                onMouseLeave={this.unHighlightMarker} className="updateAsset"
+                onMouseLeave={this.unHighlightMarker}
+                className="updateAsset"
             >
                 <div className="thumbImg">
                     <a href={project.url}>
@@ -359,10 +360,12 @@ var TextSearch = React.createClass({
         return [];
     },
     getUrl: function(entry) {
-        if (entry.project) {
-            return "../project/" + entry.project + "/update/" + entry.id;
-        } else {
+        if (this.props.type == "projects") {
             return "../project/" + entry.id;
+        } else if (this.props.type == "updates") {
+            return "../project/" + entry.project + "/update/" + entry.id;
+        } else if (this.props.type == "organisations") {
+            return "../organisation/" + entry.id;
         }
     },
     onChange: function(projects) {
