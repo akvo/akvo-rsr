@@ -1635,13 +1635,12 @@ h4.detailedInfo {
                     -moz-transition: all 2s linear;
                     -o-transition: all 2s linear;
                     transition: all 2s linear;
-                    border: thin solid rgba($rsrBlue, 0.2);
                     padding: 5px;
                     @include transition(all 0.2s ease-in);
                     &.highlightProject {
-                        box-shadow: 0 0 12px #64618c !important;
-                        background: rgba(100, 97, 140, 0.2) !important;
-                        transition: all 4s linear;
+                        box-shadow: 0 0 12px $openaidYellow !important;
+                        background: rgba($openaidYellow, 0.2) !important;
+                        transition: all 0.4s linear;
                     }
                     &.updateAsset {
                         h1 {
@@ -1661,6 +1660,9 @@ h4.detailedInfo {
                         margin-top: 5px;
                         a {
                             color: $rsrBlue;
+                            font-weight: 500;
+                            letter-spacing: 0.05em;
+                            font-size: 1.1em;
                             &:hover {
                                 color: $anchorLinkHover;
                             }

@@ -1388,16 +1388,15 @@ h4.detailedInfo {
         -moz-transition: all 2s linear;
         -o-transition: all 2s linear;
         transition: all 2s linear;
-        border: thin solid rgba(44, 42, 116, 0.2);
         padding: 5px;
         -moz-transition: all 0.2s ease-in;
         -o-transition: all 0.2s ease-in;
         -webkit-transition: all 0.2s ease-in;
         transition: all 0.2s ease-in; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.highlightProject {
-          box-shadow: 0 0 12px #64618c !important;
-          background: rgba(100, 97, 140, 0.2) !important;
-          transition: all 4s linear; }
+          box-shadow: 0 0 12px #ffd200 !important;
+          background: rgba(255, 210, 0, 0.2) !important;
+          transition: all 0.4s linear; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 {
           margin-top: 5px; }
           .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 a {
@@ -1409,7 +1408,10 @@ h4.detailedInfo {
         .main-list.projects .projectListUlcontain ul.projectListUl li h1 {
           margin-top: 5px; }
           .main-list.projects .projectListUlcontain ul.projectListUl li h1 a {
-            color: #2c2a74; }
+            color: #2c2a74;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            font-size: 1.1em; }
             .main-list.projects .projectListUlcontain ul.projectListUl li h1 a:hover {
               color: #ca8142; }
         .main-list.projects .projectListUlcontain ul.projectListUl li .projectSubT {
