@@ -144,19 +144,49 @@ var Update = React.createClass({
     }
 });
 
+var Organisation = React.createClass({
+    render: function() {
+        var organisation = this.props.organisation,
+            element_id = "organisation-" + organisation.id;
+        return (
+            <li id={element_id}>
+                <div>
+                    <a href={organisation.url}>
+                        <img src={organisation.image} alt={organisation.title} />
+                    </a>
+                </div>
+                <div>
+                    <h1>
+                        <a href={organisation.url}>{organisation.name}</a>
+                    </h1>
+                </div>
+                <div>
+                    <a href="{organisation.organisation_url}" class="organisationTitle">
+                        <span class="small">Organisation: </span> {organisation.organisation}
+                    </a>
+                </div>
+            </li>
+        );
+    }
+});
+
 var ProjectDirectory = React.createClass({
     componentDidUpdate: function(prevProps) {
         // If projects changed
         if (this.props.projects != prevProps.projects) {
             // Update map
-            window.render_map(document.querySelector("#akvo_map_projects"), this.getMapConfig());
+            if (!this.props.hide_map) {
+                window.render_map(
+                    document.querySelector("#akvo_map_projects"),
+                    this.getMapConfig()
+                );
+            }
             // Scroll the project list container to the top
             ReactDOM.findDOMNode(this).querySelector("#projList").scrollTop = 0;
         }
     },
     getLocations: function() {
         var projects = this.props.projects;
-        console.log(projects);
         return projects.map(function(project) {
             return {
                 latitude: project.latitude,
@@ -182,6 +212,7 @@ var ProjectDirectory = React.createClass({
                     ? this.props.project_count + " " + this.props.elements_text
                     : this.props.i18n.loading_text,
             filtered = this.props.filtered ? " filtered" : "",
+            listWidth = this.props.hide_map ? "col-sm-12" : "col-sm-7",
             listMsg = "The most recent " + this.props.type.toLowerCase() + " added to RSR";
 
         return (
@@ -209,7 +240,10 @@ var ProjectDirectory = React.createClass({
                             undefined
                         )}
 
-                        <div className={"col-sm-7 projectListUlcontain " + filtered} id="projList">
+                        <div
+                            className={listWidth + " projectListUlcontain " + filtered}
+                            id="projList"
+                        >
                             <p className="text-center listMsg">{listMsg}</p>
                             <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
@@ -227,6 +261,14 @@ var ProjectDirectory = React.createClass({
                                                 project={project}
                                                 i18n={this.props.i18n}
                                                 key={"project" + project.id}
+                                            />
+                                        );
+                                    } else if (this.props.type == "organisations") {
+                                        return (
+                                            <Organisation
+                                                organisation={project}
+                                                i18n={this.props.i18n}
+                                                key={"organisation" + project.id}
                                             />
                                         );
                                     }
@@ -248,11 +290,15 @@ var ProjectDirectory = React.createClass({
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-5">
-                            <section id="map" className="touch-navbar">
-                                <div id="akvo_map_projects" className="rsr_map" />
-                            </section>
-                        </div>
+                        {this.props.hide_map ? (
+                            undefined
+                        ) : (
+                            <div className="col-sm-5">
+                                <section id="map" className="touch-navbar">
+                                    <div id="akvo_map_projects" className="rsr_map" />
+                                </section>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -332,7 +378,16 @@ var TextSearch = React.createClass({
         this.props.onChange("title_or_subtitle", this.state.value);
     },
     render: function() {
-        var Typeahead = ReactBootstrapTypeahead.Typeahead;
+        var Typeahead = ReactBootstrapTypeahead.Typeahead,
+            filterBy;
+
+        if (this.props.type == "projects") {
+            filterBy = ["title", "subtitle"];
+        } else if (this.props.type == "updates") {
+            filterBy = ["title"];
+        } else if (this.props.type == "organisations") {
+            filterBy = ["name", "long_name"];
+        }
 
         return (
             <div className="form-inline col-lg-4 col-md-6" role="form">
@@ -343,8 +398,10 @@ var TextSearch = React.createClass({
                             options={this.state.options}
                             onChange={this.onChange}
                             onInputChange={this.onInputChange}
-                            filterBy={["title", "subtitle"]}
-                            labelKey="title"
+                            filterBy={filterBy}
+                            labelKey={function(x) {
+                                return x.title || x.name;
+                            }}
                             highlightOnlyResult={true}
                             placeholder={this.props.text_placeholder}
                             disabled={this.props.disabled}
@@ -407,6 +464,7 @@ var SearchBar = React.createClass({
             <section id="search-filter" className="container-fluid">
                 <div id="search" className="row searchBar">
                     <TextSearch
+                        type={this.props.type}
                         typeaheadUrl={this.props.typeaheadUrl}
                         text={this.props.selected.title_or_subtitle}
                         i18n={this.props.i18n}
@@ -471,8 +529,10 @@ var App = React.createClass({
                     options={this.state.options}
                     selected={this.state.selected}
                     text_placeholder={elements_text}
+                    type={this.props.type}
                 />
                 <ProjectDirectory
+                    hide_map={this.props.hide_map}
                     type={this.props.type}
                     onChange={this.onFilterChange}
                     limitOptions={this.state.options.limit}

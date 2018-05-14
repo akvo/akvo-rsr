@@ -40,7 +40,7 @@ from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
 from .narrative_report import NarrativeReportSerializer
-from .organisation import OrganisationSerializer, OrganisationBasicSerializer
+from .organisation import OrganisationSerializer, OrganisationBasicSerializer, OrganisationDirectorySerializer
 from .organisation_budget import (OrganisationCountryBudgetSerializer,
                                   OrganisationCountryBudgetLineSerializer,
                                   OrganisationExpenseLineSerializer,

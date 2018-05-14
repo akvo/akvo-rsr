@@ -13,15 +13,15 @@ document.addEventListener("DOMContentLoaded", function() {
         typeahead_url = "/rest/v1/typeaheads/organisations?format=json";
 
     ReactDOM.render(
-        React.createElement(DirectoryApp, {
-            hide_map: true, 
-            type: "organisations", 
-            dropdown_filters: dropdown_filters, 
-            hidden_or_other: hidden_or_other, 
-            options_url: url, 
-            i18n: i18n, 
-            typeahead_url: typeahead_url}
-        ),
+        <DirectoryApp
+            hide_map={true}
+            type={"organisations"}
+            dropdown_filters={dropdown_filters}
+            hidden_or_other={hidden_or_other}
+            options_url={url}
+            i18n={i18n}
+            typeahead_url={typeahead_url}
+        />,
         document.getElementById("organisation-directory")
     );
 });

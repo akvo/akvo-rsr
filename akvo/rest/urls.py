@@ -196,6 +196,9 @@ urlpatterns += patterns(
     url(r'v1/update_directory$',
         views.update_directory,
         name='update_directory'),
+    url(r'v1/organisation_directory$',
+        views.organisation_directory,
+        name='organisation_directory'),
 )
 
 # Typeahead

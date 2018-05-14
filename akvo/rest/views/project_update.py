@@ -163,13 +163,13 @@ def upload_indicator_update_photo(request, pk=None):
 
 @api_view(['GET'])
 def update_directory(request):
-    """REST view for the project directory."""
+    """REST view for the update directory."""
 
     # Fetch updates based on whether we are on Akvo site or RSR main site
     page = request.rsr_page
     all_updates = _all_updates() if not page else _page_updates(page)
 
-    # Filter projects based on query parameters
+    # Filter updates based on query parameters
     filter_, text_filter = _create_filters_query(request)
     updates = all_updates.filter(filter_).distinct() if filter_ is not None else all_updates
 
@@ -177,8 +177,8 @@ def update_directory(request):
     if updates_text_filtered.exists():
         updates = updates_text_filtered
 
-    # Get the relevant data for typeaheads based on filtered projects (minus
-    # text filtering, if no projects were found)
+    # Get the relevant data for typeaheads based on filtered updates (minus
+    # text filtering, if no updates were found)
     locations = [
         {'id': choice[0], 'name': choice[1]}
         for choice in location_choices(updates)

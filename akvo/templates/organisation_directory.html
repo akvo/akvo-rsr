@@ -3,111 +3,33 @@
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 {% block maincontent %}
 
-<form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
-  <section id="search-filter">
-    <div class="container-fluid">
-      <div id="search" class="verticalPadding row searchBar text-center">
-        <p>{% trans "Refine the organisation list below by searching by name, organisation or sector" %}</p>
-        <div class="form-inline" role="form">
-          <div class="form-group">
-            <div class="input-group">
-              {% bootstrap_field filter.form.name field_class='search-query' show_label=False %}
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
-    </div>
-  </section>
-</form>
-<section class="main-list orgList">
-  <div class="container-fluid">
-        <div class="row">
-          <div class="col-sm-12">
-            <ul class="projectListUl">
-              {% for o in page %}
-                <li>
-                  <div>
-                    <a href="{% url 'organisation-main' o.id %}">
-                      {% img o 165 165 o.name %}
-                    </a>
-                  </div>
-                  <div>
-                    <h1><a href="{% url 'organisation-main' o.id %}">{{o.name}}</a></h1>
-                    {% if o.iati_org_id %}<div class="orgIatiId">{{o.iati_org_id}}</div>{% endif %}
-                    <div class="orgType">{{o.iati_org_type}}</div>
-                    <div class="projectLocation hidden"><i class="fa fa-map-marker"></i>
-                      {% for country in o.organisation_countries %}
-                          {{ country }}{% if not forloop.last %}, {% endif %}
-                      {% empty %}
-                          {% trans 'No countries specified' %}
-                      {% endfor %}
-                    </div>
-                  </div>
-                  <div class="hidden-xs hidden-sm additionalInfo">
-                    <div class=""><span>{{o.published_projects.count}} {% trans "projects" %}</span></div>
-                  </div>
-                  {% if o.facebook or o.twitter or o.linkedin %}
-                    <div class="hidden-xs hidden-sm socialInfo">
-                      <h4 class="detailedInfo">{% trans "Social Media" %}</h4>
-                      <p>
-                      {% if o.facebook %}<i class="fa fa-facebook-square"></i> <a href="{{o.facebook}}">Facebook</a><br>{% endif %}
-                      {% if o.twitter %}<i class="fa fa-twitter-square"></i> <a href="{{o.twitter}}">Twitter</a><br>{% endif %}
-                      {% if o.linkedin %}<i class="fa fa-linkedin-square"></i> <a href="{{o.linkedin}}">LinkedIn</a>{% endif %}
-                      </p>
-                    </div>
-                  {% endif %}
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-    </div>
-</section>
-</div>
-<div class="container-fluid">
-  <div class="row center-text">
-        <p class="verticalPadding emTxt">
-        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} organisations
-        {% endblocktrans %}
-        </p>
-  </div>
-  <div class="row">
-    {% include 'navigation/pagination.html' %}
-  </div>
-</div>
+    <div id="organisation-directory"></div>
+
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
-
-    {# Twitter Typeahead #}
-    <script id="typeahead"
-            src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.js"
-            integrity="sha256-9PktWqeso0y5/rAR0iDepG9qzPITS+ccSjYHU9vMCf4="
-            crossorigin="anonymous"></script>
-
     <script src="//maps.google.com/maps/api/js"></script>
-    <script type="application/json" id="akvo-rsr-typeahead-thumbs">
-        {
-            "numberOfOrgs": {{ orgs_count }}
-        }
-    </script>
-
-    <script type="application/javascript">
-        AKVO_RSR.typeahead = {};
-        AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
-    </script>
-
     {# Translation strings #}
     <script type="application/json" id="organisations-text">
-        {
-            "organisations_text": "{% trans 'Organisations'|escapejs %}"
-        }
+     {
+         "organisations_text": "{% trans 'Organisations'|escapejs %}",
+         "search_text": "{% trans 'Search'|escapejs %}",
+         "loading_text": "{% trans 'Loading...'|escapejs %}",
+         "locations_text": "{% trans 'Locations'|escapejs %}",
+         "all_text": "{% trans 'All'|escapejs %}",
+         "keyword_text": "{% trans 'keyword'|escapejs %}",
+         "location_text": "{% trans 'location'|escapejs %}",
+         "status_text": "{% trans 'status'|escapejs %}",
+         "organisation_text": "{% trans 'organisation'|escapejs %}",
+         "sector_text": "{% trans 'sector'|escapejs %}",
+         "reset_filters_text": "{% trans 'Reset filters'|escapejs %}",
+         "no_location_text": "{% trans 'No location specified'|escapejs %}",
+         "page_limit_text": "{% trans '# of projects'|escapejs %}"
+     }
     </script>
+
+    {% javascript 'directory_utils' %}
+    {% javascript 'organisation_directory' %}
 
 {% endblock js %}

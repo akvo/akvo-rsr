@@ -10,16 +10,11 @@
 {% block js %}
     {{ block.super }}
 
-    {# Twitter Typeahead #}
-    <script id="typeahead"
-            src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.js"
-            integrity="sha256-9PktWqeso0y5/rAR0iDepG9qzPITS+ccSjYHU9vMCf4="
-            crossorigin="anonymous"></script>
     <script src="//maps.google.com/maps/api/js"></script>
     {# Translation strings #}
     <script type="application/json" id="updates-text">
      {
-         "updates_text": "{% trans 'Updates'|escapejs %}",
+        "updates_text": "{% trans 'Updates'|escapejs %}",
         "search_text": "{% trans 'Search'|escapejs %}",
         "loading_text": "{% trans 'Loading...'|escapejs %}",
         "organisations_text": "{% trans 'Organisations'|escapejs %}",
