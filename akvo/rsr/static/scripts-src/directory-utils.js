@@ -111,7 +111,7 @@ var Update = React.createClass({displayName: "Update",
             React.createElement("li", {
                 id: element_id, 
                 onMouseEnter: this.highlightMarker, 
-                onMouseLeave: this.unHighlightMarker
+                onMouseLeave: this.unHighlightMarker, className: "updateAsset"
             }, 
                 React.createElement("div", {className: "thumbImg"}, 
                     React.createElement("a", {href: project.url}, 
@@ -390,7 +390,7 @@ var TextSearch = React.createClass({displayName: "TextSearch",
         }
 
         return (
-            React.createElement("div", {className: "form-inline col-lg-4 col-md-6", role: "form"}, 
+            React.createElement("div", {className: "form-inline col-lg-4 col-md-4", role: "form"}, 
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement("div", {className: "input-group"}, 
                         React.createElement(Typeahead, {
@@ -472,7 +472,7 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                         projects: this.props.projects, 
                         onChange: this.props.onChange}
                     ), 
-                    React.createElement("div", {id: "filter-wrapper"}, 
+                    React.createElement("div", {id: "filter-wrapper col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2"}, 
                         React.createElement("div", null, 
                             this.props.filters.map(create_filter, this), 
                             reset_button

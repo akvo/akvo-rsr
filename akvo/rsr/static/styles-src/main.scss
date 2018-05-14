@@ -1483,6 +1483,48 @@ h4.detailedInfo {
     }
 }
 
+#organisation-directory {
+    .main-list {
+        padding-top: 20px;
+        ul.projectListUl {
+            overflow-y: scroll;
+            padding-left: 15px;
+            li {
+                margin-bottom: 5px;
+                list-style-type: none;
+                padding: 0 0 15px 0;
+                display: inline;
+                width: 24.5%;
+                float: left;
+                min-height: 265px;
+                @include border-radius(3px);
+                background: white;
+                margin-right: 0.66%;
+                > div:first-child {
+                    min-height: 130px;
+                    a {
+                        img {}
+                    }
+                }
+                &:nth-child(4n+4) {
+                    margin-right: 0;
+                }
+                h1 {
+                    margin-top: 5px;
+                    a {
+                        color: $rsrBlue;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
+                border: thin solid rgba($rsrBlue, 0);
+                @include transition(all 0.2s ease-in);
+            }
+        }
+    }
+}
+
 .main-list {
     li {
         img {
@@ -1545,45 +1587,6 @@ h4.detailedInfo {
     }
     .excerpt {
         @include noWrapBlockTxt;
-    }
-    &.orgList {
-        padding-top: 20px;
-        ul.projectListUl {
-            overflow-y: scroll;
-            padding-left: 15px;
-            li {
-                margin-bottom: 5px;
-                list-style-type: none;
-                padding: 0 0 15px 0;
-                display: inline;
-                width: 24.5%;
-                float: left;
-                min-height: 265px;
-                @include border-radius(3px);
-                background: white;
-                margin-right: 0.66%;
-                > div:first-child {
-                    min-height: 130px;
-                    a {
-                        img {}
-                    }
-                }
-                &:nth-child(4n+4) {
-                    margin-right: 0;
-                }
-                h1 {
-                    margin-top: 5px;
-                    a {
-                        color: $rsrBlue;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                border: thin solid rgba($rsrBlue, 0);
-                @include transition(all 0.2s ease-in);
-            }
-        }
     }
     &.projects {
         margin-top: 10px;
@@ -3647,17 +3650,16 @@ main.results-page {
             }
             @media only screen and (max-width: 800px) {
                 padding: 30px 20px 5px 20px;
-            }   
+            }
             .reportDscr {
                 padding: 10px 0;
             }
             .options {
                 text-align: center;
                 button {
-
                     &.reportDown {
                         margin: 15px auto 0;
-                        @include btnOutline($akvoPurple, $akvoPurple);                    
+                        @include btnOutline($akvoPurple, $akvoPurple);
                         &:nth-of-type(2) {
                             margin-left: 15px;
                             @media only screen and (max-width: 1440px) {
@@ -3665,7 +3667,7 @@ main.results-page {
                             }
                             @media only screen and (max-width: 800px) {
                                 margin-left: 15px;
-                            }                           
+                            }
                         }
                     }
                 }
@@ -3723,7 +3725,7 @@ main.results-page {
                             }
                             @media only screen and (max-width: 800px) {
                                 margin-left: 15px;
-                            }                           
+                            }
                         }
                     }
                 }

@@ -111,7 +111,7 @@ var Update = React.createClass({
             <li
                 id={element_id}
                 onMouseEnter={this.highlightMarker}
-                onMouseLeave={this.unHighlightMarker}
+                onMouseLeave={this.unHighlightMarker} className="updateAsset"
             >
                 <div className="thumbImg">
                     <a href={project.url}>
@@ -390,7 +390,7 @@ var TextSearch = React.createClass({
         }
 
         return (
-            <div className="form-inline col-lg-4 col-md-6" role="form">
+            <div className="form-inline col-lg-4 col-md-4" role="form">
                 <div className="form-group">
                     <div className="input-group">
                         <Typeahead
@@ -472,7 +472,7 @@ var SearchBar = React.createClass({
                         projects={this.props.projects}
                         onChange={this.props.onChange}
                     />
-                    <div id="filter-wrapper">
+                    <div id="filter-wrapper col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2">
                         <div>
                             {this.props.filters.map(create_filter, this)}
                             {reset_button}
