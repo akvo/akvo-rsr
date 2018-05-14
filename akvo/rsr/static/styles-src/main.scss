@@ -1350,25 +1350,6 @@ h4.detailedInfo {
     }
 }
 
-.advanced-filter {
-    display: inline-block;
-    text-align: right;
-    label {
-        margin-top: 5px !important;
-    }
-    .bootstrap-typeahead-input {
-        margin-right: 1px;
-    }
-    .bootstrap-typeahead-input-main {
-        margin-right: 20px;
-    }
-    .caret {
-        position: relative;
-        top: -26px;
-        left: -10px;
-    }
-}
-
 #sidebar-wrapper {
     display: none;
 }
@@ -1471,6 +1452,51 @@ h4.detailedInfo {
     div#filter {
         background: darken(rgba(#383334, 1), 0%);
         text-align: center;
+    }
+}
+
+#organisation-directory {
+    .searchBar {
+        max-width: 60%;
+        margin: 10px auto 0 auto;
+        position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
+        p {
+            @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top: -23px;
+            display: inline-block;
+        }
+    }
+    .advanced-filter {
+        display: inline-block;
+        text-align: right;
+        margin-left: 20%;
+        float: right;
+    }
+}
+
+.advanced-filter {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    label {
+        margin-top: 5px !important;
+    }
+    .bootstrap-typeahead-input {
+        margin-right: 1px;
+    }
+    .bootstrap-typeahead-input-main {
+        margin-right: 20px;
+    }
+    .caret {
+        position: relative;
+        top: -26px;
+        left: -10px;
     }
 }
 

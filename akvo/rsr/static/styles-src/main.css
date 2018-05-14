@@ -1149,20 +1149,6 @@ h4.detailedInfo {
     background: rgba(202, 129, 66, 0);
     border: 1px solid #ca8142; }
 
-.advanced-filter {
-  display: inline-block;
-  text-align: right; }
-  .advanced-filter label {
-    margin-top: 5px !important; }
-  .advanced-filter .bootstrap-typeahead-input {
-    margin-right: 1px; }
-  .advanced-filter .bootstrap-typeahead-input-main {
-    margin-right: 20px; }
-  .advanced-filter .caret {
-    position: relative;
-    top: -26px;
-    left: -10px; }
-
 #sidebar-wrapper {
   display: none; }
 
@@ -1240,6 +1226,42 @@ h4.detailedInfo {
   #search-filter div#filter {
     background: #383334;
     text-align: center; }
+
+#organisation-directory .searchBar {
+  max-width: 60%;
+  margin: 10px auto 0 auto;
+  position: relative; }
+  #organisation-directory .searchBar.updateSearch {
+    margin: 0px auto 0 auto; }
+  #organisation-directory .searchBar p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+  #organisation-directory .searchBar .pgTitle {
+    position: absolute;
+    top: -23px;
+    display: inline-block; }
+
+#organisation-directory .advanced-filter {
+  display: inline-block;
+  text-align: right;
+  margin-left: 20%;
+  float: right; }
+
+.advanced-filter {
+  display: inline-block;
+  text-align: right;
+  float: right; }
+  .advanced-filter label {
+    margin-top: 5px !important; }
+  .advanced-filter .bootstrap-typeahead-input {
+    margin-right: 1px; }
+  .advanced-filter .bootstrap-typeahead-input-main {
+    margin-right: 20px; }
+  .advanced-filter .caret {
+    position: relative;
+    top: -26px;
+    left: -10px; }
 
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
