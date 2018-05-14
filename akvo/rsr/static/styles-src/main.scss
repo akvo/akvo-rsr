@@ -1624,7 +1624,6 @@ h4.detailedInfo {
                 li {
                     margin-bottom: 5px;
                     list-style-type: none;
-                    padding: 0 0 15px 0;
                     display: inline;
                     width: 49%;
                     float: left;
@@ -1636,6 +1635,9 @@ h4.detailedInfo {
                     -moz-transition: all 2s linear;
                     -o-transition: all 2s linear;
                     transition: all 2s linear;
+                    border: thin solid rgba($rsrBlue, 0.2);
+                    padding: 5px;
+                    @include transition(all 0.2s ease-in);
                     &.highlightProject {
                         box-shadow: 0 0 12px #64618c !important;
                         background: rgba(100, 97, 140, 0.2) !important;
@@ -1664,14 +1666,8 @@ h4.detailedInfo {
                             }
                         }
                     }
-                    border: thin solid rgba($rsrBlue, 0);
-                    @include transition(all 0.2s ease-in);
                     .projectSubT {
                         margin-bottom: 0;
-                    }
-                    &:nth-child(2n+1) {
-                        background: darken(rgba($rsrBlue, 0), 0%);
-                        border: thin solid rgba($rsrBlue, 0);
                     }
                     .projectLocation {
                         color: rgba($akvoBlack, 0.5);
@@ -3647,17 +3643,16 @@ main.results-page {
             }
             @media only screen and (max-width: 800px) {
                 padding: 30px 20px 5px 20px;
-            }   
+            }
             .reportDscr {
                 padding: 10px 0;
             }
             .options {
                 text-align: center;
                 button {
-
                     &.reportDown {
                         margin: 15px auto 0;
-                        @include btnOutline($akvoPurple, $akvoPurple);                    
+                        @include btnOutline($akvoPurple, $akvoPurple);
                         &:nth-of-type(2) {
                             margin-left: 15px;
                             @media only screen and (max-width: 1440px) {
@@ -3665,7 +3660,7 @@ main.results-page {
                             }
                             @media only screen and (max-width: 800px) {
                                 margin-left: 15px;
-                            }                           
+                            }
                         }
                     }
                 }
@@ -3723,7 +3718,7 @@ main.results-page {
                             }
                             @media only screen and (max-width: 800px) {
                                 margin-left: 15px;
-                            }                           
+                            }
                         }
                     }
                 }

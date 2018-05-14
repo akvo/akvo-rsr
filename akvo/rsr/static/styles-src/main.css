@@ -1374,7 +1374,6 @@ h4.detailedInfo {
       .main-list.projects .projectListUlcontain ul.projectListUl li {
         margin-bottom: 5px;
         list-style-type: none;
-        padding: 0 0 15px 0;
         display: inline;
         width: 49%;
         float: left;
@@ -1389,7 +1388,8 @@ h4.detailedInfo {
         -moz-transition: all 2s linear;
         -o-transition: all 2s linear;
         transition: all 2s linear;
-        border: thin solid rgba(44, 42, 116, 0);
+        border: thin solid rgba(44, 42, 116, 0.2);
+        padding: 5px;
         -moz-transition: all 0.2s ease-in;
         -o-transition: all 0.2s ease-in;
         -webkit-transition: all 0.2s ease-in;
@@ -1414,9 +1414,6 @@ h4.detailedInfo {
               color: #ca8142; }
         .main-list.projects .projectListUlcontain ul.projectListUl li .projectSubT {
           margin-bottom: 0; }
-        .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n+1) {
-          background: rgba(44, 42, 116, 0);
-          border: thin solid rgba(44, 42, 116, 0); }
         .main-list.projects .projectListUlcontain ul.projectListUl li .projectLocation {
           color: rgba(32, 32, 36, 0.5); }
 
