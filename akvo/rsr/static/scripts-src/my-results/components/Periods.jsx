@@ -105,7 +105,7 @@ class PeriodHeader extends React.Component {
             if (page.mode.public) {
                 return false;
             }
-            if (period.locked) {
+            if (period.is_locked) {
                 return false;
             }
             if (
@@ -143,14 +143,21 @@ class PeriodHeader extends React.Component {
             periodChildrenIds[period.id].indexOf(this.props.ui[c.UPDATE_FORM_DISPLAY] || 0) > -1;
         const indicator = getAncestor(c.OBJECTS_PERIODS, period.id, c.OBJECTS_INDICATORS);
         const isQualitative = indicator.type === c.INDICATOR_QUALITATIVE;
-        const periodStart = displayDate(period.period_start);
-        const periodEnd = displayDate(period.period_end);
+        let periodStart, periodEnd;
+        // Use the project's dates if this project is part of a single period hierarchy
+        if (page.project.hierarchy_name) {
+            periodStart = displayDate(page.project.start_date);
+            periodEnd = displayDate(page.project.end_date);
+        } else {
+            periodStart = displayDate(period.period_start);
+            periodEnd = displayDate(period.period_end);
+        }
         const periodDate = `${periodStart} - ${periodEnd}`;
         const showLockCheckbox =
             ui.activeFilter !== c.FILTER_NEED_REPORTING &&
             ui.activeFilter !== c.FILTER_SHOW_PENDING;
 
-        const lockStatus = period.locked ? (
+        const lockStatus = period.is_locked ? (
             <i title={_("locked")} className="fa fa-lock" aria-hidden="true" />
         ) : (
             <i title={_("unlocked")} className="fa fa-unlock-alt" aria-hidden="true" />
@@ -208,7 +215,12 @@ class PeriodHeader extends React.Component {
                         {newUpdateButton}
                         {delUpdateAlert}
                     </li>
-                    {page.mode.public ? undefined : <li>{lockStatus}</li>}
+                    {/* Don't show locking icon if we're on the public project page, or if the */}
+                    {/* project is part of a single period hierarchy */}
+                    {page.mode.public || page.project.hierarchy_name ?
+                        undefined
+                    :
+                        <li>{lockStatus}</li>}
                 </ul>
                 {isQualitative || !page.mode.public ? (
                     undefined
@@ -286,7 +298,7 @@ export default class Periods extends React.Component {
             const period = this.props.periods.objects[id];
             const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
             const needsReporting =
-                !period.locked && period._meta && period._meta.children.ids.length == 0;
+                !period.is_locked && period._meta && period._meta.children.ids.length == 0;
 
             let className = this.hideMe(id) ? "hidePanel" : "";
             className += isChecked ? " periodSelected" : needsReporting ? " needsReporting" : "";

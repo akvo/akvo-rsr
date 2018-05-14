@@ -31,6 +31,7 @@ const getDisaggregationObjects = store => store.models.disaggregations.objects;
 const getCommentIds = store => store.models.comments.ids;
 const getCommentObjects = store => store.models.comments.objects;
 const getUser = store => store.models.user;
+const getProject = store => store.page.project;
 
 const getChildrenFactory = model => {
     const modelSelectors = {
@@ -361,7 +362,7 @@ export const getPendingUpdates = createSelector(
             updateIds.filter(
                 id =>
                     updateObjects[id].status === c.UPDATE_STATUS_PENDING &&
-                    periodObjects[updateObjects[id].period].locked == false
+                    periodObjects[updateObjects[id].period].is_locked == false
             )
         );
     }
@@ -380,7 +381,7 @@ export const getApprovedUpdates = createSelector(
             updateIds.filter(
                 id =>
                     updateObjects[id].status === c.UPDATE_STATUS_APPROVED &&
-                    periodObjects[updateObjects[id].period].locked == false
+                    periodObjects[updateObjects[id].period].is_locked == false
             )
         );
     }
@@ -389,13 +390,13 @@ export const getApprovedUpdates = createSelector(
 export const getLockedPeriods = createSelector(
     [getPeriodIds, getPeriodObjects],
     (periodIds, periodObjects) =>
-        periodIds && periodObjects && periodIds.filter(id => periodObjects[id].locked === true)
+        periodIds && periodObjects && periodIds.filter(id => periodObjects[id].is_locked === true)
 );
 
 export const getUnlockedPeriods = createSelector(
     [getPeriodIds, getPeriodObjects],
     (periodIds, periodObjects) =>
-        periodIds && periodObjects && periodIds.filter(id => periodObjects[id].locked === false)
+        periodIds && periodObjects && periodIds.filter(id => periodObjects[id].is_locked === false)
 );
 
 export const getApprovedPeriods = createSelector(
@@ -433,8 +434,9 @@ export const getNeedReportingPeriods = createSelector(
         return an array of periodIds for periods with no updates or at least one "needs reporting"
         status update
      */
-    [getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
-    (periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
+    [getProject, getPeriodObjects, getUnlockedPeriods, getPeriodsChildrenIds, getUpdateObjects],
+    (project, periodObjects, unlockedPeriods, periodChildren, updateObjects) =>
+        project &&
         unlockedPeriods &&
         updateObjects &&
         unlockedPeriods.filter(
@@ -445,7 +447,22 @@ export const getNeedReportingPeriods = createSelector(
                         updateObjects[updateId].status === c.UPDATE_STATUS_DRAFT ||
                         updateObjects[updateId].status === c.UPDATE_STATUS_NEW ||
                         updateObjects[updateId].status === c.UPDATE_STATUS_REVISION
-                ).length > 0
+                ).length > 0 ||
+                // For single period projects, if all updates are older (in days) than
+                // c.SINGLE_PERIOD_TIMEOUT_DAYS the indicator shows up in the need reporting filter
+                project.hierarchy_name && periodChildren[id].filter(
+                    updateId => {
+                        const updateDate = new Date(
+                            updateObjects[updateId].created_at.split(".")[0].replace("/", /-/g)
+                        );
+                        const now = new Date();
+                        const daysSinceUpdate = now.getDate() - updateDate.getDate();
+                        return !(
+                            daysSinceUpdate > project.needs_reporting_timeout_days
+                        )
+                    }
+                ).length === 0
+
         )
 );
 

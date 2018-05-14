@@ -78,6 +78,20 @@ const modifyUser = isMEManager => {
     };
 };
 
+const modifyPeriods = singlePeriodProject => {
+    return data => {
+        /*  Add field period.is_locked that used in lieu of period.locked.
+            This is so that single period hierarchy projects can ignore locking, the periods
+            are always treated as unlocked
+        */
+        const periods = data.map(period => {
+            period.is_locked = singlePeriodProject ? false : period.locked;
+            return period;
+        });
+        return periods;
+    };
+};
+
 @connect(store => {
     return {
         page: store.page,
@@ -146,10 +160,11 @@ export default class App extends React.Component {
 
         const projectId = project.id;
         const projectPartners = project.partners;
+        const singlePeriodProject = project.hierarchy_name ? true : false;
         fetchModel("results", projectId, activateToggleAll);
         fetchModel("indicators", projectId, activateToggleAll);
         fetchModel("dimensions", projectId, activateToggleAll);
-        fetchModel("periods", projectId, activateToggleAll);
+        fetchModel("periods", projectId, activateToggleAll, modifyPeriods(singlePeriodProject));
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
         fetchModel("comments", projectId, activateToggleAll);
