@@ -1394,8 +1394,8 @@ h4.detailedInfo {
         -webkit-transition: all 0.2s ease-in;
         transition: all 0.2s ease-in; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.highlightProject {
-          box-shadow: 0 0 12px #ffd200 !important;
-          background: rgba(255, 210, 0, 0.2) !important;
+          box-shadow: 0 0 12px #4d5a82 !important;
+          background: rgba(77, 90, 130, 0.3) !important;
           transition: all 0.4s linear; }
         .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 {
           margin-top: 5px; }
@@ -1406,12 +1406,11 @@ h4.detailedInfo {
         .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n+2) {
           margin-right: 0; }
         .main-list.projects .projectListUlcontain ul.projectListUl li h1 {
-          margin-top: 5px; }
+          margin: 5px 0 10px; }
           .main-list.projects .projectListUlcontain ul.projectListUl li h1 a {
             color: #2c2a74;
             font-weight: 500;
-            letter-spacing: 0.05em;
-            font-size: 1.1em; }
+            letter-spacing: 0.02em; }
             .main-list.projects .projectListUlcontain ul.projectListUl li h1 a:hover {
               color: #ca8142; }
         .main-list.projects .projectListUlcontain ul.projectListUl li .projectSubT {
