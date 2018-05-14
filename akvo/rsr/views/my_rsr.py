@@ -26,8 +26,7 @@ from akvo.rsr.models import IndicatorPeriodData
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
-                      single_period_dates)
+from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string)
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
@@ -330,11 +329,7 @@ def project_editor(request, project_id):
 
     }
 
-    hierarchy_name = project.uses_single_indicator_period()
-    context['start_date'], context['end_date'] = project.project_dates()
-    if hierarchy_name:
-        context['hierarchy_name'] = hierarchy_name
-        context['period_start'], context['period_end'] = single_period_dates(hierarchy_name)
+    context = project.project_hierarchy_context(context)
 
     # Custom fields context
     for section_id in xrange(1, 12):
@@ -552,4 +547,5 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
         'show_results': json.dumps(show_results),
     }
 
+    context = project.project_hierarchy_context(context)
     return render(request, template, context)

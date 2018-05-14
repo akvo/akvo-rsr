@@ -32,7 +32,7 @@ from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIV
                                                  FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
-                        rsr_show_keywords)
+                        rsr_show_keywords, single_period_dates)
 
 from ...iati.checks.iati_checks import IatiChecks
 
@@ -1264,6 +1264,20 @@ class Project(TimestampsMixin, models.Model):
         end_date = (self.date_end_actual if self.date_end_actual
                     else self.date_end_planned)
         return start_date, end_date
+
+    def project_hierarchy_context(self, context):
+        "Add info used in single period hierarchy projects if present"
+        hierarchy_name = self.uses_single_indicator_period()
+        context['start_date'], context['end_date'] = self.project_dates()
+
+        if hierarchy_name:
+            context['hierarchy_name'] = hierarchy_name
+            (
+                context['needs_reporting_timeout_days'],
+                context['period_start'],
+                context['period_end']
+            ) = single_period_dates(hierarchy_name)
+        return context
 
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)

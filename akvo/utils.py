@@ -452,6 +452,6 @@ def fix_country_codes(data):
 def single_period_dates(name):
     try:
         config = settings.SINGLE_PERIOD_INDICATORS[name]
-        return config['start_date'], config['end_date']
+        return config['needs_reporting_timeout_days'], config['period_start'], config['period_end']
     except KeyError:
-        return None, None
+        return None, None, None

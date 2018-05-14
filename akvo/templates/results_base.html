@@ -23,7 +23,15 @@
             {% if not forloop.last %} , {% endif %}
             {% endfor %}
         ],
-        "has_results": {% if project.results.exists %}true{% else %}false{% endif %}
+        "has_results": {% if project.results.exists %}true{% else %}false{% endif %},
+        "start_date": "{{ start_date|date:"Y-m-d" }}",
+        "end_date": "{{ end_date|date:"Y-m-d" }}",
+        "hierarchy_name": {% if hierarchy_name %}"{{ hierarchy_name }}"{% else %}null{% endif %},
+        "needs_reporting_timeout_days": {% if needs_reporting_timeout_days %}
+                                            {{ needs_reporting_timeout_days }}
+                                        {% else %}null{% endif %},
+        "period_start": "{{ period_start|date:"Y-m-d" }}",
+        "period_end": "{{ period_end|date:"Y-m-d" }}"
     }
 </script>
 
