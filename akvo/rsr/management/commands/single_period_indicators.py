@@ -31,21 +31,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         def set_period_dates(period):
-            period.period_start = START_DATE
-            period.period_end = END_DATE
+            period.period_start = PERIOD_START
+            period.period_end = PERIOD_END
             period.save()
 
-        def get_parent_periods(indicator, START_DATE, END_DATE):
+        def get_parent_periods(indicator, PERIOD_START, PERIOD_END):
             return indicator.parent_indicator.periods.filter(
-                    period_start=START_DATE, period_end=END_DATE)
+                    period_start=PERIOD_START, period_end=PERIOD_END)
 
         name = args[0]
         config = settings.SINGLE_PERIOD_INDICATORS[name]
         live = options['live']
 
-        START_DATE, END_DATE = single_period_dates(name)
-        assert START_DATE, u"No start date configured. Aborting."
-        assert END_DATE, u"No end date configured. Aborting."
+        _, PERIOD_START, PERIOD_END = single_period_dates(name)
+        assert PERIOD_START, u"No start date configured. Aborting."
+        assert PERIOD_END, u"No end date configured. Aborting."
 
         pk = config['pk']
         root = Project.objects.get(pk=pk)
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             in_hierarchy = set(projects) < set(hierarchy_projects)
             assert in_hierarchy, u"Not all projects part of the hierarchy. Aborting"
 
-        data = tablib.Dataset(
+        period_data = tablib.Dataset(
             headers=[
                 'Project ID',
                 'Result ID',
@@ -86,7 +86,7 @@ class Command(BaseCommand):
                 if period_count == 0:
                     # If the indicator has a parent we need to find and link to the parent period
                     if indicator.parent_indicator:
-                        parent_periods = get_parent_periods(indicator, START_DATE, END_DATE)
+                        parent_periods = get_parent_periods(indicator, PERIOD_START, PERIOD_END)
                         if parent_periods.count() != 1:
                             row_data += ["ERROR: Can't find parent period."]
                             continue
@@ -98,8 +98,8 @@ class Command(BaseCommand):
                         period = IndicatorPeriod.objects.create(
                             indicator=indicator,
                             parent_period=parent_period,
-                            period_start=START_DATE,
-                            period_end=END_DATE,
+                            period_start=PERIOD_START,
+                            period_end=PERIOD_END,
                         )
                         row_data += ['Created period: {}'.format(period.pk)]
                     else:
@@ -132,8 +132,8 @@ class Command(BaseCommand):
                                 period_count - 1, periods[0].pk
                             )]
 
-                data.append(row_data)
+                period_data.append(row_data)
 
         # Exporting as tsv results in errors I can't explain in som cases, columns get merged :-(
         # Looks like a bug in tablib
-        print data.export('csv')
+        print period_data.export('csv')
