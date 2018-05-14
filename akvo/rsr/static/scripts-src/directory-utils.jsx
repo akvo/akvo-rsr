@@ -160,11 +160,12 @@ var Organisation = React.createClass({
                     <h1>
                         <a href={organisation.url}>{organisation.name}</a>
                     </h1>
+                    <div className="orgType">{organisation.organisation_type}</div>
                 </div>
-                <div>
-                    <a href="{organisation.organisation_url}" class="organisationTitle">
-                        <span class="small">Organisation: </span> {organisation.organisation}
-                    </a>
+                <div className="hidden-xs hidden-sm additionalInfo">
+                    <div>
+                        <span>{organisation.project_count} projects</span>
+                    </div>
                 </div>
             </li>
         );

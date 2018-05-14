@@ -159,11 +159,12 @@ var Organisation = React.createClass({displayName: "Organisation",
                 React.createElement("div", null, 
                     React.createElement("h1", null, 
                         React.createElement("a", {href: organisation.url}, organisation.name)
-                    )
+                    ), 
+                    React.createElement("div", {className: "orgType"}, organisation.organisation_type)
                 ), 
-                React.createElement("div", null, 
-                    React.createElement("a", {href: "{organisation.organisation_url}", class: "organisationTitle"}, 
-                        React.createElement("span", {class: "small"}, "Organisation: "), " ", organisation.organisation
+                React.createElement("div", {className: "hidden-xs hidden-sm additionalInfo"}, 
+                    React.createElement("div", null, 
+                        React.createElement("span", null, organisation.project_count, " projects")
                     )
                 )
             )

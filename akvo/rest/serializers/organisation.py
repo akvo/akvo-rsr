@@ -78,6 +78,9 @@ class OrganisationBasicSerializer(BaseRSRSerializer):
 class OrganisationDirectorySerializer(BaseRSRSerializer):
 
     image = serializers.SerializerMethodField()
+    url = serializers.ReadOnlyField(source='get_absolute_url')
+    organisation_type = serializers.ReadOnlyField(source='iati_org_type')
+    project_count = serializers.ReadOnlyField(source='published_projects.count')
 
     class Meta:
         model = Organisation
@@ -85,7 +88,10 @@ class OrganisationDirectorySerializer(BaseRSRSerializer):
             'id',
             'name',
             'long_name',
-            'image'
+            'image',
+            'url',
+            'organisation_type',
+            'project_count',
         )
 
     def get_image(self, organisation):
