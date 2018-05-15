@@ -7,7 +7,7 @@
 
 import store from "../store";
 import * as c from "../const";
-import { getCookie, endpoints } from "../utils";
+import { getCookie, endpoints, modifyPeriods } from "../utils";
 
 import { periodSelectReset } from "./ui-actions";
 
@@ -377,7 +377,7 @@ export function updateUpdateToBackend(url, data, collapseId, callbacks) {
     return sendUpdateToBackend(url, "PATCH", data, collapseId, callbacks);
 }
 
-function patchMultiple(model, params, callback) {
+function patchMultiple(model, params, callback, dataPrepCallback) {
     /*
         Perform a series of PATCHes, used for bulk updating of e.g. Period.locked field
         params should be an array of objects, each object having the following members:
@@ -392,6 +392,9 @@ function patchMultiple(model, params, callback) {
         // Execute all fetches
         Promise.all(fetches)
             .then(responses => {
+                if (dataPrepCallback) {
+                    responses = dataPrepCallback(responses);
+                }
                 // Update each object with backend data
                 responses.map(object => {
                     dispatch({
@@ -420,7 +423,7 @@ function periodLockingParams(locked) {
     const data = selectedPeriods.map(id => {
         return { url: endpoints.period(id), data: { locked: locked } };
     });
-    patchMultiple(c.OBJECTS_PERIODS, data, periodSelectReset);
+    patchMultiple(c.OBJECTS_PERIODS, data, periodSelectReset, modifyPeriods(false));
 }
 
 export function lockSelectedPeriods() {

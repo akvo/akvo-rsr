@@ -449,7 +449,8 @@ export const getNeedReportingPeriods = createSelector(
                         updateObjects[updateId].status === c.UPDATE_STATUS_REVISION
                 ).length > 0 ||
                 // For single period projects, if all updates are older (in days) than
-                // c.SINGLE_PERIOD_TIMEOUT_DAYS the indicator shows up in the need reporting filter
+                // project.needs_reporting_timeout_days the period shows up in the need reporting
+                // filter
                 project.hierarchy_name && periodChildren[id].filter(
                     updateId => {
                         const updateDate = new Date(

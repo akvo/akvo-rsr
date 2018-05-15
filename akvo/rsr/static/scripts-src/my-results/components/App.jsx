@@ -47,7 +47,7 @@ import {
     collapseId,
     createNewDisaggregations,
     identicalArrays,
-    isNewUpdate,
+    isNewUpdate, modifyPeriods,
     openNodes,
     setHash,
     userIsMEManager
@@ -75,20 +75,6 @@ const modifyUser = isMEManager => {
         data.isMEManager = isMEManager;
         // transform to common JSON data shape so normalize works in modelsReducer
         return { results: data };
-    };
-};
-
-const modifyPeriods = singlePeriodProject => {
-    return data => {
-        /*  Add field period.is_locked that used in lieu of period.locked.
-            This is so that single period hierarchy projects can ignore locking, the periods
-            are always treated as unlocked
-        */
-        const periods = data.map(period => {
-            period.is_locked = singlePeriodProject ? false : period.locked;
-            return period;
-        });
-        return periods;
     };
 };
 
@@ -164,6 +150,7 @@ export default class App extends React.Component {
         fetchModel("results", projectId, activateToggleAll);
         fetchModel("indicators", projectId, activateToggleAll);
         fetchModel("dimensions", projectId, activateToggleAll);
+        // TODO: check if we need to run modifyPeriods() after changing the locking status of periods
         fetchModel("periods", projectId, activateToggleAll, modifyPeriods(singlePeriodProject));
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
