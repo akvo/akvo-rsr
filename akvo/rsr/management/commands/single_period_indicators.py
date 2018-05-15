@@ -37,7 +37,8 @@ class Command(BaseCommand):
 
         def get_parent_periods(indicator, PERIOD_START, PERIOD_END):
             return indicator.parent_indicator.periods.filter(
-                    period_start=PERIOD_START, period_end=PERIOD_END)
+                period_start=PERIOD_START, period_end=PERIOD_END
+            )
 
         name = args[0]
         config = settings.SINGLE_PERIOD_INDICATORS[name]
@@ -70,9 +71,10 @@ class Command(BaseCommand):
 
         for project in projects:
             for indicator in Indicator.objects.filter(
-                    result__project=project).select_related('result'):
+                    result__project=project
+            ).select_related('result'):
                 periods = IndicatorPeriod.objects.filter(
-                        indicator=indicator).order_by('-period_end')
+                    indicator=indicator).order_by('-period_end')
                 period_count = periods.count()
                 row_data = [
                     project.pk,

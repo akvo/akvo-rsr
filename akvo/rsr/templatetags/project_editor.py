@@ -11,7 +11,7 @@ from django import template
 from django.db import models
 from django.db.models import get_model, QuerySet
 
-from akvo.rsr.models import ProjectEditorValidation, IndicatorPeriod
+from akvo.rsr.models import ProjectEditorValidation
 
 register = template.Library()
 VALIDATION_CACHE = {}
