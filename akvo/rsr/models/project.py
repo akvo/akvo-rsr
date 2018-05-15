@@ -1255,9 +1255,8 @@ class Project(TimestampsMixin, models.Model):
                 return root_projects[pk]
 
     def project_dates(self):
-        """ return the project start and end dates, preferably the actuals. If they are not set, use
-            the planned values and as a last resort look for the default values for a single period
-            project hierarchy.
+        """ Return the project start and end dates, preferably the actuals. If they are not set, use
+            the planned values.
         """
         start_date = (self.date_start_actual if self.date_start_actual
                       else self.date_start_planned)
