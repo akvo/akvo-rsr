@@ -13,7 +13,7 @@ from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filenam
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
                         custom_get_or_create_country, right_now_in_akvo,
                         pagination, filter_query_string, codelist_name, get_country,
-                        codelist_choices)
+                        codelist_choices, single_period_dates)
 
 from django.core import mail
 from django.http.request import QueryDict
@@ -252,3 +252,13 @@ class GeneralUtilsTestCase(TestCase):
 
         for (lat, lon), country in LOCATIONS:
             self.assertEqual(country, get_country(lat, lon)[0])
+
+    def test_single_period_dates(self):
+        timeout, start, end = single_period_dates('EUTF')
+        self.assertEqual(timeout, 90)
+        self.assertEqual(start, datetime.date(2015, 01, 01))
+        self.assertEqual(end, datetime.date(2025, 12, 31))
+        timeout, start, end = single_period_dates('Wrong name')
+        self.assertEqual(timeout, None)
+        self.assertEqual(start, None)
+        self.assertEqual(end, None)
