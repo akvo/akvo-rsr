@@ -38,8 +38,7 @@ import {
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
-    getIndicatorsDimensionIds,
-    getPublicViewDefaultKeys
+    getIndicatorsDimensionIds
 } from "../selectors";
 
 import {
@@ -47,10 +46,9 @@ import {
     collapseId,
     createNewDisaggregations,
     identicalArrays,
-    isNewUpdate, modifyPeriods,
-    openNodes,
-    setHash,
-    userIsMEManager
+    isNewUpdate,
+    modifyPeriods,
+    setHash
 } from "../utils";
 
 import FilterBar from "./FilterBar";

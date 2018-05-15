@@ -285,8 +285,8 @@ export const getIndicatorsAggregateActualValue = createSelector(
                         childPeriods.length == 0
                             ? 0
                             : childPeriods.length == 1
-                                ? childPeriods[0].denominator
-                                : latestPeriod(childPeriods).denominator;
+                              ? childPeriods[0].denominator
+                              : latestPeriod(childPeriods).denominator;
                     aggregateValue = computePercentage(numerator, denominator);
                 } else {
                     aggregateValue = childPeriodIds[indicatorId].reduce((sum, periodId) => {
@@ -451,19 +451,15 @@ export const getNeedReportingPeriods = createSelector(
                 // For single period projects, if all updates are older (in days) than
                 // project.needs_reporting_timeout_days the period shows up in the need reporting
                 // filter
-                project.hierarchy_name && periodChildren[id].filter(
-                    updateId => {
+                (project.hierarchy_name &&
+                    periodChildren[id].filter(updateId => {
                         const updateDate = new Date(
                             updateObjects[updateId].created_at.split(".")[0].replace("/", /-/g)
                         );
                         const now = new Date();
                         const daysSinceUpdate = now.getDate() - updateDate.getDate();
-                        return !(
-                            daysSinceUpdate > project.needs_reporting_timeout_days
-                        )
-                    }
-                ).length === 0
-
+                        return !(daysSinceUpdate > project.needs_reporting_timeout_days);
+                    }).length === 0)
         )
 );
 

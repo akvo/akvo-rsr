@@ -147,7 +147,7 @@ class PeriodHeader extends React.Component {
         const isQualitative = indicator.type === c.INDICATOR_QUALITATIVE;
         let periodStart, periodEnd;
         // Use the project's dates if this project is part of a single period hierarchy
-        if (project.hierarchy_name) {
+        if (project.hierarchy_name) {
             periodStart = project.start_date ? project.start_date : period.period_start;
             periodEnd = project.end_date ? project.end_date : period.period_end;
             periodStart = displayDate(periodStart);
@@ -222,10 +222,11 @@ class PeriodHeader extends React.Component {
                     </li>
                     {/* Don't show locking icon if we're on the public project page, or if the */}
                     {/* project is part of a single period hierarchy */}
-                    {page.mode.public || page.project.hierarchy_name ?
+                    {page.mode.public || page.project.hierarchy_name ? (
                         undefined
-                    :
-                        <li>{lockStatus}</li>}
+                    ) : (
+                        <li>{lockStatus}</li>
+                    )}
                 </ul>
                 {isQualitative || !page.mode.public ? (
                     undefined

@@ -159,13 +159,11 @@ export default class FilterBar extends React.Component {
         );
         const buttonDisabled = !this.props.ui.allFetched;
 
-    const periodLockingButtons = page.project.hierarchy_name ?
-        undefined
-    :
-        <PeriodLockingButtons
-            user={this.props.user}
-            disabled={buttonDisabled}
-        />;
+        const periodLockingButtons = page.project.hierarchy_name ? (
+            undefined
+        ) : (
+            <PeriodLockingButtons user={this.props.user} disabled={buttonDisabled} />
+        );
 
         return (
             // TODO: this is a hideously ugly hack to show the filterbar in two modes depending on
