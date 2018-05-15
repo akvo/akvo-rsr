@@ -78,6 +78,7 @@ const DeleteUpdateAlert = ({ message, close }) => (
     store => {
         return {
             page: store.page,
+            project: store.page.project,
             updates: store.models.updates,
             dimensions: store.models.dimensions.objects,
             disaggregations: store.models.disaggregations.objects,
@@ -128,6 +129,7 @@ class PeriodHeader extends React.Component {
             period,
             toggleCheckbox,
             page,
+            project,
             ui,
             user,
             periodsActualValue,
@@ -145,9 +147,11 @@ class PeriodHeader extends React.Component {
         const isQualitative = indicator.type === c.INDICATOR_QUALITATIVE;
         let periodStart, periodEnd;
         // Use the project's dates if this project is part of a single period hierarchy
-        if (page.project.hierarchy_name) {
-            periodStart = displayDate(page.project.start_date);
-            periodEnd = displayDate(page.project.end_date);
+        if (project.hierarchy_name) {
+            periodStart = project.start_date ? project.start_date : period.period_start;
+            periodEnd = project.end_date ? project.end_date : period.period_end;
+            periodStart = displayDate(periodStart);
+            periodEnd = displayDate(periodEnd);
         } else {
             periodStart = displayDate(period.period_start);
             periodEnd = displayDate(period.period_end);
@@ -155,7 +159,8 @@ class PeriodHeader extends React.Component {
         const periodDate = `${periodStart} - ${periodEnd}`;
         const showLockCheckbox =
             ui.activeFilter !== c.FILTER_NEED_REPORTING &&
-            ui.activeFilter !== c.FILTER_SHOW_PENDING;
+            ui.activeFilter !== c.FILTER_SHOW_PENDING &&
+            !project.hierarchy_name;
 
         const lockStatus = period.is_locked ? (
             <i title={_("locked")} className="fa fa-lock" aria-hidden="true" />
