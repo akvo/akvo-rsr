@@ -4,6 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import logging
+
+from rest_framework import serializers
 
 from akvo.rsr.models import Organisation
 
@@ -18,6 +21,9 @@ from .organisation_document import OrganisationDocumentSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     OrganisationLocationExtraSerializer)
 from .rsr_serializer import BaseRSRSerializer
+from akvo.utils import get_thumbnail
+
+logger = logging.getLogger(__name__)
 
 
 class OrganisationSerializer(BaseRSRSerializer):
@@ -67,3 +73,34 @@ class OrganisationBasicSerializer(BaseRSRSerializer):
             'long_name',
             'logo'
         )
+
+
+class OrganisationDirectorySerializer(BaseRSRSerializer):
+
+    image = serializers.SerializerMethodField()
+    url = serializers.ReadOnlyField(source='get_absolute_url')
+    organisation_type = serializers.ReadOnlyField(source='iati_org_type')
+    project_count = serializers.ReadOnlyField(source='published_projects.count')
+
+    class Meta:
+        model = Organisation
+        fields = (
+            'id',
+            'name',
+            'long_name',
+            'image',
+            'url',
+            'organisation_type',
+            'project_count',
+        )
+
+    def get_image(self, organisation):
+        width = '191'
+        try:
+            image = get_thumbnail(organisation.logo, width, crop='smart', quality=99)
+        except Exception as e:
+            logger.error(
+                'Failed to get thumbnail for image %s with error: %s', organisation.logo, e
+            )
+            image = None
+        return image.url if image is not None else ''

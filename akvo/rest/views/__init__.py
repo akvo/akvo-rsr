@@ -39,7 +39,7 @@ from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
 from .narrative_report import NarrativeReportViewSet
-from .organisation import OrganisationViewSet
+from .organisation import OrganisationViewSet, organisation_directory
 from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationTotalBudgetLineViewSet,
                                   OrganisationRecipientOrgBudgetViewSet,
@@ -78,7 +78,8 @@ from .project_location import (ProjectLocationViewSet,
                                MapProjectLocationViewSet)
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,
-                             upload_indicator_update_photo)
+                             upload_indicator_update_photo,
+                             update_directory)
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
@@ -149,6 +150,7 @@ __all__ = [
     'MapProjectLocationViewSet',
     'MapProjectUpdateLocationViewSet',
     'NarrativeReportViewSet',
+    'organisation_directory',
     'OrganisationViewSet',
     'OrganisationLocationViewSet',
     'OrganisationCountryBudgetViewSet',
@@ -216,6 +218,7 @@ __all__ = [
     'typeahead_impact_projects',
     'typeahead_projectupdate',
     'update_details',
+    'update_directory',
     'upload_indicator_update_photo',
     'UserViewSet',
 ]

@@ -3,147 +3,35 @@
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
 
-<form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
-  <section id="search-filter">
-    <div class="container-fluid">
-      <div id="search" class="verticalPadding row searchBar  text-center updateSearch">
-        <div class="form-inline" role="form">
-          <div class="form-group">
-            <div class="input-group">
-           <p class="upLabelSearch">Updates:</p>
+    <div id="update-directory"></div>
 
-              {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
-              </span>
-            </div>
-          </div>
-          {% if q %}
-          <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> {% trans 'Reset all filters' %}</a></div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </section>
-  <div id="wrapper">
-    <aside id="sidebar-wrapper" class="{{ show_filters }}">
-      <div id="filter" class="">
-        <div>
-          <div class="btn-group">
-            {% bootstrap_field filter.form.partner %}
-          </div>
-          <div class="btn-group">
-            {% bootstrap_field filter.form.sector %}
-          </div>
-        </div>
-        <div>
-          <nav>
-            <ul class="nav nav-pills nav-stacked">
-              <li><a class="showFilters text-center" id="apply-filter">{% trans 'Apply filter' %}</a></li>
-              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </aside>
-  </div>
-</form>
+{% endblock %}
 
-    <section class="main-list projects">
-    <div class="container-fluid">
-      <div  class="row">
-        <div class="col-sm-7 projectListUlcontain">
-        <p class="text-center listMsg">
-            The most recent updates added to RSR
-        </p>
-        <ul class="projectListUl updateDirectory group">
-          {% for u in page %}
-          <li class="updateAsset">
-            <div class="thumbImg">
-              <a href="{% url 'update-main' u.project.id u.id %}">
-                {% if u.video %}
-                  {% vid_img u 160 160 u.title %}
-                {% else %}
-                  {% img u 350 150 u.title %}
-                {% endif %}
-              </a>
-            </div>
-            <div class="">
-              <h1><a href="{% url 'update-main' u.project.id u.id %}"> {{u.title}}</a></h1>
-                <div><a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><span class="small">Project: </span> {{u.project.title}}</a></div>
-                <div><span class="small">Created by: </span><span class="userFullName">{{u.user.first_name}} {{u.user.last_name}}</span></div>
-                 <div><span class="small">Org: </span>{% if u.user.employers.all %}
-                      {% with org=u.user.employers.all.0.organisation %}
-                        <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>
-                      {% endwith %}
-                    {% endif %}
-                </div>
-              </div>
-              <div class="upDateTime"> {{u.event_date|date:"d-M-Y"}}</div>
-              <div class="excerpt hidden">
-                {% autoescape off %}
-                  {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
-                {% endautoescape %}
-              </div>
-          </li>
-          {% endfor %}
-        </ul>
-
-        <div class="updatePagination">
-          <div class="row">
-            <div class="col-xs-6  col-xs-offset-3  text-center">
-              <span class="updateTotal">
-                            {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-                            {{ start_index }} - {{ end_index }} of {{ paginator_count }} updates
-                            {% endblocktrans %}
-              </span>
-              {% include 'navigation/pagination.html' %}
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <div class="col-sm-5">
-          <section id="map" class="touch-navbar updateMap">
-              {% coll_map map_updates '100%' '100%' %}
-          </section>
-      </div>
-      </div>
-    </div>
-    </section>
-
-    <div class="container">
-        <div class="row">
-        </div>
-    </div>
-    {% endblock %}
-
-    {% block js %}
+{% block js %}
     {{ block.super }}
 
-    {# Twitter Typeahead #}
-    <script id="typeahead"
-            src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.js"
-            integrity="sha256-9PktWqeso0y5/rAR0iDepG9qzPITS+ccSjYHU9vMCf4="
-            crossorigin="anonymous"></script>
-
-
     <script src="//maps.google.com/maps/api/js"></script>
-    <script type="application/json" id="akvo-rsr-typeahead-thumbs">
-        {
-            "numberOfUpdates": {{ updates_count }}
-        }
-    </script>
-
-    <script type="application/javascript">
-        AKVO_RSR.typeahead = {};
-        AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
-    </script>
-
     {# Translation strings #}
     <script type="application/json" id="updates-text">
-        {
-            "updates_text": "{% trans 'Updates'|escapejs %}"
-        }
+     {
+        "updates_text": "{% trans 'Updates'|escapejs %}",
+        "search_text": "{% trans 'Search'|escapejs %}",
+        "loading_text": "{% trans 'Loading...'|escapejs %}",
+        "organisations_text": "{% trans 'Organisations'|escapejs %}",
+        "locations_text": "{% trans 'Locations'|escapejs %}",
+        "all_text": "{% trans 'All'|escapejs %}",
+        "keyword_text": "{% trans 'keyword'|escapejs %}",
+        "location_text": "{% trans 'location'|escapejs %}",
+        "status_text": "{% trans 'status'|escapejs %}",
+        "organisation_text": "{% trans 'organisation'|escapejs %}",
+        "sector_text": "{% trans 'sector'|escapejs %}",
+        "reset_filters_text": "{% trans 'Reset filters'|escapejs %}",
+        "no_location_text": "{% trans 'No location specified'|escapejs %}",
+        "page_limit_text": "{% trans '# of projects'|escapejs %}"
+     }
     </script>
+
+    {% javascript 'directory_utils' %}
+    {% javascript 'update_directory' %}
+
 {% endblock js %}

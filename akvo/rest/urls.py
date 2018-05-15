@@ -187,12 +187,18 @@ urlpatterns += patterns(
         name='project_editor_add_org_logo'),
 )
 
-# Project directory
+# Directory views
 urlpatterns += patterns(
     '',
     url(r'v1/project_directory$',
         views.project_directory,
         name='project_directory'),
+    url(r'v1/update_directory$',
+        views.update_directory,
+        name='update_directory'),
+    url(r'v1/organisation_directory$',
+        views.organisation_directory,
+        name='organisation_directory'),
 )
 
 # Typeahead

@@ -5,8 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var projectDirectory = document.getElementById("project-directory"),
-    options_cache = {};
+var options_cache = {};
 
 var Filter = React.createClass({displayName: "Filter",
     render: function() {
@@ -98,12 +97,92 @@ var Project = React.createClass({displayName: "Project",
     }
 });
 
+var Update = React.createClass({displayName: "Update",
+    highlightMarker: function() {
+        return changeNodeMarkerIcon(this.getDOMNode(), google.maps.Animation.BOUNCE);
+    },
+    unHighlightMarker: function() {
+        return changeNodeMarkerIcon(this.getDOMNode(), null);
+    },
+    render: function() {
+        var project = this.props.project,
+            element_id = "project-" + project.id;
+        return (
+            React.createElement("li", {
+                id: element_id, 
+                onMouseEnter: this.highlightMarker, 
+                onMouseLeave: this.unHighlightMarker, 
+                className: "updateAsset"
+            }, 
+                React.createElement("div", {className: "thumbImg"}, 
+                    React.createElement("a", {href: project.url}, 
+                        React.createElement("img", {src: project.image, alt: project.title})
+                    )
+                ), 
+                React.createElement("div", null, 
+                    React.createElement("h1", null, 
+                        React.createElement("a", {href: project.url}, project.title)
+                    ), 
+                    React.createElement("div", null, 
+                        React.createElement("a", {href: "{project.project_url}", class: "projectTitle"}, 
+                            React.createElement("span", {class: "small"}, "Project: "), " ", project.project
+                        )
+                    ), 
+                    React.createElement("div", null, 
+                        React.createElement("span", {class: "small"}, "Created by: "), 
+                        React.createElement("span", {class: "userFullName"}, project.user_fullname)
+                    ), 
+                    React.createElement("div", null, 
+                        React.createElement("span", {class: "small"}, "Org: "), 
+                        React.createElement("a", {href: "{project.organisation_url}", class: "orgName"}, 
+                            project.organisation
+                        )
+                    ), 
+                    React.createElement("div", {class: "upDateTime"}, project.event_date)
+                )
+            )
+        );
+    }
+});
+
+var Organisation = React.createClass({displayName: "Organisation",
+    render: function() {
+        var organisation = this.props.organisation,
+            element_id = "organisation-" + organisation.id;
+        return (
+            React.createElement("li", {id: element_id}, 
+                React.createElement("div", null, 
+                    React.createElement("a", {href: organisation.url}, 
+                        React.createElement("img", {src: organisation.image, alt: organisation.title})
+                    )
+                ), 
+                React.createElement("div", null, 
+                    React.createElement("h1", null, 
+                        React.createElement("a", {href: organisation.url}, organisation.name)
+                    ), 
+                    React.createElement("div", {className: "orgType"}, organisation.organisation_type)
+                ), 
+                React.createElement("div", {className: "hidden-xs hidden-sm additionalInfo"}, 
+                    React.createElement("div", null, 
+                        React.createElement("span", null, organisation.project_count, " projects")
+                    )
+                )
+            )
+        );
+    }
+});
+
 var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
     componentDidUpdate: function(prevProps) {
         // If projects changed
         if (this.props.projects != prevProps.projects) {
             // Update map
-            window.render_map(document.querySelector("#akvo_map_projects"), this.getMapConfig());
+            if (!this.props.hide_map) {
+                window.render_map(
+                    document.querySelector("#akvo_map_projects"),
+                    this.getMapConfig()
+                );
+            }
             // Scroll the project list container to the top
             ReactDOM.findDOMNode(this).querySelector("#projList").scrollTop = 0;
         }
@@ -131,10 +210,12 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
     // FIXME: Need to have a better display when things are loading....
     render: function() {
         var project_count_text =
-            this.props.project_count != undefined
-                ? this.props.project_count + " " + this.props.i18n.projects_text
-                : this.props.i18n.loading_text;
-        var filtered = this.props.filtered ? " filtered" : "";
+                this.props.project_count != undefined
+                    ? this.props.project_count + " " + this.props.elements_text
+                    : this.props.i18n.loading_text,
+            filtered = this.props.filtered ? " filtered" : "",
+            listWidth = this.props.hide_map ? "col-sm-12" : "col-sm-7",
+            listMsg = "The most recent " + this.props.type.toLowerCase() + " added to RSR";
 
         return (
             React.createElement("section", {className: "main-list projects"}, 
@@ -161,19 +242,38 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                             undefined
                         ), 
 
-                        React.createElement("div", {className: "col-sm-7 projectListUlcontain " + filtered, id: "projList"}, 
-                            React.createElement("p", {className: "text-center listMsg"}, 
-                                "The most recent projects added to RSR"
-                            ), 
+                        React.createElement("div", {
+                            className: listWidth + " projectListUlcontain " + filtered, 
+                            id: "projList"
+                        }, 
+                            React.createElement("p", {className: "text-center listMsg"}, listMsg), 
                             React.createElement("ul", {className: "projectListUl group"}, 
                                 this.props.projects.map(function(project) {
-                                    return (
-                                        React.createElement(Project, {
-                                            project: project, 
-                                            i18n: this.props.i18n, 
-                                            key: "project" + project.id}
-                                        )
-                                    );
+                                    if (this.props.type == "projects") {
+                                        return (
+                                            React.createElement(Project, {
+                                                project: project, 
+                                                i18n: this.props.i18n, 
+                                                key: "project" + project.id}
+                                            )
+                                        );
+                                    } else if (this.props.type == "updates") {
+                                        return (
+                                            React.createElement(Update, {
+                                                project: project, 
+                                                i18n: this.props.i18n, 
+                                                key: "project" + project.id}
+                                            )
+                                        );
+                                    } else if (this.props.type == "organisations") {
+                                        return (
+                                            React.createElement(Organisation, {
+                                                organisation: project, 
+                                                i18n: this.props.i18n, 
+                                                key: "organisation" + project.id}
+                                            )
+                                        );
+                                    }
                                 }, this)
                             ), 
                             React.createElement("div", {className: "container-fluid pageStatus text-center"}, 
@@ -192,9 +292,13 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                                 )
                             )
                         ), 
-                        React.createElement("div", {className: "col-sm-5"}, 
-                            React.createElement("section", {id: "map", className: "touch-navbar"}, 
-                                React.createElement("div", {id: "akvo_map_projects", className: "rsr_map"})
+                        this.props.hide_map ? (
+                            undefined
+                        ) : (
+                            React.createElement("div", {className: "col-sm-5"}, 
+                                React.createElement("section", {id: "map", className: "touch-navbar"}, 
+                                    React.createElement("div", {id: "akvo_map_projects", className: "rsr_map"})
+                                )
                             )
                         )
                     )
@@ -242,7 +346,7 @@ var TextSearch = React.createClass({displayName: "TextSearch",
         this.setState({ value: nextProps.text || "" });
     },
     fetchOptions: function() {
-        var url = "/rest/v1/typeaheads/projects?format=json",
+        var url = this.props.typeaheadUrl,
             app = this;
 
         fetch(url, {})
@@ -256,9 +360,18 @@ var TextSearch = React.createClass({displayName: "TextSearch",
             });
         return [];
     },
+    getUrl: function(entry) {
+        if (this.props.type == "projects") {
+            return "../project/" + entry.id;
+        } else if (this.props.type == "updates") {
+            return "../project/" + entry.project + "/update/" + entry.id;
+        } else if (this.props.type == "organisations") {
+            return "../organisation/" + entry.id;
+        }
+    },
     onChange: function(projects) {
         var project = projects[0],
-            url = "../project/" + project.id;
+            url = this.getUrl(project);
 
         window.location.href = url;
     },
@@ -269,10 +382,19 @@ var TextSearch = React.createClass({displayName: "TextSearch",
         this.props.onChange("title_or_subtitle", this.state.value);
     },
     render: function() {
-        var Typeahead = ReactBootstrapTypeahead.Typeahead;
+        var Typeahead = ReactBootstrapTypeahead.Typeahead,
+            filterBy;
+
+        if (this.props.type == "projects") {
+            filterBy = ["title", "subtitle"];
+        } else if (this.props.type == "updates") {
+            filterBy = ["title"];
+        } else if (this.props.type == "organisations") {
+            filterBy = ["name", "long_name"];
+        }
 
         return (
-            React.createElement("div", {className: "form-inline col-lg-4 col-md-6", role: "form"}, 
+            React.createElement("div", {className: "form-inline col-lg-4 col-md-4", role: "form"}, 
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement("div", {className: "input-group"}, 
                         React.createElement(Typeahead, {
@@ -280,10 +402,12 @@ var TextSearch = React.createClass({displayName: "TextSearch",
                             options: this.state.options, 
                             onChange: this.onChange, 
                             onInputChange: this.onInputChange, 
-                            filterBy: ["title", "subtitle"], 
-                            labelKey: "title", 
+                            filterBy: filterBy, 
+                            labelKey: function(x) {
+                                return x.title || x.name;
+                            }, 
                             highlightOnlyResult: true, 
-                            placeholder: "Projects", 
+                            placeholder: this.props.text_placeholder, 
                             disabled: this.props.disabled, 
                             maxResults: 10, 
                             minLength: 3}
@@ -344,12 +468,15 @@ var SearchBar = React.createClass({displayName: "SearchBar",
             React.createElement("section", {id: "search-filter", className: "container-fluid"}, 
                 React.createElement("div", {id: "search", className: "row searchBar"}, 
                     React.createElement(TextSearch, {
+                        type: this.props.type, 
+                        typeaheadUrl: this.props.typeaheadUrl, 
                         text: this.props.selected.title_or_subtitle, 
                         i18n: this.props.i18n, 
+                        text_placeholder: this.props.text_placeholder, 
                         projects: this.props.projects, 
                         onChange: this.props.onChange}
                     ), 
-                    React.createElement("div", {id: "filter-wrapper"}, 
+                    React.createElement("div", {id: "filter-wrapper col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2"}, 
                         React.createElement("div", null, 
                             this.props.filters.map(create_filter, this), 
                             reset_button
@@ -390,9 +517,12 @@ var App = React.createClass({displayName: "App",
         };
     },
     render: function() {
+        var elements_text = this.props.i18n[this.props.type + "_text"];
+
         return (
             React.createElement("div", null, 
                 React.createElement(SearchBar, {
+                    typeaheadUrl: this.props.typeahead_url, 
                     resetFilters: this.resetFilters, 
                     onChange: this.onFilterChange, 
                     filters: this.props.dropdown_filters, 
@@ -401,9 +531,13 @@ var App = React.createClass({displayName: "App",
                     project_count: this.state.project_count, 
                     i18n: this.props.i18n, 
                     options: this.state.options, 
-                    selected: this.state.selected}
+                    selected: this.state.selected, 
+                    text_placeholder: elements_text, 
+                    type: this.props.type}
                 ), 
                 React.createElement(ProjectDirectory, {
+                    hide_map: this.props.hide_map, 
+                    type: this.props.type, 
                     onChange: this.onFilterChange, 
                     limitOptions: this.state.options.limit, 
                     page: this.state.selected.page || 1, 
@@ -411,6 +545,7 @@ var App = React.createClass({displayName: "App",
                     projects: this.state.projects, 
                     project_count: this.state.project_count, 
                     i18n: this.props.i18n, 
+                    elements_text: elements_text, 
                     disabled: this.state.disabled, 
                     filtered: this.state.filtered}
                 )
@@ -571,19 +706,5 @@ var App = React.createClass({displayName: "App",
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML),
-        dropdown_filters = ["location", "organisation", "sector"],
-        hidden_or_other = ["title_or_subtitle", "keyword", "status", "page", "limit"],
-        url = "/rest/v1/project_directory";
-
-    ReactDOM.render(
-        React.createElement(App, {
-            dropdown_filters: dropdown_filters, 
-            hidden_or_other: hidden_or_other, 
-            options_url: url, 
-            i18n: i18n}
-        ),
-        projectDirectory
-    );
-});
+// Add global variables for other scripts to use
+window.DirectoryApp = App;

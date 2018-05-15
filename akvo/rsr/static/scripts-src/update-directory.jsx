@@ -13,14 +13,14 @@ document.addEventListener("DOMContentLoaded", function() {
         typeahead_url = "/rest/v1/typeaheads/project_updates?format=json";
 
     ReactDOM.render(
-        React.createElement(DirectoryApp, {
-            type: "updates", 
-            dropdown_filters: dropdown_filters, 
-            hidden_or_other: hidden_or_other, 
-            options_url: url, 
-            i18n: i18n, 
-            typeahead_url: typeahead_url}
-        ),
+        <DirectoryApp
+            type={"updates"}
+            dropdown_filters={dropdown_filters}
+            hidden_or_other={hidden_or_other}
+            options_url={url}
+            i18n={i18n}
+            typeahead_url={typeahead_url}
+        />,
         document.getElementById("update-directory")
     );
 });

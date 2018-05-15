@@ -5,8 +5,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var projectDirectory = document.getElementById("project-directory"),
-    options_cache = {};
+var options_cache = {};
 
 var Filter = React.createClass({
     render: function() {
@@ -98,12 +97,92 @@ var Project = React.createClass({
     }
 });
 
+var Update = React.createClass({
+    highlightMarker: function() {
+        return changeNodeMarkerIcon(this.getDOMNode(), google.maps.Animation.BOUNCE);
+    },
+    unHighlightMarker: function() {
+        return changeNodeMarkerIcon(this.getDOMNode(), null);
+    },
+    render: function() {
+        var project = this.props.project,
+            element_id = "project-" + project.id;
+        return (
+            <li
+                id={element_id}
+                onMouseEnter={this.highlightMarker}
+                onMouseLeave={this.unHighlightMarker}
+                className="updateAsset"
+            >
+                <div className="thumbImg">
+                    <a href={project.url}>
+                        <img src={project.image} alt={project.title} />
+                    </a>
+                </div>
+                <div>
+                    <h1>
+                        <a href={project.url}>{project.title}</a>
+                    </h1>
+                    <div>
+                        <a href="{project.project_url}" class="projectTitle">
+                            <span class="small">Project: </span> {project.project}
+                        </a>
+                    </div>
+                    <div>
+                        <span class="small">Created by: </span>
+                        <span class="userFullName">{project.user_fullname}</span>
+                    </div>
+                    <div>
+                        <span class="small">Org: </span>
+                        <a href="{project.organisation_url}" class="orgName">
+                            {project.organisation}
+                        </a>
+                    </div>
+                    <div class="upDateTime">{project.event_date}</div>
+                </div>
+            </li>
+        );
+    }
+});
+
+var Organisation = React.createClass({
+    render: function() {
+        var organisation = this.props.organisation,
+            element_id = "organisation-" + organisation.id;
+        return (
+            <li id={element_id}>
+                <div>
+                    <a href={organisation.url}>
+                        <img src={organisation.image} alt={organisation.title} />
+                    </a>
+                </div>
+                <div>
+                    <h1>
+                        <a href={organisation.url}>{organisation.name}</a>
+                    </h1>
+                    <div className="orgType">{organisation.organisation_type}</div>
+                </div>
+                <div className="hidden-xs hidden-sm additionalInfo">
+                    <div>
+                        <span>{organisation.project_count} projects</span>
+                    </div>
+                </div>
+            </li>
+        );
+    }
+});
+
 var ProjectDirectory = React.createClass({
     componentDidUpdate: function(prevProps) {
         // If projects changed
         if (this.props.projects != prevProps.projects) {
             // Update map
-            window.render_map(document.querySelector("#akvo_map_projects"), this.getMapConfig());
+            if (!this.props.hide_map) {
+                window.render_map(
+                    document.querySelector("#akvo_map_projects"),
+                    this.getMapConfig()
+                );
+            }
             // Scroll the project list container to the top
             ReactDOM.findDOMNode(this).querySelector("#projList").scrollTop = 0;
         }
@@ -131,10 +210,12 @@ var ProjectDirectory = React.createClass({
     // FIXME: Need to have a better display when things are loading....
     render: function() {
         var project_count_text =
-            this.props.project_count != undefined
-                ? this.props.project_count + " " + this.props.i18n.projects_text
-                : this.props.i18n.loading_text;
-        var filtered = this.props.filtered ? " filtered" : "";
+                this.props.project_count != undefined
+                    ? this.props.project_count + " " + this.props.elements_text
+                    : this.props.i18n.loading_text,
+            filtered = this.props.filtered ? " filtered" : "",
+            listWidth = this.props.hide_map ? "col-sm-12" : "col-sm-7",
+            listMsg = "The most recent " + this.props.type.toLowerCase() + " added to RSR";
 
         return (
             <section className="main-list projects">
@@ -161,19 +242,38 @@ var ProjectDirectory = React.createClass({
                             undefined
                         )}
 
-                        <div className={"col-sm-7 projectListUlcontain " + filtered} id="projList">
-                            <p className="text-center listMsg">
-                                The most recent projects added to RSR
-                            </p>
+                        <div
+                            className={listWidth + " projectListUlcontain " + filtered}
+                            id="projList"
+                        >
+                            <p className="text-center listMsg">{listMsg}</p>
                             <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
-                                    return (
-                                        <Project
-                                            project={project}
-                                            i18n={this.props.i18n}
-                                            key={"project" + project.id}
-                                        />
-                                    );
+                                    if (this.props.type == "projects") {
+                                        return (
+                                            <Project
+                                                project={project}
+                                                i18n={this.props.i18n}
+                                                key={"project" + project.id}
+                                            />
+                                        );
+                                    } else if (this.props.type == "updates") {
+                                        return (
+                                            <Update
+                                                project={project}
+                                                i18n={this.props.i18n}
+                                                key={"project" + project.id}
+                                            />
+                                        );
+                                    } else if (this.props.type == "organisations") {
+                                        return (
+                                            <Organisation
+                                                organisation={project}
+                                                i18n={this.props.i18n}
+                                                key={"organisation" + project.id}
+                                            />
+                                        );
+                                    }
                                 }, this)}
                             </ul>
                             <div className="container-fluid pageStatus text-center">
@@ -192,11 +292,15 @@ var ProjectDirectory = React.createClass({
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-5">
-                            <section id="map" className="touch-navbar">
-                                <div id="akvo_map_projects" className="rsr_map" />
-                            </section>
-                        </div>
+                        {this.props.hide_map ? (
+                            undefined
+                        ) : (
+                            <div className="col-sm-5">
+                                <section id="map" className="touch-navbar">
+                                    <div id="akvo_map_projects" className="rsr_map" />
+                                </section>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -242,7 +346,7 @@ var TextSearch = React.createClass({
         this.setState({ value: nextProps.text || "" });
     },
     fetchOptions: function() {
-        var url = "/rest/v1/typeaheads/projects?format=json",
+        var url = this.props.typeaheadUrl,
             app = this;
 
         fetch(url, {})
@@ -256,9 +360,18 @@ var TextSearch = React.createClass({
             });
         return [];
     },
+    getUrl: function(entry) {
+        if (this.props.type == "projects") {
+            return "../project/" + entry.id;
+        } else if (this.props.type == "updates") {
+            return "../project/" + entry.project + "/update/" + entry.id;
+        } else if (this.props.type == "organisations") {
+            return "../organisation/" + entry.id;
+        }
+    },
     onChange: function(projects) {
         var project = projects[0],
-            url = "../project/" + project.id;
+            url = this.getUrl(project);
 
         window.location.href = url;
     },
@@ -269,10 +382,19 @@ var TextSearch = React.createClass({
         this.props.onChange("title_or_subtitle", this.state.value);
     },
     render: function() {
-        var Typeahead = ReactBootstrapTypeahead.Typeahead;
+        var Typeahead = ReactBootstrapTypeahead.Typeahead,
+            filterBy;
+
+        if (this.props.type == "projects") {
+            filterBy = ["title", "subtitle"];
+        } else if (this.props.type == "updates") {
+            filterBy = ["title"];
+        } else if (this.props.type == "organisations") {
+            filterBy = ["name", "long_name"];
+        }
 
         return (
-            <div className="form-inline col-lg-4 col-md-6" role="form">
+            <div className="form-inline col-lg-4 col-md-4" role="form">
                 <div className="form-group">
                     <div className="input-group">
                         <Typeahead
@@ -280,10 +402,12 @@ var TextSearch = React.createClass({
                             options={this.state.options}
                             onChange={this.onChange}
                             onInputChange={this.onInputChange}
-                            filterBy={["title", "subtitle"]}
-                            labelKey="title"
+                            filterBy={filterBy}
+                            labelKey={function(x) {
+                                return x.title || x.name;
+                            }}
                             highlightOnlyResult={true}
-                            placeholder="Projects"
+                            placeholder={this.props.text_placeholder}
                             disabled={this.props.disabled}
                             maxResults={10}
                             minLength={3}
@@ -344,12 +468,15 @@ var SearchBar = React.createClass({
             <section id="search-filter" className="container-fluid">
                 <div id="search" className="row searchBar">
                     <TextSearch
+                        type={this.props.type}
+                        typeaheadUrl={this.props.typeaheadUrl}
                         text={this.props.selected.title_or_subtitle}
                         i18n={this.props.i18n}
+                        text_placeholder={this.props.text_placeholder}
                         projects={this.props.projects}
                         onChange={this.props.onChange}
                     />
-                    <div id="filter-wrapper">
+                    <div id="filter-wrapper col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2">
                         <div>
                             {this.props.filters.map(create_filter, this)}
                             {reset_button}
@@ -390,9 +517,12 @@ var App = React.createClass({
         };
     },
     render: function() {
+        var elements_text = this.props.i18n[this.props.type + "_text"];
+
         return (
             <div>
                 <SearchBar
+                    typeaheadUrl={this.props.typeahead_url}
                     resetFilters={this.resetFilters}
                     onChange={this.onFilterChange}
                     filters={this.props.dropdown_filters}
@@ -402,8 +532,12 @@ var App = React.createClass({
                     i18n={this.props.i18n}
                     options={this.state.options}
                     selected={this.state.selected}
+                    text_placeholder={elements_text}
+                    type={this.props.type}
                 />
                 <ProjectDirectory
+                    hide_map={this.props.hide_map}
+                    type={this.props.type}
                     onChange={this.onFilterChange}
                     limitOptions={this.state.options.limit}
                     page={this.state.selected.page || 1}
@@ -411,6 +545,7 @@ var App = React.createClass({
                     projects={this.state.projects}
                     project_count={this.state.project_count}
                     i18n={this.props.i18n}
+                    elements_text={elements_text}
                     disabled={this.state.disabled}
                     filtered={this.state.filtered}
                 />
@@ -571,19 +706,5 @@ var App = React.createClass({
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML),
-        dropdown_filters = ["location", "organisation", "sector"],
-        hidden_or_other = ["title_or_subtitle", "keyword", "status", "page", "limit"],
-        url = "/rest/v1/project_directory";
-
-    ReactDOM.render(
-        <App
-            dropdown_filters={dropdown_filters}
-            hidden_or_other={hidden_or_other}
-            options_url={url}
-            i18n={i18n}
-        />,
-        projectDirectory
-    );
-});
+// Add global variables for other scripts to use
+window.DirectoryApp = App;

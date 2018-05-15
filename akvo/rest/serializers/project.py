@@ -51,7 +51,7 @@ class ProjectSerializer(BaseRSRSerializer):
         model = Project
 
 
-class ProjectListingSerializer(serializers.ModelSerializer):
+class ProjectDirectorySerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField()
     title = serializers.ReadOnlyField()
