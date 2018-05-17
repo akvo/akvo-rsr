@@ -86,12 +86,13 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
         geometry = '350x200'
         try:
             image = get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
+            url = image.url
         except Exception as e:
             logger.error(
                 'Failed to get thumbnail for image %s with error: %s', project.current_image, e
             )
-            image = None
-        return image.url if image is not None else ''
+            url = project.current_image.url if project.current_image.name else ''
+        return url
 
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):
