@@ -98,7 +98,7 @@ class OrganisationDirectorySerializer(BaseRSRSerializer):
     def get_image(self, organisation):
         width = '191'
         try:
-            image = get_thumbnail(organisation.logo, width, crop='smart', quality=99)
+            image = get_thumbnail(organisation.logo, width, crop='top', quality=99)
         except Exception as e:
             logger.error(
                 'Failed to get thumbnail for image %s with error: %s', organisation.logo, e

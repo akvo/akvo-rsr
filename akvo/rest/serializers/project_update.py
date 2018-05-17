@@ -96,7 +96,7 @@ class ProjectUpdateDirectorySerializer(BaseRSRSerializer):
     def get_image(self, update):
         width = '350'
         try:
-            image = get_thumbnail(update.photo, width, crop='smart', quality=99)
+            image = get_thumbnail(update.photo, width, crop='top', quality=99)
         except Exception as e:
             logger.error(
                 'Failed to get thumbnail for image %s with error: %s', update.photo, e
