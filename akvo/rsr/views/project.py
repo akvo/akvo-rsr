@@ -149,7 +149,7 @@ def main(request, project_id, template="project_main.html"):
 #####################
 
 
-def hierarchy(request, project_id):
+def hierarchy(request, project_id, template='project_hierarchy.html'):
     """."""
     project = get_object_or_404(Project, pk=project_id)
 
@@ -166,7 +166,7 @@ def hierarchy(request, project_id):
         'hierarchy_grid': hierarchy_grid,
     }
 
-    return render(request, 'project_hierarchy.html', context)
+    return render(request, template, context)
 
 
 ###############################################################################################

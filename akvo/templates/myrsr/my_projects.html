@@ -71,8 +71,16 @@
                 {{ project.primary_location.country }}
             </td>
             <td>
-                <span>{% if project.children_all.exists %}Parent{% endif %}</span>
-                <span>{% if project.parents_all.exists %}Child{% endif %}</span>
+                <span>
+                    {% if project.children_all.exists %}
+                        <a href="" class="hierarchy-link" data-project-url="{% url 'project-hierarchy-iframe' project.id %}">Parent</a>
+                    {% endif %}
+                </span>
+                <span>
+                    {% if project.parents_all.exists %}
+                        <a href="" class="hierarchy-link" data-project-url="{% url 'project-hierarchy-iframe' project.id %}">Child</a>
+                    {% endif %}
+                </span>
             </td>
             <td>{{ project.date_end_planned }}</td>
           </tr>
@@ -98,17 +106,24 @@
       {% elif organisations %}
         <p class="noItem text-center col-sm-6 col-sm-offset-3">{% trans "You can't see any projects yet." %}</p>
         <p class="text-center col-sm-8 col-sm-offset-2">
-          {% url 'my_details' as my_details_url %}
-          {% blocktrans %}
-            The organisation(s) you have joined do not have any projects yet.
-            Go to the <a href="{{ my_details_url }}">My details</a> page to see your
-            organisation(s).
-          {% endblocktrans %}
+            {% url 'my_details' as my_details_url %}
+            {% blocktrans %}
+                The organisation(s) you have joined do not have any projects yet.
+                Go to the <a href="{{ my_details_url }}">My details</a> page to see your
+                organisation(s).
+            {% endblocktrans %}
         </p>
       {% endif %}
     {% endif %}
   {% endif %}
-</div>
+      </div>
+      <div id="hierarchy-modal" class="modal fade" role="dialog">
+          <div class="modal-content" style="z-index: 2000;">
+              <div class="modal-body">
+                  <iframe frameborder="0" height="500" scroll="auto"></iframe>
+              </div>
+          </div>
+      </div>
 {% endblock %}
 </div>
 {% block js %}

@@ -219,3 +219,21 @@ function getCreateProject(createProjectNode) {
 document.addEventListener("DOMContentLoaded", function() {
     setCreateProjectOnClick();
 });
+
+// Show hierarchy modals
+var show_hierarchy = function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    var url = $(e.target).data("project-url"),
+        modal = $("#hierarchy-modal"),
+        iframe = modal.find("iframe");
+    modal.modal("hide");
+    iframe.removeAttr("src");
+    iframe.attr("src", url);
+    iframe.attr("width", $(document).width());
+    modal.modal("show");
+};
+
+$(function() {
+    $(".hierarchy-link").click(show_hierarchy);
+});
