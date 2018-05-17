@@ -6,6 +6,7 @@
 
 import logging
 
+from django.conf import settings
 from rest_framework import serializers
 
 from akvo.rsr.models import Organisation
@@ -103,4 +104,5 @@ class OrganisationDirectorySerializer(BaseRSRSerializer):
                 'Failed to get thumbnail for image %s with error: %s', organisation.logo, e
             )
             image = None
-        return image.url if image is not None else ''
+        default_logo = '{}{}'.format(settings.STATIC_URL, 'images/default-org-logo.jpg')
+        return image.url if image is not None else default_logo
