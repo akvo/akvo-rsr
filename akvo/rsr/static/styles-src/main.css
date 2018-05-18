@@ -1181,6 +1181,13 @@ h4.detailedInfo {
     max-width: 80%;
     margin: 10px auto 0 auto; }
 
+.label-info {
+  font-weight: normal; }
+  .label-info.projectTotal, .label-info.updateTotal {
+    font-size: 1.2em;
+    background-color: transparent;
+    color: #202024; }
+
 .pageStatus .pagination {
   margin: 0 auto; }
 

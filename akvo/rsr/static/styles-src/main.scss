@@ -1394,7 +1394,14 @@ h4.detailedInfo {
         margin: 10px auto 0 auto;
     }
 }
-
+.label-info {
+    font-weight: normal;
+    &.projectTotal, &.updateTotal {
+        font-size: 1.2em;
+        background-color: transparent;
+        color: $akvoBlack;
+    }
+}
 .pageStatus {
     .pagination {
         margin: 0 auto;

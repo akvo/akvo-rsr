@@ -88,11 +88,11 @@
       </table>
     </div>
       <div class="text-center small showingTxt myProjectPag">
-        <p>
+        <span class="label label-info projectTotal">
           {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} projects
+            {{ paginator_count }} projects
           {% endblocktrans %}
-        </p>
+        </span>
         {% include 'navigation/pagination.html' %}
       </div>
       </div>
