@@ -119,8 +119,7 @@ $(document).ready(function() {
     });
 
     // Maps
-    // Find each element of class rsr_map (from the coll_map template tag)
-    // and render map with data from related js object
+    // Render a map with the given config in the given node
     render_map = function(node, mapConfig) {
         var mapId = node.id,
             disableDefaultUI = false,
@@ -230,5 +229,4 @@ $(document).ready(function() {
         };
         gMap.load();
     };
-    _.forEach(document.getElementsByClassName("rsr_map"), render_map);
 });
