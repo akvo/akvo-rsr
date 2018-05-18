@@ -204,7 +204,8 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
     getMapConfig: function() {
         return {
             dynamic: true,
-            locations: this.getLocations()
+            locations: this.getLocations(),
+            clickCallback: this.props.setCountry
         };
     },
     // FIXME: Need to have a better display when things are loading....
@@ -547,7 +548,8 @@ var App = React.createClass({displayName: "App",
                     i18n: this.props.i18n, 
                     elements_text: elements_text, 
                     disabled: this.state.disabled, 
-                    filtered: this.state.filtered}
+                    filtered: this.state.filtered, 
+                    setCountry: this.setCountry}
                 )
             )
         );
@@ -675,6 +677,16 @@ var App = React.createClass({displayName: "App",
             }
         }
         return options;
+    },
+    setCountry: function(name) {
+        console.log(name);
+        var locations = this.state.options.location;
+        for (var i in locations) {
+            if (locations[i].label == name) {
+                this.onFilterChange("location", [locations[i]]);
+                break;
+            }
+        }
     },
     updateHistory: function(state) {
         if (_.isEqual(state, history.state)) {

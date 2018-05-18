@@ -98,11 +98,12 @@ class OrganisationDirectorySerializer(BaseRSRSerializer):
     def get_image(self, organisation):
         width = '191'
         try:
-            image = get_thumbnail(organisation.logo, width, crop='top', quality=99)
+            image = get_thumbnail(organisation.logo, width, crop='smart', quality=99)
+            url = image.url
         except Exception as e:
             logger.error(
                 'Failed to get thumbnail for image %s with error: %s', organisation.logo, e
             )
-            image = None
-        default_logo = '{}{}'.format(settings.STATIC_URL, 'images/default-org-logo.jpg')
-        return image.url if image is not None else default_logo
+            default_logo = '{}{}'.format(settings.STATIC_URL, 'images/default-org-logo.jpg')
+            url = organisation.logo.url if organisation.logo.name else default_logo
+        return url

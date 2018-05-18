@@ -96,13 +96,14 @@ class ProjectUpdateDirectorySerializer(BaseRSRSerializer):
     def get_image(self, update):
         width = '350'
         try:
-            image = get_thumbnail(update.photo, width, crop='top', quality=99)
+            image = get_thumbnail(update.photo, width, crop='smart', quality=99)
+            url = image.url
         except Exception as e:
             logger.error(
                 'Failed to get thumbnail for image %s with error: %s', update.photo, e
             )
-            image = None
-        return image.url if image is not None else ''
+            url = update.photo.url if update.photo.name else ''
+        return url
 
 
 class ProjectUpdateDeepSerializer(ProjectUpdateSerializer):
