@@ -217,6 +217,10 @@ button.btn-primary {
     @include border-radius(5px 0 0 5px);
 }
 
+.form-control {
+    border-radius: 0px;
+}
+
 .input-group-addon:not(:first-child):not(:last-child),
 .input-group-btn:not(:first-child):not(:last-child),
 .input-group .form-control:not(:first-child):not(:last-child) {
@@ -834,7 +838,20 @@ div.update-confirm-container {
         }
     }
 }
-
+#user_table {
+    td.text-right {
+        > span {
+            > span:first-of-type {
+                float: right;
+                margin-left: 15px;
+                margin-top: 5px;
+            }
+            > span:nth-of-type(2){
+                margin-right: 15px;
+            }
+        }
+    }
+}
 .myProjectList,
 #updates,
 #user_table {
@@ -3581,7 +3598,7 @@ main {
     }
     aside.open {
         width: calc(50% - 10px);
-        padding: 0px 5px 5px 5px;
+        padding: 0px 15px 5px 15px;
         display: block;
         margin-top: 5px;
         margin-left: 5px;
@@ -4121,7 +4138,7 @@ main.results-page {
                 span {
                     &.indicatorTitle {
                         display: inline-block;
-                        max-width: 60%;
+                        max-width: 80%;
                         ul {
                             padding-left: 0;
                             margin-bottom: 0;
@@ -4730,6 +4747,9 @@ main.results-page {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
     max-width: 100%;
+    .comments {
+        margin-left: 0;
+    }
     &.qualitativeUpdate {
         .update-description {
             display: none;
@@ -4745,9 +4765,17 @@ main.results-page {
         .update-entry-container {
             &.edit-in-progress {
                 .closingBtn {
+                    width: 25px;
+                    height: 25px;
                     z-index: 999;
                     top: -20px !important;
-                    right: -5px !important;
+                    right: -10px !important;
+                    background: rgba($akvoBlack, 0.05);
+                    border: transparent;
+                    &:hover {
+                        background: rgba($akvoBlack, 0.5);
+                        color: white;
+                    }
                 }
             }
         }
@@ -4788,8 +4816,8 @@ main.results-page {
             .disaggregationFields {
                 width: 100%;
                 overflow: auto;
-                border-top: 1px solid rgba($akvoBlack, 0.1);
-                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                border-top: 1px solid rgba($akvoBlack, 0);
+                border-bottom: 1px solid rgba($akvoBlack, 0);
                 padding: 15px 0;
                 margin-top: 10px;
                 h4 {

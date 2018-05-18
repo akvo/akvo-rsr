@@ -663,8 +663,8 @@ function initReact() {
     var EmploymentRow = React.createClass({
         render: function() {
             var employmentCell = React.createElement(Employment, {
-                key: this.props.employment.id,
-                employment: this.props.employment
+                employment: this.props.employment,
+                key: this.props.employment.id
             });
 
             return (

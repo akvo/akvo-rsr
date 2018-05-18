@@ -229,6 +229,9 @@ button.btn-primary {
   -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
 
+.form-control {
+  border-radius: 0px; }
+
 .input-group-addon:not(:first-child):not(:last-child),
 .input-group-btn:not(:first-child):not(:last-child),
 .input-group .form-control:not(:first-child):not(:last-child) {
@@ -714,6 +717,14 @@ div.update-confirm-container {
   text-align: right; }
   .myProjectList tr td:first-child {
     text-align: left; }
+
+#user_table td.text-right > span > span:first-of-type {
+  float: right;
+  margin-left: 15px;
+  margin-top: 5px; }
+
+#user_table td.text-right > span > span:nth-of-type(2) {
+  margin-right: 15px; }
 
 .myProjectList,
 #updates,
@@ -2925,7 +2936,7 @@ main {
     display: none; }
   main aside.open {
     width: calc(50% - 10px);
-    padding: 0px 5px 5px 5px;
+    padding: 0px 15px 5px 15px;
     display: block;
     margin-top: 5px;
     margin-left: 5px;
@@ -3439,7 +3450,7 @@ main.results-page {
         opacity: 1; }
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
         display: inline-block;
-        max-width: 60%; }
+        max-width: 80%; }
         .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul {
           padding-left: 0;
           margin-bottom: 0; }
@@ -3853,6 +3864,8 @@ main.results-page {
 
 .update-container {
   max-width: 100%; }
+  .update-container .comments {
+    margin-left: 0; }
   .update-container.qualitativeUpdate .update-description {
     display: none; }
   .update-container.qualitativeUpdate textarea#narrative {
@@ -3860,9 +3873,16 @@ main.results-page {
   .update-container.qualitativeUpdate .react-mde {
     min-height: 250px; }
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
+    width: 25px;
+    height: 25px;
     z-index: 999;
     top: -20px !important;
-    right: -5px !important; }
+    right: -10px !important;
+    background: rgba(32, 32, 36, 0.05);
+    border: transparent; }
+    .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn:hover {
+      background: rgba(32, 32, 36, 0.5);
+      color: white; }
   .update-container.quantitativeUpdate .targetLabel {
     margin-left: 25px; }
     .update-container.quantitativeUpdate .targetLabel + div {
@@ -3891,8 +3911,8 @@ main.results-page {
     .update-container .update-entry-container.edit-in-progress .disaggregationFields {
       width: 100%;
       overflow: auto;
-      border-top: 1px solid rgba(32, 32, 36, 0.1);
-      border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+      border-top: 1px solid rgba(32, 32, 36, 0);
+      border-bottom: 1px solid rgba(32, 32, 36, 0);
       padding: 15px 0;
       margin-top: 10px; }
       .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
