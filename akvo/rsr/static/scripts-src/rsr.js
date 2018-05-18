@@ -225,8 +225,181 @@ $(document).ready(function() {
                     if (map.getZoom() < 2) map.setZoom(2);
                     google.maps.event.removeListener(listener);
                 });
+
+                // Global function since it is called from JSONP callback
+                // Closure since it needs the map
+                window.drawCountries = function(data) {
+                    // Set data as a global, so that we don't need to fetch it
+                    // each time the map is re-rendered.
+                    window.gMapCountryData = data;
+
+                    var fillColor = "lightyellow",
+                        strokeColor = "#0000FF",
+                        rows = data["rows"];
+
+                    rows.forEach(function(row) {
+                        if (row[0] != "Antarctica") {
+                            var newCoordinates = [];
+                            var geometries = row[1]["geometries"];
+                            if (geometries) {
+                                for (var j in geometries) {
+                                    newCoordinates.push(constructNewCoordinates(geometries[j]));
+                                }
+                            } else {
+                                newCoordinates = constructNewCoordinates(row[1]["geometry"]);
+                            }
+                            var country = new google.maps.Polygon({
+                                paths: newCoordinates,
+                                strokeColor: strokeColor,
+                                strokeOpacity: 0,
+                                strokeWeight: 1,
+                                fillColor: fillColor,
+                                fillOpacity: 0.3,
+                                name: transformCountryName(row[0])
+                            });
+
+                            google.maps.event.addListener(country, "mouseover", function() {
+                                this.setOptions({ fillOpacity: 1 });
+                            });
+                            google.maps.event.addListener(country, "mouseout", function() {
+                                this.setOptions({ fillOpacity: 0.3 });
+                            });
+                            google.maps.event.addListener(country, "click", function() {
+                                if (mapConfig.clickCallback) {
+                                    mapConfig.clickCallback(country.name);
+                                }
+                            });
+
+                            country.setMap(map);
+                        }
+                    });
+                };
             }
         };
+
         gMap.load();
+        if (window.gMapCountryData) {
+            window.drawCountries(window.gMapCountryData);
+        } else {
+            getCountryData();
+        }
+    };
+
+    var getCountryData = function() {
+        // Initialize JSONP request
+        var script = document.createElement("script");
+        var url = ["https://www.googleapis.com/fusiontables/v1/query?"];
+        url.push("sql=");
+        var query = "SELECT name, kml_4326 FROM " + "1foc3xO9DyfSIF6ofvN0kp2bxSfSeKog5FbdWdQ";
+        var encodedQuery = encodeURIComponent(query);
+        url.push(encodedQuery);
+        url.push("&callback=drawCountries");
+        url.push("&key=AIzaSyAm9yWCV7JPCTHCJut8whOjARd7pwROFDQ");
+        script.src = url.join("");
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(script);
+    };
+
+    var constructNewCoordinates = function(polygon) {
+        var newCoordinates = [];
+        var coordinates = polygon["coordinates"][0];
+        for (var i in coordinates) {
+            newCoordinates.push(new google.maps.LatLng(coordinates[i][1], coordinates[i][0]));
+        }
+        return newCoordinates;
+    };
+
+    // FIXME: There should be a better way of doing this. This function
+    // translates the country names between two different datasets - country KML
+    // and the m49_codes list.
+    var transformCountryName = function(name) {
+        if (name.includes("Rep.")) {
+            name = name.replace("Rep.", "Republic");
+        }
+        if (name.includes("S.")) {
+            name = name.replace("S.", "South");
+        }
+        if (name.includes("N.")) {
+            name = name.replace("N.", "North");
+        }
+        if (name.includes("W.")) {
+            name = name.replace("W.", "Western");
+        }
+        if (name.includes("Eq.")) {
+            name = name.replace("Eq.", "Equatorial");
+        }
+        if (name.includes("Is.")) {
+            name = name.replace("Is.", "Islands");
+        }
+        if (name.includes("Herz.")) {
+            name = name.replace("Herz.", "Herzegovina");
+        }
+        if (name == "Iran") {
+            name = "Iran (Islamic Republic of)";
+        }
+        if (name == "Syria") {
+            name = "Syrian Arab Republic";
+        }
+        if (name == "Laos") {
+            name = "Lao People's Democratic Republic";
+        }
+        if (name == "Guinea Bissau") {
+            name = "Guinea-Bissau";
+        }
+        if (name == "Congo (Kinshasa)") {
+            name = "Democratic Republic of the Congo";
+        }
+        if (name == "Russia") {
+            name = "Russian Federation";
+        }
+        if (name == "Moldova") {
+            name = "Republic of Moldova";
+        }
+        if (name == "Vietnam") {
+            name = "Viet Nam";
+        }
+        if (name == "Congo (Brazzaville)") {
+            name = "Congo";
+        }
+        if (name == "North Cyprus") {
+            name = "Cyprus";
+        }
+        if (name == "Brunei") {
+            name = "Brunei Darussalam";
+        }
+        if (name == "Ivory Coast") {
+            name = "Cote d'Ivoire";
+        }
+        if (name == "North Korea") {
+            name = "Democratic People's Republic of Korea";
+        }
+        if (name == "South Korea") {
+            name = "Republic of Korea";
+        }
+        if (name == "Tanzania") {
+            name = "United Republic of Tanzania";
+        }
+        if (name == "Venezuela") {
+            name = "Venezuela (Bolivarian Republic of)";
+        }
+        if (name == "Bolivia") {
+            name = "Bolivia (Plurinational State of)";
+        }
+        if (name == "Macedonia") {
+            name = "The former Yugoslav Republic of Macedonia";
+        }
+        if (name == "East Timor") {
+            name = "Timor-Leste";
+        }
+        if (name == "Falkland Islands") {
+            name = "Falkland Islands (Malvinas)";
+        }
+        if (name == "United Kingdom") {
+            name = "United Kingdom of Great Britain and Northern Ireland";
+        }
+        if (name == "United States") {
+            name = "United States of America";
+        }
+        return name;
     };
 });
