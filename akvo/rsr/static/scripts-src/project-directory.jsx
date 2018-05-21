@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
         dropdown_filters = ["location", "organisation", "sector"],
         hidden_or_other = ["title_or_subtitle", "keyword", "status", "page", "limit"],
         url = "/rest/v1/project_directory",
-        typeahead_url = "/rest/v1/typeaheads/projects?format=json";
+        typeahead_url = "/rest/v1/typeaheads/projects?format=json&published=1";
 
     ReactDOM.render(
         <DirectoryApp
