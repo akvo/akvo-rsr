@@ -13,12 +13,8 @@ from ...models import Indicator, IndicatorPeriod
 
 
 def has_no_data(period):
-    if (period.target_value
-            or period.target_comment
-            or period.actual_value
-            or period.actual_comment
-            or period.numerator
-            or period.denominator):
+    if (period.target_value or period.target_comment or period.actual_value or period.actual_comment
+            or period.numerator or period.denominator):
         return False
     return True
 
@@ -94,7 +90,7 @@ class Command(BaseCommand):
 
         if len(problem_periods.dict):
             print u"Problems:"
-            print problem_periods.export('tsv')
+            print problem_periods.export('csv')
         else:
             print u"No problems"
         if len(deleted_dupes.dict):
@@ -103,6 +99,6 @@ class Command(BaseCommand):
                 print u"Deletions:"
             else:
                 print u"To be deleted:"
-            print deleted_dupes.export('tsv')
+            print deleted_dupes.export('csv')
         else:
             print u"No duplicates found"
