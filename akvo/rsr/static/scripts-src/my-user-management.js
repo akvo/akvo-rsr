@@ -699,11 +699,6 @@ function initReact() {
                 return React.createElement(
                     "span",
                     null,
-                    this.props.employment.organisation.name + " ",
-                    React.createElement(CountryJobTitle, {
-                        country: this.props.employment.country,
-                        job_title: this.props.employment.job_title
-                    }),
                     React.createElement(
                         SplitButton,
                         {
@@ -733,11 +728,6 @@ function initReact() {
                 return React.createElement(
                     "span",
                     null,
-                    this.props.employment.organisation.name + " ",
-                    React.createElement(CountryJobTitle, {
-                        country: this.props.employment.country,
-                        job_title: this.props.employment.job_title
-                    }),
                     React.createElement(
                         SplitButton,
                         {
@@ -773,7 +763,8 @@ function initReact() {
                     React.createElement("td", null, this.props.employment.user.email), 
                     React.createElement("td", null, this.props.employment.user.first_name), 
                     React.createElement("td", null, this.props.employment.user.last_name), 
-                    React.createElement("td", {className: "text-right"}, employmentCell)
+                    React.createElement("td", null, this.props.employment.organisation.name), 
+                    React.createElement("td", null, employmentCell)
                 )
             );
         }
@@ -806,11 +797,8 @@ function initReact() {
             var emailCell = React.createElement("th", null, i18n.email_text);
             var firstNameCell = React.createElement("th", null, i18n.first_name_text);
             var lastNameCell = React.createElement("th", null, i18n.last_name_text);
-            var organisationCell = React.createElement(
-                "th",
-                { className: "text-right" },
-                i18n.organisations_text
-            );
+            var organisationCell = React.createElement("th", null, i18n.organisations_text);
+            var roleNameCell = React.createElement("th", null, i18n.role_text);
 
             var tableRow = React.createElement(
                 "tr",
@@ -818,7 +806,8 @@ function initReact() {
                 emailCell,
                 firstNameCell,
                 lastNameCell,
-                organisationCell
+                organisationCell,
+                roleNameCell
             );
             var tableHead = React.createElement("thead", null, tableRow);
             var tableBody = React.createElement("tbody", null, employments_table);
