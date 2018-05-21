@@ -41,7 +41,7 @@ export default class Reports extends React.Component {
                                 }
                                 return (
                                     <Report
-                                        projectId={project.id}
+                                        project={project}
                                         report={reports.objects[id]}
                                         key={id}
                                     />
@@ -76,7 +76,10 @@ class Report extends React.Component {
         const { report: { url }, project } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
-        download_url = url.replace("{format}", format).replace("{project}", project.id);
+        download_url = url
+            .replace("{format}", format)
+            .replace("{project}", project.id)
+            .replace("{language_code}", project.currentLanguage);
         if (this.state.date_selection) {
             if (end_date && start_date && start_date > end_date) {
                 // Swap start and end dates if end date is before start date
