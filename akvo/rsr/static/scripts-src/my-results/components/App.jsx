@@ -378,7 +378,7 @@ export default class App extends React.Component {
                     <TabList>
                         {show_results && has_results ? <Tab>Results</Tab> : undefined}
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
-                        <Tab>Project updates</Tab><Tab>Reports</Tab>    
+                        <Tab>Project updates</Tab><Tab>Project reports</Tab>    
                     </TabList>
                     {show_results && has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (
