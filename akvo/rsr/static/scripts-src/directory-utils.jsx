@@ -455,7 +455,7 @@ var SearchBar = React.createClass({
             );
         };
         var reset_button = _.isEmpty(
-            _.pick(this.props.selected, "Location", "Organisation", "Sector", "title_or_subtitle")
+            _.pick(this.props.selected, "location", "organisation", "sector", "title_or_subtitle")
         ) ? (
             undefined
         ) : (
