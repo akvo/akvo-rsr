@@ -823,17 +823,17 @@ div.update-confirm-container {
 .myProjectList {
     thead {
         th {
-            text-align: right;
-            &:first-child {
-                text-align: left;
+            text-align: left;
+            &:last-child {
+                text-align: right;
             }
         }
     }
     tr {
         td {
-            text-align: right;
-            &:first-child {
-                text-align: left;
+            text-align: left;
+            &:last-child {
+                text-align: right;
             }
         }
     }

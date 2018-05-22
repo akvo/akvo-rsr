@@ -709,14 +709,14 @@ div.update-confirm-container {
   color: #202024 !important; }
 
 .myProjectList thead th {
-  text-align: right; }
-  .myProjectList thead th:first-child {
-    text-align: left; }
+  text-align: left; }
+  .myProjectList thead th:last-child {
+    text-align: right; }
 
 .myProjectList tr td {
-  text-align: right; }
-  .myProjectList tr td:first-child {
-    text-align: left; }
+  text-align: left; }
+  .myProjectList tr td:last-child {
+    text-align: right; }
 
 #user_table td.text-right > span > span:first-of-type {
   float: right;
