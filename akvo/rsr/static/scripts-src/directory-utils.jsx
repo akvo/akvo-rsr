@@ -513,7 +513,7 @@ var App = React.createClass({
         this.fetchData(true);
         window.onpopstate = function(popstate) {
             if (!_.isEqual(app.state.selected, popstate.state)) {
-                app.setState({ selected: popstate.state }, app.fetchData);
+                app.setState({ selected: popstate.state || {} }, app.fetchData);
             }
         };
     },
