@@ -1533,6 +1533,7 @@ class ReportAdminForm(forms.ModelForm):
             'url': forms.Textarea(attrs={'rows': 2, 'style': 'width: 80%'})
         }
 
+
 class ReportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Report')
     form = ReportAdminForm
