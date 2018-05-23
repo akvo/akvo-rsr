@@ -1245,27 +1245,6 @@ h4.detailedInfo {
     background: #383334;
     text-align: center; }
 
-#organisation-directory .searchBar {
-  max-width: 60%;
-  margin: 10px auto 0 auto;
-  position: relative; }
-  #organisation-directory .searchBar.updateSearch {
-    margin: 0px auto 0 auto; }
-  #organisation-directory .searchBar p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; }
-  #organisation-directory .searchBar .pgTitle {
-    position: absolute;
-    top: -23px;
-    display: inline-block; }
-
-#organisation-directory .advanced-filter {
-  display: inline-block;
-  text-align: right;
-  margin-left: 20%;
-  float: right; }
-
 .advanced-filter {
   display: inline-block;
   text-align: right;
@@ -1286,6 +1265,27 @@ h4.detailedInfo {
 ************************************************************************/
 .dropup button {
   border: none; }
+
+#organisation-directory .searchBar {
+  max-width: 60%;
+  margin: 10px auto 0 auto;
+  position: relative; }
+  #organisation-directory .searchBar.updateSearch {
+    margin: 0px auto 0 auto; }
+  #organisation-directory .searchBar p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+  #organisation-directory .searchBar .pgTitle {
+    position: absolute;
+    top: -23px;
+    display: inline-block; }
+
+#organisation-directory .advanced-filter {
+  display: inline-block;
+  text-align: right;
+  margin-left: 20%;
+  float: right; }
 
 #organisation-directory .main-list {
   padding-top: 20px; }
@@ -1313,6 +1313,8 @@ h4.detailedInfo {
       transition: all 0.2s ease-in; }
       #organisation-directory .main-list ul.projectListUl li > div:first-child {
         min-height: 130px; }
+        #organisation-directory .main-list ul.projectListUl li > div:first-child a img {
+          max-width: 191px; }
       #organisation-directory .main-list ul.projectListUl li:nth-child(4n+4) {
         margin-right: 0; }
       #organisation-directory .main-list ul.projectListUl li h1 {
@@ -2977,6 +2979,13 @@ main.results-page {
   min-height: calc(100vh - 160px);
   padding-right: 50px !important;
   padding-left: 50px !important; }
+  .myRsrPg .modal-content {
+    max-width: 40%;
+    height: 60vh;
+    overflow: hidden;
+    margin: 20vh 30%; }
+    .myRsrPg .modal-content iframe {
+      height: 100vh !important; }
   .myRsrPg + footer {
     position: sticky; }
   .myRsrPg h3 {

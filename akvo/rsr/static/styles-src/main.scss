@@ -1479,31 +1479,6 @@ h4.detailedInfo {
     }
 }
 
-#organisation-directory {
-    .searchBar {
-        max-width: 60%;
-        margin: 10px auto 0 auto;
-        position: relative;
-        &.updateSearch {
-            margin: 0px auto 0 auto;
-        }
-        p {
-            @include noWrapTxt;
-        }
-        .pgTitle {
-            position: absolute;
-            top: -23px;
-            display: inline-block;
-        }
-    }
-    .advanced-filter {
-        display: inline-block;
-        text-align: right;
-        margin-left: 20%;
-        float: right;
-    }
-}
-
 .advanced-filter {
     display: inline-block;
     text-align: right;
@@ -1534,6 +1509,28 @@ h4.detailedInfo {
 }
 
 #organisation-directory {
+    .searchBar {
+        max-width: 60%;
+        margin: 10px auto 0 auto;
+        position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
+        p {
+            @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top: -23px;
+            display: inline-block;
+        }
+    }
+    .advanced-filter {
+        display: inline-block;
+        text-align: right;
+        margin-left: 20%;
+        float: right;
+    }
     .main-list {
         padding-top: 20px;
         ul.projectListUl {
@@ -1553,7 +1550,9 @@ h4.detailedInfo {
                 > div:first-child {
                     min-height: 130px;
                     a {
-                        img {}
+                        img {
+                            max-width: 191px
+                        }
                     }
                 }
                 &:nth-child(4n+4) {
@@ -3645,6 +3644,16 @@ main.results-page {
 }
 
 .myRsrPg {
+    .modal-content {
+        max-width: 40%;
+        height: 60vh;
+        overflow: hidden;
+        margin: 20vh 30%;
+        iframe {
+            height: 100vh !important;
+
+        }
+    }
     min-height: calc(100vh - 160px);
     + footer {
         position: sticky;
