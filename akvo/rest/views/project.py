@@ -17,7 +17,9 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectDirectorySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadSectorSerializer,)
-from akvo.rest.views.utils import (int_or_none, get_cached_data, get_qs_elements_for_page)
+from akvo.rest.views.utils import (
+    int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
+)
 from akvo.rsr.models import Project
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.utils import codelist_choices
@@ -245,10 +247,14 @@ def project_directory(request):
 
     # Get the relevant data for typeaheads based on filtered projects (minus
     # text filtering, if no projects were found)
-    locations = [
-        {'id': choice[0], 'name': choice[1]}
-        for choice in location_choices(projects)
-    ]
+    cached_locations, _ = get_cached_data(request, 'locations', None, None)
+    if cached_locations is None:
+        cached_locations = locations = [
+            {'id': choice[0], 'name': choice[1]}
+            for choice in location_choices(projects)
+        ]
+        set_cached_data(request, 'locations', cached_locations)
+
     organisations = projects.all_partners().values('id', 'name', 'long_name')
 
     # FIXME: Currently only vocabulary 2 is supported (as was the case with
@@ -281,7 +287,7 @@ def project_directory(request):
         'showing_cached_projects': showing_cached_projects,
         'organisation': cached_organisations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
-        'location': locations,
+        'location': cached_locations,
     }
 
     return Response(response)
