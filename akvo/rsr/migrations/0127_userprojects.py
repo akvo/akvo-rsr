@@ -13,13 +13,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='UserPermissionedProjects',
+            name='UserProjects',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('projects', models.ManyToManyField(related_name='permitted_users', to='rsr.Project')),
-                ('user', models.OneToOneField(related_name='permitted_projects', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(related_name='user_projects', to=settings.AUTH_USER_MODEL)),
             ],
             options={
+                'ordering': ('user_id',),
+                'verbose_name': 'user projects',
+                'verbose_name_plural': 'users projects',
             },
             bases=(models.Model,),
         ),

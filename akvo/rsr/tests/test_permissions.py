@@ -10,7 +10,7 @@ from django.test import TestCase
 from akvo.rsr.models import (
     User, Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
-    AdministrativeLocation, ProjectLocation, OrganisationLocation, UserPermissionedProjects
+    AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects
 )
 from akvo.utils import check_auth_groups
 
@@ -515,9 +515,9 @@ class UserPermissionedProjectsTestCase(TestCase):
                 Partnership.objects.create(organisation=self.org, project=project)
 
         self.user = PermissionsTestCase.create_user('user@org.org')
-        group = Group.objects.get(name='Users')
+        self.group = Group.objects.get(name='Users')
         Employment.objects.create(
-            user=self.user, organisation=self.org, group=group, is_approved=True
+            user=self.user, organisation=self.org, group=self.group, is_approved=True
         )
 
     def test_should_view_all_org_projects(self):
@@ -536,28 +536,44 @@ class UserPermissionedProjectsTestCase(TestCase):
         user = self.user
 
         # When
-        # Create a permissioned entry with no projects in it
-        UserPermissionedProjects.objects.create(user=user)
+        # Create a UserProjects entry with no projects in it
+        UserProjects.objects.create(user=user)
 
         # Then
         for project in self.projects:
             self.assertFalse(user.has_perm('rsr.view_project', project))
 
-    def test_should_view_only_permissioned_projects(self):
+    def test_should_view_only_whitelisted_projects(self):
         # Given
         user = self.user
 
         # When
-        # Assign permissions to all projects (including non org project!)
-        permissions = UserPermissionedProjects.objects.create(user=user)
-        for project in self.projects:
+        # Assign first and second project to whitelist
+        permissions = UserProjects.objects.create(user=user)
+        for project in self.projects[:2]:
             permissions.projects.add(project)
 
         # Then
-        for i, project in enumerate(self.projects):
-            if i == 0:
-                # Non organisation project is not accessible, even if
-                # explicitly given permissions to.
-                self.assertFalse(user.has_perm('rsr.view_project', project))
-            else:
-                self.assertTrue(user.has_perm('rsr.view_project', project))
+        # Non organisation project is not accessible, even if explicitly given permissions to.
+        self.assertFalse(user.has_perm('rsr.view_project', self.projects[0]))
+        # This project is on the white list, and is a project of the user's organisation
+        self.assertTrue(user.has_perm('rsr.view_project', self.projects[1]))
+        # This project is not on the white list so even though it's  an organisation project, access
+        # is denied
+        self.assertFalse(user.has_perm('rsr.view_project', self.projects[2]))
+
+    def test_user_with_multiple_orgs_is_never_restricted(self):
+        # Given
+        user = self.user
+        org2 = Organisation.objects.create(name='org2', long_name='org2')
+        Partnership.objects.create(organisation=org2, project=self.projects[0])
+        Employment.objects.create(
+            user=user, organisation=org2, group=self.group, is_approved=True
+        )
+        # When
+        # Create a UserProjects entry with no projects in it
+        UserProjects.objects.create(user=user)
+
+        # Then
+        for project in self.projects:
+            self.assertTrue(user.has_perm('rsr.view_project', project))

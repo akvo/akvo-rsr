@@ -6,9 +6,7 @@
 
 
 import logging
-logger = logging.getLogger('akvo.rsr')
 
-from django.conf import settings
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 
@@ -28,6 +26,7 @@ from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
+from .user_projects import UserProjects
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
@@ -82,7 +81,8 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
-from .user_permissioned_projects import UserPermissionedProjects
+
+logger = logging.getLogger('akvo.rsr')
 
 __all__ = [
     'AdministrativeLocation',
@@ -173,7 +173,7 @@ __all__ = [
     'Transaction',
     'TransactionSector',
     'User',
-    'UserPermissionedProjects',
+    'UserProjects',
 ]
 
 # Permission rules

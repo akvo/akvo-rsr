@@ -9,7 +9,7 @@ import rules
 from django.contrib.auth import get_user_model
 
 from .models import (Employment, IatiExport, Organisation, PartnerSite,
-                     Project, ProjectUpdate, UserPermissionedProjects)
+                     Project, ProjectUpdate, UserProjects)
 
 ADMIN_GROUP_NAME = 'Admins'
 ME_MANAGER_GROUP_NAME = 'M&E Managers'
@@ -57,12 +57,17 @@ def _user_has_group_permissions(user, obj, group_names):
 
     if id_:
         all_projects = employments.organisations().all_projects().values_list('id', flat=True)
+        employment_count = employments.organisations().distinct().count()
         # Check if the user permissions have been explicitly set for any projects
         try:
-            permissioned_projects = UserPermissionedProjects.objects.get(user=user)
-            projects = permissioned_projects.projects.values_list('id', flat=True)
-            projects = set(all_projects).intersection(projects)
-        except UserPermissionedProjects.DoesNotExist:
+            # only check for users with only one organisation as employer
+            if employment_count < 2:
+                project_whitelist = UserProjects.objects.get(user=user)
+                projects = project_whitelist.projects.values_list('id', flat=True)
+                projects = set(all_projects).intersection(projects)
+            else:
+                projects = all_projects
+        except UserProjects.DoesNotExist:
             projects = all_projects
 
         return id_ in projects
