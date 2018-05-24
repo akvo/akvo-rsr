@@ -1483,11 +1483,19 @@ h4.detailedInfo {
     display: inline-block;
     text-align: right;
     float: right;
+    @include responsive(mediums-max-screens){
+        display: inline-block;
+        text-align: center;
+        float: none;
+    }
     label {
         margin-top: 5px !important;
     }
     .bootstrap-typeahead-input {
         margin-right: 1px;
+        input {
+            width: 100%;
+        }
     }
     .bootstrap-typeahead-input-main {
         margin-right: 20px;
@@ -3656,10 +3664,10 @@ main.results-page {
 
 .myRsrPg {
     .modal-content {
-        max-width: 40%;
+        max-width: 60%;
         height: 60vh;
         overflow: hidden;
-        margin: 20vh 30%;
+        margin: 20vh 20%;
         iframe {
             height: 100vh !important;
 

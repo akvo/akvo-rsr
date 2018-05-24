@@ -477,7 +477,7 @@ var SearchBar = React.createClass({
                         projects={this.props.projects}
                         onChange={this.props.onChange}
                     />
-                    <div id="filter-wrapper col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2">
+                    <div id="filter-wrapper col-sm-12 col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2">
                         <div>
                             {this.props.filters.map(create_filter, this)}
                             {reset_button}

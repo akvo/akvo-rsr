@@ -1249,10 +1249,17 @@ h4.detailedInfo {
   display: inline-block;
   text-align: right;
   float: right; }
+  @media only screen and (max-width: 992px) {
+    .advanced-filter {
+      display: inline-block;
+      text-align: center;
+      float: none; } }
   .advanced-filter label {
     margin-top: 5px !important; }
   .advanced-filter .bootstrap-typeahead-input {
     margin-right: 1px; }
+    .advanced-filter .bootstrap-typeahead-input input {
+      width: 100%; }
   .advanced-filter .bootstrap-typeahead-input-main {
     margin-right: 20px; }
   .advanced-filter .caret {
@@ -2989,10 +2996,10 @@ main.results-page {
   padding-right: 50px !important;
   padding-left: 50px !important; }
   .myRsrPg .modal-content {
-    max-width: 40%;
+    max-width: 60%;
     height: 60vh;
     overflow: hidden;
-    margin: 20vh 30%; }
+    margin: 20vh 20%; }
     .myRsrPg .modal-content iframe {
       height: 100vh !important; }
   .myRsrPg + footer {

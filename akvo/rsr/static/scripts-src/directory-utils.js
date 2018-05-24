@@ -477,7 +477,7 @@ var SearchBar = React.createClass({displayName: "SearchBar",
                         projects: this.props.projects, 
                         onChange: this.props.onChange}
                     ), 
-                    React.createElement("div", {id: "filter-wrapper col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2"}, 
+                    React.createElement("div", {id: "filter-wrapper col-sm-12 col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2"}, 
                         React.createElement("div", null, 
                             this.props.filters.map(create_filter, this), 
                             reset_button
