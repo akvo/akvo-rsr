@@ -471,6 +471,20 @@ export const disaggregationsToDisplayData = (disaggregationIds, disaggregations,
     );
 };
 
+export const modifyPeriods = singlePeriodProject => {
+    return data => {
+        /*  Add field period.is_locked that used in lieu of period.locked.
+            This is so that single period hierarchy projects can ignore locking, the periods
+            are always treated as unlocked
+        */
+        const periods = data.map(period => {
+            period.is_locked = singlePeriodProject ? false : period.locked;
+            return period;
+        });
+        return periods;
+    };
+};
+
 // Decimal rounding function (from MDN)
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/round
 (function() {

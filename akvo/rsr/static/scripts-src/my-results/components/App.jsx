@@ -38,8 +38,7 @@ import {
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
-    getIndicatorsDimensionIds,
-    getPublicViewDefaultKeys
+    getIndicatorsDimensionIds
 } from "../selectors";
 
 import {
@@ -48,9 +47,8 @@ import {
     createNewDisaggregations,
     identicalArrays,
     isNewUpdate,
-    openNodes,
-    setHash,
-    userIsMEManager
+    modifyPeriods,
+    setHash
 } from "../utils";
 
 import FilterBar from "./FilterBar";
@@ -146,10 +144,12 @@ export default class App extends React.Component {
 
         const projectId = project.id;
         const projectPartners = project.partners;
+        const singlePeriodProject = project.hierarchy_name ? true : false;
         fetchModel("results", projectId, activateToggleAll);
         fetchModel("indicators", projectId, activateToggleAll);
         fetchModel("dimensions", projectId, activateToggleAll);
-        fetchModel("periods", projectId, activateToggleAll);
+        // TODO: check if we need to run modifyPeriods() after changing the locking status of periods
+        fetchModel("periods", projectId, activateToggleAll, modifyPeriods(singlePeriodProject));
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
         fetchModel("comments", projectId, activateToggleAll);

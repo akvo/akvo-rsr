@@ -3,14 +3,13 @@
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
-
+from datetime import date
 from unittest import TestCase
 
 from django.contrib.auth import get_user_model
 
 from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
-    OrganisationIndicatorLabel
+    OrganisationIndicatorLabel, RelatedProject
 
 
 class ProjectModelTestCase(TestCase):
@@ -108,3 +107,89 @@ class ProjectModelTestCase(TestCase):
         labels = self.project.indicator_labels()
         self.assertEqual(has_labels, True)
         self.assertEqual(labels.count(), 2)
+
+    def test_project_dates(self):
+        #  Given
+        self.project.date_start_planned = date(2018, 01, 01)
+        self.project.date_end_planned = date(2018, 12, 31)
+        #  When
+        start_date, end_date = self.project.project_dates()
+        #  Then
+        self.assertEqual(start_date, date(2018, 01, 01))
+        self.assertEqual(end_date, date(2018, 12, 31))
+
+        #  Given
+        self.project.date_start_actual = date(2018, 03, 01)
+        self.project.date_end_actual = date(2019, 02, 28)
+        #  When
+        start_date, end_date = self.project.project_dates()
+        #  Then
+        self.assertEqual(start_date, date(2018, 03, 01))
+        self.assertEqual(end_date, date(2019, 02, 28))
+
+
+class ProjectHierarchyTestCase(TestCase):
+    """Tests for the project model"""
+
+    def setUp(self):
+        self.project1 = Project.objects.create(title="Project 1")
+        self.project2 = Project.objects.create(title="Project 2")
+        self.project3 = Project.objects.create(title="Project 3")
+        self.project4 = Project.objects.create(title="Project 4")
+        self.project5 = Project.objects.create(title="Project 5")
+
+        # Project 2 is child of project 1
+        RelatedProject.objects.create(
+            project=self.project1,
+            related_project=self.project2,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        # Project 3 is child of project 2
+        RelatedProject.objects.create(
+            project=self.project2,
+            related_project=self.project3,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        # Project 4 is child of project 2
+        RelatedProject.objects.create(
+            project=self.project2,
+            related_project=self.project4,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        # Project 5 is child of project 4
+        RelatedProject.objects.create(
+            project=self.project4,
+            related_project=self.project5,
+            relation=RelatedProject.PROJECT_RELATION_CHILD
+        )
+        # Project relations tree:
+        #   1
+        #   |
+        #   2
+        #  / \
+        # 3   4
+        #      \
+        #       5
+
+    def tearDown(self):
+        Project.objects.all().delete()
+
+    def test_project_descendants(self):
+        # Note that descendants includes self
+        descendants_p1 = self.project1.descendants()
+        self.assertEqual(descendants_p1.count(), 5)
+        descendants_p2 = self.project2.descendants()
+        self.assertEqual(descendants_p2.count(), 4)
+        descendants_p4 = self.project4.descendants()
+        self.assertEqual(descendants_p4.count(), 2)
+
+    def test_project_ancestor(self):
+        # Project 1 is ancestor to all projects in the hierarchy
+        ancestor_p2 = self.project2.ancestor()
+        self.assertEqual(ancestor_p2, self.project1)
+        ancestor_p3 = self.project3.ancestor()
+        self.assertEqual(ancestor_p3, self.project1)
+        ancestor_p4 = self.project4.ancestor()
+        self.assertEqual(ancestor_p4, self.project1)
+        ancestor_p5 = self.project5.ancestor()
+        self.assertEqual(ancestor_p5, self.project1)

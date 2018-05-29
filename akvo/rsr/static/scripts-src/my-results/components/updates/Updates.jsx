@@ -274,7 +274,7 @@ QuantitativeUpdate.propTypes = {
 const QualitativeUpdate = ({ id, period, update, collapseId }) => {
     return (
         <div className="row" key={id}>
-            <UpdateHeader update={update} periodLocked={period.locked} collapseId={collapseId} />
+            <UpdateHeader update={update} periodLocked={period.is_locked} collapseId={collapseId} />
             <div className="row">
                 <QualitativeUpdateBody period={period} update={update} />
                 <Comments parentId={id} inForm={false} />
@@ -482,7 +482,7 @@ export default class Updates extends React.Component {
                             disaggregationIds={updatesDisaggregationIds[id]}
                             disaggregations={disaggregations}
                             dimensions={dimensions}
-                            periodLocked={this.props.period.locked}
+                            periodLocked={this.props.period.is_locked}
                             collapseId={this.state.collapseId}
                         />
                     );

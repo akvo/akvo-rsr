@@ -159,6 +159,12 @@ export default class FilterBar extends React.Component {
         );
         const buttonDisabled = !this.props.ui.allFetched;
 
+        const periodLockingButtons = page.project.hierarchy_name ? (
+            undefined
+        ) : (
+            <PeriodLockingButtons user={this.props.user} disabled={buttonDisabled} />
+        );
+
         return (
             // TODO: this is a hideously ugly hack to show the filterbar in two modes depending on
             // if we're on the results page or the project page. Needs refactoring!
@@ -193,10 +199,7 @@ export default class FilterBar extends React.Component {
                                                 )}
                                             />
                                         </div>
-                                        <PeriodLockingButtons
-                                            user={this.props.user}
-                                            disabled={buttonDisabled}
-                                        />
+                                        {periodLockingButtons}
                                     </div>
                                 </div>
                             </div>
@@ -256,10 +259,7 @@ export default class FilterBar extends React.Component {
                                                 )}
                                             />
                                         </div>
-                                        <PeriodLockingButtons
-                                            user={this.props.user}
-                                            disabled={buttonDisabled}
-                                        />
+                                        {periodLockingButtons}
                                     </div>
                                 </div>
                             </div>

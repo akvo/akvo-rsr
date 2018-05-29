@@ -130,11 +130,11 @@
                 {% include "myrsr/project_editor/related_objects/indicator_period_input.html" %}
               {% endwith %}
             {% endfor %}
-            {% if not indicator.is_child_indicator %}
+            {% if not hierarchy_name and not indicator.is_child_indicator %}
               <div class="row form-group">
                 <div class="col-md-12 text-center add-object-link">
-                  <a href="#" class="add-indicator-period"><span
-                      class="glyphicon glyphicon-plus"></span>
+                  <a href="#" class="add-indicator-period">
+                    <span class="glyphicon glyphicon-plus"></span>
                     {% trans 'Add another indicator period' %}
                   </a>
                 </div>
