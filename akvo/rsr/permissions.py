@@ -57,11 +57,11 @@ def _user_has_group_permissions(user, obj, group_names):
 
     if id_:
         all_projects = employments.organisations().all_projects().values_list('id', flat=True)
-        employment_count = employments.organisations().distinct().count()
+        organisations_count = employments.organisations().distinct().count()
         # Check if the user permissions have been explicitly set for any projects
         try:
             # only check for users with only one organisation as employer
-            if employment_count < 2:
+            if organisations_count < 2:
                 project_whitelist = UserProjects.objects.get(user=user)
                 projects = project_whitelist.projects.values_list('id', flat=True)
                 projects = set(all_projects).intersection(projects)

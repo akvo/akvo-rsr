@@ -304,7 +304,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment.group.delete()
 
     def my_projects(self):
-        return self.organisations.all().all_projects()
+        return self.approved_organisations().all_projects()
 
     def first_organisation(self):
         all_orgs = self.approved_organisations()
