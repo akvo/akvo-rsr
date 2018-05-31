@@ -41,7 +41,10 @@ urlpatterns = i18n_patterns(
 
     url(r'^project/(?P<project_id>\d+)/hierarchy_embed/$',
         'akvo.rsr.views.project.hierarchy',
-        kwargs={'template': 'project_hierarchy_iframe.html'},
+        kwargs={
+            'template': 'project_hierarchy_iframe.html',
+            'public': False,
+        },
         name='project-hierarchy-iframe'),
 
     url(r'^project/(?P<project_id>\d+)/report/$',

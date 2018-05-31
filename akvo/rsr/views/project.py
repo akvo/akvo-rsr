@@ -149,17 +149,17 @@ def main(request, project_id, template="project_main.html"):
 #####################
 
 
-def hierarchy(request, project_id, template='project_hierarchy.html'):
+def hierarchy(request, project_id, public=True, template='project_hierarchy.html'):
     """."""
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
     check_project_viewing_permissions(request.user, project)
 
-    if not project.has_relations():
+    if public and not project.has_relations():
         raise Http404
 
-    hierarchy_grid = get_hierarchy_grid(project)
+    hierarchy_grid = get_hierarchy_grid(project, include_private=not public)
 
     context = {
         'project': project,
