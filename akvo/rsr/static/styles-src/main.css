@@ -1331,6 +1331,9 @@ h4.detailedInfo {
           #organisation-directory .main-list ul.projectListUl li h1 a:hover {
             color: #ca8142; }
 
+.main-list .col-sm-5 {
+  margin-top: -10px; }
+
 .main-list li img {
   border: 1px solid rgba(32, 32, 36, 0.05);
   -moz-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
@@ -3557,8 +3560,10 @@ main.results-page {
               display: block; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul li {
               display: inline; }
-            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
-              color: rgba(32, 32, 36, 0.7); }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description {
+              word-wrap: break-word; }
+              .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
+                color: rgba(32, 32, 36, 0.7); }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-year span {
               color: initial; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-value {
