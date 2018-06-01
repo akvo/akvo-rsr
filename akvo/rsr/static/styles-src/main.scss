@@ -2204,6 +2204,14 @@ div.textBlock {
 }
 
 /* Project hierarchy */
+.project-hierarchy {
+    div {
+        z-index: 99999;
+    }
+    svg {
+        z-index: 99998;
+    }
+}
 
 .project-hierarchy-window {
     border: 2px solid $anchorLink;
@@ -2266,6 +2274,10 @@ div.textBlock {
 }
 
 .project-container {
+    min-height: calc(100vh - 160px);
+    + footer {
+        position: sticky;
+    }
     .tooltip {
         .tooltip-inner {
             background: rgba(white, 0.9);

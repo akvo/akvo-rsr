@@ -1813,6 +1813,12 @@ div.textBlock {
     margin-top: 0; }
 
 /* Project hierarchy */
+.project-hierarchy div {
+  z-index: 99999; }
+
+.project-hierarchy svg {
+  z-index: 99998; }
+
 .project-hierarchy-window {
   border: 2px solid #428bca;
   color: #428bca;
@@ -1864,8 +1870,12 @@ div.textBlock {
     padding-top: 0;
     padding-bottom: 0.25em; }
 
-.project-container .tooltip .tooltip-inner {
-  background: rgba(255, 255, 255, 0.9); }
+.project-container {
+  min-height: calc(100vh - 160px); }
+  .project-container + footer {
+    position: sticky; }
+  .project-container .tooltip .tooltip-inner {
+    background: rgba(255, 255, 255, 0.9); }
 
 /* Tooltips */
 .tooltip {
