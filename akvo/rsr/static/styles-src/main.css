@@ -3004,6 +3004,9 @@ main.results-page {
 .alignFooter {
   min-height: calc(100vh - 160px); }
 
+.project-container .container.iframe {
+  margin: 0 !important; }
+
 .myRsrPg {
   min-height: calc(100vh - 160px);
   padding-right: 50px !important;
