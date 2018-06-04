@@ -20,5 +20,16 @@ class AkvoCSVRenderer(PaginatedCSVRenderer):
         if not isinstance(data, list) and self.results_field in data:
             data = data[self.results_field]
         if isinstance(data, list):
-            return super(PaginatedCSVRenderer, self).render(data, *args, **kwargs)
-        return CSVRenderer.render(self, data, *args, **kwargs)
+            response = super(PaginatedCSVRenderer, self).render(data, *args, **kwargs)
+        else:
+            response = CSVRenderer.render(self, data, *args, **kwargs)
+        request = args[1]['request']
+        headers = args[1]['response']._headers
+        headers['content-disposition'] = (
+            'Content-Disposition', 'attachment; filename="{}.csv"'.format(get_name(request))
+        )
+        return response
+
+
+def get_name(request):
+    return '-'.join(request.path.strip('/').split('/')[2:])
