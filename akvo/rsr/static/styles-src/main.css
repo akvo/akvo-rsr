@@ -3012,6 +3012,7 @@ main.results-page {
     max-width: 60%;
     height: 60vh;
     overflow: hidden;
+    overflow-y: scroll;
     margin: 20vh 20%; }
     .myRsrPg .modal-content iframe {
       height: 100vh !important; }
