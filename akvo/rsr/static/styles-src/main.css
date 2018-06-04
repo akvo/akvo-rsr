@@ -1814,10 +1814,10 @@ div.textBlock {
 
 /* Project hierarchy */
 .project-hierarchy div {
-  z-index: 99999; }
+  z-index: 9; }
 
 .project-hierarchy svg {
-  z-index: 99998; }
+  z-index: 8; }
 
 .project-hierarchy-window {
   border: 2px solid #428bca;
