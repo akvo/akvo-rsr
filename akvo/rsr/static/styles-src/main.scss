@@ -2206,10 +2206,10 @@ div.textBlock {
 /* Project hierarchy */
 .project-hierarchy {
     div {
-        z-index: 99999;
+        z-index: 9;
     }
     svg {
-        z-index: 99998;
+        z-index: 8;
     }
 }
 
@@ -2242,7 +2242,7 @@ div.textBlock {
 }
 
 .project-hierarchy-empty-window {
-    width: 150px;
+    width: 250px;
     float: left;
     margin: 30px;
 }
