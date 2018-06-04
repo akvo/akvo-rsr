@@ -192,6 +192,9 @@ class PermissionsTestCase(TestCase):
         # None object permissions
         self.assertTrue(user.has_perm('rsr.view_project', None))
 
+        # Test no permissions on None, if user doesn't have required employment
+        self.assertFalse(user.has_perm('rsr.add_indicatorperioddata'))
+
         # Project Update permissions
         for i, project_update in enumerate(self.project_updates):
             test = self.assertTrue if i == 0 else self.assertFalse
@@ -211,8 +214,19 @@ class PermissionsTestCase(TestCase):
         employment.group = group
         employment.save()
 
-        # Assert user all Users group permissions
-        self.test_org_user_permissions()
+        # Permissions on None
+        self.assertTrue(user.has_perm('rsr.view_project', None))
+
+        # Project Update permissions
+        for i, project_update in enumerate(self.project_updates):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        # Project permissions
+        for i, project in enumerate(self.projects):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.view_project', project))
+            self.assertFalse(user.has_perm('rsr.change_project', project))
 
         # Can add indicator
         project = self.projects[0]
