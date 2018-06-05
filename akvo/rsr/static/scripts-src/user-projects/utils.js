@@ -5,10 +5,12 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
 export const endpoints = {
-    user_projects: id => `/rest/v1/user_permissioned_projects/user/${id}?format=json`,
+    user_projects_access: id => `/rest/v1/user_projects_access/${id}/?format=json`
 };
 
+export const inArray = (obj, arr) => arr && arr.indexOf(obj) !== -1;
 
-export const inArray = (obj, arr) => arr.indexOf(obj) !== -1;
+export const dataFromElement = elementName => {
+    return JSON.parse(document.getElementById(elementName).innerHTML);
+};

@@ -4809,3 +4809,12 @@ main.results-page {
     bottom: 50px !important;
     top: unset !important;
 }
+
+#userProjects {
+    .disabled {
+        color: lighten($primary4, 20%);
+    }
+    .projectSelected {
+        font-style: italic;
+    }
+}

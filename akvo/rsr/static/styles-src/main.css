@@ -3877,3 +3877,9 @@ main.results-page {
 .supporthero-button {
   bottom: 50px !important;
   top: unset !important; }
+
+#userProjects .disabled {
+  color: #cccccc; }
+
+#userProjects .projectSelected {
+  font-style: italic; }

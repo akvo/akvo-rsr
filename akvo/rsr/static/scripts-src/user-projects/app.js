@@ -15,7 +15,7 @@ import createSagaMiddleware from "redux-saga";
 import { Provider } from "react-redux";
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import { reducer } from "./redux";
+import { reducer } from "./reducer";
 import { watcherSaga } from "./sagas";
 
 // create the saga middleware
