@@ -11,6 +11,7 @@ import { inArray } from "./utils";
 
 // initial state
 let initialState = {
+    selectAll: true,
     fetching: false,
     error: null,
     userId: null,
@@ -100,6 +101,18 @@ export function reducer(state = initialState, action) {
             const original_is_restricted = { ...state }.is_restricted;
             const { is_restricted } = action.data;
             return { ...state, original_is_restricted, is_restricted };
+        }
+
+        case c.UPDATE_SELECT_ALL_PROJECTS: {
+            const original_projects = state.user_projects && [...state.user_projects];
+            let user_projects, { selectAll } = {...state};
+            if (selectAll) {
+                user_projects = state.all_projects.map(project => project.id)
+            } else {
+                user_projects = []
+            }
+            selectAll = !selectAll;
+            return { ...state, selectAll, original_projects, user_projects };
         }
 
         default: {

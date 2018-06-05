@@ -48,11 +48,21 @@ const Project = ({ project, user_projects, is_restricted, onChangeProjectSelecte
     );
 };
 
+const SelectAll = ({ selectAll, onChangeProjectSelectAll }) => {
+    return (
+        <div onClick={onChangeProjectSelectAll}>
+            <span>{selectAll ? "Select all projects" : "De-select all projects"}</span>
+        </div>
+    );
+};
+
 const Projects = ({
     all_projects,
     user_projects,
     is_restricted,
+    selectAll,
     onChangeIsRestricted,
+    onChangeProjectSelectAll,
     onChangeProjectSelected
 }) => {
     return (
@@ -61,11 +71,17 @@ const Projects = ({
                 is_restricted={is_restricted}
                 onChangeIsRestricted={onChangeIsRestricted}
             />
-            {/*<SelectAll onChange={toggleAll} />*/}
+            <SelectAll
+                selectAll={selectAll}
+                onChangeProjectSelectAll={onChangeProjectSelectAll}
+                className={is_restricted ? undefined : "disabled"}
+            />
             <table className={is_restricted ? undefined : "disabled"}>
-                <th>Can access</th>
-                <th>Project ID</th>
-                <th>Project title</th>
+                <thead>
+                    <th>Can access</th>
+                    <th>Project ID</th>
+                    <th>Project title</th>
+                </thead>
                 <tbody>
                     {all_projects.map(project => (
                         <Project
@@ -86,6 +102,17 @@ class App extends React.Component {
         super(props);
         this.toggleProjectSelected = this.toggleProjectSelected.bind(this);
         this.toggleIsRestricted = this.toggleIsRestricted.bind(this);
+        this.toggleProjectSelectAll = this.toggleProjectSelectAll.bind(this);
+    }
+
+    toggleIsRestricted(e) {
+        e.stopPropagation();
+        this.props.onUpdateIsRestricted(e.target.checked);
+    }
+
+    toggleProjectSelectAll(e) {
+        e.stopPropagation();
+        this.props.onUpdateSelectAll();
     }
 
     toggleProjectSelected(e) {
@@ -94,32 +121,21 @@ class App extends React.Component {
         e.stopPropagation();
     }
 
-    toggleIsRestricted(e) {
-        e.stopPropagation();
-        this.props.onUpdateIsRestricted(e.target.checked);
-    }
-
-    toggleAll() {
-        const projects = update(
-            { ...this.state.projects },
-            { objects: { [id]: { $merge: { checked: !checked } } } }
-        );
-        this.setState({ projects });
-    }
-
     componentDidMount() {
         this.props.setUserId();
         this.props.onFetchUserProjects();
     }
 
     render() {
-        const { all_projects, is_restricted, user_projects } = this.props;
+        const { is_restricted, selectAll, all_projects, user_projects } = this.props;
         return all_projects ? (
             <Projects
-                all_projects={all_projects}
                 is_restricted={is_restricted}
+                selectAll={selectAll}
+                all_projects={all_projects}
                 user_projects={user_projects}
                 onChangeIsRestricted={this.toggleIsRestricted}
+                onChangeProjectSelectAll={this.toggleProjectSelectAll}
                 onChangeProjectSelected={this.toggleProjectSelected}
             />
         ) : (
@@ -129,8 +145,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
-    const { fetching, error, all_projects, is_restricted, user_projects } = state;
-    return { fetching, error, all_projects, is_restricted, user_projects };
+    const { fetching, error, all_projects, is_restricted, selectAll, user_projects } = state;
+    return { fetching, error, all_projects, is_restricted, selectAll, user_projects };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -140,7 +156,8 @@ const mapDispatchToProps = dispatch => {
         onUpdateProjectSelection: projectId =>
             dispatch({ type: c.UPDATE_PROJECT_SELECTION, data: { projectId } }),
         onUpdateIsRestricted: is_restricted =>
-            dispatch({ type: c.UPDATE_IS_RESTRICTED, data: { is_restricted } })
+            dispatch({ type: c.UPDATE_IS_RESTRICTED, data: { is_restricted } }),
+        onUpdateSelectAll: () => dispatch({ type: c.UPDATE_SELECT_ALL_PROJECTS })
     };
 };
 

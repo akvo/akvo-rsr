@@ -67,5 +67,6 @@ function* putSaga(action) {
 export function* watcherSaga() {
     yield takeLatest(c.API_GET_INIT, getSaga);
     yield takeLatest(c.UPDATE_PROJECT_SELECTION, putSaga);
+    yield takeLatest(c.UPDATE_SELECT_ALL_PROJECTS, putSaga);
     yield takeLatest(c.UPDATE_IS_RESTRICTED, putSaga);
 }
