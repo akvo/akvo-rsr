@@ -226,6 +226,8 @@ $(document).ready(function() {
                     google.maps.event.removeListener(listener);
                 });
 
+                // This code is based on
+                // https://developers.google.com/fusiontables/docs/samples/mouseover_map_styles
                 // Global function since it is called from JSONP callback
                 // Closure since it needs the map
                 window.drawCountries = function(data) {
