@@ -1335,6 +1335,9 @@ h4.detailedInfo {
           #organisation-directory .main-list ul.projectListUl li h1 a:hover {
             color: #ca8142; }
 
+.main-list .col-sm-5 {
+  margin-top: -10px; }
+
 .main-list li img {
   border: 1px solid rgba(32, 32, 36, 0.05);
   -moz-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
@@ -1814,6 +1817,12 @@ div.textBlock {
     margin-top: 0; }
 
 /* Project hierarchy */
+.project-hierarchy div {
+  z-index: 9; }
+
+.project-hierarchy svg {
+  z-index: 8; }
+
 .project-hierarchy-window {
   border: 2px solid #428bca;
   color: #428bca;
@@ -1842,7 +1851,7 @@ div.textBlock {
   background-color: rgba(202, 129, 66, 0.1); }
 
 .project-hierarchy-empty-window {
-  width: 150px;
+  width: 250px;
   float: left;
   margin: 30px; }
 
@@ -1865,8 +1874,12 @@ div.textBlock {
     padding-top: 0;
     padding-bottom: 0.25em; }
 
-.project-container .tooltip .tooltip-inner {
-  background: rgba(255, 255, 255, 0.9); }
+.project-container {
+  min-height: calc(100vh - 160px); }
+  .project-container + footer {
+    position: sticky; }
+  .project-container .tooltip .tooltip-inner {
+    background: rgba(255, 255, 255, 0.9); }
 
 /* Tooltips */
 .tooltip {
@@ -2995,6 +3008,9 @@ main.results-page {
 .alignFooter {
   min-height: calc(100vh - 160px); }
 
+.project-container .container.iframe {
+  margin: 0 !important; }
+
 .myRsrPg {
   min-height: calc(100vh - 160px);
   padding-right: 50px !important;
@@ -3003,6 +3019,7 @@ main.results-page {
     max-width: 60%;
     height: 60vh;
     overflow: hidden;
+    overflow-y: scroll;
     margin: 20vh 20%; }
     .myRsrPg .modal-content iframe {
       height: 100vh !important; }
@@ -3561,8 +3578,10 @@ main.results-page {
               display: block; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul li {
               display: inline; }
-            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
-              color: rgba(32, 32, 36, 0.7); }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description {
+              word-wrap: break-word; }
+              .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
+                color: rgba(32, 32, 36, 0.7); }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-year span {
               color: initial; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-value {

@@ -10,7 +10,7 @@
         </button>
         <p class="text-danger" id="projectCreationError"></p>
         <span class="verticalPadding {% if not q_search %}hidden{% endif %}">
-            <a href="{% url 'my_projects' %}">{% trans "My projects" %}</a>
+            <a href="{% url 'my_projects' %}"><i class="fa fa-home"></i> {% trans "My projects" %}</a>
         </span>
       </div>
       <div class="col-sm-6 btnHeader text-right">
@@ -87,7 +87,7 @@
         {% endfor %}
       </table>
     </div>
-      <div class="text-center small showingTxt myProjectPag">
+      <div class="text-center showingTxt myProjectPag">
         <span class="label label-info projectTotal">
           {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
             {{ paginator_count }} projects

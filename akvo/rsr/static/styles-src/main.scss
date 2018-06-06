@@ -844,6 +844,7 @@ div.update-confirm-container {
         }
     }
 }
+
 #user_table {
     td.text-right {
         > span {
@@ -852,12 +853,13 @@ div.update-confirm-container {
                 margin-left: 15px;
                 margin-top: 5px;
             }
-            > span:nth-of-type(2){
+            > span:nth-of-type(2) {
                 margin-right: 15px;
             }
         }
     }
 }
+
 .myProjectList,
 #updates,
 #user_table {
@@ -1400,6 +1402,7 @@ h4.detailedInfo {
         margin: 10px auto 0 auto;
     }
 }
+
 .label-info {
     font-weight: normal;
     &.projectTotal, &.updateTotal {
@@ -1408,6 +1411,7 @@ h4.detailedInfo {
         color: $akvoBlack;
     }
 }
+
 .pageStatus {
     .pagination {
         margin: 0 auto;
@@ -1489,11 +1493,12 @@ h4.detailedInfo {
     display: inline-block;
     text-align: right;
     float: right;
-    @include responsive(mediums-max-screens){
+    @include responsive(mediums-max-screens) {
         display: inline-block;
         text-align: center;
         float: none;
     }
+
     label {
         margin-top: 5px !important;
     }
@@ -1565,7 +1570,7 @@ h4.detailedInfo {
                     min-height: 130px;
                     a {
                         img {
-                            max-height: 177px
+                            max-height: 177px;
                         }
                     }
                 }
@@ -1589,6 +1594,9 @@ h4.detailedInfo {
 }
 
 .main-list {
+    .col-sm-5 {
+        margin-top: -10px;
+    }
     li {
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
@@ -2202,9 +2210,17 @@ div.textBlock {
 }
 
 /* Project hierarchy */
+.project-hierarchy {
+    div {
+        z-index: 9;
+    }
+    svg {
+        z-index: 8;
+    }
+}
 
 .project-hierarchy-window {
-    border: 2px solid $anchorLink;        
+    border: 2px solid $anchorLink;
     color: $anchorLink;
     width: 250px;
     float: left;
@@ -2217,7 +2233,7 @@ div.textBlock {
         border: 2px solid $akvoBlack;
         color: $akvoBlack;
     }
-    &.project-hierarchy-sibling-top, &.project-hierarchy-sibling-bottom  {
+    &.project-hierarchy-sibling-top, &.project-hierarchy-sibling-bottom {
         border: 2px solid $anchorLink;
         color: $anchorLink;
     }
@@ -2232,7 +2248,7 @@ div.textBlock {
 }
 
 .project-hierarchy-empty-window {
-    width: 150px;
+    width: 250px;
     float: left;
     margin: 30px;
 }
@@ -2264,6 +2280,10 @@ div.textBlock {
 }
 
 .project-container {
+    min-height: calc(100vh - 160px);
+    + footer {
+        position: sticky;
+    }
     .tooltip {
         .tooltip-inner {
             background: rgba(white, 0.9);
@@ -3668,15 +3688,21 @@ main.results-page {
     min-height: calc(100vh - 160px);
 }
 
+.project-container {
+    .container.iframe {
+        margin: 0 !important;
+    }
+}
+
 .myRsrPg {
     .modal-content {
         max-width: 60%;
         height: 60vh;
         overflow: hidden;
+        overflow-y: scroll;
         margin: 20vh 20%;
         iframe {
             height: 100vh !important;
-
         }
     }
     min-height: calc(100vh - 160px);
@@ -4272,6 +4298,7 @@ main.results-page {
                             .indicatorInfo {
                                 margin-top: -10px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                                .descritpion {}
                                 ul {
                                     color: rgba($akvoBlack, 0.4);
                                     padding-left: 7px;
@@ -4282,6 +4309,7 @@ main.results-page {
                                         display: inline;
                                     }
                                     .description {
+                                        word-wrap: break-word;
                                         span {
                                             color: rgba($akvoBlack, 0.7);
                                         }
