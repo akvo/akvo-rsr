@@ -530,7 +530,7 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
     me_managers = project.publishing_orgs.employments().approved().\
         filter(group__in=[admins_group, me_managers_group])
     # Can we unlock and approve?
-    user_is_me_manager = user.is_superuser or user.is_admin or user.me_manager_for_project(project)
+    user_is_me_manager = user.has_perm('rsr.do_me_manager_actions')
     show_narrative_reports = project.partners.filter(
         id__in=settings.NARRATIVE_REPORTS_BETA_ORGS
     ).exists() and user.has_perm('rsr.add_narrativereport', project)
