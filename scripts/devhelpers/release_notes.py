@@ -33,9 +33,17 @@ LABELS = {
 
 def get_issues(milestone):
     """Return the issues in the milestone."""
+    issues = []
     url = URL.format(milestone=milestone)
-    entries = requests.get(url).json()
-    issues = [entry for entry in entries if 'pull_request' not in entry]
+    while url is not None:
+        response = requests.get(url)
+        entries = response.json()
+        issues.extend([entry for entry in entries if 'pull_request' not in entry])
+
+        successive, end = response.headers.get('link').split(',')
+        url_, direction = successive.split(';')
+        url = None if 'next' not in direction else url_.strip('<>')
+
     return issues
 
 
