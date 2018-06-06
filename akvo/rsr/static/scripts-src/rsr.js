@@ -242,14 +242,7 @@ $(document).ready(function() {
                     rows.forEach(function(row) {
                         if (row[0] != "Antarctica") {
                             var newCoordinates = [];
-                            var geometries = row[1]["geometries"];
-                            if (geometries) {
-                                for (var j in geometries) {
-                                    newCoordinates.push(constructNewCoordinates(geometries[j]));
-                                }
-                            } else {
-                                newCoordinates = constructNewCoordinates(row[1]["geometry"]);
-                            }
+                            newCoordinates = constructNewCoordinates(JSON.parse(row[1]));
                             var country = new google.maps.Polygon({
                                 paths: newCoordinates,
                                 strokeColor: strokeColor,
@@ -292,7 +285,7 @@ $(document).ready(function() {
         var script = document.createElement("script");
         var url = ["https://www.googleapis.com/fusiontables/v1/query?"];
         url.push("sql=");
-        var query = "SELECT name, kml_4326 FROM " + "1foc3xO9DyfSIF6ofvN0kp2bxSfSeKog5FbdWdQ";
+        var query = "SELECT name, json_4326 FROM " + "1eSZj8FglXY3rIdzZTe42yJCXjvN_H0PjRZHCzP8X";
         var encodedQuery = encodeURIComponent(query);
         url.push(encodedQuery);
         url.push("&callback=drawCountries");
