@@ -7,7 +7,7 @@
 
 // action types
 export const //
-    SET_USER_ID = "SET_USER_ID",
+    SET_STORE = "SET_STORE",
     //
     API_GET_INIT = "API_GET_INIT",
     API_GET_SUCCESS = "API_GET_SUCCESS",

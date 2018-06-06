@@ -2,26 +2,36 @@
 
 {% load bootstrap3 pipeline i18n rules %}
 
-{% block title %}{% trans 'MyRSR - User projects management' %}{% endblock %}
+{% block title %}{% trans 'MyRSR - User projects access restrictions' %}{% endblock %}
 
 {% block myrsr_main %}
-  <div id="userProjects" class="col-sm-6 col-xs-8">
-
-  </div>
+  <section id="main">
+    <header>
+      <h2>Project access restrictions for {{ user_projects_user.get_full_name }}</h2>
+    </header>
+    <article id="userProjects" class="col-sm-6 col-xs-8">
+    </article>
+  </section>
 {% endblock %}
 
 {% block js %}
   {{ block.super }}
 
-  <script type="application/json" id="user">
+  <script type="application/json" id="user-to-restrict">
       {
-        "id": {{ user_id }}
+        "id": {{ user_projects_user.id }}
       }
   </script>
 
-  <script type="application/json" id="user-management-text">
+  <script type="application/json" id="user-projects-text">
     {
-      "some_text": "{% trans 'Some text'|escapejs %}",
+      "restrict_access": "{% trans 'Restrict access to the following checked projects'|escapejs %}",
+      "project_id": "{% trans 'Project ID'|escapejs %}",
+      "can_access": "{% trans 'Can access'|escapejs %}",
+      "project_title": "{% trans 'Project title'|escapejs %}",
+      "no_title": "{% trans 'Project without a title'|escapejs %}",
+      "select_all": "{% trans 'Select all projects'|escapejs %}",
+      "deselect_all": "{% trans 'De-select all projects'|escapejs %}"
     }
   </script>
 

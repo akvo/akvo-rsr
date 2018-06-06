@@ -6,57 +6,63 @@
  */
 
 import React from "react";
-import update from "immutability-helper";
 import { connect } from "react-redux";
-import { dataFromElement, inArray } from "../utils";
+import { _, dataFromElement, inArray } from "../utils";
 
 import * as c from "../const";
 
-const userId = dataFromElement("user").id;
-
-const IsRestricted = ({ is_restricted, onChangeIsRestricted }) => {
+const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
     return (
         <span>
-            <span>Is restricted</span>
-            <input
-                id="is_restricted"
-                type="checkbox"
-                checked={is_restricted}
-                onChange={onChangeIsRestricted}
-            />
+            <label>
+                <input
+                    id="is_restricted"
+                    type="checkbox"
+                    checked={is_restricted}
+                    onChange={onChangeIsRestricted}
+                />
+                {_("restrict_access")}
+            </label>
         </span>
     );
 };
 
-const Project = ({ project, user_projects, is_restricted, onChangeProjectSelected }) => {
+const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
     const checked = user_projects && inArray(project.id, user_projects);
     return (
-        <tr key={project.id} data-item={project.id} onClick={onChangeProjectSelected}>
+        <tr
+            key={project.id}
+            id={project.id}
+            onClick={onChangeProjectSelected}
+            className={checked ? "projectSelected" : undefined}
+        >
             <td>
                 <input
                     id={project.id}
                     type="checkbox"
                     checked={checked}
                     disabled={!is_restricted}
+                    readOnly={true}
                 />
             </td>
-            <td className={checked ? "projectSelected" : undefined}>{project.id}</td>
-            <td className={checked ? "projectSelected" : undefined}>
-                {project.title || "Project without a title"}
-            </td>
+            <td>{project.id}</td>
+            <td>{project.title || _("no_title")}</td>
         </tr>
     );
 };
 
-const SelectAll = ({ selectAll, onChangeProjectSelectAll }) => {
+const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
     return (
-        <div onClick={onChangeProjectSelectAll}>
-            <span>{selectAll ? "Select all projects" : "De-select all projects"}</span>
+        <div className={is_restricted ? undefined : "disabled"}>
+            <button onClick={onChangeProjectSelectAll} disabled={is_restricted ? false : true}>
+                {selectAll ? _("select_all") : _("deselect_all")}
+            </button>
         </div>
     );
 };
 
 const Projects = ({
+    _,
     all_projects,
     user_projects,
     is_restricted,
@@ -68,23 +74,29 @@ const Projects = ({
     return (
         <span>
             <IsRestricted
+                _={_}
                 is_restricted={is_restricted}
                 onChangeIsRestricted={onChangeIsRestricted}
             />
             <SelectAll
+                _={_}
                 selectAll={selectAll}
                 onChangeProjectSelectAll={onChangeProjectSelectAll}
-                className={is_restricted ? undefined : "disabled"}
+                is_restricted={is_restricted}
             />
             <table className={is_restricted ? undefined : "disabled"}>
                 <thead>
-                    <th>Can access</th>
-                    <th>Project ID</th>
-                    <th>Project title</th>
+                    <tr>
+                        <th>{_("can_access")}</th>
+                        <th>{_("project_id")}</th>
+                        <th>{_("project_title")}</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {all_projects.map(project => (
                         <Project
+                            _={_}
+                            key={project.id}
                             project={project}
                             user_projects={user_projects}
                             is_restricted={is_restricted}
@@ -103,6 +115,12 @@ class App extends React.Component {
         this.toggleProjectSelected = this.toggleProjectSelected.bind(this);
         this.toggleIsRestricted = this.toggleIsRestricted.bind(this);
         this.toggleProjectSelectAll = this.toggleProjectSelectAll.bind(this);
+        this._ = this._.bind(this);
+    }
+
+    // Translation handling
+    _(s) {
+        return this.props.strings && this.props.strings[s];
     }
 
     toggleIsRestricted(e) {
@@ -116,20 +134,29 @@ class App extends React.Component {
     }
 
     toggleProjectSelected(e) {
-        const id = parseInt(e.currentTarget.getAttribute("data-item"));
-        this.props.onUpdateProjectSelection(id);
         e.stopPropagation();
+        const target = e.currentTarget;
+        if (!target.closest("table").classList.contains("disabled")) {
+            const id = parseInt(target.getAttribute("id"));
+            this.props.onUpdateProjectSelection(id);
+        }
     }
 
     componentDidMount() {
-        this.props.setUserId();
-        this.props.onFetchUserProjects();
+        const userId = dataFromElement("user-to-restrict").id;
+        this.props.setStore({ userId });
+
+        const strings = dataFromElement("user-projects-text");
+        this.props.setStore({ strings });
+
+        this.props.onFetchUserProjects(userId);
     }
 
     render() {
         const { is_restricted, selectAll, all_projects, user_projects } = this.props;
         return all_projects ? (
             <Projects
+                _={this._}
                 is_restricted={is_restricted}
                 selectAll={selectAll}
                 all_projects={all_projects}
@@ -145,14 +172,22 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
-    const { fetching, error, all_projects, is_restricted, selectAll, user_projects } = state;
-    return { fetching, error, all_projects, is_restricted, selectAll, user_projects };
+    const {
+        fetching,
+        error,
+        all_projects,
+        is_restricted,
+        selectAll,
+        user_projects,
+        strings
+    } = state;
+    return { fetching, error, all_projects, is_restricted, selectAll, user_projects, strings };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserProjects: () => dispatch({ type: c.API_GET_INIT, data: { userId } }),
-        setUserId: () => dispatch({ type: c.SET_USER_ID, data: { userId } }),
+        onFetchUserProjects: userId => dispatch({ type: c.API_GET_INIT, data: { userId } }),
+        setStore: data => dispatch({ type: c.SET_STORE, data }),
         onUpdateProjectSelection: projectId =>
             dispatch({ type: c.UPDATE_PROJECT_SELECTION, data: { projectId } }),
         onUpdateIsRestricted: is_restricted =>

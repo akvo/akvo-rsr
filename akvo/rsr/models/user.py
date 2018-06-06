@@ -117,11 +117,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "/user/{}/".format(self.pk)
 
     def get_full_name(self):
-        """
-        Returns the first_name plus the last_name, with a space in between.
-        """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
+        full_name = '{} {}'.format(self.first_name, self.last_name).strip()
+        if not full_name:
+            full_name = u"User with ID: {}".format(self.pk)
+        return full_name
     get_full_name.short_description = _(u'full name')
 
     def get_short_name(self):

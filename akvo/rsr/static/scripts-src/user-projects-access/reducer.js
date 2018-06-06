@@ -23,9 +23,9 @@ let initialState = {
 
 export function reducer(state = initialState, action) {
     switch (action.type) {
-        case c.SET_USER_ID: {
-            const { userId } = action.data;
-            return { ...state, userId };
+        case c.SET_STORE: {
+            const data = action.data;
+            return { ...state, ...data };
         }
 
         case c.API_GET_INIT: {

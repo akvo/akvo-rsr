@@ -21,7 +21,7 @@ from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country, Version
 from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
-from akvo.rsr.models import IndicatorPeriodData
+from akvo.rsr.models import IndicatorPeriodData, User
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
@@ -502,8 +502,10 @@ def user_management(request):
 
 @login_required
 def user_projects(request, user_id):
+
+    user = get_object_or_404(User, pk=user_id)
     context = {
-        "user_id": user_id
+        "user_projects_user": user
     }
     return render(request, 'myrsr/user_projects.html', context)
 
