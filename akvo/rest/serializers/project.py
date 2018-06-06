@@ -4,9 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import logging
+
 from rest_framework import serializers
 
 from akvo.rsr.models import Project
+from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
 
@@ -32,6 +35,9 @@ from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
+logger = logging.getLogger(__name__)
+
+
 class ProjectSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
@@ -43,6 +49,50 @@ class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project
+
+
+class ProjectDirectorySerializer(serializers.ModelSerializer):
+
+    id = serializers.ReadOnlyField()
+    title = serializers.ReadOnlyField()
+    subtitle = serializers.ReadOnlyField()
+    latitude = serializers.ReadOnlyField(source='primary_location.latitude')
+    longitude = serializers.ReadOnlyField(source='primary_location.longitude')
+    image = serializers.SerializerMethodField()
+    countries = serializers.SerializerMethodField()
+    url = serializers.ReadOnlyField(source='get_absolute_url')
+    organisation = serializers.ReadOnlyField(source='primary_organisation.name')
+    organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
+
+    class Meta:
+        model = Project
+        fields = (
+            'id',
+            'title',
+            'subtitle',
+            'latitude',
+            'longitude',
+            'image',
+            'countries',
+            'url',
+            'organisation',
+            'organisation_url',
+        )
+
+    def get_countries(self, project):
+        return map(lambda x: unicode(x), project.countries())
+
+    def get_image(self, project):
+        geometry = '350x200'
+        try:
+            image = get_thumbnail(project.current_image, geometry, crop='smart', quality=99)
+            url = image.url
+        except Exception as e:
+            logger.error(
+                'Failed to get thumbnail for image %s with error: %s', project.current_image, e
+            )
+            url = project.current_image.url if project.current_image.name else ''
+        return url
 
 
 class ProjectIatiExportSerializer(BaseRSRSerializer):

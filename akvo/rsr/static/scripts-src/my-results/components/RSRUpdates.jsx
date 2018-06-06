@@ -13,9 +13,11 @@ import { MarkdownEditor } from "./common";
 export default class RSRUpdates extends React.Component {
     render() {
         return (
-            <div className="row">
-                <RSRUpdateList project={this.props.project} />
-                <RSRUpdateForm project={this.props.project} />
+            <div className="container-fluid">
+                <div className="row">
+                    <RSRUpdateList project={this.props.project} />
+                    <RSRUpdateForm project={this.props.project} />
+                </div>
             </div>
         );
     }
@@ -142,8 +144,8 @@ class RSRUpdateForm extends React.Component {
         };
 
         return (
-            <div className="col-md-7 col-xs-12" id="update">
-                <h2 className="hidden">Add an update</h2>
+            <div className="col-md-7 col-xs-12 projectUpdateForm" id="update">
+                <h3 className="">Add an update</h3>
                 <form method="post" action={url} id="updateForm" encType="multipart/form-data">
                     <input
                         name="csrfmiddlewaretoken"

@@ -211,11 +211,13 @@ export class MarkdownEditor extends React.Component {
         this.onChange = this.onChange.bind(this);
     }
 
-    showEditor() {
+    showEditor(e) {
+        e.preventDefault();
         this.setState({ show_editor: true });
     }
 
-    showPreview() {
+    showPreview(e) {
+        e.preventDefault();
         this.setState({ show_editor: false });
     }
 

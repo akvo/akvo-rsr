@@ -1,0 +1,69 @@
+{% load i18n rsr_filters rsr_tags webdesign piwik_tags %}
+{% load url from future %}
+{% load pipeline %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+    <head>
+        {# CSS #}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        {% stylesheet 'rsr_v3_style' %}
+    </head>
+    <body>
+        {% block maincontent %}
+            <article class="touch-navbar project-container">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12 hidden-xs project-hierarchy small" id="project-hierarchy">
+                            {% for row in hierarchy_grid %}
+                                <div class="row">
+                                    {# parent node #}
+
+                                    {% if row.0.0 %}
+                                        <a href="{% url 'project-hierarchy-iframe' row.0.0.pk %}">
+                                            <div class="project-hierarchy-window project-hierarchy-{{row.0.1}}" id="project-hierarchy-{{row.0.1}}{{forloop.counter}}">{{row.0.0.title}}</div>
+                                        </a>
+                                    {% else %}
+                                        <div class="project-hierarchy-empty-window"></div>
+                                    {% endif %}
+
+                                    {# project node/sibling nodes #}
+
+                                    {% if row.1.0 and not row.1.1 == 'project' %}
+                                        <a href="{% url 'project-hierarchy-iframe' row.1.0.pk %}">
+                                            <div class="project-hierarchy-window project-hierarchy-{{row.1.1}}" id="project-hierarchy-{{row.1.1}}{{forloop.counter}}">{{row.1.0.title}}</div>
+                                        </a>
+                                    {% elif row.1.0 %}
+                                        <div class="project-hierarchy-window {{row.1.1}}" id="project-hierarchy-{{row.1.1}}">{{row.1.0.title}}</div>
+                                    {% else %}
+                                        <div class="project-hierarchy-empty-window"></div>
+                                    {% endif %}
+
+                                    {# child nodes #}
+
+                                    {% if row.2.0 %}
+                                        <a href="{% url 'project-hierarchy-iframe' row.2.0.pk %}">
+                                            <div class="project-hierarchy-window project-hierarchy-{{row.2.1}}" id="project-hierarchy-{{row.2.1}}{{forloop.counter}}">{{row.2.0.title}}</div>
+                                        </a>
+                                    {% else %}
+                                        <div class="project-hierarchy-empty-window"></div>
+                                    {% endif %}
+
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="hidden-sm hidden-md hidden-lg">
+                            <h2><small>{% trans "Screen too small to show project hierarchy" %}</small></h2>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endblock %}
+
+        {% block js %}
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js" integrity="sha256-1OxYPHYEAB+HIz0f4AdsvZCfFaX4xrTD9d2BtGLXnTI=" crossorigin="anonymous"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.7.2/dom.jsPlumb.min.js" integrity="sha256-F1cIPOY4SemH0aexB8v8gKVMOpAOa2tT+TSPjZbdoS8=" crossorigin="anonymous"></script>
+            {% javascript 'project_hierarchy' %}
+        {% endblock js %}
+    </body>
+</html>

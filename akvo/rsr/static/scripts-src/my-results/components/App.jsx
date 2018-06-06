@@ -369,17 +369,16 @@ export default class App extends React.Component {
         ) : (
             <section className="results">
                 <a
-                    className="pull-right btn btn-default editBtn"
+                    className="pull-right editBtn"
                     href={`../../project_editor/${projectId}/`}
                 >
-                    <i className="fa fa-pencil-square-o" /> Edit project
+                    Edit project
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {show_results && has_results ? <Tab>Results</Tab> : undefined}
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
-                        <Tab>Reports</Tab>
-                        <Tab>Add an update</Tab>
+                        <Tab>Project updates</Tab><Tab>Project reports</Tab>    
                     </TabList>
                     {show_results && has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (
@@ -390,10 +389,10 @@ export default class App extends React.Component {
                         undefined
                     )}
                     <TabPanel>
-                        <Reports project={projectId} />
+                        <RSRUpdates project={projectId} />
                     </TabPanel>
                     <TabPanel>
-                        <RSRUpdates project={projectId} />
+                        <Reports project={projectId} />
                     </TabPanel>
                 </Tabs>
             </section>

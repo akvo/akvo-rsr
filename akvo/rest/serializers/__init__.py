@@ -40,7 +40,7 @@ from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
 from .narrative_report import NarrativeReportSerializer
-from .organisation import OrganisationSerializer, OrganisationBasicSerializer
+from .organisation import OrganisationSerializer, OrganisationBasicSerializer, OrganisationDirectorySerializer
 from .organisation_budget import (OrganisationCountryBudgetSerializer,
                                   OrganisationCountryBudgetLineSerializer,
                                   OrganisationExpenseLineSerializer,
@@ -67,7 +67,7 @@ from .planned_disbursement import (PlannedDisbursementSerializer,
                                    PlannedDisbursementRawSerializer)
 from .policy_marker import PolicyMarkerSerializer, PolicyMarkerRawSerializer
 from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectExtraDeepSerializer,
-                      ProjectIatiExportSerializer, ProjectUpSerializer)
+                      ProjectIatiExportSerializer, ProjectDirectorySerializer, ProjectUpSerializer)
 from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer, ProjectConditionRawSerializer
 from .project_contact import (ProjectContactSerializer,
@@ -79,6 +79,7 @@ from .project_location import (ProjectLocationSerializer, AdministrativeLocation
                                MapProjectLocationSerializer, ProjectLocationRawSerializer)
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateDeepSerializer,
+                             ProjectUpdateDirectorySerializer,
                              ProjectUpdateExtraSerializer)
 from .project_update_location import (ProjectUpdateLocationSerializer,
                                       ProjectUpdateLocationNestedSerializer,
@@ -186,9 +187,11 @@ __all__ = [
     'ProjectExtraSerializer',
     'ProjectExtraDeepSerializer',
     'ProjectIatiExportSerializer',
+    'ProjectDirectorySerializer',
     'ProjectLocationSerializer',
     'ProjectLocationRawSerializer',
     'ProjectSerializer',
+    'ProjectUpdateDirectorySerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',
     'ProjectUpdateLocationNestedSerializer',

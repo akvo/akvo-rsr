@@ -39,7 +39,7 @@ from .keyword import KeywordViewSet
 from .legacy_data import LegacyDataViewSet
 from .link import LinkViewSet
 from .narrative_report import NarrativeReportViewSet
-from .organisation import OrganisationViewSet
+from .organisation import OrganisationViewSet, organisation_directory
 from .organisation_budget import (OrganisationTotalBudgetViewSet,
                                   OrganisationTotalBudgetLineViewSet,
                                   OrganisationRecipientOrgBudgetViewSet,
@@ -57,7 +57,7 @@ from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
-                      ProjectIatiExportViewSet, ProjectUpViewSet)
+                      ProjectIatiExportViewSet, ProjectUpViewSet, project_directory)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -78,7 +78,8 @@ from .project_location import (ProjectLocationViewSet,
                                MapProjectLocationViewSet)
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,
-                             upload_indicator_update_photo)
+                             upload_indicator_update_photo,
+                             update_directory)
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
@@ -95,7 +96,6 @@ from .typeahead import (typeahead_country,
                         typeahead_organisation,
                         typeahead_user_organisations,
                         typeahead_project,
-                        typeahead_project_filters,
                         typeahead_user_projects,
                         typeahead_impact_projects,
                         typeahead_projectupdate)
@@ -150,6 +150,7 @@ __all__ = [
     'MapProjectLocationViewSet',
     'MapProjectUpdateLocationViewSet',
     'NarrativeReportViewSet',
+    'organisation_directory',
     'OrganisationViewSet',
     'OrganisationLocationViewSet',
     'OrganisationCountryBudgetViewSet',
@@ -185,6 +186,7 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
+    'project_directory',
     'project_editor',
     'log_project_addition',
     'project_editor_upload_file',
@@ -212,11 +214,11 @@ __all__ = [
     'typeahead_organisation',
     'typeahead_user_organisations',
     'typeahead_project',
-    'typeahead_project_filters',
     'typeahead_user_projects',
     'typeahead_impact_projects',
     'typeahead_projectupdate',
     'update_details',
+    'update_directory',
     'upload_indicator_update_photo',
     'UserViewSet',
 ]

@@ -37,4 +37,5 @@ class ReportSerializer(BaseRSRSerializer):
             'url',
             'parameters',
             'formats',
+            'organisations',
         )

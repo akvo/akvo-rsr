@@ -187,6 +187,20 @@ urlpatterns += patterns(
         name='project_editor_add_org_logo'),
 )
 
+# Directory views
+urlpatterns += patterns(
+    '',
+    url(r'v1/project_directory$',
+        views.project_directory,
+        name='project_directory'),
+    url(r'v1/update_directory$',
+        views.update_directory,
+        name='update_directory'),
+    url(r'v1/organisation_directory$',
+        views.organisation_directory,
+        name='organisation_directory'),
+)
+
 # Typeahead
 urlpatterns += patterns(
     '',
@@ -202,9 +216,6 @@ urlpatterns += patterns(
     url(r'v1/typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
-    url(r'v1/typeaheads/project_filters$',
-        views.typeahead_project_filters,
-        name='project_filters_typeahead'),
     url(r'v1/typeaheads/user_projects$',
         views.typeahead_user_projects,
         name='user_projects_typeahead'),

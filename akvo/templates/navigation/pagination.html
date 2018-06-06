@@ -3,11 +3,6 @@
 {% if page %}
 <div class="center-text paginationWrap">
         <ul class="pagination">
-            {% if page.has_previous %}
-            <li><a href="?page={{ page.previous_page_number }}{{ q }}">&laquo;</a></li>
-            {% else %}
-            <li class="disabled"><span>&laquo;</span></li>
-            {% endif %}
             {% for page_number in page_range %}
             {% if not page_number == '...' %}
             <li {% if page_number == page.number %}class="active"{% endif %}><a href="?page={{ page_number }}{{ q }}">{{ page_number }}</a></li>
@@ -15,11 +10,6 @@
             <li class="disabled"><span>{{ page_number }}</span></li>
             {% endif %}
             {% endfor %}
-            {% if page.has_next %}
-            <li><a href="?page={{ page.next_page_number }}{{ q }} ">&raquo;</a></li>
-            {% else %}
-            <li class="disabled"><span>&raquo;</span></li>
-            {% endif %}
         </ul>
 </div>
 {% endif %}
