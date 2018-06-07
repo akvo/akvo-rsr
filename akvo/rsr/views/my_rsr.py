@@ -478,6 +478,19 @@ def user_management(request):
             user_dict = model_to_dict(employment.user, fields=[
                 'id', 'first_name', 'last_name', 'email'
             ])
+
+            # determine if this user's project access can be restricted
+            if employment.user.has_perm('rsr.user_management'):
+                can_be_restricted = False
+            else:
+                can_be_restricted = True
+            if can_be_restricted:
+                #  We cannot limit project access to users that are employed by more than one
+                # organisation
+                if employment.user.approved_organisations().distinct().count() != 1:
+                    can_be_restricted = False
+            user_dict['can_be_restricted'] = can_be_restricted
+
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 

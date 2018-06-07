@@ -673,7 +673,13 @@ function initReact() {
                     <td>{user.email}</td>
                     <td>{user.first_name}</td>
                     <td>{user.last_name}</td>
-                    <td><a href={'/myrsr/user_projects/' + user.id + '/'}>{i18n.set_projects}</a></td>
+                    {user.can_be_restricted
+                        ? <td>
+                            <a href={'/myrsr/user_projects/' + user.id + '/'}>
+                                {i18n.restrict_project_access}
+                            </a>
+                        </td>
+                        : <td></td>}
                     <td className="text-right">{employmentCell}</td>
                 </tr>
             );

@@ -673,7 +673,13 @@ function initReact() {
                     React.createElement("td", null, user.email), 
                     React.createElement("td", null, user.first_name), 
                     React.createElement("td", null, user.last_name), 
-                    React.createElement("td", null, React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/'}, i18n.set_projects)), 
+                    user.can_be_restricted
+                        ? React.createElement("td", null, 
+                            React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/'}, 
+                                i18n.restrict_project_access
+                            )
+                        )
+                        : React.createElement("td", null), 
                     React.createElement("td", {className: "text-right"}, employmentCell)
                 )
             );
