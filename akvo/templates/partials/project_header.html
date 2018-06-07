@@ -5,13 +5,9 @@
         <div class="row">
             <div class="col-sm-8">
                 <h1>
-                    <a href="{% url 'project-main' project.pk %}"><i class="fa {% if not project.is_public %}fa-lock{% else %}fa-folder-o{% endif %}"></i> {{project.title}}</a>
+                    <a href="{% url 'project-main' project.pk %}">{{project.title}}</a>
                     {% has_perm 'rsr.change_project' user project as can_edit_project %}
-                    {% if can_edit_project %}
-                    <a title="Edit Project" alt="Edit Project"
-                       href="{% url 'project_editor' project.pk %}"><i class="fa fa-pencil"></i></a>
-                    {% endif %}
-                </h1>
+                </h1>                    
                 <p>{{project.subtitle}}</p>
                 <div class="projectLocation">
                         <p class="small"><span class="glyphicon glyphicon-globe"></span>

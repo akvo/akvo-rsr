@@ -1539,7 +1539,8 @@ function updatePartialIDs(partial, newID) {
     // Replace names and IDs of all input, select and textarea fields
     var partialInputs = partial.querySelectorAll(INPUT_ELEMENTS.join());
     for (var j = 0; j < partialInputs.length; j++) {
-        if (partialInputs[j].type !== 'checkbox') {
+        if (partialInputs[j].type !== 'checkbox' &&
+            partialInputs[j].className.indexOf('masquerade-field') === -1) {
             var oldFieldIdList = partialInputs[j].getAttribute('id').split('.');
             partialInputs[j].setAttribute('id', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
             partialInputs[j].setAttribute('name', [oldFieldIdList[0], oldFieldIdList[1], newID].join('.'));
@@ -1726,6 +1727,7 @@ function addPartial(partialName, partialContainer) {
         // Update the typeaheads, datepickers and currency fields
         updateTypeaheads();
         setDatepickers();
+        setPeriodMasqueradeDates();
         setCurrencyOnChange();
         setSectorOnChange();
 
@@ -3284,6 +3286,29 @@ function getProjectPublish(publishingStatusId, publishButton) {
     };
 }
 
+function setPeriodMasqueradeDates() {
+    if (defaultValues.hierarchy_name) {
+        var period_start = defaultValues.start_date;
+        if (!period_start) {
+            period_start = defaultValues.period_start;
+        }
+        var period_end = defaultValues.end_date;
+        if (!period_end) {
+            period_end = defaultValues.period_end;
+        }
+        var masqueradeLabel = period_start + " - " + period_end;
+        var periodContainers = document.getElementsByClassName('indicator-period-container');
+
+        for (var i=0; i < periodContainers .length; i++) {
+            var periodContainer = periodContainers[i];
+            var periodLabel = periodContainer.getElementsByClassName('unicode')[0];
+            if (periodLabel.innerHTML[0] !== '(') {
+                periodLabel.innerHTML = masqueradeLabel;
+            }
+        }
+    }
+}
+
 function setDatepickers() {
     function getDatepickerComponent(datepickerId, initialDate, disableInput) {
         return React.createClass({
@@ -3343,13 +3368,17 @@ function setDatepickers() {
     var datepickerContainers = document.getElementsByClassName('datepicker-container');
 
     for (var i=0; i < datepickerContainers.length; i++) {
-        var datepickerId, DatePickerComponent, datepickerContainer, disableInput, extraAttributes, helptext, initialDate, inputNode, inputValue, label;
+        var datepickerId, DatePickerComponent, datepickerContainer, disableInput, extraAttributes,
+            helptext, initialDate, inputNode, inputValue, label, masqueradeDate, masqueradeInput,
+            newPeriod;
 
         datepickerContainer = datepickerContainers[i];
 
         // Check if datepicker already has been set
         if (datepickerContainer.className.indexOf('has-datepicker') == -1) {
             datepickerId = datepickerContainer.getAttribute('data-id');
+            masqueradeDate = datepickerContainer.getAttribute('data-masquerade-date');
+            newPeriod = datepickerContainer.getAttribute('new-period');
 
             // Set initial value of datepicker
             inputValue = datepickerContainer.getAttribute('data-child');
@@ -3374,7 +3403,11 @@ function setDatepickers() {
             inputNode = datepickerContainer.querySelector('input');
             inputNode.setAttribute("id", datepickerId);
             inputNode.setAttribute("name", datepickerId);
-            inputNode.setAttribute("saved-value", inputValue);
+            // Don't set saved-value for new periods. This way the period is instantiated as part of
+            // saving the indicator
+            if (newPeriod === 'false') {
+                inputNode.setAttribute("saved-value", inputValue);
+            }
             if (disableInput === 'true') {
                 inputNode.setAttribute("disabled", '');
             }
@@ -3385,6 +3418,16 @@ function setDatepickers() {
 
             // Set addtional attributes of input
             inputNode.setAttribute('mandatory-or', mandatoryOr);
+
+            if (masqueradeDate) {
+                // Create masquerade input field
+                masqueradeInput = document.createElement('input');
+                masqueradeInput.setAttribute("class", "form-control masquerade-field");
+                masqueradeInput.setAttribute("type", "text");
+                masqueradeInput.setAttribute("value", masqueradeDate);
+                masqueradeInput.setAttribute("disabled", true);
+                inputNode.parentNode.appendChild(masqueradeInput);
+            }
 
             // Set label of datepicker
             label = document.createElement('label');
@@ -3422,7 +3465,10 @@ function checkUnsavedChangesForm(form) {
 
     var inputElements = form.querySelectorAll(INPUT_ELEMENTS.join());
     for (var j = 0; j < inputElements.length; j++) {
-        if (inputElements[j].type !== 'checkbox' && fieldChanged(inputElements[j])) {
+        if (inputElements[j].type !== 'checkbox' &&
+                // Don't include masquerade fields in form-changed checking
+                !inputElements[j].classList.contains('masquerade-field') &&
+                fieldChanged(inputElements[j])) {
             return true;
         }
     }
@@ -3977,6 +4023,7 @@ function initApp() {
     setSubmitOnClicks();
 
     setDatepickers();
+    setPeriodMasqueradeDates();
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();

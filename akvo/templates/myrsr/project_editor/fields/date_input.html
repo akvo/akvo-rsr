@@ -1,14 +1,27 @@
 {% load project_editor %}
 
 {% with obj_field_id=obj|field_id:field obj_value=obj|value:field %}
-    <div class="form-group">
-        <div class="control datepicker-container"
-             data-id="{{ obj_field_id }}"
-             data-child="{{ obj_value|date:"d/m/Y" }}"
-             data-label="{{ obj|field_name:field }}"
-             data-helptext="{{ obj|help_text:field }}"
-             data-classes="{{ validations|mandatory_or_hidden:obj_field_id }}"
-             {% if disabled %}data-disabled="true"{% endif %}>
-        </div>
+  {% date_value_with_default project obj field as date_value %}
+  <div class="form-group">
+    {# If this is a single period hierarchy project date_value.masquerade_date will have a value. #}
+    {# When this is the case, the datepicker is hidden and instead a disabled input field is #}
+    {# shown that takes its value from the project start or end dates #}
+    <div class="control datepicker-container"
+         data-id="{{ obj_field_id }}"
+         data-child="{{ date_value.value|date:"d/m/Y" }}"
+      {% if date_value.masquerade_date %}
+         data-masquerade-date="{{ date_value.masquerade_date|date:"d/m/Y" }}"
+         {# Use the invisible class instead of hidden to include the field when saving #}
+         data-classes="invisible"
+         new-period="{{ date_value.new_period }}"
+      {% else %}
+         data-classes="{{ validations|mandatory_or_hidden:obj_field_id }}"
+      {% endif %}
+         data-label="{{ obj|field_name:field }}"
+         data-helptext="{{ obj|help_text:field }}"
+      {% if disabled %}
+         data-disabled="true"
+      {% endif %}>
     </div>
+  </div>
 {% endwith %}

@@ -3,142 +3,35 @@
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
 
-<section id="map" class="touch-navbar">
-    {% coll_map map_updates '100%' '100%' %}
-</section>
-{% if not rsr_page.all_maps %}
-  <div id="map-warning" class="text-center">{% trans 'This map only shows the updates listed on this page.' %}</div>
-{% endif %}
-<form id="filterForm" action="" method="get" accept-charset="uft-8" class="searchContainer">
-  <section id="search-filter">
-    <div class="container-fluid">
-      <div id="search" class="verticalPadding">
-        <p>{% trans "Refine the update list below by searching by name, organisation or sector" %}</p>
-        <div class="form-inline" role="form">
-          <div class="form-group">
-            <div class="input-group">
-              {% bootstrap_field filter.form.title field_class='search-query' show_label=False %}
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit">{% trans "Search" %} &#8250;</button>
-              </span>
-            </div>
-            <a class="btn showFilters menu-toggle"><i class="fa fa-toggle-off"></i> {% trans 'Advanced filters' %}</a>
-          </div>
-          {% if q %}
-          <div><a href="{% url 'update-directory' %}" class="btn"><i class="fa fa-times"></i> {% trans 'Reset all filters' %}</a></div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </section>
-  <div id="wrapper">
-    <aside id="sidebar-wrapper" class="{{ show_filters }}">
-      <div id="filter" class="">
-        <div>
-          <div class="btn-group">
-            {% bootstrap_field filter.form.partner %}
-          </div>
-          <div class="btn-group">
-            {% bootstrap_field filter.form.sector %}
-          </div>
-        </div>
-        <div>
-          <nav>
-            <ul class="nav nav-pills nav-stacked">
-              <li><a class="showFilters text-center" id="apply-filter">{% trans 'Apply filter' %}</a></li>
-              <li><a class="showFilters menu-toggle text-center"><i class="fa fa-toggle-off"></i> {% trans 'Close this' %}</a></li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </aside>
-  </div>
-</form>
+    <div id="update-directory"></div>
 
-
-<div class="container">
-  <div class="row center-text">
-        <p class="verticalPadding emTxt">
-        {% blocktrans with start_index=page.start_index end_index=page.end_index paginator_count=paginator.count %}
-            Viewing {{ start_index }} - {{ end_index }} of {{ paginator_count }} updates
-        {% endblocktrans %}
-        </p>
-  </div>
-  <div class="row">
-        {% include 'navigation/pagination.html' %}
-  </div>
-</div>
-
-    <section class="main-list updates">
-      <ul class="container">
-        {% for u in page %}
-        <li class="row updateAsset">
-          <div class="col-sm-3 col-md-2 col-xs-4">
-            <a href="{% url 'update-main' u.project.id u.id %}">
-              {% if u.video %}
-                {% vid_img u 160 160 u.title %}
-              {% else %}
-                {% img u 160 160 u.title %}
-              {% endif %}
-            </a>
-          </div>
-          <div class="col-sm-4 col-md-4 col-xs-8">
-            <h1><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h1>
-            <a href="{% url 'project-main' u.project.pk %}" class="projectTitle"><i class="fa fa-folder-o"></i> {{u.project.title}}</a>
-            <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
-                {% if u.user.employers.all %}
-                  {% with org=u.user.employers.all.0.organisation %}
-                    <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
-                  {% endwith %}
-                {% endif %}
-            </div>
-            <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.event_date|date:"d-M-Y"}}</div>
-          </div>
-          <div class="excerpt col-sm-5 col-md-5 col-xs-12 hidden-xs">
-            {% autoescape off %}
-              {{ u.text|force_escape|urlize|apply_markup:"markdown"|truncatechars_html:250 }}
-            {% endautoescape %}
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-    </section>
-
-<div class="container">
-    <div class="row">
-        {% include 'navigation/pagination.html' %}
-    </div>
-</div>
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
 
-    {# Twitter Typeahead #}
-    <script id="typeahead"
-        src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.js"
-        integrity="sha256-9PktWqeso0y5/rAR0iDepG9qzPITS+ccSjYHU9vMCf4="
-        crossorigin="anonymous"></script>
-
-
     <script src="//maps.google.com/maps/api/js"></script>
-    <script type="application/json" id="akvo-rsr-typeahead-thumbs">
-        {
-            "numberOfUpdates": {{ updates_count }}
-        }
-    </script>
-
-    <script type="application/javascript">
-        AKVO_RSR.typeahead = {};
-        AKVO_RSR.typeahead.thumbs = JSON.parse(document.getElementById("akvo-rsr-typeahead-thumbs").innerHTML);
-    </script>
-
     {# Translation strings #}
     <script type="application/json" id="updates-text">
-        {
-            "updates_text": "{% trans 'Updates'|escapejs %}"
-        }
+     {
+        "updates_text": "{% trans 'Updates'|escapejs %}",
+        "search_text": "{% trans 'Search'|escapejs %}",
+        "loading_text": "{% trans 'Loading...'|escapejs %}",
+        "organisations_text": "{% trans 'Organisations'|escapejs %}",
+        "locations_text": "{% trans 'Locations'|escapejs %}",
+        "all_text": "{% trans 'All'|escapejs %}",
+        "keyword_text": "{% trans 'keyword'|escapejs %}",
+        "location_text": "{% trans 'location'|escapejs %}",
+        "status_text": "{% trans 'status'|escapejs %}",
+        "organisation_text": "{% trans 'organisation'|escapejs %}",
+        "sector_text": "{% trans 'sector'|escapejs %}",
+        "reset_filters_text": "{% trans 'Reset filters'|escapejs %}",
+        "no_location_text": "{% trans 'No location specified'|escapejs %}",
+        "page_limit_text": "{% trans '# of projects'|escapejs %}"
+     }
     </script>
 
+    {% javascript 'directory_utils' %}
     {% javascript 'update_directory' %}
+
 {% endblock js %}

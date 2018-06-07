@@ -5,14 +5,24 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+import { applyMiddleware, createStore } from "redux";
+import logger from "redux-logger";
+import thunk from "redux-thunk";
 
-import { applyMiddleware, createStore } from "redux"
-import logger from "redux-logger"
-import thunk from "redux-thunk"
-
-import reducer from "./reducers"
+import reducer from "./reducers";
 
 //TODO: investigate using promises or redux-saga
 const middleware = applyMiddleware(/*promise(),*/ thunk, logger());
 
-export default createStore(reducer, middleware);
+// This setup allows us to mock the store in tests
+// See: https://railsware.com/blog/2017/01/10/mocking-es6-module-import-without-dependency-injection/
+let store;
+const realStore = createStore(reducer, middleware);
+store = realStore;
+
+export function mock(mockStore) {
+    // helper function used when mocking the Redux store in tests
+    store = mockStore || realStore;
+}
+
+export { store as default };

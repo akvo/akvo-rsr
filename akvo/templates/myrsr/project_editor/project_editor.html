@@ -11,6 +11,11 @@
 
     <!--*************************************** Project editor header **********************************************-->
     <div class="row">
+        <div class="col-xs-12">
+            <h2>{{project.title}}</h2>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-4">
             <h3>{% trans 'Project Editor' %} <span class="glyphicon glyphicon-info-sign info-icon activated info-icon-special" toggleid="editorHelptext"></span></h3>
         </div>
@@ -122,6 +127,11 @@
     <script type="application/json" id="default-values">
         {
             "project_id": "{{ project.pk }}",
+            "start_date": "{{ start_date|date:"Y-m-d" }}",
+            "end_date": "{{ end_date|date:"Y-m-d" }}",
+            "hierarchy_name": "{{ hierarchy_name }}",
+            "period_start": "{{ period_start|date:"Y-m-d" }}",
+            "period_end": "{{ period_end|date:"Y-m-d" }}",
             "publishing_status_id": "{{ project.publishingstatus.pk }}",
             "user_id": "{{ user.pk }}",
             "is_admin": {% if is_admin %}true{% else %}false{% endif %},

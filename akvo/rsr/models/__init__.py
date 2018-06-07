@@ -4,11 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
 import logging
-logger = logging.getLogger('akvo.rsr')
 
-from django.conf import settings
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.admin.models import LogEntry
 
@@ -174,11 +171,13 @@ __all__ = [
     'User',
 ]
 
+logger = logging.getLogger('akvo.rsr')
+
 # Permission rules
 import rules
 from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager,
                            is_org_me_manager, is_org_project_editor,
-                           is_org_user, is_self)
+                           is_org_user, is_self, is_org_enumerator)
 
 rules.add_perm('rsr', rules.always_allow)
 
@@ -205,7 +204,7 @@ rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin |is_org_project_editor)
+rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
 
@@ -215,9 +214,18 @@ rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
 
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
-rules.add_perm('rsr.add_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm(
+    'rsr.add_indicatorperioddata',
+    is_rsr_admin | is_org_admin | is_org_project_editor | is_org_enumerator
+)
+rules.add_perm(
+    'rsr.change_indicatorperioddata',
+    is_rsr_admin | is_org_admin | is_org_project_editor | is_org_enumerator
+)
+rules.add_perm(
+    'rsr.delete_indicatorperioddata',
+    is_rsr_admin | is_org_admin | is_org_project_editor | is_org_enumerator
+)
 
 rules.add_perm('rsr.add_disaggregation', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_disaggregation', is_rsr_admin | is_org_admin | is_org_project_editor)
@@ -240,9 +248,9 @@ rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
 rules.add_perm('rsr.add_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_user)
+               is_org_project_editor | is_org_enumerator | is_org_user)
 rules.add_perm('rsr.change_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_user)
+               is_org_project_editor | is_org_user | is_org_enumerator)
 rules.add_perm('rsr.delete_projectupdate', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)
@@ -354,7 +362,7 @@ rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_p
 rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
 
-rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.change_iatiexport', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.delete_iatiexport', is_rsr_admin | is_org_admin)
 
@@ -421,7 +429,7 @@ rules.add_perm('rsr.delete_organisationdocumentcountry', is_rsr_admin | is_org_a
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.view_project', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_user)
+               is_org_project_editor | is_org_user | is_org_enumerator)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
 
@@ -438,7 +446,7 @@ rules.add_perm('rsr.delete_employment', is_rsr_admin | is_org_admin | is_org_use
 rules.add_perm('rsr.project_management', is_rsr_admin | is_org_admin | is_org_project_editor)
 rules.add_perm('rsr.user_management', is_rsr_admin | is_org_admin | is_org_user_manager)
 rules.add_perm('rsr.post_updates', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_user)
+               is_org_project_editor | is_org_user | is_org_enumerator)
 
 
 # Signals

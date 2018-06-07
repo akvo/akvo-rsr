@@ -92,11 +92,8 @@ Session.vim
 *.tmproject
 tmtags
 
-## Komodo
-*.komodoproject
-*.komodotools
-*.kpf
-*.templatec
+## GvH
+foo.*
 
 # PyCharm
 .idea

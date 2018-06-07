@@ -39,6 +39,14 @@ urlpatterns = i18n_patterns(
     url(r'^project/(?P<project_id>\d+)/hierarchy/$',
         'akvo.rsr.views.project.hierarchy', name='project-hierarchy'),
 
+    url(r'^project/(?P<project_id>\d+)/hierarchy_embed/$',
+        'akvo.rsr.views.project.hierarchy',
+        kwargs={
+            'template': 'project_hierarchy_iframe.html',
+            'public': False,
+        },
+        name='project-hierarchy-iframe'),
+
     url(r'^project/(?P<project_id>\d+)/report/$',
         'akvo.rsr.views.project.report', name='project-report'),
 
@@ -103,6 +111,9 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/$',
         'akvo.rsr.views.my_rsr.my_rsr', name='my_rsr'),
 
+    url(r'^myrsr/my_project/(?P<project_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.my_project', name='project-edit'),
+
     url(r'^myrsr/details/$',
         'akvo.rsr.views.my_rsr.my_details', name='my_details'),
 
@@ -120,12 +131,6 @@ urlpatterns = i18n_patterns(
 
     url(r'^myrsr/reports/$',
         'akvo.rsr.views.my_rsr.my_reports', name='my_reports'),
-
-    url(r'^myrsr/results/$',
-        'akvo.rsr.views.my_rsr.my_results_select', name='my_results_select'),
-
-    url(r'^myrsr/results/(?P<project_id>\d+)/$',
-        'akvo.rsr.views.my_rsr.my_results', name='my_results'),
 
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
@@ -152,12 +157,11 @@ urlpatterns += patterns(
     url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
         'akvo.rsr.views.organisation.iati_org', name='org-iati'),
 
-    # TastyPie API
-    # (r'^api/', include(named_api('v1').urls)),
-    (r'^api/v1/', include('akvo.rest.urls')),
+    # Legacy TastyPie API emulation
+    (r'^api/', include('akvo.rest.urls')),
 
     # Django Rest Framework urls
-    (r'^rest/v1/', include('akvo.rest.urls')),
+    (r'^rest/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 
     # RSS

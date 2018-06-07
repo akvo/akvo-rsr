@@ -1,0 +1,33 @@
+{% extends "myrsr/myrsr_base.html" %}
+
+{% load pipeline i18n %}
+
+{% block title %}{{ project.title }}{% endblock title %}
+
+{% block myrsr_main %}
+
+<ol class="breadcrumb">
+    <li><a href="{% url 'my_projects' %}"><i class="fa fa-home"></i> {% trans "My projects" %}</a></li>
+    <li class="active"><span>{{ project.title }}</span></li>
+    <a href="{% url 'project-main' project.pk %}" class="text-right liveView btn btn-default hidden">{% trans 'View public project' %}</a>
+</ol>
+
+{% if not me_managers %}
+<div id="draft" class="">{% trans 'There are no M&E managers for this project. No one will be able to approve data updates.' %}</div>
+{% endif %}
+<div id="new-results-framework"></div>
+
+{% endblock myrsr_main %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script type="application/json" id="mode">
+        {
+            "public": false,
+            "show_narrative_reports": {{ show_narrative_reports }},
+            "show_results": {{ show_results }}
+        }
+    </script>
+    {% include "results_base.html" %}
+{% endblock js %}

@@ -30,10 +30,12 @@ class ReportSerializer(BaseRSRSerializer):
     class Meta:
         model = Report
         fields = (
+            'id',
             'name',
             'title',
             'description',
             'url',
             'parameters',
             'formats',
+            'organisations',
         )

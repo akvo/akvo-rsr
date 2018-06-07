@@ -1,9 +1,9 @@
-{% load i18n bootstrap3 rsr_utils %}
+{% load i18n bootstrap3 rsr_utils rules %}
 
 {% url 'index' as index_url %}
 
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-  <div class="container">
+  <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapsed">
@@ -13,115 +13,60 @@
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand" href="{% firstof rsr_page.return_url index_url %}">
+      <a class="navbar-brand" href="{% url 'project-directory' %}">
         {% if rsr_page.logo %}
           {% img rsr_page 125 60 organisation.name %}
         {% elif rsr_page.organisation %}
           {% img rsr_page.organisation 125 60 rsr_page.organisation.name %}
         {% else %}
-          <h1>Akvo RSR</h1> {# Text is just a placeholder, svg from css #}
+            <h1>Akvo RSR</h1> {# Text is just a placeholder, svg from css #}
         {% endif %}
       </a>
     </div>
-
+    {% if '/myrsr/' in request.path %}
+        <ul class="nav navbar-nav">
+            <li role="presentation">
+                {% has_perm 'rsr.user_management' user as can_manage_users %}
+                {% if can_manage_users %}
+                    <a href="{% url 'user_management' %}">
+                        {% trans "User management" %}
+                    </a>
+                {% endif %}
+            </li>
+            {% has_perm 'rsr.project_management' user as can_manage_projects %}
+            <li role="presentation" class="navIati">
+                <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
+                   href="{% url 'my_iati' %}">
+                    {% trans "IATI" %}
+                </a>
+            </li>
+            <li role="presentation" class="navReports">
+                <a href="{% url 'my_reports' %}"
+                   class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
+                    {% trans 'Organisation Reports' %}
+                </a>
+            </li>
+        </ul>
+    {% else %}
+        <div class="tagLine">
+            <h2>Monitor, report and share with ease</h2>
+        </div>
+    {% endif %}
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
-      <ul class="nav navbar-nav">
-        <li class="navProject">
-          <a class="{% if 'projects' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'project-directory' %}">
-            {% trans "All projects" %}
-          </a>
-        </li>
-        <li class="navUpdate">
-          <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'update-directory' %}">
-            {% trans "All updates" %}
-          </a>
-        </li>
-        <li class="navOrganisation">
-          <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'organisation-directory' %}">
-            {% trans "All organisations" %}
-          </a>
-        </li>
-      </ul>
-
-      <ul class="nav navbar-nav navbar-right">
-        {% if not '/myrsr/projects/' in request.get_full_path %}
-          <li>
-              <a href="{% if project and project.publishingstatus.status == "published" %}{% url 'add-update' project.pk %}{% else %}{% url 'my_projects' %}{% endif %}"
-                 class="addUpdateBtn">
-                <i class="glyphicon glyphicon-camera"></i> {% trans 'Add an update' %}
-              </a>
-          </li>
-        {% endif %}
-        {% if not user.username %}
-          <li><a href="{% url 'register' %}"><i class="fa fa-pencil-square-o"></i> {% trans 'Register' %}</a></li>
-          <li><a href="{% url 'sign_in' %}"><i class="fa fa-sign-in"></i> {% trans 'Sign in' %}</a></li>
-        {% else %}
-        <li>
-          <a class="{% if 'myrsr' in request.path %}active{% endif %}"
-             href="{% url 'my_rsr' %}"><i class="fa fa-user"></i> {% trans 'MyRSR' %}</a>
-        </li>
-        <li><a href="{% url 'sign_out' %}"><i class="fa fa-sign-out"></i> {% trans 'Sign out' %}</a></li>
-        {% endif %}
-        {% if not rsr_page or not rsr_page.google_translation %}
-        <li>
-          <div class="dropdown langDropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-              {% get_language_info_list for LANGUAGES as languages %}
-              {% for language in languages %}
-                {% if not language.code == LANGUAGE_CODE %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-        </li>
-        {% else %}
-          <li>
-            <div class="dropdown langDropdown">
-              <div id="google_translate_element"></div>
-              <script type="text/javascript">
-                function googleTranslateElementInit() {
-                  new google.translate.TranslateElement(
-                    {
-                      pageLanguage: '{{LANGUAGE_CODE}}',
-                      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                      autoDisplay: false,
-                      multilanguagePage: true
-                    },
-                    'google_translate_element');
-                }
-                </script>
-                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-                <script type="text/javascript">
-                  /* Add class name to body when translation widget clicked so we can pad to create
-                  ** room for translation bar. */
-                  var el = document.querySelector('#google_translate_element');
-                  el.addEventListener('click', function() {
-                    var body = document.querySelector('body');
-                    if (body.classList) {
-                      if (!body.classList.contains('translationBarActive')) {
-                        body.classList.add('translationBarActive');
-                      }
-                    } else {
-                      var classList = body.getAttribute('class');
-                      if (classList.indexOf('translationBarActive') === -1) {
-                        body.setAttribute('class', classList + ' ' + 'translationBarActive');
-                      }
-                    }
-                  });
-                </script>
-            </div>
-          </li>
-        {% endif %}
-      </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if not user.is_authenticated %}
+                <li><a href="{% url 'register' %}">{% trans 'Register' %}</a></li>
+                <li><a href="{% url 'sign_in' %}">{% trans 'Sign in' %}</a></li>
+            {% else %}
+                {% include 'navigation/user-details-dropdown.html' %}
+                <li>
+                    <a class="btn areaToggle"
+                       href="{% url 'my_rsr' %}">{% trans 'My projects' %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
     </div>
   </div>
 </nav>

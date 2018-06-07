@@ -1,57 +1,26 @@
+/** @jsx React.DOM */
+
 // Akvo RSR is covered by the GNU Affero General Public License.
 // See more details in the license.txt file located at the root folder of the
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
+document.addEventListener("DOMContentLoaded", function() {
+    var i18n = JSON.parse(document.getElementById("updates-text").innerHTML),
+        dropdown_filters = ["location", "organisation", "sector"],
+        hidden_or_other = ["title_or_subtitle", "page"],
+        url = "/rest/v1/update_directory",
+        typeahead_url = "/rest/v1/typeaheads/project_updates?format=json";
 
-$(document).ready(function(){
-
-  // Submit filter form on select change
-  // $('#filter select').change(function() {
-  //   $('#filterForm').submit();
-  // });
-
-  var updates_text = JSON.parse(document.getElementById("updates-text").innerHTML).updates_text;
-
-    // setup Bloodhound for typeahead
-  var updates = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: {
-      url: '/rest/v1/typeaheads/project_updates?format=json',
-      thumbprint: AKVO_RSR.typeahead.thumbs.numberOfUpdates,
-      filter: function(response) {
-        return response.results;
-      }
-
-    }
-  });
-
-  updates.initialize();
-
-  $('#id_title').typeahead(
-    {
-      highlight: true
-    },
-    {
-      name: 'updates',
-      displayKey: 'title',
-      source: updates.ttAdapter(),
-      templates: {
-        header: '<h3 class="dd-category">' + updates_text + '</h3>',
-        suggestion: _.template('<a href="/project/<%= project %>/update/<%= id %>"><p><%= title %></p></a>')
-       }
-    });
-
+    ReactDOM.render(
+        React.createElement(DirectoryApp, {
+            type: "updates", 
+            dropdown_filters: dropdown_filters, 
+            hidden_or_other: hidden_or_other, 
+            options_url: url, 
+            i18n: i18n, 
+            typeahead_url: typeahead_url}
+        ),
+        document.getElementById("update-directory")
+    );
 });
-
-(function() {
-
-  var applyFilterButton;
-
-  applyFilterButton= document.getElementById('apply-filter');
-  applyFilterButton.onclick = function() {
-      document.getElementById('filterForm').submit();
-  };
-
-}());

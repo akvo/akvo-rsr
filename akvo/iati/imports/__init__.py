@@ -193,7 +193,7 @@ class ImportMapper(object):
         """
         try:
             max_length = self.model._meta.get_field(field).max_length
-        except (AttributeError, FieldDoesNotExist) as e:
+        except (AttributeError, FieldDoesNotExist):
             return text
         if max_length and len(text) > max_length:
             if log:
@@ -282,7 +282,7 @@ class ImportMapper(object):
             return default
         try:
             max_length = self.model._meta.get_field(field).max_length
-        except (AttributeError, FieldDoesNotExist) as e:
+        except (AttributeError, FieldDoesNotExist):
             return value
         if not max_length:
             return value
@@ -462,7 +462,7 @@ class ImportMapper(object):
         """
         changes = []
         for obj in reverse_manager.all():
-            if not obj in existing:
+            if obj not in existing:
                 obj.delete()
                 changes.append(u'deleted {} (id: {}): {}'.format(
                         field_label, obj.pk, obj.__unicode__()))

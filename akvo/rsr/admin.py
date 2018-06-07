@@ -1526,8 +1526,17 @@ class IndicatorPeriodDataAdmin(admin.ModelAdmin):
 admin.site.register(get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodDataAdmin)
 
 
+class ReportAdminForm(forms.ModelForm):
+    class Meta:
+        model = get_model('rsr', 'Report')
+        widgets = {
+            'url': forms.Textarea(attrs={'rows': 2, 'style': 'width: 80%'})
+        }
+
+
 class ReportAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'Report')
+    form = ReportAdminForm
     save_as = True
     filter_horizontal = ('organisations',)
 

@@ -8,14 +8,12 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from copy import deepcopy
 
-import django_filters
-from django import forms
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
+from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
 from akvo.utils import codelist_choices
-from .models import (Category, Keyword, Organisation, OrganisationLocation,
+from .models import (Organisation, OrganisationLocation,
                      Project, ProjectLocation, ProjectUpdate, ProjectUpdateLocation,
                      RecipientCountry)
 from .m49 import M49_CODES, M49_HIERARCHY
@@ -56,14 +54,13 @@ def walk(node):
         return (walk(node.pop()) + walk(node)) if node else []
 
 
-def get_m49_filter(value):
+def get_m49_filter(value, use_recipient_country=True):
     """Returns the location filter object based on value."""
     countries = walk(deepcopy(M49_HIERARCHY)[int(value)])
     countries_lower = [c.lower() for c in countries]
-    filter_ = (
-        Q(recipient_countries__country__in=countries) |
-        Q(locations__country__iso_code__in=countries_lower)
-    )
+    filter_ = Q(locations__country__iso_code__in=countries_lower)
+    if use_recipient_country:
+        filter_ = (Q(recipient_countries__country__in=countries) | filter_)
     return filter_
 
 
@@ -173,142 +170,3 @@ def get_location_country_ids(qs):
 def build_choices(qs):
     """Build choices from queryset and add an All option"""
     return [('', _('All'))] + list(qs.values_list('id', 'name', flat=False))
-
-
-class BaseProjectFilter(django_filters.FilterSet):
-
-    category = django_filters.ChoiceFilter(
-        choices=([('', _('All'))] +
-                 list(Category.objects.all().values_list('id', 'name',
-                                                         flat=False))),
-        label=_(u'category'),
-        name='categories__id')
-
-    sector = django_filters.ChoiceFilter(
-        initial=_('All'),
-        choices=([('', _('All'))] + sectors()),
-        label=_(u'sector'),
-        name='sectors__sector_code')
-
-    status = django_filters.ChoiceFilter(
-        initial=_('All'),
-        label=_(u'status'),
-        choices=([('', _('All'))] + codelist_choices(ACTIVITY_STATUS, False)),
-        name='iati_status',
-    )
-
-    title_or_subtitle = django_filters.CharFilter(
-        label=_(u'Search'),
-        action=filter_title_or_subtitle)
-
-
-def create_project_filter_class(request, projects):
-    """Create ProjectFilter class based on request attributes."""
-
-    def keywords():
-        if request.rsr_page is not None:
-            keywords = request.rsr_page.keywords.all()
-        else:
-            keywords = Keyword.objects.all()
-        keywords = list(keywords.values_list('id', 'label'))
-        return [('', _('All'))] + keywords
-
-    def locations():
-        if request.rsr_page is not None:
-            return location_choices(projects)
-        else:
-            return M49_CODES
-
-    def organisations():
-        if request.rsr_page is not None:
-            return build_choices(request.rsr_page.partners())
-        else:
-            return get_orgs()
-
-    class ProjectFilter(BaseProjectFilter):
-
-        keyword = django_filters.ChoiceFilter(
-            initial=_('All'),
-            choices=keywords(),
-            label=_(u'keyword'),
-            name='keywords',
-        )
-
-        location = django_filters.ChoiceFilter(
-            choices=locations(),
-            label=_(u'location'),
-            action=filter_m49,
-        )
-
-        organisation = django_filters.ChoiceFilter(
-            choices=organisations(),
-            label=_(u'organisation'),
-            name='partners__id',
-        )
-
-        class Meta:
-            model = Project
-            fields = [
-                'title_or_subtitle',
-                'keyword',
-                'location',
-                'status',
-                'organisation',
-                'category',
-                'sector',
-            ]
-
-    return ProjectFilter
-
-
-class ChoiceMethodFilter(django_filters.MethodFilter):
-    field_class = forms.ChoiceField
-
-
-class ProjectUpdateFilter(django_filters.FilterSet):
-
-    partner = ChoiceMethodFilter(
-        choices=get_orgs(),
-        label=_(u'organisation'),
-        action='partner_updates')
-
-    sector = django_filters.ChoiceFilter(
-        initial=_('All'),
-        choices=([('', _('All'))] + sectors()),
-        label=_(u'sector'),
-        name='project__sectors__sector_code')
-
-    title = django_filters.CharFilter(
-        lookup_type='icontains',
-        label=_(u'Search'),
-        name='title')
-
-    class Meta:
-        model = ProjectUpdate
-        fields = ['partner', 'sector', 'title', ]
-
-    def partner_updates(self, qs, value):
-        """Updates made by users of org in projects where org is a partner."""
-
-        if value in ([], (), {}, None, ''):
-            return qs
-
-        return qs.filter(user__organisations__id=value)\
-                 .filter(project__partners__id=value).distinct()
-
-
-class OrganisationFilter(django_filters.FilterSet):
-
-    location = django_filters.ChoiceFilter(
-        choices=M49_CODES,
-        label=_(u'location'),
-        action=filter_m49_orgs)
-
-    name = django_filters.CharFilter(
-        lookup_type='icontains',
-        label=_(u'Search'),
-        name='name')
-
-    class Meta:
-        model = ProjectUpdate
-        fields = ['location', 'name', ]

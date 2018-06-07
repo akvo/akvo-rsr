@@ -175,21 +175,7 @@ def max_length(obj, field):
     return retrieve_model(obj)._meta.get_field(field).max_length
 
 
-@register.filter
-def value(obj, field):
-    """
-    Retrieves the value of a given object's field.
-
-    In case the object is a string, the supplied model and field are retrieved, and
-    the default value of the field returned, or an empty string if no default is specified.
-
-    In case the object is a Django object, the value of that object is retrieved.
-    If the object is a related object (e.g. ForeignKey), the primary key of the related object
-    is returned.
-
-    :returns "Project title"
-    :returns 1234 (in case of related object)
-    """
+def get_field_value(obj, field):
     if isinstance(obj, basestring):
         return ''
     else:
@@ -206,6 +192,51 @@ def value(obj, field):
             return '0'
         else:
             return field_value or ''
+
+
+@register.assignment_tag(takes_context=True)
+def date_value_with_default(context, project, obj, field):
+    """
+    Returns the period_start or period_end value for the IndicatorPeriod of a single period
+    hierarchy
+    Also return the masquerade_date to be used to show the project start or end date
+    respectively instead of the period dates
+
+    If there is no hierarchy or the fields are not the ones above return the field value
+    """
+    new_period = isinstance(obj, basestring) and obj.split('.')[0] == 'IndicatorPeriod'
+    if (context.get('hierarchy_name') and field in ['period_start', 'period_end'] and (
+            new_period or obj.__class__.__name__ == 'IndicatorPeriod'
+    )):
+
+        # Set masquerade value using project dates
+        project_date_field = 0 if field == 'period_start' else 1
+        masquerade_date = project.project_dates()[project_date_field]
+        # If the project has no date, use the relevant hierarchy date
+        if not masquerade_date:
+            masquerade_date = context[field]
+        return {'value': context[field], 'masquerade_date': masquerade_date,
+                'new_period': 'true' if new_period else 'false'}
+    else:
+        return {'value': get_field_value(obj, field), 'masquerade_date ': None}
+
+
+@register.filter
+def value(obj, field):
+    """
+    Retrieves the value of a given object's field.
+
+    In case the object is a string, the supplied model and field are retrieved, and
+    the default value of the field returned, or an empty string if no default is specified.
+
+    In case the object is a Django object, the value of that object is retrieved.
+    If the object is a related object (e.g. ForeignKey), the primary key of the related object
+    is returned.
+
+    :returns "Project title"
+    :returns 1234 (in case of related object)
+    """
+    return get_field_value(obj, field)
 
 
 @register.filter

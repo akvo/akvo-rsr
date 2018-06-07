@@ -26,6 +26,9 @@ from django.utils.text import slugify
 import pytz
 import requests
 from shapely.geometry import shape, Point
+from sorl.thumbnail import get_thumbnail as get_sorl_thumbnail
+from sorl.thumbnail.parsers import parse_geometry
+
 
 from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES, ISO_ALPHA3_ALPHA2_MAP
 
@@ -447,3 +450,23 @@ def fix_country_codes(data):
         fixed_data.append(country_json)
 
     return fixed_data
+
+
+def single_period_dates(name):
+    try:
+        config = settings.SINGLE_PERIOD_INDICATORS[name]
+        return config['needs_reporting_timeout_days'], config['period_start'], config['period_end']
+    except KeyError:
+        return None, None, None
+
+
+def get_placeholder_thumbnail(file_, geometry_string, **options):
+    """Return a place holder url for the given geometry string"""
+    x, y = parse_geometry(geometry_string, ratio=1)
+    url = '//placehold.it/{}x{}'.format(x, y)
+    Url = namedtuple('Url', ('url',))
+    return Url(url=url)
+
+
+local_dev = settings.RSR_DOMAIN == 'rsr.localdev.akvo.org'
+get_thumbnail = get_placeholder_thumbnail if local_dev else get_sorl_thumbnail

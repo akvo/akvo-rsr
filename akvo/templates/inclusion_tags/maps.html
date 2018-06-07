@@ -10,6 +10,7 @@
             {% if not dynamic %}
             disableDefaultUI: true,
             draggable: false,
+            zoom: 12
             {% endif %}
         },
         locations: {{ locations|safe }},
@@ -121,7 +122,7 @@
 
             var listener = google.maps.event.addListener(map, "idle", function() {
                 // Don't let the map be too zoomed in
-                if (map.getZoom() > 8) map.setZoom(8);
+                if (map.getZoom() > 12) map.setZoom(12);
                 // Don't let the map be too zoomed out
                 if (map.getZoom() < 2) map.setZoom(2);
                 google.maps.event.removeListener(listener);

@@ -58,7 +58,7 @@ gunicorn==18.0
 wsgiref==0.1.2
 
 # Scripts logging support
-tablib==0.9.11
+tablib==0.12.1
 
 # Piwik
 django-piwik==0.1
@@ -87,3 +87,7 @@ xmlunittest==0.3.2
 
 # Country detection
 Shapely==1.5.7
+
+# DRF CSV endpoints
+djangorestframework-csv==2.1.0
+unicodecsv==0.14.1

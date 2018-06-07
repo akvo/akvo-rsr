@@ -5,7 +5,7 @@
 {% block title %}{% trans 'MyRSR - My Reports' %}{% endblock %}
 
 {% block myrsr_main %}
-    <div id="container" class="col-sm-12"></div>
+    <div id="container-fluid" class="col-sm-12"></div>
 {% endblock %}
 
 {% block js %}
@@ -16,17 +16,17 @@
         {
             "base_url": "//{{ request.META.HTTP_HOST }}",
             "formats": "{% url 'report_formats_api' %}",
-            "user": "{% url 'user-detail' request.user.pk %}",
+            "user": "{% url 'user-detail' 'v1' request.user.pk %}",
             "user_organisations": "{% url 'user_organisations_typeahead' %}",
             "user_projects": "{% url 'user_projects_typeahead' %}",
-            "reports": "{% url 'reports_api' %}"
+            "reports": "{% url 'reports_api-list' 'v1' %}"
         }
     </script>
 
     {# Translation strings #}
     <script type="application/json" id="translation-texts">
         {
-            "my_reports": "{% trans 'My reports'|escapejs %}",
+            "my_reports": "{% trans 'Organisation reports'|escapejs %}",
             "download_report": "{% trans 'Download report'|escapejs %}",
             "report_type": "{% trans 'Report type'|escapejs %}",
             "select_a_report_type": "{% trans 'Select a report type'|escapejs %}",

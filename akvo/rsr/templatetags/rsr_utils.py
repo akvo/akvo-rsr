@@ -10,6 +10,7 @@ from __future__ import absolute_import, print_function
 from django import template
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 
 from akvo.rsr.models import Keyword, PartnerSite, Project, ProjectUpdate, Organisation
 
@@ -72,3 +73,11 @@ def vid_img(context, obj, width, height, alt):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+@register.simple_tag
+def project_edit_link(project, user):
+    """Return the project edit link based on project status and user permissions."""
+    published = project.publishingstatus.status == project.publishingstatus.STATUS_PUBLISHED
+    view_name = 'project-edit' if published else 'project_editor'
+    return reverse(view_name, args=[project.pk])

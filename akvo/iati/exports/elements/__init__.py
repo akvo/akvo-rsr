@@ -69,6 +69,7 @@ __all__ = [
     'iati_identifier',
     'legacy_data',
     'location',
+    'other_identifier',
     'participating_org',
     'planned_disbursement',
     'policy_marker',

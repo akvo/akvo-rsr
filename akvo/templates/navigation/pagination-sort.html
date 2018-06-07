@@ -23,21 +23,5 @@
             {% endif %}
         </ul>
     </div>
-    <div class="sortList col-md-4">
-        <div class="dropdown">
-          <button class="btn btn-primary dropdown-toggle" type="button" id="sortByButton" data-toggle="dropdown" aria-expanded="true">
-            {% trans "Sort by" %}
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="sortByDropdown">
-            <li role="presentation"{% if sorting = "-last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-last_modified_at">{% trans "Latest modified" %}</a></li>
-            <li role="presentation"{% if sorting = "last_modified_at" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="last_modified_at">{% trans "Oldest modified" %}</a></li>
-            <li role="presentation"{% if sorting = "title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="title">{% trans "Title (A-Z)" %}</a></li>
-            <li role="presentation"{% if sorting = "-title" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-title">{% trans "Title (Z-A)" %}</a></li>
-            <li role="presentation"{% if sorting = "budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="budget">{% trans "Total budget (low-high)" %}</a></li>
-            <li role="presentation"{% if sorting = "-budget" %} class="disabled"{% endif %}><a role="menuitem" tabindex="-1" param="-budget">{% trans "Total budget (high-low)" %}</a></li>
-          </ul>
-        </div>
-    </div>
 </div>
 {% endif %}

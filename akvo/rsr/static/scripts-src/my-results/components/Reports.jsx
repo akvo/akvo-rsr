@@ -5,357 +5,198 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
 import React from "react";
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
-import {
-    _,
-    collapseId,
-    displayDate,
-    distinct,
-    endpoints,
-    setHash,
-} from "../utils";
-import * as c from "../const";
-import {collapseChange} from "../actions/collapse-actions";
-import {
-    updateModelToBackend,
-    saveModelToBackend,
-    deleteModelFromBackend
-} from "../actions/model-actions";
-import Collapse, { Panel } from 'rc-collapse';
-import {
-    datePairs,
-    reportFormToggle,
-    selectPeriodByDates,
-    periodSelectReset,
-    noHide,
-} from "../actions/ui-actions";
-import Select from "react-select";
+import { connect } from "react-redux";
 import "react-select/dist/react-select.css";
 import Results from "./Results";
 
-// Markdown
-import {Markdown} from 'react-showdown';
-import {MarkdownEditor} from "./common";
+// DatePicker
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-// Alerts
-import AlertFactory from "./alertContainer"
-import * as alertActions from "../actions/alert-actions"
-
-
-const ReportingPeriodHeader = ({period_start, period_end, count, onCreate}) => {
-    return (
-        <div>
-            <span>{_("narrative_summaries")}: <span className="narrativePeriod">{`${displayDate(period_start)} - ${displayDate(period_end)}`}</span></span>
-            <span className="narrativeCount" >{`(${count})`}</span>
-            {
-                onCreate == undefined ?
-                undefined
-                :
-                <button className="btn btn-sm btn-default createSummaryBtn"
-                        onClick={onCreate}>
-                    {_("create_narrative_summary")}
-                </button>
-            }
-        </div>
-    )
-}
-
-const ReportHeader = ({categories, report, onClick}) => {
-    const category_style = {marginRight: '10px'};
-    const status_style = {float: 'right', marginRight: '20px'};
-    const clickHandler = (e) => {
-        e.stopPropagation();
-        return onClick(report);
-    };
-    return (
-        <div>
-            <span style={category_style}>{categories.objects[report.category].label}</span>
-            <button className="btn btn-sm btn-default" onClick={clickHandler}>{_("edit")}</button>
-            <span style={status_style} className="narrativeStatus">{report.published?_("approved"):_("draft")}</span>
-        </div>
-    )
-};
-
-const Report = ({report}) => {
-    return <Markdown markup={report.text}/>
-};
-
-
-@connect((store) => {return {}}, alertActions)
-export class ReportForm extends React.Component {
-    constructor(props) {
-        super(props);
-        const {report} = this.props;
-        const {text, category} = report;
-        const alertName = 'ReportAlert';
-        this.state = {
-            text: text,
-            alertName,
-            category,
-        };
-        this.closeForm = this.closeForm.bind(this);
-        this.saveSummary = this.saveSummary.bind(this);
-        this.approveSummary = this.approveSummary.bind(this);
-        this.createSummary = this.createSummary.bind(this);
-        this.deleteSummary = this.deleteSummary.bind(this);
-        this.summaryToBackend = this.summaryToBackend.bind(this);
+var sortReportIds = function(reports) {
+    if (!reports || !reports.ids) {
+        return;
     }
+    var sorter = function(id1, id2) {
+        const a = reports.objects[id1].organisations.length,
+            b = reports.objects[id2].organisations.length;
 
-    componentDidMount() {
-        // filter periods;
-        const {period_start, period_end} = this.props.report;
-        selectPeriodByDates(period_start, period_end);
-        periodSelectReset();
-        setHash();
-    }
-
-    componentWillUnmount() {
-        noHide();
-    }
-
-    closeForm() {
-        reportFormToggle();
-        // HACK: Displaying the results in the edit view resets the keys! We
-        // manually expand the correct period, again.
-        const {period_start, period_end} = this.props.report;
-        const activeKey = `${period_start}:${period_end}`
-        collapseChange(collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS), activeKey);
-    }
-
-    saveSummary() {
-        this.summaryToBackend();
-    }
-
-    approveSummary() {
-        this.summaryToBackend(true);
-    }
-
-    createSummary(published) {
-        const {text, category} = this.state;
-        const summary = Object.assign({}, this.props.report);
-        Object.assign(summary, {text, category});
-        if (published) {summary.published = published};
-        if (summary.id == 'new') {delete summary.id};
-        return summary;
-    }
-
-    deleteSummary(){
-        const {report} = this.props;
-        const {alertName} = this.state;
-        const callbacks = {
-            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                this, alertName, _("summary_not_deleted")
-            )
-        };
-        this.closeForm();
-        deleteModelFromBackend(
-            c.OBJECTS_REPORTS, endpoints.update_report(report.id), report, null, callbacks
-        );
-    }
-
-    summaryToBackend(published){
-        const {alertName} = this.state;
-        const callbacks = {
-            [c.UPDATE_MODEL_FULFILLED]: this.closeForm,
-            [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
-                this, alertName, _("summary_not_saved")
-            )
-        };
-        const summary = this.createSummary(published);
-        if (summary.id) {
-            updateModelToBackend(
-                c.OBJECTS_REPORTS, endpoints.update_report(summary.id), summary, null, callbacks
-            );
-        } else {
-            saveModelToBackend(
-                c.OBJECTS_REPORTS, endpoints.save_report(), summary, null, callbacks
-            );
+        if (a < b) {
+            return -1;
+        } else if (b < a) {
+            return 1;
         }
-    }
+        return 0;
+    };
+    reports.ids.sort(sorter);
+};
 
+@connect(store => {
+    return {
+        reports: store.models.reports,
+        project: store.page.project
+    };
+})
+export default class Reports extends React.Component {
     render() {
-        const {categories, reports, report} = this.props;
-        const setText = (text) => {this.setState({text: text})};
-        const setCategory = (category) => {this.setState({category: category.id})};
-        const reportedCategories = new Set(reports.map((report)=>{return report.category}));
-        const categoryOptions = categories
-            .ids
-            .map((id) => {return this.props.categories.objects[id]})
-            .filter((category)=>{return !reportedCategories.has(category.id) || category.id == report.category});
-        const reportCategory = categories.objects[this.state.category];
-        const disableDelete = report.id === 'new';
-        const disableSave = (reportCategory === undefined || !this.state.text);
+        const { project, reports } = this.props;
+        const report_count = (reports && reports.ids && reports.ids.length) || 0;
+        const row_count = Math.round(Math.ceil(report_count / 3)),
+            row_indexes = Array.from(Array(row_count).keys()),
+            col_indexes = Array.from(Array(3).keys());
+        // Order reports so that organisation specific reports are listed at the end
+        sortReportIds(reports);
         return (
-            <div>
-                <h2>{displayDate(report.period_start)} - {displayDate(report.period_end)}</h2>
-                <article className="shared">
-                    <button className="btn btn-xs btn-default closingBtn" onClick={this.closeForm}>{"x"}</button>
-                    <h3>Narrative summary</h3>
-                    <Select options={categoryOptions}
-                            value={reportCategory}
-                            onChange={setCategory}
-                            multi={false}
-                            placeholder={_("select_category")}
-                            searchable={false}
-                            clearable={false}/>
-                    <MarkdownEditor text={this.state.text} onChange={setText}/>
-                    <div className="menuAction">
-                        <button className="btn btn-xs btn-delete deleteBtn" onClick={this.deleteSummary} disabled={disableDelete}>
-                            {_("delete")}
-                        </button>
-
-                        <button className="btn btn-xs btn-default" onClick={this.approveSummary} disabled={disableSave}>
-                            {_("approve")}
-                        </button>
-                        <button className="btn btn-xs btn-default" onClick={this.saveSummary} disabled={disableSave}>
-                            {_("save")}
-                        </button>
-                    </div>
-                </article>
-                <aside className="open">
-                    <Results parentId="results"/>
-                </aside>
+            <div className="rsrReports">
+                {row_indexes.map(row => {
+                    return (
+                        <div className="row" key={row}>
+                            {col_indexes.map(col => {
+                                const index = row * 3 + col,
+                                    id = reports.ids[index];
+                                if (id === undefined) {
+                                    return;
+                                }
+                                return (
+                                    <Report
+                                        project={project}
+                                        report={reports.objects[id]}
+                                        key={id}
+                                    />
+                                );
+                            })}
+                        </div>
+                    );
+                })}
             </div>
         );
     }
 }
 
-const filterReports = (reports, period_start, period_end) => {
-    const ids = reports.ids.filter((id) => {
-        const report = reports.objects[id];
-        return report.period_start === period_start && report.period_end === period_end;
-    });
-    return ids.map((id) => {return reports.objects[id];});
-};
-
-const ReportAlert = ({message, close}) => (
-    <div className='reports-alert'>
-        {message}
-        <button className="btn btn-sm btn-default" onClick={close}>X</button>
-    </div>
-);
-ReportAlert.propTypes = {
-    message: PropTypes.string.isRequired,
-    close: PropTypes.func.isRequired,
-};
-
-@connect((store) => {
-    return {
-        keys: store.keys,
-        categories: store.models.categories,
-        reports: store.models.reports,
-        periods: store.models.periods,
-        project: store.page.project.id,
-        reportFormDisplay: store.ui[c.REPORT_FORM_DISPLAY],
-    }
-})
-export default class Reports extends React.Component {
+class Report extends React.Component {
     constructor(props) {
         super(props);
-        this.collapseChange = this.collapseChange.bind(this);
-        const alertName = 'ReportAlert';
+        const { report } = props;
         this.state = {
-                  ReportAlert: AlertFactory({alertName})(ReportAlert),
-                  collapseId: collapseId(c.OBJECTS_REPORTS, c.OBJECTS_REPORTS)
+            show_description: true,
+            date_selection:
+                report.url.indexOf("{start_date}") > -1 || report.url.indexOf("{end_date}") > -1,
+            start_date: undefined,
+            end_date: undefined
         };
-        this.createSummary = this.createSummary.bind(this);
+        this.downloadReport = this.downloadReport.bind(this);
+        this.toggleDescription = this.toggleDescription.bind(this);
+        this.setStartDate = this.setStartDate.bind(this);
+        this.setEndDate = this.setEndDate.bind(this);
     }
 
-    activeKey() {
-        return this.props.keys[this.state.collapseId];
-    }
-
-    collapseChange(activeKey) {
-        collapseChange(this.state.collapseId, activeKey);
-    }
-
-    renderReports(reports, categories) {
-        return reports.map((report) => {
-            const header = (<ReportHeader categories={categories} report={report} onClick={this.editSummary}/>);
-            return (
-                <Collapse key={report.id}>
-                    <Panel header={header}>
-                        <Report report={report}/>
-                    </Panel>
-                </Collapse>
-            );
-        });
-    }
-
-    editSummary(report) {
-        const {period_start, period_end} = report;
-        // Show report editing form
-        reportFormToggle(report.id);
-    }
-
-    createSummary(e, period_start, period_end){
-        e.stopPropagation();
-        console.log(period_start, period_end);
-        const id = 'new';
-        const text = '';
-        const {reports, project} = this.props;
-        const report = {id, period_start, period_end, project, text};
-        reports.objects[report.id] = report
-        this.editSummary(report);
-    }
-
-    renderPanels(ids) {
-        const {categories, reports} = this.props;
-        const pairs = distinct(datePairs(ids, c.OBJECTS_PERIODS));
-        return (pairs.map(
-            (pair) => {
-                const [period_start, period_end] = pair.split(':');
-                const period_reports = filterReports(reports, period_start, period_end);
-                const onCreate = pair === this.activeKey() ?
-                                 ((e) => {return this.createSummary(e, period_start, period_end)}) :
-                                 undefined;
-                const header = (
-                    <ReportingPeriodHeader period_start={period_start}
-                                           period_end={period_end}
-                                           count={period_reports.length}
-                                           onCreate={onCreate}/>
-                )
-                return (
-                    <Panel header={header} key={pair}>
-                        {this.renderReports(period_reports, categories)}
-                    </Panel>
-                )
+    downloadReport(format) {
+        const { report: { url }, projectId } = this.props;
+        let { start_date, end_date } = this.state;
+        let download_url;
+        download_url = url
+            .replace("{format}", format)
+            .replace("{project}", projectId)
+            .replace("{language_code}", project.currentLanguage);
+        if (this.state.date_selection) {
+            if (end_date && start_date && start_date > end_date) {
+                // Swap start and end dates if end date is before start date
+                start_date = end_date;
+                end_date = this.state.start_date;
             }
-        ))
+            download_url = start_date
+                ? download_url.replace("{start_date}", start_date.toISOString())
+                : download_url.replace("p_StartDate={start_date}", "");
+            download_url = end_date
+                ? download_url.replace("{end_date}", end_date.toISOString())
+                : download_url.replace("p_EndDate={end_date}", "");
+            download_url = download_url.replace(/&+/g, "&").replace(/&$/, "");
+        }
+        console.log("Downloading report from", download_url);
+        this.toggleDescription();
+        window.location.assign(download_url);
+    }
+
+    toggleDescription() {
+        this.setState({ show_description: !this.state.show_description });
+    }
+
+    setStartDate(start_date) {
+        this.setState({ start_date });
+    }
+
+    setEndDate(end_date) {
+        this.setState({ end_date });
     }
 
     render() {
-        // Special case, always get all Results
-        const {categories, reports, periods, reportFormDisplay} = this.props;
-        const periodIds = periods.ids;
-
-        const reportsDisplay = (
-            <Collapse accordion={true} activeKey={this.activeKey()} onChange={this.collapseChange}>
-                {this.renderPanels(periodIds)}
-            </Collapse>
-        );
-        const noPeriods = (<p>No reporting periods</p>);
-        const reportForm = (reportFormDisplay) => {
-            const report = reports.objects[reportFormDisplay];
-            const period_reports = filterReports(reports, report.period_start, report.period_end);
-            return (<ReportForm report={report} reports={period_reports} categories={categories}/>);
-        }
-        if (!reports.fetched || !periods.fetched) {
+        const { report } = this.props;
+        const { show_description, date_selection, start_date, end_date } = this.state;
+        const formats = report.formats.map(format => {
+            const { icon, name, display_name } = format;
             return (
-                <p className="loading">Loading <i className="fa fa-spin fa-spinner" /></p>
+                <ReportFormatButton
+                    download={this.downloadReport}
+                    icon={icon}
+                    format_name={name}
+                    display_name={display_name}
+                    url={report.url}
+                    key={format.name}
+                />
             );
-        } else {
-            return (
-                <div className={c.OBJECTS_REPORTS}>
-                    {<this.state.ReportAlert/>}
-                    {reportFormDisplay?
-                     reportForm(reportFormDisplay):
-                     (periodIds.length > 0? reportsDisplay: noPeriods)}
+        });
+        const date_selectors = (
+            <div className="reportDate">
+                <div className="startDate">
+                    <div>Start Date</div>
+                    <DatePicker onChange={this.setStartDate} selected={start_date} />
                 </div>
-            );
-        }
+                <div className="endDate">
+                    <div>End Date</div>
+                    <DatePicker onChange={this.setEndDate} selected={end_date} />
+                </div>
+            </div>
+        );
+        return (
+            <div className="rsrReport col-sm-6 col-md-4 col-xs-12">
+                <div className="reportContainer">
+                    <div className="">
+                        <h3 className="">{report.title}</h3>
+                    </div>
+                    <div className="reportDscr">{report.description}</div>
+                    <div className="options">
+                        {date_selection ? date_selectors : undefined}
+                        {formats}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+class ReportFormatButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick(e) {
+        e.stopPropagation();
+        console.log(e);
+        this.props.download(this.props.format_name);
+    }
+
+    render() {
+        const { icon, display_name } = this.props;
+        const icon_class = `fa fa-${icon}`,
+            text = `Download ${display_name}`;
+        return (
+            <button className="btn btn-default reportDown" onClick={this.onClick}>
+                <i className={icon_class} />
+                <span>&nbsp;&nbsp;</span>
+                <span>{text}</span>
+            </button>
+        );
     }
 }

@@ -26,7 +26,7 @@ from akvo.rsr.models import IndicatorPeriodData
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
+from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string)
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
@@ -329,6 +329,8 @@ def project_editor(request, project_id):
 
     }
 
+    context = project.project_hierarchy_context(context)
+
     # Custom fields context
     for section_id in xrange(1, 12):
         context['custom_fields_section_{}'.format(section_id)] = \
@@ -403,7 +405,7 @@ def user_management(request):
 
     org_admin = user.approved_employments().filter(group__name='Admins').exists() or \
         user.is_admin or user.is_superuser
-    groups = ['Users', 'User Managers', 'Project Editors', 'M&E Managers', 'Admins']
+    groups = settings.REQUIRED_AUTH_GROUPS
 
     if user.is_admin or user.is_superuser:
         # Superusers or RSR Admins can manage and invite someone for any organisation
@@ -450,13 +452,7 @@ def user_management(request):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, employments, 10)
 
-    all_groups = [
-        Group.objects.get(name='Users'),
-        Group.objects.get(name='User Managers'),
-        Group.objects.get(name='Project Editors'),
-        Group.objects.get(name='M&E Managers'),
-        Group.objects.get(name='Admins')
-    ]
+    all_groups = [Group.objects.get(name=name) for name in settings.REQUIRED_AUTH_GROUPS]
 
     employments_array = []
     for employment in page:
@@ -506,38 +502,27 @@ def user_management(request):
 
 
 @login_required
-def my_results_select(request):
-    """
-    My results section without a project selected. Only accessible to M&E Managers, Admins and
-    Project editors.
+def my_project(request, project_id, template='myrsr/my_project.html'):
+    """Project results, updates and reports CRUD view
 
-    :param request; A Django HTTP request and context
-    """
-    user = request.user
-    me_managers = Group.objects.get(name='M&E Managers')
-    admins = Group.objects.get(name='Admins')
-    project_editors = Group.objects.get(name='Project Editors')
-
-    if not (user.is_admin or user.is_superuser or user.in_group(me_managers) or
-            user.in_group(admins) or user.in_group(project_editors)):
-        raise PermissionDenied
-
-    return render(request, 'myrsr/my_results_select.html', {})
-
-
-@login_required
-def my_results(request, project_id, template='myrsr/my_results.html'):
-    """
-    My results section. Only accessible to M&E Managers, Admins and Project editors.
+    The page allows adding updates, creating reports, adding/changing results
+    and narrative reports. So, this page should be visible to any org user, but
+    tabs are shown based on the permissions of the user.
 
     :param request; A Django HTTP request and context
     :param project_id; The ID of the project
+
     """
     project = get_object_or_404(Project, pk=project_id)
     user = request.user
 
-    if not user.has_perm('rsr.change_project', project) or project.iati_status in Project.EDIT_DISABLED \
-            or not project.is_published():
+    # FIXME: Can reports be generated on EDIT_DISABLED projects?
+    if project.iati_status in Project.EDIT_DISABLED:
+        raise PermissionDenied
+
+    # Adding an update is the action that requires least privileges - the view
+    # is shown if a user can add updates to the project.
+    if not user.has_perm('rsr.add_projectupdate') or not project.is_published():
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')
@@ -548,16 +533,19 @@ def my_results(request, project_id, template='myrsr/my_results.html'):
     user_is_me_manager = user.has_perm('rsr.do_me_manager_actions')
     show_narrative_reports = project.partners.filter(
         id__in=settings.NARRATIVE_REPORTS_BETA_ORGS
-    ).exists()
+    ).exists() and user.has_perm('rsr.add_narrativereport', project)
+    show_results = user.has_perm('rsr.add_indicatorperioddata', project)
 
     context = {
         'project': project,
         'user': user,
-        # turn it into JSON boolean
-        'user_is_me_manager': 'true' if user_is_me_manager else 'false',
         'me_managers': me_managers.exists(),
+        # JSON data for the client-side JavaScript
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
-        'show_narrative_reports': 'true' if show_narrative_reports else 'false',
+        'user_is_me_manager': json.dumps(user_is_me_manager),
+        'show_narrative_reports': json.dumps(show_narrative_reports),
+        'show_results': json.dumps(show_results),
     }
 
+    context = project.project_hierarchy_context(context)
     return render(request, template, context)

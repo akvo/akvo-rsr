@@ -115,6 +115,12 @@ em {
     font-style: italic;
 }
 
+.group:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 div.morePartners {
     overflow: visible;
     display: inline-block;
@@ -204,11 +210,21 @@ button.btn-primary {
     }
 }
 
+// Copy of Bootstrap .hidden Used to hide form elements that _should_ be included in the form data
+.invisible {
+    display: none!important;
+    visibility: hidden!important;
+}
+
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
 .tt-input,
 .tt-hint {
     @include border-radius(5px 0 0 5px);
+}
+
+.form-control {
+    border-radius: 0px;
 }
 
 .input-group-addon:not(:first-child):not(:last-child),
@@ -356,7 +372,7 @@ label {
 nav.navbar-fixed-top {
     background-color: rgba(white, 0.95);
     border: none;
-    padding: 5px 0;
+    padding: 5px 40px;
     @include border-radius(0);
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
     button.navbar-toggle {
@@ -369,6 +385,10 @@ nav.navbar-fixed-top {
                 background: $rsrBlue;
             }
         }
+    }
+    & + .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
     }
     .navbar-brand {
         float: left;
@@ -407,10 +427,34 @@ nav.navbar-fixed-top {
             }
         }
     }
+    .tagLine {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        @include responsive(mediums-max-screens) {
+            top: 20px;
+            left: 50%;
+            transform: translate(-50%, 0%);
+            h2 {
+                font-size: 1.2em;
+            }
+        }
+
+        @include responsive(small-max-screens) {
+            display: none;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+        }
+    }
     .navbar-nav {
         li {
             font-weight: normal;
-            padding-top: 3px;
             &:first-child {}
             a {
                 color: $akvoPurple;
@@ -419,70 +463,11 @@ nav.navbar-fixed-top {
                     color: $anchorLinkHover;
                 }
                 &.active {
-                    color: $rsrGreen;
-                    font-weight: bold;
-                    background: rgba($anchorLinkHover, 0.1);
+                    color: $rsrBlue2;
+                    background: transparent;
                     @include border-radius(3px);
                     @include responsive(tablets) {
                         background: rgba($anchorLinkHover, 0.1);
-                    }
-                }
-                &.addUpdateBtn {
-                    margin-right: 15px;
-                    background-color: transparent;
-                    border-color: transparent;
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                    @include responsive(tablets) {
-                        width: 95%;
-                        padding: 10px 5%;
-                        margin: 0 auto 10px auto;
-                    }
-                }
-            }
-            &.navProject {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
-            &.navUpdate {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
-            &.navOrganisation {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
                     }
                 }
             }
@@ -490,6 +475,65 @@ nav.navbar-fixed-top {
         &.navbar-right {
             li {
                 margin-right: 2px;
+                &:nth-child(1) {
+                    margin-right: 15px;
+                    .userDropdown {
+                        margin-top: 2px;
+                        background-color: transparent !important;
+                        border-color: transparent !important;
+                        .btn-default {
+                            margin-top: -5px;
+                            padding: 3px 8px 3px 3px;
+                            border: 1px solid rgba($rsrBlue, 0) !important;
+                            background: rgba($anchorLink, 0) !important;
+                            color: $rsrBlue;
+                            &:hover {
+                                border: 1px solid rgba($rsrBlue, 0) !important;
+                                background: white !important;
+                                color: $flowOrange !important;
+                            }
+                            .userAvatar {
+                                width: 30px;
+                                height: 30px;
+                                img {
+                                    margin: 0;
+                                    width: 30px;
+                                    height: 30px;
+                                    border: 1px solid white;
+                                }
+                            }
+                        }
+                        .dropdown-menu {
+                            @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
+                                position: initial;
+                                float: none;
+                            }
+                            @include responsive(small-max-screens) {
+                                background-color: #fff !important;
+                                border: 1px solid rgba(0, 0, 0, 0.14902);
+                                box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                a {
+                                    color: $anchorLink;
+                                    font-family: $titleFont;
+                                    border: thin solid transparent;
+                                    &:hover {
+                                        color: $anchorLinkHover;
+                                    }
+                                    &.active {
+                                        color: complement($rsrBlue);
+                                        font-weight: bold;
+                                        background: rgba($anchorLinkHover, 0.1);
+                                        @include border-radius(3px);
+                                        @include responsive(tablets) {
+                                            background: rgba($anchorLinkHover, 0.1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 &:nth-child(2) {
                     a {
                         padding-left: 10px;
@@ -499,52 +543,24 @@ nav.navbar-fixed-top {
                 a {
                     padding-left: 5px;
                     padding-right: 5px;
+                    &.areaToggle {
+                        margin-top: 5px;
+                        @include button($anchorLink, white);
+                        box-shadow: none !important;
+                        padding: 8px 8px;
+                    }
                     @include responsive(tablets) {
                         padding: 10px 15px;
                     }
 
-                    &.active {
-                        background: rgba($anchorLinkHover, 0.1);
-                        color: $anchorLinkHover;
-                    }
+                    &.active {}
                 }
-                .langDropdown {
-                    .btn-default {
-                        border-color: transparent;
-                    }
-                    margin-top: 10px;
-                    @include responsive(small-max-screens) {
-                        padding-left: 15px;
-                        padding-right: 15px;
-                    }
-
-                    .dropdown-menu {
-                        @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
-                            position: initial;
-                            float: none;
-                        }
-                        @include responsive(small-max-screens) {
-                            background-color: #FFF;
-                            border: 1px solid rgba(0, 0, 0, 0.14902);
-                            box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-                            -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-                            a {
-                                color: $anchorLink;
-                                font-family: $titleFont;
-                                border: thin solid transparent;
-                                &:hover {
-                                    color: $anchorLinkHover;
-                                }
-                                &.active {
-                                    color: complement($rsrBlue);
-                                    font-weight: bold;
-                                    background: rgba($anchorLinkHover, 0.1);
-                                    @include border-radius(3px);
-                                    @include responsive(tablets) {
-                                        background: rgba($anchorLinkHover, 0.1);
-                                    }
-                                }
-                            }
+                div.userDropdown {
+                    margin-top: 10px !important;
+                    li {
+                        a {
+                            padding-right: 20px;
+                            padding-left: 20px;
                         }
                     }
                 }
@@ -554,6 +570,7 @@ nav.navbar-fixed-top {
 }
 
 .navbar {
+    margin-bottom: 0 !important;
     .active {
         color: #2A6297;
     }
@@ -634,20 +651,13 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 0 25px 0;
+    padding: 10px 0px 0 20px;
 }
 
 .navContainer {
     background: rgba($primary5, 0.1);
     margin: -20px 0 10px 0;
     padding-top: 10px;
-}
-
-.myRsrPg {
-    h3 {
-        display: inline-block;
-        margin-top: 20px;
-    }
 }
 
 .choose-report-template {
@@ -751,7 +761,7 @@ div.update-confirm-container {
 }
 
 #createProject {
-    margin: -5px 0 0 25px;
+    margin: 18px 0 0 0;
     background: $akvoBlack;
     color: white;
     border: none;
@@ -810,108 +820,110 @@ div.update-confirm-container {
     }
 }
 
+.projectStatus {
+    span {
+        color: $akvoBlack !important;
+    }
+}
+
+.myProjectList {
+    thead {
+        th {
+            text-align: left;
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+    tr {
+        td {
+            text-align: left;
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+}
+
+#user_table {
+    td.text-right {
+        > span {
+            > span:first-of-type {
+                float: right;
+                margin-left: 15px;
+                margin-top: 5px;
+            }
+            > span:nth-of-type(2) {
+                margin-right: 15px;
+            }
+        }
+    }
+}
+
 .myProjectList,
 #updates,
 #user_table {
+    font-size: 1.2em;
     thead {
         tr {
-            background-color: rgba($akvoBlack, 0.05);
             border-bottom: none;
             th {
-                padding-top: 15px;
-                padding-bottom: 15px;
+                padding-top: 25px;
+                padding-bottom: 25px;
+                td {
+                    padding-top: 40px;
+                    padding-bottom: 50px;
+                }
             }
         }
     }
     tbody {
         tr {
             background: white !important;
+            td {
+                border: none;
+                padding-top: 40px;
+                padding-bottom: 50px;
+            }
             &.notPublished {
-                background: rgba($primary4, 0.15) !important;
                 td {
                     position: relative;
-                    padding-top: 40px;
+                    .media-body {
+                        a {
+                            padding-top: 20px;
+                        }
+                    }
                     .unplubishedPjt {
-                        position: absolute;
-                        top: 7px;
-                        left: 8px;
-                        padding: 3px;
+                        padding: 0px 3px;
                         display: inline-block;
-                        @include border-radius(2px);
-                        color: $akvoTvRed;
-                        border: 1px solid $akvoTvRed;
-                        font-size: 80%;
-                        font-weight: 600;
+                        color: $progressWarning;
+                        font-size: 70%;
+                        font-weight: 400;
                     }
                 }
             }
             &.isPrivate {
-                background: rgba($progressNot, 0.1) !important;
                 td {
                     position: relative;
-                    padding-top: 40px;
+                    .media-body {
+                        a {
+                            padding-top: 20px;
+                        }
+                    }
                     .privatePjt {
-                        position: absolute;
-                        top: 7px;
-                        left: 8px;
-                        padding: 3px;
+                        padding: 0px 3px;
                         display: inline-block;
-                        @include border-radius(2px);
-                        color: $akvoTvRed;
-                        border: 1px solid $akvoTvRed;
-                        font-size: 80%;
-                        font-weight: 600;
+                        color: $progressWarning;
+                        font-size: 70%;
+                        font-weight: 400;
                     }
                 }
-            }
-            td {
-                padding-top: 30px;
-                padding-bottom: 30px;
-                border: none;
-            }
-        }
-    }
-    div.projectListMenu {
-        ul {
-            margin-top: -10px;
-            li {
-                display: inline-block;
-                @include responsive(mediums-max-screens) {
-                    display: block;
-                }
-
-                @include responsive(small-max-screens) {}
-
-                a {
-                    &:last-child {
-                        margin-right: 0;
-                    }
-                }
-                @include responsive(wide-screens) {}
-
-                > a {}
-            }
-            @media (min-width: 992px) {
-                min-width: 340px;
             }
         }
     }
     a {
         &:last-child {
             margin-right: 0;
-        }
-        &.addUpdate {
-            &.disabled {
-                background-color: lighten($primary4, 30%);
-                color: lighten($primary4, 20%);
-                pointer-events: initial;
-                cursor: not-allowed;
-                border: none;
-                @include border-radius(5px);
-                &:hover {
-                    text-decoration: none;
-                }
-            }
         }
     }
 }
@@ -1006,7 +1018,7 @@ div.paginationWrap {
     }
 
     .media {
-        width: 39%;
+        width: 59%;
         > a {
             min-width: 80px;
         }
@@ -1109,8 +1121,15 @@ body > footer {
 }
 
 footer {
+    .dropdown-menu {
+        position: absolute !important;
+        top: -420%;
+        right: 0;
+        left: inherit;
+        background-color: white !important;
+    }
     .navbar {
-        background: $akvoBlack;
+        border-top: 1px solid rgba($akvoBlack, 0.2);
         @include border-radius(0);
         #footer-body {
             ul.nav {
@@ -1119,28 +1138,74 @@ footer {
                     padding-bottom: 10px;
                     a {
                         display: block;
-                        @include border-radius(5px);
                         &:hover {
                             background-color: rgba(white, 0.1);
                         }
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
-                            background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
+                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
                             text-indent: -9999px;
-                            background-size: 70px 42px;
+                            background-size: 92%;
                             &:hover {
-                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
+                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
                                 text-indent: -9999px;
-                                background-size: 70px 42px;
+                                background-size: 92%;
                             }
                             @include responsive(small-max-screens) {
                                 width: 100%;
-                                background: rgba(white, 0) url(../images/akvo.orgLogo.svg) center center no-repeat;
-                                background-size: 80px auto;
+                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                background-size: 92%;
                                 &:hover {
-                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.svg) center center no-repeat;
-                                    background-size: 80px auto;
+                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                    background-size: 92%;
+                                }
+                            }
+                        }
+                    }
+                    div.langDropdown {
+                        margin-top: 13px;
+                        background-color: white !important;
+                        border-color: transparent !important;
+                        color: $akvoBlack !important;
+                        .btn-default {
+                            background-color: transparent !important;
+                            border-color: transparent;
+                        }
+                        button {
+                            background-color: transparent !important;
+                            border-color: transparent !important;
+                        }
+                        @include responsive(small-max-screens) {
+                            padding-left: 15px;
+                            padding-right: 15px;
+                        }
+
+                        .dropdown-menu {
+                            position: absolute;
+                            background-color: white !important;
+                            border-color: transparent !important;
+                            @include responsive(small-max-screens) {
+                                background-color: white !important;
+                                border: 1px solid rgba(0, 0, 0, 0.14902);
+                                box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+                                a {
+                                    color: $anchorLink;
+                                    font-family: $titleFont;
+                                    border: thin solid transparent;
+                                    &:hover {
+                                        color: $anchorLinkHover;
+                                    }
+                                    &.active {
+                                        color: complement($rsrBlue);
+                                        font-weight: bold;
+                                        background: rgba($anchorLinkHover, 0.1);
+                                        @include border-radius(3px);
+                                        @include responsive(tablets) {
+                                            background: rgba($anchorLinkHover, 0.1);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1164,7 +1229,6 @@ footer {
 /* GENERIC STRUCTURE and TEXT STYLES */
 
 .touch-navbar {
-    margin-top: -10px;
     @include responsive(small-max-screens) {
         margin-top: -15px;
     }
@@ -1203,17 +1267,9 @@ h4.detailedInfo {
     background-color: $secondary1;
 }
 
-/* LISTINGS */
-
-#map {
-    height: 400px;
-    @include responsive(xtra-small-max-screens) {
-        display: none;
-    }
-}
-
 #map-warning {
-    @include responsive(xtra-small-max-screens) {
+    display: none;
+    @include responsive(small-max-screens) {
         display: none;
     }
 
@@ -1234,12 +1290,13 @@ h4.detailedInfo {
 .searchContainer {
     position: relative;
     #search {
+        input.form-control {
+            border-color: #ccc;
+        }
         .showFilters {
             /*background-color: rgba(white,0.2);
             border: 1px solid rgba($rsrGreen, 0);
             color: white;*/
-            color: white;
-            border: 1px solid rgba(white, 0.2);
             transition: all 0.4s ease-in;
             @include noWrapTxt;
             &:hover {
@@ -1274,55 +1331,43 @@ h4.detailedInfo {
     margin-top: 20px;
 }
 
-.paginationWrap {
-    background: rgba(58, 58, 58, 0);
-    @include border-radius(3px);
-    margin-bottom: 15px;
+.updatePagination {
+    margin-top: 40px;
+}
+
+.pgWrap, .pageStatus, .paginationWrap {
     .pagination {
         li {
             a,
             span {
+                margin-right: 1px;
+                color: $anchorLink;
+                border: 1px solid transparent;
+                cursor: pointer;
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
                 }
-            }
-        }
-    }
-    .sortList {
-        display: inline-block;
-        padding-left: 0;
-        margin: 23px 0 0 0;
-        text-align: left;
-        @include responsive(small-max-screens) {
-            text-align: center;
-            margin: 20px auto;
-        }
 
-        .dropdown {
-            .dropdown-menu {
-                li {
-                    a {
-                        color: $anchorLink;
+                &:hover {
+                    background: rgba($anchorLink, 0.1);
+                    border: 1px solid rgba($anchorLink, 1);
+                    span {
+                        border: 1px solid rgba($anchorLink, 0);
+                        background: rgba($anchorLink, 0);
                     }
-                    &.disabled {
-                        a {
-                            font-weight: bold;
-                            color: $anchorLinkHover;
-                        }
-                    }
-                    @include responsive(small-max-screens) {
-                        a {
-                            color: $anchorLink;
-                            padding-top: 10px;
-                            padding-bottom: 10px;
-                        }
-                        &.disabled {
-                            a {
-                                font-weight: bold;
-                                color: $anchorLinkHover;
-                            }
-                        }
+                }
+            }
+            &.active {
+                a,
+                span {
+                    font-weight: bold;
+                    color: $anchorLinkHover;
+                    background-color: transparent;
+                    border: 1px solid $anchorLinkHover;
+                    &:hover {
+                        background: rgba($anchorLinkHover, 0);
+                        border: 1px solid $anchorLinkHover;
                     }
                 }
             }
@@ -1331,47 +1376,7 @@ h4.detailedInfo {
 }
 
 #sidebar-wrapper {
-    z-index: 99999;
-    position: absolute;
-    left: 200px;
-    width: 0;
-    margin-left: -200px;
-    overflow-y: auto;
-    background: rgba(white, 0.9);
-    @include border-radius(0 0 5px 0);
-    @include transition(all 0.5s ease);
-    @include box-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
-    .showFilters {
-        &:hover {
-            color: $anchorLinkHover;
-        }
-        @include responsive(small-max-screens) {
-            padding-top: 20px;
-            padding-bottom: 20px;
-        }
-    }
-    div#filter {
-        padding: 5px 15px 15px 15px;
-        div {
-            .btn-group {
-                width: 100%;
-                border-top: 1px solid rgba($akvoBlack, 0.1);
-                padding: 5px 0;
-                select {
-                    border-color: rgba($akvoBlack, 0.2);
-                }
-                label {
-                    color: rgba($akvoBlack, 0.5);
-                    @include noWrapTxt;
-                }
-            }
-            &:nth-child(1) {
-                .btn-group {
-                    border-top: none;
-                }
-            }
-        }
-    }
+    display: none;
 }
 
 #page-content-wrapper {
@@ -1390,26 +1395,93 @@ h4.detailedInfo {
     }
 }
 
+.sortContainer {
+    background-color: rgba($akvoBlack, 0.1);
+    .colorChange {
+        max-width: 80%;
+        margin: 10px auto 0 auto;
+    }
+}
+
+.label-info {
+    font-weight: normal;
+    &.projectTotal, &.updateTotal {
+        font-size: 1.2em;
+        background-color: transparent;
+        color: $akvoBlack;
+    }
+}
+
+.pageStatus {
+    .pagination {
+        margin: 0 auto;
+    }
+    .label-info {
+        font-weight: normal;
+        &.projectTotal, &.updateTotal {
+            font-size: 1em;
+            background-color: transparent;
+            color: $akvoBlack;
+        }
+    }
+}
+
+.upLabelSearch {
+    top: -20px;
+    position: absolute;
+}
+
 #search-filter {
+    margin-top: -20px;
+    padding-top: 10px;
+    background: rgba($akvoPurple, 0.05);
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
 
+    .searchBar {
+        max-width: 80%;
+        margin: 10px auto 0 auto;
+        position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
+        p {
+            @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top: -23px;
+            display: inline-block;
+        }
+    }
     #search {
-        color: #fff;
-        text-align: center;
         @include responsive(small-max-screens) {
             padding-bottom: 0;
         }
 
+        .form-group {
+            input {
+                width: 250px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+            }
+            button {
+                padding-top: 7px;
+                padding-bottom: 5px;
+            }
+        }
+        .sortList {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        p {
+            display: inline-block;
+        }
         button {
             padding-top: 5px;
             padding-bottom: 5px;
         }
-    }
-    background-color: #241F20;
-    p {
-        color: lighten($rsrBlue2, 10%);
     }
     div#filter {
         background: darken(rgba(#383334, 1), 0%);
@@ -1417,38 +1489,140 @@ h4.detailedInfo {
     }
 }
 
+.advanced-filter {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    @include responsive(mediums-max-screens) {
+        display: inline-block;
+        text-align: center;
+        float: none;
+    }
+
+    label {
+        margin-top: 5px !important;
+    }
+    .bootstrap-typeahead-input {
+        margin-right: 1px;
+        input {
+            width: 100%;
+        }
+    }
+    .bootstrap-typeahead-input-main {
+        margin-right: 20px;
+    }
+    .caret {
+        position: relative;
+        top: -26px;
+        left: -10px;
+    }
+}
+
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
+.dropup {
+    button {
+        border: none;
+    }
+}
+
+#organisation-directory {
+    .searchBar {
+        max-width: 60%;
+        margin: 10px auto 0 auto;
+        position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
+        p {
+            @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top: -23px;
+            display: inline-block;
+        }
+    }
+    .advanced-filter {
+        display: inline-block;
+        text-align: right;
+        margin-left: 20%;
+        float: right;
+    }
+    .main-list {
+        padding-top: 20px;
+        ul.projectListUl {
+            overflow-y: scroll;
+            padding-left: 15px;
+            li {
+                margin-bottom: 15px;
+                list-style-type: none;
+                padding: 0 0 15px 0;
+                display: inline;
+                width: 24.5%;
+                float: left;
+                min-height: 265px;
+                @include border-radius(3px);
+                background: white;
+                margin-right: 0.66%;
+                > div:first-child {
+                    min-height: 130px;
+                    a {
+                        img {
+                            max-height: 177px;
+                        }
+                    }
+                }
+                &:nth-child(4n+4) {
+                    margin-right: 0;
+                }
+                h1 {
+                    margin-top: 5px;
+                    a {
+                        color: $rsrBlue;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
+                border: thin solid rgba($rsrBlue, 0);
+                @include transition(all 0.2s ease-in);
+            }
+        }
+    }
+}
 
 .main-list {
+    .col-sm-5 {
+        margin-top: -10px;
+    }
     li {
-        margin-bottom: 30px;
-        list-style-type: none;
-        padding: 15px 0;
-        @include border-radius(3px);
-        background: white;
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
-        }
-        &:nth-child(2n+1) {
-            background: rgb(238, 238, 238);
         }
         &:last-child {
             margin-bottom: 0;
         }
         h1 {
             margin-top: 0;
-            font-size: 1.3em;
+            font-size: 1.15em;
         }
         div h4:first-of-type {
             margin-top: 0;
         }
         .thumbImg {
-            height: 100%;
+            height: 160px;
+            overflow-y: hidden;
+            position: relative;
+            background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
+                position: absolute;
+                top: 0%;
+                left: 50%;
+                transform: translate(-50%, 0%);
             }
         }
         .projectLocation {
@@ -1457,15 +1631,16 @@ h4.detailedInfo {
         }
         .projectTitle {
             display: block;
-            margin: 0 0 3px 0;
+            @include noWrapTxt;
+            span {
+                color: $akvoBlack !important;
+            }
         }
         span.userFullName {
-            color: rgba($akvoBlack, 0.5);
             margin: 0 0 0px 0;
         }
         .upDateTime {
             color: rgba($akvoBlack, 0.5);
-            margin-top: 10px;
         }
         .orgType {
             color: rgba($akvoBlack, 0.5);
@@ -1480,175 +1655,103 @@ h4.detailedInfo {
                 }
             }
         }
-        dl {
-            &.dl-horizontal {
-                dd {
-                    @include responsive(small-max-screens) {
-                        margin-left: 100px;
-                    }
-
-                    @include responsive(wide-max-screens) {
-                        margin-left: 0px;
-                        display: block;
-                    }
-                }
-            }
-        }
     }
     .excerpt {
         @include noWrapBlockTxt;
     }
     &.projects {
-        ul {
-            li {
-                h1 {
-                    a {
-                        color: $rsrBlue;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                border: thin solid rgba($rsrBlue, 0);
-                @include transition(all 0.2s ease-in);
-                .projectSubT {
-                    margin-bottom: 0;
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrBlue, 0.05), 10%);
-                    border: thin solid rgba($rsrBlue, 0.05);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrBlue, 0.1), 0%);
-                    border: thin solid rgba($rsrBlue, 0.3);
-                }
-                .donateButton {
-                    text-align: left;
-                    a {
-                        @include responsive(mediums-max-screens) {
-                            margin-top: 0.6em;
-                        }
+        margin-top: 10px;
+        #map {
+            position: relative;
+            height: calc(100vh - 230px);
+            @include responsive(small-max-screens) {
+                display: none;
+            }
 
-                        @include responsive(small-max-screens) {
-                            margin-top: 1em;
-                        }
-                    }
-                    .totalBudgetLabel {
-                        width: initial;
-                    }
-                }
+            &.updateMap {
+                height: calc(100vh - 240px);
+            }
+            .rsr_map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
             }
         }
-    }
-    &.updates {
-        ul {
-            li {
-                border: thin solid rgba($rsrGreen, 0);
-                @include transition(all 0.2s ease-in);
-                .orgName {}
-                .projectTitle {
-                    color: rgba($anchorLink, 1);
-                    i {
-                        font-size: 1.1em;
-                        color: rgba($anchorLink, 1);
-                    }
-                    &:hover {
-                        color: $anchorLinkHover;
-                    }
-                }
-                h1 {
-                    a {
-                        color: $rsrGreen;
-                        &:hover {
-                            color: $anchorLinkHover;
-                        }
-                    }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrGreen, 0.05), 10%);
-                    border: thin solid rgba($rsrGreen, 0.1);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
-                }
-                &:hover {
-                    background: darken(rgba($rsrGreen, 0.1), 0%);
-                    border: thin solid rgba($rsrGreen, 0.35);
-                }
-                .excerpt {
-                    li {
-                        background: none;
-                        border: none;
-                        transition: none;
-                        list-style-type: initial;
-                        margin: initial;
-                        padding: initial;
-                    }
+        .projectListUlcontain {
+            max-height: calc(100vh - 240px);
+            overflow-y: scroll;
+            p.listMsg {
+                font-size: 1.2em;
+                text-align: center;
+            }
+            &.filtered {
+                p.listMsg {
+                    display: none;
                 }
             }
-        }
-    }
-    &.organisations {
-        ul {
-            li {
-                border: thin solid rgba($akvoTvRed, 0);
-                @include transition(all 0.2s ease-in);
-                i {
-                    font-size: 1.1em;
-                }
-                .projectLocation {}
-                .projectTitle {
-                    display: block;
-                    margin: 0 0 3px 0;
-                }
-                span.userFullName {
-                    margin: 0 0 0px 0;
-                }
-                .upDateTime {
-                    margin-top: 10px;
-                }
-                .orgType {}
-                .additionalInfo {
-                    div {
-                        color: rgba($akvoBlack, 0.5);
-                        span {
-                            margin-left: 5px;
+            ul.projectListUl {
+                padding-left: 15px;
+                li {
+                    margin-bottom: 5px;
+                    list-style-type: none;
+                    display: inline;
+                    width: 49%;
+                    float: left;
+                    min-height: 285px;
+                    @include border-radius(3px);
+                    background: white;
+                    margin-right: 2%;
+                    -webkit-transition: all 2s linear;
+                    -moz-transition: all 2s linear;
+                    -o-transition: all 2s linear;
+                    transition: all 2s linear;
+                    padding: 5px;
+                    @include transition(all 0.2s ease-in);
+                    &.highlightProject {
+                        box-shadow: 0 0 12px rgba(77, 90, 130, 0) !important;
+                        background: rgba(77, 90, 130, 0.15) !important;
+                        transition: all 0.4s linear;
+                    }
+                    &.updateAsset {
+                        h1 {
+                            margin-top: 5px;
+                            a {
+                                color: #00a79d;
+                                &:hover {
+                                    color: $anchorLinkHover;
+                                }
+                            }
                         }
                     }
-                }
-                .socialInfo {
-                    p {
-                        color: rgba($akvoBlack, 0.5);
+                    &:nth-child(2n+2) {
+                        margin-right: 0;
                     }
-                }
-                h1 {
-                    a {
-                        color: $akvoTvRed;
-                        &:hover {
-                            color: $anchorLinkHover;
+                    h1 {
+                        margin: 5px 0 10px;
+                        a {
+                            color: $rsrBlue;
+                            font-weight: 500;
+                            letter-spacing: 0.02em;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
                         }
                     }
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($akvoTvRed, 0.05), 0);
-                    border: thin solid rgba($akvoTvRed, 0.05);
-                }
-                &:hover {
-                    background: darken(rgba($akvoTvRed, 0.1), 0%);
-                    border: thin solid rgba($akvoTvRed, 0.35);
-                }
-                img {
-                    transition: all 0.2s ease-in;
+                    .projectSubT {
+                        margin-bottom: 0;
+                    }
+                    .projectLocation {
+                        color: rgba($akvoBlack, 0.5);
+                    }
                 }
             }
         }
     }
 }
-
-/* PROJECT */
 
 header {
     &.projectHeader {
@@ -1767,8 +1870,19 @@ header {
         margin-top: 60px;
     }
     &.updates {
-        .updateAsset:first-child {
-            margin-top: 25px;
+        ul {
+            list-style-type: none;
+            .updateAsset {
+                margin: 25px 0 50px;
+                h1 {
+                    a {
+                        color: #00a79d;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -2096,26 +2210,45 @@ div.textBlock {
 }
 
 /* Project hierarchy */
+.project-hierarchy {
+    div {
+        z-index: 9;
+    }
+    svg {
+        z-index: 8;
+    }
+}
 
 .project-hierarchy-window {
-    border: 0.1em solid #d3d3d3;
-    width: 150px;
+    border: 2px solid $anchorLink;
+    color: $anchorLink;
+    width: 250px;
     float: left;
     margin: 30px;
     padding: 10px;
     text-align: center;
-    @include border-radius(5px);
+    @include border-radius(3px);
+    background-color: rgba($anchorLink, 0.1);
+    &.project-hierarchy-parent {
+        border: 2px solid $akvoBlack;
+        color: $akvoBlack;
+    }
+    &.project-hierarchy-sibling-top, &.project-hierarchy-sibling-bottom {
+        border: 2px solid $anchorLink;
+        color: $anchorLink;
+    }
 }
 
 .project-hierarchy-window:hover,
 .project-hierarchy-window._jsPlumb_source_hover,
 .project-hierarchy-window._jsPlumb_target_hover {
-    border: 1px solid orange;
-    color: orange;
+    border: 2px solid $anchorLinkHover;
+    color: $anchorLinkHover;
+    background-color: rgba($anchorLinkHover, 0.1);
 }
 
 .project-hierarchy-empty-window {
-    width: 150px;
+    width: 250px;
     float: left;
     margin: 30px;
 }
@@ -2147,6 +2280,10 @@ div.textBlock {
 }
 
 .project-container {
+    min-height: calc(100vh - 160px);
+    + footer {
+        position: sticky;
+    }
     .tooltip {
         .tooltip-inner {
             background: rgba(white, 0.9);
@@ -2206,14 +2343,28 @@ ul.typeahead-selector {
     }
 }
 
+#filter-wrapper {
+    @media (max-width: 1200px) {
+        text-align: left;
+    }
+    @media (min-width: 1200px) {
+        text-align: right;
+    }
+    & > div {
+        display: flex;
+        div:not(.advanced-filter) {
+            display: block !important;
+        }
+    }
+}
+
+.projectCountTxt {}
+
 /* Organisation Page */
 
 .organisationDetail {
-    .organisationHeader {
-        background: rgba($akvoBlack, 0.05);
-    }
+    .organisationHeader {}
     .orgDescr {
-        background-color: rgba(lighten($akvoTvRed, 15%), 0);
         p {
             padding-left: 20px;
         }
@@ -2221,9 +2372,7 @@ ul.typeahead-selector {
     h1 {
         margin-top: 0;
         margin-bottom: 20px;
-        color: rgba($akvoTvRed, 1);
         padding-bottom: 10px;
-        border-bottom: 1px solid rgba($akvoTvRed, 0.05);
         position: relative;
         i {
             font-size: 0.75em;
@@ -2282,15 +2431,17 @@ ul.typeahead-selector {
     h2 {
         color: $rsrGreen;
         margin-top: 0;
+        font-size: 1.3em;
     }
     .asideUpList {
         .row {
+            margin-bottom: 15px;
             padding: 15px 0;
-            &:nth-of-type(2n+1) {
-                background-color: rgba($rsrGreen, 0.1);
-            }
             h5 {
                 margin-top: 0;
+                a {
+                    color: #00a79d;
+                }
             }
         }
     }
@@ -2489,10 +2640,6 @@ section.projectPartners {
 }
 
 /* Display currency totals right-aligned */
-
-.currencyAmount {
-    text-align: right;
-}
 
 dd {
     &.currencyAmount {
@@ -3502,7 +3649,7 @@ main {
     }
     aside.open {
         width: calc(50% - 10px);
-        padding: 0px 5px 5px 5px;
+        padding: 0px 15px 5px 15px;
         display: block;
         margin-top: 5px;
         margin-left: 5px;
@@ -3513,11 +3660,11 @@ main {
 }
 
 main.project-page {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 260px);
 }
 
 main.results-page {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 140px);
 }
 
 .resultProjectTitle {
@@ -3537,24 +3684,241 @@ main.results-page {
     }
 }
 
+.alignFooter {
+    min-height: calc(100vh - 160px);
+}
+
+.project-container {
+    .container.iframe {
+        margin: 0 !important;
+    }
+}
+
+.myRsrPg {
+    .modal-content {
+        max-width: 60%;
+        height: 60vh;
+        overflow: hidden;
+        overflow-y: scroll;
+        margin: 20vh 20%;
+        iframe {
+            height: 100vh !important;
+        }
+    }
+    min-height: calc(100vh - 160px);
+    + footer {
+        position: sticky;
+    }
+    h3 {
+        display: inline-block;
+        margin-top: 20px;
+    }
+    padding-right: 50px !important;
+    padding-left: 50px !important;
+    ol {
+        &.breadcrumb {
+            background-color: white !important;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            padding: 10px 0;
+            a.liveView {
+                margin-left: 50px;
+            }
+            >li+li:before {
+                padding: 0 5px;
+                color: #ccc;
+                content: "\003e";
+            }
+            li:first-of-type {
+                a {
+                    i {
+                        font-size: 120%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.rsrReports {
+    * {
+        box-sizing: border-box;
+    }
+    padding-top: 20px;
+    .rsrReport {
+        margin-bottom: 20px;
+        position: relative;
+        .reportContainer {
+            box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
+            min-height: 270px;
+            padding: 30px 50px 5px 50px;
+            @media only screen and (max-width: 1449px) {
+                padding: 30px 40px 5px 40px;
+            }
+            @media only screen and (max-width: 800px) {
+                padding: 30px 20px 5px 20px;
+            }
+            .reportDscr {
+                padding: 10px 0;
+            }
+            .options {
+                text-align: center;
+                button {
+                    &.reportDown {
+                        margin: 15px auto 0;
+                        @include btnOutline($akvoPurple, $akvoPurple);
+                        &:nth-of-type(2) {
+                            margin-left: 15px;
+                            @media only screen and (max-width: 1440px) {
+                                margin-left: 0px;
+                            }
+                            @media only screen and (max-width: 800px) {
+                                margin-left: 15px;
+                            }
+                        }
+                    }
+                }
+                .reportDate {
+                    margin: 0 auto;
+                    background-color: rgba($akvoBlack, 0.05);
+                    text-align: left;
+                    padding: 10px 15px 20px 15px;
+                    border-radius: 6px;
+                    &:after {
+                        content: "";
+                        display: table;
+                        clear: both;
+                    }
+                    .startDate {
+                        float: left;
+                        width: 49.5%;
+                        position: relative;
+                        div {
+                            width: 100%;
+                            input {
+                                width: 100%;
+                            }
+                        }
+                    }
+                    .endDate {
+                        float: right;
+                        width: 49.5%;
+                        position: relative;
+                        div {
+                            width: 100%;
+                            input {
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+            &:hover {
+                box-shadow: 0 0 10px rgba($rsrBlue2, 0.4);
+                .options {
+                    text-align: center;
+                    button {
+                        &.reportDown {
+                            margin: 15px auto 0;
+                            @include btnOutline($rsrBlue2, $rsrBlue2);
+                            &:hover {
+                                @include button(darken($rsrBlue2, 10%), white);
+                            }
+                        }
+                        &:nth-of-type(2) {
+                            margin-left: 15px;
+                            @media only screen and (max-width: 1440px) {
+                                margin-left: 0px;
+                            }
+                            @media only screen and (max-width: 800px) {
+                                margin-left: 15px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 .results {
     background: white;
     box-sizing: border-box;
+    position: relative;
     * {
         box-sizing: border-box;
     }
     > button {
         display: none;
     }
+    #update {
+        padding-top: 25px;
+        background: rgba(240, 240, 240, 0.5);
+    }
+    .editBtn {
+        border: 1px solid rgba($anchorLink, 0.1) !important;
+        background: $anchorLink;
+        color: white;
+        border-bottom: 1px solid transparent !important;
+        padding: 7px 8px;
+        border-radius: 5px 5px 0 0;
+        &:hover {
+            background: #3071a9;
+            color: white;
+            border: 1px solid rgba($anchorLink, 0.1) !important;
+        }
+    }
     .react-tabs {
-        ul {
+        ul.react-tabs__tab-list {
+            border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;
             li {
-                border-radius: 0;
+                border-radius: 5px 5px 0 0;
+                border: 1px solid rgba($akvoBlack, 0.1) !important;
+                border-bottom: 1px solid rgba($akvoBlack, 0) !important;
             }
         }
     }
+    .updateList {
+        max-height: calc(100vh - 160px);
+        overflow-y: scroll;
+        padding-top: 25px;
+        .row {
+            margin: 10px 0;
+            &:first-child {
+                margin-top: 0;
+            }
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        .updateImg {
+            height: 130px;
+            overflow-y: hidden;
+            position: relative;
+            img {
+                width: 100%;
+                max-width: 350px;
+                position: absolute;
+                top: 0%;
+                left: 50%;
+                transform: translate(-50%, 0%);
+            }
+        }
+        h3 {
+            margin-top: 0;
+            display: block;
+            margin-bottom: 20px;
+        }
+    }
+    .projectUpdateForm {
+        h3 {
+            margin-top: 0;
+            display: block;
+            margin-bottom: 20px;
+        }
+    }
     /********************* Narrative report ***************************/
-    .reports {
+    .narrative_reports {
         position: relative;
         .narrativeStatus {
             color: $rsrGreen;
@@ -3841,7 +4205,7 @@ main.results-page {
                 span {
                     &.indicatorTitle {
                         display: inline-block;
-                        max-width: 60%;
+                        max-width: 80%;
                         ul {
                             padding-left: 0;
                             margin-bottom: 0;
@@ -3934,6 +4298,7 @@ main.results-page {
                             .indicatorInfo {
                                 margin-top: -10px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                                .descritpion {}
                                 ul {
                                     color: rgba($akvoBlack, 0.4);
                                     padding-left: 7px;
@@ -3944,6 +4309,7 @@ main.results-page {
                                         display: inline;
                                     }
                                     .description {
+                                        word-wrap: break-word;
                                         span {
                                             color: rgba($akvoBlack, 0.7);
                                         }
@@ -4428,7 +4794,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -4450,6 +4816,9 @@ main.results-page {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
     max-width: 100%;
+    .comments {
+        margin-left: 0;
+    }
     &.qualitativeUpdate {
         .update-description {
             display: none;
@@ -4465,9 +4834,17 @@ main.results-page {
         .update-entry-container {
             &.edit-in-progress {
                 .closingBtn {
+                    width: 25px;
+                    height: 25px;
                     z-index: 999;
                     top: -20px !important;
-                    right: -5px !important;
+                    right: -10px !important;
+                    background: rgba($akvoBlack, 0.05);
+                    border: transparent;
+                    &:hover {
+                        background: rgba($akvoBlack, 0.5);
+                        color: white;
+                    }
                 }
             }
         }
@@ -4508,8 +4885,8 @@ main.results-page {
             .disaggregationFields {
                 width: 100%;
                 overflow: auto;
-                border-top: 1px solid rgba($akvoBlack, 0.1);
-                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                border-top: 1px solid rgba($akvoBlack, 0);
+                border-bottom: 1px solid rgba($akvoBlack, 0);
                 padding: 15px 0;
                 margin-top: 10px;
                 h4 {
@@ -4676,8 +5053,9 @@ main.results-page {
 
 .periodMenuBar {
     box-sizing: border-box;
-    margin-top: 20px;
-    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
+    margin-top: 0px;
+    @include box-shadow(0 0px 0px rgba(0, 0, 0, 0.2));
+    border: 1px solid #ECECEC;
     * {
         box-sizing: border-box;
     }
@@ -4687,10 +5065,12 @@ main.results-page {
     .btn {
         margin-right: 10px;
     }
-    .periodOverview {
-        .overviewBtn {
-            margin: 10px 0 0 5px;
-        }
+    .overviewBtn {
+        margin: 5px 0 0 5px;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-bottom: 1px solid white;
+        color: $anchorLink;
     }
     .loading {
         margin-top: 20px;
@@ -4698,11 +5078,12 @@ main.results-page {
         font-size: 120%;
     }
     .periodBtns {
-        padding: 10px;
-        background: rgba($akvoBlack, 0.05);
+        padding: 3px 10px 0;
+        //background: rgba($akvoBlack, 0.05);
         .periodBulkAct {
             h5 {
                 padding-left: 15px;
+                font-size: 0.9em;
             }
             button {
                 background: $akvoBlack;
@@ -4718,12 +5099,14 @@ main.results-page {
         .periodFilter {
             h5 {
                 padding-left: 15px;
+                font-size: 0.9em;
             }
             padding-top: 10px;
             padding-bottom: 10px;
             button {
                 border: none;
                 color: #428bca;
+                @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
                 &.filterActive {
                     border: 1px solid rgba($primary6, 0.5) !important;
                     background: rgba($primary6, 1) !important;
@@ -4748,4 +5131,9 @@ main.results-page {
 
 .form-button {
     margin-right: 5px;
+}
+
+.supporthero-button {
+    bottom: 50px !important;
+    top: unset !important;
 }

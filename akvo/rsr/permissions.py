@@ -9,12 +9,13 @@ import rules
 from django.contrib.auth import get_user_model
 
 from .models import (Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate,
-                     PublishingStatus)
+                     PublishingStatus, IndicatorPeriodData)
 
 ADMIN_GROUP_NAME = 'Admins'
 ME_MANAGER_GROUP_NAME = 'M&E Managers'
 PROJECT_EDITOR_GROUP_NAME = 'Project Editors'
 USER_GROUP_NAME = 'Users'
+ENUMERATOR_GROUP_NAME = 'Enumerators'
 USER_MANAGER_GROUP_NAME = 'User Managers'
 
 
@@ -169,14 +170,32 @@ def is_org_me_manager(user, obj):
 def is_org_user(user, obj):
     if not user.is_authenticated():
         return False
-    for employment in user.approved_employments():
-        if employment.group.name == USER_GROUP_NAME:
-            if not obj:
-                return True
-            if isinstance(obj, Project) and obj in employment.organisation.all_projects():
-                return True
-            if isinstance(obj, ProjectUpdate) and obj.user == user:
-                return True
+    employments = user.approved_employments(group_names=[USER_GROUP_NAME])
+    has_employments = employments.exists()
+    if obj is None and has_employments:
+        return True
+    if isinstance(obj, ProjectUpdate):
+        return obj.user == user
+    if isinstance(obj, Project):
+        return obj in employments.organisations().all_projects()
+    return False
+
+
+@rules.predicate
+def is_org_enumerator(user, obj):
+    if not user.is_authenticated():
+        return False
+    employments = user.approved_employments(group_names=[ENUMERATOR_GROUP_NAME])
+    has_employments = employments.exists()
+    if obj is None and has_employments:
+        return True
+    if isinstance(obj, ProjectUpdate):
+        return obj.user == user
+    if isinstance(obj, IndicatorPeriodData):
+        # Fetch the corresponding project for the indicator update
+        obj = Project.objects.get(results__indicators__periods__data__in=[obj.id])
+    if isinstance(obj, Project):
+        return obj in employments.organisations().all_projects()
     return False
 
 
