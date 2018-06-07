@@ -250,7 +250,7 @@ def project_directory(request):
     # text filtering, if no projects were found)
     cached_locations, _ = get_cached_data(request, 'locations', None, None)
     if cached_locations is None:
-        cached_locations = locations = [
+        cached_locations = [
             {'id': choice[0], 'name': choice[1]}
             for choice in location_choices(projects)
         ]
