@@ -93,12 +93,12 @@ class Report extends React.Component {
     }
 
     downloadReport(format) {
-        const { report: { url }, projectId } = this.props;
+        const { report: { url }, project } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
         download_url = url
             .replace("{format}", format)
-            .replace("{project}", projectId)
+            .replace("{project}", project.id)
             .replace("{language_code}", project.currentLanguage);
         if (this.state.date_selection) {
             if (end_date && start_date && start_date > end_date) {
