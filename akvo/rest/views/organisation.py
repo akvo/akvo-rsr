@@ -106,7 +106,7 @@ def organisation_directory(request):
 
     # Get related objects of page at once
     response = {
-        'project_count': all_organisations.count(),
+        'project_count': organisations_text_filtered.count(),
         'projects': OrganisationDirectorySerializer(display_organisations, many=True).data,
         'location': locations,
     }
