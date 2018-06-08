@@ -27,7 +27,9 @@ const RSRUpdate = ({ update }) => {
     return (
         <div className="row">
             <div className="col-md-4 updateImg">
-                <img src={update.photo} />
+                <a href={update.absolute_url}>
+                    <img src={update.photo} />
+                </a>
             </div>
             <div className="col-md-8">
                 <a href={update.absolute_url}>
