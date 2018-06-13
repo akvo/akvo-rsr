@@ -141,6 +141,7 @@ def main(request, project_id, template="project_main.html"):
         'user_is_me_manager': 'false',
     }
 
+    context = project.project_hierarchy_context(context)
     return render(request, template, context)
 
 
