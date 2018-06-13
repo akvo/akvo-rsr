@@ -859,7 +859,7 @@ div.paginationWrap {
   .table-responsive .media > a {
     min-width: 80px; }
   .table-responsive .media .media-body p {
-    max-width: 170px;
+    max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; }
