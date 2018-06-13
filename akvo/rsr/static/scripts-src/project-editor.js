@@ -3832,6 +3832,8 @@ function checkUnsavedChangesForm(form) {
             inputElements[j].type !== "checkbox" &&
             // Don't include masquerade fields in form-changed checking
             !inputElements[j].classList.contains("masquerade-field") &&
+            // Don't include invisible fields in form-changed checking
+            !inputElements[j].classList.contains("invisible") &&
             fieldChanged(inputElements[j])
         ) {
             return true;
