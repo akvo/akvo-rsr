@@ -1024,7 +1024,7 @@ div.paginationWrap {
         }
         .media-body {
             p {
-                max-width: 170px;
+                max-width: 300px;
                 @include noWrapTxt;
                 @include responsive(small-max-screens) {
                     max-width: 120px;
