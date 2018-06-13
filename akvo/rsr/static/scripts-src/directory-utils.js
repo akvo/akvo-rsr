@@ -357,7 +357,7 @@ var TextSearch = React.createClass({displayName: "TextSearch",
                 }
             })
             .then(function(options) {
-                app.setState({ options: options.results || [] });
+                app.setState({ options: app.mungeOptions(options.results) || [] });
             });
         return [];
     },
@@ -369,6 +369,12 @@ var TextSearch = React.createClass({displayName: "TextSearch",
         } else if (this.props.type == "organisations") {
             return "../organisation/" + entry.id;
         }
+    },
+    mungeOptions: function(options) {
+        return options.map(function(option) {
+            option.id = String(option.id);
+            return option;
+        });
     },
     onChange: function(projects) {
         var project = projects[0],
@@ -387,7 +393,7 @@ var TextSearch = React.createClass({displayName: "TextSearch",
             filterBy;
 
         if (this.props.type == "projects") {
-            filterBy = ["title", "subtitle"];
+            filterBy = ["id", "title", "subtitle"];
         } else if (this.props.type == "updates") {
             filterBy = ["title"];
         } else if (this.props.type == "organisations") {
