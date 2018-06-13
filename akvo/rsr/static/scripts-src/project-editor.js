@@ -3405,7 +3405,7 @@ function setDatepickers() {
             inputNode.setAttribute("name", datepickerId);
             // Don't set saved-value for new periods. This way the period is instantiated as part of
             // saving the indicator
-            if (newPeriod === 'false') {
+            if (newPeriod === "false" || newPeriod === null) {
                 inputNode.setAttribute("saved-value", inputValue);
             }
             if (disableInput === 'true') {
