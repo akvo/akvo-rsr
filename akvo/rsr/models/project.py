@@ -1408,6 +1408,26 @@ class Project(TimestampsMixin, models.Model):
         for dimension in indicator.dimensions.all():
             self.add_dimension(child_indicator, dimension)
 
+    def update_indicator(self, result, parent_indicator):
+        """Update an indicator based on parent indicator attributes."""
+        Indicator = get_model('rsr', 'Indicator')
+        try:
+            child_indicator = Indicator.objects.get(
+                result=result,
+                parent_indicator=parent_indicator,
+            )
+
+        except Indicator.DoesNotExist:
+            return
+
+        child_indicator.title = parent_indicator.title
+        child_indicator.measure = parent_indicator.measure
+        child_indicator.ascending = parent_indicator.ascending
+        child_indicator.save()
+
+        fields = ['title', 'description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
+
     def add_period(self, indicator, period):
         """Add a new period to the indicator as a child of period.
 
@@ -1429,6 +1449,29 @@ class Project(TimestampsMixin, models.Model):
         )
         fields = ['target_value', 'target_comment', 'actual_comment']
         self._update_fields_if_not_child_updated(period, child_period, fields)
+
+    def update_period(self, indicator, parent_period):
+        """Update a period based on the parent period attributes."""
+
+        IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
+        try:
+            child_period = IndicatorPeriod.objects.select_related(
+                'indicator',
+                'indicator__result',
+            ).get(
+                indicator=indicator,
+                parent_period=parent_period,
+            )
+
+        except IndicatorPeriod.DoesNotExist:
+            return
+
+        child_period.period_start = parent_period.period_start
+        child_period.period_end = parent_period.period_end
+        child_period.save()
+
+        fields = ['target_value', 'target_comment', 'actual_comment']
+        self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
     def add_dimension(self, indicator, dimension):
         get_model('rsr', 'IndicatorDimension').objects.create(

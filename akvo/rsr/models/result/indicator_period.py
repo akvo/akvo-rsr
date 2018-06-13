@@ -85,6 +85,7 @@ class IndicatorPeriod(models.Model):
 
     def save(self, *args, **kwargs):
         actual_value_changed = False
+        new_period = not self.pk
 
         if (
             self.indicator.measure == PERCENTAGE_MEASURE and
@@ -94,7 +95,7 @@ class IndicatorPeriod(models.Model):
             percentage = calculate_percentage(self.numerator, self.denominator)
             self.actual_value = str(percentage)
 
-        if self.pk:
+        if not new_period:
             # Check if the actual value has changed
             orig_period = IndicatorPeriod.objects.get(pk=self.pk)
             if orig_period.actual_value != self.actual_value:
@@ -108,7 +109,10 @@ class IndicatorPeriod(models.Model):
         )
 
         for child_indicator in child_indicators.all():
-            child_indicator.result.project.add_period(child_indicator, self)
+            if new_period:
+                child_indicator.result.project.add_period(child_indicator, self)
+            else:
+                child_indicator.result.project.update_period(child_indicator, self)
 
         # If the actual value has changed, the period has a parent period and aggregations are on,
         # then the the parent should be updated as well
