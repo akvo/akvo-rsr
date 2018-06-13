@@ -40,8 +40,9 @@ def get_issues(milestone):
         entries = response.json()
         issues.extend([entry for entry in entries if 'pull_request' not in entry])
 
-        successive, end = response.headers.get('link').split(',')
-        url_, direction = successive.split(';')
+        link = response.headers.get('link')
+        successive, end = link.split(',') if link is not None else ('', '')
+        url_, direction = successive.split(';') if successive else ('', '')
         url = None if 'next' not in direction else url_.strip('<>')
 
     return issues
