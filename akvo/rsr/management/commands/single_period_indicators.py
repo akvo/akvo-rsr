@@ -40,6 +40,23 @@ class Command(BaseCommand):
                 period_start=PERIOD_START, period_end=PERIOD_END
             )
 
+        def find_periods_with_data(periods):
+            """ Separate a list of periods into two groups: those tht have been modified from an
+            original, "empty" state and those that haven't. To be counted as modified a period has
+            data in at least one of the fields target_value, target_comment, actual_value or
+            actual_comment or has at least one update.
+            """
+            modified_periods = []
+            unmodified_periods = []
+            for period in periods:
+                updates = IndicatorPeriodData.objects.filter(period=period)
+                if (period.target_value or period.target_comment or
+                        period.actual_value or period.actual_comment or updates):
+                    modified_periods += [period]
+                else:
+                    unmodified_periods += [period]
+            return modified_periods, unmodified_periods
+
         name = args[0]
         config = settings.SINGLE_PERIOD_INDICATORS[name]
         live = options['live']
@@ -116,22 +133,30 @@ class Command(BaseCommand):
                     else:
                         row_data += ['Would modify period: {}'.format(period.pk)]
 
-                # Multiple periods. Keep the "latest" one.
+                # Multiple periods, try to keep one.
                 else:
-                    updates = IndicatorPeriodData.objects.filter(period__in=periods)
-                    if updates.count() > 0:
-                        row_data += ['ERROR: Multiple periods, at least one with updates']
+                    # Check if more than one period "has data"
+                    modified_periods, unmodified_periods = find_periods_with_data(periods)
+                    # If it does, report and don't touch!
+                    if len(modified_periods) > 1:
+                        row_data += ['ERROR: Multiple periods, more than one has data']
+                    # Otherwise keep the period with data, delete the others
                     else:
+                        if len(modified_periods) == 1:
+                            period_to_keep = modified_periods[0]
+                        else:
+                            period_to_keep = unmodified_periods[0]
+                            unmodified_periods = unmodified_periods[1:]
                         if live:
-                            for period in periods[1:]:
+                            for period in unmodified_periods:
                                 period.delete()
-                            set_period_dates(periods[0])
+                            set_period_dates(period_to_keep)
                             row_data += ['Deleted {} periods, set dates on period {}'.format(
-                                period_count - 1, periods[0].pk
+                                len(unmodified_periods), period_to_keep.pk
                             )]
                         else:
                             row_data += ['Would delete {} periods, set dates on period {}'.format(
-                                period_count - 1, periods[0].pk
+                                len(unmodified_periods), period_to_keep.pk
                             )]
 
                 period_data.append(row_data)
