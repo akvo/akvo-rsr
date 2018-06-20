@@ -135,39 +135,42 @@ def inconsistent_periods():
         'Indicator ID',
         'Indicator title',
     ]
-    for period in IndicatorPeriod.objects.all().select_related(
-        'parent_period', 'parent_period__indicator', 'indicator__parent_indicator',
-        'indicator__result__project',
-    ).order_by('indicator__result__project__pk', 'indicator__result__pk', 'indicator__pk'):
-        if period.parent_period:
-            if (
-                period.parent_period.indicator.pk !=
-                period.indicator.parent_indicator.pk if period.indicator.parent_indicator else None
-            ):
-                problem_periods.append([
-                    period.pk,
-                    period.parent_period.indicator.pk if period.parent_period.indicator else "None",
-                    period.indicator.parent_indicator.pk if period.indicator.parent_indicator else "None",
-                    "{} : {}".format(period.period_start, period.period_end),
-                    period.indicator.result.project.pk,
-                    period.indicator.result.project.title,
-                    period.indicator.result.pk,
-                    period.indicator.result.title,
-                    period.indicator.pk,
-                    period.indicator.title,
-                ])
-    if len(problem_periods.dict):
-        print "Indicator periods where parent indicators don't match"
-        print problem_periods.export('tsv')
-    else:
-        print "No problems with periods and their parent indicators"
+    print "Indicator periods where parent indicators don't match"
+    print problem_periods.export('csv'),
+    # Note: this double loop is to avoid running out of memory (I think). Previously the loop was
+    # over IndicatorPeriod.objects.() and then the script was halted with a Killed message
+    # indicating that some system resource is running out
+    # https://stackoverflow.com/questions/19189522/what-does-killed-mean
+    for indicator in Indicator.objects.all():
+        for period in IndicatorPeriod.objects.filter(indicator=indicator).select_related(
+            'parent_period', 'parent_period__indicator', 'indicator__parent_indicator',
+            'indicator__result__project',
+        ).order_by('indicator__result__project__pk', 'indicator__result__pk', 'indicator__pk'):
+            if period.parent_period:
+                if (
+                    period.parent_period.indicator.pk !=
+                    period.indicator.parent_indicator.pk if period.indicator.parent_indicator else None
+                ):
+                    problem_periods.wipe()
+                    problem_periods.append([
+                        period.pk,
+                        period.parent_period.indicator.pk if period.parent_period.indicator else "None",
+                        period.indicator.parent_indicator.pk if period.indicator.parent_indicator else "None",
+                        "{} : {}".format(period.period_start, period.period_end),
+                        period.indicator.result.project.pk,
+                        period.indicator.result.project.title,
+                        period.indicator.result.pk,
+                        period.indicator.result.title,
+                        period.indicator.pk,
+                        period.indicator.title,
+                    ])
+                    print problem_periods.export('csv'),
     print "\n\n"
 
 
 class Command(BaseCommand):
-    args = '<page_site_id|page_site_hostname> <admin|me_manager|project_editor|user_manager|user>'
-    help = ('Script returning all users associated with a Page and the projects they have access '
-            'to as the selected permission group')
+    args = ''
+    help = ('Script analyzing the results framework for problems')
 
     def handle(self, *args, **options):
         projects_with_multiple_parents()

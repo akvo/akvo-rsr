@@ -16,7 +16,7 @@ from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
-    RelatedProject, IndicatorPeriod, IndicatorReference)
+    RelatedProject, IndicatorPeriod)
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
 
