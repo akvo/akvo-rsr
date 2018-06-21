@@ -42,20 +42,19 @@ export default class RSRUpdates extends React.Component {
     }
 }
 
-const RSRUpdate = ({ update, userId, onEdit }) => {
+const RSRUpdate = ({ update, onEdit }) => {
     const editUpdate = () => {
         return onEdit(update);
     };
-    const edit_button =
-        update.user == userId ? (
-            <div>
-                <a onClick={editUpdate} href="#">
-                    Edit
-                </a>
-            </div>
-        ) : (
-            undefined
-        );
+    const edit_button = update.editable ? (
+        <div>
+            <a onClick={editUpdate} href="#">
+                Edit
+            </a>
+        </div>
+    ) : (
+        undefined
+    );
 
     return (
         <div className="row">
@@ -74,11 +73,6 @@ const RSRUpdate = ({ update, userId, onEdit }) => {
     );
 };
 
-@connect(store => {
-    return {
-        userId: store.models.user.fetched && store.models.user.ids[0]
-    };
-})
 class RSRUpdateList extends React.Component {
     constructor(props) {
         super(props);
@@ -108,21 +102,13 @@ class RSRUpdateList extends React.Component {
     }
     render() {
         let updates;
-        const { userId } = this.props;
         if (this.state.loading) {
             updates = "Loading...";
         } else if (this.state.updates.length == 0) {
             updates = "No updates";
         } else {
             updates = this.state.updates.map(function(update) {
-                return (
-                    <RSRUpdate
-                        key={update.id}
-                        update={update}
-                        userId={userId}
-                        onEdit={this.props.editUpdate}
-                    />
-                );
+                return <RSRUpdate key={update.id} update={update} onEdit={this.props.editUpdate} />;
             }, this);
         }
         return (

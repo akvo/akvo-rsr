@@ -33,6 +33,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     photo_credit = serializers.CharField(required=False, allow_null=True)
     video_caption = serializers.CharField(required=False, allow_null=True)
     video_credit = serializers.CharField(required=False, allow_null=True)
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = ProjectUpdate
@@ -51,6 +52,10 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
             ProjectUpdateLocation.objects.create(location_target=update, **location_data)
 
         return update
+
+    def get_editable(self, obj):
+        user = self.context['request'].user
+        return user.has_perm('rsr.change_projectupdate', obj)
 
 
 class ProjectUpdateDirectorySerializer(BaseRSRSerializer):
