@@ -7,23 +7,56 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { _, getCookie } from "../utils";
+import { _, getCookie, isEmpty } from "../utils";
 import { MarkdownEditor } from "./common";
 
 export default class RSRUpdates extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            editingUpdate: {
+                title: "",
+                text: "",
+                event_date: "",
+                language: "",
+                photo_caption: "",
+                photo_credit: "",
+                video_caption: "",
+                video_credit: ""
+            }
+        };
+        this.editUpdate = this.editUpdate.bind(this);
+    }
     render() {
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <RSRUpdateList project={this.props.project} />
-                    <RSRUpdateForm project={this.props.project} />
+                    <RSRUpdateList project={this.props.project} editUpdate={this.editUpdate} />
+                    <RSRUpdateForm project={this.props.project} update={this.state.editingUpdate} />
                 </div>
             </div>
         );
     }
+    editUpdate(update) {
+        this.setState({ editingUpdate: update });
+    }
 }
 
-const RSRUpdate = ({ update }) => {
+const RSRUpdate = ({ update, userId, onEdit }) => {
+    const editUpdate = () => {
+        return onEdit(update);
+    };
+    const edit_button =
+        update.user == userId ? (
+            <div>
+                <a onClick={editUpdate} href="#">
+                    Edit
+                </a>
+            </div>
+        ) : (
+            undefined
+        );
+
     return (
         <div className="row">
             <div className="col-md-4 updateImg">
@@ -35,11 +68,17 @@ const RSRUpdate = ({ update }) => {
                 <a href={update.absolute_url}>
                     <h5>{update.title}</h5>
                 </a>
+                {edit_button}
             </div>
         </div>
     );
 };
 
+@connect(store => {
+    return {
+        userId: store.models.user.fetched && store.models.user.ids[0]
+    };
+})
 class RSRUpdateList extends React.Component {
     constructor(props) {
         super(props);
@@ -69,15 +108,22 @@ class RSRUpdateList extends React.Component {
     }
     render() {
         let updates;
+        const { userId } = this.props;
         if (this.state.loading) {
             updates = "Loading...";
         } else if (this.state.updates.length == 0) {
             updates = "No updates";
         } else {
             updates = this.state.updates.map(function(update) {
-                console.log(update);
-                return <RSRUpdate key={update.id} update={update} />;
-            });
+                return (
+                    <RSRUpdate
+                        key={update.id}
+                        update={update}
+                        userId={userId}
+                        onEdit={this.props.editUpdate}
+                    />
+                );
+            }, this);
         }
         return (
             <div className="col-md-5 hidden-sm-down updateList">
@@ -92,13 +138,14 @@ class RSRUpdateForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            description: "",
+            update: this.props.update,
             oversize_image: false,
             photo_help_text: _("photo_help_text"),
             photo_image_size_text: _("photo_image_size_text")
         };
         this.warnImageSize = this.warnImageSize.bind(this);
         this.setText = this.setText.bind(this);
+        this.editUpdate = this.editUpdate.bind(this);
     }
     componentDidMount() {
         const storePosition = ({ coords }) => {
@@ -107,6 +154,12 @@ class RSRUpdateForm extends React.Component {
         };
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(storePosition);
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.update.id !== this.props.update.id) {
+            // Update property has changed, update state
+            this.setState({ update: this.props.update });
         }
     }
     warnImageSize(e) {
@@ -126,17 +179,32 @@ class RSRUpdateForm extends React.Component {
         }
     }
     setText(description) {
-        this.setState({ description });
+        const update = Object.assign({}, this.state.update, { text: description });
+        this.setState({ update });
+    }
+    editUpdate(event) {
+        const value = event.target.value;
+        var update = this.state.update;
+        update[event.target.name] = value;
+        this.setState({ update });
     }
     render() {
         const { project } = this.props;
-        const { oversize_image, photo_help_text, photo_image_size_text, description } = this.state;
-        const url = `../../../project/${project}/add_update/`;
+        const { oversize_image, photo_help_text, photo_image_size_text, update } = this.state;
+        const url = update.id
+            ? `../../../project/${project}/update/${update.id}/edit/`
+            : `../../../project/${project}/add_update/`;
+        const formPhoto = update.id ? (
+            <div className="col-md-3 pull-right">
+                <img src={update.photo} />
+            </div>
+        ) : (
+            undefined
+        );
         const photoClass = oversize_image ? "form-group has-error" : "form-group";
         const helpText = oversize_image
             ? `${photo_help_text} ${photo_image_size_text}: ${this.state.image_size} MB`
             : photo_help_text;
-
         const textAreaProps = {
             id: "id_text",
             className: "form-control textarea",
@@ -144,10 +212,9 @@ class RSRUpdateForm extends React.Component {
             cols: 40,
             rows: 10
         };
-
         return (
             <div className="col-md-7 col-xs-12 projectUpdateForm" id="update">
-                <h3 className="">Add an update</h3>
+                <h3 className="">{update.id ? "Edit update" : "Add an update"}</h3>
                 <form method="post" action={url} id="updateForm" encType="multipart/form-data">
                     <input
                         name="csrfmiddlewaretoken"
@@ -166,16 +233,19 @@ class RSRUpdateForm extends React.Component {
                             size="42"
                             title=""
                             type="text"
+                            value={update.title}
+                            onChange={this.editUpdate}
                         />
                     </div>
 
                     <div className="form-group">
                         <MarkdownEditor
-                            text={description}
+                            text={update.text}
                             textAreaProps={textAreaProps}
                             onChange={this.setText}
                         />
-                        <textarea name="text" value={this.state.description} hidden />
+                        {/* Hidden field to submit description when submitting the form */}
+                        <textarea name="text" value={update.text} hidden />
                     </div>
 
                     <div className="form-group">
@@ -189,6 +259,8 @@ class RSRUpdateForm extends React.Component {
                             required="required"
                             title=""
                             defaultValue="en"
+                            value={update.language}
+                            onChange={this.editUpdate}
                         >
                             <option value="en">English</option>
                             <option value="es">Spanish</option>
@@ -209,10 +281,13 @@ class RSRUpdateForm extends React.Component {
                             required="required"
                             title=""
                             type="date"
+                            value={update.event_date}
+                            onChange={this.editUpdate}
                         />
                     </div>
 
                     <div className={photoClass}>
+                        {formPhoto}
                         <label className="control-label" htmlFor="id_photo">
                             Photo
                         </label>
@@ -237,6 +312,8 @@ class RSRUpdateForm extends React.Component {
                             size="25"
                             title=""
                             type="text"
+                            value={update.photo_caption}
+                            onChange={this.editUpdate}
                         />
                     </div>
 
@@ -250,6 +327,8 @@ class RSRUpdateForm extends React.Component {
                             size="25"
                             title=""
                             type="text"
+                            value={update.photo_credit}
+                            onChange={this.editUpdate}
                         />
                     </div>
 
@@ -279,6 +358,8 @@ class RSRUpdateForm extends React.Component {
                             size="25"
                             title=""
                             type="text"
+                            value={update.video_caption}
+                            onChange={this.editUpdate}
                         />
                     </div>
 
@@ -292,6 +373,8 @@ class RSRUpdateForm extends React.Component {
                             size="25"
                             title=""
                             type="text"
+                            value={update.video_credit}
+                            onChange={this.editUpdate}
                         />
                     </div>
 
@@ -308,10 +391,9 @@ class RSRUpdateForm extends React.Component {
                         value={this.state.longitude || 0}
                         type="hidden"
                     />
-
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary" disabled={oversize_image}>
-                            Add update
+                            {update.id ? "Edit update" : "Add update"}
                         </button>
                     </div>
                 </form>
