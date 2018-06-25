@@ -42,9 +42,12 @@ export default class RSRUpdates extends React.Component {
     }
 }
 
-const RSRUpdate = ({ update, onEdit }) => {
+const RSRUpdate = ({ update, onEdit, onDelete }) => {
     const editUpdate = () => {
         return onEdit(update);
+    };
+    const deleteUpdate = () => {
+        return onDelete(update);
     };
     const edit_button = update.editable ? (
         <div>
@@ -55,7 +58,15 @@ const RSRUpdate = ({ update, onEdit }) => {
     ) : (
         undefined
     );
-
+    const delete_button = update.deletable ? (
+        <div>
+            <a onClick={deleteUpdate} href="#">
+                Delete
+            </a>
+        </div>
+    ) : (
+        undefined
+    );
     return (
         <div className="row">
             <div className="col-md-4 updateImg">
@@ -68,6 +79,7 @@ const RSRUpdate = ({ update, onEdit }) => {
                     <h5>{update.title}</h5>
                 </a>
                 {edit_button}
+                {delete_button}
             </div>
         </div>
     );
@@ -80,12 +92,17 @@ class RSRUpdateList extends React.Component {
             updates: [],
             loading: true
         };
+        this.deleteUpdate = this.deleteUpdate.bind(this);
+        this.fetchUpdates = this.fetchUpdates.bind(this);
     }
     componentDidMount() {
-        const api_endpoint = ({ project }) => {
-            return `/rest/v1/project_update/?project=${project}&format=json`;
-        };
-        const self = this;
+        this.fetchUpdates();
+    }
+    fetchUpdates() {
+        const self = this,
+            api_endpoint = ({ project }) => {
+                return `/rest/v1/project_update/?project=${project}&format=json`;
+            };
         fetch(api_endpoint(this.props))
             .then(function(response) {
                 self.setState({ loading: false });
@@ -100,6 +117,25 @@ class RSRUpdateList extends React.Component {
                 self.setState({ updates: data.results });
             });
     }
+    deleteUpdate(update) {
+        const url = `/rest/v1/project_update/${update.id}/?format=json`,
+            self = this;
+        fetch(url, {
+            method: "DELETE",
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        })
+            .then(function(response) {
+                if (response.status == 204) {
+                    return true;
+                }
+            })
+            .then(function(deleted) {
+                if (deleted) {
+                    console.log("fetching updates...");
+                    self.fetchUpdates();
+                }
+            });
+    }
     render() {
         let updates;
         if (this.state.loading) {
@@ -108,7 +144,14 @@ class RSRUpdateList extends React.Component {
             updates = "No updates";
         } else {
             updates = this.state.updates.map(function(update) {
-                return <RSRUpdate key={update.id} update={update} onEdit={this.props.editUpdate} />;
+                return (
+                    <RSRUpdate
+                        key={update.id}
+                        update={update}
+                        onEdit={this.props.editUpdate}
+                        onDelete={this.deleteUpdate}
+                    />
+                );
             }, this);
         }
         return (
