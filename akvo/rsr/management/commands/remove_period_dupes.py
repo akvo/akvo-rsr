@@ -12,13 +12,6 @@ from optparse import make_option
 from ...models import Indicator, IndicatorPeriod
 
 
-def has_no_data(period):
-    if (period.target_value or period.target_comment or period.actual_value or period.actual_comment
-            or period.numerator or period.denominator):
-        return False
-    return True
-
-
 class Command(BaseCommand):
     help = ("Script that lists indicator periods that share the same indicator, have the same "
             "period_start and period_end and has no other data. When deleting, there will always "
@@ -38,67 +31,103 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        headers = [
-            'Project ID',
-            'Result ID',
-            'Result title',
-            'Indicator ID',
-            'Indicator title',
-            'Period ID',
-            'Period.period_start',
-            'Period.period_end',
-        ]
-        problem_periods = tablib.Dataset()
-        problem_periods.headers = headers
-        deleted_dupes = tablib.Dataset()
-        deleted_dupes.headers = headers
-        for indicator in Indicator.objects.all():
+        def has_data(period):
+            if (period.target_value or period.target_comment or period.actual_value or
+                    period.actual_comment or period.numerator or period.denominator or
+                    period.data.exists()):
+                return True
+            return False
+
+        def separate(periods):
+            periods_with_data = []
+            periods_without_data = []
+            for period in periods:
+                if has_data(period):
+                    periods_with_data += [period]
+                else:
+                    periods_without_data += [period]
+            if len(periods_with_data) > 0:
+                return dict(
+                    keep=periods_with_data,
+                    delete=periods_without_data
+                )
+            else:
+                return dict(
+                    keep=[periods_without_data[0]],
+                    delete=periods_without_data[1:]
+                )
+
+        def de_duplicate(indicator):
             periods = IndicatorPeriod.objects.filter(indicator=indicator).select_related(
                 'indicator', 'indicator__result', 'indicator__result__project'
-            )
-            for period in periods:
-                dupes = IndicatorPeriod.objects.filter(
-                    indicator=indicator,
-                    period_start=period.period_start,
-                    period_end=period.period_end,
-                ).exclude(pk=period.id)
-                if dupes:
-                    deletables = [dupe for dupe in dupes if has_no_data(dupe)]
-                    if deletables:
-                        if len(dupes) - len(deletables) > 0:
-                            problem_periods.append([
-                                period.indicator.result.project.pk,
-                                period.indicator.result.pk,
-                                period.indicator.result.title,
-                                period.indicator.pk,
-                                period.indicator.title,
-                                period.pk,
-                                period.period_start,
-                                period.period_end,
-                            ])
-                        else:
-                            deleted_dupes.append([
-                                period.indicator.result.project.pk,
-                                period.indicator.result.pk,
-                                period.indicator.result.title,
-                                period.indicator.pk,
-                                period.indicator.title,
-                                period.pk,
-                                period.period_start,
-                                period.period_end,
-                            ])
+            ).prefetch_related('data')
 
-        if len(problem_periods.dict):
-            print u"Problems:"
-            print problem_periods.export('csv')
+            # group periods with identical date fields
+            dupe_groups = {}
+            for period in periods:
+                dupe_groups.setdefault(
+                    "{}:{}".format(period.period_start, period.period_end), []
+                ).append(period)
+
+            problem_periods = []
+            duplicate_periods = []
+            for key in dupe_groups.keys():
+                periods_with_same_dates = dupe_groups[key]
+                if len(periods_with_same_dates) > 1:
+                    periods_to_keep_and_to_delete = separate(periods_with_same_dates)
+                    if len(periods_to_keep_and_to_delete['keep']) > 1:
+                        problem_periods.extend(periods_to_keep_and_to_delete['keep'])
+                    else:
+                        duplicate_periods.extend(periods_to_keep_and_to_delete['delete'])
+
+            return problem_periods, duplicate_periods
+
+        def table_of(periods, delete=False):
+            headers = [
+                'Project ID',
+                'Result ID',
+                'Result title',
+                'Indicator ID',
+                'Indicator title',
+                'Period ID',
+                'Period.period_start',
+                'Period.period_end',
+            ]
+            table = tablib.Dataset()
+            table.headers = headers
+
+            for period in periods:
+                table.append([
+                    period.indicator.result.project.pk,
+                    period.indicator.result.pk,
+                    period.indicator.result.title,
+                    period.indicator.pk,
+                    period.indicator.title,
+                    period.pk,
+                    period.period_start,
+                    period.period_end,
+                ])
+
+                if delete:
+                    period.delete()
+
+            return table
+
+        problem_periods = []
+        duplicate_periods = []
+        for indicator in Indicator.objects.all():
+            new_problems, new_dupes = de_duplicate(indicator)
+            problem_periods.extend(new_problems)
+            duplicate_periods.extend(new_dupes)
+
+        if problem_periods:
+            print "Duplicate periods with data"
+            print table_of(problem_periods).export('csv')
         else:
-            print u"No problems"
-        if len(deleted_dupes.dict):
-            if options['delete']:
-                IndicatorPeriod.objects.filter(pk__in=deleted_dupes['Period ID']).delete()
-                print u"Deletions:"
-            else:
-                print u"To be deleted:"
-            print deleted_dupes.export('csv')
+            print "No duplicate periods with data"
+
+        if duplicate_periods:
+            print "Deleted duplicate periods with no data"
+            print table_of(duplicate_periods, options['delete']).export('csv')
         else:
-            print u"No duplicates found"
+            print "No duplicate periods"
