@@ -567,6 +567,9 @@ var App = React.createClass({
         Object.assign(update, this.state.selected);
         if (values.length > 0) {
             update[field_name] = typeof values == "string" ? values : values[0].id;
+            if (field_name !== "page" && update[field_name] !== this.state.selected[field_name]) {
+                update["page"] = 1;
+            }
         } else {
             delete update[field_name];
         }
