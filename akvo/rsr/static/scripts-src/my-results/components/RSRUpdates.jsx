@@ -53,7 +53,7 @@ class RSRUpdateList extends React.Component {
             return `/rest/v1/project_update/?project=${project}&format=json`;
         };
         const self = this;
-        fetch(api_endpoint(this.props))
+        fetch(api_endpoint(this.props), { credentials: "same-origin" })
             .then(function(response) {
                 self.setState({ loading: false });
                 if (response.status == 200) {
