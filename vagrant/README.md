@@ -34,6 +34,14 @@ You may also want to clean up the old base boxes. They can be found in `$HOME/.v
 
 ## Upgrading Virtualbox on Mac OS X
 
+### Use a vagrant plugin
+
+There is now a plugin for vagrant that manages the guest additions and eliminates the steps below:
+
+```vagrant plugin install vagrant-vbguest```
+
+### Old way left for reference
+
 To run properly software that's called Guest addisions needs to be installed on the VM. One issue that may otherwise occur is that the shared folder doesn't properly mount. The documentation on how to install or upgrade guest additions is flaky at best, at least for Mac OS X. The following links helped a lot: [Blog on using Virtualbox on Mac OSX](http://www.bogotobogo.com/Linux/Ubuntu_Desktop_on_Mac_OSX_using_VirtualBox_4_3_II.php) is a good start and boils down to mounting VBoxGuestAdditions.iso, which can be found in the package contents of Virtualbox.app, in the emulated CD of the VM. When the image is mounted, run the following _in the VM_:
 
 ```bash
