@@ -124,8 +124,9 @@ var Update = React.createClass({displayName: "Update",
                         React.createElement("a", {href: project.url}, project.title)
                     ), 
                     React.createElement("div", null, 
-                        React.createElement("a", {href: "{project.project_url}", class: "projectTitle"}, 
-                            React.createElement("span", {class: "small"}, "Project: "), " ", project.project
+                        React.createElement("span", {className: ""}, "Project: "), 
+                        React.createElement("a", {href: project.project_url, class: "projectTitle"}, 
+                            project.project
                         )
                     ), 
                     React.createElement("div", null, 
@@ -134,7 +135,7 @@ var Update = React.createClass({displayName: "Update",
                     ), 
                     React.createElement("div", null, 
                         React.createElement("span", {class: "small"}, "Org: "), 
-                        React.createElement("a", {href: "{project.organisation_url}", class: "orgName"}, 
+                        React.createElement("a", {href: project.organisation_url, class: "orgName"}, 
                             project.organisation
                         )
                     ), 
