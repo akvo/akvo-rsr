@@ -655,7 +655,7 @@ class DefaultPeriodsTestCase(TestCase):
     def test_set_default_periods_when_periods_exist(self):
         # Given
         # Adding a period to indicator2 prevents copying of default periods to it
-        period3 = IndicatorPeriod.objects.create(
+        IndicatorPeriod.objects.create(
             indicator=self.indicator2,
             period_start=self.today + datetime.timedelta(days=3),
             period_end=self.today + datetime.timedelta(days=4), target_value="300"
@@ -667,10 +667,10 @@ class DefaultPeriodsTestCase(TestCase):
         # When
         # Set first indicator's periods as default
         data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'true'}
-        response = self.c.post(url, data=data, follow=True)
+        self.c.post(url, data=data, follow=True)
         # Remove first indicator's periods as default
         data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'false'}
-        response = self.c.post(url, data=data, follow=True)
+        self.c.post(url, data=data, follow=True)
         # Set first indicator's periods as default, and copy the periods to other eligible
         # indicators
         data = {'indicator_id': indicator_id, 'copy': 'true', 'set_default': 'true'}

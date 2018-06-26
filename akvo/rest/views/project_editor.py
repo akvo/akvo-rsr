@@ -717,7 +717,7 @@ def project_editor_default_periods(request, project_pk=None):
                 )
 
         indicators = Indicator.objects.filter(result__project=project).exclude(
-                pk=default_indicator.pk).prefetch_related('periods')
+            pk=default_indicator.pk).prefetch_related('periods')
 
         for indicator in indicators:
             if indicator.periods.exists():
