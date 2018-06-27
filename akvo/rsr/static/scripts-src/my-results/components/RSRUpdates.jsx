@@ -6,8 +6,7 @@
  */
 
 import React from "react";
-import { connect } from "react-redux";
-import { _, getCookie, isEmpty } from "../utils";
+import { _, getCookie } from "../utils";
 import { MarkdownEditor } from "./common";
 
 export default class RSRUpdates extends React.Component {
@@ -103,7 +102,7 @@ class RSRUpdateList extends React.Component {
             api_endpoint = ({ project }) => {
                 return `/rest/v1/project_update/?project=${project}&format=json`;
             };
-        fetch(api_endpoint(this.props))
+        fetch(api_endpoint(this.props), { credentials: "same-origin" })
             .then(function(response) {
                 self.setState({ loading: false });
                 if (response.status == 200) {
@@ -122,7 +121,8 @@ class RSRUpdateList extends React.Component {
             self = this;
         fetch(url, {
             method: "DELETE",
-            headers: { "X-CSRFToken": getCookie("csrftoken") }
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            credentials: "same-origin"
         })
             .then(function(response) {
                 if (response.status == 204) {
