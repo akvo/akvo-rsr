@@ -124,17 +124,18 @@ var Update = React.createClass({
                         <a href={project.url}>{project.title}</a>
                     </h1>
                     <div>
-                        <a href="{project.project_url}" class="projectTitle">
-                            <span class="small">Project: </span> {project.project}
+                        <span>Project: </span>
+                        <a href={project.project_url} class="projectTitle">
+                            {project.project}
                         </a>
                     </div>
                     <div>
-                        <span class="small">Created by: </span>
+                        <span>Created by: </span>
                         <span class="userFullName">{project.user_fullname}</span>
                     </div>
                     <div>
-                        <span class="small">Org: </span>
-                        <a href="{project.organisation_url}" class="orgName">
+                        <span>Org: </span>
+                        <a href={project.organisation_url} class="orgName">
                             {project.organisation}
                         </a>
                     </div>
