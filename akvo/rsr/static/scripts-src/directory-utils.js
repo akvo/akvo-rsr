@@ -124,17 +124,17 @@ var Update = React.createClass({displayName: "Update",
                         React.createElement("a", {href: project.url}, project.title)
                     ), 
                     React.createElement("div", null, 
-                        React.createElement("span", {className: ""}, "Project: "), 
+                        React.createElement("span", null, "Project: "), 
                         React.createElement("a", {href: project.project_url, class: "projectTitle"}, 
                             project.project
                         )
                     ), 
                     React.createElement("div", null, 
-                        React.createElement("span", {class: "small"}, "Created by: "), 
+                        React.createElement("span", null, "Created by: "), 
                         React.createElement("span", {class: "userFullName"}, project.user_fullname)
                     ), 
                     React.createElement("div", null, 
-                        React.createElement("span", {class: "small"}, "Org: "), 
+                        React.createElement("span", null, "Org: "), 
                         React.createElement("a", {href: project.organisation_url, class: "orgName"}, 
                             project.organisation
                         )
@@ -526,7 +526,6 @@ var App = React.createClass({displayName: "App",
     },
     render: function() {
         var elements_text = this.props.i18n[this.props.type + "_text"];
-
         return (
             React.createElement("div", null, 
                 React.createElement(SearchBar, {
@@ -549,7 +548,7 @@ var App = React.createClass({displayName: "App",
                     onChange: this.onFilterChange, 
                     limitOptions: this.state.options.limit, 
                     page: this.state.selected.page || 1, 
-                    limit: this.state.selected.limit || 15, 
+                    limit: this.state.selected.limit || this.state.page_size_default, 
                     projects: this.state.projects, 
                     project_count: this.state.project_count, 
                     i18n: this.props.i18n, 
@@ -723,6 +722,7 @@ var App = React.createClass({displayName: "App",
             options: options,
             disabled: false,
             project_count: options.project_count,
+            page_size_default: options.page_size_default,
             projects: options.projects
         });
     }

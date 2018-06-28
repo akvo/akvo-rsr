@@ -526,7 +526,6 @@ var App = React.createClass({
     },
     render: function() {
         var elements_text = this.props.i18n[this.props.type + "_text"];
-
         return (
             <div>
                 <SearchBar
@@ -549,7 +548,7 @@ var App = React.createClass({
                     onChange={this.onFilterChange}
                     limitOptions={this.state.options.limit}
                     page={this.state.selected.page || 1}
-                    limit={this.state.selected.limit || 15}
+                    limit={this.state.selected.limit || this.state.page_size_default}
                     projects={this.state.projects}
                     project_count={this.state.project_count}
                     i18n={this.props.i18n}
@@ -723,6 +722,7 @@ var App = React.createClass({
             options: options,
             disabled: false,
             project_count: options.project_count,
+            page_size_default: options.page_size_default,
             projects: options.projects
         });
     }
