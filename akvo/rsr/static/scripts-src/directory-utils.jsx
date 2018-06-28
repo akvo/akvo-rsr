@@ -124,17 +124,18 @@ var Update = React.createClass({
                         <a href={project.url}>{project.title}</a>
                     </h1>
                     <div>
-                        <a href="{project.project_url}" class="projectTitle">
-                            <span class="small">Project: </span> {project.project}
+                        <span>Project: </span>
+                        <a href={project.project_url} class="projectTitle">
+                            {project.project}
                         </a>
                     </div>
                     <div>
-                        <span class="small">Created by: </span>
+                        <span>Created by: </span>
                         <span class="userFullName">{project.user_fullname}</span>
                     </div>
                     <div>
-                        <span class="small">Org: </span>
-                        <a href="{project.organisation_url}" class="orgName">
+                        <span>Org: </span>
+                        <a href={project.organisation_url} class="orgName">
                             {project.organisation}
                         </a>
                     </div>
@@ -525,7 +526,6 @@ var App = React.createClass({
     },
     render: function() {
         var elements_text = this.props.i18n[this.props.type + "_text"];
-
         return (
             <div>
                 <SearchBar
@@ -548,7 +548,7 @@ var App = React.createClass({
                     onChange={this.onFilterChange}
                     limitOptions={this.state.options.limit}
                     page={this.state.selected.page || 1}
-                    limit={this.state.selected.limit || 15}
+                    limit={this.state.selected.limit || this.state.page_size_default}
                     projects={this.state.projects}
                     project_count={this.state.project_count}
                     i18n={this.props.i18n}
@@ -567,6 +567,9 @@ var App = React.createClass({
         Object.assign(update, this.state.selected);
         if (values.length > 0) {
             update[field_name] = typeof values == "string" ? values : values[0].id;
+            if (field_name !== "page" && update[field_name] !== this.state.selected[field_name]) {
+                update["page"] = 1;
+            }
         } else {
             delete update[field_name];
         }
@@ -719,6 +722,7 @@ var App = React.createClass({
             options: options,
             disabled: false,
             project_count: options.project_count,
+            page_size_default: options.page_size_default,
             projects: options.projects
         });
     }

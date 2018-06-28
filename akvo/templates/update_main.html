@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-md-7 col-xs-12">
                     <h2>{{update.title}}</h2>
-                    <div class="upDateTime">{{update.event_date|date:"d-M-Y"}}</div>
+                    <div class="upDateTime">{{update.event_date|date:"d-M-Y"}}{% if update.edited %} (edited on {{update.last_modified_at|date:"d-M-Y"}}){% endif %}</div>
                     <div class="post-info media">
                         <div class="media-body">
                             <p>
@@ -71,7 +71,7 @@
                                     {% endwith %}
                                 {% endif %}
                             </div>
-                            <div class="upDateTime">{{u.event_date|date:"d-M-Y"}}</div>
+                            <div class="upDateTime">{{u.event_date|date:"d-M-Y"}}{% if update.edited %} (edited on {{update.last_modified_at|date:"d-M-Y"}}){% endif %}</div>
                         </div>
                     </div>
                 {% endfor %}

@@ -98,5 +98,15 @@ class ProjectUpdate(TimestampsMixin, models.Model):
     def get_absolute_url(self):
         return 'update-main', (), {'project_id': self.project_id, 'update_id': self.pk}
 
+    @property
+    def edited(self):
+        """Edited status for an update.
+
+        An update is considered as edited only if it was edited after 1 minute
+        of posting it.
+
+        """
+        return (self.last_modified_at - self.created_at).total_seconds() > 60
+
     def __unicode__(self):
         return _(u'Project update for %(project_name)s') % {'project_name': self.project.title}
