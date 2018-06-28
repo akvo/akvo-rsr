@@ -45,7 +45,7 @@ def projects_with_multiple_parents():
         for data in ordered:
             problem_projects.append(data)
         print "Projects that have more than one parent project"
-        print problem_projects.export('tsv')
+        print problem_projects.export('csv')
     else:
         print "No child projects with multiple parents"
     print "\n\n"
@@ -79,7 +79,7 @@ def inconsistent_results():
 
     if len(problem_results):
         print "Results where Result.parent_result.project is not in result.project.parents_all()"
-        print problem_results.export('tsv')
+        print problem_results.export('csv')
     else:
         print "No problems with results and their projects"
     print "\n\n"
@@ -122,7 +122,7 @@ def inconsistent_indicators():
 
     if len(problem_indicators):
         print "Indicators where the parent results don't match"
-        print problem_indicators.export('tsv')
+        print problem_indicators.export('csv')
     else:
         print "No problems with indicators and their results"
     print "\n\n"
