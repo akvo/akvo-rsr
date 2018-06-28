@@ -8,6 +8,7 @@
 import tablib
 
 from django.core.management.base import BaseCommand
+from django.db.models import F
 
 from akvo.rsr.models import Result, Indicator, IndicatorPeriod
 from ...models import RelatedProject
@@ -96,10 +97,16 @@ def inconsistent_indicators():
         'Result ID',
         'Result title',
     ]
-    for indicator in Indicator.objects.all().select_related(
-            'result__parent_result', 'parent_indicator', 'parent_indicator__result',
-            'result__project',
-    ).order_by('result__project__pk', 'result__pk'):
+    for indicator in Indicator.objects.exclude(
+        parent_indicator=None
+    ).exclude(
+        parent_indicator__result__pk=F('result__parent_result__pk')
+    ).select_related(
+        'result__parent_result', 'parent_indicator', 'parent_indicator__result',
+        'result__project',
+    ).order_by(
+        'result__project__pk', 'result__pk'
+    ):
         if indicator.parent_indicator:
             if indicator.parent_indicator.result != indicator.result.parent_result:
                 problem_indicators.append([
@@ -141,30 +148,35 @@ def inconsistent_periods():
     # over IndicatorPeriod.objects.() and then the script was halted with a Killed message
     # indicating that some system resource is running out
     # https://stackoverflow.com/questions/19189522/what-does-killed-mean
-    for indicator in Indicator.objects.all():
-        for period in IndicatorPeriod.objects.filter(indicator=indicator).select_related(
-            'parent_period', 'parent_period__indicator', 'indicator__parent_indicator',
-            'indicator__result__project',
-        ).order_by('indicator__result__project__pk', 'indicator__result__pk', 'indicator__pk'):
-            if period.parent_period:
-                if (
-                    period.parent_period.indicator.pk !=
-                    period.indicator.parent_indicator.pk if period.indicator.parent_indicator else None
-                ):
-                    problem_periods.wipe()
-                    problem_periods.append([
-                        period.pk,
-                        period.parent_period.indicator.pk if period.parent_period.indicator else "None",
-                        period.indicator.parent_indicator.pk if period.indicator.parent_indicator else "None",
-                        "{} : {}".format(period.period_start, period.period_end),
-                        period.indicator.result.project.pk,
-                        period.indicator.result.project.title,
-                        period.indicator.result.pk,
-                        period.indicator.result.title,
-                        period.indicator.pk,
-                        period.indicator.title,
-                    ])
-                    print problem_periods.export('csv'),
+    for period in IndicatorPeriod.objects.exclude(
+        parent_period=None
+    ).exclude(
+        parent_period__indicator__pk=F('indicator__parent_indicator__pk')
+    ).select_related(
+        'parent_period', 'parent_period__indicator', 'indicator__parent_indicator',
+        'indicator__result__project',
+    ).order_by(
+        'indicator__result__project__pk', 'indicator__result__pk', 'indicator__pk'
+    ):
+        if period.parent_period:
+            if (
+                period.parent_period.indicator.pk !=
+                period.indicator.parent_indicator.pk if period.indicator.parent_indicator else None
+            ):
+                problem_periods.wipe()
+                problem_periods.append([
+                    period.pk,
+                    period.parent_period.indicator.pk if period.parent_period.indicator else "None",
+                    period.indicator.parent_indicator.pk if period.indicator.parent_indicator else "None",
+                    "{} : {}".format(period.period_start, period.period_end),
+                    period.indicator.result.project.pk,
+                    period.indicator.result.project.title,
+                    period.indicator.result.pk,
+                    period.indicator.result.title,
+                    period.indicator.pk,
+                    period.indicator.title,
+                ])
+                print problem_periods.export('csv'),
     print "\n\n"
 
 
@@ -173,8 +185,8 @@ class Command(BaseCommand):
     help = ('Script analyzing the results framework for problems')
 
     def handle(self, *args, **options):
-        projects_with_multiple_parents()
-        inconsistent_results()
+        # projects_with_multiple_parents()
+        # inconsistent_results()
         inconsistent_indicators()
         inconsistent_periods()
 
