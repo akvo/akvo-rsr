@@ -64,18 +64,19 @@ def inconsistent_results():
     ]
     for result in Result.objects.all().select_related(
             'project', 'parent_result', 'parent_result__project'
+    ).exclude(
+        parent_result=None
     ).order_by('project__pk'):
-        if result.parent_result:
-            if result.parent_result.project not in result.project.parents_all():
-                problem_results.append([
-                    result.project.pk,
-                    result.pk,
-                    ", ".join([str(parent.pk) for parent in result.project.parents_all()]),
-                    result.parent_result.project.pk,
-                    result.project.title,
-                    result.title,
-                    result.parent_result.project.title,
-                ])
+        if result.parent_result.project not in result.project.parents_all():
+            problem_results.append([
+                result.project.pk,
+                result.pk,
+                ", ".join([str(parent.pk) for parent in result.project.parents_all()]),
+                result.parent_result.project.pk,
+                result.project.title,
+                result.title,
+                result.parent_result.project.title,
+            ])
 
     if len(problem_results):
         print "Results where Result.parent_result.project is not in result.project.parents_all()"
@@ -107,18 +108,16 @@ def inconsistent_indicators():
     ).order_by(
         'result__project__pk', 'result__pk'
     ):
-        if indicator.parent_indicator:
-            if indicator.parent_indicator.result != indicator.result.parent_result:
-                problem_indicators.append([
-                    indicator.pk,
-                    indicator.parent_indicator.result,
-                    indicator.result.parent_result,
-                    indicator.title,
-                    indicator.result.project.pk,
-                    indicator.result.project.title,
-                    indicator.result.pk,
-                    indicator.result.title,
-                ])
+        problem_indicators.append([
+            indicator.pk,
+            indicator.parent_indicator.result,
+            indicator.result.parent_result,
+            indicator.title,
+            indicator.result.project.pk,
+            indicator.result.project.title,
+            indicator.result.pk,
+            indicator.result.title,
+        ])
 
     if len(problem_indicators):
         print "Indicators where the parent results don't match"
@@ -144,10 +143,7 @@ def inconsistent_periods():
     ]
     print "Indicator periods where parent indicators don't match"
     print problem_periods.export('csv'),
-    # Note: this double loop is to avoid running out of memory (I think). Previously the loop was
-    # over IndicatorPeriod.objects.() and then the script was halted with a Killed message
-    # indicating that some system resource is running out
-    # https://stackoverflow.com/questions/19189522/what-does-killed-mean
+
     for period in IndicatorPeriod.objects.exclude(
         parent_period=None
     ).exclude(
@@ -158,25 +154,20 @@ def inconsistent_periods():
     ).order_by(
         'indicator__result__project__pk', 'indicator__result__pk', 'indicator__pk'
     ):
-        if period.parent_period:
-            if (
-                period.parent_period.indicator.pk !=
-                period.indicator.parent_indicator.pk if period.indicator.parent_indicator else None
-            ):
-                problem_periods.wipe()
-                problem_periods.append([
-                    period.pk,
-                    period.parent_period.indicator.pk if period.parent_period.indicator else "None",
-                    period.indicator.parent_indicator.pk if period.indicator.parent_indicator else "None",
-                    "{} : {}".format(period.period_start, period.period_end),
-                    period.indicator.result.project.pk,
-                    period.indicator.result.project.title,
-                    period.indicator.result.pk,
-                    period.indicator.result.title,
-                    period.indicator.pk,
-                    period.indicator.title,
-                ])
-                print problem_periods.export('csv'),
+        problem_periods.wipe()
+        problem_periods.append([
+            period.pk,
+            period.parent_period.indicator.pk if period.parent_period.indicator else "None",
+            period.indicator.parent_indicator.pk if period.indicator.parent_indicator else "None",
+            "{} : {}".format(period.period_start, period.period_end),
+            period.indicator.result.project.pk,
+            period.indicator.result.project.title,
+            period.indicator.result.pk,
+            period.indicator.result.title,
+            period.indicator.pk,
+            period.indicator.title,
+        ])
+        print problem_periods.export('csv'),
     print "\n\n"
 
 
