@@ -185,8 +185,8 @@ class Command(BaseCommand):
     help = ('Script analyzing the results framework for problems')
 
     def handle(self, *args, **options):
-        # projects_with_multiple_parents()
-        # inconsistent_results()
+        projects_with_multiple_parents()
+        inconsistent_results()
         inconsistent_indicators()
         inconsistent_periods()
 
