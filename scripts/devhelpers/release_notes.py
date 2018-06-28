@@ -10,7 +10,7 @@ Usage:
 import requests
 
 URL = 'https://api.github.com/repos/akvo/akvo-rsr/issues?milestone={milestone}&state=closed'
-RELEASE_NOTES = """
+RELEASE_NOTES = u"""
 ## New and noteworthy
 
 {features}
@@ -49,11 +49,11 @@ def get_issues(milestone):
 
 
 def format_issue(issue):
-    return '- {title} [#{number}]({html_url})'.format(**issue)
+    return u'- {title} [#{number}]({html_url})'.format(**issue)
 
 
 def format_issues(issues):
-    return '\n\n'.join(map(format_issue, issues))
+    return u'\n\n'.join(map(format_issue, issues))
 
 
 def issue_labels(issue):
