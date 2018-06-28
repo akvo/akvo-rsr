@@ -34,7 +34,7 @@ class Command(BaseCommand):
         def has_data(period):
             if (period.target_value or period.target_comment or period.actual_value or
                     period.actual_comment or period.numerator or period.denominator or
-                    period.data.exists()):
+                    not period.locked or period.data.exists()):
                 return True
             return False
 
