@@ -3247,7 +3247,7 @@ function submitDefaultPeriods(indicatorId, copy, setDefault) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
-            console.log('submitDefaultPeriods response: ' + JSON.stringify(response));
+            console.log("submitDefaultPeriods response: " + JSON.stringify(response));
             // TODO: dispay error when there was an error
             if (response.default_periods) {
                 defaultValues.default_indicator = indicatorId;
@@ -3941,42 +3941,10 @@ function addOrgModal() {
             request.onload = function() {
                 var response;
                 if (request.status === 201) {
-                    var organisation_id;
-
                     // Get organisation ID
                     response = JSON.parse(request.responseText);
-                    organisation_id = response.id;
-
-                    // Add location (fails silently)
-                    if (
-                        form.querySelector("#latitude").value !== "" &&
-                        form.querySelector("#longitude").value !== ""
-                    ) {
-                        var request_loc;
-                        api_url = "/rest/v1/organisation_location/?format=json";
-                        request_loc = new XMLHttpRequest();
-                        request_loc.open("POST", api_url, true);
-                        request_loc.setRequestHeader("X-CSRFToken", csrftoken);
-                        request_loc.setRequestHeader(
-                            "Content-type",
-                            "application/x-www-form-urlencoded"
-                        );
-                        request_loc.send(form_data + "&location_target=" + organisation_id);
-                    }
-
-                    // Add logo (fails silently)
-                    var logo_request, logo_data, org_logo_files;
-                    org_logo_files = document.getElementById("org-logo").files;
-                    if (org_logo_files !== undefined) {
-                        api_url =
-                            "/rest/v1/organisation/" + organisation_id + "/add_logo/?format=json";
-                        logo_data = new FormData();
-                        logo_data.append("logo", org_logo_files[0]);
-                        logo_request = new XMLHttpRequest();
-                        logo_request.open("POST", api_url);
-                        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
-                        logo_request.send(logo_data);
-                    }
+                    var organisation_id = response.id;
+                    submitOrgLocation(organisation_id, form, form_data);
 
                     updateThisOrganisationTypeahead(organisation_id);
                     updateOrganisationTypeaheads(true);
@@ -4015,6 +3983,53 @@ function addOrgModal() {
         } else {
             document.querySelector(".orgModal").scrollTop = 0;
         }
+    }
+
+    /* Submits the organisation location, and also calls the submitOrgLogo
+    method at the appropriate time - immediately, if there is no location update
+    to be made, or after the request finishes if a location update request has
+    been sent.
+
+    NOTE: The two requests cannot be made asynchronously since the server method
+    doesn't handle updates correctly. It seems to be losing the logo data, or
+    the location data, based on the order in which it is handling these
+    requests.
+     */
+    function submitOrgLocation(organisation_id, form, form_data) {
+        var latitude = form.querySelector("#latitude").value,
+            longitude = form.querySelector("#longitude").value;
+
+        if (latitude !== "" && longitude !== "") {
+            var api_url = "/rest/v1/organisation_location/?format=json",
+                request_loc = new XMLHttpRequest();
+
+            // Making a synchronous request, since org!
+            request_loc.open("POST", api_url, false);
+            request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+            request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request_loc.send(form_data + "&location_target=" + organisation_id);
+        }
+
+        // Call sendOrgLogo after updating location is done. The update location
+        // request is synchronous
+        submitOrgLogo(organisation_id);
+    }
+
+    function submitOrgLogo(organisation_id) {
+        var org_logo_files = document.getElementById("org-logo").files;
+        if (org_logo_files === undefined) {
+            return;
+        }
+
+        var api_url = "/rest/v1/organisation/" + organisation_id + "/add_logo/?format=json",
+            logo_data = new FormData(),
+            logo_request = new XMLHttpRequest();
+
+        logo_data.append("logo", org_logo_files[0]);
+
+        logo_request.open("POST", api_url);
+        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
+        logo_request.send(logo_data);
     }
 
     function allInputsFilled() {
