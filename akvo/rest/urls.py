@@ -114,6 +114,13 @@ router.register(r'(?P<version>(v1))/transaction', views.TransactionViewSet)
 router.register(r'(?P<version>(v1))/transaction_sector', views.TransactionSectorViewSet)
 router.register(r'(?P<version>(v1))/user', views.UserViewSet)
 
+
+# We turn off the API root view (since it's broken with URLPathVersioning)
+router.include_root_view = False
+# Add API root view by version
+root_url = url(r'(?P<version>(v1|v2))/$', router.get_api_root_view(), name=router.root_view_name)
+router.urls.append(root_url)
+
 # Additionally, we include URLs for non-viewsets (functional views).
 # NOTE: if versions is to be added to one of the views below, the view function needs to include
 # version in its parameters.
