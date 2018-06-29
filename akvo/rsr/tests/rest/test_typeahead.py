@@ -17,15 +17,16 @@ class ProjectTypeaheadTest(TestCase):
 
     def setUp(self):
         super(ProjectTypeaheadTest, self).setUp()
-        organisation = self._create_organisation('Akvo')
-        PartnerSite.objects.create(
-            organisation=organisation,
+        self.organisation = self._create_organisation('Akvo')
+        self.partner_site = PartnerSite.objects.create(
+            organisation=self.organisation,
             piwik_id=1,
             hostname='akvo'
         )
 
         for i in range(1, 6):
             project = Project.objects.create(title='Project - {}'.format(i))
+
             if i < 4:
                 publishing_status = project.publishingstatus
                 publishing_status.status = PublishingStatus.STATUS_PUBLISHED
@@ -34,7 +35,7 @@ class ProjectTypeaheadTest(TestCase):
             # Add a partnership for a couple of projects
             if i in {1, 4}:
                 Partnership.objects.create(
-                    organisation=organisation,
+                    organisation=self.organisation,
                     project=project,
                     iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
                 )

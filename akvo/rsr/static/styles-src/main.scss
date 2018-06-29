@@ -10,7 +10,7 @@
 
 html {
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 body {
@@ -115,6 +115,12 @@ em {
     font-style: italic;
 }
 
+.group:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
 div.morePartners {
     overflow: visible;
     display: inline-block;
@@ -204,11 +210,21 @@ button.btn-primary {
     }
 }
 
+// Copy of Bootstrap .hidden Used to hide form elements that _should_ be included in the form data
+.invisible {
+    display: none!important;
+    visibility: hidden!important;
+}
+
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 
 .tt-input,
 .tt-hint {
     @include border-radius(5px 0 0 5px);
+}
+
+.form-control {
+    border-radius: 0px;
 }
 
 .input-group-addon:not(:first-child):not(:last-child),
@@ -411,10 +427,34 @@ nav.navbar-fixed-top {
             }
         }
     }
+    .tagLine {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        @include responsive(mediums-max-screens) {
+            top: 20px;
+            left: 50%;
+            transform: translate(-50%, 0%);
+            h2 {
+                font-size: 1.2em;
+            }
+        }
+
+        @include responsive(small-max-screens) {
+            display: none;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+        }
+    }
     .navbar-nav {
         li {
             font-weight: normal;
-            padding-top: 3px;
             &:first-child {}
             a {
                 color: $akvoPurple;
@@ -431,36 +471,37 @@ nav.navbar-fixed-top {
                     }
                 }
             }
-            &.navProject {
-                .active {
-                    background: darken(rgba($anchorLinkHover, 0.05), 10%);
-                    border: thin solid rgba($anchorLinkHover, 0);
-                    @include border-radius(3px);
-                    color: $anchorLinkHover;
-                    @include transition(all 0.2s linear);
-                    cursor: text;
-                    &:hover {
-                        background: darken(rgba($anchorLinkHover, 0), 10%);
-                        border: thin solid rgba($anchorLinkHover, 0);
-                        @include border-radius(3px);
-                        color: $anchorLinkHover;
-                    }
-                }
-            }
         }
         &.navbar-right {
-            margin-top: 10px;
             li {
                 margin-right: 2px;
                 &:nth-child(1) {
-                    margin-right: 10px;
+                    margin-right: 15px;
                     .userDropdown {
                         margin-top: 2px;
                         background-color: transparent !important;
                         border-color: transparent !important;
                         .btn-default {
-                            background-color: transparent !important;
-                            border-color: transparent;
+                            margin-top: -5px;
+                            padding: 3px 8px 3px 3px;
+                            border: 1px solid rgba($rsrBlue, 0) !important;
+                            background: rgba($anchorLink, 0) !important;
+                            color: $rsrBlue;
+                            &:hover {
+                                border: 1px solid rgba($rsrBlue, 0) !important;
+                                background: white !important;
+                                color: $flowOrange !important;
+                            }
+                            .userAvatar {
+                                width: 30px;
+                                height: 30px;
+                                img {
+                                    margin: 0;
+                                    width: 30px;
+                                    height: 30px;
+                                    border: 1px solid white;
+                                }
+                            }
                         }
                         .dropdown-menu {
                             @media only screen and (max-width: $width-middle) and (min-width: $width-small) {
@@ -503,8 +544,10 @@ nav.navbar-fixed-top {
                     padding-left: 5px;
                     padding-right: 5px;
                     &.areaToggle {
-                        @include button($akvoPurple, white);
+                        margin-top: 5px;
+                        @include button($anchorLink, white);
                         box-shadow: none !important;
+                        padding: 8px 8px;
                     }
                     @include responsive(tablets) {
                         padding: 10px 15px;
@@ -513,7 +556,7 @@ nav.navbar-fixed-top {
                     &.active {}
                 }
                 div.userDropdown {
-                    margin-top: 10px;
+                    margin-top: 10px !important;
                     li {
                         a {
                             padding-right: 20px;
@@ -608,7 +651,7 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 20px 25px 20px;
+    padding: 10px 0px 0 20px;
 }
 
 .navContainer {
@@ -783,9 +826,44 @@ div.update-confirm-container {
     }
 }
 
+.myProjectList {
+    thead {
+        th {
+            text-align: left;
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+    tr {
+        td {
+            text-align: left;
+            &:last-child {
+                text-align: right;
+            }
+        }
+    }
+}
+
+#user_table {
+    td.text-right {
+        > span {
+            > span:first-of-type {
+                float: right;
+                margin-left: 15px;
+                margin-top: 5px;
+            }
+            > span:nth-of-type(2) {
+                margin-right: 15px;
+            }
+        }
+    }
+}
+
 .myProjectList,
 #updates,
 #user_table {
+    font-size: 1.2em;
     thead {
         tr {
             border-bottom: none;
@@ -810,82 +888,42 @@ div.update-confirm-container {
             &.notPublished {
                 td {
                     position: relative;
-                    padding-top: 40px;
+                    .media-body {
+                        a {
+                            padding-top: 20px;
+                        }
+                    }
                     .unplubishedPjt {
-                        position: absolute;
-                        top: 7px;
-                        left: 8px;
-                        padding: 3px;
+                        padding: 0px 3px;
                         display: inline-block;
-                        @include border-radius(2px);
-                        color: $akvoTvRed;
-                        border: 1px solid $akvoTvRed;
-                        font-size: 80%;
-                        font-weight: 600;
+                        color: $progressWarning;
+                        font-size: 70%;
+                        font-weight: 400;
                     }
                 }
             }
             &.isPrivate {
-                background: rgba($progressNot, 0.1) !important;
                 td {
                     position: relative;
+                    .media-body {
+                        a {
+                            padding-top: 20px;
+                        }
+                    }
                     .privatePjt {
-                        position: absolute;
-                        top: 7px;
-                        left: 8px;
-                        padding: 3px;
+                        padding: 0px 3px;
                         display: inline-block;
-                        @include border-radius(2px);
-                        color: $akvoTvRed;
-                        border: 1px solid $akvoTvRed;
-                        font-size: 80%;
-                        font-weight: 600;
+                        color: $progressWarning;
+                        font-size: 70%;
+                        font-weight: 400;
                     }
                 }
-            }
-        }
-    }
-    div.projectListMenu {
-        ul {
-            margin-top: -10px;
-            li {
-                display: inline-block;
-                @include responsive(mediums-max-screens) {
-                    display: block;
-                }
-
-                @include responsive(small-max-screens) {}
-
-                a {
-                    &:last-child {
-                        margin-right: 0;
-                    }
-                }
-                @include responsive(wide-screens) {}
-
-                > a {}
-            }
-            @media (min-width: 992px) {
-                min-width: 340px;
             }
         }
     }
     a {
         &:last-child {
             margin-right: 0;
-        }
-        &.addUpdate {
-            &.disabled {
-                background-color: lighten($primary4, 30%);
-                color: lighten($primary4, 20%);
-                pointer-events: initial;
-                cursor: not-allowed;
-                border: none;
-                @include border-radius(5px);
-                &:hover {
-                    text-decoration: none;
-                }
-            }
         }
     }
 }
@@ -986,7 +1024,7 @@ div.paginationWrap {
         }
         .media-body {
             p {
-                max-width: 170px;
+                max-width: 300px;
                 @include noWrapTxt;
                 @include responsive(small-max-screens) {
                     max-width: 120px;
@@ -1127,7 +1165,7 @@ footer {
                     }
                     div.langDropdown {
                         margin-top: 13px;
-                        background-color: transparent !important;
+                        background-color: white !important;
                         border-color: transparent !important;
                         color: $akvoBlack !important;
                         .btn-default {
@@ -1145,7 +1183,7 @@ footer {
 
                         .dropdown-menu {
                             position: absolute;
-                            background-color: transparent !important;
+                            background-color: white !important;
                             border-color: transparent !important;
                             @include responsive(small-max-screens) {
                                 background-color: white !important;
@@ -1293,23 +1331,31 @@ h4.detailedInfo {
     margin-top: 20px;
 }
 
-.paginationWrap {
-    background: rgba(58, 58, 58, 0);
-    @include border-radius(3px);
-    margin-bottom: 15px;
+.updatePagination {
+    margin-top: 40px;
+}
+
+.pgWrap, .pageStatus, .paginationWrap {
     .pagination {
-        margin: 0 auto;
         li {
             a,
             span {
-                border-color: transparent;
+                margin-right: 1px;
+                color: $anchorLink;
+                border: 1px solid transparent;
+                cursor: pointer;
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
                     font-size: 18px;
                 }
 
                 &:hover {
-                    background: transparent;
+                    background: rgba($anchorLink, 0.1);
+                    border: 1px solid rgba($anchorLink, 1);
+                    span {
+                        border: 1px solid rgba($anchorLink, 0);
+                        background: rgba($anchorLink, 0);
+                    }
                 }
             }
             &.active {
@@ -1318,116 +1364,19 @@ h4.detailedInfo {
                     font-weight: bold;
                     color: $anchorLinkHover;
                     background-color: transparent;
+                    border: 1px solid $anchorLinkHover;
                     &:hover {
-                        background: transparent;
-                        border-color: transparent;
+                        background: rgba($anchorLinkHover, 0);
+                        border: 1px solid $anchorLinkHover;
                     }
                 }
             }
         }
-    }
-    .sortList {
-        display: inline-block;
-        padding-left: 0;
-        margin: 23px 0 0 0;
-        text-align: left;
-        @include responsive(small-max-screens) {
-            text-align: center;
-            margin: 20px auto;
-        }
-
-        .dropdown {
-            .dropdown-menu {
-                li {
-                    a {
-                        color: $anchorLink;
-                    }
-                    &.disabled {
-                        a {
-                            font-weight: bold;
-                            color: $anchorLinkHover;
-                        }
-                    }
-                    @include responsive(small-max-screens) {
-                        a {
-                            color: $anchorLink;
-                            padding-top: 10px;
-                            padding-bottom: 10px;
-                        }
-                        &.disabled {
-                            a {
-                                font-weight: bold;
-                                color: $anchorLinkHover;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-.advanced-filter {
-    display: inline-block;
-    text-align: right;
-    label {
-        margin-top: 5px !important;
-    }
-    .bootstrap-typeahead-input {
-        margin-right: 1px;
-    }
-    .bootstrap-typeahead-input-main {
-        margin-right: 20px;
-    }
-    .caret {
-        position: relative;
-        top: -26px;
-        left: -10px;
     }
 }
 
 #sidebar-wrapper {
-    z-index: 99999;
-    position: absolute;
-    left: 200px;
-    width: 0;
-    margin-left: -200px;
-    overflow-y: auto;
-    background: rgba(white, 0.9);
-    @include border-radius(0 0 5px 0);
-    @include transition(all 0.5s ease);
-    @include box-shadow(2px 2px 5px rgba(0, 0, 0, 0.5));
-    .showFilters {
-        &:hover {
-            color: $anchorLinkHover;
-        }
-        @include responsive(small-max-screens) {
-            padding-top: 20px;
-            padding-bottom: 20px;
-        }
-    }
-    div#filter {
-        padding: 5px 15px 15px 15px;
-        div {
-            .btn-group {
-                width: 100%;
-                border-top: 1px solid rgba($akvoBlack, 0.1);
-                padding: 5px 0;
-                select {
-                    border-color: rgba($akvoBlack, 0.2);
-                }
-                label {
-                    color: rgba($akvoBlack, 0.5);
-                    @include noWrapTxt;
-                }
-            }
-            &:nth-child(1) {
-                .btn-group {
-                    border-top: none;
-                }
-            }
-        }
-    }
+    display: none;
 }
 
 #page-content-wrapper {
@@ -1454,8 +1403,38 @@ h4.detailedInfo {
     }
 }
 
+.label-info {
+    font-weight: normal;
+    &.projectTotal, &.updateTotal {
+        font-size: 1.2em;
+        background-color: transparent;
+        color: $akvoBlack;
+    }
+}
+
+.pageStatus {
+    .pagination {
+        margin: 0 auto;
+    }
+    .label-info {
+        font-weight: normal;
+        &.projectTotal, &.updateTotal {
+            font-size: 1em;
+            background-color: transparent;
+            color: $akvoBlack;
+        }
+    }
+}
+
+.upLabelSearch {
+    top: -20px;
+    position: absolute;
+}
+
 #search-filter {
-    margin-top: -10px;
+    margin-top: -20px;
+    padding-top: 10px;
+    background: rgba($akvoPurple, 0.05);
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
@@ -1463,8 +1442,17 @@ h4.detailedInfo {
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
+        position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
         p {
             @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top: -23px;
+            display: inline-block;
         }
     }
     #search {
@@ -1475,6 +1463,8 @@ h4.detailedInfo {
         .form-group {
             input {
                 width: 250px;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
             }
             button {
                 padding-top: 7px;
@@ -1499,18 +1489,118 @@ h4.detailedInfo {
     }
 }
 
+.advanced-filter {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    @include responsive(mediums-max-screens) {
+        display: inline-block;
+        text-align: center;
+        float: none;
+    }
+
+    label {
+        margin-top: 5px !important;
+    }
+    .bootstrap-typeahead-input {
+        margin-right: 1px;
+        input {
+            width: 100%;
+        }
+    }
+    .bootstrap-typeahead-input-main {
+        margin-right: 20px;
+    }
+    .caret {
+        position: relative;
+        top: -26px;
+        left: -10px;
+    }
+}
+
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
+.dropup {
+    button {
+        border: none;
+    }
+}
+
+#organisation-directory {
+    .searchBar {
+        max-width: 60%;
+        margin: 10px auto 0 auto;
+        position: relative;
+        &.updateSearch {
+            margin: 0px auto 0 auto;
+        }
+        p {
+            @include noWrapTxt;
+        }
+        .pgTitle {
+            position: absolute;
+            top: -23px;
+            display: inline-block;
+        }
+    }
+    .advanced-filter {
+        display: inline-block;
+        text-align: right;
+        margin-left: 20%;
+        float: right;
+    }
+    .main-list {
+        padding-top: 20px;
+        ul.projectListUl {
+            overflow-y: scroll;
+            padding-left: 15px;
+            li {
+                margin-bottom: 15px;
+                list-style-type: none;
+                padding: 0 0 15px 0;
+                display: inline;
+                width: 24.5%;
+                float: left;
+                min-height: 265px;
+                @include border-radius(3px);
+                background: white;
+                margin-right: 0.66%;
+                > div:first-child {
+                    min-height: 130px;
+                    a {
+                        img {
+                            max-height: 177px;
+                        }
+                    }
+                }
+                &:nth-child(4n+4) {
+                    margin-right: 0;
+                }
+                h1 {
+                    margin-top: 5px;
+                    a {
+                        color: $rsrBlue;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
+                border: thin solid rgba($rsrBlue, 0);
+                @include transition(all 0.2s ease-in);
+            }
+        }
+    }
+}
 
 .main-list {
+    .col-sm-5 {
+        margin-top: -10px;
+    }
     li {
         img {
             border: 1px solid rgba($akvoBlack, 0.05);
             @include box-shadow(0 0 2px rgba($anchorLinkHover, 0));
-        }
-        &:nth-child(2n+1) {
-            background: rgb(238, 238, 238);
         }
         &:last-child {
             margin-bottom: 0;
@@ -1523,16 +1613,16 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 130px;
+            height: 160px;
             overflow-y: hidden;
             position: relative;
+            background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
-                max-width: 350px;
                 position: absolute;
-                top: 50%;
+                top: 0%;
                 left: 50%;
-                transform: translate(-50%, -50%);
+                transform: translate(-50%, 0%);
             }
         }
         .projectLocation {
@@ -1573,11 +1663,14 @@ h4.detailedInfo {
         margin-top: 10px;
         #map {
             position: relative;
-            height: calc(100vh - 310px);
+            height: calc(100vh - 230px);
             @include responsive(small-max-screens) {
                 display: none;
             }
 
+            &.updateMap {
+                height: calc(100vh - 240px);
+            }
             .rsr_map {
                 position: absolute;
                 top: 0;
@@ -1588,44 +1681,72 @@ h4.detailedInfo {
                 height: 100%;
             }
         }
-        ul.projectListUl {
-            max-height: calc(100vh - 370px);
+        .projectListUlcontain {
+            max-height: calc(100vh - 240px);
             overflow-y: scroll;
-            padding-left: 15px;
-            li {
-                margin-bottom: 5px;
-                list-style-type: none;
-                padding: 15px 0;
-                display: inline;
-                width: 32%;
-                float: left;
-                min-height: 315px;
-                @include border-radius(3px);
-                background: white;
-                margin-right: 2%;
-                &:nth-child(3n+3) {
-                    margin-right: 0;
+            p.listMsg {
+                font-size: 1.2em;
+                text-align: center;
+            }
+            &.filtered {
+                p.listMsg {
+                    display: none;
                 }
-                h1 {
-                    margin-top: 5px;
-                    a {
-                        color: $rsrBlue;
-                        &:hover {
-                            color: $anchorLinkHover;
+            }
+            ul.projectListUl {
+                padding-left: 15px;
+                li {
+                    margin-bottom: 5px;
+                    list-style-type: none;
+                    display: inline;
+                    width: 49%;
+                    float: left;
+                    min-height: 285px;
+                    @include border-radius(3px);
+                    background: white;
+                    margin-right: 2%;
+                    -webkit-transition: all 2s linear;
+                    -moz-transition: all 2s linear;
+                    -o-transition: all 2s linear;
+                    transition: all 2s linear;
+                    padding: 5px;
+                    @include transition(all 0.2s ease-in);
+                    &.highlightProject {
+                        box-shadow: 0 0 12px rgba(77, 90, 130, 0) !important;
+                        background: rgba(77, 90, 130, 0.15) !important;
+                        transition: all 0.4s linear;
+                    }
+                    &.updateAsset {
+                        h1 {
+                            margin-top: 5px;
+                            a {
+                                color: #00a79d;
+                                &:hover {
+                                    color: $anchorLinkHover;
+                                }
+                            }
                         }
                     }
-                }
-                border: thin solid rgba($rsrBlue, 0);
-                @include transition(all 0.2s ease-in);
-                .projectSubT {
-                    margin-bottom: 0;
-                }
-                &:nth-child(2n+1) {
-                    background: darken(rgba($rsrBlue, 0), 0%);
-                    border: thin solid rgba($rsrBlue, 0);
-                }
-                .projectLocation {
-                    color: rgba($akvoBlack, 0.5);
+                    &:nth-child(2n+2) {
+                        margin-right: 0;
+                    }
+                    h1 {
+                        margin: 5px 0 10px;
+                        a {
+                            color: $rsrBlue;
+                            font-weight: 500;
+                            letter-spacing: 0.02em;
+                            &:hover {
+                                color: $anchorLinkHover;
+                            }
+                        }
+                    }
+                    .projectSubT {
+                        margin-bottom: 0;
+                    }
+                    .projectLocation {
+                        color: rgba($akvoBlack, 0.5);
+                    }
                 }
             }
         }
@@ -1749,8 +1870,19 @@ header {
         margin-top: 60px;
     }
     &.updates {
-        .updateAsset:first-child {
-            margin-top: 25px;
+        ul {
+            list-style-type: none;
+            .updateAsset {
+                margin: 25px 0 50px;
+                h1 {
+                    a {
+                        color: #00a79d;
+                        &:hover {
+                            color: $anchorLinkHover;
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -2078,26 +2210,45 @@ div.textBlock {
 }
 
 /* Project hierarchy */
+.project-hierarchy {
+    div {
+        z-index: 9;
+    }
+    svg {
+        z-index: 8;
+    }
+}
 
 .project-hierarchy-window {
-    border: 0.1em solid #d3d3d3;
-    width: 150px;
+    border: 2px solid $anchorLink;
+    color: $anchorLink;
+    width: 250px;
     float: left;
     margin: 30px;
     padding: 10px;
     text-align: center;
-    @include border-radius(5px);
+    @include border-radius(3px);
+    background-color: rgba($anchorLink, 0.1);
+    &.project-hierarchy-parent {
+        border: 2px solid $akvoBlack;
+        color: $akvoBlack;
+    }
+    &.project-hierarchy-sibling-top, &.project-hierarchy-sibling-bottom {
+        border: 2px solid $anchorLink;
+        color: $anchorLink;
+    }
 }
 
 .project-hierarchy-window:hover,
 .project-hierarchy-window._jsPlumb_source_hover,
 .project-hierarchy-window._jsPlumb_target_hover {
-    border: 1px solid orange;
-    color: orange;
+    border: 2px solid $anchorLinkHover;
+    color: $anchorLinkHover;
+    background-color: rgba($anchorLinkHover, 0.1);
 }
 
 .project-hierarchy-empty-window {
-    width: 150px;
+    width: 250px;
     float: left;
     margin: 30px;
 }
@@ -2129,6 +2280,10 @@ div.textBlock {
 }
 
 .project-container {
+    min-height: calc(100vh - 160px);
+    + footer {
+        position: sticky;
+    }
     .tooltip {
         .tooltip-inner {
             background: rgba(white, 0.9);
@@ -2203,20 +2358,13 @@ ul.typeahead-selector {
     }
 }
 
-.projectCountTxt {
-    position: absolute;
-    top: 40px;
-    left: 22px;
-}
+.projectCountTxt {}
 
 /* Organisation Page */
 
 .organisationDetail {
-    .organisationHeader {
-        background: rgba($akvoBlack, 0.05);
-    }
+    .organisationHeader {}
     .orgDescr {
-        background-color: rgba(lighten($akvoTvRed, 15%), 0);
         p {
             padding-left: 20px;
         }
@@ -2224,9 +2372,7 @@ ul.typeahead-selector {
     h1 {
         margin-top: 0;
         margin-bottom: 20px;
-        color: rgba($akvoTvRed, 1);
         padding-bottom: 10px;
-        border-bottom: 1px solid rgba($akvoTvRed, 0.05);
         position: relative;
         i {
             font-size: 0.75em;
@@ -2285,15 +2431,17 @@ ul.typeahead-selector {
     h2 {
         color: $rsrGreen;
         margin-top: 0;
+        font-size: 1.3em;
     }
     .asideUpList {
         .row {
+            margin-bottom: 15px;
             padding: 15px 0;
-            &:nth-of-type(2n+1) {
-                background-color: rgba($rsrGreen, 0.1);
-            }
             h5 {
                 margin-top: 0;
+                a {
+                    color: #00a79d;
+                }
             }
         }
     }
@@ -3501,7 +3649,7 @@ main {
     }
     aside.open {
         width: calc(50% - 10px);
-        padding: 0px 5px 5px 5px;
+        padding: 0px 15px 5px 15px;
         display: block;
         margin-top: 5px;
         margin-left: 5px;
@@ -3512,11 +3660,11 @@ main {
 }
 
 main.project-page {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 260px);
 }
 
 main.results-page {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 140px);
 }
 
 .resultProjectTitle {
@@ -3536,7 +3684,31 @@ main.results-page {
     }
 }
 
+.alignFooter {
+    min-height: calc(100vh - 160px);
+}
+
+.project-container {
+    .container.iframe {
+        margin: 0 !important;
+    }
+}
+
 .myRsrPg {
+    .modal-content {
+        max-width: 60%;
+        height: 60vh;
+        overflow: hidden;
+        overflow-y: scroll;
+        margin: 20vh 20%;
+        iframe {
+            height: 100vh !important;
+        }
+    }
+    min-height: calc(100vh - 160px);
+    + footer {
+        position: sticky;
+    }
     h3 {
         display: inline-block;
         margin-top: 20px;
@@ -3545,10 +3717,10 @@ main.results-page {
     padding-left: 50px !important;
     ol {
         &.breadcrumb {
-            padding: 15px !important;
             background-color: white !important;
-            font-size: 1.1em;
-            margin-top: -10px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            padding: 10px 0;
             a.liveView {
                 margin-left: 50px;
             }
@@ -3556,6 +3728,114 @@ main.results-page {
                 padding: 0 5px;
                 color: #ccc;
                 content: "\003e";
+            }
+            li:first-of-type {
+                a {
+                    i {
+                        font-size: 120%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.rsrReports {
+    * {
+        box-sizing: border-box;
+    }
+    padding-top: 20px;
+    .rsrReport {
+        margin-bottom: 20px;
+        position: relative;
+        .reportContainer {
+            box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
+            min-height: 270px;
+            padding: 30px 50px 5px 50px;
+            @media only screen and (max-width: 1449px) {
+                padding: 30px 40px 5px 40px;
+            }
+            @media only screen and (max-width: 800px) {
+                padding: 30px 20px 5px 20px;
+            }
+            .reportDscr {
+                padding: 10px 0;
+            }
+            .options {
+                text-align: center;
+                button {
+                    &.reportDown {
+                        margin: 15px auto 0;
+                        @include btnOutline($akvoPurple, $akvoPurple);
+                        &:nth-of-type(2) {
+                            margin-left: 15px;
+                            @media only screen and (max-width: 1440px) {
+                                margin-left: 0px;
+                            }
+                            @media only screen and (max-width: 800px) {
+                                margin-left: 15px;
+                            }
+                        }
+                    }
+                }
+                .reportDate {
+                    margin: 0 auto;
+                    background-color: rgba($akvoBlack, 0.05);
+                    text-align: left;
+                    padding: 10px 15px 20px 15px;
+                    border-radius: 6px;
+                    &:after {
+                        content: "";
+                        display: table;
+                        clear: both;
+                    }
+                    .startDate {
+                        float: left;
+                        width: 49.5%;
+                        position: relative;
+                        div {
+                            width: 100%;
+                            input {
+                                width: 100%;
+                            }
+                        }
+                    }
+                    .endDate {
+                        float: right;
+                        width: 49.5%;
+                        position: relative;
+                        div {
+                            width: 100%;
+                            input {
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+            &:hover {
+                box-shadow: 0 0 10px rgba($rsrBlue2, 0.4);
+                .options {
+                    text-align: center;
+                    button {
+                        &.reportDown {
+                            margin: 15px auto 0;
+                            @include btnOutline($rsrBlue2, $rsrBlue2);
+                            &:hover {
+                                @include button(darken($rsrBlue2, 10%), white);
+                            }
+                        }
+                        &:nth-of-type(2) {
+                            margin-left: 15px;
+                            @media only screen and (max-width: 1440px) {
+                                margin-left: 0px;
+                            }
+                            @media only screen and (max-width: 800px) {
+                                margin-left: 15px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -3573,9 +3853,20 @@ main.results-page {
     }
     #update {
         padding-top: 25px;
+        background: rgba(240, 240, 240, 0.5);
     }
     .editBtn {
-        @include btnOutline($akvoPurple, $akvoPurple);
+        border: 1px solid rgba($anchorLink, 0.1) !important;
+        background: $anchorLink;
+        color: white;
+        border-bottom: 1px solid transparent !important;
+        padding: 7px 8px;
+        border-radius: 5px 5px 0 0;
+        &:hover {
+            background: #3071a9;
+            color: white;
+            border: 1px solid rgba($anchorLink, 0.1) !important;
+        }
     }
     .react-tabs {
         ul.react-tabs__tab-list {
@@ -3588,8 +3879,18 @@ main.results-page {
         }
     }
     .updateList {
-        max-height: calc(100vh - 370px);
+        max-height: calc(100vh - 160px);
         overflow-y: scroll;
+        padding-top: 25px;
+        .row {
+            margin: 10px 0;
+            &:first-child {
+                margin-top: 0;
+            }
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
         .updateImg {
             height: 130px;
             overflow-y: hidden;
@@ -3598,14 +3899,22 @@ main.results-page {
                 width: 100%;
                 max-width: 350px;
                 position: absolute;
-                top: 50%;
+                top: 0%;
                 left: 50%;
-                transform: translate(-50%, -50%);
+                transform: translate(-50%, 0%);
             }
         }
         h3 {
             margin-top: 0;
             display: block;
+            margin-bottom: 20px;
+        }
+    }
+    .projectUpdateForm {
+        h3 {
+            margin-top: 0;
+            display: block;
+            margin-bottom: 20px;
         }
     }
     /********************* Narrative report ***************************/
@@ -3896,7 +4205,7 @@ main.results-page {
                 span {
                     &.indicatorTitle {
                         display: inline-block;
-                        max-width: 60%;
+                        max-width: 80%;
                         ul {
                             padding-left: 0;
                             margin-bottom: 0;
@@ -3989,6 +4298,7 @@ main.results-page {
                             .indicatorInfo {
                                 margin-top: -10px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                                .descritpion {}
                                 ul {
                                     color: rgba($akvoBlack, 0.4);
                                     padding-left: 7px;
@@ -3999,6 +4309,7 @@ main.results-page {
                                         display: inline;
                                     }
                                     .description {
+                                        word-wrap: break-word;
                                         span {
                                             color: rgba($akvoBlack, 0.7);
                                         }
@@ -4505,6 +4816,9 @@ main.results-page {
     // background: rgba($primary4, 0.05);
     // border: 1px solid rgba($akvoBlack, 0.2);
     max-width: 100%;
+    .comments {
+        margin-left: 0;
+    }
     &.qualitativeUpdate {
         .update-description {
             display: none;
@@ -4520,9 +4834,17 @@ main.results-page {
         .update-entry-container {
             &.edit-in-progress {
                 .closingBtn {
+                    width: 25px;
+                    height: 25px;
                     z-index: 999;
                     top: -20px !important;
-                    right: -5px !important;
+                    right: -10px !important;
+                    background: rgba($akvoBlack, 0.05);
+                    border: transparent;
+                    &:hover {
+                        background: rgba($akvoBlack, 0.5);
+                        color: white;
+                    }
                 }
             }
         }
@@ -4563,8 +4885,8 @@ main.results-page {
             .disaggregationFields {
                 width: 100%;
                 overflow: auto;
-                border-top: 1px solid rgba($akvoBlack, 0.1);
-                border-bottom: 1px solid rgba($akvoBlack, 0.1);
+                border-top: 1px solid rgba($akvoBlack, 0);
+                border-bottom: 1px solid rgba($akvoBlack, 0);
                 padding: 15px 0;
                 margin-top: 10px;
                 h4 {
@@ -4731,8 +5053,9 @@ main.results-page {
 
 .periodMenuBar {
     box-sizing: border-box;
-    margin-top: 20px;
-    @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.2));
+    margin-top: 0px;
+    @include box-shadow(0 0px 0px rgba(0, 0, 0, 0.2));
+    border: 1px solid #ECECEC;
     * {
         box-sizing: border-box;
     }
@@ -4742,10 +5065,12 @@ main.results-page {
     .btn {
         margin-right: 10px;
     }
-    .periodOverview {
-        .overviewBtn {
-            margin: 10px 0 0 5px;
-        }
+    .overviewBtn {
+        margin: 5px 0 0 5px;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-bottom: 1px solid white;
+        color: $anchorLink;
     }
     .loading {
         margin-top: 20px;
@@ -4753,11 +5078,12 @@ main.results-page {
         font-size: 120%;
     }
     .periodBtns {
-        padding: 10px;
-        background: rgba($akvoBlack, 0.05);
+        padding: 3px 10px 0;
+        //background: rgba($akvoBlack, 0.05);
         .periodBulkAct {
             h5 {
                 padding-left: 15px;
+                font-size: 0.9em;
             }
             button {
                 background: $akvoBlack;
@@ -4773,12 +5099,14 @@ main.results-page {
         .periodFilter {
             h5 {
                 padding-left: 15px;
+                font-size: 0.9em;
             }
             padding-top: 10px;
             padding-bottom: 10px;
             button {
                 border: none;
                 color: #428bca;
+                @include box-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
                 &.filterActive {
                     border: 1px solid rgba($primary6, 0.5) !important;
                     background: rgba($primary6, 1) !important;

@@ -4,18 +4,15 @@
 {% block maincontent %}
     <div class="touch-navbar updateMain">
         {% include "partials/project_header.html" with project=update.project %}
-        <div class="container-fluid">
+        <div class="container">
             <div class="row">
                 <div class="col-md-7 col-xs-12">
-                    <h2><i class="fa fa-camera-retro"></i> {{update.title}}</h2>
-                    <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{update.event_date|date:"d-M-Y"}}</div>
+                    <h2>{{update.title}}</h2>
+                    <div class="upDateTime">{{update.event_date|date:"d-M-Y"}}{% if update.edited %} (edited on {{update.last_modified_at|date:"d-M-Y"}}){% endif %}</div>
                     <div class="post-info media">
                         <div class="media-body">
                             <p>
-                            {% if update.user.avatar %}
-                                {% img update.user 50 50 update.user.get_full_name %}
-                            {% endif %}
-                            <span class="userFullName"><em>{% trans 'by' %}</em>{{update.user.first_name}} {{update.user.last_name}}</span> {% trans 'via' %} {{update.get_update_method_display}}
+                            <span class="userFullName">{{update.user.first_name}} {{update.user.last_name}}</span> {% trans 'via' %} {{update.get_update_method_display}}
                             </p>
                         </div>
 
@@ -66,19 +63,19 @@
                                 </a>
                             </div>
                             <div class="col-md-8">
-                                <h5><a href="{% url 'update-main' u.project.id u.id %}"><i class="fa fa-camera-retro"></i> {{u.title}}</a></h5>
-                                <div><span class="userFullName"><em>{% trans 'by' %}</em>{{u.user.first_name}} {{u.user.last_name}}</span>
+                                <h5><a href="{% url 'update-main' u.project.id u.id %}">{{u.title}}</a></h5>
+                                <div><span class="userFullName">{{u.user.first_name}} {{u.user.last_name}}</span><br/>
                                     {% if u.user.approved_organisations %}
                                         {% with org=u.user.approved_organisations.0 %}
-                                        <a href="{% url 'organisation-main' org.pk %}" class="orgName"><i class="fa fa-users"></i>  {{org.long_name}}</a>
+                                        <a href="{% url 'organisation-main' org.pk %}" class="orgName">{{org.long_name}}</a>
                                     {% endwith %}
                                 {% endif %}
                             </div>
-                            <div class="upDateTime"><i class="fa fa-calendar-o"></i> {{u.event_date|date:"d-M-Y"}}</div>
+                            <div class="upDateTime">{{u.event_date|date:"d-M-Y"}}{% if update.edited %} (edited on {{update.last_modified_at|date:"d-M-Y"}}){% endif %}</div>
                         </div>
                     </div>
                 {% endfor %}
-                <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}"><i class="fa fa-eye"></i> {% trans 'See all updates for this project.' %}</a></div>
+                <div class="allUpdates text-center"><a href="{% url 'project-updates' project.pk %}">{% trans 'See all updates for this project.' %}</a></div>
             </aside>
         {% endif %}
     </div>

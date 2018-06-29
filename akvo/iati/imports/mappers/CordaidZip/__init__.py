@@ -21,6 +21,7 @@ CORDAID_ORG_ID = 273
 OTHERS = 'Others'
 OTHERS_ORG_ID = 1653
 
+
 def same_data(f1, f2):
     """ Compare two file like objects for sameness by comparing sha1 hashes of them """
     if not f1 or f2:

@@ -169,7 +169,7 @@ function renderPartnersTab() {
                             ), 
                             React.createElement("div", {className: "col-sm-6"}, 
                                 React.createElement("a", {href: '/organisation/' + id + '/', className: "org-link"}, 
-                                    React.createElement("i", {className: "fa fa-users"}), " ", React.createElement("h2", null, thisApp.partnerName(partner))
+                                    React.createElement("h2", null, thisApp.partnerName(partner))
                                 )
                             ), 
                             React.createElement("div", {className: "col-sm-4"}, 

@@ -15,6 +15,24 @@ import Results from "./Results";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+var sortReportIds = function(reports) {
+    if (!reports || !reports.ids) {
+        return;
+    }
+    var sorter = function(id1, id2) {
+        const a = reports.objects[id1].organisations.length,
+            b = reports.objects[id2].organisations.length;
+
+        if (a < b) {
+            return -1;
+        } else if (b < a) {
+            return 1;
+        }
+        return 0;
+    };
+    reports.ids.sort(sorter);
+};
+
 @connect(store => {
     return {
         reports: store.models.reports,
@@ -28,8 +46,10 @@ export default class Reports extends React.Component {
         const row_count = Math.round(Math.ceil(report_count / 3)),
             row_indexes = Array.from(Array(row_count).keys()),
             col_indexes = Array.from(Array(3).keys());
+        // Order reports so that organisation specific reports are listed at the end
+        sortReportIds(reports);
         return (
-            <div>
+            <div className="rsrReports">
                 {row_indexes.map(row => {
                     return (
                         <div className="row" key={row}>
@@ -41,7 +61,7 @@ export default class Reports extends React.Component {
                                 }
                                 return (
                                     <Report
-                                        projectId={project.id}
+                                        project={project}
                                         report={reports.objects[id]}
                                         key={id}
                                     />
@@ -76,7 +96,10 @@ class Report extends React.Component {
         const { report: { url }, project } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
-        download_url = url.replace("{format}", format).replace("{project}", project.id);
+        download_url = url
+            .replace("{format}", format)
+            .replace("{project}", project.id)
+            .replace("{language_code}", project.currentLanguage);
         if (this.state.date_selection) {
             if (end_date && start_date && start_date > end_date) {
                 // Swap start and end dates if end date is before start date
@@ -125,39 +148,33 @@ class Report extends React.Component {
             );
         });
         const date_selectors = (
-            <div>
-                <div>
+            <div className="reportDate">
+                <div className="startDate">
                     <div>Start Date</div>
                     <DatePicker onChange={this.setStartDate} selected={start_date} />
                 </div>
-                <div>
+                <div className="endDate">
                     <div>End Date</div>
                     <DatePicker onChange={this.setEndDate} selected={end_date} />
                 </div>
             </div>
         );
         return (
-            <div className="col-xs-4">
-                <div className="panel panel-default">
-                    <div className="panel-heading" onClick={this.toggleDescription}>
-                        <h3 className="panel-title">{report.title}</h3>
+            <div className="rsrReport col-sm-6 col-md-4 col-xs-12">
+                <div className="reportContainer">
+                    <div className="">
+                        <h3 className="">{report.title}</h3>
                     </div>
-                    <div className="panel-body">
-                        {show_description ? (
-                            <div onClick={this.toggleDescription}>{report.description}</div>
-                        ) : (
-                            <div>
-                                {date_selection ? date_selectors : undefined}
-                                {formats}
-                            </div>
-                        )}
+                    <div className="reportDscr">{report.description}</div>
+                    <div className="options">
+                        {date_selection ? date_selectors : undefined}
+                        {formats}
                     </div>
                 </div>
             </div>
         );
     }
 }
-
 class ReportFormatButton extends React.Component {
     constructor(props) {
         super(props);
@@ -166,6 +183,7 @@ class ReportFormatButton extends React.Component {
 
     onClick(e) {
         e.stopPropagation();
+        console.log(e);
         this.props.download(this.props.format_name);
     }
 
@@ -174,7 +192,7 @@ class ReportFormatButton extends React.Component {
         const icon_class = `fa fa-${icon}`,
             text = `Download ${display_name}`;
         return (
-            <button className="btn btn-default" onClick={this.onClick}>
+            <button className="btn btn-default reportDown" onClick={this.onClick}>
                 <i className={icon_class} />
                 <span>&nbsp;&nbsp;</span>
                 <span>{text}</span>

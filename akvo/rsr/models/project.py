@@ -32,7 +32,7 @@ from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIV
                                                  FLOW_TYPE, TIED_STATUS,
                                                  BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
-                        rsr_show_keywords)
+                        rsr_show_keywords, single_period_dates)
 
 from ...iati.checks.iati_checks import IatiChecks
 
@@ -1219,6 +1219,65 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
+    def descendants(self):
+        "All child projects and all their children recursively"
+        family = Project.objects.filter(pk=self.pk)
+        family_count = 1
+        while True:
+            family = Project.objects.filter(
+                related_projects__related_project__in=family,
+                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
+            ) | Project.objects.filter(
+                related_to_projects__project__in=family,
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
+            ) | family
+            if family.distinct().count() > family_count:
+                family_count = family.distinct().count()
+            else:
+                return family.distinct()
+
+    def ancestor(self):
+        "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
+        parents = self.parents_all()
+        if parents and parents.count() == 1:
+            return parents[0].ancestor()
+        else:
+            return self
+
+    def uses_single_indicator_period(self):
+        "Return the settings name of the hierarchy if there is one"
+        ancestor = self.ancestor()
+        if ancestor:
+            pk = ancestor.pk
+            root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
+            root_ids = root_projects.keys()
+            if pk in root_ids:
+                return root_projects[pk]
+
+    def project_dates(self):
+        """ Return the project start and end dates, preferably the actuals. If they are not set, use
+            the planned values.
+        """
+        start_date = (self.date_start_actual if self.date_start_actual
+                      else self.date_start_planned)
+        end_date = (self.date_end_actual if self.date_end_actual
+                    else self.date_end_planned)
+        return start_date, end_date
+
+    def project_hierarchy_context(self, context):
+        "Add info used in single period hierarchy projects if present"
+        hierarchy_name = self.uses_single_indicator_period()
+        context['start_date'], context['end_date'] = self.project_dates()
+
+        if hierarchy_name:
+            context['hierarchy_name'] = hierarchy_name
+            (
+                context['needs_reporting_timeout_days'],
+                context['period_start'],
+                context['period_end']
+            ) = single_period_dates(hierarchy_name)
+        return context
+
     def check_mandatory_fields(self):
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
@@ -1349,6 +1408,26 @@ class Project(TimestampsMixin, models.Model):
         for dimension in indicator.dimensions.all():
             self.add_dimension(child_indicator, dimension)
 
+    def update_indicator(self, result, parent_indicator):
+        """Update an indicator based on parent indicator attributes."""
+        Indicator = get_model('rsr', 'Indicator')
+        try:
+            child_indicator = Indicator.objects.get(
+                result=result,
+                parent_indicator=parent_indicator,
+            )
+
+        except Indicator.DoesNotExist:
+            return
+
+        child_indicator.title = parent_indicator.title
+        child_indicator.measure = parent_indicator.measure
+        child_indicator.ascending = parent_indicator.ascending
+        child_indicator.save()
+
+        fields = ['title', 'description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
+
     def add_period(self, indicator, period):
         """Add a new period to the indicator as a child of period.
 
@@ -1370,6 +1449,29 @@ class Project(TimestampsMixin, models.Model):
         )
         fields = ['target_value', 'target_comment', 'actual_comment']
         self._update_fields_if_not_child_updated(period, child_period, fields)
+
+    def update_period(self, indicator, parent_period):
+        """Update a period based on the parent period attributes."""
+
+        IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
+        try:
+            child_period = IndicatorPeriod.objects.select_related(
+                'indicator',
+                'indicator__result',
+            ).get(
+                indicator=indicator,
+                parent_period=parent_period,
+            )
+
+        except IndicatorPeriod.DoesNotExist:
+            return
+
+        child_period.period_start = parent_period.period_start
+        child_period.period_end = parent_period.period_end
+        child_period.save()
+
+        fields = ['target_value', 'target_comment', 'actual_comment']
+        self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
     def add_dimension(self, indicator, dimension):
         get_model('rsr', 'IndicatorDimension').objects.create(

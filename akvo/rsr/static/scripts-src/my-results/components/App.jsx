@@ -38,8 +38,7 @@ import {
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
-    getIndicatorsDimensionIds,
-    getPublicViewDefaultKeys
+    getIndicatorsDimensionIds
 } from "../selectors";
 
 import {
@@ -48,9 +47,8 @@ import {
     createNewDisaggregations,
     identicalArrays,
     isNewUpdate,
-    openNodes,
-    setHash,
-    userIsMEManager
+    modifyPeriods,
+    setHash
 } from "../utils";
 
 import FilterBar from "./FilterBar";
@@ -146,10 +144,12 @@ export default class App extends React.Component {
 
         const projectId = project.id;
         const projectPartners = project.partners;
+        const singlePeriodProject = project.hierarchy_name ? true : false;
         fetchModel("results", projectId, activateToggleAll);
         fetchModel("indicators", projectId, activateToggleAll);
         fetchModel("dimensions", projectId, activateToggleAll);
-        fetchModel("periods", projectId, activateToggleAll);
+        // TODO: check if we need to run modifyPeriods() after changing the locking status of periods
+        fetchModel("periods", projectId, activateToggleAll, modifyPeriods(singlePeriodProject));
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
         fetchModel("comments", projectId, activateToggleAll);
@@ -369,17 +369,16 @@ export default class App extends React.Component {
         ) : (
             <section className="results">
                 <a
-                    className="pull-right btn btn-default editBtn"
+                    className="pull-right editBtn"
                     href={`../../project_editor/${projectId}/`}
                 >
-                    <i className="fa fa-pencil-square-o" /> Edit project
+                    Edit project
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {show_results && has_results ? <Tab>Results</Tab> : undefined}
                         {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
-                        <Tab>Reports</Tab>
-                        <Tab>Add an update</Tab>
+                        <Tab>Project updates</Tab><Tab>Project reports</Tab>    
                     </TabList>
                     {show_results && has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (
@@ -390,10 +389,10 @@ export default class App extends React.Component {
                         undefined
                     )}
                     <TabPanel>
-                        <Reports project={projectId} />
+                        <RSRUpdates project={projectId} />
                     </TabPanel>
                     <TabPanel>
-                        <RSRUpdates project={projectId} />
+                        <Reports project={projectId} />
                     </TabPanel>
                 </Tabs>
             </section>

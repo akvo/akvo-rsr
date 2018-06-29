@@ -10,18 +10,25 @@
                     <li><a href="https://github.com/akvo/akvo-rsr">{% trans 'Source code' %}</a></li>
                     <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">{% trans 'API' %}</a></li>
                     <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">{% trans 'Terms of service' %}</a></li>
-                            <li class="navUpdate">
-          <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'update-directory' %}">
-            {% trans "All updates" %}
-          </a>
-        </li>
-        <li class="navOrganisation">
-          <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
-             href="{% url 'organisation-directory' %}">
-            {% trans "All organisations" %}
-          </a>
-        </li>
+                    
+                    <li>
+                       <a class="{% if 'projects' in request.path and 'myrsr' not in request.path %}active{% endif %}"
+                        href="{% url 'project-directory' %}">
+                         {% trans "All projects" %}
+                       </a>
+                    </li>
+                    <li class="navUpdate">
+                      <a class="{% if 'updates' in request.path and 'myrsr' not in request.path %}active{% endif %}"
+                         href="{% url 'update-directory' %}">
+                        {% trans "All updates" %}
+                      </a>
+                    </li>
+                    <li class="navOrganisation">
+                      <a class="{% if 'organisations' in request.path and 'myrsr' not in request.path %}active{% endif %}"
+                         href="{% url 'organisation-directory' %}">
+                        {% trans "All organisations" %}
+                      </a>
+                    </li>
                     <li class="akvoLogo"><a href="http://akvo.org">Akvo.org</a></li>
                     <li class="uiFeedback">
                         {# Javascript will generate the support feedback email, as to reduce spam #}

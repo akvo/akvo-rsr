@@ -115,6 +115,13 @@ router.register(r'(?P<version>(v1))/transaction_sector', views.TransactionSector
 router.register(r'(?P<version>(v1))/user', views.UserViewSet)
 router.register(r'(?P<version>(v1))/user_projects_access', views.UserProjectsAccessViewSet)
 
+
+# We turn off the API root view (since it's broken with URLPathVersioning)
+router.include_root_view = False
+# Add API root view by version
+root_url = url(r'(?P<version>(v1|v2))/$', router.get_api_root_view(), name=router.root_view_name)
+router.urls.append(root_url)
+
 # Additionally, we include URLs for non-viewsets (functional views).
 # NOTE: if versions is to be added to one of the views below, the view function needs to include
 # version in its parameters.
@@ -188,6 +195,20 @@ urlpatterns += patterns(
         name='project_editor_add_org_logo'),
 )
 
+# Directory views
+urlpatterns += patterns(
+    '',
+    url(r'v1/project_directory$',
+        views.project_directory,
+        name='project_directory'),
+    url(r'v1/update_directory$',
+        views.update_directory,
+        name='update_directory'),
+    url(r'v1/organisation_directory$',
+        views.organisation_directory,
+        name='organisation_directory'),
+)
+
 # Typeahead
 urlpatterns += patterns(
     '',
@@ -203,9 +224,6 @@ urlpatterns += patterns(
     url(r'v1/typeaheads/projects$',
         views.typeahead_project,
         name='project_typeahead'),
-    url(r'v1/typeaheads/project_filters$',
-        views.typeahead_project_filters,
-        name='project_filters_typeahead'),
     url(r'v1/typeaheads/user_projects$',
         views.typeahead_user_projects,
         name='user_projects_typeahead'),

@@ -10,7 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.forms.models import model_to_dict
@@ -26,7 +26,7 @@ from akvo.rsr.models import IndicatorPeriodData, User
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
+from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string)
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
@@ -300,10 +300,9 @@ def project_editor(request, project_id):
 
     # Check for default indicator
     results = Result.objects.filter(project_id=project)
-    default_indicator = Indicator.objects.filter(result_id__in=results, default_periods=True)
-    if default_indicator:
-        default_indicator = default_indicator[0].id
-    else:
+    try:
+        default_indicator = Indicator.objects.get(result_id__in=results, default_periods=True).pk
+    except ObjectDoesNotExist:
         default_indicator = '-1'
 
     context = {
@@ -329,6 +328,8 @@ def project_editor(request, project_id):
         'default_indicator': default_indicator,
 
     }
+
+    context = project.project_hierarchy_context(context)
 
     # Custom fields context
     for section_id in xrange(1, 12):
@@ -552,7 +553,7 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
     me_managers = project.publishing_orgs.employments().approved().\
         filter(group__in=[admins_group, me_managers_group])
     # Can we unlock and approve?
-    user_is_me_manager = user.is_superuser or user.is_admin or user.me_manager_for_project(project)
+    user_is_me_manager = user.has_perm('rsr.do_me_manager_actions')
     show_narrative_reports = project.partners.filter(
         id__in=settings.NARRATIVE_REPORTS_BETA_ORGS
     ).exists() and user.has_perm('rsr.add_narrativereport', project)
@@ -569,4 +570,5 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
         'show_results': json.dumps(show_results),
     }
 
+    context = project.project_hierarchy_context(context)
     return render(request, template, context)

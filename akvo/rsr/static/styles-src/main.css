@@ -38,7 +38,7 @@
   ========================================================================== */
 html {
   width: 100%;
-  overflow-y: scroll; }
+  overflow-y: auto; }
 
 body {
   width: 100%;
@@ -135,6 +135,11 @@ em {
   margin: 0 5px 0em 0em;
   font-style: italic; }
 
+.group:after {
+  content: "";
+  display: table;
+  clear: both; }
+
 div.morePartners {
   overflow: visible;
   display: inline-block; }
@@ -216,6 +221,10 @@ button.btn-primary {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
+.invisible {
+  display: none !important;
+  visibility: hidden !important; }
+
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
 .tt-input,
 .tt-hint {
@@ -223,6 +232,9 @@ button.btn-primary {
   -o-border-radius: 5px 0 0 5px;
   -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px; }
+
+.form-control {
+  border-radius: 0px; }
 
 .input-group-addon:not(:first-child):not(:last-child),
 .input-group-btn:not(:first-child):not(:last-child),
@@ -387,9 +399,28 @@ nav.navbar-fixed-top {
           background-size: 175px auto;
           text-indent: -9999px;
           margin-top: 0; } }
+  nav.navbar-fixed-top .tagLine {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%, 0%); }
+    @media only screen and (max-width: 992px) {
+      nav.navbar-fixed-top .tagLine {
+        top: 20px;
+        left: 50%;
+        transform: translate(-50%, 0%); }
+        nav.navbar-fixed-top .tagLine h2 {
+          font-size: 1.2em; } }
+    @media only screen and (max-width: 768px) {
+      nav.navbar-fixed-top .tagLine {
+        display: none; } }
+    nav.navbar-fixed-top .tagLine h2 {
+      font-size: 1.4em;
+      margin: 0;
+      padding: 0;
+      font-weight: normal; }
   nav.navbar-fixed-top .navbar-nav li {
-    font-weight: normal;
-    padding-top: 3px; }
+    font-weight: normal; }
     nav.navbar-fixed-top .navbar-nav li a {
       color: #2c2a74;
       border: thin solid transparent; }
@@ -405,109 +436,103 @@ nav.navbar-fixed-top {
         @media only screen and (max-width: 1024px) {
           nav.navbar-fixed-top .navbar-nav li a.active {
             background: rgba(202, 129, 66, 0.1); } }
-    nav.navbar-fixed-top .navbar-nav li.navProject .active {
-      background: rgba(169, 104, 48, 0.05);
-      border: thin solid rgba(202, 129, 66, 0);
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      color: #ca8142;
-      -moz-transition: all 0.2s linear;
-      -o-transition: all 0.2s linear;
-      -webkit-transition: all 0.2s linear;
-      transition: all 0.2s linear;
-      cursor: text; }
-      nav.navbar-fixed-top .navbar-nav li.navProject .active:hover {
-        background: rgba(169, 104, 48, 0);
-        border: thin solid rgba(202, 129, 66, 0);
+  nav.navbar-fixed-top .navbar-nav.navbar-right li {
+    margin-right: 2px; }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) {
+      margin-right: 15px; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown {
+        margin-top: 2px;
+        background-color: transparent !important;
+        border-color: transparent !important; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default {
+          margin-top: -5px;
+          padding: 3px 8px 3px 3px;
+          border: 1px solid rgba(44, 42, 116, 0) !important;
+          background: rgba(66, 139, 202, 0) !important;
+          color: #2c2a74; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default:hover {
+            border: 1px solid rgba(44, 42, 116, 0) !important;
+            background: white !important;
+            color: #de8929 !important; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar {
+            width: 30px;
+            height: 30px; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default .userAvatar img {
+              margin: 0;
+              width: 30px;
+              height: 30px;
+              border: 1px solid white; }
+        @media only screen and (max-width: 1024px) and (min-width: 768px) {
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
+            position: initial;
+            float: none; } }
+        @media only screen and (max-width: 768px) {
+          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
+            background-color: #fff !important;
+            border: 1px solid rgba(0, 0, 0, 0.14902);
+            box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
+            -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
+            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a {
+              color: #428bca;
+              font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+              border: thin solid transparent; }
+              nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a:hover {
+                color: #ca8142; }
+              nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a.active {
+                color: #72742a;
+                font-weight: bold;
+                background: rgba(202, 129, 66, 0.1);
+                -moz-border-radius: 3px;
+                -o-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                border-radius: 3px; } }
+      @media only screen and (max-width: 768px) and (max-width: 1024px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a.active {
+          background: rgba(202, 129, 66, 0.1); } }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
+      padding-left: 10px;
+      padding-right: 10px; }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li a {
+      padding-left: 5px;
+      padding-right: 5px; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle {
+        margin-top: 5px;
+        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+        display: inline-block;
+        padding: 5px 8px;
+        background-color: #428bca;
+        color: white !important;
+        text-decoration: none;
+        cursor: pointer;
         -moz-border-radius: 3px;
         -o-border-radius: 3px;
         -webkit-border-radius: 3px;
         border-radius: 3px;
-        color: #ca8142; }
-  nav.navbar-fixed-top .navbar-nav.navbar-right {
-    margin-top: 10px; }
-    nav.navbar-fixed-top .navbar-nav.navbar-right li {
-      margin-right: 2px; }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) {
-        margin-right: 10px; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown {
-          margin-top: 2px;
-          background-color: transparent !important;
-          border-color: transparent !important; }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .btn-default {
-            background-color: transparent !important;
-            border-color: transparent; }
-          @media only screen and (max-width: 1024px) and (min-width: 768px) {
-            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
-              position: initial;
-              float: none; } }
-          @media only screen and (max-width: 768px) {
-            nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu {
-              background-color: #fff !important;
-              border: 1px solid rgba(0, 0, 0, 0.14902);
-              box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px;
-              -webkit-box-shadow: rgba(0, 0, 0, 0.17255) 0px 6px 12px 0px; }
-              nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a {
-                color: #428bca;
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                border: thin solid transparent; }
-                nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a:hover {
-                  color: #ca8142; }
-                nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a.active {
-                  color: #72742a;
-                  font-weight: bold;
-                  background: rgba(202, 129, 66, 0.1);
-                  -moz-border-radius: 3px;
-                  -o-border-radius: 3px;
-                  -webkit-border-radius: 3px;
-                  border-radius: 3px; } }
-      @media only screen and (max-width: 768px) and (max-width: 1024px) {
-        nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(1) .userDropdown .dropdown-menu a.active {
-          background: rgba(202, 129, 66, 0.1); } }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li:nth-child(2) a {
-        padding-left: 10px;
-        padding-right: 10px; }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li a {
-        padding-left: 5px;
-        padding-right: 5px; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle {
-          /* use @extend .button on any element (a or button) or use directly in markup class="button" */
-          display: inline-block;
-          padding: 5px 8px;
-          background-color: #2c2a74;
-          color: white !important;
-          text-decoration: none;
-          cursor: pointer;
-          -moz-border-radius: 3px;
-          -o-border-radius: 3px;
-          -webkit-border-radius: 3px;
-          border-radius: 3px;
-          border: 1px solid transparent;
-          text-align: center;
-          box-shadow: none !important; }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
-            background: #1e1c4f;
-            color: white; }
-          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
+        border: 1px solid transparent;
+        text-align: center;
+        box-shadow: none !important;
+        padding: 8px 8px; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle:hover {
+          background: #3071a9;
+          color: white; }
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled {
+          cursor: not-allowed;
+          background-color: rgba(128, 128, 128, 0.1) !important;
+          color: rgba(128, 128, 128, 0.4) !important;
+          border: 1px solid transparent; }
+          nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
             cursor: not-allowed;
             background-color: rgba(128, 128, 128, 0.1) !important;
             color: rgba(128, 128, 128, 0.4) !important;
             border: 1px solid transparent; }
-            nav.navbar-fixed-top .navbar-nav.navbar-right li a.areaToggle.disabled:hover {
-              cursor: not-allowed;
-              background-color: rgba(128, 128, 128, 0.1) !important;
-              color: rgba(128, 128, 128, 0.4) !important;
-              border: 1px solid transparent; }
-        @media only screen and (max-width: 1024px) {
-          nav.navbar-fixed-top .navbar-nav.navbar-right li a {
-            padding: 10px 15px; } }
-      nav.navbar-fixed-top .navbar-nav.navbar-right li div.userDropdown {
-        margin-top: 10px; }
-        nav.navbar-fixed-top .navbar-nav.navbar-right li div.userDropdown li a {
-          padding-right: 20px;
-          padding-left: 20px; }
+      @media only screen and (max-width: 1024px) {
+        nav.navbar-fixed-top .navbar-nav.navbar-right li a {
+          padding: 10px 15px; } }
+    nav.navbar-fixed-top .navbar-nav.navbar-right li div.userDropdown {
+      margin-top: 10px !important; }
+      nav.navbar-fixed-top .navbar-nav.navbar-right li div.userDropdown li a {
+        padding-right: 20px;
+        padding-left: 20px; }
 
 .navbar {
   margin-bottom: 0 !important; }
@@ -565,7 +590,7 @@ nav.navbar-fixed-top {
 
 /* My RSR stuff */
 .btnHeader {
-  padding: 10px 20px 25px 20px; }
+  padding: 10px 0px 0 20px; }
 
 .navContainer {
   background: rgba(57, 102, 128, 0.1);
@@ -687,121 +712,88 @@ div.update-confirm-container {
 .projectStatus span {
   color: #202024 !important; }
 
-.myProjectList thead tr,
-#updates thead tr,
-#user_table thead tr {
-  border-bottom: none; }
-  .myProjectList thead tr th,
-  #updates thead tr th,
-  #user_table thead tr th {
-    padding-top: 25px;
-    padding-bottom: 25px; }
-    .myProjectList thead tr th td,
-    #updates thead tr th td,
-    #user_table thead tr th td {
+.myProjectList thead th {
+  text-align: left; }
+  .myProjectList thead th:last-child {
+    text-align: right; }
+
+.myProjectList tr td {
+  text-align: left; }
+  .myProjectList tr td:last-child {
+    text-align: right; }
+
+#user_table td.text-right > span > span:first-of-type {
+  float: right;
+  margin-left: 15px;
+  margin-top: 5px; }
+
+#user_table td.text-right > span > span:nth-of-type(2) {
+  margin-right: 15px; }
+
+.myProjectList,
+#updates,
+#user_table {
+  font-size: 1.2em; }
+  .myProjectList thead tr,
+  #updates thead tr,
+  #user_table thead tr {
+    border-bottom: none; }
+    .myProjectList thead tr th,
+    #updates thead tr th,
+    #user_table thead tr th {
+      padding-top: 25px;
+      padding-bottom: 25px; }
+      .myProjectList thead tr th td,
+      #updates thead tr th td,
+      #user_table thead tr th td {
+        padding-top: 40px;
+        padding-bottom: 50px; }
+  .myProjectList tbody tr,
+  #updates tbody tr,
+  #user_table tbody tr {
+    background: white !important; }
+    .myProjectList tbody tr td,
+    #updates tbody tr td,
+    #user_table tbody tr td {
+      border: none;
       padding-top: 40px;
       padding-bottom: 50px; }
-
-.myProjectList tbody tr,
-#updates tbody tr,
-#user_table tbody tr {
-  background: white !important; }
-  .myProjectList tbody tr td,
-  #updates tbody tr td,
-  #user_table tbody tr td {
-    border: none;
-    padding-top: 40px;
-    padding-bottom: 50px; }
-  .myProjectList tbody tr.notPublished td,
-  #updates tbody tr.notPublished td,
-  #user_table tbody tr.notPublished td {
-    position: relative;
-    padding-top: 40px; }
-    .myProjectList tbody tr.notPublished td .unplubishedPjt,
-    #updates tbody tr.notPublished td .unplubishedPjt,
-    #user_table tbody tr.notPublished td .unplubishedPjt {
-      position: absolute;
-      top: 7px;
-      left: 8px;
-      padding: 3px;
-      display: inline-block;
-      -moz-border-radius: 2px;
-      -o-border-radius: 2px;
-      -webkit-border-radius: 2px;
-      border-radius: 2px;
-      color: #ee3124;
-      border: 1px solid #ee3124;
-      font-size: 80%;
-      font-weight: 600; }
-  .myProjectList tbody tr.isPrivate,
-  #updates tbody tr.isPrivate,
-  #user_table tbody tr.isPrivate {
-    background: rgba(240, 173, 78, 0.1) !important; }
+    .myProjectList tbody tr.notPublished td,
+    #updates tbody tr.notPublished td,
+    #user_table tbody tr.notPublished td {
+      position: relative; }
+      .myProjectList tbody tr.notPublished td .media-body a,
+      #updates tbody tr.notPublished td .media-body a,
+      #user_table tbody tr.notPublished td .media-body a {
+        padding-top: 20px; }
+      .myProjectList tbody tr.notPublished td .unplubishedPjt,
+      #updates tbody tr.notPublished td .unplubishedPjt,
+      #user_table tbody tr.notPublished td .unplubishedPjt {
+        padding: 0px 3px;
+        display: inline-block;
+        color: #d9534f;
+        font-size: 70%;
+        font-weight: 400; }
     .myProjectList tbody tr.isPrivate td,
     #updates tbody tr.isPrivate td,
     #user_table tbody tr.isPrivate td {
       position: relative; }
+      .myProjectList tbody tr.isPrivate td .media-body a,
+      #updates tbody tr.isPrivate td .media-body a,
+      #user_table tbody tr.isPrivate td .media-body a {
+        padding-top: 20px; }
       .myProjectList tbody tr.isPrivate td .privatePjt,
       #updates tbody tr.isPrivate td .privatePjt,
       #user_table tbody tr.isPrivate td .privatePjt {
-        position: absolute;
-        top: 7px;
-        left: 8px;
-        padding: 3px;
+        padding: 0px 3px;
         display: inline-block;
-        -moz-border-radius: 2px;
-        -o-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        border-radius: 2px;
-        color: #ee3124;
-        border: 1px solid #ee3124;
-        font-size: 80%;
-        font-weight: 600; }
-
-.myProjectList div.projectListMenu ul,
-#updates div.projectListMenu ul,
-#user_table div.projectListMenu ul {
-  margin-top: -10px; }
-  .myProjectList div.projectListMenu ul li,
-  #updates div.projectListMenu ul li,
-  #user_table div.projectListMenu ul li {
-    display: inline-block; }
-    @media only screen and (max-width: 992px) {
-      .myProjectList div.projectListMenu ul li,
-      #updates div.projectListMenu ul li,
-      #user_table div.projectListMenu ul li {
-        display: block; } }
-    .myProjectList div.projectListMenu ul li a:last-child,
-    #updates div.projectListMenu ul li a:last-child,
-    #user_table div.projectListMenu ul li a:last-child {
-      margin-right: 0; }
-  @media (min-width: 992px) {
-    .myProjectList div.projectListMenu ul,
-    #updates div.projectListMenu ul,
-    #user_table div.projectListMenu ul {
-      min-width: 340px; } }
-
-.myProjectList a:last-child,
-#updates a:last-child,
-#user_table a:last-child {
-  margin-right: 0; }
-
-.myProjectList a.addUpdate.disabled,
-#updates a.addUpdate.disabled,
-#user_table a.addUpdate.disabled {
-  background-color: #e6e6e6;
-  color: #cccccc;
-  pointer-events: initial;
-  cursor: not-allowed;
-  border: none;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
-  .myProjectList a.addUpdate.disabled:hover,
-  #updates a.addUpdate.disabled:hover,
-  #user_table a.addUpdate.disabled:hover {
-    text-decoration: none; }
+        color: #d9534f;
+        font-size: 70%;
+        font-weight: 400; }
+  .myProjectList a:last-child,
+  #updates a:last-child,
+  #user_table a:last-child {
+    margin-right: 0; }
 
 div.paginationWrap {
   clear: both; }
@@ -867,7 +859,7 @@ div.paginationWrap {
   .table-responsive .media > a {
     min-width: 80px; }
   .table-responsive .media .media-body p {
-    max-width: 170px;
+    max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; }
@@ -993,7 +985,7 @@ footer .navbar {
               background-size: 92%; } }
     footer .navbar #footer-body ul.nav li div.langDropdown {
       margin-top: 13px;
-      background-color: transparent !important;
+      background-color: white !important;
       border-color: transparent !important;
       color: #202024 !important; }
       footer .navbar #footer-body ul.nav li div.langDropdown .btn-default {
@@ -1008,7 +1000,7 @@ footer .navbar {
           padding-right: 15px; } }
       footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
         position: absolute;
-        background-color: transparent !important;
+        background-color: white !important;
         border-color: transparent !important; }
         @media only screen and (max-width: 768px) {
           footer .navbar #footer-body ul.nav li div.langDropdown .dropdown-menu {
@@ -1126,113 +1118,54 @@ h4.detailedInfo {
   color: rgba(44, 42, 116, 0.5);
   margin-top: 20px; }
 
-.paginationWrap {
-  background: rgba(58, 58, 58, 0);
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  margin-bottom: 15px; }
-  .paginationWrap .pagination {
-    margin: 0 auto; }
-    .paginationWrap .pagination li a,
-    .paginationWrap .pagination li span {
-      border-color: transparent; }
-      @media only screen and (max-width: 768px) {
-        .paginationWrap .pagination li a,
-        .paginationWrap .pagination li span {
-          padding: 10px 16px;
-          font-size: 18px; } }
-      .paginationWrap .pagination li a:hover,
-      .paginationWrap .pagination li span:hover {
-        background: transparent; }
-    .paginationWrap .pagination li.active a,
-    .paginationWrap .pagination li.active span {
-      font-weight: bold;
-      color: #ca8142;
-      background-color: transparent; }
-      .paginationWrap .pagination li.active a:hover,
-      .paginationWrap .pagination li.active span:hover {
-        background: transparent;
-        border-color: transparent; }
-  .paginationWrap .sortList {
-    display: inline-block;
-    padding-left: 0;
-    margin: 23px 0 0 0;
-    text-align: left; }
-    @media only screen and (max-width: 768px) {
-      .paginationWrap .sortList {
-        text-align: center;
-        margin: 20px auto; } }
-    .paginationWrap .sortList .dropdown .dropdown-menu li a {
-      color: #428bca; }
-    .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
-      font-weight: bold;
-      color: #ca8142; }
-    @media only screen and (max-width: 768px) {
-      .paginationWrap .sortList .dropdown .dropdown-menu li a {
-        color: #428bca;
-        padding-top: 10px;
-        padding-bottom: 10px; }
-      .paginationWrap .sortList .dropdown .dropdown-menu li.disabled a {
-        font-weight: bold;
-        color: #ca8142; } }
+.updatePagination {
+  margin-top: 40px; }
 
-.advanced-filter {
-  display: inline-block;
-  text-align: right; }
-  .advanced-filter label {
-    margin-top: 5px !important; }
-  .advanced-filter .bootstrap-typeahead-input {
-    margin-right: 1px; }
-  .advanced-filter .bootstrap-typeahead-input-main {
-    margin-right: 20px; }
-  .advanced-filter .caret {
-    position: relative;
-    top: -26px;
-    left: -10px; }
+.pgWrap .pagination li a,
+.pgWrap .pagination li span, .pageStatus .pagination li a,
+.pageStatus .pagination li span, .paginationWrap .pagination li a,
+.paginationWrap .pagination li span {
+  margin-right: 1px;
+  color: #428bca;
+  border: 1px solid transparent;
+  cursor: pointer; }
+  @media only screen and (max-width: 768px) {
+    .pgWrap .pagination li a,
+    .pgWrap .pagination li span, .pageStatus .pagination li a,
+    .pageStatus .pagination li span, .paginationWrap .pagination li a,
+    .paginationWrap .pagination li span {
+      padding: 10px 16px;
+      font-size: 18px; } }
+  .pgWrap .pagination li a:hover,
+  .pgWrap .pagination li span:hover, .pageStatus .pagination li a:hover,
+  .pageStatus .pagination li span:hover, .paginationWrap .pagination li a:hover,
+  .paginationWrap .pagination li span:hover {
+    background: rgba(66, 139, 202, 0.1);
+    border: 1px solid #428bca; }
+    .pgWrap .pagination li a:hover span,
+    .pgWrap .pagination li span:hover span, .pageStatus .pagination li a:hover span,
+    .pageStatus .pagination li span:hover span, .paginationWrap .pagination li a:hover span,
+    .paginationWrap .pagination li span:hover span {
+      border: 1px solid rgba(66, 139, 202, 0);
+      background: rgba(66, 139, 202, 0); }
+
+.pgWrap .pagination li.active a,
+.pgWrap .pagination li.active span, .pageStatus .pagination li.active a,
+.pageStatus .pagination li.active span, .paginationWrap .pagination li.active a,
+.paginationWrap .pagination li.active span {
+  font-weight: bold;
+  color: #ca8142;
+  background-color: transparent;
+  border: 1px solid #ca8142; }
+  .pgWrap .pagination li.active a:hover,
+  .pgWrap .pagination li.active span:hover, .pageStatus .pagination li.active a:hover,
+  .pageStatus .pagination li.active span:hover, .paginationWrap .pagination li.active a:hover,
+  .paginationWrap .pagination li.active span:hover {
+    background: rgba(202, 129, 66, 0);
+    border: 1px solid #ca8142; }
 
 #sidebar-wrapper {
-  z-index: 99999;
-  position: absolute;
-  left: 200px;
-  width: 0;
-  margin-left: -200px;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.9);
-  -moz-border-radius: 0 0 5px 0;
-  -o-border-radius: 0 0 5px 0;
-  -webkit-border-radius: 0 0 5px 0;
-  border-radius: 0 0 5px 0;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-  -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  -o-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); }
-  #sidebar-wrapper .showFilters:hover {
-    color: #ca8142; }
-  @media only screen and (max-width: 768px) {
-    #sidebar-wrapper .showFilters {
-      padding-top: 20px;
-      padding-bottom: 20px; } }
-  #sidebar-wrapper div#filter {
-    padding: 5px 15px 15px 15px; }
-    #sidebar-wrapper div#filter div .btn-group {
-      width: 100%;
-      border-top: 1px solid rgba(32, 32, 36, 0.1);
-      padding: 5px 0; }
-      #sidebar-wrapper div#filter div .btn-group select {
-        border-color: rgba(32, 32, 36, 0.2); }
-      #sidebar-wrapper div#filter div .btn-group label {
-        color: rgba(32, 32, 36, 0.5);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap; }
-    #sidebar-wrapper div#filter div:nth-child(1) .btn-group {
-      border-top: none; }
+  display: none; }
 
 #page-content-wrapper {
   width: 100%;
@@ -1252,23 +1185,55 @@ h4.detailedInfo {
     max-width: 80%;
     margin: 10px auto 0 auto; }
 
+.label-info {
+  font-weight: normal; }
+  .label-info.projectTotal, .label-info.updateTotal {
+    font-size: 1.2em;
+    background-color: transparent;
+    color: #202024; }
+
+.pageStatus .pagination {
+  margin: 0 auto; }
+
+.pageStatus .label-info {
+  font-weight: normal; }
+  .pageStatus .label-info.projectTotal, .pageStatus .label-info.updateTotal {
+    font-size: 1em;
+    background-color: transparent;
+    color: #202024; }
+
+.upLabelSearch {
+  top: -20px;
+  position: absolute; }
+
 #search-filter {
-  margin-top: -10px; }
+  margin-top: -20px;
+  padding-top: 10px;
+  background: rgba(44, 42, 116, 0.05); }
   @media only screen and (max-width: 768px) {
     #search-filter {
       padding-bottom: 0; } }
   #search-filter .searchBar {
     max-width: 80%;
-    margin: 10px auto 0 auto; }
+    margin: 10px auto 0 auto;
+    position: relative; }
+    #search-filter .searchBar.updateSearch {
+      margin: 0px auto 0 auto; }
     #search-filter .searchBar p {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; }
+    #search-filter .searchBar .pgTitle {
+      position: absolute;
+      top: -23px;
+      display: inline-block; }
   @media only screen and (max-width: 768px) {
     #search-filter #search {
       padding-bottom: 0; } }
   #search-filter #search .form-group input {
-    width: 250px; }
+    width: 250px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important; }
   #search-filter #search .form-group button {
     padding-top: 7px;
     padding-bottom: 5px; }
@@ -1284,18 +1249,101 @@ h4.detailedInfo {
     background: #383334;
     text-align: center; }
 
+.advanced-filter {
+  display: inline-block;
+  text-align: right;
+  float: right; }
+  @media only screen and (max-width: 992px) {
+    .advanced-filter {
+      display: inline-block;
+      text-align: center;
+      float: none; } }
+  .advanced-filter label {
+    margin-top: 5px !important; }
+  .advanced-filter .bootstrap-typeahead-input {
+    margin-right: 1px; }
+    .advanced-filter .bootstrap-typeahead-input input {
+      width: 100%; }
+  .advanced-filter .bootstrap-typeahead-input-main {
+    margin-right: 20px; }
+  .advanced-filter .caret {
+    position: relative;
+    top: -26px;
+    left: -10px; }
+
 /************************************************************************
         COMMON STYLES TO PROJECTS, UPDATES & ORGANISATIONS LISTS
 ************************************************************************/
+.dropup button {
+  border: none; }
+
+#organisation-directory .searchBar {
+  max-width: 60%;
+  margin: 10px auto 0 auto;
+  position: relative; }
+  #organisation-directory .searchBar.updateSearch {
+    margin: 0px auto 0 auto; }
+  #organisation-directory .searchBar p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+  #organisation-directory .searchBar .pgTitle {
+    position: absolute;
+    top: -23px;
+    display: inline-block; }
+
+#organisation-directory .advanced-filter {
+  display: inline-block;
+  text-align: right;
+  margin-left: 20%;
+  float: right; }
+
+#organisation-directory .main-list {
+  padding-top: 20px; }
+  #organisation-directory .main-list ul.projectListUl {
+    overflow-y: scroll;
+    padding-left: 15px; }
+    #organisation-directory .main-list ul.projectListUl li {
+      margin-bottom: 15px;
+      list-style-type: none;
+      padding: 0 0 15px 0;
+      display: inline;
+      width: 24.5%;
+      float: left;
+      min-height: 265px;
+      -moz-border-radius: 3px;
+      -o-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      background: white;
+      margin-right: 0.66%;
+      border: thin solid rgba(44, 42, 116, 0);
+      -moz-transition: all 0.2s ease-in;
+      -o-transition: all 0.2s ease-in;
+      -webkit-transition: all 0.2s ease-in;
+      transition: all 0.2s ease-in; }
+      #organisation-directory .main-list ul.projectListUl li > div:first-child {
+        min-height: 130px; }
+        #organisation-directory .main-list ul.projectListUl li > div:first-child a img {
+          max-height: 177px; }
+      #organisation-directory .main-list ul.projectListUl li:nth-child(4n+4) {
+        margin-right: 0; }
+      #organisation-directory .main-list ul.projectListUl li h1 {
+        margin-top: 5px; }
+        #organisation-directory .main-list ul.projectListUl li h1 a {
+          color: #2c2a74; }
+          #organisation-directory .main-list ul.projectListUl li h1 a:hover {
+            color: #ca8142; }
+
+.main-list .col-sm-5 {
+  margin-top: -10px; }
+
 .main-list li img {
   border: 1px solid rgba(32, 32, 36, 0.05);
   -moz-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
   -o-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
   -webkit-box-shadow: 0 0 2px rgba(202, 129, 66, 0);
   box-shadow: 0 0 2px rgba(202, 129, 66, 0); }
-
-.main-list li:nth-child(2n+1) {
-  background: #eeeeee; }
 
 .main-list li:last-child {
   margin-bottom: 0; }
@@ -1308,16 +1356,16 @@ h4.detailedInfo {
   margin-top: 0; }
 
 .main-list li .thumbImg {
-  height: 130px;
+  height: 160px;
   overflow-y: hidden;
-  position: relative; }
+  position: relative;
+  background-color: rgba(32, 32, 36, 0.05); }
   .main-list li .thumbImg img {
     width: 100%;
-    max-width: 350px;
     position: absolute;
-    top: 50%;
+    top: 0%;
     left: 50%;
-    transform: translate(-50%, -50%); }
+    transform: translate(-50%, 0%); }
 
 .main-list li .projectLocation {
   color: rgba(32, 32, 36, 0.5);
@@ -1355,10 +1403,12 @@ h4.detailedInfo {
   margin-top: 10px; }
   .main-list.projects #map {
     position: relative;
-    height: calc(100vh - 310px); }
+    height: calc(100vh - 230px); }
     @media only screen and (max-width: 768px) {
       .main-list.projects #map {
         display: none; } }
+    .main-list.projects #map.updateMap {
+      height: calc(100vh - 240px); }
     .main-list.projects #map .rsr_map {
       position: absolute;
       top: 0;
@@ -1367,44 +1417,62 @@ h4.detailedInfo {
       left: 0;
       width: 100%;
       height: 100%; }
-  .main-list.projects ul.projectListUl {
-    max-height: calc(100vh - 370px);
-    overflow-y: scroll;
-    padding-left: 15px; }
-    .main-list.projects ul.projectListUl li {
-      margin-bottom: 5px;
-      list-style-type: none;
-      padding: 15px 0;
-      display: inline;
-      width: 32%;
-      float: left;
-      min-height: 315px;
-      -moz-border-radius: 3px;
-      -o-border-radius: 3px;
-      -webkit-border-radius: 3px;
-      border-radius: 3px;
-      background: white;
-      margin-right: 2%;
-      border: thin solid rgba(44, 42, 116, 0);
-      -moz-transition: all 0.2s ease-in;
-      -o-transition: all 0.2s ease-in;
-      -webkit-transition: all 0.2s ease-in;
-      transition: all 0.2s ease-in; }
-      .main-list.projects ul.projectListUl li:nth-child(3n+3) {
-        margin-right: 0; }
-      .main-list.projects ul.projectListUl li h1 {
-        margin-top: 5px; }
-        .main-list.projects ul.projectListUl li h1 a {
-          color: #2c2a74; }
-          .main-list.projects ul.projectListUl li h1 a:hover {
-            color: #ca8142; }
-      .main-list.projects ul.projectListUl li .projectSubT {
-        margin-bottom: 0; }
-      .main-list.projects ul.projectListUl li:nth-child(2n+1) {
-        background: rgba(44, 42, 116, 0);
-        border: thin solid rgba(44, 42, 116, 0); }
-      .main-list.projects ul.projectListUl li .projectLocation {
-        color: rgba(32, 32, 36, 0.5); }
+  .main-list.projects .projectListUlcontain {
+    max-height: calc(100vh - 240px);
+    overflow-y: scroll; }
+    .main-list.projects .projectListUlcontain p.listMsg {
+      font-size: 1.2em;
+      text-align: center; }
+    .main-list.projects .projectListUlcontain.filtered p.listMsg {
+      display: none; }
+    .main-list.projects .projectListUlcontain ul.projectListUl {
+      padding-left: 15px; }
+      .main-list.projects .projectListUlcontain ul.projectListUl li {
+        margin-bottom: 5px;
+        list-style-type: none;
+        display: inline;
+        width: 49%;
+        float: left;
+        min-height: 285px;
+        -moz-border-radius: 3px;
+        -o-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        background: white;
+        margin-right: 2%;
+        -webkit-transition: all 2s linear;
+        -moz-transition: all 2s linear;
+        -o-transition: all 2s linear;
+        transition: all 2s linear;
+        padding: 5px;
+        -moz-transition: all 0.2s ease-in;
+        -o-transition: all 0.2s ease-in;
+        -webkit-transition: all 0.2s ease-in;
+        transition: all 0.2s ease-in; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li.highlightProject {
+          box-shadow: 0 0 12px rgba(77, 90, 130, 0) !important;
+          background: rgba(77, 90, 130, 0.15) !important;
+          transition: all 0.4s linear; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 {
+          margin-top: 5px; }
+          .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 a {
+            color: #00a79d; }
+            .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 a:hover {
+              color: #ca8142; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n+2) {
+          margin-right: 0; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li h1 {
+          margin: 5px 0 10px; }
+          .main-list.projects .projectListUlcontain ul.projectListUl li h1 a {
+            color: #2c2a74;
+            font-weight: 500;
+            letter-spacing: 0.02em; }
+            .main-list.projects .projectListUlcontain ul.projectListUl li h1 a:hover {
+              color: #ca8142; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li .projectSubT {
+          margin-bottom: 0; }
+        .main-list.projects .projectListUlcontain ul.projectListUl li .projectLocation {
+          color: rgba(32, 32, 36, 0.5); }
 
 header.projectHeader {
   margin-bottom: 0;
@@ -1499,8 +1567,14 @@ header.projectHeader {
 .project-tab.partners {
   margin-top: 60px; }
 
-.project-tab.updates .updateAsset:first-child {
-  margin-top: 25px; }
+.project-tab.updates ul {
+  list-style-type: none; }
+  .project-tab.updates ul .updateAsset {
+    margin: 25px 0 50px; }
+    .project-tab.updates ul .updateAsset h1 a {
+      color: #00a79d; }
+      .project-tab.updates ul .updateAsset h1 a:hover {
+        color: #ca8142; }
 
 div.projectTopRow {
   position: relative;
@@ -1743,26 +1817,41 @@ div.textBlock {
     margin-top: 0; }
 
 /* Project hierarchy */
+.project-hierarchy div {
+  z-index: 9; }
+
+.project-hierarchy svg {
+  z-index: 8; }
+
 .project-hierarchy-window {
-  border: 0.1em solid #d3d3d3;
-  width: 150px;
+  border: 2px solid #428bca;
+  color: #428bca;
+  width: 250px;
   float: left;
   margin: 30px;
   padding: 10px;
   text-align: center;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; }
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background-color: rgba(66, 139, 202, 0.1); }
+  .project-hierarchy-window.project-hierarchy-parent {
+    border: 2px solid #202024;
+    color: #202024; }
+  .project-hierarchy-window.project-hierarchy-sibling-top, .project-hierarchy-window.project-hierarchy-sibling-bottom {
+    border: 2px solid #428bca;
+    color: #428bca; }
 
 .project-hierarchy-window:hover,
 .project-hierarchy-window._jsPlumb_source_hover,
 .project-hierarchy-window._jsPlumb_target_hover {
-  border: 1px solid orange;
-  color: orange; }
+  border: 2px solid #ca8142;
+  color: #ca8142;
+  background-color: rgba(202, 129, 66, 0.1); }
 
 .project-hierarchy-empty-window {
-  width: 150px;
+  width: 250px;
   float: left;
   margin: 30px; }
 
@@ -1785,8 +1874,12 @@ div.textBlock {
     padding-top: 0;
     padding-bottom: 0.25em; }
 
-.project-container .tooltip .tooltip-inner {
-  background: rgba(255, 255, 255, 0.9); }
+.project-container {
+  min-height: calc(100vh - 160px); }
+  .project-container + footer {
+    position: sticky; }
+  .project-container .tooltip .tooltip-inner {
+    background: rgba(255, 255, 255, 0.9); }
 
 /* Tooltips */
 .tooltip {
@@ -1843,26 +1936,14 @@ ul.typeahead-selector {
   #filter-wrapper > div div:not(.advanced-filter) {
     display: block !important; }
 
-.projectCountTxt {
-  position: absolute;
-  top: 40px;
-  left: 22px; }
-
 /* Organisation Page */
-.organisationDetail .organisationHeader {
-  background: rgba(32, 32, 36, 0.05); }
-
-.organisationDetail .orgDescr {
-  background-color: rgba(244, 116, 107, 0); }
-  .organisationDetail .orgDescr p {
-    padding-left: 20px; }
+.organisationDetail .orgDescr p {
+  padding-left: 20px; }
 
 .organisationDetail h1 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #ee3124;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(238, 49, 36, 0.05);
   position: relative; }
   .organisationDetail h1 i {
     font-size: 0.75em;
@@ -1909,14 +1990,16 @@ ul.typeahead-selector {
 /* Update Page */
 .updateMain h2 {
   color: #00a79d;
-  margin-top: 0; }
+  margin-top: 0;
+  font-size: 1.3em; }
 
 .updateMain .asideUpList .row {
+  margin-bottom: 15px;
   padding: 15px 0; }
-  .updateMain .asideUpList .row:nth-of-type(2n+1) {
-    background-color: rgba(0, 167, 157, 0.1); }
   .updateMain .asideUpList .row h5 {
     margin-top: 0; }
+    .updateMain .asideUpList .row h5 a {
+      color: #00a79d; }
 
 /* Donate Page*/
 .projectDonate {
@@ -2895,7 +2978,7 @@ main {
     display: none; }
   main aside.open {
     width: calc(50% - 10px);
-    padding: 0px 5px 5px 5px;
+    padding: 0px 15px 5px 15px;
     display: block;
     margin-top: 5px;
     margin-left: 5px;
@@ -2904,10 +2987,10 @@ main {
     position: relative; }
 
 main.project-page {
-  height: calc(100vh - 400px); }
+  height: calc(100vh - 260px); }
 
 main.results-page {
-  height: calc(100vh - 400px); }
+  height: calc(100vh - 140px); }
 
 .resultProjectTitle {
   margin: 15px 0 25px 0; }
@@ -2922,23 +3005,225 @@ main.results-page {
       background: #2c2a74;
       color: white; }
 
+.alignFooter {
+  min-height: calc(100vh - 160px); }
+
+.project-container .container.iframe {
+  margin: 0 !important; }
+
 .myRsrPg {
+  min-height: calc(100vh - 160px);
   padding-right: 50px !important;
   padding-left: 50px !important; }
+  .myRsrPg .modal-content {
+    max-width: 60%;
+    height: 60vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    margin: 20vh 20%; }
+    .myRsrPg .modal-content iframe {
+      height: 100vh !important; }
+  .myRsrPg + footer {
+    position: sticky; }
   .myRsrPg h3 {
     display: inline-block;
     margin-top: 20px; }
   .myRsrPg ol.breadcrumb {
-    padding: 15px !important;
     background-color: white !important;
-    font-size: 1.1em;
-    margin-top: -10px; }
+    margin-top: 0px;
+    margin-bottom: 10px;
+    padding: 10px 0; }
     .myRsrPg ol.breadcrumb a.liveView {
       margin-left: 50px; }
     .myRsrPg ol.breadcrumb > li + li:before {
       padding: 0 5px;
       color: #ccc;
       content: "\003e"; }
+    .myRsrPg ol.breadcrumb li:first-of-type a i {
+      font-size: 120%; }
+
+.rsrReports {
+  padding-top: 20px; }
+  .rsrReports * {
+    box-sizing: border-box; }
+  .rsrReports .rsrReport {
+    margin-bottom: 20px;
+    position: relative; }
+    .rsrReports .rsrReport .reportContainer {
+      box-shadow: 0 0 5px rgba(32, 32, 36, 0.1);
+      min-height: 270px;
+      padding: 30px 50px 5px 50px; }
+      @media only screen and (max-width: 1449px) {
+        .rsrReports .rsrReport .reportContainer {
+          padding: 30px 40px 5px 40px; } }
+      @media only screen and (max-width: 800px) {
+        .rsrReports .rsrReport .reportContainer {
+          padding: 30px 20px 5px 20px; } }
+      .rsrReports .rsrReport .reportContainer .reportDscr {
+        padding: 10px 0; }
+      .rsrReports .rsrReport .reportContainer .options {
+        text-align: center; }
+        .rsrReports .rsrReport .reportContainer .options button.reportDown {
+          margin: 15px auto 0;
+          /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+          display: inline-block;
+          padding: 5px 8px;
+          background-color: #2c2a74;
+          color: #2c2a74 !important;
+          text-decoration: none;
+          cursor: pointer;
+          -moz-border-radius: 3px;
+          -o-border-radius: 3px;
+          -webkit-border-radius: 3px;
+          border-radius: 3px;
+          border: 1px solid transparent;
+          text-align: center;
+          background-color: transparent;
+          color: #2c2a74 !important;
+          border: 1px solid #2c2a74; }
+          .rsrReports .rsrReport .reportContainer .options button.reportDown:hover {
+            background: #1e1c4f;
+            color: white; }
+          .rsrReports .rsrReport .reportContainer .options button.reportDown.disabled {
+            cursor: not-allowed;
+            background-color: rgba(128, 128, 128, 0.1) !important;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid transparent; }
+            .rsrReports .rsrReport .reportContainer .options button.reportDown.disabled:hover {
+              cursor: not-allowed;
+              background-color: rgba(128, 128, 128, 0.1) !important;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid transparent; }
+          .rsrReports .rsrReport .reportContainer .options button.reportDown:hover {
+            color: white !important;
+            border: none;
+            border: 1px solid #428bca;
+            background-color: #428bca; }
+          .rsrReports .rsrReport .reportContainer .options button.reportDown.disabled {
+            cursor: not-allowed;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid rgba(128, 128, 128, 0.4); }
+            .rsrReports .rsrReport .reportContainer .options button.reportDown.disabled:hover {
+              cursor: not-allowed;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid rgba(128, 128, 128, 0.4); }
+          .rsrReports .rsrReport .reportContainer .options button.reportDown:nth-of-type(2) {
+            margin-left: 15px; }
+            @media only screen and (max-width: 1440px) {
+              .rsrReports .rsrReport .reportContainer .options button.reportDown:nth-of-type(2) {
+                margin-left: 0px; } }
+            @media only screen and (max-width: 800px) {
+              .rsrReports .rsrReport .reportContainer .options button.reportDown:nth-of-type(2) {
+                margin-left: 15px; } }
+        .rsrReports .rsrReport .reportContainer .options .reportDate {
+          margin: 0 auto;
+          background-color: rgba(32, 32, 36, 0.05);
+          text-align: left;
+          padding: 10px 15px 20px 15px;
+          border-radius: 6px; }
+          .rsrReports .rsrReport .reportContainer .options .reportDate:after {
+            content: "";
+            display: table;
+            clear: both; }
+          .rsrReports .rsrReport .reportContainer .options .reportDate .startDate {
+            float: left;
+            width: 49.5%;
+            position: relative; }
+            .rsrReports .rsrReport .reportContainer .options .reportDate .startDate div {
+              width: 100%; }
+              .rsrReports .rsrReport .reportContainer .options .reportDate .startDate div input {
+                width: 100%; }
+          .rsrReports .rsrReport .reportContainer .options .reportDate .endDate {
+            float: right;
+            width: 49.5%;
+            position: relative; }
+            .rsrReports .rsrReport .reportContainer .options .reportDate .endDate div {
+              width: 100%; }
+              .rsrReports .rsrReport .reportContainer .options .reportDate .endDate div input {
+                width: 100%; }
+      .rsrReports .rsrReport .reportContainer:hover {
+        box-shadow: 0 0 10px rgba(114, 205, 255, 0.4); }
+        .rsrReports .rsrReport .reportContainer:hover .options {
+          text-align: center; }
+          .rsrReports .rsrReport .reportContainer:hover .options button.reportDown {
+            margin: 15px auto 0;
+            /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+            display: inline-block;
+            padding: 5px 8px;
+            background-color: #72cdff;
+            color: #72cdff !important;
+            text-decoration: none;
+            cursor: pointer;
+            -moz-border-radius: 3px;
+            -o-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            border: 1px solid transparent;
+            text-align: center;
+            background-color: transparent;
+            color: #72cdff !important;
+            border: 1px solid #72cdff; }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover {
+              background: #3fbbff;
+              color: white; }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown.disabled {
+              cursor: not-allowed;
+              background-color: rgba(128, 128, 128, 0.1) !important;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid transparent; }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown.disabled:hover {
+                cursor: not-allowed;
+                background-color: rgba(128, 128, 128, 0.1) !important;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid transparent; }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover {
+              color: white !important;
+              border: none;
+              border: 1px solid #428bca;
+              background-color: #428bca; }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown.disabled {
+              cursor: not-allowed;
+              color: rgba(128, 128, 128, 0.4) !important;
+              border: 1px solid rgba(128, 128, 128, 0.4); }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown.disabled:hover {
+                cursor: not-allowed;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid rgba(128, 128, 128, 0.4); }
+            .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover {
+              /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+              display: inline-block;
+              padding: 5px 8px;
+              background-color: #3fbbff;
+              color: white !important;
+              text-decoration: none;
+              cursor: pointer;
+              -moz-border-radius: 3px;
+              -o-border-radius: 3px;
+              -webkit-border-radius: 3px;
+              border-radius: 3px;
+              border: 1px solid transparent;
+              text-align: center; }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover:hover {
+                background: #0ca9ff;
+                color: white; }
+              .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover.disabled {
+                cursor: not-allowed;
+                background-color: rgba(128, 128, 128, 0.1) !important;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid transparent; }
+                .rsrReports .rsrReport .reportContainer:hover .options button.reportDown:hover.disabled:hover {
+                  cursor: not-allowed;
+                  background-color: rgba(128, 128, 128, 0.1) !important;
+                  color: rgba(128, 128, 128, 0.4) !important;
+                  border: 1px solid transparent; }
+          .rsrReports .rsrReport .reportContainer:hover .options button:nth-of-type(2) {
+            margin-left: 15px; }
+            @media only screen and (max-width: 1440px) {
+              .rsrReports .rsrReport .reportContainer:hover .options button:nth-of-type(2) {
+                margin-left: 0px; } }
+            @media only screen and (max-width: 800px) {
+              .rsrReports .rsrReport .reportContainer:hover .options button:nth-of-type(2) {
+                margin-left: 15px; } }
 
 .results {
   background: white;
@@ -2951,50 +3236,19 @@ main.results-page {
   .results > button {
     display: none; }
   .results #update {
-    padding-top: 25px; }
+    padding-top: 25px;
+    background: rgba(240, 240, 240, 0.5); }
   .results .editBtn {
-    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
-    display: inline-block;
-    padding: 5px 8px;
-    background-color: #2c2a74;
-    color: #2c2a74 !important;
-    text-decoration: none;
-    cursor: pointer;
-    -moz-border-radius: 3px;
-    -o-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    text-align: center;
-    background-color: transparent;
-    color: #2c2a74 !important;
-    border: 1px solid #2c2a74; }
+    border: 1px solid rgba(66, 139, 202, 0.1) !important;
+    background: #428bca;
+    color: white;
+    border-bottom: 1px solid transparent !important;
+    padding: 7px 8px;
+    border-radius: 5px 5px 0 0; }
     .results .editBtn:hover {
-      background: #1e1c4f;
-      color: white; }
-    .results .editBtn.disabled {
-      cursor: not-allowed;
-      background-color: rgba(128, 128, 128, 0.1) !important;
-      color: rgba(128, 128, 128, 0.4) !important;
-      border: 1px solid transparent; }
-      .results .editBtn.disabled:hover {
-        cursor: not-allowed;
-        background-color: rgba(128, 128, 128, 0.1) !important;
-        color: rgba(128, 128, 128, 0.4) !important;
-        border: 1px solid transparent; }
-    .results .editBtn:hover {
-      color: white !important;
-      border: none;
-      border: 1px solid #428bca;
-      background-color: #428bca; }
-    .results .editBtn.disabled {
-      cursor: not-allowed;
-      color: rgba(128, 128, 128, 0.4) !important;
-      border: 1px solid rgba(128, 128, 128, 0.4); }
-      .results .editBtn.disabled:hover {
-        cursor: not-allowed;
-        color: rgba(128, 128, 128, 0.4) !important;
-        border: 1px solid rgba(128, 128, 128, 0.4); }
+      background: #3071a9;
+      color: white;
+      border: 1px solid rgba(66, 139, 202, 0.1) !important; }
   .results .react-tabs ul.react-tabs__tab-list {
     border-bottom: 1px solid rgba(32, 32, 36, 0.1) !important; }
     .results .react-tabs ul.react-tabs__tab-list li {
@@ -3002,8 +3256,15 @@ main.results-page {
       border: 1px solid rgba(32, 32, 36, 0.1) !important;
       border-bottom: 1px solid rgba(32, 32, 36, 0) !important; }
   .results .updateList {
-    max-height: calc(100vh - 370px);
-    overflow-y: scroll; }
+    max-height: calc(100vh - 160px);
+    overflow-y: scroll;
+    padding-top: 25px; }
+    .results .updateList .row {
+      margin: 10px 0; }
+      .results .updateList .row:first-child {
+        margin-top: 0; }
+      .results .updateList .row:last-child {
+        margin-bottom: 0; }
     .results .updateList .updateImg {
       height: 130px;
       overflow-y: hidden;
@@ -3012,12 +3273,17 @@ main.results-page {
         width: 100%;
         max-width: 350px;
         position: absolute;
-        top: 50%;
+        top: 0%;
         left: 50%;
-        transform: translate(-50%, -50%); }
+        transform: translate(-50%, 0%); }
     .results .updateList h3 {
       margin-top: 0;
-      display: block; }
+      display: block;
+      margin-bottom: 20px; }
+  .results .projectUpdateForm h3 {
+    margin-top: 0;
+    display: block;
+    margin-bottom: 20px; }
   .results .narrative_reports {
     position: relative; }
     .results .narrative_reports .narrativeStatus {
@@ -3237,7 +3503,7 @@ main.results-page {
         opacity: 1; }
       .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle {
         display: inline-block;
-        max-width: 60%; }
+        max-width: 80%; }
         .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul {
           padding-left: 0;
           margin-bottom: 0; }
@@ -3312,8 +3578,10 @@ main.results-page {
               display: block; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul li {
               display: inline; }
-            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
-              color: rgba(32, 32, 36, 0.7); }
+            .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description {
+              word-wrap: break-word; }
+              .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .description span {
+                color: rgba(32, 32, 36, 0.7); }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-year span {
               color: initial; }
             .indicators .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .indicatorInfo ul .baseline-value {
@@ -3651,6 +3919,8 @@ main.results-page {
 
 .update-container {
   max-width: 100%; }
+  .update-container .comments {
+    margin-left: 0; }
   .update-container.qualitativeUpdate .update-description {
     display: none; }
   .update-container.qualitativeUpdate textarea#narrative {
@@ -3658,9 +3928,16 @@ main.results-page {
   .update-container.qualitativeUpdate .react-mde {
     min-height: 250px; }
   .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn {
+    width: 25px;
+    height: 25px;
     z-index: 999;
     top: -20px !important;
-    right: -5px !important; }
+    right: -10px !important;
+    background: rgba(32, 32, 36, 0.05);
+    border: transparent; }
+    .update-container.quantitativeUpdate .update-entry-container.edit-in-progress .closingBtn:hover {
+      background: rgba(32, 32, 36, 0.5);
+      color: white; }
   .update-container.quantitativeUpdate .targetLabel {
     margin-left: 25px; }
     .update-container.quantitativeUpdate .targetLabel + div {
@@ -3689,8 +3966,8 @@ main.results-page {
     .update-container .update-entry-container.edit-in-progress .disaggregationFields {
       width: 100%;
       overflow: auto;
-      border-top: 1px solid rgba(32, 32, 36, 0.1);
-      border-bottom: 1px solid rgba(32, 32, 36, 0.1);
+      border-top: 1px solid rgba(32, 32, 36, 0);
+      border-bottom: 1px solid rgba(32, 32, 36, 0);
       padding: 15px 0;
       margin-top: 10px; }
       .update-container .update-entry-container.edit-in-progress .disaggregationFields h4 {
@@ -3817,31 +4094,36 @@ main.results-page {
 
 .periodMenuBar {
   box-sizing: border-box;
-  margin-top: 20px;
-  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  -o-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); }
+  margin-top: 0px;
+  -moz-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ECECEC; }
   .periodMenuBar * {
     box-sizing: border-box; }
   .periodMenuBar .results-bar-titles {
     display: none; }
   .periodMenuBar .btn {
     margin-right: 10px; }
-  .periodMenuBar .periodOverview .overviewBtn {
-    margin: 10px 0 0 5px; }
+  .periodMenuBar .overviewBtn {
+    margin: 5px 0 0 5px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-bottom: 1px solid white;
+    color: #428bca; }
   .periodMenuBar .loading {
     margin-top: 20px;
     margin-left: 5px;
     font-size: 120%; }
   .periodMenuBar .periodBtns {
-    padding: 10px;
-    background: rgba(32, 32, 36, 0.05); }
+    padding: 3px 10px 0; }
     .periodMenuBar .periodBtns .periodBulkAct {
       padding-top: 10px;
       padding-bottom: 10px; }
       .periodMenuBar .periodBtns .periodBulkAct h5 {
-        padding-left: 15px; }
+        padding-left: 15px;
+        font-size: 0.9em; }
       .periodMenuBar .periodBtns .periodBulkAct button {
         background: #202024;
         color: white; }
@@ -3852,10 +4134,15 @@ main.results-page {
       padding-top: 10px;
       padding-bottom: 10px; }
       .periodMenuBar .periodBtns .periodFilter h5 {
-        padding-left: 15px; }
+        padding-left: 15px;
+        font-size: 0.9em; }
       .periodMenuBar .periodBtns .periodFilter button {
         border: none;
-        color: #428bca; }
+        color: #428bca;
+        -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        -o-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); }
         .periodMenuBar .periodBtns .periodFilter button.filterActive {
           border: 1px solid rgba(107, 134, 141, 0.5) !important;
           background: #6b868d !important;

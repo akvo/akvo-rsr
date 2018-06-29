@@ -7,22 +7,17 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from django.conf import settings
-from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from akvo.codelists.models import Country, Version
-from akvo.codelists.store.codelists_v202 import ACTIVITY_STATUS, SECTOR_CATEGORY
 from akvo.rest.serializers import (TypeaheadCountrySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadProjectSerializer,
                                    TypeaheadProjectUpdateSerializer,
-                                   TypeaheadKeywordSerializer,
-                                   TypeaheadSectorSerializer,)
-from akvo.rsr.filters import location_choices, get_m49_filter
+                                   TypeaheadKeywordSerializer,)
 from akvo.rsr.models import Organisation, Project, ProjectUpdate
 from akvo.rsr.views.project import _project_directory_coll
-from akvo.utils import codelist_choices
 
 
 def rejig(queryset, serializer):
@@ -110,90 +105,6 @@ def typeahead_project(request):
     return Response(
         rejig(projects, TypeaheadProjectSerializer(projects, many=True))
     )
-
-
-def _int_or_none(value):
-    """Return int or None given a value."""
-    try:
-        return int(value)
-    except:
-        return None
-
-
-def _create_filters_query(request):
-    """Returns a Q object expression based on query parameters."""
-    keyword_param = _int_or_none(request.GET.get('keyword'))
-    location_param = _int_or_none(request.GET.get('location'))
-    status_param = _int_or_none(request.GET.get('status'))
-    organisation_param = _int_or_none(request.GET.get('organisation'))
-    sector_param = _int_or_none(request.GET.get('sector'))
-
-    keyword_filter = Q(keywords__id=keyword_param) if keyword_param else None
-    location_filter = get_m49_filter(location_param) if location_param else None
-    status_filter = Q(iati_status=status_param) if status_param else None
-    organisation_filter = Q(partners__id=organisation_param) if organisation_param else None
-    sector_filter = (
-        Q(sectors__sector_code=sector_param, sectors__vocabulary='2')
-        if sector_param else None
-    )
-    all_filters = [
-        keyword_filter, location_filter, status_filter, organisation_filter, sector_filter
-    ]
-    filters = filter(None, all_filters)
-    return reduce(lambda x, y: x & y, filters) if filters else None
-
-
-@api_view(['GET'])
-def typeahead_project_filters(request):
-    """Return the values for various project filters.
-
-    Based on the current filters, it returns new options for all the (other)
-    filters. This is used to generate dynamic filters.
-
-    """
-
-    # Fetch projects based on whether we are an Akvo site or RSR main site
-    page = request.rsr_page
-    projects = page.projects() if page else Project.objects.all().public().published()
-
-    # Filter projects based on query parameters
-    filter_ = _create_filters_query(request)
-    projects = projects.filter(filter_).distinct() if filter_ is not None else projects
-
-    # Get the relevant data for typeaheads based on filtered projects.
-    keywords = projects.keywords().values('id', 'label')
-
-    locations = [
-        {'id': choice[0], 'name': choice[1]}
-        for choice in location_choices(projects)
-    ]
-
-    valid_statuses = dict(codelist_choices(ACTIVITY_STATUS))
-    status = [
-        {'id': status, 'name': valid_statuses[status]}
-        for status in set(projects.values_list('iati_status', flat=True))
-        if status in valid_statuses
-    ]
-
-    organisations = projects.all_partners().values('id', 'name', 'long_name')
-
-    # FIXME: Currently only vocabulary 2 is supported (as was the case with
-    # static filters). This could be extended to other vocabularies, in future.
-    valid_sectors = dict(codelist_choices(SECTOR_CATEGORY))
-    sectors = projects.sectors().filter(
-        vocabulary='2', sector_code__in=valid_sectors
-    ).values('sector_code').distinct()
-
-    response = {
-        'project_count': projects.count(),
-        'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
-        'keyword': TypeaheadKeywordSerializer(keywords, many=True).data,
-        'status': sorted(status, key=lambda x: x['id']),
-        'sector': TypeaheadSectorSerializer(sectors, many=True).data,
-        'location': locations,
-    }
-
-    return Response(response)
 
 
 @api_view(['GET'])

@@ -14,8 +14,12 @@ from ..fields import ValidXMLCharField, ValidXMLTextField
 
 
 PARAMETER_REGEX = re.compile('{(.*?)}')
-ALLOWED_PARAMETERS = {'project', 'organisation', 'format', 'start_date', 'end_date'}
+ALLOWED_PARAMETERS = {
+    'project', 'organisation', 'format', 'start_date', 'end_date', 'language_code'
+}
 MANDATORY_PARAMETERS = {'format'}
+
+NEWLINE_REGEX = re.compile('.*\n.*')
 
 
 class ReportFormat(models.Model):
@@ -36,7 +40,8 @@ class Report(models.Model):
     url = ValidXMLCharField(
         _(u'url'),
         max_length=200,
-        help_text=_(u'Enter the parametrized path for downloading the report'),
+        help_text=_(u'Enter the parametrized path for downloading the report. NOTE: one line only '
+                    u'even if the input field allows for more!'),
     )
     formats = models.ManyToManyField(ReportFormat)
     organisations = models.ManyToManyField('Organisation', blank=True)
@@ -44,6 +49,10 @@ class Report(models.Model):
     @property
     def parameters(self):
         return sorted(PARAMETER_REGEX.findall(self.url))
+
+    @property
+    def multiple_lines(self):
+        return len(NEWLINE_REGEX.findall(self.url)) > 0
 
     def __unicode__(self):
         return u'{}'.format(self.name)
@@ -65,6 +74,11 @@ class Report(models.Model):
             additional_parameters = ', '.join(additional_parameters)
             raise ValidationError(
                 'These parameters are not allowed in URL: {}'.format(additional_parameters)
+            )
+
+        if self.multiple_lines:
+            raise ValidationError(
+                'The URL template must be a single line.'
             )
 
         super(Report, self).clean(*args, **kwargs)

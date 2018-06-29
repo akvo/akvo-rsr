@@ -9,8 +9,6 @@ import datetime
 import decimal
 import json
 
-from collections import namedtuple
-
 from akvo.rsr.fields import (LatitudeField, LongitudeField,
                              ProjectLimitedTextField, ValidXMLCharField,
                              ValidXMLTextField)
@@ -28,6 +26,8 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country,
                              Result, Transaction, TransactionSector)
 from akvo.utils import DjangoModel
 
+from collections import namedtuple
+
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
@@ -36,6 +36,7 @@ from django.db.models import (get_model, BooleanField, DateField, DecimalField, 
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
 from django.http import HttpResponseForbidden
+from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
@@ -671,55 +672,69 @@ def project_editor_reorder_items(request, project_pk=None):
     )
 
 
+JS_TRUE = 'true'
+
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def project_editor_default_periods(request, project_pk=None):
     """API call to set default indicator periods"""
 
+    PeriodDates = namedtuple('PeriodDates', 'period_start period_end')
     errors = []
 
-    # FIXME: We are doing a get using indicator_id, cannot have default as False
-    indicator_id = request.POST.get('indicator_id', False)
+    def do_return(error=None):
+        if error:
+            errors.append(error)
+        return Response({
+            'default_periods': default_indicator.default_periods if default_indicator else False,
+            'errors': errors
+        })
+
+    indicator_id = request.POST.get('indicator_id')
+    try:
+        default_indicator = Indicator.objects.get(id=indicator_id)
+    except Indicator.DoesNotExist:
+        return do_return(_(u'Indicator with ID {} does not exist.').format(indicator_id))
+
     copy = json.loads(request.POST.get('copy', 'false'))
     set_default = json.loads(request.POST.get('set_default', 'false'))
 
-    default_indicator = Indicator.objects.get(id=indicator_id)
-
-    if set_default:
-        default_indicator.default_periods = True
-        default_indicator.save()
-
-        # copy to existing indicators if desired
-        if copy:
+    if set_default and copy:
+        try:
             project = Project.objects.get(pk=project_pk)
-            results = Result.objects.filter(project_id=project)
-            indicators = Indicator.objects.filter(result_id__in=results)
+        except Project.DoesNotExist:
+            return do_return(_(u'Project with ID {} does not exist.'))
 
-            default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
+        default_periods_dates = [
+            PeriodDates(period.period_start, period.period_end)
+            for period in IndicatorPeriod.objects.filter(indicator_id=default_indicator)
+        ]
+        for date_pair in default_periods_dates:
+            if not (date_pair.period_start and date_pair.period_end):
+                return do_return(
+                    _(u'All default periods must have both a start and an end date')
+                )
 
-            for indicator in indicators:
-                if indicator != default_indicator:
-                    for period in default_periods:
-                        period.pk = None
+        indicators = Indicator.objects.filter(result__project=project).exclude(
+            pk=default_indicator.pk).prefetch_related('periods')
 
-                        # Blank all values except id and locked status
-                        period.target_value = ''
-                        period.target_comment = ''
-                        period.actual_value = ''
-                        period.actual_comment = ''
+        for indicator in indicators:
+            if indicator.periods.exists():
+                errors.append(smart_unicode(_(u'Periods already exist for indicator {0}: {1}. '
+                                              u'default periods will not be created.'
+                                              ).format(indicator.pk, indicator.title)))
+            else:
+                for date_pair in default_periods_dates:
+                    IndicatorPeriod.objects.create(
+                        indicator=indicator,
+                        period_start=date_pair.period_start,
+                        period_end=date_pair.period_end,
+                    )
 
-                        period.indicator_id = indicator.id
-                        period.save()
-
-    else:
-        default_indicator.default_periods = False
-        default_indicator.save()
-
-    return Response(
-        {
-            'errors': errors,
-        }
-    )
+    default_indicator.default_periods = set_default
+    default_indicator.save()
+    return do_return()
 
 
 @api_view(['POST'])

@@ -94,19 +94,24 @@ class Indicator(models.Model):
     def save(self, *args, **kwargs):
         """Update the values of child indicators, if a parent indicator is updated."""
 
-        if not self.pk and Indicator.objects.filter(result_id=self.result.id).exists():
+        new_indicator = not self.pk
+
+        if new_indicator and Indicator.objects.filter(result_id=self.result.id).exists():
             prev_indicator = Indicator.objects.filter(result_id=self.result.id).reverse()[0]
             if prev_indicator.order:
                 self.order = prev_indicator.order + 1
 
         # HACK: Delete IndicatorLabels on non-qualitative indicators
-        if self.pk and self.type != QUALITATIVE:
+        if new_indicator and self.type != QUALITATIVE:
             IndicatorLabel.objects.filter(indicator=self).delete()
 
         super(Indicator, self).save(*args, **kwargs)
 
         for child_result in self.result.child_results.all():
-            child_result.project.add_indicator(child_result, self)
+            if new_indicator:
+                child_result.project.add_indicator(child_result, self)
+            else:
+                child_result.project.update_indicator(child_result, self)
 
     def clean(self):
         validation_errors = {}

@@ -142,7 +142,7 @@ class ResultsFrameworkTestCase(TestCase):
         """Test that updating indicator propagates to children."""
 
         # Given
-        self.indicator.tile = "Indicator #200"
+        self.indicator.title = "Indicator #200"
         self.indicator.measure = "2"
         # # these properties were not set already, and hence should be updated too
         self.indicator.baseline_year = 2010
@@ -290,6 +290,65 @@ class ResultsFrameworkTestCase(TestCase):
             1,
             Indicator.objects.filter(result__project=self.child_project).count()
         )
+
+    def test_indicator_update_does_not_create_deleted_indicators(self):
+        """Test that indicator update doesn't create indicators deleted from child."""
+        # Given
+        title = 'Indicator #2'
+        result = self.parent_project.results.first()
+        # New indicator created (also cloned to child)
+        indicator = Indicator.objects.create(result=result, title=title, measure='1')
+        # Assert indicator has been cloned to child
+        self.assertEqual(indicator.child_indicators.count(), 1)
+
+        # When
+        # Delete the child indicator
+        indicator.child_indicators.first().delete()
+        self.assertEqual(0, indicator.child_indicators.count())
+        # Modify the parent indicator
+        indicator.title = 'Indicator number two'
+        indicator.save()
+
+        # Then
+        self.assertEqual(0, indicator.child_indicators.count())
+
+    def test_import_does_not_create_deleted_periods(self):
+        """Test that import does not create periods deleted from child."""
+        # Given
+        indicator = self.indicator
+        child_indicator = indicator.child_indicators.first()
+        # New indicator period created (also cloned to child)
+        IndicatorPeriod.objects.create(indicator=indicator)
+
+        # When
+        # Import results framework into child
+        child_indicator.periods.last().delete()
+        import_status, import_message = self.child_project.import_results()
+
+        # Then
+        self.assertEqual(import_status, 1)
+        self.assertEqual(import_message, "Results imported")
+        self.assertEqual(1, child_indicator.periods.count())
+
+    def test_period_update_does_not_create_deleted_periods(self):
+        """Test that period update does not create periods deleted from child."""
+        # Given
+        # result = self.parent_project.results.first()
+        # child_result = result.child_results.first()
+        indicator = self.indicator
+        child_indicator = self.indicator.child_indicators.first()
+        # New indicator period created (also cloned to child)
+        indicator_period = IndicatorPeriod.objects.create(indicator=indicator)
+
+        # When
+        # Import results framework into child
+        child_indicator.periods.last().delete()
+        # Update indicator period
+        indicator_period.target_value = 100
+        indicator_period.save()
+
+        # Then
+        self.assertEqual(1, child_indicator.periods.count())
 
     def test_update(self):
         """

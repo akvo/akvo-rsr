@@ -169,7 +169,7 @@ function renderPartnersTab() {
                             </div>
                             <div className="col-sm-6">
                                 <a href={'/organisation/' + id + '/'} className="org-link">
-                                    <i className="fa fa-users" /> <h2>{thisApp.partnerName(partner)}</h2>
+                                    <h2>{thisApp.partnerName(partner)}</h2>
                                 </a>
                             </div>
                             <div className="col-sm-4">
