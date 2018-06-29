@@ -22,11 +22,13 @@ from tastypie.models import ApiKey
 from akvo.codelists.models import Country, Version
 from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
 from akvo.rsr.models import IndicatorPeriodData, User
+from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string)
+from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
+                      project_access_filter)
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
@@ -132,7 +134,7 @@ def my_projects(request):
     """
 
     # User groups
-    not_allowed_to_edit = ['Users', 'User Managers', ]
+    not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS]
 
     # Get user organisation information
     employments = request.user.approved_employments()
@@ -154,6 +156,8 @@ def my_projects(request):
             else:
                 projects = projects | employment.organisation.all_projects().published()
         projects = projects.distinct()
+        # If user has a whitelist, only projects on the list may be accessible, depending on groups
+        projects = project_access_filter(request.user, projects)
 
     # Custom filter on project id or (sub)title
     q = request.GET.get('q')
@@ -545,7 +549,7 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
 
     # Adding an update is the action that requires least privileges - the view
     # is shown if a user can add updates to the project.
-    if not user.has_perm('rsr.add_projectupdate') or not project.is_published():
+    if not user.has_perm('rsr.add_projectupdate', project) or not project.is_published():
         raise PermissionDenied
 
     me_managers_group = Group.objects.get(name='M&E Managers')

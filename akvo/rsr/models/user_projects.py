@@ -12,7 +12,8 @@ class UserProjects(models.Model):
 
     user = models.OneToOneField('User', related_name='user_projects')
     is_restricted = models.BooleanField(default=False)
-    projects = models.ManyToManyField('Project', related_name='permitted_users', null=True, blank=True)
+    projects = models.ManyToManyField(
+        'Project', related_name='permitted_users', null=True, blank=True)
 
     def __unicode__(self):
         return '{} - {} projects'.format(

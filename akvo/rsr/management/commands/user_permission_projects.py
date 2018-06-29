@@ -8,42 +8,43 @@ import sys
 
 from django.core.management.base import BaseCommand
 
-from ...models import UserPermissionedProjects, User
+from ...models import Employment, UserProjects, Project, User
 
 
 class Command(BaseCommand):
 
-    args = '<email_id> (all|none|<project_id_list>)'
-    help = 'Script to permission projects for a user'
+    args = '<email_id> <org_name> (all|none|<project_id_list>)'
+    help = 'Script restricting project access for an employment'
 
     def handle(self, *args, **options):
 
-        if len(args) != 2:
+        if len(args) != 3:
             print 'Usage: {} {}'.format(sys.argv[0], self.args)
             sys.exit(1)
 
-        email, projects = args
+        email, org_name, projects = args
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            print('Could not find user with email id: {}'.format(email))
+            print('Error: Could not find user with email id: {}.'.format(email))
             sys.exit(1)
 
         if projects == 'all':
-            UserPermissionedProjects.objects.filter(user=user).delete()
-            print('Removed all permission restrictions for user - {}'.format(email))
+            UserProjects.objects.filter(user=user).delete()
+            print('Removed all permission restrictions for user {}.'.format(user.email))
 
         elif projects == 'none':
-            permissions, created = UserPermissionedProjects.objects.get_or_create(user=user)
+            whitelist, created = UserProjects.objects.get_or_create(user=user)
             if not created:
-                permissions.projects.clear()
-            print('User({}) cannot access any projects'.format(email))
+                whitelist.projects.clear()
+            print('User {}  cannot access any projects'.format(user.email))
 
         else:
-            projects = projects.split(',')
-            permissions, created = UserPermissionedProjects.objects.get_or_create(user=user)
+            ids = projects.split(',')
+            whitelist, created = UserProjects.objects.get_or_create(user=user)
             if not created:
-                permissions.projects.clear()
-            for project in projects:
-                permissions.projects.add(project)
-            print('User({}) given permissions to projects: {}'.format(email, ', '.join(projects)))
+                whitelist.projects.clear()
+            for id in ids:
+                whitelist.projects.add(Project.objects.get(pk=id))
+            print('User {} limited to access projects: {}'.format(
+                    user.email, ', '.join(projects)))

@@ -202,31 +202,31 @@ function loadReactForModal() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Load global settings
-    i18nCookie = JSON.parse(document.getElementById("cookie-text").innerHTML);    // Translation strings
-    dropCookie = true;                      // false disables the Cookie, allowing you to style the banner
-    cookieDuration = 14;                    // Number of days before the cookie expires, and the banner reappears
-    cookieName = 'complianceCookie';        // Name of our cookie
-    cookieValue = 'on';                     // Value of cookie
-    protectCookieDuration = 7;              // Number of days before the protection cookie expires, and the modal reappears
-    protectCookieName = 'protectCookie';    // Name of our protection cookie
-    protectPassword = 'TesTing!';           // No need to encrypt this password, it's not vital
-    testEnvironments = ['test', 'uat'];     // Set the test environments that need a password
-
-    // Check for a protection cookie on Test or UAT
-    if (Cookies.get(protectCookieName)!== cookieValue) {
-        var hostnameArray = window.location.hostname.split(".");
-        for (var i = 0; i < testEnvironments.length; i++) {
-            if (hostnameArray.indexOf(testEnvironments[i]) > -1) {
-                loadReactForModal();
-                break;
-            }
-        }
-    }
-
-    // Check for general cookie
-    if (Cookies.get(cookieName) !== cookieValue) {
-        createDiv();
-    }
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//     // Load global settings
+//     i18nCookie = JSON.parse(document.getElementById("cookie-text").innerHTML);    // Translation strings
+//     dropCookie = true;                      // false disables the Cookie, allowing you to style the banner
+//     cookieDuration = 14;                    // Number of days before the cookie expires, and the banner reappears
+//     cookieName = 'complianceCookie';        // Name of our cookie
+//     cookieValue = 'on';                     // Value of cookie
+//     protectCookieDuration = 7;              // Number of days before the protection cookie expires, and the modal reappears
+//     protectCookieName = 'protectCookie';    // Name of our protection cookie
+//     protectPassword = 'TesTing!';           // No need to encrypt this password, it's not vital
+//     testEnvironments = ['test', 'uat'];     // Set the test environments that need a password
+//
+//     // Check for a protection cookie on Test or UAT
+//     if (Cookies.get(protectCookieName)!== cookieValue) {
+//         var hostnameArray = window.location.hostname.split(".");
+//         for (var i = 0; i < testEnvironments.length; i++) {
+//             if (hostnameArray.indexOf(testEnvironments[i]) > -1) {
+//                 loadReactForModal();
+//                 break;
+//             }
+//         }
+//     }
+//
+//     // Check for general cookie
+//     if (Cookies.get(cookieName) !== cookieValue) {
+//         createDiv();
+//     }
+// });

@@ -19,14 +19,14 @@ var jsfiles = [
     // Ignored since webpack is used to build this code, and linting these files
     // here doesn't really help the developers while working on this code.
     '!../../akvo/rsr/static/scripts-src/my-results/**/*.js',
-    '!../../akvo/rsr/static/scripts-src/user-projects/**/*.js',
+    '!../../akvo/rsr/static/scripts-src/user-projects-access/**/*.js',
 ];
 
 var jsxfiles = [
     '../../akvo/rsr/static/scripts-src/**/*.jsx',
     // excluded files
     '!../../akvo/rsr/static/scripts-src/my-results/**/*.jsx',
-    '!../../akvo/rsr/static/scripts-src/user-projects/**/*.jsx',
+    '!../../akvo/rsr/static/scripts-src/user-projects-access/**/*.jsx',
 ];
 
 gulp.task('lint', function() {

@@ -8,15 +8,15 @@ import rules
 
 from django.contrib.auth import get_user_model
 
-from .models import (Employment, IatiExport, Organisation, PartnerSite,
-                     Project, ProjectUpdate, UserProjects)
+from ..utils import project_access_filter
+from .models import Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate
 
-ADMIN_GROUP_NAME = 'Admins'
-ME_MANAGER_GROUP_NAME = 'M&E Managers'
-PROJECT_EDITOR_GROUP_NAME = 'Project Editors'
-USER_GROUP_NAME = 'Users'
-ENUMERATOR_GROUP_NAME = 'Enumerators'
-USER_MANAGER_GROUP_NAME = 'User Managers'
+GROUP_NAME_ADMINS = 'Admins'
+GROUP_NAME_ME_MANAGERS = 'M&E Managers'
+GROUP_NAME_PROJECT_EDITORS = 'Project Editors'
+GROUP_NAME_USERS = 'Users'
+GROUP_NAME_ENUMERATORS = 'Enumerators'
+GROUP_NAME_USER_MANAGERS = 'User Managers'
 
 
 @rules.predicate
@@ -56,21 +56,9 @@ def _user_has_group_permissions(user, obj, group_names):
         id_ = None
 
     if id_:
-        all_projects = employments.organisations().all_projects().values_list('id', flat=True)
-        organisations_count = employments.organisations().distinct().count()
-        # Check if the user permissions have been explicitly set for any projects
-        try:
-            # only check for users with only one organisation as employer
-            if organisations_count < 2:
-                project_whitelist = UserProjects.objects.get(user=user)
-                projects = project_whitelist.projects.values_list('id', flat=True)
-                projects = set(all_projects).intersection(projects)
-            else:
-                projects = all_projects
-        except UserProjects.DoesNotExist:
-            projects = all_projects
-
-        return id_ in projects
+        all_projects = employments.organisations().all_projects()
+        projects = project_access_filter(user, all_projects)
+        return id_ in projects.values_list('id', flat=True)
 
     all_users = employments.organisations().users().values_list('id', flat=True)
     if isinstance(obj, User):
@@ -99,37 +87,37 @@ def _user_has_group_permissions(user, obj, group_names):
 
 @rules.predicate
 def is_org_admin(user, obj):
-    group_names = [ADMIN_GROUP_NAME]
+    group_names = [GROUP_NAME_ADMINS]
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_user_manager(user, obj):
-    group_names = [USER_MANAGER_GROUP_NAME]
+    group_names = [GROUP_NAME_USER_MANAGERS]
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_me_manager_or_project_editor(user, obj):
-    group_names = [PROJECT_EDITOR_GROUP_NAME, ME_MANAGER_GROUP_NAME]
+    group_names = [GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ME_MANAGERS]
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_me_manager(user, obj):
-    group_names = [ME_MANAGER_GROUP_NAME]
+    group_names = [GROUP_NAME_ME_MANAGERS]
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_user(user, obj):
-    group_names = [USER_GROUP_NAME]
+    group_names = [GROUP_NAME_USERS]
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_enumerator(user, obj):
-    group_names = [ENUMERATOR_GROUP_NAME]
+    group_names = [GROUP_NAME_ENUMERATORS]
     return _user_has_group_permissions(user, obj, group_names)
 
 
