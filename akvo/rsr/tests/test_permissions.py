@@ -551,7 +551,7 @@ class UserPermissionedProjectsTestCase(TestCase):
 
         # When
         # Create a UserProjects entry with no projects in it
-        UserProjects.objects.create(user=user)
+        UserProjects.objects.create(user=user, is_restricted=True)
 
         # Then
         for project in self.projects:
@@ -563,7 +563,7 @@ class UserPermissionedProjectsTestCase(TestCase):
 
         # When
         # Assign first and second project to whitelist
-        permissions = UserProjects.objects.create(user=user)
+        permissions = UserProjects.objects.create(user=user, is_restricted=True)
         for project in self.projects[:2]:
             permissions.projects.add(project)
 
@@ -586,7 +586,7 @@ class UserPermissionedProjectsTestCase(TestCase):
         )
         # When
         # Create a UserProjects entry with no projects in it
-        UserProjects.objects.create(user=user)
+        UserProjects.objects.create(user=user, is_restricted=True)
 
         # Then
         for project in self.projects:
