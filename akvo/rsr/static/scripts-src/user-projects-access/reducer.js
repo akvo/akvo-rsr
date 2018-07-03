@@ -18,6 +18,7 @@ let initialState = {
     is_restricted: false,
     all_projects: [],
     user_projects: [],
+    original_is_restricted: null,
     original_projects: null
 };
 
@@ -40,7 +41,7 @@ export function reducer(state = initialState, action) {
                 all_projects,
                 // NOTE: we're "unwrapping" the UserProjects data
                 user_projects: (user_projects && user_projects.projects) || [],
-                is_restricted: user_projects && user_projects.is_restricted || false
+                is_restricted: (user_projects && user_projects.is_restricted) || false
             };
         }
 
@@ -69,21 +70,28 @@ export function reducer(state = initialState, action) {
                 fetching: false,
                 // NOTE: we're "unwrapping" the list of projects here, to simplify the store
                 is_restricted: user_projects.is_restricted,
+                original_is_restricted: null,
                 user_projects: user_projects.projects,
                 original_projects: null
             };
         }
 
         case c.API_PUT_FAILURE: {
-            return {
+            const new_state = {
                 ...state,
                 fetching: false,
-                is_restricted: { ...state }.original_is_restricted,
-                user_projects: { ...state }.original_projects,
                 original_is_restricted: null,
                 original_projects: null,
                 error: action.error
             };
+            // Overwrite if we have an original value
+            if (state.original_is_restricted !== null) {
+                new_state.is_restricted = state.original_is_restricted;
+            }
+            if (state.original_projects !== null) {
+                new_state.user_projects = state.original_projects;
+            }
+            return new_state;
         }
 
         case c.UPDATE_PROJECT_SELECTION: {
@@ -98,18 +106,18 @@ export function reducer(state = initialState, action) {
         }
 
         case c.UPDATE_IS_RESTRICTED: {
-            const original_is_restricted = { ...state }.is_restricted;
             const { is_restricted } = action.data;
-            return { ...state, original_is_restricted, is_restricted };
+            return { ...state, is_restricted, original_is_restricted: state.is_restricted };
         }
 
         case c.UPDATE_SELECT_ALL_PROJECTS: {
             const original_projects = state.user_projects && [...state.user_projects];
-            let user_projects, { selectAll } = {...state};
+            let user_projects,
+                { selectAll } = { ...state };
             if (selectAll) {
-                user_projects = state.all_projects.map(project => project.id)
+                user_projects = state.all_projects.map(project => project.id);
             } else {
-                user_projects = []
+                user_projects = [];
             }
             selectAll = !selectAll;
             return { ...state, selectAll, original_projects, user_projects };
