@@ -769,7 +769,6 @@ function initReact() {
                         React.createElement("td", null, i18n.user_with_id, user.id), 
 
                     
-                    React.createElement("td", null, user.first_name, " ", user.last_name), 
                     React.createElement("td", null, employment.organisation.name), 
                     user.can_be_restricted
                         ? React.createElement("td", null, 
