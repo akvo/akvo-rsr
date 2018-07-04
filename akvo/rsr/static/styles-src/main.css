@@ -733,18 +733,16 @@ div.update-confirm-container {
 #user_table .btn-danger {
   margin-left: 10px; }
 
-#user_table .dropdown.btn-group {
-  margin-right: 10px !important; }
-  #user_table .dropdown.btn-group button {
-    border: 1px solid rgba(32, 32, 36, 0.3); }
-    #user_table .dropdown.btn-group button:first-of-type {
-      border-radius: 3px 0 0 3px;
-      border-right: none; }
-    #user_table .dropdown.btn-group button:nth-of-type(2) {
-      border-radius: 0 3px 3px 0;
-      border: 1px solid rgba(32, 32, 36, 0.3);
-      background: rgba(32, 32, 36, 0.3);
-      color: white; }
+#user_table .dropdown.btn-group button {
+  border: 1px solid rgba(32, 32, 36, 0.3); }
+  #user_table .dropdown.btn-group button:first-of-type {
+    border-radius: 3px 0 0 3px;
+    border-right: none; }
+  #user_table .dropdown.btn-group button:nth-of-type(2) {
+    border-radius: 0 3px 3px 0;
+    border: 1px solid rgba(32, 32, 36, 0.3);
+    background: transparent;
+    color: rgba(32, 32, 36, 0.3); }
 
 .myProjectList,
 #updates,
