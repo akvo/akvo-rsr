@@ -54,7 +54,7 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
 const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
     return (
         <div className={is_restricted ? undefined : "disabled"}>
-            <button onClick={onChangeProjectSelectAll} disabled={is_restricted ? false : true}>
+            <button onClick={onChangeProjectSelectAll} disabled={is_restricted ? false : true} className="selectAllProject">
                 {selectAll ? _("select_all") : _("deselect_all")}
             </button>
         </div>

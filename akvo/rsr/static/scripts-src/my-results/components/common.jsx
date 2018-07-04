@@ -240,13 +240,13 @@ export class MarkdownEditor extends React.Component {
             <div>
                 <div className="markdown-editor-buttons">
                     <button
-                        className={`btn btn-xs btn-default ${editClass}`}
+                        className={`btn-xs ${editClass}`}
                         onClick={this.showEditor}
                     >
                         {_("write")}
                     </button>
                     <button
-                        className={`btn btn-xs btn-default ${previewClass}`}
+                        className={`btn-xs ${previewClass}`}
                         onClick={this.showPreview}
                     >
                         {_("preview")}

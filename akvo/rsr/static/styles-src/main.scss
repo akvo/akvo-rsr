@@ -212,8 +212,8 @@ button.btn-primary {
 
 // Copy of Bootstrap .hidden Used to hide form elements that _should_ be included in the form data
 .invisible {
-    display: none!important;
-    visibility: hidden!important;
+    display: none !important;
+    visibility: hidden !important;
 }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
@@ -3740,6 +3740,10 @@ main.results-page {
     }
 }
 
+.rc-collapse-header {
+    outline: none !important;
+}
+
 .rsrReports {
     * {
         box-sizing: border-box;
@@ -3889,6 +3893,22 @@ main.results-page {
             }
             &:last-child {
                 margin-bottom: 0;
+            }
+        }
+        .menuUpdate {
+            list-style-type: none;
+            padding: 0;
+            li {
+                display: inline-block;
+                a {
+                    padding: 3px 6px;
+                    font-weight: normal;
+                }
+                &:first-child {
+                    a {
+                        padding-left: 0px;
+                    }
+                }
             }
         }
         .updateImg {
@@ -4090,6 +4110,7 @@ main.results-page {
             .rc-collapse-header {
                 padding: 5px 10px;
                 position: relative;
+                outline: none !important;
                 span {
                     &.resultTitle {
                         display: inline-block;
@@ -4794,7 +4815,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -5138,11 +5159,96 @@ main.results-page {
     top: unset !important;
 }
 
+.userProject {
+    h4 {
+        margin-top: 25px;
+        span {
+            font-weight: bold;
+        }
+    }
+}
+
+.markdown-editor-buttons {
+    button {
+        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+        display: inline-block;
+        padding: 3px 6px;
+        background-color: transparent;
+        color: $akvoBlack !important;
+        text-decoration: none;
+        cursor: pointer;
+        @include border-radius(3px);
+        border: 1px solid $akvoBlack;
+        text-align: center;
+        &:hover {
+            background: $akvoBlack;
+            color: white !important;
+        }
+        &.active {
+            background: $akvoBlack;
+            color: white !important;
+        }
+        &.disabled {
+            cursor: not-allowed;
+            background-color: rgba(128, 128, 128, 0.1) !important;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid transparent;
+            &:hover {
+                cursor: not-allowed;
+                background-color: rgba(128, 128, 128, 0.1) !important;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid transparent;
+            }
+        }
+    }
+}
+
 #userProjects {
     .disabled {
         color: lighten($primary4, 20%);
     }
-    .projectSelected {
-        font-style: italic;
+    #is_restricted {
+        margin-bottom: 25px;
+        margin-right: 10px;
+    }
+    .selectAllProject {
+        @include smallButton($akvoBlack, white);
+        margin-bottom: 15px;
+    }
+    table {
+        width: 100%;
+        thead {
+            tr {
+                background: rgba($akvoBlack, 0.05);
+                th {
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    width: 200px;
+                    border-right: 1px solid white;
+                    padding-left: 10px;
+                    &:first-of-type {
+                        width: 100px;
+                    }
+                    &:nth-of-type(2) {
+                        width: 150px;
+                    }
+                }
+            }
+        }
+        tr {
+            &:hover {
+                background: rgba($rsrBlue2, 0.1);
+            }
+            &.projectSelected {
+                background: rgba($rsrBlue2, 0.1);
+            }
+            td {
+                padding: 15px 0 15px 10px;
+                margin-top: 1px;
+                &:first-of-type {
+                    padding-left: 25px;
+                }
+            }
+        }
     }
 }

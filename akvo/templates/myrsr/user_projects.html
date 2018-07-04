@@ -5,9 +5,13 @@
 {% block title %}{% trans 'MyRSR - User projects access restrictions' %}{% endblock %}
 
 {% block myrsr_main %}
-  <section id="main">
+  <section id="main" class="userProject">
     <header>
-      <h2>Project access restrictions for {{ user_projects_user.get_full_name }}</h2>
+      <h2>Grant access to projects</h2>
+      <h4 >Project access restrictions for <span>{{ user_projects_user.get_full_name }}</span></h4>
+      <p>Select all appropriate projects that you would like grant the User access to. <br/>
+       The User will have access to the selected projects based on the permissions of their assigned role. <br/>
+      To restrict a User’s access to a project, uncheck the box.</p>
     </header>
     <article id="userProjects" class="col-sm-6 col-xs-8">
     </article>
