@@ -21,20 +21,22 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
                     checked={is_restricted}
                     onChange={onChangeIsRestricted}
                 />
-                {_("restrict_access")}
+                {_("grant_access")}
             </label>
         </span>
     );
 };
 
 const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
-    const checked = user_projects && inArray(project.id, user_projects);
+    const checked = user_projects && inArray(project.id, user_projects),
+        selected = checked ? " projectSelected": "",
+        className = (is_restricted ? "" : "disabled") + selected;
     return (
         <tr
             key={project.id}
             id={project.id}
             onClick={onChangeProjectSelected}
-            className={checked ? "projectSelected" : undefined}
+            className={className}
         >
             <td>
                 <input
@@ -52,9 +54,11 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
 };
 
 const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
+    const disabled = is_restricted ? false : true,
+        className = "selectAllProjects" + (is_restricted ? "" : " disabled");
     return (
         <div className={is_restricted ? undefined : "disabled"}>
-            <button onClick={onChangeProjectSelectAll} disabled={is_restricted ? false : true} className="selectAllProject">
+            <button onClick={onChangeProjectSelectAll} disabled={disabled} className={className}>
                 {selectAll ? _("select_all") : _("deselect_all")}
             </button>
         </div>
@@ -76,6 +80,7 @@ const Projects = ({
     onChangeProjectSelectAll,
     onChangeProjectSelected
 }) => {
+    const className = is_restricted ? "" : "disabled";
     return (
         <span>
             <Error _={_} error={error} />
@@ -90,12 +95,12 @@ const Projects = ({
                 onChangeProjectSelectAll={onChangeProjectSelectAll}
                 is_restricted={is_restricted}
             />
-            <table className={is_restricted ? undefined : "disabled"}>
+            <table>
                 <thead>
                     <tr>
-                        <th>{_("can_access")}</th>
-                        <th>{_("project_id")}</th>
-                        <th>{_("project_title")}</th>
+                        <th className={className}>{_("can_access")}</th>
+                        <th className={className}>{_("project_id")}</th>
+                        <th className={className}>{_("project_title")}</th>
                     </tr>
                 </thead>
                 <tbody>

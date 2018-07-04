@@ -773,7 +773,7 @@ function initReact() {
                     {user.can_be_restricted
                         ? <td>
                             <a href={'/myrsr/user_projects/' + user.id + '/'}>
-                                {i18n.restrict_project_access}
+                                {i18n.grant_project_access}
                             </a>
                         </td>
                         : <td></td>}
@@ -811,7 +811,7 @@ function initReact() {
             var emailCell = React.createElement('th', null, i18n.email_text);
             var nameCell = React.createElement('th', null, i18n.name);
             var organisationCell = React.createElement('th', null, i18n.organisation);
-            var projectsCell = React.createElement('th', null, i18n.set_projects);
+            var projectsCell = React.createElement('th', null, i18n.grant_projects);
             var roleNameCell = React.createElement("th", {className: "text-right"}, i18n.role_text);
 
             var tableRow = React.createElement('tr', null, emailCell, nameCell, organisationCell, projectsCell, roleNameCell);

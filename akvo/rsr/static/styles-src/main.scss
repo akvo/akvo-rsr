@@ -5223,14 +5223,11 @@ main.results-page {
 
 #userProjects {
     padding-left: 0;
-    .disabled {
-        color: lighten($primary4, 20%);
-    }
     #is_restricted {
         margin-bottom: 25px;
         margin-right: 10px;
     }
-    .selectAllProject {
+    .selectAllProjects {
         @include smallButton($akvoBlack, white);
         margin-bottom: 15px;
     }
@@ -5251,21 +5248,36 @@ main.results-page {
                     &:nth-of-type(2) {
                         width: 150px;
                     }
+                    &.disabled {
+                        color: lighten($akvoBlack, 60%);
+                    }
+
                 }
             }
         }
-        tr {
-            &:hover {
-                background: rgba($rsrBlue2, 0.1);
-            }
-            &.projectSelected {
-                background: rgba($rsrBlue2, 0.1);
-            }
-            td {
-                padding: 15px 0 15px 10px;
-                margin-top: 1px;
-                &:first-of-type {
-                    padding-left: 25px;
+        tbody {
+            tr {
+                color: $akvoTvRed;
+                &:hover {
+                    background: rgba($rsrBlue2, 0.1);
+                }
+                &.disabled {
+                    color: lighten($akvoTvRed, 30%);
+                }
+                &.projectSelected {
+                    color: $akvoBlack;
+                    background: rgba($rsrBlue2, 0.1);
+                }
+                &.projectSelected.disabled {
+                    color: lighten($akvoBlack, 60%);
+                    background: rgba($rsrBlue2, 0.1);
+                }
+                td {
+                    padding: 15px 0 15px 10px;
+                    margin-top: 1px;
+                    &:first-of-type {
+                        padding-left: 25px;
+                    }
                 }
             }
         }

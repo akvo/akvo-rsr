@@ -4231,12 +4231,10 @@ main.results-page {
 
 #userProjects {
   padding-left: 0; }
-  #userProjects .disabled {
-    color: #cccccc; }
   #userProjects #is_restricted {
     margin-bottom: 25px;
     margin-right: 10px; }
-  #userProjects .selectAllProject {
+  #userProjects .selectAllProjects {
     /* use @extend .button on any element (a or button) or use directly in markup class="button" */
     display: inline-block;
     padding: 5px 8px;
@@ -4252,15 +4250,15 @@ main.results-page {
     text-align: center;
     padding: 3px 6px;
     margin-bottom: 15px; }
-    #userProjects .selectAllProject:hover {
+    #userProjects .selectAllProjects:hover {
       background: #080809;
       color: white; }
-    #userProjects .selectAllProject.disabled {
+    #userProjects .selectAllProjects.disabled {
       cursor: not-allowed;
       background-color: rgba(128, 128, 128, 0.1) !important;
       color: rgba(128, 128, 128, 0.4) !important;
       border: 1px solid transparent; }
-      #userProjects .selectAllProject.disabled:hover {
+      #userProjects .selectAllProjects.disabled:hover {
         cursor: not-allowed;
         background-color: rgba(128, 128, 128, 0.1) !important;
         color: rgba(128, 128, 128, 0.4) !important;
@@ -4279,12 +4277,22 @@ main.results-page {
           width: 100px; }
         #userProjects table thead tr th:nth-of-type(2) {
           width: 150px; }
-    #userProjects table tr:hover {
-      background: rgba(114, 205, 255, 0.1); }
-    #userProjects table tr.projectSelected {
-      background: rgba(114, 205, 255, 0.1); }
-    #userProjects table tr td {
-      padding: 15px 0 15px 10px;
-      margin-top: 1px; }
-      #userProjects table tr td:first-of-type {
-        padding-left: 25px; }
+        #userProjects table thead tr th.disabled {
+          color: #b7b7bf; }
+    #userProjects table tbody tr {
+      color: #ee3124; }
+      #userProjects table tbody tr:hover {
+        background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr.disabled {
+        color: #f9b7b2; }
+      #userProjects table tbody tr.projectSelected {
+        color: #202024;
+        background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr.projectSelected.disabled {
+        color: #b7b7bf;
+        background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr td {
+        padding: 15px 0 15px 10px;
+        margin-top: 1px; }
+        #userProjects table tbody tr td:first-of-type {
+          padding-left: 25px; }
