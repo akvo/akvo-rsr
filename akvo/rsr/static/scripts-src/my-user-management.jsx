@@ -769,7 +769,6 @@ function initReact() {
                         <td>{i18n.user_with_id}{user.id}</td>
 
                     }
-                    <td>{user.first_name} {user.last_name}</td>
                     <td>{employment.organisation.name}</td>
                     {user.can_be_restricted
                         ? <td>
