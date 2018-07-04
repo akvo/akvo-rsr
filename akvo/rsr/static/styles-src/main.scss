@@ -846,6 +846,7 @@ div.update-confirm-container {
 }
 
 #user_table {
+    th {}
     td.text-right {
         > span {
             > span:first-of-type {
@@ -855,6 +856,25 @@ div.update-confirm-container {
             }
             > span:nth-of-type(2) {
                 margin-right: 15px;
+            }
+        }
+    }
+    .btn-danger {
+        margin-left: 10px;
+    }
+    .dropdown.btn-group {
+        margin-right: 10px !important;
+        button {
+            border: 1px solid rgba($akvoBlack, 0.3);
+            &:first-of-type {
+                border-radius: 3px 0 0 3px;
+                border-right: none;
+            }
+            &:nth-of-type(2) {
+                border-radius: 0 3px 3px 0;
+                border: 1px solid rgba($akvoBlack, 0.3);
+                background: rgba($akvoBlack, 0.3);
+                color: white;
             }
         }
     }
@@ -5204,6 +5224,7 @@ main.results-page {
 }
 
 #userProjects {
+    padding-left: 0;
     .disabled {
         color: lighten($primary4, 20%);
     }
