@@ -754,16 +754,23 @@ function initReact() {
 
     var EmploymentRow = React.createClass({displayName: "EmploymentRow",
         render: function() {
-            var employmentCell = React.createElement(Employment, {
-                employment: this.props.employment,
-                key: this.props.employment.id
+            var employment = this.props.employment;
+            var user = employment.user;
+            var roleCell = React.createElement(Employment, {
+                employment: employment,
+                key: employment.id
             });
-            var user = this.props.employment.user;
             return (
                 React.createElement("tr", null, 
                     React.createElement("td", null, user.email), 
-                    React.createElement("td", null, user.first_name), 
-                    React.createElement("td", null, user.last_name), 
+                    user.first_name || user.last_name ?
+                        React.createElement("td", null, user.first_name, " ", user.last_name)
+                        :
+                        React.createElement("td", null, i18n.user_with_id, user.id), 
+
+                    
+                    React.createElement("td", null, user.first_name, " ", user.last_name), 
+                    React.createElement("td", null, employment.organisation.name), 
                     user.can_be_restricted
                         ? React.createElement("td", null, 
                             React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/'}, 
@@ -771,7 +778,7 @@ function initReact() {
                             )
                         )
                         : React.createElement("td", null), 
-                    React.createElement("td", {className: "text-right"}, employmentCell)
+                    React.createElement("td", {className: "text-right"}, roleCell)
                 )
             );
         }
@@ -795,6 +802,7 @@ function initReact() {
 
         render: function() {
             var employments_table = this.state.employments.map(function(employment) {
+
                 return React.createElement(EmploymentRow, {
                     key: employment.id,
                     employment: employment
@@ -802,13 +810,12 @@ function initReact() {
             });
 
             var emailCell = React.createElement('th', null, i18n.email_text);
-            var firstNameCell = React.createElement('th', null, i18n.first_name_text);
-            var lastNameCell = React.createElement('th', null, i18n.last_name_text);
+            var nameCell = React.createElement('th', null, i18n.name);
+            var organisationCell = React.createElement('th', null, i18n.organisation);
             var projectsCell = React.createElement('th', null, i18n.set_projects);
+            var roleNameCell = React.createElement("th", {className: "text-right"}, i18n.role_text);
 
-            var organisationCell = React.createElement('th', {className: "text-right"}, i18n.organisations_text);
-
-            var tableRow = React.createElement('tr', null, emailCell, firstNameCell, lastNameCell, projectsCell, organisationCell);
+            var tableRow = React.createElement('tr', null, emailCell, nameCell, organisationCell, projectsCell, roleNameCell);
             var tableHead = React.createElement('thead', null, tableRow);
             var tableBody = React.createElement('tbody', null, employments_table);
 

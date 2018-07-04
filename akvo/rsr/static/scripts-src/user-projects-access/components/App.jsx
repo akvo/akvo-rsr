@@ -61,8 +61,13 @@ const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) =>
     );
 };
 
+const Error = ({ _, error }) => {
+    return error ? <div>{_("an_error_occured") + error.message}</div> : <div>&nbsp;</div>;
+};
+
 const Projects = ({
     _,
+    error,
     all_projects,
     user_projects,
     is_restricted,
@@ -73,6 +78,7 @@ const Projects = ({
 }) => {
     return (
         <span>
+            <Error _={_} error={error} />
             <IsRestricted
                 _={_}
                 is_restricted={is_restricted}
@@ -153,10 +159,11 @@ class App extends React.Component {
     }
 
     render() {
-        const { is_restricted, selectAll, all_projects, user_projects } = this.props;
+        const { is_restricted, selectAll, all_projects, user_projects, error } = this.props;
         return all_projects ? (
             <Projects
                 _={this._}
+                error={error}
                 is_restricted={is_restricted}
                 selectAll={selectAll}
                 all_projects={all_projects}
