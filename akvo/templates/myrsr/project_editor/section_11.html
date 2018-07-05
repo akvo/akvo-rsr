@@ -62,7 +62,11 @@
                 {% if custom_fields_section_11 %}
                     <div class="row">
                         <div class="col-md-12">
-                          <h4>Additional fields for {{ project.primary_organisation }}</h4>
+                            <h4>
+                                {% blocktrans with primary_organisation_name=project.primary_organisation %}
+                                    Additional fields for {{ primary_organisation_name }}
+                                {% endblocktrans %}
+                            </h4>
                         </div>
                     </div>
                 {%  endif %}
