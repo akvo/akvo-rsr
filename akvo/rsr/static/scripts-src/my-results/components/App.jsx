@@ -368,17 +368,15 @@ export default class App extends React.Component {
             results_tab
         ) : (
             <section className="results">
-                <a
-                    className="pull-right editBtn"
-                    href={`../../project_editor/${projectId}/`}
-                >
-                    Edit project
+                <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
+                    {_("edit_project")}
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
-                        {show_results && has_results ? <Tab>Results</Tab> : undefined}
-                        {show_reports ? <Tab>Narrative summaries</Tab> : undefined}
-                        <Tab>Project updates</Tab><Tab>Project reports</Tab>    
+                        {show_results && has_results ? <Tab>{_("results")}</Tab> : null}
+                        {show_reports ? <Tab>{_("narrative_summaries")}</Tab> : null}
+                        <Tab>{_("project_updates")}</Tab>
+                        <Tab>{_("project_reports")}</Tab>
                     </TabList>
                     {show_results && has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
                     {show_reports ? (

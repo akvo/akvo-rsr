@@ -51,7 +51,7 @@ const RSRUpdate = ({ update, onEdit, onDelete }) => {
     const edit_button = update.editable ? (
         <div>
             <a onClick={editUpdate} href="#">
-                Edit
+                {_("edit")}
             </a>
         </div>
     ) : (
@@ -60,7 +60,7 @@ const RSRUpdate = ({ update, onEdit, onDelete }) => {
     const delete_button = update.deletable ? (
         <div>
             <a onClick={deleteUpdate} href="#">
-                Delete
+                {_("delete")}
             </a>
         </div>
     ) : (
@@ -139,9 +139,9 @@ class RSRUpdateList extends React.Component {
     render() {
         let updates;
         if (this.state.loading) {
-            updates = "Loading...";
+            updates = _("loading") + "...";
         } else if (this.state.updates.length == 0) {
-            updates = "No updates";
+            updates = _("no_project_updates");
         } else {
             updates = this.state.updates.map(function(update) {
                 return (
@@ -156,7 +156,7 @@ class RSRUpdateList extends React.Component {
         }
         return (
             <div className="col-md-5 hidden-sm-down updateList">
-                <h3>Previous updates</h3>
+                <h3>{_("previous_updates")}</h3>
                 {updates}
             </div>
         );
@@ -237,13 +237,13 @@ class RSRUpdateForm extends React.Component {
         const textAreaProps = {
             id: "id_text",
             className: "form-control textarea",
-            placeholder: "Description",
+            placeholder: _("description"),
             cols: 40,
             rows: 10
         };
         return (
             <div className="col-md-7 col-xs-12 projectUpdateForm" id="update">
-                <h3 className="">{update.id ? "Edit update" : "Add an update"}</h3>
+                <h3 className="">{update.id ? _("edit_update") : _("add_update")}</h3>
                 <form method="post" action={url} id="updateForm" encType="multipart/form-data">
                     <input
                         name="csrfmiddlewaretoken"
@@ -257,7 +257,7 @@ class RSRUpdateForm extends React.Component {
                             id="id_title"
                             maxLength="80"
                             name="title"
-                            placeholder="Title"
+                            placeholder={_("title")}
                             required="required"
                             size="42"
                             title=""
@@ -279,7 +279,7 @@ class RSRUpdateForm extends React.Component {
 
                     <div className="form-group">
                         <label className="control-label" htmlFor="id_language">
-                            Language
+                            {_("language")}
                         </label>
                         <select
                             className="form-control"
@@ -299,14 +299,14 @@ class RSRUpdateForm extends React.Component {
 
                     <div className="form-group">
                         <label className="control-label" htmlFor="id_event_date">
-                            Event date
+                            {_("event_date")}
                         </label>
                         {/* FIXME: Add a default value for the date */}
                         <input
                             className="form-control"
                             id="id_event_date"
                             name="event_date"
-                            placeholder="Event date"
+                            placeholder={_("event_date")}
                             required="required"
                             title=""
                             type="date"
@@ -318,7 +318,7 @@ class RSRUpdateForm extends React.Component {
                     <div className={photoClass}>
                         {formPhoto}
                         <label className="control-label" htmlFor="id_photo">
-                            Photo
+                            {_("photo")}
                         </label>
                         <input
                             className="input"
@@ -337,7 +337,7 @@ class RSRUpdateForm extends React.Component {
                             id="id_photo_caption"
                             maxLength="75"
                             name="photo_caption"
-                            placeholder="Photo caption"
+                            placeholder={_("photo_caption")}
                             size="25"
                             title=""
                             type="text"
@@ -352,7 +352,7 @@ class RSRUpdateForm extends React.Component {
                             id="id_photo_credit"
                             maxLength="75"
                             name="photo_credit"
-                            placeholder="Photo credit"
+                            placeholder={_("photo_credit")}
                             size="25"
                             title=""
                             type="text"
@@ -363,7 +363,7 @@ class RSRUpdateForm extends React.Component {
 
                     <div className="form-group">
                         <label className="control-label" htmlFor="id_video">
-                            Video
+                            {_("video")}
                         </label>
                         <input
                             className="form-control input"
@@ -383,7 +383,7 @@ class RSRUpdateForm extends React.Component {
                             id="id_video_caption"
                             maxLength="75"
                             name="video_caption"
-                            placeholder="Video caption"
+                            placeholder={_("video_caption")}
                             size="25"
                             title=""
                             type="text"
@@ -398,7 +398,7 @@ class RSRUpdateForm extends React.Component {
                             id="id_video_credit"
                             maxLength="75"
                             name="video_credit"
-                            placeholder="Video credit"
+                            placeholder={_("video_credit")}
                             size="25"
                             title=""
                             type="text"
@@ -422,7 +422,7 @@ class RSRUpdateForm extends React.Component {
                     />
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary" disabled={oversize_image}>
-                            {update.id ? "Edit update" : "Add update"}
+                            {update.id ? _("edit_update") : _("add_update")}
                         </button>
                     </div>
                 </form>
