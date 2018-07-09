@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-19 17:06+0200\n"
+"POT-Creation-Date: 2018-07-09 09:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,9 +79,9 @@ msgstr ""
 #: akvo/codelists/models/verification_status.py:15
 #: akvo/codelists/models/vocabulary.py:15 akvo/rsr/models/custom_field.py:47
 #: akvo/rsr/models/custom_field.py:117 akvo/rsr/models/legacy_data.py:17
-#: akvo/rsr/models/location.py:123 akvo/rsr/models/organisation.py:80
+#: akvo/rsr/models/location.py:148 akvo/rsr/models/organisation.py:80
 #: akvo/rsr/models/project_editor_validation.py:17
-#: akvo/rsr/models/report.py:22 akvo/rsr/models/report.py:31
+#: akvo/rsr/models/report.py:26 akvo/rsr/models/report.py:35
 msgid "name"
 msgstr ""
 
@@ -134,7 +134,7 @@ msgstr ""
 #: akvo/rsr/models/organisation_budget.py:211
 #: akvo/rsr/models/organisation_document.py:136
 #: akvo/rsr/models/project_editor_validation.py:18
-#: akvo/rsr/models/report.py:34
+#: akvo/rsr/models/report.py:38
 msgid "description"
 msgstr ""
 
@@ -181,8 +181,9 @@ msgstr ""
 #: akvo/codelists/models/finance_type.py:15
 #: akvo/codelists/models/location_type.py:15
 #: akvo/codelists/models/organisation_registration_agency.py:15
-#: akvo/codelists/models/sector.py:15 akvo/rsr/filters.py:183
-#: akvo/rsr/models/benchmark.py:16 akvo/rsr/models/category.py:34
+#: akvo/codelists/models/sector.py:15 akvo/rsr/models/benchmark.py:16
+#: akvo/rsr/models/category.py:34
+#: akvo/rsr/models/result/narrative_report.py:21
 msgid "category"
 msgstr ""
 
@@ -223,19 +224,20 @@ msgstr ""
 
 #: akvo/codelists/models/base_codelist.py:13
 #: akvo/codelists/models/version.py:13 akvo/rsr/models/crs_add.py:142
-#: akvo/rsr/models/location.py:114
+#: akvo/rsr/models/location.py:139
 msgid "code"
 msgstr ""
 
 #: akvo/codelists/models/base_codelist.py:14
-#: akvo/codelists/models/version.py:22 akvo/rsr/models/iati_export.py:38
+#: akvo/codelists/models/version.py:22 akvo/rsr/models/iati_export.py:41
 msgid "version"
 msgstr ""
 
 #: akvo/codelists/models/budget_identifier.py:17
-#: akvo/codelists/models/sector.py:27 akvo/rsr/filters.py:189
-#: akvo/rsr/filters.py:273 akvo/rsr/models/sector.py:105
-#: akvo/templates/project_directory.html:218
+#: akvo/codelists/models/sector.py:27 akvo/rsr/models/sector.py:105
+#: akvo/templates/organisation_directory.html:25
+#: akvo/templates/project_directory.html:40
+#: akvo/templates/update_directory.html:27
 msgid "sector"
 msgstr ""
 
@@ -313,7 +315,7 @@ msgstr ""
 
 #: akvo/codelists/models/country.py:24 akvo/rsr/models/country.py:44
 #: akvo/rsr/models/employment.py:39 akvo/rsr/models/location.py:35
-#: akvo/rsr/models/location.py:89 akvo/rsr/models/project_contact.py:48
+#: akvo/rsr/models/location.py:114 akvo/rsr/models/project_contact.py:48
 msgid "country"
 msgstr ""
 
@@ -454,7 +456,7 @@ msgstr ""
 #: akvo/codelists/models/organisation_registration_agency.py:16
 #: akvo/codelists/models/sector_vocabulary.py:15
 #: akvo/codelists/models/version.py:14 akvo/rsr/models/iati_import.py:118
-#: akvo/rsr/models/report.py:37
+#: akvo/rsr/models/report.py:41
 msgid "url"
 msgstr ""
 
@@ -709,326 +711,421 @@ msgid "versions"
 msgstr ""
 
 #: akvo/codelists/models/vocabulary.py:23
-#: akvo/codelists/models/vocabulary.py:24 akvo/rsr/models/location.py:120
+#: akvo/codelists/models/vocabulary.py:24 akvo/rsr/models/location.py:145
 #: akvo/rsr/models/organisation_budget.py:123
 #: akvo/rsr/models/policy_marker.py:47
 msgid "vocabulary"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:272
-#: akvo/templates/results_base.html:53
+#: akvo/codelists/store/codelists_v202.py:276
+#: akvo/codelists/store/codelists_v203.py:276
+#: akvo/templates/results_base.html:71
 msgid "Unit"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:272
+#: akvo/codelists/store/codelists_v202.py:276
+#: akvo/codelists/store/codelists_v203.py:276
 msgid "The indicator is measured in units."
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:273
-#: akvo/templates/results_base.html:54
+#: akvo/codelists/store/codelists_v202.py:277
+#: akvo/codelists/store/codelists_v203.py:277
+#: akvo/templates/results_base.html:72
 msgid "Percentage"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:273
+#: akvo/codelists/store/codelists_v202.py:277
+#: akvo/codelists/store/codelists_v203.py:277
 msgid "The indicator is measured in percentages"
 msgstr ""
 
+#: akvo/codelists/store/codelists_v202.py:278
+#: akvo/codelists/store/codelists_v203.py:278
+msgid "Nominal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:278
+#: akvo/codelists/store/codelists_v203.py:278
+msgid "The indicator is measured as a quantitative nominal scale."
+msgstr ""
+
 #: akvo/codelists/store/codelists_v202.py:279
-msgid "General Enquiries"
+#: akvo/codelists/store/codelists_v203.py:279
+msgid "Ordinal"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:279
+#: akvo/codelists/store/codelists_v203.py:279
+msgid "The indicator is measured as a quantitative ordinal scale."
 msgstr ""
 
 #: akvo/codelists/store/codelists_v202.py:280
+#: akvo/codelists/store/codelists_v203.py:280
+#: akvo/rsr/models/result/indicator.py:29
+msgid "Qualitative"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:280
+#: akvo/codelists/store/codelists_v203.py:280
+msgid "The indicator is qualitative."
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:286
+#: akvo/codelists/store/codelists_v203.py:286
+msgid "General Enquiries"
+msgstr ""
+
+#: akvo/codelists/store/codelists_v202.py:287
+#: akvo/codelists/store/codelists_v203.py:287
 msgid "Project Management"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:281
+#: akvo/codelists/store/codelists_v202.py:288
+#: akvo/codelists/store/codelists_v203.py:288
 msgid "Financial Management"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:282
+#: akvo/codelists/store/codelists_v202.py:289
+#: akvo/codelists/store/codelists_v203.py:289
 msgid "Communications"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1126
+#: akvo/codelists/store/codelists_v202.py:1132
+#: akvo/codelists/store/codelists_v203.py:1132
 #: akvo/templates/organisation_main.html:126
 #: akvo/templates/partials/widgets/project_status.html:5
 #: akvo/templates/widgets/project_list.html:70
 msgid "Pipeline/identification"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1126
+#: akvo/codelists/store/codelists_v202.py:1132
+#: akvo/codelists/store/codelists_v203.py:1132
 msgid "The activity is being scoped or planned "
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1127
+#: akvo/codelists/store/codelists_v202.py:1133
+#: akvo/codelists/store/codelists_v203.py:1133
 #: akvo/templates/organisation_main.html:136
 #: akvo/templates/partials/widgets/project_status.html:9
 #: akvo/templates/widgets/project_list.html:71
 msgid "Implementation"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1127
+#: akvo/codelists/store/codelists_v202.py:1133
+#: akvo/codelists/store/codelists_v203.py:1133
 msgid "The activity is currently being implemented"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1128
+#: akvo/codelists/store/codelists_v202.py:1134
+#: akvo/codelists/store/codelists_v203.py:1134
 #: akvo/templates/organisation_main.html:146
 #: akvo/templates/partials/widgets/project_status.html:13
 #: akvo/templates/widgets/project_list.html:72
 msgid "Completion"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1128
+#: akvo/codelists/store/codelists_v202.py:1134
+#: akvo/codelists/store/codelists_v203.py:1134
 msgid "Physical activity is complete or the final disbursement has been made."
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1129
+#: akvo/codelists/store/codelists_v202.py:1135
+#: akvo/codelists/store/codelists_v203.py:1135
 #: akvo/templates/organisation_main.html:156
 msgid "Post-completion"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1129
+#: akvo/codelists/store/codelists_v202.py:1135
+#: akvo/codelists/store/codelists_v203.py:1135
 msgid ""
 "Physical activity is complete or the final disbursement has been made, but "
 "the activity remains open pending financial sign off or M&E"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1130 akvo/rsr/models/project.py:93
+#: akvo/codelists/store/codelists_v202.py:1136
+#: akvo/codelists/store/codelists_v203.py:1136 akvo/rsr/models/project.py:93
 #: akvo/templates/organisation_main.html:166
 #: akvo/templates/partials/widgets/project_status.html:21
 #: akvo/templates/widgets/project_list.html:74
 msgid "Cancelled"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1130
+#: akvo/codelists/store/codelists_v202.py:1136
+#: akvo/codelists/store/codelists_v203.py:1136
 msgid "The activity has been cancelled"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1131
+#: akvo/codelists/store/codelists_v202.py:1137
+#: akvo/codelists/store/codelists_v203.py:1137
 #: akvo/templates/organisation_main.html:176
 #: akvo/templates/partials/widgets/project_status.html:25
 #: akvo/templates/widgets/project_list.html:75
 msgid "Suspended"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:1131
+#: akvo/codelists/store/codelists_v202.py:1137
+#: akvo/codelists/store/codelists_v203.py:1137
 msgid "The activity has been temporarily suspended"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2002
-#: akvo/templates/results_base.html:49
+#: akvo/codelists/store/codelists_v202.py:2124
+#: akvo/codelists/store/codelists_v203.py:2124
+#: akvo/templates/results_base.html:67
 msgid "Output"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2002
+#: akvo/codelists/store/codelists_v202.py:2124
+#: akvo/codelists/store/codelists_v203.py:2124
 msgid ""
 "Results of the activity that came about as a direct effect of your work and "
 "specific, what is done, and what communities are reached. For example, X "
 "number of individuals."
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2003
-#: akvo/templates/results_base.html:50
+#: akvo/codelists/store/codelists_v202.py:2125
+#: akvo/codelists/store/codelists_v203.py:2125
+#: akvo/templates/results_base.html:68
 msgid "Outcome"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2003
+#: akvo/codelists/store/codelists_v202.py:2125
+#: akvo/codelists/store/codelists_v203.py:2125
 msgid ""
 "Results of the activity that produce an effect on the overall communities or "
 "issues you serve. For example lower rate of infection after a vaccination "
 "programme."
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2004
-#: akvo/templates/results_base.html:51
+#: akvo/codelists/store/codelists_v202.py:2126
+#: akvo/codelists/store/codelists_v203.py:2126
+#: akvo/templates/results_base.html:69
 msgid "Impact"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2004
+#: akvo/codelists/store/codelists_v202.py:2126
+#: akvo/codelists/store/codelists_v203.py:2126
 msgid ""
 "The long term effects of the outcomes, that lead to larger, over arching "
 "results, such as improved life-expectancy."
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2005
-#: akvo/templates/results_base.html:52
+#: akvo/codelists/store/codelists_v202.py:2127
+#: akvo/codelists/store/codelists_v203.py:2127
+#: akvo/templates/results_base.html:70
 msgid "Other"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2005
+#: akvo/codelists/store/codelists_v202.py:2127
+#: akvo/codelists/store/codelists_v203.py:2127
 msgid "Another type of result, not specified above."
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2096
+#: akvo/codelists/store/codelists_v202.py:2233
+#: akvo/codelists/store/codelists_v203.py:2233
 msgid "OECD DAC CRS Purpose Codes (5 digit)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2096
+#: akvo/codelists/store/codelists_v202.py:2233
+#: akvo/codelists/store/codelists_v203.py:2233
 msgid "The sector reported corresponds to an OECD DAC CRS 5-digit purpose code"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2097
+#: akvo/codelists/store/codelists_v202.py:2234
+#: akvo/codelists/store/codelists_v203.py:2234
 msgid "OECD DAC CRS Purpose Codes (3 digit)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2097
+#: akvo/codelists/store/codelists_v202.py:2234
+#: akvo/codelists/store/codelists_v203.py:2234
 msgid "The sector reported corresponds to an OECD DAC CRS 3-digit purpose code"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2098
+#: akvo/codelists/store/codelists_v202.py:2235
+#: akvo/codelists/store/codelists_v203.py:2235
 msgid "Classification of the Functions of Government (UN)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2098
+#: akvo/codelists/store/codelists_v202.py:2235
+#: akvo/codelists/store/codelists_v203.py:2235
 msgid ""
 "The sector reported corresponds to the UN Classification of the Functions of "
 "Government (CoFoG)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2099
+#: akvo/codelists/store/codelists_v202.py:2236
+#: akvo/codelists/store/codelists_v203.py:2236
 msgid ""
 "Statistical classification of economic activities in the European Community"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2099
+#: akvo/codelists/store/codelists_v202.py:2236
+#: akvo/codelists/store/codelists_v203.py:2236
 msgid ""
 "The sector reported corresponds to the statistical classifications of "
 "economic activities in the European Community"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2100
+#: akvo/codelists/store/codelists_v202.py:2237
+#: akvo/codelists/store/codelists_v203.py:2237
 msgid "National Taxonomy for Exempt Entities (USA)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2100
+#: akvo/codelists/store/codelists_v202.py:2237
+#: akvo/codelists/store/codelists_v203.py:2237
 msgid ""
 "The sector reported corresponds to the National Taxonomy for Exempt Entities "
 "(NTEE) - USA"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2101
+#: akvo/codelists/store/codelists_v202.py:2238
+#: akvo/codelists/store/codelists_v203.py:2238
 msgid "AidData"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2101
+#: akvo/codelists/store/codelists_v202.py:2238
+#: akvo/codelists/store/codelists_v203.py:2238
 msgid "The sector reported corresponds to AidData classifications"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2102
+#: akvo/codelists/store/codelists_v202.py:2239
+#: akvo/codelists/store/codelists_v203.py:2239
 msgid "SDG Goal"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2102
+#: akvo/codelists/store/codelists_v202.py:2239
+#: akvo/codelists/store/codelists_v203.py:2239
 msgid ""
 "A value from the top-level list of UN sustainable development goals (SDGs) "
 "(e.g. ‘1’)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2103
+#: akvo/codelists/store/codelists_v202.py:2240
+#: akvo/codelists/store/codelists_v203.py:2240
 msgid "SDG Target"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2103
+#: akvo/codelists/store/codelists_v202.py:2240
+#: akvo/codelists/store/codelists_v203.py:2240
 msgid ""
 "A value from the second-level list of UN sustainable development goals "
 "(SDGs) (e.g. ‘1.1’)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2104
+#: akvo/codelists/store/codelists_v202.py:2241
+#: akvo/codelists/store/codelists_v203.py:2241
 msgid "SDG Indicator"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2104
+#: akvo/codelists/store/codelists_v202.py:2241
+#: akvo/codelists/store/codelists_v203.py:2241
 msgid ""
 "A value from the second-level list of UN sustainable development (SDG) "
 "indicators"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2105
+#: akvo/codelists/store/codelists_v202.py:2242
+#: akvo/codelists/store/codelists_v203.py:2242
 msgid "Humanitarian Global Clusters (Inter-Agency Standing Committee)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2105
+#: akvo/codelists/store/codelists_v202.py:2242
+#: akvo/codelists/store/codelists_v203.py:2242
 msgid ""
 "The sector reported corresponds to an Inter-Agency Standard Committee "
 "Humanitarian Global Cluster code"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2106
+#: akvo/codelists/store/codelists_v202.py:2243
+#: akvo/codelists/store/codelists_v203.py:2243
 msgid "Reporting Organisation"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2106
+#: akvo/codelists/store/codelists_v202.py:2243
+#: akvo/codelists/store/codelists_v203.py:2243
 msgid ""
 "The sector reported corresponds to a sector vocabulary maintained by the "
 "reporting organisation for this activity"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2107
+#: akvo/codelists/store/codelists_v202.py:2244
+#: akvo/codelists/store/codelists_v203.py:2244
 msgid "Reporting Organisation 2"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:2107
+#: akvo/codelists/store/codelists_v202.py:2244
+#: akvo/codelists/store/codelists_v203.py:2244
 msgid ""
 "The sector reported corresponds to a sector vocabulary maintained by the "
 "reporting organisation for this activity (if they are referencing more than "
 "one)"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3395
+#: akvo/codelists/store/codelists_v202.py:3546
+#: akvo/codelists/store/codelists_v203.py:3546
+#: akvo/templates/myrsr/my_projects.html:76
 msgid "Parent"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3395
+#: akvo/codelists/store/codelists_v202.py:3546
+#: akvo/codelists/store/codelists_v203.py:3546
 msgid ""
 "An activity that contains sub-activities (sub-components) which are reported "
 "separately to IATI"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3396
+#: akvo/codelists/store/codelists_v202.py:3547
+#: akvo/codelists/store/codelists_v203.py:3547
+#: akvo/templates/myrsr/my_projects.html:81
 msgid "Child"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3396
+#: akvo/codelists/store/codelists_v202.py:3547
+#: akvo/codelists/store/codelists_v203.py:3547
 msgid ""
 "A sub-activity (or sub-component) that sits within a larger activity "
 "(parent) which is also reported to IATI"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3397
+#: akvo/codelists/store/codelists_v202.py:3548
+#: akvo/codelists/store/codelists_v203.py:3548
 msgid "Sibling"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3397
+#: akvo/codelists/store/codelists_v202.py:3548
+#: akvo/codelists/store/codelists_v203.py:3548
 msgid ""
 "A sub-activity (or sub-component) that is related to another sub-activity "
 "with the same parent "
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3398
+#: akvo/codelists/store/codelists_v202.py:3549
+#: akvo/codelists/store/codelists_v203.py:3549
 msgid "Co-funded"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3398
+#: akvo/codelists/store/codelists_v202.py:3549
+#: akvo/codelists/store/codelists_v203.py:3549
 msgid "An activity that receives funding from more than one organisation"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3399
+#: akvo/codelists/store/codelists_v202.py:3550
+#: akvo/codelists/store/codelists_v203.py:3550
 msgid "Third Party"
 msgstr ""
 
-#: akvo/codelists/store/codelists_v202.py:3399
+#: akvo/codelists/store/codelists_v202.py:3550
+#: akvo/codelists/store/codelists_v203.py:3550
 msgid ""
 "A report by another organisation on the same activity you are reporting "
 "(excluding activities reported as part of a financial transaction - e.g. "
 "provider-activity-id or a co-funded activity, using code 4)"
 msgstr ""
 
-#: akvo/rest/fields.py:61
+#: akvo/rest/fields.py:62
 msgid "Please upload a valid image."
 msgstr ""
 
-#: akvo/rest/fields.py:166
+#: akvo/rest/fields.py:171
 #, python-format
 msgid "Unknown image type. Only the following types are accepted: %(format)s"
 msgstr ""
@@ -1041,31 +1138,49 @@ msgstr ""
 msgid "Passwords do not match."
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:89
+#: akvo/rest/views/project_editor.py:90
 msgid "Project editor, changed: "
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:199
+#: akvo/rest/views/project_editor.py:200
 msgid "It is not allowed to use a comma, use a period to denote decimals."
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:410
+#: akvo/rest/views/project_editor.py:411
 msgid "There can be only one reporting organisation"
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:814
+#: akvo/rest/views/project_editor.py:698
+msgid "Indicator with ID {} does not exist."
+msgstr ""
+
+#: akvo/rest/views/project_editor.py:707
+msgid "Project with ID {} does not exist."
+msgstr ""
+
+#: akvo/rest/views/project_editor.py:716
+msgid "All default periods must have both a start and an end date"
+msgstr ""
+
+#: akvo/rest/views/project_editor.py:724
+msgid ""
+"Periods already exist for indicator {0}: {1}. default periods will not be "
+"created."
+msgstr ""
+
+#: akvo/rest/views/project_editor.py:829
 msgid "Project editor, added: validation set"
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:842
+#: akvo/rest/views/project_editor.py:857
 msgid "Project editor, deleted: validation set"
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:870
+#: akvo/rest/views/project_editor.py:885
 msgid "Project editor, deleted: keyword"
 msgstr ""
 
-#: akvo/rest/views/project_editor.py:915
+#: akvo/rest/views/project_editor.py:930
 msgid "Project editor, added project"
 msgstr ""
 
@@ -1114,7 +1229,7 @@ msgstr ""
 msgid "{} has duplicate organisation roles of the same kind."
 msgstr ""
 
-#: akvo/rsr/admin.py:836 akvo/rsr/admin.py:1233
+#: akvo/rsr/admin.py:836 akvo/rsr/admin.py:1239
 msgid "General Information"
 msgstr ""
 
@@ -1251,7 +1366,7 @@ msgstr ""
 
 #: akvo/rsr/admin.py:933 akvo/templates/myrsr/project_editor/section_5.html:45
 #: akvo/templates/project_main.html:19 akvo/templates/project_main.html:163
-#: akvo/templates/results_base.html:41
+#: akvo/templates/results_base.html:59
 msgid "Results"
 msgstr ""
 
@@ -1271,7 +1386,7 @@ msgid ""
 "the project, the indicator (period) will be shown."
 msgstr ""
 
-#: akvo/rsr/admin.py:947 akvo/templates/organisation_directory.html:92
+#: akvo/rsr/admin.py:947
 msgid "Additional Information"
 msgstr ""
 
@@ -1332,15 +1447,15 @@ msgstr ""
 msgid "Important dates"
 msgstr ""
 
-#: akvo/rsr/admin.py:1236
+#: akvo/rsr/admin.py:1242
 msgid "Content"
 msgstr ""
 
-#: akvo/rsr/admin.py:1239
+#: akvo/rsr/admin.py:1245
 msgid "Image and video"
 msgstr ""
 
-#: akvo/rsr/admin.py:1263
+#: akvo/rsr/admin.py:1270
 msgid "Project selection"
 msgstr ""
 
@@ -1390,1192 +1505,1147 @@ msgstr ""
 msgid "Longitude coordinate."
 msgstr ""
 
-#: akvo/rsr/filters.py:22 akvo/rsr/filters.py:35 akvo/rsr/filters.py:174
-#: akvo/rsr/filters.py:180 akvo/rsr/filters.py:187 akvo/rsr/filters.py:188
-#: akvo/rsr/filters.py:193 akvo/rsr/filters.py:195 akvo/rsr/filters.py:213
-#: akvo/rsr/filters.py:230 akvo/rsr/filters.py:271 akvo/rsr/filters.py:272
-#: akvo/templates/project_directory.html:213
+#: akvo/rsr/filters.py:21 akvo/rsr/filters.py:34 akvo/rsr/filters.py:172
+#: akvo/templates/organisation_directory.html:20
+#: akvo/templates/project_directory.html:35
+#: akvo/templates/update_directory.html:22
 msgid "All"
 msgstr ""
 
-#: akvo/rsr/filters.py:194 akvo/rsr/models/budget_item.py:77
-#: akvo/rsr/models/iati_activity_export.py:28 akvo/rsr/models/iati_check.py:22
-#: akvo/rsr/models/iati_export.py:39 akvo/rsr/models/iati_import_job.py:71
-#: akvo/rsr/models/organisation_budget.py:72 akvo/rsr/models/project.py:134
-#: akvo/rsr/models/project.py:137
-#: akvo/rsr/models/result/indicator_period_data.py:60
-#: akvo/templates/myrsr/my_iati.html:84
-#: akvo/templates/project_directory.html:216
-msgid "status"
-msgstr ""
-
-#: akvo/rsr/filters.py:200 akvo/rsr/filters.py:278 akvo/rsr/filters.py:295
-#: akvo/templates/myrsr/my_projects.html:14
-#: akvo/templates/organisation_directory.html:22
-#: akvo/templates/project_directory.html:25
-#: akvo/templates/project_directory.html:209
-#: akvo/templates/update_directory.html:22
-msgid "Search"
-msgstr ""
-
-#: akvo/rsr/filters.py:232 akvo/rsr/models/keyword.py:41
-#: akvo/rsr/models/project.py:266 akvo/templates/project_directory.html:214
-msgid "keyword"
-msgstr ""
-
-#: akvo/rsr/filters.py:238 akvo/rsr/filters.py:290
-#: akvo/rsr/models/location.py:224
-#: akvo/rsr/models/result/indicator_period_actual_location.py:19
-#: akvo/rsr/models/result/indicator_period_target_location.py:19
-#: akvo/templates/project_directory.html:215
-msgid "location"
-msgstr ""
-
-#: akvo/rsr/filters.py:244 akvo/rsr/filters.py:267
-#: akvo/rsr/models/custom_field.py:115 akvo/rsr/models/employment.py:28
-#: akvo/rsr/models/organisation.py:497
-#: akvo/rsr/models/organisation_budget.py:90
-#: akvo/rsr/models/organisation_budget.py:101
-#: akvo/rsr/models/organisation_budget.py:116
-#: akvo/rsr/models/organisation_budget.py:158
-#: akvo/rsr/models/organisation_budget.py:183
-#: akvo/rsr/models/organisation_document.py:25
-#: akvo/rsr/models/organisation_indicator_label.py:17
-#: akvo/rsr/models/partner_site.py:51 akvo/rsr/models/partnership.py:91
-#: akvo/rsr/views/project_update.py:72
-#: akvo/templates/project_directory.html:217
-msgid "organisation"
-msgstr ""
-
-#: akvo/rsr/forms.py:32 akvo/rsr/forms.py:35 akvo/rsr/forms.py:119
+#: akvo/rsr/forms.py:34 akvo/rsr/forms.py:37 akvo/rsr/forms.py:121
 #: akvo/templates/myrsr/user_management.html:77 akvo/templates/sign_in.html:16
 #: akvo/templates/sign_in.html.py:40
 msgid "Email"
 msgstr ""
 
-#: akvo/rsr/forms.py:39 akvo/rsr/forms.py:42 akvo/rsr/forms.py:127
-#: akvo/rsr/forms.py:177 akvo/rsr/forms.py:180
+#: akvo/rsr/forms.py:41 akvo/rsr/forms.py:44 akvo/rsr/forms.py:129
+#: akvo/rsr/forms.py:179 akvo/rsr/forms.py:182
 #: akvo/templates/myrsr/user_management.html:78
 msgid "First name"
 msgstr ""
 
-#: akvo/rsr/forms.py:46 akvo/rsr/forms.py:49 akvo/rsr/forms.py:134
-#: akvo/rsr/forms.py:184 akvo/rsr/forms.py:187
+#: akvo/rsr/forms.py:48 akvo/rsr/forms.py:51 akvo/rsr/forms.py:136
+#: akvo/rsr/forms.py:186 akvo/rsr/forms.py:189
 #: akvo/templates/myrsr/user_management.html:79
 msgid "Last name"
 msgstr ""
 
-#: akvo/rsr/forms.py:53 akvo/rsr/forms.py:55 akvo/rsr/forms.py:191
-#: akvo/rsr/forms.py:193 akvo/templates/sign_in.html:20
+#: akvo/rsr/forms.py:55 akvo/rsr/forms.py:57 akvo/rsr/forms.py:193
+#: akvo/rsr/forms.py:195 akvo/templates/sign_in.html:20
 msgid "Password"
 msgstr ""
 
-#: akvo/rsr/forms.py:60 akvo/rsr/forms.py:62 akvo/rsr/forms.py:198
-#: akvo/rsr/forms.py:200
+#: akvo/rsr/forms.py:62 akvo/rsr/forms.py:64 akvo/rsr/forms.py:200
+#: akvo/rsr/forms.py:202
 msgid "Repeat password"
 msgstr ""
 
-#: akvo/rsr/forms.py:76 akvo/rsr/forms.py:219
+#: akvo/rsr/forms.py:78 akvo/rsr/forms.py:221
 msgid "Passwords do not match. Please enter the same password in both fields."
 msgstr ""
 
-#: akvo/rsr/forms.py:87
+#: akvo/rsr/forms.py:89
 msgid "A user with this email address already exists."
 msgstr ""
 
-#: akvo/rsr/forms.py:155
+#: akvo/rsr/forms.py:157
 msgid "Current password"
 msgstr ""
 
-#: akvo/rsr/forms.py:162
+#: akvo/rsr/forms.py:164
 msgid "New password"
 msgstr ""
 
-#: akvo/rsr/forms.py:169
+#: akvo/rsr/forms.py:171
 msgid "Repeat new password"
 msgstr ""
 
-#: akvo/rsr/forms.py:238 akvo/templates/myrsr/my_details.html:109
+#: akvo/rsr/forms.py:240 akvo/templates/myrsr/my_details.html:109
 #: akvo/templates/myrsr/my_reports.html:33
 #: akvo/templates/myrsr/user_management.html:82
 #: akvo/templates/project_widgets2.html:50
 msgid "Organisation"
 msgstr ""
 
-#: akvo/rsr/forms.py:245 akvo/templates/myrsr/my_details.html:111
+#: akvo/rsr/forms.py:247 akvo/templates/myrsr/my_details.html:111
 msgid "Job title (optional)"
 msgstr ""
 
-#: akvo/rsr/forms.py:252 akvo/templates/myrsr/my_details.html:110
+#: akvo/rsr/forms.py:254 akvo/templates/myrsr/my_details.html:110
 msgid "Country (optional)"
 msgstr ""
 
-#: akvo/rsr/forms.py:267
+#: akvo/rsr/forms.py:269
 msgid "User already linked to organisation."
 msgstr ""
 
-#: akvo/rsr/forms.py:285 akvo/templates/myrsr/my_updates.html:27
+#: akvo/rsr/forms.py:292 akvo/templates/myrsr/my_updates.html:27
+#: akvo/templates/results_base.html:174
 msgid "Title"
 msgstr ""
 
-#: akvo/rsr/forms.py:289
-#: akvo/templates/myrsr/project_editor/project_editor.html:162
+#: akvo/rsr/forms.py:296
+#: akvo/templates/myrsr/project_editor/project_editor.html:172
+#: akvo/templates/results_base.html:175
 msgid "Description"
 msgstr ""
 
-#: akvo/rsr/forms.py:297 akvo/templates/update_add.html:102
+#: akvo/rsr/forms.py:308 akvo/templates/results_base.html:167
+#: akvo/templates/update_add.html:102
 msgid "Please upload an image of 2 MB or less."
 msgstr ""
 
-#: akvo/rsr/forms.py:303
+#: akvo/rsr/forms.py:314 akvo/templates/results_base.html:179
 msgid "Photo caption"
 msgstr ""
 
-#: akvo/rsr/forms.py:309 akvo/templates/update_main.html:43
+#: akvo/rsr/forms.py:320 akvo/templates/results_base.html:180
+#: akvo/templates/update_main.html:40
 msgid "Photo credit"
 msgstr ""
 
-#: akvo/rsr/forms.py:315
+#: akvo/rsr/forms.py:326
 msgid "Video link"
 msgstr ""
 
-#: akvo/rsr/forms.py:321
+#: akvo/rsr/forms.py:332 akvo/templates/results_base.html:182
 msgid "Video caption"
 msgstr ""
 
-#: akvo/rsr/forms.py:327 akvo/templates/update_main.html:31
+#: akvo/rsr/forms.py:338 akvo/templates/results_base.html:183
+#: akvo/templates/update_main.html:28
 msgid "Video credit"
 msgstr ""
 
-#: akvo/rsr/forms.py:347
+#: akvo/rsr/forms.py:359
 msgid "Invalid video URL. Currently only YouTube and Vimeo are supported."
 msgstr ""
 
-#: akvo/rsr/forms.py:378
+#: akvo/rsr/forms.py:390
 msgid "Project or user not found."
 msgstr ""
 
-#: akvo/rsr/iso3166.py:10
+#: akvo/rsr/iso3166.py:14
 msgid "Afghanistan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:11
+#: akvo/rsr/iso3166.py:15
 msgid "Åland Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:12
+#: akvo/rsr/iso3166.py:16
 msgid "Albania"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:13
+#: akvo/rsr/iso3166.py:17
 msgid "Algeria"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:14
+#: akvo/rsr/iso3166.py:18
 msgid "American Samoa"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:15
+#: akvo/rsr/iso3166.py:19
 msgid "Andorra"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:16
+#: akvo/rsr/iso3166.py:20
 msgid "Angola"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:17
+#: akvo/rsr/iso3166.py:21
 msgid "Anguilla"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:18 akvo/rsr/iso3166.py:527
+#: akvo/rsr/iso3166.py:22 akvo/rsr/iso3166.py:531
 msgid "Antarctica"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:19
+#: akvo/rsr/iso3166.py:23
 msgid "Antigua and Barbuda"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:20
+#: akvo/rsr/iso3166.py:24
 msgid "Argentina"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:21
+#: akvo/rsr/iso3166.py:25
 msgid "Armenia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:22
+#: akvo/rsr/iso3166.py:26
 msgid "Aruba"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:23
+#: akvo/rsr/iso3166.py:27
 msgid "Australia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:24
+#: akvo/rsr/iso3166.py:28
 msgid "Austria"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:25
+#: akvo/rsr/iso3166.py:29
 msgid "Azerbaijan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:26
+#: akvo/rsr/iso3166.py:30
 msgid "Bahamas"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:27
+#: akvo/rsr/iso3166.py:31
 msgid "Bahrain"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:28
+#: akvo/rsr/iso3166.py:32
 msgid "Bangladesh"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:29
+#: akvo/rsr/iso3166.py:33
 msgid "Barbados"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:30
+#: akvo/rsr/iso3166.py:34
 msgid "Belarus"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:31
+#: akvo/rsr/iso3166.py:35
 msgid "Belgium"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:32
+#: akvo/rsr/iso3166.py:36
 msgid "Belize"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:33
+#: akvo/rsr/iso3166.py:37
 msgid "Benin"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:34
+#: akvo/rsr/iso3166.py:38
 msgid "Bermuda"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:35
+#: akvo/rsr/iso3166.py:39
 msgid "Bhutan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:36
+#: akvo/rsr/iso3166.py:40
 msgid "Bolivia, Plurinational State of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:37
+#: akvo/rsr/iso3166.py:41
 msgid "Bonaire, Sint Eustatius and Saba"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:38
+#: akvo/rsr/iso3166.py:42
 msgid "Bosnia and Herzegovina"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:39
+#: akvo/rsr/iso3166.py:43
 msgid "Botswana"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:40
+#: akvo/rsr/iso3166.py:44
 msgid "Bouvet Island"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:41
+#: akvo/rsr/iso3166.py:45
 msgid "Brazil"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:42
+#: akvo/rsr/iso3166.py:46
 msgid "British Indian Ocean Territory"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:43
+#: akvo/rsr/iso3166.py:47
 msgid "Brunei Darussalam"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:44
+#: akvo/rsr/iso3166.py:48
 msgid "Bulgaria"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:45
+#: akvo/rsr/iso3166.py:49
 msgid "Burkina Faso"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:46
+#: akvo/rsr/iso3166.py:50
 msgid "Burundi"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:47
+#: akvo/rsr/iso3166.py:51
 msgid "Cambodia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:48
+#: akvo/rsr/iso3166.py:52
 msgid "Cameroon"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:49
+#: akvo/rsr/iso3166.py:53
 msgid "Canada"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:50
+#: akvo/rsr/iso3166.py:54
 msgid "Cape Verde"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:51
+#: akvo/rsr/iso3166.py:55
 msgid "Cayman Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:52
+#: akvo/rsr/iso3166.py:56
 msgid "Central African Republic"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:53
+#: akvo/rsr/iso3166.py:57
 msgid "Chad"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:54
+#: akvo/rsr/iso3166.py:58
 msgid "Chile"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:55
+#: akvo/rsr/iso3166.py:59
 msgid "China"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:56
+#: akvo/rsr/iso3166.py:60
 msgid "Christmas Island"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:57
+#: akvo/rsr/iso3166.py:61
 msgid "Cocos (keeling) Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:58
+#: akvo/rsr/iso3166.py:62
 msgid "Colombia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:59
+#: akvo/rsr/iso3166.py:63
 msgid "Comoros"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:60
+#: akvo/rsr/iso3166.py:64
 msgid "Congo"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:61
+#: akvo/rsr/iso3166.py:65
 msgid "Congo, The Democratic Republic of the"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:62
+#: akvo/rsr/iso3166.py:66
 msgid "Cook Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:63
+#: akvo/rsr/iso3166.py:67
 msgid "Costa Rica"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:64
+#: akvo/rsr/iso3166.py:68
 msgid "Côte D'ivoire"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:65
+#: akvo/rsr/iso3166.py:69
 msgid "Croatia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:66
+#: akvo/rsr/iso3166.py:70
 msgid "Cuba"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:67
+#: akvo/rsr/iso3166.py:71
 msgid "Curaçao"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:68
+#: akvo/rsr/iso3166.py:72
 msgid "Cyprus"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:69
+#: akvo/rsr/iso3166.py:73
 msgid "Czech Republic"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:70
+#: akvo/rsr/iso3166.py:74
 msgid "Denmark"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:71
+#: akvo/rsr/iso3166.py:75
 msgid "Djibouti"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:72
+#: akvo/rsr/iso3166.py:76
 msgid "Dominica"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:73
+#: akvo/rsr/iso3166.py:77
 msgid "Dominican Republic"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:74
+#: akvo/rsr/iso3166.py:78
 msgid "Ecuador"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:75
+#: akvo/rsr/iso3166.py:79
 msgid "Egypt"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:76
+#: akvo/rsr/iso3166.py:80
 msgid "El Salvador"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:77
+#: akvo/rsr/iso3166.py:81
 msgid "Equatorial Guinea"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:78
+#: akvo/rsr/iso3166.py:82
 msgid "Eritrea"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:79
+#: akvo/rsr/iso3166.py:83
 msgid "Estonia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:80
+#: akvo/rsr/iso3166.py:84
 msgid "Ethiopia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:81
+#: akvo/rsr/iso3166.py:85
 msgid "Falkland Islands (Malvinas)"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:82
+#: akvo/rsr/iso3166.py:86
 msgid "Faroe Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:83
+#: akvo/rsr/iso3166.py:87
 msgid "Fiji"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:84
+#: akvo/rsr/iso3166.py:88
 msgid "Finland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:85
+#: akvo/rsr/iso3166.py:89
 msgid "France"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:86
+#: akvo/rsr/iso3166.py:90
 msgid "French Guiana"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:87
+#: akvo/rsr/iso3166.py:91
 msgid "French Polynesia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:88
+#: akvo/rsr/iso3166.py:92
 msgid "French Southern Territories"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:89
+#: akvo/rsr/iso3166.py:93
 msgid "Gabon"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:90
+#: akvo/rsr/iso3166.py:94
 msgid "Gambia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:91
+#: akvo/rsr/iso3166.py:95
 msgid "Georgia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:92
+#: akvo/rsr/iso3166.py:96
 msgid "Germany"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:93
+#: akvo/rsr/iso3166.py:97
 msgid "Ghana"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:94
+#: akvo/rsr/iso3166.py:98
 msgid "Gibraltar"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:95
+#: akvo/rsr/iso3166.py:99
 msgid "Greece"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:96
+#: akvo/rsr/iso3166.py:100
 msgid "Greenland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:97
+#: akvo/rsr/iso3166.py:101
 msgid "Grenada"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:98
+#: akvo/rsr/iso3166.py:102
 msgid "Guadeloupe"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:99
+#: akvo/rsr/iso3166.py:103
 msgid "Guam"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:100
+#: akvo/rsr/iso3166.py:104
 msgid "Guatemala"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:101
+#: akvo/rsr/iso3166.py:105
 msgid "Guernsey"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:102
+#: akvo/rsr/iso3166.py:106
 msgid "Guinea"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:103
+#: akvo/rsr/iso3166.py:107
 msgid "Guinea-bissau"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:104
+#: akvo/rsr/iso3166.py:108
 msgid "Guyana"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:105
+#: akvo/rsr/iso3166.py:109
 msgid "Haiti"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:106
+#: akvo/rsr/iso3166.py:110
 msgid "Heard Island and Mcdonald Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:107
+#: akvo/rsr/iso3166.py:111
 msgid "Holy See (Vatican City State)"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:108
+#: akvo/rsr/iso3166.py:112
 msgid "Honduras"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:109
+#: akvo/rsr/iso3166.py:113
 msgid "Hong Kong"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:110
+#: akvo/rsr/iso3166.py:114
 msgid "Hungary"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:111
+#: akvo/rsr/iso3166.py:115
 msgid "Iceland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:112
+#: akvo/rsr/iso3166.py:116
 msgid "India"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:113
+#: akvo/rsr/iso3166.py:117
 msgid "Indonesia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:114
+#: akvo/rsr/iso3166.py:118
 msgid "Iran, Islamic Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:115
+#: akvo/rsr/iso3166.py:119
 msgid "Iraq"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:116
+#: akvo/rsr/iso3166.py:120
 msgid "Ireland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:117
+#: akvo/rsr/iso3166.py:121
 msgid "Isle of Man"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:118
+#: akvo/rsr/iso3166.py:122
 msgid "Israel"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:119
+#: akvo/rsr/iso3166.py:123
 msgid "Italy"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:120
+#: akvo/rsr/iso3166.py:124
 msgid "Jamaica"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:121
+#: akvo/rsr/iso3166.py:125
 msgid "Japan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:122
+#: akvo/rsr/iso3166.py:126
 msgid "Jersey"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:123
+#: akvo/rsr/iso3166.py:127
 msgid "Jordan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:124
+#: akvo/rsr/iso3166.py:128
 msgid "Kazakhstan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:125
+#: akvo/rsr/iso3166.py:129
 msgid "Kenya"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:126
+#: akvo/rsr/iso3166.py:130
 msgid "Kiribati"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:127
+#: akvo/rsr/iso3166.py:131
 msgid "Korea, Democratic People's Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:128
+#: akvo/rsr/iso3166.py:132
 msgid "Korea, Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:129
+#: akvo/rsr/iso3166.py:133
 msgid "Kosovo"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:130
+#: akvo/rsr/iso3166.py:134
 msgid "Kuwait"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:131
+#: akvo/rsr/iso3166.py:135
 msgid "Kyrgyzstan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:132
+#: akvo/rsr/iso3166.py:136
 msgid "Lao People's Democratic Republic"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:133
+#: akvo/rsr/iso3166.py:137
 msgid "Latvia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:134
+#: akvo/rsr/iso3166.py:138
 msgid "Lebanon"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:135
+#: akvo/rsr/iso3166.py:139
 msgid "Lesotho"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:136
+#: akvo/rsr/iso3166.py:140
 msgid "Liberia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:137
+#: akvo/rsr/iso3166.py:141
 msgid "Libyan Arab Jamahiriya"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:138
+#: akvo/rsr/iso3166.py:142
 msgid "Liechtenstein"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:139
+#: akvo/rsr/iso3166.py:143
 msgid "Lithuania"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:140
+#: akvo/rsr/iso3166.py:144
 msgid "Luxembourg"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:141
+#: akvo/rsr/iso3166.py:145
 msgid "Macao"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:142
+#: akvo/rsr/iso3166.py:146
 msgid "Macedonia, The Former Yugoslav Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:143
+#: akvo/rsr/iso3166.py:147
 msgid "Madagascar"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:144
+#: akvo/rsr/iso3166.py:148
 msgid "Malawi"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:145
+#: akvo/rsr/iso3166.py:149
 msgid "Malaysia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:146
+#: akvo/rsr/iso3166.py:150
 msgid "Maldives"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:147
+#: akvo/rsr/iso3166.py:151
 msgid "Mali"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:148
+#: akvo/rsr/iso3166.py:152
 msgid "Malta"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:149
+#: akvo/rsr/iso3166.py:153
 msgid "Marshall Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:150
+#: akvo/rsr/iso3166.py:154
 msgid "Martinique"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:151
+#: akvo/rsr/iso3166.py:155
 msgid "Mauritania"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:152
+#: akvo/rsr/iso3166.py:156
 msgid "Mauritius"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:153
+#: akvo/rsr/iso3166.py:157
 msgid "Mayotte"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:154
+#: akvo/rsr/iso3166.py:158
 msgid "Mexico"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:155
+#: akvo/rsr/iso3166.py:159
 msgid "Micronesia, Federated States of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:156
+#: akvo/rsr/iso3166.py:160
 msgid "Moldova, Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:157
+#: akvo/rsr/iso3166.py:161
 msgid "Monaco"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:158
+#: akvo/rsr/iso3166.py:162
 msgid "Mongolia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:159
+#: akvo/rsr/iso3166.py:163
 msgid "Montenegro"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:160
+#: akvo/rsr/iso3166.py:164
 msgid "Montserrat"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:161
+#: akvo/rsr/iso3166.py:165
 msgid "Morocco"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:162
+#: akvo/rsr/iso3166.py:166
 msgid "Mozambique"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:163
+#: akvo/rsr/iso3166.py:167
 msgid "Myanmar"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:164
+#: akvo/rsr/iso3166.py:168
 msgid "Namibia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:165
+#: akvo/rsr/iso3166.py:169
 msgid "Nauru"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:166
+#: akvo/rsr/iso3166.py:170
 msgid "Nepal"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:167
+#: akvo/rsr/iso3166.py:171
 msgid "Netherlands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:168
+#: akvo/rsr/iso3166.py:172
 msgid "New Caledonia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:169
+#: akvo/rsr/iso3166.py:173
 msgid "New Zealand"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:170
+#: akvo/rsr/iso3166.py:174
 msgid "Nicaragua"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:171
+#: akvo/rsr/iso3166.py:175
 msgid "Niger"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:172
+#: akvo/rsr/iso3166.py:176
 msgid "Nigeria"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:173
+#: akvo/rsr/iso3166.py:177
 msgid "Niue"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:174
+#: akvo/rsr/iso3166.py:178
 msgid "Norfolk Island"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:175
+#: akvo/rsr/iso3166.py:179
 msgid "Northern Mariana Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:176
+#: akvo/rsr/iso3166.py:180
 msgid "Norway"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:177
+#: akvo/rsr/iso3166.py:181
 msgid "Oman"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:178
+#: akvo/rsr/iso3166.py:182
 msgid "Pakistan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:179
+#: akvo/rsr/iso3166.py:183
 msgid "Palau"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:180
+#: akvo/rsr/iso3166.py:184
 msgid "Palestine, State of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:181
+#: akvo/rsr/iso3166.py:185
 msgid "Panama"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:182
+#: akvo/rsr/iso3166.py:186
 msgid "Papua New Guinea"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:183
+#: akvo/rsr/iso3166.py:187
 msgid "Paraguay"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:184
+#: akvo/rsr/iso3166.py:188
 msgid "Peru"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:185
+#: akvo/rsr/iso3166.py:189
 msgid "Philippines"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:186
+#: akvo/rsr/iso3166.py:190
 msgid "Pitcairn"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:187
+#: akvo/rsr/iso3166.py:191
 msgid "Poland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:188
+#: akvo/rsr/iso3166.py:192
 msgid "Portugal"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:189
+#: akvo/rsr/iso3166.py:193
 msgid "Puerto Rico"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:190
+#: akvo/rsr/iso3166.py:194
 msgid "Qatar"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:191
+#: akvo/rsr/iso3166.py:195
 msgid "Réunion"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:192
+#: akvo/rsr/iso3166.py:196
 msgid "Romania"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:193
+#: akvo/rsr/iso3166.py:197
 msgid "Russian Federation"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:194
+#: akvo/rsr/iso3166.py:198
 msgid "Rwanda"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:195
+#: akvo/rsr/iso3166.py:199
 msgid "Saint Barthélemy"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:196
+#: akvo/rsr/iso3166.py:200
 msgid "Saint Helena, Ascension and Tristan Da Cunha"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:197
+#: akvo/rsr/iso3166.py:201
 msgid "Saint Kitts and Nevis"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:198
+#: akvo/rsr/iso3166.py:202
 msgid "Saint Lucia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:199
+#: akvo/rsr/iso3166.py:203
 msgid "Saint Martin (French part)"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:200
+#: akvo/rsr/iso3166.py:204
 msgid "Saint Pierre and Miquelon"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:201
+#: akvo/rsr/iso3166.py:205
 msgid "Saint Vincent and the Grenadines"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:202
+#: akvo/rsr/iso3166.py:206
 msgid "Samoa"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:203
+#: akvo/rsr/iso3166.py:207
 msgid "San Marino"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:204
+#: akvo/rsr/iso3166.py:208
 msgid "Sao Tome and Principe"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:205
+#: akvo/rsr/iso3166.py:209
 msgid "Saudi Arabia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:206
+#: akvo/rsr/iso3166.py:210
 msgid "Senegal"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:207
+#: akvo/rsr/iso3166.py:211
 msgid "Serbia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:208
+#: akvo/rsr/iso3166.py:212
 msgid "Seychelles"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:209
+#: akvo/rsr/iso3166.py:213
 msgid "Sierra Leone"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:210
+#: akvo/rsr/iso3166.py:214
 msgid "Singapore"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:211
+#: akvo/rsr/iso3166.py:215
 msgid "Sint Maarten (Dutch part)"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:212
+#: akvo/rsr/iso3166.py:216
 msgid "Slovakia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:213
+#: akvo/rsr/iso3166.py:217
 msgid "Slovenia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:214
+#: akvo/rsr/iso3166.py:218
 msgid "Solomon Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:215
+#: akvo/rsr/iso3166.py:219
 msgid "Somalia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:216
+#: akvo/rsr/iso3166.py:220
 msgid "South Africa"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:217
+#: akvo/rsr/iso3166.py:221
 msgid "South Georgia and the South Sandwich Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:218
+#: akvo/rsr/iso3166.py:222
 msgid "South Sudan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:219
+#: akvo/rsr/iso3166.py:223
 msgid "Spain"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:220
+#: akvo/rsr/iso3166.py:224
 msgid "Sri Lanka"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:221
+#: akvo/rsr/iso3166.py:225
 msgid "Sudan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:222
+#: akvo/rsr/iso3166.py:226
 msgid "Suriname"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:223
+#: akvo/rsr/iso3166.py:227
 msgid "Svalbard and Jan Mayen"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:224
+#: akvo/rsr/iso3166.py:228
 msgid "Swaziland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:225
+#: akvo/rsr/iso3166.py:229
 msgid "Sweden"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:226
+#: akvo/rsr/iso3166.py:230
 msgid "Switzerland"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:227
+#: akvo/rsr/iso3166.py:231
 msgid "Syrian Arab Republic"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:228
+#: akvo/rsr/iso3166.py:232
 msgid "Taiwan, Province of China"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:229
+#: akvo/rsr/iso3166.py:233
 msgid "Tajikistan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:230
+#: akvo/rsr/iso3166.py:234
 msgid "Tanzania, United Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:231
+#: akvo/rsr/iso3166.py:235
 msgid "Thailand"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:232
+#: akvo/rsr/iso3166.py:236
 msgid "Timor-leste"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:233
+#: akvo/rsr/iso3166.py:237
 msgid "Togo"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:234
+#: akvo/rsr/iso3166.py:238
 msgid "Tokelau"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:235
+#: akvo/rsr/iso3166.py:239
 msgid "Tonga"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:236
+#: akvo/rsr/iso3166.py:240
 msgid "Trinidad and Tobago"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:237
+#: akvo/rsr/iso3166.py:241
 msgid "Tunisia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:238
+#: akvo/rsr/iso3166.py:242
 msgid "Turkey"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:239
+#: akvo/rsr/iso3166.py:243
 msgid "Turkmenistan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:240
+#: akvo/rsr/iso3166.py:244
 msgid "Turks and Caicos Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:241
+#: akvo/rsr/iso3166.py:245
 msgid "Tuvalu"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:242
+#: akvo/rsr/iso3166.py:246
 msgid "Uganda"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:243
+#: akvo/rsr/iso3166.py:247
 msgid "Ukraine"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:244
+#: akvo/rsr/iso3166.py:248
 msgid "United Arab Emirates"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:245
+#: akvo/rsr/iso3166.py:249
 msgid "United Kingdom"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:246
+#: akvo/rsr/iso3166.py:250
 msgid "United States"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:247
+#: akvo/rsr/iso3166.py:251
 msgid "United States Minor Outlying Islands"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:248
+#: akvo/rsr/iso3166.py:252
 msgid "Uruguay"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:249
+#: akvo/rsr/iso3166.py:253
 msgid "Uzbekistan"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:250
+#: akvo/rsr/iso3166.py:254
 msgid "Vanuatu"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:251
+#: akvo/rsr/iso3166.py:255
 msgid "Venezuela, Bolivarian Republic of"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:252
+#: akvo/rsr/iso3166.py:256
 msgid "Vietnam"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:253
+#: akvo/rsr/iso3166.py:257
 msgid "Virgin Islands, British"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:254
+#: akvo/rsr/iso3166.py:258
 msgid "Virgin Islands, U.S."
 msgstr ""
 
-#: akvo/rsr/iso3166.py:255
+#: akvo/rsr/iso3166.py:259
 msgid "Wallis and Futuna"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:256
+#: akvo/rsr/iso3166.py:260
 msgid "Western Sahara"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:257
+#: akvo/rsr/iso3166.py:261
 msgid "Yemen"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:258
+#: akvo/rsr/iso3166.py:262
 msgid "Zambia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:259
+#: akvo/rsr/iso3166.py:263
 msgid "Zimbabwe"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:521
+#: akvo/rsr/iso3166.py:525
 msgid "Africa"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:522
+#: akvo/rsr/iso3166.py:526
 msgid "Asia"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:523
+#: akvo/rsr/iso3166.py:527
 msgid "Europe"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:524
+#: akvo/rsr/iso3166.py:528
 msgid "North America"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:525
+#: akvo/rsr/iso3166.py:529
 msgid "South America"
 msgstr ""
 
-#: akvo/rsr/iso3166.py:526
+#: akvo/rsr/iso3166.py:530
 msgid "Oceania"
 msgstr ""
 
@@ -3919,7 +3989,7 @@ msgid "%sWallis and Futuna Islands"
 msgstr ""
 
 #: akvo/rsr/models/benchmark.py:15 akvo/rsr/models/budget_item.py:39
-#: akvo/rsr/models/budget_item.py:167 akvo/rsr/models/country.py:51
+#: akvo/rsr/models/budget_item.py:160 akvo/rsr/models/country.py:51
 #: akvo/rsr/models/custom_field.py:46 akvo/rsr/models/goal.py:15
 #: akvo/rsr/models/humanitarian_scope.py:18
 #: akvo/rsr/models/iati_activity_export.py:26
@@ -3931,11 +4001,10 @@ msgstr ""
 #: akvo/rsr/models/project_comment.py:17
 #: akvo/rsr/models/project_condition.py:19
 #: akvo/rsr/models/project_contact.py:19
-#: akvo/rsr/models/project_document.py:24 akvo/rsr/models/project_update.py:38
-#: akvo/rsr/models/region.py:21 akvo/rsr/models/result/result.py:18
-#: akvo/rsr/models/sector.py:20 akvo/rsr/models/transaction.py:24
-#: akvo/templates/myrsr/my_iati.html:69
-#: akvo/templates/myrsr/my_projects.html:65
+#: akvo/rsr/models/project_document.py:24 akvo/rsr/models/project_update.py:36
+#: akvo/rsr/models/region.py:21 akvo/rsr/models/result/narrative_report.py:17
+#: akvo/rsr/models/result/result.py:18 akvo/rsr/models/sector.py:20
+#: akvo/rsr/models/transaction.py:24 akvo/templates/myrsr/my_iati.html:71
 #: akvo/templates/myrsr/my_projects.html:138
 msgid "project"
 msgstr ""
@@ -3996,7 +4065,7 @@ msgstr ""
 msgid "budget item labels"
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:41 akvo/rsr/models/budget_item.py:162
+#: akvo/rsr/models/budget_item.py:41 akvo/rsr/models/budget_item.py:155
 msgid "budget item"
 msgstr ""
 
@@ -4059,6 +4128,19 @@ msgid ""
 "currency conversions."
 msgstr ""
 
+#: akvo/rsr/models/budget_item.py:77
+#: akvo/rsr/models/iati_activity_export.py:28 akvo/rsr/models/iati_check.py:22
+#: akvo/rsr/models/iati_export.py:42 akvo/rsr/models/iati_import_job.py:71
+#: akvo/rsr/models/organisation_budget.py:72 akvo/rsr/models/project.py:134
+#: akvo/rsr/models/project.py:137
+#: akvo/rsr/models/result/indicator_period_data.py:65
+#: akvo/templates/myrsr/my_iati.html:86
+#: akvo/templates/organisation_directory.html:23
+#: akvo/templates/project_directory.html:38
+#: akvo/templates/update_directory.html:25
+msgid "status"
+msgstr ""
+
 #: akvo/rsr/models/budget_item.py:78 akvo/rsr/models/organisation_budget.py:73
 msgid ""
 "The status explains whether the budget being reported is indicative or has "
@@ -4082,46 +4164,47 @@ msgstr ""
 #: akvo/rsr/models/organisation_budget.py:58
 #: akvo/rsr/models/planned_disbursement.py:101
 #: akvo/rsr/models/planned_disbursement.py:103
-#: akvo/rsr/models/result/indicator_period.py:166
-#: akvo/rsr/models/result/indicator_period.py:168
+#: akvo/rsr/models/result/indicator_period.py:154
+#: akvo/rsr/models/result/indicator_period.py:156
+#: akvo/rsr/models/result/narrative_report.py:58
 msgid "Period start cannot be at a later time than period end."
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:163
+#: akvo/rsr/models/budget_item.py:156
 msgid "budget items"
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:169 akvo/rsr/models/budget_item.py:197
+#: akvo/rsr/models/budget_item.py:162 akvo/rsr/models/budget_item.py:190
 msgid "country budget item"
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:171
+#: akvo/rsr/models/budget_item.py:164
 msgid ""
 "This item encodes the alignment of activities with both the functional and "
 "administrative classifications used in the recipient country’s Chart of "
 "Accounts. This applies to both on- and off-budget activities."
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:176
+#: akvo/rsr/models/budget_item.py:169
 msgid "country budget item description"
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:179
+#: akvo/rsr/models/budget_item.py:172
 msgid "country budget item percentage"
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:181
+#: akvo/rsr/models/budget_item.py:174
 msgid ""
 "If more than one identifier is reported, the percentage share must be "
 "reported and all percentages should add up to 100 percent. Use a period to "
 "denote decimals."
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:187 akvo/rsr/models/location.py:243
+#: akvo/rsr/models/budget_item.py:180 akvo/rsr/models/location.py:258
 msgid "No code specified"
 msgstr ""
 
-#: akvo/rsr/models/budget_item.py:198
+#: akvo/rsr/models/budget_item.py:191
 msgid "country budget items"
 msgstr ""
 
@@ -4191,7 +4274,8 @@ msgstr ""
 msgid "Enter additional information about the recipient country, if necessary."
 msgstr ""
 
-#: akvo/rsr/models/country.py:77 akvo/rsr/models/organisation_document.py:153
+#: akvo/rsr/models/country.py:77 akvo/rsr/models/location.py:47
+#: akvo/rsr/models/organisation_document.py:153
 msgid "No country specified"
 msgstr ""
 
@@ -4475,9 +4559,25 @@ msgid ""
 "editor, and checkbox will show a checkbox."
 msgstr ""
 
-#: akvo/rsr/models/employment.py:30 akvo/rsr/models/iati_export.py:35
+#: akvo/rsr/models/custom_field.py:115 akvo/rsr/models/employment.py:28
+#: akvo/rsr/models/organisation.py:511
+#: akvo/rsr/models/organisation_budget.py:90
+#: akvo/rsr/models/organisation_budget.py:101
+#: akvo/rsr/models/organisation_budget.py:116
+#: akvo/rsr/models/organisation_budget.py:158
+#: akvo/rsr/models/organisation_budget.py:183
+#: akvo/rsr/models/organisation_document.py:25
+#: akvo/rsr/models/organisation_indicator_label.py:17
+#: akvo/rsr/models/partner_site.py:52 akvo/rsr/models/partnership.py:91
+#: akvo/templates/organisation_directory.html:24
+#: akvo/templates/project_directory.html:39
+#: akvo/templates/update_directory.html:26
+msgid "organisation"
+msgstr ""
+
+#: akvo/rsr/models/employment.py:30 akvo/rsr/models/iati_export.py:38
 #: akvo/rsr/models/iati_import.py:117 akvo/rsr/models/project_comment.py:18
-#: akvo/rsr/models/project_update.py:39
+#: akvo/rsr/models/project_update.py:37
 #: akvo/rsr/models/result/indicator_period_data.py:50
 #: akvo/rsr/models/result/indicator_period_data_comment.py:23
 #: akvo/rsr/models/user.py:109
@@ -4711,7 +4811,7 @@ msgid "humanitarian scopes"
 msgstr ""
 
 #: akvo/rsr/models/iati_activity_export.py:14
-#: akvo/rsr/models/iati_export.py:24 akvo/rsr/models/iati_import_job.py:57
+#: akvo/rsr/models/iati_export.py:29 akvo/rsr/models/iati_import_job.py:57
 msgid "in progress"
 msgstr ""
 
@@ -4728,7 +4828,7 @@ msgid "IATI activity exports"
 msgstr ""
 
 #: akvo/rsr/models/iati_activity_export.py:37
-#: akvo/rsr/models/iati_export.py:50
+#: akvo/rsr/models/iati_export.py:53
 msgid "IATI export for"
 msgstr ""
 
@@ -4737,7 +4837,7 @@ msgid "IATI export for project with no title"
 msgstr ""
 
 #: akvo/rsr/models/iati_activity_export.py:43 akvo/rsr/models/iati_check.py:38
-#: akvo/rsr/models/iati_export.py:56
+#: akvo/rsr/models/iati_export.py:59
 msgid "unknown status"
 msgstr ""
 
@@ -4774,11 +4874,11 @@ msgstr ""
 msgid "success"
 msgstr ""
 
-#: akvo/rsr/models/iati_check.py:15 akvo/templates/myrsr/my_iati.html:108
+#: akvo/rsr/models/iati_check.py:15 akvo/templates/myrsr/my_iati.html:110
 msgid "warning"
 msgstr ""
 
-#: akvo/rsr/models/iati_check.py:16 akvo/templates/myrsr/my_iati.html:110
+#: akvo/rsr/models/iati_check.py:16 akvo/templates/myrsr/my_iati.html:112
 msgid "error"
 msgstr ""
 
@@ -4786,7 +4886,7 @@ msgstr ""
 msgid "IATI check"
 msgstr ""
 
-#: akvo/rsr/models/iati_check.py:28 akvo/templates/myrsr/my_iati.html:99
+#: akvo/rsr/models/iati_check.py:28 akvo/templates/myrsr/my_iati.html:101
 msgid "IATI checks"
 msgstr ""
 
@@ -4798,46 +4898,46 @@ msgstr ""
 msgid "IATI check for unknown project"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:23 akvo/rsr/models/iati_import_job.py:56
+#: akvo/rsr/models/iati_export.py:28 akvo/rsr/models/iati_import_job.py:56
 msgid "pending"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:25 akvo/rsr/models/iati_import_job.py:59
+#: akvo/rsr/models/iati_export.py:30 akvo/rsr/models/iati_import_job.py:59
 msgid "completed"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:26 akvo/rsr/models/iati_import_job.py:60
-#: akvo/templates/myrsr/my_iati.html:132
+#: akvo/rsr/models/iati_export.py:31 akvo/rsr/models/iati_import_job.py:60
+#: akvo/templates/myrsr/my_iati.html:134
 msgid "cancelled"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:32 akvo/templates/myrsr/my_projects.html:139
+#: akvo/rsr/models/iati_export.py:35 akvo/templates/myrsr/my_projects.html:139
 msgid "reporting organisation"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:37 akvo/rsr/models/iati_import_job.py:73
-#: akvo/rsr/models/project.py:423 akvo/templates/myrsr/my_iati.html:70
-#: akvo/templates/organisation_directory.html:93
+#: akvo/rsr/models/iati_export.py:40 akvo/rsr/models/iati_import_job.py:73
+#: akvo/rsr/models/project.py:423 akvo/templates/myrsr/my_iati.html:72
+#: akvo/templates/myrsr/my_projects.html:19
 msgid "projects"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:40 akvo/templates/organisation_main.html:93
+#: akvo/rsr/models/iati_export.py:43 akvo/templates/organisation_main.html:93
 msgid "IATI file"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:41 akvo/templates/myrsr/my_iati.html:100
+#: akvo/rsr/models/iati_export.py:44 akvo/templates/myrsr/my_iati.html:102
 msgid "public"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:45 akvo/templates/myrsr/my_iati.html:67
+#: akvo/rsr/models/iati_export.py:48 akvo/templates/myrsr/my_iati.html:69
 msgid "IATI export"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:46 akvo/templates/myrsr/my_iati.html:68
+#: akvo/rsr/models/iati_export.py:49 akvo/templates/myrsr/my_iati.html:70
 msgid "IATI exports"
 msgstr ""
 
-#: akvo/rsr/models/iati_export.py:52
+#: akvo/rsr/models/iati_export.py:55
 msgid "IATI export for unknown organisation"
 msgstr ""
 
@@ -5005,8 +5105,8 @@ msgstr ""
 msgid "field"
 msgstr ""
 
-#: akvo/rsr/models/iati_import_log.py:117 akvo/rsr/models/project_update.py:42
-#: akvo/rsr/models/result/indicator_period_data.py:62
+#: akvo/rsr/models/iati_import_log.py:117 akvo/rsr/models/project_update.py:40
+#: akvo/rsr/models/result/indicator_period_data.py:67
 msgid "text"
 msgstr ""
 
@@ -5053,7 +5153,14 @@ msgid ""
 "format."
 msgstr ""
 
-#: akvo/rsr/models/keyword.py:42 akvo/rsr/models/partner_site.py:159
+#: akvo/rsr/models/keyword.py:41 akvo/rsr/models/project.py:266
+#: akvo/templates/organisation_directory.html:21
+#: akvo/templates/project_directory.html:36
+#: akvo/templates/update_directory.html:23
+msgid "keyword"
+msgstr ""
+
+#: akvo/rsr/models/keyword.py:42 akvo/rsr/models/partner_site.py:160
 msgid "keywords"
 msgstr ""
 
@@ -5157,15 +5264,38 @@ msgstr ""
 msgid "postal code"
 msgstr ""
 
-#: akvo/rsr/models/location.py:90
+#: akvo/rsr/models/location.py:40
+#: akvo/templates/myrsr/project_editor/project_editor.html:192
+msgid "Latitude"
+msgstr ""
+
+#: akvo/rsr/models/location.py:41
+msgid "No latitude specified"
+msgstr ""
+
+#: akvo/rsr/models/location.py:43
+#: akvo/templates/myrsr/project_editor/project_editor.html:191
+msgid "Longitude"
+msgstr ""
+
+#: akvo/rsr/models/location.py:44
+msgid "No longitude specified"
+msgstr ""
+
+#: akvo/rsr/models/location.py:46
+#: akvo/templates/myrsr/project_editor/project_editor.html:193
+msgid "Country"
+msgstr ""
+
+#: akvo/rsr/models/location.py:115
 msgid "The country in which the organisation is located."
 msgstr ""
 
-#: akvo/rsr/models/location.py:105 akvo/rsr/models/organisation_budget.py:206
+#: akvo/rsr/models/location.py:130 akvo/rsr/models/organisation_budget.py:206
 msgid "reference"
 msgstr ""
 
-#: akvo/rsr/models/location.py:106
+#: akvo/rsr/models/location.py:131
 msgid ""
 "An internal reference that describes the location in the reporting "
 "organisation's own system. For reference see: <a href=\"http://iatistandard."
@@ -5174,7 +5304,7 @@ msgid ""
 "activities/iati-activity/location/#attributes</a>."
 msgstr ""
 
-#: akvo/rsr/models/location.py:115
+#: akvo/rsr/models/location.py:140
 msgid ""
 "Enter a code to identify the region. Codes are based on DAC region codes. "
 "Where an activity is considered global, the code 998 can be used. For "
@@ -5182,26 +5312,26 @@ msgid ""
 "target=\"_blank\">http://www.oecd.org/dac/stats/dacandcrscodelists.htm</a>."
 msgstr ""
 
-#: akvo/rsr/models/location.py:124
+#: akvo/rsr/models/location.py:149
 msgid "The human-readable name for the location."
 msgstr ""
 
-#: akvo/rsr/models/location.py:127
+#: akvo/rsr/models/location.py:152
 msgid "location description"
 msgstr ""
 
-#: akvo/rsr/models/location.py:128
+#: akvo/rsr/models/location.py:153
 msgid ""
 "This provides free text space for providing an additional description, if "
 "needed, of the actual target of the activity. A description that qualifies "
 "the location, not the activity."
 msgstr ""
 
-#: akvo/rsr/models/location.py:133
+#: akvo/rsr/models/location.py:158
 msgid "activity description"
 msgstr ""
 
-#: akvo/rsr/models/location.py:134
+#: akvo/rsr/models/location.py:159
 msgid ""
 "A description that qualifies the activity taking place at the location. This "
 "should not duplicate information provided in the main activity description, "
@@ -5209,32 +5339,32 @@ msgid ""
 "locations within a single iati-activity record."
 msgstr ""
 
-#: akvo/rsr/models/location.py:140
+#: akvo/rsr/models/location.py:165
 msgid "location precision"
 msgstr ""
 
-#: akvo/rsr/models/location.py:142
+#: akvo/rsr/models/location.py:167
 msgid ""
 "Defines whether the location represents the most distinct point reasonably "
 "possible for this type of activity or is an approximation due to lack of "
 "more detailed information."
 msgstr ""
 
-#: akvo/rsr/models/location.py:147
+#: akvo/rsr/models/location.py:172
 msgid "reach"
 msgstr ""
 
-#: akvo/rsr/models/location.py:148
+#: akvo/rsr/models/location.py:173
 msgid ""
 "Does this location describe where the activity takes place or where the "
 "intended beneficiaries reside?"
 msgstr ""
 
-#: akvo/rsr/models/location.py:152
+#: akvo/rsr/models/location.py:177
 msgid "class"
 msgstr ""
 
-#: akvo/rsr/models/location.py:153
+#: akvo/rsr/models/location.py:178
 msgid ""
 "Does the location refer to a physical structure such as a building, a "
 "populated place (e.g. city or village), an administrative division, or "
@@ -5244,11 +5374,11 @@ msgid ""
 "GeographicLocationClass/</a>."
 msgstr ""
 
-#: akvo/rsr/models/location.py:161
+#: akvo/rsr/models/location.py:186
 msgid "feature designation"
 msgstr ""
 
-#: akvo/rsr/models/location.py:163
+#: akvo/rsr/models/location.py:188
 msgid ""
 "A more refined coded classification of the type of feature referred to by "
 "this location. For reference: <a href=\"http://iatistandard.org/202/"
@@ -5256,59 +5386,50 @@ msgid ""
 "codelists/LocationType/</a>."
 msgstr ""
 
-#: akvo/rsr/models/location.py:172
-#: akvo/templates/myrsr/project_editor/project_editor.html:182
-msgid "Latitude"
-msgstr ""
-
-#: akvo/rsr/models/location.py:173
-msgid "No latitude specified"
-msgstr ""
-
-#: akvo/rsr/models/location.py:175
-#: akvo/templates/myrsr/project_editor/project_editor.html:181
-msgid "Longitude"
-msgstr ""
-
-#: akvo/rsr/models/location.py:176
-msgid "No longitude specified"
-msgstr ""
-
-#: akvo/rsr/models/location.py:218
+#: akvo/rsr/models/location.py:233
 msgid "The country or countries that benefit(s) from the activity."
 msgstr ""
 
-#: akvo/rsr/models/location.py:227
+#: akvo/rsr/models/location.py:239
+#: akvo/rsr/models/result/indicator_period_actual_location.py:19
+#: akvo/rsr/models/result/indicator_period_target_location.py:19
+#: akvo/templates/organisation_directory.html:22
+#: akvo/templates/project_directory.html:37
+#: akvo/templates/update_directory.html:24
+msgid "location"
+msgstr ""
+
+#: akvo/rsr/models/location.py:242
 msgid "administrative code"
 msgstr ""
 
-#: akvo/rsr/models/location.py:228
+#: akvo/rsr/models/location.py:243
 msgid ""
 "Coded identification of national and sub-national divisions according to "
 "recognised administrative boundary repositories. Multiple levels may be "
 "reported."
 msgstr ""
 
-#: akvo/rsr/models/location.py:233
+#: akvo/rsr/models/location.py:248
 msgid "administrative vocabulary"
 msgstr ""
 
-#: akvo/rsr/models/location.py:235
+#: akvo/rsr/models/location.py:250
 msgid ""
 "For reference: <a href=\"http://iatistandard.org/202/codelists/"
 "GeographicVocabulary/\" target=\"_blank\">http://iatistandard.org/202/"
 "codelists/GeographicVocabulary/</a>."
 msgstr ""
 
-#: akvo/rsr/models/location.py:240
+#: akvo/rsr/models/location.py:255
 msgid "administrative level"
 msgstr ""
 
-#: akvo/rsr/models/location.py:253
+#: akvo/rsr/models/location.py:268
 msgid "location administrative"
 msgstr ""
 
-#: akvo/rsr/models/location.py:254
+#: akvo/rsr/models/location.py:269
 msgid "location administratives"
 msgstr ""
 
@@ -5397,7 +5518,7 @@ msgstr ""
 msgid "(20 characters)."
 msgstr ""
 
-#: akvo/rsr/models/organisation.py:139 akvo/rsr/models/project_update.py:34
+#: akvo/rsr/models/organisation.py:139 akvo/rsr/models/project_update.py:32
 #: akvo/rsr/models/result/indicator_period_data.py:44
 msgid "mobile"
 msgstr ""
@@ -5428,7 +5549,7 @@ msgstr ""
 msgid "Describe your organisation."
 msgstr ""
 
-#: akvo/rsr/models/organisation.py:156 akvo/rsr/models/project_update.py:65
+#: akvo/rsr/models/organisation.py:156 akvo/rsr/models/project_update.py:68
 #: akvo/rsr/models/user.py:97
 msgid "Notes and comments"
 msgstr ""
@@ -5490,7 +5611,7 @@ msgstr ""
 msgid "An Organisation with this IATI organisation identifier already exists"
 msgstr ""
 
-#: akvo/rsr/models/organisation.py:498 akvo/rsr/models/user.py:94
+#: akvo/rsr/models/organisation.py:512 akvo/rsr/models/user.py:94
 #: akvo/rsr/models/user.py:139
 msgid "organisations"
 msgstr ""
@@ -5535,11 +5656,13 @@ msgstr ""
 
 #: akvo/rsr/models/organisation_budget.py:33
 #: akvo/rsr/models/result/indicator_period.py:25
+#: akvo/rsr/models/result/narrative_report.py:33
 msgid "period start"
 msgstr ""
 
 #: akvo/rsr/models/organisation_budget.py:37
 #: akvo/rsr/models/result/indicator_period.py:29
+#: akvo/rsr/models/result/narrative_report.py:37
 msgid "period end"
 msgstr ""
 
@@ -5819,99 +5942,99 @@ msgstr ""
 msgid "organisation indicator labels"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:52
+#: akvo/rsr/models/partner_site.py:53
 msgid "Select your organisation from the drop-down list."
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:53
+#: akvo/rsr/models/partner_site.py:54
 msgid "Akvo page notes"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:55
+#: akvo/rsr/models/partner_site.py:56
 msgid "hostname"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:56
+#: akvo/rsr/models/partner_site.py:57
 msgid ""
 "<p>Your hostname is used in the default web address of your Akvo page. The "
 "web address created from  the hostname <em>myorganisation</em> would be "
 "<em>http://myorganisation.akvoapp.org/</em>.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:62
+#: akvo/rsr/models/partner_site.py:63
 msgid "CNAME"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:63
+#: akvo/rsr/models/partner_site.py:64
 msgid ""
 "<p>Enter a custom domain name for accessing the Akvo page, for example "
 "<i>projects.mydomain.org</i>. Optional. Requires additional DNS setup.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:69
+#: akvo/rsr/models/partner_site.py:70
 msgid ""
 "Indicate if we should redirect to the Hostname when the request is made to "
 "the CNAME. This is for sites that don't yet have a valid TLS certificate for "
 "the CNAME."
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:74
+#: akvo/rsr/models/partner_site.py:75
 msgid "Return URL"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:75
+#: akvo/rsr/models/partner_site.py:76
 msgid ""
 "<p>Enter the full URL (including http://) for the page to which users should "
 "be returned when leaving the Akvo page.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:80
+#: akvo/rsr/models/partner_site.py:81
 msgid "Return URL text"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:81
+#: akvo/rsr/models/partner_site.py:82
 msgid ""
 "<p>Enter a text for the back button and return URL. Leave empty to display "
 "\"Back to <em>myorganisation</em>\".</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:85
+#: akvo/rsr/models/partner_site.py:86
 msgid "Piwik analytics ID"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:86
+#: akvo/rsr/models/partner_site.py:87
 msgid "stylesheet"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:88
+#: akvo/rsr/models/partner_site.py:89
 msgid "organisation banner logo"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:89
+#: akvo/rsr/models/partner_site.py:90
 msgid ""
 "<p>Upload a logo file for the logo at the top of the Akvo page. By default "
 "logo of the organisation belonging to the Akvo Page will be displayed.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:94
+#: akvo/rsr/models/partner_site.py:95
 msgid "favicon"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:95
+#: akvo/rsr/models/partner_site.py:96
 msgid ""
 "<p>A favicon (.ico file) is the 16x16 pixel image shown inside the browser's "
 "location bar, on tabs and in the bookmark menu.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:99
+#: akvo/rsr/models/partner_site.py:100
 msgid "Show keyword logos on project pages"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:102
+#: akvo/rsr/models/partner_site.py:103
 msgid "about box text"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:103
+#: akvo/rsr/models/partner_site.py:104
 msgid ""
 "Enter HTML that will make up the top left box of the home page. (500 "
 "characters)<p>    Any text added should be wrapped in 2 &lt;div&gt; tags, an "
@@ -5932,45 +6055,45 @@ msgid ""
 "only to the About box.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:131
+#: akvo/rsr/models/partner_site.py:132
 msgid "about box image"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:132
+#: akvo/rsr/models/partner_site.py:133
 msgid ""
 "<p>The optional background image for the About box <em>must</em> be 470 "
 "pixels wide and 250 pixels tall.</p>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:137
+#: akvo/rsr/models/partner_site.py:138
 msgid "enabled"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:139
+#: akvo/rsr/models/partner_site.py:140
 msgid "Site UI default language"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:141
+#: akvo/rsr/models/partner_site.py:142
 msgid "Translate user interface"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:142
+#: akvo/rsr/models/partner_site.py:143
 msgid "Google translation widget"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:143
+#: akvo/rsr/models/partner_site.py:144
 msgid "Facebook share button"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:144
+#: akvo/rsr/models/partner_site.py:145
 msgid "Twitter share button"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:146
+#: akvo/rsr/models/partner_site.py:147
 msgid "Facebook App Id"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:147
+#: akvo/rsr/models/partner_site.py:148
 msgid ""
 "<p>Your FaceBook app id is used when sharing pages from your partner site. "
 "It can be obtained by creating a Facebook app, which will let you monitor "
@@ -5979,31 +6102,31 @@ msgid ""
 "\">here</a>"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:155
+#: akvo/rsr/models/partner_site.py:156
 msgid "Show only projects of partner"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:156
+#: akvo/rsr/models/partner_site.py:157
 msgid "Uncheck to list all projects on this Akvo page."
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:161
+#: akvo/rsr/models/partner_site.py:162
 msgid "Exclude projects with selected keyword(s)"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:163
+#: akvo/rsr/models/partner_site.py:164
 msgid "Show all projects, updates and organisations on the maps."
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:168
+#: akvo/rsr/models/partner_site.py:169
 msgid "Akvo page for {}"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:262
+#: akvo/rsr/models/partner_site.py:263
 msgid "Akvo page"
 msgstr ""
 
-#: akvo/rsr/models/partner_site.py:263
+#: akvo/rsr/models/partner_site.py:264
 msgid "Akvo pages"
 msgstr ""
 
@@ -6028,7 +6151,7 @@ msgid "Extending partner"
 msgstr ""
 
 #: akvo/rsr/models/partnership.py:54
-#: akvo/templates/myrsr/project_editor/project_editor.html:150
+#: akvo/templates/myrsr/project_editor/project_editor.html:160
 msgid "Reporting organisation"
 msgstr ""
 
@@ -6133,7 +6256,7 @@ msgstr ""
 msgid "Organisation not specified"
 msgstr ""
 
-#: akvo/rsr/models/partnership.py:208
+#: akvo/rsr/models/partnership.py:210
 msgid "Project can only have one reporting organisation"
 msgstr ""
 
@@ -6326,7 +6449,7 @@ msgid ""
 "or the reporting partner no longer uses RSR."
 msgstr ""
 
-#: akvo/rsr/models/project.py:155 akvo/templates/project_directory.html:251
+#: akvo/rsr/models/project.py:155 akvo/templates/project_directory.html:75
 #: akvo/templates/project_main.html:124 akvo/templates/project_main.html:191
 msgid "partners"
 msgstr ""
@@ -6344,8 +6467,8 @@ msgid ""
 "hopes to accomplish;<br>- How those specific goals will be reached"
 msgstr ""
 
-#: akvo/rsr/models/project.py:171 akvo/rsr/models/project_update.py:47
-#: akvo/rsr/models/result/indicator_period_data.py:63
+#: akvo/rsr/models/project.py:171 akvo/rsr/models/project_update.py:50
+#: akvo/rsr/models/result/indicator_period_data.py:68
 msgid "photo"
 msgstr ""
 
@@ -6357,7 +6480,7 @@ msgid ""
 "2 MB in size, and should preferably be in JPG format."
 msgstr ""
 
-#: akvo/rsr/models/project.py:178 akvo/rsr/models/project_update.py:50
+#: akvo/rsr/models/project.py:178 akvo/rsr/models/project_update.py:53
 msgid "photo caption"
 msgstr ""
 
@@ -6365,7 +6488,7 @@ msgstr ""
 msgid "Briefly describe who or what you see in the photo."
 msgstr ""
 
-#: akvo/rsr/models/project.py:182 akvo/rsr/models/project_update.py:52
+#: akvo/rsr/models/project.py:182 akvo/rsr/models/project_update.py:55
 msgid "photo credit"
 msgstr ""
 
@@ -6695,7 +6818,7 @@ msgstr ""
 msgid "Start date (actual) cannot be at a later time than end date (actual)."
 msgstr ""
 
-#: akvo/rsr/models/project.py:890
+#: akvo/rsr/models/project.py:875
 msgid "No update yet"
 msgstr ""
 
@@ -6879,94 +7002,102 @@ msgstr ""
 msgid "project editor validations"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:31
+#: akvo/rsr/models/project_update.py:29
 #: akvo/rsr/models/result/indicator_period_data.py:43
 msgid "web"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:32
+#: akvo/rsr/models/project_update.py:30
 msgid "e-mail"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:33
+#: akvo/rsr/models/project_update.py:31
 msgid "SMS"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:40 akvo/rsr/models/report.py:32
-#: akvo/templates/myrsr/my_iati.html:97
+#: akvo/rsr/models/project_update.py:38 akvo/rsr/models/report.py:36
+#: akvo/templates/myrsr/my_iati.html:99
 msgid "title"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:41
+#: akvo/rsr/models/project_update.py:39
 msgid "80 characters"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:44
+#: akvo/rsr/models/project_update.py:42
 msgid "The language of the update"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:48
+#: akvo/rsr/models/project_update.py:43
+msgid "The date of the corresponding event"
+msgstr ""
+
+#: akvo/rsr/models/project_update.py:44
+msgid "event date"
+msgstr ""
+
+#: akvo/rsr/models/project_update.py:51
 msgid "The image should have 4:3 height:width ratio for best displaying result"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:51 akvo/rsr/models/project_update.py:53
-#: akvo/rsr/models/project_update.py:57 akvo/rsr/models/project_update.py:59
+#: akvo/rsr/models/project_update.py:54 akvo/rsr/models/project_update.py:56
+#: akvo/rsr/models/project_update.py:60 akvo/rsr/models/project_update.py:62
 msgid "75 characters"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:54
+#: akvo/rsr/models/project_update.py:57
 msgid "video URL"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:55
+#: akvo/rsr/models/project_update.py:58
 msgid "Supported providers: YouTube and Vimeo"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:56
+#: akvo/rsr/models/project_update.py:59
 msgid "video caption"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:58
+#: akvo/rsr/models/project_update.py:61
 msgid "video credit"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:60
-#: akvo/rsr/models/result/indicator_period_data.py:65
+#: akvo/rsr/models/project_update.py:63
+#: akvo/rsr/models/result/indicator_period_data.py:70
 msgid "update method"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:62
+#: akvo/rsr/models/project_update.py:65
 msgid "user agent"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:63
+#: akvo/rsr/models/project_update.py:66
 msgid "uuid"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:64
+#: akvo/rsr/models/project_update.py:67
 msgid "Universally unique ID set by creating user agent"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:70
+#: akvo/rsr/models/project_update.py:73
 msgid "project update"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:71
+#: akvo/rsr/models/project_update.py:74
 msgid "project updates"
 msgstr ""
 
-#: akvo/rsr/models/project_update.py:99
+#: akvo/rsr/models/project_update.py:112
 #, python-format
 msgid "Project update for %(project_name)s"
 msgstr ""
 
 #: akvo/rsr/models/publishing_status.py:20
-#: akvo/templates/myrsr/my_projects.html:60
+#: akvo/templates/myrsr/my_projects.html:62
 msgid "Unpublished"
 msgstr ""
 
 #: akvo/rsr/models/publishing_status.py:21
-#: akvo/templates/myrsr/project_editor/project_editor.html:144
+#: akvo/templates/myrsr/project_editor/project_editor.html:154
 #: akvo/templates/myrsr/project_editor/project_editor_progress.html:35
 msgid "Published"
 msgstr ""
@@ -7127,20 +7258,22 @@ msgstr ""
 msgid "No related project specified"
 msgstr ""
 
-#: akvo/rsr/models/report.py:23
+#: akvo/rsr/models/report.py:27
 msgid "display name"
 msgstr ""
 
-#: akvo/rsr/models/report.py:24
+#: akvo/rsr/models/report.py:28
 msgid "icon"
 msgstr ""
 
-#: akvo/rsr/models/report.py:34
+#: akvo/rsr/models/report.py:38
 msgid "Describe the report."
 msgstr ""
 
-#: akvo/rsr/models/report.py:39
-msgid "Enter the parametrized path for downloading the report"
+#: akvo/rsr/models/report.py:43
+msgid ""
+"Enter the parametrized path for downloading the report. NOTE: one line only "
+"even if the input field allows for more!"
 msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:23
@@ -7157,7 +7290,7 @@ msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:39
 #: akvo/rsr/models/result/indicator_period.py:50
-#: akvo/rsr/models/result/indicator_period_data.py:69
+#: akvo/rsr/models/result/indicator_period_data.py:74
 msgid "numerator for indicator"
 msgstr ""
 
@@ -7167,7 +7300,7 @@ msgstr ""
 
 #: akvo/rsr/models/result/disaggregation.py:45
 #: akvo/rsr/models/result/indicator_period.py:56
-#: akvo/rsr/models/result/indicator_period_data.py:75
+#: akvo/rsr/models/result/indicator_period_data.py:80
 msgid "denominator for indicator"
 msgstr ""
 
@@ -7185,10 +7318,6 @@ msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:28
 msgid "Quantitative"
-msgstr ""
-
-#: akvo/rsr/models/result/indicator.py:29
-msgid "Qualitative"
 msgstr ""
 
 #: akvo/rsr/models/result/indicator.py:32 akvo/rsr/models/result/result.py:158
@@ -7282,31 +7411,31 @@ msgstr ""
 msgid "period(s)"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator.py:133
+#: akvo/rsr/models/result/indicator.py:123
 msgid ""
 "It is not possible to update the result of this indicator, because it is "
 "linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator.py:137
+#: akvo/rsr/models/result/indicator.py:127
 msgid ""
 "It is not possible to update the title of this indicator, because it is "
 "linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator.py:141
+#: akvo/rsr/models/result/indicator.py:131
 msgid ""
 "It is not possible to update the measure of this indicator, because it is "
 "linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator.py:145
+#: akvo/rsr/models/result/indicator.py:135
 msgid ""
 "It is not possible to update the ascending value of this indicator, because "
 "it is linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator.py:218
+#: akvo/rsr/models/result/indicator.py:208
 #: akvo/rsr/models/result/indicator_dimension.py:16
 #: akvo/rsr/models/result/indicator_label.py:14
 #: akvo/rsr/models/result/indicator_period.py:19
@@ -7314,7 +7443,7 @@ msgstr ""
 msgid "indicator"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator.py:219
+#: akvo/rsr/models/result/indicator.py:209
 msgid "indicators"
 msgstr ""
 
@@ -7406,12 +7535,12 @@ msgid ""
 msgstr ""
 
 #: akvo/rsr/models/result/indicator_period.py:53
-#: akvo/rsr/models/result/indicator_period_data.py:72
+#: akvo/rsr/models/result/indicator_period_data.py:77
 msgid "The numerator for a calculated percentage"
 msgstr ""
 
 #: akvo/rsr/models/result/indicator_period.py:59
-#: akvo/rsr/models/result/indicator_period_data.py:78
+#: akvo/rsr/models/result/indicator_period_data.py:83
 msgid "The denominator for a calculated percentage"
 msgstr ""
 
@@ -7423,32 +7552,32 @@ msgstr ""
 msgid "No end date"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period.py:145
+#: akvo/rsr/models/result/indicator_period.py:133
 msgid ""
 "It is not possible to update the actual value of this indicator period, "
 "because it is a calculated value. Please update the actual value through a "
 "new update."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period.py:153
+#: akvo/rsr/models/result/indicator_period.py:141
 msgid ""
 "It is not possible to update the indicator of this indicator period, because "
 "it is linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period.py:157
+#: akvo/rsr/models/result/indicator_period.py:145
 msgid ""
 "It is not possible to update the start period of this indicator, because it "
 "is linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period.py:161
+#: akvo/rsr/models/result/indicator_period.py:149
 msgid ""
 "It is not possible to update the end period of this indicator, because it is "
 "linked to a parent result."
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period.py:465
+#: akvo/rsr/models/result/indicator_period.py:453
 #: akvo/rsr/models/result/indicator_period_actual_dimension.py:16
 #: akvo/rsr/models/result/indicator_period_actual_location.py:16
 #: akvo/rsr/models/result/indicator_period_data.py:47
@@ -7457,7 +7586,7 @@ msgstr ""
 msgid "indicator period"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period.py:466
+#: akvo/rsr/models/result/indicator_period.py:454
 msgid "indicator periods"
 msgstr ""
 
@@ -7511,60 +7640,60 @@ msgstr ""
 msgid "approved by"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:57
+#: akvo/rsr/models/result/indicator_period_data.py:59
 msgid "quantitative indicator value"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:58
+#: akvo/rsr/models/result/indicator_period_data.py:63
 msgid "qualitative indicator narrative"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:59
+#: akvo/rsr/models/result/indicator_period_data.py:64
 msgid "period actual value"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:64
+#: akvo/rsr/models/result/indicator_period_data.py:69
 msgid "file"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:83
-#: akvo/rsr/models/result/indicator_period_data.py:84
+#: akvo/rsr/models/result/indicator_period_data.py:88
+#: akvo/rsr/models/result/indicator_period_data.py:89
 #: akvo/rsr/models/result/indicator_period_data_comment.py:21
 msgid "indicator period data"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:129
+#: akvo/rsr/models/result/indicator_period_data.py:134
 msgid "Indicator period must be part of a published project to add data to it"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:135
+#: akvo/rsr/models/result/indicator_period_data.py:140
 msgid ""
 "Indicator period must be part of an RSR Impact project to add data to it"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:141
+#: akvo/rsr/models/result/indicator_period_data.py:146
 msgid "Indicator period must be unlocked to add data to it"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:148
+#: akvo/rsr/models/result/indicator_period_data.py:153
 msgid ""
 "Indicator period has an average aggregate of the child projects. Disable "
 "aggregations to add data to it"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:157
+#: akvo/rsr/models/result/indicator_period_data.py:162
 msgid "Not allowed to change indicator period in a data update"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:163
+#: akvo/rsr/models/result/indicator_period_data.py:168
 msgid "Narrative field should be empty in quantitative indicators"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:169
+#: akvo/rsr/models/result/indicator_period_data.py:174
 msgid "Only numeric values are allowed in quantitative indicators"
 msgstr ""
 
-#: akvo/rsr/models/result/indicator_period_data.py:174
+#: akvo/rsr/models/result/indicator_period_data.py:179
 msgid "Value field should be empty in qualitative indicators"
 msgstr ""
 
@@ -7639,6 +7768,47 @@ msgstr ""
 
 #: akvo/rsr/models/result/indicator_reference.py:44
 msgid "indicator references"
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:26
+msgid "narrative report text"
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:27
+msgid "The text of the narrative report."
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:30
+#: akvo/templates/myrsr/my_iati.html:104
+msgid "published"
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:34
+msgid "The start date of the reporting period for this narrative report."
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:38
+msgid "The end date of the reporting period for this narrative report."
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:45
+msgid "The narrative report needs a period start date."
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:51
+msgid "The narrative report needs a period end date."
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:60
+msgid "Period end cannot be at an earleir time than period start."
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:67
+msgid "narrative report"
+msgstr ""
+
+#: akvo/rsr/models/result/narrative_report.py:68
+msgid "narrative reports"
 msgstr ""
 
 #: akvo/rsr/models/result/result.py:20
@@ -8028,7 +8198,7 @@ msgstr ""
 msgid "The avatar should be less than 500 kb in size."
 msgstr ""
 
-#: akvo/rsr/models/user.py:110 akvo/templates/organisation_directory.html:94
+#: akvo/rsr/models/user.py:110
 msgid "users"
 msgstr ""
 
@@ -8328,7 +8498,7 @@ msgid "MyRSR - My details"
 msgstr ""
 
 #: akvo/templates/myrsr/my_details.html:14
-#: akvo/templates/myrsr/myrsr_base.html:26
+#: akvo/templates/navigation/user-details-dropdown.html:16
 msgid "My details"
 msgstr ""
 
@@ -8408,359 +8578,377 @@ msgstr ""
 msgid "MyRSR - My IATI"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:9 akvo/templates/myrsr/myrsr_base.html:21
+#: akvo/templates/myrsr/my_iati.html:10
 msgid "My IATI"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:9
+#: akvo/templates/myrsr/my_iati.html:10
 msgid "for"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:13
+#: akvo/templates/myrsr/my_iati.html:14
 msgid "Add a new IATI export"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:18
+#: akvo/templates/myrsr/my_iati.html:19
 msgid "Back to exports overview"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:22
+#: akvo/templates/myrsr/my_iati.html:23
 msgid "Find out more about IATI"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:22
+#: akvo/templates/myrsr/my_iati.html:23
 msgid "International Aid Transparency Initiative"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:25
+#: akvo/templates/myrsr/my_iati.html:26
 #: akvo/templates/myrsr/my_reports.html:34
 msgid "Select an organisation"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:26
+#: akvo/templates/myrsr/my_iati.html:27
 msgid ""
 "Since your account is connected to multiple organisations, please select an "
 "organisation first"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:34
+#: akvo/templates/myrsr/my_iati.html:35
 #: akvo/templates/myrsr/user_management.html:84
 msgid "Select organisation"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:40
+#: akvo/templates/myrsr/my_iati.html:41
 msgid "IATI files"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:42
+#: akvo/templates/myrsr/my_iati.html:43
 msgid ""
 "It is possible to generate both an IATI activity file for project "
 "information, and an IATI organisation file for organisation information:"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:44
+#: akvo/templates/myrsr/my_iati.html:45
 msgid "The latest activity file of"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:45
+#: akvo/templates/myrsr/my_iati.html:46
 msgid "The organisation file of"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:47
+#: akvo/templates/myrsr/my_iati.html:48
 msgid "Show latest activity file on the organisation page of"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:72
+#: akvo/templates/myrsr/my_iati.html:74
 msgid "loading"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:73
+#: akvo/templates/myrsr/my_iati.html:75
 msgid "refreshing"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:74
+#: akvo/templates/myrsr/my_iati.html:76
 msgid "there is at least one export pending or in progress"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:75
+#: akvo/templates/myrsr/my_iati.html:77
 #: akvo/templates/myrsr/user_management.html:75
 msgid "in"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:76
+#: akvo/templates/myrsr/my_iati.html:78
 msgid "seconds"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:77
+#: akvo/templates/myrsr/my_iati.html:79
 msgid "last"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:78
+#: akvo/templates/myrsr/my_iati.html:80
 msgid "view latest file"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:79
+#: akvo/templates/myrsr/my_iati.html:81
 msgid "view file"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:80
+#: akvo/templates/myrsr/my_iati.html:82
 msgid "set as latest file"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:81
+#: akvo/templates/myrsr/my_iati.html:83
 msgid "created by"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:82
+#: akvo/templates/myrsr/my_iati.html:84
 msgid "created at"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:83
+#: akvo/templates/myrsr/my_iati.html:85
 msgid "IATI version"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:85
+#: akvo/templates/myrsr/my_iati.html:87
+#: akvo/templates/organisation_directory.html:28
+#: akvo/templates/project_directory.html:43
+#: akvo/templates/update_directory.html:30
 msgid "# of projects"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:86
+#: akvo/templates/myrsr/my_iati.html:88
 msgid "actions"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:87
+#: akvo/templates/myrsr/my_iati.html:89
 msgid "processed"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:88
+#: akvo/templates/myrsr/my_iati.html:90
 msgid "no IATI file"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:89
+#: akvo/templates/myrsr/my_iati.html:91
 msgid "Your organisation does not report any projects yet."
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:90
+#: akvo/templates/myrsr/my_iati.html:92
 msgid ""
 "Set your organisation to reporting organisation of a project to create an "
 "IATI file for the project."
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:91
+#: akvo/templates/myrsr/my_iati.html:93
 msgid "Go to the projects admin "
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:92
+#: akvo/templates/myrsr/my_iati.html:94
 msgid "here"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:93
+#: akvo/templates/myrsr/my_iati.html:95
 msgid "create a new"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:94
+#: akvo/templates/myrsr/my_iati.html:96
 #: akvo/templates/myrsr/project_editor/partials/related_object_header.html:7
 msgid "new"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:95
+#: akvo/templates/myrsr/my_iati.html:97
 msgid "your organisation has no IATI exports yet"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:96 akvo/templates/project_main.html:131
+#: akvo/templates/myrsr/my_iati.html:98 akvo/templates/project_main.html:131
 msgid "ID"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:98
+#: akvo/templates/myrsr/my_iati.html:100
 msgid "included in last export"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:101
+#: akvo/templates/myrsr/my_iati.html:103
 msgid "private"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:102
-msgid "published"
-msgstr ""
-
-#: akvo/templates/myrsr/my_iati.html:103
+#: akvo/templates/myrsr/my_iati.html:105
 msgid "unpublished"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:104
+#: akvo/templates/myrsr/my_iati.html:106
 msgid "untitled"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:105
+#: akvo/templates/myrsr/my_iati.html:107
 msgid "Perform checks"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:106
+#: akvo/templates/myrsr/my_iati.html:108
 msgid "Performing checks"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:107
+#: akvo/templates/myrsr/my_iati.html:109
 msgid "Checks not performed yet"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:109
+#: akvo/templates/myrsr/my_iati.html:111
 msgid "warnings"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:111
+#: akvo/templates/myrsr/my_iati.html:113
 msgid "errors"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:112
+#: akvo/templates/myrsr/my_iati.html:114
 msgid "show all"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:113
+#: akvo/templates/myrsr/my_iati.html:115
 msgid "hide all"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:114
+#: akvo/templates/myrsr/my_iati.html:116
 msgid "all checks completed successfully"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:115 akvo/templates/results_base.html:104
+#: akvo/templates/myrsr/my_iati.html:117 akvo/templates/results_base.html:124
 msgid "Unknown date"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:116 akvo/templates/results_base.html:109
+#: akvo/templates/myrsr/my_iati.html:118 akvo/templates/results_base.html:129
 msgid "and"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:117
+#: akvo/templates/myrsr/my_iati.html:119
 msgid "yes"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:118
+#: akvo/templates/myrsr/my_iati.html:120
 msgid "no"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:119
+#: akvo/templates/myrsr/my_iati.html:121
 msgid "project selection"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:120
+#: akvo/templates/myrsr/my_iati.html:122
 msgid "global selection"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:121
+#: akvo/templates/myrsr/my_iati.html:123
 msgid "project status"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:122
+#: akvo/templates/myrsr/my_iati.html:124
 msgid "projects selected"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:123
+#: akvo/templates/myrsr/my_iati.html:125
 msgid "select"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:124
+#: akvo/templates/myrsr/my_iati.html:126
 msgid "deselect"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:125
+#: akvo/templates/myrsr/my_iati.html:127
 msgid "all"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:126
+#: akvo/templates/myrsr/my_iati.html:128
 msgid "without errors"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:127
+#: akvo/templates/myrsr/my_iati.html:129
 msgid "no status"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:128
+#: akvo/templates/myrsr/my_iati.html:130
 msgid "pipeline/identification"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:129
+#: akvo/templates/myrsr/my_iati.html:131
 msgid "implementation"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:130
+#: akvo/templates/myrsr/my_iati.html:132
 msgid "completion"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:131
+#: akvo/templates/myrsr/my_iati.html:133
 msgid "post completion"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:133
+#: akvo/templates/myrsr/my_iati.html:135
 msgid "suspended"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:161 akvo/templates/results_base.html:23
+#: akvo/templates/myrsr/my_iati.html:163 akvo/templates/results_base.html:41
 msgid "Jan"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:162 akvo/templates/results_base.html:24
+#: akvo/templates/myrsr/my_iati.html:164 akvo/templates/results_base.html:42
 msgid "Feb"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:163 akvo/templates/results_base.html:25
+#: akvo/templates/myrsr/my_iati.html:165 akvo/templates/results_base.html:43
 msgid "Mar"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:164 akvo/templates/results_base.html:26
+#: akvo/templates/myrsr/my_iati.html:166 akvo/templates/results_base.html:44
 msgid "Apr"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:165 akvo/templates/results_base.html:27
+#: akvo/templates/myrsr/my_iati.html:167 akvo/templates/results_base.html:45
 msgid "May"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:166 akvo/templates/results_base.html:28
+#: akvo/templates/myrsr/my_iati.html:168 akvo/templates/results_base.html:46
 msgid "Jun"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:167 akvo/templates/results_base.html:29
+#: akvo/templates/myrsr/my_iati.html:169 akvo/templates/results_base.html:47
 msgid "Jul"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:168 akvo/templates/results_base.html:30
+#: akvo/templates/myrsr/my_iati.html:170 akvo/templates/results_base.html:48
 msgid "Aug"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:169 akvo/templates/results_base.html:31
+#: akvo/templates/myrsr/my_iati.html:171 akvo/templates/results_base.html:49
 msgid "Sep"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:170 akvo/templates/results_base.html:32
+#: akvo/templates/myrsr/my_iati.html:172 akvo/templates/results_base.html:50
 msgid "Oct"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:171 akvo/templates/results_base.html:33
+#: akvo/templates/myrsr/my_iati.html:173 akvo/templates/results_base.html:51
 msgid "Nov"
 msgstr ""
 
-#: akvo/templates/myrsr/my_iati.html:172 akvo/templates/results_base.html:34
+#: akvo/templates/myrsr/my_iati.html:174 akvo/templates/results_base.html:52
 msgid "Dec"
+msgstr ""
+
+#: akvo/templates/myrsr/my_project.html:10
+#: akvo/templates/myrsr/my_projects.html:13
+#: akvo/templates/navigation/header.html:65
+msgid "My projects"
+msgstr ""
+
+#: akvo/templates/myrsr/my_project.html:12
+msgid "View public project"
+msgstr ""
+
+#: akvo/templates/myrsr/my_project.html:16
+msgid ""
+"There are no M&E managers for this project. No one will be able to approve "
+"data updates."
 msgstr ""
 
 #: akvo/templates/myrsr/my_projects.html:3
 msgid "MyRSR - my projects"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:5
-#: akvo/templates/myrsr/myrsr_base.html:16
-msgid "My projects"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:8
+#: akvo/templates/myrsr/my_projects.html:9
 msgid "Add a new project"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:25
-#: akvo/templates/myrsr/my_projects.html:114
+#: akvo/templates/myrsr/my_projects.html:23
+#: akvo/templates/myrsr/user_management.html:24
+#: akvo/templates/organisation_directory.html:17
+#: akvo/templates/project_directory.html:31
+#: akvo/templates/update_directory.html:18
+msgid "Search"
+msgstr ""
+
+#: akvo/templates/myrsr/my_projects.html:30
+#: akvo/templates/myrsr/my_projects.html:107
 msgid "You can't see any projects yet."
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:28
+#: akvo/templates/myrsr/my_projects.html:33
 #, python-format
 msgid ""
 "\n"
@@ -8772,111 +8960,60 @@ msgid ""
 "      "
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:40
-#: akvo/templates/myrsr/my_reports.html:35
-#: akvo/templates/myrsr/my_updates.html:27
-#: akvo/templates/partials/widgets/header.html:5
-#: akvo/templates/project_widgets2.html:26
-#: akvo/templates/results_framework/approve_update_message.html:25
-#: akvo/templates/results_framework/approve_update_message.txt:8
-#: akvo/templates/results_framework/approved_message.html:25
-#: akvo/templates/results_framework/approved_message.txt:8
-#: akvo/templates/results_framework/revise_update_message.html:25
-#: akvo/templates/results_framework/revise_update_message.txt:8
-msgid "Project"
+#: akvo/templates/myrsr/my_projects.html:47
+#: akvo/templates/organisation_main.html:223
+#: akvo/templates/project_directory.html:3
+#: akvo/templates/project_directory.html:30
+#: akvo/templates/widgets/project_list.html:16
+msgid "Projects"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:41
-msgid "Type"
+#: akvo/templates/myrsr/my_projects.html:48
+msgid "Project Location"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:42
-#: akvo/templates/project_directory.html:86
-#: akvo/templates/project_directory.html:119
-#: akvo/templates/project_directory.html:159
-#: akvo/templates/project_main.html:135
-#: akvo/templates/project_main_tabs/summary.html:46
-#: akvo/templates/widgets/project_list.html:30
-msgid "Status"
+#: akvo/templates/myrsr/my_projects.html:49
+msgid "Relationship"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:43
-#: akvo/templates/myrsr/my_updates.html:27
-msgid "Actions"
+#: akvo/templates/myrsr/my_projects.html:50
+#: akvo/templates/project_main_tabs/summary.html:65
+msgid "End date (planned)"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:55
+#: akvo/templates/myrsr/my_projects.html:61
 msgid "Untitled project"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:62
+#: akvo/templates/myrsr/my_projects.html:64
 msgid "Private"
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:70
-msgid "View"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:73
-#: akvo/templates/myrsr/my_projects.html:75
-#: akvo/templates/results_base.html:89
-msgid "Edit"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:75
-msgid "Can't edit a completed or cancelled project"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:78
-#: akvo/templates/myrsr/my_projects.html:80
-msgid "Results data"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:80
-msgid "Can't update an unpublished, cancelled or completed project"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:84
-#: akvo/templates/myrsr/my_projects.html:86
-#: akvo/templates/myrsr/my_projects.html:88
-#: akvo/templates/widgets/project_list.html:33
-msgid "Update"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:86
-msgid "Can't update a completed or cancelled project"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:88
-msgid "Can't update an unpublished project"
-msgstr ""
-
-#: akvo/templates/myrsr/my_projects.html:99
+#: akvo/templates/myrsr/my_projects.html:92
 #, python-format
 msgid ""
 "\n"
-"            Viewing %(start_index)s - %(end_index)s of %(paginator_count)s "
-"projects\n"
+"            %(paginator_count)s projects\n"
 "          "
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:110
+#: akvo/templates/myrsr/my_projects.html:103
 #, python-format
 msgid ""
 "Your search - %(q_search)s - did not match any\n"
 "            projects."
 msgstr ""
 
-#: akvo/templates/myrsr/my_projects.html:117
+#: akvo/templates/myrsr/my_projects.html:110
 #, python-format
 msgid ""
 "\n"
-"            The organisation(s) you have joined do not have any projects "
+"                The organisation(s) you have joined do not have any projects "
 "yet.\n"
-"            Go to the <a href=\"%(my_details_url)s\">My details</a> page to "
-"see your\n"
-"            organisation(s).\n"
-"          "
+"                Go to the <a href=\"%(my_details_url)s\">My details</a> page "
+"to see your\n"
+"                organisation(s).\n"
+"            "
 msgstr ""
 
 #: akvo/templates/myrsr/my_projects.html:136
@@ -8904,8 +9041,7 @@ msgid "MyRSR - My Reports"
 msgstr ""
 
 #: akvo/templates/myrsr/my_reports.html:29
-#: akvo/templates/myrsr/myrsr_base.html:18
-msgid "My reports"
+msgid "Organisation reports"
 msgstr ""
 
 #: akvo/templates/myrsr/my_reports.html:30
@@ -8920,8 +9056,20 @@ msgstr ""
 msgid "Select a report type"
 msgstr ""
 
+#: akvo/templates/myrsr/my_reports.html:35
+#: akvo/templates/myrsr/my_updates.html:27
+#: akvo/templates/partials/widgets/header.html:5
+#: akvo/templates/project_widgets2.html:26
+#: akvo/templates/results_framework/approve_update_message.html:25
+#: akvo/templates/results_framework/approve_update_message.txt:8
+#: akvo/templates/results_framework/approved_message.html:25
+#: akvo/templates/results_framework/approved_message.txt:8
+#: akvo/templates/results_framework/revise_update_message.html:25
+#: akvo/templates/results_framework/revise_update_message.txt:8
+msgid "Project"
+msgstr ""
+
 #: akvo/templates/myrsr/my_reports.html:36
-#: akvo/templates/myrsr/my_results_select.html:31
 msgid "Select a project"
 msgstr ""
 
@@ -8957,54 +9105,9 @@ msgstr ""
 msgid "No format is selected."
 msgstr ""
 
-#: akvo/templates/myrsr/my_results.html:5
-msgid "MyRSR - My Results"
-msgstr ""
-
-#: akvo/templates/myrsr/my_results.html:10
-msgid "Edit project"
-msgstr ""
-
-#: akvo/templates/myrsr/my_results.html:13
-msgid ""
-"This is not an RSR Impact project, it is not possible to place updates on "
-"this project."
-msgstr ""
-
-#: akvo/templates/myrsr/my_results.html:15
-msgid "This project has no results."
-msgstr ""
-
-#: akvo/templates/myrsr/my_results.html:18
-msgid ""
-"There are no M&E managers for this project. No one will be able to approve "
-"data updates."
-msgstr ""
-
-#: akvo/templates/myrsr/my_results_select.html:5
-#: akvo/templates/navigation/header.html:65
-msgid "MyRSR"
-msgstr ""
-
-#: akvo/templates/myrsr/my_results_select.html:5
-#: akvo/templates/myrsr/my_results_select.html:28
-#: akvo/templates/myrsr/myrsr_base.html:20
-msgid "My results"
-msgstr ""
-
-#: akvo/templates/myrsr/my_results_select.html:29
-msgid "Loading projects"
-msgstr ""
-
-#: akvo/templates/myrsr/my_results_select.html:30
-msgid ""
-"You are not able to fill in results data for any projects yet, only for a "
-"small selection of projects this new feature has been enabled. Soon, this "
-"will be available for all projects."
-msgstr ""
-
-#: akvo/templates/myrsr/my_results_select.html:32
-msgid "Select a project by typing the project name or ID"
+#: akvo/templates/myrsr/my_reports.html:45
+#: akvo/templates/results_base.html:188
+msgid "Download"
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:5
@@ -9012,7 +9115,6 @@ msgid "MyRSR - My updates"
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:9
-#: akvo/templates/myrsr/myrsr_base.html:17
 msgid "My updates"
 msgstr ""
 
@@ -9026,6 +9128,21 @@ msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:27
 msgid "Date"
+msgstr ""
+
+#: akvo/templates/myrsr/my_updates.html:27
+msgid "Actions"
+msgstr ""
+
+#: akvo/templates/myrsr/my_updates.html:55
+#: akvo/templates/results_base.html:108
+msgid "Edit"
+msgstr ""
+
+#: akvo/templates/myrsr/my_updates.html:56
+#: akvo/templates/myrsr/my_updates.html:94
+#: akvo/templates/results_base.html:110
+msgid "Delete"
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:67
@@ -9047,28 +9164,24 @@ msgid "You have not placed any updates yet."
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:91
-#: akvo/templates/myrsr/project_editor/project_editor.html:136
+#: akvo/templates/myrsr/project_editor/project_editor.html:146
 msgid "Are you sure?"
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:92
 #: akvo/templates/myrsr/project_editor/fields/boolean_input.html:14
 #: akvo/templates/myrsr/project_editor/fields/custom_field_input.html:29
-#: akvo/templates/myrsr/project_editor/project_editor.html:137
-#: akvo/templates/results_base.html:97
+#: akvo/templates/myrsr/project_editor/project_editor.html:147
+#: akvo/templates/results_base.html:117
 msgid "Yes"
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:93
 #: akvo/templates/myrsr/project_editor/fields/boolean_input.html:15
 #: akvo/templates/myrsr/project_editor/fields/custom_field_input.html:30
-#: akvo/templates/myrsr/project_editor/project_editor.html:138
-#: akvo/templates/results_base.html:98
+#: akvo/templates/myrsr/project_editor/project_editor.html:148
+#: akvo/templates/results_base.html:118
 msgid "No"
-msgstr ""
-
-#: akvo/templates/myrsr/my_updates.html:94 akvo/templates/results_base.html:91
-msgid "Delete"
 msgstr ""
 
 #: akvo/templates/myrsr/my_updates.html:95
@@ -9087,19 +9200,14 @@ msgstr ""
 msgid " error, please contact support using the help button to the right."
 msgstr ""
 
-#: akvo/templates/myrsr/myrsr_base.html:24
-#: akvo/templates/myrsr/user_management.html:9
-msgid "User management"
-msgstr ""
-
 #: akvo/templates/myrsr/project_editor/fields/file_input.html:24
-#: akvo/templates/myrsr/project_editor/project_editor.html:140
+#: akvo/templates/myrsr/project_editor/project_editor.html:150
 msgid "Uploaded document"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/partials/save_row.html:10
-#: akvo/templates/myrsr/project_editor/project_editor.html:130
-#: akvo/templates/results_base.html:92
+#: akvo/templates/myrsr/project_editor/project_editor.html:140
+#: akvo/templates/results_base.html:111
 msgid "Save"
 msgstr ""
 
@@ -9113,23 +9221,23 @@ msgid ""
 "update your browser to a newer version or use a different browser."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:15
+#: akvo/templates/myrsr/project_editor/project_editor.html:20
 msgid "Project Editor"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:19
+#: akvo/templates/myrsr/project_editor/project_editor.html:24
 msgid "View project page"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:24
+#: akvo/templates/myrsr/project_editor/project_editor.html:29
 msgid "Date created"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:26
+#: akvo/templates/myrsr/project_editor/project_editor.html:31
 msgid "Last modified"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:32
+#: akvo/templates/myrsr/project_editor/project_editor.html:37
 msgid ""
 "Your RSR project page shows project information about what’s happening, "
 "where and who’s involved, as well as who the funders are. Tell your "
@@ -9138,13 +9246,13 @@ msgid ""
 "photos and videos."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:33
+#: akvo/templates/myrsr/project_editor/project_editor.html:38
 msgid ""
 "Before you start, please review all the project fields so you know which "
 "information belongs where in the RSR project form."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:34
+#: akvo/templates/myrsr/project_editor/project_editor.html:39
 msgid ""
 "RSR editors can edit the project information, and RSR administrators can "
 "edit and publish the project once all mandatory fields are filled out and "
@@ -9152,205 +9260,201 @@ msgid ""
 "published project, will be visible online immediately after saving."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:131
+#: akvo/templates/myrsr/project_editor/project_editor.html:141
 msgid "Saving"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:132
+#: akvo/templates/myrsr/project_editor/project_editor.html:142
 msgid "Could not save one or more fields"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:133
+#: akvo/templates/myrsr/project_editor/project_editor.html:143
 msgid "Something went wrong while saving"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:134
+#: akvo/templates/myrsr/project_editor/project_editor.html:144
 msgid "Saved successfully!"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:135
+#: akvo/templates/myrsr/project_editor/project_editor.html:145
 msgid "You are not allowed to save this project"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:139
+#: akvo/templates/myrsr/project_editor/project_editor.html:149
 msgid "Could not delete file"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:141
+#: akvo/templates/myrsr/project_editor/project_editor.html:151
 msgid "Could not delete item"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:142
+#: akvo/templates/myrsr/project_editor/project_editor.html:152
 #: akvo/templates/myrsr/project_editor/project_editor_progress.html:55
 msgid "Publish"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:143
+#: akvo/templates/myrsr/project_editor/project_editor.html:153
 #: akvo/templates/myrsr/project_editor/project_editor_progress.html:53
 msgid "Unpublish"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:145
+#: akvo/templates/myrsr/project_editor/project_editor.html:155
 #: akvo/templates/myrsr/project_editor/project_editor_progress.html:35
 msgid "Not published"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:146
+#: akvo/templates/myrsr/project_editor/project_editor.html:156
 msgid "Either this field or"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:147
+#: akvo/templates/myrsr/project_editor/project_editor.html:157
 msgid "is mandatory"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:148
+#: akvo/templates/myrsr/project_editor/project_editor.html:158
 msgid "Related RSR project"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:149
+#: akvo/templates/myrsr/project_editor/project_editor.html:159
 msgid ""
 "When your project has related projects in the RSR database, you can link "
 "them here to create a hierarchy, by filling in the project title. It is "
 "possible to link multiple projects."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:151
+#: akvo/templates/myrsr/project_editor/project_editor.html:161
 msgid "Project partner"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:152
+#: akvo/templates/myrsr/project_editor/project_editor.html:162
 msgid ""
 "Select an organisation that is playing a role in the project.  If an "
 "organisation is not currently featured in RSR, please contact"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:152
+#: akvo/templates/myrsr/project_editor/project_editor.html:162
 msgid "to request to add it to the database."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:153
+#: akvo/templates/myrsr/project_editor/project_editor.html:163
 msgid "Provider organisation"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:154
+#: akvo/templates/myrsr/project_editor/project_editor.html:164
 msgid ""
 "For incoming funds, this is the organisation from which the funds "
 "originated. It will default to the reporting organisation."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:155
+#: akvo/templates/myrsr/project_editor/project_editor.html:165
 msgid "Recipient organisation"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:156
+#: akvo/templates/myrsr/project_editor/project_editor.html:166
 msgid "The organisation that receives the incoming funds."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:157
+#: akvo/templates/myrsr/project_editor/project_editor.html:167
 msgid "Add new organisation"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:158
+#: akvo/templates/myrsr/project_editor/project_editor.html:168
 msgid "Name"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:159
+#: akvo/templates/myrsr/project_editor/project_editor.html:169
 msgid "Long name"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:160
+#: akvo/templates/myrsr/project_editor/project_editor.html:170
 msgid "Organisation IATI identifier"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:161
+#: akvo/templates/myrsr/project_editor/project_editor.html:171
 msgid "Organisation type"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:163
-#: akvo/templates/project_directory.html:229
+#: akvo/templates/myrsr/project_editor/project_editor.html:173
+#: akvo/templates/project_directory.html:53
 #: akvo/templates/project_main.html:81 akvo/templates/project_main.html:86
-#: akvo/templates/results_base.html:90
+#: akvo/templates/results_base.html:109
 msgid "Cancel"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:164
+#: akvo/templates/myrsr/project_editor/project_editor.html:174
 msgid "Max"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:165
+#: akvo/templates/myrsr/project_editor/project_editor.html:175
 msgid "characters"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:166
+#: akvo/templates/myrsr/project_editor/project_editor.html:176
 msgid "This field is mandatory"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:167
+#: akvo/templates/myrsr/project_editor/project_editor.html:177
 msgid "Government"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:168
+#: akvo/templates/myrsr/project_editor/project_editor.html:178
 msgid "Other Public Sector"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:169
+#: akvo/templates/myrsr/project_editor/project_editor.html:179
 msgid "International NGO"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:170
+#: akvo/templates/myrsr/project_editor/project_editor.html:180
 msgid "National NGO"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:171
+#: akvo/templates/myrsr/project_editor/project_editor.html:181
 msgid "Regional NGO"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:172
+#: akvo/templates/myrsr/project_editor/project_editor.html:182
 msgid "Public Private Partnership"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:173
+#: akvo/templates/myrsr/project_editor/project_editor.html:183
 msgid "Multilateral"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:174
+#: akvo/templates/myrsr/project_editor/project_editor.html:184
 msgid "Foundation"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:175
+#: akvo/templates/myrsr/project_editor/project_editor.html:185
 msgid "Private Sector"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:176
+#: akvo/templates/myrsr/project_editor/project_editor.html:186
 msgid "Academic, Training and Research"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:177
+#: akvo/templates/myrsr/project_editor/project_editor.html:187
 msgid "Website"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:178
+#: akvo/templates/myrsr/project_editor/project_editor.html:188
 msgid "The URL of the website must begin with http://"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:179
+#: akvo/templates/myrsr/project_editor/project_editor.html:189
 msgid "Contact name"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:180
+#: akvo/templates/myrsr/project_editor/project_editor.html:190
 msgid "Contact email"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:183
-msgid "Country"
-msgstr ""
-
-#: akvo/templates/myrsr/project_editor/project_editor.html:184
+#: akvo/templates/myrsr/project_editor/project_editor.html:194
 #: akvo/templates/myrsr/project_editor/related_objects/location_input.html:6
 msgid "Use the link to"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:185
+#: akvo/templates/myrsr/project_editor/project_editor.html:195
 #: akvo/templates/myrsr/project_editor/related_objects/location_input.html:8
 #: akvo/templates/myrsr/project_editor/section_7.html:17
 msgid ""
@@ -9358,63 +9462,63 @@ msgid ""
 "correctly placed."
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:186
+#: akvo/templates/myrsr/project_editor/project_editor.html:196
 msgid "Organisation logo"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:187
+#: akvo/templates/myrsr/project_editor/project_editor.html:197
 msgid "All location fields have to be filled in"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:188
+#: akvo/templates/myrsr/project_editor/project_editor.html:198
 msgid "Something went wrong while adding the organisation"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:189
+#: akvo/templates/myrsr/project_editor/project_editor.html:199
 msgid "It is not allowed to use a comma, use a period to denote decimals"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:190
+#: akvo/templates/myrsr/project_editor/project_editor.html:200
 msgid "File is not an image file. Supported formats are"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:191
+#: akvo/templates/myrsr/project_editor/project_editor.html:201
 msgid "File size is too large"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:192
+#: akvo/templates/myrsr/project_editor/project_editor.html:202
 msgid "Maximum file size allowed is"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:193
+#: akvo/templates/myrsr/project_editor/project_editor.html:203
 msgid "Connection error, please check your internet connection"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:194
+#: akvo/templates/myrsr/project_editor/project_editor.html:204
 msgid "Today"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:195
+#: akvo/templates/myrsr/project_editor/project_editor.html:205
 msgid "Set periods as default"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:196
+#: akvo/templates/myrsr/project_editor/project_editor.html:206
 msgid "Remove periods as default"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:197
+#: akvo/templates/myrsr/project_editor/project_editor.html:207
 msgid "Copy to all indicators for this project?"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:198
+#: akvo/templates/myrsr/project_editor/project_editor.html:208
 msgid "Refresh page to view copied periods"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:200
+#: akvo/templates/myrsr/project_editor/project_editor.html:210
 msgid "Move up"
 msgstr ""
 
-#: akvo/templates/myrsr/project_editor/project_editor.html:201
+#: akvo/templates/myrsr/project_editor/project_editor.html:211
 msgid "Move down"
 msgstr ""
 
@@ -9614,7 +9718,7 @@ msgid ""
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/related_objects/result_input.html:32
-#: akvo/templates/project_main.html:164 akvo/templates/results_base.html:43
+#: akvo/templates/project_main.html:164 akvo/templates/results_base.html:61
 msgid "Indicators"
 msgstr ""
 
@@ -9652,6 +9756,20 @@ msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_1.html:63
 msgid "Delete photo"
+msgstr ""
+
+#: akvo/templates/myrsr/project_editor/section_1.html:89
+#: akvo/templates/myrsr/project_editor/section_10.html:43
+#: akvo/templates/myrsr/project_editor/section_11.html:65
+#: akvo/templates/myrsr/project_editor/section_2.html:36
+#: akvo/templates/myrsr/project_editor/section_3.html:39
+#: akvo/templates/myrsr/project_editor/section_4.html:28
+#: akvo/templates/myrsr/project_editor/section_5.html:79
+#: akvo/templates/myrsr/project_editor/section_6.html:100
+#: akvo/templates/myrsr/project_editor/section_7.html:73
+#: akvo/templates/myrsr/project_editor/section_8.html:74
+#: akvo/templates/myrsr/project_editor/section_9.html:58
+msgid "Additional fields for"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_10.html:6
@@ -9828,9 +9946,7 @@ msgid "Add another condition"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_6.html:6
-#: akvo/templates/project_directory.html:91
-#: akvo/templates/project_directory.html:124
-#: akvo/templates/project_directory.html:170
+#: akvo/templates/project_main_tabs/summary.html:78
 msgid "Finance"
 msgstr ""
 
@@ -9935,10 +10051,8 @@ msgid "DAC-5 sector codes which are most detailed. For reference see:"
 msgstr ""
 
 #: akvo/templates/myrsr/project_editor/section_8.html:22
-#: akvo/templates/project_directory.html:110
-#: akvo/templates/project_directory.html:140
 #: akvo/templates/project_main.html:171
-#: akvo/templates/project_main_tabs/summary.html:90
+#: akvo/templates/project_main_tabs/summary.html:102
 msgid "Sectors"
 msgstr ""
 
@@ -10005,6 +10119,11 @@ msgstr ""
 msgid "MyRSR - User management"
 msgstr ""
 
+#: akvo/templates/myrsr/user_management.html:9
+#: akvo/templates/navigation/header.html:32
+msgid "User management"
+msgstr ""
+
 #: akvo/templates/myrsr/user_management.html:13
 msgid "You don't have the rights to manage users."
 msgstr ""
@@ -10013,8 +10132,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"                        Viewing %(start_index)s - %(end_index)s of "
-"%(paginator_count)s users\n"
+"                        %(paginator_count)s users\n"
 "                    "
 msgstr ""
 
@@ -10048,7 +10166,7 @@ msgid "Are you sure you want to approve"
 msgstr ""
 
 #: akvo/templates/myrsr/user_management.html:71
-#: akvo/templates/results_base.html:95
+#: akvo/templates/results_base.html:115
 msgid "Approve"
 msgstr ""
 
@@ -10061,7 +10179,9 @@ msgid "at"
 msgstr ""
 
 #: akvo/templates/myrsr/user_management.html:74
-#: akvo/templates/project_directory.html:210
+#: akvo/templates/organisation_directory.html:18
+#: akvo/templates/project_directory.html:32
+#: akvo/templates/update_directory.html:19
 msgid "Loading..."
 msgstr ""
 
@@ -10116,7 +10236,19 @@ msgstr ""
 msgid "Terms of service"
 msgstr ""
 
-#: akvo/templates/navigation/footer.html:18
+#: akvo/templates/navigation/footer.html:17
+msgid "All projects"
+msgstr ""
+
+#: akvo/templates/navigation/footer.html:23
+msgid "All updates"
+msgstr ""
+
+#: akvo/templates/navigation/footer.html:29
+msgid "All organisations"
+msgstr ""
+
+#: akvo/templates/navigation/footer.html:37
 msgid "Provide feedback"
 msgstr ""
 
@@ -10124,125 +10256,62 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: akvo/templates/navigation/header.html:33
-msgid "All projects"
+#: akvo/templates/navigation/header.html:40
+msgid "IATI"
 msgstr ""
 
-#: akvo/templates/navigation/header.html:39
-msgid "All updates"
+#: akvo/templates/navigation/header.html:46
+msgid "Organisation Reports"
 msgstr ""
 
-#: akvo/templates/navigation/header.html:45
-msgid "All organisations"
+#: akvo/templates/navigation/header.html:52
+msgid "Monitor, report and share with ease"
 msgstr ""
 
-#: akvo/templates/navigation/header.html:55 akvo/templates/update_add.html:13
-msgid "Add an update"
-msgstr ""
-
-#: akvo/templates/navigation/header.html:60
+#: akvo/templates/navigation/header.html:59
 #: akvo/templates/registration/register.html:9
 #: akvo/templates/registration/register.html:22
 msgid "Register"
 msgstr ""
 
-#: akvo/templates/navigation/header.html:61
+#: akvo/templates/navigation/header.html:60
 #: akvo/templates/registration/password_reset_complete.html:11
 #: akvo/templates/sign_in.html:9
 msgid "Sign in"
 msgstr ""
 
-#: akvo/templates/navigation/header.html:67
+#: akvo/templates/navigation/user-details-dropdown.html:19
 msgid "Sign out"
 msgstr ""
 
-#: akvo/templates/navigation/pagination-sort.html:29
-msgid "Sort by"
-msgstr ""
-
-#: akvo/templates/navigation/pagination-sort.html:33
-msgid "Latest modified"
-msgstr ""
-
-#: akvo/templates/navigation/pagination-sort.html:34
-msgid "Oldest modified"
-msgstr ""
-
-#: akvo/templates/navigation/pagination-sort.html:35
-msgid "Title (A-Z)"
-msgstr ""
-
-#: akvo/templates/navigation/pagination-sort.html:36
-msgid "Title (Z-A)"
-msgstr ""
-
-#: akvo/templates/navigation/pagination-sort.html:37
-msgid "Total budget (low-high)"
-msgstr ""
-
-#: akvo/templates/navigation/pagination-sort.html:38
-msgid "Total budget (high-low)"
-msgstr ""
-
 #: akvo/templates/organisation_directory.html:3
-#: akvo/templates/organisation_directory.html:143
-#: akvo/templates/project_directory.html:211
+#: akvo/templates/organisation_directory.html:16
+#: akvo/templates/project_directory.html:33
+#: akvo/templates/update_directory.html:20
 msgid "Organisations"
 msgstr ""
 
-#: akvo/templates/organisation_directory.html:10
-msgid "This map only shows the organisations listed on this page."
+#: akvo/templates/organisation_directory.html:19
+#: akvo/templates/project_directory.html:34
+#: akvo/templates/project_main.html:159
+#: akvo/templates/update_directory.html:21
+msgid "Locations"
 msgstr ""
 
-#: akvo/templates/organisation_directory.html:16
-msgid ""
-"Refine the organisation list below by searching by name, organisation or "
-"sector"
+#: akvo/templates/organisation_directory.html:26
+#: akvo/templates/project_directory.html:41
+#: akvo/templates/update_directory.html:28
+msgid "Reset filters"
 msgstr ""
 
-#: akvo/templates/organisation_directory.html:25
-#: akvo/templates/project_directory.html:29
-#: akvo/templates/update_directory.html:25
-msgid "Advanced filters"
+#: akvo/templates/organisation_directory.html:27
+#: akvo/templates/project_directory.html:42
+#: akvo/templates/update_directory.html:29
+msgid "No location specified"
 msgstr ""
 
 #: akvo/templates/organisation_directory.html:29
-#: akvo/templates/project_directory.html:32
-#: akvo/templates/update_directory.html:28
-msgid "Reset all filters"
-msgstr ""
-
-#: akvo/templates/organisation_directory.html:47
-#: akvo/templates/project_directory.html:219
-#: akvo/templates/update_directory.html:48
-msgid "Apply filter"
-msgstr ""
-
-#: akvo/templates/organisation_directory.html:48
-#: akvo/templates/project_directory.html:220
-#: akvo/templates/update_directory.html:49
-msgid "Close this"
-msgstr ""
-
-#: akvo/templates/organisation_directory.html:60
-#, python-format
-msgid ""
-"\n"
-"            Viewing %(start_index)s - %(end_index)s of %(paginator_count)s "
-"organisations\n"
-"        "
-msgstr ""
-
-#: akvo/templates/organisation_directory.html:87
-msgid "No countries specified"
-msgstr ""
-
-#: akvo/templates/organisation_directory.html:95
-msgid "updates"
-msgstr ""
-
-#: akvo/templates/organisation_directory.html:99
-msgid "Social Media"
+msgid "The most recent organisations added to RSR"
 msgstr ""
 
 #: akvo/templates/organisation_main.html:32
@@ -10274,36 +10343,29 @@ msgstr ""
 msgid "Total updates"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:218
+#: akvo/templates/organisation_main.html:220
 msgid "Funding"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:221
-#: akvo/templates/project_directory.html:3
-#: akvo/templates/project_directory.html:208
-#: akvo/templates/widgets/project_list.html:16
-msgid "Projects"
-msgstr ""
-
-#: akvo/templates/organisation_main.html:222
+#: akvo/templates/organisation_main.html:224
 msgid "Only includes projects with organisation currency"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:223
+#: akvo/templates/organisation_main.html:225
 msgid "Currency used"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:225
+#: akvo/templates/organisation_main.html:227
 msgid "Pledged"
 msgstr ""
 
-#: akvo/templates/organisation_main.html:227
+#: akvo/templates/organisation_main.html:229
 msgid "Still needed"
 msgstr ""
 
 #: akvo/templates/partials/project_budget.html:19
-#: akvo/templates/project_main_tabs/summary.html:116
-#: akvo/templates/project_main_tabs/summary.html:119
+#: akvo/templates/project_main_tabs/summary.html:128
+#: akvo/templates/project_main_tabs/summary.html:131
 msgid "Total Budget"
 msgstr ""
 
@@ -10313,22 +10375,19 @@ msgid "Funds needed"
 msgstr ""
 
 #: akvo/templates/partials/project_budget.html:33
-#: akvo/templates/project_directory.html:94
-#: akvo/templates/project_directory.html:127
 #: akvo/templates/project_main_tabs/finance.html:93
-#: akvo/templates/project_main_tabs/summary.html:126
+#: akvo/templates/project_main_tabs/summary.html:81
+#: akvo/templates/project_main_tabs/summary.html:138
 msgid "Only includes funds in project currency"
 msgstr ""
 
 #: akvo/templates/partials/project_budget.html:42
 #: akvo/templates/partials/widgets/project_donate_button.html:4
-#: akvo/templates/project_directory.html:101
-#: akvo/templates/project_directory.html:134
-#: akvo/templates/project_directory.html:226
-#: akvo/templates/project_directory.html:228
+#: akvo/templates/project_directory.html:50
+#: akvo/templates/project_directory.html:52
 #: akvo/templates/project_main.html:83 akvo/templates/project_main.html:85
 #: akvo/templates/project_main_tabs/finance.html:67
-#: akvo/templates/project_main_tabs/summary.html:130
+#: akvo/templates/project_main_tabs/summary.html:142
 msgid "Donate"
 msgstr ""
 
@@ -10368,25 +10427,25 @@ msgstr ""
 msgid "JSON"
 msgstr ""
 
-#: akvo/templates/partials/project_header.html:21
+#: akvo/templates/partials/project_header.html:17
 msgid "No recipient countries specified"
 msgstr ""
 
-#: akvo/templates/partials/project_header.html:23
-#: akvo/templates/partials/project_header.html:77
+#: akvo/templates/partials/project_header.html:19
+#: akvo/templates/partials/project_header.html:73
 msgid "Show map"
 msgstr ""
 
-#: akvo/templates/partials/project_header.html:31
+#: akvo/templates/partials/project_header.html:27
 msgid "Follow project"
 msgstr ""
 
-#: akvo/templates/partials/project_header.html:38
-#: akvo/templates/partials/project_header.html:46
+#: akvo/templates/partials/project_header.html:34
+#: akvo/templates/partials/project_header.html:42
 msgid "Share"
 msgstr ""
 
-#: akvo/templates/partials/project_header.html:74
+#: akvo/templates/partials/project_header.html:70
 msgid "Hide map"
 msgstr ""
 
@@ -10413,62 +10472,18 @@ msgstr ""
 msgid "Post-Completion"
 msgstr ""
 
-#: akvo/templates/project_directory.html:9
-msgid "This map only shows the projects listed on this page."
+#: akvo/templates/project_directory.html:44
+msgid "The most recent projects added to RSR"
 msgstr ""
 
-#: akvo/templates/project_directory.html:18
-msgid ""
-"Refine the project list below by searching by name, organisation or sector"
-msgstr ""
-
-#: akvo/templates/project_directory.html:46
-#, python-format
-msgid ""
-"\n"
-"          Viewing %(start_index)s - %(end_index)s of %(paginator_count)s "
-"projects\n"
-"      "
-msgstr ""
-
-#: akvo/templates/project_directory.html:76
-msgid "No project locations or recipient countries specified"
-msgstr ""
-
-#: akvo/templates/project_directory.html:89
-#: akvo/templates/project_directory.html:122
-#: akvo/templates/project_directory.html:162
-msgid "Latest update"
-msgstr ""
-
-#: akvo/templates/project_directory.html:93
-#: akvo/templates/project_directory.html:96
-#: akvo/templates/project_directory.html:126
-#: akvo/templates/project_directory.html:129
-msgid "of"
-msgstr ""
-
-#: akvo/templates/project_directory.html:143
-msgid "No sectors"
-msgstr ""
-
-#: akvo/templates/project_directory.html:166
-msgid "No updates"
-msgstr ""
-
-#: akvo/templates/project_directory.html:212
-#: akvo/templates/project_main.html:159
-msgid "Locations"
-msgstr ""
-
-#: akvo/templates/project_directory.html:227
+#: akvo/templates/project_directory.html:51
 #: akvo/templates/project_main.html:84
 msgid ""
 "You will be sent to an external website that accepts donations for this "
 "project. To continue, click Donate."
 msgstr ""
 
-#: akvo/templates/project_directory.html:250
+#: akvo/templates/project_directory.html:74
 #: akvo/templates/project_main.html:123
 msgid "partner"
 msgstr ""
@@ -10478,6 +10493,7 @@ msgid "Hierarchy of"
 msgstr ""
 
 #: akvo/templates/project_hierarchy.html:52
+#: akvo/templates/project_hierarchy_iframe.html:56
 msgid "Screen too small to show project hierarchy"
 msgstr ""
 
@@ -10494,7 +10510,7 @@ msgid "Finances"
 msgstr ""
 
 #: akvo/templates/project_main.html:20 akvo/templates/update_directory.html:3
-#: akvo/templates/update_directory.html:139
+#: akvo/templates/update_directory.html:17
 msgid "Updates"
 msgstr ""
 
@@ -10538,7 +10554,7 @@ msgstr ""
 msgid "Target group"
 msgstr ""
 
-#: akvo/templates/project_main.html:79 akvo/templates/results_base.html:96
+#: akvo/templates/project_main.html:79 akvo/templates/results_base.html:116
 msgid "Are you sure you want to delete this update?"
 msgstr ""
 
@@ -10558,11 +10574,17 @@ msgstr ""
 msgid "Activity dates and status"
 msgstr ""
 
+#: akvo/templates/project_main.html:135
+#: akvo/templates/project_main_tabs/summary.html:46
+#: akvo/templates/widgets/project_list.html:30
+msgid "Status"
+msgstr ""
+
 #: akvo/templates/project_main.html:136
 msgid "Planned"
 msgstr ""
 
-#: akvo/templates/project_main.html:137 akvo/templates/results_base.html:69
+#: akvo/templates/project_main.html:137 akvo/templates/results_base.html:87
 msgid "Actual"
 msgstr ""
 
@@ -10610,7 +10632,7 @@ msgstr ""
 msgid "Document categories"
 msgstr ""
 
-#: akvo/templates/project_main.html:189 akvo/templates/results_base.html:59
+#: akvo/templates/project_main.html:189 akvo/templates/results_base.html:77
 msgid "Loading"
 msgstr ""
 
@@ -10709,19 +10731,20 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:65
-msgid "End date (planned)"
-msgstr ""
-
 #: akvo/templates/project_main_tabs/summary.html:72
 msgid "End date"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:81
+#: akvo/templates/project_main_tabs/summary.html:82
+#: akvo/templates/project_main_tabs/summary.html:84
+msgid "of"
+msgstr ""
+
+#: akvo/templates/project_main_tabs/summary.html:93
 msgid "Hierarchy"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:82
+#: akvo/templates/project_main_tabs/summary.html:94
 #, python-format
 msgid ""
 "\n"
@@ -10731,32 +10754,26 @@ msgid ""
 "                                        "
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:85
+#: akvo/templates/project_main_tabs/summary.html:97
 msgid "View full hierarchy"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:98
+#: akvo/templates/project_main_tabs/summary.html:110
 msgid "Primary organisation"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:117
-#: akvo/templates/project_main_tabs/summary.html:123
+#: akvo/templates/project_main_tabs/summary.html:129
+#: akvo/templates/project_main_tabs/summary.html:135
 msgid "Funds Needed"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:148
+#: akvo/templates/project_main_tabs/summary.html:160
 msgid "Latest project updates"
 msgstr ""
 
-#: akvo/templates/project_main_tabs/summary.html:156
-#: akvo/templates/update_add.html:68 akvo/templates/update_main.html:81
+#: akvo/templates/project_main_tabs/summary.html:168
+#: akvo/templates/update_add.html:68 akvo/templates/update_main.html:78
 msgid "See all updates for this project."
-msgstr ""
-
-#: akvo/templates/project_main_tabs/updates.html:22
-#: akvo/templates/update_directory.html:88 akvo/templates/update_main.html:18
-#: akvo/templates/update_main.html.py:70
-msgid "by"
 msgstr ""
 
 #: akvo/templates/project_widgets.html:5
@@ -10843,6 +10860,7 @@ msgstr ""
 
 #: akvo/templates/project_widgets.html:67
 #: akvo/templates/project_widgets2.html:112
+#: akvo/templates/results_base.html:149
 msgid "Preview"
 msgstr ""
 
@@ -11236,7 +11254,7 @@ msgstr ""
 msgid "[Akvo RSR] %(user_name)s has requested to join %(organisation_name)s"
 msgstr ""
 
-#: akvo/templates/results_base.html:42
+#: akvo/templates/results_base.html:60
 #: akvo/templates/results_framework/approve_update_message.html:27
 #: akvo/templates/results_framework/approve_update_message.txt:10
 #: akvo/templates/results_framework/approved_message.html:27
@@ -11246,35 +11264,35 @@ msgstr ""
 msgid "Indicator"
 msgstr ""
 
-#: akvo/templates/results_base.html:44
+#: akvo/templates/results_base.html:62
 msgid "This result has no indicators yet"
 msgstr ""
 
-#: akvo/templates/results_base.html:45
+#: akvo/templates/results_base.html:63
 msgid "Find out more about adding indicators to the results framework"
 msgstr ""
 
-#: akvo/templates/results_base.html:46
+#: akvo/templates/results_base.html:64
 msgid "Add indicators"
 msgstr ""
 
-#: akvo/templates/results_base.html:47
+#: akvo/templates/results_base.html:65
 msgid "Indicator period"
 msgstr ""
 
-#: akvo/templates/results_base.html:48
+#: akvo/templates/results_base.html:66
 msgid "Indicator period(s)"
 msgstr ""
 
-#: akvo/templates/results_base.html:55
+#: akvo/templates/results_base.html:73
 msgid "Baseline year"
 msgstr ""
 
-#: akvo/templates/results_base.html:56
+#: akvo/templates/results_base.html:74
 msgid "Baseline value"
 msgstr ""
 
-#: akvo/templates/results_base.html:57
+#: akvo/templates/results_base.html:75
 #: akvo/templates/results_framework/approve_update_message.html:28
 #: akvo/templates/results_framework/approve_update_message.txt:11
 #: akvo/templates/results_framework/approved_message.html:28
@@ -11284,288 +11302,376 @@ msgstr ""
 msgid "Period"
 msgstr ""
 
-#: akvo/templates/results_base.html:58
+#: akvo/templates/results_base.html:76
 msgid "Back"
 msgstr ""
 
-#: akvo/templates/results_base.html:60
+#: akvo/templates/results_base.html:78
 msgid "Number of pending updates"
 msgstr ""
 
-#: akvo/templates/results_base.html:61
+#: akvo/templates/results_base.html:79
 msgid "Lock period"
 msgstr ""
 
-#: akvo/templates/results_base.html:62
+#: akvo/templates/results_base.html:80
 msgid "Unlock period"
 msgstr ""
 
-#: akvo/templates/results_base.html:63
+#: akvo/templates/results_base.html:81
 msgid "Unlocking period"
 msgstr ""
 
-#: akvo/templates/results_base.html:64
+#: akvo/templates/results_base.html:82
 msgid "Period locked"
 msgstr ""
 
-#: akvo/templates/results_base.html:65
+#: akvo/templates/results_base.html:83
 msgid "Period unlocked"
 msgstr ""
 
-#: akvo/templates/results_base.html:66
+#: akvo/templates/results_base.html:84
 msgid "Parent project"
 msgstr ""
 
-#: akvo/templates/results_base.html:67
+#: akvo/templates/results_base.html:85
 msgid "Child project"
 msgstr ""
 
-#: akvo/templates/results_base.html:68
+#: akvo/templates/results_base.html:86
 msgid "Request update"
 msgstr ""
 
-#: akvo/templates/results_base.html:70
+#: akvo/templates/results_base.html:88
 msgid "Actual value"
 msgstr ""
 
-#: akvo/templates/results_base.html:71
+#: akvo/templates/results_base.html:89
 msgid "This is the total of all indicator updates for this period"
 msgstr ""
 
-#: akvo/templates/results_base.html:72
+#: akvo/templates/results_base.html:90
+msgid "Narrative reporting"
+msgstr ""
+
+#: akvo/templates/results_base.html:91
 msgid "Target"
 msgstr ""
 
-#: akvo/templates/results_base.html:73
+#: akvo/templates/results_base.html:92
 msgid "Target value"
 msgstr ""
 
-#: akvo/templates/results_base.html:74
+#: akvo/templates/results_base.html:93
 msgid "Target comment"
 msgstr ""
 
-#: akvo/templates/results_base.html:75
+#: akvo/templates/results_base.html:94
 msgid "Actual comment"
 msgstr ""
 
-#: akvo/templates/results_base.html:76
+#: akvo/templates/results_base.html:95
 msgid "Current"
 msgstr ""
 
-#: akvo/templates/results_base.html:77
+#: akvo/templates/results_base.html:96
 msgid "Add to actual value"
 msgstr ""
 
-#: akvo/templates/results_base.html:78
+#: akvo/templates/results_base.html:97
 msgid "Fill in a value to add to the actual value"
 msgstr ""
 
-#: akvo/templates/results_base.html:79
+#: akvo/templates/results_base.html:98
 msgid "Actual value comment"
 msgstr ""
 
-#: akvo/templates/results_base.html:80
+#: akvo/templates/results_base.html:99
 msgid ""
 "Add a comment to provide additional background information for this update"
 msgstr ""
 
-#: akvo/templates/results_base.html:81
+#: akvo/templates/results_base.html:100
 msgid "New total for this period"
 msgstr ""
 
-#: akvo/templates/results_base.html:82
+#: akvo/templates/results_base.html:101
 msgid "Actual total for this period (after this update)"
 msgstr ""
 
-#: akvo/templates/results_base.html:83
+#: akvo/templates/results_base.html:102
 msgid "Indicator Update"
 msgstr ""
 
-#: akvo/templates/results_base.html:84
+#: akvo/templates/results_base.html:103
 msgid "Indicator Updates"
 msgstr ""
 
-#: akvo/templates/results_base.html:85
+#: akvo/templates/results_base.html:104
 msgid "This period has no updates yet"
 msgstr ""
 
-#: akvo/templates/results_base.html:86
+#: akvo/templates/results_base.html:105
 msgid ""
 "This period is an average of the child projects, disable aggregations to "
 "place updates on this period"
 msgstr ""
 
-#: akvo/templates/results_base.html:87
+#: akvo/templates/results_base.html:106
 msgid "Insert reporting value"
 msgstr ""
 
-#: akvo/templates/results_base.html:88
+#: akvo/templates/results_base.html:107
 msgid "Adding new update"
 msgstr ""
 
-#: akvo/templates/results_base.html:93
+#: akvo/templates/results_base.html:112
+msgid "Write"
+msgstr ""
+
+#: akvo/templates/results_base.html:113
 msgid "Submit for approval"
 msgstr ""
 
-#: akvo/templates/results_base.html:94
+#: akvo/templates/results_base.html:114
 msgid "Return for revision"
 msgstr ""
 
-#: akvo/templates/results_base.html:99
+#: akvo/templates/results_base.html:119
 msgid "Add image"
 msgstr ""
 
-#: akvo/templates/results_base.html:100
+#: akvo/templates/results_base.html:120
 msgid "Change image"
 msgstr ""
 
-#: akvo/templates/results_base.html:101
+#: akvo/templates/results_base.html:121
 msgid "Click to remove image"
 msgstr ""
 
-#: akvo/templates/results_base.html:102
+#: akvo/templates/results_base.html:122
 msgid "Attach file"
 msgstr ""
 
-#: akvo/templates/results_base.html:103
+#: akvo/templates/results_base.html:123
 msgid "Remove file"
 msgstr ""
 
-#: akvo/templates/results_base.html:105
+#: akvo/templates/results_base.html:125
 msgid "Comment"
 msgstr ""
 
-#: akvo/templates/results_base.html:106
+#: akvo/templates/results_base.html:126
 #: akvo/templates/results_framework/approve_update_message.html:33
 #: akvo/templates/results_framework/approved_message.html:33
 #: akvo/templates/results_framework/revise_update_message.html:33
 msgid "Comments"
 msgstr ""
 
-#: akvo/templates/results_base.html:107
+#: akvo/templates/results_base.html:127
 msgid "Add a note"
 msgstr ""
 
-#: akvo/templates/results_base.html:108
+#: akvo/templates/results_base.html:128
 msgid "Add a note to the update"
 msgstr ""
 
-#: akvo/templates/results_base.html:110
+#: akvo/templates/results_base.html:130
 msgid "others"
 msgstr ""
 
-#: akvo/templates/results_base.html:111
+#: akvo/templates/results_base.html:131
 msgid "An error occurred"
 msgstr ""
 
-#: akvo/templates/results_base.html:112
+#: akvo/templates/results_base.html:132
 msgid ""
 "There was a connection error. Please check your internet connection and "
 "refresh the page."
 msgstr ""
 
-#: akvo/templates/results_base.html:114
+#: akvo/templates/results_base.html:134
 msgid "Only numeric values are accepted"
 msgstr ""
 
-#: akvo/templates/results_base.html:115
+#: akvo/templates/results_base.html:135
 msgid "Actual value is required for updates"
 msgstr ""
 
-#: akvo/templates/results_base.html:116
+#: akvo/templates/results_base.html:136
 msgid "Couldn't create update, please try again"
 msgstr ""
 
-#: akvo/templates/results_base.html:117
+#: akvo/templates/results_base.html:137
 msgid "Couldn't save update"
 msgstr ""
 
-#: akvo/templates/results_base.html:118
+#: akvo/templates/results_base.html:138
 msgid "Couldn't delete update, please try again"
 msgstr ""
 
-#: akvo/templates/results_base.html:119
+#: akvo/templates/results_base.html:139
 msgid "Full view"
 msgstr ""
 
-#: akvo/templates/results_base.html:120
+#: akvo/templates/results_base.html:140
 msgid "Overview"
 msgstr ""
 
-#: akvo/templates/results_base.html:121
+#: akvo/templates/results_base.html:141
 msgid "Needs reporting"
 msgstr ""
 
-#: akvo/templates/results_base.html:122
+#: akvo/templates/results_base.html:142
 msgid "Pending approval"
 msgstr ""
 
-#: akvo/templates/results_base.html:123
+#: akvo/templates/results_base.html:143
+msgid "Draft"
+msgstr ""
+
+#: akvo/templates/results_base.html:144
+msgid "Create Narrative Summary"
+msgstr ""
+
+#: akvo/templates/results_base.html:145
+msgid "Narrative summaries"
+msgstr ""
+
+#: akvo/templates/results_base.html:146
+msgid "Couldn't save Narrative summary, please try again"
+msgstr ""
+
+#: akvo/templates/results_base.html:147
+msgid "Couldn't delete Narrative summary, please try again"
+msgstr ""
+
+#: akvo/templates/results_base.html:148
+msgid "Select Category"
+msgstr ""
+
+#: akvo/templates/results_base.html:150
 msgid "Approved"
 msgstr ""
 
-#: akvo/templates/results_base.html:124
+#: akvo/templates/results_base.html:151
 msgid "Approved on"
 msgstr ""
 
-#: akvo/templates/results_base.html:125
+#: akvo/templates/results_base.html:152
 msgid "Created on"
 msgstr ""
 
-#: akvo/templates/results_base.html:126
+#: akvo/templates/results_base.html:153
 msgid "Reset filter"
 msgstr ""
 
-#: akvo/templates/results_base.html:127
+#: akvo/templates/results_base.html:154
 msgid "Select period(s)"
 msgstr ""
 
-#: akvo/templates/results_base.html:128
+#: akvo/templates/results_base.html:155
 msgid "Lock selected"
 msgstr ""
 
-#: akvo/templates/results_base.html:129
+#: akvo/templates/results_base.html:156
 msgid "Unlock selected"
 msgstr ""
 
-#: akvo/templates/results_base.html:130
+#: akvo/templates/results_base.html:157
 msgid "Filter periods"
 msgstr ""
 
-#: akvo/templates/results_base.html:131
+#: akvo/templates/results_base.html:158
 msgid "Indicator reporting"
 msgstr ""
 
-#: akvo/templates/results_base.html:132
+#: akvo/templates/results_base.html:159
 msgid "Couldn't save comment, please try again"
 msgstr ""
 
-#: akvo/templates/results_base.html:133
+#: akvo/templates/results_base.html:160
 msgid "Please enter a comment text"
 msgstr ""
 
-#: akvo/templates/results_base.html:134
+#: akvo/templates/results_base.html:161
 msgid "Notes are disabled until the update is saved"
 msgstr ""
 
-#: akvo/templates/results_base.html:135
+#: akvo/templates/results_base.html:162
 msgid "Nameless indicator"
 msgstr ""
 
-#: akvo/templates/results_base.html:136
+#: akvo/templates/results_base.html:163
 msgid "Aggregate actual value:"
 msgstr ""
 
-#: akvo/templates/results_base.html:137
+#: akvo/templates/results_base.html:164
 msgid "Lock status change failed, please try again"
 msgstr ""
 
-#: akvo/templates/results_base.html:138
+#: akvo/templates/results_base.html:165
 msgid "Locked"
 msgstr ""
 
-#: akvo/templates/results_base.html:139
+#: akvo/templates/results_base.html:166
 msgid "Unlocked"
+msgstr ""
+
+#: akvo/templates/results_base.html:168 akvo/templates/update_add.html:117
+msgid "Your image size: "
+msgstr ""
+
+#: akvo/templates/results_base.html:169
+msgid "Project updates"
+msgstr ""
+
+#: akvo/templates/results_base.html:170
+msgid "Previous updates"
+msgstr ""
+
+#: akvo/templates/results_base.html:171
+msgid "No updates"
+msgstr ""
+
+#: akvo/templates/results_base.html:172 akvo/templates/update_add.html:43
+msgid "Edit update"
+msgstr ""
+
+#: akvo/templates/results_base.html:173 akvo/templates/update_add.html:13
+msgid "Add an update"
+msgstr ""
+
+#: akvo/templates/results_base.html:176
+msgid "Language"
+msgstr ""
+
+#: akvo/templates/results_base.html:177
+msgid "Event date"
+msgstr ""
+
+#: akvo/templates/results_base.html:178
+msgid "Photo"
+msgstr ""
+
+#: akvo/templates/results_base.html:181
+msgid "Video"
+msgstr ""
+
+#: akvo/templates/results_base.html:184
+msgid "Project reports"
+msgstr ""
+
+#: akvo/templates/results_base.html:185
+msgid "Edit project"
+msgstr ""
+
+#: akvo/templates/results_base.html:186
+msgid "Start Date"
+msgstr ""
+
+#: akvo/templates/results_base.html:187
+msgid "End Date"
 msgstr ""
 
 #: akvo/templates/results_framework/approve_update_message.html:22
@@ -11736,10 +11842,6 @@ msgid ""
 msgstr ""
 
 #: akvo/templates/update_add.html:43
-msgid "Edit update"
-msgstr ""
-
-#: akvo/templates/update_add.html:43
 msgid "Add update"
 msgstr ""
 
@@ -11747,33 +11849,15 @@ msgstr ""
 msgid "Previous updates of this project"
 msgstr ""
 
-#: akvo/templates/update_add.html:117
-msgid "Your image size: "
+#: akvo/templates/update_directory.html:31
+msgid "The most recent updates added to RSR"
 msgstr ""
 
-#: akvo/templates/update_directory.html:10
-msgid "This map only shows the updates listed on this page."
-msgstr ""
-
-#: akvo/templates/update_directory.html:16
-msgid ""
-"Refine the update list below by searching by name, organisation or sector"
-msgstr ""
-
-#: akvo/templates/update_directory.html:62
-#, python-format
-msgid ""
-"\n"
-"            Viewing %(start_index)s - %(end_index)s of %(paginator_count)s "
-"updates\n"
-"        "
-msgstr ""
-
-#: akvo/templates/update_main.html:18
+#: akvo/templates/update_main.html:15
 msgid "via"
 msgstr ""
 
-#: akvo/templates/update_main.html:56
+#: akvo/templates/update_main.html:53
 msgid "Latest updates from this project"
 msgstr ""
 
@@ -11791,6 +11875,10 @@ msgstr ""
 
 #: akvo/templates/widgets/project_list.html:26
 msgid "Location"
+msgstr ""
+
+#: akvo/templates/widgets/project_list.html:33
+msgid "Update"
 msgstr ""
 
 #: akvo/templates/widgets/project_list.html:36
