@@ -7,11 +7,16 @@
 {% block myrsr_main %}
   <section id="main" class="userProject">
     <header>
-      <h2>Grant access to projects</h2>
-      <h4 >Project access restrictions for <span>{{ user_projects_user.get_full_name }}</span></h4>
-      <p>Select all appropriate projects that you would like grant the User access to. <br/>
-       The User will have access to the selected projects based on the permissions of their assigned role. <br/>
-      To restrict a User’s access to a project, uncheck the box.</p>
+      <h2>User access to projects</h2>
+      <h4>Project access restrictions for <span>{{ user_projects_user.get_full_name }}</span></h4>
+      <p style="margin-top:10px;">
+        Select the project(s) that you would like to <strong>restrict</strong> the user access to.
+      </p>
+      <p>
+        <em>Note:</em>
+        The type of access a user has to projects granted access to is based on the permissions of
+        their assigned role(s)
+      </p>
     </header>
     <article id="userProjects" class="col-sm-6 col-xs-8">
     </article>
@@ -30,13 +35,13 @@
   <script type="application/json" id="user-projects-text">
     {
       "an_error_occured": "{% trans 'An error occured, please try again. The error message is: '|escapejs %}",
-      "can_access": "{% trans 'Can access'|escapejs %}",
-      "deselect_all": "{% trans 'De-select all projects'|escapejs %}",
+      "can_access": "{% trans 'Grant access'|escapejs %}",
+      "deselect_all": "{% trans 'Uncheck all projects'|escapejs %}",
       "no_title": "{% trans 'Project without a title'|escapejs %}",
       "project_id": "{% trans 'Project ID'|escapejs %}",
       "project_title": "{% trans 'Project title'|escapejs %}",
-      "grant_access": "{% trans 'Grant access to the following checked projects'|escapejs %}",
-      "select_all": "{% trans 'Select all projects'|escapejs %}"
+      "grant_access": "{% trans 'Restrict access to projects'|escapejs %}",
+      "select_all": "{% trans 'Check all projects'|escapejs %}"
     }
   </script>
 
