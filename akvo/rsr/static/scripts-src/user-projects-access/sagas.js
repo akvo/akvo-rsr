@@ -5,6 +5,10 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
+// This import is necessary to be able to test sagas.
+// See https://github.com/redux-saga/redux-saga/issues/280#issuecomment-291133023
+import "regenerator-runtime/runtime";
+
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import axios from "axios";
 
@@ -17,7 +21,7 @@ function callAxios(config) {
         .catch(error => ({ error }));
 }
 
-function fetchData(userId) {
+export function fetchData(userId) {
     const config = {
         method: "get",
         url: `/rest/v1/user_projects_access/${userId}/`
@@ -25,7 +29,7 @@ function fetchData(userId) {
     return callAxios(config);
 }
 
-function putData(userId, is_restricted, user_projects) {
+export function putData(userId, is_restricted, user_projects) {
     const config = {
         method: "put",
         headers: {
@@ -42,7 +46,7 @@ function putData(userId, is_restricted, user_projects) {
     return callAxios(config);
 }
 
-function* getSaga(action) {
+export function* getSaga(action) {
     const { userId } = action.data;
     const { response, error } = yield call(fetchData, userId);
     if (response) {
@@ -52,11 +56,11 @@ function* getSaga(action) {
     }
 }
 
-const getUserId = state => state.userId;
-const getUserProjects = state => state.user_projects;
-const getIsRestricted = state => state.is_restricted;
+export const getUserId = state => state.userId;
+export const getUserProjects = state => state.user_projects;
+export const getIsRestricted = state => state.is_restricted;
 
-function* putSaga(action) {
+export function* putSaga(action) {
     yield put({ type: c.API_PUT_INIT });
     const userId = yield select(getUserId);
     const is_restricted = yield select(getIsRestricted);
