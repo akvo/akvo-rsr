@@ -4296,3 +4296,7 @@ main.results-page {
         margin-top: 1px; }
         #userProjects table tbody tr td:first-of-type {
           padding-left: 25px; }
+        #userProjects table tbody tr td.id {
+          color: #202024; }
+        #userProjects table tbody tr td.id.disabled {
+          color: #b7b7bf; }

@@ -5278,6 +5278,12 @@ main.results-page {
                     &:first-of-type {
                         padding-left: 25px;
                     }
+                    &.id {
+                        color: $akvoBlack;
+                    }
+                    &.id.disabled {
+                        color: lighten($akvoBlack, 60%);
+                    }
                 }
             }
         }

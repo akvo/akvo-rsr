@@ -21,7 +21,7 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
                     checked={is_restricted}
                     onChange={onChangeIsRestricted}
                 />
-                {_("grant_access")}
+                {_("restrict_access")}
             </label>
         </span>
     );
@@ -29,14 +29,16 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
 
 const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
     const checked = user_projects && inArray(project.id, user_projects),
-        selected = checked ? " projectSelected": "",
-        className = (is_restricted ? "" : "disabled") + selected;
+        disabled = is_restricted ? "" : "disabled",
+        projectSelected = checked ? " projectSelected": "",
+        trClassName = disabled + projectSelected,
+        idClassName = disabled +  " id";
     return (
         <tr
             key={project.id}
             id={project.id}
             onClick={onChangeProjectSelected}
-            className={className}
+            className={trClassName}
         >
             <td>
                 <input
@@ -47,7 +49,7 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
                     readOnly={true}
                 />
             </td>
-            <td>{project.id}</td>
+            <td className={idClassName}>{project.id}</td>
             <td>{project.title || _("no_title")}</td>
         </tr>
     );
@@ -59,7 +61,7 @@ const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) =>
     return (
         <div className={is_restricted ? undefined : "disabled"}>
             <button onClick={onChangeProjectSelectAll} disabled={disabled} className={className}>
-                {selectAll ? _("select_all") : _("deselect_all")}
+                {selectAll ? _("check_all_projects") : _("uncheck_all_projects")}
             </button>
         </div>
     );
@@ -98,7 +100,7 @@ const Projects = ({
             <table>
                 <thead>
                     <tr>
-                        <th className={className}>{_("can_access")}</th>
+                        <th className={className}>{_("restrict_access")}</th>
                         <th className={className}>{_("project_id")}</th>
                         <th className={className}>{_("project_title")}</th>
                     </tr>
