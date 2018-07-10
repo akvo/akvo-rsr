@@ -21,7 +21,7 @@
       <p>
         {% blocktrans %}
           Note: The type of access a user has to their projects is based on the permissions of their
-          assigned role(s)
+          assigned role(s).
         {% endblocktrans %}
       </p>
     </header>
@@ -42,13 +42,14 @@
   <script type="application/json" id="user-projects-text">
     {
       "an_error_occured": "{% trans 'An error occured, please try again. The error message is: '|escapejs %}",
-      "uncheck_all_projects": "{% trans 'Uncheck all projects'|escapejs %}",
+      "check_all_projects": "{% trans 'Check all projects'|escapejs %}",
+      "grant_access": "{% trans 'Grant access'|escapejs %}",
       "loading": "{% trans 'Loading...'|escapejs %}",
       "no_title": "{% trans 'Project without a title'|escapejs %}",
       "project_id": "{% trans 'Project ID'|escapejs %}",
       "project_title": "{% trans 'Project title'|escapejs %}",
       "restrict_access": "{% trans 'Restrict access to projects'|escapejs %}",
-      "check_all_projects": "{% trans 'Check all projects'|escapejs %}"
+      "uncheck_all_projects": "{% trans 'Uncheck all projects'|escapejs %}"
     }
   </script>
 

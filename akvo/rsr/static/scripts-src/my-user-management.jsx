@@ -811,7 +811,7 @@ function initReact() {
             var emailCell = React.createElement('th', null, i18n.email_text);
             var nameCell = React.createElement('th', null, i18n.name);
             var organisationCell = React.createElement('th', null, i18n.organisation);
-            var projectsCell = React.createElement('th', null, i18n.grant_projects);
+            var projectsCell = React.createElement('th', null, i18n.project_access);
             var roleNameCell = React.createElement("th", {className: "text-right"}, i18n.role_text);
 
             var tableRow = React.createElement('tr', null, emailCell, nameCell, organisationCell, projectsCell, roleNameCell);

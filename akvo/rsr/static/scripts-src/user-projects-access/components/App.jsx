@@ -100,7 +100,7 @@ const Projects = ({
             <table>
                 <thead>
                     <tr>
-                        <th className={className}>{_("restrict_access")}</th>
+                        <th className={className}>{_("grant_access")}</th>
                         <th className={className}>{_("project_id")}</th>
                         <th className={className}>{_("project_title")}</th>
                     </tr>
