@@ -4229,9 +4229,6 @@ main.results-page {
       color: rgba(128, 128, 128, 0.4) !important;
       border: 1px solid transparent; }
 
-#main.userProject h2 {
-  margin-top: 10px; }
-
 #userProjects {
   padding-left: 0; }
   #userProjects #is_restricted {

@@ -523,8 +523,7 @@ def user_projects(request, user_id):
 
     user = get_object_or_404(User, pk=user_id)
     context = {
-        "user_projects_user": user,
-        "page": request.GET.get(u'page', None)
+        "user_projects_user": user
     }
     return render(request, 'myrsr/user_projects.html', context)
 

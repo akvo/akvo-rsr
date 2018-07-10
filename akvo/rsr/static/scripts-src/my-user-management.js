@@ -772,7 +772,7 @@ function initReact() {
                     React.createElement("td", null, employment.organisation.name), 
                     user.can_be_restricted
                         ? React.createElement("td", null, 
-                            React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/' + window.location.search}, 
+                            React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/'}, 
                                 i18n.grant_project_access
                             )
                         )
@@ -811,7 +811,7 @@ function initReact() {
             var emailCell = React.createElement('th', null, i18n.email_text);
             var nameCell = React.createElement('th', null, i18n.name);
             var organisationCell = React.createElement('th', null, i18n.organisation);
-            var projectsCell = React.createElement('th', null, i18n.project_access);
+            var projectsCell = React.createElement('th', null, i18n.grant_projects);
             var roleNameCell = React.createElement("th", {className: "text-right"}, i18n.role_text);
 
             var tableRow = React.createElement('tr', null, emailCell, nameCell, organisationCell, projectsCell, roleNameCell);
