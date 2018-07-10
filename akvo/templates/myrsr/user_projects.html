@@ -7,15 +7,23 @@
 {% block myrsr_main %}
   <section id="main" class="userProject">
     <header>
-      <h2>User access to projects</h2>
-      <h4>Project access restrictions for <span>{{ user_projects_user.get_full_name }}</span></h4>
+      <h2>{% trans "User access to projects" %}</h2>
+      <h4>
+        {% blocktrans with full_name=user_projects_user.get_full_name %}
+          Project access restrictions for <span>{{ full_name }}</span>
+        {% endblocktrans %}
+      </h4>
       <p style="margin-top:10px;">
-        Select the project(s) that you would like to <strong>restrict</strong> the user access to.
+        {% blocktrans %}
+          Select the project(s) that you would like to <strong>restrict</strong> the user access to.
+        {% endblocktrans %}
       </p>
       <p>
-        <em>Note:</em>
-        The type of access a user has to projects granted access to is based on the permissions of
-        their assigned role(s)
+        {% blocktrans %}
+          <em>Note:</em>
+          The type of access a user has to projects granted access to is based on the permissions of
+          their assigned role(s)
+        {% endblocktrans %}
       </p>
     </header>
     <article id="userProjects" class="col-sm-6 col-xs-8">
@@ -37,6 +45,7 @@
       "an_error_occured": "{% trans 'An error occured, please try again. The error message is: '|escapejs %}",
       "can_access": "{% trans 'Grant access'|escapejs %}",
       "deselect_all": "{% trans 'Uncheck all projects'|escapejs %}",
+      "loading": "{% trans 'Loading...'|escapejs %}",
       "no_title": "{% trans 'Project without a title'|escapejs %}",
       "project_id": "{% trans 'Project ID'|escapejs %}",
       "project_title": "{% trans 'Project title'|escapejs %}",

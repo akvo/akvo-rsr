@@ -178,7 +178,7 @@ class App extends React.Component {
                 onChangeProjectSelected={this.toggleProjectSelected}
             />
         ) : (
-            <div>Loading...</div>
+            <div>{_("loading")}</div>
         );
     }
 }
