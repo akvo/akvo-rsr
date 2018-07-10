@@ -11,15 +11,22 @@ import axios from "axios";
 import * as c from "./const";
 import { getCookie } from "../my-results/utils";
 
+function callAxios(config) {
+    return axios(config)
+        .then(response => ({ response }))
+        .catch(error => ({ error }));
+}
+
 function fetchData(userId) {
-    return axios({
+    const config = {
         method: "get",
         url: `/rest/v1/user_projects_access/${userId}/`
-    });
+    };
+    return callAxios(config);
 }
 
 function putData(userId, is_restricted, user_projects) {
-    return axios({
+    const config = {
         method: "put",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
@@ -31,16 +38,16 @@ function putData(userId, is_restricted, user_projects) {
                 projects: user_projects
             }
         }
-    });
+    };
+    return callAxios(config);
 }
 
 function* getSaga(action) {
     const { userId } = action.data;
-    try {
-        const response = yield call(fetchData, userId);
-        const data = response.data;
-        yield put({ type: c.API_GET_SUCCESS, data });
-    } catch (error) {
+    const { response, error } = yield call(fetchData, userId);
+    if (response) {
+        yield put({ type: c.API_GET_SUCCESS, data: response.data });
+    } else {
         yield put({ type: c.API_GET_FAILURE, error });
     }
 }
@@ -50,15 +57,15 @@ const getUserProjects = state => state.user_projects;
 const getIsRestricted = state => state.is_restricted;
 
 function* putSaga(action) {
-    try {
-        yield put({ type: c.API_PUT_INIT });
-        const userId = yield select(getUserId);
-        const is_restricted = yield select(getIsRestricted);
-        const user_projects = yield select(getUserProjects);
-        const response = yield call(putData, userId, is_restricted, user_projects);
-        const data = response.data;
-        yield put({ type: c.API_PUT_SUCCESS, data });
-    } catch (error) {
+    yield put({ type: c.API_PUT_INIT });
+    const userId = yield select(getUserId);
+    const is_restricted = yield select(getIsRestricted);
+    const user_projects = yield select(getUserProjects);
+
+    const { response, error } = yield call(putData, userId, is_restricted, user_projects);
+    if (response) {
+        yield put({ type: c.API_PUT_SUCCESS, data: response.data });
+    } else {
         yield put({ type: c.API_PUT_FAILURE, error });
     }
 }
