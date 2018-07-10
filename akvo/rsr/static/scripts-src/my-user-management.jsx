@@ -772,7 +772,7 @@ function initReact() {
                     <td>{employment.organisation.name}</td>
                     {user.can_be_restricted
                         ? <td>
-                            <a href={'/myrsr/user_projects/' + user.id + '/'}>
+                            <a href={'/myrsr/user_projects/' + user.id + '/' + window.location.search}>
                                 {i18n.grant_project_access}
                             </a>
                         </td>

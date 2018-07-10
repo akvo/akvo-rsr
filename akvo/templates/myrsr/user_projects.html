@@ -7,6 +7,9 @@
 {% block myrsr_main %}
   <section id="main" class="userProject">
     <header>
+      <a href="{% url "user_management" %}{% if page %}?page={{ page }}{% endif %}">
+        Return to User management
+      </a>
       <h2>{% trans "User access to projects" %}</h2>
       <h4>
         {% blocktrans with full_name=user_projects_user.get_full_name %}
