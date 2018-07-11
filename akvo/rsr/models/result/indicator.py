@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.codelists.models import IndicatorMeasure
-from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE
+from akvo.codelists.store.default_codelists import INDICATOR_MEASURE
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 

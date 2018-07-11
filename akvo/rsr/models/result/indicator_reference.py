@@ -7,7 +7,7 @@
 from indicator import Indicator
 
 from akvo.codelists.models import IndicatorVocabulary
-from akvo.codelists.store.codelists_v202 import INDICATOR_VOCABULARY
+from akvo.codelists.store.default_codelists import INDICATOR_VOCABULARY
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 

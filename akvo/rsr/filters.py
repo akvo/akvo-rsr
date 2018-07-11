@@ -11,7 +11,7 @@ from copy import deepcopy
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
-from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
+from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.utils import codelist_choices
 from .models import (Organisation, OrganisationLocation,
                      Project, ProjectLocation, ProjectUpdate, ProjectUpdateLocation,

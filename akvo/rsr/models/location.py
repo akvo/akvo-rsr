@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
 from akvo.codelists.models import (Country, GeographicExactness, GeographicLocationClass,
                                    GeographicLocationReach, GeographicVocabulary, LocationType)
-from akvo.codelists.store.codelists_v202 import (
+from akvo.codelists.store.default_codelists import (
     COUNTRY, GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS, GEOGRAPHIC_LOCATION_REACH,
     GEOGRAPHIC_VOCABULARY, LOCATION_TYPE
 )

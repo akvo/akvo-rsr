@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 
-from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
+from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.serializers import (
     ProjectUpdateSerializer, ProjectUpdateDirectorySerializer, ProjectUpdateExtraSerializer,
     TypeaheadSectorSerializer, TypeaheadOrganisationSerializer

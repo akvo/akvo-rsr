@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import ContactType
-from akvo.codelists.store.codelists_v202 import CONTACT_TYPE
+from akvo.codelists.store.default_codelists import CONTACT_TYPE
 from akvo.utils import codelist_choices, codelist_value
 
 

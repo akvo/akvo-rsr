@@ -27,10 +27,10 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
                                    FinanceType, FlowType, TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS,
-                                                 COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
-                                                 FLOW_TYPE, TIED_STATUS,
-                                                 BUDGET_IDENTIFIER_VOCABULARY)
+from akvo.codelists.store.default_codelists import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS,
+                                                    COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
+                                                    FLOW_TYPE, TIED_STATUS,
+                                                    BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
 

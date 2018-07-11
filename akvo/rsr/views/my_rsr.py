@@ -20,7 +20,7 @@ from django.shortcuts import get_object_or_404, render
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country, Version
-from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
+from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR
 from akvo.rsr.models import IndicatorPeriodData
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
