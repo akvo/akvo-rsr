@@ -138,6 +138,3 @@ class MyRSRTestCase(TestCase):
         self.assertEqual(len(soup.findAll('table')), 1)
         # There should be two table rows: one header and one for project1
         self.assertEqual(len(soup.findAll('table')[0].findChildren('tr')), 2)
-
-
-Add
