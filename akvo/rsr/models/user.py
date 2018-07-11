@@ -117,7 +117,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "/user/{}/".format(self.pk)
 
     def get_full_name(self):
-        full_name = '{} {}'.format(self.first_name, self.last_name).strip()
+        full_name = u"{} {}".format(self.first_name, self.last_name).strip()
         if not full_name:
             full_name = u"User with ID: {}".format(self.pk)
         return full_name
