@@ -149,7 +149,7 @@ class App extends React.Component {
     toggleProjectSelected(e) {
         e.stopPropagation();
         const target = e.currentTarget;
-        if (!target.closest("table").classList.contains("disabled")) {
+        if (!target.classList.contains("disabled")) {
             const id = parseInt(target.getAttribute("id"));
             this.props.onUpdateProjectSelection(id);
         }

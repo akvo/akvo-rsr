@@ -15,7 +15,7 @@ module.exports = {
     entry: {
         // When working on one or the other apps, comment out the other while developing. Saves time
         // on the transpiling ;-)
-        // results: './scripts-src/my-results/app.js',
+        results: './scripts-src/my-results/app.js',
         userProjects: './scripts-src/user-projects-access/app.js',
         vendors: [
             // NOTE: babel-polyfill always needs to be loaded before react and redux
