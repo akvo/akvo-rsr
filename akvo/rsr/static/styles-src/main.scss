@@ -5227,6 +5227,9 @@ main.results-page {
         margin-bottom: 25px;
         margin-right: 10px;
     }
+    .error {
+        color: $akvoTvRed;
+    }
     .selectAllProjects {
         @include smallButton($akvoBlack, white);
         margin-bottom: 15px;

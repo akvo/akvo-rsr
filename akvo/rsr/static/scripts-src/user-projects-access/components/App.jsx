@@ -68,7 +68,7 @@ const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) =>
 };
 
 const Error = ({ _, error }) => {
-    return error ? <div>{_("an_error_occured") + error.message}</div> : null;
+    return error ? <div className="error">{_("an_error_occured") + error.message}</div> : null;
 };
 
 const Projects = ({
