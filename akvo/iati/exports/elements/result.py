@@ -50,141 +50,144 @@ def result(project):
                         indicator.description or indicator.references.all() or \
                         indicator.baseline_year or indicator.baseline_value or \
                         indicator.baseline_comment or indicator.periods.all():
-                    indicator_element = etree.SubElement(element, "indicator")
-
-                    if indicator.measure:
-                        indicator_element.attrib['measure'] = indicator.measure
-
-                    if indicator.ascending is not None:
-                        indicator_element.attrib['ascending'] = '1' if indicator.ascending else '0'
-
-                    if indicator.title:
-                        title_element = etree.SubElement(indicator_element, "title")
-                        narrative_element = etree.SubElement(title_element, "narrative")
-                        narrative_element.text = indicator.title
-
-                    if indicator.description:
-                        description_element = etree.SubElement(indicator_element, "description")
-                        narrative_element = etree.SubElement(description_element, "narrative")
-                        narrative_element.text = indicator.description
-
-                    for reference in indicator.references.all():
-                        if reference.vocabulary or reference.reference or reference.vocabulary_uri:
-                            reference_element = etree.SubElement(indicator_element, "reference")
-
-                            if reference.vocabulary:
-                                reference_element.attrib['vocabulary'] = reference.vocabulary
-
-                            if reference.reference:
-                                reference_element.attrib['code'] = reference.reference
-
-                            if reference.vocabulary_uri:
-                                reference_element.attrib['indicator-uri'] = reference.vocabulary_uri
-
-                    if DGIS_PROJECT or indicator.baseline_year or indicator.baseline_value or \
-                            indicator.baseline_comment:
-                            baseline_element = etree.SubElement(indicator_element, "baseline")
-
-                            if indicator.baseline_year:
-                                baseline_element.attrib['year'] = str(indicator.baseline_year)
-                            elif DGIS_PROJECT:
-                                baseline_element.attrib['year'] = NOT_AVAILABLE_YEAR
-
-                            if indicator.baseline_value:
-                                baseline_element.attrib['value'] = indicator.baseline_value
-                            elif DGIS_PROJECT:
-                                baseline_element.attrib['value'] = NOT_AVAILABLE
-
-                            if indicator.baseline_comment:
-                                comment_element = etree.SubElement(baseline_element, "comment")
-                                narrative_element = etree.SubElement(comment_element, "narrative")
-                                narrative_element.text = indicator.baseline_comment
-
-                    for period in indicator.periods.all():
-                        if period.period_start or period.period_end or period.target_value or \
-                                period.target_locations.all() or period.target_dimensions.all() or \
-                                period.target_comment or period.actual_value or \
-                                period.actual_locations.all() or period.actual_dimensions.all() or \
-                                period.actual_comment:
-                            period_element = etree.SubElement(indicator_element, "period")
-
-                            if period.period_start:
-                                period_start_element = etree.SubElement(period_element,
-                                                                        "period-start")
-                                period_start_element.attrib['iso-date'] = str(period.period_start)
-
-                            if period.period_end:
-                                period_end_element = etree.SubElement(period_element, "period-end")
-                                period_end_element.attrib['iso-date'] = str(period.period_end)
-
-                            if (DGIS_PROJECT or period.target_value or
-                                    period.target_locations.all() or
-                                    period.target_dimensions.all() or period.target_comment):
-                                target_element = etree.SubElement(period_element, "target")
-
-                                if period.target_value:
-                                    target_element.attrib['value'] = period.target_value
-                                elif DGIS_PROJECT:
-                                    target_element.attrib['value'] = NOT_AVAILABLE
-
-                                for target_location in period.target_locations.all():
-                                    target_location_element = etree.SubElement(target_element,
-                                                                               "location")
-                                    target_location_element.attrib['ref'] = target_location.location
-
-                                for target_dimension in period.target_dimensions.all():
-                                    if target_dimension.name or target_dimension.value:
-                                        target_dimension_element = etree.SubElement(target_element,
-                                                                                    "dimension")
-
-                                        if target_dimension.name:
-                                            target_dimension_element.attrib['name'] = \
-                                                target_dimension.name
-
-                                        if target_dimension.value:
-                                            target_dimension_element.attrib['value'] = \
-                                                target_dimension.value
-
-                                if period.target_comment:
-                                    comment_element = etree.SubElement(target_element, "comment")
-                                    narrative_element = etree.SubElement(comment_element,
-                                                                         "narrative")
-                                    narrative_element.text = period.target_comment
-
-                            if (DGIS_PROJECT or period.actual_value or
-                                    period.actual_locations.all() or
-                                    period.actual_dimensions.all() or period.actual_comment):
-                                actual_element = etree.SubElement(period_element, "actual")
-
-                                if period.actual_value:
-                                    actual_element.attrib['value'] = period.actual_value
-                                elif DGIS_PROJECT:
-                                    actual_element.attrib['value'] = NOT_AVAILABLE
-
-                                for actual_location in period.actual_locations.all():
-                                    actual_location_element = etree.SubElement(actual_element,
-                                                                               "location")
-                                    actual_location_element.attrib['ref'] = actual_location.location
-
-                                for actual_dimension in period.actual_dimensions.all():
-                                    if actual_dimension.name or actual_dimension.value:
-                                        actual_dimension_element = etree.SubElement(actual_element,
-                                                                                    "dimension")
-
-                                        if actual_dimension.name:
-                                            actual_dimension_element.attrib['name'] = \
-                                                actual_dimension.name
-
-                                        if actual_dimension.value:
-                                            actual_dimension_element.attrib['value'] = \
-                                                actual_dimension.value
-
-                                if period.actual_comment:
-                                    comment_element = etree.SubElement(actual_element, "comment")
-                                    narrative_element = etree.SubElement(comment_element,
-                                                                         "narrative")
-                                    narrative_element.text = period.actual_comment
+                    add_indicator_element(element, indicator, DGIS_PROJECT)
 
             result_elements.append(element)
 
     return result_elements
+
+
+def add_indicator_element(result_element, indicator, is_dgis_project):
+    indicator_element = etree.SubElement(result_element, "indicator")
+
+    if indicator.measure:
+        indicator_element.attrib['measure'] = indicator.measure
+
+    if indicator.ascending is not None:
+        indicator_element.attrib['ascending'] = '1' if indicator.ascending else '0'
+
+    if indicator.title:
+        title_element = etree.SubElement(indicator_element, "title")
+        narrative_element = etree.SubElement(title_element, "narrative")
+        narrative_element.text = indicator.title
+
+    if indicator.description:
+        description_element = etree.SubElement(indicator_element, "description")
+        narrative_element = etree.SubElement(description_element, "narrative")
+        narrative_element.text = indicator.description
+
+    for reference in indicator.references.all():
+        if reference.vocabulary or reference.reference or reference.vocabulary_uri:
+            reference_element = etree.SubElement(indicator_element, "reference")
+
+            if reference.vocabulary:
+                reference_element.attrib['vocabulary'] = reference.vocabulary
+
+            if reference.reference:
+                reference_element.attrib['code'] = reference.reference
+
+            if reference.vocabulary_uri:
+                reference_element.attrib['indicator-uri'] = reference.vocabulary_uri
+
+    if is_dgis_project or indicator.baseline_year or indicator.baseline_value or indicator.baseline_comment:
+        baseline_element = etree.SubElement(indicator_element, "baseline")
+
+        if indicator.baseline_year:
+            baseline_element.attrib['year'] = str(indicator.baseline_year)
+        elif is_dgis_project:
+            baseline_element.attrib['year'] = NOT_AVAILABLE_YEAR
+
+        if indicator.baseline_value:
+            baseline_element.attrib['value'] = indicator.baseline_value
+        elif is_dgis_project:
+            baseline_element.attrib['value'] = NOT_AVAILABLE
+
+        if indicator.baseline_comment:
+            comment_element = etree.SubElement(baseline_element, "comment")
+            narrative_element = etree.SubElement(comment_element, "narrative")
+            narrative_element.text = indicator.baseline_comment
+
+    for period in indicator.periods.all():
+        if period.period_start or period.period_end or period.target_value or \
+                period.target_locations.all() or period.target_dimensions.all() or \
+                period.target_comment or period.actual_value or \
+                period.actual_locations.all() or period.actual_dimensions.all() or \
+                period.actual_comment:
+            period_element = etree.SubElement(indicator_element, "period")
+
+            if period.period_start:
+                period_start_element = etree.SubElement(period_element,
+                                                        "period-start")
+                period_start_element.attrib['iso-date'] = str(period.period_start)
+
+            if period.period_end:
+                period_end_element = etree.SubElement(period_element, "period-end")
+                period_end_element.attrib['iso-date'] = str(period.period_end)
+
+            if (is_dgis_project or period.target_value or
+                    period.target_locations.all() or
+                    period.target_dimensions.all() or period.target_comment):
+                target_element = etree.SubElement(period_element, "target")
+
+                if period.target_value:
+                    target_element.attrib['value'] = period.target_value
+                elif is_dgis_project:
+                    target_element.attrib['value'] = NOT_AVAILABLE
+
+                for target_location in period.target_locations.all():
+                    target_location_element = etree.SubElement(target_element,
+                                                               "location")
+                    target_location_element.attrib['ref'] = target_location.location
+
+                for target_dimension in period.target_dimensions.all():
+                    if target_dimension.name or target_dimension.value:
+                        target_dimension_element = etree.SubElement(target_element,
+                                                                    "dimension")
+
+                        if target_dimension.name:
+                            target_dimension_element.attrib['name'] = \
+                                target_dimension.name
+
+                        if target_dimension.value:
+                            target_dimension_element.attrib['value'] = \
+                                target_dimension.value
+
+                if period.target_comment:
+                    comment_element = etree.SubElement(target_element, "comment")
+                    narrative_element = etree.SubElement(comment_element,
+                                                         "narrative")
+                    narrative_element.text = period.target_comment
+
+            if (is_dgis_project or period.actual_value or
+                    period.actual_locations.all() or
+                    period.actual_dimensions.all() or period.actual_comment):
+                actual_element = etree.SubElement(period_element, "actual")
+
+                if period.actual_value:
+                    actual_element.attrib['value'] = period.actual_value
+                elif is_dgis_project:
+                    actual_element.attrib['value'] = NOT_AVAILABLE
+
+                for actual_location in period.actual_locations.all():
+                    actual_location_element = etree.SubElement(actual_element,
+                                                               "location")
+                    actual_location_element.attrib['ref'] = actual_location.location
+
+                for actual_dimension in period.actual_dimensions.all():
+                    if actual_dimension.name or actual_dimension.value:
+                        actual_dimension_element = etree.SubElement(actual_element,
+                                                                    "dimension")
+
+                        if actual_dimension.name:
+                            actual_dimension_element.attrib['name'] = \
+                                actual_dimension.name
+
+                        if actual_dimension.value:
+                            actual_dimension_element.attrib['value'] = \
+                                actual_dimension.value
+
+                if period.actual_comment:
+                    comment_element = etree.SubElement(actual_element, "comment")
+                    narrative_element = etree.SubElement(comment_element,
+                                                         "narrative")
+                    narrative_element.text = period.actual_comment
