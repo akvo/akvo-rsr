@@ -347,11 +347,11 @@ export default class App extends React.Component {
                 />
             );
         }
-        const show_reports = page.mode && page.mode.show_narrative_reports;
-        const show_results = page.mode && page.mode.show_results;
+        const showReports = page.mode && page.mode.show_narrative_reports;
+        const showResults = page.mode && page.mode.show_results;
         const projectId = dataFromElement("project").id;
-        const has_results = dataFromElement("project").has_results;
-        const results_tab = (
+        const hasResults = dataFromElement("project").has_results;
+        const resultsTab = (
             <div>
                 <FilterBar callbacks={callbacks} />
                 <main
@@ -365,7 +365,7 @@ export default class App extends React.Component {
         );
 
         return page.mode && page.mode.public ? (
-            results_tab
+            resultsTab
         ) : (
             <section className="results">
                 <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
@@ -373,13 +373,13 @@ export default class App extends React.Component {
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
-                        {show_results && has_results ? <Tab>{_("results")}</Tab> : null}
-                        {show_reports ? <Tab>{_("narrative_summaries")}</Tab> : null}
+                        {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
+                        {showReports ? <Tab>{_("narrative_summaries")}</Tab> : null}
                         <Tab>{_("project_updates")}</Tab>
                         <Tab>{_("project_reports")}</Tab>
                     </TabList>
-                    {show_results && has_results ? <TabPanel>{results_tab}</TabPanel> : undefined}
-                    {show_reports ? (
+                    {showResults && hasResults ? <TabPanel>{resultsTab}</TabPanel> : null}
+                    {showReports ? (
                         <TabPanel>
                             <NarrativeReports />
                         </TabPanel>
