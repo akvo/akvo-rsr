@@ -9,8 +9,8 @@
     <header>
       <h2>{% trans "User access to projects" %}</h2>
       <h4>
-        {% blocktrans with full_name=user_projects_user.get_full_name %}
-          Project access restrictions for <span>{{ full_name }}</span>
+        {% blocktrans with full_name=user_projects_user.get_full_name org_name=user_projects_user.approved_organisations.0 %}
+          Project access restrictions for <span>{{ full_name }}, {{ org_name }}</span>
         {% endblocktrans %}
       </h4>
       <p style="margin-top:10px;">
