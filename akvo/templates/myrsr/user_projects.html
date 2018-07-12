@@ -13,11 +13,6 @@
           Project access restrictions for <span>{{ full_name }}, {{ org_name }}</span>
         {% endblocktrans %}
       </h4>
-      <p style="margin-top:10px;">
-        {% blocktrans %}
-          Select the project(s) that you would like to <strong>restrict</strong> the user access to.
-        {% endblocktrans %}
-      </p>
       <p>
         {% blocktrans %}
           Note: The type of access a user has to their projects is based on the permissions of their
@@ -41,15 +36,16 @@
 
   <script type="application/json" id="user-projects-text">
     {
+      "access": "{% trans 'Access'|escapejs %}",
       "an_error_occured": "{% trans 'An error occured, please try again. The error message is: '|escapejs %}",
       "check_all_projects": "{% trans 'Check all projects'|escapejs %}",
-      "grant_access": "{% trans 'Grant access'|escapejs %}",
       "loading": "{% trans 'Loading...'|escapejs %}",
       "no_title": "{% trans 'Project without a title'|escapejs %}",
       "project_id": "{% trans 'Project ID'|escapejs %}",
       "project_title": "{% trans 'Project title'|escapejs %}",
-      "user_access_restricted": "{% trans 'This user only access to the checked/highlighted projects below. Click to change.'|escapejs %}",
-      "user_access_unrestricted": "{% trans 'This user has access to all projects. Click to change.'|escapejs %}",
+      {# The following two strings have tags, they require special treatment in the React code #}
+      "user_access_restricted": "{% trans 'This user has restricted access, limited to <strong>only</strong> the projects checked below. Click to change.'|escapejs %}",
+      "user_access_unrestricted": "{% trans 'This user has access to <strong>all</strong> projects. Click to change.'|escapejs %}",
       "uncheck_all_projects": "{% trans 'Uncheck all projects'|escapejs %}"
     }
   </script>

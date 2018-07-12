@@ -21,7 +21,15 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
                     checked={is_restricted}
                     onChange={onChangeIsRestricted}
                 />
-                {is_restricted ? _("user_access_restricted") : _("user_access_unrestricted")}
+                {/* The strings include <strong> tags which requires the use of
+                    dangerouslySetInnerHTML */}
+                <span
+                    dangerouslySetInnerHTML={{
+                        __html: is_restricted
+                            ? _("user_access_restricted")
+                            : _("user_access_unrestricted")
+                    }}
+                />
             </label>
         </span>
     );
@@ -100,7 +108,7 @@ const Projects = ({
             <table>
                 <thead>
                     <tr>
-                        <th className={className}>{_("grant_access")}</th>
+                        <th className={className}>{_("access")}</th>
                         <th className={className}>{_("project_id")}</th>
                         <th className={className}>{_("project_title")}</th>
                     </tr>
