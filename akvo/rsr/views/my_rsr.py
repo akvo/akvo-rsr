@@ -21,7 +21,7 @@ from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country, Version
 from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY, SECTOR
-from akvo.rsr.models import IndicatorPeriodData, User
+from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
 
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
@@ -494,6 +494,11 @@ def user_management(request):
                 # organisation
                 if employment.user.approved_organisations().distinct().count() != 1:
                     can_be_restricted = False
+                else:
+                    user_projects = UserProjects.objects.filter(user=employment.user)
+                    if user_projects.exists():
+                        user_dict['is_restricted'] = user_projects[0].is_restricted
+                        user_dict['restricted_count'] = user_projects[0].projects.count()
             user_dict['can_be_restricted'] = can_be_restricted
 
             employment_dict["user"] = user_dict

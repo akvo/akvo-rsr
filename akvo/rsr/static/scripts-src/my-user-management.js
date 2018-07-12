@@ -760,6 +760,14 @@ function initReact() {
                 employment: employment,
                 key: employment.id
             });
+            var label;
+            if (user.can_be_restricted) {
+                if (user.is_restricted) {
+                    label = i18n.edit_access + " (" + user.restricted_count + ")";
+                } else {
+                    label = i18n.restrict_access
+                }
+            }
             return (
                 React.createElement("tr", null, 
                     React.createElement("td", null, user.email), 
@@ -773,7 +781,7 @@ function initReact() {
                     user.can_be_restricted
                         ? React.createElement("td", null, 
                             React.createElement("a", {href: '/myrsr/user_projects/' + user.id + '/'}, 
-                                i18n.grant_project_access
+                                label
                             )
                         )
                         : React.createElement("td", null), 

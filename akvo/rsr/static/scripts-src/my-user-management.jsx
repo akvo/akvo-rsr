@@ -760,6 +760,14 @@ function initReact() {
                 employment: employment,
                 key: employment.id
             });
+            var label;
+            if (user.can_be_restricted) {
+                if (user.is_restricted) {
+                    label = i18n.edit_access + " (" + user.restricted_count + ")";
+                } else {
+                    label = i18n.restrict_access
+                }
+            }
             return (
                 <tr>
                     <td>{user.email}</td>
@@ -773,7 +781,7 @@ function initReact() {
                     {user.can_be_restricted
                         ? <td>
                             <a href={'/myrsr/user_projects/' + user.id + '/'}>
-                                {i18n.grant_project_access}
+                                {label}
                             </a>
                         </td>
                         : <td></td>}
