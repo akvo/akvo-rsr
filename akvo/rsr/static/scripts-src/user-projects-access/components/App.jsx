@@ -21,7 +21,7 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
                     checked={is_restricted}
                     onChange={onChangeIsRestricted}
                 />
-                {_("restrict_access")}
+                {is_restricted ? _("user_access_restricted") : _("user_access_unrestricted")}
             </label>
         </span>
     );
@@ -30,9 +30,9 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
 const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
     const checked = user_projects && inArray(project.id, user_projects),
         disabled = is_restricted ? "" : "disabled",
-        projectSelected = checked ? " projectSelected": "",
+        projectSelected = checked ? " projectSelected" : "",
         trClassName = disabled + projectSelected,
-        idClassName = disabled +  " id";
+        idClassName = disabled + " id";
     return (
         <tr
             key={project.id}
