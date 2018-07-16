@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from akvo.utils import manageable_objects
+from akvo.rsr.views.my_rsr import manageable_objects
 from ..serializers import UserProjectAccessSerializer
 
 

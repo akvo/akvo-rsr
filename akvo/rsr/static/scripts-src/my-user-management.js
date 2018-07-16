@@ -13,7 +13,7 @@ var Button,
     initial_employment_data,
     orgAdmin,
     organisation_data,
-    role_data,
+    roles,
     i18n;
 
 // CSRF TOKEN
@@ -72,7 +72,7 @@ function initReact() {
                 );
             });
 
-            var roles = role_data.map(function(role) {
+            var roles = roles.map(function(role) {
                 return (
                     React.createElement("option", {key: role.id, value: role.id}, 
                         role.name
@@ -875,7 +875,7 @@ document.addEventListener("DOMContentLoaded", function() {
     );
     orgAdmin = JSON.parse(document.getElementById("org-admin").innerHTML).org_admin;
     organisation_data = JSON.parse(document.getElementById("organisation-data").innerHTML);
-    role_data = JSON.parse(document.getElementById("role-data").innerHTML);
+    roles = JSON.parse(document.getElementById("roles").innerHTML);
     i18n = JSON.parse(document.getElementById("user-management-text").innerHTML);
 
     // Check if React is loaded

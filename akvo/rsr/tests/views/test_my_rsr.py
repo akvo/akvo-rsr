@@ -17,6 +17,7 @@ from django.test import TestCase, Client
 from lxml import html
 
 from akvo.rsr.models import Employment, Organisation, Project, User, Partnership, UserProjects
+from akvo.rsr.views.my_rsr import manageable_objects
 from akvo.utils import check_auth_groups
 
 
@@ -138,3 +139,52 @@ class MyRSRTestCase(TestCase):
         self.assertEqual(len(soup.findAll('table')), 1)
         # There should be two table rows: one header and one for project1
         self.assertEqual(len(soup.findAll('table')[0].findChildren('tr')), 2)
+
+    def test_manageable_objects_employments_is_admin_can_manage_all(self):
+        # Given a user that is_admin
+        # When employments for two different organisations exist
+        other_org = Organisation.objects.create(name='Other org', long_name='Other org')
+        Employment.objects.create(user=self.user1, organisation=self.org, group=self.admin_group)
+        Employment.objects.create(user=self.user2, organisation=self.org, group=self.user_group)
+        Employment.objects.create(user=self.user3, organisation=other_org, group=self.user_group)
+
+        # Then the is_admin user can manage all employments
+        manageables = manageable_objects(self.user1)
+        self.assertEqual(len(manageables['employments']), 3)
+        self.assertTrue(manageables['employments'][0] in Employment.objects.all())
+        self.assertTrue(manageables['employments'][1] in Employment.objects.all())
+        self.assertTrue(manageables['employments'][2] in Employment.objects.all())
+
+    def test_manageable_objects_employments_org_admin_can_manage_own(self):
+        # Given a user that is "org admin", i.e. part of the 'Admins' group
+        Employment.objects.create(user=self.user3, organisation=self.org, group=self.admin_group, is_approved=True)
+
+        # When employments for two different organisations exist
+        user4 = self._create_user('user4@example.com', self.password)
+        user5 = self._create_user('user5@example.com', self.password)
+        user6 = self._create_user('user6@example.com', self.password)
+        other_org = Organisation.objects.create(name='Other org', long_name='Other org')
+        Employment.objects.create(user=user4, organisation=self.org, group=self.user_group, is_approved=True)
+        Employment.objects.create(user=user5, organisation=self.org, group=self.user_group)
+        Employment.objects.create(user=user6, organisation=other_org, group=self.user_group)
+
+        # Then the "Admins" user can only manage employments of the same organisation
+        manageables = manageable_objects(self.user3)
+        self.assertEqual(len(manageables['employments']), 3)
+        self.assertTrue(manageables['employments'][0] in Employment.objects.filter(organisation=self.org))
+        self.assertTrue(manageables['employments'][1] in Employment.objects.filter(organisation=self.org))
+        self.assertTrue(manageables['employments'][2] in Employment.objects.filter(organisation=self.org))
+
+    def test_manageable_objects_orgs_is_admin_can_manage_all(self):
+        other_org = Organisation.objects.create(name='Other org', long_name='Other org')
+        manageables = manageable_objects(self.user1)
+        self.assertEqual(len(manageables['organisations']), 2)
+        self.assertTrue(manageables['organisations'][0] in Organisation.objects.all())
+        self.assertTrue(manageables['organisations'][1] in Organisation.objects.all())
+
+    def test_manageable_objects_orgs_org_admin_can_manage_own(self):
+        Employment.objects.create(user=self.user3, organisation=self.org, group=self.admin_group, is_approved=True)
+        Organisation.objects.create(name='Other org', long_name='Other org')
+        manageables = manageable_objects(self.user3)
+        self.assertEqual(len(manageables['organisations']), 1)
+        self.assertEqual(manageables['organisations'][0], Organisation.objects.get(name='akvo'))

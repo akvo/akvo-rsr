@@ -57,7 +57,7 @@
         <script type="application/json" id="initial-employment-data">{{ employments|safe }}</script>
         <script type="application/json" id="organisation-data">{{ organisations|safe }}</script>
         <script type="application/json" id="org-admin">{"org_admin": {% if org_admin %}true{% else %}false{% endif %}}</script>
-        <script type="application/json" id="role-data">{{ roles|safe }}</script>
+        <script type="application/json" id="roles">{{ roles|safe }}</script>
 
         {# Translation strings #}
         <script type="application/json" id="user-management-text">
