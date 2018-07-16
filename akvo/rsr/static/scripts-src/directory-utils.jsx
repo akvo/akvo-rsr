@@ -217,7 +217,7 @@ var ProjectDirectory = React.createClass({
                     : this.props.i18n.loading_text,
             filtered = this.props.filtered ? " filtered" : "",
             listWidth = this.props.hide_map ? "col-sm-12" : "col-sm-7",
-            listMsg = "The most recent " + this.props.type.toLowerCase() + " added to RSR";
+            listMsg = this.props.i18n.list_message_text;
 
         return (
             <section className="main-list projects">

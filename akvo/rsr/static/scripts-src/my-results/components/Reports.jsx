@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import "react-select/dist/react-select.css";
 import Results from "./Results";
+import { _ } from "../utils";
 
 // DatePicker
 import DatePicker from "react-datepicker";
@@ -150,11 +151,11 @@ class Report extends React.Component {
         const date_selectors = (
             <div className="reportDate">
                 <div className="startDate">
-                    <div>Start Date</div>
+                    <div>{_("start_date")}</div>
                     <DatePicker onChange={this.setStartDate} selected={start_date} />
                 </div>
                 <div className="endDate">
-                    <div>End Date</div>
+                    <div>{_("end_date")}</div>
                     <DatePicker onChange={this.setEndDate} selected={end_date} />
                 </div>
             </div>
@@ -190,7 +191,7 @@ class ReportFormatButton extends React.Component {
     render() {
         const { icon, display_name } = this.props;
         const icon_class = `fa fa-${icon}`,
-            text = `Download ${display_name}`;
+            text = `${_("download")} ${display_name}`;
         return (
             <button className="btn btn-default reportDown" onClick={this.onClick}>
                 <i className={icon_class} />

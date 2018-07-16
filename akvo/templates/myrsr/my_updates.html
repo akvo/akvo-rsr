@@ -52,8 +52,8 @@
                         <td>
                             <div class="updateListMenu text-right">
                                 <ul class="nav">
-                                    <li><a href="{% url 'edit-update' update.project.id update.id %}">Edit</a></li>
-                                    <li><a href="" class="delete-update" id="update-{{ update.id }}">Delete</a></li>
+                                    <li><a href="{% url 'edit-update' update.project.id update.id %}">{% trans "Edit" %}</a></li>
+                                    <li><a href="" class="delete-update" id="update-{{ update.id }}">{% trans "Delete" %}</a></li>
                                 </ul>
                             </div>
                             <div id="confirm-delete-{{ update.id }}" class="update-confirm-container text-right"></div>

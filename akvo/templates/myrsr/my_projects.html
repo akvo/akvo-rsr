@@ -20,7 +20,7 @@
                      {% if q_search %}value="{{ q_search }}"{% endif %}>
               <div class="input-group-btn">
                 <button class="btn btn-primary" type="submit">
-                  Search
+                  {% trans "Search" %}
                 </button>
               </div>
             </div>
@@ -73,12 +73,12 @@
             <td>
                 <span>
                     {% if project.children_all.exists %}
-                        <a href="" class="hierarchy-link" data-project-url="{% url 'project-hierarchy-iframe' project.id %}">Parent</a>
+                        <a href="" class="hierarchy-link" data-project-url="{% url 'project-hierarchy-iframe' project.id %}">{% trans "Parent" %}</a>
                     {% endif %}
                 </span>
                 <span>
                     {% if project.parents_all.exists %}
-                        <a href="" class="hierarchy-link" data-project-url="{% url 'project-hierarchy-iframe' project.id %}">Child</a>
+                        <a href="" class="hierarchy-link" data-project-url="{% url 'project-hierarchy-iframe' project.id %}">{% trans "Child" %}</a>
                     {% endif %}
                 </span>
             </td>
