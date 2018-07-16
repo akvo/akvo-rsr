@@ -496,3 +496,46 @@ def project_access_filter(user, projects):
     except UserProjects.DoesNotExist:
         pass
     return projects
+
+
+def manageable_objects(user):
+    """
+    Return all employments, organisations and groups the user can "manage"
+    :param user: a User object
+    :return: a dict with three query sets of Employment, Organisation and Group objects
+        The Employment and Organisation query sets consits of objects that user may manage while
+        roles is a QS of the RSR Group models, minus the "User" group if user is not an org_admin or
+        "higher"
+    NOTE: this is a refactoring of some inline code that used to be in my_rsr.user_management. We
+    need the exact same set of employments in UserProjectsAccessViewSet.get_queryset()
+    """
+    from akvo.rsr.models import Employment, Organisation
+
+    groups = settings.REQUIRED_AUTH_GROUPS
+    non_admin_groups = [group for group in groups if not group is 'Admins']
+    if user.is_admin or user.is_superuser:
+        # Superusers or RSR Admins can manage and invite someone for any organisation
+        employments = Employment.objects.select_related().prefetch_related('group')
+        organisations = Organisation.objects.all()
+        roles = Group.objects.filter(name__in=groups)
+    else:
+        # Others can only manage or invite users to their own organisation, or the
+        # organisations that they content own
+        connected_orgs = user.approved_organisations()
+        connected_orgs_list = [
+            org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
+        ]
+        organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
+            content_owned_organisations()
+        if user.approved_employments().filter(group__name='Admins').exists():
+            roles = Group.objects.filter(name__in=groups)
+            employments = organisations.employments()
+        else:
+            roles = Group.objects.filter(name__in=non_admin_groups)
+            employments = organisations.employments().exclude(user=user)
+
+    return dict(
+        employments=employments,
+        organisations=organisations,
+        roles=roles,
+    )

@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.forms.models import model_to_dict
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 
 from tastypie.models import ApiKey
@@ -28,7 +28,7 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
-                      project_access_filter)
+                      project_access_filter, manageable_objects)
 from ..models import (Employment, Organisation, OrganisationCustomField, Project,
                       ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
 
@@ -409,29 +409,10 @@ def user_management(request):
 
     org_admin = user.approved_employments().filter(group__name='Admins').exists() or \
         user.is_admin or user.is_superuser
-    groups = settings.REQUIRED_AUTH_GROUPS
 
-    if user.is_admin or user.is_superuser:
-        # Superusers or RSR Admins can manage and invite someone for any organisation
-        employments = Employment.objects.select_related().prefetch_related('group')
-        organisations = Organisation.objects.all()
-        roles = Group.objects.filter(name__in=groups)
-    else:
-        # Others can only manage or invite users to their own organisation, or the
-        # organisations that they content own
-        connected_orgs = user.approved_organisations()
-        connected_orgs_list = [
-            org.pk for org in connected_orgs if user.has_perm('rsr.user_management', org)
-        ]
-        organisations = Organisation.objects.filter(pk__in=connected_orgs_list).\
-            content_owned_organisations()
-        if org_admin:
-            roles = Group.objects.filter(name__in=groups)
-            employments = organisations.employments()
-        else:
-            roles = Group.objects.filter(name__in=groups[:-1])
-            employments = organisations.employments().exclude(user=user)
+    manageables = manageable_objects(user)
 
+    employments = manageables['employments']
     q = request.GET.get('q')
     if q:
         q_list = q.split()
@@ -489,7 +470,6 @@ def user_management(request):
                 can_be_restricted = False
             else:
                 can_be_restricted = True
-            if can_be_restricted:
                 #  We cannot limit project access to users that are employed by more than one
                 # organisation
                 if employment.user.approved_organisations().distinct().count() != 1:
@@ -504,8 +484,8 @@ def user_management(request):
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
 
-    organisations_list = list(organisations.values('id', 'name'))
-    roles_list = list(roles.values('id', 'name').order_by('name'))
+    organisations_list = list(manageables['organisations'].values('id', 'name'))
+    roles_list = list(manageables['roles'].values('id', 'name').order_by('name'))
 
     context = {}
     if employments_array:
@@ -527,6 +507,11 @@ def user_management(request):
 def user_projects(request, user_id):
 
     user = get_object_or_404(User, pk=user_id)
+    manageables = manageable_objects(request.user)
+    manageable_users = manageables['employments'].users()
+    if not user in manageable_users:
+        raise PermissionDenied
+
     context = {
         "user_projects_user": user
     }
