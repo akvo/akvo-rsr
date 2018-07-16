@@ -371,6 +371,40 @@ class IndicatorPeriodDataTestCase(TestCase):
         self.assertEqual(1, len(content['results'][0]['data']))
         self.assertEqual(update.id, content['results'][0]['data'][0]['id'])
 
+    def test_percentage_indicator_allows_edit_update(self):
+        # Given
+        self._create_new_user(group='M&E Managers')
+        self.c.login(username=self.username2, password=self.password2)
+        url = '/rest/v1/indicator_period_data_framework/?format=json'
+        data = {
+            'period': self.period.id,
+            'user': self.user.id,
+            "value":150,
+            "narrative":"",
+            "text":"",
+            "status":"D",
+            "actual_value":0,
+            "numerator":"3",
+            "denominator":"2",
+            "disaggregations":[],
+        }
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+        self.assertEqual(201, response.status_code)
+
+        # When
+        data['id'] = response.data['id']
+        data['numerator'] = '5'
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type='application/json')
+
+        # Then
+        self.assertEqual(201, response.status_code)
+        self.assertEqual('5.00', response.data['numerator'])
+
+
     def setup_results_framework(self):
         self.result = Result.objects.create(
             title='Result 1',
@@ -389,4 +423,14 @@ class IndicatorPeriodDataTestCase(TestCase):
             period_start='2016-01-01',
             period_end='2016-12-31',
             indicator=self.indicator
+        )
+        self.percentage_indicator = Indicator.objects.create(
+            title='Indicator 2',
+            result=self.result,
+            measure='2',
+        )
+        self.percentage_period = IndicatorPeriod.objects.create(
+            period_start='2016-01-01',
+            period_end='2016-12-31',
+            indicator=self.percentage_indicator
         )
