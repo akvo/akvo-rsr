@@ -9,6 +9,8 @@ from decimal import Decimal, InvalidOperation
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail.fields import ImageField
 
@@ -238,3 +240,22 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
             )
 
         return f_queryset.distinct()
+
+
+@receiver(post_save, sender=IndicatorPeriodData)
+def set_qualitative_narrative(sender, **kwargs):
+    """Update the narrative field of a qualitative indicator on updates."""
+
+    update = kwargs['instance']
+    if update.status != IndicatorPeriodData.STATUS_APPROVED_CODE:
+        return
+
+    if update.period.indicator.type != QUALITATIVE:
+        return
+
+    # Current update is the latest update?
+    if update.period.approved_updates.last().id != update.id:
+        return
+
+    update.period.narrative = update.narrative
+    update.period.save()

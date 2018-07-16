@@ -6,7 +6,7 @@
 
 from lxml import etree
 
-from akvo.rsr.models.result.utils import QUANTITATIVE
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
 DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
 NOT_AVAILABLE = u"N/A"
@@ -45,7 +45,7 @@ def result(project):
                 narrative_element = etree.SubElement(description_element, "narrative")
                 narrative_element.text = res.description
 
-            for indicator in res.indicators.filter(type=QUANTITATIVE):
+            for indicator in res.indicators.all():
                 if indicator.measure or indicator.ascending is not None or indicator.title or \
                         indicator.description or indicator.references.all() or \
                         indicator.baseline_year or indicator.baseline_value or \
@@ -62,6 +62,9 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
 
     if indicator.measure:
         indicator_element.attrib['measure'] = indicator.measure
+
+    elif indicator.type == QUALITATIVE:
+        indicator_element.attrib['measure'] = '5'
 
     if indicator.ascending is not None:
         indicator_element.attrib['ascending'] = '1' if indicator.ascending else '0'
@@ -110,7 +113,7 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
     for period in indicator.periods.all():
         if period.period_start or period.period_end or period.target_value or \
                 period.target_locations.all() or period.target_dimensions.all() or \
-                period.target_comment or period.actual_value or \
+                period.target_comment or period.actual_value or period.narrative or \
                 period.actual_locations.all() or period.actual_dimensions.all() or \
                 period.actual_comment:
             period_element = etree.SubElement(indicator_element, "period")
@@ -158,15 +161,20 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
                                                          "narrative")
                     narrative_element.text = period.target_comment
 
-            if (is_dgis_project or period.actual_value or
+            if (is_dgis_project or period.actual_value or period.narrative or
                     period.actual_locations.all() or
                     period.actual_dimensions.all() or period.actual_comment):
                 actual_element = etree.SubElement(period_element, "actual")
 
-                if period.actual_value:
-                    actual_element.attrib['value'] = period.actual_value
-                elif is_dgis_project:
-                    actual_element.attrib['value'] = NOT_AVAILABLE
+                if period.indicator.type == QUANTITATIVE:
+                    if period.actual_value:
+                        actual_element.attrib['value'] = period.actual_value
+                    elif is_dgis_project:
+                        actual_element.attrib['value'] = NOT_AVAILABLE
+
+                else:
+                    if period.narrative:
+                        actual_element.attrib['value'] = period.narrative
 
                 for actual_location in period.actual_locations.all():
                     actual_location_element = etree.SubElement(actual_element,
