@@ -36,7 +36,10 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
 };
 
 const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
-    const checked = user_projects && inArray(project.id, user_projects),
+    // NOTE: the checked value is set to true of is_restricted is false. This is so that the list of
+    // projects looks like all projects are selected when restrictions are not in force.
+    // This is _not_ reflected in the store.
+    const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
         disabled = is_restricted ? "" : "disabled",
         projectSelected = checked ? " projectSelected" : "",
         trClassName = disabled + projectSelected,
