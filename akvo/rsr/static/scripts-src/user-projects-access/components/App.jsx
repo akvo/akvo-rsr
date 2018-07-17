@@ -35,6 +35,33 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
     );
 };
 
+const DummyProject = ({ _, is_restricted }) => {
+    const disabled = is_restricted ? "" : "disabled",
+        hidden = is_restricted ? "hidden" : "",
+        projectSelected = is_restricted ? "" : " projectSelected",
+        trClassName = disabled + projectSelected,
+        idClassName = disabled + " id",
+        newProject = is_restricted
+            ? "A new project will not be accessible"
+            : "A new project is automatically included in the accessible projects";
+    return (
+        <tr key={0} id={0} className={trClassName}>
+            <td>
+                <input
+                    id={0}
+                    type="checkbox"
+                    checked={true}
+                    disabled={true}
+                    readOnly={true}
+                    className={hidden}
+                />
+            </td>
+            <td className={idClassName}>New project</td>
+            <td>{newProject}</td>
+        </tr>
+    );
+};
+
 const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
     // NOTE: the checked value is set to true of is_restricted is false. This is so that the list of
     // projects looks like all projects are selected when restrictions are not in force.
@@ -117,6 +144,7 @@ const Projects = ({
                     </tr>
                 </thead>
                 <tbody>
+                    <DummyProject _={_} is_restricted={is_restricted} />
                     {all_projects.map(project => (
                         <Project
                             _={_}
