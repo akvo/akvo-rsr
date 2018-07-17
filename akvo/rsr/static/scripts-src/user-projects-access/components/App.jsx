@@ -11,7 +11,7 @@ import { _, dataFromElement, inArray } from "../utils";
 
 import * as c from "../const";
 
-const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
+const IsRestricted = ({ _, is_restricted, onChangeIsRestricted, visible }) => {
     return (
         <span>
             <label>
@@ -31,6 +31,15 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
                     }}
                 />
             </label>
+            {is_restricted && visible ? (
+                <div style={{ marginBottom: "10px" }}>
+                    New projects added to RSR are not automatically accessible to your
+                    organisation’s users. Once the project has been created, the project team must
+                    be granted access individually by the organisation’s administrator.
+                </div>
+            ) : (
+                <div />
+            )}
         </span>
     );
 };
@@ -42,8 +51,8 @@ const DummyProject = ({ _, is_restricted }) => {
         trClassName = disabled + projectSelected,
         idClassName = disabled + " id",
         newProject = is_restricted
-            ? "A new project will not be accessible"
-            : "A new project is automatically included in the accessible projects";
+            ? "New projects added to RSR are not automatically accessible to your organisation’s users. Once the project has been created, access must granted individually on this page."
+            : "New projects are automatically included in the accessible projects";
     return (
         <tr key={0} id={0} className={trClassName}>
             <td>
@@ -109,6 +118,21 @@ const Error = ({ _, error }) => {
     return error ? <div className="error">{_("an_error_occured") + error.message}</div> : null;
 };
 
+const ShowDummy = ({ showDummy, onChange }) => (
+    <input
+        type="checkbox"
+        checked={showDummy}
+        onClick={onChange}
+        style={{
+            position: "absolute",
+            top: "0px",
+            right: "0px",
+            filter: "alpha(opacity=50)",
+            opacity: "0.2"
+        }}
+    />
+);
+
 const Projects = ({
     _,
     error,
@@ -118,16 +142,20 @@ const Projects = ({
     selectAll,
     onChangeIsRestricted,
     onChangeProjectSelectAll,
-    onChangeProjectSelected
+    onChangeProjectSelected,
+    onChangeShowDummy,
+    showDummy
 }) => {
     const className = is_restricted ? "" : "disabled";
     return (
         <span>
             <Error _={_} error={error} />
+            <ShowDummy showDummy={showDummy} onChange={onChangeShowDummy} />
             <IsRestricted
                 _={_}
                 is_restricted={is_restricted}
                 onChangeIsRestricted={onChangeIsRestricted}
+                visible={!showDummy}
             />
             <SelectAll
                 _={_}
@@ -144,7 +172,7 @@ const Projects = ({
                     </tr>
                 </thead>
                 <tbody>
-                    <DummyProject _={_} is_restricted={is_restricted} />
+                    {showDummy ? <DummyProject _={_} is_restricted={is_restricted} /> : <span />}
                     {all_projects.map(project => (
                         <Project
                             _={_}
@@ -168,11 +196,20 @@ class App extends React.Component {
         this.toggleIsRestricted = this.toggleIsRestricted.bind(this);
         this.toggleProjectSelectAll = this.toggleProjectSelectAll.bind(this);
         this._ = this._.bind(this);
+        this.toggleShowDummy = this.toggleShowDummy.bind(this);
+        this.state = { showDummy: false };
     }
 
     // Translation handling
     _(s) {
         return this.props.strings && this.props.strings[s];
+    }
+
+    toggleShowDummy(e) {
+        e.stopPropagation();
+        this.setState(prevState => ({
+            showDummy: !prevState.showDummy
+        }));
     }
 
     toggleIsRestricted(e) {
@@ -217,6 +254,8 @@ class App extends React.Component {
                 onChangeIsRestricted={this.toggleIsRestricted}
                 onChangeProjectSelectAll={this.toggleProjectSelectAll}
                 onChangeProjectSelected={this.toggleProjectSelected}
+                onChangeShowDummy={this.toggleShowDummy}
+                showDummy={this.state.showDummy}
             />
         ) : (
             <div>{_("loading")}</div>
