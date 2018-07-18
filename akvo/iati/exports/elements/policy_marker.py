@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def policy_marker(project):
     """
@@ -17,8 +19,8 @@ def policy_marker(project):
     policy_marker_elements = []
 
     for policy in project.policy_markers.all():
-        if policy.policy_marker or policy.significance or policy.vocabulary or \
-                policy.vocabulary_uri or policy.description:
+        if has_data(policy, ['policy_marker', 'significance', 'vocabulary', 'vocabulary_uri',
+                             'description', ]):
             element = etree.Element("policy-marker")
 
             if policy.policy_marker:

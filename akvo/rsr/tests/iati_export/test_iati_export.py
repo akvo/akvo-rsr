@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.iati.exports.iati_export import IatiXML
+from akvo.iati.exports.elements.utils import has_qs_data
 from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
                              LegacyData, RecipientCountry, RelatedProject, Sector, RecipientRegion,
                              PolicyMarker, HumanitarianScope, CountryBudgetItem, Fss, FssForecast,
@@ -869,3 +870,25 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertXmlHasAttribute(root_test, 'generated-datetime')
         self.assertXmlHasAttribute(root_test, 'version')
         self.assertXpathsExist(root_test, ('./iati-activity',))
+
+    def test_bogus_queryset_attribute(self):
+        # Given
+        project = Project.objects.create()
+
+        # When/Then
+        self.assertFalse(has_qs_data(project, ['foobar']))
+
+    def test_has_queryset_attribute(self):
+        # Given
+        project = Project.objects.create()
+
+        # When/Then
+        self.assertFalse(has_qs_data(project, ['results']))
+
+    def test_queryset_has_data(self):
+        # Given
+        project = Project.objects.create()
+        Result.objects.create(project=project)
+
+        # When/Then
+        self.assertTrue(has_qs_data(project, ['results']))

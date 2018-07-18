@@ -6,6 +6,7 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data, has_qs_data
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
 DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
@@ -25,8 +26,9 @@ def result(project):
     DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
 
     for res in project.results.all():
-        if res.type or res.aggregation_status is not None or res.title or res.description or \
-                res.indicators.all():
+        if (has_data(res, ['type', 'title', 'description', ]) or
+                res.aggregation_status is not None or
+                res.indicators.all()):
             element = etree.Element("result")
 
             if res.type:
@@ -46,10 +48,10 @@ def result(project):
                 narrative_element.text = res.description
 
             for indicator in res.indicators.all():
-                if indicator.measure or indicator.ascending is not None or indicator.title or \
-                        indicator.description or indicator.references.all() or \
-                        indicator.baseline_year or indicator.baseline_value or \
-                        indicator.baseline_comment or indicator.periods.all():
+                if (has_data(indicator, ['measure', 'title', 'description', 'baseline_year',
+                                         'baseline_value', 'baseline_comment', ]) or
+                        indicator.ascending is not None or
+                        has_qs_data(indicator, ['references', 'periods', ])):
                     add_indicator_element(element, indicator, DGIS_PROJECT)
 
             result_elements.append(element)
@@ -80,7 +82,7 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
         narrative_element.text = indicator.description
 
     for reference in indicator.references.all():
-        if reference.vocabulary or reference.reference or reference.vocabulary_uri:
+        if has_data(reference, ['vocabulary', 'reference', 'vocabulary_uri', ]):
             reference_element = etree.SubElement(indicator_element, "reference")
 
             if reference.vocabulary:
@@ -92,7 +94,8 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
             if reference.vocabulary_uri:
                 reference_element.attrib['indicator-uri'] = reference.vocabulary_uri
 
-    if is_dgis_project or indicator.baseline_year or indicator.baseline_value or indicator.baseline_comment:
+    if is_dgis_project or has_data(indicator,
+                                   ['baseline_year', 'baseline_value', 'baseline_comment', ]):
         baseline_element = etree.SubElement(indicator_element, "baseline")
 
         if indicator.baseline_year:
@@ -111,11 +114,10 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
             narrative_element.text = indicator.baseline_comment
 
     for period in indicator.periods.all():
-        if period.period_start or period.period_end or period.target_value or \
-                period.target_locations.all() or period.target_dimensions.all() or \
-                period.target_comment or period.actual_value or period.narrative or \
-                period.actual_locations.all() or period.actual_dimensions.all() or \
-                period.actual_comment:
+        if (has_data(period, ['period_start', 'period_end', 'target_value', 'target_comment',
+                              'actual_value', 'narrative', 'actual_comment']) or
+                has_qs_data(period, ['target_locations', 'target_dimensions', 'actual_locations',
+                                     'actual_dimensions', ])):
             period_element = etree.SubElement(indicator_element, "period")
 
             if period.period_start:
@@ -127,9 +129,8 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
                 period_end_element = etree.SubElement(period_element, "period-end")
                 period_end_element.attrib['iso-date'] = str(period.period_end)
 
-            if (is_dgis_project or period.target_value or
-                    period.target_locations.all() or
-                    period.target_dimensions.all() or period.target_comment):
+            if (is_dgis_project or has_data(period, ['target_value', 'target_comment', ]) or
+                    has_qs_data(period, ['target_locations', 'target_dimensions', ])):
                 target_element = etree.SubElement(period_element, "target")
 
                 if period.target_value:
@@ -148,12 +149,10 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
                                                                     "dimension")
 
                         if target_dimension.name:
-                            target_dimension_element.attrib['name'] = \
-                                target_dimension.name
+                            target_dimension_element.attrib['name'] = target_dimension.name
 
                         if target_dimension.value:
-                            target_dimension_element.attrib['value'] = \
-                                target_dimension.value
+                            target_dimension_element.attrib['value'] = target_dimension.value
 
                 if period.target_comment:
                     comment_element = etree.SubElement(target_element, "comment")
@@ -161,9 +160,9 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
                                                          "narrative")
                     narrative_element.text = period.target_comment
 
-            if (is_dgis_project or period.actual_value or period.narrative or
-                    period.actual_locations.all() or
-                    period.actual_dimensions.all() or period.actual_comment):
+            if (is_dgis_project or
+                    has_data(period, ['actual_value', 'narrative', 'actual_comment', ]) or
+                    has_qs_data(period, ['actual_locations', 'actual_dimensions', ])):
                 actual_element = etree.SubElement(period_element, "actual")
 
                 if period.indicator.type == QUANTITATIVE:
@@ -187,12 +186,10 @@ def add_indicator_element(result_element, indicator, is_dgis_project):
                                                                     "dimension")
 
                         if actual_dimension.name:
-                            actual_dimension_element.attrib['name'] = \
-                                actual_dimension.name
+                            actual_dimension_element.attrib['name'] = actual_dimension.name
 
                         if actual_dimension.value:
-                            actual_dimension_element.attrib['value'] = \
-                                actual_dimension.value
+                            actual_dimension_element.attrib['value'] = actual_dimension.value
 
                 if period.actual_comment:
                     comment_element = etree.SubElement(actual_element, "comment")

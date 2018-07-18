@@ -14,7 +14,7 @@ def country_budget_items(project):
     :param project: Project object
     :return: A list of Etree elements
     """
-    if project.country_budget_items.all():
+    if project.country_budget_items.exists():
         country_budget_items_element = etree.Element("country-budget-items")
 
         if project.country_budget_vocabulary:

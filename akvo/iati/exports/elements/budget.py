@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def budget(project):
     """
@@ -17,9 +19,8 @@ def budget(project):
     budget_elements = []
 
     for budget_item in project.budget_items.all():
-        if budget_item.amount or budget_item.period_start or budget_item.period_end or \
-                budget_item.type or budget_item.status or budget_item.value_date or \
-                budget_item.currency or budget_item.other_extra or budget_item.label:
+        if has_data(budget_item, ['amount', 'period_start', 'period_end', 'type', 'status',
+                                  'value_date', 'currency', 'other_extra', 'label']):
             element = etree.Element("budget")
 
             if budget_item.type:

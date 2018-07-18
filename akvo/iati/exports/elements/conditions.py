@@ -16,7 +16,7 @@ def conditions(project):
     """
     conditions_element = etree.Element("conditions")
 
-    if project.conditions.all():
+    if project.conditions.exists():
         conditions_element.attrib['attached'] = '1'
     else:
         conditions_element.attrib['attached'] = '0'
