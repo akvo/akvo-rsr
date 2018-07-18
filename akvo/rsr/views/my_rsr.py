@@ -368,12 +368,10 @@ def project_editor(request, project_id):
 
         # IATI fields
         'countries': countries,
-        'dac5_codes': dac5_codes,
-        'dac3_codes': dac3_codes,
+        'sector_vocabulary_options': json.dumps({'1': dict(dac5_codes), '2': dict(dac3_codes)}),
 
         # Default indicator
         'default_indicator': default_indicator,
-
     }
 
     context = project.project_hierarchy_context(context)

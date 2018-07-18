@@ -216,5 +216,7 @@
         [{% for country in countries %}{"pk": "{{ country.code }}", "name": "{{ country.name }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
     </script>
 
+    {% include "myrsr/project_editor/project_editor_dropdown_options.html" %}
+
     {% javascript 'project_editor' %}
 {% endblock %}
