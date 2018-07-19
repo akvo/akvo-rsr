@@ -27,10 +27,9 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
                                    FinanceType, FlowType, TiedStatus)
-from akvo.codelists.store.default_codelists import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS,
+from akvo.codelists.store.default_codelists import (AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS,
                                                     COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
-                                                    FLOW_TYPE, TIED_STATUS,
-                                                    BUDGET_IDENTIFIER_VOCABULARY)
+                                                    FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
 
@@ -344,8 +343,18 @@ class Project(TimestampsMixin, models.Model):
                     u'CollaborationType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'CollaborationType/</a>.')
     )
+    default_aid_type_vocabulary = ValidXMLCharField(
+        _(u'default aid type vocabulary'), blank=True, max_length=1, default='1',
+        choices=codelist_choices(AID_TYPE_VOCABULARY),
+        help_text=_(u'This is the IATI identifier for the type of vocabulary being used for '
+                    u'describing the type of the aid being supplied or activity '
+                    u'being undertaken. For reference, please visit: <a '
+                    u'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
+                    u'"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
+    )
     default_aid_type = ValidXMLCharField(
-        _(u'default aid type'), blank=True, max_length=3, choices=codelist_choices(AID_TYPE),
+        _(u'default aid type'),
+        blank=True, max_length=3,
         help_text=_(u'This is the IATI identifier for the type of aid being supplied or activity '
                     u'being undertaken. This element specifies a default for all the project’s '
                     u'financial transactions. This can be overridden at the individual transaction '
