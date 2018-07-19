@@ -20,10 +20,11 @@ from django.shortcuts import get_object_or_404, render
 from tastypie.models import ApiKey
 
 from akvo.codelists.models import Country, Version
-from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR
+from akvo.codelists.store.default_codelists import (
+    AID_TYPE, EARMARKING_CATEGORY, SECTOR_CATEGORY, SECTOR
+)
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
-
 from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
                      SelectOrgForm)
 from ..filters import remove_empty_querydict_items
@@ -335,8 +336,13 @@ def project_editor(request, project_id):
 
     # IATI fields
     countries = Country.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
-    dac5_codes = codelist_choices(SECTOR)
-    dac3_codes = codelist_choices(SECTOR_CATEGORY)
+    # Map options to the vocabulary code
+    sector_vocabulary_options = {
+        '1': dict(codelist_choices(SECTOR)), '2': dict(codelist_choices(SECTOR_CATEGORY))
+    }
+    aid_type_vocabulary_options = {
+        '1': dict(codelist_choices(AID_TYPE)), '2': dict(codelist_choices(EARMARKING_CATEGORY))
+    }
 
     # Permissions
     org_permissions = []
@@ -368,7 +374,8 @@ def project_editor(request, project_id):
 
         # IATI fields
         'countries': countries,
-        'sector_vocabulary_options': json.dumps({'1': dict(dac5_codes), '2': dict(dac3_codes)}),
+        'sector_vocabulary_options': json.dumps(sector_vocabulary_options),
+        'aid_type_vocabulary_options': json.dumps(aid_type_vocabulary_options),
 
         # Default indicator
         'default_indicator': default_indicator,

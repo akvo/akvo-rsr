@@ -1959,7 +1959,7 @@ function addPartial(partialName, partialContainer) {
         setDatepickers();
         setPeriodMasqueradeDates();
         setCurrencyOnChange();
-        setSectorOnChange();
+        setVocabularyOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons("." + partialName + "-container");
@@ -2799,34 +2799,58 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
-function setSectorOnChange() {
-    var sectorVocabularyFields = document.querySelectorAll(".sector-vocabulary");
+function setVocabularyOnChange() {
+    var fieldInfo = [
+        {
+            selector: ".sector-vocabulary",
+            optionsId: "sector-vocabulary-options",
+            textInputSelector: ".sector-code-text-input",
+            dropDownInputSelector: ".sector-code-dropdown-input"
+        },
+        {
+            selector: ".default-aid-type-vocabulary",
+            optionsId: "aid-type-vocabulary-options",
+            textInputSelector: ".aid-type-text-input",
+            dropDownInputSelector: ".aid-type-dropdown-input"
+        }
+    ];
+    fieldInfo.map(function(info) {
+        var vocabularyFields = document.querySelectorAll(info.selector);
 
-    for (var i = 0; i < sectorVocabularyFields.length; i++) {
-        sectorVocabularyFields[i].querySelector("select").onchange = sectorCodeSelectorOnClick(
-            sectorVocabularyFields[i]
-        );
-        sectorCodeSwitcher(sectorVocabularyFields[i]);
-    }
+        for (var i = 0; i < vocabularyFields.length; i++) {
+            vocabularyFields[i].querySelector("select").onchange = vocabularyOnChange(
+                vocabularyFields[i],
+                info
+            );
+            codeFieldSwitcher(
+                vocabularyFields[i],
+                info.optionsId,
+                info.textInputSelector,
+                info.dropDownInputSelector
+            );
+        }
+    });
 }
 
-function sectorCodeSelectorOnClick(vocabularyField) {
+function vocabularyOnChange(vocabularyField, info) {
     return function(e) {
         e.preventDefault();
-        sectorCodeSwitcher(vocabularyField);
+        codeFieldSwitcher(
+            vocabularyField,
+            info.optionsId,
+            info.textInputSelector,
+            info.dropDownInputSelector
+        );
     };
 }
 
-function sectorCodeSwitcher(vocabularyField) {
+function codeFieldSwitcher(vocabularyField, optionsId, textInputSelector, dropDownInputSelector) {
     var selectField = vocabularyField.getElementsByTagName("select")[0];
     var vocabularyValue = selectField.options[selectField.selectedIndex].value;
-
-    var allOptions = JSON.parse(document.getElementById("sector-vocabulary-options").innerHTML);
+    var allOptions = JSON.parse(document.getElementById(optionsId).innerHTML);
     var options = allOptions[vocabularyValue];
-    var textInputField = vocabularyField.parentNode.querySelector(".sector-code-text-input"),
-        dropDownInputField = vocabularyField.parentNode.querySelector(
-            ".sector-code-dropdown-input"
-        );
+    var textInputField = vocabularyField.parentNode.querySelector(textInputSelector);
+    var dropDownInputField = vocabularyField.parentNode.querySelector(dropDownInputSelector);
 
     if (options) {
         dropDownInputField.classList.remove("hidden");
@@ -4482,7 +4506,7 @@ function initApp() {
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
-    setSectorOnChange();
+    setVocabularyOnChange();
     setFileUploads();
     checkPartnerships();
 
