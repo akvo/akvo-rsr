@@ -5234,6 +5234,10 @@ main.results-page {
         @include smallButton($akvoBlack, white);
         margin-bottom: 15px;
     }
+    .restrictedInfo {
+        margin-top: -0.75em;
+        margin-bottom: 1.5em;
+    }
     table {
         width: 100%;
         thead {

@@ -4265,6 +4265,9 @@ main.results-page {
         background-color: rgba(128, 128, 128, 0.1) !important;
         color: rgba(128, 128, 128, 0.4) !important;
         border: 1px solid transparent; }
+  #userProjects .restrictedInfo {
+    margin-top: -0.75em;
+    margin-bottom: 1.5em; }
   #userProjects table {
     width: 100%; }
     #userProjects table thead tr {

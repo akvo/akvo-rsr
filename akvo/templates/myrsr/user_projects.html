@@ -13,12 +13,6 @@
           Project access restrictions for <span>{{ full_name }} ({{ org_name }})</span>
         {% endblocktrans %}
       </h4>
-      <p>
-        {% blocktrans %}
-          Note: The type of access a user has to their projects is based on the permissions of their
-          assigned role(s).
-        {% endblocktrans %}
-      </p>
     </header>
     <article id="userProjects" class="col-sm-6 col-xs-8">
     </article>
@@ -43,6 +37,7 @@
       "no_title": "{% trans 'Project without a title'|escapejs %}",
       "project_id": "{% trans 'Project ID'|escapejs %}",
       "project_title": "{% trans 'Project title'|escapejs %}",
+      "restricted_info": "{% trans '<strong>Important:</strong> New projects added to RSR are not automatically accessible to your organisation’s users. Once the project has been created, the project team must be granted access individually by the organisation’s administrator.'|escapejs %}",
       {# The following two strings have tags, they require special treatment in the React code #}
       "user_access_restricted": "{% trans 'This user has restricted access, limited to <strong>only</strong> the projects checked below. Click to change.'|escapejs %}",
       "user_access_unrestricted": "{% trans 'This user has access to <strong>all</strong> projects. Click to change.'|escapejs %}",
