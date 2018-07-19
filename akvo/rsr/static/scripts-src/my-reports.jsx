@@ -160,7 +160,7 @@ function initReact() {
             const icon = this.props.icon,
                 display_name = this.props.display_name,
                 icon_class = "fa fa-" + icon,
-                text = "Download " + display_name;
+                text = i18n.download + " " + display_name;
             return (
                 <button
                     className="btn btn-default reportDown"
