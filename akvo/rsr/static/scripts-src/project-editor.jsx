@@ -2812,6 +2812,12 @@ function setVocabularyOnChange() {
             optionsId: "aid-type-vocabulary-options",
             textInputSelector: ".aid-type-text-input",
             dropDownInputSelector: ".aid-type-dropdown-input"
+        },
+        {
+            selector: ".transaction-aid-type-vocabulary",
+            optionsId: "aid-type-vocabulary-options",
+            textInputSelector: ".aid-type-text-input",
+            dropDownInputSelector: ".aid-type-dropdown-input"
         }
     ];
     fieldInfo.map(function(info) {

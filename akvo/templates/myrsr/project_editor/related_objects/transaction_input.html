@@ -51,7 +51,18 @@
                 {% include text_input with obj=transaction field='description' %}
             </div>
         </div>
-        {% include choice_input with obj=transaction field='aid_type' %}
+        <div class="transaction-aid-type-vocabulary">
+            {% include choice_input with obj=transaction field="aid_type_vocabulary" %}
+        </div>
+        <!-- A couple of input fields - text and select dropdown. The one that is
+             shown will depend on whether the vocabulary chosen in the option above
+             has a codelist associated with it.  -->
+        <div class="aid-type-dropdown-input hidden">
+            {% include choice_input with obj=transaction field="aid_type" %}
+        </div>
+        <div class="aid-type-text-input hidden">
+            {% include text_input with obj=transaction field="aid_type" %}
+        </div>
         {% include choice_input with obj=transaction field='disbursement_channel' %}
         {% include choice_input with obj=transaction field='finance_type' %}
         {% include choice_input with obj=transaction field='flow_type' %}
@@ -73,10 +84,10 @@
             <h5>{% trans 'Transaction sectors' %}</h5>
             <div class="transaction-sector-container" id="transaction-sector-container">
                 {% for sector in transaction.sectors.all %}
-                    {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" %}
+                {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" %}
                 {% empty %}
-                    {% with transaction_id_string=transaction.pk|default:"new-0"|stringformat:"s" %}
-                        {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
+                {% with transaction_id_string=transaction.pk|default:"new-0"|stringformat:"s" %}
+                {% include "myrsr/project_editor/related_objects/transaction_sector_input.html" with sector='TransactionSector.'|add:project_id_string|add:'_'|add:transaction_id_string %}
                     {% endwith %}
                 {% endfor %}
                 <div class="row form-group">
