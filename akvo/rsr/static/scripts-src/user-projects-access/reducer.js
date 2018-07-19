@@ -96,13 +96,13 @@ export function reducer(state = initialState, action) {
 
         case c.UPDATE_PROJECT_SELECTION: {
             const { projectId } = action.data;
-            const original_projects = state.user_projects && [...state.user_projects];
+            const original_user_projects = state.user_projects && [...state.user_projects];
             const user_projects = state.user_projects && [...state.user_projects];
 
             inArray(projectId, user_projects)
                 ? pull(user_projects, projectId)
                 : user_projects.push(projectId);
-            return { ...state, original_projects: original_user_projects, user_projects };
+            return { ...state, original_user_projects, user_projects };
         }
 
         case c.UPDATE_IS_RESTRICTED: {
@@ -111,7 +111,7 @@ export function reducer(state = initialState, action) {
         }
 
         case c.UPDATE_SELECT_ALL_PROJECTS: {
-            const original_projects = state.user_projects && [...state.user_projects];
+            const original_user_projects = state.user_projects && [...state.user_projects];
             let user_projects,
                 { selectAll } = { ...state };
             if (selectAll) {
@@ -123,7 +123,7 @@ export function reducer(state = initialState, action) {
             return {
                 ...state,
                 selectAll,
-                original_projects: original_user_projects,
+                original_user_projects,
                 user_projects
             };
         }
