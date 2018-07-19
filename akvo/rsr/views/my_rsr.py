@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.forms.models import model_to_dict
-from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 
 from tastypie.models import ApiKey
@@ -45,7 +45,7 @@ def manageable_objects(user):
     NOTE: this is a refactoring of some inline code that used to be in my_rsr.user_management. We
     need the exact same set of employments in UserProjectsAccessViewSet.get_queryset()
     """
-    from akvo.rsr.models import Employment, Organisation
+    from akvo.rsr.models import Organisation
 
     groups = settings.REQUIRED_AUTH_GROUPS
     non_admin_groups = [group for group in groups if group is not 'Admins']
@@ -543,7 +543,7 @@ def user_projects(request, user_id):
     user = get_object_or_404(User, pk=user_id)
     manageables = manageable_objects(request.user)
     manageable_users = manageables['employments'].users()
-    if not user in manageable_users:
+    if user not in manageable_users:
         raise PermissionDenied
 
     context = {

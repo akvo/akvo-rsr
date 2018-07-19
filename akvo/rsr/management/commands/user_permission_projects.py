@@ -8,12 +8,12 @@ import sys
 
 from django.core.management.base import BaseCommand
 
-from ...models import Employment, UserProjects, Project, User
+from ...models import UserProjects, Project, User
 
 
 class Command(BaseCommand):
 
-    args = '<email_id> <org_name> (all|none|<project_id_list>)'
+    args = '<email_id> (all|none|<project_id_list>)'
     help = 'Script restricting project access for an employment'
 
     def handle(self, *args, **options):
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             print 'Usage: {} {}'.format(sys.argv[0], self.args)
             sys.exit(1)
 
-        email, org_name, projects = args
+        email, projects = args
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -40,11 +40,11 @@ class Command(BaseCommand):
             print('User {}  cannot access any projects'.format(user.email))
 
         else:
-            ids = projects.split(',')
+            pks = projects.split(',')
             whitelist, created = UserProjects.objects.get_or_create(user=user)
             if not created:
                 whitelist.projects.clear()
-            for id in ids:
-                whitelist.projects.add(Project.objects.get(pk=id))
+            for pk in pks:
+                whitelist.projects.add(Project.objects.get(pk=pk))
             print('User {} limited to access projects: {}'.format(
-                    user.email, ', '.join(projects)))
+                    user.email, projects))

@@ -44,7 +44,7 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
 };
 
 const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
-    // NOTE: the checked value is set to true of is_restricted is false. This is so that the list of
+    // NOTE: the checked value is set to true if is_restricted is false. This is so that the list of
     // projects looks like all projects are selected when restrictions are not in force.
     // This is _not_ reflected in the store.
     const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
@@ -125,7 +125,7 @@ const Projects = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {all_projects.map(project => (
+                    {all_projects.map((project) => (
                         <Project
                             _={_}
                             key={project.id}
@@ -204,7 +204,7 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     const {
         fetching,
         error,
@@ -217,16 +217,20 @@ const mapStateToProps = state => {
     return { fetching, error, all_projects, is_restricted, selectAll, user_projects, strings };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onFetchUserProjects: userId => dispatch({ type: c.API_GET_INIT, data: { userId } }),
-        setStore: data => dispatch({ type: c.SET_STORE, data }),
-        onUpdateProjectSelection: projectId =>
-            dispatch({ type: c.UPDATE_PROJECT_SELECTION, data: { projectId } }),
-        onUpdateIsRestricted: is_restricted =>
-            dispatch({ type: c.UPDATE_IS_RESTRICTED, data: { is_restricted } }),
-        onUpdateSelectAll: () => dispatch({ type: c.UPDATE_SELECT_ALL_PROJECTS })
-    };
+const mapDispatchToProps = (dispatch) => {
+    return { onFetchUserProjects: userId => dispatch({
+                type: c.API_GET_INIT,
+                data: { userId }
+            }), setStore: data => dispatch({
+                type: c.SET_STORE,
+                data
+            }), onUpdateProjectSelection: projectId => dispatch({
+                type: c.UPDATE_PROJECT_SELECTION,
+                data: { projectId }
+            }), onUpdateIsRestricted: is_restricted => dispatch({
+                type: c.UPDATE_IS_RESTRICTED,
+                data: { is_restricted }
+            }), onUpdateSelectAll: () => dispatch({ type: c.UPDATE_SELECT_ALL_PROJECTS }) };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -176,7 +176,7 @@ class MyRSRTestCase(TestCase):
         self.assertTrue(manageables['employments'][2] in Employment.objects.filter(organisation=self.org))
 
     def test_manageable_objects_orgs_is_admin_can_manage_all(self):
-        other_org = Organisation.objects.create(name='Other org', long_name='Other org')
+        Organisation.objects.create(name='Other org', long_name='Other org')
         manageables = manageable_objects(self.user1)
         self.assertEqual(len(manageables['organisations']), 2)
         self.assertTrue(manageables['organisations'][0] in Organisation.objects.all())

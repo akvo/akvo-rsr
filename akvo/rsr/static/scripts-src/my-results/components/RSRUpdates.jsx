@@ -48,14 +48,14 @@ const RSRUpdate = ({ update, onEdit, onDelete }) => {
     const deleteUpdate = () => {
         return onDelete(update);
     };
-    const edit_button = update.editable ? (
+    const editButton = update.editable ? (
             <a onClick={editUpdate} href="#">
                 {_("edit")}
             </a>
     ) : (
         undefined
     );
-    const delete_button = update.deletable ? (
+    const deleteButton = update.deletable ? (
             <a onClick={deleteUpdate} href="#">
                 {_("delete")}
             </a>
@@ -74,8 +74,8 @@ const RSRUpdate = ({ update, onEdit, onDelete }) => {
                     <h5>{update.title}</h5>
                 </a>
                 <ul className="menuUpdate">
-                    <li>{edit_button}</li>
-                    <li>{delete_button}</li>
+                    <li>{editButton}</li>
+                    <li>{deleteButton}</li>
                 </ul>
             </div>
         </div>

@@ -19,7 +19,7 @@ let initialState = {
     all_projects: [],
     user_projects: [],
     original_is_restricted: null,
-    original_projects: null
+    original_user_projects: null
 };
 
 export function reducer(state = initialState, action) {
@@ -72,26 +72,26 @@ export function reducer(state = initialState, action) {
                 is_restricted: user_projects.is_restricted,
                 original_is_restricted: null,
                 user_projects: user_projects.projects,
-                original_projects: null
+                original_user_projects: null
             };
         }
 
         case c.API_PUT_FAILURE: {
-            const new_state = {
+            const newState = {
                 ...state,
                 fetching: false,
                 original_is_restricted: null,
-                original_projects: null,
+                original_user_projects: null,
                 error: action.error
             };
             // Overwrite if we have an original value
             if (state.original_is_restricted !== null) {
-                new_state.is_restricted = state.original_is_restricted;
+                newState.is_restricted = state.original_is_restricted;
             }
-            if (state.original_projects !== null) {
-                new_state.user_projects = state.original_projects;
+            if (state.original_user_projects !== null) {
+                newState.user_projects = state.original_user_projects;
             }
-            return new_state;
+            return newState;
         }
 
         case c.UPDATE_PROJECT_SELECTION: {
@@ -102,7 +102,7 @@ export function reducer(state = initialState, action) {
             inArray(projectId, user_projects)
                 ? pull(user_projects, projectId)
                 : user_projects.push(projectId);
-            return { ...state, original_projects, user_projects };
+            return { ...state, original_projects: original_user_projects, user_projects };
         }
 
         case c.UPDATE_IS_RESTRICTED: {
@@ -120,7 +120,12 @@ export function reducer(state = initialState, action) {
                 user_projects = [];
             }
             selectAll = !selectAll;
-            return { ...state, selectAll, original_projects, user_projects };
+            return {
+                ...state,
+                selectAll,
+                original_projects: original_user_projects,
+                user_projects
+            };
         }
 
         default: {

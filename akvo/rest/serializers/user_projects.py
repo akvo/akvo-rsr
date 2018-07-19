@@ -44,10 +44,12 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
         super(UserProjectAccessSerializer, self).__init__(*args, **kwargs)
         del self.fields['absolute_url']
 
-    def get_all_projects(self, obj):
+    @staticmethod
+    def get_all_projects(obj):
         return obj.user.my_projects().values('id', 'title')
 
-    def update(self, user, validated_data):
+    @staticmethod
+    def update(user, validated_data):
         """ Custom update method that adds and/or removes projects from the UserProjects.projects
             list
         """
@@ -71,7 +73,7 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
                         user_projects.projects.clear()
                     for project in projects:
                         # Check that each project is accessible by the user
-                        if not project in allowable_projects:
+                        if project not in allowable_projects:
                             raise PermissionDenied(u"Project {} is not accessible by user {}".format(
                                 project.pk, user.pk))
                         user_projects.projects.add(project)
