@@ -179,6 +179,7 @@ def transaction(project):
             if trans.aid_type:
                 aid_type_element = etree.SubElement(element, "aid-type")
                 aid_type_element.attrib['code'] = trans.aid_type
+                aid_type_element.attrib['vocabulary'] = trans.aid_type_vocabulary
 
             if trans.tied_status:
                 tied_status_element = etree.SubElement(element, "tied-status")
