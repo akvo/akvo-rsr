@@ -379,14 +379,14 @@ class IndicatorPeriodDataTestCase(TestCase):
         data = {
             'period': self.period.id,
             'user': self.user.id,
-            "value":150,
-            "narrative":"",
-            "text":"",
-            "status":"D",
-            "actual_value":0,
-            "numerator":"3",
-            "denominator":"2",
-            "disaggregations":[],
+            "value": 150,
+            "narrative": "",
+            "text": "",
+            "status": "D",
+            "actual_value": 0,
+            "numerator": "3",
+            "denominator": "2",
+            "disaggregations": [],
         }
         response = self.c.post(url,
                                data=json.dumps(data),
@@ -403,7 +403,6 @@ class IndicatorPeriodDataTestCase(TestCase):
         # Then
         self.assertEqual(201, response.status_code)
         self.assertEqual('5.00', response.data['numerator'])
-
 
     def setup_results_framework(self):
         self.result = Result.objects.create(
