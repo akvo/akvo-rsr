@@ -379,7 +379,7 @@ class PermissionFilteringTestCase(TestCase):
         # 8 project updates group_count(for each user in each group) per project
         # Every non-privileged user will also be able to see their update
         model_map[M.ProjectUpdate] = {
-            'group_count': group_count(64, 16, (48, 34), (34, 34)),
+            'group_count': group_count(64, 16, (48, 48), (48, 34)),
             'project_relation': 'project__'
         }
 

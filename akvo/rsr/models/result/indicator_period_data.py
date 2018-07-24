@@ -25,6 +25,9 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     """
     Model for adding data to an indicator period.
     """
+
+    project_relation = 'results__indicators__periods__data__in'
+
     STATUS_DRAFT = unicode(_(u'draft'))
     STATUS_PENDING = unicode(_(u'pending approval'))
     STATUS_REVISION = unicode(_(u'return for revision'))

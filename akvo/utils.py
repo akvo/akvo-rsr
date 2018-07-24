@@ -30,7 +30,8 @@ from sorl.thumbnail import get_thumbnail as get_sorl_thumbnail
 from sorl.thumbnail.parsers import parse_geometry
 
 
-from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES, ISO_ALPHA3_ALPHA2_MAP
+from akvo.rsr.iso3166 import (COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES,
+                              ISO_ALPHA3_ALPHA2_MAP)
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -470,3 +471,28 @@ def get_placeholder_thumbnail(file_, geometry_string, **options):
 
 local_dev = settings.RSR_DOMAIN == 'rsr.localdev.akvo.org'
 get_thumbnail = get_placeholder_thumbnail if local_dev else get_sorl_thumbnail
+
+
+def project_access_filter(user, projects):
+    """ Limit project access for a user
+
+    :param user: A user object
+    :param projects: A Project QS
+
+    :return: The intersection of projects with the UserProjects.projects.all() QS _if_
+        the user is only employed by one organisation and
+        UserProjects.is_restricted == True.
+        Otherwise return the original QS
+    """
+    from akvo.rsr.models import UserProjects
+    employments = user.approved_employments()
+    organisations_count = employments.organisations().distinct().count()
+    try:
+        # only check for users with only one organisation as employer that's not a user manager
+        if organisations_count < 2 and not user.has_perm('rsr.user_management'):
+            project_whitelist = UserProjects.objects.get(user=user)
+            if project_whitelist.is_restricted:
+                return project_whitelist.projects.filter(pk__in=projects)
+    except UserProjects.DoesNotExist:
+        pass
+    return projects

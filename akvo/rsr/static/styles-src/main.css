@@ -730,6 +730,20 @@ div.update-confirm-container {
 #user_table td.text-right > span > span:nth-of-type(2) {
   margin-right: 15px; }
 
+#user_table .btn-danger {
+  margin-left: 10px; }
+
+#user_table .dropdown.btn-group button {
+  border: 1px solid rgba(32, 32, 36, 0.3); }
+  #user_table .dropdown.btn-group button:first-of-type {
+    border-radius: 3px 0 0 3px;
+    border-right: none; }
+  #user_table .dropdown.btn-group button:nth-of-type(2) {
+    border-radius: 0 3px 3px 0;
+    border: 1px solid rgba(32, 32, 36, 0.3);
+    background: transparent;
+    color: rgba(32, 32, 36, 0.3); }
+
 .myProjectList,
 #updates,
 #user_table {
@@ -3042,6 +3056,9 @@ main.results-page {
     .myRsrPg ol.breadcrumb li:first-of-type a i {
       font-size: 120%; }
 
+.rc-collapse-header {
+  outline: none !important; }
+
 .rsrReports {
   padding-top: 20px; }
   .rsrReports * {
@@ -3265,6 +3282,16 @@ main.results-page {
         margin-top: 0; }
       .results .updateList .row:last-child {
         margin-bottom: 0; }
+    .results .updateList .menuUpdate {
+      list-style-type: none;
+      padding: 0; }
+      .results .updateList .menuUpdate li {
+        display: inline-block; }
+        .results .updateList .menuUpdate li a {
+          padding: 3px 6px;
+          font-weight: normal; }
+        .results .updateList .menuUpdate li:first-child a {
+          padding-left: 0px; }
     .results .updateList .updateImg {
       height: 130px;
       overflow-y: hidden;
@@ -3421,7 +3448,8 @@ main.results-page {
         margin-bottom: 0; }
       .results .rc-collapse .rc-collapse-item .rc-collapse-header {
         padding: 5px 10px;
-        position: relative; }
+        position: relative;
+        outline: none !important; }
         .results .rc-collapse .rc-collapse-item .rc-collapse-header span.resultTitle {
           display: inline-block;
           width: calc(100% - 20px);
@@ -4164,3 +4192,116 @@ main.results-page {
 .supporthero-button {
   bottom: 50px !important;
   top: unset !important; }
+
+.userProject h4 {
+  margin-top: 25px; }
+  .userProject h4 span {
+    font-weight: bold; }
+
+.markdown-editor-buttons button {
+  /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+  display: inline-block;
+  padding: 3px 6px;
+  background-color: transparent;
+  color: #202024 !important;
+  text-decoration: none;
+  cursor: pointer;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #202024;
+  text-align: center; }
+  .markdown-editor-buttons button:hover {
+    background: #202024;
+    color: white !important; }
+  .markdown-editor-buttons button.active {
+    background: #202024;
+    color: white !important; }
+  .markdown-editor-buttons button.disabled {
+    cursor: not-allowed;
+    background-color: rgba(128, 128, 128, 0.1) !important;
+    color: rgba(128, 128, 128, 0.4) !important;
+    border: 1px solid transparent; }
+    .markdown-editor-buttons button.disabled:hover {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+
+#userProjects {
+  padding-left: 0; }
+  #userProjects #is_restricted {
+    margin-bottom: 25px;
+    margin-right: 10px; }
+  #userProjects .error {
+    color: #ee3124; }
+  #userProjects .selectAllProjects {
+    /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+    display: inline-block;
+    padding: 5px 8px;
+    background-color: #202024;
+    color: white !important;
+    text-decoration: none;
+    cursor: pointer;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-align: center;
+    padding: 3px 6px;
+    margin-bottom: 15px; }
+    #userProjects .selectAllProjects:hover {
+      background: #080809;
+      color: white; }
+    #userProjects .selectAllProjects.disabled {
+      cursor: not-allowed;
+      background-color: rgba(128, 128, 128, 0.1) !important;
+      color: rgba(128, 128, 128, 0.4) !important;
+      border: 1px solid transparent; }
+      #userProjects .selectAllProjects.disabled:hover {
+        cursor: not-allowed;
+        background-color: rgba(128, 128, 128, 0.1) !important;
+        color: rgba(128, 128, 128, 0.4) !important;
+        border: 1px solid transparent; }
+  #userProjects .restrictedInfo {
+    margin-top: -0.75em;
+    margin-bottom: 1.5em; }
+  #userProjects table {
+    width: 100%; }
+    #userProjects table thead tr {
+      background: rgba(32, 32, 36, 0.05); }
+      #userProjects table thead tr th {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 200px;
+        border-right: 1px solid white;
+        padding-left: 10px; }
+        #userProjects table thead tr th:first-of-type {
+          width: 100px; }
+        #userProjects table thead tr th:nth-of-type(2) {
+          width: 150px; }
+        #userProjects table thead tr th.disabled {
+          color: #b7b7bf; }
+    #userProjects table tbody tr {
+      color: #ee3124; }
+      #userProjects table tbody tr:hover {
+        background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr.disabled {
+        color: #f9b7b2; }
+      #userProjects table tbody tr.projectSelected {
+        color: #202024;
+        background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr.projectSelected.disabled {
+        color: #b7b7bf;
+        background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr td {
+        padding: 15px 0 15px 10px;
+        margin-top: 1px; }
+        #userProjects table tbody tr td:first-of-type {
+          padding-left: 25px; }
+        #userProjects table tbody tr td.id {
+          color: #202024; }
+        #userProjects table tbody tr td.id.disabled {
+          color: #b7b7bf; }
