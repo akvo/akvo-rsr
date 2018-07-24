@@ -22,7 +22,7 @@ from akvo.rest.serializers import (
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rest.viewsets import PublicProjectViewSet
 from akvo.rsr.filters import location_choices, get_m49_filter
-from akvo.rsr.models import Project, ProjectUpdate
+from akvo.rsr.models import Project, ProjectUpdate, Organisation
 from akvo.rsr.views.utils import apply_keywords, org_projects
 from akvo.utils import codelist_choices
 
@@ -246,7 +246,7 @@ def _create_filters_query(request):
         get_m49_filter(location_param, use_recipient_country=False) if location_param else None
     )
     organisation_filter = (
-        Q(project__partners__id=organisation_param)
+        Organisation.all_updates_filter(organisation_param)
         if organisation_param else None
     )
     sector_filter = (
