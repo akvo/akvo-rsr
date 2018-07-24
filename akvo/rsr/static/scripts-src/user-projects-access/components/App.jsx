@@ -47,7 +47,7 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
     // NOTE: the checked value is set to true if is_restricted is false. This is so that the list of
     // projects looks like all projects are selected when restrictions are not in force.
     // This is _not_ reflected in the store.
-    const UIsettings = (project, user_projects, is_restricted) => {
+    const uiSettings = (project, user_projects, is_restricted) => {
         const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
             disabled = is_restricted ? "" : "disabled",
             projectSelected = checked ? " projectSelected" : "",
@@ -55,7 +55,7 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
             idClassName = disabled + " id";
         return { checked, trClassName, idClassName };
     };
-    const { checked, trClassName, idClassName } = UIsettings(project, user_projects, is_restricted);
+    const { checked, trClassName, idClassName } = uiSettings(project, user_projects, is_restricted);
     return (
         <tr
             key={project.id}
@@ -79,13 +79,13 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
 };
 
 const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
-    const UIsettings = is_restricted => {
+    const uiSettings = is_restricted => {
         const buttonClass = "selectAllProjects" + (is_restricted ? "" : " disabled"),
             disabled = !is_restricted,
             divClass = is_restricted ? "" : "disabled";
         return { buttonClass, disabled, divClass };
     };
-    const { divClass, disabled, buttonClass } = UIsettings(is_restricted);
+    const { divClass, disabled, buttonClass } = uiSettings(is_restricted);
     return (
         <div className={divClass}>
             <button onClick={onChangeProjectSelectAll} disabled={disabled} className={buttonClass}>
