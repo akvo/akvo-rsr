@@ -23,17 +23,15 @@ let initialState = {
 };
 
 export function reducer(state = initialState, action) {
-    switch (action.type) {
-        case c.SET_STORE: {
+    const reducerActions = {
+        [c.SET_STORE]: (state, action) => {
             const data = action.data;
             return { ...state, ...data };
-        }
-
-        case c.API_GET_INIT: {
+        },
+        [c.API_GET_INIT]: (state, action) => {
             return { ...state, fetching: true, error: null };
-        }
-
-        case c.API_GET_SUCCESS: {
+        },
+        [c.API_GET_SUCCESS]: (state, action) => {
             const { all_projects, user_projects } = action.data;
             return {
                 ...state,
@@ -43,9 +41,8 @@ export function reducer(state = initialState, action) {
                 user_projects: (user_projects && user_projects.projects) || [],
                 is_restricted: (user_projects && user_projects.is_restricted) || false
             };
-        }
-
-        case c.API_GET_FAILURE: {
+        },
+        [c.API_GET_FAILURE]: (state, action) => {
             return {
                 ...state,
                 fetching: false,
@@ -53,17 +50,15 @@ export function reducer(state = initialState, action) {
                 user_projects: [],
                 error: action.error
             };
-        }
-
-        case c.API_PUT_INIT: {
+        },
+        [c.API_PUT_INIT]: (state, action) => {
             return {
                 ...state,
                 fetching: true,
                 error: null
             };
-        }
-
-        case c.API_PUT_SUCCESS: {
+        },
+        [c.API_PUT_SUCCESS]: (state, action) => {
             const { user_projects } = action.data;
             return {
                 ...state,
@@ -74,9 +69,8 @@ export function reducer(state = initialState, action) {
                 user_projects: user_projects.projects,
                 original_user_projects: null
             };
-        }
-
-        case c.API_PUT_FAILURE: {
+        },
+        [c.API_PUT_FAILURE]: (state, action) => {
             const newState = {
                 ...state,
                 fetching: false,
@@ -92,9 +86,8 @@ export function reducer(state = initialState, action) {
                 newState.user_projects = state.original_user_projects;
             }
             return newState;
-        }
-
-        case c.UPDATE_PROJECT_SELECTION: {
+        },
+        [c.UPDATE_PROJECT_SELECTION]: (state, action) => {
             const { projectId } = action.data;
             const original_user_projects = state.user_projects && [...state.user_projects];
             const user_projects = state.user_projects && [...state.user_projects];
@@ -103,14 +96,12 @@ export function reducer(state = initialState, action) {
                 ? pull(user_projects, projectId)
                 : user_projects.push(projectId);
             return { ...state, original_user_projects, user_projects };
-        }
-
-        case c.UPDATE_IS_RESTRICTED: {
+        },
+        [c.UPDATE_IS_RESTRICTED]: (state, action) => {
             const { is_restricted } = action.data;
             return { ...state, is_restricted, original_is_restricted: state.is_restricted };
-        }
-
-        case c.UPDATE_SELECT_ALL_PROJECTS: {
+        },
+        [c.UPDATE_SELECT_ALL_PROJECTS]: (state, action) => {
             const original_user_projects = state.user_projects && [...state.user_projects];
             let user_projects,
                 { selectAll } = { ...state };
@@ -127,9 +118,10 @@ export function reducer(state = initialState, action) {
                 user_projects
             };
         }
-
-        default: {
-            return state;
-        }
+    };
+    if (reducerActions.hasOwnProperty(action.type)) {
+        return reducerActions[action.type](state, action);
+    } else {
+        return state;
     }
 }

@@ -47,11 +47,15 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
     // NOTE: the checked value is set to true if is_restricted is false. This is so that the list of
     // projects looks like all projects are selected when restrictions are not in force.
     // This is _not_ reflected in the store.
-    const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
-        disabled = is_restricted ? "" : "disabled",
-        projectSelected = checked ? " projectSelected" : "",
-        trClassName = disabled + projectSelected,
-        idClassName = disabled + " id";
+    const UIsettings = (project, user_projects, is_restricted) => {
+        const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
+            disabled = is_restricted ? "" : "disabled",
+            projectSelected = checked ? " projectSelected" : "",
+            trClassName = disabled + projectSelected,
+            idClassName = disabled + " id";
+        return { checked, trClassName, idClassName };
+    };
+    const { checked, trClassName, idClassName } = UIsettings(project, user_projects, is_restricted);
     return (
         <tr
             key={project.id}
@@ -75,11 +79,16 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
 };
 
 const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
-    const disabled = is_restricted ? false : true,
-        className = "selectAllProjects" + (is_restricted ? "" : " disabled");
+    const UIsettings = is_restricted => {
+        const buttonClass = "selectAllProjects" + (is_restricted ? "" : " disabled"),
+            disabled = !is_restricted,
+            divClass = is_restricted ? "" : "disabled";
+        return { buttonClass, disabled, divClass };
+    };
+    const { divClass, disabled, buttonClass } = UIsettings(is_restricted);
     return (
-        <div className={is_restricted ? undefined : "disabled"}>
-            <button onClick={onChangeProjectSelectAll} disabled={disabled} className={className}>
+        <div className={divClass}>
+            <button onClick={onChangeProjectSelectAll} disabled={disabled} className={buttonClass}>
                 {selectAll ? _("check_all_projects") : _("uncheck_all_projects")}
             </button>
         </div>
@@ -125,7 +134,7 @@ const Projects = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {all_projects.map((project) => (
+                    {all_projects.map(project => (
                         <Project
                             _={_}
                             key={project.id}
@@ -204,7 +213,7 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     const {
         fetching,
         error,
@@ -217,20 +226,30 @@ const mapStateToProps = (state) => {
     return { fetching, error, all_projects, is_restricted, selectAll, user_projects, strings };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return { onFetchUserProjects: userId => dispatch({
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchUserProjects: userId =>
+            dispatch({
                 type: c.API_GET_INIT,
                 data: { userId }
-            }), setStore: data => dispatch({
+            }),
+        setStore: data =>
+            dispatch({
                 type: c.SET_STORE,
                 data
-            }), onUpdateProjectSelection: projectId => dispatch({
+            }),
+        onUpdateProjectSelection: projectId =>
+            dispatch({
                 type: c.UPDATE_PROJECT_SELECTION,
                 data: { projectId }
-            }), onUpdateIsRestricted: is_restricted => dispatch({
+            }),
+        onUpdateIsRestricted: is_restricted =>
+            dispatch({
                 type: c.UPDATE_IS_RESTRICTED,
                 data: { is_restricted }
-            }), onUpdateSelectAll: () => dispatch({ type: c.UPDATE_SELECT_ALL_PROJECTS }) };
+            }),
+        onUpdateSelectAll: () => dispatch({ type: c.UPDATE_SELECT_ALL_PROJECTS })
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
