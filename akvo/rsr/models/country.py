@@ -13,7 +13,7 @@ from ..fields import ValidXMLCharField
 from ..iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
 from akvo.codelists import models as codelist_models
-from akvo.codelists.store.codelists_v202 import COUNTRY
+from akvo.codelists.store.default_codelists import COUNTRY
 from akvo.utils import codelist_choices, codelist_value
 
 

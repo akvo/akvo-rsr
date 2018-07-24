@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def contact_info(project):
     """
@@ -17,9 +19,8 @@ def contact_info(project):
     contact_info_elements = []
 
     for contact in project.contacts.all():
-        if contact.type or contact.organisation or contact.department or contact.person_name or \
-                contact.job_title or contact.telephone or contact.email or contact.website or \
-                contact.mailing_address:
+        if has_data(contact, ['type', 'organisation', 'department', 'person_name', 'job_title',
+                              'telephone', 'email', 'website', 'mailing_address', ]):
             element = etree.Element("contact-info")
 
             if contact.type:

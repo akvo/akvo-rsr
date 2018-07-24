@@ -13,10 +13,10 @@ from ..fields import ValidXMLCharField
 from akvo.codelists.models import (AidType, Currency, DisbursementChannel, TransactionType,
                                    Country, Region, RegionVocabulary, Sector, SectorCategory,
                                    SectorVocabulary, FinanceType, FlowType, TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, CURRENCY, DISBURSEMENT_CHANNEL,
-                                                 FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
-                                                 TRANSACTION_TYPE, COUNTRY, REGION,
-                                                 REGION_VOCABULARY, SECTOR_VOCABULARY)
+from akvo.codelists.store.default_codelists import (AID_TYPE, CURRENCY, DISBURSEMENT_CHANNEL,
+                                                    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
+                                                    TRANSACTION_TYPE, COUNTRY, REGION,
+                                                    REGION_VOCABULARY, SECTOR_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, codelist_name
 
 

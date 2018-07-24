@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .indicator_period_data import IndicatorPeriodData
 from .utils import calculate_percentage, PERCENTAGE_MEASURE
-from akvo.rsr.fields import ValidXMLCharField
+from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
 
 class IndicatorPeriod(models.Model):
@@ -58,6 +58,7 @@ class IndicatorPeriod(models.Model):
         null=True, blank=True,
         help_text=_(u'The denominator for a calculated percentage')
     )
+    narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
 
     def __unicode__(self):
         if self.period_start:
@@ -265,10 +266,9 @@ class IndicatorPeriod(models.Model):
         :param save; Boolean, save period if True
         :return Actual comment of period
         """
-        approved_updates = self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
         update_texts = [
             u'{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
-            for update in approved_updates.order_by('-created_at')
+            for update in self.approved_updates.order_by('-created_at')
         ]
         actual_comment = u' | '.join(update_texts)
         if len(actual_comment) >= 2000:  # max_size
@@ -447,6 +447,10 @@ class IndicatorPeriod(models.Model):
                 return Decimal(baseline)
             except (InvalidOperation, TypeError):
                 return baseline
+
+    @property
+    def approved_updates(self):
+        return self.data.filter(status=IndicatorPeriodData.STATUS_APPROVED_CODE)
 
     class Meta:
         app_label = 'rsr'

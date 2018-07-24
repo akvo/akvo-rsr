@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from rest_framework import serializers
 
 from akvo.codelists.models import Country
-from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
+from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rsr.models import Keyword, Organisation, Project, ProjectUpdate, Sector
 from akvo.utils import codelist_choices
 

@@ -10,7 +10,7 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.codelists.store.codelists_v202 import SECTOR_CATEGORY
+from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectExtraDeepSerializer,
                                    ProjectIatiExportSerializer,

@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import DocumentCategory, FileFormat, Language
-from akvo.codelists.store.codelists_v202 import DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
+from akvo.codelists.store.default_codelists import DOCUMENT_CATEGORY, FILE_FORMAT, LANGUAGE
 from akvo.utils import codelist_choices, codelist_value
 
 

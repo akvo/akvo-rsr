@@ -6,8 +6,8 @@
 
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.codelists.models import HumanitarianScopeType, HumanitarianScopeVocabulary
-from akvo.codelists.store.codelists_v202 import (HUMANITARIAN_SCOPE_TYPE,
-                                                 HUMANITARIAN_SCOPE_VOCABULARY)
+from akvo.codelists.store.default_codelists import (HUMANITARIAN_SCOPE_TYPE,
+                                                    HUMANITARIAN_SCOPE_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value
 
 from django.db import models

@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def document_link(project):
     """
@@ -58,8 +60,10 @@ def document_link(project):
             document_link_elements.append(link_element)
 
     for document in project.documents.all():
-        if document.url or document.document or document.format or document.title or \
-                document.categories.all() or document.language or document.document_date:
+
+        if has_data(document, ['url', 'document', 'format', 'title', 'language', 'document_date'])\
+           or document.categories.exists():
+
             document_element = etree.Element("document-link")
 
             if document.url:

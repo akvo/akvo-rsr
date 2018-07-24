@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def humanitarian_scope(project):
     """
@@ -17,7 +19,7 @@ def humanitarian_scope(project):
     humanitarian_scope_elements = []
 
     for scope in project.humanitarian_scopes.all():
-        if scope.code or scope.type or scope.vocabulary or scope.vocabulary_uri or scope.text:
+        if has_data(scope, ['code', 'type', 'vocabulary', 'vocabulary_uri', 'text', ]):
             element = etree.Element("humanitarian-scope")
 
             if scope.code:

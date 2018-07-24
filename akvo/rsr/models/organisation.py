@@ -17,7 +17,7 @@ from akvo.utils import codelist_choices, codelist_name, rsr_image_path
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
-from akvo.codelists.store.codelists_v202 import CURRENCY, ORGANISATION_TYPE
+from akvo.codelists.store.default_codelists import CURRENCY, ORGANISATION_TYPE
 from akvo.codelists.models import Currency
 
 from .country import Country

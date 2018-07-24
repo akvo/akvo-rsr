@@ -67,7 +67,7 @@ class IatiOrgXML(object):
             for tree_element in tree_elements:
                 organisation_element.append(tree_element)
 
-    def __init__(self, request, organisations, version='2.02', excluded_elements=None):
+    def __init__(self, request, organisations, version='2.03', excluded_elements=None):
         """
         Initialise the IATI XML object, creating a 'iati-organisations' etree Element as root.
 

@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from akvo.iati.exports.iati_export import IatiXML
+from akvo.iati.exports.elements.utils import has_qs_data
 from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, User, ProjectCondition,
                              LegacyData, RecipientCountry, RelatedProject, Sector, RecipientRegion,
                              PolicyMarker, HumanitarianScope, CountryBudgetItem, Fss, FssForecast,
@@ -16,8 +17,10 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              ProjectLocation, AdministrativeLocation, CrsAdd, CrsAddOtherFlag,
                              Transaction, TransactionSector, Result, Indicator, IndicatorPeriod,
                              IndicatorPeriodActualDimension, IndicatorPeriodActualLocation,
-                             IndicatorPeriodTargetDimension, IndicatorPeriodTargetLocation,
-                             IndicatorReference, ProjectEditorValidationSet)
+                             IndicatorPeriodData, IndicatorPeriodTargetDimension,
+                             IndicatorPeriodTargetLocation, IndicatorReference,
+                             ProjectEditorValidationSet)
+
 from akvo.rsr.models.result.utils import QUALITATIVE
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -416,10 +419,10 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             baseline_comment="Comment"
         )
         # Create a qualitative indicator
-        Indicator.objects.create(
+        q_indicator = Indicator.objects.create(
             result=result,
             title="Qualitative indicator",
-            description="Indicator Description",
+            description="Qualitative Indicator Description",
             type=QUALITATIVE,
         )
         IndicatorReference.objects.create(
@@ -436,6 +439,21 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             target_comment="Comment",
             actual_value="1",
             actual_comment="Comment",
+        )
+        q_period = IndicatorPeriod.objects.create(
+            indicator=q_indicator,
+            period_start=datetime.date.today(),
+            period_end=datetime.date.today() + datetime.timedelta(days=1),
+            target_value="1",
+            target_comment="Comment",
+            actual_value="1",
+            actual_comment="Comment",
+        )
+        IndicatorPeriodData.objects.create(
+            period=q_period,
+            narrative='This is an amazing update',
+            status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+            user=self.user,
         )
         IndicatorPeriodTargetLocation.objects.create(
             period=period,
@@ -501,14 +519,32 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertEqual(1, len(related_activities))
         self.assertEqual(attributes, related_activities[0].attrib)
 
-        # Test indicator has description
-        indicator_description_xpath = './iati-activity/result/indicator/description/narrative'
-        self.assertXpathsExist(root_test, (indicator_description_xpath,))
-        indicators = root_test.xpath(indicator_description_xpath)
-        self.assertEqual(indicators[0].text, 'Indicator Description')
+        indicator_xpath = './iati-activity/result/indicator'
+        self.assertXpathsExist(root_test, (indicator_xpath,))
+        indicators = root_test.xpath(indicator_xpath)
 
-        # Test qualitative indicator is not included
-        self.assertEqual(1, len(indicators))
+        # Test qualitative indicator is included
+        self.assertEqual(2, len(indicators))
+        self.assertIndicatorExported(indicators[0], indicator)
+        self.assertIndicatorExported(indicators[1], q_indicator)
+
+    def assertIndicatorExported(self, element, indicator):
+        # Test element has description
+        self.assertEqual(element.find('./description/narrative').text, indicator.description)
+        self.assertEqual(len(element.xpath('./period')), indicator.periods.count())
+
+        if indicator.type == QUALITATIVE:
+            self.assertEqual(element.get('measure'), '5')
+        else:
+            self.assertEqual(element.get('measure'), indicator.measure)
+
+        period = indicator.periods.first()
+        if period is not None:
+            period_element = element.find('./period')
+            if indicator.type == QUALITATIVE:
+                self.assertEqual(period_element.find('./actual').get('value'), period.narrative)
+            else:
+                self.assertEqual(period_element.find('./actual').get('value'), str(period.actual))
 
     def test_dgis_validated_project_export(self):
         """
@@ -834,3 +870,25 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertXmlHasAttribute(root_test, 'generated-datetime')
         self.assertXmlHasAttribute(root_test, 'version')
         self.assertXpathsExist(root_test, ('./iati-activity',))
+
+    def test_bogus_queryset_attribute(self):
+        # Given
+        project = Project.objects.create()
+
+        # When/Then
+        self.assertFalse(has_qs_data(project, ['foobar']))
+
+    def test_has_queryset_attribute(self):
+        # Given
+        project = Project.objects.create()
+
+        # When/Then
+        self.assertFalse(has_qs_data(project, ['results']))
+
+    def test_queryset_has_data(self):
+        # Given
+        project = Project.objects.create()
+        Result.objects.create(project=project)
+
+        # When/Then
+        self.assertTrue(has_qs_data(project, ['results']))

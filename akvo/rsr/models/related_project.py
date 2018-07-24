@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import RelatedActivityType
-from akvo.codelists.store.codelists_v202 import RELATED_ACTIVITY_TYPE
+from akvo.codelists.store.default_codelists import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
 
 

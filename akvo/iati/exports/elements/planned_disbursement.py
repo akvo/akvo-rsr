@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def _provider_organisation(element, pd):
     """
@@ -69,8 +71,8 @@ def planned_disbursement(project):
     planned_disbursement_elements = []
 
     for pd in project.planned_disbursements.all():
-        if pd.value or pd.type or pd.period_start or pd.period_end or pd.value_date or \
-                pd.currency or pd.provider_organisation or pd.receiver_organisation:
+        if has_data(pd, ['value', 'type', 'period_start', 'period_end', 'value_date', 'currency',
+                         'provider_organisation', 'receiver_organisation', ]):
             element = etree.Element("planned-disbursement")
 
             if pd.type:
@@ -88,7 +90,7 @@ def planned_disbursement(project):
                 value_element = etree.SubElement(element, "value")
                 value_element.text = str(pd.value)
 
-            if pd.value_date:
+            if (pd.value == 0 or pd.value) and pd.value_date:
                 value_element.attrib['value-date'] = str(pd.value_date)
 
             if pd.currency:

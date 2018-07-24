@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Currency
-from akvo.codelists.store.codelists_v202 import CURRENCY
+from akvo.codelists.store.default_codelists import CURRENCY
 from akvo.utils import codelist_choices, codelist_value
 
 

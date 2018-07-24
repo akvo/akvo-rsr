@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import Region, RegionVocabulary
-from akvo.codelists.store.codelists_v202 import REGION, REGION_VOCABULARY
+from akvo.codelists.store.default_codelists import REGION, REGION_VOCABULARY
 from akvo.utils import codelist_choices, codelist_value
 
 
