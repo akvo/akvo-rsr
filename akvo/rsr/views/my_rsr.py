@@ -34,6 +34,7 @@ from ..models import (Employment, Organisation, OrganisationCustomField, Project
 
 import json
 
+
 def manageable_objects(user):
     """
     Return all employments, organisations and groups the user can "manage"

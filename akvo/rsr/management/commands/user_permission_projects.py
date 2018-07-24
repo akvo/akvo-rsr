@@ -47,4 +47,4 @@ class Command(BaseCommand):
             for pk in pks:
                 whitelist.projects.add(Project.objects.get(pk=pk))
             print('User {} limited to access projects: {}'.format(
-                    user.email, projects))
+                user.email, projects))
