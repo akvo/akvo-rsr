@@ -2621,10 +2621,21 @@ function markMandatoryFields(parent) {
                 var fieldClassList = elementsToMark[k].classList;
                 for (var l = 0; l < fieldClassList.length; l++) {
                     if (fieldClassList[l].indexOf(mandatoryOrClass) > -1) {
-                        var otherFieldName = fieldClassList[l]
-                            .replace(mandatoryOrClass, "")
-                            .replace(/_/g, " ");
-                        markMandatoryOrField(elementsToMark[k], otherFieldName);
+                        var otherFieldId = fieldClassList[l].replace(mandatoryOrClass, "");
+                        var otherFieldName = otherFieldId.replace(/_/g, " ");
+                        var element = elementsToMark[k];
+                        var idComponents = element.id.split(".");
+                        var otherElement = document.querySelector(
+                            "#" + [idComponents[0], otherFieldId, idComponents[2]].join("\\.")
+                        );
+                        // Mark mandatory or fields only if both the fields are
+                        // empty. This behavior is slightly different than how
+                        // the * marks for mandatory fields works, but adding
+                        // the text even when the mandatory requirements are
+                        // fulfilled can often be confusing.
+                        if (element.value === "" && otherElement.value === "") {
+                            markMandatoryOrField(element, otherFieldName);
+                        }
                     }
                 }
             }
