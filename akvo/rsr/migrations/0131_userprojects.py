@@ -8,7 +8,7 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0127_auto_20180529_0955'),
+        ('rsr', '0130_indicatorperiod_narrative'),
     ]
 
     operations = [
