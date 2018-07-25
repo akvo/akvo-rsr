@@ -29,7 +29,13 @@
                 <span>{% trans 'Date created' %}:</span>
                 <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.created_at }}</time><br/>
                 <span>{% trans 'Last modified' %}:</span>
-                <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.last_modified_at }}</time>
+                <time datetime="YYYY-MM-DDThh:mm:ssTZD">{{ project.last_modified_at }}</time><br/>
+                {% with last_user=project.last_modified_by %}
+                    {% if last_user %}
+                        <span>{% trans 'Last modified by' %}:</span>
+                        <time>{{ user.get_full_name }}</time>
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
     </div>

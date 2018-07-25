@@ -9,6 +9,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -596,6 +598,16 @@ class Project(TimestampsMixin, models.Model):
         self.save()
 
     # End new API
+
+    @property
+    def last_modified_by(self):
+        """Return the user who last edited this project."""
+        entries = LogEntry.objects.filter(object_id=self.id, object_repr=self.__unicode__())
+        if not entries.exists():
+            return None
+        user_id = entries.last().user_id
+        User = get_user_model()
+        return User.objects.only('first_name', 'last_name', 'email').get(id=user_id)
 
     @property
     def view_count(self):
