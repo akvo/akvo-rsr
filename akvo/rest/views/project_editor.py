@@ -374,10 +374,15 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
         # in the project editor.
         errors = add_error(errors, str(e), field_name)
     else:
+        # if the object has a last_modified_at field, include it in the update
+        if hasattr(obj, 'last_modified_at'):
+            update_fields = [field, 'last_modified_at']
+        else:
+            update_fields = [field]
         # No validation errors. Save the field and append the changes to the changes list.
         # In case of a non-Project object, add the object to the related objects list, so that the
         # ID will be replaced (in case of a new object) and the unicode will be replaced.
-        obj.save(update_fields=[field])
+        obj.save(update_fields=update_fields)
         changes = add_changes(changes, obj, field, field_name, orig_data)
         if not (related_obj_id in rel_objects.keys() or isinstance(obj, Project)):
             rel_objects[related_obj_id] = obj.pk
