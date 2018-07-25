@@ -77,7 +77,15 @@
                     </div>
                 </div>
 
-                {% include choice_input with obj=project field="default_aid_type" %}
+                <div class="default-aid-type-vocabulary">
+                    {% include choice_input with obj=project field="default_aid_type_vocabulary" %}
+                </div>
+                <div class="aid-type-dropdown-input hidden">
+                    {% include choice_input with obj=project field="default_aid_type" %}
+                </div>
+                <div class="aid-type-text-input hidden">
+                    {% include text_input with obj=project field="default_aid_type" %}
+                </div>
                 {% include choice_input with obj=project field="default_flow_type" %}
                 {% include choice_input with obj=project field="default_tied_status" %}
                 {% include choice_input with obj=project field="collaboration_type" %}

@@ -13,9 +13,9 @@ from ..fields import ValidXMLCharField
 from akvo.codelists.models import (AidType, Currency, DisbursementChannel, TransactionType,
                                    Country, Region, RegionVocabulary, Sector, SectorCategory,
                                    SectorVocabulary, FinanceType, FlowType, TiedStatus)
-from akvo.codelists.store.default_codelists import (AID_TYPE, CURRENCY, DISBURSEMENT_CHANNEL,
-                                                    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS,
-                                                    TRANSACTION_TYPE, COUNTRY, REGION,
+from akvo.codelists.store.default_codelists import (AID_TYPE_VOCABULARY, CURRENCY,
+                                                    DISBURSEMENT_CHANNEL, FINANCE_TYPE, FLOW_TYPE,
+                                                    TIED_STATUS, TRANSACTION_TYPE, COUNTRY, REGION,
                                                     REGION_VOCABULARY, SECTOR_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value, codelist_name
 
@@ -26,8 +26,16 @@ class Transaction(models.Model):
         _(u'transaction reference'), blank=True, max_length=25,
         help_text=_(u'Enter a reference for the transaction (eg. transaction number).')
     )
+    aid_type_vocabulary = ValidXMLCharField(
+        _(u'transaction aid type vocabulary'), blank=True, max_length=1, default='1',
+        choices=codelist_choices(AID_TYPE_VOCABULARY),
+        help_text=_(u'Enter the type of vocabulary being used to describe the aid type '
+                    u'For reference, please visit: <a '
+                    u'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
+                    u'"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
+    )
     aid_type = ValidXMLCharField(
-        _(u'transaction aid type'), blank=True, max_length=3, choices=codelist_choices(AID_TYPE),
+        _(u'transaction aid type'), blank=True, max_length=3,
         help_text=_(u'Enter the type of aid being supplied. For reference, please visit: '
                     u'<a href="http://iatistandard.org/202/codelists/AidType/" target="_blank">'
                     u'http://iatistandard.org/202/codelists/AidType/</a>.')

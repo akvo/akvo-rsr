@@ -1959,7 +1959,7 @@ function addPartial(partialName, partialContainer) {
         setDatepickers();
         setPeriodMasqueradeDates();
         setCurrencyOnChange();
-        setSectorOnChange();
+        setVocabularyOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons("." + partialName + "-container");
@@ -2799,158 +2799,95 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
-function setSectorOnChange() {
-    var sectorVocabularyFields = document.querySelectorAll(".sector-vocabulary");
+function setVocabularyOnChange() {
+    var fieldInfo = [
+        {
+            selector: ".sector-vocabulary",
+            optionsId: "sector-vocabulary-options",
+            textInputSelector: ".sector-code-text-input",
+            dropDownInputSelector: ".sector-code-dropdown-input"
+        },
+        {
+            selector: ".default-aid-type-vocabulary",
+            optionsId: "aid-type-vocabulary-options",
+            textInputSelector: ".aid-type-text-input",
+            dropDownInputSelector: ".aid-type-dropdown-input"
+        },
+        {
+            selector: ".transaction-aid-type-vocabulary",
+            optionsId: "aid-type-vocabulary-options",
+            textInputSelector: ".aid-type-text-input",
+            dropDownInputSelector: ".aid-type-dropdown-input"
+        }
+    ];
+    fieldInfo.map(function(info) {
+        var vocabularyFields = document.querySelectorAll(info.selector);
 
-    for (var i = 0; i < sectorVocabularyFields.length; i++) {
-        sectorVocabularyFields[i].getElementsByTagName(
-            "select"
-        )[0].onchange = sectorCodeSelectorOnClick(sectorVocabularyFields[i]);
-        sectorCodeSwitcher(sectorVocabularyFields[i]);
-    }
+        for (var i = 0; i < vocabularyFields.length; i++) {
+            vocabularyFields[i].querySelector("select").onchange = vocabularyOnChange(
+                vocabularyFields[i],
+                info
+            );
+            codeFieldSwitcher(
+                vocabularyFields[i],
+                info.optionsId,
+                info.textInputSelector,
+                info.dropDownInputSelector
+            );
+        }
+    });
 }
 
-function sectorCodeSelectorOnClick(vocabularyField) {
+function vocabularyOnChange(vocabularyField, info) {
     return function(e) {
         e.preventDefault();
-        sectorCodeSwitcher(vocabularyField);
+        codeFieldSwitcher(
+            vocabularyField,
+            info.optionsId,
+            info.textInputSelector,
+            info.dropDownInputSelector
+        );
     };
 }
 
-function sectorCodeSwitcher(vocabularyField) {
+function codeFieldSwitcher(vocabularyField, optionsId, textInputSelector, dropDownInputSelector) {
     var selectField = vocabularyField.getElementsByTagName("select")[0];
     var vocabularyValue = selectField.options[selectField.selectedIndex].value;
+    var allOptions = JSON.parse(document.getElementById(optionsId).innerHTML);
+    var options = allOptions[vocabularyValue];
+    var textInputField = vocabularyField.parentNode.querySelector(textInputSelector);
+    var dropDownInputField = vocabularyField.parentNode.querySelector(dropDownInputSelector);
 
-    var sectorOther = vocabularyField.parentNode.querySelector(".sector-code-other");
-    var sectorDAC5 = vocabularyField.parentNode.querySelector(".sector-code-dac5");
-    var sectorDAC3 = vocabularyField.parentNode.querySelector(".sector-code-dac3");
-
-    var itemName = sectorOther
-        .getElementsByTagName("input")[0]
-        .getAttribute("name")
-        .replace(".other", "");
-    var itemId = sectorOther
-        .getElementsByTagName("input")[0]
-        .getAttribute("id")
-        .replace(".other", "");
-
-    if (vocabularyValue == "1" && sectorDAC5.classList.contains("hidden")) {
-        sectorDAC5.classList.remove("hidden");
-        sectorDAC5.querySelector(".form-group").classList.remove("always-hidden");
-        sectorDAC5.querySelector(".form-group").classList.remove("hidden");
-
-        sectorDAC5.getElementsByTagName("select")[0].setAttribute("name", itemName);
-        sectorDAC5.getElementsByTagName("select")[0].setAttribute("id", itemId);
-
-        if (!sectorOther.classList.contains("hidden")) {
-            sectorOther.classList.add("hidden");
-            sectorOther.querySelector(".form-group").classList.add("always-hidden");
-            sectorOther.querySelector(".form-group").classList.add("hidden");
-
-            sectorOther.getElementsByTagName("input")[0].setAttribute("name", itemName + ".other");
-            sectorOther.getElementsByTagName("input")[0].setAttribute("id", itemId + ".other");
-
-            sectorDAC5
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorOther.getElementsByTagName("input")[0].getAttribute("saved-value")
-                );
+    if (options) {
+        dropDownInputField.classList.remove("hidden");
+        textInputField.classList.add("hidden");
+        var codeSelectField = dropDownInputField.querySelector("select");
+        // Remove existing options
+        codeSelectField.options.length = 0;
+        // Create empty option
+        createSelectOption(codeSelectField, "", "");
+        // Create other options
+        for (var key in options) {
+            createSelectOption(codeSelectField, key, options[key]);
         }
-        if (!sectorDAC3.classList.contains("hidden")) {
-            sectorDAC3.classList.add("hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("hidden");
+        setSelectedValue(codeSelectField, codeSelectField.getAttribute("saved-value"));
+    } else {
+        textInputField.classList.remove("hidden");
+        dropDownInputField.classList.add("hidden");
+    }
+}
 
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac3");
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac3");
+function createSelectOption(selectField, value, text) {
+    var optionField = document.createElement("option");
+    optionField.text = text;
+    optionField.value = value;
+    selectField.add(optionField);
+}
 
-            sectorDAC5
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC3.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
-        }
-    } else if (vocabularyValue == "2" && sectorDAC3.classList.contains("hidden")) {
-        sectorDAC3.classList.remove("hidden");
-        sectorDAC3.querySelector(".form-group").classList.remove("always-hidden");
-        sectorDAC3.querySelector(".form-group").classList.remove("hidden");
-
-        sectorDAC3.getElementsByTagName("select")[0].setAttribute("name", itemName);
-        sectorDAC3.getElementsByTagName("select")[0].setAttribute("id", itemId);
-
-        if (!sectorOther.classList.contains("hidden")) {
-            sectorOther.classList.add("hidden");
-            sectorOther.querySelector(".form-group").classList.add("always-hidden");
-            sectorOther.querySelector(".form-group").classList.add("hidden");
-
-            sectorOther.getElementsByTagName("input")[0].setAttribute("name", itemName + ".other");
-            sectorOther.getElementsByTagName("input")[0].setAttribute("id", itemId + ".other");
-
-            sectorDAC3
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorOther.getElementsByTagName("input")[0].getAttribute("saved-value")
-                );
-        }
-        if (!sectorDAC5.classList.contains("hidden")) {
-            sectorDAC5.classList.add("hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("hidden");
-
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac5");
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac5");
-
-            sectorDAC3
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC5.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
-        }
-    } else if (
-        vocabularyValue != "1" &&
-        vocabularyValue != "2" &&
-        sectorOther.classList.contains("hidden")
-    ) {
-        sectorOther.classList.remove("hidden");
-        sectorOther.querySelector(".form-group").classList.remove("always-hidden");
-        sectorOther.querySelector(".form-group").classList.remove("hidden");
-
-        sectorOther.getElementsByTagName("input")[0].setAttribute("name", itemName);
-        sectorOther.getElementsByTagName("input")[0].setAttribute("id", itemId);
-
-        if (!sectorDAC5.classList.contains("hidden")) {
-            sectorDAC5.classList.add("hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("hidden");
-
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac5");
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac5");
-
-            sectorOther
-                .getElementsByTagName("input")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC5.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
-        }
-        if (!sectorDAC3.classList.contains("hidden")) {
-            sectorDAC3.classList.add("hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("hidden");
-
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac3");
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac3");
-
-            sectorOther
-                .getElementsByTagName("input")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC3.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
+function setSelectedValue(selectField, value) {
+    for (var i = 0; i < selectField.options.length; i++) {
+        if (selectField.options[i].value == value) {
+            selectField.selectedIndex = i;
         }
     }
 }
@@ -4575,7 +4512,7 @@ function initApp() {
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
-    setSectorOnChange();
+    setVocabularyOnChange();
     setFileUploads();
     checkPartnerships();
 
