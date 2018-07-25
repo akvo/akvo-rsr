@@ -641,6 +641,8 @@ var App = React.createClass({displayName: "App",
         var query = location.search.substring(1);
         // Treat iati_status query param as status param
         query = query.replace("iati_status", "status");
+        // Allow using partner as a query param for organisation
+        query = query.replace("partner", "organisation");
         if (query === "") {
             return selected;
         }

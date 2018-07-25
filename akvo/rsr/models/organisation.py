@@ -351,6 +351,11 @@ class Organisation(TimestampsMixin, models.Model):
         """returns a queryset with all projects that has self as any kind of partner."""
         return self.projects.distinct()
 
+    @staticmethod
+    def all_updates_filter(org_id):
+        """Returns a Q object for filtering updates for an organisation."""
+        return Q(user__organisations__id=org_id, project__partners__id=org_id)
+
     def all_updates(self):
         """Returns a queryset with all updates of the organisation.
 
@@ -360,9 +365,7 @@ class Organisation(TimestampsMixin, models.Model):
         2. Posted on projects where the organisation is a partner.
 
         """
-        return ProjectUpdate.objects.filter(
-            user__organisations=self, project__in=self.all_projects()
-        ).distinct()
+        return ProjectUpdate.objects.filter(Organisation.all_updates_filter(self.id)).distinct()
 
     def public_updates(self):
         """Returns a queryset with public updates of the organisation."""

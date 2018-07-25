@@ -205,8 +205,8 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
               <dt>{% trans 'Total updates' %}</dt>
               <dd>
                   {% with update_count=organisation.public_updates.count %}
-                    {% if  update_count %}
-                      <a href="{% url 'update-directory' %}?partner={{ organisation.id }}">
+                    {% if update_count %}
+                      <a href="{% url 'update-directory' %}?organisation={{ organisation.id }}">
                         {{ update_count }}
                       </a>
                     {% else %}
