@@ -423,6 +423,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             result=result,
             title="Qualitative indicator",
             description="Qualitative Indicator Description",
+            measure='1',
             type=QUALITATIVE,
         )
         IndicatorReference.objects.create(
