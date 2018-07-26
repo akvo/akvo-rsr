@@ -72,7 +72,7 @@ function initReact() {
                 );
             });
 
-            var roles = roles.map(function(role) {
+            var all_roles = roles.map(function(role) {
                 return (
                     React.createElement("option", {key: role.id, value: role.id}, 
                         role.name
@@ -109,7 +109,7 @@ function initReact() {
                     React.createElement("td", null, 
                         React.createElement("select", {className: "form-control role-select", defaultValue: ""}, 
                             React.createElement("option", {value: ""}, i18n.select_role_text), 
-                            roles
+                            all_roles
                         )
                     ), 
                     React.createElement("td", null, thisButton)
