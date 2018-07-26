@@ -117,11 +117,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "/user/{}/".format(self.pk)
 
     def get_full_name(self):
-        """
-        Returns the first_name plus the last_name, with a space in between.
-        """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
+        full_name = u"{} {}".format(self.first_name, self.last_name).strip()
+        if not full_name:
+            full_name = u"User with ID: {}".format(self.pk)
+        return full_name
     get_full_name.short_description = _(u'full name')
 
     def get_short_name(self):
@@ -304,7 +303,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment.group.delete()
 
     def my_projects(self):
-        return self.organisations.all().all_projects()
+        return self.approved_organisations().all_projects()
 
     def first_organisation(self):
         all_orgs = self.approved_organisations()
@@ -385,11 +384,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def can_create_project(self):
         """Check to see if the user can create a project."""
 
-        for employment in self.approved_employments():
-            org = employment.organisation
-            if org.can_create_projects and self.has_perm('rsr.add_project', org):
+        for org in self.approved_organisations().filter(can_create_projects=True):
+            if self.has_perm('rsr.add_project', org):
                 return True
-
         return False
 
     def can_import_results(self):
@@ -551,7 +548,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         permissions = {
             'is_rsr_admin': Q() if self.is_authenticated() and self.is_admin else Q(pk=None),
             'is_org_admin': Q(**{project_filter_name: self.admin_projects()}),
-            'is_org_project_editor': Q(
+            'is_org_me_manager_or_project_editor': Q(
                 **{project_filter_name: self.project_editor_me_manager_projects()}
             ),
             'is_org_me_manager': Q(

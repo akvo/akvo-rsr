@@ -17,6 +17,7 @@ def default_aid_type(project):
     if project.default_aid_type:
         element = etree.Element("default-aid-type")
         element.attrib['code'] = project.default_aid_type
+        element.attrib['vocabulary'] = project.default_aid_type_vocabulary
         return [element]
 
     return []

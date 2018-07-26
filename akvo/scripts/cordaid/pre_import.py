@@ -18,7 +18,7 @@ sys.path.append(project_root)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 
-from akvo.codelists.store.codelists_v201 import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
+from akvo.codelists.store.default_codelists import ORGANISATION_TYPE as IATI_LIST_ORGANISATION_TYPE
 from akvo.rsr.models import (
     Category, Benchmarkname, FocusArea, Organisation, InternalOrganisationID
 )

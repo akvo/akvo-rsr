@@ -164,10 +164,16 @@ $(document).ready(function() {
                 window.mapMarkers = [];
 
                 _(this.locations).forEach(function(location) {
+                    var markerImage = new google.maps.MarkerImage(
+                        location.icon,
+                        new google.maps.Size(38, 38),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(19, 19)
+                    );
                     var position = new google.maps.LatLng(location.latitude, location.longitude),
                         markerOpts = {
                             position: position,
-                            icon: location.icon,
+                            icon: markerImage,
                             map: map,
                             highlightId: location.highlightId
                         },

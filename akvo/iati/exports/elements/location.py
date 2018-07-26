@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def location(project):
     """
@@ -17,12 +19,12 @@ def location(project):
     location_elements = []
 
     for loc in project.locations.all():
-        if loc.reference or loc.location_reach or loc.location_code or loc.vocabulary or loc.name \
-                or loc.description or loc.activity_description or loc.administratives.all() or \
-                (loc.latitude and loc.longitude) or loc.exactness or loc.location_class or \
-                loc.feature_designation:
+        if (has_data(loc, ['reference', 'location_reach', 'location_code', 'vocabulary', 'name',
+                           'description', 'activity_description', 'exactness', 'location_class',
+                           'feature_designation', ]) or
+                (loc.latitude and loc.longitude) or
+                loc.administratives.exists()):
             element = etree.Element("location")
-
             if loc.reference:
                 element.attrib['ref'] = loc.reference
 

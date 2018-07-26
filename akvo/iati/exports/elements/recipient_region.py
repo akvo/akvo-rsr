@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def recipient_region(project):
     """
@@ -17,8 +19,8 @@ def recipient_region(project):
     recipient_region_elements = []
 
     for region in project.recipient_regions.all():
-        if region.region or region.percentage or region.region_vocabulary or \
-                region.region_vocabulary_uri or region.text:
+        if has_data(region, ['region', 'percentage', 'region_vocabulary', 'region_vocabulary_uri',
+                             'text', ]):
             element = etree.Element("recipient-region")
 
             if region.region:

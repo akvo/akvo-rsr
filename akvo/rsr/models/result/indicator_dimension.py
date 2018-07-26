@@ -13,6 +13,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class IndicatorDimension(models.Model):
+    project_relation = 'results__indicators__dimensions__in'
+
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
                                   related_name='dimensions')
     name = ValidXMLCharField(

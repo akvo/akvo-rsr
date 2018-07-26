@@ -15,19 +15,18 @@ var sass = require('gulp-sass');
 var jsfiles = [
     '../../akvo/rsr/static/scripts-src/**/*.js',
     // excluded files
-    '!../../akvo/rsr/static/scripts-src/**/bundle.js',
-    '!../../akvo/rsr/static/scripts-src/**/vendors.js',
-    '!../../akvo/rsr/static/scripts-src/**/vendors.bundle.js',
+    '!../../akvo/rsr/static/dist/**/*.js',
     // Ignored since webpack is used to build this code, and linting these files
     // here doesn't really help the developers while working on this code.
-    '!../../akvo/rsr/static/scripts-src/**/app.js',
     '!../../akvo/rsr/static/scripts-src/my-results/**/*.js',
+    '!../../akvo/rsr/static/scripts-src/user-projects-access/**/*.js',
 ];
 
 var jsxfiles = [
     '../../akvo/rsr/static/scripts-src/**/*.jsx',
     // excluded files
     '!../../akvo/rsr/static/scripts-src/my-results/**/*.jsx',
+    '!../../akvo/rsr/static/scripts-src/user-projects-access/**/*.jsx',
 ];
 
 gulp.task('lint', function() {

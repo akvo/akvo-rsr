@@ -13,9 +13,9 @@ from ..fields import ValidXMLCharField
 
 from akvo.codelists.models import (CRSAddOtherFlags, LoanRepaymentType, LoanRepaymentPeriod,
                                    Currency, CRSChannelCode)
-from akvo.codelists.store.codelists_v202 import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
-                                                 LOAN_REPAYMENT_PERIOD, CURRENCY,
-                                                 C_R_S_CHANNEL_CODE)
+from akvo.codelists.store.default_codelists import (C_R_S_ADD_OTHER_FLAGS, LOAN_REPAYMENT_TYPE,
+                                                    LOAN_REPAYMENT_PERIOD, CURRENCY,
+                                                    C_R_S_CHANNEL_CODE)
 from akvo.utils import codelist_choices, codelist_value
 
 

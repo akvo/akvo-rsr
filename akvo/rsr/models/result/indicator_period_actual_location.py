@@ -13,6 +13,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class IndicatorPeriodActualLocation(models.Model):
+    project_relation = 'results__indicators__periods__actual_locations__in'
+
     period = models.ForeignKey(IndicatorPeriod, verbose_name=_(u'indicator period'),
                                related_name='actual_locations')
     location = ValidXMLCharField(

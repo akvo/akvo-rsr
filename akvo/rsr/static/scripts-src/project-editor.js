@@ -1959,7 +1959,7 @@ function addPartial(partialName, partialContainer) {
         setDatepickers();
         setPeriodMasqueradeDates();
         setCurrencyOnChange();
-        setSectorOnChange();
+        setVocabularyOnChange();
 
         // Update help icons and progress bars
         updateHelpIcons("." + partialName + "-container");
@@ -2621,10 +2621,21 @@ function markMandatoryFields(parent) {
                 var fieldClassList = elementsToMark[k].classList;
                 for (var l = 0; l < fieldClassList.length; l++) {
                     if (fieldClassList[l].indexOf(mandatoryOrClass) > -1) {
-                        var otherFieldName = fieldClassList[l]
-                            .replace(mandatoryOrClass, "")
-                            .replace(/_/g, " ");
-                        markMandatoryOrField(elementsToMark[k], otherFieldName);
+                        var otherFieldId = fieldClassList[l].replace(mandatoryOrClass, "");
+                        var otherFieldName = otherFieldId.replace(/_/g, " ");
+                        var element = elementsToMark[k];
+                        var idComponents = element.id.split(".");
+                        var otherElement = document.querySelector(
+                            "#" + [idComponents[0], otherFieldId, idComponents[2]].join("\\.")
+                        );
+                        // Mark mandatory or fields only if both the fields are
+                        // empty. This behavior is slightly different than how
+                        // the * marks for mandatory fields works, but adding
+                        // the text even when the mandatory requirements are
+                        // fulfilled can often be confusing.
+                        if (element.value === "" && otherElement.value === "") {
+                            markMandatoryOrField(element, otherFieldName);
+                        }
                     }
                 }
             }
@@ -2799,158 +2810,95 @@ function updateObjectCurrency(currencyDropdown) {
     };
 }
 
-function setSectorOnChange() {
-    var sectorVocabularyFields = document.querySelectorAll(".sector-vocabulary");
+function setVocabularyOnChange() {
+    var fieldInfo = [
+        {
+            selector: ".sector-vocabulary",
+            optionsId: "sector-vocabulary-options",
+            textInputSelector: ".sector-code-text-input",
+            dropDownInputSelector: ".sector-code-dropdown-input"
+        },
+        {
+            selector: ".default-aid-type-vocabulary",
+            optionsId: "aid-type-vocabulary-options",
+            textInputSelector: ".aid-type-text-input",
+            dropDownInputSelector: ".aid-type-dropdown-input"
+        },
+        {
+            selector: ".transaction-aid-type-vocabulary",
+            optionsId: "aid-type-vocabulary-options",
+            textInputSelector: ".aid-type-text-input",
+            dropDownInputSelector: ".aid-type-dropdown-input"
+        }
+    ];
+    fieldInfo.map(function(info) {
+        var vocabularyFields = document.querySelectorAll(info.selector);
 
-    for (var i = 0; i < sectorVocabularyFields.length; i++) {
-        sectorVocabularyFields[i].getElementsByTagName(
-            "select"
-        )[0].onchange = sectorCodeSelectorOnClick(sectorVocabularyFields[i]);
-        sectorCodeSwitcher(sectorVocabularyFields[i]);
-    }
+        for (var i = 0; i < vocabularyFields.length; i++) {
+            vocabularyFields[i].querySelector("select").onchange = vocabularyOnChange(
+                vocabularyFields[i],
+                info
+            );
+            codeFieldSwitcher(
+                vocabularyFields[i],
+                info.optionsId,
+                info.textInputSelector,
+                info.dropDownInputSelector
+            );
+        }
+    });
 }
 
-function sectorCodeSelectorOnClick(vocabularyField) {
+function vocabularyOnChange(vocabularyField, info) {
     return function(e) {
         e.preventDefault();
-        sectorCodeSwitcher(vocabularyField);
+        codeFieldSwitcher(
+            vocabularyField,
+            info.optionsId,
+            info.textInputSelector,
+            info.dropDownInputSelector
+        );
     };
 }
 
-function sectorCodeSwitcher(vocabularyField) {
+function codeFieldSwitcher(vocabularyField, optionsId, textInputSelector, dropDownInputSelector) {
     var selectField = vocabularyField.getElementsByTagName("select")[0];
     var vocabularyValue = selectField.options[selectField.selectedIndex].value;
+    var allOptions = JSON.parse(document.getElementById(optionsId).innerHTML);
+    var options = allOptions[vocabularyValue];
+    var textInputField = vocabularyField.parentNode.querySelector(textInputSelector);
+    var dropDownInputField = vocabularyField.parentNode.querySelector(dropDownInputSelector);
 
-    var sectorOther = vocabularyField.parentNode.querySelector(".sector-code-other");
-    var sectorDAC5 = vocabularyField.parentNode.querySelector(".sector-code-dac5");
-    var sectorDAC3 = vocabularyField.parentNode.querySelector(".sector-code-dac3");
-
-    var itemName = sectorOther
-        .getElementsByTagName("input")[0]
-        .getAttribute("name")
-        .replace(".other", "");
-    var itemId = sectorOther
-        .getElementsByTagName("input")[0]
-        .getAttribute("id")
-        .replace(".other", "");
-
-    if (vocabularyValue == "1" && sectorDAC5.classList.contains("hidden")) {
-        sectorDAC5.classList.remove("hidden");
-        sectorDAC5.querySelector(".form-group").classList.remove("always-hidden");
-        sectorDAC5.querySelector(".form-group").classList.remove("hidden");
-
-        sectorDAC5.getElementsByTagName("select")[0].setAttribute("name", itemName);
-        sectorDAC5.getElementsByTagName("select")[0].setAttribute("id", itemId);
-
-        if (!sectorOther.classList.contains("hidden")) {
-            sectorOther.classList.add("hidden");
-            sectorOther.querySelector(".form-group").classList.add("always-hidden");
-            sectorOther.querySelector(".form-group").classList.add("hidden");
-
-            sectorOther.getElementsByTagName("input")[0].setAttribute("name", itemName + ".other");
-            sectorOther.getElementsByTagName("input")[0].setAttribute("id", itemId + ".other");
-
-            sectorDAC5
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorOther.getElementsByTagName("input")[0].getAttribute("saved-value")
-                );
+    if (options) {
+        dropDownInputField.classList.remove("hidden");
+        textInputField.classList.add("hidden");
+        var codeSelectField = dropDownInputField.querySelector("select");
+        // Remove existing options
+        codeSelectField.options.length = 0;
+        // Create empty option
+        createSelectOption(codeSelectField, "", "");
+        // Create other options
+        for (var key in options) {
+            createSelectOption(codeSelectField, key, options[key]);
         }
-        if (!sectorDAC3.classList.contains("hidden")) {
-            sectorDAC3.classList.add("hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("hidden");
+        setSelectedValue(codeSelectField, codeSelectField.getAttribute("saved-value"));
+    } else {
+        textInputField.classList.remove("hidden");
+        dropDownInputField.classList.add("hidden");
+    }
+}
 
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac3");
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac3");
+function createSelectOption(selectField, value, text) {
+    var optionField = document.createElement("option");
+    optionField.text = text;
+    optionField.value = value;
+    selectField.add(optionField);
+}
 
-            sectorDAC5
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC3.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
-        }
-    } else if (vocabularyValue == "2" && sectorDAC3.classList.contains("hidden")) {
-        sectorDAC3.classList.remove("hidden");
-        sectorDAC3.querySelector(".form-group").classList.remove("always-hidden");
-        sectorDAC3.querySelector(".form-group").classList.remove("hidden");
-
-        sectorDAC3.getElementsByTagName("select")[0].setAttribute("name", itemName);
-        sectorDAC3.getElementsByTagName("select")[0].setAttribute("id", itemId);
-
-        if (!sectorOther.classList.contains("hidden")) {
-            sectorOther.classList.add("hidden");
-            sectorOther.querySelector(".form-group").classList.add("always-hidden");
-            sectorOther.querySelector(".form-group").classList.add("hidden");
-
-            sectorOther.getElementsByTagName("input")[0].setAttribute("name", itemName + ".other");
-            sectorOther.getElementsByTagName("input")[0].setAttribute("id", itemId + ".other");
-
-            sectorDAC3
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorOther.getElementsByTagName("input")[0].getAttribute("saved-value")
-                );
-        }
-        if (!sectorDAC5.classList.contains("hidden")) {
-            sectorDAC5.classList.add("hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("hidden");
-
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac5");
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac5");
-
-            sectorDAC3
-                .getElementsByTagName("select")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC5.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
-        }
-    } else if (
-        vocabularyValue != "1" &&
-        vocabularyValue != "2" &&
-        sectorOther.classList.contains("hidden")
-    ) {
-        sectorOther.classList.remove("hidden");
-        sectorOther.querySelector(".form-group").classList.remove("always-hidden");
-        sectorOther.querySelector(".form-group").classList.remove("hidden");
-
-        sectorOther.getElementsByTagName("input")[0].setAttribute("name", itemName);
-        sectorOther.getElementsByTagName("input")[0].setAttribute("id", itemId);
-
-        if (!sectorDAC5.classList.contains("hidden")) {
-            sectorDAC5.classList.add("hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC5.querySelector(".form-group").classList.add("hidden");
-
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac5");
-            sectorDAC5.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac5");
-
-            sectorOther
-                .getElementsByTagName("input")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC5.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
-        }
-        if (!sectorDAC3.classList.contains("hidden")) {
-            sectorDAC3.classList.add("hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("always-hidden");
-            sectorDAC3.querySelector(".form-group").classList.add("hidden");
-
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("name", itemName + ".dac3");
-            sectorDAC3.getElementsByTagName("select")[0].setAttribute("id", itemId + ".dac3");
-
-            sectorOther
-                .getElementsByTagName("input")[0]
-                .setAttribute(
-                    "saved-value",
-                    sectorDAC3.getElementsByTagName("select")[0].getAttribute("saved-value")
-                );
+function setSelectedValue(selectField, value) {
+    for (var i = 0; i < selectField.options.length; i++) {
+        if (selectField.options[i].value == value) {
+            selectField.selectedIndex = i;
         }
     }
 }
@@ -3247,7 +3195,8 @@ function submitDefaultPeriods(indicatorId, copy, setDefault) {
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             var response = JSON.parse(request.responseText);
-            console.log('submitDefaultPeriods response: ' + JSON.stringify(response));
+            console.log("submitDefaultPeriods response: " + JSON.stringify(response));
+            // TODO: dispay error when there was an error
             if (response.default_periods) {
                 defaultValues.default_indicator = indicatorId;
             } else {
@@ -3940,42 +3889,10 @@ function addOrgModal() {
             request.onload = function() {
                 var response;
                 if (request.status === 201) {
-                    var organisation_id;
-
                     // Get organisation ID
                     response = JSON.parse(request.responseText);
-                    organisation_id = response.id;
-
-                    // Add location (fails silently)
-                    if (
-                        form.querySelector("#latitude").value !== "" &&
-                        form.querySelector("#longitude").value !== ""
-                    ) {
-                        var request_loc;
-                        api_url = "/rest/v1/organisation_location/?format=json";
-                        request_loc = new XMLHttpRequest();
-                        request_loc.open("POST", api_url, true);
-                        request_loc.setRequestHeader("X-CSRFToken", csrftoken);
-                        request_loc.setRequestHeader(
-                            "Content-type",
-                            "application/x-www-form-urlencoded"
-                        );
-                        request_loc.send(form_data + "&location_target=" + organisation_id);
-                    }
-
-                    // Add logo (fails silently)
-                    var logo_request, logo_data, org_logo_files;
-                    org_logo_files = document.getElementById("org-logo").files;
-                    if (org_logo_files !== undefined) {
-                        api_url =
-                            "/rest/v1/organisation/" + organisation_id + "/add_logo/?format=json";
-                        logo_data = new FormData();
-                        logo_data.append("logo", org_logo_files[0]);
-                        logo_request = new XMLHttpRequest();
-                        logo_request.open("POST", api_url);
-                        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
-                        logo_request.send(logo_data);
-                    }
+                    var organisation_id = response.id;
+                    submitOrgLocation(organisation_id, form, form_data);
 
                     updateThisOrganisationTypeahead(organisation_id);
                     updateOrganisationTypeaheads(true);
@@ -4014,6 +3931,53 @@ function addOrgModal() {
         } else {
             document.querySelector(".orgModal").scrollTop = 0;
         }
+    }
+
+    /* Submits the organisation location, and also calls the submitOrgLogo
+    method at the appropriate time - immediately, if there is no location update
+    to be made, or after the request finishes if a location update request has
+    been sent.
+
+    NOTE: The two requests cannot be made asynchronously since the server method
+    doesn't handle updates correctly. It seems to be losing the logo data, or
+    the location data, based on the order in which it is handling these
+    requests.
+     */
+    function submitOrgLocation(organisation_id, form, form_data) {
+        var latitude = form.querySelector("#latitude").value,
+            longitude = form.querySelector("#longitude").value;
+
+        if (latitude !== "" && longitude !== "") {
+            var api_url = "/rest/v1/organisation_location/?format=json",
+                request_loc = new XMLHttpRequest();
+
+            // Making a synchronous request, since org!
+            request_loc.open("POST", api_url, false);
+            request_loc.setRequestHeader("X-CSRFToken", csrftoken);
+            request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            request_loc.send(form_data + "&location_target=" + organisation_id);
+        }
+
+        // Call sendOrgLogo after updating location is done. The update location
+        // request is synchronous
+        submitOrgLogo(organisation_id);
+    }
+
+    function submitOrgLogo(organisation_id) {
+        var org_logo_files = document.getElementById("org-logo").files;
+        if (org_logo_files === undefined) {
+            return;
+        }
+
+        var api_url = "/rest/v1/organisation/" + organisation_id + "/add_logo/?format=json",
+            logo_data = new FormData(),
+            logo_request = new XMLHttpRequest();
+
+        logo_data.append("logo", org_logo_files[0]);
+
+        logo_request.open("POST", api_url);
+        logo_request.setRequestHeader("X-CSRFToken", csrftoken);
+        logo_request.send(logo_data);
     }
 
     function allInputsFilled() {
@@ -4559,7 +4523,7 @@ function initApp() {
     setToggleSectionOnClick();
     setPartialOnClicks();
     setCurrencyOnChange();
-    setSectorOnChange();
+    setVocabularyOnChange();
     setFileUploads();
     checkPartnerships();
 

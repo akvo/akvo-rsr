@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from akvo.codelists.store.codelists_v202 import COUNTRY
+from akvo.codelists.store.default_codelists import COUNTRY
 from akvo.codelists.models import Country, Version
 from akvo.rsr.models import Project, RecipientCountry
 

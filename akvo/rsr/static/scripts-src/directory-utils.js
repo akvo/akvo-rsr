@@ -217,7 +217,7 @@ var ProjectDirectory = React.createClass({displayName: "ProjectDirectory",
                     : this.props.i18n.loading_text,
             filtered = this.props.filtered ? " filtered" : "",
             listWidth = this.props.hide_map ? "col-sm-12" : "col-sm-7",
-            listMsg = "The most recent " + this.props.type.toLowerCase() + " added to RSR";
+            listMsg = this.props.i18n.list_message_text;
 
         return (
             React.createElement("section", {className: "main-list projects"}, 
@@ -641,6 +641,8 @@ var App = React.createClass({displayName: "App",
         var query = location.search.substring(1);
         // Treat iati_status query param as status param
         query = query.replace("iati_status", "status");
+        // Allow using partner as a query param for organisation
+        query = query.replace("partner", "organisation");
         if (query === "") {
             return selected;
         }

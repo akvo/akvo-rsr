@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def sector(project):
     """
@@ -17,7 +19,7 @@ def sector(project):
     sector_elements = []
 
     for sec in project.sectors.all():
-        if sec.sector_code or sec.vocabulary or sec.vocabulary_uri or sec.percentage or sec.text:
+        if has_data(sec, ['sector_code', 'vocabulary', 'vocabulary_uri', 'percentage', 'text', ]):
             element = etree.Element("sector")
 
             if sec.sector_code:

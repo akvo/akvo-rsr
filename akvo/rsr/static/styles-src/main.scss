@@ -212,8 +212,8 @@ button.btn-primary {
 
 // Copy of Bootstrap .hidden Used to hide form elements that _should_ be included in the form data
 .invisible {
-    display: none!important;
-    visibility: hidden!important;
+    display: none !important;
+    visibility: hidden !important;
 }
 
 /* Bootstrap style for typeahead dropdown, to be included in CSS file */
@@ -855,6 +855,24 @@ div.update-confirm-container {
             }
             > span:nth-of-type(2) {
                 margin-right: 15px;
+            }
+        }
+    }
+    .btn-danger {
+        margin-left: 10px;
+    }
+    .dropdown.btn-group {
+        button {
+            border: 1px solid rgba($akvoBlack, 0.3);
+            &:first-of-type {
+                border-radius: 3px 0 0 3px;
+                border-right: none;
+            }
+            &:nth-of-type(2) {
+                border-radius: 0 3px 3px 0;
+                border: 1px solid rgba($akvoBlack, 0.3);
+                background: transparent;
+                color: rgba($akvoBlack, 0.3);
             }
         }
     }
@@ -3740,6 +3758,10 @@ main.results-page {
     }
 }
 
+.rc-collapse-header {
+    outline: none !important;
+}
+
 .rsrReports {
     * {
         box-sizing: border-box;
@@ -3889,6 +3911,22 @@ main.results-page {
             }
             &:last-child {
                 margin-bottom: 0;
+            }
+        }
+        .menuUpdate {
+            list-style-type: none;
+            padding: 0;
+            li {
+                display: inline-block;
+                a {
+                    padding: 3px 6px;
+                    font-weight: normal;
+                }
+                &:first-child {
+                    a {
+                        padding-left: 0px;
+                    }
+                }
             }
         }
         .updateImg {
@@ -4090,6 +4128,7 @@ main.results-page {
             .rc-collapse-header {
                 padding: 5px 10px;
                 position: relative;
+                outline: none !important;
                 span {
                     &.resultTitle {
                         display: inline-block;
@@ -4794,7 +4833,7 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-
+                           
                             }
                         }
                     }
@@ -5136,4 +5175,124 @@ main.results-page {
 .supporthero-button {
     bottom: 50px !important;
     top: unset !important;
+}
+
+.userProject {
+    h4 {
+        margin-top: 25px;
+        span {
+            font-weight: bold;
+        }
+    }
+}
+
+.markdown-editor-buttons {
+    button {
+        /* use @extend .button on any element (a or button) or use directly in markup class="button" */
+        display: inline-block;
+        padding: 3px 6px;
+        background-color: transparent;
+        color: $akvoBlack !important;
+        text-decoration: none;
+        cursor: pointer;
+        @include border-radius(3px);
+        border: 1px solid $akvoBlack;
+        text-align: center;
+        &:hover {
+            background: $akvoBlack;
+            color: white !important;
+        }
+        &.active {
+            background: $akvoBlack;
+            color: white !important;
+        }
+        &.disabled {
+            cursor: not-allowed;
+            background-color: rgba(128, 128, 128, 0.1) !important;
+            color: rgba(128, 128, 128, 0.4) !important;
+            border: 1px solid transparent;
+            &:hover {
+                cursor: not-allowed;
+                background-color: rgba(128, 128, 128, 0.1) !important;
+                color: rgba(128, 128, 128, 0.4) !important;
+                border: 1px solid transparent;
+            }
+        }
+    }
+}
+
+#userProjects {
+    padding-left: 0;
+    #is_restricted {
+        margin-bottom: 25px;
+        margin-right: 10px;
+    }
+    .error {
+        color: $akvoTvRed;
+    }
+    .selectAllProjects {
+        @include smallButton($akvoBlack, white);
+        margin-bottom: 15px;
+    }
+    .restrictedInfo {
+        margin-top: -0.75em;
+        margin-bottom: 1.5em;
+    }
+    table {
+        width: 100%;
+        thead {
+            tr {
+                background: rgba($akvoBlack, 0.05);
+                th {
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    width: 200px;
+                    border-right: 1px solid white;
+                    padding-left: 10px;
+                    &:first-of-type {
+                        width: 100px;
+                    }
+                    &:nth-of-type(2) {
+                        width: 150px;
+                    }
+                    &.disabled {
+                        color: lighten($akvoBlack, 60%);
+                    }
+
+                }
+            }
+        }
+        tbody {
+            tr {
+                color: $akvoTvRed;
+                &:hover {
+                    background: rgba($rsrBlue2, 0.1);
+                }
+                &.disabled {
+                    color: lighten($akvoTvRed, 30%);
+                }
+                &.projectSelected {
+                    color: $akvoBlack;
+                    background: rgba($rsrBlue2, 0.1);
+                }
+                &.projectSelected.disabled {
+                    color: lighten($akvoBlack, 60%);
+                    background: rgba($rsrBlue2, 0.1);
+                }
+                td {
+                    padding: 15px 0 15px 10px;
+                    margin-top: 1px;
+                    &:first-of-type {
+                        padding-left: 25px;
+                    }
+                    &.id {
+                        color: $akvoBlack;
+                    }
+                    &.id.disabled {
+                        color: lighten($akvoBlack, 60%);
+                    }
+                }
+            }
+        }
+    }
 }

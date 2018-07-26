@@ -25,6 +25,7 @@ from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
+from .user_projects import UserProjects
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
@@ -79,6 +80,8 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
+
+logger = logging.getLogger('akvo.rsr')
 
 __all__ = [
     'AdministrativeLocation',
@@ -169,6 +172,7 @@ __all__ = [
     'Transaction',
     'TransactionSector',
     'User',
+    'UserProjects',
 ]
 
 logger = logging.getLogger('akvo.rsr')
@@ -176,7 +180,7 @@ logger = logging.getLogger('akvo.rsr')
 # Permission rules
 import rules
 from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager,
-                           is_org_me_manager, is_org_project_editor,
+                           is_org_me_manager, is_org_me_manager_or_project_editor,
                            is_org_user, is_self, is_org_enumerator)
 
 rules.add_perm('rsr', rules.always_allow)
@@ -196,48 +200,47 @@ rules.add_perm('rsr.change_category', is_rsr_admin)
 rules.add_perm('rsr.add_focusarea', is_rsr_admin)
 rules.add_perm('rsr.change_focusarea', is_rsr_admin)
 
-rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicatorlabel', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin |is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
+rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm(
     'rsr.add_indicatorperioddata',
-    is_rsr_admin | is_org_admin | is_org_project_editor | is_org_enumerator
+    is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor | is_org_enumerator
 )
 rules.add_perm(
     'rsr.change_indicatorperioddata',
-    is_rsr_admin | is_org_admin | is_org_project_editor | is_org_enumerator
+    is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor | is_org_enumerator
 )
 rules.add_perm(
     'rsr.delete_indicatorperioddata',
-    is_rsr_admin | is_org_admin | is_org_project_editor | is_org_enumerator
+    is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor | is_org_enumerator
 )
 
-rules.add_perm('rsr.add_disaggregation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_disaggregation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_disaggregation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_narrativereport', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_narrativereport', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_narrativereport', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_narrativereport', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_keyword', is_rsr_admin)
 rules.add_perm('rsr.change_keyword', is_rsr_admin)
@@ -248,36 +251,37 @@ rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
 rules.add_perm('rsr.add_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_enumerator | is_org_user)
-rules.add_perm('rsr.change_projectupdate', is_rsr_admin | is_org_admin | is_org_user)
+               is_org_me_manager_or_project_editor | is_org_enumerator | is_org_user)
+rules.add_perm('rsr.change_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
+               is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
 rules.add_perm('rsr.delete_projectupdate', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.change_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.delete_projectupdatelocation', is_rsr_admin)
 
-rules.add_perm('rsr.add_relatedproject', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_relatedproject', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_relatedproject', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_relatedproject', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_projectcomment', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_projectcomment', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectcomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_projectcomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_goal', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_goal', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_goal', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_goal', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_projectlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_projectlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectlocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_projectlocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_projectlocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_administrativelocation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_administrativelocation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_administrativelocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_administrativelocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_administrativelocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_administrativelocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_budgetitem', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_budgetitem', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_budgetitem', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_projecteditorvalidation', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_projecteditorvalidation', is_rsr_admin | is_org_admin)
@@ -285,92 +289,92 @@ rules.add_perm('rsr.change_projecteditorvalidation', is_rsr_admin | is_org_admin
 rules.add_perm('rsr.add_projecteditorvalidationset', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.change_projecteditorvalidationset', is_rsr_admin | is_org_admin)
 
-rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectcustomfield', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_projectcustomfield', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_projectcustomfield', is_rsr_admin)
 
 rules.add_perm('rsr.add_organisationcustomfield', is_rsr_admin | is_org_admin |
-               is_org_project_editor)
+               is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_organisationcustomfield', is_rsr_admin | is_org_admin |
-               is_org_project_editor)
+               is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_organisationcustomfield', is_rsr_admin)
 
 rules.add_perm('rsr.add_organisationindicatorlabel', is_rsr_admin)
 rules.add_perm('rsr.change_organisationindicatorlabel', is_rsr_admin)
 rules.add_perm('rsr.delete_organisationindicatorlabel', is_rsr_admin)
 
-rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_benchmark', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_benchmark', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_benchmark', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_benchmark', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_partnership', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_partnership', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_partnership', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_partnership', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_partnership', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_partnership', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_link', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_link', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_link', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_link', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_link', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_link', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_projectcondition', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_projectcondition', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_projectcondition', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectcondition', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_projectcondition', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_projectcondition', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_projectcontact', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_projectcontact', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_projectcontact', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectcontact', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_projectcontact', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_projectcontact', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_countrybudgetitem', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_planneddisbursement', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_planneddisbursement', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_planneddisbursement', is_rsr_admin | is_org_admin |
-               is_org_project_editor)
+               is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_planneddisbursement', is_rsr_admin | is_org_admin |
-               is_org_project_editor)
+               is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_policymarker', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_policymarker', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_policymarker', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_policymarker', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_policymarker', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_policymarker', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_recipientcountry', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_recipientcountry', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_recipientcountry', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_recipientcountry', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_recipientcountry', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_recipientcountry', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_recipientregion', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_recipientregion', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_recipientregion', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_recipientregion', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_recipientregion', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_recipientregion', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_result', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_result', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_result', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_sector', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_sector', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_sector', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_transaction', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_transaction', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_transaction', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_transaction', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_transaction', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_transaction', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_legacydata', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_legacydata', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_legacydata', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_legacydata', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_legacydata', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_legacydata', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_projectdocument', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_projectdocument', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_projectdocument', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
-rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_iatiexport', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_iatiexport', is_rsr_admin | is_org_admin)
 rules.add_perm('rsr.delete_iatiexport', is_rsr_admin | is_org_admin)
 
-rules.add_perm('rsr.add_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_organisation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_organisation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_organisation', is_rsr_admin)
 
-rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
-rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.add_organisationlocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_organisationlocation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_organisationlocation', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_organisationtotalbudget', is_rsr_admin | is_org_admin)
@@ -426,9 +430,9 @@ rules.add_perm('rsr.change_organisationdocumentcountry', is_rsr_admin | is_org_a
 rules.add_perm('rsr.delete_organisationdocumentcountry', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_project', is_rsr_admin | is_org_admin)
-rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.change_project', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.view_project', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_user | is_org_enumerator)
+               is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
 
 rules.add_perm('rsr.change_publishingstatus', is_rsr_admin | is_org_admin)
 
@@ -436,16 +440,16 @@ rules.add_perm('rsr.add_user', is_rsr_admin)
 rules.add_perm('rsr.change_user', is_rsr_admin | is_org_admin | is_org_user_manager | is_self)
 
 rules.add_perm('tastypie.change_apikey', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor)
+               is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_employment', is_rsr_admin)
 rules.add_perm('rsr.change_employment', is_rsr_admin | is_org_admin | is_org_user_manager)
 rules.add_perm('rsr.delete_employment', is_rsr_admin | is_org_admin | is_org_user_manager | is_self)
 
-rules.add_perm('rsr.project_management', is_rsr_admin | is_org_admin | is_org_project_editor)
+rules.add_perm('rsr.project_management', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.user_management', is_rsr_admin | is_org_admin | is_org_user_manager)
 rules.add_perm('rsr.post_updates', is_rsr_admin | is_org_admin | is_org_user_manager |
-               is_org_project_editor | is_org_user | is_org_enumerator)
+               is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
 
 
 # Signals

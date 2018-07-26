@@ -18,6 +18,8 @@ class IndicatorPeriodDataComment(TimestampsMixin, models.Model):
     """
     Model for adding comments to data of an indicator period.
     """
+    project_relation = 'results__indicators__periods__data__comments__in'
+
     data = models.ForeignKey(IndicatorPeriodData, verbose_name=_(u'indicator period data'),
                              related_name='comments')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True)

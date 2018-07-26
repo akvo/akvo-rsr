@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.codelists.models import IndicatorMeasure
-from akvo.codelists.store.codelists_v202 import INDICATOR_MEASURE
+from akvo.codelists.store.default_codelists import INDICATOR_MEASURE as IM
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 
@@ -22,8 +22,15 @@ from .indicator_label import IndicatorLabel
 from .result import Result
 from .utils import PERCENTAGE_MEASURE, QUALITATIVE, QUANTITATIVE
 
+# Currently we support only Unit, Percentage measures. Qualitative is
+# implemented as a different Indicator type, and hence we drop that from the
+# measure list. We also drop nominal and ordinal since we don't support those.
+INDICATOR_MEASURE = IM[:3]
+
 
 class Indicator(models.Model):
+    project_relation = 'results__indicators__in'
+
     INDICATOR_TYPES = (
         (QUANTITATIVE, _('Quantitative')),
         (QUALITATIVE, _('Qualitative')),

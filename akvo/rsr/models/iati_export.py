@@ -38,7 +38,7 @@ class IatiExport(TimestampsMixin, models.Model):
         settings.AUTH_USER_MODEL, verbose_name=_(u'user'), related_name='iati_exports'
     )
     projects = models.ManyToManyField('Project', verbose_name=_(u'projects'))
-    version = ValidXMLCharField(_(u'version'), max_length=4, default='2.02')
+    version = ValidXMLCharField(_(u'version'), max_length=4, default='2.03')
     status = models.PositiveSmallIntegerField(_(u'status'), default=STATUS_PENDING)
     iati_file = models.FileField(_(u'IATI file'), blank=True, upload_to=file_path)
     is_public = models.BooleanField(_(u'public'), default=True)

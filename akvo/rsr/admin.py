@@ -1547,3 +1547,12 @@ class ReportFormatAdmin(admin.ModelAdmin):
     model = get_model('rsr', 'ReportFormat')
 
 admin.site.register(get_model('rsr', 'Reportformat'), ReportFormatAdmin)
+
+
+UserProjects = get_model('rsr', 'UserProjects')
+
+
+class UserProjectsAdmin(admin.ModelAdmin):
+    model = UserProjects
+
+admin.site.register(UserProjects, UserProjectsAdmin)

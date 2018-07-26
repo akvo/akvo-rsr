@@ -7,7 +7,7 @@
 
 def set_project_status_complete(modeladmin, request, queryset):
     """ Admin action setting selected projects iati_status to u'3', i.e. 'Completion' in
-    codelists_v202.ACTIVITY_STATUS and status to Project.STATUS_COMPLETE
+    default_codelists.ACTIVITY_STATUS and status to Project.STATUS_COMPLETE
     """
     for project in queryset:
         project.iati_status = u'3'

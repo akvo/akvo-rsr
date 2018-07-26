@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def crs_add(project):
     """
@@ -31,9 +33,9 @@ def crs_add(project):
 
                 element.append(other_flag_element)
 
-        if crs.loan_terms_rate1 or crs.loan_terms_rate2 or crs.repayment_type or \
-                crs.repayment_plan or crs.commitment_date or crs.repayment_first_date or \
-                crs.repayment_final_date:
+        if has_data(crs, ['loan_terms_rate1', 'loan_terms_rate2', 'repayment_type',
+                          'repayment_plan', 'commitment_date', 'repayment_first_date',
+                          'repayment_final_date', ]):
             loan_terms_element = etree.SubElement(element, "loan-terms")
 
             if crs.loan_terms_rate1 == 0 or crs.loan_terms_rate1:
@@ -64,10 +66,10 @@ def crs_add(project):
 
             element.append(loan_terms_element)
 
-        if crs.loan_status_year or crs.loan_status_currency or crs.loan_status_value_date or \
-                crs.interest_received or crs.principal_outstanding or crs.principal_arrears or \
-                crs.interest_arrears:
-            loan_status_element = etree.SubElement(element, "loan-status")
+            if has_data(crs, ['loan_status_year', 'loan_status_currency', 'loan_status_value_date',
+                              'interest_received', 'principal_outstanding', 'principal_arrears',
+                              'interest_arrears']):
+                loan_status_element = etree.SubElement(element, "loan-status")
 
             if crs.loan_status_year:
                 loan_status_element.attrib['year'] = str(crs.loan_status_year)

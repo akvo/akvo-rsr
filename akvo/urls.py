@@ -135,6 +135,9 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/user_management/$',
         'akvo.rsr.views.my_rsr.user_management', name='user_management'),
 
+    url(r'^myrsr/user_projects/(?P<user_id>\d+)/$',
+        'akvo.rsr.views.my_rsr.user_projects', name='user_projects'),
+
     # Admin
     (r'^admin/', include(admin.site.urls)),
 )

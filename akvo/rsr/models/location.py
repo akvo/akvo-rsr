@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import LatitudeField, LongitudeField, ValidXMLCharField
 from akvo.codelists.models import (Country, GeographicExactness, GeographicLocationClass,
                                    GeographicLocationReach, GeographicVocabulary, LocationType)
-from akvo.codelists.store.codelists_v202 import (
+from akvo.codelists.store.default_codelists import (
     COUNTRY, GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS, GEOGRAPHIC_LOCATION_REACH,
     GEOGRAPHIC_VOCABULARY, LOCATION_TYPE
 )
@@ -123,6 +123,9 @@ class OrganisationLocation(BaseLocation):
 
 
 class ProjectLocation(BaseLocation):
+
+    project_relation = 'locations__in'
+
     location_target = models.ForeignKey('Project', related_name='locations')
 
     # Additional IATI fields
@@ -235,6 +238,9 @@ ProjectLocation._meta.get_field('country').help_text = _(
 
 
 class AdministrativeLocation(models.Model):
+
+    project_relation = 'locations__administratives__in'
+
     location = models.ForeignKey(
         'ProjectLocation', verbose_name=_(u'location'), related_name='administratives'
     )

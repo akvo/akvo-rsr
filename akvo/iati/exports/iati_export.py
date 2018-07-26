@@ -105,7 +105,7 @@ class IatiXML(object):
             for tree_element in tree_elements:
                 project_element.append(tree_element)
 
-    def __init__(self, projects, version='2.02', iati_export=None, excluded_elements=None):
+    def __init__(self, projects, version='2.03', iati_export=None, excluded_elements=None):
         """
         Initialise the IATI XML object, creating a 'iati-activities' etree Element as root.
 

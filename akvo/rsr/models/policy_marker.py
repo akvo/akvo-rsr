@@ -13,8 +13,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 
 from akvo.codelists import models as codelist_models
-from akvo.codelists.store.codelists_v202 import (POLICY_MARKER, POLICY_SIGNIFICANCE,
-                                                 POLICY_MARKER_VOCABULARY)
+from akvo.codelists.store.default_codelists import (POLICY_MARKER, POLICY_SIGNIFICANCE,
+                                                    POLICY_MARKER_VOCABULARY)
 from akvo.utils import codelist_choices, codelist_value
 
 

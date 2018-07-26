@@ -7,7 +7,7 @@
 from indicator import Indicator
 
 from akvo.codelists.models import IndicatorVocabulary
-from akvo.codelists.store.codelists_v202 import INDICATOR_VOCABULARY
+from akvo.codelists.store.default_codelists import INDICATOR_VOCABULARY
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 
@@ -16,6 +16,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class IndicatorReference(models.Model):
+
+    project_relation = 'results__indicators__references__in'
+
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
                                   related_name='references')
     reference = ValidXMLCharField(

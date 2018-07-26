@@ -102,6 +102,7 @@ from .typeahead import (typeahead_country,
 from .user import (UserViewSet, change_password, update_details,
                    request_organisation)
 from .user_management import invite_user
+from .user_projects import UserProjectsAccessViewSet
 
 __all__ = [
     'AdministrativeLocationViewSet',
@@ -220,5 +221,6 @@ __all__ = [
     'update_details',
     'update_directory',
     'upload_indicator_update_photo',
+    'UserProjectsAccessViewSet',
     'UserViewSet',
 ]

@@ -6,6 +6,8 @@
 
 from lxml import etree
 
+from akvo.iati.exports.elements.utils import has_data
+
 
 def _provider_organisation(element, trans):
     """
@@ -63,7 +65,7 @@ def _sector(element, sector):
     """
     Helper function for transaction()
     """
-    if sector.code or sector.vocabulary or sector.vocabulary_uri or sector.text:
+    if has_data(sector, ['code', 'vocabulary', 'vocabulary_uri', 'text', ]):
         sector_element = etree.SubElement(element, "sector")
 
         if sector.code:
@@ -93,14 +95,15 @@ def transaction(project):
     transaction_elements = []
 
     for trans in project.transactions.all():
-        if trans.reference or trans.humanitarian is not None or trans.transaction_type or \
-                trans.transaction_date or trans.value or trans.currency or trans.value_date or \
-                trans.description or trans.provider_organisation or \
-                trans.provider_organisation_activity or trans.receiver_organisation or \
-                trans.receiver_organisation_activity or trans.disbursement_channel or \
-                trans.sectors.all() or trans.recipient_country or trans.recipient_region or \
-                trans.recipient_region_vocabulary or trans.recipient_region_vocabulary_uri or \
-                trans.flow_type or trans.finance_type or trans.aid_type or trans.tied_status:
+        if (has_data(trans, ['reference', 'transaction_type', 'transaction_date', 'value',
+                             'currency', 'value_date', 'description', 'provider_organisation',
+                             'provider_organisation_activity', 'receiver_organisation',
+                             'receiver_organisation_activity', 'disbursement_channel',
+                             'recipient_country', 'recipient_region', 'recipient_region_vocabulary',
+                             'recipient_region_vocabulary_uri', 'flow_type', 'finance_type',
+                             'aid_type', 'tied_status', ]) or
+                trans.humanitarian is not None or
+                trans.sectors.exists()):
             element = etree.Element("transaction")
 
             if trans.reference:
@@ -176,6 +179,7 @@ def transaction(project):
             if trans.aid_type:
                 aid_type_element = etree.SubElement(element, "aid-type")
                 aid_type_element.attrib['code'] = trans.aid_type
+                aid_type_element.attrib['vocabulary'] = trans.aid_type_vocabulary
 
             if trans.tied_status:
                 tied_status_element = etree.SubElement(element, "tied-status")

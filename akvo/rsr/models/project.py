@@ -9,6 +9,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -27,10 +30,9 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
                                    FinanceType, FlowType, TiedStatus)
-from akvo.codelists.store.codelists_v202 import (AID_TYPE, ACTIVITY_SCOPE, ACTIVITY_STATUS,
-                                                 COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
-                                                 FLOW_TYPE, TIED_STATUS,
-                                                 BUDGET_IDENTIFIER_VOCABULARY)
+from akvo.codelists.store.default_codelists import (AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS,
+                                                    COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
+                                                    FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY)
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
 
@@ -344,8 +346,18 @@ class Project(TimestampsMixin, models.Model):
                     u'CollaborationType/" target="_blank">http://iatistandard.org/202/codelists/'
                     u'CollaborationType/</a>.')
     )
+    default_aid_type_vocabulary = ValidXMLCharField(
+        _(u'default aid type vocabulary'), blank=True, max_length=1, default='1',
+        choices=codelist_choices(AID_TYPE_VOCABULARY),
+        help_text=_(u'This is the IATI identifier for the type of vocabulary being used for '
+                    u'describing the type of the aid being supplied or activity '
+                    u'being undertaken. For reference, please visit: <a '
+                    u'href="http://iatistandard.org/203/codelists/AidTypeVocabulary/" target='
+                    u'"_blank"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.')
+    )
     default_aid_type = ValidXMLCharField(
-        _(u'default aid type'), blank=True, max_length=3, choices=codelist_choices(AID_TYPE),
+        _(u'default aid type'),
+        blank=True, max_length=3,
         help_text=_(u'This is the IATI identifier for the type of aid being supplied or activity '
                     u'being undertaken. This element specifies a default for all the project’s '
                     u'financial transactions. This can be overridden at the individual transaction '
@@ -587,6 +599,20 @@ class Project(TimestampsMixin, models.Model):
         self.save()
 
     # End new API
+
+    @property
+    def last_modified_by(self):
+        """Return the user who last edited this project and when the edit was made."""
+        entries = LogEntry.objects.filter(
+            object_id=str(self.id), content_type=ContentType.objects.get_for_model(self)
+        ).order_by('action_time')
+        if not entries.exists():
+            return None
+        user_id = entries.last().user_id
+        last_modified_at = entries.last().action_time
+        User = get_user_model()
+        return dict(user=User.objects.only('first_name', 'last_name', 'email').get(id=user_id),
+                    last_modified_at=last_modified_at)
 
     @property
     def view_count(self):
