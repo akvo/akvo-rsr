@@ -450,6 +450,16 @@ def user_management(request):
 
     :param request; a Django request.
     """
+
+    def _restrictions_turned_on(user):
+        # "Feature flag" for access restrictions
+        restricting_orgs = settings.ACCESS_RESTRICTIONS_ORGS
+
+        if ('ALL' in restricting_orgs or
+                user.approved_organisations().filter(pk__in=restricting_orgs).exists()):
+            return True
+        return False
+
     user = request.user
 
     if not user.has_perm('rsr.user_management'):
@@ -507,21 +517,24 @@ def user_management(request):
                 'id', 'first_name', 'last_name', 'email'
             ])
 
-            # determine if this user's project access can be restricted
-            if employment.user.has_perm('rsr.user_management'):
-                can_be_restricted = False
-            else:
-                can_be_restricted = True
-                #  We cannot limit project access to users that are employed by more than one
-                # organisation
-                if employment.user.approved_organisations().distinct().count() != 1:
+            if _restrictions_turned_on(user):
+                # determine if this user's project access can be restricted
+                if employment.user.has_perm('rsr.user_management'):
                     can_be_restricted = False
                 else:
-                    user_projects = UserProjects.objects.filter(user=employment.user)
-                    if user_projects.exists():
-                        user_dict['is_restricted'] = user_projects[0].is_restricted
-                        user_dict['restricted_count'] = user_projects[0].projects.count()
-            user_dict['can_be_restricted'] = can_be_restricted
+                    can_be_restricted = True
+                    #  We cannot limit project access to users that are employed by more than one
+                    # organisation
+                    if employment.user.approved_organisations().distinct().count() != 1:
+                        can_be_restricted = False
+                    else:
+                        user_projects = UserProjects.objects.filter(user=employment.user)
+                        if user_projects.exists():
+                            user_dict['is_restricted'] = user_projects[0].is_restricted
+                            user_dict['restricted_count'] = user_projects[0].projects.count()
+                user_dict['can_be_restricted'] = can_be_restricted
+            else:
+                user_dict['can_be_restricted'] = False
 
             employment_dict["user"] = user_dict
         employments_array.append(employment_dict)
