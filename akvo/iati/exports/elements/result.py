@@ -62,11 +62,11 @@ def result(project):
 def add_indicator_element(result_element, indicator, is_dgis_project):
     indicator_element = etree.SubElement(result_element, "indicator")
 
-    if indicator.measure:
-        indicator_element.attrib['measure'] = indicator.measure
-
-    elif indicator.type == QUALITATIVE:
+    if indicator.type == QUALITATIVE:
         indicator_element.attrib['measure'] = '5'
+
+    elif indicator.measure:
+        indicator_element.attrib['measure'] = indicator.measure
 
     if indicator.ascending is not None:
         indicator_element.attrib['ascending'] = '1' if indicator.ascending else '0'
