@@ -72,7 +72,7 @@ function initReact() {
                 );
             });
 
-            var roles = roles.map(function(role) {
+            var all_roles = roles.map(function(role) {
                 return (
                     <option key={role.id} value={role.id}>
                         {role.name}
@@ -109,7 +109,7 @@ function initReact() {
                     <td>
                         <select className="form-control role-select" defaultValue="">
                             <option value="">{i18n.select_role_text}</option>
-                            {roles}
+                            {all_roles}
                         </select>
                     </td>
                     <td>{thisButton}</td>
