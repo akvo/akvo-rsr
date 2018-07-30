@@ -31,12 +31,15 @@ import unittest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import get_model
 from django.test import TestCase, Client
 from django.core import management
 import xmltodict
 
 from .fixture_factory import populate_test_data
 from .migration_data import (DELETE_URLS, GET_URLS, HERE, PATCH_URLS, POST_URLS)
+from akvo.codelists.models import Version
+from akvo.codelists.store import codelists_v202
 
 
 EXPECTED_RESPONSES_FILE = join(HERE, 'expected_responses.json')
@@ -163,6 +166,27 @@ class MigrationTestsMeta(type):
         return fn
 
 
+def add_v202_codelists():
+    """Load the IATI v2.02 codelists in the database."""
+
+    # Add new version first
+    v202, _ = Version.objects.get_or_create(code=u'2.02', url=u'http://iatistandard.org/202/')
+
+    # Add all new codelists, linked to the v2.02 version
+    for codelist in codelists_v202.codelist_list:
+        if codelist != 'VERSION':
+            codelist_tuples = getattr(codelists_v202, codelist, None)
+            if codelist_tuples is not None:
+                codelist_fields = codelist_tuples[0]
+                for codelist_entry in codelist_tuples[1:]:
+                    codelist_dict = {}
+                    codelist_dict['version'] = v202
+                    for index, field in enumerate(codelist_fields):
+                        codelist_dict[field] = codelist_entry[index]
+                    Model = get_model('codelists', codelist.replace('_', ''))
+                    Model.objects.get_or_create(**codelist_dict)
+
+
 @unittest.skipIf(not SLOW_TESTS, 'Not running slow tests')
 class MigrationTestCase(TestCase):
     """Test the endpoints.
@@ -185,6 +209,9 @@ class MigrationTestCase(TestCase):
         cls.longMessage = True
 
         cls.c = CLIENT
+
+        # Setup codelists
+        add_v202_codelists()
 
         # Populate the db with test data
         populate_test_data()

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='ActivityDateType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='ActivityScope',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             name='ActivityStatus',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('language', models.CharField(max_length=2, verbose_name='language', blank=True)),
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             name='AidType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=2, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
             name='AidTypeCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
             name='AidTypeFlag',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
             name='BudgetIdentifier',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=100, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('sector', models.CharField(max_length=100, verbose_name='sector', blank=True)),
@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
             name='BudgetIdentifierSector',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=2, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
             name='BudgetIdentifierSectorCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -153,7 +153,7 @@ class Migration(migrations.Migration):
             name='BudgetIdentifierVocabulary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -165,10 +165,25 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='BudgetStatus',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
+                ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
+                ('description', models.TextField(verbose_name='description', blank=True)),
+            ],
+            options={
+                'ordering': ('-version', 'code'),
+                'verbose_name': 'budget status',
+                'verbose_name_plural': 'budget statuses',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='BudgetType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('language', models.CharField(max_length=2, verbose_name='language', blank=True)),
@@ -184,7 +199,7 @@ class Migration(migrations.Migration):
             name='CollaborationType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('language', models.CharField(max_length=2, verbose_name='language', blank=True)),
@@ -200,7 +215,7 @@ class Migration(migrations.Migration):
             name='ConditionType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('language', models.CharField(max_length=2, verbose_name='language', blank=True)),
@@ -216,7 +231,7 @@ class Migration(migrations.Migration):
             name='ContactType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -231,12 +246,12 @@ class Migration(migrations.Migration):
             name='Country',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('language', models.CharField(max_length=2, verbose_name='language', blank=True)),
             ],
             options={
-                'ordering': ('-version', 'code'),
+                'ordering': ('-version', 'name', 'code'),
                 'verbose_name': 'country',
                 'verbose_name_plural': 'countries',
             },
@@ -246,7 +261,7 @@ class Migration(migrations.Migration):
             name='CRSAddOtherFlags',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -258,10 +273,24 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='CRSChannelCode',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
+                ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
+            ],
+            options={
+                'ordering': ('-version', 'code'),
+                'verbose_name': 'crs channel code',
+                'verbose_name_plural': 'crs channel codes',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Currency',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('language', models.CharField(max_length=2, verbose_name='language', blank=True)),
             ],
@@ -276,7 +305,7 @@ class Migration(migrations.Migration):
             name='DescriptionType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -291,7 +320,7 @@ class Migration(migrations.Migration):
             name='DisbursementChannel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -306,7 +335,7 @@ class Migration(migrations.Migration):
             name='DocumentCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=2, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
@@ -323,7 +352,7 @@ class Migration(migrations.Migration):
             name='DocumentCategoryCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -338,7 +367,7 @@ class Migration(migrations.Migration):
             name='FileFormat',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=20, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='category', blank=True)),
             ],
@@ -353,7 +382,7 @@ class Migration(migrations.Migration):
             name='FinanceType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=3, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('category_name', models.CharField(max_length=300, verbose_name='category name', blank=True)),
@@ -370,7 +399,7 @@ class Migration(migrations.Migration):
             name='FinanceTypeCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -385,7 +414,7 @@ class Migration(migrations.Migration):
             name='FlowType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -400,7 +429,7 @@ class Migration(migrations.Migration):
             name='GazetteerAgency',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -414,7 +443,7 @@ class Migration(migrations.Migration):
             name='GeographicalPrecision',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -429,7 +458,7 @@ class Migration(migrations.Migration):
             name='GeographicExactness',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -444,7 +473,7 @@ class Migration(migrations.Migration):
             name='GeographicLocationClass',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -459,7 +488,7 @@ class Migration(migrations.Migration):
             name='GeographicLocationReach',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -474,9 +503,10 @@ class Migration(migrations.Migration):
             name='GeographicVocabulary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
+                ('description', models.TextField(verbose_name='description', blank=True)),
             ],
             options={
                 'ordering': ('-version', 'code'),
@@ -486,10 +516,39 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='HumanitarianScopeType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
+                ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
+            ],
+            options={
+                'ordering': ('-version', 'code'),
+                'verbose_name': 'humanitarian scope type',
+                'verbose_name_plural': 'humanitarian scope types',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='HumanitarianScopeVocabulary',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
+                ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
+                ('url', models.URLField(verbose_name='url', blank=True)),
+            ],
+            options={
+                'ordering': ('-version', 'code'),
+                'verbose_name': 'humanitarian scope vocabulary',
+                'verbose_name_plural': 'humanitarian scope vocabularies',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='IndicatorMeasure',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -501,10 +560,25 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='IndicatorVocabulary',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
+                ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
+                ('url', models.URLField(verbose_name='url', blank=True)),
+            ],
+            options={
+                'ordering': ('-version', 'code'),
+                'verbose_name': 'indicator vocabulary',
+                'verbose_name_plural': 'indicator vocabularies',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Language',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -518,7 +592,7 @@ class Migration(migrations.Migration):
             name='LoanRepaymentPeriod',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -533,7 +607,7 @@ class Migration(migrations.Migration):
             name='LoanRepaymentType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -548,7 +622,7 @@ class Migration(migrations.Migration):
             name='LocationType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=2, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
@@ -564,7 +638,7 @@ class Migration(migrations.Migration):
             name='LocationTypeCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -578,7 +652,7 @@ class Migration(migrations.Migration):
             name='OrganisationIdentifier',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('abbreviation', models.CharField(max_length=100, verbose_name='abbreviation', blank=True)),
             ],
@@ -593,7 +667,7 @@ class Migration(migrations.Migration):
             name='OrganisationRegistrationAgency',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=2, verbose_name='category', blank=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
@@ -610,7 +684,7 @@ class Migration(migrations.Migration):
             name='OrganisationRole',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -625,7 +699,7 @@ class Migration(migrations.Migration):
             name='OrganisationType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -639,7 +713,7 @@ class Migration(migrations.Migration):
             name='OtherIdentifierType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -654,7 +728,7 @@ class Migration(migrations.Migration):
             name='PolicyMarker',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -668,7 +742,7 @@ class Migration(migrations.Migration):
             name='PolicyMarkerVocabulary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -683,7 +757,7 @@ class Migration(migrations.Migration):
             name='PolicySignificance',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -698,7 +772,7 @@ class Migration(migrations.Migration):
             name='PublisherType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -713,7 +787,7 @@ class Migration(migrations.Migration):
             name='Region',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
             ],
             options={
@@ -727,7 +801,7 @@ class Migration(migrations.Migration):
             name='RegionVocabulary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -742,7 +816,7 @@ class Migration(migrations.Migration):
             name='RelatedActivityType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -757,7 +831,7 @@ class Migration(migrations.Migration):
             name='ResultType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -772,7 +846,7 @@ class Migration(migrations.Migration):
             name='Sector',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('category', models.CharField(max_length=3, verbose_name='category', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
@@ -790,7 +864,7 @@ class Migration(migrations.Migration):
             name='SectorCategory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -805,7 +879,7 @@ class Migration(migrations.Migration):
             name='SectorVocabulary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('url', models.URLField(verbose_name='url', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
@@ -821,7 +895,7 @@ class Migration(migrations.Migration):
             name='TiedStatus',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -836,7 +910,7 @@ class Migration(migrations.Migration):
             name='TransactionType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -851,7 +925,7 @@ class Migration(migrations.Migration):
             name='ValueType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -866,7 +940,7 @@ class Migration(migrations.Migration):
             name='VerificationStatus',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('description', models.TextField(verbose_name='description', blank=True)),
             ],
@@ -895,7 +969,7 @@ class Migration(migrations.Migration):
             name='Vocabulary',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(max_length=100, verbose_name='code', blank=True)),
+                ('code', models.CharField(db_index=True, max_length=100, verbose_name='code', blank=True)),
                 ('name', models.CharField(max_length=300, verbose_name='name', blank=True)),
                 ('version', models.ForeignKey(verbose_name='version', to='codelists.Version')),
             ],
@@ -1057,7 +1131,25 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
+            model_name='indicatorvocabulary',
+            name='version',
+            field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='indicatormeasure',
+            name='version',
+            field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='humanitarianscopevocabulary',
+            name='version',
+            field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='humanitarianscopetype',
             name='version',
             field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
             preserve_default=True,
@@ -1153,6 +1245,12 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
+            model_name='crschannelcode',
+            name='version',
+            field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='crsaddotherflags',
             name='version',
             field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
@@ -1184,6 +1282,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='budgettype',
+            name='version',
+            field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='budgetstatus',
             name='version',
             field=models.ForeignKey(verbose_name='version', to='codelists.Version'),
             preserve_default=True,
