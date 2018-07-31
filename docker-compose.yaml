@@ -1,6 +1,11 @@
 version: '3'
 
 services:
+  mainnetwork:
+    image: alpine
+    command: tail -f /dev/null
+    ports:
+      - "8000:8000"
   web:
     build: .
     #;; user superme:passwd
@@ -8,8 +13,7 @@ services:
     volumes:
       - .:/var/akvo/rsr/code
       - /var/akvo/rsr/code/src/
-    ports:
-      - "8000:8000"
+    network_mode: service:mainnetwork
     depends_on:
       - rsrdbhost
   rsrdbhost:
@@ -19,3 +23,6 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d/
+  memcached:
+    image: memcached:1.5.9-alpine
+    network_mode: service:mainnetwork
