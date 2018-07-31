@@ -215,6 +215,7 @@ rules.add_perm('rsr.delete_indicatorlabel', is_rsr_admin | is_org_admin | is_org
 rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
 
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm(
