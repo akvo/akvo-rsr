@@ -16,7 +16,7 @@
     {
         "currentLanguage": "{{ request.LANGUAGE_CODE }}",
         "id": {{ project.pk }},
-        "primaryOrganisationId": {{ project.primary_organisation.pk }},
+        "primaryOrganisationId": {{ project.primary_organisation.pk|default:"null" }},
         "partners": [
             {% for partner in project.all_partners %}
             {{ partner.id }}
