@@ -7,7 +7,9 @@ services:
     ports:
       - "8000:8000"
   web:
-    build: .
+    build:
+     context: .
+     dockerfile: Dockerfile-dev
     #;; user superme:passwd
     volumes:
       - .:/var/akvo/rsr/code
