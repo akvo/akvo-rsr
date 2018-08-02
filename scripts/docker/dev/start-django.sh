@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu
+
 ./scripts/docker/dev/wait-for-dependencies.sh
 
 python manage.py migrate
