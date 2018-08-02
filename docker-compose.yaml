@@ -9,7 +9,6 @@ services:
   web:
     build: .
     #;; user superme:passwd
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/var/akvo/rsr/code
       - /var/akvo/rsr/code/src/

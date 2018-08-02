@@ -2,7 +2,7 @@ FROM python:2.7.15-stretch
 
 RUN set -ex; apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-    libgeos-dev && \
+    libgeos-dev postgresql-client-9.6 && \
     rm -rf /var/lib/apt/lists/*
 
 ENV NODE_VERSION 8.11.3
@@ -29,5 +29,4 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir -p /var/akvo/rsr/logs/
 RUN mkdir -p /var/log/akvo/
 
-
-
+CMD scripts/docker/dev/start-django.sh
