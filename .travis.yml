@@ -29,6 +29,7 @@ before_script:
   - python manage.py runserver &
 
 script:
+  - ci/build.sh
   # Ensure there are no changes that are missing migrations
   - python manage.py makemigrations rsr|grep -i "no changes"
   - python manage.py collectstatic --noinput
