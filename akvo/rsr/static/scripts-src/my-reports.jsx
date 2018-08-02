@@ -157,7 +157,7 @@ function initReact() {
         },
 
         render: function() {
-            const icon = this.props.icon,
+            var icon = this.props.icon,
                 display_name = this.props.display_name,
                 icon_class = "fa fa-" + icon,
                 text = i18n.download + " " + display_name;
