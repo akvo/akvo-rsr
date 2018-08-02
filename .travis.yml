@@ -3,8 +3,7 @@ language: python
 cache: pip
 
 services:
-  - postgresql
-  - memcached
+  - docker
 
 python:
   - "2.7"
@@ -12,39 +11,8 @@ python:
 env:
   - DJANGO=1.7.7 DB=postgres
 
-before_install:
-  - export DJANGO_SETTINGS_MODULE=akvo.settings
-  - export PYTHONPATH=$HOME/builds/akvo/akvo-rsr
-  - sudo mkdir /var/log/akvo/ && sudo chmod -R 777 /var/log/akvo/
-  - sudo mkdir /var/akvo/ && sudo chmod -R 777 /var/akvo/
-  - sudo mkdir /var/www/ && sudo chmod -R 777 /var/www/
-
-install:
-  - pip install -r scripts/deployment/pip/requirements/2_rsr.txt
-  - pip install -r scripts/deployment/pip/requirements/3_testing.txt
-
-before_script:
-  - psql -c 'CREATE DATABASE travis_test;' -U postgres
-  - python manage.py migrate --noinput
-  - python manage.py runserver &
-
 script:
   - ci/build.sh
-  # Ensure there are no changes that are missing migrations
-  - python manage.py makemigrations rsr|grep -i "no changes"
-  - python manage.py collectstatic --noinput
-  - coverage run manage.py test akvo
-  - SLOW_TESTS=1 coverage run -a manage.py test akvo.rsr.tests.rest.test_migration
-  - coverage report -m
-  # We don't care about migrations; __init__.py can have unused imports
-  # wsgi.py and scripts/ are handled below
-  - flake8 --ignore=E501 --exclude=wsgi.py,scripts,migrations,__init__.py akvo/
-  # Need environ to be set before other imports, etc. So, ignore E402
-  - flake8 --ignore=E501,E402 akvo/scripts/
-  - flake8 --ignore=E501,E402 akvo/wsgi.py
-
-after_success:
-  - coveralls
 
 notifications:
   email: false
