@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rsr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: rsr
+      app: rsr
+  template:
+    metadata:
+      labels:
+        run: rsr
+        rsr-version: ${TRAVIS_COMMIT}
+        app: rsr
+    spec:
+      containers:
+      - name: rsr-nginx
+        image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+      - name: rsr-backend
+        image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
+        command:
+#         - sleep
+#         - "36000"
+         - python
+         - manage.py
+         - runserver
+         - 0.0.0.0:8000
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+        volumeMounts:
+            - name: "secret-config"
+              mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
+              subPath: "django.conf"
+      - name: rsr-memcached
+        image: memcached:1.5.9-alpine
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+      volumes:
+         - name: "secret-config"
+           secret:
+             secretName: "rsr-test-secret"
