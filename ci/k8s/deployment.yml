@@ -41,6 +41,9 @@ spec:
             cpu: "50m"
           limits:
             cpu: "1000m"
+        volumeMounts:
+            - name: "rsr-media-disk"
+              mountPath: "/var/akvo/rsr/mediaroot"
       - name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
         command:
@@ -60,6 +63,8 @@ spec:
             - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
               subPath: "django.conf"
+            - name: "rsr-media-disk"
+              mountPath: "/var/akvo/rsr/mediaroot"
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:
@@ -71,3 +76,6 @@ spec:
          - name: "secret-config"
            secret:
              secretName: "rsr-test-secret"
+         - name: rsr-media-disk
+           persistentVolumeClaim:
+             claimName: rsr-media-disk
