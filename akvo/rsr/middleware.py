@@ -12,6 +12,7 @@ import logging
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import redirect
 
 from akvo.rsr.context_processors import extra_context
@@ -57,6 +58,9 @@ class HostDispatchMiddleware(object):
         """Route on request."""
         request.rsr_page = None
         DEFAULT_REDIRECT_URL = "{}://{}".format(request.scheme, settings.RSR_DOMAIN)
+
+        if request.META['HTTP_USER_AGENT'] == 'GoogleHC/1.0':
+            return HttpResponse("OK")
 
         try:
             # Make sure host is valid - otherwise redirect to RSR_DOMAIN.
