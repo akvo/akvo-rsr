@@ -60,22 +60,18 @@ class UpdateHeader extends React.Component {
         if (this.props.periodLocked) {
             return false;
         }
-        // M&E manager
+        // M&E manager can always edit updates
         if (this.props.user.isMEManager) {
-            // M&E manager can always edit updates
             return true;
-            // Project editor
-        } else {
-            // Can't edit other's updates
-            if (this.props.user.id !== update.user) {
-                return false;
-            }
-            // Can't update submitted or approved
-            return (
-                update.status !== c.UPDATE_STATUS_PENDING &&
-                update.status !== c.UPDATE_STATUS_APPROVED
-            );
         }
+        // Can't edit other's updates
+        if (this.props.user.id !== update.user) {
+            return false;
+        }
+        // Can't update submitted or approved
+        return (
+            update.status !== c.UPDATE_STATUS_PENDING && update.status !== c.UPDATE_STATUS_APPROVED
+        );
     }
 
     render() {

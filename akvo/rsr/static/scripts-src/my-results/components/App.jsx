@@ -182,7 +182,7 @@ class App extends React.Component {
                 const update = updates.objects[updateFormDisplay];
                 const period = periods.objects[update.period];
                 const indicator = indicators.objects[period.indicator];
-                const dimensions = this.props.dimension_ids[indicator.id].map(id => {
+                const dimensions = this.props.dimensionIds[indicator.id].map(id => {
                     return this.props.dimensions.objects[id];
                 });
                 createNewDisaggregations(
@@ -303,7 +303,7 @@ class App extends React.Component {
             const update = updates.objects[updateFormDisplay];
             const period = periods.objects[update.period];
             const indicator = indicators.objects[period.indicator];
-            const dimensions = this.props.dimension_ids[indicator.id].map(id => {
+            const dimensions = this.props.dimensionIds[indicator.id].map(id => {
                 return this.props.dimensions.objects[id];
             });
             updateForm = (
@@ -381,7 +381,7 @@ const mapStateToProps = store => {
         updates: store.models.updates,
         reports: store.models.reports,
         disaggregations: getUpdatesDisaggregationObjects(store),
-        dimension_ids: getIndicatorsDimensionIds(store),
+        dimensionIds: getIndicatorsDimensionIds(store),
         dimensions: store.models.dimensions,
         user: store.models.user,
         ui: store.ui,

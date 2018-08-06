@@ -39,7 +39,7 @@ class ReportForm extends React.Component {
         const { text, category } = report;
         const alertName = "ReportAlert";
         this.state = {
-            text: text,
+            text,
             alertName,
             category
         };
@@ -90,7 +90,7 @@ class ReportForm extends React.Component {
         if (published) {
             summary.published = published;
         }
-        if (summary.id == "new") {
+        if (summary.id === "new") {
             delete summary.id;
         }
         return summary;
@@ -149,7 +149,7 @@ class ReportForm extends React.Component {
     render() {
         const { categories, narrative_reports, report } = this.props;
         const setText = text => {
-            this.setState({ text: text });
+            this.setState({ text });
         };
         const setCategory = category => {
             this.setState({ category: category.id });

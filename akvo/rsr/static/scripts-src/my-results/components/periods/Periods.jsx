@@ -99,7 +99,7 @@ class Periods extends React.Component {
             const period = this.props.periods.objects[id];
             const isChecked = new Set(this.props.ui[c.SELECTED_PERIODS]).has(id);
             const needsReporting =
-                !period.is_locked && period._meta && period._meta.children.ids.length == 0;
+                !period.is_locked && period._meta && period._meta.children.ids.length === 0;
 
             let className = this.hideMe(id) ? "hidePanel" : "";
             className += isChecked ? " periodSelected" : needsReporting ? " needsReporting" : "";
