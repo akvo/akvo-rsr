@@ -9,16 +9,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import { Markdown } from "react-showdown";
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
-import {
-    deleteFromModel,
-    fetchModel,
-    fetchUser,
-    testFetchModel,
-    updateModel
-} from "../actions/model-actions";
+import { deleteFromModel, fetchModel, updateModel } from "../actions/model-actions";
 
 import { setPageData } from "../actions/page-actions";
 
@@ -52,7 +45,7 @@ import {
 } from "../utils";
 
 import FilterBar from "./FilterBar";
-import NarrativeReports from "./NarrativeReports";
+import NarrativeReports from "./narrative-reports/NarrativeReports";
 import Reports from "./Reports";
 import RSRUpdates from "./RSRUpdates";
 import Results from "./Results";
@@ -76,25 +69,7 @@ const modifyUser = isMEManager => {
     };
 };
 
-@connect(store => {
-    return {
-        page: store.page,
-        indicators: store.models.indicators,
-        periods: store.models.periods,
-        updates: store.models.updates,
-        reports: store.models.reports,
-        disaggregations: getUpdatesDisaggregationObjects(store),
-        dimension_ids: getIndicatorsDimensionIds(store),
-        dimensions: store.models.dimensions,
-        user: store.models.user,
-        ui: store.ui,
-        needReportingPeriods: getNeedReportingPeriods(store),
-        pendingApprovalPeriods: getPendingApprovalPeriods(store),
-        approvedPeriods: getApprovedPeriods(store),
-        ResultsDefaultKeys: getResultsDefaultKeys(store)
-    };
-})
-export default class App extends React.Component {
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.showPending = this.showPending.bind(this);
@@ -397,3 +372,24 @@ export default class App extends React.Component {
         );
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        page: store.page,
+        indicators: store.models.indicators,
+        periods: store.models.periods,
+        updates: store.models.updates,
+        reports: store.models.reports,
+        disaggregations: getUpdatesDisaggregationObjects(store),
+        dimension_ids: getIndicatorsDimensionIds(store),
+        dimensions: store.models.dimensions,
+        user: store.models.user,
+        ui: store.ui,
+        needReportingPeriods: getNeedReportingPeriods(store),
+        pendingApprovalPeriods: getPendingApprovalPeriods(store),
+        approvedPeriods: getApprovedPeriods(store),
+        ResultsDefaultKeys: getResultsDefaultKeys(store)
+    };
+};
+
+export default connect(mapStateToProps)(App);

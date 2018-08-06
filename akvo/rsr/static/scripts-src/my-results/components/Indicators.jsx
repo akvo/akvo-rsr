@@ -25,7 +25,7 @@ import { collapseChange } from "../actions/collapse-actions";
 
 import { _, collapseId, hideMe } from "../utils";
 
-import Periods from "./Periods";
+import Periods from "./periods/Periods";
 
 const IndicatorHeaderPeriodCount = ({ count }) => {
     const periodText = count == 1 ? "period" : "periods";
@@ -127,20 +127,7 @@ IndicatorContent.propTypes = {
     indicator: PropTypes.object
 };
 
-@connect(store => {
-    return {
-        indicators: store.models.indicators,
-        periods: store.models.periods,
-        keys: store.keys,
-        ui: store.ui,
-        primaryOrganisationId: store.page.project.primaryOrganisationId,
-        resultChildrenIds: getResultsChildrenIds(store),
-        indicatorsChildrenIds: getIndicatorsChildrenIds(store),
-        aggregateActualValue: getIndicatorsAggregateActualValue(store),
-        aggregateCompletionPercentage: getIndicatorsAggregateCompletionPercentage(store)
-    };
-})
-export default class Indicators extends React.Component {
+class Indicators extends React.Component {
     static propTypes = {
         parentId: PropTypes.number
     };
@@ -222,3 +209,19 @@ export default class Indicators extends React.Component {
         }
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        indicators: store.models.indicators,
+        periods: store.models.periods,
+        keys: store.keys,
+        ui: store.ui,
+        primaryOrganisationId: store.page.project.primaryOrganisationId,
+        resultChildrenIds: getResultsChildrenIds(store),
+        indicatorsChildrenIds: getIndicatorsChildrenIds(store),
+        aggregateActualValue: getIndicatorsAggregateActualValue(store),
+        aggregateCompletionPercentage: getIndicatorsAggregateCompletionPercentage(store)
+    };
+};
+
+export default connect(mapStateToProps)(Indicators);

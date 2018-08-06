@@ -66,20 +66,7 @@ const PeriodLockingButtons = ({ user, disabled }) => {
     );
 };
 
-@connect(store => {
-    return {
-        page: store.page,
-        keys: store.keys,
-        periods: store.models.periods,
-        ui: store.ui,
-        user: store.models.user,
-        pendingUpdates: getPendingUpdates(store),
-        approvedPeriods: getApprovedPeriods(store),
-        needReportingPeriods: getNeedReportingPeriods(store),
-        ResultsDefaultKeys: getResultsDefaultKeys(store)
-    };
-})
-export default class FilterBar extends React.Component {
+class FilterBar extends React.Component {
     static propTypes = {
         callbacks: PropTypes.object.isRequired
     };
@@ -280,3 +267,19 @@ export default class FilterBar extends React.Component {
         );
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        page: store.page,
+        keys: store.keys,
+        periods: store.models.periods,
+        ui: store.ui,
+        user: store.models.user,
+        pendingUpdates: getPendingUpdates(store),
+        approvedPeriods: getApprovedPeriods(store),
+        needReportingPeriods: getNeedReportingPeriods(store),
+        ResultsDefaultKeys: getResultsDefaultKeys(store)
+    };
+};
+
+export default connect(mapStateToProps)(FilterBar);

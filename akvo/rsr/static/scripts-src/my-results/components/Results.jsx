@@ -77,16 +77,7 @@ ResultHeader.propTypes = {
     indicatorCount: PropTypes.number
 };
 
-@connect(store => {
-    return {
-        results: store.models["results"],
-        keys: store.keys,
-        ui: store.ui,
-        resultChildrenIds: getResultsChildrenIds(store),
-        primaryOrganisationId: store.page.project.primaryOrganisationId
-    };
-})
-export default class Results extends React.Component {
+class Results extends React.Component {
     static propTypes = {
         parentId: PropTypes.string.isRequired
     };
@@ -172,3 +163,15 @@ export default class Results extends React.Component {
         }
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        results: store.models["results"],
+        keys: store.keys,
+        ui: store.ui,
+        resultChildrenIds: getResultsChildrenIds(store),
+        primaryOrganisationId: store.page.project.primaryOrganisationId
+    };
+};
+
+export default connect(mapStateToProps)(Results);

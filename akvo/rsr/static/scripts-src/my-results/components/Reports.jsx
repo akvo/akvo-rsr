@@ -6,10 +6,8 @@
  */
 
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import "react-select/dist/react-select.css";
-import Results from "./Results";
 import { _ } from "../utils";
 
 // DatePicker
@@ -34,13 +32,7 @@ var sortReportIds = function(reports) {
     reports.ids.sort(sorter);
 };
 
-@connect(store => {
-    return {
-        reports: store.models.reports,
-        project: store.page.project
-    };
-})
-export default class Reports extends React.Component {
+class Reports extends React.Component {
     render() {
         const { project, reports } = this.props;
         const report_count = (reports && reports.ids && reports.ids.length) || 0;
@@ -94,7 +86,10 @@ class Report extends React.Component {
     }
 
     downloadReport(format) {
-        const { report: { url }, project } = this.props;
+        const {
+            report: { url },
+            project
+        } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
         download_url = url
@@ -201,3 +196,12 @@ class ReportFormatButton extends React.Component {
         );
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        reports: store.models.reports,
+        project: store.page.project
+    };
+};
+
+export default connect(mapStateToProps)(Reports);

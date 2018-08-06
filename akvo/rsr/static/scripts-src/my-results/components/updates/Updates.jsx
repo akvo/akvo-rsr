@@ -8,47 +8,41 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
-import groupBy from "lodash/groupBy";
-import keyBy from "lodash/keyBy";
-
-import * as alertActions from "../../actions/alert-actions";
+import { Markdown } from "react-showdown";
 
 import { collapseChange } from "../../actions/collapse-actions";
-
-import { uiHideMode, updateFormOpen } from "../../actions/ui-actions";
 
 import * as c from "../../const.js";
 
 import {
     getPeriodsChildrenIds,
+    getUpdatesDisaggregationIds,
     getUpdatesForApprovedPeriods,
     getUpdatesForNeedReportingPeriods,
-    getUpdatesForPendingApprovalPeriods,
-    getUpdatesDisaggregationIds
+    getUpdatesForPendingApprovalPeriods
 } from "../../selectors";
 
 import {
-    closeNodes,
+    _,
+    collapseId,
+    displayDate,
     disaggregationsToDisplayData,
     filterUpdatesByStatus,
-    fullUpdateVisibility,
-    hideMe,
-    openNodes
-} from "../../utils";
+    hideMe
+} from "../../utils.js";
+import { DisaggregationsDisplay } from "../common";
+import Comments from "../comments/Comments";
 
-import { displayDate, _, collapseId } from "../../utils.js";
-
-import { DisaggregationsDisplay, ToggleButton } from "../common";
-
-import Comments from "../Comments";
-
-import { Markdown } from "react-showdown";
+import UpdateHeader from "./UpdateHeader";
 
 function displayName(user) {
     return user.last_name
-        ? user.first_name ? user.first_name + " " + user.last_name : user.last_name
-        : user.first_name ? user.first_name : user.email;
+        ? user.first_name
+            ? user.first_name + " " + user.last_name
+            : user.last_name
+        : user.first_name
+            ? user.first_name
+            : user.email;
 }
 
 const TimestampInfo = ({ update, user, label }) => {
@@ -221,21 +215,6 @@ QualitativeUpdateBody.propTypes = {
     update: PropTypes.object.isRequired
 };
 
-const UserInfo = ({ user_details }) => {
-    const { approved_organisations, first_name, last_name } = user_details;
-    const organisation = approved_organisations.length ? approved_organisations[0].name : null;
-    const userName = first_name + " " + last_name;
-
-    return (
-        <span>
-            <span>{userName}</span> {organisation ? " at " + organisation : ""}
-        </span>
-    );
-};
-UserInfo.propTypes = {
-    user_details: PropTypes.object.isRequired
-};
-
 const QuantitativeUpdate = ({
     id,
     update,
@@ -290,117 +269,7 @@ QualitativeUpdate.propTypes = {
     collapseId: PropTypes.string.isRequired
 };
 
-@connect(store => {
-    return {
-        page: store.page,
-        [c.UPDATE_FORM_DISPLAY]: store.ui[c.UPDATE_FORM_DISPLAY],
-        activeFilter: store.ui.activeFilter,
-        user: store.models.user.objects[store.models.user.ids[0]]
-    };
-}, alertActions)
-class UpdateHeader extends React.Component {
-    static propTypes = {
-        update: PropTypes.object.isRequired,
-        collapseId: PropTypes.string.isRequired,
-        periodLocked: PropTypes.bool.isRequired
-    };
-
-    constructor(props) {
-        super(props);
-        this.formToggle = this.formToggle.bind(this);
-        this.showEditButton = this.showEditButton.bind(this);
-    }
-
-    formToggle(e) {
-        const { collapseId, update } = this.props;
-        updateFormOpen(update.id);
-        uiHideMode(c.OBJECTS_PERIODS);
-        openNodes(c.OBJECTS_PERIODS, [update.period]);
-        closeNodes(c.OBJECTS_PERIODS, [update.period]);
-        e.stopPropagation();
-    }
-
-    showEditButton() {
-        // Only show the Edit update button if the period is unlocked, the update is shown in the
-        // relevant filter and the user can edit at this time
-        const { page, update, activeFilter } = this.props;
-        if (page.mode.public) {
-            return false;
-        }
-        const show = fullUpdateVisibility(update, activeFilter);
-        if (!show) {
-            return false;
-        }
-        if (this.props.periodLocked) {
-            return false;
-        }
-        // M&E manager
-        if (this.props.user.isMEManager) {
-            // M&E manager can always edit updates
-            return true;
-            // Project editor
-        } else {
-            // Can't edit other's updates
-            if (this.props.user.id !== update.user) {
-                return false;
-            }
-            // Can't update submitted or approved
-            return (
-                update.status !== c.UPDATE_STATUS_PENDING &&
-                update.status !== c.UPDATE_STATUS_APPROVED
-            );
-        }
-    }
-
-    render() {
-        let editUpdateButton;
-        const { updateFormDisplay, update } = this.props;
-
-        if (this.showEditButton()) {
-            let className;
-            if (updateFormDisplay) {
-                className = "btn btn-sm btn-default editingForm";
-            } else {
-                className = "btn btn-sm btn-default";
-            }
-            editUpdateButton = (
-                <ToggleButton
-                    onClick={this.formToggle}
-                    className={className}
-                    label={_("edit")}
-                    disabled={updateFormDisplay !== false}
-                />
-            );
-        }
-        return (
-            <div className="UpdateHead">
-                <span className="updateName">
-                    <UserInfo user_details={update.user_details} />
-                </span>
-                <span className="updateStatus">{_("update_statuses")[update.status]}</span>
-                <span>{editUpdateButton}</span>
-            </div>
-        );
-    }
-}
-
-@connect(store => {
-    return {
-        page: store.page,
-        indicators: store.models.indicators,
-        updates: store.models.updates,
-        keys: store.keys,
-        ui: store.ui,
-        updatesDisaggregationIds: getUpdatesDisaggregationIds(store),
-        disaggregations: store.models.disaggregations.objects,
-        dimensions: store.models.dimensions.objects,
-        periodChildrenIds: getPeriodsChildrenIds(store),
-        needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
-        pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),
-        approvedUpdates: getUpdatesForApprovedPeriods(store)
-    };
-})
-export default class Updates extends React.Component {
+class Updates extends React.Component {
     static propTypes = {
         indicatorId: PropTypes.number.isRequired,
         period: PropTypes.object.isRequired
@@ -524,3 +393,21 @@ export default class Updates extends React.Component {
         }
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        page: store.page,
+        indicators: store.models.indicators,
+        updates: store.models.updates,
+        keys: store.keys,
+        ui: store.ui,
+        updatesDisaggregationIds: getUpdatesDisaggregationIds(store),
+        disaggregations: store.models.disaggregations.objects,
+        dimensions: store.models.dimensions.objects,
+        periodChildrenIds: getPeriodsChildrenIds(store),
+        needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
+        pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),
+        approvedUpdates: getUpdatesForApprovedPeriods(store)
+    };
+};
+export default connect(mapStateToProps)(Updates);

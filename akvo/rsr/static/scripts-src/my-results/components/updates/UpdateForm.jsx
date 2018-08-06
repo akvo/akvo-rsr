@@ -29,25 +29,21 @@ import * as c from "../../const.js";
 import { updateFormOpen, updateFormClose, uiHideMode } from "../../actions/ui-actions";
 
 import {
-    endpoints,
     _,
     collapseId,
-    isNewUpdate,
-    isNumeric,
+    computePercentage,
+    endpoints,
     getAncestor,
-    computePercentage
+    isNewUpdate,
+    isNumeric
 } from "../../utils.js";
 
 import AlertFactory from "../alertContainer";
 
 import { FileReaderInput, ToggleButton, MarkdownEditor } from "../common";
 
-import Comments from "../Comments";
+import Comments from "../comments/Comments";
 import { closeNodes, openNodes } from "../../utils";
-
-// If the update is approved only M&E managers are allowed to delete
-const isAllowedToDelete = (user, update) =>
-    update.status !== c.UPDATE_STATUS_APPROVED || user.isMEManager;
 
 const UpdateAlert = ({ message, close }) => (
     <div className="results-alert update-alert">
@@ -786,15 +782,7 @@ const pruneForPOST = update => {
     return updateForPOST;
 };
 
-@connect(store => {
-    return {
-        user: store.models.user.objects[store.models.user.ids[0]],
-        updates: store.models.updates,
-        ui: store.ui,
-        primaryOrganisationId: store.page.project.primaryOrganisationId
-    };
-}, alertActions)
-export default class UpdateForm extends React.Component {
+class UpdateForm extends React.Component {
     static propTypes = {
         indicator: PropTypes.object.isRequired,
         period: PropTypes.object.isRequired,
@@ -1303,3 +1291,17 @@ export class NewUpdateButton extends React.Component {
         );
     }
 }
+
+const mapStateToProps = store => {
+    return {
+        user: store.models.user.objects[store.models.user.ids[0]],
+        updates: store.models.updates,
+        ui: store.ui,
+        primaryOrganisationId: store.page.project.primaryOrganisationId
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    alertActions
+)(UpdateForm);
