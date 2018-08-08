@@ -44,6 +44,17 @@ spec:
         volumeMounts:
             - name: "rsr-media-disk"
               mountPath: "/var/akvo/rsr/mediaroot"
+        env:
+        - name: REPORT_SERVER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-test-secret"
+              key: report-server-api-key
+        - name: REPORT_SERVER_URL
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-test-secret"
+              key: report-server-url
       - name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
         imagePullPolicy: Always
