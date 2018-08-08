@@ -21,7 +21,7 @@ gcloud version
 which gcloud kubectl
 
 log Authentication with gcloud and kubectl
-openssl aes-256-cbc -K $encrypted_13abf95e958f_key -iv $encrypted_13abf95e958f_iv \
+openssl aes-256-cbc -K $encrypted_12c8071d2874_key -iv $encrypted_12c8071d2874_iv \
 	-in ci/gcloud-service-account.json.enc -out ci/gcloud-service-account.json -d
 gcloud auth activate-service-account --key-file ci/gcloud-service-account.json
 gcloud config set project akvo-lumen
