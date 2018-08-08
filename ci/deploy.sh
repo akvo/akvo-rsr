@@ -50,7 +50,5 @@ kubectl apply -f deployment.yml.tmp
 
 log Waiting for k8s to finish
 ./ci/k8s/helpers/wait-for-k8s-deployment-to-be-ready.sh
-log Waiting for k8s to be healthy
-./ci/helpers/wait-for-k8s-deployment-to-be-healthy.sh
 
 #kubectl create secret generic  --dry-run rsr-test-secret --from-file=ci/k8s/rsr-test-config -o yaml | kubectl apply -f -
