@@ -10,6 +10,8 @@ fi
 escaped_url=$(printf '%s\n' "$REPORT_SERVER_URL" | sed 's:[\/&]:\\&:g;$!s/$/\\/')
 escaped_key=$(printf '%s\n' "$REPORT_SERVER_API_KEY" | sed 's:[\/&]:\\&:g;$!s/$/\\/')
 
+echo "$escaped_url and $escaped_key"
+
 sed -i /etc/nginx/conf.d/default.conf \
     -e "s/%REPORT_SERVER_URL%/$escaped_url/" \
     -e "s/%REPORT_SERVER_API_KEY%/$escaped_key/"
