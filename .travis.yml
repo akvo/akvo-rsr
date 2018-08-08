@@ -12,7 +12,7 @@ env:
   - DJANGO=1.7.7 DB=postgres
 
 script:
-  - ci/build.sh
+  - ci/build.sh && ci/deploy.sh
 
 notifications:
   email: false
