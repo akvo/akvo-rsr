@@ -1,6 +1,8 @@
 language: python
 
-cache: pip
+cache:
+  directories:
+  - "${HOME}/google-cloud-sdk"
 
 services:
   - docker
@@ -8,8 +10,15 @@ services:
 python:
   - "2.7"
 
+before_install:
+  - if [[ ! -f "${HOME}/google-cloud-sdk/bin/gcloud" ]]; then rm -rf "${HOME}/google-cloud-sdk";
+  curl https://sdk.cloud.google.com | bash > /dev/null; fi
+
+
 env:
-  - DJANGO=1.7.7 DB=postgres
+  global:
+  - PATH=${HOME}/google-cloud-sdk/bin:$PATH
+  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
 script:
   - ci/build.sh && ci/deploy.sh
