@@ -16,4 +16,7 @@ RUN mkdir -p /var/log/akvo/
 CMD scripts/docker/dev/start-django.sh
 
 COPY manage.py /var/akvo/rsr/code/
+COPY scripts/docker/prod/start-django.sh /var/akvo/rsr/code/
 COPY akvo/ /var/akvo/rsr/code/akvo
+
+CMD ./start-django.sh

@@ -46,13 +46,6 @@ spec:
               mountPath: "/var/akvo/rsr/mediaroot"
       - name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
-        command:
-#         - sleep
-#         - "36000"
-         - python
-         - manage.py
-         - runserver
-         - 0.0.0.0:8000
         imagePullPolicy: Always
         resources:
           requests:
