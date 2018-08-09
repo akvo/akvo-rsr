@@ -27,6 +27,10 @@ class UserProjects(models.Model):
         ordering = ('user_id',)
 
 
+class InvalidPermissionChange(Exception):
+    pass
+
+
 class RestrictedUserProjectsByOrg(models.Model):
     user = models.ForeignKey('User', related_name='restricted_projects')
     organisation = models.ForeignKey('Organisation', related_name='restricted_users')
@@ -37,7 +41,11 @@ class RestrictedUserProjectsByOrg(models.Model):
     def __unicode__(self):
         return '{} - {} restricted projects'.format(
             self.user.email,
-            self.restricted_projects.count()) #TODO: this is probably not what we want to show
+            self.restricted_projects.count())  # TODO: this is probably not what we want to show
+
+    @staticmethod
+    def restrict_projects(admin, user, projects):
+        pass
 
     class Meta:
         app_label = 'rsr'
