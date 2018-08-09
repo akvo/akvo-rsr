@@ -25,3 +25,22 @@ class UserProjects(models.Model):
         verbose_name = _(u'user projects')
         verbose_name_plural = _(u'users projects')
         ordering = ('user_id',)
+
+
+class RestrictedUserProjectsByOrg(models.Model):
+    user = models.ForeignKey('User', related_name='restricted_projects')
+    organisation = models.ForeignKey('Organisation', related_name='restricted_users')
+    is_restricted = models.BooleanField(default=False)
+    restricted_projects = models.ManyToManyField('Project', related_name='inaccessible_by',
+                                                 null=True, blank=True)
+
+    def __unicode__(self):
+        return '{} - {} restricted projects'.format(
+            self.user.email,
+            self.restricted_projects.count()) #TODO: this is probably not what we want to show
+
+    class Meta:
+        app_label = 'rsr'
+        verbose_name = _(u'restricted user projects')
+        verbose_name_plural = _(u'restricted users projects')
+        unique_together = ('user', 'organisation')
