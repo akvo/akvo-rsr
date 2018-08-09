@@ -59,7 +59,7 @@ class HostDispatchMiddleware(object):
         request.rsr_page = None
         DEFAULT_REDIRECT_URL = "{}://{}".format(request.scheme, settings.RSR_DOMAIN)
 
-        if request.META['HTTP_USER_AGENT'] == 'GoogleHC/1.0':
+        if request.META.get('HTTP_USER_AGENT', "") == 'GoogleHC/1.0':
             return HttpResponse("OK")
 
         try:
