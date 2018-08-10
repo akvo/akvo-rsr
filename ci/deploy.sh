@@ -16,6 +16,14 @@ if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
     exit 0
 fi
 
+
+log Creating Production Backend image
+docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT} .
+docker tag eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT} rsr-backend:develop
+
+log Creating Production Nginx image
+docker build nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
+
 log Making sure gcloud and kubectl are installed and up to date
 gcloud components install kubectl
 gcloud components update
