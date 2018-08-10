@@ -13,6 +13,7 @@ services:
     #;; user superme:passwd
     volumes:
       - .:/var/akvo/rsr/code
+      - ./scripts/docker/dev/:/config_overrides
       - /var/akvo/rsr/code/src/
     network_mode: service:mainnetwork
     depends_on:
