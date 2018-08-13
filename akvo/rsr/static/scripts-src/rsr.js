@@ -227,8 +227,6 @@ $(document).ready(function() {
                 listener = google.maps.event.addListener(map, "idle", function() {
                     // Don't let the map be too zoomed in
                     if (map.getZoom() > 8) map.setZoom(8);
-                    // Don't let the map be too zoomed out
-                    if (map.getZoom() < 2) map.setZoom(2);
                     google.maps.event.removeListener(listener);
                 });
 
