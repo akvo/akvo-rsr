@@ -11,6 +11,8 @@ import { _, dataFromElement, inArray } from "../utils";
 
 import * as c from "../const";
 
+import projects from "../mock-data"
+
 const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
     return (
         <span>
@@ -102,11 +104,11 @@ const Error = ({ _, error }) => {
 const Projects = ({
     _,
     error,
-    all_projects,
-    user_projects,
-    is_restricted,
+    projects,
+    // user_projects,
+    // is_restricted,
     selectAll,
-    onChangeIsRestricted,
+    // onChangeIsRestricted,
     onChangeProjectSelectAll,
     onChangeProjectSelected
 }) => {
@@ -114,11 +116,11 @@ const Projects = ({
     return (
         <span>
             <Error _={_} error={error} />
-            <IsRestricted
-                _={_}
-                is_restricted={is_restricted}
-                onChangeIsRestricted={onChangeIsRestricted}
-            />
+            {/*<IsRestricted*/}
+                {/*_={_}*/}
+                {/*is_restricted={is_restricted}*/}
+                {/*onChangeIsRestricted={onChangeIsRestricted}*/}
+            {/*/>*/}
             <SelectAll
                 _={_}
                 selectAll={selectAll}
@@ -190,7 +192,8 @@ class App extends React.Component {
         const strings = dataFromElement("user-projects-text");
         this.props.setStore({ strings });
 
-        this.props.onFetchUserProjects(userId);
+        // this.props.onFetchUserProjects(userId);
+        this.props.setStore({ projects });
     }
 
     render() {
@@ -199,11 +202,11 @@ class App extends React.Component {
             <Projects
                 _={this._}
                 error={error}
-                is_restricted={is_restricted}
+                // is_restricted={is_restricted}
                 selectAll={selectAll}
-                all_projects={all_projects}
-                user_projects={user_projects}
-                onChangeIsRestricted={this.toggleIsRestricted}
+                projects={all_projects}
+                // user_projects={user_projects}
+                // onChangeIsRestricted={this.toggleIsRestricted}
                 onChangeProjectSelectAll={this.toggleProjectSelectAll}
                 onChangeProjectSelected={this.toggleProjectSelected}
             />
