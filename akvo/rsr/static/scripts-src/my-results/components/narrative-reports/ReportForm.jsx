@@ -164,7 +164,7 @@ class ReportForm extends React.Component {
                 return this.props.categories.objects[id];
             })
             .filter(category => {
-                return !reportedCategories.has(category.id) || category.id == report.category;
+                return !reportedCategories.has(category.id) || category.id === report.category;
             });
         const reportCategory = categories.objects[this.state.category];
         const disableDelete = report.id === "new";
