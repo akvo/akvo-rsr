@@ -19,8 +19,10 @@ flake8 --ignore=E501,E402 akvo/wsgi.py
 ## This sometimes hangs if the makemigrations prompts. Latest 1.11 and 2.1 versions of Django have a --check option
 log the akvo log directory
 ls -dlrt /var/log/akvo/
+log who am i
+id
 log and inside
-ls -lrt /var/log/akvo/*
+ls -lrt /var/log/akvo/
 
 log Running makemigrations
 python manage.py makemigrations rsr | grep -i "no changes"

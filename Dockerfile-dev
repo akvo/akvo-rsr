@@ -29,6 +29,6 @@ RUN pip install --no-cache-dir -r 3_testing.txt
 
 ENV PYTHONUNBUFFERED 1
 RUN mkdir -p /var/log/akvo/ /var/akvo/rsr/logs/ /var/akvo/rsr/staticroot/ /var/akvo/rsr/mediaroot/ && \
-    chown akvo:akvo /var/log/akvo/ /var/akvo/rsr/logs/ /var/akvo/rsr/staticroot/ /var/akvo/rsr/mediaroot/
+    chown -R akvo:akvo /var/log/akvo/ /var/akvo/rsr/logs/ /var/akvo/rsr/staticroot/ /var/akvo/rsr/mediaroot/
 
 CMD scripts/docker/dev/run-as-user.sh scripts/docker/dev/start-django.sh
