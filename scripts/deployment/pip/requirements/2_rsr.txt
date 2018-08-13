@@ -1,5 +1,5 @@
 # Django
-Django==1.11.15
+Django==1.7.7
 
 # Django apps
 django-filter==0.9
