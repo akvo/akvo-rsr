@@ -17,6 +17,9 @@ flake8 --ignore=E501,E402 akvo/wsgi.py
 ./scripts/docker/dev/wait-for-dependencies.sh
 
 ## This sometimes hangs if the makemigrations prompts. Latest 1.11 and 2.1 versions of Django have a --check option
+ls -dlrt /var/log/akvo/
+ls -lrt /var/log/akvo/*
+
 log Running makemigrations
 python manage.py makemigrations rsr | grep -i "no changes"
 
