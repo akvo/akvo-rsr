@@ -47,6 +47,10 @@ class RestrictedUserProjectsByOrg(models.Model):
     def restrict_projects(admin, user, projects):
         pass
 
+    @staticmethod
+    def unrestrict_projects(admin, user, projects):
+        pass
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'restricted user projects')

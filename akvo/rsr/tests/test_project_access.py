@@ -98,7 +98,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
     def test_admin_can_restrict_new_content_owned_user(self):
         """
-        User M      User N      User O         User C
+        User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
             \      /     \    /                   |
@@ -113,7 +113,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
             name='C', long_name='C', can_create_projects=False
         )
         Partnership.objects.create(organisation=org_content_owned, project=self.projects['Y'])
-        user = PermissionsTestCase.create_user('A@org.org')
+        user = PermissionsTestCase.create_user('P@org.org')
         Employment.objects.create(
             user=user, organisation=org_content_owned, group=self.users, is_approved=True
         )
@@ -133,14 +133,16 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
     def test_admin_cannot_restrict_other_admins(self):
         with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.restrict_projects(self.user_m, self.user_n, [self.projects['Y']])
+            RestrictedUserProjectsByOrg.restrict_projects(
+                self.user_m, self.user_n, [self.projects['Y']]
+            )
 
         self.assertTrue(self.user_n.has_perm('rsr.view_project', self.projects['Y']))
         self.assertTrue(self.user_n.has_perm('rsr.view_project', self.projects['Z']))
 
     def test_admin_cannot_restrict_inaccessible_projects_for_content_owned_user(self):
         """
-        User M      User N      User O         User C
+        User M      User N      User O         User P
         Admin       Admin       User              |
            \        /   \      /                  |
             \      /     \    /                   |
@@ -156,10 +158,154 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         )
         Partnership.objects.create(organisation=org_content_owned, project=self.projects['Y'])
         Partnership.objects.create(organisation=org_content_owned, project=self.projects['Z'])
-        user = PermissionsTestCase.create_user('user@C.org')
+        user = PermissionsTestCase.create_user('P@org.org')
         Employment.objects.create(
             user=user, organisation=org_content_owned, group=self.users, is_approved=True
         )
 
         with self.assertRaises(InvalidPermissionChange):
             RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user, [self.projects['Z']])
+
+    # Remove Restrictions
+
+    def test_admin_can_remove_restrictions(self):
+        user = PermissionsTestCase.create_user('A@org.org')
+        Employment.objects.create(
+            user=user, organisation=self.org_a, group=self.users, is_approved=True
+        )
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user, [self.projects['X']])
+
+        with self.assertRaises(InvalidPermissionChange):
+            RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['X']])
+
+        self.assertTrue(user.has_perm('rsr.view_project', self.projects['X']))
+        self.assertTrue(user.has_perm('rsr.view_project', self.projects['Y']))
+
+    def test_admin_cannot_remove_restrictions_from_non_manageable_user(self):
+        user = PermissionsTestCase.create_user('P@org.org')
+        Employment.objects.create(
+            user=user, organisation=self.org_b, group=self.users, is_approved=True
+        )
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, user, [self.projects['Y']])
+
+        RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['Y']])
+
+        self.assertFalse(user.has_perm('rsr.view_project', self.projects['Y']))
+        self.assertTrue(user.has_perm('rsr.view_project', self.projects['Z']))
+
+    # Add Restrictions
+
+    def test_can_add_new_restrictions(self):
+        RestrictedUserProjectsByOrg.restrict_projects(
+            self.user_n, self.user_o, [self.projects['Z']]
+        )
+
+        RestrictedUserProjectsByOrg.restrict_projects(
+            self.user_n, self.user_o, [self.projects['Y']]
+        )
+
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Y']))
+
+    # Add a new project
+
+    def test_new_projects_are_not_accessible_to_restricted_users(self):
+        RestrictedUserProjectsByOrg.restrict_projects(
+            self.user_n, self.user_o, [self.projects['Z']]
+        )
+
+        project = Project.objects.create(title='W')
+        Partnership.objects.create(organisation=self.org_b, project=project)
+
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', project))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
+
+    def test_new_projects_are_accessible_to_unrestricted_users(self):
+        project = Project.objects.create(title='W')
+        Partnership.objects.create(organisation=self.org_b, project=project)
+
+        self.assertTrue(self.user_o.has_perm('rsr.view_project', project))
+        self.assertTrue(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
+
+    def test_new_projects_are_accessible_in_unrestricted_orgs(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B             /--Org C
+            /      \      /    \       /----      |
+           /        \    /      \   ---           |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+        """
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False
+        )
+        Partnership.objects.create(organisation=org_content_owned, project=self.projects['Y'])
+        Partnership.objects.create(organisation=org_content_owned, project=self.projects['Z'])
+        user_p = PermissionsTestCase.create_user('P@org.org')
+        Employment.objects.create(
+            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user_p, [self.projects['Y']])
+
+        project = Project.objects.create(title='W')
+        Partnership.objects.create(organisation=self.org_b, project=project)
+        Partnership.objects.create(organisation=org_content_owned, project=project)
+
+        self.assertTrue(user_p.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertTrue(user_p.has_perm('rsr.view_project', project))
+        self.assertFalse(user_p.has_perm('rsr.view_project', self.projects['Y']))
+
+    # Remove a partner
+
+    def test_removing_partner_restores_access(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B                Org C (content owned)
+            /      \      /    \                  |
+           /        \    /      \                 |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+        """
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False
+        )
+        Partnership.objects.create(organisation=org_content_owned, project=self.projects['Y'])
+        user_p = PermissionsTestCase.create_user('P@org.org')
+        Employment.objects.create(
+            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user_p, [self.projects['Y']])
+
+        Partnership.objects.get(organisation=self.org_a, project=self.projects['Y']).delete()
+
+        self.assertTrue(user_p.has_perm('rsr.view_project', self.projects['Y']))
+
+    def test_removing_one_role_of_partner_does_not_restore_access(self):
+        """
+        User M      User N      User O
+        Admin       Admin       User
+           \        /   \      /
+            \      /     \    /  Funding partner
+              Org A       Org B-------+
+            /      \      /    \      | (default partnership)
+           /        \    /      \     |
+        Project X   Project Y   Project Z
+        """
+        extra_partnership = Partnership.objects.create(
+            organisation=self.org_b,
+            project=self.projects['Z'],
+            iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
+        )
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [self.projects['Z']])
+
+        extra_partnership.delete()
+
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
