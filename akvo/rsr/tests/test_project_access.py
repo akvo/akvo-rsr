@@ -233,9 +233,9 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Admin       Admin       User              |
            \        /   \      /                  |
             \      /     \    /                   |
-              Org A       Org B             /--Org C
-            /      \      /    \       /----      |
-           /        \    /      \   ---           |
+              Org A       Org B - -Project W- - Org C
+            /      \      /    \          _____/  |
+           /        \    /      \        /        |
         Project X   Project Y   Project Z         |
                         |                         |
                         +-------------------------+
