@@ -5291,6 +5291,10 @@ main.results-page {
                     &.id.disabled {
                         color: lighten($akvoBlack, 60%);
                     }
+                    &.border {
+                        border: 1px solid $akvoBlack;
+                        vertical-align: baseline;
+                    }
                 }
             }
         }

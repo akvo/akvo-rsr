@@ -11,7 +11,7 @@ import { _, dataFromElement, inArray } from "../utils";
 
 import * as c from "../const";
 
-import projects from "../mock-data"
+import groupedProjects from "../mock-data";
 
 const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
     return (
@@ -45,19 +45,18 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
     );
 };
 
-const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
+const Project = ({ _, project, onChangeProjectSelected, includeOrgCell, rowSpan, orgs }) => {
     // NOTE: the checked value is set to true if is_restricted is false. This is so that the list of
     // projects looks like all projects are selected when restrictions are not in force.
     // This is _not_ reflected in the store.
-    const uiSettings = (project, user_projects, is_restricted) => {
-        const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
-            disabled = is_restricted ? "" : "disabled",
-            projectSelected = checked ? " projectSelected" : "",
-            trClassName = disabled + projectSelected,
-            idClassName = disabled + " id";
+    const uiSettings = project => {
+        const checked = project.access,
+            projectSelected = project.access ? " projectSelected" : "",
+            trClassName = projectSelected,
+            idClassName = "id";
         return { checked, trClassName, idClassName };
     };
-    const { checked, trClassName, idClassName } = uiSettings(project, user_projects, is_restricted);
+    const { checked, trClassName, idClassName } = uiSettings(project);
     return (
         <tr
             key={project.id}
@@ -70,27 +69,26 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
                     id={project.id}
                     type="checkbox"
                     checked={checked}
-                    disabled={!is_restricted}
+                    // disabled={!is_restricted}
                     readOnly={true}
                 />
             </td>
             <td className={idClassName}>{project.id}</td>
             <td>{project.title || _("no_title")}</td>
+            <td>{project.subtitle}</td>
+            {includeOrgCell ? (
+                <td className="border" rowSpan={rowSpan}>
+                    {orgs}
+                </td>
+            ) : null}
         </tr>
     );
 };
 
-const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
-    const uiSettings = is_restricted => {
-        const buttonClass = "selectAllProjects" + (is_restricted ? "" : " disabled"),
-            disabled = !is_restricted,
-            divClass = is_restricted ? "" : "disabled";
-        return { buttonClass, disabled, divClass };
-    };
-    const { divClass, disabled, buttonClass } = uiSettings(is_restricted);
+const SelectAll = ({ _, selectAll, onChangeProjectSelectAll }) => {
     return (
-        <div className={divClass}>
-            <button onClick={onChangeProjectSelectAll} disabled={disabled} className={buttonClass}>
+        <div className="selectAllProjects">
+            <button onClick={onChangeProjectSelectAll}>
                 {selectAll ? _("check_all_projects") : _("uncheck_all_projects")}
             </button>
         </div>
@@ -104,7 +102,7 @@ const Error = ({ _, error }) => {
 const Projects = ({
     _,
     error,
-    projects,
+    groupedProjects,
     // user_projects,
     // is_restricted,
     selectAll,
@@ -112,40 +110,54 @@ const Projects = ({
     onChangeProjectSelectAll,
     onChangeProjectSelected
 }) => {
-    const className = is_restricted ? "" : "disabled";
+    // const className = is_restricted ? "" : "disabled";
     return (
         <span>
             <Error _={_} error={error} />
             {/*<IsRestricted*/}
-                {/*_={_}*/}
-                {/*is_restricted={is_restricted}*/}
-                {/*onChangeIsRestricted={onChangeIsRestricted}*/}
+            {/*_={_}*/}
+            {/*is_restricted={is_restricted}*/}
+            {/*onChangeIsRestricted={onChangeIsRestricted}*/}
             {/*/>*/}
             <SelectAll
                 _={_}
                 selectAll={selectAll}
                 onChangeProjectSelectAll={onChangeProjectSelectAll}
-                is_restricted={is_restricted}
+                // is_restricted={is_restricted}
             />
             <table>
                 <thead>
                     <tr>
-                        <th className={className}>{_("access")}</th>
-                        <th className={className}>{_("project_id")}</th>
-                        <th className={className}>{_("project_title")}</th>
+                        <th>{_("access")}</th>
+                        <th>{_("project_id")}</th>
+                        <th>{_("project_title")}</th>
+                        <th>Project subtitle</th>
+                        <th>Managing organisations</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {all_projects.map(project => (
-                        <Project
-                            _={_}
-                            key={project.id}
-                            project={project}
-                            user_projects={user_projects}
-                            is_restricted={is_restricted}
-                            onChangeProjectSelected={onChangeProjectSelected}
-                        />
-                    ))}
+                    {groupedProjects.map(group => {
+                        const rowSpan = group.projects.length;
+                        let first = true;
+                        const foo = group.projects.map(project => {
+                            const includeOrgCell = first;
+                            first = false;
+                            return (
+                                <Project
+                                    _={_}
+                                    key={project.id}
+                                    project={project}
+                                    // user_projects={user_projects}
+                                    // is_restricted={is_restricted}
+                                    onChangeProjectSelected={onChangeProjectSelected}
+                                    includeOrgCell={includeOrgCell}
+                                    rowSpan={rowSpan}
+                                    orgs={group.organisations}
+                                />
+                            );
+                        });
+                        return foo;
+                    })}
                 </tbody>
             </table>
         </span>
@@ -193,18 +205,18 @@ class App extends React.Component {
         this.props.setStore({ strings });
 
         // this.props.onFetchUserProjects(userId);
-        this.props.setStore({ projects });
+        this.props.setStore({ groupedProjects });
     }
 
     render() {
-        const { is_restricted, selectAll, all_projects, user_projects, error } = this.props;
-        return all_projects ? (
+        const { selectAll, groupedProjects, error } = this.props;
+        return groupedProjects ? (
             <Projects
                 _={this._}
                 error={error}
                 // is_restricted={is_restricted}
                 selectAll={selectAll}
-                projects={all_projects}
+                groupedProjects={groupedProjects}
                 // user_projects={user_projects}
                 // onChangeIsRestricted={this.toggleIsRestricted}
                 onChangeProjectSelectAll={this.toggleProjectSelectAll}
@@ -217,16 +229,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
-    const {
-        fetching,
-        error,
-        all_projects,
-        is_restricted,
-        selectAll,
-        user_projects,
-        strings
-    } = state;
-    return { fetching, error, all_projects, is_restricted, selectAll, user_projects, strings };
+    const { fetching, error, groupedProjects, selectAll, strings } = state;
+    return { fetching, error, groupedProjects, selectAll, strings };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -255,4 +259,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

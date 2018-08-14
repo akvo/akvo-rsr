@@ -4305,3 +4305,6 @@ main.results-page {
           color: #202024; }
         #userProjects table tbody tr td.id.disabled {
           color: #b7b7bf; }
+        #userProjects table tbody tr td.border {
+          border: 1px solid #202024;
+          vertical-align: baseline; }

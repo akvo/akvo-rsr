@@ -15,9 +15,8 @@ let initialState = {
     fetching: false,
     error: null,
     userId: null,
-    is_restricted: false,
-    all_projects: [],
-    user_projects: [],
+    groupedProjects: [],
+
     original_is_restricted: null,
     original_user_projects: null
 };

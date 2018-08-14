@@ -5,7 +5,7 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-export default restrictedUserProjectsByOrg = [
+const restrictedUserProjectsByOrg = [
     {
         organisations: "EUTF, SNV",
         projects: [
@@ -13,7 +13,7 @@ export default restrictedUserProjectsByOrg = [
                 id: 1,
                 title: "Project 1",
                 subtitle: "Project 1 subtitle",
-                access: true
+                access: false
             },
             {
                 id: 2,
@@ -42,7 +42,7 @@ export default restrictedUserProjectsByOrg = [
                 id: 5,
                 title: "Project 5",
                 subtitle: "Project 5 subtitle",
-                access: true
+                access: false
             }
         ]
     },
@@ -64,3 +64,5 @@ export default restrictedUserProjectsByOrg = [
         ]
     }
 ];
+
+export default restrictedUserProjectsByOrg;
