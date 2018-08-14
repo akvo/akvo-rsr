@@ -474,25 +474,21 @@ get_thumbnail = get_placeholder_thumbnail if local_dev else get_sorl_thumbnail
 
 
 def project_access_filter(user, projects):
-    """ Limit project access for a user
+    """Filter projects restricted for the user from the projects queryset.
 
     :param user: A user object
     :param projects: A Project QS
 
-    :return: The intersection of projects with the UserProjects.projects.all() QS _if_
-        the user is only employed by one organisation and
-        UserProjects.is_restricted == True.
-        Otherwise return the original QS
     """
-    from akvo.rsr.models import UserProjects
-    employments = user.approved_employments()
-    organisations_count = employments.organisations().distinct().count()
+    from akvo.rsr.models import RestrictedUserProjectsByOrg
     try:
-        # only check for users with only one organisation as employer that's not a user manager
-        if organisations_count < 2 and not user.has_perm('rsr.user_management'):
-            project_whitelist = UserProjects.objects.get(user=user)
-            if project_whitelist.is_restricted:
-                return project_whitelist.projects.filter(pk__in=projects)
-    except UserProjects.DoesNotExist:
+        project_blacklists = RestrictedUserProjectsByOrg.objects.filter(
+            user=user, is_restricted=True
+        ).values_list('restricted_projects', flat=True)
+        # Empty restricted_projects return a None, which filters out all
+        # projects in the exclude! So, we get rid of the None
+        project_blacklists = filter(None, project_blacklists)
+        return projects.exclude(pk__in=project_blacklists)
+    except RestrictedUserProjectsByOrg.DoesNotExist:
         pass
     return projects

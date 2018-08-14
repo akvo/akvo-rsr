@@ -7,6 +7,8 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -226,3 +228,44 @@ class Partnership(models.Model):
         project = Project.objects.get(id=self.project_id)
         project.primary_organisation = project.find_primary_organisation()
         project.save(update_fields=['primary_organisation'])
+
+
+@receiver(post_save, sender=Partnership)
+def add_project_restrictions(sender, **kwargs):
+    created = kwargs['created']
+    # Return if save is not a "create"
+    if not created:
+        return
+
+    from akvo.rsr.models import RestrictedUserProjectsByOrg
+
+    partnership = kwargs['instance']
+    organisation_id = partnership.organisation_id
+    project_id = partnership.project_id
+    # Return if partnership is not the first one!
+    other_partnerships = Partnership.objects.filter(
+        organisation_id=organisation_id, project_id=project_id
+    ).exclude(id=partnership.id)
+    if other_partnerships.exists():
+        return
+
+    for restriction in RestrictedUserProjectsByOrg.objects.filter(organisation_id=organisation_id):
+        restriction.restricted_projects.add(project_id)
+
+
+@receiver(post_delete, sender=Partnership)
+def remove_project_restrictions(sender, **kwargs):
+    from akvo.rsr.models import RestrictedUserProjectsByOrg
+
+    partnership = kwargs['instance']
+    organisation_id = partnership.organisation_id
+    project_id = partnership.project_id
+    # Return if partnership is not the first one!
+    other_partnerships = Partnership.objects.filter(
+        organisation_id=organisation_id, project_id=project_id
+    ).exclude(id=partnership.id)
+    if other_partnerships.exists():
+        return
+
+    for restriction in RestrictedUserProjectsByOrg.objects.filter(organisation_id=organisation_id):
+        restriction.restricted_projects.remove(project_id)

@@ -34,6 +34,7 @@ class InvalidPermissionChange(Exception):
 class RestrictedUserProjectsByOrg(models.Model):
     user = models.ForeignKey('User', related_name='restricted_projects')
     organisation = models.ForeignKey('Organisation', related_name='restricted_users')
+    # FIXME: Are we keeping this? Or getting rid of this?
     is_restricted = models.BooleanField(default=False)
     restricted_projects = models.ManyToManyField('Project', related_name='inaccessible_by',
                                                  null=True, blank=True)
@@ -45,11 +46,51 @@ class RestrictedUserProjectsByOrg(models.Model):
 
     @staticmethod
     def restrict_projects(admin, user, projects):
-        pass
+        RestrictedUserProjectsByOrg.check_valid_permission_change(admin, user, projects)
+        GROUP_NAME_ADMINS = 'Admins'
+        for employment in admin.approved_employments(group_names=[GROUP_NAME_ADMINS]):
+            rupbo, _ = RestrictedUserProjectsByOrg.objects.get_or_create(
+                user=user, organisation=employment.organisation, defaults={'is_restricted': True}
+            )
+            # FIXME: Does this need to be only projects where the org is a partner?
+            # See test_admin_employment_organisations_swapped_as_partners_retains_restrictions
+            for project in projects:
+                rupbo.restricted_projects.add(project)
 
     @staticmethod
     def unrestrict_projects(admin, user, projects):
-        pass
+        RestrictedUserProjectsByOrg.check_valid_permission_change(admin, user, projects)
+        GROUP_NAME_ADMINS = 'Admins'
+        for employment in admin.approved_employments(group_names=[GROUP_NAME_ADMINS]):
+            rupbo, _ = RestrictedUserProjectsByOrg.objects.get_or_create(
+                user=user, organisation=employment.organisation, defaults={'is_restricted': True}
+            )
+            for project in projects:
+                rupbo.restricted_projects.remove(project)
+
+    @staticmethod
+    def check_valid_permission_change(admin, user, projects):
+        project_ids = {project.id for project in projects}
+        RestrictedUserProjectsByOrg.check_projects_adminable(admin, project_ids)
+        RestrictedUserProjectsByOrg.check_user_not_admin(user, project_ids)
+        RestrictedUserProjectsByOrg.check_user_manageable(admin, user)
+
+    @staticmethod
+    def check_projects_adminable(admin, project_ids):
+        admin_projects = set(admin.admin_projects().values_list('pk', flat=True))
+        if project_ids - admin_projects:
+            raise(InvalidPermissionChange)
+
+    @staticmethod
+    def check_user_not_admin(user, project_ids):
+        admin_projects = set(user.admin_projects().values_list('pk', flat=True))
+        if project_ids & admin_projects:
+            raise(InvalidPermissionChange)
+
+    @staticmethod
+    def check_user_manageable(admin, user):
+        if not admin.get_owned_org_users().filter(id=user.id).exists():
+            raise(InvalidPermissionChange)
 
     class Meta:
         app_label = 'rsr'

@@ -228,10 +228,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return employments.organisations()
 
     def get_owned_org_users(self):
-        owned_organisation_users = []
-        for o in self.get_admin_employment_orgs():
-            owned_organisation_users += o.content_owned_organisations().users()
-        return owned_organisation_users
+        return self.get_admin_employment_orgs().content_owned_organisations().users()
 
     def get_is_user_manager(self, org):
         from .employment import Employment
