@@ -175,8 +175,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         )
         RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user, [self.projects['X']])
 
-        with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['X']])
+        RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['X']])
 
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['X']))
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Y']))
@@ -188,7 +187,8 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         )
         RestrictedUserProjectsByOrg.restrict_projects(self.user_n, user, [self.projects['Y']])
 
-        RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['Y']])
+        with self.assertRaises(InvalidPermissionChange):
+            RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['Y']])
 
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['Y']))
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Z']))
