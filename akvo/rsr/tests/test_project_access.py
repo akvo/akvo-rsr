@@ -200,7 +200,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
         self.assertTrue(self.user_o.has_perm('rsr.view_project', Y))
 
-    def test_admin_employment_organisations_swapped_as_partners_retains_restrictions(self):
+    def test_admin_employers_swapped_as_partners_retains_restrictions(self):
         """
         User M      User N      User O         User P
         Admin       Admin       User              |
@@ -388,8 +388,18 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
             project=self.projects['Z'],
             iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
         )
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [self.projects['Z']])
+        Z = self.projects['Z']
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Z])
 
         extra_partnership.delete()
 
-        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', Z))
+
+    def test_removing_and_adding_partnership_doesnot_change_permissions(self):
+        Z = self.projects['Z']
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Z])
+
+        Partnership.objects.get(organisation=self.org_b, project=Z).delete()
+        Partnership.objects.create(organisation=self.org_b, project=Z)
+
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', Z))
