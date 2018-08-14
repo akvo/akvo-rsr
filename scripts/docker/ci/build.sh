@@ -24,10 +24,10 @@ log Building assets
 python manage.py collectstatic --noinput
 
 log Running tests
-coverage run manage.py test --verbosity 3 akvo
+coverage run manage.py test akvo
 
 log Testing migrations
-SLOW_TESTS=1 coverage run -a manage.py test --verbosity 3 akvo.rsr.tests.rest.test_migration
+SLOW_TESTS=1 coverage run -a manage.py test akvo.rsr.tests.rest.test_migration
 
 log Coverage
 coverage report -m
