@@ -127,6 +127,20 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['X']))  # by employment
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['Y']))
 
+    def test_user_can_be_restricted_by_multiple_admins(self):
+        Employment.objects.create(
+            user=self.user_o, organisation=self.org_a, group=self.users, is_approved=True
+        )
+        X, Y, Z = (self.projects[name] for name in 'XYZ')
+
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, self.user_o, [X])
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Y])
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Z])
+
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', X))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', Y))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', Z))
+
     def test_admin_cannot_restrict_inaccessible_projects(self):
         Z = self.projects['Z']
 
