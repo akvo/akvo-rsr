@@ -200,6 +200,40 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
         self.assertTrue(self.user_o.has_perm('rsr.view_project', Y))
 
+    def test_admin_employment_organisations_swapped_as_partners_retains_restrictions(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B                Org C (content owned)
+            /             /    \                  |
+           /             /      \                 |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+        """
+        Y = self.projects['Y']
+        Partnership.objects.get(organisation=self.org_a, project=Y).delete()
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False,
+        )
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=Y,
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        user_p = PermissionsTestCase.create_user('P@org.org')
+        Employment.objects.create(
+            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+
+        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, user_p, [Y])
+        Partnership.objects.get(organisation=self.org_b, project=Y).delete()
+        Partnership.objects.create(organisation=self.org_a, project=Y)
+
+        self.assertFalse(user_p.has_perm('rsr.view_project', Y))
+
     # Remove Restrictions
 
     def test_admin_can_remove_restrictions(self):
