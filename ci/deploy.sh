@@ -48,8 +48,9 @@ else
 fi
 
 log Pushing images
-gcloud docker -- push eu.gcr.io/${PROJECT_NAME}/rsr-backend
-gcloud docker -- push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
+gcloud auth configure-docker
+docker push eu.gcr.io/${PROJECT_NAME}/rsr-backend
+docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
 
 sed -e "s/\${TRAVIS_COMMIT}/$TRAVIS_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
 
