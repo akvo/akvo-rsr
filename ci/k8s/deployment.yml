@@ -69,6 +69,12 @@ spec:
               subPath: "django.conf"
             - name: "rsr-media-disk"
               mountPath: "/var/akvo/rsr/mediaroot"
+        env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-test-secret"
+              key: sentry-dsn
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:
