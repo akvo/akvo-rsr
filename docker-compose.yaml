@@ -16,8 +16,6 @@ services:
       - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
       - /var/akvo/rsr/code/src/
     network_mode: service:mainnetwork
-    environment:
-      - DJANGO_SECRET_KEY=secretkey
     depends_on:
       - rsrdbhost
   rsrdbhost:
