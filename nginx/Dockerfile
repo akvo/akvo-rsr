@@ -9,6 +9,8 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 
 RUN npm install -g yuglify
 
+ENV DJANGO_SECRET_KEY=any
+
 RUN python manage.py collectstatic --noinput
 
 FROM nginx:1.13.8-alpine
