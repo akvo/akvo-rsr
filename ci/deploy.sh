@@ -20,7 +20,7 @@ log Preparing deploy info file
 echo "DEPLOY_COMMIT_FULL_ID = '`git rev-parse HEAD`'" > ._66_deploy_info.conf
 echo "DEPLOY_COMMIT_ID = '`git rev-parse --short HEAD`'" >> ._66_deploy_info.conf
 echo "DEPLOY_BRANCH = '$TRAVIS_BRANCH'" >> ._66_deploy_info.conf
-echo "DEPLOY_TAG = '`git tag | tail -1`'" >> ._66_deploy_info.conf
+echo "DEPLOY_TAG = '$TRAVIS_TAG'" >> ._66_deploy_info.conf
 
 log Creating Production Backend image
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT} .
