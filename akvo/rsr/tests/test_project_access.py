@@ -341,7 +341,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
     # Remove a partner
 
-    def test_removing_partner_restores_access(self):
+    def test_removing_partner_does_not_restore_access(self):
         """
         User M      User N      User O         User P
         Admin       Admin       User              |
@@ -370,7 +370,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
         Partnership.objects.get(organisation=self.org_a, project=self.projects['Y']).delete()
 
-        self.assertTrue(user_p.has_perm('rsr.view_project', self.projects['Y']))
+        self.assertFalse(user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_removing_one_role_of_partner_does_not_restore_access(self):
         """
