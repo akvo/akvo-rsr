@@ -29,26 +29,30 @@ class UserProjects(models.Model):
 
 def restrict_projects(admin, user, projects):
     check_valid_permission_change(admin, user, projects)
-    GROUP_NAME_ADMINS = 'Admins'
-    for employment in admin.approved_employments(group_names=[GROUP_NAME_ADMINS]):
-        rupbo, _ = RestrictedUserProjectsByOrg.objects.get_or_create(
-            user=user, organisation=employment.organisation, defaults={'is_restricted': True}
-        )
-        # FIXME: Does this need to be only projects where the org is a partner?
-        # See test_admin_employment_organisations_swapped_as_partners_retains_restrictions
+    user_projects, created = UserProjects.objects.get_or_create(
+        user=user, defaults={'is_restricted': True}
+    )
+
+    if created:
+        allowed_projects = user.approved_employments().organisations().all_projects()
+        project_ids = [p.id for p in projects]
+        for project in allowed_projects.exclude(id__in=project_ids):
+            user_projects.projects.add(project)
+    else:
         for project in projects:
-            rupbo.restricted_projects.add(project)
+            user_projects.projects.remove(project)
 
 
 def unrestrict_projects(admin, user, projects):
     check_valid_permission_change(admin, user, projects)
-    GROUP_NAME_ADMINS = 'Admins'
-    for employment in admin.approved_employments(group_names=[GROUP_NAME_ADMINS]):
-        rupbo, _ = RestrictedUserProjectsByOrg.objects.get_or_create(
-            user=user, organisation=employment.organisation, defaults={'is_restricted': True}
-        )
-        for project in projects:
-            rupbo.restricted_projects.remove(project)
+
+    try:
+        user_projects = UserProjects.objects.get(user=user, is_restricted=True)
+    except UserProjects.DoesNotExist:
+        return
+
+    for project in projects:
+        user_projects.projects.add(project)
 
 
 def check_valid_permission_change(admin, user, projects):

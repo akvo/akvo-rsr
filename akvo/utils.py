@@ -480,15 +480,11 @@ def project_access_filter(user, projects):
     :param projects: A Project QS
 
     """
-    from akvo.rsr.models import RestrictedUserProjectsByOrg
+    from akvo.rsr.models import UserProjects
+
     try:
-        project_blacklists = RestrictedUserProjectsByOrg.objects.filter(
-            user=user, is_restricted=True
-        ).values_list('restricted_projects', flat=True)
-        # Empty restricted_projects return a None, which filters out all
-        # projects in the exclude! So, we get rid of the None
-        project_blacklists = filter(None, project_blacklists)
-        return projects.exclude(pk__in=project_blacklists)
-    except RestrictedUserProjectsByOrg.DoesNotExist:
-        pass
-    return projects
+        whitelist = UserProjects.objects.get(user=user, is_restricted=True)
+        return whitelist.projects.filter(pk__in=projects)
+
+    except UserProjects.DoesNotExist:
+        return projects
