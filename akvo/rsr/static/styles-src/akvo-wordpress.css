@@ -1,0 +1,23 @@
+/*---------------------------------------------------------------------------------
+
+            Title:   Custom CSS for use in Akvo's Wordpress site
+            Author:  Gabriel von Heijne
+            LICENSE: GNU Affero General Public License
+
+/*---------------------------------------------------------------------------------*/
+
+body > nav.navbar {
+    display: none !important;
+}
+header.projectHeader {
+    display: none !important;
+}
+footer {
+    display: none !important;
+}
+footer#project-footer {
+    display: block !important;
+}
+#supporthero-button {
+    display: none !important;
+}
