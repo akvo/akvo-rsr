@@ -93,7 +93,7 @@ spec:
           limits:
             cpu: "1000m"
       - name: rsr-statsd-to-prometheus
-        image: akvo/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
+        image: eu.gcr.io/akvo-lumen/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
         ports:
         - containerPort: 9125
         - containerPort: 9102

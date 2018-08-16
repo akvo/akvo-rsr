@@ -30,7 +30,7 @@ log Creating Production Nginx image
 docker build nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
 
 log Creating statsd to prometheus
-docker build -t "akvo/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}" statsd-to-prometheus
+docker build -t "eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}" statsd-to-prometheus
 
 log Making sure gcloud and kubectl are installed and up to date
 gcloud components install kubectl
