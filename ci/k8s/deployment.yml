@@ -14,6 +14,9 @@ spec:
         run: rsr
         rsr-version: ${TRAVIS_COMMIT}
         app: rsr
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9102'
     spec:
       containers:
       - name: rsr-nginx
@@ -80,6 +83,8 @@ spec:
             secretKeyRef:
               name: "rsr-test-secret"
               key: django-secret-key
+        - name: ENABLE_STATS
+          value: "yes please"
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:
@@ -87,6 +92,24 @@ spec:
             cpu: "50m"
           limits:
             cpu: "1000m"
+      - name: rsr-statsd-to-prometheus
+        image: akvo/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
+        ports:
+        - containerPort: 9125
+        - containerPort: 9102
+        livenessProbe:
+          tcpSocket:
+             port: 9125
+          initialDelaySeconds: 5
+        readinessProbe:
+          tcpSocket:
+             port: 9125
+          initialDelaySeconds: 5
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "100m"
       volumes:
          - name: "secret-config"
            secret:

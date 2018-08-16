@@ -29,6 +29,9 @@ docker tag eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT} rsr-backend:de
 log Creating Production Nginx image
 docker build nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
 
+log Creating statsd to prometheus
+docker build -t "akvo/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}" statsd-to-prometheus
+
 log Making sure gcloud and kubectl are installed and up to date
 gcloud components install kubectl
 gcloud components update
@@ -56,6 +59,7 @@ log Pushing images
 gcloud auth configure-docker
 docker push eu.gcr.io/${PROJECT_NAME}/rsr-backend
 docker push eu.gcr.io/${PROJECT_NAME}/rsr-nginx
+docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
 
 sed -e "s/\${TRAVIS_COMMIT}/$TRAVIS_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
 
