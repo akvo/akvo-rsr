@@ -6,6 +6,9 @@
 
 /*---------------------------------------------------------------------------------*/
 
+body > nav.navbar {
+    display: none !important;
+}
 header.projectHeader {
     display: none !important;
 }
