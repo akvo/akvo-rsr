@@ -8,8 +8,9 @@ from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from akvo.rsr.models import (
-    Project, Organisation, Employment, Partnership, RestrictedUserProjectsByOrg
+    Project, Organisation, Employment, Partnership
 )
+from akvo.rsr.models.user_projects import restrict_projects, unrestrict_projects
 from akvo.rsr.models.user_projects import InvalidPermissionChange
 from akvo.rsr.tests.test_permissions import PermissionsTestCase
 from akvo.utils import check_auth_groups
@@ -91,7 +92,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         admin = self.user_m
         project = self.projects['X']
 
-        RestrictedUserProjectsByOrg.restrict_projects(admin, user, [project])
+        restrict_projects(admin, user, [project])
 
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['X']))
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Y']))
@@ -122,7 +123,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
             user=user, organisation=org_content_owned, group=self.users, is_approved=True
         )
 
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user, [self.projects['Y']])
+        restrict_projects(self.user_m, user, [self.projects['Y']])
 
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['X']))  # by employment
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['Y']))
@@ -133,9 +134,9 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         )
         X, Y, Z = (self.projects[name] for name in 'XYZ')
 
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, self.user_o, [X])
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Y])
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Z])
+        restrict_projects(self.user_m, self.user_o, [X])
+        restrict_projects(self.user_n, self.user_o, [Y])
+        restrict_projects(self.user_n, self.user_o, [Z])
 
         self.assertFalse(self.user_o.has_perm('rsr.view_project', X))
         self.assertFalse(self.user_o.has_perm('rsr.view_project', Y))
@@ -145,7 +146,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Z = self.projects['Z']
 
         with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.restrict_projects(self.user_m, self.user_o, [Z])
+            restrict_projects(self.user_m, self.user_o, [Z])
 
         self.assertTrue(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
 
@@ -181,11 +182,11 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         )
 
         with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user, [self.projects['Z']])
+            restrict_projects(self.user_m, user, [self.projects['Z']])
 
     def test_admin_cannot_restrict_other_admins(self):
         with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.restrict_projects(
+            restrict_projects(
                 self.user_m, self.user_n, [self.projects['Y']]
             )
 
@@ -196,7 +197,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Y = self.projects['Y']
 
         with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.restrict_projects(self.user_m, self.user_o, [Y])
+            restrict_projects(self.user_m, self.user_o, [Y])
 
         self.assertTrue(self.user_o.has_perm('rsr.view_project', Y))
 
@@ -228,7 +229,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
 
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, user_p, [Y])
+        restrict_projects(self.user_n, user_p, [Y])
         Partnership.objects.get(organisation=self.org_b, project=Y).delete()
         Partnership.objects.create(organisation=self.org_a, project=Y)
 
@@ -241,9 +242,9 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Employment.objects.create(
             user=user, organisation=self.org_a, group=self.users, is_approved=True
         )
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user, [self.projects['X']])
+        restrict_projects(self.user_m, user, [self.projects['X']])
 
-        RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['X']])
+        unrestrict_projects(self.user_m, user, [self.projects['X']])
 
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['X']))
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Y']))
@@ -253,10 +254,10 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Employment.objects.create(
             user=user, organisation=self.org_b, group=self.users, is_approved=True
         )
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, user, [self.projects['Y']])
+        restrict_projects(self.user_n, user, [self.projects['Y']])
 
         with self.assertRaises(InvalidPermissionChange):
-            RestrictedUserProjectsByOrg.unrestrict_projects(self.user_m, user, [self.projects['Y']])
+            unrestrict_projects(self.user_m, user, [self.projects['Y']])
 
         self.assertFalse(user.has_perm('rsr.view_project', self.projects['Y']))
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Z']))
@@ -264,11 +265,11 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
     # Add Restrictions
 
     def test_can_add_new_restrictions(self):
-        RestrictedUserProjectsByOrg.restrict_projects(
+        restrict_projects(
             self.user_n, self.user_o, [self.projects['Z']]
         )
 
-        RestrictedUserProjectsByOrg.restrict_projects(
+        restrict_projects(
             self.user_n, self.user_o, [self.projects['Y']]
         )
 
@@ -278,7 +279,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
     # Add a new project
 
     def test_new_projects_are_not_accessible_to_restricted_users(self):
-        RestrictedUserProjectsByOrg.restrict_projects(
+        restrict_projects(
             self.user_n, self.user_o, [self.projects['Z']]
         )
 
@@ -325,7 +326,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user_p, [self.projects['Y']])
+        restrict_projects(self.user_m, user_p, [self.projects['Y']])
 
         project = Project.objects.create(title='W')
         Partnership.objects.create(organisation=self.org_b, project=project)
@@ -366,7 +367,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_m, user_p, [self.projects['Y']])
+        restrict_projects(self.user_m, user_p, [self.projects['Y']])
 
         Partnership.objects.get(organisation=self.org_a, project=self.projects['Y']).delete()
 
@@ -389,7 +390,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
             iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
         )
         Z = self.projects['Z']
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Z])
+        restrict_projects(self.user_n, self.user_o, [Z])
 
         extra_partnership.delete()
 
@@ -397,7 +398,7 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
 
     def test_removing_and_adding_partnership_doesnot_change_permissions(self):
         Z = self.projects['Z']
-        RestrictedUserProjectsByOrg.restrict_projects(self.user_n, self.user_o, [Z])
+        restrict_projects(self.user_n, self.user_o, [Z])
 
         Partnership.objects.get(organisation=self.org_b, project=Z).delete()
         Partnership.objects.create(organisation=self.org_b, project=Z)
