@@ -5,7 +5,7 @@ services:
     image: alpine
     command: tail -f /dev/null
     expose:
-      - "8000"
+      - "80"
   web:
     build:
      context: .

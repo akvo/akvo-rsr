@@ -3,7 +3,7 @@ version: '3'
 services:
   mainnetwork:
     ports:
-      - "8000:8000"
+      - "80:8000"
   web:
   rsrdbhost:
     ports:
