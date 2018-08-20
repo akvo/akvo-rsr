@@ -13,7 +13,7 @@ if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
     exit 0
 fi
 
-if [[ "${TRAVIS_BRANCH}" != "develop" ]] && [[ "${TRAVIS_BRANCH}" != "master" ]]; then
+if [[ "${TRAVIS_BRANCH}" != "develop" ]] && [[ "${TRAVIS_BRANCH}" != "master" ]] && [[ "${TRAVIS_BRANCH}" != "issue/3337-dockerize-django" ]]; then
     exit 0
 fi
 
