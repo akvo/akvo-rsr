@@ -54,7 +54,7 @@ psycopg2==2.7.4
 django-pgviews==0.5.3
 
 # App container
-gunicorn==18.0
+gunicorn==19.5.0
 wsgiref==0.1.2
 
 # Scripts logging support
