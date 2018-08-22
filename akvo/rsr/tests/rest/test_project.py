@@ -11,6 +11,7 @@ import json
 import os
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
 from django.core.cache import cache
 from django.test import TestCase, Client
@@ -19,7 +20,9 @@ from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              Employment, Keyword, PartnerSite,
                              PublishingStatus, ProjectLocation, Country,
-                             RecipientCountry)
+                             RecipientCountry, ProjectEditorValidationSet,
+                             OrganisationCustomField, ProjectCustomField)
+from akvo.utils import check_auth_groups
 
 
 class RestProjectTestCase(TestCase):
@@ -311,3 +314,105 @@ class ProjectDirectoryTestCase(TestCase):
     def setup_country_objects(self):
         for iso_code, name in ISO_3166_COUNTRIES:
             Country.objects.create(name=name, iso_code=iso_code)
+
+
+class ProjectPostTestCase(TestCase):
+    """Test the creation of projects."""
+
+    def setUp(self):
+        # Create necessary groups
+        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+        # Create a validation set
+        self.validation = ProjectEditorValidationSet.objects.create(name='test')
+        # Create organisation
+        self.reporting_org = Organisation.objects.create(
+            id=1337,
+            name="Test REST reporting",
+            long_name="Test REST reporting org",
+            new_organisation_type=22,
+            can_create_projects=True,
+        )
+        username = 'username'
+        password = 'password'
+        group = Group.objects.get(name='Admins')
+        self.user = self.create_user(username, password, group, self.reporting_org)
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.c.login(username=username, password=password)
+
+    @staticmethod
+    def create_user(username, password, group, organisation, is_admin=False, is_superuser=False):
+        user = User.objects.create(username=username,
+                                   email=username,
+                                   is_active=True)
+        user.set_password(password)
+        user.is_admin = is_admin
+        user.is_superuser = is_superuser
+        user.save()
+        Employment.objects.create(
+            user=user,
+            group=group,
+            organisation=organisation,
+            is_approved=True)
+        return user
+
+    def test_reporting_org_set(self):
+        # When
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        project_id = response.data['id']
+        project = Project.objects.get(id=project_id)
+        self.assertEqual(project.partnerships.count(), 1)
+        partnership = project.partnerships.first()
+        self.assertEqual(partnership.organisation, self.reporting_org)
+        self.assertEqual(
+            partnership.iati_organisation_role, Partnership.IATI_REPORTING_ORGANISATION
+        )
+
+    def test_project_creation_logged(self):
+        # When
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        log_entry = LogEntry.objects.first()
+        self.assertEqual(log_entry.user, self.user)
+        self.assertEqual(log_entry.object_id, str(response.data['id']))
+        self.assertEqual(log_entry.content_type.name, 'project')
+
+    def test_custom_fields_added(self):
+        # Given
+        for num in (1, 2):
+            OrganisationCustomField.objects.create(
+                organisation=self.reporting_org,
+                name='Custom Field {}'.format(num),
+                order=num,
+                max_characters=num,
+                section=num,
+                help_text='Help Text {}'.format(num),
+                type='text',
+                mandatory=True,
+            )
+
+        # When
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        project_id = response.data['id']
+        custom_fields = ProjectCustomField.objects.filter(project_id=project_id)
+        self.assertEqual(custom_fields.count(), 2)
+        self.assertEqual(custom_fields.filter(section=1).count(), 1)
+        self.assertEqual(custom_fields.filter(section=2).count(), 1)
+        custom_field_1 = custom_fields.filter(section=1).first()
+        self.assertEqual(custom_field_1.name, 'Custom Field 1')
+        self.assertEqual(custom_field_1.type, 'text')
+        self.assertEqual(custom_field_1.order, 1)
+        self.assertEqual(custom_field_1.max_characters, 1)
+        self.assertTrue(custom_field_1.mandatory)
+        self.assertEqual(custom_field_1.help_text, 'Help Text 1')
