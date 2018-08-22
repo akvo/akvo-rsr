@@ -7,9 +7,11 @@ RSR_DB_NAME=$2
 RSR_USER=$3
 DUMP_FILE=$4
 
-read -s -p "Password for user ${RSR_USER} for the new DB ${RSR_DB_NAME}@${DB_HOST}: " PASSWORD
+if [ -z "${RSR_PASSWORD:-}" ]; then
+    read -s -p "Password for user ${RSR_USER} for the new DB ${RSR_DB_NAME}@${DB_HOST}: " RSR_PASSWORD
+fi
 
-export PGPASSWORD=${PASSWORD}
+export PGPASSWORD=${RSR_PASSWORD}
 
 echo ""
 

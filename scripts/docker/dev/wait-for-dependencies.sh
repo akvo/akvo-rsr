@@ -9,6 +9,7 @@ ATTEMPTS=0
 PG=""
 SQL="SELECT * FROM thumbnail_kvstore"
 
+export PGPASSWORD=rsrpasswddb
 echo "Waiting for PostgreSQL ..."
 while [[ -z "${PG}" && "${ATTEMPTS}" -lt "${MAX_ATTEMPTS}" ]]; do
     PG=$(psql --username=rsruserdb --host=rsrdbhost --dbname=rsrdb -c "${SQL}" >/dev/null 2>&1 && echo "works!" || echo "")

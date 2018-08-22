@@ -13,13 +13,11 @@ cd $DIR
 
 # Provision
 
-## Create lumen role
-psql -c "CREATE ROLE rsruserdb WITH PASSWORD 'rsrpasswddb' CREATEDB LOGIN;"
+SUPER_USER_PASSWORD=mysecretpassword NEW_USER_PASSWORD=rsrpasswddb /data-scripts/create-db.sh localhost postgres rsrdb rsruserdb
 
-createdb rsrdb -E UTF8 -O rsruserdb -T template0
-psql --set ON_ERROR_STOP=on rsrdb < pg.dump
+RSR_PASSWORD=rsrpasswddb /data-scripts/restore-from-dump.sh localhost rsrdb rsruserdb $(pwd)/pg.dump.gz
 
-psql -d rsrdb -f $DIR/helpers/init.sql
+PGPASSWORD=mysecretpassword psql -d rsrdb -f $DIR/helpers/init.sql
 
 echo ""
 echo "----------"

@@ -7,10 +7,15 @@ SUPER_USER=$2
 NEW_DB_NAME=$3
 NEW_USER=$4
 
-read -s -p "Password for the new user ${NEW_USER} for the new DB ${NEW_DB_NAME}@${DB_HOST}: " NEW_USER_PASSWORD
+if [ -z "${NEW_USER_PASSWORD:-}" ]; then
+    read -s -p "Password for the new user ${NEW_USER} for the new DB ${NEW_DB_NAME}@${DB_HOST}: " NEW_USER_PASSWORD
+fi
 
 echo ""
-read -s -p "Password for the **super** user ${SUPER_USER} for host ${DB_HOST}: " SUPER_USER_PASSWORD
+
+if [ -z "${SUPER_USER_PASSWORD:-}" ]; then
+    read -s -p "Password for the **super** user ${SUPER_USER} for host ${DB_HOST}: " SUPER_USER_PASSWORD
+fi
 
 echo ""
 
