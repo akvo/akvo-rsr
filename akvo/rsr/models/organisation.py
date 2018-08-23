@@ -316,9 +316,9 @@ class Organisation(TimestampsMixin, models.Model):
                 return Organisation.objects.filter(
                     Q(pk__in=queryset.values_list('pk', flat=True)) |
                     Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
-                )
+                ).distinct()
 
-            return queryset
+            return queryset.distinct()
 
     def __unicode__(self):
         return self.name
