@@ -29,17 +29,17 @@ export function fetchData(userId) {
     return callAxios(config);
 }
 
-export function putData(userId, is_restricted, user_projects) {
+export function putData(userId, isRestricted, projectsWithAccess) {
     const config = {
-        method: "put",
+        method: "patch",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
         },
         url: `/rest/v1/user_projects_access/${userId}/`,
         data: {
             user_projects: {
-                is_restricted,
-                projects: user_projects
+                is_restricted: isRestricted,
+                projects: projectsWithAccess
             }
         }
     };
@@ -56,17 +56,24 @@ export function* getSaga(action) {
     }
 }
 
+const filterProjects = state => {
+    return state.groupedProjects.reduce((acc, group) => {
+        return acc.concat(
+            group.projects.filter(project => project.access).map(project => project.id)
+        );
+    }, []);
+};
+
 export const getUserId = state => state.userId;
-export const getUserProjects = state => state.user_projects;
-export const getIsRestricted = state => state.is_restricted;
+export const getIsRestricted = state => state.isRestricted;
 
 export function* putSaga(action) {
     yield put({ type: c.API_PUT_INIT });
     const userId = yield select(getUserId);
-    const is_restricted = yield select(getIsRestricted);
-    const user_projects = yield select(getUserProjects);
+    const isRestricted = yield select(getIsRestricted);
+    const projectsWithAccess = yield select(filterProjects);
 
-    const { response, error } = yield call(putData, userId, is_restricted, user_projects);
+    const { response, error } = yield call(putData, userId, isRestricted, projectsWithAccess);
     if (response) {
         yield put({ type: c.API_PUT_SUCCESS, data: response.data });
     } else {

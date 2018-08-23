@@ -4231,7 +4231,7 @@ main.results-page {
 
 #userProjects {
   padding-left: 0; }
-  #userProjects #is_restricted {
+  #userProjects #isRestricted {
     margin-bottom: 25px;
     margin-right: 10px; }
   #userProjects .error {
