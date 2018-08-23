@@ -42,6 +42,8 @@ def restrict_projects(admin, user, projects):
         for project in projects:
             user_projects.projects.remove(project)
 
+    return user_projects
+
 
 def unrestrict_projects(admin, user, projects):
     check_valid_permission_change(admin, user, projects)
@@ -53,6 +55,8 @@ def unrestrict_projects(admin, user, projects):
 
     for project in projects:
         user_projects.projects.add(project)
+
+    return user_projects
 
 
 def check_valid_permission_change(admin, user, projects):
