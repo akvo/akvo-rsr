@@ -17,6 +17,7 @@ SUPER_USER_PASSWORD=mysecretpassword NEW_USER_PASSWORD=rsrpasswddb /data-scripts
 
 RSR_PASSWORD=rsrpasswddb /data-scripts/restore-from-dump.sh localhost rsrdb rsruserdb $(pwd)/pg.dump.gz
 
+PGPASSWORD=mysecretpassword psql -c "ALTER USER rsruserdb CREATEDB;"
 PGPASSWORD=mysecretpassword psql -d rsrdb -f $DIR/helpers/init.sql
 
 echo ""
