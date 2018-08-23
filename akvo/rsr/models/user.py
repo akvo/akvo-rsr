@@ -227,6 +227,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         employments = Employment.objects.filter(user=self, is_approved=True, group__name='Admins')
         return employments.organisations()
 
+    def get_non_admin_employment_orgs(self):
+        " Return all organisations of the user where (s)he is not part of the Admins group"
+        all_orgs = Employment.objects.filter(user=self, is_approved=True).organisations()
+        admin_orgs = self.get_admin_employment_orgs()
+        return all_orgs.exclude(id__in=admin_orgs)
+
     def get_owned_org_users(self):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
 
