@@ -16,7 +16,7 @@ from akvo.rsr.tests.test_permissions import PermissionsTestCase
 from akvo.utils import check_auth_groups
 
 
-class RestrictedUserProjectsByOrgTestCase(TestCase):
+class RestrictedUserProjects(TestCase):
 
     def setUp(self):
         """
@@ -64,6 +64,9 @@ class RestrictedUserProjectsByOrgTestCase(TestCase):
         Employment.objects.create(
             user=self.user_o, organisation=self.org_b, group=self.users, is_approved=True
         )
+
+
+class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
 
     def test_user_project_access_default(self):
         self.assertTrue(self.projects['X'].connected_to_user(self.user_m))

@@ -477,16 +477,23 @@ class PermissionsTestCase(TestCase):
         self.assertTrue(user.has_perm('rsr.change_indicatorperioddata', project))
 
     @staticmethod
-    def create_user(email, is_active=True, is_admin=False, is_superuser=False):
+    def create_user(email, password=None, is_active=True, is_admin=False, is_superuser=False):
         """Create a user with the given email."""
 
+        first_name = email.split('@')[0]
+        last_name = 'von {}'.format(first_name)
         user = User.objects.create(
             email=email,
             username=email,
+            first_name=first_name,
+            last_name=last_name,
             is_active=is_active,
             is_admin=is_admin,
             is_superuser=is_superuser,
         )
+        if password:
+            user.set_password(password)
+            user.save()
         return user
 
     @staticmethod
