@@ -277,32 +277,30 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertEqual(org_groups[1]['projects'][0]['id'], self.projects['Z'].pk)
         self.assertTrue(org_groups[1]['projects'][0]['access'])
 
-    # def test_set_restrictions_for_user_o(self):
-    #     """
-    #     User M      User N      User O
-    #     Admin       Admin       User
-    #        \       /    \      /
-    #         \     /      \    /
-    #           Org A       Org B
-    #         /      \     /    \
-    #        /        \   /      \
-    #     Project X   Project Y   Project Z
-    #
-    #     Test to PATCH a restriction
-    #     """
-    #     #  When
-    #     self.c.login(username=self.user_n.username, password=self.password_n)
-    #     # Visit the endpoint to instantiate a UserProjects object
-    #     self.c.get('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
-    #                           {'format': 'json'})
-    #     response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
-    #                             data={'user_projects': {'is_restricted': True}},
-    #                             content_type='application/json')
-    #
-    #     content = json.loads(response.content)
-    #
-    #     is_restricted = content['user_projects']['is_restricted']
-    #
-    #     # Then
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTrue(is_restricted)
+    def test_set_restrictions_for_user_o(self):
+        """
+        User M      User N      User O
+        Admin       Admin       User
+           \       /    \      /
+            \     /      \    /
+              Org A       Org B
+            /      \     /    \
+           /        \   /      \
+        Project X   Project Y   Project Z
+
+        Test to PATCH a restriction
+        """
+        #  When
+        self.c.login(username=self.user_n.username, password=self.password_n)
+        # Visit the endpoint to instantiate a UserProjects object
+        self.c.get('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
+                              {'format': 'json'})
+        response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
+                                data=json.dumps({'user_projects': {'is_restricted': True}}),
+                                content_type='application/json')
+
+        is_restricted = response.data['user_projects']['is_restricted']
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(is_restricted)
