@@ -516,8 +516,9 @@ def user_management(request):
             if _restrictions_turned_on(user):
                 # determine if this user's project access can be restricted
                 # TODO: this needs fixing, since a user can be admin for one org and project editor
-                # for another
-                if employment.user.has_perm('rsr.user_management'):
+                # for another, or have an employment pending approval while being approved for
+                # another org
+                if employment.user.has_perm('rsr.user_management') or not employment.is_approved:
                     can_be_restricted = False
                 else:
                     try:
