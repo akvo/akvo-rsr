@@ -22,6 +22,8 @@ from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              PublishingStatus, ProjectLocation, Country,
                              RecipientCountry, ProjectEditorValidationSet,
                              OrganisationCustomField, ProjectCustomField)
+from akvo.rsr.models.user_projects import restrict_projects
+from akvo.rsr.tests.test_project_access import RestrictedUserProjects
 from akvo.utils import check_auth_groups
 
 
@@ -416,3 +418,97 @@ class ProjectPostTestCase(TestCase):
         self.assertEqual(custom_field_1.max_characters, 1)
         self.assertTrue(custom_field_1.mandatory)
         self.assertEqual(custom_field_1.help_text, 'Help Text 1')
+
+
+class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
+
+    def setUp(self):
+        """
+        User M      User N      User O
+        Admin       Admin       User
+           \            \      /
+            \            \    /
+              Org A       Org B
+            /      \      /    \
+           /        \    /      \
+        Project X   Project Y   Project Z
+        """
+
+        self.tearDown()
+
+        super(RestrictionsSetupOnProjectCreation, self).setUp()
+
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+
+        self.password_m = 'password_m'
+        self.user_m.set_password(self.password_m)
+        self.user_m.save()
+
+        self.password_n = 'password_n'
+        self.user_n.set_password(self.password_n)
+        self.user_n.save()
+        self.user_n.employers.filter(organisation=self.org_a).delete()
+
+    def tearDown(self):
+        Project.objects.all().delete()
+        User.objects.all().delete()
+        Organisation.objects.all().delete()
+        Group.objects.all().delete()
+
+    def test_access_for_unrestricted_user_of_new_project(self):
+        # When
+        self.c.login(username=self.user_n.username, password=self.password_n)
+        self.validation = ProjectEditorValidationSet.objects.create(name='test')
+
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        project_id = response.data['id']
+        my_projects_list = self.user_o.my_projects().values_list('id', flat=True)
+        self.assertTrue(project_id in my_projects_list)
+
+    def test_access_for_restricted_user_of_new_project(self):
+        # When
+        self.c.login(username=self.user_n.username, password=self.password_n)
+        self.validation = ProjectEditorValidationSet.objects.create(name='test')
+
+        restrict_projects(self.user_n, self.user_o, [self.projects['Y']])
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        project_id = response.data['id']
+        my_projects_list = self.user_o.my_projects().values_list('id', flat=True)
+        self.assertTrue(project_id in my_projects_list)
+
+    def test_access_for_unrestricted_user_of_new_project_by_other_orgs_admin(self):
+        # When
+        self.c.login(username=self.user_m.username, password=self.password_m)
+        self.validation = ProjectEditorValidationSet.objects.create(name='test')
+
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        project_id = response.data['id']
+        my_projects_list = self.user_o.my_projects().values_list('id', flat=True)
+        self.assertFalse(project_id in my_projects_list)
+
+    def test_access_for_restricted_user_of_new_project_by_other_orgs_admin(self):
+        # When
+        self.c.login(username=self.user_m.username, password=self.password_m)
+        self.validation = ProjectEditorValidationSet.objects.create(name='test')
+
+        restrict_projects(self.user_n, self.user_o, [self.projects['Y']])
+        response = self.c.post(
+            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+        )
+
+        # Then
+        project_id = response.data['id']
+        my_projects_list = self.user_o.my_projects().values_list('id', flat=True)
+        self.assertFalse(project_id in my_projects_list)

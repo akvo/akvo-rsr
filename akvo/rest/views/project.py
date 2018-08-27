@@ -21,7 +21,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, UserProjects
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet
@@ -64,6 +64,7 @@ class ProjectViewSet(PublicProjectViewSet):
         user = request.user
         project_id = response.data['id']
         Project.new_project_created(project_id, user)
+        UserProjects.include_restricted(project_id, user)
         return response
 
 
