@@ -162,6 +162,13 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Partner editors of this organisation can create new projects, and publish '
                     u'projects it is a partner of.')
     )
+    include_restricted = models.BooleanField(
+        verbose_name=_(u"Include restricted users"),
+        default=True,
+        help_text=_(
+            u'Restricted users automatically get access to new projects of this organisation'
+        )
+    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.')

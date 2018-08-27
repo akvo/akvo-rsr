@@ -267,7 +267,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
         (_(u'Organisation settings'),
-            {'fields': ('can_create_projects', 'public_iati_file', 'allow_edit', 'content_owner')}),
+            {'fields': ('can_create_projects', 'include_restricted', 'public_iati_file',
+                        'allow_edit', 'content_owner')}),
         (_(u'Notes'), {'fields': ('notes', )}),
     )
     form = OrganisationAdminForm
