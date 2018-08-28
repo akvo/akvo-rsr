@@ -326,16 +326,16 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=self.projects['Z'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user_p = self.create_user('P@org.org')
+        self.user_p = self.create_user('P@org.org')
         Employment.objects.create(
-            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+            user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
-        restrict_projects(self.user_m, user_p, [self.projects['Y']])
+        restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
 
         # When
         self.org_b.include_restricted = True
         self.org_b.save()
-        project = Project.objects.create(title='W')
+        self.projects['W'] = project = Project.objects.create(title='W')
         # FIXME: Ideally, this call should be automatic, but is manual now.
         Project.new_project_created(project.id, self.user_n)
         Partnership.objects.create(
@@ -345,9 +345,9 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         )
 
         # Then
-        self.assertTrue(user_p.has_perm('rsr.view_project', self.projects['Z']))
-        self.assertTrue(user_p.has_perm('rsr.view_project', project))
-        self.assertFalse(user_p.has_perm('rsr.view_project', self.projects['Y']))
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     # Remove a partner
 
@@ -413,3 +413,31 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         Partnership.objects.create(organisation=self.org_b, project=Z)
 
         self.assertFalse(self.user_o.has_perm('rsr.view_project', Z))
+
+    def test_removing_reporting_partner_does_not_change_access(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B - -Project W- - Org C
+            /      \      /    \          _____/  |
+           /        \    /      \        /        |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+        """
+        # Given
+        self.test_new_projects_are_accessible_in_unrestricted_orgs()
+        project = self.projects['W']
+
+        # When
+        project.partnerships.filter(
+            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+        ).delete()
+
+        # Then
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
