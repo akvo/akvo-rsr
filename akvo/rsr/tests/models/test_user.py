@@ -7,11 +7,10 @@
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.test import TestCase
 
 from akvo import settings
 from akvo.rsr.models import Organisation, Employment
-from akvo.rsr.tests.test_permissions import PermissionsTestCase
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import check_auth_groups
 
 User = get_user_model()
@@ -32,7 +31,7 @@ def _create_employment(user, organisation, group='Users', is_approved=True):
     )
 
 
-class UserModelTestCase(TestCase):
+class UserModelTestCase(BaseTestCase):
     """"""
 
     def setUp(self):
@@ -49,9 +48,9 @@ class UserModelTestCase(TestCase):
         # self.tearDown()
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
 
-        self.user_m = PermissionsTestCase.create_user('M@org.org')
-        self.user_n = PermissionsTestCase.create_user('N@org.org')
-        self.user_o = PermissionsTestCase.create_user('O@org.org')
+        self.user_m = self.create_user('M@org.org')
+        self.user_n = self.create_user('N@org.org')
+        self.user_o = self.create_user('O@org.org')
 
         self.org_x = _create_organisation('X')
         self.org_y = _create_organisation('Y')

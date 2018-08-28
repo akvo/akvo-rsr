@@ -5,18 +5,17 @@
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.test import TestCase
 
 from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership
 )
 from akvo.rsr.models.user_projects import restrict_projects, unrestrict_projects
 from akvo.rsr.models.user_projects import InvalidPermissionChange
-from akvo.rsr.tests.test_permissions import PermissionsTestCase
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.utils import check_auth_groups
 
 
-class RestrictedUserProjects(TestCase):
+class RestrictedUserProjects(BaseTestCase):
 
     def setUp(self):
         """
@@ -45,9 +44,9 @@ class RestrictedUserProjects(TestCase):
         Partnership.objects.create(organisation=self.org_b, project=self.projects['Y'])
         Partnership.objects.create(organisation=self.org_b, project=self.projects['Z'])
 
-        self.user_m = PermissionsTestCase.create_user('M@org.org')
-        self.user_n = PermissionsTestCase.create_user('N@org.org')
-        self.user_o = PermissionsTestCase.create_user('O@org.org')
+        self.user_m = self.create_user('M@org.org')
+        self.user_n = self.create_user('N@org.org')
+        self.user_o = self.create_user('O@org.org')
 
         self.users = Group.objects.get(name='Users')
         self.admins = Group.objects.get(name='Admins')
@@ -78,7 +77,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.projects['Z'].connected_to_user(self.user_o))
 
     def test_new_user_can_view_projects(self):
-        unrestricted_user = PermissionsTestCase.create_user('A@org.org')
+        unrestricted_user = self.create_user('A@org.org')
         Employment.objects.create(
             user=unrestricted_user, organisation=self.org_a, group=self.users, is_approved=True
         )
@@ -88,7 +87,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(unrestricted_user.has_perm('rsr.view_project', self.projects['Z']))
 
     def test_admin_can_restrict_new_user(self):
-        user = PermissionsTestCase.create_user('A@org.org')
+        user = self.create_user('A@org.org')
         Employment.objects.create(
             user=user, organisation=self.org_a, group=self.users, is_approved=True
         )
@@ -121,7 +120,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=self.projects['Y'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user = PermissionsTestCase.create_user('P@org.org')
+        user = self.create_user('P@org.org')
         Employment.objects.create(
             user=user, organisation=org_content_owned, group=self.users, is_approved=True
         )
@@ -179,7 +178,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=self.projects['Z'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user = PermissionsTestCase.create_user('P@org.org')
+        user = self.create_user('P@org.org')
         Employment.objects.create(
             user=user, organisation=org_content_owned, group=self.users, is_approved=True
         )
@@ -227,7 +226,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=Y,
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user_p = PermissionsTestCase.create_user('P@org.org')
+        user_p = self.create_user('P@org.org')
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
@@ -241,7 +240,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
     # Remove Restrictions
 
     def test_admin_can_remove_restrictions(self):
-        user = PermissionsTestCase.create_user('A@org.org')
+        user = self.create_user('A@org.org')
         Employment.objects.create(
             user=user, organisation=self.org_a, group=self.users, is_approved=True
         )
@@ -253,7 +252,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(user.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_admin_cannot_remove_restrictions_from_non_manageable_user(self):
-        user = PermissionsTestCase.create_user('P@org.org')
+        user = self.create_user('P@org.org')
         Employment.objects.create(
             user=user, organisation=self.org_b, group=self.users, is_approved=True
         )
@@ -325,7 +324,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=self.projects['Z'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user_p = PermissionsTestCase.create_user('P@org.org')
+        user_p = self.create_user('P@org.org')
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
@@ -366,7 +365,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=self.projects['Y'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user_p = PermissionsTestCase.create_user('P@org.org')
+        user_p = self.create_user('P@org.org')
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
