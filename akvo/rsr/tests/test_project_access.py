@@ -338,7 +338,6 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         project = Project.objects.create(title='W')
         # FIXME: Ideally, this call should be automatic, but is manual now.
         Project.new_project_created(project.id, self.user_n)
-        Partnership.objects.create(organisation=self.org_b, project=project)
         Partnership.objects.create(
             organisation=org_content_owned,
             project=project,
