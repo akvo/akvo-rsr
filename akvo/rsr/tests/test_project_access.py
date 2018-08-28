@@ -121,15 +121,39 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             project=self.projects['Y'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
-        user = self.create_user('P@org.org')
+        self.user_p = self.create_user('P@org.org')
         Employment.objects.create(
-            user=user, organisation=org_content_owned, group=self.users, is_approved=True
+            user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
 
-        restrict_projects(self.user_m, user, [self.projects['Y']])
+        restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
 
-        self.assertFalse(user.has_perm('rsr.view_project', self.projects['X']))  # by employment
-        self.assertFalse(user.has_perm('rsr.view_project', self.projects['Y']))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['X']))  # by employment
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
+
+    def test_another_admin_can_unrestrict_user(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B                Org C (content owned)
+            /             /    \                  |
+           /             /      \                 |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+        """
+        # Given
+        self.test_admin_can_restrict_new_content_owned_user()
+        project = self.projects['Y']
+
+        # When
+        project.partnerships.filter(organisation=self.org_a).delete()
+        unrestrict_projects(self.user_n, self.user_p, [self.projects['Y']])
+
+        # Then
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_user_can_be_restricted_by_multiple_admins(self):
         Employment.objects.create(
