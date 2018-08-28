@@ -542,7 +542,7 @@ class UserPermissionedProjectsTestCase(BaseTestCase):
         # is denied
         self.assertFalse(user.has_perm('rsr.view_project', self.projects[2]))
 
-    def test_user_with_multiple_orgs_is_never_restricted(self):
+    def test_user_with_multiple_orgs_can_be_restricted(self):
         # Given
         user = self.user
         org2 = Organisation.objects.create(name='org2', long_name='org2')
@@ -556,4 +556,4 @@ class UserPermissionedProjectsTestCase(BaseTestCase):
 
         # Then
         for project in self.projects:
-            self.assertTrue(user.has_perm('rsr.view_project', project))
+            self.assertFalse(user.has_perm('rsr.view_project', project))
