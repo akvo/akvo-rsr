@@ -7,8 +7,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from ..models import Employment, Project
-
 
 class UserProjects(models.Model):
 
@@ -16,17 +14,6 @@ class UserProjects(models.Model):
     is_restricted = models.BooleanField(default=False)
     projects = models.ManyToManyField(
         'Project', related_name='accessible_by', null=True, blank=True)
-
-    @classmethod
-    def include_restricted(cls, project_id, admin):
-
-        project = Project.objects.get(pk=project_id)
-        organisation = project.reporting_org
-        users = Employment.objects.filter(organisation=organisation).approved().users()
-        user_projects = cls.objects.filter(user__in=users)
-
-        for user_project in user_projects:
-            unrestrict_projects(admin, user_project.user, [project])
 
     def __unicode__(self):
         return '{} - {} projects'.format(
@@ -59,7 +46,8 @@ def restrict_projects(admin, user, projects):
 
 
 def unrestrict_projects(admin, user, projects):
-    check_valid_permission_change(admin, user, projects)
+    if admin is not None:
+        check_valid_permission_change(admin, user, projects)
 
     try:
         user_projects = UserProjects.objects.get(user=user, is_restricted=True)

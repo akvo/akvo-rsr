@@ -7,7 +7,7 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -228,3 +228,24 @@ class Partnership(models.Model):
         project = Project.objects.get(id=self.project_id)
         project.primary_organisation = project.find_primary_organisation()
         project.save(update_fields=['primary_organisation'])
+
+
+@receiver(post_save, sender=Partnership)
+def allow_project_access_if_include_restricted(sender, **kwargs):
+    created = kwargs['created']
+    # Return if save is not a "create"
+    if not created:
+        return
+
+    partnership = kwargs['instance']
+    # Change permissions only when a reporting organisation is created
+    if not partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION:
+        return
+
+    from akvo.rsr.models.user_projects import unrestrict_projects
+
+    project_id = partnership.project_id
+    users = partnership.organisation.content_owned_organisations().users()
+
+    for user in users:
+        unrestrict_projects(None, user, [project_id])

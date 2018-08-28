@@ -54,11 +54,12 @@ class RestrictedUserProjects(BaseTestCase):
         Employment.objects.create(
             user=self.user_m, organisation=self.org_a, group=self.admins, is_approved=True
         )
-        Employment.objects.create(
-            user=self.user_n, organisation=self.org_a, group=self.admins, is_approved=True
-        )
+        # Primary organisation for user is org B
         Employment.objects.create(
             user=self.user_n, organisation=self.org_b, group=self.admins, is_approved=True
+        )
+        Employment.objects.create(
+            user=self.user_n, organisation=self.org_a, group=self.admins, is_approved=True
         )
         Employment.objects.create(
             user=self.user_o, organisation=self.org_b, group=self.users, is_approved=True
@@ -311,6 +312,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
                         |                         |
                         +-------------------------+
         """
+        # Given
         org_content_owned = Organisation.objects.create(
             name='C', long_name='C', can_create_projects=False
         )
@@ -330,7 +332,12 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         )
         restrict_projects(self.user_m, user_p, [self.projects['Y']])
 
+        # When
+        self.org_b.include_restricted = True
+        self.org_b.save()
         project = Project.objects.create(title='W')
+        # FIXME: Ideally, this call should be automatic, but is manual now.
+        Project.new_project_created(project.id, self.user_n)
         Partnership.objects.create(organisation=self.org_b, project=project)
         Partnership.objects.create(
             organisation=org_content_owned,
@@ -338,6 +345,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
 
+        # Then
         self.assertTrue(user_p.has_perm('rsr.view_project', self.projects['Z']))
         self.assertTrue(user_p.has_perm('rsr.view_project', project))
         self.assertFalse(user_p.has_perm('rsr.view_project', self.projects['Y']))

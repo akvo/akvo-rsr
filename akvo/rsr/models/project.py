@@ -1638,7 +1638,7 @@ class Project(TimestampsMixin, models.Model):
 
         """
         # Set reporting organisation
-        organisations = [e.organisation for e in user.approved_employments()]
+        organisations = [e.organisation for e in user.approved_employments().order_by('id')]
         can_create_project_orgs = [
             org for org in organisations
             if org.can_create_projects and user.has_perm('rsr.add_project', org)
