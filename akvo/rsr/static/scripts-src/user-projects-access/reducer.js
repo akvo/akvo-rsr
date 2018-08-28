@@ -6,10 +6,8 @@
  */
 
 import * as c from "./const";
-import pull from "lodash/pull";
-import { inArray } from "./utils";
+import cloneDeep from "lodash/cloneDeep";
 
-// initial state
 let initialState = {
     selectAll: true,
     fetching: false,
@@ -17,30 +15,41 @@ let initialState = {
     userId: null,
     groupedProjects: [],
     isRestricted: null,
-
     originalIsRestricted: null,
-    originalGroupedProjects: null
+    originalGroupedProjects: null,
+    originalSelectAll: null
 };
 
 const updateProjectAccess = (projectId, groupedProjects) => {
     // Find the correct project and toggle the the access field
-    groupedProjects.map(group => {
-        group.projects.map(project => {
-            project.id === projectId ? (project.access = !project.access) : null;
-        });
-    });
-    return groupedProjects;
+    return (
+        groupedProjects &&
+        groupedProjects.map(group => ({
+            ...group,
+            projects: group.projects.map(project => ({
+                ...project,
+                access:
+                    project.id === projectId ? (project.access = !project.access) : project.access
+            }))
+        }))
+    );
 };
 
 const updateAllProjectsAccess = (access, groupedProjects) => {
     // Find the correct project and toggle the the access field
-    groupedProjects.map(group => {
-        group.projects.map(project => {
-            project.access = access;
-        });
-    });
-    return groupedProjects;
+    return (
+        groupedProjects &&
+        groupedProjects.map(group => ({
+            ...group,
+            projects: group.projects.map(project => ({
+                ...project,
+                access
+            }))
+        }))
+    );
 };
+
+const cloneState = obj => obj && cloneDeep(obj);
 
 export function reducer(state = initialState, action) {
     const reducerActions = {
@@ -85,7 +94,7 @@ export function reducer(state = initialState, action) {
         },
 
         [c.API_PUT_SUCCESS]: (state, action) => {
-            const { grouped_projects: groupedProjects } = action.data;
+            const { organisation_groups: groupedProjects } = action.data;
             return {
                 ...state,
                 fetching: false,
@@ -93,7 +102,8 @@ export function reducer(state = initialState, action) {
                 isRestricted: user_projects.isRestricted,
                 originalIsRestricted: null,
                 groupedProjects,
-                originalGroupedProjects: null
+                originalGroupedProjects: null,
+                originalSelectAll: null
             };
         },
 
@@ -103,6 +113,7 @@ export function reducer(state = initialState, action) {
                 fetching: false,
                 originalIsRestricted: null,
                 originalGroupedProjects: null,
+                originalSelectAll: null,
                 error: action.error
             };
             // Overwrite if we have an original value
@@ -112,15 +123,23 @@ export function reducer(state = initialState, action) {
             if (state.originalGroupedProjects !== null) {
                 newState.groupedProjects = state.originalGroupedProjects;
             }
+            if (state.originalSelectAll !== null) {
+                newState.selectAll = state.originalSelectAll;
+            }
             return newState;
         },
 
         [c.UPDATE_PROJECT_SELECTION]: (state, action) => {
             const { projectId } = action.data;
-            const originalGroupedProjects = state.groupedProjects && [...state.groupedProjects];
-            let groupedProjects = state.groupedProjects && [...state.groupedProjects];
-            groupedProjects = updateProjectAccess(projectId, groupedProjects);
-            return { ...state, originalGroupedProjects, groupedProjects };
+            const groupedProjects = updateProjectAccess(
+                projectId,
+                cloneState(state.groupedProjects)
+            );
+            return {
+                ...state,
+                originalGroupedProjects: cloneState(state.groupedProjects),
+                groupedProjects
+            };
         },
 
         [c.UPDATE_IS_RESTRICTED]: (state, action) => {
@@ -133,16 +152,15 @@ export function reducer(state = initialState, action) {
         },
 
         [c.UPDATE_SELECT_ALL_PROJECTS]: (state, action) => {
-            const originalGroupedProjects = state.groupedProjects && [...state.groupedProjects];
-            let groupedProjects = state.groupedProjects && [...state.groupedProjects],
-                { selectAll } = { ...state };
-            groupedProjects = updateAllProjectsAccess(selectAll, groupedProjects);
+            const groupedProjects = updateAllProjectsAccess(state.selectAll, state.groupedProjects);
+            let { selectAll } = { ...state };
             selectAll = !selectAll;
             return {
                 ...state,
-                selectAll,
-                originalGroupedProjects,
-                groupedProjects
+                originalGroupedProjects: cloneState(state.groupedProjects),
+                originalSelectAll: state.selectAll,
+                groupedProjects,
+                selectAll
             };
         }
     };
