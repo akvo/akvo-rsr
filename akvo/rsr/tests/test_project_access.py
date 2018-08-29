@@ -31,8 +31,12 @@ class RestrictedUserProjects(BaseTestCase):
 
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
 
-        self.org_a = Organisation.objects.create(name='A', long_name='A', can_create_projects=True)
-        self.org_b = Organisation.objects.create(name='B', long_name='B', can_create_projects=True)
+        self.org_a = Organisation.objects.create(
+            name='A', long_name='A', can_create_projects=True, enable_restrictions=True
+        )
+        self.org_b = Organisation.objects.create(
+            name='B', long_name='B', can_create_projects=True, enable_restrictions=True
+        )
 
         self.projects = {}
         for title in "XYZ":
@@ -114,7 +118,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
                         +-------------------------+
         """
         org_content_owned = Organisation.objects.create(
-            name='C', long_name='C', can_create_projects=False
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
         Partnership.objects.create(
             organisation=org_content_owned,
@@ -191,7 +195,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
                         +-------------------------+
         """
         org_content_owned = Organisation.objects.create(
-            name='C', long_name='C', can_create_projects=False,
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
         Partnership.objects.create(
             organisation=org_content_owned,
@@ -244,7 +248,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         Y = self.projects['Y']
         Partnership.objects.get(organisation=self.org_a, project=Y).delete()
         org_content_owned = Organisation.objects.create(
-            name='C', long_name='C', can_create_projects=False,
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
         Partnership.objects.create(
             organisation=org_content_owned,
@@ -310,8 +314,6 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             self.user_n, self.user_o, [self.projects['Z']]
         )
 
-        self.org_b.enable_restrictions = True
-        self.org_b.save()
         project = Project.objects.create(title='W')
         Project.new_project_created(project.id, self.user_n)
 
@@ -325,6 +327,8 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         )
 
         # When
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
         project = Project.objects.create(title='W')
         Project.new_project_created(project.id, self.user_n)
 
@@ -355,7 +359,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         """
         # Given
         org_content_owned = Organisation.objects.create(
-            name='C', long_name='C', can_create_projects=False
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
         Partnership.objects.create(
             organisation=org_content_owned,
@@ -374,7 +378,8 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
 
         # When
-        self.assertFalse(self.org_b.enable_restrictions)
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
         self.projects['W'] = project = Project.objects.create(title='W')
         # FIXME: Ideally, this call should be automatic, but is manual now.
         Project.new_project_created(project.id, self.user_n)
@@ -385,6 +390,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         )
 
         # Then
+        self.assertFalse(self.org_b.enable_restrictions)
         self.assertTrue(self.user_p.has_perm('rsr.view_project', self.projects['Z']))
         self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
@@ -405,7 +411,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
                         +-------------------------+
         """
         org_content_owned = Organisation.objects.create(
-            name='C', long_name='C', can_create_projects=False
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
         Partnership.objects.create(
             organisation=org_content_owned,

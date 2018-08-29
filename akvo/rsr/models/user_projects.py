@@ -80,7 +80,10 @@ def check_user_not_admin(user, project_ids):
 
 
 def check_user_manageable(admin, user):
-    if not admin.get_owned_org_users().filter(id=user.id).exists():
+    orgs_with_restrictions = admin.get_admin_employment_orgs().content_owned_organisations().filter(
+        enable_restrictions=True
+    )
+    if not orgs_with_restrictions.users().filter(id=user.id).exists():
         raise(InvalidPermissionChange)
 
 
