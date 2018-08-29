@@ -128,7 +128,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
 
         restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
 
-        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['X']))  # by employment
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['X']))  # no empl
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
 
     def test_another_admin_can_unrestrict_user(self):
@@ -316,6 +316,21 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_o.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
 
+    def test_new_projects_are_accessible_to_restricted_users_if_include_restricted(self):
+        # Given
+        restrict_projects(
+            self.user_n, self.user_o, [self.projects['Z']]
+        )
+
+        # When
+        project = Project.objects.create(title='W')
+        Project.new_project_created(project.id, self.user_n)
+
+        # Then
+        self.assertTrue(self.org_b.include_restricted)
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertTrue(self.user_o.has_perm('rsr.view_project', project))
+
     def test_new_projects_are_accessible_to_unrestricted_users(self):
         project = Project.objects.create(title='W')
         Partnership.objects.create(organisation=self.org_b, project=project)
@@ -357,8 +372,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
 
         # When
-        self.org_b.include_restricted = True
-        self.org_b.save()
+        self.assertTrue(self.org_b.include_restricted)
         self.projects['W'] = project = Project.objects.create(title='W')
         # FIXME: Ideally, this call should be automatic, but is manual now.
         Project.new_project_created(project.id, self.user_n)
