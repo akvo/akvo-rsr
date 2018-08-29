@@ -231,7 +231,7 @@ class Partnership(models.Model):
 
 
 @receiver(post_save, sender=Partnership)
-def allow_project_access_if_include_restricted(sender, **kwargs):
+def allow_project_access_if_restrictions_disabled(sender, **kwargs):
     created = kwargs['created']
     # Return if save is not a "create"
     if not created:
@@ -242,7 +242,7 @@ def allow_project_access_if_include_restricted(sender, **kwargs):
     if not partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION:
         return
 
-    if not partnership.organisation.include_restricted:
+    if partnership.organisation.enable_restrictions:
         return
 
     from akvo.rsr.models.user_projects import unrestrict_projects

@@ -305,12 +305,12 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
 
     # Add a new project
 
-    def test_new_projects_are_not_accessible_to_restricted_users_if_not_include_restricted(self):
+    def test_new_projects_are_not_accessible_to_restricted_users_if_enable_restrictions(self):
         restrict_projects(
             self.user_n, self.user_o, [self.projects['Z']]
         )
 
-        self.org_b.include_restricted = False
+        self.org_b.enable_restrictions = True
         self.org_b.save()
         project = Project.objects.create(title='W')
         Project.new_project_created(project.id, self.user_n)
@@ -318,7 +318,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_o.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
 
-    def test_new_projects_are_accessible_to_restricted_users_if_include_restricted(self):
+    def test_new_projects_are_accessible_to_restricted_users_in_unrestricted_orgs(self):
         # Given
         restrict_projects(
             self.user_n, self.user_o, [self.projects['Z']]
@@ -329,7 +329,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         Project.new_project_created(project.id, self.user_n)
 
         # Then
-        self.assertTrue(self.org_b.include_restricted)
+        self.assertFalse(self.org_b.enable_restrictions)
         self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
         self.assertTrue(self.user_o.has_perm('rsr.view_project', project))
 
@@ -374,7 +374,7 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
 
         # When
-        self.assertTrue(self.org_b.include_restricted)
+        self.assertFalse(self.org_b.enable_restrictions)
         self.projects['W'] = project = Project.objects.create(title='W')
         # FIXME: Ideally, this call should be automatic, but is manual now.
         Project.new_project_created(project.id, self.user_n)

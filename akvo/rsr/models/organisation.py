@@ -162,11 +162,11 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Partner editors of this organisation can create new projects, and publish '
                     u'projects it is a partner of.')
     )
-    include_restricted = models.BooleanField(
-        verbose_name=_(u"Include restricted users"),
-        default=True,
+    enable_restrictions = models.BooleanField(
+        verbose_name=_(u"enable restrictions"),
+        default=False,
         help_text=_(
-            u'Restricted users automatically get access to new projects of this organisation'
+            u'Toggle user access restrictions for projects with this organisation as reporting partner'
         )
     )
     content_owner = models.ForeignKey(
