@@ -7,6 +7,7 @@
 import rules
 
 from django.contrib.auth import get_user_model
+from timeit import default_timer as timer
 
 from ..utils import project_access_filter
 from .models import Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate
@@ -88,37 +89,61 @@ def _user_has_group_permissions(user, obj, group_names):
 @rules.predicate
 def is_org_admin(user, obj):
     group_names = [GROUP_NAME_ADMINS]
-    return _user_has_group_permissions(user, obj, group_names)
+    start = timer()
+    foo = _user_has_group_permissions(user, obj, group_names)
+    end = timer()
+    print "is_org_admin:", (end-start), obj
+    return foo
 
 
 @rules.predicate
 def is_org_user_manager(user, obj):
     group_names = [GROUP_NAME_USER_MANAGERS]
-    return _user_has_group_permissions(user, obj, group_names)
+    start = timer()
+    foo = _user_has_group_permissions(user, obj, group_names)
+    end = timer()
+    print "is_org_user_manager:", (end-start), obj
+    return foo
 
 
 @rules.predicate
 def is_org_me_manager_or_project_editor(user, obj):
     group_names = [GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ME_MANAGERS]
-    return _user_has_group_permissions(user, obj, group_names)
+    start = timer()
+    foo = _user_has_group_permissions(user, obj, group_names)
+    end = timer()
+    print "is_org_me_manager_or_project_editor:", (end-start), obj
+    return foo
 
 
 @rules.predicate
 def is_org_me_manager(user, obj):
     group_names = [GROUP_NAME_ME_MANAGERS]
-    return _user_has_group_permissions(user, obj, group_names)
+    start = timer()
+    foo = _user_has_group_permissions(user, obj, group_names)
+    end = timer()
+    print "is_org_me_manager:", (end-start), obj
+    return foo
 
 
 @rules.predicate
 def is_org_user(user, obj):
     group_names = [GROUP_NAME_USERS]
-    return _user_has_group_permissions(user, obj, group_names)
+    start = timer()
+    foo = _user_has_group_permissions(user, obj, group_names)
+    end = timer()
+    print "is_org_user:", (end-start), obj
+    return foo
 
 
 @rules.predicate
 def is_org_enumerator(user, obj):
     group_names = [GROUP_NAME_ENUMERATORS]
-    return _user_has_group_permissions(user, obj, group_names)
+    start = timer()
+    foo = _user_has_group_permissions(user, obj, group_names)
+    end = timer()
+    print "is_org_enumerator:", (end-start), obj
+    return foo
 
 
 @rules.predicate
