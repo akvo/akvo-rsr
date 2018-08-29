@@ -305,13 +305,15 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
 
     # Add a new project
 
-    def test_new_projects_are_not_accessible_to_restricted_users(self):
+    def test_new_projects_are_not_accessible_to_restricted_users_if_not_include_restricted(self):
         restrict_projects(
             self.user_n, self.user_o, [self.projects['Z']]
         )
 
+        self.org_b.include_restricted = False
+        self.org_b.save()
         project = Project.objects.create(title='W')
-        Partnership.objects.create(organisation=self.org_b, project=project)
+        Project.new_project_created(project.id, self.user_n)
 
         self.assertFalse(self.user_o.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))

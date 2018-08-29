@@ -242,6 +242,9 @@ def allow_project_access_if_include_restricted(sender, **kwargs):
     if not partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION:
         return
 
+    if not partnership.organisation.include_restricted:
+        return
+
     from akvo.rsr.models.user_projects import unrestrict_projects
 
     project_id = partnership.project_id
