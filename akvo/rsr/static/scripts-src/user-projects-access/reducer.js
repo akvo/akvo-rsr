@@ -11,6 +11,7 @@ import cloneDeep from "lodash/cloneDeep";
 let initialState = {
     selectAll: true,
     fetching: false,
+    projectsLoaded: false,
     error: null,
     userId: null,
     groupedProjects: [],
@@ -70,6 +71,7 @@ export function reducer(state = initialState, action) {
             return {
                 ...state,
                 fetching: false,
+                projectsLoaded: true,
                 groupedProjects,
                 isRestricted
             };

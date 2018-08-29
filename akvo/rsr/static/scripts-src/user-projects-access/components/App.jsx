@@ -7,7 +7,7 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { _, dataFromElement, inArray } from "../utils";
+import { _, dataFromElement} from "../utils";
 
 import * as c from "../const";
 
@@ -48,22 +48,31 @@ const Project = ({
     project,
     isRestricted,
     onChangeProjectSelected,
-    includeOrgCell,
+    firstProjectOfOrgGroup,
     rowSpan,
     orgs
 }) => {
-    // NOTE: the checked value is set to true if isRestricted is false. This is so that the list of
-    // projects looks like all projects are selected when restrictions are not in force.
-    // This is _not_ reflected in the store.
-    const uiSettings = (project, isRestricted) => {
+    const uiSettings = (project, isRestricted, firstProjectOfOrgGroup) => {
         const checked = project.access,
             disabled = isRestricted ? "" : "disabled",
             projectSelected = checked ? " projectSelected" : "",
-            trClassName = disabled + projectSelected,
+            trClassName =
+                disabled + projectSelected + (firstProjectOfOrgGroup ? " border-top" : ""),
             idClassName = disabled + " id";
         return { checked, trClassName, idClassName };
     };
-    const { checked, trClassName, idClassName } = uiSettings(project, isRestricted);
+
+    const cancelClick = e => {
+        // Cancel the tr onClick for the org group cell
+        e.stopPropagation();
+    };
+
+    const { checked, trClassName, idClassName } = uiSettings(
+        project,
+        isRestricted,
+        firstProjectOfOrgGroup
+    );
+
     return (
         <tr
             key={project.id}
@@ -71,7 +80,7 @@ const Project = ({
             onClick={onChangeProjectSelected}
             className={trClassName}
         >
-            <td>
+            <td className="border-left">
                 <input
                     id={project.id}
                     type="checkbox"
@@ -83,8 +92,8 @@ const Project = ({
             <td className={idClassName}>{project.id}</td>
             <td>{project.title || _("no_title")}</td>
             <td>{project.subtitle}</td>
-            {includeOrgCell ? (
-                <td className="border" rowSpan={rowSpan}>
+            {firstProjectOfOrgGroup ? (
+                <td className="border" rowSpan={rowSpan} onClick={cancelClick}>
                     {orgs}
                 </td>
             ) : null}
@@ -152,8 +161,8 @@ const Projects = ({
                     {groupedProjects.map(group => {
                         const rowSpan = group.projects.length;
                         let first = true;
-                        const foo = group.projects.map(project => {
-                            const includeOrgCell = first;
+                        return group.projects.map(project => {
+                            const firstProjectOfOrgGroup = first;
                             first = false;
                             return (
                                 <Project
@@ -162,13 +171,12 @@ const Projects = ({
                                     project={project}
                                     isRestricted={isRestricted}
                                     onChangeProjectSelected={onChangeProjectSelected}
-                                    includeOrgCell={includeOrgCell}
+                                    firstProjectOfOrgGroup={firstProjectOfOrgGroup}
                                     rowSpan={rowSpan}
                                     orgs={group.organisations}
                                 />
                             );
                         });
-                        return foo;
                     })}
                 </tbody>
             </table>
@@ -220,8 +228,8 @@ class App extends React.Component {
     }
 
     render() {
-        const { selectAll, groupedProjects, isRestricted, error } = this.props;
-        return groupedProjects ? (
+        const { projectsLoaded, selectAll, groupedProjects, isRestricted, error } = this.props;
+        return projectsLoaded ? (
             <Projects
                 _={this._}
                 error={error}
@@ -233,14 +241,14 @@ class App extends React.Component {
                 onChangeProjectSelected={this.toggleProjectSelected}
             />
         ) : (
-            <div>{_("loading")}</div>
+            <div className="loading">{this._('loading')} <i className="fa fa-spin fa-spinner" /></div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const { fetching, error, groupedProjects, isRestricted, selectAll, strings } = state;
-    return { fetching, error, groupedProjects, isRestricted, selectAll, strings };
+    const { projectsLoaded, fetching, error, groupedProjects, isRestricted, selectAll, strings } = state;
+    return { projectsLoaded, fetching, error, groupedProjects, isRestricted, selectAll, strings };
 };
 
 const mapDispatchToProps = dispatch => {
