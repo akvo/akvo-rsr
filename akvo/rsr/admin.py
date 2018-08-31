@@ -288,10 +288,17 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     def get_readonly_fields(self, request, obj=None):
         """Make sure only super users can set the ability to become a reporting org"""
-        if request.user.is_superuser:
-            return ['created_at', 'last_modified_at']
-        else:
-            return ['created_at', 'last_modified_at', 'can_create_projects']
+        readonly_fields = ['created_at', 'last_modified_at']
+        if not request.user.is_superuser:
+            readonly_fields.append('can_create_projects')
+
+        if request.resolver_match.args:
+            org_id, = request.resolver_match.args
+            org = self.get_object(request, org_id)
+            if org is not None and not org.can_disable_restrictions():
+                readonly_fields.append('enable_restrictions')
+
+        return readonly_fields
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:

@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership
 )
+from akvo.rsr.models.organisation import CannotDisableRestrictions
 from akvo.rsr.models.user_projects import restrict_projects, unrestrict_projects
 from akvo.rsr.models.user_projects import InvalidPermissionChange
 from akvo.rsr.tests.base import BaseTestCase
@@ -320,23 +321,6 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_o.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
 
-    def test_new_projects_are_accessible_to_restricted_users_in_unrestricted_orgs(self):
-        # Given
-        restrict_projects(
-            self.user_n, self.user_o, [self.projects['Z']]
-        )
-
-        # When
-        self.org_b.enable_restrictions = False
-        self.org_b.save()
-        project = Project.objects.create(title='W')
-        Project.new_project_created(project.id, self.user_n)
-
-        # Then
-        self.assertFalse(self.org_b.enable_restrictions)
-        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Z']))
-        self.assertTrue(self.user_o.has_perm('rsr.view_project', project))
-
     def test_new_projects_are_accessible_to_unrestricted_users(self):
         project = Project.objects.create(title='W')
         Partnership.objects.create(organisation=self.org_b, project=project)
@@ -487,3 +471,45 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_p.has_perm('rsr.view_project', self.projects['Z']))
         self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
+
+    # Toggling Enable restrictions
+
+    def test_disable_restrictions_if_no_restricted_users(self):
+        # Given
+        self.assertTrue(self.org_b.enable_restrictions)
+
+        # When
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
+
+        # Then
+        self.assertFalse(self.org_b.enable_restrictions)
+
+    def test_should_not_disable_restrictions_when_restricted_users(self):
+        # Given
+        self.assertTrue(self.org_b.enable_restrictions)
+        restrict_projects(self.user_n, self.user_o, [self.projects['Z']])
+
+        # When/Then
+        self.org_b.enable_restrictions = False
+        with self.assertRaises(CannotDisableRestrictions):
+            self.org_b.save()
+
+        # Then
+        org_b = Organisation.objects.get(pk=self.org_b.pk)
+        self.assertTrue(org_b.enable_restrictions)
+
+    def test_can_disable_restrictions_when_multi_employed_restricted_users(self):
+        # Given
+        self.assertTrue(self.org_b.enable_restrictions)
+        restrict_projects(self.user_n, self.user_o, [self.projects['Z']])
+        Employment.objects.create(
+            user=self.user_o, organisation=self.org_a, group=self.users, is_approved=True
+        )
+
+        # When/Then
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
+
+        # Then
+        self.assertFalse(self.org_b.enable_restrictions)
