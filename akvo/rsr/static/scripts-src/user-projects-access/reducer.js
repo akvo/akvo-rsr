@@ -96,12 +96,15 @@ export function reducer(state = initialState, action) {
         },
 
         [c.API_PUT_SUCCESS]: (state, action) => {
-            const { organisation_groups: groupedProjects } = action.data;
+            const {
+                user_projects: { is_restricted: isRestricted },
+                organisation_groups: groupedProjects,
+
+            } = action.data;
             return {
                 ...state,
                 fetching: false,
-                // NOTE: we're "unwrapping" the list of projects here, to simplify the store
-                isRestricted: user_projects.isRestricted,
+                isRestricted,
                 originalIsRestricted: null,
                 groupedProjects,
                 originalGroupedProjects: null,
