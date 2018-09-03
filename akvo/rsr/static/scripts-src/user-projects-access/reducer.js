@@ -12,13 +12,13 @@ let initialState = {
     selectAll: true,
     fetching: false,
     projectsLoaded: false,
-    error: null,
-    userId: null,
+    error: undefined,
+    userId: undefined,
     groupedProjects: [],
-    isRestricted: null,
-    originalIsRestricted: null,
-    originalGroupedProjects: null,
-    originalSelectAll: null
+    isRestricted: undefined,
+    originalIsRestricted: undefined,
+    originalGroupedProjects: undefined,
+    originalSelectAll: undefined
 };
 
 const updateProjectAccess = (projectId, groupedProjects) => {
@@ -52,10 +52,10 @@ const updateAllProjectsAccess = (access, groupedProjects) => {
 
 const cloneState = obj => obj && cloneDeep(obj);
 
-export function reducer(state = initialState, action) {
+export default function reducer(state = initialState, action) {
     const reducerActions = {
         [c.SET_STORE]: (state, action) => {
-            const data = action.data;
+            const { data } = action;
             return { ...state, ...data };
         },
 
@@ -81,7 +81,6 @@ export function reducer(state = initialState, action) {
             return {
                 ...state,
                 fetching: false,
-                all_projects: [],
                 groupedProjects: [],
                 error: action.error
             };
@@ -98,8 +97,7 @@ export function reducer(state = initialState, action) {
         [c.API_PUT_SUCCESS]: (state, action) => {
             const {
                 user_projects: { is_restricted: isRestricted },
-                organisation_groups: groupedProjects,
-
+                organisation_groups: groupedProjects
             } = action.data;
             return {
                 ...state,
@@ -134,6 +132,15 @@ export function reducer(state = initialState, action) {
             return newState;
         },
 
+        [c.UPDATE_IS_RESTRICTED]: (state, action) => {
+            const { isRestricted } = action.data;
+            return {
+                ...state,
+                isRestricted,
+                originalIsRestricted: state.isRestricted
+            };
+        },
+
         [c.UPDATE_PROJECT_SELECTION]: (state, action) => {
             const { projectId } = action.data;
             const groupedProjects = updateProjectAccess(
@@ -144,15 +151,6 @@ export function reducer(state = initialState, action) {
                 ...state,
                 originalGroupedProjects: cloneState(state.groupedProjects),
                 groupedProjects
-            };
-        },
-
-        [c.UPDATE_IS_RESTRICTED]: (state, action) => {
-            const { isRestricted } = action.data;
-            return {
-                ...state,
-                isRestricted,
-                originalIsRestricted: state.isRestricted
             };
         },
 
@@ -169,7 +167,7 @@ export function reducer(state = initialState, action) {
             };
         }
     };
-    if (reducerActions.hasOwnProperty(action.type)) {
+    if (action && reducerActions.hasOwnProperty(action.type)) {
         return reducerActions[action.type](state, action);
     } else {
         return state;
