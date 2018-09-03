@@ -56,7 +56,7 @@ export function* getSaga(action) {
     }
 }
 
-const filterProjects = state => {
+export const filterProjects = state => {
     return state.groupedProjects.reduce((acc, group) => {
         return acc.concat(
             group.projects.filter(project => project.access).map(project => project.id)
