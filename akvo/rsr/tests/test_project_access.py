@@ -338,16 +338,18 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
             /      \      /    \          _____/  |
            /        \    /      \        /        |
         Project X   Project Y   Project Z         |
-                        |                         |
-                        +-------------------------+
+            |                                     |
+            +-------------------------------------+
         """
         # Given
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
         org_content_owned = Organisation.objects.create(
             name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
         Partnership.objects.create(
             organisation=org_content_owned,
-            project=self.projects['Y'],
+            project=self.projects['X'],
             iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
         )
         Partnership.objects.create(
@@ -359,11 +361,9 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         Employment.objects.create(
             user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
         )
-        restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
+        restrict_projects(self.user_m, self.user_p, [self.projects['X']])
 
         # When
-        self.org_b.enable_restrictions = False
-        self.org_b.save()
         self.projects['W'] = project = Project.objects.create(title='W')
         # FIXME: Ideally, this call should be automatic, but is manual now.
         Project.new_project_created(project.id, self.user_n)
@@ -499,17 +499,114 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         org_b = Organisation.objects.get(pk=self.org_b.pk)
         self.assertTrue(org_b.enable_restrictions)
 
-    def test_can_disable_restrictions_when_multi_employed_restricted_users(self):
+    def test_should_not_disable_restrictions_when_restricted_content_owned_users(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B                 Org C
+            /      \      /    \          _____/
+           /        \    /      \        /
+        Project X   Project Y   Project Z
+        """
         # Given
-        self.assertTrue(self.org_b.enable_restrictions)
-        restrict_projects(self.user_n, self.user_o, [self.projects['Z']])
-        Employment.objects.create(
-            user=self.user_o, organisation=self.org_a, group=self.users, is_approved=True
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=self.projects['Z'],
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        self.user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        restrict_projects(self.user_n, self.user_p, [self.projects['Z']])
 
-        # When/Then
+        # When
         self.org_b.enable_restrictions = False
-        self.org_b.save()
+        with self.assertRaises(CannotDisableRestrictions):
+            self.org_b.save()
+
+    def test_can_disable_when_is_restricted_turned_off(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B                 Org C
+            /      \      /    \          _____/
+           /        \    /      \        /
+        Project X   Project Y   Project Z
+        """
+        # Given
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
+        )
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=self.projects['Z'],
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        self.user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        restrict_projects(self.user_n, self.user_p, [self.projects['Z']])
+        self.org_b.enable_restrictions = False
+        with self.assertRaises(CannotDisableRestrictions):
+            self.org_b.save()
+
+        # When
+        from akvo.rsr.models import UserProjects
+        user_projects = UserProjects.objects.get(user=self.user_p)
+        user_projects.is_restricted = False
+        user_projects.save()
 
         # Then
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
         self.assertFalse(self.org_b.enable_restrictions)
+
+    def test_cannot_disable_restrictions_when_any_restricted_users_exist(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B                 Org C
+            /      \      /    \          _____/  |
+           /        \    /      \        /        |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+        """
+        # Given
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
+        )
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=self.projects['Y'],
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=self.projects['Z'],
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        self.user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        restrict_projects(self.user_m, self.user_p, [self.projects['Y']])
+
+        # When
+        with self.assertRaises(CannotDisableRestrictions):
+            self.org_b.enable_restrictions = False
+            self.org_b.save()
+        with self.assertRaises(CannotDisableRestrictions):
+            self.org_a.enable_restrictions = False
+            self.org_a.save()

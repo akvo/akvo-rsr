@@ -359,12 +359,9 @@ class Organisation(TimestampsMixin, models.Model):
         in another organisation.
 
         """
-        from akvo.rsr.models import UserProjects, User
-        employees = User.objects.filter(employers__organisation=self.id)
-        org_only_employees = employees.exclude(
-            Q(employers__organisation__lt=self.id) | Q(employers__organisation__gt=self.id)
-        )
-        org_only_restrictions = UserProjects.objects.filter(user__in=org_only_employees)
+        from akvo.rsr.models import UserProjects
+        employees = self.content_owned_organisations().users()
+        org_only_restrictions = UserProjects.objects.filter(is_restricted=True, user__in=employees)
         return not org_only_restrictions.exists()
 
     def published_projects(self, only_public=True):
