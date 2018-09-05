@@ -247,8 +247,6 @@ def allow_project_access_if_restrictions_disabled(sender, **kwargs):
 
     from akvo.rsr.models.user_projects import unrestrict_projects
 
-    project_id = partnership.project_id
     users = partnership.organisation.content_owned_organisations().users()
-
     for user in users:
-        unrestrict_projects(None, user, [project_id])
+        unrestrict_projects(None, user, [partnership.project])
