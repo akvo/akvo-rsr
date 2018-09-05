@@ -278,7 +278,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                OrganisationDocumentInline, OrganisationCustomFieldInline,
                OrganisationIndicatorLabelInline)
     exclude = ('internal_org_ids',)
-    list_display = ('name', 'long_name', 'website', 'language')
+    list_display = ('name', 'long_name', 'enable_restrictions', 'website', 'language')
     search_fields = ('name', 'long_name')
 
     def __init__(self, model, admin_site):
