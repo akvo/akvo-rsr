@@ -11,4 +11,4 @@ usermod -u "$NEW_UID" -o akvo
 mkdir -p /var/log/akvo/ /var/akvo/rsr/logs/ /var/akvo/rsr/staticroot/ /var/akvo/rsr/mediaroot/
 chown -R akvo:akvo /var/log/akvo/ /var/akvo/rsr/logs/ /var/akvo/rsr/staticroot/ /var/akvo/rsr/mediaroot/
 
-gosu akvo:akvo "$@"
+exec chpst -u akvo:akvo -U akvo:akvo env HOME=/home/akvo "$@"

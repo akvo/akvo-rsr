@@ -1,9 +1,15 @@
-FROM python:2.7.15-stretch
+FROM yarara/python-2.7.3:v1
 
 RUN set -ex; apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-    libgeos-dev postgresql-client-9.6 gosu && \
+    libgeos-dev curl git postgresql-client runit \
+    libxml2-dev libxslt1-dev zlib1g-dev python-dev python-setuptools && \
     rm -rf /var/lib/apt/lists/*
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
 
 ENV NODE_VERSION 8.11.3
 
