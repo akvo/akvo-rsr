@@ -251,6 +251,14 @@ class OrganisationAdminForm(forms.ModelForm):
         return self.cleaned_data['iati_org_id'] or None
 
 
+def enable_restrictions(modeladmin, request, queryset):
+    queryset.update(enable_restrictions=True)
+
+    
+enable_restrictions.short_description = ("Enable project access restrictions for the selected "
+                                         "organisations")
+
+
 class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
 
     """OrganisationAdmin.
@@ -280,6 +288,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     exclude = ('internal_org_ids',)
     list_display = ('name', 'long_name', 'enable_restrictions', 'website', 'language')
     search_fields = ('name', 'long_name')
+    actions = (enable_restrictions,)
 
     def __init__(self, model, admin_site):
         """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
