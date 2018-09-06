@@ -4,7 +4,8 @@ RUN set -ex; apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends --no-install-suggests \
     libgeos-dev curl git postgresql-client runit \
-    libxml2-dev libxslt1-dev zlib1g-dev python-dev python-setuptools && \
+    libjpeg-dev libfreetype6-dev \
+    libxml2-dev libxslt1-dev zlib1g-dev python-dev && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
