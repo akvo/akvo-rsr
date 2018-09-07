@@ -75,6 +75,8 @@ spec:
               subPath: "django.conf"
             - name: "rsr-media-disk"
               mountPath: "/var/akvo/rsr/mediaroot"
+            - name: "rsr-staticroot-disk"
+              mountPath: "/var/akvo/rsr/staticroot"
         env:
         - name: SENTRY_DSN
           valueFrom:
@@ -113,7 +115,18 @@ spec:
             cpu: "10m"
           limits:
             cpu: "100m"
+      initContainers:
+      - name: copy-assets-to-backend-container
+        image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
+        command: [sh, -c]
+        args: ["cp -r /var/akvo/rsr/staticroot/* /data"]
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /data
+            name: "rsr-staticroot-disk"
       volumes:
+        - name: rsr-staticroot-disk
+          emptyDir: {}
          - name: "secret-config"
            secret:
              secretName: "rsr-test-secret"
