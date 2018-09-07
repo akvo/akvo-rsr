@@ -125,8 +125,8 @@ spec:
           - mountPath: /data
             name: "rsr-staticroot-disk"
       volumes:
-        - name: rsr-staticroot-disk
-          emptyDir: {}
+         - name: rsr-staticroot-disk
+           emptyDir: {}
          - name: "secret-config"
            secret:
              secretName: "rsr-test-secret"
