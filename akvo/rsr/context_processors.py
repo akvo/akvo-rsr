@@ -75,6 +75,9 @@ def extra_pages_context(request):
             'no_facebook': not page.facebook_button,
             'facebook_app_id': page.facebook_app_id,
             'no_twitter': not page.twitter_button,
+            'disable_robots': not settings.ALLOW_ROBOTS,
         }
 
-    return {}
+    return {
+        'disable_robots': not settings.ALLOW_ROBOTS,
+    }
