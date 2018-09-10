@@ -96,6 +96,14 @@ spec:
             cpu: "50m"
           limits:
             cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "echo stats | nc 127.0.0.1 11211 | grep version"
+          initialDelaySeconds: 10
+          periodSeconds: 5
       - name: memcached-exporter
         image: prom/memcached-exporter:v0.4.1
         ports:
