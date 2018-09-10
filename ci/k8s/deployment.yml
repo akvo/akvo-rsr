@@ -16,7 +16,6 @@ spec:
         app: rsr
       annotations:
         prometheus.io/scrape: 'true'
-        prometheus.io/port: '9102'
     spec:
       containers:
       - name: rsr-nginx
@@ -92,6 +91,20 @@ spec:
           value: "yes please"
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+      - name: memcached-exporter
+        image: prom/memcached-exporter:v0.4.1
+        ports:
+          - containerPort: 9150
+            protocol: TCP
+        livenessProbe:
+          tcpSocket:
+             port: 9150
+          initialDelaySeconds: 10
         resources:
           requests:
             cpu: "50m"
