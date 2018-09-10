@@ -33,8 +33,8 @@ spec:
           timeoutSeconds: 1
         readinessProbe:
           httpGet:
-            path: /
-            port: 8080
+            path: /healthz
+            port: 80
           initialDelaySeconds: 5
           timeoutSeconds: 1
         imagePullPolicy: Always
@@ -68,6 +68,18 @@ spec:
         ports:
         - containerPort: 8000
           protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
         volumeMounts:
             - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
