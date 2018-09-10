@@ -8,6 +8,7 @@ Forms and validation code for user registration and updating.
 """
 
 import datetime
+import re
 
 from django import forms
 
@@ -27,6 +28,8 @@ from .models import ProjectUpdate
 from .models import ProjectUpdateLocation
 
 from akvo import settings
+
+PASSWORD_MINIMUM_LENGTH = 8
 
 
 class RegisterForm(forms.Form):
@@ -66,17 +69,62 @@ class RegisterForm(forms.Form):
         )
     )
 
+
     def clean(self):
         """
         Verify that the values entered into the two password fields match.
         Note that an error here will end up in non_field_errors() because it doesn't
         apply to a single field.
         """
-        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
+
+        def check_passwords_identical(form):
+            if 'password1' in form.cleaned_data and 'password2' in form.cleaned_data:
+                if form.cleaned_data['password1'] != form.cleaned_data['password2']:
+                    raise forms.ValidationError(
+                        _(u'Passwords do not match. Please enter the same password in both fields.')
+                    )
+
+        def check_password_minimum_length(password):
+            if len(password) < PASSWORD_MINIMUM_LENGTH:
                 raise forms.ValidationError(
-                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                    _(u'Passwords must be at least {} characters long.'.format(
+                        PASSWORD_MINIMUM_LENGTH))
                 )
+
+        def check_password_has_number(password):
+            if not re.findall('\d', password):
+                raise forms.ValidationError(
+                    _(u'The password must contain at least one digit, 0-9.')
+                )
+
+        def check_password_has_upper(password):
+            if not re.findall('[A-Z]', password):
+                raise forms.ValidationError(
+                    _(u'The password must contain at least one uppercase letter, A-Z.')
+                )
+
+        def check_password_has_lower(password):
+            if not re.findall('[a-z]', password):
+                raise forms.ValidationError(
+                    _(u'The password must contain at least one lowercase letter, A-Z.')
+                )
+
+        def check_password_has_symbol(password):
+            if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+                raise forms.ValidationError(
+                    _(u'The password must contain at least one symbol: '
+                      u'()[]{}|\`~!@#$%^&amp;*_-+=;:\'",<>./?')
+                )
+
+        check_passwords_identical(self)
+
+        password = self.cleaned_data['password1']
+        check_password_minimum_length(password)
+        check_password_has_number(password)
+        check_password_has_upper(password)
+        check_password_has_lower(password)
+        check_password_has_symbol(password)
+
         return self.cleaned_data
 
     def clean_email(self):
