@@ -50,6 +50,7 @@ class HealthCheckTestCase(TestCase):
         resp = self.c.get('/healthz')
         self.assertEqual(resp.status_code, 200)
 
+
 class HostHeaderTestCase(TestCase):
 
     """Testing boot traffic."""
