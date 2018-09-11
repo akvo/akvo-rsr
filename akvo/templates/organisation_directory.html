@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n maps rsr_utils bootstrap3 pipeline %}
+{% load i18n rsr_utils bootstrap3 pipeline %}
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 {% block maincontent %}
 
@@ -9,7 +9,6 @@
 
 {% block js %}
     {{ block.super }}
-    <script src="//maps.google.com/maps/api/js"></script>
     {# Translation strings #}
     <script type="application/json" id="organisations-text">
      {
