@@ -106,14 +106,14 @@ class RegisterForm(forms.Form):
         def check_password_has_lower(password):
             if not re.findall('[a-z]', password):
                 raise forms.ValidationError(
-                    _(u'The password must contain at least one lowercase letter, A-Z.')
+                    _(u'The password must contain at least one lowercase letter, a-z.')
                 )
 
         def check_password_has_symbol(password):
             if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
                 raise forms.ValidationError(
                     _(u'The password must contain at least one symbol: '
-                      u'()[]{}|\`~!@#$%^&amp;*_-+=;:\'",<>./?')
+                      u'()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?')
                 )
 
         check_passwords_identical(self)
