@@ -44,7 +44,7 @@ class ValidStockRSRTestCase(TestCase):
 
 class HealthCheckTestCase(TestCase):
 
-    """Testing Health Check."""
+    """Testing Health Check. """
 
     def test_health_check(self):
         resp = self.c.get('/healthz')
