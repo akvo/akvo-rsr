@@ -69,7 +69,6 @@ class RegisterForm(forms.Form):
         )
     )
 
-
     def clean(self):
         """
         Verify that the values entered into the two password fields match.
