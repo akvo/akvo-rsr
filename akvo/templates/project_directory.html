@@ -10,9 +10,8 @@
 {% block js %}
     {{ block.super }}
 
-    {# Google Maps API #}
-    <script src="//maps.google.com/maps/api/js"></script>
-
+  {# Google Maps API #}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{gmaps_api_key}}"></script>
     <script type="application/json" id="akvo-rsr-typeahead-thumbs">
         {
             "numberOfProjects": {{ project_count }}
