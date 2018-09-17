@@ -151,7 +151,7 @@ class AccountRegistrationTestCase(TestCase):
 
     def setUp(self):
         self.username = 'user@example.com'
-        self.password = 'passwordA1$'
+        self.password = 'passwdpasswdA1$'
         self.title = 'Admiral'
         self.first_name = 'John'
         self.last_name = 'Doe'
@@ -184,7 +184,7 @@ class AccountRegistrationTestCase(TestCase):
 
     def test_registration_password_too_short(self):
         # Given
-        self._create_registration_data('passwor')
+        self._create_registration_data('passwdpassw')
 
         # When
         response = self.c.post('/en/register/', data=self.data)
@@ -196,7 +196,7 @@ class AccountRegistrationTestCase(TestCase):
 
     def test_registration_password_has_no_digit(self):
         # Given
-        self._create_registration_data('passwordA$')
+        self._create_registration_data('passwdpasswdA$')
 
         # When
         response = self.c.post('/en/register/', data=self.data)
@@ -208,7 +208,7 @@ class AccountRegistrationTestCase(TestCase):
 
     def test_registration_password_has_no_symbol(self):
         # Given
-        self._create_registration_data('passwordA1')
+        self._create_registration_data('passwdpasswdA1')
 
         # When
         response = self.c.post('/en/register/', data=self.data)
@@ -222,7 +222,7 @@ class AccountRegistrationTestCase(TestCase):
 
     def test_registration_password_has_no_uppercase(self):
         # Given
-        self._create_registration_data('password1$')
+        self._create_registration_data('passwdpasswd1$')
 
         # When
         response = self.c.post('/en/register/', data=self.data)
@@ -234,7 +234,7 @@ class AccountRegistrationTestCase(TestCase):
 
     def test_registration_password_has_no_lowercase(self):
         # Given
-        self._create_registration_data('PASSWORD1$')
+        self._create_registration_data('PASSWDPASSWD1$')
 
         # When
         response = self.c.post('/en/register/', data=self.data)
