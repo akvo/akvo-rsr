@@ -3311,6 +3311,8 @@ main.results-page {
     margin-top: 0;
     display: block;
     margin-bottom: 20px; }
+  .results .projectUpdateForm .react-datepicker__input-container {
+    display: block; }
   .results .narrative_reports {
     position: relative; }
     .results .narrative_reports .narrativeStatus {

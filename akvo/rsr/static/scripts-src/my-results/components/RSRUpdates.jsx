@@ -6,6 +6,8 @@
  */
 
 import React from "react";
+import DatePicker from "react-datepicker";
+import moment from "moment";
 import { _, getCookie } from "../utils";
 import { MarkdownEditor } from "./common";
 
@@ -173,6 +175,7 @@ class RSRUpdateForm extends React.Component {
         this.warnImageSize = this.warnImageSize.bind(this);
         this.setText = this.setText.bind(this);
         this.editUpdate = this.editUpdate.bind(this);
+        this.editUpdateDate = this.editUpdateDate.bind(this);
     }
     componentDidMount() {
         const storePosition = ({ coords }) => {
@@ -209,6 +212,11 @@ class RSRUpdateForm extends React.Component {
         const update = Object.assign({}, this.state.update, { text: description });
         this.setState({ update });
     }
+    editUpdateDate(value) {
+        var update = this.state.update;
+        update["event_date"] = value.format("YYYY-MM-DD");
+        this.setState({ update });
+    }
     editUpdate(event) {
         const value = event.target.value;
         var update = this.state.update;
@@ -239,6 +247,7 @@ class RSRUpdateForm extends React.Component {
             cols: 40,
             rows: 10
         };
+        const eventDate = update.event_date ? moment(update.event_date) : moment();
         return (
             <div className="col-md-7 col-xs-12 projectUpdateForm" id="update">
                 <h3 className="">{update.id ? _("edit_update") : _("add_update")}</h3>
@@ -299,17 +308,16 @@ class RSRUpdateForm extends React.Component {
                         <label className="control-label" htmlFor="id_event_date">
                             {_("event_date")}
                         </label>
-                        {/* FIXME: Add a default value for the date */}
-                        <input
+                        <DatePicker
                             className="form-control"
-                            id="id_event_date"
+                            dateFormat="YYYY-MM-DD"
                             name="event_date"
-                            placeholder={_("event_date")}
-                            required="required"
+                            id="id_event_date"
                             title=""
-                            type="date"
-                            value={update.event_date}
-                            onChange={this.editUpdate}
+                            required="required"
+                            placeholder={_("event_date")}
+                            selected={eventDate}
+                            onChange={this.editUpdateDate}
                         />
                     </div>
 
