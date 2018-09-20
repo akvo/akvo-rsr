@@ -1,0 +1,10 @@
+{# NOTE: this file is not translated as it is sent by the system #}
+
+Dear sir or madam.
+
+This email is sent automatically when errors in the hierarchy of the EUTF results is detected.
+
+Please see the attached file for details on which {{error_type}} contain errors.
+
+Thank you,
+Akvo.org
