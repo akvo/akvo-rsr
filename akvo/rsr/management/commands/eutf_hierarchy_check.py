@@ -15,8 +15,6 @@ from akvo.utils import rsr_send_mail
 from ...models import Project, Result, Indicator
 
 EUTF_PROJECT_ID = 4401
-EUTF_INDICATORS_TITLE = u'EUTF indicators'
-EUTF_INDICATORS_NEW_TITLE = u'EUTF indicators - new'
 
 INDICATORS = 'indicators'
 PERIODS = 'periods'
