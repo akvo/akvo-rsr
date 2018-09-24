@@ -89,11 +89,11 @@ class Command(BaseCommand):
             result_parent_result_pk = (orphan.result.parent_result.pk
                                        if result_pk and orphan.result.parent_result else None)
             result_parent_result_project_pk = (orphan.result.parent_result.project.pk
-                                               if result_parent_result_pk
-                                               and orphan.result.parent_result.project else None)
+                                               if result_parent_result_pk and
+                                               orphan.result.parent_result.project else None)
             result_parent_result_project_title = (orphan.result.parent_result.project.title
-                                                  if result_parent_result_pk
-                                                  and orphan.result.parent_result.project else None)
+                                                  if result_parent_result_pk and
+                                                  orphan.result.parent_result.project else None)
             problem_indicators.append([
                 pk,
                 result_pk,
@@ -173,7 +173,8 @@ class Command(BaseCommand):
             self.ctr_results, self.dec_results
         )
 
-    def send_eutf_error_email(self, error_type, attachments):
+    @staticmethod
+    def send_eutf_error_email(error_type, attachments):
         recipients = getattr(
             settings,
             'EUTF_HIERARCHY_ERROR_RECIPIENTS',
