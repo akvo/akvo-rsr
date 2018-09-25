@@ -30,9 +30,8 @@ from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatar
 from ..filters import remove_empty_querydict_items
 from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
                       project_access_filter)
-from ..models import (Employment, Organisation, OrganisationCustomField, Project,
-                      ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
-
+from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
+                      ProjectEditorValidationSet, Result, Indicator)
 import json
 
 
@@ -227,14 +226,8 @@ def my_projects(request):
     page.object_list = page.object_list.select_related('validations').\
         prefetch_related('publishingstatus')
 
-    # Add custom fields in case user adds a new project
-    new_project_custom_fields = OrganisationCustomField.objects.filter(
-        organisation__in=organisations
-    )
-
     context = {
         'organisations': organisations,
-        'new_project_custom_fields': new_project_custom_fields,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
