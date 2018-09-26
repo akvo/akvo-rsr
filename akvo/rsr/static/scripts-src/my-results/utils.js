@@ -295,22 +295,25 @@ export function flatten(arr) {
 }
 
 export function toggleTree(open) {
-    const models = c.RESULTS_MODELS_LIST.slice(1);
-    const fullTree = models.map(model => {
-        const parentModel = parentModelName(model);
-        const ids = store.getState().models[parentModel].ids;
-        return ids
-            .filter(
-                id => store.getState().models[parentModel].objects[id]._meta.children.ids.length > 0
-            )
-            .map(id => {
-                const keys = store.getState().models[parentModel].objects[id]._meta.children.ids;
-                return {
-                    activeKey: open ? idsToActiveKey(keys) : [],
-                    collapseId: collapseId(model, id)
-                };
-            });
-    });
+    const models = c.RESULTS_MODELS_LIST.slice(1),
+        fullTree = models.map(model => {
+            const parentModel = parentModelName(model),
+                modelObject = store.getState().models[parentModel];
+
+            return modelObject.ids
+                .filter(
+                    id =>
+                        modelObject.objects[id]._meta &&
+                        modelObject.objects[id]._meta.children.ids.length > 0
+                )
+                .map(id => {
+                    const keys = modelObject.objects[id]._meta.children.ids;
+                    return {
+                        activeKey: open ? idsToActiveKey(keys) : [],
+                        collapseId: collapseId(model, id)
+                    };
+                });
+        });
     return flatten(fullTree);
 }
 
@@ -421,7 +424,7 @@ export function computePercentage(numerator, denominator) {
     numerator = parseFloat(numerator) || 0;
     denominator = parseFloat(denominator) || 0;
     if (denominator != 0) {
-        return Math.round10(numerator * 100 / denominator, -2);
+        return Math.round10((numerator * 100) / denominator, -2);
     } else {
         return 0;
     }
