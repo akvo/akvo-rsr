@@ -722,6 +722,9 @@ div.update-confirm-container {
   .myProjectList tr td:last-child {
     text-align: right; }
 
+#user_table th:nth-child(4) {
+  visibility: hidden; }
+
 #user_table td.text-right > span > span:first-of-type {
   float: right;
   margin-left: 15px;
