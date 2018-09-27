@@ -109,6 +109,7 @@ def organisation_directory(request):
         'project_count': organisations_text_filtered.count(),
         'projects': OrganisationDirectorySerializer(display_organisations, many=True).data,
         'location': locations,
+        'page_size_default': settings.PROJECT_DIRECTORY_PAGE_SIZES[0],
     }
     return Response(response)
 
