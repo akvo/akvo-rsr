@@ -448,11 +448,7 @@ def user_management(request):
     """
 
     def _restrictions_turned_on(user):
-        # "Feature flag" for access restrictions
-        restricting_orgs = settings.ACCESS_RESTRICTIONS_ORGS
-
-        if ('ALL' in restricting_orgs or
-                user.approved_organisations().filter(pk__in=restricting_orgs).exists()):
+        if user.approved_organisations().filter(enable_restrictions=True).exists():
             return True
         return False
 
