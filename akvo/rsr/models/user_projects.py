@@ -45,12 +45,12 @@ def restrict_projects(admin, user, projects):
     return user_projects
 
 
-def unrestrict_projects(admin, user, projects):
+def unrestrict_projects(admin, user, projects, is_restricted=True):
     if admin is not None:
         check_valid_permission_change(admin, user, projects)
 
     try:
-        user_projects = UserProjects.objects.get(user=user, is_restricted=True)
+        user_projects = UserProjects.objects.get(user=user, is_restricted=is_restricted)
     except UserProjects.DoesNotExist:
         return
 

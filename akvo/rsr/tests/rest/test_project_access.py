@@ -304,3 +304,48 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(is_restricted)
+
+    def test_restrictions_unchanged_when_setting_is_restricted(self):
+        """
+        User M      User N      User O
+        Admin       Admin       User
+           \       /    \      /
+            \     /      \    /
+              Org A       Org B
+            /      \     /    \
+           /        \   /      \
+        Project X   Project Y   Project Z
+
+        Test that toggling is_restricted does not change the UserProject.projects QS
+        """
+        #  When
+        self.c.login(username=self.user_n.username, password=self.password_n)
+        Y, Z = self.projects['Y'], self.projects['Z']
+        # Visit the endpoint to instantiate a UserProjects object
+        response = self.c.get('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
+                              {'format': 'json'})
+
+        # Toggle is_restricted to False
+        data = json.dumps({
+            'user_projects': {
+                'is_restricted': False, 'projects': response.data['user_projects']['projects']
+            },
+        })
+        response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
+                                data=data, content_type='application/json')
+        # Toggle is_restricted back to True
+        data = json.dumps({
+            'user_projects': {
+                'is_restricted': True, 'projects': response.data['user_projects']['projects']
+            },
+        })
+        response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
+                                data=data, content_type='application/json')
+
+        is_restricted = response.data['user_projects']['is_restricted']
+        projects = response.data['user_projects']['projects']
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(is_restricted)
+        self.assertSequenceEqual(projects, [Z.pk, Y.pk])

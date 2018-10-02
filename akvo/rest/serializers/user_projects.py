@@ -149,7 +149,8 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
 
                 # Now we unrestrict the accessible_projects
                 if accessible_projects:
-                    unrestrict_projects(admin, user, accessible_projects)
+                    unrestrict_projects(admin, user, accessible_projects,
+                                        user_projects.is_restricted)
 
                 # Finally set is_restricted
                 is_restricted = user_projects_data.get('is_restricted', None)
