@@ -456,15 +456,15 @@ def user_management(request):
             return True
         return False
 
-    user = request.user
+    admin = request.user
 
-    if not user.has_perm('rsr.user_management'):
+    if not admin.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    org_admin = user.approved_employments().filter(group__name='Admins').exists() or \
-        user.is_admin or user.is_superuser
+    org_admin = admin.approved_employments().filter(group__name='Admins').exists() or \
+        admin.is_admin or admin.is_superuser
 
-    manageables = manageable_objects(user)
+    manageables = manageable_objects(admin)
 
     employments = manageables['employments']
     organisations_list = list(manageables['organisations'].values('id', 'name'))
@@ -513,7 +513,7 @@ def user_management(request):
                 'id', 'first_name', 'last_name', 'email'
             ])
 
-            if _restrictions_turned_on(user):
+            if _restrictions_turned_on(admin):
                 # determine if this user's project access can be restricted
                 # TODO: this needs fixing, since a user can be admin for one org and project editor
                 # for another, or have an employment pending approval while being approved for
@@ -522,12 +522,15 @@ def user_management(request):
                     can_be_restricted = False
                 else:
                     try:
-                        check_user_manageable(user, employment.user)
+                        check_user_manageable(admin, employment.user)
                         can_be_restricted = True
                         user_projects = UserProjects.objects.filter(user=employment.user)
                         if user_projects.exists():
+                            admin_projects = admin.admin_projects()
                             user_dict['is_restricted'] = user_projects[0].is_restricted
-                            user_dict['restricted_count'] = user_projects[0].projects.count()
+                            user_dict['restricted_count'] = admin.admin_projects().filter(
+                                pk__in=user_projects[0].projects.all()
+                            ).count()
                     except InvalidPermissionChange:
                         can_be_restricted = False
 
