@@ -238,15 +238,37 @@ def allow_project_access_if_restrictions_disabled(sender, **kwargs):
         return
 
     partnership = kwargs['instance']
-    # Change permissions only when a reporting organisation is created
-    if not partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION:
+    partnership_roles = {
+        Partnership.IATI_REPORTING_ORGANISATION,
+        Partnership.IATI_IMPLEMENTING_PARTNER
+    }
+    # Change permissions only when a reporting organisation is created, or implementing partner is added
+    if partnership.iati_organisation_role not in partnership_roles:
         return
 
-    if partnership.organisation.enable_restrictions:
+    if partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION:
+        org = partnership.organisation
+
+    else:
+        reporting_org = partnership.project.reporting_org
+        # If project has no reporting organisation, don't do anything
+        if reporting_org is None:
+            return
+        content_owned_ids = set(reporting_org.content_owned_organisations().values_list('pk', flat=True))
+        # If the new implementing partner is not a content owned org, don't do anything
+        if partnership.organisation.pk not in content_owned_ids:
+            return
+        org = reporting_org
+
+    if org.enable_restrictions:
         return
 
     from akvo.rsr.models.user_projects import unrestrict_projects
+    users = (
+        partnership.organisation.content_owned_organisations().users()
+        if partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION
+        else partnership.organisation.all_users()
+    )
 
-    users = partnership.organisation.content_owned_organisations().users()
     for user in users:
         unrestrict_projects(None, user, [partnership.project])

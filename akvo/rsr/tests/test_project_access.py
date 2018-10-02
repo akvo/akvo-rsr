@@ -379,6 +379,107 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
 
+    def test_new_projects_become_accessible_to_new_content_owned_org_users(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \        /   \      /                  |
+            \      /     \    /                   |
+              Org A       Org B --- Project W---Org C
+            /      \      /    \                  |
+           /        \    /      \                 |
+        Project X   Project Y   Project Z         |
+            |                                     |
+            +-------------------------------------+
+        """
+        # Given
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
+        )
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=self.projects['X'],
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        self.user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=self.user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        restrict_projects(self.user_m, self.user_p, [self.projects['X']])
+
+        # When
+        self.projects['W'] = project = Project.objects.create(title='W')
+        # FIXME: Ideally, this call should be automatic, but is manual now.
+        Project.new_project_created(project.id, self.user_n)
+        Partnership.objects.create(
+            organisation=org_content_owned,
+            project=project,
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+
+        # Then
+        self.assertFalse(self.org_b.enable_restrictions)
+        self.assertTrue(org_content_owned.enable_restrictions)
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['X']))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertTrue(self.user_p.has_perm('rsr.view_project', project))
+
+    def test_new_projects_not_accessible_to_implementing_partners_not_content_owned_org_users(self):
+        """
+           ---------------------------------------------+
+          /                                             |
+        User M      User N      User O         User P   |
+        Admin       Admin       User              |     |
+           \        /   \      /                  |     |
+            \      /     \    /                   |     |
+              Org A       Org B --- Project W---Org C --+
+            /      \      /    \                  |
+           /        \    /      \                 |
+        Project X   Project Y   Project Z         |
+            |                                     |
+            +-------------------------------------+
+        """
+        # Given
+        self.org_b.enable_restrictions = False
+        self.org_b.save()
+        implementing_partner = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=True, enable_restrictions=True
+        )
+        Partnership.objects.create(
+            organisation=implementing_partner,
+            project=self.projects['X'],
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+        self.user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=self.user_p, organisation=implementing_partner, group=self.users, is_approved=True
+        )
+        Employment.objects.create(
+            user=self.user_m, organisation=implementing_partner, group=self.admins, is_approved=True
+        )
+        restrict_projects(self.user_m, self.user_p, [self.projects['X']])
+
+        # When
+        self.projects['W'] = project = Project.objects.create(title='W')
+        # FIXME: Ideally, this call should be automatic, but is manual now.
+        Project.new_project_created(project.id, self.user_n)
+        Partnership.objects.create(
+            organisation=implementing_partner,
+            project=project,
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
+        )
+
+        # Then
+        self.assertFalse(self.org_b.enable_restrictions)
+        self.assertTrue(implementing_partner.enable_restrictions)
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['X']))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Z']))
+        self.assertFalse(self.user_p.has_perm('rsr.view_project', project))
+
     def test_new_projects_are_accessible_in_unrestricted_content_owner_orgs(self):
         """
         User M      User N      User O         User P
