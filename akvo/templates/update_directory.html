@@ -10,7 +10,7 @@
 {% block js %}
     {{ block.super }}
 
-    <script src="//maps.google.com/maps/api/js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{gmaps_api_key}}"></script>
     {# Translation strings #}
     <script type="application/json" id="updates-text">
      {

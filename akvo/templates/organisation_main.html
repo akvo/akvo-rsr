@@ -5,7 +5,7 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
 -->
 
 {% extends "base.html" %}
-{% load i18n rsr_filters humanize rsr_utils maps %}
+{% load i18n rsr_filters humanize rsr_utils %}
 {% block title %}{{ organisation.name }}{% endblock %}
 {% block maincontent %}
   <div class="container organisationDetail">
@@ -238,7 +238,4 @@ For additional details on the GNU license please see http://www.gnu.org/licenses
 
 {% block js %}
   {{ block.super }}
-
-  {# Google Maps #}
-  <script src="//maps.google.com/maps/api/js"></script>
 {% endblock js %}

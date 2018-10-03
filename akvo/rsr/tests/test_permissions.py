@@ -110,6 +110,9 @@ class PermissionsTestCase(TestCase):
         self.assertTrue(user.has_perm('rsr.change_project', None))
         self.assertTrue(user.has_perm('rsr.change_partnersite'))
 
+        # "M&E manager" actions
+        self.assertTrue(user.has_perm('rsr.do_me_manager_actions'))
+
         # Organisation permissions
         for i, org in enumerate(self.orgs):
             test = self.assertTrue if i == 0 else self.assertFalse
@@ -195,6 +198,9 @@ class PermissionsTestCase(TestCase):
         # No object
         self.assertTrue(user.has_perm('rsr.change_project', None))
 
+        # "M&E manager" actions
+        self.assertFalse(user.has_perm('rsr.do_me_manager_actions'))
+
         # Organisation permissions
         for i, org in enumerate(self.orgs):
             test = self.assertTrue if i == 0 else self.assertFalse
@@ -278,6 +284,9 @@ class PermissionsTestCase(TestCase):
 
         # No object
         self.assertTrue(user.has_perm('rsr.change_project', None))
+
+        # "M&E manager" actions
+        self.assertTrue(user.has_perm('rsr.do_me_manager_actions'))
 
         # Organisation permissions
         for i, org in enumerate(self.orgs):
@@ -363,6 +372,9 @@ class PermissionsTestCase(TestCase):
         # No object
         self.assertFalse(user.has_perm('rsr.change_project', None))
 
+        # "M&E manager" actions
+        self.assertFalse(user.has_perm('rsr.do_me_manager_actions'))
+
         # Organisation permissions
         for i, org in enumerate(self.orgs):
             self.assertFalse(user.has_perm('rsr.change_organisation', org))
@@ -435,6 +447,9 @@ class PermissionsTestCase(TestCase):
         # None object permissions
         self.assertTrue(user.has_perm('rsr.view_project', None))
 
+        # "M&E manager" actions
+        self.assertFalse(user.has_perm('rsr.do_me_manager_actions'))
+
         # Test no permissions on None, if user doesn't have required employment
         self.assertFalse(user.has_perm('rsr.add_indicatorperioddata'))
 
@@ -459,6 +474,9 @@ class PermissionsTestCase(TestCase):
 
         # Permissions on None
         self.assertTrue(user.has_perm('rsr.view_project', None))
+
+        # "M&E manager" actions
+        self.assertFalse(user.has_perm('rsr.do_me_manager_actions'))
 
         # Project Update permissions
         for i, project_update in enumerate(self.project_updates):

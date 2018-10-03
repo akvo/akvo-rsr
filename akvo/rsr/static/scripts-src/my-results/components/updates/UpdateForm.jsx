@@ -1119,9 +1119,12 @@ export default class UpdateForm extends React.Component {
         };
 
         let update = Object.assign({}, this.props.update);
+        const indicator = getAncestor(c.OBJECTS_UPDATES, update.id, c.OBJECTS_INDICATORS);
         if (this.props.updates.changing) {
             //NOOP if we're already talking to the backend
             return;
+        } else if (indicator.type === c.INDICATOR_QUALITATIVE) {
+            update.value = null;
         } else if (!String(update.value).trim()) {
             if (action === c.UPDATE_ACTION_SAVE) {
                 // Explicitly empty data, only allowed when saving a draft
