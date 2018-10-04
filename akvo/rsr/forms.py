@@ -29,7 +29,7 @@ from .models import ProjectUpdateLocation
 
 from akvo import settings
 
-PASSWORD_MINIMUM_LENGTH = 12
+PASSWORD_MINIMUM_LENGTH = settings.PASSWORD_MINIMUM_LENGTH
 
 
 class RegisterForm(forms.Form):
