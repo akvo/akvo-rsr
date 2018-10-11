@@ -86,3 +86,24 @@ class LoginLoggingTestCase(BaseTestCase):
         # Then
         log_entry = LoginLog.objects.filter(email=self.email).first()
         self.assertTrue(log_entry.success)
+
+    def test_successful_login_resets_password_attempts(self):
+        # Given
+        # For legacy accounts email != username
+        self.user.username = 'frank'
+        self.user.save()
+        for _ in range(MAX_FAILED_LOGINS - 1):
+            with self.assertRaises(ValidationError):
+                self.c.login(username=self.user.username, password='')
+        self.c.login(username=self.user.username, password=self.password)
+
+        # When
+        with self.assertRaises(ValidationError):
+            self.c.login(username=self.user.username, password='')
+        fail_log_entry = LoginLog.objects.filter(email=self.email).first()
+        self.c.login(username=self.user.username, password=self.password)
+
+        # Then
+        log_entry = LoginLog.objects.filter(email=self.email).first()
+        self.assertFalse(fail_log_entry.success)
+        self.assertTrue(log_entry.success)

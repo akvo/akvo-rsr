@@ -8,6 +8,7 @@ from datetime import timedelta
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.signals import user_login_failed, user_logged_in
 from django.db import models
@@ -56,7 +57,12 @@ def log_failed_login(sender, credentials, **kwargs):
 
     """
     username = credentials['username']
-    LoginLog.objects.create(success=False, email=username)
+    User = get_user_model()
+    try:
+        email = User.objects.get(username=username).email
+    except User.DoesNotExist:
+        email = username
+    LoginLog.objects.create(success=False, email=email)
     failed_logins = count_failed_attempts(username)
     if failed_logins >= MAX_FAILED_LOGINS:
         raise forms.ValidationError(
