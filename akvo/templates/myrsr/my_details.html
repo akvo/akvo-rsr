@@ -39,6 +39,16 @@
             <form method="post" action="" id="passwordForm">
                 {% for field in change_password_form %}
                     {% bootstrap_field field %}
+                    {% if field.name == "new_password1" %}
+                        <ul class="help-block">
+                            <li>{% blocktrans %}Passwords must be at least {{password_length}} characters long{% endblocktrans %}</li>
+                            <li>{% trans "The password must contain at least one digit, 0-9" %}</li>
+                            <li>{% trans 'The password must contain at least one uppercase letter, A-Z.' %}</li>
+                            <li>{% trans 'The password must contain at least one lowercase letter, a-z.' %}</li>
+                            <li>{% trans 'The password must contain at least one symbol: ' %}
+                                {% blocktrans %}()[]{}|\`~!@#$%^&*_-+=;:'",<>./?{% endblocktrans %}</li>
+                        </ul>
+                    {% endif %}
                 {% endfor %}
                 {% buttons %}
                     <button type="submit" class="btn btn-default btn-sm">
