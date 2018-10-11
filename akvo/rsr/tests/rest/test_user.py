@@ -13,6 +13,7 @@ from django.conf import settings
 from django.test import TransactionTestCase, Client
 
 from akvo.codelists.models import Country, Version
+from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, User
 from akvo.utils import check_auth_groups
 
@@ -84,6 +85,71 @@ class UserTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 409)
         employment = Employment.objects.get(user=self.user, organisation_id=self.org.id)
         self.assertEqual(employment.group.name, 'Users')
+
+    def test_change_password_non_matching_passwords(self):
+        # Given
+        pk = self.user.id
+        data = {
+            'new_password1': 'passwdpasswd',
+            'new_password2': 'passwdpassw',
+            'old_password': 'password'
+        }
+
+        # When
+        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+
+        # Then
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(response.content.decode('utf-8').find(u'Passwords do not match.') > 0)
+
+    def test_change_password_too_short_password(self):
+        # Given
+        pk = self.user.id
+        data = {
+            'new_password1': 'passwdpassw',
+            'new_password2': 'passwdpassw',
+            'old_password': 'password'
+        }
+
+        # When
+        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+
+        # Then
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+
+    def test_change_password_no_digit_in_password(self):
+        # Given
+        pk = self.user.id
+        data = {
+            'new_password1': 'passwdpasswdA$',
+            'new_password2': 'passwdpasswdA$',
+            'old_password': 'password'
+        }
+        # When
+        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+
+        # Then
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'The password must contain at least one digit, 0-9.') > 0)
+
+    def test_change_password_no_symbol_in_password(self):
+        # Given
+        pk = self.user.id
+        data = {
+            'new_password1': 'passwdpasswdA1',
+            'new_password2': 'passwdpasswdA1',
+            'old_password': 'password'
+        }
+        # When
+        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+
+        # Then
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'The password must contain at least one symbol:') > 0)
 
     def _create_user(self, email, password, is_active=True):
         """Create a user with the given email and password."""

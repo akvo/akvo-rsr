@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
+from akvo.rsr.forms import check_password_minimum_length, check_password_has_number, \
+    check_password_has_upper, check_password_has_lower, check_password_has_symbol
 from .employment import EmploymentSerializer
 from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializer
 from .rsr_serializer import BaseRSRSerializer
@@ -113,6 +115,14 @@ class UserPasswordSerializer(serializers.Serializer):
         """Check if password1 and password2 match"""
         if data['new_password1'] != data['new_password2']:
             raise serializers.ValidationError(_(u'Passwords do not match.'))
+
+        password = data['new_password1']
+        check_password_minimum_length(password)
+        check_password_has_number(password)
+        check_password_has_upper(password)
+        check_password_has_lower(password)
+        check_password_has_symbol(password)
+
         return data
 
     def update(self, instance, validated_data):
