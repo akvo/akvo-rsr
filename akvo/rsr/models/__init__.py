@@ -51,6 +51,7 @@ from .legacy_data import LegacyData
 from .link import Link
 from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocation,
                        AdministrativeLocation)
+from .login_log import LoginLog
 from .organisation import Organisation
 from .organisation_indicator_label import OrganisationIndicatorLabel
 from .organisation_account import OrganisationAccount
@@ -124,6 +125,7 @@ __all__ = [
     'InternalOrganisationID',
     'Keyword',
     'LegacyData',
+    'LoginLog',
     'Link',
     'NarrativeReport',
     'Organisation',
