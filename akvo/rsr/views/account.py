@@ -48,7 +48,8 @@ def register(request):
                                       context_instance=context)
     else:
         form = RegisterForm()
-    return render_to_response('registration/register.html', {'form': form},
+    return render_to_response('registration/register.html',
+                              {'form': form, 'password_length': settings.PASSWORD_MINIMUM_LENGTH},
                               context_instance=context)
 
 

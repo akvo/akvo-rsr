@@ -6,6 +6,7 @@
 
 import re
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.core.mail import send_mail
 from django.db import models
@@ -103,6 +104,21 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', ]
+
+    def check_password(self, raw_password):
+        """
+        Returns a boolean of whether the raw_password was correct. Handles
+        hashing formats behind the scenes.
+        """
+        from akvo.rsr.models.login_log import is_login_disabled
+        from django import forms
+        if is_login_disabled(self.user.username):
+            message = _(u'Login has been disabled for %(time)d minutes') % {
+                'time': settings.LOGIN_DISABLE_TIME / 60.0
+            }
+            raise forms.ValidationError(message)
+
+        return super(User, self).check_password(raw_password)
 
     class Meta:
         app_label = 'rsr'
