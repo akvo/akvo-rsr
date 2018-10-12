@@ -72,30 +72,25 @@ def check_password_has_symbol(password):
 class PasswordValidationMixin():
 
     def clean(self):
-        def check_passwords_identical(password1, password2):
-            if password1 != password2:
-                raise forms.ValidationError(
-                    _(u'Passwords do not match. Please enter the same password in both fields.')
-                )
+        if self.errors:
+            raise forms.ValidationError(
+                self.errors[self.errors.keys()[0]]
+            )
 
         if 'password1' in self.cleaned_data:
-            password1 = self.cleaned_data['password1']
-            password2 = self.cleaned_data['password2']
+            password = self.cleaned_data['password1']
         elif 'new_password1' in self.cleaned_data:
-            password1 = self.cleaned_data['new_password1']
-            password2 = self.cleaned_data['new_password2']
+            password = self.cleaned_data['new_password1']
         else:
             raise forms.ValidationError(
                 _(u"Couldn't find the password fields in the form")
             )
 
-        check_passwords_identical(password1, password2)
-
-        check_password_minimum_length(password1)
-        check_password_has_number(password1)
-        check_password_has_upper(password1)
-        check_password_has_lower(password1)
-        check_password_has_symbol(password1)
+        check_password_minimum_length(password)
+        check_password_has_number(password)
+        check_password_has_upper(password)
+        check_password_has_lower(password)
+        check_password_has_symbol(password)
 
         return self.cleaned_data
 
@@ -146,6 +141,16 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
                 or get_user_model().objects.filter(username__iexact=email).exists():
             raise forms.ValidationError(_(u'A user with this email address already exists.'))
         return email
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError(
+                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                )
+        return password2
 
     def save(self, request):
         """
