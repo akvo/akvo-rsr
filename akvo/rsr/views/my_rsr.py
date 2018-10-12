@@ -25,8 +25,8 @@ from akvo.codelists.store.default_codelists import (
 )
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
-from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
-                     SelectOrgForm)
+from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
+                     RSRPasswordChangeForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
                       project_access_filter)
@@ -118,7 +118,7 @@ def my_details(request):
     organisation_count = Organisation.objects.all().count()
     country_count = Country.objects.all().count()
 
-    change_password_form = PasswordForm(request.user)
+    change_password_form = RSRPasswordChangeForm(request.user)
 
     api_key = ApiKey.objects.get_or_create(user=request.user)[0].key
 

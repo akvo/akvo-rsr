@@ -13,7 +13,7 @@ import re
 from django import forms
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
@@ -69,7 +69,38 @@ def check_password_has_symbol(password):
         )
 
 
-class RegisterForm(forms.Form):
+class PasswordValidationMixin():
+
+    def clean(self):
+        def check_passwords_identical(password1, password2):
+            if password1 != password2:
+                raise forms.ValidationError(
+                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                )
+
+        if 'password1' in self.cleaned_data:
+            password1 = self.cleaned_data['password1']
+            password2 = self.cleaned_data['password2']
+        elif 'new_password1' in self.cleaned_data:
+            password1 = self.cleaned_data['new_password1']
+            password2 = self.cleaned_data['new_password2']
+        else:
+            raise forms.ValidationError(
+                _(u"Couldn't find the password fields in the form")
+            )
+
+        check_passwords_identical(password1, password2)
+
+        check_password_minimum_length(password1)
+        check_password_has_number(password1)
+        check_password_has_upper(password1)
+        check_password_has_lower(password1)
+        check_password_has_symbol(password1)
+
+        return self.cleaned_data
+
+
+class RegisterForm(PasswordValidationMixin, forms.Form):
     email = forms.EmailField(
         label=_(u'Email'),
         max_length=254,
@@ -105,31 +136,6 @@ class RegisterForm(forms.Form):
             render_value=False
         )
     )
-
-    def clean(self):
-        """
-        Verify that the values entered into the two password fields match.
-        Note that an error here will end up in non_field_errors() because it doesn't
-        apply to a single field.
-        """
-
-        def check_passwords_identical(form):
-            if 'password1' in form.cleaned_data and 'password2' in form.cleaned_data:
-                if form.cleaned_data['password1'] != form.cleaned_data['password2']:
-                    raise forms.ValidationError(
-                        _(u'Passwords do not match. Please enter the same password in both fields.')
-                    )
-
-        check_passwords_identical(self)
-
-        password = self.cleaned_data['password1']
-        check_password_minimum_length(password)
-        check_password_has_number(password)
-        check_password_has_upper(password)
-        check_password_has_lower(password)
-        check_password_has_symbol(password)
-
-        return self.cleaned_data
 
     def clean_email(self):
         """
@@ -199,7 +205,7 @@ class ProfileForm(forms.Form):
         user.save()
 
 
-class PasswordForm(PasswordChangeForm):
+class RSRPasswordChangeForm(PasswordValidationMixin, PasswordChangeForm):
     """
     Custom password form to remove the labels of the form fields.
     """
@@ -224,6 +230,14 @@ class PasswordForm(PasswordChangeForm):
             render_value=False
         )
     )
+
+
+class RSRSetPasswordForm(PasswordValidationMixin, SetPasswordForm):
+    """
+    Customization of SetPasswordForm to extend validation
+    """
+    def clean(self):
+        super(RSRSetPasswordForm, self).clean()
 
 
 class InvitedUserForm(forms.Form):

@@ -10,8 +10,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
-from akvo.rsr.forms import check_password_minimum_length, check_password_has_number, \
-    check_password_has_upper, check_password_has_lower, check_password_has_symbol
+from akvo.rsr.forms import (check_password_minimum_length, check_password_has_number,
+                            check_password_has_upper, check_password_has_lower,
+                            check_password_has_symbol)
+
 from .employment import EmploymentSerializer
 from .organisation import OrganisationExtraSerializer, OrganisationBasicSerializer
 from .rsr_serializer import BaseRSRSerializer
