@@ -205,7 +205,7 @@ class ProfileForm(forms.Form):
         user.save()
 
 
-class RSRPasswordChangeForm(PasswordValidationMixin, PasswordChangeForm):
+class RSRPasswordChangeForm(PasswordChangeForm):
     """
     Custom password form to remove the labels of the form fields.
     """
