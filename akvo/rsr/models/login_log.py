@@ -63,7 +63,7 @@ def log_failed_login(sender, credentials, **kwargs):
     except User.DoesNotExist:
         email = username
     LoginLog.objects.create(success=False, email=email)
-    failed_logins = count_failed_attempts(username)
+    failed_logins = count_failed_attempts(email)
     if failed_logins >= MAX_FAILED_LOGINS:
         raise forms.ValidationError(
             _(u'Login has been disabled for %(time)d minutes') % {
