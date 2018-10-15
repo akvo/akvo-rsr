@@ -3,43 +3,50 @@
 {% load i18n humanize bootstrap3 %}
 
 {% block title %}
-    {% trans 'Activate your RSR account' %}
+  {% trans 'Activate your RSR account' %}
 {% endblock title %}
 
 {% block maincontent %}
-    <div class="container">
-        {% if bad_link %}
-            <div class="row">
-                <h1>{% trans 'Your activation link is incorrect' %}</h1>
-		        <h2>
-                    <small>
-                        {% trans 'Unfortunately, your activation link is incorrect. Please contact' %}
-                        {# Javascript will generate the support feedback email, as to reduce spam #}
-                        {# <a href="mailto:rsr@akvo.org?subject=RSR feedback">rsr@akvo.org</a> #}
-                        <script type="text/javascript">document.write(String.fromCharCode(60,97,32,104,114,101,102,61,34,109,97,105,108,116,111,58,114,115,114,64,97,107,118,111,46,111,114,103,63,115,117,98,106,101,99,116,61,82,83,82,32,102,101,101,100,98,97,99,107,34,62,114,115,114,64,97,107,118,111,46,111,114,103,60,47,97,62));</script>
-                        {% trans 'if you would like to activate your account.' %}
-                    </small>
-                </h2>
-            </div>
-        {% else %}
-            <h2 class="text-center verticalPadding">{% trans 'Activate your account' %}</h2>
-            <h4 class="text-center verticalPadding">{% trans 'Please fill in your first and last name, and set a password for your account.' %}</h4>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <form method="post" action="" name="invitedUserForm">
-                        {% csrf_token %}
-                        {% bootstrap_form_errors form type='non_fields' %}
-                        {% for field in form %}
-                            {% bootstrap_field field %}
-                        {% endfor %}
-                        {% buttons %}
-                            <button type="submit" class="btn btn-success center-block">
-                               <i class="fa fa-check"></i> {% trans 'Activate' %}
-                            </button>
-                        {% endbuttons %}
-                    </form>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+  <div class="container">
+    {% if bad_link %}
+      <div class="row">
+        <h1>{% trans 'Your activation link is incorrect' %}</h1>
+        <h2>
+          <small>
+            {% trans 'Unfortunately, your activation link is incorrect. Please contact' %}
+            {# Javascript will generate the support feedback email, as to reduce spam #}
+            {# <a href="mailto:rsr@akvo.org?subject=RSR feedback">rsr@akvo.org</a> #}
+            <script type="text/javascript">document.write(String.fromCharCode(
+                60, 97, 32, 104, 114, 101, 102, 61, 34, 109, 97, 105, 108, 116, 111, 58, 114, 115,
+                114, 64, 97, 107, 118, 111, 46, 111, 114, 103, 63, 115, 117, 98, 106, 101, 99, 116,
+                61, 82, 83, 82, 32, 102, 101, 101, 100, 98, 97, 99, 107, 34, 62, 114, 115, 114, 64,
+                97, 107, 118, 111, 46, 111, 114, 103, 60, 47, 97, 62));
+            </script>
+            {% trans 'if you would like to activate your account.' %}
+          </small>
+        </h2>
+      </div>
+    {% else %}
+      <h2 class="text-center verticalPadding">{% trans 'Activate your account' %}</h2>
+      <h4 class="text-center verticalPadding">
+        {% trans 'Please fill in your first and last name, and set a password for your account.' %}
+      </h4>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <form method="post" action="" name="invitedUserForm">
+            {% csrf_token %}
+            {% bootstrap_form_errors form type='non_fields' %}
+            {% for field in form %}
+              {% bootstrap_field field %}
+            {% endfor %}
+            {% buttons %}
+              <button type="submit" class="btn btn-success center-block">
+                <i class="fa fa-check"></i> {% trans 'Activate' %}
+              </button>
+            {% endbuttons %}
+          </form>
+        </div>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
