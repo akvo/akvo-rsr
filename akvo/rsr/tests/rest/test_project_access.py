@@ -349,3 +349,98 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(is_restricted)
         self.assertSequenceEqual(projects, [Z.pk, Y.pk])
+
+    def test_user_may_be_unrestricted_only_by_eligible_admin(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \            \      /                  |
+            \            \    /                   |
+              Org A       Org B           Org C (content owned)
+            /      \           \          /̶ P     |
+           /        \           \        /̶ P      |
+        Project X   Project Y   Project Z         |
+                        |                         |
+                        +-------------------------+
+
+        Check the may_unrestrict field on the UserProjectsSerializer
+        """
+        # When
+        Y, Z = self.projects['Y'], self.projects['Z']
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
+        )
+        Partnership.objects.create( organisation=org_content_owned, project=Y,
+                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create( organisation=org_content_owned, project=Z,
+                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        Employment.objects.get(user=self.user_n, organisation=self.org_a).delete()
+        Partnership.objects.get(organisation=self.org_b, project=Y).delete()
+
+        restrict_projects(self.user_n, user_p, [Z])
+
+        self.c.login(username=self.user_m.username, password=self.password_m)
+        response_m = self.c.get('/rest/v1/user_projects_access/{}/'.format(user_p.pk),
+                                content_type='application/json')
+        self.c.login(username=self.user_n.username, password=self.password_n)
+        response_n = self.c.get('/rest/v1/user_projects_access/{}/'.format(user_p.pk),
+                                content_type='application/json')
+
+        # Then
+        may_unrestrict_m = response_m.data['user_projects']['may_unrestrict']
+        may_unrestrict_n = response_n.data['user_projects']['may_unrestrict']
+
+        self.assertFalse(may_unrestrict_m)
+        self.assertTrue(may_unrestrict_n)
+
+
+    def test_unrestrict_user_with_restricted_projects_from_other_org(self):
+        """
+        User M      User N      User O         User P
+        Admin       Admin       User              |
+           \            \      /                  |
+            \            \    /                   |
+              Org A       Org B           Org C (content owned)
+            /      \           \          /̶ P     |
+           /        \           \        /̶ P      |
+        Project X   Project Y   Project Z         |
+                        |           |             |
+                        +-----------+-------------+
+
+        Test that you can't unrestrict a user (set is_restricted to False) with restricted projects
+        that you don't control
+        """
+        # When
+        Y, Z = self.projects['Y'], self.projects['Z']
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
+        )
+        Partnership.objects.create( organisation=org_content_owned, project=Y,
+                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create( organisation=org_content_owned, project=Z,
+                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        Employment.objects.get(user=self.user_n, organisation=self.org_a).delete()
+        Partnership.objects.get(organisation=self.org_b, project=Y).delete()
+
+        restrict_projects(self.user_n, user_p, [Z])
+        self.c.login(username=self.user_m.username, password=self.password_m)
+        data = json.dumps({
+            'user_projects': {
+                'is_restricted': False, 'projects': [Y.pk]
+            },
+        })
+        response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(user_p.pk),
+                                data=data, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['non_field_errors'][0],
+                         u'This user may not be unrestricted at this time.')

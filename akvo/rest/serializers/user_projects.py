@@ -6,9 +6,9 @@
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
-from rest_framework.exceptions import PermissionDenied
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import User, UserProjects, Organisation, Project
@@ -17,12 +17,44 @@ from akvo.rsr.models.user_projects import restrict_projects, unrestrict_projects
 
 class UserProjectsSerializer(BaseRSRSerializer):
 
+    may_unrestrict = serializers.SerializerMethodField()
+
     class Meta:
         model = UserProjects
         fields = (
             'is_restricted',
             'projects',
+            'may_unrestrict',
         )
+
+    def get_may_unrestrict(self, obj):
+        admin = self.context['request'].user.user
+        user = obj.user
+
+        return not self.disallow_unrestrict(admin, user)
+
+    @staticmethod
+    def disallow_unrestrict(admin, user):
+        """ Determine if the admin is allowed to unrestrict a user
+            This depends on there not being any restricted projects for the user that the admin
+            cannot administer
+        """
+        try:
+            user_projects = UserProjects.objects.get(user=user)
+        except UserProjects.DoesNotExist:
+            return True
+
+        admin_projects = set(admin.admin_projects().values_list('pk', flat=True))
+
+        user_orgs = user.get_non_admin_employment_orgs()
+        user_associated_projects = user_orgs.all_projects().values_list('pk', flat=True)
+        # restricted projects are those not included in user_projects.projects.all()
+        user_restricted_projects = user_associated_projects.exclude(
+            pk__in=user_projects.projects.all()
+        ).values_list('pk', flat=True)
+        # if user_restricted_projects has projects that are not in admin_projects then restrictions
+        # should not be lifted
+        return bool(set(user_restricted_projects).difference(admin_projects))
 
 
 class UserProjectAccessSerializer(BaseRSRSerializer):
@@ -61,6 +93,23 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
             admin = self.context['request'].user
             # Make sure we have a UserProjects object, but don't change an existing one
             restrict_projects(admin, user, Project.objects.none())
+
+    def validate(self, data):
+        """ Here validate that we can unrestrict a user. This check is only done if is_restricted is
+            present in the data and is False
+        """
+        is_restricted = data.get('user_projects', []).get('is_restricted', None)
+        if is_restricted is False:
+
+            admin = self.context['request'].user.user
+            user = self.instance
+
+            if UserProjectsSerializer.disallow_unrestrict(admin, user):
+                raise serializers.ValidationError(
+                    _(u'This user may not be unrestricted at this time.')
+                )
+
+        return data
 
     def get_organisation_groups(self, obj):
 
