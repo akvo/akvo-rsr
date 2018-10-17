@@ -8,11 +8,12 @@ Forms and validation code for user registration and updating.
 """
 
 import datetime
+import re
 
 from django import forms
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.sites.models import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
@@ -28,8 +29,73 @@ from .models import ProjectUpdateLocation
 
 from akvo import settings
 
+PASSWORD_MINIMUM_LENGTH = settings.PASSWORD_MINIMUM_LENGTH
 
-class RegisterForm(forms.Form):
+
+def check_password_minimum_length(password):
+    if len(password) < PASSWORD_MINIMUM_LENGTH:
+        raise forms.ValidationError(
+            _(u'Passwords must be at least {} characters long.'.format(
+                PASSWORD_MINIMUM_LENGTH))
+        )
+
+
+def check_password_has_number(password):
+    if not re.findall('\d', password):
+        raise forms.ValidationError(
+            _(u'The password must contain at least one digit, 0-9.')
+        )
+
+
+def check_password_has_upper(password):
+    if not re.findall('[A-Z]', password):
+        raise forms.ValidationError(
+            _(u'The password must contain at least one uppercase letter, A-Z.')
+        )
+
+
+def check_password_has_lower(password):
+    if not re.findall('[a-z]', password):
+        raise forms.ValidationError(
+            _(u'The password must contain at least one lowercase letter, a-z.')
+        )
+
+
+def check_password_has_symbol(password):
+    if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+        raise forms.ValidationError(
+            _(u'The password must contain at least one symbol: '
+              u'()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?')
+        )
+
+
+class PasswordValidationMixin():
+
+    def clean(self):
+        if self.errors:
+            raise forms.ValidationError(
+                self.errors[self.errors.keys()[0]]
+            )
+
+        if 'password1' in self.cleaned_data:
+            password = self.cleaned_data['password1']
+        elif 'new_password1' in self.cleaned_data:
+            password = self.cleaned_data['new_password1']
+        else:
+            raise forms.ValidationError(
+                _(u"Couldn't find the password fields in the form")
+            )
+
+        check_password_minimum_length(password)
+        check_password_has_number(password)
+        check_password_has_upper(password)
+        check_password_has_lower(password)
+        check_password_has_symbol(password)
+
+        return self.cleaned_data
+
+
+class RegisterForm(PasswordValidationMixin, forms.Form):
     email = forms.EmailField(
         label=_(u'Email'),
         max_length=254,
@@ -66,19 +132,6 @@ class RegisterForm(forms.Form):
         )
     )
 
-    def clean(self):
-        """
-        Verify that the values entered into the two password fields match.
-        Note that an error here will end up in non_field_errors() because it doesn't
-        apply to a single field.
-        """
-        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise forms.ValidationError(
-                    _(u'Passwords do not match. Please enter the same password in both fields.')
-                )
-        return self.cleaned_data
-
     def clean_email(self):
         """
         Verify that the email entered does not exist as an email or username.
@@ -88,6 +141,16 @@ class RegisterForm(forms.Form):
                 or get_user_model().objects.filter(username__iexact=email).exists():
             raise forms.ValidationError(_(u'A user with this email address already exists.'))
         return email
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError(
+                    _(u'Passwords do not match. Please enter the same password in both fields.')
+                )
+        return password2
 
     def save(self, request):
         """
@@ -147,7 +210,7 @@ class ProfileForm(forms.Form):
         user.save()
 
 
-class PasswordForm(PasswordChangeForm):
+class RSRPasswordChangeForm(PasswordChangeForm):
     """
     Custom password form to remove the labels of the form fields.
     """
@@ -174,7 +237,15 @@ class PasswordForm(PasswordChangeForm):
     )
 
 
-class InvitedUserForm(forms.Form):
+class RSRSetPasswordForm(PasswordValidationMixin, SetPasswordForm):
+    """
+    Customization of SetPasswordForm to extend validation
+    """
+    def clean(self):
+        super(RSRSetPasswordForm, self).clean()
+
+
+class InvitedUserForm(PasswordValidationMixin, forms.Form):
     first_name = forms.CharField(
         label=_(u'First name'),
         max_length=30,
@@ -209,18 +280,15 @@ class InvitedUserForm(forms.Form):
         super(InvitedUserForm, self).__init__(*args, **kwargs)
         self.user = user
 
-    def clean(self):
-        """
-        Verify that the values entered into the two password fields match.
-        Note that an error here will end up in non_field_errors() because it doesn't
-        apply to a single field.
-        """
-        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
-            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2:
+            if password1 != password2:
                 raise forms.ValidationError(
                     _(u'Passwords do not match. Please enter the same password in both fields.')
                 )
-        return self.cleaned_data
+        return password2
 
     def save(self, request):
         """

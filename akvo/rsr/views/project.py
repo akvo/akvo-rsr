@@ -107,6 +107,9 @@ def main(request, project_id, template="project_main.html"):
     page = request.GET.get('page')
     page, paginator, page_range = pagination(page, updates, 10)
 
+    # Wordpress custom CSS trigger
+    iframe = request.GET.get('iframe')
+
     # Related documents
     related_documents = []
     for d in project.documents.all():
@@ -139,6 +142,7 @@ def main(request, project_id, template="project_main.html"):
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
         'user_is_me_manager': 'false',
+        'load_wp_css': iframe is not None,
     }
 
     context = project.project_hierarchy_context(context)
