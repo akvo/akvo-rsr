@@ -7,11 +7,11 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { _, dataFromElement} from "../utils";
+import { _, dataFromElement } from "../utils";
 
 import * as c from "../const";
 
-const IsRestricted = ({ _, isRestricted, onChangeIsRestricted }) => {
+const IsRestricted = ({ _, isRestricted, toggleIsRestricted }) => {
     return (
         <span>
             <label>
@@ -19,7 +19,7 @@ const IsRestricted = ({ _, isRestricted, onChangeIsRestricted }) => {
                     id="isRestricted"
                     type="checkbox"
                     checked={isRestricted}
-                    onChange={onChangeIsRestricted}
+                    onChange={toggleIsRestricted}
                 />
                 {/* The strings include <strong> tags which requires the use of
                     dangerouslySetInnerHTML */}
@@ -101,7 +101,7 @@ const Project = ({
     );
 };
 
-const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, isRestricted }) => {
+const SelectAll = ({ _, selectAll, toggleProjectSelectAll, isRestricted }) => {
     const uiSettings = isRestricted => {
         const buttonClass = "selectAllProjects" + (isRestricted ? "" : " disabled"),
             disabled = !isRestricted,
@@ -111,7 +111,7 @@ const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, isRestricted }) => 
     const { divClass, disabled, buttonClass } = uiSettings(isRestricted);
     return (
         <div className={divClass}>
-            <button onClick={onChangeProjectSelectAll} disabled={disabled} className={buttonClass}>
+            <button onClick={toggleProjectSelectAll} disabled={disabled} className={buttonClass}>
                 {selectAll ? _("check_all_projects") : _("uncheck_all_projects")}
             </button>
         </div>
@@ -122,31 +122,14 @@ const Error = ({ _, error }) => {
     return error ? <div className="error">{_("an_error_occured") + error.message}</div> : null;
 };
 
-const Projects = ({
-    _,
-    error,
-    groupedProjects,
-    isRestricted,
-    selectAll,
-    onChangeIsRestricted,
-    onChangeProjectSelectAll,
-    onChangeProjectSelected
-}) => {
+const Projects = ({ groupedProjects, toggleProjectSelected, ...props }) => {
+    const { _, isRestricted } = props;
     const className = isRestricted ? "" : "disabled";
     return (
         <span>
-            <Error _={_} error={error} />
-            <IsRestricted
-                _={_}
-                isRestricted={isRestricted}
-                onChangeIsRestricted={onChangeIsRestricted}
-            />
-            <SelectAll
-                _={_}
-                selectAll={selectAll}
-                onChangeProjectSelectAll={onChangeProjectSelectAll}
-                isRestricted={isRestricted}
-            />
+            <Error {...props} />
+            <IsRestricted {...props} />
+            <SelectAll {...props} />
             <table>
                 <thead>
                     <tr>
@@ -170,7 +153,7 @@ const Projects = ({
                                     key={project.id}
                                     project={project}
                                     isRestricted={isRestricted}
-                                    onChangeProjectSelected={onChangeProjectSelected}
+                                    onChangeProjectSelected={toggleProjectSelected}
                                     firstProjectOfOrgGroup={firstProjectOfOrgGroup}
                                     rowSpan={rowSpan}
                                     orgs={group.organisations}
@@ -228,27 +211,33 @@ class App extends React.Component {
     }
 
     render() {
-        const { projectsLoaded, selectAll, groupedProjects, isRestricted, error } = this.props;
+        const {
+            props,
+            _,
+            toggleIsRestricted,
+            toggleProjectSelectAll,
+            toggleProjectSelected
+        } = this;
+        const newProps = {
+            ...props,
+            _,
+            toggleIsRestricted,
+            toggleProjectSelectAll,
+            toggleProjectSelected
+        };
+        const { projectsLoaded } = props;
         return projectsLoaded ? (
-            <Projects
-                _={this._}
-                error={error}
-                isRestricted={isRestricted}
-                selectAll={selectAll}
-                groupedProjects={groupedProjects}
-                onChangeIsRestricted={this.toggleIsRestricted}
-                onChangeProjectSelectAll={this.toggleProjectSelectAll}
-                onChangeProjectSelected={this.toggleProjectSelected}
-            />
+            <Projects {...newProps} />
         ) : (
-            <div className="loading">{this._('loading')} <i className="fa fa-spin fa-spinner" /></div>
+            <div className="loading">
+                {_("loading")} <i className="fa fa-spin fa-spinner" />
+            </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const { projectsLoaded, fetching, error, groupedProjects, isRestricted, selectAll, strings } = state;
-    return { projectsLoaded, fetching, error, groupedProjects, isRestricted, selectAll, strings };
+    return state;
 };
 
 const mapDispatchToProps = dispatch => {
