@@ -65,7 +65,7 @@ export default function reducer(state = initialState, action) {
 
         [c.API_GET_SUCCESS]: (state, action) => {
             const {
-                user_projects: { is_restricted: isRestricted },
+                user_projects: { is_restricted: isRestricted, may_unrestrict: mayUnrestrict },
                 organisation_groups: groupedProjects
             } = action.data;
             return {
@@ -73,7 +73,8 @@ export default function reducer(state = initialState, action) {
                 fetching: false,
                 projectsLoaded: true,
                 groupedProjects,
-                isRestricted
+                isRestricted,
+                mayUnrestrict
             };
         },
 

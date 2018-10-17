@@ -11,15 +11,16 @@ import { _, dataFromElement } from "../utils";
 
 import * as c from "../const";
 
-const IsRestricted = ({ _, isRestricted, toggleIsRestricted }) => {
+const IsRestricted = ({ _, isRestricted, mayUnrestrict, toggleIsRestricted }) => {
     return (
-        <span>
+        <span className={mayUnrestrict ? "" : "disableUnrestrict"}>
             <label>
                 <input
                     id="isRestricted"
                     type="checkbox"
                     checked={isRestricted}
                     onChange={toggleIsRestricted}
+                    disabled={!mayUnrestrict}
                 />
                 {/* The strings include <strong> tags which requires the use of
                     dangerouslySetInnerHTML */}
@@ -30,6 +31,9 @@ const IsRestricted = ({ _, isRestricted, toggleIsRestricted }) => {
                             : _("user_access_unrestricted")
                     }}
                 />
+                {mayUnrestrict ? null : (
+                <span className="unrestrictNote">NOTE: This user cannot be unrestricted because of other restricted projects than those listed here</span>
+            )}
             </label>
             {isRestricted ? (
                 <div

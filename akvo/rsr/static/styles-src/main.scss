@@ -5299,12 +5299,17 @@ main.results-page {
         margin-top: -0.75em;
         margin-bottom: 1.5em;
     }
+    .unrestrictNote {
+        margin-left: 0.5em;
+    }
     .loading {
         margin-top: 20px;
         margin-left: 5px;
         font-size: 120%;
     }
-
+    .disableUnrestrict {
+        color: lighten($akvoBlack, 60%);
+    }
     table {
         width: 100%;
         border-bottom: 1px solid $akvoBlack;

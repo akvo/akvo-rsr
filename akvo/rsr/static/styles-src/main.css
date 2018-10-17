@@ -4302,10 +4302,14 @@ main.results-page {
   #userProjects .restrictedInfo {
     margin-top: -0.75em;
     margin-bottom: 1.5em; }
+  #userProjects .unrestrictNote {
+    margin-left: 0.5em; }
   #userProjects .loading {
     margin-top: 20px;
     margin-left: 5px;
     font-size: 120%; }
+  #userProjects .disableUnrestrict {
+    color: #b7b7bf; }
   #userProjects table {
     width: 100%;
     border-bottom: 1px solid #202024; }
