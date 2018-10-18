@@ -546,7 +546,6 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['U']))
 
-
     # Remove a partner
 
     def test_removing_partner_does_not_restore_access(self):

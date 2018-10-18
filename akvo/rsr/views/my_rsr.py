@@ -522,7 +522,6 @@ def user_management(request):
                         can_be_restricted = True
                         user_projects = UserProjects.objects.filter(user=employment.user)
                         if user_projects.exists():
-                            admin_projects = admin.admin_projects()
                             user_dict['is_restricted'] = user_projects[0].is_restricted
                             user_dict['restricted_count'] = admin.admin_projects().filter(
                                 pk__in=user_projects[0].projects.all()

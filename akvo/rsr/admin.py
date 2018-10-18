@@ -254,7 +254,7 @@ class OrganisationAdminForm(forms.ModelForm):
 def enable_restrictions(modeladmin, request, queryset):
     queryset.update(enable_restrictions=True)
 
-    
+
 enable_restrictions.short_description = ("Enable project access restrictions for the selected "
                                          "organisations")
 

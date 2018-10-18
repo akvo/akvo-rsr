@@ -89,7 +89,6 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertEqual(org_groups[1]['projects'][0]['id'], self.projects['Z'].pk)
         self.assertTrue(org_groups[1]['projects'][0]['access'])
 
-
     def test_endpoint_for_admin_and_user_having_same_org(self):
         """
         /̶ o and \̶ o = project with restricted access for user_o
@@ -208,7 +207,6 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertEqual(org_groups[1]['projects'][0]['id'], self.projects['Z'].pk)
         self.assertTrue(org_groups[1]['projects'][0]['access'])
 
-
     def test_endpoint_for_admin_n_user_o_with_extra_employment(self):
         """
         Test where user o has an employment in C too
@@ -293,8 +291,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         #  When
         self.c.login(username=self.user_n.username, password=self.password_n)
         # Visit the endpoint to instantiate a UserProjects object
-        self.c.get('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
-                              {'format': 'json'})
+        self.c.get('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk), {'format': 'json'})
         response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(self.user_o.pk),
                                 data=json.dumps({'user_projects': {'is_restricted': True}}),
                                 content_type='application/json')
@@ -370,10 +367,10 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         org_content_owned = Organisation.objects.create(
             name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
-        Partnership.objects.create( organisation=org_content_owned, project=Y,
-                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
-        Partnership.objects.create( organisation=org_content_owned, project=Z,
-                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create(organisation=org_content_owned, project=Y,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create(organisation=org_content_owned, project=Z,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
         user_p = self.create_user('P@org.org')
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
@@ -397,7 +394,6 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertFalse(may_unrestrict_m)
         self.assertTrue(may_unrestrict_n)
 
-
     def test_unrestrict_user_with_restricted_projects_from_other_org(self):
         """
         User M      User N      User O         User P
@@ -419,10 +415,10 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         org_content_owned = Organisation.objects.create(
             name='C', long_name='C', can_create_projects=False, enable_restrictions=True
         )
-        Partnership.objects.create( organisation=org_content_owned, project=Y,
-                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
-        Partnership.objects.create( organisation=org_content_owned, project=Z,
-                                    iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create(organisation=org_content_owned, project=Y,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create(organisation=org_content_owned, project=Z,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
         user_p = self.create_user('P@org.org')
         Employment.objects.create(
             user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
