@@ -420,7 +420,6 @@ class ProjectPostTestCase(TestCase):
         self.assertEqual(custom_field_1.max_characters, 1)
         self.assertTrue(custom_field_1.mandatory)
         self.assertEqual(custom_field_1.help_text, 'Help Text 1')
-<<<<<<< HEAD
 
 
 class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
@@ -515,5 +514,3 @@ class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
         project_id = response.data['id']
         my_projects_list = self.user_o.my_projects().values_list('id', flat=True)
         self.assertFalse(project_id in my_projects_list)
-=======
->>>>>>> develop

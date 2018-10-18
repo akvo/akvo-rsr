@@ -8,7 +8,7 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0133_auto_20180719_1952'),
+        ('rsr', '0134_loginlog'),
     ]
 
     operations = [
