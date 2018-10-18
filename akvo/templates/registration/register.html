@@ -15,7 +15,6 @@
                 {# Experimental honeypot field for registration bots #}
                 <input maxlength="30" name="hp_title" id="id_hp_title" type="text"/>
                 {% for field in form %}
-                    {% bootstrap_field field %}
                     {% if field.name == "password1" %}
                         <ul class="help-block">
                             <li>{% blocktrans %}Passwords must be at least {{password_length}} characters long{% endblocktrans %}</li>
@@ -26,6 +25,7 @@
                                 {% blocktrans %}()[]{}|\`~!@#$%^&*_-+=;:'",<>./?{% endblocktrans %}</li>
                         </ul>
                     {% endif %}
+                    {% bootstrap_field field %}
                 {% endfor %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary center-block">
