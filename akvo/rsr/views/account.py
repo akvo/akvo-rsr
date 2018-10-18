@@ -20,7 +20,7 @@ from akvo.utils import rsr_send_mail
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
@@ -295,7 +295,10 @@ def api_key(request):
     handles_unemployed = bool(request.POST.get("handles_unemployed", False))
 
     if username and password:
-        user = authenticate(username=username, password=password)
+        try:
+            user = authenticate(username=username, password=password)
+        except ValidationError:
+            user = None
         if user is not None and user.is_active:
             orgs = user.approved_organisations()
             if orgs or handles_unemployed:
