@@ -16,6 +16,7 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from urlparse import urlparse
 
+from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
 from akvo.utils import check_auth_groups
 
@@ -28,7 +29,7 @@ class AccountTestCase(TestCase):
         self.admin_group = Group.objects.get(name='Admins')
         self.user_group = Group.objects.get(name='Users')
         self.username = 'user@example.com'
-        self.password = 'password'
+        self.password = 'password1A$'
         self.title = 'Admiral'
         self.first_name = 'John'
         self.last_name = 'Doe'
@@ -130,40 +131,6 @@ class AccountTestCase(TestCase):
             set(edit_projects)
         )
 
-    def test_registration_without_honeypot_filled_in(self):
-        # Given
-        data = dict(
-            first_name=self.first_name,
-            last_name=self.last_name,
-            email=self.username,
-            password1=self.password,
-            password2=self.password,
-        )
-
-        # When
-        response = self.c.post('/en/register/', data=data)
-
-        # Then
-        self.assertEqual(response.status_code, 200)
-
-    def test_registration_with_honeypot_filled_in(self):
-        # Given
-        data = dict(
-            hp_title=self.title,
-            first_name=self.first_name,
-            last_name=self.last_name,
-            email=self.username,
-            password1=self.password,
-            password2=self.password,
-        )
-
-        # When
-        response = self.c.post('/en/register/', data=data)
-
-        # Then
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(urlparse(response._headers['location'][1]).path, '/en/')
-
     def _create_user(self, email, password, is_active=True, is_admin=False):
         """Create a user with the given email and password."""
 
@@ -177,3 +144,120 @@ class AccountTestCase(TestCase):
         user.save()
 
         return user
+
+
+class AccountRegistrationTestCase(TestCase):
+    """Test account views."""
+
+    def setUp(self):
+        self.username = 'user@example.com'
+        self.password = 'passwdpasswdA1$'
+        self.title = 'Admiral'
+        self.first_name = 'John'
+        self.last_name = 'Doe'
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+
+    def tearDown(self):
+        User.objects.all().delete()
+        self.data = None
+
+    def _create_registration_data(self, password1, password2=None):
+        if password2 is None:
+            password2 = password1
+        self.data = dict(
+            first_name=self.first_name,
+            last_name=self.last_name,
+            email=self.username,
+            password1=password1,
+            password2=password2,
+        )
+
+    def test_registration_without_honeypot_filled_in(self):
+        # Given
+        self._create_registration_data('passwordA1$')
+
+        # When
+        response = self.c.post('/en/register/', data=self.data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+
+    def test_registration_password_too_short(self):
+        # Given
+        self._create_registration_data('passwdpassw')
+
+        # When
+        response = self.c.post('/en/register/', data=self.data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+
+    def test_registration_password_has_no_digit(self):
+        # Given
+        self._create_registration_data('passwdpasswdA$')
+
+        # When
+        response = self.c.post('/en/register/', data=self.data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'The password must contain at least one digit, 0-9.') > 0)
+
+    def test_registration_password_has_no_symbol(self):
+        # Given
+        self._create_registration_data('passwdpasswdA1')
+
+        # When
+        response = self.c.post('/en/register/', data=self.data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'The password must contain at least one symbol: '
+            u'()[]{}|\\`~!@#$%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0)
+
+    def test_registration_password_has_no_uppercase(self):
+        # Given
+        self._create_registration_data('passwdpasswd1$')
+
+        # When
+        response = self.c.post('/en/register/', data=self.data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'The password must contain at least one uppercase letter, A-Z.') > 0)
+
+    def test_registration_password_has_no_lowercase(self):
+        # Given
+        self._create_registration_data('PASSWDPASSWD1$')
+
+        # When
+        response = self.c.post('/en/register/', data=self.data)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.content.decode('utf-8').find(
+            u'The password must contain at least one lowercase letter, a-z.') > 0)
+
+    def test_registration_with_honeypot_filled_in(self):
+        # Given
+        data = dict(
+            first_name=self.first_name,
+            last_name=self.last_name,
+            hp_title=self.title,
+            email=self.username,
+            password1=self.password,
+            password2=self.password,
+        )
+
+        # When
+        response = self.c.post('/en/register/', data=data)
+
+        # Then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response._headers['location'][1]).path, '/en/')

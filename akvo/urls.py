@@ -5,10 +5,10 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.utils import check_auth_groups
+from .rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
+from .rsr.forms import RSRSetPasswordForm
+from .utils import check_auth_groups
 from .rsr.views import widgets as widget_views
-
-from akvo.rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 
 from django.conf import settings
 from django.conf.urls import (include, patterns, url)
@@ -102,7 +102,8 @@ urlpatterns = i18n_patterns(
         'akvo.rsr.views.account.sign_out', name='sign_out'),
 
     url(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        'django.contrib.auth.views.password_reset_confirm', name='password_reset_confirm'),
+        'django.contrib.auth.views.password_reset_confirm', name='password_reset_confirm',
+        kwargs={'set_password_form': RSRSetPasswordForm}),
 
     url(r'^reset_password/complete/$',
         'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),

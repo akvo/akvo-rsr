@@ -17,7 +17,7 @@ class BaseTestCase(TestCase):
         """Create a user with the given email."""
 
         first_name = email.split('@')[0]
-        last_name = 'von {}'.format(first_name)
+        last_name = 'von {}enstein'.format(first_name)
         user = User.objects.create(
             email=email,
             username=email,
