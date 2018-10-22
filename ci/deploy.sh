@@ -8,11 +8,6 @@ function log {
 
 export PROJECT_NAME=akvo-lumen
 
-if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
-    ## Not deploying to prod until prod is ready.
-    exit 0
-fi
-
 if [[ "${TRAVIS_BRANCH}" != "develop" ]] && [[ "${TRAVIS_BRANCH}" != "master" ]] && [[ "${TRAVIS_BRANCH}" != "issue/3337-dockerize-django" ]]; then
     exit 0
 fi
