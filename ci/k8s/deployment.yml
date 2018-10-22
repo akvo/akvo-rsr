@@ -50,12 +50,12 @@ spec:
         - name: REPORT_SERVER_API_KEY
           valueFrom:
             secretKeyRef:
-              name: "rsr-test-secret"
+              name: "rsr-secret"
               key: report-server-api-key
         - name: REPORT_SERVER_URL
           valueFrom:
             secretKeyRef:
-              name: "rsr-test-secret"
+              name: "rsr-secret"
               key: report-server-url
       - name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
@@ -92,12 +92,12 @@ spec:
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: "rsr-test-secret"
+              name: "rsr-secret"
               key: sentry-dsn
         - name: DJANGO_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: "rsr-test-secret"
+              name: "rsr-secret"
               key: django-secret-key
         - name: ENABLE_STATS
           value: "yes please"
@@ -162,7 +162,7 @@ spec:
            emptyDir: {}
          - name: "secret-config"
            secret:
-             secretName: "rsr-test-secret"
+             secretName: "rsr-secret"
          - name: rsr-media-disk
            persistentVolumeClaim:
              claimName: rsr-media-disk
