@@ -256,7 +256,8 @@ def allow_project_access_if_restrictions_disabled(sender, **kwargs):
             return
         content_owned_ids = set(reporting_org.content_owned_organisations().values_list('pk', flat=True))
         # If the new implementing partner is not a content owned org, don't do anything
-        if partnership.organisation.pk not in content_owned_ids:
+        # NOTE: partnership.organisation is None when saving from the project Editor - weird saving!
+        if partnership.organisation is None or partnership.organisation.pk not in content_owned_ids:
             return
         org = reporting_org
 
