@@ -69,6 +69,7 @@ docker push eu.gcr.io/${PROJECT_NAME}/rsr-statsd-to-prometheus
 sed -e "s/\${TRAVIS_COMMIT}/$TRAVIS_COMMIT/" ci/k8s/deployment.yml > deployment.yml.tmp
 
 kubectl apply -f ci/k8s/media-disk.yml
+kubectl apply -f ci/k8s/service.yml
 kubectl apply -f deployment.yml.tmp
 
 log Waiting for k8s to finish
