@@ -134,17 +134,17 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
 
         # The project list is split on partners shared by the project and the admin or the user
         project_sets = {}
+        admin_orgs_pks = set(admin_orgs.values_list('pk', flat=True))
+        user_orgs_pks = set(user_orgs.values_list('pk', flat=True))
         for project in common_projects:
             # Determine which partners the the project has in common with the admin and/or the user
             # See the tests at rest.test_project_access for more detail on the resulting data
             # structure
-            project_partners = project.all_partners()
-            admin_orgs_for_project = admin_orgs & project_partners
-            user_orgs_for_project = user_orgs & project_partners
-            admin_org_pks = admin_orgs_for_project.values_list('pk', flat=True)
-            user_org_pks = user_orgs_for_project.values_list('pk', flat=True)
+            project_partners_pks = set(project.all_partners().values_list('pk', flat=True))
+            admin_org_for_project_pks = admin_orgs_pks & project_partners_pks
+            user_org_for_project_pks = user_orgs_pks & project_partners_pks
             # Crete a tuple of the org's pks so it can be used as a dict key
-            common_orgs_pks = tuple(set().union(admin_org_pks, user_org_pks))
+            common_orgs_pks = tuple(admin_org_for_project_pks | user_org_for_project_pks)
             project_sets.setdefault(common_orgs_pks, []).append(project)
 
         projects_grouped_by_orgs = []
