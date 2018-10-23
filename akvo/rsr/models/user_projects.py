@@ -42,6 +42,10 @@ def restrict_projects(admin, user, projects):
         for project in projects:
             user_projects.projects.remove(project)
 
+        if not user_projects.is_restricted:
+            user_projects.is_restricted = True
+            user_projects.save(update_fields=['is_restricted'])
+
     return user_projects
 
 
