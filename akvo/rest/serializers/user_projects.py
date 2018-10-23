@@ -179,27 +179,33 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
                 # All projects the admin can restrict
                 admin_associated_projects = admin.admin_projects()
 
-                # Check if we have a list of projects. These are all projects that the admin can
-                # grant access to
+                # Check if we have a list of projects. These are all projects
+                # that the admin can grant access to. The user may have access
+                # to other projects, which this admin cannot restrict/grant
+                # access to.
                 accessible_projects = user_projects_data.get('projects', None)
+                accessible_project_pks = set(p.pk for p in accessible_projects or {})
 
-                # To set restrictions, we restrict all admin_associated_projects and then add
-                # back the accessible_projects.
+                # The projects where the admin has restricted access by
+                # unselecting previously selected check boxes
+                try:
+                    projects = UserProjects.objects.get(user=user).projects.values_list('pk', flat=True)
+                except UserProjects.DoesNotExist:
+                    projects = []
 
-                if accessible_projects is not None:
-                    user_projects = restrict_projects(admin, user, admin_associated_projects)
+                restricted_projects = set(projects) - accessible_project_pks
+                user_projects = restrict_projects(
+                    admin, user, Project.objects.filter(pk__in=restricted_projects)
+                )
 
-                # If accessible_projects is None no changes to restrictions should be made, so we
-                # call restrict_projects with an empty Project QS to get the current one back
-                # without modifying it
-                else:
-                    accessible_projects = Project.objects.none()
-                    user_projects = restrict_projects(admin, user, accessible_projects)
-
-                # Now we unrestrict the accessible_projects
-                if accessible_projects:
-                    unrestrict_projects(admin, user, accessible_projects,
-                                        user_projects.is_restricted)
+                # The projects where the admin has granted access by selecting
+                # previously unselected check boxes
+                unrestricted_projects = (
+                    accessible_project_pks - set(user_projects.projects.values_list('pk', flat=True))
+                )
+                user_projects = unrestrict_projects(
+                    admin, user, Project.objects.filter(pk__in=unrestricted_projects)
+                )
 
                 # Finally set is_restricted
                 is_restricted = user_projects_data.get('is_restricted', None)
