@@ -7,31 +7,35 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { _, dataFromElement, inArray } from "../utils";
+import { _, dataFromElement } from "../utils";
 
 import * as c from "../const";
 
-const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
+const IsRestricted = ({ _, isRestricted, mayUnrestrict, toggleIsRestricted }) => {
     return (
-        <span>
+        <span className={mayUnrestrict ? "" : "disableUnrestrict"}>
             <label>
                 <input
-                    id="is_restricted"
+                    id="isRestricted"
                     type="checkbox"
-                    checked={is_restricted}
-                    onChange={onChangeIsRestricted}
+                    checked={isRestricted}
+                    onChange={toggleIsRestricted}
+                    disabled={!mayUnrestrict}
                 />
                 {/* The strings include <strong> tags which requires the use of
                     dangerouslySetInnerHTML */}
                 <span
                     dangerouslySetInnerHTML={{
-                        __html: is_restricted
+                        __html: isRestricted
                             ? _("user_access_restricted")
                             : _("user_access_unrestricted")
                     }}
                 />
+                {mayUnrestrict ? null : (
+                <span className="unrestrictNote">NOTE: This user cannot be unrestricted because of other restricted projects than those listed here</span>
+            )}
             </label>
-            {is_restricted ? (
+            {isRestricted ? (
                 <div
                     className="restrictedInfo"
                     dangerouslySetInnerHTML={{ __html: _("restricted_info") }}
@@ -43,19 +47,36 @@ const IsRestricted = ({ _, is_restricted, onChangeIsRestricted }) => {
     );
 };
 
-const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSelected }) => {
-    // NOTE: the checked value is set to true if is_restricted is false. This is so that the list of
-    // projects looks like all projects are selected when restrictions are not in force.
-    // This is _not_ reflected in the store.
-    const uiSettings = (project, user_projects, is_restricted) => {
-        const checked = !is_restricted || (user_projects && inArray(project.id, user_projects)),
-            disabled = is_restricted ? "" : "disabled",
+const Project = ({
+    _,
+    project,
+    isRestricted,
+    onChangeProjectSelected,
+    firstProjectOfOrgGroup,
+    rowSpan,
+    orgs
+}) => {
+    const uiSettings = (project, isRestricted, firstProjectOfOrgGroup) => {
+        const checked = project.access,
+            disabled = isRestricted ? "" : "disabled",
             projectSelected = checked ? " projectSelected" : "",
-            trClassName = disabled + projectSelected,
+            trClassName =
+                disabled + projectSelected + (firstProjectOfOrgGroup ? " border-top" : ""),
             idClassName = disabled + " id";
         return { checked, trClassName, idClassName };
     };
-    const { checked, trClassName, idClassName } = uiSettings(project, user_projects, is_restricted);
+
+    const cancelClick = e => {
+        // Cancel the tr onClick for the org group cell
+        e.stopPropagation();
+    };
+
+    const { checked, trClassName, idClassName } = uiSettings(
+        project,
+        isRestricted,
+        firstProjectOfOrgGroup
+    );
+
     return (
         <tr
             key={project.id}
@@ -63,32 +84,38 @@ const Project = ({ _, project, user_projects, is_restricted, onChangeProjectSele
             onClick={onChangeProjectSelected}
             className={trClassName}
         >
-            <td>
+            <td className="border-left">
                 <input
                     id={project.id}
                     type="checkbox"
                     checked={checked}
-                    disabled={!is_restricted}
+                    disabled={!isRestricted}
                     readOnly={true}
                 />
             </td>
             <td className={idClassName}>{project.id}</td>
             <td>{project.title || _("no_title")}</td>
+            <td>{project.subtitle}</td>
+            {firstProjectOfOrgGroup ? (
+                <td className="border" rowSpan={rowSpan} onClick={cancelClick}>
+                    {orgs}
+                </td>
+            ) : null}
         </tr>
     );
 };
 
-const SelectAll = ({ _, selectAll, onChangeProjectSelectAll, is_restricted }) => {
-    const uiSettings = is_restricted => {
-        const buttonClass = "selectAllProjects" + (is_restricted ? "" : " disabled"),
-            disabled = !is_restricted,
-            divClass = is_restricted ? "" : "disabled";
+const SelectAll = ({ _, selectAll, toggleProjectSelectAll, isRestricted }) => {
+    const uiSettings = isRestricted => {
+        const buttonClass = "selectAllProjects" + (isRestricted ? "" : " disabled"),
+            disabled = !isRestricted,
+            divClass = isRestricted ? "" : "disabled";
         return { buttonClass, disabled, divClass };
     };
-    const { divClass, disabled, buttonClass } = uiSettings(is_restricted);
+    const { divClass, disabled, buttonClass } = uiSettings(isRestricted);
     return (
         <div className={divClass}>
-            <button onClick={onChangeProjectSelectAll} disabled={disabled} className={buttonClass}>
+            <button onClick={toggleProjectSelectAll} disabled={disabled} className={buttonClass}>
                 {selectAll ? _("check_all_projects") : _("uncheck_all_projects")}
             </button>
         </div>
@@ -99,51 +126,45 @@ const Error = ({ _, error }) => {
     return error ? <div className="error">{_("an_error_occured") + error.message}</div> : null;
 };
 
-const Projects = ({
-    _,
-    error,
-    all_projects,
-    user_projects,
-    is_restricted,
-    selectAll,
-    onChangeIsRestricted,
-    onChangeProjectSelectAll,
-    onChangeProjectSelected
-}) => {
-    const className = is_restricted ? "" : "disabled";
+const Projects = ({ groupedProjects, toggleProjectSelected, ...props }) => {
+    const { _, isRestricted } = props;
+    const className = isRestricted ? "" : "disabled";
     return (
         <span>
-            <Error _={_} error={error} />
-            <IsRestricted
-                _={_}
-                is_restricted={is_restricted}
-                onChangeIsRestricted={onChangeIsRestricted}
-            />
-            <SelectAll
-                _={_}
-                selectAll={selectAll}
-                onChangeProjectSelectAll={onChangeProjectSelectAll}
-                is_restricted={is_restricted}
-            />
+            <Error {...props} />
+            <IsRestricted {...props} />
+            <SelectAll {...props} />
             <table>
                 <thead>
                     <tr>
                         <th className={className}>{_("access")}</th>
                         <th className={className}>{_("project_id")}</th>
                         <th className={className}>{_("project_title")}</th>
+                        <th className={className}>Project subtitle</th>
+                        <th className={className}>Managing organisations</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {all_projects.map(project => (
-                        <Project
-                            _={_}
-                            key={project.id}
-                            project={project}
-                            user_projects={user_projects}
-                            is_restricted={is_restricted}
-                            onChangeProjectSelected={onChangeProjectSelected}
-                        />
-                    ))}
+                    {groupedProjects.map(group => {
+                        const rowSpan = group.projects.length;
+                        let first = true;
+                        return group.projects.map(project => {
+                            const firstProjectOfOrgGroup = first;
+                            first = false;
+                            return (
+                                <Project
+                                    _={_}
+                                    key={project.id}
+                                    project={project}
+                                    isRestricted={isRestricted}
+                                    onChangeProjectSelected={toggleProjectSelected}
+                                    firstProjectOfOrgGroup={firstProjectOfOrgGroup}
+                                    rowSpan={rowSpan}
+                                    orgs={group.organisations}
+                                />
+                            );
+                        });
+                    })}
                 </tbody>
             </table>
         </span>
@@ -194,36 +215,33 @@ class App extends React.Component {
     }
 
     render() {
-        const { is_restricted, selectAll, all_projects, user_projects, error } = this.props;
-        return all_projects ? (
-            <Projects
-                _={this._}
-                error={error}
-                is_restricted={is_restricted}
-                selectAll={selectAll}
-                all_projects={all_projects}
-                user_projects={user_projects}
-                onChangeIsRestricted={this.toggleIsRestricted}
-                onChangeProjectSelectAll={this.toggleProjectSelectAll}
-                onChangeProjectSelected={this.toggleProjectSelected}
-            />
+        const {
+            props,
+            _,
+            toggleIsRestricted,
+            toggleProjectSelectAll,
+            toggleProjectSelected
+        } = this;
+        const newProps = {
+            ...props,
+            _,
+            toggleIsRestricted,
+            toggleProjectSelectAll,
+            toggleProjectSelected
+        };
+        const { projectsLoaded } = props;
+        return projectsLoaded ? (
+            <Projects {...newProps} />
         ) : (
-            <div>{_("loading")}</div>
+            <div className="loading">
+                {_("loading")} <i className="fa fa-spin fa-spinner" />
+            </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    const {
-        fetching,
-        error,
-        all_projects,
-        is_restricted,
-        selectAll,
-        user_projects,
-        strings
-    } = state;
-    return { fetching, error, all_projects, is_restricted, selectAll, user_projects, strings };
+    return state;
 };
 
 const mapDispatchToProps = dispatch => {
@@ -243,13 +261,16 @@ const mapDispatchToProps = dispatch => {
                 type: c.UPDATE_PROJECT_SELECTION,
                 data: { projectId }
             }),
-        onUpdateIsRestricted: is_restricted =>
+        onUpdateIsRestricted: isRestricted =>
             dispatch({
                 type: c.UPDATE_IS_RESTRICTED,
-                data: { is_restricted }
+                data: { isRestricted }
             }),
         onUpdateSelectAll: () => dispatch({ type: c.UPDATE_SELECT_ALL_PROJECTS })
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

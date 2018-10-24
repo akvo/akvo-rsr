@@ -7,8 +7,9 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, signals
 from django.db.models.query import QuerySet as DjangoQuerySet
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -161,6 +162,14 @@ class Organisation(TimestampsMixin, models.Model):
         default=False,
         help_text=_(u'Partner editors of this organisation can create new projects, and publish '
                     u'projects it is a partner of.')
+    )
+    enable_restrictions = models.BooleanField(
+        verbose_name=_(u"enable restrictions"),
+        default=False,
+        help_text=_(
+            u'Toggle user access restrictions for projects with this organisation as reporting partner. '
+            u'Can be turned off only if all the restricted employees have another employment.'
+        )
     )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
@@ -316,9 +325,9 @@ class Organisation(TimestampsMixin, models.Model):
                 return Organisation.objects.filter(
                     Q(pk__in=queryset.values_list('pk', flat=True)) |
                     Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
-                )
+                ).distinct()
 
-            return queryset
+            return queryset.distinct()
 
     def __unicode__(self):
         return self.name
@@ -341,6 +350,19 @@ class Organisation(TimestampsMixin, models.Model):
     def all_users(self):
         "returns a queryset of all users belonging to the organisation"
         return self.users.all()
+
+    def can_disable_restrictions(self):
+        """Return True if enable_restrictions can be disabled.
+
+        The enable_restrictions flag can be turned off only if all of the
+        employees of the organisation are unrestricted, or have an employment
+        in another organisation.
+
+        """
+        from akvo.rsr.models import UserProjects
+        employees = self.content_owned_organisations().users()
+        org_only_restrictions = UserProjects.objects.filter(is_restricted=True, user__in=employees)
+        return not org_only_restrictions.exists()
 
     def published_projects(self, only_public=True):
         "returns a queryset with published projects that has self as any kind of partner"
@@ -516,3 +538,34 @@ class Organisation(TimestampsMixin, models.Model):
         permissions = (
             ('user_management', u'Can manage users'),
         )
+
+
+class CannotDisableRestrictions(Exception):
+    pass
+
+
+@receiver(signals.pre_save, sender=Organisation)
+def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
+    """Disable turning off enable_restrictions when restricted users exist.
+
+    enable_restrictions can be turned off for an organisations, only if there
+    are no users who have restrictions, and have employments only in that
+    organisation.
+
+    """
+
+    org = kwargs['instance']
+    if org.enable_restrictions:
+        return
+
+    old_org = sender.objects.filter(pk=org.pk).first()
+    # Restrictions not changed
+    if old_org is None or not old_org.enable_restrictions:
+        return
+
+    if org.can_disable_restrictions():
+        return
+
+    raise CannotDisableRestrictions(
+        'At least one user with restrictions, only employed by organisation exists'
+    )

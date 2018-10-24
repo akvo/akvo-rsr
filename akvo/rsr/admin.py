@@ -251,6 +251,14 @@ class OrganisationAdminForm(forms.ModelForm):
         return self.cleaned_data['iati_org_id'] or None
 
 
+def enable_restrictions(modeladmin, request, queryset):
+    queryset.update(enable_restrictions=True)
+
+
+enable_restrictions.short_description = ("Enable project access restrictions for the selected "
+                                         "organisations")
+
+
 class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
 
     """OrganisationAdmin.
@@ -267,7 +275,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
         (_(u'Organisation settings'),
-            {'fields': ('can_create_projects', 'public_iati_file', 'allow_edit', 'content_owner')}),
+            {'fields': ('can_create_projects', 'enable_restrictions', 'public_iati_file',
+                        'allow_edit', 'content_owner')}),
         (_(u'Notes'), {'fields': ('notes', )}),
     )
     form = OrganisationAdminForm
@@ -277,8 +286,9 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                OrganisationDocumentInline, OrganisationCustomFieldInline,
                OrganisationIndicatorLabelInline)
     exclude = ('internal_org_ids',)
-    list_display = ('name', 'long_name', 'website', 'language')
+    list_display = ('name', 'long_name', 'enable_restrictions', 'website', 'language')
     search_fields = ('name', 'long_name')
+    actions = (enable_restrictions,)
 
     def __init__(self, model, admin_site):
         """Override to add self.formfield_overrides. Needed for ImageField working in the admin."""
@@ -287,10 +297,17 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
 
     def get_readonly_fields(self, request, obj=None):
         """Make sure only super users can set the ability to become a reporting org"""
-        if request.user.is_superuser:
-            return ['created_at', 'last_modified_at']
-        else:
-            return ['created_at', 'last_modified_at', 'can_create_projects']
+        readonly_fields = ['created_at', 'last_modified_at']
+        if not request.user.is_superuser:
+            readonly_fields.append('can_create_projects')
+
+        if request.resolver_match.args:
+            org_id, = request.resolver_match.args
+            org = self.get_object(request, org_id)
+            if org is not None and not org.can_disable_restrictions():
+                readonly_fields.append('enable_restrictions')
+
+        return readonly_fields
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
