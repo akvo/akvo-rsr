@@ -176,8 +176,6 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
             if user_projects_data is not None:
 
                 admin = self.context['request'].user.user
-                # All projects the admin can restrict
-                admin_associated_projects = admin.admin_projects()
 
                 # Check if we have a list of projects. These are all projects
                 # that the admin can grant access to. The user may have access
