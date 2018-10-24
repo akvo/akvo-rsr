@@ -62,7 +62,15 @@ body {
     body {
       padding-top: 65px; } }
 
-h1, h2, h3, h4, h5, h6, p, ul, ol {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
   margin-top: 0;
   margin-bottom: 1rem; }
 
@@ -75,7 +83,7 @@ h6 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   line-height: 1.1; }
 
 a,
@@ -537,7 +545,7 @@ nav.navbar-fixed-top {
 .navbar {
   margin-bottom: 0 !important; }
   .navbar .active {
-    color: #2A6297; }
+    color: #2a6297; }
   .navbar .container {
     /* nav menu overflows to two lines in spanish and french unless container width
         is increased slightly just above the threshold for switching to dropdown */ }
@@ -607,24 +615,24 @@ nav.navbar-fixed-top {
     border-bottom: none; }
   .myRsrMenu h4 {
     padding-top: 15px; }
-  .myRsrMenu nav[role=navigation] {
+  .myRsrMenu nav[role="navigation"] {
     background: rgba(32, 32, 36, 0); }
-    .myRsrMenu nav[role=navigation] ul li {
+    .myRsrMenu nav[role="navigation"] ul li {
       display: inline; }
       @media only screen and (max-width: 768px) {
-        .myRsrMenu nav[role=navigation] ul li {
+        .myRsrMenu nav[role="navigation"] ul li {
           bottom: -8px; } }
-      .myRsrMenu nav[role=navigation] ul li a {
+      .myRsrMenu nav[role="navigation"] ul li a {
         color: #396680;
         padding: 15px; }
         @media only screen and (max-width: 768px) {
-          .myRsrMenu nav[role=navigation] ul li a {
+          .myRsrMenu nav[role="navigation"] ul li a {
             padding: 20px 10px; } }
-        .myRsrMenu nav[role=navigation] ul li a:hover {
+        .myRsrMenu nav[role="navigation"] ul li a:hover {
           color: #ca8142;
           border-color: transparent;
           background-color: rgba(32, 32, 36, 0.1); }
-        .myRsrMenu nav[role=navigation] ul li a.active {
+        .myRsrMenu nav[role="navigation"] ul li a.active {
           color: #ca8142;
           font-weight: normal;
           background: white;
@@ -632,11 +640,11 @@ nav.navbar-fixed-top {
           -o-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
           -webkit-box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1);
           box-shadow: 0 -1px 0px rgba(32, 32, 36, 0.1); }
-      .myRsrMenu nav[role=navigation] ul li.usrMgt {
+      .myRsrMenu nav[role="navigation"] ul li.usrMgt {
         position: absolute;
         right: 0; }
         @media only screen and (max-width: 768px) {
-          .myRsrMenu nav[role=navigation] ul li.usrMgt {
+          .myRsrMenu nav[role="navigation"] ul li.usrMgt {
             position: relative;
             right: auto; } }
 
@@ -1139,8 +1147,10 @@ h4.detailedInfo {
   margin-top: 40px; }
 
 .pgWrap .pagination li a,
-.pgWrap .pagination li span, .pageStatus .pagination li a,
-.pageStatus .pagination li span, .paginationWrap .pagination li a,
+.pgWrap .pagination li span,
+.pageStatus .pagination li a,
+.pageStatus .pagination li span,
+.paginationWrap .pagination li a,
 .paginationWrap .pagination li span {
   margin-right: 1px;
   color: #428bca;
@@ -1148,35 +1158,45 @@ h4.detailedInfo {
   cursor: pointer; }
   @media only screen and (max-width: 768px) {
     .pgWrap .pagination li a,
-    .pgWrap .pagination li span, .pageStatus .pagination li a,
-    .pageStatus .pagination li span, .paginationWrap .pagination li a,
+    .pgWrap .pagination li span,
+    .pageStatus .pagination li a,
+    .pageStatus .pagination li span,
+    .paginationWrap .pagination li a,
     .paginationWrap .pagination li span {
       padding: 10px 16px;
       font-size: 18px; } }
   .pgWrap .pagination li a:hover,
-  .pgWrap .pagination li span:hover, .pageStatus .pagination li a:hover,
-  .pageStatus .pagination li span:hover, .paginationWrap .pagination li a:hover,
+  .pgWrap .pagination li span:hover,
+  .pageStatus .pagination li a:hover,
+  .pageStatus .pagination li span:hover,
+  .paginationWrap .pagination li a:hover,
   .paginationWrap .pagination li span:hover {
     background: rgba(66, 139, 202, 0.1);
     border: 1px solid #428bca; }
     .pgWrap .pagination li a:hover span,
-    .pgWrap .pagination li span:hover span, .pageStatus .pagination li a:hover span,
-    .pageStatus .pagination li span:hover span, .paginationWrap .pagination li a:hover span,
+    .pgWrap .pagination li span:hover span,
+    .pageStatus .pagination li a:hover span,
+    .pageStatus .pagination li span:hover span,
+    .paginationWrap .pagination li a:hover span,
     .paginationWrap .pagination li span:hover span {
       border: 1px solid rgba(66, 139, 202, 0);
       background: rgba(66, 139, 202, 0); }
 
 .pgWrap .pagination li.active a,
-.pgWrap .pagination li.active span, .pageStatus .pagination li.active a,
-.pageStatus .pagination li.active span, .paginationWrap .pagination li.active a,
+.pgWrap .pagination li.active span,
+.pageStatus .pagination li.active a,
+.pageStatus .pagination li.active span,
+.paginationWrap .pagination li.active a,
 .paginationWrap .pagination li.active span {
   font-weight: bold;
   color: #ca8142;
   background-color: transparent;
   border: 1px solid #ca8142; }
   .pgWrap .pagination li.active a:hover,
-  .pgWrap .pagination li.active span:hover, .pageStatus .pagination li.active a:hover,
-  .pageStatus .pagination li.active span:hover, .paginationWrap .pagination li.active a:hover,
+  .pgWrap .pagination li.active span:hover,
+  .pageStatus .pagination li.active a:hover,
+  .pageStatus .pagination li.active span:hover,
+  .paginationWrap .pagination li.active a:hover,
   .paginationWrap .pagination li.active span:hover {
     background: rgba(202, 129, 66, 0);
     border: 1px solid #ca8142; }
@@ -1343,7 +1363,7 @@ h4.detailedInfo {
         min-height: 130px; }
         #organisation-directory .main-list ul.projectListUl li > div:first-child a img {
           max-height: 177px; }
-      #organisation-directory .main-list ul.projectListUl li:nth-child(4n+4) {
+      #organisation-directory .main-list ul.projectListUl li:nth-child(4n + 4) {
         margin-right: 0; }
       #organisation-directory .main-list ul.projectListUl li h1 {
         margin-top: 5px; }
@@ -1476,7 +1496,7 @@ h4.detailedInfo {
             color: #00a79d; }
             .main-list.projects .projectListUlcontain ul.projectListUl li.updateAsset h1 a:hover {
               color: #ca8142; }
-        .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n+2) {
+        .main-list.projects .projectListUlcontain ul.projectListUl li:nth-child(2n + 2) {
           margin-right: 0; }
         .main-list.projects .projectListUlcontain ul.projectListUl li h1 {
           margin: 5px 0 10px; }
@@ -1747,10 +1767,10 @@ div.textBlock {
   .accordionContainer p {
     padding: 15px 30px; }
   .accordionContainer #accordion .panel-group .panel-heading a:before {
-    content: '- ';
+    content: "- ";
     position: relative; }
   .accordionContainer #accordion .panel-group .panel-heading a.collapsed:before {
-    content: '+ ';
+    content: "+ ";
     top: 1px; }
 
 .projectMenu {
@@ -1814,7 +1834,7 @@ div.textBlock {
 #draft {
   background: rgba(224, 79, 70, 0.2);
   border: 1px solid rgba(224, 79, 70, 0.2);
-  color: #E04F46;
+  color: #e04f46;
   padding: 10px;
   text-align: center;
   margin-bottom: 20px;
@@ -2160,10 +2180,12 @@ dd.currencyAmount {
     flex-wrap: wrap;
     margin: 0.5em 0;
     border: 1px solid rgba(3, 3, 3, 0.2); }
-  .projectReport td, .projectReport th {
+  .projectReport td,
+  .projectReport th {
     flex: 1 1 150px;
     border: 0.5px solid rgba(3, 3, 3, 0.2); }
-  .projectReport td.edit-buttons, .projectReport td.empty {
+  .projectReport td.edit-buttons,
+  .projectReport td.empty {
     /*flex: 1 0 90%;
             text-align: center;*/ } }
 
@@ -2185,7 +2207,8 @@ dd.currencyAmount {
     background-color: rgba(57, 102, 128, 0.05); }
   .projectReport table.table-bordered {
     border: 2px solid white; }
-    .projectReport table.table-bordered td, .projectReport table.table-bordered th {
+    .projectReport table.table-bordered td,
+    .projectReport table.table-bordered th {
       border: 2px solid white; }
 
 .projectReport h4 {
@@ -2261,13 +2284,13 @@ body.translationBarActive div.skiptranslate ~ #map {
       font-weight: bold; }
 
 /* Project Admin */
-.progress .progress-bar[data-completion='empty'] {
+.progress .progress-bar[data-completion="empty"] {
   background: #d9534f; }
 
-.progress .progress-bar[data-completion='incomplete'] {
+.progress .progress-bar[data-completion="incomplete"] {
   background: #f0ad4e; }
 
-.progress .progress-bar[data-completion='complete'] {
+.progress .progress-bar[data-completion="complete"] {
   background: #5cb85c; }
 
 .progress .progress-bar .progress-percentage {
@@ -2335,16 +2358,16 @@ body.translationBarActive div.skiptranslate ~ #map {
     display: block;
     overflow: hidden;
     box-sizing: border-box;
-    transition: all .5s linear;
+    transition: all 0.5s linear;
     padding: 5px 15px;
     margin: 0 auto; }
-  .projectEdit .myPanel input[type='radio']:checked ~ .formBlock {
+  .projectEdit .myPanel input[type="radio"]:checked ~ .formBlock {
     height: auto;
     overflow: auto;
     background: rgba(253, 242, 232, 0);
     box-shadow: 0 0 15px rgba(44, 42, 116, 0.2); }
 
-.projectEdit input[type='radio'] {
+.projectEdit input[type="radio"] {
   display: none; }
 
 .projectEdit .formStep {
@@ -2542,7 +2565,7 @@ body.translationBarActive div.skiptranslate ~ #map {
   background: lightgoldenrodyellow; }
 
 .projectEdit div.partial-header {
-  font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #2c2a74;
   font-size: 12px;
@@ -2892,25 +2915,31 @@ button#createIATIExport {
   button#createIATIExport:hover {
     background: #2c2a74; }
 
-div#exportsOverview tr.success, div#newIATIExport tr.success {
+div#exportsOverview tr.success,
+div#newIATIExport tr.success {
   background: rgba(92, 184, 92, 0.1) !important;
   color: #5cb85c !important; }
 
-div#exportsOverview tr.warning, div#newIATIExport tr.warning {
+div#exportsOverview tr.warning,
+div#newIATIExport tr.warning {
   background: rgba(222, 137, 41, 0.1) !important;
   color: #de8929 !important; }
 
-div#exportsOverview tr.error, div#newIATIExport tr.error {
+div#exportsOverview tr.error,
+div#newIATIExport tr.error {
   background: rgba(238, 49, 36, 0.1) !important;
   color: #ee3124 !important; }
 
-div#exportsOverview .IATIfilters button.btn-default, div#newIATIExport .IATIfilters button.btn-default {
+div#exportsOverview .IATIfilters button.btn-default,
+div#newIATIExport .IATIfilters button.btn-default {
   margin-top: 10px; }
 
-div#exportsOverview button.btn-default, div#newIATIExport button.btn-default {
+div#exportsOverview button.btn-default,
+div#newIATIExport button.btn-default {
   border: none;
   margin-left: 3px; }
-  div#exportsOverview button.btn-default:hover, div#newIATIExport button.btn-default:hover {
+  div#exportsOverview button.btn-default:hover,
+  div#newIATIExport button.btn-default:hover {
     background: #2c2a74;
     color: white; }
 
@@ -2963,7 +2992,8 @@ div.iatiFilters {
   color: #ee3124;
   font-size: 85%; }
 
-.fa-paperclip, .fa-camera {
+.fa-paperclip,
+.fa-camera {
   margin-right: 0.3em; }
 
 /* Registration */
@@ -3433,7 +3463,7 @@ main.results-page {
             padding: 15px 5px; }
           .results .narrative_reports aside.open .rc-collapse .rc-collapse-item .rc-collapse-header div span:nth-of-type(2) {
             margin-left: 10px; }
-      .results .narrative_reports aside input[type=checkbox] {
+      .results .narrative_reports aside input[type="checkbox"] {
         display: none; }
       .results .narrative_reports aside .updates button {
         display: none; }
@@ -3559,7 +3589,7 @@ main.results-page {
                 margin-left: 1em; }
                 .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li.indicatorProgress .react-sweet-progress-circle-outer .react-sweet-progress-symbol {
                   font-size: 13px !important;
-                  font-weight: 400  !important; }
+                  font-weight: 400 !important; }
                   .indicators .rc-collapse .rc-collapse-item .rc-collapse-header span.indicatorTitle ul li.indicatorProgress .react-sweet-progress-circle-outer .react-sweet-progress-symbol svg {
                     width: 21px !important;
                     height: 21px !important; }
@@ -3812,19 +3842,23 @@ main.results-page {
       padding-left: 20px; }
       .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody {
         width: calc(100% - 20px); }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .update-photo, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .update-attachment {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .update-photo,
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .update-attachment {
           padding: 0 40px;
           width: calc(100% - 20px); }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .update-attachment {
           margin: 20px 0 40px 0; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .statusMeta {
           display: none; }
-        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment {
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue,
+        .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment {
           margin-bottom: 10px; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue span,
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment span {
             width: calc(100% - 40px);
             display: block; }
-          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue:first-child span, .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment:first-child span {
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValue:first-child span,
+          .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .updateValueComment:first-child span {
             display: inline; }
         .periods .rc-collapse .rc-collapse-item.rc-collapse-item-active .rc-collapse-content.rc-collapse-content-active .rc-collapse-content-box .updates > .row .row .UpdateBody .approverMeta span.hide {
           display: none; }
@@ -4132,7 +4166,7 @@ main.results-page {
   -o-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
   -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
   box-shadow: 0 0px 0px rgba(0, 0, 0, 0.2);
-  border: 1px solid #ECECEC; }
+  border: 1px solid #ececec; }
   .periodMenuBar * {
     box-sizing: border-box; }
   .periodMenuBar .results-bar-titles {
@@ -4236,7 +4270,7 @@ main.results-page {
 
 #userProjects {
   padding-left: 0; }
-  #userProjects #is_restricted {
+  #userProjects #isRestricted {
     margin-bottom: 25px;
     margin-right: 10px; }
   #userProjects .error {
@@ -4273,8 +4307,17 @@ main.results-page {
   #userProjects .restrictedInfo {
     margin-top: -0.75em;
     margin-bottom: 1.5em; }
+  #userProjects .unrestrictNote {
+    margin-left: 0.5em; }
+  #userProjects .loading {
+    margin-top: 20px;
+    margin-left: 5px;
+    font-size: 120%; }
+  #userProjects .disableUnrestrict {
+    color: #b7b7bf; }
   #userProjects table {
-    width: 100%; }
+    width: 100%;
+    border-bottom: 1px solid #202024; }
     #userProjects table thead tr {
       background: rgba(32, 32, 36, 0.05); }
       #userProjects table thead tr th {
@@ -4301,6 +4344,8 @@ main.results-page {
       #userProjects table tbody tr.projectSelected.disabled {
         color: #b7b7bf;
         background: rgba(114, 205, 255, 0.1); }
+      #userProjects table tbody tr.border-top {
+        border-top: 1px solid #202024; }
       #userProjects table tbody tr td {
         padding: 15px 0 15px 10px;
         margin-top: 1px; }
@@ -4310,3 +4355,10 @@ main.results-page {
           color: #202024; }
         #userProjects table tbody tr td.id.disabled {
           color: #b7b7bf; }
+        #userProjects table tbody tr td.border {
+          background: rgba(114, 205, 255, 0.1);
+          color: #202024;
+          border: 1px solid #202024;
+          vertical-align: baseline; }
+        #userProjects table tbody tr td.border-left {
+          border-left: 1px solid #202024; }

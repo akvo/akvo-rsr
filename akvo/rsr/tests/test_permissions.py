@@ -5,17 +5,17 @@
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.test import TestCase
 
 from akvo.rsr.models import (
-    User, Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
+    Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
     AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects
 )
 from akvo.utils import check_auth_groups
+from akvo.rsr.tests.base import BaseTestCase
 
 
-class PermissionsTestCase(TestCase):
+class PermissionsTestCase(BaseTestCase):
     """Testing that permissions work correctly."""
 
     def setUp(self):
@@ -494,42 +494,8 @@ class PermissionsTestCase(TestCase):
         self.assertTrue(user.has_perm('rsr.add_indicatorperioddata', project))
         self.assertTrue(user.has_perm('rsr.change_indicatorperioddata', project))
 
-    @staticmethod
-    def create_user(email, is_active=True, is_admin=False, is_superuser=False):
-        """Create a user with the given email."""
 
-        user = User.objects.create(
-            email=email,
-            username=email,
-            is_active=is_active,
-            is_admin=is_admin,
-            is_superuser=is_superuser,
-        )
-        return user
-
-    @staticmethod
-    def make_org_admin(user, org):
-        PermissionsTestCase.make_employment(user, org, 'Admins')
-
-    @staticmethod
-    def make_org_project_editor(user, org):
-        PermissionsTestCase.make_employment(user, org, 'Project Editors')
-
-    @staticmethod
-    def make_org_me_manager(user, org):
-        PermissionsTestCase.make_employment(user, org, 'M&E Managers')
-
-    @staticmethod
-    def make_org_user_manager(user, org):
-        PermissionsTestCase.make_employment(user, org, 'User Managers')
-
-    @staticmethod
-    def make_employment(user, org, group_name):
-        group = Group.objects.get(name=group_name)
-        Employment.objects.create(user=user, organisation=org, group=group, is_approved=True)
-
-
-class UserPermissionedProjectsTestCase(TestCase):
+class UserPermissionedProjectsTestCase(BaseTestCase):
     """Testing that restricting permissions to projects per user works."""
 
     def setUp(self):
@@ -594,7 +560,7 @@ class UserPermissionedProjectsTestCase(TestCase):
         # is denied
         self.assertFalse(user.has_perm('rsr.view_project', self.projects[2]))
 
-    def test_user_with_multiple_orgs_is_never_restricted(self):
+    def test_user_with_multiple_orgs_can_be_restricted(self):
         # Given
         user = self.user
         org2 = Organisation.objects.create(name='org2', long_name='org2')
@@ -608,4 +574,4 @@ class UserPermissionedProjectsTestCase(TestCase):
 
         # Then
         for project in self.projects:
-            self.assertTrue(user.has_perm('rsr.view_project', project))
+            self.assertFalse(user.has_perm('rsr.view_project', project))
