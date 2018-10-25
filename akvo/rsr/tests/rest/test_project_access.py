@@ -192,7 +192,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         #         ]
         #     }
         # ]
-        org_groups = content['organisation_groups']
+        org_groups = sorted(content['organisation_groups'], key=lambda x: x['organisations'])
 
         # Then
         self.assertEqual(len(org_groups), 2)
@@ -262,7 +262,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         # ]
 
         # Then
-        org_groups = content['organisation_groups']
+        org_groups = sorted(content['organisation_groups'], key=lambda x: x['organisations'])
         self.assertEqual(len(org_groups), 2)
 
         self.assertEqual(org_groups[0]['organisations'], "A, B")
@@ -440,3 +440,57 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['non_field_errors'][0],
                          u'This user may not be unrestricted at this time.')
+
+    def test_admin_can_restrict_user_with_restricted_projects_from_other_org(self):
+        """
+        User M                      User N      User O         User P
+        Admin                       Admin       User              |
+           \                            \      /                  |
+            \                            \    /                   |
+              Org A                       Org B           Org C (content owned)
+            /      \                     /     \          /̶ P    |
+           /        \                   /       \        /̶ P     |
+        Project X   Project Y       Project W   Project Z         |
+                        |              |            |             |
+                        +--------------+------------+-------------+
+
+        Test that you can restrict permissions for a user with restricted
+        projects that you don't control
+
+        """
+        # Given
+        Y, Z = self.projects['Y'], self.projects['Z']
+        W = Project.objects.create(title='W')
+        Project.new_project_created(W.id, self.user_n)
+        org_content_owned = Organisation.objects.create(
+            name='C', long_name='C', can_create_projects=False, enable_restrictions=True
+        )
+        Partnership.objects.create(organisation=org_content_owned, project=Y,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create(organisation=org_content_owned, project=Z,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        Partnership.objects.create(organisation=org_content_owned, project=W,
+                                   iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER)
+        user_p = self.create_user('P@org.org')
+        Employment.objects.create(
+            user=user_p, organisation=org_content_owned, group=self.users, is_approved=True
+        )
+        Employment.objects.get(user=self.user_n, organisation=self.org_a).delete()
+        Partnership.objects.get(organisation=self.org_b, project=Y).delete()
+        restrict_projects(self.user_n, user_p, [Z])
+        self.c.login(username=self.user_m.username, password=self.password_m)
+        data = json.dumps({
+            'user_projects': {
+                'is_restricted': True, 'projects': []
+            },
+        })
+
+        # When
+        response = self.c.patch('/rest/v1/user_projects_access/{}/'.format(user_p.pk),
+                                data=data, content_type='application/json')
+
+        # Then
+        may_unrestrict_m = response.data['user_projects']['may_unrestrict']
+        self.assertFalse(may_unrestrict_m)
+        projects = response.data['user_projects']['projects']
+        self.assertEqual(projects, [W.id])

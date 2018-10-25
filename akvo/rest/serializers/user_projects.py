@@ -191,7 +191,9 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
                 except UserProjects.DoesNotExist:
                     projects = []
 
-                restricted_projects = set(projects) - accessible_project_pks
+                admin_associated_project_pks = admin.admin_projects().values_list('pk', flat=True)
+                currently_accessible_projects = set(projects) & set(admin_associated_project_pks)
+                restricted_projects = currently_accessible_projects - accessible_project_pks
                 user_projects = restrict_projects(
                     admin, user, Project.objects.filter(pk__in=restricted_projects)
                 )
