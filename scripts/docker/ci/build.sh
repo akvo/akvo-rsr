@@ -3,7 +3,7 @@
 set -eu
 
 function log {
-   echo "$(date +"%T") - INFO - $*"
+   echo "$(date +"%T") - BUILD INFO - $*"
 }
 
 # We don't care about migrations; __init__.py can have unused imports

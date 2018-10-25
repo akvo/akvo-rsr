@@ -2,7 +2,7 @@
 set -eu
 
 function log {
-   echo "$(date +"%T") - INFO - $*"
+   echo "$(date +"%T") - BUILD INFO - $*"
 }
 
 export PROJECT_NAME=akvo-lumen
