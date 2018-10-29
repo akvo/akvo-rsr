@@ -3,14 +3,20 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from django.conf import settings
 from django.contrib.auth.models import Group
-from django.test import TestCase
+from django.test import TestCase, Client
 
 from akvo.rsr.models import User, Employment
+from akvo.utils import check_auth_groups
 
 
 class BaseTestCase(TestCase):
     """Testing that permissions work correctly."""
+
+    def setUp(self):
+        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     @staticmethod
     def create_user(email, password=None, is_active=True, is_admin=False, is_superuser=False):
