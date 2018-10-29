@@ -38,16 +38,46 @@ class SetProjectUpdate(BaseTestCase):
         self.user = self.create_user('user@example.org', 'password')
         self.admin = self.create_user('admin@example.org', 'password')
         self.project_editor = self.create_user('project-editor@example.org', 'password')
-        self.org = Organisation.objects.create(name='Name', long_name='Long Name')
+        self.co_user = self.create_user('co-user@example.org', 'password')
+        self.org = Organisation.objects.create(
+            name='Name', long_name='Long Name', can_create_projects=True
+        )
+        self.co_org = Organisation.objects.create(
+            name='co Org', long_name='Content Owned Org', content_owner=self.org
+        )
         self.make_org_admin(self.admin, self.org)
         self.make_org_project_editor(self.project_editor, self.org)
         self.make_employment(self.user, self.org, 'Users')
+        self.make_employment(self.co_user, self.co_org, 'Users')
         self.project = Project.objects.create(title='Project')
         Partnership.objects.create(project=self.project, organisation=self.org)
+        Partnership.objects.create(project=self.project, organisation=self.co_org)
 
     def test_admin_can_edit_user_project_update(self):
         # Given
         update = ProjectUpdate.objects.create(project=self.project, user=self.user)
+        url = '/en/project/{}/update/{}/edit/'.format(self.project.id, update.id)
+        data = {
+            'title': 'Awesome New Title',
+            'language': update.language,
+            'latitude': '0',
+            'longitude': '0',
+            'event_date': '2017-11-21'
+        }
+
+        # When
+        self.c.login(username=self.admin.email, password='password')
+        response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        update = ProjectUpdate.objects.get(id=update.id)
+        self.assertEqual(update.title, data['title'])
+        self.assertEqual(update.event_date.strftime('%Y-%m-%d'), data['event_date'])
+
+    def test_admin_can_edit_content_owned_user_project_update(self):
+        # Given
+        update = ProjectUpdate.objects.create(project=self.project, user=self.co_user)
         url = '/en/project/{}/update/{}/edit/'.format(self.project.id, update.id)
         data = {
             'title': 'Awesome New Title',
