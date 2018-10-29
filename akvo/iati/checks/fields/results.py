@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models.result.utils import QUANTITATIVE
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
 DGIS_VALIDATION_SET_NAME = u"DGIS IATI"
 
@@ -28,14 +28,14 @@ def results(project):
             all_checks_passed = False
             checks.append((u'error', u'result (id: %s) has no title specified' % str(result.pk)))
 
-        if not result.indicators.filter(type=QUANTITATIVE):
+        if not result.indicators.exists():
             all_checks_passed = False
             checks.append(
-                (u'error', u'result (id: %s) has no quantitative indicator(s)' % str(result.pk))
+                (u'error', u'result (id: %s) has no indicator(s)' % str(result.pk))
             )
 
-        for indicator in result.indicators.filter(type=QUANTITATIVE):
-            if not indicator.measure:
+        for indicator in result.indicators.all():
+            if indicator.type == QUANTITATIVE and not indicator.measure:
                 all_checks_passed = False
                 checks.append((u'error', u'indicator (id: %s) has no measure specified' %
                                str(indicator.pk)))
@@ -101,7 +101,7 @@ def results(project):
                     checks.append((u'error', u'indicator period (id: %s) has a start date '
                                              u'later than the end date' % str(period.pk)))
 
-                if not period.target_value:
+                if indicator.type == QUANTITATIVE and not period.target_value:
                     if DGIS_PROJECT:
                         all_checks_passed = False
                         checks.append((u'warning', u'indicator period (id: %s) has no target value '
@@ -115,7 +115,7 @@ def results(project):
                                                  u'location(s) or target dimension(s)' %
                                        str(period.pk)))
 
-                if not period.actual_value:
+                if indicator.type == QUANTITATIVE and not period.actual_value:
                     if DGIS_PROJECT:
                         all_checks_passed = False
                         checks.append((u'warning', u'indicator period (id: %s) has no actual value '
