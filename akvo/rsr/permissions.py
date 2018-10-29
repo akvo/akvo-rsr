@@ -7,6 +7,7 @@
 import rules
 
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 
 from ..utils import project_access_filter
 from .models import Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate
@@ -44,7 +45,7 @@ def _user_has_group_permissions(user, obj, group_names):
             return True
         elif group_names == [GROUP_NAME_ADMINS]:
             # Check if user can admin the user making the update
-            obj = obj.user
+            obj = obj.user.employers.all()
             id_ = None
         else:
             return False
@@ -81,6 +82,11 @@ def _user_has_group_permissions(user, obj, group_names):
 
     if isinstance(obj, Employment):
         return obj.organisation_id in content_owned_organisations
+
+    if isinstance(obj, QuerySet) and obj.model == Employment:
+        return bool(
+            set(obj.values_list('organisation_id', flat=True)) & set(content_owned_organisations)
+        )
 
     if isinstance(obj, PartnerSite):
         return obj.organisation_id in content_owned_organisations
