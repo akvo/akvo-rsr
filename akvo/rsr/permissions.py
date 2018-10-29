@@ -40,9 +40,16 @@ def _user_has_group_permissions(user, obj, group_names):
         return True
 
     if isinstance(obj, ProjectUpdate):
-        return obj.user == user
+        if obj.user == user:
+            return True
+        elif group_names == [GROUP_NAME_ADMINS]:
+            # Check if user can admin the user making the update
+            obj = obj.user
+            id_ = None
+        else:
+            return False
 
-    if hasattr(obj, 'project_id'):
+    elif hasattr(obj, 'project_id'):
         id_ = obj.project_id
 
     elif isinstance(obj, Project):
@@ -60,6 +67,8 @@ def _user_has_group_permissions(user, obj, group_names):
         projects = project_access_filter(user, all_projects)
         return id_ in projects.values_list('id', flat=True)
 
+    # FIXME: Admins can only edit directly employed users, not content owned
+    # users. Admins can change employments of content_owned_users, though
     all_users = employments.organisations().users().values_list('id', flat=True)
     if isinstance(obj, User):
         return obj.id in all_users

@@ -262,7 +262,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         edit_mode = True
         update = get_object_or_404(ProjectUpdate, id=update_id)
         update_user = update.user.get_full_name()
-        if not request.user == update.user and not request.user.can_edit_update(update):
+        if not request.user.has_perm('rsr.change_projectupdate', update):
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 
