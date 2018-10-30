@@ -111,6 +111,19 @@ class RestProjectUpdateTestCase(BaseTestCase):
                                })
         self.assertEqual(response.status_code, 201)
 
+    def test_rest_cannot_post_project_update_to_random_projects(self):
+        """
+        Checks the REST project update endpoint POST functions.
+        """
+        self.c.login(username=self.user.username, password='password')
+        response = self.c.post('/rest/v1/project_update/',
+                               {
+                                   'project': self.orphan_project.pk,
+                                   'user': self.user.pk,
+                                   'title': 'Not Allowed'
+                               })
+        self.assertEqual(response.status_code, 403)
+
     def test_rest_post_project_update_photo_none(self):
         """
         Checks posting a project update with photo being None
