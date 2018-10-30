@@ -36,10 +36,14 @@ class RestProjectUpdateTestCase(BaseTestCase):
         """
 
         super(RestProjectUpdateTestCase, self).setUp()
-        # Create active (super)user
+        # Create active user
         self.user = self.create_user("user@test.akvo.org", "password")
         self.org = Organisation.objects.create(name='org', long_name='org')
         self.make_employment(self.user, self.org, 'Users')
+
+        # Create admin user
+        self.admin = self.create_user("admin@test.akvo.org", "password")
+        self.make_org_admin(self.admin, self.org)
 
         # Create projects
         self.orphan_project = Project.objects.create(title="REST test project")
@@ -123,6 +127,30 @@ class RestProjectUpdateTestCase(BaseTestCase):
                                    'title': 'Not Allowed'
                                })
         self.assertEqual(response.status_code, 403)
+
+    def test_admin_can_delete_user_project_update(self):
+        # Given
+        self.c.login(username=self.user.username, password='password')
+        response = self.c.post('/rest/v1/project_update/?format=json',
+                               {
+                                   'project': self.project.pk,
+                                   'user': self.user.pk,
+                                   'title': 'Delete by Admin Allowed'
+                               })
+        update_id = json.loads(response.content)['id']
+        self.c.logout()
+
+        # When
+        self.c.login(username=self.admin.username, password='password')
+        response = self.c.delete(
+            '/rest/v1/project_update/{}/?format=json'.format(update_id),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 204)
+        with self.assertRaises(ProjectUpdate.DoesNotExist):
+            ProjectUpdate.objects.get(id=update_id)
 
     def test_rest_post_project_update_photo_none(self):
         """

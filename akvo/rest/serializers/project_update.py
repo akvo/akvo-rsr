@@ -61,10 +61,12 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
         return update
 
     def get_editable(self, obj):
+        """Method used by the editable SerializerMethodField"""
         user = self.context['request'].user
         return user.has_perm('rsr.change_projectupdate', obj)
 
     def get_deletable(self, obj):
+        """Method used by the deletable SerializerMethodField"""
         user = self.context['request'].user
         return user.has_perm('rsr.delete_projectupdate', obj)
 
