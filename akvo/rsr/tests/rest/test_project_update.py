@@ -11,10 +11,8 @@ import base64
 import json
 import tempfile
 
-from akvo.rsr.models import Project, User, ProjectUpdate
-
-from django.conf import settings
-from django.test import TestCase, Client
+from akvo.rsr.models import Organisation, Partnership, Project, ProjectUpdate
+from akvo.rsr.tests.base import BaseTestCase
 
 # Data for a WMF image file
 WMF_DATA = (
@@ -29,7 +27,7 @@ WMF_DATA = (
 )
 
 
-class RestProjectUpdateTestCase(TestCase):
+class RestProjectUpdateTestCase(BaseTestCase):
     """Tests the project update REST endpoints."""
 
     def setUp(self):
@@ -37,24 +35,18 @@ class RestProjectUpdateTestCase(TestCase):
         For all tests, we at least need two projects and an update in the database. And a client.
         """
 
-        # Create projects
-        Project.objects.create(
-            title="REST test project",
-        ).publish()
-
-        self.project = Project.objects.create(
-            title="REST test project 2",
-        )
-        self.project.publish()
-
+        super(RestProjectUpdateTestCase, self).setUp()
         # Create active (super)user
-        self.user = User.objects.create_superuser(
-            username="Super user REST",
-            email="superuser.rest@test.akvo.org",
-            password="password",
-        )
-        self.user.is_active = True
-        self.user.save()
+        self.user = self.create_user("user@test.akvo.org", "password")
+        self.org = Organisation.objects.create(name='org', long_name='org')
+        self.make_employment(self.user, self.org, 'Users')
+
+        # Create projects
+        self.orphan_project = Project.objects.create(title="REST test project")
+        self.orphan_project.publish()
+        self.project = Project.objects.create(title="REST test project 2")
+        self.project.publish()
+        Partnership.objects.create(organisation=self.org, project=self.project)
 
         # Create update
         ProjectUpdate.objects.create(
@@ -62,8 +54,6 @@ class RestProjectUpdateTestCase(TestCase):
             user=self.user,
             title="Update title",
         )
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def test_rest_project_update_project_filter(self):
         """
