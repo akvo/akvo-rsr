@@ -43,46 +43,92 @@ export default class RSRUpdates extends React.Component {
     }
 }
 
-const RSRUpdate = ({ update, onEdit, onDelete }) => {
-    const editUpdate = () => {
-        return onEdit(update);
-    };
-    const deleteUpdate = () => {
-        return onDelete(update);
-    };
-    const editButton = update.editable ? (
+class RSRUpdate extends React.Component {
+    // = ({ update, deleting, onEdit, onDelete }) => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showConfirmation: false,
+            showSpinner: false
+        };
+    }
+    render() {
+        const { onEdit, onDelete, update } = this.props;
+        const { showSpinner, showConfirmation } = this.state;
+        const editUpdate = () => {
+            return onEdit(update);
+        };
+        const deleteUpdate = () => {
+            this.setState({ showSpinner: true });
+            return onDelete(update);
+        };
+        const confirmDelete = () => {
+            return this.setState({ showConfirmation: true });
+        };
+        const cancelDelete = () => {
+            return this.setState({ showConfirmation: false });
+        };
+        const editButton = update.editable ? (
             <a onClick={editUpdate} href="#">
                 {_("edit")}
             </a>
-    ) : (
-        undefined
-    );
-    const deleteButton = update.deletable ? (
-            <a onClick={deleteUpdate} href="#">
+        ) : (
+            undefined
+        );
+        const confirmDeleteButton = update.deletable ? (
+            <a onClick={confirmDelete} href="#">
                 {_("delete")}
             </a>
-    ) : (
-        undefined
-    );
-    return (
-        <div className="row">
-            <div className="col-md-4 updateImg">
-                <a href={update.absolute_url}>
-                    <img src={update.photo} />
+        ) : (
+            undefined
+        );
+        const deleteButton = update.deletable ? (
+            <span>
+                {_("delete_confirmation")}
+                <a onClick={deleteUpdate} href="#">
+                    {_("yes")}
                 </a>
-            </div>
-            <div className="col-md-8">
-                <a href={update.absolute_url}>
-                    <h5>{update.title}</h5>
+                <a onClick={cancelDelete} href="#">
+                    {_("no")}
                 </a>
-                <ul className="menuUpdate">
-                    <li>{editButton}</li>
-                    <li>{deleteButton}</li>
-                </ul>
+            </span>
+        ) : (
+            undefined
+        );
+        return (
+            <div className="row">
+                <div className="col-md-4 updateImg">
+                    <a href={update.absolute_url}>
+                        <img src={update.photo} />
+                    </a>
+                </div>
+                <div className="col-md-8">
+                    <a href={update.absolute_url}>
+                        <h5>{update.title}</h5>
+                    </a>
+                    <ul className="menuUpdate">
+                        <li>{editButton}</li>
+                        {!showConfirmation ? <li>{confirmDeleteButton}</li> : undefined}
+                        {showSpinner ? (
+                            <li>
+                                <i className="fa fa-spin fa-spinner" />
+                            </li>
+                        ) : (
+                            undefined
+                        )}
+                    </ul>
+                    {showConfirmation & !showSpinner ? (
+                        <ul className="menuUpdate">
+                            <li>{deleteButton}</li>
+                        </ul>
+                    ) : (
+                        undefined
+                    )}
+                </div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+}
 
 class RSRUpdateList extends React.Component {
     constructor(props) {
