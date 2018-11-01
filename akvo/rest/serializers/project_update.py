@@ -62,19 +62,11 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
-        return True
-
-        # FIXME: This is super-slow and causing timeouts. We'll need to do some
-        # performance evaluation on why this is so slow, and speed this up.
         user = self.context['request'].user
         return user.has_perm('rsr.change_projectupdate', obj)
 
     def get_deletable(self, obj):
         """Method used by the deletable SerializerMethodField"""
-        return True
-
-        # FIXME: This is super-slow and causing timeouts. We'll need to do some
-        # performance evaluation on why this is so slow, and speed this up.
         user = self.context['request'].user
         return user.has_perm('rsr.delete_projectupdate', obj)
 
