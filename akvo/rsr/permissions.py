@@ -41,7 +41,7 @@ def _user_has_group_permissions(user, obj, group_names):
         return True
 
     if isinstance(obj, ProjectUpdate):
-        if obj.user == user:
+        if obj.user_id == user.id:
             return True
         elif group_names == [GROUP_NAME_ADMINS]:
             # Check if user can admin the user making the update
