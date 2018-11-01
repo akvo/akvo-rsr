@@ -286,13 +286,14 @@ class RSRUpdateForm extends React.Component {
         const url = update.id
             ? `../../../project/${project}/update/${update.id}/edit/`
             : `../../../project/${project}/add_update/`;
-        const formPhoto = update.id ? (
-            <div className="col-md-3 pull-right">
-                <img src={update.photo} />
-            </div>
-        ) : (
-            undefined
-        );
+        const formPhoto =
+            update.id && update.photo ? (
+                <div className="col-md-3 pull-right">
+                    <img src={update.photo} />
+                </div>
+            ) : (
+                undefined
+            );
         const photoClass = oversize_image ? "form-group has-error" : "form-group";
         const helpText = oversize_image
             ? `${photo_help_text} ${photo_image_size_text}: ${this.state.image_size} MB`
