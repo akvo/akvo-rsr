@@ -45,6 +45,12 @@ def _user_has_group_permissions(user, obj, group_names):
             return True
         elif group_names == [GROUP_NAME_ADMINS]:
             # Check if user can admin the user making the update
+
+            # NOTE: We could set `obj = user` and just see if the admin has the
+            # right permissions on the user, but admins cannot modify content
+            # owned users, only their employments. This seems to be reasonable,
+            # though, it may be harmless to change. We therefor use an ugly
+            # Employment QuerySet here to check further.
             obj = obj.user.employers.all()
             id_ = None
         else:
@@ -94,6 +100,7 @@ def _user_has_group_permissions(user, obj, group_names):
         return obj.organisation_id in content_owned_organisations
 
     if isinstance(obj, QuerySet) and obj.model == Employment:
+        # NOTE: We reach here from the ProjectUpdate check above
         return bool(
             set(obj.values_list('organisation_id', flat=True)) & set(content_owned_organisations)
         )
