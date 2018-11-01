@@ -104,7 +104,10 @@ class RSRUpdate extends React.Component {
                 </div>
                 <div className="col-md-8">
                     <a href={update.absolute_url}>
-                        <h5>{update.title}</h5>
+                        <h5>
+                            {update.title}{" "}
+                            {update.edited ? <i className="fa fa-pencil" /> : undefined}
+                        </h5>
                     </a>
                     <ul className="menuUpdate">
                         <li>{editButton}</li>
