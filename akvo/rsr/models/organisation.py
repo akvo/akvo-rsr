@@ -348,6 +348,16 @@ class Organisation(TimestampsMixin, models.Model):
 
             return queryset.distinct()
 
+        def new_content_owned_organisations(self):
+            """
+            Returns a list of Organisations of which these organisations are the content owner.
+            Includes self, is recursive.
+            """
+            result = set()
+            for org in self:
+                result = result | set(org.new_content_owned_organisations())
+            return Organisation.objects.filter(pk__in=result).distinct()
+
     def __unicode__(self):
         return self.name
 
@@ -460,6 +470,29 @@ class Organisation(TimestampsMixin, models.Model):
         Includes self and is recursive.
         """
         return Organisation.objects.filter(pk=self.pk).content_owned_organisations()
+
+    def new_content_owned_organisations(self):
+        """
+        Returns a list of Organisations of which this organisation is the content owner.
+        Includes self and is recursive.
+        """
+        org = Organisation.objects.get(pk=self.pk)
+        queryset = Organisation.objects.filter(pk=org.pk)
+        if org.can_create_projects:
+            field_partners = org.all_projects().field_partners().exclude(can_create_projects=True)
+            queryset = Organisation.objects.filter(
+                         Q(pk=org.id) | Q(pk__in=field_partners.values_list('pk', flat=True))
+            )
+
+        kids = Organisation.objects.filter(content_owner_id=org.id).exclude(id=org.id)
+        if kids.exists():
+            kids_content_owned_orgs = Organisation.objects.filter(
+                Q(pk__in=queryset.values_list('pk', flat=True)) |
+                Q(pk__in=kids.new_content_owned_organisations().values_list('pk', flat=True))
+            ).distinct()
+            return kids_content_owned_orgs.values_list('pk', flat=True)
+
+        return queryset.values_list('pk', flat=True)
 
     def content_owned_by(self):
         """
