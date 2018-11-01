@@ -11,35 +11,46 @@ import moment from "moment";
 import { _, getCookie } from "../utils";
 import { MarkdownEditor } from "./common";
 
+const emptyUpdate = {
+    title: "",
+    text: "",
+    event_date: "",
+    language: "",
+    photo_caption: "",
+    photo_credit: "",
+    video_caption: "",
+    video_credit: ""
+};
+
 export default class RSRUpdates extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            editingUpdate: {
-                title: "",
-                text: "",
-                event_date: "",
-                language: "",
-                photo_caption: "",
-                photo_credit: "",
-                video_caption: "",
-                video_credit: ""
-            }
+            editingUpdate: emptyUpdate
         };
         this.editUpdate = this.editUpdate.bind(this);
+        this.clearUpdate = this.clearUpdate.bind(this);
     }
     render() {
         return (
             <div className="container-fluid">
                 <div className="row">
                     <RSRUpdateList project={this.props.project} editUpdate={this.editUpdate} />
-                    <RSRUpdateForm project={this.props.project} update={this.state.editingUpdate} />
+                    <RSRUpdateForm
+                        project={this.props.project}
+                        update={this.state.editingUpdate}
+                        onClear={this.clearUpdate}
+                    />
                 </div>
             </div>
         );
     }
     editUpdate(update) {
         this.setState({ editingUpdate: update });
+    }
+    clearUpdate(update) {
+        console.log("clear update", update);
+        this.setState({ editingUpdate: emptyUpdate });
     }
 }
 
@@ -232,6 +243,7 @@ class RSRUpdateForm extends React.Component {
         this.warnImageSize = this.warnImageSize.bind(this);
         this.setText = this.setText.bind(this);
         this.editUpdate = this.editUpdate.bind(this);
+        this.clearUpdate = this.clearUpdate.bind(this);
         this.editUpdateDate = this.editUpdateDate.bind(this);
     }
     componentDidMount() {
@@ -280,8 +292,12 @@ class RSRUpdateForm extends React.Component {
         update[event.target.name] = value;
         this.setState({ update });
     }
+    clearUpdate() {
+        this.setState({ update: emptyUpdate });
+        this.props.onClear();
+    }
     render() {
-        const { project } = this.props;
+        const { project, onClose } = this.props;
         const { oversize_image, photo_help_text, photo_image_size_text, update } = this.state;
         const url = update.id
             ? `../../../project/${project}/update/${update.id}/edit/`
@@ -306,8 +322,16 @@ class RSRUpdateForm extends React.Component {
             rows: 10
         };
         const eventDate = update.event_date ? moment(update.event_date) : moment();
+        const closeButton = update.id ? (
+            <button className="btn btn-sm btn-default pull-right" onClick={this.clearUpdate}>
+                X
+            </button>
+        ) : (
+            undefined
+        );
         return (
             <div className="col-md-7 col-xs-12 projectUpdateForm" id="update">
+                {closeButton}
                 <h3 className="">{update.id ? _("edit_update") : _("add_update")}</h3>
                 <form method="post" action={url} id="updateForm" encType="multipart/form-data">
                     <input
