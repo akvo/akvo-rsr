@@ -85,12 +85,14 @@ class RSRUpdate extends React.Component {
         const deleteButton = update.deletable ? (
             <span>
                 {_("delete_confirmation")}
-                <a onClick={deleteUpdate} href="#">
-                    {_("yes")}
-                </a>
-                <a onClick={cancelDelete} href="#">
-                    {_("no")}
-                </a>
+                <p>
+                    <a onClick={deleteUpdate} href="#">
+                        {_("yes")}
+                    </a>
+                    <a onClick={cancelDelete} href="#">
+                        {_("no")}
+                    </a>
+                </p>
             </span>
         ) : (
             undefined
