@@ -74,9 +74,19 @@ def _user_has_group_permissions(user, obj, group_names):
     if isinstance(obj, User):
         return obj.id in all_users
 
-    content_owned_organisations = employments.organisations()\
-                                             .content_owned_organisations()\
-                                             .values_list('id', flat=True)
+    # NOTE: This is a "caching" hack. The query for content_owned_organisations
+    # is pretty slow, and doing it multiple times per request is a disaster.
+    # Per request, though, the user object should ideally be created once and
+    # only once. So, we are caching the ids of the content owned organisations
+    # on the user object, and avoiding multiple slow queries.
+    if not hasattr(user, '_content_owned_organisations'):
+        content_owned_organisations = employments.organisations()\
+                                                 .content_owned_organisations()\
+                                                 .values_list('id', flat=True)
+        user._content_owned_organisations = content_owned_organisations
+    else:
+        content_owned_organisations = user._content_owned_organisations
+
     if isinstance(obj, Organisation):
         return obj.id in content_owned_organisations
 
