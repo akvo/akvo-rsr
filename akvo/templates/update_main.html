@@ -71,7 +71,7 @@
                                     {% endwith %}
                                 {% endif %}
                             </div>
-                            <div class="upDateTime">{{u.event_date|date:"d-M-Y"}}{% if update.edited %} (edited on {{update.last_modified_at|date:"d-M-Y"}}){% endif %}</div>
+                            <div class="upDateTime">{{u.event_date|date:"d-M-Y"}}{% if u.edited %} (edited on {{u.last_modified_at|date:"d-M-Y"}}){% endif %}</div>
                         </div>
                     </div>
                 {% endfor %}

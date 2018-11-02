@@ -11,29 +11,36 @@ import moment from "moment";
 import { _, getCookie } from "../utils";
 import { MarkdownEditor } from "./common";
 
+const emptyUpdate = {
+    title: "",
+    text: "",
+    event_date: "",
+    language: "",
+    photo_caption: "",
+    photo_credit: "",
+    video_caption: "",
+    video_credit: ""
+};
+
 export default class RSRUpdates extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            editingUpdate: {
-                title: "",
-                text: "",
-                event_date: "",
-                language: "",
-                photo_caption: "",
-                photo_credit: "",
-                video_caption: "",
-                video_credit: ""
-            }
+            editingUpdate: emptyUpdate
         };
         this.editUpdate = this.editUpdate.bind(this);
+        this.clearUpdate = this.clearUpdate.bind(this);
     }
     render() {
         return (
             <div className="container-fluid">
                 <div className="row">
                     <RSRUpdateList project={this.props.project} editUpdate={this.editUpdate} />
-                    <RSRUpdateForm project={this.props.project} update={this.state.editingUpdate} />
+                    <RSRUpdateForm
+                        project={this.props.project}
+                        update={this.state.editingUpdate}
+                        onClear={this.clearUpdate}
+                    />
                 </div>
             </div>
         );
@@ -41,48 +48,109 @@ export default class RSRUpdates extends React.Component {
     editUpdate(update) {
         this.setState({ editingUpdate: update });
     }
+    clearUpdate(update) {
+        console.log("clear update", update);
+        this.setState({ editingUpdate: emptyUpdate });
+    }
 }
 
-const RSRUpdate = ({ update, onEdit, onDelete }) => {
-    const editUpdate = () => {
-        return onEdit(update);
-    };
-    const deleteUpdate = () => {
-        return onDelete(update);
-    };
-    const editButton = update.editable ? (
+class RSRUpdate extends React.Component {
+    // = ({ update, deleting, onEdit, onDelete }) => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showConfirmation: false,
+            showSpinner: false
+        };
+    }
+    render() {
+        const { onEdit, onDelete, update } = this.props;
+        const { showSpinner, showConfirmation } = this.state;
+        const editUpdate = () => {
+            return onEdit(update);
+        };
+        const deleteUpdate = () => {
+            this.setState({ showSpinner: true });
+            return onDelete(update);
+        };
+        const confirmDelete = () => {
+            return this.setState({ showConfirmation: true });
+        };
+        const cancelDelete = () => {
+            return this.setState({ showConfirmation: false });
+        };
+        const editButton = update.editable ? (
             <a onClick={editUpdate} href="#">
                 {_("edit")}
             </a>
-    ) : (
-        undefined
-    );
-    const deleteButton = update.deletable ? (
-            <a onClick={deleteUpdate} href="#">
+        ) : (
+            undefined
+        );
+        const confirmDeleteButton = update.deletable ? (
+            <a onClick={confirmDelete} href="#">
                 {_("delete")}
             </a>
-    ) : (
-        undefined
-    );
-    return (
-        <div className="row">
-            <div className="col-md-4 updateImg">
-                <a href={update.absolute_url}>
-                    <img src={update.photo} />
-                </a>
+        ) : (
+            undefined
+        );
+        const deleteButton = update.deletable ? (
+            <span>
+                <strong>{_("delete_confirmation")}</strong>
+                <p>
+                    <a onClick={deleteUpdate} href="#">
+                        {_("yes")}
+                    </a>
+                    <a onClick={cancelDelete} href="#">
+                        {_("no")}
+                    </a>
+                </p>
+            </span>
+        ) : (
+            undefined
+        );
+        return (
+            <div className="row">
+                <div className="col-md-4 updateImg">
+                    <a href={update.absolute_url}>
+                        <img src={update.photo} />
+                    </a>
+                </div>
+                <div className="col-md-8">
+                    <div className="row">
+                        {update.edited ? (
+                            <span className="text-muted">
+                                <i className="fa fa-pencil pull-right" />
+                            </span>
+                        ) : (
+                            undefined
+                        )}
+                        <a href={update.absolute_url}>
+                            <h5>{update.title} </h5>
+                        </a>
+                    </div>
+                    <ul className="menuUpdate">
+                        <li>{editButton}</li>
+                        {!showConfirmation ? <li>{confirmDeleteButton}</li> : undefined}
+                        {showSpinner ? (
+                            <li>
+                                <i className="fa fa-spin fa-spinner" />
+                            </li>
+                        ) : (
+                            undefined
+                        )}
+                    </ul>
+                    {showConfirmation & !showSpinner ? (
+                        <ul className="menuUpdate">
+                            <li>{deleteButton}</li>
+                        </ul>
+                    ) : (
+                        undefined
+                    )}
+                </div>
             </div>
-            <div className="col-md-8">
-                <a href={update.absolute_url}>
-                    <h5>{update.title}</h5>
-                </a>
-                <ul className="menuUpdate">
-                    <li>{editButton}</li>
-                    <li>{deleteButton}</li>
-                </ul>
-            </div>
-        </div>
-    );
-};
+        );
+    }
+}
 
 class RSRUpdateList extends React.Component {
     constructor(props) {
@@ -175,6 +243,7 @@ class RSRUpdateForm extends React.Component {
         this.warnImageSize = this.warnImageSize.bind(this);
         this.setText = this.setText.bind(this);
         this.editUpdate = this.editUpdate.bind(this);
+        this.clearUpdate = this.clearUpdate.bind(this);
         this.editUpdateDate = this.editUpdateDate.bind(this);
     }
     componentDidMount() {
@@ -223,19 +292,24 @@ class RSRUpdateForm extends React.Component {
         update[event.target.name] = value;
         this.setState({ update });
     }
+    clearUpdate() {
+        this.setState({ update: emptyUpdate });
+        this.props.onClear();
+    }
     render() {
-        const { project } = this.props;
+        const { project, onClose } = this.props;
         const { oversize_image, photo_help_text, photo_image_size_text, update } = this.state;
         const url = update.id
             ? `../../../project/${project}/update/${update.id}/edit/`
             : `../../../project/${project}/add_update/`;
-        const formPhoto = update.id ? (
-            <div className="col-md-3 pull-right">
-                <img src={update.photo} />
-            </div>
-        ) : (
-            undefined
-        );
+        const formPhoto =
+            update.id && update.photo ? (
+                <div className="col-md-3 pull-right">
+                    <img src={update.photo} />
+                </div>
+            ) : (
+                undefined
+            );
         const photoClass = oversize_image ? "form-group has-error" : "form-group";
         const helpText = oversize_image
             ? `${photo_help_text} ${photo_image_size_text}: ${this.state.image_size} MB`
@@ -248,8 +322,16 @@ class RSRUpdateForm extends React.Component {
             rows: 10
         };
         const eventDate = update.event_date ? moment(update.event_date) : moment();
+        const closeButton = update.id ? (
+            <button className="btn btn-sm btn-default pull-right" onClick={this.clearUpdate}>
+                X
+            </button>
+        ) : (
+            undefined
+        );
         return (
             <div className="col-md-7 col-xs-12 projectUpdateForm" id="update">
+                {closeButton}
                 <h3 className="">{update.id ? _("edit_update") : _("add_update")}</h3>
                 <form method="post" action={url} id="updateForm" encType="multipart/form-data">
                     <input

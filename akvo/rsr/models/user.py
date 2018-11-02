@@ -173,10 +173,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             else:
                 return ProjectUpdate.objects.filter(user=self)
 
-    def can_edit_update(self, update):
-        is_admin = self.is_admin or self.is_superuser
-        return is_admin or update in self.get_admin_employment_orgs().all_updates()
-
     def latest_update_date(self):
         updates = self.updates()
         if updates:
