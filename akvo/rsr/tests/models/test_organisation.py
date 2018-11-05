@@ -149,6 +149,17 @@ class OrganisationModelTestCase(BaseTestCase):
             msg = 'Content owners for {} - {} not in {}'.format(org.name, content_owners, names)
             self.assertTrue(set(content_owners) & names, msg)
 
+    def test_project_content_ownership_sanity_for_org_pair_with_new_code(self):
+        # Given
+        names = set(('A', 'E'))
+        orgs = Organisation.objects.filter(name__in=names)
+
+        # When/Then
+        for org in orgs.new_content_owned_organisations():
+            content_owners = org.content_owned_by().values_list('name', flat=True)
+            msg = 'Content owners for {} - {} not in {}'.format(org.name, content_owners, names)
+            self.assertTrue(set(content_owners) & names, msg)
+
     def test_mutual_content_ownership_works(self):
         # Given
         G = self.orgs['G']
