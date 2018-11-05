@@ -36,6 +36,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
     video_credit = serializers.CharField(required=False, allow_null=True)
     editable = serializers.SerializerMethodField()
     deletable = serializers.SerializerMethodField()
+    edited = serializers.ReadOnlyField()
 
     class Meta:
         model = ProjectUpdate
