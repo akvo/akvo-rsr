@@ -18,6 +18,7 @@ FROM nginx:1.13.8-alpine
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /var/akvo/rsr/staticroot/images/favicon.ico /usr/share/nginx/html/favicon.ico
+COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY --from=builder /var/akvo/rsr/staticroot/ /var/akvo/rsr/staticroot/
 COPY start.sh /start.sh
 CMD /start.sh
