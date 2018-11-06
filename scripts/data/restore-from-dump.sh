@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eux
+set -eu
 
 DB_HOST="${1}"
 RSR_DB_NAME="${2}"
