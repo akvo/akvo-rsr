@@ -15,6 +15,7 @@ RUN python manage.py collectstatic --noinput
 
 FROM nginx:1.13.8-alpine
 
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /var/akvo/rsr/staticroot/images/favicon.ico /usr/share/nginx/html/favicon.ico
