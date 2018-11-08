@@ -306,10 +306,15 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
-        def content_owned_organisations(self):
-            """
-            Returns a list of Organisations of which these organisations are the content owner.
+        def content_owned_organisations(self, exclude_orgs=None):
+            """Returns a list of Organisations of which these organisations are the content owner.
+
             Includes self, is recursive.
+
+            The exclude_orgs parameter is used to avoid recursive calls that
+            can happen in case there are organisations that set each other as
+            content owned organisations.
+
             """
             queryset = self
 
@@ -323,12 +328,22 @@ class Organisation(TimestampsMixin, models.Model):
                     Q(pk__in=field_partners.values_list('pk', flat=True))
                 )
 
-            # If the organisations content own other organisations, add those to the queryset
-            kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
-            if kids:
+            # Look for organisations that explicitly set these orgs as content owners
+            kids = Organisation.objects.filter(content_owner__in=self).exclude(pk__in=self)
+            if exclude_orgs is not None:
+                kids = kids.exclude(pk__in=exclude_orgs)
+
+            if kids.exists():
+                exclude_orgs = Organisation.objects.filter(Q(pk__in=self) | Q(pk__in=kids))
+                # If the organisations content own other organisations, add
+                # those to the queryset, but exclude any organisations that
+                # have already been added to the queryset - avoid
+                # non-terminating recursive calls to this function.
+                grand_kids = kids.content_owned_organisations(exclude_orgs=exclude_orgs)
                 return Organisation.objects.filter(
                     Q(pk__in=queryset.values_list('pk', flat=True)) |
-                    Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
+                    Q(pk__in=kids.values_list('pk', flat=True)) |
+                    Q(pk__in=grand_kids.values_list('pk', flat=True))
                 ).distinct()
 
             return queryset.distinct()
