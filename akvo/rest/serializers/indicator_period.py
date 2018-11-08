@@ -14,11 +14,12 @@ from rest_framework import serializers
 class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     indicator_unicode = serializers.ReadOnlyField(source='indicator.__unicode__')
-    parent_period = serializers.ReadOnlyField(source='parent_period.pk')
     percent_accomplishment = serializers.ReadOnlyField()
 
     class Meta:
         model = IndicatorPeriod
+
+    # TODO: add validation for parent_period
 
 
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
