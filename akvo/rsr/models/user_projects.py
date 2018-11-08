@@ -7,6 +7,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from akvo.rsr.models import Organisation, Project, User
+
 
 class UserProjects(models.Model):
 
@@ -28,7 +30,9 @@ class UserProjects(models.Model):
 
 
 def restrict_projects(admin, user, projects):
-    check_valid_permission_change(admin, user, projects)
+    if admin is not None:
+        check_valid_permission_change(admin, user, projects)
+
     user_projects, created = UserProjects.objects.get_or_create(
         user=user, defaults={'is_restricted': True}
     )
@@ -89,6 +93,30 @@ def check_user_manageable(admin, user):
     )
     if not orgs_with_restrictions.users().filter(id=user.id).exists():
         raise(InvalidPermissionChange)
+
+
+EUTF_ORG_ID = 3394
+EUTF_PROJECT_ID = 4401
+
+
+def check_set_eutf_restrictions(partnership=None, employment=None):
+
+    # all partners to EUTF projects
+    root = Project.objects.get(pk=EUTF_PROJECT_ID)
+    eutf_projects = root.descendants()
+    eutf_partners = eutf_projects.all_partners()
+
+    # all partners that are content owned by EUTF
+    eutf = Organisation.objects.get(pk=EUTF_ORG_ID)
+    content_owned_organisations = eutf.content_owned_organisations()
+
+    # all "non content-owned" partners
+    other_organisations = eutf_partners.exclude(pk__in=content_owned_organisations)
+
+    if partnership is not None and partnership.organisation in other_organisations:
+        organisation_users = User.objects.filter(employers__organisation=partnership.organisation)
+    elif employment is not None and employment.organisation in other_organisations:
+        organisation_users = User.objects.filter(employers__in=employment)
 
 
 class InvalidPermissionChange(Exception):
