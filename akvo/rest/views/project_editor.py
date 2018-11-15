@@ -39,7 +39,7 @@ from django.http import HttpResponseForbidden
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import status
+from rest_framework import status as http_status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -810,12 +810,20 @@ def project_editor_import_results(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
 
-    if not (user.is_superuser or user.can_import_results()):
+    if not (user.is_superuser or
+            user.can_import_results() and user.has_perm('rsr.change_project', project)):
         return HttpResponseForbidden()
 
     status_code, message = project.import_results()
 
-    return Response({'code': status_code, 'message': message})
+    if status_code == 1:
+        data = {'project_id': project_pk, 'import_success': True}
+        status = http_status.HTTP_201_CREATED
+    else:
+        data = {'project_id': project_pk, 'import_success': False, 'message': message}
+        status = http_status.HTTP_400_BAD_REQUEST
+
+    return Response(data=data, status=status)
 
 
 @api_view(['POST'])
