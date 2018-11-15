@@ -8,7 +8,7 @@ from rest_framework import pagination
 from rest_framework.response import Response
 
 
-class LimitSizePageNumberPagination(pagination.PageNumberPagination):
+class StandardSizePageNumberPagination(pagination.PageNumberPagination):
     page_size = 30
     page_size_query_param = 'limit'
     max_page_size = 100
