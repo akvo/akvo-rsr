@@ -7,6 +7,7 @@
 
 // TODO: several of these constants should be derived from the RSR settings
 export const API_LIMIT = 100,
+    API_LARGE_LIMIT = 1000,
     // From rsr.models.indicator.IndicatorPeriodData
     ROLE_ME_MANAGER = "ROLE_ME_MANAGER",
     ROLE_PROJECT_EDITOR = "ROLE_PROJECT_EDITOR",
