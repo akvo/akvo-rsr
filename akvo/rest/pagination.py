@@ -14,6 +14,12 @@ class StandardSizePageNumberPagination(pagination.PageNumberPagination):
     max_page_size = 100
 
 
+class LargeSizePageNumberPagination(pagination.PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'limit'
+    max_page_size = 1000
+
+
 class TastypieOffsetPagination(pagination.LimitOffsetPagination):
 
     def get_paginated_response(self, data):

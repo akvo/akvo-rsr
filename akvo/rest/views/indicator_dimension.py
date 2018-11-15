@@ -6,6 +6,7 @@
 
 
 from akvo.rsr.models import IndicatorDimension
+from akvo.rest.pagination import LargeSizePageNumberPagination
 
 from ..serializers import IndicatorDimensionSerializer
 from ..viewsets import PublicProjectViewSet
@@ -17,3 +18,4 @@ class IndicatorDimensionViewSet(PublicProjectViewSet):
     queryset = IndicatorDimension.objects.all()
     serializer_class = IndicatorDimensionSerializer
     project_relation = 'indicator__result__project__'
+    pagination_class = LargeSizePageNumberPagination
