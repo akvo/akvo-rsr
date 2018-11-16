@@ -941,4 +941,4 @@ def log_project_addition(request, project_pk=None):
 
     Project.log_project_addition(project_pk, user)
     content = {'log_entry': 'added successfully'}
-    return Response(content, status=status.HTTP_201_CREATED)
+    return Response(content, status=http_status.HTTP_201_CREATED)
