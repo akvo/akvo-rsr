@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
-from django.contrib.admin.models import LogEntry
+from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
@@ -1592,6 +1592,72 @@ class Project(TimestampsMixin, models.Model):
 
         except (InvalidOperation, TypeError):
             pass
+
+    @classmethod
+    def log_project_addition(cls, project_id, user):
+        project = cls.objects.get(id=project_id)
+        message = u'%s.' % (_(u'Project editor, added project'))
+
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(project).pk,
+            object_id=project.pk,
+            object_repr=project.__unicode__(),
+            action_flag=ADDITION,
+            change_message=message
+        )
+
+        # Perform IATI checks after a project has been created.
+        project.update_iati_checks()
+
+    @staticmethod
+    def add_custom_fields(project_id, organisations):
+        from akvo.rsr.models import OrganisationCustomField, ProjectCustomField
+        custom_fields = OrganisationCustomField.objects.filter(
+            organisation__in=organisations
+        )
+        copy_fields = (
+            'name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text'
+        )
+        project_custom_fields = [
+            ProjectCustomField(
+                project_id=project_id,
+                **{field: getattr(custom_field, field) for field in copy_fields}
+            )
+            for custom_field in custom_fields
+        ]
+        ProjectCustomField.objects.bulk_create(project_custom_fields)
+
+    @classmethod
+    def new_project_created(cls, project_id, user):
+        """Hook to do some book-keeping for a newly created project.
+
+        *NOTE*: This hook cannot be moved into a post-save hook since we need
+        information about the user who created this project, to perform some of
+        the actions.
+
+        """
+        # Set reporting organisation
+        organisations = [e.organisation for e in user.approved_employments().order_by('id')]
+        can_create_project_orgs = [
+            org for org in organisations
+            if org.can_create_projects and user.has_perm('rsr.add_project', org)
+        ]
+
+        if can_create_project_orgs:
+            # FIXME: We randomly choose the first organisation, where the user
+            # can create projects, when ordered by employments
+            organisation_id = organisations[0].id
+            from akvo.rsr.models import Partnership
+            Partnership.objects.create(
+                project_id=project_id,
+                organisation_id=organisation_id,
+                iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+            )
+
+        Project.log_project_addition(project_id, user)
+        organisation_ids = [org.id for org in organisations]
+        Project.add_custom_fields(project_id, organisation_ids)
 
 
 @receiver(post_save, sender=Project)

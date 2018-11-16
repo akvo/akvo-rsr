@@ -24,15 +24,15 @@ from akvo.codelists.store.default_codelists import (
     AID_TYPE, EARMARKING_CATEGORY, SECTOR_CATEGORY, SECTOR
 )
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
+from akvo.rsr.models.user_projects import InvalidPermissionChange, check_user_manageable
 from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
-from ..forms import (PasswordForm, ProfileForm, UserOrganisationForm, UserAvatarForm,
-                     SelectOrgForm)
+from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
+                     RSRPasswordChangeForm)
 from ..filters import remove_empty_querydict_items
 from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
                       project_access_filter)
-from ..models import (Employment, Organisation, OrganisationCustomField, Project,
-                      ProjectEditorValidation, ProjectEditorValidationSet, Result, Indicator)
-
+from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
+                      ProjectEditorValidationSet, Result, Indicator)
 import json
 
 
@@ -119,7 +119,7 @@ def my_details(request):
     organisation_count = Organisation.objects.all().count()
     country_count = Country.objects.all().count()
 
-    change_password_form = PasswordForm(request.user)
+    change_password_form = RSRPasswordChangeForm(request.user)
 
     api_key = ApiKey.objects.get_or_create(user=request.user)[0].key
 
@@ -201,6 +201,8 @@ def my_projects(request):
                 projects = projects | employment.organisation.all_projects().published()
         projects = projects.distinct()
         # If user has a whitelist, only projects on the list may be accessible, depending on groups
+        # TODO: the filtering needs to take into account that the user may be an admin for org A and
+        # not for org B
         projects = project_access_filter(request.user, projects)
 
     # Custom filter on project id or (sub)title
@@ -227,14 +229,8 @@ def my_projects(request):
     page.object_list = page.object_list.select_related('validations').\
         prefetch_related('publishingstatus')
 
-    # Add custom fields in case user adds a new project
-    new_project_custom_fields = OrganisationCustomField.objects.filter(
-        organisation__in=organisations
-    )
-
     context = {
         'organisations': organisations,
-        'new_project_custom_fields': new_project_custom_fields,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,
@@ -452,23 +448,19 @@ def user_management(request):
     """
 
     def _restrictions_turned_on(user):
-        # "Feature flag" for access restrictions
-        restricting_orgs = settings.ACCESS_RESTRICTIONS_ORGS
-
-        if ('ALL' in restricting_orgs or
-                user.approved_organisations().filter(pk__in=restricting_orgs).exists()):
+        if user.approved_organisations().filter(enable_restrictions=True).exists():
             return True
         return False
 
-    user = request.user
+    admin = request.user
 
-    if not user.has_perm('rsr.user_management'):
+    if not admin.has_perm('rsr.user_management'):
         raise PermissionDenied
 
-    org_admin = user.approved_employments().filter(group__name='Admins').exists() or \
-        user.is_admin or user.is_superuser
+    org_admin = admin.approved_employments().filter(group__name='Admins').exists() or \
+        admin.is_admin or admin.is_superuser
 
-    manageables = manageable_objects(user)
+    manageables = manageable_objects(admin)
 
     employments = manageables['employments']
     organisations_list = list(manageables['organisations'].values('id', 'name'))
@@ -517,21 +509,26 @@ def user_management(request):
                 'id', 'first_name', 'last_name', 'email'
             ])
 
-            if _restrictions_turned_on(user):
+            if _restrictions_turned_on(admin):
                 # determine if this user's project access can be restricted
-                if employment.user.has_perm('rsr.user_management'):
+                # TODO: this needs fixing, since a user can be admin for one org and project editor
+                # for another, or have an employment pending approval while being approved for
+                # another org
+                if employment.user.has_perm('rsr.user_management') or not employment.is_approved:
                     can_be_restricted = False
                 else:
-                    can_be_restricted = True
-                    #  We cannot limit project access to users that are employed by more than one
-                    # organisation
-                    if employment.user.approved_organisations().distinct().count() != 1:
-                        can_be_restricted = False
-                    else:
+                    try:
+                        check_user_manageable(admin, employment.user)
+                        can_be_restricted = True
                         user_projects = UserProjects.objects.filter(user=employment.user)
                         if user_projects.exists():
                             user_dict['is_restricted'] = user_projects[0].is_restricted
-                            user_dict['restricted_count'] = user_projects[0].projects.count()
+                            user_dict['restricted_count'] = admin.admin_projects().filter(
+                                pk__in=user_projects[0].projects.all()
+                            ).count()
+                    except InvalidPermissionChange:
+                        can_be_restricted = False
+
                 user_dict['can_be_restricted'] = can_be_restricted
             else:
                 user_dict['can_be_restricted'] = False

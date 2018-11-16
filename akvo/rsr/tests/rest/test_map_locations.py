@@ -25,8 +25,9 @@ class ProjectMapLocationTest(TestCase):
         3. Add the user to the created group
         4. Save a test Client with the correct HOST(needed because of our dispatch middleware)
         """
-        u = User.objects.create(username="testuser", password="password", is_staff=True,
+        u = User.objects.create(username='testuser', is_staff=True,
                                 is_active=True, is_superuser=True)
+        u.set_password('password')
         u.save()
         API_users = Group.objects.create(id=8, name="Full REST API access")
         API_users.save()

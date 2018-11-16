@@ -19,7 +19,7 @@ import {
     putData,
     getUserId,
     getIsRestricted,
-    getUserProjects
+    filterProjects
 } from "../../../scripts-src/user-projects-access/sagas";
 import * as c from "../../../scripts-src/user-projects-access/const";
 
@@ -57,7 +57,7 @@ describe("function* putSaga", () => {
     it("expect to select three values from store", () => {
         expect(iterator.next().value).to.deep.equal(select(getUserId));
         expect(iterator.next().value).to.deep.equal(select(getIsRestricted));
-        expect(iterator.next().value).to.deep.equal(select(getUserProjects));
+        expect(iterator.next().value).to.deep.equal(select(filterProjects));
     });
 
     it("expect to call putData", () => {

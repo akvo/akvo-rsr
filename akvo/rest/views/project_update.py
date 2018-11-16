@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from re import match
 
+from django.conf import settings
 from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -214,6 +215,7 @@ def update_directory(request):
         'organisation': TypeaheadOrganisationSerializer(organisations, many=True).data,
         'location': locations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
+        'page_size_default': settings.PROJECT_DIRECTORY_PAGE_SIZES[0],
     }
     return Response(response)
 

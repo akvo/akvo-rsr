@@ -6,6 +6,7 @@
 
 import re
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.core.mail import send_mail
 from django.db import models
@@ -104,6 +105,21 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', ]
 
+    def check_password(self, raw_password):
+        """
+        Returns a boolean of whether the raw_password was correct. Handles
+        hashing formats behind the scenes.
+        """
+        from akvo.rsr.models.login_log import is_login_disabled
+        from django import forms
+        if is_login_disabled(self.user.username):
+            message = _(u'Login has been disabled for %(time)d minutes') % {
+                'time': settings.LOGIN_DISABLE_TIME / 60.0
+            }
+            raise forms.ValidationError(message)
+
+        return super(User, self).check_password(raw_password)
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'user')
@@ -156,10 +172,6 @@ class User(AbstractBaseUser, PermissionsMixin):
                 return admin_employment_orgs.all_updates()
             else:
                 return ProjectUpdate.objects.filter(user=self)
-
-    def can_edit_update(self, update):
-        is_admin = self.is_admin or self.is_superuser
-        return is_admin or update in self.get_admin_employment_orgs().all_updates()
 
     def latest_update_date(self):
         updates = self.updates()
@@ -227,11 +239,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         employments = Employment.objects.filter(user=self, is_approved=True, group__name='Admins')
         return employments.organisations()
 
+    def get_non_admin_employment_orgs(self):
+        " Return all organisations of the user where (s)he is not part of the Admins group"
+        all_orgs = Employment.objects.filter(user=self, is_approved=True).organisations()
+        admin_orgs = self.get_admin_employment_orgs()
+        return all_orgs.exclude(id__in=admin_orgs)
+
     def get_owned_org_users(self):
-        owned_organisation_users = []
-        for o in self.get_admin_employment_orgs():
-            owned_organisation_users += o.content_owned_organisations().users()
-        return owned_organisation_users
+        return self.get_admin_employment_orgs().content_owned_organisations().users()
 
     def get_is_user_manager(self, org):
         from .employment import Employment

@@ -53,7 +53,9 @@
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
     {% stylesheet 'rsr_v3_style' %}
+    {% if load_wp_css %}{% stylesheet 'rsr_wp_style' %}{% endif %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
         img[src*="gstatic.com/"], img[src*="googleapis.com/"] {

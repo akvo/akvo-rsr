@@ -29,6 +29,7 @@ def extra_context(request, protocol="http"):
     deploy_commit_id = getattr(settings, 'DEPLOY_COMMIT_ID', 'Unknown')
     deploy_commit_full_id = getattr(settings, 'DEPLOY_COMMIT_FULL_ID', 'Unknown')
     sentry_dsn = get_sentry_dsn(settings)
+    gmaps_api_key = getattr(settings, 'GOOGLE_MAPS_API_KEY', 'NO_API_KEY')
 
     return dict(
         current_site=current_site,
@@ -39,6 +40,7 @@ def extra_context(request, protocol="http"):
         deploy_commit_id=deploy_commit_id,
         deploy_commit_full_id=deploy_commit_full_id,
         sentry_dsn=sentry_dsn,
+        gmaps_api_key=gmaps_api_key,
     )
 
 

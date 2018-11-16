@@ -28,7 +28,7 @@ from akvo.utils import DjangoModel
 
 from collections import namedtuple
 
-from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
+from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.db import transaction
@@ -936,23 +936,9 @@ def project_editor_organisation_logo(request, pk=None):
 def log_project_addition(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
-
     if not user.has_perm('rsr.change_project', project):
         return HttpResponseForbidden()
 
-    message = u'%s.' % (_(u'Project editor, added project'))
-
-    LogEntry.objects.log_action(
-        user_id=user.pk,
-        content_type_id=ContentType.objects.get_for_model(project).pk,
-        object_id=project.pk,
-        object_repr=project.__unicode__(),
-        action_flag=ADDITION,
-        change_message=message
-    )
-
-    # Perform IATI checks after a project has been created.
-    project.update_iati_checks()
-
+    Project.log_project_addition(project_pk, user)
     content = {'log_entry': 'added successfully'}
     return Response(content, status=http_status.HTTP_201_CREATED)

@@ -25,7 +25,6 @@ from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
-from .user_projects import UserProjects
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
@@ -51,6 +50,7 @@ from .legacy_data import LegacyData
 from .link import Link
 from .location import (OrganisationLocation, ProjectLocation, ProjectUpdateLocation,
                        AdministrativeLocation)
+from .login_log import LoginLog
 from .organisation import Organisation
 from .organisation_indicator_label import OrganisationIndicatorLabel
 from .organisation_account import OrganisationAccount
@@ -80,6 +80,7 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
+from .user_projects import UserProjects, RestrictedUserProjectsByOrg
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -124,6 +125,7 @@ __all__ = [
     'InternalOrganisationID',
     'Keyword',
     'LegacyData',
+    'LoginLog',
     'Link',
     'NarrativeReport',
     'Organisation',
@@ -173,6 +175,7 @@ __all__ = [
     'TransactionSector',
     'User',
     'UserProjects',
+    'RestrictedUserProjectsByOrg',
 ]
 
 logger = logging.getLogger('akvo.rsr')
@@ -215,6 +218,7 @@ rules.add_perm('rsr.delete_indicatorlabel', is_rsr_admin | is_org_admin | is_org
 rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
 
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm(

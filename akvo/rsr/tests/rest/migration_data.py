@@ -307,9 +307,9 @@ POST_URLS = [
 
     ('/rest/v1/user/1/change_password/?format=json',
      {'old_password': 'password',
-      'new_password1': 'my-awesome-new-password',
-      'new_password2': 'my-awesome-new-password'},
-     ('User.objects.get(id=1).check_password("my-awesome-new-password")',)),
+      'new_password1': 'my-@wesome-N3W-password',
+      'new_password2': 'my-@wesome-N3W-password'},
+     ('User.objects.get(id=1).check_password("my-@wesome-N3W-password")',)),
 
     ('/rest/v1/project/4/log_project_addition/?format=json',
      {},

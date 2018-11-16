@@ -34,7 +34,7 @@ class Command(BaseCommand):
         for user_id in user_ids:
             user = User.objects.get(id=user_id)
             user.is_active = False
-            user.set_password(None)
+            user.set_unusable_password()
             email = 'user-{}@example.com'.format(user_id)
             user.first_name = user.last_name = 'User-{}'.format(user_id)
             user.username = email
