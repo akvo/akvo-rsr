@@ -955,4 +955,4 @@ def log_project_addition(request, project_pk=None):
     project.update_iati_checks()
 
     content = {'log_entry': 'added successfully'}
-    return Response(content, status=status.HTTP_201_CREATED)
+    return Response(content, status=http_status.HTTP_201_CREATED)
