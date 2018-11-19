@@ -65,7 +65,11 @@ function fetchFromAPI(baseUrl) {
             // if data.next then we have more data than fits in one go
             if (data.next) {
                 // calculate how many pages we need to get and consturct URLs
-                const pageNumbers = range(2, Math.ceil(data.count / c.API_LIMIT));
+                const limitParam = baseUrl.match(/limit=\d+/);
+                const pageSize = limitParam
+                    ? parseInt(limitParam[0].split("=")[1]) || c.API_LIMIT
+                    : c.API_LIMIT;
+                const pageNumbers = range(2, Math.ceil(data.count / pageSize));
                 const urls = pageNumbers.map(n => `${baseUrl}&page=${n}`);
                 // NOTE: we need to bind url to wrappedFetch or the array index will leak as a
                 // second param into the call. Nasty!
