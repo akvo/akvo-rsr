@@ -133,7 +133,7 @@ export const endpoints = {
     dimensions: id =>
         `/rest/v1/indicator_dimension/?format=json&limit=${
             c.API_LARGE_LIMIT
-        }&result__project=${id}`,
+        }&indicator__result__project=${id}`,
     periods: id =>
         `/rest/v1/indicator_period/?format=json&limit=${
             c.API_LIMIT
