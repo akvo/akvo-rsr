@@ -24,8 +24,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 
-from django_counter.models import ViewCounter
-
 from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
@@ -613,11 +611,6 @@ class Project(TimestampsMixin, models.Model):
         User = get_user_model()
         return dict(user=User.objects.only('first_name', 'last_name', 'email').get(id=user_id),
                     last_modified_at=last_modified_at)
-
-    @property
-    def view_count(self):
-        counter = ViewCounter.objects.get_for_object(self)
-        return counter.count or 0
 
     @property
     def reporting_partner(self):

@@ -19,7 +19,6 @@ django-tastypie==0.12.1
 django-rest-swagger==0.3.10
 
 # Django apps from VCS web services
--e git://github.com/akvo/django-counter.git@3b38f45a243970fda1a61124fd6ec8b9bd352c35#egg=django-counter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
 -e git://github.com/akvo/django-registration.git@d1ff9eba18854fc41892de5a16562db77b93a25a#egg=registration
 
