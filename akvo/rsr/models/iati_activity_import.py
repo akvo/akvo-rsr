@@ -9,6 +9,7 @@ import inspect
 from datetime import datetime
 from lxml import etree
 
+from django.apps import apps
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -18,8 +19,6 @@ from django.utils.translation import ugettext_lazy as _
 from akvo import settings
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
-from akvo.rsr.models.organisation import Organisation
-from akvo.rsr.models.project import Project, MultipleReportingOrgs
 from akvo.utils import get_sha1_hash
 
 
@@ -172,6 +171,7 @@ class IatiActivityImport(TimestampsMixin):
         must already exist in RSR for this function to return True.
         :return: Boolean; True if a reporting org was found, False if not
         """
+        Organisation = apps.get_model('rsr', 'Organisation')
         reporting_org_element = self.activity.find('reporting-org')
 
         if reporting_org_element is not None and 'ref' in reporting_org_element.attrib.keys():
@@ -232,6 +232,7 @@ class IatiActivityImport(TimestampsMixin):
                          LOG_ENTRY_TYPE.CRITICAL_ERROR)
             raise IatiIdNotFoundException
 
+        Project = apps.get_model('rsr', 'Project')
         self.project, created = Project.objects.get_or_create(
             iati_activity_id=self.iati_identifier
         )

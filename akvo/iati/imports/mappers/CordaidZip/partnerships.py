@@ -4,8 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from .....rsr.models.organisation import Organisation
-from .....rsr.models.partnership import Partnership
 from ..partnerships import Partnerships
 from .financials import BudgetItems
 
@@ -27,6 +25,7 @@ class Partnerships(Partnerships):
 
     def get_or_create_partnership(self, organisation, iati_organisation_role, funding_amount=None):
 
+        from akvo.rsr.models.partnership import Partnership
         partnership_obj, created = Partnership.objects.get_or_create(
             project=self.project,
             organisation=organisation,
@@ -47,6 +46,7 @@ class Partnerships(Partnerships):
         :return:
         """
         from . import CORDAID_ORG_ID, OTHERS_ORG_ID, CORDAID
+        from akvo.rsr.models.organisation import Organisation
 
         assert budget_from == "Cordaid" or budget_from == "Others", (
             "akvo:budget-from value incorrect: {}".format(budget_from))

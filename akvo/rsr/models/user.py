@@ -53,11 +53,12 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, username, email, password, **extra_fields):
         return self._create_user(username, email, password, True, True, True, **extra_fields)
 
-    def __getattr__(self, attr, *args):
-        try:
-            return getattr(self.__class__, attr, *args)
-        except AttributeError:
-            return getattr(self.get_queryset(), attr, *args)
+    # def __getattr__(self, attr, *args):
+    #     try:
+    #         return getattr(self.__class__, attr, *args)
+    #     except AttributeError:
+    #         print(self.get_queryset(), attr)
+    #         return getattr(self.get_queryset(), attr, *args)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -92,7 +93,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_(u'date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'organisations'), through=Employment,
+        'Organisation', verbose_name=_(u'organisations'), through='Employment',
         related_name='users', blank=True
     )
     notes = ValidXMLTextField(verbose_name=_(u'Notes and comments'), blank=True, default='')

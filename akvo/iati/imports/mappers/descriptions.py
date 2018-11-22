@@ -7,7 +7,6 @@
 import collections
 
 from ....rsr.models.custom_field import ProjectCustomField
-from ....rsr.models.project import Project
 
 from .. import ImportMapper, akvo_ns
 
@@ -40,6 +39,7 @@ class Descriptions(ImportMapper):
                  related_obj=None):
         super(Descriptions, self).__init__(
             iati_import_job, parent_elem, project, globals)
+        from akvo.rsr.models.project import Project
         self.model = Project
 
     def find_description_by_akvo_type(self, field):

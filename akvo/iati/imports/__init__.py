@@ -6,8 +6,6 @@
 
 from akvo.rsr.models.custom_field import ProjectCustomField
 from akvo.rsr.models.iati_import_log import IatiImportLog, LOG_ENTRY_TYPE
-from akvo.rsr.models.organisation import Organisation, ORG_TYPE_NGO
-from akvo.rsr.models.project import Project
 
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
@@ -65,6 +63,9 @@ class ImportMapper(object):
             in some cases it is another object to which we need to make a relation. In those cases
             we use related_obj
         """
+
+        from akvo.rsr.models.project import Project
+
         self.iati_import_job = iati_import_job
         # most often parent_elem is the activity element
         self.parent_elem = parent_elem
@@ -86,6 +87,8 @@ class ImportMapper(object):
         :param name: String; the name of the organisation that is specified in the IATI file.
         :return: Organisation instance or None
         """
+        from akvo.rsr.models.organisation import Organisation, ORG_TYPE_NGO
+
         if not (ref or name):
             return None
 

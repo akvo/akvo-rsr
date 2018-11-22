@@ -16,7 +16,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist, Multiple
 from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import get_model, Max, Sum
+from django.apps import apps
+from django.db.models import Max, Sum
 from django.db.models.signals import post_save, post_delete
 from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
@@ -34,7 +35,6 @@ from akvo.codelists.store.default_codelists import (AID_TYPE_VOCABULARY, ACTIVIT
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
 
-from ...iati.checks.iati_checks import IatiChecks
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
@@ -152,7 +152,7 @@ class Project(TimestampsMixin, models.Model):
         'Category', verbose_name=_(u'categories'), related_name='projects', blank=True
     )
     partners = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'partners'), through=Partnership, related_name='projects',
+        'Organisation', verbose_name=_(u'partners'), through='Partnership', related_name='projects',
         blank=True,
     )
     project_plan_summary = ProjectLimitedTextField(
@@ -403,7 +403,7 @@ class Project(TimestampsMixin, models.Model):
 
     # Project editor settings
     validations = models.ManyToManyField(
-        ProjectEditorValidationSet, verbose_name=_(u'validations'), related_name='projects'
+        'ProjectEditorValidationSet', verbose_name=_(u'validations'), related_name='projects'
     )
 
     # denormalized data
@@ -853,11 +853,11 @@ class Project(TimestampsMixin, models.Model):
             return PublishingStatus.objects.filter(project__in=self)
 
         def keywords(self):
-            Keyword = get_model('rsr', 'Keyword')
+            Keyword = apps.get_model('rsr', 'Keyword')
             return Keyword.objects.filter(projects__in=self).distinct()
 
         def sectors(self):
-            Sector = get_model('rsr', 'Sector')
+            Sector = apps.get_model('rsr', 'Sector')
             return Sector.objects.filter(project__in=self).distinct()
 
     def __unicode__(self):
@@ -1308,6 +1308,8 @@ class Project(TimestampsMixin, models.Model):
         return context
 
     def check_mandatory_fields(self):
+        from ...iati.checks.iati_checks import IatiChecks
+
         iati_checks = IatiChecks(self)
         return iati_checks.perform_checks()
 
@@ -1440,7 +1442,7 @@ class Project(TimestampsMixin, models.Model):
         return self.add_indicator(result, parent_indicator)
 
     def add_result(self, result):
-        child_result = get_model('rsr', 'Result').objects.create(
+        child_result = apps.get_model('rsr', 'Result').objects.create(
             project=self,
             parent_result=result,
             title=result.title,
@@ -1462,7 +1464,7 @@ class Project(TimestampsMixin, models.Model):
         the indicator, if the indicator is being created and not updated.
 
         """
-        Indicator = get_model('rsr', 'Indicator')
+        Indicator = apps.get_model('rsr', 'Indicator')
         indicator, created = Indicator.objects.update_or_create(
             result=result,
             parent_indicator=parent_indicator,
@@ -1491,7 +1493,7 @@ class Project(TimestampsMixin, models.Model):
 
     def update_indicator(self, result, parent_indicator):
         """Update an indicator based on parent indicator attributes."""
-        Indicator = get_model('rsr', 'Indicator')
+        Indicator = apps.get_model('rsr', 'Indicator')
         try:
             child_indicator = Indicator.objects.get(
                 result=result,
@@ -1516,7 +1518,7 @@ class Project(TimestampsMixin, models.Model):
         method automatically updates the existing one, if there is one.
 
         """
-        IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
+        IndicatorPeriod = apps.get_model('rsr', 'IndicatorPeriod')
         child_period, created = IndicatorPeriod.objects.select_related(
             'indicator',
             'indicator__result',
@@ -1534,7 +1536,7 @@ class Project(TimestampsMixin, models.Model):
     def update_period(self, indicator, parent_period):
         """Update a period based on the parent period attributes."""
 
-        IndicatorPeriod = get_model('rsr', 'IndicatorPeriod')
+        IndicatorPeriod = apps.get_model('rsr', 'IndicatorPeriod')
         try:
             child_period = IndicatorPeriod.objects.select_related(
                 'indicator',
@@ -1555,14 +1557,14 @@ class Project(TimestampsMixin, models.Model):
         self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
     def add_dimension(self, indicator, dimension):
-        get_model('rsr', 'IndicatorDimension').objects.create(
+        apps.get_model('rsr', 'IndicatorDimension').objects.create(
             indicator=indicator,
             name=dimension.name,
             value=dimension.value,
         )
 
     def add_reference(self, indicator, reference):
-        get_model('rsr', 'IndicatorReference').objects.create(
+        apps.get_model('rsr', 'IndicatorReference').objects.create(
             indicator=indicator,
             reference=reference.reference,
             vocabulary=reference.vocabulary,
@@ -1591,7 +1593,7 @@ class Project(TimestampsMixin, models.Model):
         return False
 
     def indicator_labels(self):
-        return get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
+        return apps.get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
             organisation=self.all_partners()
         ).distinct()
 

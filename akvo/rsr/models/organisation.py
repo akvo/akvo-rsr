@@ -51,11 +51,11 @@ class OrgManager(models.Manager):
             }
         ).order_by('lower_name')
 
-    def __getattr__(self, attr, *args):
-        try:
-            return getattr(self.__class__, attr, *args)
-        except AttributeError:
-            return getattr(self.get_queryset(), attr, *args)
+    # def __getattr__(self, attr, *args):
+    #     try:
+    #         return getattr(self.__class__, attr, *args)
+    #     except AttributeError:
+    #         return getattr(self.get_queryset(), attr, *args)
 
 
 class Organisation(TimestampsMixin, models.Model):
