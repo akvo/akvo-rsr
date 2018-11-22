@@ -13,7 +13,6 @@ import * as c from "../../const";
 import { collapseChange } from "../../actions/collapse-actions";
 import Collapse, { Panel } from "rc-collapse";
 import { datePairs, reportFormToggle } from "../../actions/ui-actions";
-import "react-select/dist/react-select.css";
 
 // Markdown
 import { Markdown } from "react-showdown";

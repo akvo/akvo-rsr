@@ -1,9 +1,3 @@
 {
-  "presets": [["env",{"modules":false}], "react"],
-  "env":{
-    "test":{
-      "presets":["env", "stage-0"],
-      "plugins": ["babel-plugin-transform-decorators-legacy", "transform-object-rest-spread"]
-    }
-  }
+    "presets": [ "env", "react", "stage-1" ]
 }

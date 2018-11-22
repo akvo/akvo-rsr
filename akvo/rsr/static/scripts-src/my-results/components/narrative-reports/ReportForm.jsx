@@ -7,7 +7,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import "react-select/dist/react-select.css";
 import Select from "react-select";
 
 import { _, collapseId, displayDate, endpoints, setHash } from "../../utils";

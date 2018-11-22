@@ -7,12 +7,11 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import "react-select/dist/react-select.css";
+import "!css-loader!react-select/dist/react-select.css";
 import { _ } from "../utils";
 
 // DatePicker
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 var sortReportIds = function(reports) {
     if (!reports || !reports.ids) {

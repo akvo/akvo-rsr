@@ -7,8 +7,11 @@
 
 import React from "react";
 import { connect } from "react-redux";
+
+// NOTE: the css for react-tabs is imported in main.scss as I couldn't get the MiniCssExtractPlugin
+// loader to work correctly for react-tabs/style/react-tabs.css
+// This is true for all style sheets provided by packages
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
 
 // TODO: look at refactoring the actions, moving the dispatch calls out of them. Not entirely trivial...
 import { deleteFromModel, fetchModel, updateModel } from "../actions/model-actions";

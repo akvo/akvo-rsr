@@ -10,8 +10,6 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 
 import ReactMde, { ReactMdeCommands } from "react-mde";
-import "react-mde/lib/styles/css/react-mde-all.css";
-import "./styles/markdown-editor.css";
 
 import { _, isEmpty } from "../utils";
 

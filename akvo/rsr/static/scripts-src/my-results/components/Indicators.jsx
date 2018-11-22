@@ -10,7 +10,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Collapse, { Panel } from "rc-collapse";
 import { Progress } from "react-sweet-progress";
-import "react-sweet-progress/lib/style.css";
 
 import * as c from "../const.js";
 
