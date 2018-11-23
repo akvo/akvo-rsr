@@ -52,7 +52,7 @@ if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
     gcloud container clusters get-credentials production
 else
     log Environement is test
-    gcloud container clusters get-credentials test
+    gcloud container clusters get-credentials production
 fi
 
 log Pushing images
