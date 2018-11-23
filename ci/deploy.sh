@@ -8,7 +8,7 @@ function log {
 
 export PROJECT_NAME=akvo-lumen
 
-if [[ "${TRAVIS_BRANCH}" != "develop" ]] && [[ "${TRAVIS_BRANCH}" != "master" ]] && [[ "${TRAVIS_BRANCH}" != "issue/3337-dockerize-django" ]]; then
+if [[ "${TRAVIS_BRANCH}" != "develop" ]] && [[ "${TRAVIS_BRANCH}" != "master" ]] && [[ "${TRAVIS_BRANCH}" != "poc/perf" ]]; then
     exit 0
 fi
 

@@ -1,12 +1,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: rsr-media-disk
+  name: fast-rsr-media-disk
   labels:
-    app: rsr
+    app: fast-rsr
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Gi
+      storage: 2Gi

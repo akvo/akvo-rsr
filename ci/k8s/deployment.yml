@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: rsr
+  name: fast-rsr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: rsr
-      app: rsr
+      run: fast-rsr
+      app: fast-rsr
   template:
     metadata:
       labels:
-        run: rsr
+        run: fast-rsr
         rsr-version: ${TRAVIS_COMMIT}
-        app: rsr
+        app: fast-rsr
       annotations:
         prometheus.io/scrape: 'true'
     spec:
@@ -35,8 +35,10 @@ spec:
           httpGet:
             path: /healthz
             port: 80
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
         imagePullPolicy: Always
         resources:
           requests:
@@ -63,8 +65,10 @@ spec:
         resources:
           requests:
             cpu: "50m"
+            memory: "4024Mi"
           limits:
             cpu: "4000m"
+            memory: "4024Mi"
         ports:
         - containerPort: 8000
           protocol: TCP
@@ -72,14 +76,18 @@ spec:
           httpGet:
             path: /healthz
             port: 8000
+          failureThreshold: 5
           initialDelaySeconds: 30
-          timeoutSeconds: 1
+          periodSeconds: 30
+          timeoutSeconds: 10
         readinessProbe:
           httpGet:
             path: /healthz
             port: 8000
+          failureThreshold: 5
           initialDelaySeconds: 30
-          timeoutSeconds: 1
+          periodSeconds: 30
+          timeoutSeconds: 10
         volumeMounts:
             - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
@@ -171,4 +179,4 @@ spec:
              secretName: "rsr-secret"
          - name: rsr-media-disk
            persistentVolumeClaim:
-             claimName: rsr-media-disk
+             claimName: fast-rsr-media-disk
