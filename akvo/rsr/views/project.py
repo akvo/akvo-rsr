@@ -103,9 +103,12 @@ def main(request, project_id, template="project_main.html"):
     check_project_viewing_permissions(request.user, project)
 
     # Updates
-    updates = project.project_updates.prefetch_related('user')
+    updates = project.project_updates.prefetch_related(None)
+    first_updates = updates[:9]
+
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
+
+    page, paginator, page_range = pagination(page, first_updates, 10)
 
     # Wordpress custom CSS trigger
     iframe = request.GET.get('iframe')
@@ -118,7 +121,7 @@ def main(request, project_id, template="project_main.html"):
     related_documents = related_documents[:5]
 
     # JSON data
-    carousel_data = json.dumps(_get_carousel_data(project, updates[:9]))
+    carousel_data = json.dumps(_get_carousel_data(project, first_updates))
     accordion_data = json.dumps({
         'background': project.background,
         'current_status': project.current_status,
@@ -138,7 +141,7 @@ def main(request, project_id, template="project_main.html"):
         'pledged': project.get_pledged(),
         'project': project,
         'related_documents': related_documents,
-        'updates': updates[:5] if updates else None,
+        'updates': first_updates[:5] if first_updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
         'user_is_me_manager': 'false',
