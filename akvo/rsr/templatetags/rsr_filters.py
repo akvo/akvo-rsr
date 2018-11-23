@@ -83,6 +83,7 @@ def rsr_sorted_set(iterable):
     set_list.sort()
     return set_list
 
+
 @register.filter
 def load_partnerships_and_orgs(project):
     return project.partnerships.prefetch_related('organisation').all()
