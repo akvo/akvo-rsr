@@ -157,16 +157,16 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += (
 
-    # # IATI file
-    # url(r'^project/(?P<project_id>\d+)/iati/$',
-    #     project.iati, name='project-iati'),
+    # IATI file
+    url(r'^project/(?P<project_id>\d+)/iati/$',
+        project.iati, name='project-iati'),
 
-    # url(r'^organisation/(?P<organisation_id>\d+)/iati/$',
-    #     organisation.iati, name='projects-iati'),
+    url(r'^organisation/(?P<organisation_id>\d+)/iati/$',
+        organisation.iati, name='projects-iati'),
 
-    # # IATI organisation file
-    # url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
-    #     organisation.iati_org, name='org-iati'),
+    # IATI organisation file
+    url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
+        organisation.iati_org, name='org-iati'),
 
     # # Legacy TastyPie API emulation
     # (r'^api/', include('akvo.rest.urls')),
