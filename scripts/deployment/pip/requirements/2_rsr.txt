@@ -40,7 +40,6 @@ xmltodict==0.10.2
 Markdown==2.4
 Pillow==2.7.0
 python-memcached==1.53
-template-utils==0.4p2
 
 # Images and videos
 sorl-thumbnail==12.5.0
