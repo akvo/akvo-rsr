@@ -7,7 +7,7 @@ django-markup==0.4
 django-pagination==1.0.7
 
 # Bootstrap
-django-bootstrap3==4.11.0
+django-bootstrap3==11.0
 
 # API framework
 mimeparse==0.1.3
