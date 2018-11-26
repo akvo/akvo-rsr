@@ -40,6 +40,7 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectUpdate
+        fields = '__all__'
 
     def create(self, validated_data):
         locations_data = validated_data.pop('locations', [])

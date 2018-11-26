@@ -7,7 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import views
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from rest_framework import routers
 
 # Wire up our API using automatic URL routing.
@@ -126,8 +126,7 @@ router.urls.append(root_url)
 # NOTE: if versions is to be added to one of the views below, the view function needs to include
 # version in its parameters.
 
-urlpatterns = patterns(
-    '',
+urlpatterns = (
     url(r'^', include(router.urls)),
     url(r'v1/employment/(?P<pk>[0-9]+)/approve/$',
         views.approve_employment,
@@ -158,8 +157,7 @@ urlpatterns = patterns(
 )
 
 # Project editor
-urlpatterns += patterns(
-    '',
+urlpatterns += (
     url(r'v1/project/(?P<pk>[0-9]+)/project_editor/$',
         views.project_editor,
         name='project_editor_api'),
@@ -199,8 +197,7 @@ urlpatterns += patterns(
 )
 
 # Directory views
-urlpatterns += patterns(
-    '',
+urlpatterns += (
     url(r'v1/project_directory$',
         views.project_directory,
         name='project_directory'),
@@ -213,8 +210,7 @@ urlpatterns += patterns(
 )
 
 # Typeahead
-urlpatterns += patterns(
-    '',
+urlpatterns += (
     url(r'v1/typeaheads/countries$',
         views.typeahead_country,
         name='country_typeahead'),
@@ -242,8 +238,7 @@ urlpatterns += patterns(
 )
 
 # My reports
-urlpatterns += patterns(
-    '',
+urlpatterns += (
     url(r'v1/report_formats/$',
         views.report_formats,
         name='report_formats_api'),

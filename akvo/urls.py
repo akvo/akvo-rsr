@@ -172,8 +172,8 @@ urlpatterns += (
     # (r'^api/', include('akvo.rest.urls')),
 
     # Django Rest Framework urls
-    # (r'^rest/', include('akvo.rest.urls')),
-    # url(r'^rest/docs/', include('rest_framework_swagger.urls')),
+    url(r'^rest/', include('akvo.rest.urls')),
+    url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 
     # # RSS
     # url(r'^rss/updates/(?P<project_id>\d+)/$',
