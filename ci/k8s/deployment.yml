@@ -35,7 +35,7 @@ spec:
           httpGet:
             path: /healthz
             port: 80
-          failureThreshold: 5
+          failureThreshold: 10
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 10
@@ -52,12 +52,12 @@ spec:
         - name: REPORT_SERVER_API_KEY
           valueFrom:
             secretKeyRef:
-              name: "rsr-secret"
+              name: "fast-rsr-secret"
               key: report-server-api-key
         - name: REPORT_SERVER_URL
           valueFrom:
             secretKeyRef:
-              name: "rsr-secret"
+              name: "fast-rsr-secret"
               key: report-server-url
       - name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
@@ -76,7 +76,7 @@ spec:
           httpGet:
             path: /healthz
             port: 8000
-          failureThreshold: 5
+          failureThreshold: 10
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 10
@@ -84,7 +84,7 @@ spec:
           httpGet:
             path: /healthz
             port: 8000
-          failureThreshold: 5
+          failureThreshold: 10
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 10
@@ -106,12 +106,12 @@ spec:
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: "rsr-secret"
+              name: "fast-rsr-secret"
               key: sentry-dsn
         - name: DJANGO_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: "rsr-secret"
+              name: "fast-rsr-secret"
               key: django-secret-key
         - name: ENABLE_STATS
           value: "yes please"
@@ -176,7 +176,7 @@ spec:
            emptyDir: {}
          - name: "secret-config"
            secret:
-             secretName: "rsr-secret"
+             secretName: "fast-rsr-secret"
          - name: rsr-media-disk
            persistentVolumeClaim:
              claimName: fast-rsr-media-disk
