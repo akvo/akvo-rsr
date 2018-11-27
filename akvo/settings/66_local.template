@@ -6,7 +6,8 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 # Development mode
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = True
+
 
 # Production mode
 # DEBUG = TEMPLATE_DEBUG = False
