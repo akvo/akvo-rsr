@@ -16,6 +16,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
+from django.views.static import serve
 
 from akvo.rsr import views
 from akvo.rsr.views import account
@@ -175,70 +176,64 @@ urlpatterns += (
     url(r'^rest/', include('akvo.rest.urls')),
     url(r'^rest/docs/', include('rest_framework_swagger.urls')),
 
-    # # RSS
-    # url(r'^rss/updates/(?P<project_id>\d+)/$',
-    #     ProjectUpdates(),
-    #     name="rss_project_updates"),
+    # RSS
+    url(r'^rss/updates/(?P<project_id>\d+)/$',
+        ProjectUpdates(),
+        name="rss_project_updates"),
 
-    # url(r'^rss/org-updates/(?P<org_id>\d+)/$',
-    #     OrganisationUpdates(),
-    #     name="rss_org_updates"),
+    url(r'^rss/org-updates/(?P<org_id>\d+)/$',
+        OrganisationUpdates(),
+        name="rss_org_updates"),
 
-    # url(r'^rss/all-updates/$',
-    #     AllProjectUpdates(),
-    #     name="rss_all_updates"),
+    url(r'^rss/all-updates/$',
+        AllProjectUpdates(),
+        name="rss_all_updates"),
 
-    # # Auth token for mobile apps
-    # url(r'^auth/token/$',
-    #     'akvo.rsr.views.account.api_key',
-    #     name="auth_token"),
+    # Auth token for mobile apps
+    url(r'^auth/token/$', account.api_key, name="auth_token"),
 
-    # # Widgets
-    # url(r'^widgets/projects/map/$',
-    #     widget_views.ProjectMapView.as_view(),
-    #     name="widget_org_map"),
+    # Widgets
+    url(r'^widgets/projects/map/$',
+        widget_views.ProjectMapView.as_view(),
+        name="widget_org_map"),
 
-    # url(r'^widgets/projects/list/$',
-    #     widget_views.ProjectListView.as_view(),
-    #     name="widget_project_list"),
+    url(r'^widgets/projects/list/$',
+        widget_views.ProjectListView.as_view(),
+        name="widget_project_list"),
 
-    # url(r'^widgets/cobranded-banner/(?P<project_id>\d+)/$',
-    #     widget_views.CobrandedBannerView.as_view(),
-    #     name="widget_cobranded_banner"),
+    url(r'^widgets/cobranded-banner/(?P<project_id>\d+)/$',
+        widget_views.CobrandedBannerView.as_view(),
+        name="widget_cobranded_banner"),
 
-    # url(r'^widgets/cobranded-banner/random/$',
-    #     widget_views.RandomCobrandedBannerView.as_view(),
-    #     name="widget_random_cobranded_banner"),
+    url(r'^widgets/cobranded-banner/random/$',
+        widget_views.RandomCobrandedBannerView.as_view(),
+        name="widget_random_cobranded_banner"),
 
-    # url(r'^widgets/project-narrow/(?P<project_id>\d+)/$',
-    #     widget_views.ProjectNarrowView.as_view(),
-    #     name="widget_project_narrow"),
+    url(r'^widgets/project-narrow/(?P<project_id>\d+)/$',
+        widget_views.ProjectNarrowView.as_view(),
+        name="widget_project_narrow"),
 
-    # url(r'^widgets/project-narrow/random/$',
-    #     widget_views.RandomProjectNarrowView.as_view(),
-    #     name="widget_random_project_narrow"),
+    url(r'^widgets/project-narrow/random/$',
+        widget_views.RandomProjectNarrowView.as_view(),
+        name="widget_random_project_narrow"),
 
-    # url(r'^widgets/project-small/(?P<project_id>\d+)/$',
-    #     widget_views.ProjectSmallView.as_view(),
-    #     name="widget_project_small"),
+    url(r'^widgets/project-small/(?P<project_id>\d+)/$',
+        widget_views.ProjectSmallView.as_view(),
+        name="widget_project_small"),
 
-    # url(r'^widgets/project-small/random/$',
-    #     widget_views.RandomProjectSmallView.as_view(),
-    #     name="widget_random_project_small"),
+    url(r'^widgets/project-small/random/$',
+        widget_views.RandomProjectSmallView.as_view(),
+        name="widget_random_project_small"),
 )
 
-# handler500 = 'akvo.rsr.views.error.server_error'
+handler500 = 'akvo.rsr.views.error.server_error'
 
-# urlpatterns += (
-#     '',
+urlpatterns += (
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+)
 
-#     (r'^media/(?P<path>.*)$',
-#         'django.views.static.serve',
-#         {'document_root': settings.MEDIA_ROOT}),
-# )
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
 
-# if settings.DEBUG:
-#     urlpatterns += staticfiles_urlpatterns()
-
-# if settings.REQUIRED_AUTH_GROUPS:
-#     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+if settings.REQUIRED_AUTH_GROUPS:
+    check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
