@@ -68,7 +68,7 @@ class Indicator(models.Model):
         help_text=_(u'You can provide further information of the indicator here.')
     )
     baseline_year = models.PositiveIntegerField(
-        _(u'baseline year'), blank=True, null=True, max_length=4,
+        _(u'baseline year'), blank=True, null=True,
         help_text=_(u'The year the baseline value was taken.')
     )
     baseline_value = ValidXMLCharField(

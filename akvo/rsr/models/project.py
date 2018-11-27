@@ -321,7 +321,7 @@ class Project(TimestampsMixin, models.Model):
                                           'iati-identifier/#definition</a>'
     )
     hierarchy = models.PositiveIntegerField(
-        _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS,
+        _(u'hierarchy'), null=True, blank=True, choices=HIERARCHY_OPTIONS,
         help_text=_(u'If you are reporting multiple levels of projects in RSR, you can specify '
                     u'whether this is a core, sub, or lower sub activity here.')
     )
