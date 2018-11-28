@@ -1406,8 +1406,8 @@ class Project(TimestampsMixin, models.Model):
         else:
             parent_project = parents[0]
 
-        Result = get_model('rsr', 'Result')
-        Indicator = get_model('rsr', 'Indicator')
+        Result = apps.get_model('rsr', 'Result')
+        Indicator = apps.get_model('rsr', 'Indicator')
 
         # Check that we have a parent indicator
         parent_indicator = Indicator.objects.get(pk=parent_indicator_id)
