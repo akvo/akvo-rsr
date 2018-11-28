@@ -52,7 +52,7 @@ class IatiImportTestCase(TestCase):
 
         # Create budget item labels
         BudgetItemLabel.objects.create(label="Total")
-        BudgetItemLabel.objects.create(label="Other")
+        BudgetItemLabel.objects.create(label="Subtotal")
 
         # Create budget identifier code
         iati_version = Version.objects.create(code='2.02')
