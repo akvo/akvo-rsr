@@ -226,8 +226,7 @@ def my_projects(request):
     page, paginator, page_range = pagination(page, projects, 10)
 
     # Get related objects of page at once
-    page.object_list = page.object_list.select_related('validations').\
-        prefetch_related('publishingstatus')
+    page.object_list = page.object_list.prefetch_related('publishingstatus')
 
     context = {
         'organisations': organisations,
@@ -483,7 +482,6 @@ def user_management(request):
         'user',
         'organisation',
         'group',
-        'country',
     )
 
     qs = remove_empty_querydict_items(request.GET)
