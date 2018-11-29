@@ -35,7 +35,6 @@ from django.views.decorators.http import require_POST
 
 def register(request):
     """Register form."""
-    context = RequestContext(request)
     if request.method == 'POST':
         form = RegisterForm(data=request.POST, files=request.FILES)
         if form.is_valid():
@@ -43,14 +42,16 @@ def register(request):
             if request.POST.get('hp_title'):
                 return redirect('index')
             user = form.save(request)
-            return render_to_response('registration/register_complete.html',
-                                      {'new_user': user},
-                                      context_instance=context)
+            return render_to_response(
+                'registration/register_complete.html',
+                {'new_user': user},
+            )
     else:
         form = RegisterForm()
-    return render_to_response('registration/register.html',
-                              {'form': form, 'password_length': settings.PASSWORD_MINIMUM_LENGTH},
-                              context_instance=context)
+    return render_to_response(
+        'registration/register.html',
+        {'form': form, 'password_length': settings.PASSWORD_MINIMUM_LENGTH}
+    )
 
 
 def activate(request, activation_key, extra_context=None):
@@ -89,7 +90,7 @@ def activate(request, activation_key, extra_context=None):
         context[key] = callable(value) and value() or value
     return render_to_response(
         'registration/activate.html',
-        context_instance=context
+        context=context
     )
 
 
@@ -192,7 +193,6 @@ def sign_in(request):
      - username > normal sign in
      - email > password reset workflow
     """
-    context = RequestContext(request)
     form = AuthenticationForm()
     reset_form = PasswordResetForm()
     if request.method == "POST" and 'username' in request.POST:
@@ -207,8 +207,7 @@ def sign_in(request):
         if reset_form.is_valid():
             reset_form.save(domain_override=settings.RSR_DOMAIN)
         return HttpResponse()
-    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form},
-                              context_instance=context)
+    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form})
 
 
 def sign_out(request):
