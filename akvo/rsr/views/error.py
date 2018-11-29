@@ -7,10 +7,9 @@
 """
 
 from django.shortcuts import render_to_response
-from django.template import RequestContext
 
 
 def server_error(request, template_name='500.html'):
-    response = render_to_response('500.html', {}, context_instance=RequestContext(request))
+    response = render_to_response('500.html', {})
     response.status_code = 500
     return response
