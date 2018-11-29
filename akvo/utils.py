@@ -253,6 +253,7 @@ def pagination(page, object_list, objects_per_page):
     active = page.number
 
     if not len(page_range) < 10:
+        page_range = list(page_range)
         if active > 4:
             page_range[1] = '...'
             del page_range[2:active - 2]
