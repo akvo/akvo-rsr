@@ -93,9 +93,5 @@ def check_user_manageable(admin, user):
         raise InvalidPermissionChange
 
 
-EUTF_ORG_ID = 3394
-EUTF_PROJECT_ID = 4401
-
-
 class InvalidPermissionChange(Exception):
     pass

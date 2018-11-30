@@ -175,9 +175,10 @@ class Organisation(TimestampsMixin, models.Model):
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.')
     )
-    # pointer to original org if this is a shadow. Used by EUTF
     original = models.OneToOneField('self', related_name='shadow', null=True, blank=True,
-                                    on_delete=models.SET_NULL)
+                                    on_delete=models.SET_NULL,
+                                    help_text=u'Pointer to original organisation if this is a '
+                                              u'shadow. Used by EUTF')
     allow_edit = models.BooleanField(
         _(u'Partner editors of this organisation are allowed to manually edit projects where '
           u'this organisation is support partner'),
