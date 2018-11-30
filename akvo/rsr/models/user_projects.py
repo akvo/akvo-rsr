@@ -78,13 +78,13 @@ def check_valid_permission_change(admin, user, projects):
 def check_projects_adminable(admin, project_ids):
     admin_projects = set(admin.admin_projects().values_list('pk', flat=True))
     if project_ids - admin_projects:
-        raise(InvalidPermissionChange)
+        raise InvalidPermissionChange
 
 
 def check_user_not_admin(user, project_ids):
     admin_projects = set(user.admin_projects().values_list('pk', flat=True))
     if project_ids & admin_projects:
-        raise(InvalidPermissionChange)
+        raise InvalidPermissionChange
 
 
 def check_user_manageable(admin, user):
@@ -92,52 +92,12 @@ def check_user_manageable(admin, user):
         enable_restrictions=True
     )
     if not orgs_with_restrictions.users().filter(id=user.id).exists():
-        raise(InvalidPermissionChange)
+        raise InvalidPermissionChange
 
 
 EUTF_ORG_ID = 3394
 EUTF_PROJECT_ID = 4401
 
 
-def check_set_eutf_restrictions(partnership=None, employment=None):
-
-    # all partners to EUTF projects
-    root = Project.objects.get(pk=EUTF_PROJECT_ID)
-    eutf_projects = root.descendants()
-    eutf_partners = eutf_projects.all_partners()
-
-    # all partners that are content owned by EUTF
-    eutf = Organisation.objects.get(pk=EUTF_ORG_ID)
-    content_owned_organisations = eutf.content_owned_organisations()
-
-    # all "non content-owned" partners
-    other_organisations = eutf_partners.exclude(pk__in=content_owned_organisations)
-
-    if partnership is not None and partnership.organisation in other_organisations:
-        organisation_users = User.objects.filter(employers__organisation=partnership.organisation)
-    elif employment is not None and employment.organisation in other_organisations:
-        organisation_users = User.objects.filter(employers__in=employment)
-
-
 class InvalidPermissionChange(Exception):
     pass
-
-
-class RestrictedUserProjectsByOrg(models.Model):
-    user = models.ForeignKey('User', related_name='restricted_projects')
-    organisation = models.ForeignKey('Organisation', related_name='restricted_users')
-    # FIXME: Are we keeping this? Or getting rid of this?
-    is_restricted = models.BooleanField(default=False)
-    restricted_projects = models.ManyToManyField('Project', related_name='inaccessible_by',
-                                                 null=True, blank=True)
-
-    def __unicode__(self):
-        return '{} - {} restricted projects'.format(
-            self.user.email,
-            self.restricted_projects.count())  # TODO: this is probably not what we want to show
-
-    class Meta:
-        app_label = 'rsr'
-        verbose_name = _(u'restricted user projects')
-        verbose_name_plural = _(u'restricted users projects')
-        unique_together = ('user', 'organisation')

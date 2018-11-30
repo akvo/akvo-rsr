@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0136_organisation_include_restricted'),
+        ('rsr', '0135_organisation_include_restricted'),
     ]
 
     operations = [
