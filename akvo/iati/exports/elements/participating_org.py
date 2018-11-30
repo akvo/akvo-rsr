@@ -22,7 +22,7 @@ def participating_org(project):
         # Don't include reporting orgs or sponsor partners
         if partnership.iati_organisation_role in Partnership.IATI_ROLE_LIST[:4] and \
                 partnership.organisation:
-            org = partnership.organisation
+            org = partnership.organisation.get_original()
 
             element = etree.Element("participating-org")
 

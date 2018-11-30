@@ -13,7 +13,7 @@ def _provider_organisation(element, trans):
     """
     Helper function for transaction()
     """
-    org = trans.provider_organisation
+    org = trans.provider_organisation.get_original()
     provider_org_element = etree.SubElement(element, "provider-org")
 
     if trans.provider_organisation_activity:
@@ -39,7 +39,7 @@ def _receiver_organisation(element, trans):
     """
     Helper function for transaction()
     """
-    org = trans.receiver_organisation
+    org = trans.receiver_organisation.get_original()
     receiver_org_element = etree.SubElement(element, "receiver-org")
 
     if trans.receiver_organisation_activity:
