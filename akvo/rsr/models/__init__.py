@@ -80,7 +80,7 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
-from .user_projects import UserProjects, RestrictedUserProjectsByOrg
+from .user_projects import UserProjects
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -175,7 +175,6 @@ __all__ = [
     'TransactionSector',
     'User',
     'UserProjects',
-    'RestrictedUserProjectsByOrg',
 ]
 
 logger = logging.getLogger('akvo.rsr')
