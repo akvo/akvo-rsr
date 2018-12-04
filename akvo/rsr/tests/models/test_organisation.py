@@ -4,7 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from unittest import expectedFailure
 
 from akvo.rsr.models import Organisation, Partnership, Project
 from akvo.rsr.tests.base import BaseTestCase
@@ -137,7 +136,6 @@ class OrganisationModelTestCase(BaseTestCase):
                 content_owners = content_owned_org.content_owned_by()
                 self.assertIn(org.pk, content_owners.values_list('pk', flat=True))
 
-    @expectedFailure
     def test_project_content_ownership_sanity_for_org_pair(self):
         # Given
         names = set(('A', 'E'))
@@ -155,7 +153,7 @@ class OrganisationModelTestCase(BaseTestCase):
         orgs = Organisation.objects.filter(name__in=names)
 
         # When/Then
-        for org in orgs.new_content_owned_organisations():
+        for org in orgs.content_owned_organisations():
             content_owners = org.content_owned_by().values_list('name', flat=True)
             msg = 'Content owners for {} - {} not in {}'.format(org.name, content_owners, names)
             self.assertTrue(set(content_owners) & names, msg)
@@ -174,4 +172,4 @@ class OrganisationModelTestCase(BaseTestCase):
         # Then
         F = Organisation.objects.get(name='F')
         self.assertIn(G.pk, F.content_owned_organisations().values_list('pk', flat=True))
-        # self.assertIn(F.pk, G.content_owned_organisations().values_list('pk', flat=True))
+        self.assertIn(F.pk, G.content_owned_organisations().values_list('pk', flat=True))
