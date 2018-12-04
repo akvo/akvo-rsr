@@ -28,6 +28,8 @@ class OrganisationModelTestCase(BaseTestCase):
                                                              |    content-owner   |
                                                              +====================+
 
+        * indicates organisations which can_create_projects
+
         """
 
         self.projects = {}
@@ -137,26 +139,20 @@ class OrganisationModelTestCase(BaseTestCase):
                 self.assertIn(org.pk, content_owners.values_list('pk', flat=True))
 
     def test_project_content_ownership_sanity_for_org_pair(self):
-        # Given
-        names = set(('A', 'E'))
-        orgs = Organisation.objects.filter(name__in=names)
+        org_names = 'ABCDEFG'
+        for i, first_org in enumerate(org_names):
+            for second_org in org_names[i + 1:]:
+                # Given
+                names = set([first_org, second_org])
+                orgs = Organisation.objects.filter(name__in=names)
 
-        # When/Then
-        for org in orgs.content_owned_organisations():
-            content_owners = org.content_owned_by().values_list('name', flat=True)
-            msg = 'Content owners for {} - {} not in {}'.format(org.name, content_owners, names)
-            self.assertTrue(set(content_owners) & names, msg)
-
-    def test_project_content_ownership_sanity_for_org_pair_with_new_code(self):
-        # Given
-        names = set(('A', 'E'))
-        orgs = Organisation.objects.filter(name__in=names)
-
-        # When/Then
-        for org in orgs.content_owned_organisations():
-            content_owners = org.content_owned_by().values_list('name', flat=True)
-            msg = 'Content owners for {} - {} not in {}'.format(org.name, content_owners, names)
-            self.assertTrue(set(content_owners) & names, msg)
+                # When/Then
+                for org in orgs.content_owned_organisations():
+                    content_owners = org.content_owned_by().values_list('name', flat=True)
+                    msg = 'Content owners for {} - {} not in {}'.format(
+                        org.name, content_owners, names
+                    )
+                    self.assertTrue(set(content_owners) & names, msg)
 
     def test_mutual_content_ownership_works(self):
         # Given
