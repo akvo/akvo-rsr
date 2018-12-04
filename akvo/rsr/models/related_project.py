@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db import models
+from django.db.models.signals import pre_delete, pre_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -12,8 +14,6 @@ from ..fields import ValidXMLCharField
 from akvo.codelists.models import RelatedActivityType
 from akvo.codelists.store.default_codelists import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
-from django.db.models.signals import pre_delete, pre_save
-from django.dispatch import receiver
 
 
 class RelatedProject(models.Model):
@@ -95,20 +95,27 @@ class RelatedProject(models.Model):
         return u'%s' % _(u'No related project specified')
 
 
-class MultipleParentsDisallowed(Exception):
+class RelatedProjectError(Exception):
+    def __str__(self):
+        return str(self.message)
+
+
+class MultipleParentsDisallowed(RelatedProjectError):
     """Exception raised when trying to create multiple parents for a project."""
     message = _(u'A project can have only one parent.')
 
-    def __str__(self):
-        return str(self.message)
 
-
-class ParentChangeDisallowed(Exception):
+class ParentChangeDisallowed(RelatedProjectError):
     """Exception raised when trying to change parent after importing results."""
     message = _(u"Cannot change a project's parent after importing results.")
 
-    def __str__(self):
-        return str(self.message)
+
+class SelfParentDisallowed(RelatedProjectError):
+    message = _(u'A project cannot be related to itself')
+
+
+class CyclicRelationship(RelatedProjectError):
+    message = _(u'Cannot create cyclic relationships')
 
 
 PARENT_RELATIONS = {
@@ -178,3 +185,40 @@ def prevent_parent_delete(sender, **kwargs):
 
         if child_results.exists():
             raise ParentChangeDisallowed
+
+
+@receiver(pre_save, sender=RelatedProject)
+def prevent_incorrect_relationships(sender, **kwargs):
+    """ Prevent incorrect/meaningless relationships from being created.
+
+    - A project cannot be related to itself
+    - A project cannot have it's child as it's parent too
+
+    """
+
+    R = kwargs['instance']
+    if R.project_id is None or R.related_project_id is None:
+        return
+
+    if R.project_id == R.related_project_id:
+        raise SelfParentDisallowed
+
+    # If relation is symmetric, then cycles cannot be formed
+    if not R.relation or R.relation == R.reciprocal_relation:
+        return
+
+    # Check for reciprocal relations,
+    # 1. project & related_project are swapped with relation being the same OR
+    # 2. project & related_project are the same, but with reciprocal relation
+
+    # NOTE: We only check for the first case, since the second case is made
+    # invalid because RelatedProject's unique_together ensures there's only one
+    # relation with (project, related_project) pair
+    cyclic_relations = RelatedProject.objects.filter(
+        project_id=R.related_project_id,
+        related_project_id=R.project_id,
+        relation=R.relation,
+    )
+
+    if cyclic_relations.exists():
+        raise CyclicRelationship
