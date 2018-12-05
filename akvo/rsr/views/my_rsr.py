@@ -488,7 +488,7 @@ def user_management(request):
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, employments, 20)
+    page, paginator, page_range = pagination(page, employments, 10)
 
     employments_array = []
     for employment in page:
