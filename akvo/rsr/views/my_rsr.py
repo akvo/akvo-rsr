@@ -488,7 +488,7 @@ def user_management(request):
 
     qs = remove_empty_querydict_items(request.GET)
     page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, employments, 10)
+    page, paginator, page_range = pagination(page, employments, 20)
 
     employments_array = []
     for employment in page:
@@ -514,7 +514,8 @@ def user_management(request):
                 # TODO: this needs fixing, since a user can be admin for one org and project editor
                 # for another, or have an employment pending approval while being approved for
                 # another org
-                if employment.user.has_perm('rsr.user_management') or not employment.is_approved:
+                if employment.user.has_perm('rsr.user_management',
+                                            employment.organisation) or not employment.is_approved:
                     can_be_restricted = False
                 else:
                     try:

@@ -306,32 +306,23 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
-        def content_owned_organisations(self):
-            """
-            Returns a list of Organisations of which these organisations are the content owner.
+        def content_owned_organisations(self, exclude_orgs=None):
+            """Returns a list of Organisations of which these organisations are the content owner.
+
             Includes self, is recursive.
+
+            The exclude_orgs parameter is used to avoid recursive calls that
+            can happen in case there are organisations that set each other as
+            content owned organisations.
+
             """
-            queryset = self
 
-            # If one of the organisations is a paying partner, add all implementing partners to
-            # the queryset
-            if queryset.filter(can_create_projects=True).exists():
-                field_partners = queryset.all_projects().field_partners().\
-                    exclude(can_create_projects=True)
-                queryset = Organisation.objects.filter(
-                    Q(pk__in=queryset.values_list('pk', flat=True)) |
-                    Q(pk__in=field_partners.values_list('pk', flat=True))
+            result = set()
+            for org in self:
+                result = result | set(
+                    org.content_owned_organisations(exclude_orgs=exclude_orgs).values_list('pk', flat=True)
                 )
-
-            # If the organisations content own other organisations, add those to the queryset
-            kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
-            if kids:
-                return Organisation.objects.filter(
-                    Q(pk__in=queryset.values_list('pk', flat=True)) |
-                    Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
-                ).distinct()
-
-            return queryset.distinct()
+            return Organisation.objects.filter(pk__in=result).distinct()
 
     def __unicode__(self):
         return self.name
@@ -439,12 +430,35 @@ class Organisation(TimestampsMixin, models.Model):
             ).values_list('iati_organisation_role', flat=True)
         ]
 
-    def content_owned_organisations(self):
+    def content_owned_organisations(self, exclude_orgs=None):
         """
         Returns a list of Organisations of which this organisation is the content owner.
         Includes self and is recursive.
         """
-        return Organisation.objects.filter(pk=self.pk).content_owned_organisations()
+        org = Organisation.objects.get(pk=self.pk)
+        queryset = Organisation.objects.filter(pk=org.pk)
+        # If the organisation is a paying partner, add all implementing
+        # partners to the queryset
+        if org.can_create_projects:
+            field_partners = org.all_projects().field_partners().exclude(can_create_projects=True)
+            queryset = Organisation.objects.filter(
+                Q(pk=org.id) | Q(pk__in=field_partners.values_list('pk', flat=True))
+            )
+
+        kids = Organisation.objects.filter(content_owner_id=org.id).exclude(id=org.id)
+        if exclude_orgs is not None:
+            kids = kids.exclude(pk__in=exclude_orgs)
+        if kids.exists():
+            exclude_orgs = Organisation.objects.filter(Q(pk=self.pk) | Q(pk__in=kids))
+            grand_kids = kids.content_owned_organisations(exclude_orgs=exclude_orgs)
+            kids_content_owned_orgs = Organisation.objects.filter(
+                Q(pk__in=queryset.values_list('pk', flat=True)) |
+                Q(pk__in=kids.values_list('pk', flat=True)) |
+                Q(pk__in=grand_kids.values_list('pk', flat=True))
+            ).distinct()
+            return kids_content_owned_orgs
+
+        return queryset
 
     def content_owned_by(self):
         """

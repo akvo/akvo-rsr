@@ -73,7 +73,7 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         content = json.loads(response.content)
 
         is_restricted = content['user_projects']['is_restricted']
-        org_groups = content['organisation_groups']
+        org_groups = sorted(content['organisation_groups'], key=lambda x: x['organisations'])
 
         # Then
         self.assertEqual(response.status_code, 200)
