@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.core.paginator import Page
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from lxml import etree
@@ -111,7 +112,7 @@ def main(request, project_id, template="project_main.html"):
     page, paginator, page_range = pagination(page_number, updates, 10)
 
     if page_number == '1':
-        page = first_10_updates
+        page = Page(first_10_updates, 1, paginator)
 
     first_9_updates = first_10_updates[:9]
 
