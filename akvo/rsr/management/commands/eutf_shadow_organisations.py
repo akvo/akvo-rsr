@@ -75,12 +75,27 @@ class Command(BaseCommand):
 
         # all partners that are content owned by EUTF
         eutf = Organisation.objects.get(pk=EUTF_ORG_ID)
-        content_owned_organisations = eutf.content_owned_organisations()
+        content_owned_by_eutf = eutf.content_owned_organisations()
 
         # all "non content-owned" partners
-        other_organisations = eutf_partners.exclude(pk__in=content_owned_organisations)
+        other_organisations = eutf_partners.exclude(pk__in=content_owned_by_eutf)
 
-        for organisation in other_organisations:
+        # all partners that share content ownership with EUTF
+        other_owners = set()
+        for org in content_owned_by_eutf:
+            other_owners = other_owners.union(
+                org.content_owned_by().exclude(pk__in=content_owned_by_eutf).exclude(pk=eutf.pk)
+            )
+        other_owners_qs = Organisation.objects.filter(pk__in=[o.pk for o in other_owners])
+
+        # all partners content owned by EUTF that have another content owner
+        externally_owned = other_owners_qs.content_owned_organisations()
+        shared_owned = set(externally_owned).intersection(content_owned_by_eutf)
+
+        # all partners that are either not owned by EUTF or have shared ownership
+        to_be_made_shadows = shared_owned.union(other_organisations)
+
+        for organisation in to_be_made_shadows:
             shadow = create_shadow(eutf, organisation)
             count = replace_original_with_shadow(eutf_projects, organisation, shadow)
 
