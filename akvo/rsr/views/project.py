@@ -104,11 +104,16 @@ def main(request, project_id, template="project_main.html"):
 
     # Updates
     updates = project.project_updates.prefetch_related('user')
-    first_updates = updates[:9]
+    first_10_updates = updates[:10]
 
-    page = request.GET.get('page')
+    page_number = request.GET.get('page')
 
-    page, paginator, page_range = pagination(page, first_updates, 10)
+    page, paginator, page_range = pagination(page_number, updates, 10)
+
+    if page_number == '1':
+        page = first_10_updates
+
+    first_9_updates = first_10_updates[:9]
 
     # Wordpress custom CSS trigger
     iframe = request.GET.get('iframe')
@@ -119,9 +124,9 @@ def main(request, project_id, template="project_main.html"):
         if d.url or d.document:
             related_documents += [d]
     related_documents = related_documents[:5]
-
+    #
     # JSON data
-    carousel_data = json.dumps(_get_carousel_data(project, first_updates))
+    carousel_data = json.dumps(_get_carousel_data(project, first_9_updates))
     accordion_data = json.dumps({
         'background': project.background,
         'current_status': project.current_status,
@@ -141,7 +146,7 @@ def main(request, project_id, template="project_main.html"):
         'pledged': project.get_pledged(),
         'project': project,
         'related_documents': related_documents,
-        'updates': first_updates[:5] if first_updates else None,
+        'updates': first_9_updates[:5] if first_9_updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
         'user_is_me_manager': 'false',
