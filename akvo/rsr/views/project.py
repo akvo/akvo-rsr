@@ -103,7 +103,7 @@ def main(request, project_id, template="project_main.html"):
     check_project_viewing_permissions(request.user, project)
 
     # Updates
-    updates = project.project_updates.prefetch_related(None)
+    updates = project.project_updates.prefetch_related('user')
     first_updates = updates[:9]
 
     page = request.GET.get('page')
