@@ -1420,7 +1420,7 @@ class Project(TimestampsMixin, models.Model):
         # Check that parent indicator's project is our parent project
         parent_result = parent_indicator.result
         if parent_result.project != parent_project:
-            raise ValidationError, "Parent indicator's project is not the correct parent project"
+            raise ValidationError("Parent indicator's project is not the correct parent project")
 
         # Get or create self.result that has parent_indicator.result as parent_result
         result, _created = Result.objects.get_or_create(
@@ -1442,7 +1442,7 @@ class Project(TimestampsMixin, models.Model):
         except:
             indicator_exists = False
         if indicator_exists:
-            raise ValidationError, "Indicator already exists"
+            raise ValidationError("Indicator already exists")
 
         return self.add_indicator(result, parent_indicator)
 
