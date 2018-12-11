@@ -18,6 +18,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriod
+        fields = '__all__'
 
     # TODO: add validation for parent_period
 
@@ -30,6 +31,7 @@ class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriod
+        fields = '__all__'
 
     def get_updates(self, obj):
         user = self.context['request'].user
