@@ -48,7 +48,11 @@ class UserManagementTestCase(TestCase):
         data = {'user_data': user_data}
 
         # When
-        response = self.c.post('/rest/v1/invite_user/?format=json', data)
+        response = self.c.post(
+            '/rest/v1/invite_user/?format=json',
+            json.dumps(data),
+            content_type='application/json',
+        )
 
         # Then
         self.assertEqual(response.status_code, 201)
@@ -73,7 +77,11 @@ class UserManagementTestCase(TestCase):
             'email': email
         })
         data = {'user_data': user_data}
-        response = self.c.post('/rest/v1/invite_user/?format=json', data)
+        response = self.c.post(
+            '/rest/v1/invite_user/?format=json',
+            json.dumps(data),
+            content_type='application/json',
+        )
 
         # Then
         self.assertEqual(response.status_code, 201)
@@ -96,7 +104,11 @@ class UserManagementTestCase(TestCase):
         data = {'user_data': user_data}
 
         # When
-        response = self.c.post('/rest/v1/invite_user/?format=json', data)
+        response = self.c.post(
+            '/rest/v1/invite_user/?format=json',
+            json.dumps(data),
+            content_type='application/json',
+        )
 
         # Then
         self.assertEqual(response.status_code, 201)
@@ -121,7 +133,11 @@ class UserManagementTestCase(TestCase):
         data = {'user_data': user_data}
 
         # When
-        response = self.c.post('/rest/v1/invite_user/?format=json', data)
+        response = self.c.post(
+            '/rest/v1/invite_user/?format=json',
+            json.dumps(data),
+            content_type='application/json',
+        )
 
         # Then
         self.assertEqual(response.status_code, 201)
