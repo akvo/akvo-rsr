@@ -19,6 +19,8 @@ class ProjectLocationTest(TestCase):
 
     def setUp(self):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        # Delete all countries created in any migrations
+        Country.objects.all().delete()
 
     def test_project_location_with_unicode_country(self):
         # Given
