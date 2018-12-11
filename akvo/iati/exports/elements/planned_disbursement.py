@@ -13,7 +13,7 @@ def _provider_organisation(element, pd):
     """
     Helper function for planned_disbursement()
     """
-    org = pd.provider_organisation
+    org = pd.provider_organisation.get_original()
     provider_org_element = etree.SubElement(element, "provider-org")
 
     if pd.provider_organisation_activity:
@@ -39,7 +39,7 @@ def _receiver_organisation(element, pd):
     """
     Helper function for planned_disbursement()
     """
-    org = pd.receiver_organisation
+    org = pd.receiver_organisation.get_original()
     receiver_org_element = etree.SubElement(element, "receiver-org")
 
     if pd.receiver_organisation_activity:

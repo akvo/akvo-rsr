@@ -39,7 +39,15 @@ body {
     }
 }
 
-h1, h2, h3, h4, h5, h6, p, ul, ol {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
     margin-top: 0;
     margin-bottom: 1rem;
 }
@@ -53,7 +61,7 @@ h6 {
     font-family: $titleFont;
     font-weight: normal;
     color: $akvoPurple;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
     line-height: 1.1;
 }
 
@@ -185,7 +193,6 @@ div.morePartners {
     }
 }
 
-
 .btn {
     @include transition(all 0.1s linear);
 }
@@ -265,9 +272,12 @@ span.twitter-typeahead .tt-dropdown-menu {
             color: rgba(black, 0.7) !important;
         }
     }
-    .tt-dataset-projects {}
-    .tt-dataset-organisations {}
-    .tt-dataset-locations {}
+    .tt-dataset-projects {
+    }
+    .tt-dataset-organisations {
+    }
+    .tt-dataset-locations {
+    }
 }
 
 .tt-hint {
@@ -461,7 +471,8 @@ nav.navbar-fixed-top {
     .navbar-nav {
         li {
             font-weight: normal;
-            &:first-child {}
+            &:first-child {
+            }
             a {
                 color: $akvoPurple;
                 border: thin solid transparent;
@@ -559,7 +570,8 @@ nav.navbar-fixed-top {
                         padding: 10px 15px;
                     }
 
-                    &.active {}
+                    &.active {
+                    }
                 }
                 div.userDropdown {
                     margin-top: 10px !important;
@@ -578,7 +590,7 @@ nav.navbar-fixed-top {
 .navbar {
     margin-bottom: 0 !important;
     .active {
-        color: #2A6297;
+        color: #2a6297;
     }
     .container {
         /* nav menu overflows to two lines in spanish and french unless container width
@@ -636,7 +648,6 @@ nav.navbar-fixed-top {
     }
 }
 
-
 .navbar-inverse {
     .navbar-collapse {
         border-color: rgb(228, 228, 228);
@@ -652,7 +663,6 @@ nav.navbar-fixed-top {
         margin-left: 0;
     }
 }
-
 
 /* My RSR stuff */
 
@@ -681,7 +691,7 @@ nav.navbar-fixed-top {
     h4 {
         padding-top: 15px;
     }
-    nav[role=navigation] {
+    nav[role="navigation"] {
         background: rgba($akvoBlack, 0);
         ul {
             li {
@@ -731,7 +741,8 @@ div.updateListMenu {
                 display: block;
             }
 
-            @include responsive(small-max-screens) {}
+            @include responsive(small-max-screens) {
+            }
 
             a {
                 &:last-child {
@@ -749,9 +760,11 @@ div.updateListMenu {
                     }
                 }
             }
-            @include responsive(wide-screens) {}
+            @include responsive(wide-screens) {
+            }
 
-            > a {}
+            > a {
+            }
         }
     }
 }
@@ -790,7 +803,8 @@ div.update-confirm-container {
             }
         }
     }
-    &.selfProject {}
+    &.selfProject {
+    }
     thead {
         tr {
             background-color: rgba($akvoBlack, 0.05);
@@ -852,6 +866,10 @@ div.update-confirm-container {
 }
 
 #user_table {
+    // Hide temporarily as project access restrictions is not used yet
+    th:nth-child(4) {
+        visibility: hidden;
+    }
     td.text-right {
         > span {
             > span:first-of-type {
@@ -1168,20 +1186,24 @@ footer {
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
-                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
+                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center
+                                no-repeat;
                             text-indent: -9999px;
                             background-size: 92%;
                             &:hover {
-                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center
+                                    center no-repeat;
                                 text-indent: -9999px;
                                 background-size: 92%;
                             }
                             @include responsive(small-max-screens) {
                                 width: 100%;
-                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center
+                                    center no-repeat;
                                 background-size: 92%;
                                 &:hover {
-                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center center no-repeat;
+                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png)
+                                        center center no-repeat;
                                     background-size: 92%;
                                 }
                             }
@@ -1359,7 +1381,9 @@ h4.detailedInfo {
     margin-top: 40px;
 }
 
-.pgWrap, .pageStatus, .paginationWrap {
+.pgWrap,
+.pageStatus,
+.paginationWrap {
     .pagination {
         li {
             a,
@@ -1429,7 +1453,8 @@ h4.detailedInfo {
 
 .label-info {
     font-weight: normal;
-    &.projectTotal, &.updateTotal {
+    &.projectTotal,
+    &.updateTotal {
         font-size: 1.2em;
         background-color: transparent;
         color: $akvoBlack;
@@ -1442,7 +1467,8 @@ h4.detailedInfo {
     }
     .label-info {
         font-weight: normal;
-        &.projectTotal, &.updateTotal {
+        &.projectTotal,
+        &.updateTotal {
             font-size: 1em;
             background-color: transparent;
             color: $akvoBlack;
@@ -1598,7 +1624,7 @@ h4.detailedInfo {
                         }
                     }
                 }
-                &:nth-child(4n+4) {
+                &:nth-child(4n + 4) {
                     margin-right: 0;
                 }
                 h1 {
@@ -1751,7 +1777,7 @@ h4.detailedInfo {
                             }
                         }
                     }
-                    &:nth-child(2n+2) {
+                    &:nth-child(2n + 2) {
                         margin-right: 0;
                     }
                     h1 {
@@ -2114,12 +2140,12 @@ div.textBlock {
             .panel-heading {
                 a {
                     &:before {
-                        content: '- ';
+                        content: "- ";
                         position: relative;
                     }
                     &.collapsed {
                         &:before {
-                            content: '+ ';
+                            content: "+ ";
                             top: 1px;
                         }
                     }
@@ -2210,7 +2236,7 @@ div.textBlock {
 #draft {
     background: rgba(#e04f46, 0.2);
     border: 1px solid rgba(#e04f46, 0.2);
-    color: #E04F46;
+    color: #e04f46;
     padding: 10px;
     text-align: center;
     margin-bottom: 20px;
@@ -2257,7 +2283,8 @@ div.textBlock {
         border: 2px solid $akvoBlack;
         color: $akvoBlack;
     }
-    &.project-hierarchy-sibling-top, &.project-hierarchy-sibling-bottom {
+    &.project-hierarchy-sibling-top,
+    &.project-hierarchy-sibling-bottom {
         border: 2px solid $anchorLink;
         color: $anchorLink;
     }
@@ -2319,7 +2346,8 @@ div.textBlock {
 
 .tooltip {
     z-index: 99999;
-    .tooltip-arrow {}
+    .tooltip-arrow {
+    }
     .tooltip-inner {
         max-width: 350px;
         padding: 15px;
@@ -2382,12 +2410,14 @@ ul.typeahead-selector {
     }
 }
 
-.projectCountTxt {}
+.projectCountTxt {
+}
 
 /* Organisation Page */
 
 .organisationDetail {
-    .organisationHeader {}
+    .organisationHeader {
+    }
     .orgDescr {
         p {
             padding-left: 20px;
@@ -2682,11 +2712,13 @@ dd {
             margin: 0.5em 0;
             border: 1px solid rgba(3, 3, 3, 0.2);
         }
-        td, th {
+        td,
+        th {
             flex: 1 1 150px;
             border: 0.5px solid rgba(3, 3, 3, 0.2);
         }
-        td.edit-buttons, td.empty {
+        td.edit-buttons,
+        td.empty {
             /*flex: 1 0 90%;
             text-align: center;*/
         }
@@ -2716,7 +2748,8 @@ dd {
         }
         &.table-bordered {
             border: 2px solid rgb(255, 255, 255);
-            td, th {
+            td,
+            th {
                 border: 2px solid rgb(255, 255, 255);
             }
         }
@@ -2815,13 +2848,13 @@ body {
 
 .progress {
     .progress-bar {
-        &[data-completion='empty'] {
+        &[data-completion="empty"] {
             background: rgba($progressWarning, 1);
         }
-        &[data-completion='incomplete'] {
+        &[data-completion="incomplete"] {
             background: rgba($progressNot, 1);
         }
-        &[data-completion='complete'] {
+        &[data-completion="complete"] {
             background: rgba($progressSuccess, 1);
         }
         .progress-percentage {
@@ -2908,18 +2941,18 @@ body {
             display: block;
             overflow: hidden;
             box-sizing: border-box;
-            transition: all .5s linear;
+            transition: all 0.5s linear;
             padding: 5px 15px;
             margin: 0 auto;
         }
-        input[type='radio']:checked ~ .formBlock {
+        input[type="radio"]:checked ~ .formBlock {
             height: auto;
             overflow: auto;
             background: rgba($lightOrange, 0);
             box-shadow: 0 0 15px rgba($akvoPurple, 0.2);
         }
     }
-    input[type='radio'] {
+    input[type="radio"] {
         display: none;
     }
     .formStep {
@@ -2960,7 +2993,8 @@ body {
     .borderBottom {
         padding-bottom: 10px;
         border-bottom: 1px solid rgba($akvoPurple, 0);
-        &.myPanel {}
+        &.myPanel {
+        }
     }
     $padding: 10px;
     $label-font-size: 13px;
@@ -3126,7 +3160,7 @@ body {
         background: lightgoldenrodyellow;
     }
     div.partial-header {
-        font-family: 'Montserrat', "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: normal;
         color: #2c2a74;
         font-size: 12px;
@@ -3542,7 +3576,8 @@ button#createIATIExport {
     }
 }
 
-div#exportsOverview, div#newIATIExport {
+div#exportsOverview,
+div#newIATIExport {
     tr {
         &.success {
             background: rgba($progressSuccess, 0.1) !important;
@@ -3634,7 +3669,8 @@ div.iatiFilters {
     font-size: 85%;
 }
 
-.fa-paperclip, .fa-camera {
+.fa-paperclip,
+.fa-camera {
     margin-right: 0.3em;
 }
 
@@ -3748,7 +3784,7 @@ main.results-page {
             a.liveView {
                 margin-left: 50px;
             }
-            >li+li:before {
+            > li + li:before {
                 padding: 0 5px;
                 color: #ccc;
                 content: "\003e";
@@ -3960,6 +3996,9 @@ main.results-page {
             display: block;
             margin-bottom: 20px;
         }
+        .react-datepicker__input-container {
+            display: block;
+        }
     }
     /********************* Narrative report ***************************/
     .narrative_reports {
@@ -4060,7 +4099,9 @@ main.results-page {
                     &:first-of-type {
                         left: 0px;
                     }
-                    &:nth-of-type(2), &:nth-of-type(3),  &:nth-of-type(4) {
+                    &:nth-of-type(2),
+                    &:nth-of-type(3),
+                    &:nth-of-type(4) {
                         float: right;
                     }
                     &:hover {
@@ -4103,7 +4144,7 @@ main.results-page {
                     }
                 }
             }
-            input[type=checkbox] {
+            input[type="checkbox"] {
                 display: none;
             }
             .updates {
@@ -4120,7 +4161,8 @@ main.results-page {
             -webkit-transition: height 0.2s ease-out;
             transition: height 0.2s ease-out;
         }
-        & > .rc-collapse-item:first-child {}
+        & > .rc-collapse-item:first-child {
+        }
         .rc-collapse-item {
             padding: 10px 5px;
             background: white;
@@ -4186,7 +4228,8 @@ main.results-page {
                 border: 1px solid rgba(242, 240, 230, 1);
                 .rc-collapse-header {
                     cursor: pointer;
-                    span {}
+                    span {
+                    }
                     &[aria-expanded="true"] {
                         .arrow {
                             background: url(../images/arrowUpDown.png) no-repeat bottom center !important;
@@ -4276,7 +4319,7 @@ main.results-page {
                                         margin-left: 1em;
                                         .react-sweet-progress-symbol {
                                             font-size: 13px !important;
-                                            font-weight: 400  !important;
+                                            font-weight: 400 !important;
                                             svg {
                                                 width: 21px !important;
                                                 height: 21px !important;
@@ -4343,7 +4386,8 @@ main.results-page {
                             .indicatorInfo {
                                 margin-top: -10px;
                                 border-bottom: 1px solid rgba($akvoBlack, 0.1);
-                                .descritpion {}
+                                .descritpion {
+                                }
                                 ul {
                                     color: rgba($akvoBlack, 0.4);
                                     padding-left: 7px;
@@ -4408,7 +4452,8 @@ main.results-page {
             &:last-child {
                 border-bottom: none;
             }
-            &.needsReporting {}
+            &.needsReporting {
+            }
             &.periodSelected {
                 .rc-collapse-header {
                     .periodWrap {
@@ -4451,11 +4496,13 @@ main.results-page {
                                     &:nth-child(2) {
                                         padding-left: 0px;
                                     }
-                                    &:nth-child(3), &:nth-child(4) {
+                                    &:nth-child(3),
+                                    &:nth-child(4) {
                                         span {
                                             color: rgba($akvoBlack, 0.4);
                                         }
-                                        &.targetValue, &.actualValue {
+                                        &.targetValue,
+                                        &.actualValue {
                                             font-variant: small-caps;
                                         }
                                     }
@@ -4589,7 +4636,8 @@ main.results-page {
                             background: url(../images/arrowUpDown.png) no-repeat top center;
                         }
                         .rc-collapse-content-box {
-                            .emptyData {}
+                            .emptyData {
+                            }
                             .emptyUpdate {
                                 display: flex;
                                 .newUpdate {
@@ -4608,26 +4656,32 @@ main.results-page {
                                 > .row {
                                     margin-bottom: 20px;
                                     padding-left: 20px;
-                                    &::after {}
+                                    &::after {
+                                    }
                                     .UpdateHead {
-                                        .updateName {}
-                                        .updateStatus {}
+                                        .updateName {
+                                        }
+                                        .updateStatus {
+                                        }
                                     }
                                     .row {
                                         .UpdateBody {
                                             width: calc(100% - 20px);
-                                            .update-photo, .update-attachment {
+                                            .update-photo,
+                                            .update-attachment {
                                                 padding: 0 40px;
                                                 width: calc(100% - 20px);
                                             }
                                             .update-attachment {
                                                 margin: 20px 0 40px 0;
                                             }
-                                            .valueMeta {}
+                                            .valueMeta {
+                                            }
                                             .statusMeta {
                                                 display: none;
                                             }
-                                            .updateValue, .updateValueComment {
+                                            .updateValue,
+                                            .updateValueComment {
                                                 margin-bottom: 10px;
                                                 span {
                                                     width: calc(100% - 40px);
@@ -4767,7 +4821,8 @@ main.results-page {
                                         ul {
                                             list-style-type: none;
                                         }
-                                        .timestamp-info-container {}
+                                        .timestamp-info-container {
+                                        }
                                         .markdown {
                                             ul {
                                                 list-style-type: initial;
@@ -4776,7 +4831,8 @@ main.results-page {
                                         }
                                     }
                                 }
-                                .arrow {}
+                                .arrow {
+                                }
                                 //}
                                 &.rc-collapse-item-active {
                                     border: 1px solid white !important;
@@ -4785,7 +4841,8 @@ main.results-page {
                                         background: rgba(white, 1) !important;
                                         padding-left: 20px;
                                         .arrow {
-                                            background: url(../images/arrowUpDown.png) no-repeat bottom center;
+                                            background: url(../images/arrowUpDown.png) no-repeat
+                                                bottom center;
                                         }
                                     }
                                     .rc-collapse-content {
@@ -4808,7 +4865,9 @@ main.results-page {
                                                         display: inline;
                                                         margin-right: 25px;
                                                         color: $primary4;
-                                                        &.creatorMeta, &.approverMeta, &.statusMeta {
+                                                        &.creatorMeta,
+                                                        &.approverMeta,
+                                                        &.statusMeta {
                                                             span {
                                                                 color: initial;
                                                             }
@@ -4819,17 +4878,22 @@ main.results-page {
                                                     }
                                                     &.valueMeta {
                                                         li {
-                                                            &.updateValue, &.totalValue {
+                                                            &.updateValue,
+                                                            &.totalValue {
                                                                 color: $primary4;
                                                                 span {
                                                                     font-weight: bold;
                                                                     color: initial;
                                                                 }
                                                             }
-                                                            &:first-of-type {}
-                                                            &:nth-of-type(2) {}
-                                                            &:nth-of-type(3) {}
-                                                            &:nth-of-type(4) {}
+                                                            &:first-of-type {
+                                                            }
+                                                            &:nth-of-type(2) {
+                                                            }
+                                                            &:nth-of-type(3) {
+                                                            }
+                                                            &:nth-of-type(4) {
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -4839,7 +4903,6 @@ main.results-page {
                                 }
                                 //    }
                                 //}
-                           
                             }
                         }
                     }
@@ -5031,10 +5094,14 @@ main.results-page {
                 .cancelUpdate {
                     margin-right: 25px;
                 }
-                .saveUpdate {}
-                .returnUpdate {}
-                .submitUpdate {}
-                .approveUpdate {}
+                .saveUpdate {
+                }
+                .returnUpdate {
+                }
+                .submitUpdate {
+                }
+                .approveUpdate {
+                }
             }
         }
         .upActualValue {
@@ -5091,7 +5158,8 @@ main.results-page {
                     }
                 }
             }
-            .comment-text {}
+            .comment-text {
+            }
         }
     }
 }
@@ -5100,7 +5168,7 @@ main.results-page {
     box-sizing: border-box;
     margin-top: 0px;
     @include box-shadow(0 0px 0px rgba(0, 0, 0, 0.2));
-    border: 1px solid #ECECEC;
+    border: 1px solid #ececec;
     * {
         box-sizing: border-box;
     }
@@ -5229,7 +5297,7 @@ main.results-page {
 
 #userProjects {
     padding-left: 0;
-    #is_restricted {
+    #isRestricted {
         margin-bottom: 25px;
         margin-right: 10px;
     }
@@ -5244,8 +5312,20 @@ main.results-page {
         margin-top: -0.75em;
         margin-bottom: 1.5em;
     }
+    .unrestrictNote {
+        margin-left: 0.5em;
+    }
+    .loading {
+        margin-top: 20px;
+        margin-left: 5px;
+        font-size: 120%;
+    }
+    .disableUnrestrict {
+        color: lighten($akvoBlack, 60%);
+    }
     table {
         width: 100%;
+        border-bottom: 1px solid $akvoBlack;
         thead {
             tr {
                 background: rgba($akvoBlack, 0.05);
@@ -5264,7 +5344,6 @@ main.results-page {
                     &.disabled {
                         color: lighten($akvoBlack, 60%);
                     }
-
                 }
             }
         }
@@ -5285,6 +5364,9 @@ main.results-page {
                     color: lighten($akvoBlack, 60%);
                     background: rgba($rsrBlue2, 0.1);
                 }
+                &.border-top {
+                    border-top: 1px solid $akvoBlack;
+                }
                 td {
                     padding: 15px 0 15px 10px;
                     margin-top: 1px;
@@ -5296,6 +5378,15 @@ main.results-page {
                     }
                     &.id.disabled {
                         color: lighten($akvoBlack, 60%);
+                    }
+                    &.border {
+                        background: rgba($rsrBlue2, 0.1);
+                        color: $akvoBlack;
+                        border: 1px solid $akvoBlack;
+                        vertical-align: baseline;
+                    }
+                    &.border-left {
+                        border-left: 1px solid $akvoBlack;
                     }
                 }
             }

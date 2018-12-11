@@ -15,7 +15,7 @@ from akvo.iati.checks.fields import results as results_checks
 from akvo.rsr.models import (
     Project, Result, Indicator, IndicatorPeriod, ProjectEditorValidationSet, IndicatorReference
 )
-from akvo.rsr.models.result.utils import QUANTITATIVE
+from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
 
 class IatiChecksFieldsReultsTestCase(TestCase):
@@ -52,6 +52,25 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertEquals(len(checks), 1)
         self.assertIn(u'has valid result(s)', checks[0][1])
 
+    def test_iati_results_checks_pass_with_qualitative_indicator_only(self):
+        # Given
+        Indicator.objects.create(
+            result=self.result,
+            type=QUALITATIVE,
+            title="Title",
+            description="Description",
+            baseline_value="4711",
+            baseline_year=2017,
+        )
+
+        # When
+        all_checks_passed, checks = results_checks(self.project)
+
+        # Then
+        self.assertTrue(all_checks_passed)
+        self.assertEquals(len(checks), 1)
+        self.assertIn(u'has valid result(s)', checks[0][1])
+
     def test_iati_checks_fields_results_result_errors(self):
         # When
         self.result.title = ''
@@ -64,7 +83,7 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertEquals(len(checks), 3)
         self.assertIn(u'has no type specified', checks[0][1])
         self.assertIn(u'has no title specified', checks[1][1])
-        self.assertIn(u'has no quantitative indicator', checks[2][1])
+        self.assertIn(u'has no indicator', checks[2][1])
 
     def test_iati_checks_fields_results_indicator_error(self):
         # Given an indicator missing title, measure and baseline year and value

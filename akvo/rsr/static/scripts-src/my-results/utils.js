@@ -131,7 +131,9 @@ export const endpoints = {
     results: id => `/rest/v2/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     indicators: id => `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
     dimensions: id =>
-        `/rest/v1/indicator_dimension/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
+        `/rest/v1/indicator_dimension/?format=json&limit=${
+            c.API_LARGE_LIMIT
+        }&indicator__result__project=${id}`,
     periods: id =>
         `/rest/v1/indicator_period/?format=json&limit=${
             c.API_LIMIT
@@ -300,9 +302,10 @@ export function toggleTree(open) {
         const parentModel = parentModelName(model);
         const ids = store.getState().models[parentModel].ids;
         return ids
-            .filter(
-                id => store.getState().models[parentModel].objects[id]._meta.children.ids.length > 0
-            )
+            .filter(id => {
+                const instance = store.getState().models[parentModel].objects[id];
+                return instance._meta && instance._meta.children.ids.length > 0;
+            })
             .map(id => {
                 const keys = store.getState().models[parentModel].objects[id]._meta.children.ids;
                 return {

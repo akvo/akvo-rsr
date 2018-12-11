@@ -1141,7 +1141,7 @@ class Project(TimestampsMixin, models.Model):
 
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name')
+        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name').prefetch_related('organisation').all()
 
     def show_status_large(self):
         "Show the current project status with background"
@@ -1245,8 +1245,12 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
-    def descendants(self):
-        "All child projects and all their children recursively"
+    def descendants(self, depth=None):
+        """
+        All child projects and all their children recursively
+        :param dephth: How "deep" we recurse. If None, drill all the way down
+        :return:
+        """
         family = Project.objects.filter(pk=self.pk)
         family_count = 1
         while True:
@@ -1257,10 +1261,16 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project__in=family,
                 related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
             ) | family
-            if family.distinct().count() > family_count:
-                family_count = family.distinct().count()
+            if depth is None:
+                if family.distinct().count() > family_count:
+                    family_count = family.distinct().count()
+                else:
+                    return family.distinct()
             else:
-                return family.distinct()
+                if family_count < depth:
+                    family_count += 1
+                else:
+                    return family.distinct()
 
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
@@ -1638,7 +1648,7 @@ class Project(TimestampsMixin, models.Model):
 
         """
         # Set reporting organisation
-        organisations = [e.organisation for e in user.approved_employments()]
+        organisations = [e.organisation for e in user.approved_employments().order_by('id')]
         can_create_project_orgs = [
             org for org in organisations
             if org.can_create_projects and user.has_perm('rsr.add_project', org)

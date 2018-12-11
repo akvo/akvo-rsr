@@ -5,8 +5,6 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-import store from "../my-results/store";
-
 export const endpoints = {
     user_projects_access: id => `/rest/v1/user_projects_access/${id}/?format=json`
 };

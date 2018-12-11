@@ -1,6 +1,7 @@
+{% load rsr_filters %}
 <script type="application/json" id="more-partners-{{project.id}}">
 [
-{% for partnership in project.partnerships.all %}
+{% for partnership in project|load_partnerships_and_orgs %}
     {% if partnership.organisation.id %}
     {
         "organisation": {

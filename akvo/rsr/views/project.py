@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.core.paginator import Page
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from lxml import etree
@@ -104,8 +105,16 @@ def main(request, project_id, template="project_main.html"):
 
     # Updates
     updates = project.project_updates.prefetch_related('user')
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, updates, 10)
+    first_10_updates = updates[:10]
+
+    page_number = request.GET.get('page')
+
+    page, paginator, page_range = pagination(page_number, updates, 10)
+
+    if page_number == '1':
+        page = Page(first_10_updates, 1, paginator)
+
+    first_9_updates = first_10_updates[:9]
 
     # Wordpress custom CSS trigger
     iframe = request.GET.get('iframe')
@@ -118,7 +127,7 @@ def main(request, project_id, template="project_main.html"):
     related_documents = related_documents[:5]
 
     # JSON data
-    carousel_data = json.dumps(_get_carousel_data(project, updates[:9]))
+    carousel_data = json.dumps(_get_carousel_data(project, first_9_updates))
     accordion_data = json.dumps({
         'background': project.background,
         'current_status': project.current_status,
@@ -138,7 +147,7 @@ def main(request, project_id, template="project_main.html"):
         'pledged': project.get_pledged(),
         'project': project,
         'related_documents': related_documents,
-        'updates': updates[:5] if updates else None,
+        'updates': first_9_updates[:5] if first_9_updates else None,
         'update_timeout': settings.PROJECT_UPDATE_TIMEOUT,
         'update_statuses': json.dumps(dict(IndicatorPeriodData.STATUSES)),
         'user_is_me_manager': 'false',
@@ -262,7 +271,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
         edit_mode = True
         update = get_object_or_404(ProjectUpdate, id=update_id)
         update_user = update.user.get_full_name()
-        if not request.user == update.user and not request.user.can_edit_update(update):
+        if not request.user.has_perm('rsr.change_projectupdate', update):
             request.error_message = u'You can only edit your own updates.'
             raise PermissionDenied
 

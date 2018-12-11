@@ -30,7 +30,7 @@ def other_identifier(project):
 
     for partnership in project.partnerships.all():
         if partnership.internal_id and partnership.organisation:
-            org = partnership.organisation
+            org = partnership.organisation.get_original()
 
             element = etree.Element("other-identifier")
             element.attrib['ref'] = str(partnership.internal_id)

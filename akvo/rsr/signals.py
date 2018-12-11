@@ -179,6 +179,13 @@ def employment_pre_save(sender, **kwargs):
     # FIXME: The actual save may fail. Why are emails being sent pre_save?!
     employment = kwargs.get("instance", None)
 
+    if not employment:
+        return
+
+    # If this is an employment with a shadow org, don't send email
+    if employment.organisation.original is not None:
+        return
+
     # Set the group to 'Users' when no group has been specified
     if not employment.group:
         employment.group = Group.objects.get(name='Users')
@@ -234,6 +241,10 @@ def employment_post_save(sender, **kwargs):
     employment = kwargs.get("instance", None)
 
     if not employment:
+        return
+
+    # If this is an employment with a shadow org, don't send email
+    if employment.organisation.original is not None:
         return
 
     user = employment.user
