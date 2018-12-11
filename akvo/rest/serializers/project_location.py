@@ -15,6 +15,7 @@ class ProjectLocationRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectLocation
+        fields = '__all__'
 
 
 class ProjectLocationSerializer(ProjectLocationRawSerializer):
@@ -34,6 +35,7 @@ class AdministrativeLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = AdministrativeLocation
+        fields = '__all__'
 
 
 class ProjectLocationExtraSerializer(ProjectLocationRawSerializer):
