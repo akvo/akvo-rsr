@@ -32,12 +32,11 @@ class ProjectViewSet(PublicProjectViewSet):
     """
     Viewset providing Project data.
     """
-    queryset = Project.objects.select_related(
+    queryset = Project.objects.prefetch_related(
+        'publishingstatus',
         'categories',
         'keywords',
         'partners',
-    ).prefetch_related(
-        'publishingstatus',
     )
     serializer_class = ProjectSerializer
     project_relation = ''
@@ -74,9 +73,8 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
         'title',
         'is_public',
         'status',
-    ).select_related(
-        'partners',
     ).prefetch_related(
+        'partners',
         'iati_checks',
         'publishingstatus',
         'partnerships',
@@ -193,12 +191,12 @@ class ProjectUpViewSet(ProjectViewSet):
 
     queryset = Project.objects.select_related(
         'primary_location',
-        'categories',
-        'keywords',
-        'partners',
     ).prefetch_related(
         'publishingstatus',
         'project_updates',
+        'categories',
+        'keywords',
+        'partners',
     )
     serializer_class = ProjectUpSerializer
     paginate_by_param = 'limit'
