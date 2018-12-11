@@ -287,7 +287,6 @@ class ProjectDirectoryTestCase(TestCase):
         # Add a Recipient Country - DJ
         RecipientCountry.objects.create(project=projects[2], country=country_code)
         # ProjectLocation in DJ
-        self.setup_country_objects()
         project_location = ProjectLocation.objects.create(location_target=projects[3],
                                                           latitude=latitude,
                                                           longitude=longitude)
@@ -314,10 +313,6 @@ class ProjectDirectoryTestCase(TestCase):
         self.assertIn(titles[2], response_titles)
         self.assertIn(titles[3], response_titles)
         self.assertEqual(project_location.country.iso_code, country_code.lower())
-
-    def setup_country_objects(self):
-        for iso_code, name in ISO_3166_COUNTRIES:
-            Country.objects.create(name=name, iso_code=iso_code)
 
 
 class ProjectPostTestCase(TestCase):
