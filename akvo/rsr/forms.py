@@ -65,7 +65,7 @@ def check_password_has_symbol(password):
     if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
         raise forms.ValidationError(
             _(u'The password must contain at least one symbol: '
-              u'()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?')
+              u'()[]{}|\`~!@#$%%^&*_-+=;:\'",<>./?')
         )
 
 
