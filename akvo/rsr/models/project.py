@@ -1594,7 +1594,7 @@ class Project(TimestampsMixin, models.Model):
 
     def indicator_labels(self):
         return apps.get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
-            organisation=self.all_partners()
+            organisation__in=self.all_partners()
         ).distinct()
 
     def has_indicator_labels(self):
