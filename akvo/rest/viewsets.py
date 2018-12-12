@@ -84,7 +84,7 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
 
                             if direct:
                                 if issubclass(field_object.__class__, ForeignObject):
-                                    model = field_object.related.parent_model
+                                    model = field_object.related_model
                                 else:
                                     value = field_object.to_python(value)
                                     break
