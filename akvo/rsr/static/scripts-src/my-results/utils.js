@@ -302,9 +302,10 @@ export function toggleTree(open) {
         const parentModel = parentModelName(model);
         const ids = store.getState().models[parentModel].ids;
         return ids
-            .filter(
-                id => store.getState().models[parentModel].objects[id]._meta.children.ids.length > 0
-            )
+            .filter(id => {
+                const instance = store.getState().models[parentModel].objects[id];
+                return instance._meta && instance._meta.children.ids.length > 0;
+            })
             .map(id => {
                 const keys = store.getState().models[parentModel].objects[id]._meta.children.ids;
                 return {
