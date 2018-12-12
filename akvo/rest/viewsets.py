@@ -78,8 +78,9 @@ class BaseRSRViewSet(viewsets.ModelViewSet):
                     model = queryset.model
                     for part in parts:
                         try:
-                            field_object, related_model, direct, m2m = model._meta.\
-                                get_field_by_name(part)
+                            field_object = model._meta.get_field(part)
+                            related_model = field_object.model
+                            direct = not field_object.auto_created or field_object.concrete
 
                             if direct:
                                 if issubclass(field_object.__class__, ForeignObject):
