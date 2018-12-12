@@ -51,11 +51,16 @@ class OrgManager(models.Manager):
             }
         ).order_by('lower_name')
 
-    # def __getattr__(self, attr, *args):
-    #     try:
-    #         return getattr(self.__class__, attr, *args)
-    #     except AttributeError:
-    #         return getattr(self.get_queryset(), attr, *args)
+    def __getattr__(self, attr):
+        try:
+            return getattr(self.__class__, attr)
+        except AttributeError:
+            queryset = self.get_queryset()
+            # FIXME: Some metaclass magic is going on here, but not calling
+            # print or repr below causes related fields to not resolve
+            # correctly!
+            repr(queryset)
+            return getattr(queryset, attr)
 
 
 class Organisation(TimestampsMixin, models.Model):
