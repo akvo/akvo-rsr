@@ -9,24 +9,33 @@ import tablib
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from optparse import make_option
-
 from akvo.rsr.models import IndicatorPeriodData
 from akvo.utils import single_period_dates
 from ...models import Project, Indicator, IndicatorPeriod
 
 
 class Command(BaseCommand):
-    args = '<name> <all | ids of projects>'
     help = ('Convert a project hierarchy to use single period reporting')
 
-    option_list = BaseCommand.option_list + (
-        make_option('--live',
-                    action='store_true',
-                    dest='live',
-                    default=False,
-                    help='Live run, changes made to the models'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument(
+            action='store',
+            dest='name',
+            help='Name of the project hierarchy'
+        )
+        parser.add_argument(
+            action='store',
+            nargs='+',
+            dest='project_ids',
+            help='Name of the project hierarchy'
+        )
+        parser.add_argument(
+            '--live',
+            action='store_true',
+            dest='live',
+            default=False,
+            help='Live run, changes made to the models'
+        )
 
     def handle(self, *args, **options):
 
@@ -57,7 +66,7 @@ class Command(BaseCommand):
                     unmodified_periods += [period]
             return modified_periods, unmodified_periods
 
-        name = args[0]
+        name = options['name']
         config = settings.SINGLE_PERIOD_INDICATORS[name]
         live = options['live']
 
@@ -69,10 +78,11 @@ class Command(BaseCommand):
         root = Project.objects.get(pk=pk)
         hierarchy_projects = root.descendants()
 
-        if args[1] == 'all':
+        project_ids = options['project_ids']
+        if project_ids[0] == 'all':
             projects = hierarchy_projects
         else:
-            projects = Project.objects.filter(id__in=map(int, args[1:]))
+            projects = Project.objects.filter(id__in=map(int, project_ids))
             in_hierarchy = set(projects) < set(hierarchy_projects)
             assert in_hierarchy, u"Not all projects part of the hierarchy. Aborting"
 
