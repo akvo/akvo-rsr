@@ -5,25 +5,23 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var endpointsPartners,
-    i18nPartners,
-    projectIdPartners;
+var endpointsPartners, i18nPartners, projectIdPartners;
 
 // Polyfill from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
 if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(searchString, position){
-      return this.substr(position || 0, searchString.length) === searchString;
-  };
+    String.prototype.startsWith = function(searchString, position) {
+        return this.substr(position || 0, searchString.length) === searchString;
+    };
 }
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
     var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
+    if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
             var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            if (cookie.substring(0, name.length + 1) == name + "=") {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -31,7 +29,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-csrftoken = getCookie('csrftoken');
+csrftoken = getCookie("csrftoken");
 
 function renderPartnersTab() {
     var PartnersApp = React.createClass({
@@ -43,12 +41,16 @@ function renderPartnersTab() {
 
         componentDidMount: function() {
             var xmlHttp = new XMLHttpRequest();
-            var url = endpointsPartners.base_url + endpointsPartners.partnerships_of_project.replace('{project}', projectIdPartners);
+            var url =
+                endpointsPartners.base_url +
+                endpointsPartners.partnerships_of_project.replace("{project}", projectIdPartners);
             var thisApp = this;
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
                     thisApp.setState({
-                        partnerships: thisApp.processPartners(JSON.parse(xmlHttp.responseText).results)
+                        partnerships: thisApp.processPartners(
+                            JSON.parse(xmlHttp.responseText).results
+                        )
                     });
                 }
             };
@@ -74,22 +76,18 @@ function renderPartnersTab() {
 
         orgLogo: function(logoUrl, width, height) {
             var logoStyle = {
-                'max-width': width + 'px',
-                'max-height': height + 'px'
+                "max-width": width + "px",
+                "max-height": height + "px"
             };
 
-            if (logoUrl !== '') {
-                return (
-                    <img src={logoUrl} style={logoStyle} />
-                );
+            if (logoUrl !== "") {
+                return <img src={logoUrl} style={logoStyle} />;
             } else {
-                return (
-                    <img src={'/static/images/default-org-logo.jpg'} style={logoStyle} />
-                );
+                return <img src={"/static/images/default-org-logo.jpg"} style={logoStyle} />;
             }
         },
 
-        partnerName: function(partner){
+        partnerName: function(partner) {
             /*
             Return org.long_name if org.name looks like a truncated version of org.long_name
 
@@ -106,16 +104,14 @@ function renderPartnersTab() {
             var LONG_TRUNCATED_NAME_LENGTH = 40;
             var name = org.name;
             var long_name = org.long_name;
-            if (name.length === 0 ||
-                (
-                    ((name.length == SHORT_TRUNCATED_NAME_LENGTH &&
-                      long_name.length > SHORT_TRUNCATED_NAME_LENGTH) ||
-                     (name.length == LONG_TRUNCATED_NAME_LENGTH &&
-                      long_name.length > LONG_TRUNCATED_NAME_LENGTH)) &&
-                    long_name.startsWith(name)
-                )
-            )
-            {
+            if (
+                name.length === 0 ||
+                (((name.length == SHORT_TRUNCATED_NAME_LENGTH &&
+                    long_name.length > SHORT_TRUNCATED_NAME_LENGTH) ||
+                    (name.length == LONG_TRUNCATED_NAME_LENGTH &&
+                        long_name.length > LONG_TRUNCATED_NAME_LENGTH)) &&
+                    long_name.startsWith(name))
+            ) {
                 return long_name.trim();
             }
             return name.trim();
@@ -137,13 +133,15 @@ function renderPartnersTab() {
             if (this.state.partnerships === null) {
                 return (
                     <div>
-                        <i className="fa fa-spin fa-spinner" /> {i18nPartners.loading} {i18nPartners.partners}...
+                        <i className="fa fa-spin fa-spinner" /> {i18nPartners.loading}{" "}
+                        {i18nPartners.partners}
+                        ...
                     </div>
                 );
             } else {
                 var partnershipsArray = [];
                 for (var orgId in this.state.partnerships) {
-                    if(this.state.partnerships.hasOwnProperty(orgId)) {
+                    if (this.state.partnerships.hasOwnProperty(orgId)) {
                         partnershipsArray.push(this.state.partnerships[orgId]);
                     }
                 }
@@ -161,48 +159,41 @@ function renderPartnersTab() {
                     var id = partner[0].organisation.id;
 
                     return (
-                        <div className='row verticalPadding projectPartners' key={id}>
+                        <div className="row verticalPadding projectPartners" key={id}>
                             <div className="col-sm-2 img">
-                                <a href={'/organisation/' + id + '/'}>
+                                <a href={"/organisation/" + id + "/"}>
                                     {thisApp.orgLogo(partner[0].organisation.logo, 120, 120)}
                                 </a>
                             </div>
                             <div className="col-sm-6">
-                                <a href={'/organisation/' + id + '/'} className="org-link">
+                                <a href={"/organisation/" + id + "/"} className="org-link">
                                     <h2>{thisApp.partnerName(partner)}</h2>
                                 </a>
                             </div>
                             <div className="col-sm-4">
                                 <h4 className="detailedInfo">{i18nPartners.roles}</h4>
-                                <div>{roles.join(', ')}</div>
+                                <div>{roles.join(", ")}</div>
                             </div>
                         </div>
                     );
                 });
 
-                return (
-                    <div>
-                        {organisations}
-                    </div>
-                );
+                return <div>{organisations}</div>;
             }
         }
     });
 
     // Initialise 'Partners' tab
-    var partnersContainer = document.querySelector('section.projectPartners div.container');
-    ReactDOM.render(
-        React.createElement(PartnersApp),
-        partnersContainer
-    );
+    var partnersContainer = document.querySelector("section.projectPartners div.container");
+    ReactDOM.render(React.createElement(PartnersApp), partnersContainer);
 }
 
-var loadJS = function(url, implementationCode, location){
+var loadJS = function(url, implementationCode, location) {
     //url is URL of external file, implementationCode is the code
     //to be called from the file, location is the location to
     //insert the <script> element
 
-    var scriptTag = document.createElement('script');
+    var scriptTag = document.createElement("script");
     scriptTag.src = url;
 
     scriptTag.onload = implementationCode;
@@ -213,24 +204,24 @@ var loadJS = function(url, implementationCode, location){
 
 function loadAndRenderReact() {
     function loadReactDOM() {
-        var reactDOMSrc = document.getElementById('react-dom').src;
+        var reactDOMSrc = document.getElementById("react-dom").src;
         loadJS(reactDOMSrc, renderPartnersTab, document.body);
     }
 
-    console.log('No React, load again.');
-    var reactSrc = document.getElementById('react').src;
+    console.log("No React, load again.");
+    var reactSrc = document.getElementById("react").src;
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
 /* Initialise page */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     // Load initial data
-    endpointsPartners = JSON.parse(document.getElementById('data-endpoints').innerHTML);
-    i18nPartners = JSON.parse(document.getElementById('partner-translations').innerHTML);
-    projectIdPartners = JSON.parse(document.getElementById('default-values').innerHTML).project_id;
+    endpointsPartners = JSON.parse(document.getElementById("data-endpoints").innerHTML);
+    i18nPartners = JSON.parse(document.getElementById("partner-translations").innerHTML);
+    projectIdPartners = JSON.parse(document.getElementById("default-values").innerHTML).project_id;
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+    if (typeof React !== "undefined" && typeof ReactDOM !== "undefined") {
         // Render React components
         renderPartnersTab();
     } else {

@@ -23,7 +23,13 @@ const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVT
 
 let store;
 if (reduxDevTools) {
-    store = createStore(reducer, compose(applyMiddleware(sagaMiddleware), reduxDevTools));
+    store = createStore(
+        reducer,
+        compose(
+            applyMiddleware(sagaMiddleware),
+            reduxDevTools
+        )
+    );
 } else {
     store = createStore(reducer, applyMiddleware(sagaMiddleware));
 }

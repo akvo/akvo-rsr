@@ -285,8 +285,8 @@ export const getIndicatorsAggregateActualValue = createSelector(
                         childPeriods.length == 0
                             ? 0
                             : childPeriods.length == 1
-                              ? childPeriods[0].denominator
-                              : latestPeriod(childPeriods).denominator;
+                                ? childPeriods[0].denominator
+                                : latestPeriod(childPeriods).denominator;
                     aggregateValue = computePercentage(numerator, denominator);
                 } else {
                     aggregateValue = childPeriodIds[indicatorId].reduce((sum, periodId) => {
@@ -343,7 +343,7 @@ export const getIndicatorsAggregateCompletionPercentage = createSelector(
             const target = targetValue[indicatorId],
                 actual = actualValue[indicatorId],
                 completion =
-                    target != undefined && target > 0 ? Math.round(actual * 100 / target) : NaN;
+                    target != undefined && target > 0 ? Math.round((actual * 100) / target) : NaN;
             return { ...acc, [indicatorId]: completion };
         }, {});
     }

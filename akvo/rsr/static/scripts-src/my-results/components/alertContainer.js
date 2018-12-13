@@ -51,7 +51,10 @@ const AlertFactory = config => WrappedComponent => {
     function mapDispatchToProps(dispatch) {
         return { actions: bindActionCreators(alertActions, dispatch) };
     }
-    return connect(mapStateToProps, mapDispatchToProps)(AlertContainer);
+    return connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(AlertContainer);
 };
 
 export default AlertFactory;

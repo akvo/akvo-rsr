@@ -588,7 +588,12 @@ function initReact() {
                     text += i18n.in_text + " " + country;
                 }
                 text += ")";
-                return <span className="small">{text}&nbsp; &nbsp;</span>;
+                return (
+                    <span className="small">
+                        {text}
+                        &nbsp; &nbsp;
+                    </span>
+                );
             }
         }
     });
@@ -749,7 +754,6 @@ function initReact() {
         }
     });
 
-
     var EmploymentRow = React.createClass({
         render: function() {
             var employment = this.props.employment;
@@ -763,26 +767,30 @@ function initReact() {
                 if (user.is_restricted) {
                     label = i18n.edit_access + " (" + user.restricted_count + ")";
                 } else {
-                    label = i18n.restrict_access
+                    label = i18n.restrict_access;
                 }
             }
             return (
                 <tr>
                     <td>{user.email}</td>
-                    {user.first_name || user.last_name ?
-                        <td>{user.first_name} {user.last_name}</td>
-                        :
-                        <td>{i18n.user_with_id}{user.id}</td>
-
-                    }
-                    <td>{employment.organisation.name}</td>
-                    {user.can_be_restricted
-                        ? <td>
-                            <a href={'/myrsr/user_projects/' + user.id + '/'}>
-                                {label}
-                            </a>
+                    {user.first_name || user.last_name ? (
+                        <td>
+                            {user.first_name} {user.last_name}
                         </td>
-                        : <td></td>}
+                    ) : (
+                        <td>
+                            {i18n.user_with_id}
+                            {user.id}
+                        </td>
+                    )}
+                    <td>{employment.organisation.name}</td>
+                    {user.can_be_restricted ? (
+                        <td>
+                            <a href={"/myrsr/user_projects/" + user.id + "/"}>{label}</a>
+                        </td>
+                    ) : (
+                        <td />
+                    )}
                     <td className="text-right">{roleCell}</td>
                 </tr>
             );
@@ -807,22 +815,33 @@ function initReact() {
 
         render: function() {
             var employments_table = this.state.employments.map(function(employment) {
-
                 return React.createElement(EmploymentRow, {
                     key: employment.id,
                     employment: employment
                 });
             });
 
-            var emailCell = React.createElement('th', null, i18n.email_text);
-            var nameCell = React.createElement('th', null, i18n.name);
-            var organisationCell = React.createElement('th', null, i18n.organisation);
-            var projectsCell = React.createElement('th', null, i18n.project_access);
-            var roleNameCell = React.createElement("th", {className: "text-right"}, i18n.role_text);
+            var emailCell = React.createElement("th", null, i18n.email_text);
+            var nameCell = React.createElement("th", null, i18n.name);
+            var organisationCell = React.createElement("th", null, i18n.organisation);
+            var projectsCell = React.createElement("th", null, i18n.project_access);
+            var roleNameCell = React.createElement(
+                "th",
+                { className: "text-right" },
+                i18n.role_text
+            );
 
-            var tableRow = React.createElement('tr', null, emailCell, nameCell, organisationCell, projectsCell, roleNameCell);
-            var tableHead = React.createElement('thead', null, tableRow);
-            var tableBody = React.createElement('tbody', null, employments_table);
+            var tableRow = React.createElement(
+                "tr",
+                null,
+                emailCell,
+                nameCell,
+                organisationCell,
+                projectsCell,
+                roleNameCell
+            );
+            var tableHead = React.createElement("thead", null, tableRow);
+            var tableBody = React.createElement("tbody", null, employments_table);
 
             return React.createElement(Table, { striped: true }, tableHead, tableBody);
         }

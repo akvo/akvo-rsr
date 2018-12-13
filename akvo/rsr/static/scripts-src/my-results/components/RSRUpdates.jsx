@@ -271,7 +271,7 @@ class RSRUpdateForm extends React.Component {
         if (size > max_size * megabyte) {
             this.setState({
                 oversize_image: true,
-                image_size: Math.round(size / megabyte * 1000) / 1000
+                image_size: Math.round((size / megabyte) * 1000) / 1000
             });
         } else {
             this.setState({ oversize_image: false, image_size: 0 });

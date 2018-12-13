@@ -11,89 +11,227 @@ var endpointsReport,
     loadedAPIsReport = 0;
 
 var relatedObjectsReport = [
-    ['related_project', ['relation_label', 'related_iati_id', 'related_project_show_link']],
-    ['project_contact', ['type_label', 'email', 'job_title', 'organisation', 'telephone',
-        'mailing_address', 'state', 'department', 'website']],
-    ['partnership', ['organisation_show_link', 'organisation_role_label', 'is_secondary_reporter',
-        'funding_amount_label', 'iati_activity_id']],
-    ['budget_item', ['currency_label', 'amount', 'label_label', 'other_extra', 'type_label',
-        'status_label', 'period_start', 'period_end', 'value_date']],
-    ['country_budget_item', ['code_label', 'description', 'percentage']],
-    ['transaction', ['currency_label', 'value', 'value_date', 'reference', 'description',
-        'provider_organisation_show_link', 'provider_organisation_activity',
-        'receiver_organisation_show_link', 'receiver_organisation_activity',
-        'transaction_type_label', 'aid_type_label', 'disbursement_channel_label',
-        'finance_type_label', 'flow_type_label', 'tied_status_label', 'recipient_country_label',
-        'recipient_region_label', 'recipient_region_vocabulary_label', 'humanitarian']],
-    ['transaction_sector', ['transaction_unicode', 'code_label', 'text', 'vocabulary_label',
-        'vocabulary_uri']],
-    ['planned_disbursement', ['currency_label', 'value', 'value_date', 'type_label',
-        'period_start', 'period_end', 'provider_organisation_show_link',
-        'provider_organisation_activity', 'receiver_organisation_show_link',
-        'receiver_organisation_activity']],
-    ['project_location', ['longitude', 'latitude', 'city', 'state', 'address_1', 'address_2',
-        'postcode', 'reference', 'location_code', 'vocabulary_label', 'name', 'description',
-        'activity_description', 'exactness_label', 'reach_label', 'class_label',
-        'feature_designation_label']],
-    ['administrative_location', ['location_unicode', 'code', 'vocabulary_label']],
-    ['recipient_country', ['country_label', 'text', 'percentage']],
-    ['recipient_region', ['region_label', 'text', 'percentage', 'vocabulary_label',
-        'vocabulary_uri']],
-    ['result', ['title', 'type_label', 'description', 'aggregation_status']],
-    ['indicator', ['result_unicode', 'title', 'description', 'measure_label', 'ascending',
-        'baseline_year', 'baseline_value', 'baseline_comment']],
-    ['indicator_reference', ['indicator_unicode', 'reference', 'vocabulary_label',
-        'vocabulary_uri']],
-    ['indicator_period', ['indicator_unicode', 'period_start', 'period_end', 'target_value',
-        'target_comment', 'actual_value', 'actual_comment']],
-    ['indicator_period_actual_dimension', ['period_unicode', 'name', 'value']],
-    ['indicator_period_target_dimension', ['period_unicode', 'name', 'value']],
-    ['indicator_period_actual_location', ['period_unicode', 'location']],
-    ['indicator_period_target_location', ['period_unicode', 'location']],
-    ['sector', ['code_label', 'text', 'vocabulary_label', 'vocabulary_uri', 'percentage']],
-    ['policy_marker', ['policy_marker_label', 'description', 'significance_label',
-        'vocabulary_label', 'vocabulary_uri']],
-    ['humanitarian_scope', ['code', 'text', 'type_label', 'vocabulary_label', 'vocabulary_uri']],
-    ['project_condition', ['type_label', 'text']],
-    ['project_document', ['title', 'title_language_label', 'url', 'document_show_link',
-        'language_label', 'format_label']],
-    ['project_document_category', ['document_unicode', 'category_label']],
-    ['link', ['url', 'caption']],
-    ['crs_add', ['repayment_type_label', 'repayment_plan_label', 'loan_terms_rate1',
-        'loan_terms_rate2', 'commitment_date', 'repayment_first_date', 'repayment_final_date',
-        'loan_status_year', 'currency_label', 'loan_status_value_date', 'interest_received',
-        'principal_outstanding', 'principal_arrears', 'interest_arrears', 'channel_code_label']],
-    ['crs_add_other_flag', ['code_label', 'significance']],
-    ['fss', ['extraction_date', 'priority', 'phaseout_year']],
-    ['fss_forecast', ['currency_label', 'value', 'year', 'value_date']],
-    ['legacy_data', ['name', 'value', 'iati_equivalent']]
+    ["related_project", ["relation_label", "related_iati_id", "related_project_show_link"]],
+    [
+        "project_contact",
+        [
+            "type_label",
+            "email",
+            "job_title",
+            "organisation",
+            "telephone",
+            "mailing_address",
+            "state",
+            "department",
+            "website"
+        ]
+    ],
+    [
+        "partnership",
+        [
+            "organisation_show_link",
+            "organisation_role_label",
+            "is_secondary_reporter",
+            "funding_amount_label",
+            "iati_activity_id"
+        ]
+    ],
+    [
+        "budget_item",
+        [
+            "currency_label",
+            "amount",
+            "label_label",
+            "other_extra",
+            "type_label",
+            "status_label",
+            "period_start",
+            "period_end",
+            "value_date"
+        ]
+    ],
+    ["country_budget_item", ["code_label", "description", "percentage"]],
+    [
+        "transaction",
+        [
+            "currency_label",
+            "value",
+            "value_date",
+            "reference",
+            "description",
+            "provider_organisation_show_link",
+            "provider_organisation_activity",
+            "receiver_organisation_show_link",
+            "receiver_organisation_activity",
+            "transaction_type_label",
+            "aid_type_label",
+            "disbursement_channel_label",
+            "finance_type_label",
+            "flow_type_label",
+            "tied_status_label",
+            "recipient_country_label",
+            "recipient_region_label",
+            "recipient_region_vocabulary_label",
+            "humanitarian"
+        ]
+    ],
+    [
+        "transaction_sector",
+        ["transaction_unicode", "code_label", "text", "vocabulary_label", "vocabulary_uri"]
+    ],
+    [
+        "planned_disbursement",
+        [
+            "currency_label",
+            "value",
+            "value_date",
+            "type_label",
+            "period_start",
+            "period_end",
+            "provider_organisation_show_link",
+            "provider_organisation_activity",
+            "receiver_organisation_show_link",
+            "receiver_organisation_activity"
+        ]
+    ],
+    [
+        "project_location",
+        [
+            "longitude",
+            "latitude",
+            "city",
+            "state",
+            "address_1",
+            "address_2",
+            "postcode",
+            "reference",
+            "location_code",
+            "vocabulary_label",
+            "name",
+            "description",
+            "activity_description",
+            "exactness_label",
+            "reach_label",
+            "class_label",
+            "feature_designation_label"
+        ]
+    ],
+    ["administrative_location", ["location_unicode", "code", "vocabulary_label"]],
+    ["recipient_country", ["country_label", "text", "percentage"]],
+    [
+        "recipient_region",
+        ["region_label", "text", "percentage", "vocabulary_label", "vocabulary_uri"]
+    ],
+    ["result", ["title", "type_label", "description", "aggregation_status"]],
+    [
+        "indicator",
+        [
+            "result_unicode",
+            "title",
+            "description",
+            "measure_label",
+            "ascending",
+            "baseline_year",
+            "baseline_value",
+            "baseline_comment"
+        ]
+    ],
+    [
+        "indicator_reference",
+        ["indicator_unicode", "reference", "vocabulary_label", "vocabulary_uri"]
+    ],
+    [
+        "indicator_period",
+        [
+            "indicator_unicode",
+            "period_start",
+            "period_end",
+            "target_value",
+            "target_comment",
+            "actual_value",
+            "actual_comment"
+        ]
+    ],
+    ["indicator_period_actual_dimension", ["period_unicode", "name", "value"]],
+    ["indicator_period_target_dimension", ["period_unicode", "name", "value"]],
+    ["indicator_period_actual_location", ["period_unicode", "location"]],
+    ["indicator_period_target_location", ["period_unicode", "location"]],
+    ["sector", ["code_label", "text", "vocabulary_label", "vocabulary_uri", "percentage"]],
+    [
+        "policy_marker",
+        [
+            "policy_marker_label",
+            "description",
+            "significance_label",
+            "vocabulary_label",
+            "vocabulary_uri"
+        ]
+    ],
+    ["humanitarian_scope", ["code", "text", "type_label", "vocabulary_label", "vocabulary_uri"]],
+    ["project_condition", ["type_label", "text"]],
+    [
+        "project_document",
+        [
+            "title",
+            "title_language_label",
+            "url",
+            "document_show_link",
+            "language_label",
+            "format_label"
+        ]
+    ],
+    ["project_document_category", ["document_unicode", "category_label"]],
+    ["link", ["url", "caption"]],
+    [
+        "crs_add",
+        [
+            "repayment_type_label",
+            "repayment_plan_label",
+            "loan_terms_rate1",
+            "loan_terms_rate2",
+            "commitment_date",
+            "repayment_first_date",
+            "repayment_final_date",
+            "loan_status_year",
+            "currency_label",
+            "loan_status_value_date",
+            "interest_received",
+            "principal_outstanding",
+            "principal_arrears",
+            "interest_arrears",
+            "channel_code_label"
+        ]
+    ],
+    ["crs_add_other_flag", ["code_label", "significance"]],
+    ["fss", ["extraction_date", "priority", "phaseout_year"]],
+    ["fss_forecast", ["currency_label", "value", "year", "value_date"]],
+    ["legacy_data", ["name", "value", "iati_equivalent"]]
 ];
 
 var differentRelations = [
-    ['project_location', 'location_target'],
-    ['indicator', 'result__project'],
-    ['indicator_reference', 'indicator__result__project'],
-    ['indicator_period', 'indicator__result__project'],
-    ['indicator_period_actual_dimension', 'period__indicator__result__project'],
-    ['indicator_period_target_dimension', 'period__indicator__result__project'],
-    ['indicator_period_actual_location', 'period__indicator__result__project'],
-    ['indicator_period_target_location', 'period__indicator__result__project'],
-    ['transaction_sector', 'transaction__project'],
-    ['administrative_location', 'location__location_target'],
-    ['project_document_category', 'document__project'],
-    ['crs_add_other_flag', 'crs__project'],
-    ['fss_forecast', 'fss__project']
+    ["project_location", "location_target"],
+    ["indicator", "result__project"],
+    ["indicator_reference", "indicator__result__project"],
+    ["indicator_period", "indicator__result__project"],
+    ["indicator_period_actual_dimension", "period__indicator__result__project"],
+    ["indicator_period_target_dimension", "period__indicator__result__project"],
+    ["indicator_period_actual_location", "period__indicator__result__project"],
+    ["indicator_period_target_location", "period__indicator__result__project"],
+    ["transaction_sector", "transaction__project"],
+    ["administrative_location", "location__location_target"],
+    ["project_document_category", "document__project"],
+    ["crs_add_other_flag", "crs__project"],
+    ["fss_forecast", "fss__project"]
 ];
-
 
 /* CSRF TOKEN (this should really be added in base.html, we use it everywhere) */
 function getCookie(name) {
     var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
+    if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
             var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            if (cookie.substring(0, name.length + 1) == name + "=") {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -101,7 +239,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-csrftoken = getCookie('csrftoken');
+csrftoken = getCookie("csrftoken");
 
 function renderReportTab() {
     var LargeTable = React.createClass({
@@ -110,27 +248,28 @@ function renderReportTab() {
         },
 
         headerName: function(header) {
-            var newHeaderName = header.replace('iati', 'IATI').replace('url', 'URL').replace('uri', 'URI');
+            var newHeaderName = header
+                .replace("iati", "IATI")
+                .replace("url", "URL")
+                .replace("uri", "URI");
             newHeaderName = newHeaderName.charAt(0).toUpperCase() + newHeaderName.slice(1);
-            return newHeaderName.replace(/_/g, ' ').replace(' label', '').replace(' unicode', '').replace(' show link', '');
+            return newHeaderName
+                .replace(/_/g, " ")
+                .replace(" label", "")
+                .replace(" unicode", "")
+                .replace(" show link", "");
         },
 
         renderHeader: function(fieldsList) {
             var thisTable = this;
 
             var headers = fieldsList.map(function(field) {
-                return (
-                    <th>
-                        {thisTable.headerName(field)}
-                    </th>
-                );
+                return <th>{thisTable.headerName(field)}</th>;
             });
 
             return (
                 <thead>
-                    <tr>
-                        {headers}
-                    </tr>
+                    <tr>{headers}</tr>
                 </thead>
             );
         },
@@ -141,13 +280,15 @@ function renderReportTab() {
             for (var i = 0; i < fieldsList.length; i++) {
                 var value = relatedObject[fieldsList[i]];
 
-                if (typeof value === "string" && value.indexOf('<a href') > -1) {
-                    cells.push(React.createElement('td', {dangerouslySetInnerHTML: {__html: value}}));
+                if (typeof value === "string" && value.indexOf("<a href") > -1) {
+                    cells.push(
+                        React.createElement("td", { dangerouslySetInnerHTML: { __html: value } })
+                    );
                 } else {
                     if (value === true) {
-                        value = 'True';
+                        value = "True";
                     } else if (value === false) {
-                        value = 'False';
+                        value = "False";
                     }
                     cells.push(<td>{value}</td>);
                 }
@@ -155,9 +296,7 @@ function renderReportTab() {
 
             return (
                 <tbody>
-                    <tr>
-                        {cells}
-                    </tr>
+                    <tr>{cells}</tr>
                 </tbody>
             );
         },
@@ -166,7 +305,10 @@ function renderReportTab() {
             var thisTable = this;
 
             var tables = this.props.tableInfo.map(function(relatedObject) {
-                var relatedObjectId = relatedObject.id !== undefined ? ' (' + i18nReport.id + ': ' + relatedObject.id + ')' : '';
+                var relatedObjectId =
+                    relatedObject.id !== undefined
+                        ? " (" + i18nReport.id + ": " + relatedObject.id + ")"
+                        : "";
 
                 return (
                     <div className={thisTable.props.tableName}>
@@ -183,11 +325,7 @@ function renderReportTab() {
                 );
             });
 
-            return (
-                <div className={this.props.tableName + "Container"}>
-                    {tables}
-                </div>
-            );
+            return <div className={this.props.tableName + "Container"}>{tables}</div>;
         }
     });
 
@@ -197,27 +335,28 @@ function renderReportTab() {
         },
 
         headerName: function(header) {
-            var newHeaderName = header.replace('iati', 'IATI').replace('url', 'URL').replace('uri', 'URI');
+            var newHeaderName = header
+                .replace("iati", "IATI")
+                .replace("url", "URL")
+                .replace("uri", "URI");
             newHeaderName = newHeaderName.charAt(0).toUpperCase() + newHeaderName.slice(1);
-            return newHeaderName.replace(/_/g, ' ').replace(' label', '').replace(' unicode', '').replace(' show link', '');
+            return newHeaderName
+                .replace(/_/g, " ")
+                .replace(" label", "")
+                .replace(" unicode", "")
+                .replace(" show link", "");
         },
 
         renderHeader: function() {
             var thisTable = this;
 
             var headers = this.props.fields[0].map(function(field) {
-                return (
-                    <th>
-                        {thisTable.headerName(field)}
-                    </th>
-                );
+                return <th>{thisTable.headerName(field)}</th>;
             });
 
             return (
                 <thead>
-                    <tr>
-                        {headers}
-                    </tr>
+                    <tr>{headers}</tr>
                 </thead>
             );
         },
@@ -232,28 +371,26 @@ function renderReportTab() {
                 for (var i = 0; i < fieldsList.length; i++) {
                     var value = relatedObject[fieldsList[i]];
 
-                    if (typeof value === "string" && value.indexOf('<a href') > -1) {
-                        cells.push(React.createElement('td', {dangerouslySetInnerHTML: {__html: value}}));
+                    if (typeof value === "string" && value.indexOf("<a href") > -1) {
+                        cells.push(
+                            React.createElement("td", {
+                                dangerouslySetInnerHTML: { __html: value }
+                            })
+                        );
                     } else {
                         if (value === true) {
-                            value = 'True';
+                            value = "True";
                         } else if (value === false) {
-                            value = 'False';
+                            value = "False";
                         }
                         cells.push(<td>{value}</td>);
                     }
                 }
 
-                return (
-                    <tr>{cells}</tr>
-                );
+                return <tr>{cells}</tr>;
             });
 
-            return (
-                <tbody>
-                    {rows}
-                </tbody>
-            );
+            return <tbody>{rows}</tbody>;
         },
 
         render: function() {
@@ -284,7 +421,7 @@ function renderReportTab() {
         hasData: function(field) {
             for (var i = 0; i < this.props.tableInfo.length; i++) {
                 var objectEntry = this.props.tableInfo[i];
-                if (!(objectEntry[field] === null || objectEntry[field] === '')) {
+                if (!(objectEntry[field] === null || objectEntry[field] === "")) {
                     return true;
                 }
             }
@@ -294,7 +431,6 @@ function renderReportTab() {
         fields: function() {
             var fieldsList = this.getFields(),
                 fields = [];
-
 
             for (var i = 0; i < fieldsList.length; i++) {
                 if (this.hasData(fieldsList[i])) {
@@ -328,17 +464,13 @@ function renderReportTab() {
                     table = LargeTable;
                 }
 
-                return (
-                    React.createElement(table, {
-                        fields: fields,
-                        tableInfo: this.props.tableInfo,
-                        tableName: this.props.tableName
-                    })
-                );
+                return React.createElement(table, {
+                    fields: fields,
+                    tableInfo: this.props.tableInfo,
+                    tableName: this.props.tableName
+                });
             } else {
-                return (
-                    <span />
-                );
+                return <span />;
             }
         }
     });
@@ -357,7 +489,9 @@ function renderReportTab() {
                                         <td>{projectIdReport}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{i18nReport.iati_activity} {i18nReport.id}</th>
+                                        <th scope="row">
+                                            {i18nReport.iati_activity} {i18nReport.id}
+                                        </th>
                                         <td>{proj.iati_activity_id}</td>
                                     </tr>
                                 </tbody>
@@ -374,19 +508,28 @@ function renderReportTab() {
                                         <td>{proj.status_label}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{i18nReport.planned} {i18nReport.start} {i18nReport.date}</th>
+                                        <th scope="row">
+                                            {i18nReport.planned} {i18nReport.start}{" "}
+                                            {i18nReport.date}
+                                        </th>
                                         <td>{proj.date_start_planned}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{i18nReport.planned} {i18nReport.end} {i18nReport.date}</th>
+                                        <th scope="row">
+                                            {i18nReport.planned} {i18nReport.end} {i18nReport.date}
+                                        </th>
                                         <td>{proj.date_end_planned}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{i18nReport.actual} {i18nReport.start} {i18nReport.date}</th>
+                                        <th scope="row">
+                                            {i18nReport.actual} {i18nReport.start} {i18nReport.date}
+                                        </th>
                                         <td>{proj.date_start_actual}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">{i18nReport.actual} {i18nReport.end} {i18nReport.date}</th>
+                                        <th scope="row">
+                                            {i18nReport.actual} {i18nReport.end} {i18nReport.date}
+                                        </th>
                                         <td>{proj.date_end_actual}</td>
                                     </tr>
                                 </tbody>
@@ -398,13 +541,13 @@ function renderReportTab() {
         },
 
         descriptions: function(proj) {
-            var projectPlanText = {__html: micromarkdown.parse(proj.project_plan)};
-            var goalsOverviewText = {__html: micromarkdown.parse(proj.goals_overview)};
-            var targetGroupText = {__html: micromarkdown.parse(proj.target_group)};
-            var projectPlanSummaryText = {__html: micromarkdown.parse(proj.project_plan_summary)};
-            var backgroundText = {__html: micromarkdown.parse(proj.background)};
-            var currentStatusText = {__html: micromarkdown.parse(proj.current_status)};
-            var sustainabilityText = {__html: micromarkdown.parse(proj.sustainability)};
+            var projectPlanText = { __html: micromarkdown.parse(proj.project_plan) };
+            var goalsOverviewText = { __html: micromarkdown.parse(proj.goals_overview) };
+            var targetGroupText = { __html: micromarkdown.parse(proj.target_group) };
+            var projectPlanSummaryText = { __html: micromarkdown.parse(proj.project_plan_summary) };
+            var backgroundText = { __html: micromarkdown.parse(proj.background) };
+            var currentStatusText = { __html: micromarkdown.parse(proj.current_status) };
+            var sustainabilityText = { __html: micromarkdown.parse(proj.sustainability) };
 
             return (
                 <div className="row">
@@ -443,7 +586,7 @@ function renderReportTab() {
                                     </tr>
                                     <tr>
                                         <th scope="row">{i18nReport.keywords}</th>
-                                        <td>{proj.keyword_labels.join(', ')}</td>
+                                        <td>{proj.keyword_labels.join(", ")}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -486,7 +629,8 @@ function renderReportTab() {
 
         getProjectData: function() {
             var xmlHttp = new XMLHttpRequest();
-            var url = endpointsReport.base_url + "/rest/v1/project/" + projectIdReport + "/?format=json";
+            var url =
+                endpointsReport.base_url + "/rest/v1/project/" + projectIdReport + "/?format=json";
             var thisApp = this;
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
@@ -503,7 +647,7 @@ function renderReportTab() {
 
         getData: function(relatedObject) {
             var xmlHttp = new XMLHttpRequest();
-            var relation = 'project';
+            var relation = "project";
 
             for (var i = 0; i < differentRelations.length; i++) {
                 if (differentRelations[i][0] === relatedObject) {
@@ -511,7 +655,14 @@ function renderReportTab() {
                 }
             }
 
-            var url = endpointsReport.base_url + "/rest/v1/" + relatedObject + "/?format=json&" + relation + "=" + projectIdReport;
+            var url =
+                endpointsReport.base_url +
+                "/rest/v1/" +
+                relatedObject +
+                "/?format=json&" +
+                relation +
+                "=" +
+                projectIdReport;
             var thisApp = this;
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE && xmlHttp.status == 200) {
@@ -531,13 +682,12 @@ function renderReportTab() {
             if (loadedAPIsReport < relatedObjectsReport.length - 1) {
                 return (
                     <div className="text-center">
-                        <i className="fa fa-spin fa-spinner" /> {i18nReport.loading}..
+                        <i className="fa fa-spin fa-spinner" /> {i18nReport.loading}
+                        ..
                     </div>
                 );
             } else {
-                return (
-                    <span />
-                );
+                return <span />;
             }
         },
 
@@ -555,14 +705,22 @@ function renderReportTab() {
             var relatedObjectsOrder = [];
 
             for (var relatedObject in this.state.relatedObjects) {
-                if (this.state.relatedObjects.hasOwnProperty(relatedObject) && relatedObject !== 'project') {
+                if (
+                    this.state.relatedObjects.hasOwnProperty(relatedObject) &&
+                    relatedObject !== "project"
+                ) {
                     var index = 0;
                     for (var i = 0; i < relatedObjectsOrder.length; i++) {
-                        if (this.indexOfObject(relatedObjectsOrder[i]) < this.indexOfObject(relatedObject)) {
+                        if (
+                            this.indexOfObject(relatedObjectsOrder[i]) <
+                            this.indexOfObject(relatedObject)
+                        ) {
                             index++;
                         }
                     }
-                    relatedObjectsArray.splice(index, 0,
+                    relatedObjectsArray.splice(
+                        index,
+                        0,
                         React.createElement(RelatedObjectTable, {
                             tableName: relatedObject,
                             tableInfo: this.state.relatedObjects[relatedObject]
@@ -572,8 +730,10 @@ function renderReportTab() {
                 }
             }
 
-            if ('project' in this.state.relatedObjects) {
-                relatedObjectsArray.splice(0, 0,
+            if ("project" in this.state.relatedObjects) {
+                relatedObjectsArray.splice(
+                    0,
+                    0,
                     React.createElement(ProjectTables, {
                         projectInfo: this.state.relatedObjects.project
                     })
@@ -594,8 +754,14 @@ function renderReportTab() {
                                                 <td>{projectIdReport}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">{i18nReport.iati_activity} {i18nReport.id}</th>
-                                                <td><i className="fa fa-spin fa-spinner" /> {i18nReport.loading}..</td>
+                                                <th scope="row">
+                                                    {i18nReport.iati_activity} {i18nReport.id}
+                                                </th>
+                                                <td>
+                                                    <i className="fa fa-spin fa-spinner" />{" "}
+                                                    {i18nReport.loading}
+                                                    ..
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -616,19 +782,16 @@ function renderReportTab() {
     });
 
     // Initialise 'Report' tab
-    var reportContainer = document.querySelector('article.projectReport');
-    ReactDOM.render(
-        React.createElement(ReportApp),
-        reportContainer
-    );
+    var reportContainer = document.querySelector("article.projectReport");
+    ReactDOM.render(React.createElement(ReportApp), reportContainer);
 }
 
-var loadJS = function(url, implementationCode, location){
+var loadJS = function(url, implementationCode, location) {
     //url is URL of external file, implementationCode is the code
     //to be called from the file, location is the location to
     //insert the <script> element
 
-    var scriptTag = document.createElement('script');
+    var scriptTag = document.createElement("script");
     scriptTag.src = url;
 
     scriptTag.onload = implementationCode;
@@ -639,29 +802,33 @@ var loadJS = function(url, implementationCode, location){
 
 function loadAndRenderReact() {
     function loadMarkdown() {
-        var markdownSrc = document.getElementById('markdown').src;
+        var markdownSrc = document.getElementById("markdown").src;
         loadJS(markdownSrc, renderReportTab, document.body);
     }
 
     function loadReactDOM() {
-        var reactDOMSrc = document.getElementById('react-dom').src;
+        var reactDOMSrc = document.getElementById("react-dom").src;
         loadJS(reactDOMSrc, loadMarkdown, document.body);
     }
 
-    console.log('No React, load again.');
-    var reactSrc = document.getElementById('react').src;
+    console.log("No React, load again.");
+    var reactSrc = document.getElementById("react").src;
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
 /* Initialise page */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     // Load initial data
-    endpointsReport = JSON.parse(document.getElementById('data-endpoints').innerHTML);
-    i18nReport = JSON.parse(document.getElementById('report-translations').innerHTML);
-    projectIdReport = JSON.parse(document.getElementById('default-values').innerHTML).project_id;
+    endpointsReport = JSON.parse(document.getElementById("data-endpoints").innerHTML);
+    i18nReport = JSON.parse(document.getElementById("report-translations").innerHTML);
+    projectIdReport = JSON.parse(document.getElementById("default-values").innerHTML).project_id;
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && micromarkdown !== 'undefined') {
+    if (
+        typeof React !== "undefined" &&
+        typeof ReactDOM !== "undefined" &&
+        micromarkdown !== "undefined"
+    ) {
         // Render React components
         renderReportTab();
     } else {

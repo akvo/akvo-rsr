@@ -3,27 +3,21 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-
 /* Global variables */
-var countries,
-    i18n,
-    initial_data,
-    organisations,
-    request_link,
-    Typeahead;
+var countries, i18n, initial_data, organisations, request_link, Typeahead;
 
-var orgsAPIUrl = '/rest/v1/typeaheads/organisations?format=json',
-    countriesAPIUrl = '/rest/v1/typeaheads/countries?format=json';
+var orgsAPIUrl = "/rest/v1/typeaheads/organisations?format=json",
+    countriesAPIUrl = "/rest/v1/typeaheads/countries?format=json";
 
 // CSRF TOKEN
 function getCookie(name) {
     var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
+    if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
             var cookie = cookies[i].trim();
             // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            if (cookie.substring(0, name.length + 1) == name + "=") {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -32,7 +26,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-var csrftoken = getCookie('csrftoken');
+var csrftoken = getCookie("csrftoken");
 
 /* Build React components of Employments app */
 function buildEmploymentsApp() {
@@ -49,14 +43,14 @@ function buildEmploymentsApp() {
 
         handleDelete: function() {
             // Delete current employment
-            this.setState({deleting: true});
+            this.setState({ deleting: true });
 
             var xmlHttp = new XMLHttpRequest();
             var thisEmployment = this;
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-                    thisEmployment.setState({deleting: false});
-                    if (xmlHttp.status >= 200 && xmlHttp.status < 400){
+                    thisEmployment.setState({ deleting: false });
+                    if (xmlHttp.status >= 200 && xmlHttp.status < 400) {
                         thisEmployment.props.removeEmployment(thisEmployment.props.employment.id);
                         return false;
                     }
@@ -74,34 +68,58 @@ function buildEmploymentsApp() {
 
             var deleteButton;
             if (!this.state.deleting) {
-                var buttonStyle = {cursor: 'pointer'};
+                var buttonStyle = { cursor: "pointer" };
                 deleteButton = React.createElement("i", {
-                    className: 'fa fa-times help-block-error',
+                    className: "fa fa-times help-block-error",
                     style: buttonStyle,
                     onClick: this.handleDelete
                 });
             } else {
-                deleteButton = React.createElement("i", {className: 'fa fa-spinner fa-spin'});
+                deleteButton = React.createElement("i", { className: "fa fa-spinner fa-spin" });
             }
 
             if (this.props.employment.is_approved) {
-                var groupName = React.createElement("i", null, '(', this.props.employment.group.name.slice(0, -1), ')');
-                var employmentNode = React.createElement("li", {}, this.props.employment.organisation_full.name, ' ', groupName, ' ', deleteButton);
+                var groupName = React.createElement(
+                    "i",
+                    null,
+                    "(",
+                    this.props.employment.group.name.slice(0, -1),
+                    ")"
+                );
+                var employmentNode = React.createElement(
+                    "li",
+                    {},
+                    this.props.employment.organisation_full.name,
+                    " ",
+                    groupName,
+                    " ",
+                    deleteButton
+                );
                 return React.createElement("b", null, employmentNode);
             } else {
-                var notApproved = React.createElement("i", null, '(', i18n.not_approved_text, ')');
-                return React.createElement("li", {}, this.props.employment.organisation_full.name, ' ', notApproved, ' ', deleteButton);
+                var notApproved = React.createElement("i", null, "(", i18n.not_approved_text, ")");
+                return React.createElement(
+                    "li",
+                    {},
+                    this.props.employment.organisation_full.name,
+                    " ",
+                    notApproved,
+                    " ",
+                    deleteButton
+                );
             }
-
         }
     });
-
 
     var EmploymentList = React.createClass({
         render: function() {
             var thisEmploymentList = this;
             var employments = this.props.employments.map(function(job) {
-                return React.createElement(Employment, {key: job.id, employment: job, removeEmployment: thisEmploymentList.props.removeEmployment});
+                return React.createElement(Employment, {
+                    key: job.id,
+                    employment: job,
+                    removeEmployment: thisEmploymentList.props.removeEmployment
+                });
             });
 
             return React.createElement("ul", null, employments);
@@ -110,11 +128,11 @@ function buildEmploymentsApp() {
 
     var OrganisationInput = React.createClass({
         typeaheadCallback: function(option) {
-            document.getElementById('organisationInput').setAttribute('value', option.id);
+            document.getElementById("organisationInput").setAttribute("value", option.id);
         },
 
         render: function() {
-            var inputProps = {id: 'organisationInput'};
+            var inputProps = { id: "organisationInput" };
             if (this.props.loading) {
                 inputProps.disabled = true;
             }
@@ -123,21 +141,25 @@ function buildEmploymentsApp() {
                 maxVisible: 10,
                 options: organisations,
                 onOptionSelected: this.typeaheadCallback,
-                displayOption: 'displayOption',
-                filterOption: 'filterOption',
-                customClasses: {input: 'form-control'},
+                displayOption: "displayOption",
+                filterOption: "filterOption",
+                customClasses: { input: "form-control" },
                 inputProps: inputProps
             });
-            var div = React.createFactory('div');
-            var formGroupClass = this.props.orgError ? 'form-group has-error' : 'form-group';
-            return div({className: formGroupClass}, orgTypeahead);
+            var div = React.createFactory("div");
+            var formGroupClass = this.props.orgError ? "form-group has-error" : "form-group";
+            return div({ className: formGroupClass }, orgTypeahead);
         }
     });
 
     var ErrorNode = React.createClass({
         render: function() {
             if (this.props.visible) {
-                return React.createElement("div", {className: 'help-block-error'}, '* ' + this.props.errorText);
+                return React.createElement(
+                    "div",
+                    { className: "help-block-error" },
+                    "* " + this.props.errorText
+                );
             } else {
                 return React.createElement("span");
             }
@@ -146,11 +168,11 @@ function buildEmploymentsApp() {
 
     var CountryInput = React.createClass({
         typeaheadCallback: function(option) {
-            document.getElementById('countryInput').setAttribute('value', option.code);
+            document.getElementById("countryInput").setAttribute("value", option.code);
         },
 
         render: function() {
-            var inputProps = {id: 'countryInput'};
+            var inputProps = { id: "countryInput" };
             if (this.props.loading) {
                 inputProps.disabled = true;
             }
@@ -159,54 +181,59 @@ function buildEmploymentsApp() {
                 maxVisible: 5,
                 options: countries,
                 onOptionSelected: this.typeaheadCallback,
-                displayOption: 'name',
-                filterOption: 'name',
-                customClasses: {input: 'form-control'},
+                displayOption: "name",
+                filterOption: "name",
+                customClasses: { input: "form-control" },
                 inputProps: inputProps
             });
-            var div = React.createFactory('div');
-            return div({className: 'form-group'}, countryTypeahead);
+            var div = React.createFactory("div");
+            return div({ className: "form-group" }, countryTypeahead);
         }
     });
 
     var JobTitleInput = React.createClass({
         render: function() {
-            var input = React.createFactory('input');
-            var inputProps = {className: 'form-control', type: 'text', 'placeholder': i18n.job_title_text, id: "jobtitleInput"};
+            var input = React.createFactory("input");
+            var inputProps = {
+                className: "form-control",
+                type: "text",
+                placeholder: i18n.job_title_text,
+                id: "jobtitleInput"
+            };
             if (this.props.loading) {
                 inputProps.disabled = true;
             }
             var jobTitleInput = input(inputProps);
-            var div = React.createFactory('div');
-            return div({className: 'form-group'}, jobTitleInput);
+            var div = React.createFactory("div");
+            return div({ className: "form-group" }, jobTitleInput);
         }
     });
 
     var FormButton = React.createClass({
-        handleAddEmployment: function () {
+        handleAddEmployment: function() {
             this.props.addEmployment();
         },
 
         render: function() {
-            var loadingIcon = React.createElement("i", {className: 'fa fa-spinner fa-spin'});
-            var button = React.createFactory('button');
+            var loadingIcon = React.createElement("i", { className: "fa fa-spinner fa-spin" });
+            var button = React.createFactory("button");
             if (this.props.loading) {
                 return button(
                     {
                         onClick: this.handleAddEmployment,
-                        className: 'btn btn-default btn-sm',
+                        className: "btn btn-default btn-sm",
                         type: "button",
                         disabled: true
                     },
                     loadingIcon,
-                    ' ',
+                    " ",
                     i18n.sending_request_text
                 );
             } else {
                 return button(
                     {
                         onClick: this.handleAddEmployment,
-                        className: 'btn btn-default btn-sm',
+                        className: "btn btn-default btn-sm",
                         type: "button"
                     },
                     i18n.request_join_text
@@ -216,16 +243,16 @@ function buildEmploymentsApp() {
     });
 
     var AddEmploymentForm = React.createClass({
-        getInitialState: function () {
+        getInitialState: function() {
             return {
                 buttonText: i18n.request_join_text,
                 loading: false,
                 showError: false,
-                errorText: ''
+                errorText: ""
             };
         },
 
-        handleAddEmployment: function (employment) {
+        handleAddEmployment: function(employment) {
             this.props.addEmployment(employment);
         },
 
@@ -233,10 +260,10 @@ function buildEmploymentsApp() {
             return this.props.existingEmployment(organisationId);
         },
 
-        getFormData: function () {
-            var orgValue = document.getElementById('organisationInput').getAttribute('value');
-            var countryValue = document.getElementById('countryInput').getAttribute('value');
-            var jobTitleValue = document.getElementById('jobtitleInput').value;
+        getFormData: function() {
+            var orgValue = document.getElementById("organisationInput").getAttribute("value");
+            var countryValue = document.getElementById("countryInput").getAttribute("value");
+            var jobTitleValue = document.getElementById("jobtitleInput").value;
 
             return {
                 organisation: orgValue,
@@ -245,7 +272,7 @@ function buildEmploymentsApp() {
             };
         },
 
-        addEmployment: function () {
+        addEmployment: function() {
             // Retrieve form data
             var formData = this.getFormData();
 
@@ -253,11 +280,11 @@ function buildEmploymentsApp() {
             this.setState({
                 loading: true,
                 showError: false,
-                errorText: ''
+                errorText: ""
             });
 
             // Check if organisation is filled in
-            if (formData.organisation === '') {
+            if (formData.organisation === "") {
                 this.setState({
                     loading: false,
                     showError: true,
@@ -292,9 +319,9 @@ function buildEmploymentsApp() {
             var thisForm = this;
             xmlHttp.onreadystatechange = function() {
                 if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-                    thisForm.setState({loading: false});
-                    if (xmlHttp.status == 200){
-                        thisForm.setState({loading: false, showError: false, errorText: ''});
+                    thisForm.setState({ loading: false });
+                    if (xmlHttp.status == 200) {
+                        thisForm.setState({ loading: false, showError: false, errorText: "" });
                         var response = JSON.parse(xmlHttp.responseText);
                         thisForm.handleAddEmployment(response);
                         return false;
@@ -323,34 +350,50 @@ function buildEmploymentsApp() {
 
         render: function() {
             var heading = React.createElement("h4", null, i18n.connect_employer_text);
-            var errorMessage = React.createElement(ErrorNode, {visible: this.state.showError, errorText: this.state.errorText});
-            var orgInput = React.createElement(OrganisationInput, {orgError: this.state.showError, loading: this.state.loading});
-            var countryInput = React.createElement(CountryInput, {loading: this.state.loading});
-            var jobTitleInput = React.createElement(JobTitleInput, {loading: this.state.loading});
-            var formButton = React.createElement(FormButton, {addEmployment: this.addEmployment, loading: this.state.loading});
-            var form = React.createElement("form", null, errorMessage, orgInput, countryInput, jobTitleInput, formButton);
+            var errorMessage = React.createElement(ErrorNode, {
+                visible: this.state.showError,
+                errorText: this.state.errorText
+            });
+            var orgInput = React.createElement(OrganisationInput, {
+                orgError: this.state.showError,
+                loading: this.state.loading
+            });
+            var countryInput = React.createElement(CountryInput, { loading: this.state.loading });
+            var jobTitleInput = React.createElement(JobTitleInput, { loading: this.state.loading });
+            var formButton = React.createElement(FormButton, {
+                addEmployment: this.addEmployment,
+                loading: this.state.loading
+            });
+            var form = React.createElement(
+                "form",
+                null,
+                errorMessage,
+                orgInput,
+                countryInput,
+                jobTitleInput,
+                formButton
+            );
             return React.createElement("span", null, heading, form);
         }
-
     });
 
     var EmploymentApp = React.createClass({
         getInitialState: function() {
-            return {employments: []};
+            return { employments: [] };
         },
 
         componentDidMount: function() {
             if (this.isMounted()) {
-                this.setState(
-                    {employments: this.props.employments}
-                );
+                this.setState({ employments: this.props.employments });
             }
         },
 
         existingEmployment: function(organisationId) {
-            for (var i=0; i < this.state.employments.length; i++) {
-                if (this.state.employments[i].organisation_full.id === organisationId &&
-                    this.state.employments[i].group.name === 'Users') {
+            for (var i = 0; i < this.state.employments.length; i++) {
+                if (
+                    this.state.employments[i].organisation_full.id === organisationId &&
+                    this.state.employments[i].group.name === "Users"
+                ) {
                     return true;
                 }
             }
@@ -358,17 +401,15 @@ function buildEmploymentsApp() {
         },
 
         addEmployment: function(employment) {
-            this.setState(
-                {employments: this.state.employments.concat([employment])}
-            );
+            this.setState({ employments: this.state.employments.concat([employment]) });
         },
 
         removeEmployment: function(employmentId) {
-            for (var i=0; i < this.state.employments.length; i++) {
+            for (var i = 0; i < this.state.employments.length; i++) {
                 if (this.state.employments[i].id === employmentId) {
                     var employments = this.state.employments;
                     employments.splice(i, 1);
-                    this.setState({employments: employments});
+                    this.setState({ employments: employments });
                     break;
                 }
             }
@@ -376,25 +417,31 @@ function buildEmploymentsApp() {
 
         render: function() {
             var icon = React.createFactory("i");
-            var headingIcon = icon({className: 'fa fa-users'});
-            var heading = React.createElement("h4", null, ' ', i18n.my_organisations_text);
-            var employmentList = React.createElement(EmploymentList, {employments: this.state.employments, removeEmployment: this.removeEmployment});
-            var addEmploymentForm = React.createElement(AddEmploymentForm, {link: this.props.link, org_link: this.props.org_link, country_link: this.props.country_link, addEmployment: this.addEmployment, existingEmployment: this.existingEmployment});
+            var headingIcon = icon({ className: "fa fa-users" });
+            var heading = React.createElement("h4", null, " ", i18n.my_organisations_text);
+            var employmentList = React.createElement(EmploymentList, {
+                employments: this.state.employments,
+                removeEmployment: this.removeEmployment
+            });
+            var addEmploymentForm = React.createElement(AddEmploymentForm, {
+                link: this.props.link,
+                org_link: this.props.org_link,
+                country_link: this.props.country_link,
+                addEmployment: this.addEmployment,
+                existingEmployment: this.existingEmployment
+            });
             return React.createElement("span", null, heading, employmentList, addEmploymentForm);
         }
     });
 
     ReactDOM.render(
-        React.createElement(
-            EmploymentApp,
-            {
-                employments: initial_data.user.employments,
-                link: request_link.link,
-                org_link: request_link.org_rest_link,
-                country_link: request_link.country_rest_link
-            }
-        ),
-        document.getElementById('organisations')
+        React.createElement(EmploymentApp, {
+            employments: initial_data.user.employments,
+            link: request_link.link,
+            org_link: request_link.org_rest_link,
+            country_link: request_link.country_rest_link
+        }),
+        document.getElementById("organisations")
     );
 }
 
@@ -407,14 +454,14 @@ function processOrgs(orgResults) {
         if (!long) {
             return short;
         }
-        return short + ' (' + long + ')';
+        return short + " (" + long + ")";
     }
 
     organisations = orgResults;
-    organisations.forEach(function (o) {
+    organisations.forEach(function(o) {
         var newName = getDisplayOption(o.name, o.long_name);
 
-        o.filterOption = o.name + ' ' + o.long_name;
+        o.filterOption = o.name + " " + o.long_name;
         o.displayOption = newName;
     });
 }
@@ -431,7 +478,10 @@ function getOrgsandCountries() {
             var xmlHttpCountries = new XMLHttpRequest();
             xmlHttpCountries.onreadystatechange = function() {
                 // Then get countries
-                if (xmlHttpCountries.readyState == XMLHttpRequest.DONE && xmlHttpCountries.status == 200) {
+                if (
+                    xmlHttpCountries.readyState == XMLHttpRequest.DONE &&
+                    xmlHttpCountries.status == 200
+                ) {
                     var countriesResult = JSON.parse(xmlHttpCountries.responseText);
                     countries = countriesResult.results;
                     // Finally, build the app
@@ -453,12 +503,12 @@ function getInitialData() {
     i18n = JSON.parse(document.getElementById("my-details-text").innerHTML);
 }
 
-var loadJS = function(url, implementationCode, location){
+var loadJS = function(url, implementationCode, location) {
     //url is URL of external file, implementationCode is the code
     //to be called from the file, location is the location to
     //insert the <script> element
 
-    var scriptTag = document.createElement('script');
+    var scriptTag = document.createElement("script");
     scriptTag.src = url;
 
     scriptTag.onload = implementationCode;
@@ -469,25 +519,29 @@ var loadJS = function(url, implementationCode, location){
 
 function loadAndRenderReact() {
     function loadReactTypeahead() {
-        var reactTypeaheadSrc = document.getElementById('react-typeahead').src;
+        var reactTypeaheadSrc = document.getElementById("react-typeahead").src;
         loadJS(reactTypeaheadSrc, getOrgsandCountries, document.body);
     }
 
     function loadReactDOM() {
-        var reactDOMSrc = document.getElementById('react-dom').src;
+        var reactDOMSrc = document.getElementById("react-dom").src;
         loadJS(reactDOMSrc, loadReactTypeahead, document.body);
     }
 
-    console.log('No React, load again.');
-    var reactSrc = document.getElementById('react').src;
+    console.log("No React, load again.");
+    var reactSrc = document.getElementById("react").src;
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     getInitialData();
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined') {
+    if (
+        typeof React !== "undefined" &&
+        typeof ReactDOM !== "undefined" &&
+        typeof ReactTypeahead !== "undefined"
+    ) {
         getOrgsandCountries();
     } else {
         loadAndRenderReact();

@@ -6,8 +6,7 @@
 // AKVO_RSR is defined in base.html
 window.AKVO_RSR.utils = {
     resetFormElement: function(e) {
-        e
-            .wrap("<form>")
+        e.wrap("<form>")
             .closest("form")
             .get(0)
             .reset();

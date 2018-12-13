@@ -32,8 +32,11 @@ const IsRestricted = ({ _, isRestricted, mayUnrestrict, toggleIsRestricted }) =>
                     }}
                 />
                 {mayUnrestrict ? null : (
-                <span className="unrestrictNote">NOTE: This user cannot be unrestricted because of other restricted projects than those listed here</span>
-            )}
+                    <span className="unrestrictNote">
+                        NOTE: This user cannot be unrestricted because of other restricted projects
+                        than those listed here
+                    </span>
+                )}
             </label>
             {isRestricted ? (
                 <div

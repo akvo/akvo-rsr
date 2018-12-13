@@ -5,7 +5,6 @@
 
 // FIXME: Lots of duplicated code from password-reset.jsx
 function showDonatePopup(url) {
-
     if (this.donateComponent !== undefined) {
         this.donateComponent.open();
         return;
@@ -16,7 +15,6 @@ function showDonatePopup(url) {
     var Input = ReactBootstrap.Input;
 
     var DonateModal = React.createClass({
-
         getInitialState: function() {
             return {
                 showModal: false
@@ -36,47 +34,67 @@ function showDonatePopup(url) {
         },
 
         render: function() {
-            var thisModal = React.createElement(Modal, {
-                show: this.state.showModal,
-                onHide: this.close,
-                url: this.props.url
-            },
-                React.createElement(Modal.Header, {closeButton: true},
+            var thisModal = React.createElement(
+                Modal,
+                {
+                    show: this.state.showModal,
+                    onHide: this.close,
+                    url: this.props.url
+                },
+                React.createElement(
+                    Modal.Header,
+                    { closeButton: true },
                     React.createElement(Modal.Title, null, i18n.donate_heading)
                 ),
-                React.createElement(Modal.Body, null,
-                    React.createElement('p', null, i18n.donate_summary)
+                React.createElement(
+                    Modal.Body,
+                    null,
+                    React.createElement("p", null, i18n.donate_summary)
                 ),
-                React.createElement(Modal.Footer, null,
-                    React.createElement(Button, {onClick: this.close}, i18n.donate_confirm_cancel_text),
-                    React.createElement(Button, {onClick: this.close},
-                        React.createElement('a', {href: this.props.url, target: "_blank"}, i18n.donate_text)
+                React.createElement(
+                    Modal.Footer,
+                    null,
+                    React.createElement(
+                        Button,
+                        { onClick: this.close },
+                        i18n.donate_confirm_cancel_text
+                    ),
+                    React.createElement(
+                        Button,
+                        { onClick: this.close },
+                        React.createElement(
+                            "a",
+                            { href: this.props.url, target: "_blank" },
+                            i18n.donate_text
+                        )
                     )
                 )
             );
 
-            return (
-                <div> {thisModal} </div>
-            );
+            return <div> {thisModal} </div>;
         }
     });
 
     // Initialise the dialog
-    var body = document.getElementsByTagName('body')[0],
-    donate_info = document.createElement('div');
+    var body = document.getElementsByTagName("body")[0],
+        donate_info = document.createElement("div");
 
     body.appendChild(donate_info);
-    donate_info.setAttribute('id', 'donate-info');
-    this.donateComponent = ReactDOM.render(React.createElement(DonateModal, {url: url}), donate_info);
+    donate_info.setAttribute("id", "donate-info");
+    this.donateComponent = ReactDOM.render(
+        React.createElement(DonateModal, { url: url }),
+        donate_info
+    );
 
     // Open the dialog
     this.donateComponent.open();
 }
 
 /* Initialise page */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     // Load initial data
-    var data_element = document.getElementById("project-main-text") || document.getElementById("donate-text");
+    var data_element =
+        document.getElementById("project-main-text") || document.getElementById("donate-text");
     i18n = JSON.parse(data_element.innerHTML);
 
     // Hack to make this name available to onClick in HTML.

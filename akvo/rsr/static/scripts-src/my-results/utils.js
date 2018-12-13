@@ -424,7 +424,7 @@ export function computePercentage(numerator, denominator) {
     numerator = parseFloat(numerator) || 0;
     denominator = parseFloat(denominator) || 0;
     if (denominator != 0) {
-        return Math.round10(numerator * 100 / denominator, -2);
+        return Math.round10((numerator * 100) / denominator, -2);
     } else {
         return 0;
     }

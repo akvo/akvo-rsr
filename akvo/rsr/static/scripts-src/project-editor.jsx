@@ -724,7 +724,7 @@ function uploadFile(fileInput, maxFileSize, fileType) {
                 "progress",
                 function(e) {
                     var progressBar = progressBarContainer.querySelector(".progress-bar");
-                    var percentage = parseInt(e.loaded / e.total * 100);
+                    var percentage = parseInt((e.loaded / e.total) * 100);
                     progressBar.setAttribute("aria-valuenow", percentage);
                     progressBar.style.width = percentage + "%";
                     progressBar.innerHTML = percentage + "%";
@@ -2475,7 +2475,7 @@ function getInputResults(section) {
 function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
     var completionPercentage, completionClass, publishButton;
 
-    completionPercentage = Math.floor(numInputsCompleted / numInputs * 100);
+    completionPercentage = Math.floor((numInputsCompleted / numInputs) * 100);
     if (completionPercentage === 0) {
         // Never show an empty bar
         completionPercentage = 1;

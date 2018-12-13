@@ -3,8 +3,7 @@
 // Akvo RSR module. For additional details on the GNU license please see
 // < http://www.gnu.org/licenses/agpl.html >.
 
-var i18n,
-    Typeahead;
+var i18n, Typeahead;
 
 function loadAsync(url, retryCount, retryLimit) {
     var xmlHttp;
@@ -13,8 +12,7 @@ function loadAsync(url, retryCount, retryLimit) {
 
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-
-            if(xmlHttp.status == 200){
+            if (xmlHttp.status == 200) {
                 processResponse(xmlHttp.responseText);
             } else {
                 if (retryCount >= retryLimit) {
@@ -54,7 +52,7 @@ function processResponse(response) {
         var id, idElement;
 
         id = getIdFromName(option, orgs);
-        idElement = document.getElementById('org-filter-input');
+        idElement = document.getElementById("org-filter-input");
 
         idElement.value = id;
     };
@@ -75,10 +73,10 @@ function getTypeaheadOptions(orgs) {
 }
 
 function getCurrentOrgFilter(orgs) {
-
     var currentFilterId, currentFilterName, filter;
 
-    currentFilterId = JSON.parse(document.getElementById("react-typeahead-org").innerHTML).currentOrg;
+    currentFilterId = JSON.parse(document.getElementById("react-typeahead-org").innerHTML)
+        .currentOrg;
     currentFilterName = getNameFromId(currentFilterId, orgs);
 
     filter = {};
@@ -109,7 +107,7 @@ function getIdFromName(name, orgs) {
 function updateIdElement(filter) {
     var idElement, typeaheadPlaceholder;
 
-    idElement = document.getElementById('org-filter-input');
+    idElement = document.getElementById("org-filter-input");
     idElement.value = filter.id;
 }
 
@@ -120,15 +118,19 @@ function getPlaceholder(filter) {
 function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) {
     var TypeaheadLabel = React.createClass({
         render: function() {
-            return React.createElement('div', null,
-                React.createElement('label', {className: 'control-label'}, i18n.organisation_text)
+            return React.createElement(
+                "div",
+                null,
+                React.createElement("label", { className: "control-label" }, i18n.organisation_text)
             );
         }
     });
 
     var TypeaheadContainer = React.createClass({
         render: function() {
-            return React.createElement('div', null,
+            return React.createElement(
+                "div",
+                null,
                 React.createElement(TypeaheadLabel),
                 React.createElement(Typeahead, {
                     placeholder: placeholder,
@@ -150,22 +152,23 @@ function buildReactComponents(placeholder, typeaheadOptions, typeaheadCallback) 
     });
 
     ReactDOM.render(
-        React.createElement(TypeaheadContainer), document.getElementById('org-filter-container')
+        React.createElement(TypeaheadContainer),
+        document.getElementById("org-filter-container")
     );
 }
 
 function initReact() {
     // Load globals
     Typeahead = ReactTypeahead.Typeahead;
-    loadAsync('/rest/v1/typeaheads/organisations?format=json&partners=1', 0, 3);
+    loadAsync("/rest/v1/typeaheads/organisations?format=json&partners=1", 0, 3);
 }
 
-var loadJS = function(url, implementationCode, location){
+var loadJS = function(url, implementationCode, location) {
     //url is URL of external file, implementationCode is the code
     //to be called from the file, location is the location to
     //insert the <script> element
 
-    var scriptTag = document.createElement('script');
+    var scriptTag = document.createElement("script");
     scriptTag.src = url;
 
     scriptTag.onload = implementationCode;
@@ -176,26 +179,30 @@ var loadJS = function(url, implementationCode, location){
 
 function loadAndRenderReact() {
     function loadReactTypeahead() {
-        var reactTypeaheadSrc = document.getElementById('react-typeahead').src;
+        var reactTypeaheadSrc = document.getElementById("react-typeahead").src;
         loadJS(reactTypeaheadSrc, initReact, document.body);
     }
 
     function loadReactDOM() {
-        var reactDOMSrc = document.getElementById('react-dom').src;
+        var reactDOMSrc = document.getElementById("react-dom").src;
         loadJS(reactDOMSrc, loadReactTypeahead, document.body);
     }
 
-    console.log('No React, load again.');
-    var reactSrc = document.getElementById('react').src;
+    console.log("No React, load again.");
+    var reactSrc = document.getElementById("react").src;
     loadJS(reactSrc, loadReactDOM, document.body);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     // Initial data
     i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML);
 
     // Check if React is loaded
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined' && typeof ReactTypeahead !== 'undefined') {
+    if (
+        typeof React !== "undefined" &&
+        typeof ReactDOM !== "undefined" &&
+        typeof ReactTypeahead !== "undefined"
+    ) {
         initReact();
     } else {
         loadAndRenderReact();

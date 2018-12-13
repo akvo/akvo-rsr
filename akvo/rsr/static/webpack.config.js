@@ -6,7 +6,6 @@
  */
 
 
-
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -38,8 +37,6 @@ module.exports = {
     devtool: "source-map",
     entry: {
         // "New React"
-        // When working on one or the other apps, comment out the other while developing. Saves time
-        // on the transpiling ;-)
         results: "./scripts-src/my-results/app.js",
         userProjects: "./scripts-src/user-projects-access/app.js",
         vendors: [
@@ -53,9 +50,10 @@ module.exports = {
             "reselect",
             "isomorphic-fetch"
         ],
+
         // Sass
         main: "./styles-src/main.scss",
-        // foo: "./styles-src/foo.css",
+
         // "Old React"
         cookie: "./scripts-src/cookie.jsx",
         directoryUtils: "./scripts-src/directory-utils.jsx",
