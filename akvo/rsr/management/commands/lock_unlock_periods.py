@@ -4,7 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from optparse import make_option
 import sys
 
 from django.core.management.base import BaseCommand
@@ -14,26 +13,33 @@ from ...models import IndicatorPeriod, Keyword, Project
 
 class Command(BaseCommand):
 
-    args = '<lock|unlock>'
     help = 'Script for locking and unlocking periods based on Keyword'
 
-    option_list = BaseCommand.option_list + (
-        make_option('-k', '--keyword',
-                    action='store', dest='keyword',
-                    help='Keyword to use for filtering Indicator Periods'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'action',
+            type=str,
+            choices=['lock', 'unlock'],
+            help='Action to take - lock or unlock'
+        )
+        parser.add_argument(
+            '-k',
+            '--keyword',
+            action='store',
+            dest='keyword',
+            help='Keyword to use for filtering Indicator Periods'
+        )
 
     def handle(self, *args, **options):
 
         # parse options
         verbosity = int(options['verbosity'])
-        keyword = options['keyword']
+        keyword = options.get('keyword')
+        action = options.get('action')
 
-        if not len(args) == 1 or args[0].lower() not in ('lock', 'unlock') or not keyword:
-            print 'Usage: {} {} {} --keyword KEYWORD'.format(sys.argv[0], sys.argv[1], self.args)
+        if not keyword:
+            print 'Keyword argument is required'
             sys.exit(1)
-
-        action = args[0].lower()
 
         try:
             keyword = Keyword.objects.get(label=keyword)
