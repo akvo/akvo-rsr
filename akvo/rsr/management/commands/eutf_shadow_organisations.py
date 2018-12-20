@@ -13,11 +13,22 @@ from django.db import IntegrityError
 
 from akvo.rsr.management.utils import rotate_spinner
 from ...models import Project, Organisation, User, Employment, Partnership
-from ...permissions import GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS
+from ...permissions import (GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAME_ENUMERATORS,
+                            GROUP_NAME_PROJECT_EDITORS)
 
 
 EUTF_ORG_ID = 3394
 EUTF_PROJECT_ID = 4401
+EXCLUDED_ORGS = [
+    13,     # WASTE
+    405,    # ICCO Cooperation
+    428,    # UNDP
+    1994,   # SNV Mali
+    2251,   # Ecorys
+    3210,   # SNV World
+    4814,   # APEJ
+    4824,   # ICCO CORPORATION Mali
+]
 
 
 class Command(BaseCommand):
@@ -66,6 +77,8 @@ class Command(BaseCommand):
 
         admins = Group.objects.get(name=GROUP_NAME_ADMINS)
         me_managers = Group.objects.get(name=GROUP_NAME_ME_MANAGERS)
+        editors = Group.objects.get(name=GROUP_NAME_PROJECT_EDITORS)
+        enumerators = Group.objects.get(name=GROUP_NAME_ENUMERATORS)
 
         # all partners to EUTF projects
         root = Project.objects.get(pk=EUTF_PROJECT_ID)
@@ -108,6 +121,18 @@ class Command(BaseCommand):
                 '-',
                 '-',
             ])
+            # EXCLUDED_ORGS will not have any users in their shadows
+            if organisation.pk in EXCLUDED_ORGS:
+                shadows_and_employments.append([
+                    organisation.pk,
+                    u'This organisation will not have its users transferred',
+                    '-',
+                    '-',
+                    '-',
+                    '-',
+                    '-',
+                ])
+                continue
 
             users = User.objects.filter(organisations__in=[organisation]).distinct()
 
@@ -121,6 +146,12 @@ class Command(BaseCommand):
                         not employments.filter(group=me_managers).exists()):
                     add_me_manager = True
 
+                # convert Project editor to Enumerator if user does not have Enumerator employment
+                add_enumerator = False
+                if (employments.filter(group=editors).exists() and
+                        not employments.filter(group=enumerators).exists()):
+                    add_enumerator = True
+
                 for employment in employments:
                     rotate_spinner()
 
@@ -128,6 +159,13 @@ class Command(BaseCommand):
                     if employment.group == admins:
                         if add_me_manager:
                             employment.group = me_managers
+                        else:
+                            continue
+
+                    # project editors are converted to enumerators
+                    if employment.group == editors:
+                        if add_enumerator:
+                            employment.group = editors
                         else:
                             continue
 

@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  mainnetwork:
+    ports:
+      - "80:8000"
+  web:
+  rsrdbhost:
+    ports:
+      - "5432:5432"
+  memcached:

@@ -36,4 +36,11 @@ import glob
 conffiles = glob.glob(os.path.join(os.path.dirname(__file__), '*.conf'))
 conffiles.sort()
 for f in conffiles:
+    path = os.path.abspath(f)
+    if os.path.exists(path):
+        execfile(path)
+
+overwrite_conffiles = glob.glob("/config_overrides/*.conf")
+overwrite_conffiles.sort()
+for f in overwrite_conffiles:
     execfile(os.path.abspath(f))

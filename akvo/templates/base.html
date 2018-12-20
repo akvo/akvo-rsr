@@ -6,7 +6,7 @@
 <html lang="{{ request.LANGUAGE_CODE }}">
   <head>
     <meta charset="UTF-8"/>
-    {% if debug %}<meta name="robots" content="none"/>{% endif %}
+    {% if disable_robots %}<meta name="robots" content="none"/>{% endif %}
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Akvo RSR"/>
     <meta property="og:url" content="http://{{request.META.HTTP_HOST}}{{request.path}}"/>
