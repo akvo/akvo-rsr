@@ -109,6 +109,12 @@ export function displayDate(dateString) {
     return "Unknown date";
 }
 
+export function dateToISOString(date) {
+    // Return ISO string for the selected date, ignoring any timezone conversions!
+    // date.toISOString does timezone conversions, sometimes returning the wrong date.
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T00:00:00.000Z`;
+}
+
 export function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== "") {
