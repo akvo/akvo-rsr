@@ -94,7 +94,10 @@ class Report extends React.Component {
     }
 
     downloadReport(format) {
-        const { report: { url }, project } = this.props;
+        const {
+            report: { url },
+            project
+        } = this.props;
         let { start_date, end_date } = this.state;
         let download_url;
         download_url = url
@@ -108,10 +111,10 @@ class Report extends React.Component {
                 end_date = this.state.start_date;
             }
             download_url = start_date
-                ? download_url.replace("{start_date}", start_date.toISOString())
+                ? download_url.replace("{start_date}", start_date.toISOString(true))
                 : download_url.replace("p_StartDate={start_date}", "");
             download_url = end_date
-                ? download_url.replace("{end_date}", end_date.toISOString())
+                ? download_url.replace("{end_date}", end_date.toISOString(true))
                 : download_url.replace("p_EndDate={end_date}", "");
             download_url = download_url.replace(/&+/g, "&").replace(/&$/, "");
         }
