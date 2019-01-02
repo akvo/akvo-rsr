@@ -21,7 +21,8 @@ services:
     depends_on:
       - rsrdbhost
   rsrdbhost:
-    image: postgres:9.6.1
+    build:
+      context: postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
