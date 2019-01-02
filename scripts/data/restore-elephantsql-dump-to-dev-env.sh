@@ -28,7 +28,7 @@ if [[ -z "${dump_owner}" ]]; then
     exit 2
 fi
 
-lzop -cd "${DUMP_FILE}" | sed -e "s/${dump_owner}/${RSR_DB_SUPERUSER}/" | sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | psql "${psql_settings[@]}"
+lzop -cd "${DUMP_FILE}" | sed -e "s/${dump_owner}/${RSR_DB_USER}/" | sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | psql "${psql_settings[@]}"
 
 psql "${psql_settings[@]}" --dbname="${RSR_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${RSR_DB_USER};"
 psql "${psql_settings[@]}" --command="ALTER DATABASE ${RSR_DB_NAME} OWNER TO ${RSR_DB_USER};"
