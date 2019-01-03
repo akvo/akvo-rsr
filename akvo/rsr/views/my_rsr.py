@@ -313,7 +313,7 @@ def project_editor(request, project_id):
             'documents',
             'keywords',
         ).select_related(
-            'publishingstatus__status',
+            'publishingstatus',
             'primary_organisation',
         ).get(pk=project_id)
     except Project.DoesNotExist:
