@@ -24,8 +24,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden)
-from django.shortcuts import redirect, render, render_to_response
-from django.template import RequestContext
+from django.shortcuts import redirect, render
 
 from registration.models import RegistrationProfile
 
@@ -42,13 +41,15 @@ def register(request):
             if request.POST.get('hp_title'):
                 return redirect('index')
             user = form.save(request)
-            return render_to_response(
+            return render(
+                request,
                 'registration/register_complete.html',
                 {'new_user': user},
             )
     else:
         form = RegisterForm()
-    return render_to_response(
+    return render(
+        request,
         'registration/register.html',
         {'form': form, 'password_length': settings.PASSWORD_MINIMUM_LENGTH}
     )
@@ -85,12 +86,13 @@ def activate(request, activation_key, extra_context=None):
                 login(request, user)
     if extra_context is None:
         extra_context = {}
-    context = RequestContext(request)
+    context = dict()
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
-    return render_to_response(
+    return render(
+        request,
         'registration/activate.html',
-        context=context
+        context
     )
 
 
@@ -207,7 +209,7 @@ def sign_in(request):
         if reset_form.is_valid():
             reset_form.save(domain_override=settings.RSR_DOMAIN)
         return HttpResponse()
-    return render_to_response('sign_in.html', {'form': form, 'reset_form': reset_form})
+    return render(request, 'sign_in.html', {'form': form, 'reset_form': reset_form})
 
 
 def sign_out(request):
