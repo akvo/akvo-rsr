@@ -452,7 +452,7 @@ def populate_test_data(seed=42):
     random.seed(seed)
 
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
+    User.objects.all().delete()
     UserFactory.create(is_admin=True, is_superuser=True, is_staff=True)
     UserFactory.create_batch(4)
     OrganisationFactory.create_batch(3)
