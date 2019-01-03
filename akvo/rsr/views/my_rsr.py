@@ -235,7 +235,7 @@ def my_projects(request):
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
-        'reportable_organisations': creator_organisations
+        'reportable_organisations': list(creator_organisations)
     }
     return render(request, 'myrsr/my_projects.html', context)
 
