@@ -42,6 +42,7 @@ class Fss(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'FSS')
         verbose_name_plural = _(u'FSS')
+        ordering = ('pk',)
 
 
 class FssForecast(models.Model):
@@ -84,3 +85,4 @@ class FssForecast(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'FSS forecast')
         verbose_name_plural = _(u'FSS forecasts')
+        ordering = ('pk',)

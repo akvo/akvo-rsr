@@ -131,6 +131,7 @@ class CrsAdd(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'CRS reporting')
         verbose_name_plural = _(u'CRS reporting')
+        ordering = ('pk',)
 
 
 class CrsAddOtherFlag(models.Model):
@@ -167,3 +168,4 @@ class CrsAddOtherFlag(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'CRS other flag')
         verbose_name_plural = _(u'CRS other flags')
+        ordering = ('pk',)

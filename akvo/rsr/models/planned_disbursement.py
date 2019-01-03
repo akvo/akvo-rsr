@@ -108,3 +108,4 @@ class PlannedDisbursement(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'planned disbursement')
         verbose_name_plural = _(u'planned disbursements')
+        ordering = ('pk',)

@@ -48,6 +48,7 @@ class HumanitarianScope(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'humanitarian scope')
         verbose_name_plural = _(u'humanitarian scopes')
+        ordering = ('pk',)
 
     def __unicode__(self):
         if self.text:

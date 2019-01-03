@@ -239,6 +239,7 @@ class Transaction(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'transaction')
         verbose_name_plural = _(u'transactions')
+        ordering = ('pk',)
 
 
 class TransactionSector(models.Model):
@@ -301,3 +302,4 @@ class TransactionSector(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'transaction sector')
         verbose_name_plural = _(u'transaction sectors')
+        ordering = ('pk',)

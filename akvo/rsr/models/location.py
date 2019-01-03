@@ -274,6 +274,7 @@ class AdministrativeLocation(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'location administrative')
         verbose_name_plural = _(u'location administratives')
+        ordering = ('pk',)
 
 
 class ProjectUpdateLocation(BaseLocation):

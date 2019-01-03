@@ -85,3 +85,4 @@ class RecipientRegion(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'recipient region')
         verbose_name_plural = _(u'recipient regions')
+        ordering = ('pk',)
