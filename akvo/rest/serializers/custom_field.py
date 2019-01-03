@@ -13,10 +13,12 @@ from .rsr_serializer import BaseRSRSerializer
 class OrganisationCustomFieldSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = OrganisationCustomField
 
 
 class ProjectCustomFieldSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = ProjectCustomField

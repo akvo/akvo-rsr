@@ -19,6 +19,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Indicator
+        fields = '__all__'
 
     # TODO: add validation for parent_indicator
 
@@ -31,3 +32,4 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Indicator
+        fields = '__all__'

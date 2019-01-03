@@ -19,3 +19,4 @@ class HumanitarianScopeSerializer(BaseRSRSerializer):
 
     class Meta:
         model = HumanitarianScope
+        fields = '__all__'

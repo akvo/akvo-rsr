@@ -15,6 +15,7 @@ from rest_framework import serializers
 class ProjectConditionRawSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = ProjectCondition
 
 

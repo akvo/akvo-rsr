@@ -14,3 +14,4 @@ class GoalSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Goal
+        fields = '__all__'

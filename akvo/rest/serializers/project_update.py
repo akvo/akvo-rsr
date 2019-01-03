@@ -143,5 +143,6 @@ class ProjectUpdateExtraSerializer(BaseRSRSerializer):
     user = UserSerializer()
 
     class Meta:
+        fields = '__all__'
         model = ProjectUpdate
         depth = 2

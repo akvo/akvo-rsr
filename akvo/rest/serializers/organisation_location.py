@@ -15,6 +15,7 @@ class OrganisationLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = OrganisationLocation
+        fields = '__all__'
 
 
 class OrganisationLocationExtraSerializer(OrganisationLocationSerializer):
@@ -32,6 +33,9 @@ class MapOrganisationSerializer(serializers.Serializer):
     url = serializers.URLField(source='get_absolute_url')
     logo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
 
+    class Meta:
+        fields = '__all__'
+
 
 class MapOrganisationLocationSerializer(serializers.Serializer):
 
@@ -42,3 +46,6 @@ class MapOrganisationLocationSerializer(serializers.Serializer):
     longitude = serializers.FloatField()
     organisation = MapOrganisationSerializer(source='location_target')
     country = CountrySerializer()
+
+    class Meta:
+        fields = '__all__'

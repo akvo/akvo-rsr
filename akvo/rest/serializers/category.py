@@ -14,3 +14,4 @@ class CategorySerializer(BaseRSRSerializer):
 
     class Meta:
         model = Category
+        fields = '__all__'

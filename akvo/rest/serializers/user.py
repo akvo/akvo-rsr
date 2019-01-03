@@ -107,6 +107,9 @@ class UserPasswordSerializer(serializers.Serializer):
         help_text='New Password (confirmation)',
     )
 
+    class Meta:
+        fields = '__all__'
+
     def validate_old_password(self, value):
         """Check for current password"""
         if not self.instance.check_password(value):

@@ -62,3 +62,6 @@ class MapProjectLocationSerializer(serializers.Serializer):
     longitude = serializers.FloatField()
     project = MapProjectSerializer(source='location_target')
     country = CountrySerializer()
+
+    class Meta:
+        fields = '__all__'

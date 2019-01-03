@@ -16,6 +16,7 @@ class PolicyMarkerRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = PolicyMarker
+        fields = '__all__'
 
 
 class PolicyMarkerSerializer(PolicyMarkerRawSerializer):

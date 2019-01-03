@@ -16,6 +16,7 @@ class FssSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Fss
+        fields = '__all__'
 
 
 class FssForecastSerializer(BaseRSRSerializer):
@@ -24,3 +25,4 @@ class FssForecastSerializer(BaseRSRSerializer):
 
     class Meta:
         model = FssForecast
+        fields = '__all__'

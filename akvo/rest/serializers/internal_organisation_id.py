@@ -14,3 +14,4 @@ class InternalOrganisationIDSerializer(BaseRSRSerializer):
 
     class Meta:
         model = InternalOrganisationID
+        fields = '__all__'
