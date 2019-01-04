@@ -16,6 +16,7 @@ import tablib
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
+from akvo.rsr.models import User
 from ...models import Organisation, Employment
 from ...permissions import GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ENUMERATORS
 
@@ -40,17 +41,20 @@ class Command(BaseCommand):
 
         eutf = Organisation.objects.get(pk=EUTF_ORG_ID)
         content_owned_orgs = eutf.content_owned_organisations()
-        groups = Group.objects.filter(name__in=GROUPS_TO_CHANGE)
-        enumerator = Group.objects.get(name=GROUP_NAME_ENUMERATORS)
+        # groups = Group.objects.filter(name__in=[GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ENUMERATORS])
+        enumerators = Group.objects.get(name=GROUP_NAME_ENUMERATORS)
+        editors = Group.objects.get(name=GROUP_NAME_PROJECT_EDITORS)
+        # find all Project editors and Enumerators employments
         employments = Employment.objects.filter(
             organisation__in=content_owned_orgs,
-            group__in=groups
-        ).order_by('organisation_id', 'user_id').select_related('organisation', 'user')
+            group__in=[enumerators, editors]
+        # The -group_id ordering means we handle Enumerators before Project editors
+        ).order_by('organisation_id', 'user_id', '-group_id').select_related('organisation', 'user')
 
         organisation_id, user_id = None, None
         for employment in employments:
             if employment.organisation.pk != organisation_id or employment.user.pk != user_id:
-                employment.group = enumerator
+                employment.group = enumerators
                 employment.save()
                 users.append([
                     employment.organisation.pk,
