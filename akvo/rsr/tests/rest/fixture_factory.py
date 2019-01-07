@@ -483,13 +483,6 @@ def populate_test_data(seed=42):
     IatiExportFactory.create_batch(3)
     IatiImportFactory.create_batch(3)
 
-    for _ in range(10):
-        created = False
-        while not created:
-            country_code = random.choice(ISO_3166_COUNTRIES)[0]
-            country_info = Country.fields_from_iso_code(country_code)
-            country, created = Country.objects.get_or_create(**country_info)
-
     EmploymentFactory.create_batch(30)
 
     KeywordFactory.create_batch(20)
@@ -502,7 +495,6 @@ def populate_test_data(seed=42):
     ProjectEditorValidationSetFactory.create_batch(2)
     ProjectEditorValidationFactory.create_batch(20)
 
-    ReportFormatFactory.create_batch(4)
     ReportFactory.create_batch(4)
 
     # FIXME: Enforce this!
