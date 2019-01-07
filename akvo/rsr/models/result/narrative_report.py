@@ -67,3 +67,4 @@ class NarrativeReport(models.Model):
         verbose_name = _(u'narrative report')
         verbose_name_plural = _(u'narrative reports')
         unique_together = ('project', 'category', 'period_start', 'period_end')
+        ordering = ('id',)
