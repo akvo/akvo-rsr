@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  mainnetwork:
+    image: alpine
+    command: tail -f /dev/null
+    expose:
+      - "80"
+  web:
+    build:
+     context: .
+     dockerfile: Dockerfile-dev
+    #;; user superme:passwd
+    volumes:
+      - .:/var/akvo/rsr/code
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
+      - /var/akvo/rsr/code/src/
+    network_mode: service:mainnetwork
+    environment:
+      - DJANGO_SECRET_KEY=secretkey
+    depends_on:
+      - rsrdbhost
+  rsrdbhost:
+    build:
+      context: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    expose:
+      - "5432"
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d/
+      - ./scripts/data:/data-scripts/
+  memcached:
+    image: memcached:1.5.9-alpine
+    network_mode: service:mainnetwork

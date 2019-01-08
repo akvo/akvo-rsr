@@ -42,6 +42,16 @@ class ValidStockRSRTestCase(TestCase):
         self.assertTrue(_is_rsr_host(self.req_localhost.get_host()))
 
 
+class HealthCheckTestCase(TestCase):
+
+    """Testing Health Check. """
+
+    def test_health_check(self):
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        resp = self.c.get('/healthz')
+        self.assertEqual(resp.status_code, 200)
+
+
 class HostHeaderTestCase(TestCase):
 
     """Testing boot traffic."""

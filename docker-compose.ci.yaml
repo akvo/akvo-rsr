@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  mainnetwork:
+  web:
+    command: "true"
+    volumes:
+      - ./scripts/docker/ci/80-travis.conf:/config_overrides/80-travis.conf
+  rsrdbhost:
+  memcached:

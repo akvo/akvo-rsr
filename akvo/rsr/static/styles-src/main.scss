@@ -866,10 +866,6 @@ div.update-confirm-container {
 }
 
 #user_table {
-    // Hide temporarily as project access restrictions is not used yet
-    th:nth-child(4) {
-        visibility: hidden;
-    }
     td.text-right {
         > span {
             > span:first-of-type {
