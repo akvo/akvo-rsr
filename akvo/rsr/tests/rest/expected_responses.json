@@ -285,25 +285,25 @@
     "/rest/v1/organisation/?format=json&limit=10": "{\"count\":3,\"next\":null,\"previous\":null,\"results\":[{\"id\":1,\"total_budgets\":[],\"recipient_org_budgets\":[],\"region_budgets\":[],\"country_budgets\":[],\"total_expenditures\":[],\"documents\":[],\"locations\":[{\"id\":1,\"latitude\":25.1,\"longitude\":-85.5,\"city\":\"\",\"state\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"postcode\":\"\",\"iati_country\":\"\",\"country\":null,\"location_target\":1}],\"logo\":null,\"created_at\":\"2018-11-30T12:07:06.025043\",\"last_modified_at\":\"2018-11-30T12:07:08.929956\",\"name\":\"Organisation - 0\",\"long_name\":\"Organisation - 0\",\"language\":\"en\",\"organisation_type\":null,\"currency\":\"EUR\",\"new_organisation_type\":22,\"iati_org_id\":null,\"url\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"linkedin\":\"\",\"phone\":\"\",\"mobile\":\"\",\"fax\":\"\",\"contact_person\":\"\",\"contact_email\":\"\",\"description\":\"\",\"notes\":\"\",\"can_create_projects\":false,\"enable_restrictions\":false,\"allow_edit\":true,\"public_iati_file\":true,\"can_become_reporting\":false,\"primary_location\":1,\"content_owner\":null,\"original\":null,\"internal_org_ids\":[],\"absolute_url\":\"/en/organisation/1/\"},{\"id\":2,\"total_budgets\":[],\"recipient_org_budgets\":[],\"region_budgets\":[],\"country_budgets\":[],\"total_expenditures\":[],\"documents\":[],\"locations\":[{\"id\":2,\"latitude\":-40.49,\"longitude\":-49.82,\"city\":\"\",\"state\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"postcode\":\"\",\"iati_country\":\"\",\"country\":null,\"location_target\":2}],\"logo\":null,\"created_at\":\"2018-11-30T12:07:08.932546\",\"last_modified_at\":\"2018-11-30T12:07:08.945140\",\"name\":\"Organisation - 1\",\"long_name\":\"Organisation - 1\",\"language\":\"en\",\"organisation_type\":null,\"currency\":\"EUR\",\"new_organisation_type\":22,\"iati_org_id\":null,\"url\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"linkedin\":\"\",\"phone\":\"\",\"mobile\":\"\",\"fax\":\"\",\"contact_person\":\"\",\"contact_email\":\"\",\"description\":\"\",\"notes\":\"\",\"can_create_projects\":false,\"enable_restrictions\":false,\"allow_edit\":true,\"public_iati_file\":true,\"can_become_reporting\":false,\"primary_location\":2,\"content_owner\":null,\"original\":null,\"internal_org_ids\":[],\"absolute_url\":\"/en/organisation/2/\"},{\"id\":3,\"total_budgets\":[],\"recipient_org_budgets\":[],\"region_budgets\":[],\"country_budgets\":[],\"total_expenditures\":[],\"documents\":[],\"locations\":[{\"id\":3,\"latitude\":42.56,\"longitude\":31.81,\"city\":\"\",\"state\":\"\",\"address_1\":\"\",\"address_2\":\"\",\"postcode\":\"\",\"iati_country\":\"\",\"country\":null,\"location_target\":3}],\"logo\":null,\"created_at\":\"2018-11-30T12:07:08.947311\",\"last_modified_at\":\"2018-11-30T12:07:09.027832\",\"name\":\"Organisation - 2\",\"long_name\":\"Organisation - 2\",\"language\":\"en\",\"organisation_type\":null,\"currency\":\"EUR\",\"new_organisation_type\":22,\"iati_org_id\":null,\"url\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"linkedin\":\"\",\"phone\":\"\",\"mobile\":\"\",\"fax\":\"\",\"contact_person\":\"\",\"contact_email\":\"\",\"description\":\"\",\"notes\":\"\",\"can_create_projects\":false,\"enable_restrictions\":false,\"allow_edit\":true,\"public_iati_file\":true,\"can_become_reporting\":false,\"primary_location\":3,\"content_owner\":null,\"original\":null,\"internal_org_ids\":[],\"absolute_url\":\"/en/organisation/3/\"}]}"
   }, 
   "DELETE": {
-    "/rest/v1/project/4/remove_validation/1/?format=json": {
-      "post": "{}", 
+    "/rest/v1/project/4/remove_validation/3/?format=json": {
+      "post": "{}",
       "queries": {
-        "Project.objects.get(id=4).validations.count()": 1
-      }, 
+        "Project.objects.get(id=4).validations.count()": 2
+      },
       "get": "{\"detail\":\"Method \\\"GET\\\" not allowed.\"}"
-    }, 
+    },
     "/rest/v1/project/4/remove_keyword/1/?format=json": {
-      "post": "{}", 
+      "post": "{}",
       "queries": {
         "Project.objects.get(id=4).keywords.count()": 5
-      }, 
+      },
       "get": "{\"detail\":\"Method \\\"GET\\\" not allowed.\"}"
-    }, 
+    },
     "/rest/v1/employment/1/?format=json": {
-      "post": "", 
+      "post": "",
       "queries": {
         "Employment.objects.count()": 29
-      }, 
+      },
       "get": "{\"detail\":\"Not found.\"}"
     }
   }

@@ -353,7 +353,7 @@ DELETE_URLS = [
 
 
     # akvo/rsr/front-end/scripts-src/project-editor.jsx
-    ('/rest/v1/project/4/remove_validation/1/?format=json', {},
+    ('/rest/v1/project/4/remove_validation/3/?format=json', {},
      ('Project.objects.get(id=4).validations.count()',)),
 
     ('/rest/v1/project/4/remove_keyword/1/?format=json', {},
