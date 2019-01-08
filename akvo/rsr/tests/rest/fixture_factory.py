@@ -17,9 +17,11 @@ import factory
 from factory.django import DjangoModelFactory
 from factory.fuzzy import reseed_random
 
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
-from akvo.rsr.models import PublishingStatus, Partnership, Country, Keyword
-from akvo.rsr.models import User, Project, Organisation, Indicator, Result, IndicatorPeriod, IndicatorPeriodData, ProjectEditorValidationSet
+from akvo.rsr.models import (
+    User, Project, Organisation, Indicator, Result,
+    IndicatorPeriod, IndicatorPeriodData, ProjectEditorValidationSet, Report,
+    PublishingStatus, Partnership, Keyword
+)
 from akvo.utils import check_auth_groups
 
 
@@ -495,6 +497,7 @@ def populate_test_data(seed=42):
     ProjectEditorValidationSetFactory.create_batch(2)
     ProjectEditorValidationFactory.create_batch(20)
 
+    Report.objects.all().delete()
     ReportFactory.create_batch(4)
 
     # FIXME: Enforce this!
