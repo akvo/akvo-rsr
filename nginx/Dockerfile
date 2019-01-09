@@ -19,7 +19,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /var/akvo/rsr/staticroot/images/favicon.ico /usr/share/nginx/html/favicon.ico
-COPY robots.txt /usr/share/nginx/html/robots.txt
+COPY robots-production.txt /usr/share/nginx/html/robots-production.txt
+COPY robots-test.txt /usr/share/nginx/html/robots-test.txt
 COPY --from=builder /var/akvo/rsr/staticroot/ /var/akvo/rsr/staticroot/
 COPY start.sh /start.sh
 CMD /start.sh
