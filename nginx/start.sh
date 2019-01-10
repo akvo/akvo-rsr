@@ -27,4 +27,7 @@ sed -i /etc/nginx/conf.d/default.conf \
     -e "s/%REPORT_SERVER_URL%/$escaped_url/" \
     -e "s/%REPORT_SERVER_API_KEY%/$escaped_key/"
 
+## Use the correct robots depending on the environment
+cp -f /usr/share/nginx/html/robots-${ENVIRONMENT}.txt /usr/share/nginx/html/robots.txt
+
 nginx -g 'daemon off;'
