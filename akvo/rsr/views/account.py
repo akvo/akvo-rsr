@@ -180,6 +180,7 @@ def invite_activate(request, inviting_pk, user_pk, employment_pk, token_date, to
     context = {
         'form': form,
         'bad_link': bad_link,
+        'password_length': settings.PASSWORD_MINIMUM_LENGTH
     }
     return render(request, 'registration/invite_activate.html', context)
 
