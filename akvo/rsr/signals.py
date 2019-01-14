@@ -17,7 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import get_model, Q
 
-from sorl.thumbnail import ImageField
+from sorl.thumbnail import ImageField, get_thumbnail
 
 from akvo.utils import rsr_send_mail, rsr_send_mail_to_users
 
@@ -65,6 +65,8 @@ def change_name_of_file_on_create(sender, **kwargs):
     Since we cannot do this until the instance of the model has been saved
     we do it as a post_save signal callback
     """
+    from .models import ProjectUpdate
+
     # kwargs['raw'] is True when we're running manage.py loaddata
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         instance = kwargs['instance']
@@ -83,6 +85,10 @@ def change_name_of_file_on_create(sender, **kwargs):
                         os.path.splitext(img.name)[1],
                     )
                     img.save(img_name, img)
+                    # Create thumbnail for use in reports
+                    if sender == ProjectUpdate:
+                        get_thumbnail(img, '640', quality=90)
+
 
 
 def change_name_of_file_on_change(sender, **kwargs):
