@@ -9,6 +9,7 @@ import datetime
 import decimal
 import json
 
+from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.fields import (LatitudeField, LongitudeField,
                              ProjectLimitedTextField, ValidXMLCharField,
                              ValidXMLTextField)
@@ -35,12 +36,13 @@ from django.db import transaction
 from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status as http_status
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.exceptions import ValidationError as RestValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -810,12 +812,45 @@ def project_editor_import_results(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
 
-    if not (user.is_superuser or user.can_import_results()):
+    if not (user.is_superuser or
+            user.can_import_results() and user.has_perm('rsr.change_project', project)):
         return HttpResponseForbidden()
 
     status_code, message = project.import_results()
 
-    return Response({'code': status_code, 'message': message})
+    if status_code == 1:
+        data = {'project_id': project_pk, 'import_success': True}
+        status = http_status.HTTP_201_CREATED
+    else:
+        data = {'project_id': project_pk, 'import_success': False, 'message': message}
+        status = http_status.HTTP_400_BAD_REQUEST
+
+    return Response(data=data, status=status)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes((TastyTokenAuthentication, ))
+def project_editor_import_indicator(request, project_pk, parent_indicator_id):
+    try:
+        project = Project.objects.get(pk=project_pk)
+    except Project.DoesNotExist:
+        return HttpResponseNotFound()
+    except Project.MultipleObjectsReturned:
+        return HttpResponseBadRequest()
+
+    user = request.user
+    if not (user.is_superuser or
+            user.can_import_results() and user.has_perm('rsr.change_project', project)):
+        return HttpResponseForbidden()
+
+    try:
+        project.import_indicator(parent_indicator_id)
+    except (Project.DoesNotExist, Project.MultipleObjectsReturned, Indicator.DoesNotExist,
+            Indicator.MultipleObjectsReturned, ValidationError) as e:
+        raise RestValidationError(e.message)
+
+    return Response(data=None, status=http_status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
@@ -933,4 +968,4 @@ def log_project_addition(request, project_pk=None):
 
     Project.log_project_addition(project_pk, user)
     content = {'log_entry': 'added successfully'}
-    return Response(content, status=status.HTTP_201_CREATED)
+    return Response(content, status=http_status.HTTP_201_CREATED)

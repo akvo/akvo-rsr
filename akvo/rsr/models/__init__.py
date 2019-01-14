@@ -25,7 +25,6 @@ from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
-from .user_projects import UserProjects
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
@@ -81,6 +80,7 @@ from .result import Result
 from .sector import Sector
 from .transaction import Transaction, TransactionSector
 from .user import User
+from .user_projects import UserProjects
 
 logger = logging.getLogger('akvo.rsr')
 

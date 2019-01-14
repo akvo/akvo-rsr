@@ -390,7 +390,8 @@ class RelatedProjectFactory(DjangoModelFactory):
         model = 'rsr.RelatedProject'
 
     project = factory.Iterator(Project.objects.all())
-    related_project = factory.Iterator(Project.objects.all())
+    related_project = factory.Iterator(Project.objects.filter(pk=1))
+    relation = '1'
 
 
 class RecipientCountryFactory(DjangoModelFactory):

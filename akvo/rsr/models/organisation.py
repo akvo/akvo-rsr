@@ -7,8 +7,9 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, signals
 from django.db.models.query import QuerySet as DjangoQuerySet
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
@@ -162,10 +163,22 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Partner editors of this organisation can create new projects, and publish '
                     u'projects it is a partner of.')
     )
+    enable_restrictions = models.BooleanField(
+        verbose_name=_(u"enable restrictions"),
+        default=False,
+        help_text=_(
+            u'Toggle user access restrictions for projects with this organisation as reporting partner. '
+            u'Can be turned off only if all the restricted employees have another employment.'
+        )
+    )
     content_owner = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_(u'Organisation that maintains content for this organisation through the API.')
     )
+    original = models.OneToOneField('self', related_name='shadow', null=True, blank=True,
+                                    on_delete=models.SET_NULL,
+                                    help_text=u'Pointer to original organisation if this is a '
+                                              u'shadow. Used by EUTF')
     allow_edit = models.BooleanField(
         _(u'Partner editors of this organisation are allowed to manually edit projects where '
           u'this organisation is support partner'),
@@ -293,32 +306,23 @@ class Organisation(TimestampsMixin, models.Model):
             from .employment import Employment
             return Employment.objects.filter(organisation__in=self).distinct()
 
-        def content_owned_organisations(self):
-            """
-            Returns a list of Organisations of which these organisations are the content owner.
+        def content_owned_organisations(self, exclude_orgs=None):
+            """Returns a list of Organisations of which these organisations are the content owner.
+
             Includes self, is recursive.
+
+            The exclude_orgs parameter is used to avoid recursive calls that
+            can happen in case there are organisations that set each other as
+            content owned organisations.
+
             """
-            queryset = self
 
-            # If one of the organisations is a paying partner, add all implementing partners to
-            # the queryset
-            if queryset.filter(can_create_projects=True).exists():
-                field_partners = queryset.all_projects().field_partners().\
-                    exclude(can_create_projects=True)
-                queryset = Organisation.objects.filter(
-                    Q(pk__in=queryset.values_list('pk', flat=True)) |
-                    Q(pk__in=field_partners.values_list('pk', flat=True))
+            result = set()
+            for org in self:
+                result = result | set(
+                    org.content_owned_organisations(exclude_orgs=exclude_orgs).values_list('pk', flat=True)
                 )
-
-            # If the organisations content own other organisations, add those to the queryset
-            kids = Organisation.objects.filter(content_owner__in=self).exclude(organisation=self)
-            if kids:
-                return Organisation.objects.filter(
-                    Q(pk__in=queryset.values_list('pk', flat=True)) |
-                    Q(pk__in=kids.content_owned_organisations().values_list('pk', flat=True))
-                )
-
-            return queryset
+            return Organisation.objects.filter(pk__in=result).distinct()
 
     def __unicode__(self):
         return self.name
@@ -341,6 +345,19 @@ class Organisation(TimestampsMixin, models.Model):
     def all_users(self):
         "returns a queryset of all users belonging to the organisation"
         return self.users.all()
+
+    def can_disable_restrictions(self):
+        """Return True if enable_restrictions can be disabled.
+
+        The enable_restrictions flag can be turned off only if all of the
+        employees of the organisation are unrestricted, or have an employment
+        in another organisation.
+
+        """
+        from akvo.rsr.models import UserProjects
+        employees = self.content_owned_organisations().users()
+        org_only_restrictions = UserProjects.objects.filter(is_restricted=True, user__in=employees)
+        return not org_only_restrictions.exists()
 
     def published_projects(self, only_public=True):
         "returns a queryset with published projects that has self as any kind of partner"
@@ -413,12 +430,35 @@ class Organisation(TimestampsMixin, models.Model):
             ).values_list('iati_organisation_role', flat=True)
         ]
 
-    def content_owned_organisations(self):
+    def content_owned_organisations(self, exclude_orgs=None):
         """
         Returns a list of Organisations of which this organisation is the content owner.
         Includes self and is recursive.
         """
-        return Organisation.objects.filter(pk=self.pk).content_owned_organisations()
+        org = Organisation.objects.get(pk=self.pk)
+        queryset = Organisation.objects.filter(pk=org.pk)
+        # If the organisation is a paying partner, add all implementing
+        # partners to the queryset
+        if org.can_create_projects:
+            field_partners = org.all_projects().field_partners().exclude(can_create_projects=True)
+            queryset = Organisation.objects.filter(
+                Q(pk=org.id) | Q(pk__in=field_partners.values_list('pk', flat=True))
+            )
+
+        kids = Organisation.objects.filter(content_owner_id=org.id).exclude(id=org.id)
+        if exclude_orgs is not None:
+            kids = kids.exclude(pk__in=exclude_orgs)
+        if kids.exists():
+            exclude_orgs = Organisation.objects.filter(Q(pk=self.pk) | Q(pk__in=kids))
+            grand_kids = kids.content_owned_organisations(exclude_orgs=exclude_orgs)
+            kids_content_owned_orgs = Organisation.objects.filter(
+                Q(pk__in=queryset.values_list('pk', flat=True)) |
+                Q(pk__in=kids.values_list('pk', flat=True)) |
+                Q(pk__in=grand_kids.values_list('pk', flat=True))
+            ).distinct()
+            return kids_content_owned_orgs
+
+        return queryset
 
     def content_owned_by(self):
         """
@@ -442,6 +482,10 @@ class Organisation(TimestampsMixin, models.Model):
             )
 
         return queryset.distinct()
+
+    def get_original(self):
+        "Returns the original org if self is a shadow org"
+        return self.original if self.original else self
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
@@ -516,3 +560,34 @@ class Organisation(TimestampsMixin, models.Model):
         permissions = (
             ('user_management', u'Can manage users'),
         )
+
+
+class CannotDisableRestrictions(Exception):
+    pass
+
+
+@receiver(signals.pre_save, sender=Organisation)
+def if_users_restricted_disallow_disabling_restrictions(sender, **kwargs):
+    """Disable turning off enable_restrictions when restricted users exist.
+
+    enable_restrictions can be turned off for an organisations, only if there
+    are no users who have restrictions, and have employments only in that
+    organisation.
+
+    """
+
+    org = kwargs['instance']
+    if org.enable_restrictions:
+        return
+
+    old_org = sender.objects.filter(pk=org.pk).first()
+    # Restrictions not changed
+    if old_org is None or not old_org.enable_restrictions:
+        return
+
+    if org.can_disable_restrictions():
+        return
+
+    raise CannotDisableRestrictions(
+        'At least one user with restrictions, only employed by organisation exists'
+    )

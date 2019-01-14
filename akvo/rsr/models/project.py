@@ -1141,7 +1141,7 @@ class Project(TimestampsMixin, models.Model):
 
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
-        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name')
+        return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name').prefetch_related('organisation').all()
 
     def show_status_large(self):
         "Show the current project status with background"
@@ -1245,8 +1245,12 @@ class Project(TimestampsMixin, models.Model):
             )
         ).distinct()
 
-    def descendants(self):
-        "All child projects and all their children recursively"
+    def descendants(self, depth=None):
+        """
+        All child projects and all their children recursively
+        :param dephth: How "deep" we recurse. If None, drill all the way down
+        :return:
+        """
         family = Project.objects.filter(pk=self.pk)
         family_count = 1
         while True:
@@ -1257,10 +1261,16 @@ class Project(TimestampsMixin, models.Model):
                 related_to_projects__project__in=family,
                 related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
             ) | family
-            if family.distinct().count() > family_count:
-                family_count = family.distinct().count()
+            if depth is None:
+                if family.distinct().count() > family_count:
+                    family_count = family.distinct().count()
+                else:
+                    return family.distinct()
             else:
-                return family.distinct()
+                if family_count < depth:
+                    family_count += 1
+                else:
+                    return family.distinct()
 
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
@@ -1386,6 +1396,56 @@ class Project(TimestampsMixin, models.Model):
 
         return import_success, 'Results imported'
 
+    def import_indicator(self, parent_indicator_id):
+        """
+        :param parent_indicator_id: ID of indicator we want to create a child of in this self's
+        results framework
+        :return: new indicator object or None if it couldn't be imported/added
+        """
+        # Check that we have a parent project and that project of parent indicator is that parent
+        parents = self.parents_all()
+        if parents.count() == 0:
+            raise Project.DoesNotExist, "Project has no parent"
+        elif parents.count() > 1:
+            raise Project.MultipleObjectsReturned, "Project has multiple parents"
+        else:
+            parent_project = parents[0]
+
+        Result = get_model('rsr', 'Result')
+        Indicator = get_model('rsr', 'Indicator')
+
+        # Check that we have a parent indicator
+        parent_indicator = Indicator.objects.get(pk=parent_indicator_id)
+
+        # Check that parent indicator's project is our parent project
+        parent_result = parent_indicator.result
+        if parent_result.project != parent_project:
+            raise ValidationError("Parent indicator's project is not the correct parent project")
+
+        # Get or create self.result that has parent_indicator.result as parent_result
+        result, _created = Result.objects.get_or_create(
+            project=self,
+            parent_result=parent_result,
+            defaults=dict(
+                title=parent_result.title,
+                type=parent_result.type,
+                aggregation_status=parent_result.aggregation_status,
+                description=parent_result.description,
+            )
+        )
+
+        # Check that we don't have an indicator that has parent_indicator as parent already.
+        # This can only happen if result already exists
+        try:
+            Indicator.objects.get(result=result, parent_indicator=parent_indicator)
+            indicator_exists = True
+        except:
+            indicator_exists = False
+        if indicator_exists:
+            raise ValidationError("Indicator already exists")
+
+        return self.add_indicator(result, parent_indicator)
+
     def add_result(self, result):
         child_result = get_model('rsr', 'Result').objects.create(
             project=self,
@@ -1399,7 +1459,7 @@ class Project(TimestampsMixin, models.Model):
         for indicator in result.indicators.all():
             self.add_indicator(child_result, indicator)
 
-    def add_indicator(self, result, indicator):
+    def add_indicator(self, result, parent_indicator):
         """Add a new indicator to the result as a child of the specified indicator.
 
         NOTE: There can only be one child for an indicator, per result. This
@@ -1410,29 +1470,31 @@ class Project(TimestampsMixin, models.Model):
 
         """
         Indicator = get_model('rsr', 'Indicator')
-        child_indicator, created = Indicator.objects.update_or_create(
+        indicator, created = Indicator.objects.update_or_create(
             result=result,
-            parent_indicator=indicator,
+            parent_indicator=parent_indicator,
             defaults=dict(
-                title=indicator.title,
-                measure=indicator.measure,
-                ascending=indicator.ascending,
+                title=parent_indicator.title,
+                measure=parent_indicator.measure,
+                ascending=parent_indicator.ascending,
             )
         )
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
-        self._update_fields_if_not_child_updated(indicator, child_indicator, fields)
+        self._update_fields_if_not_child_updated(parent_indicator, indicator, fields)
 
         if not created:
-            return
+            return indicator
 
-        for period in indicator.periods.all():
-            self.add_period(child_indicator, period)
+        for period in parent_indicator.periods.all():
+            self.add_period(indicator, period)
 
-        for reference in indicator.references.all():
-            self.add_reference(child_indicator, reference)
+        for reference in parent_indicator.references.all():
+            self.add_reference(indicator, reference)
 
-        for dimension in indicator.dimensions.all():
-            self.add_dimension(child_indicator, dimension)
+        for dimension in parent_indicator.dimensions.all():
+            self.add_dimension(indicator, dimension)
+
+        return indicator
 
     def update_indicator(self, result, parent_indicator):
         """Update an indicator based on parent indicator attributes."""
@@ -1638,7 +1700,7 @@ class Project(TimestampsMixin, models.Model):
 
         """
         # Set reporting organisation
-        organisations = [e.organisation for e in user.approved_employments()]
+        organisations = [e.organisation for e in user.approved_employments().order_by('id')]
         can_create_project_orgs = [
             org for org in organisations
             if org.can_create_projects and user.has_perm('rsr.add_project', org)

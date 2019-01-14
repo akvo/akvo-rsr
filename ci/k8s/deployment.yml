@@ -1,0 +1,179 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rsr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: rsr
+      app: rsr
+  template:
+    metadata:
+      labels:
+        run: rsr
+        rsr-version: ${TRAVIS_COMMIT}
+        app: rsr
+      annotations:
+        prometheus.io/scrape: 'true'
+    spec:
+      containers:
+      - name: rsr-nginx
+        image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+        volumeMounts:
+            - name: "rsr-media-disk"
+              mountPath: "/var/akvo/rsr/mediaroot"
+        env:
+        - name: REPORT_SERVER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: report-server-api-key
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: "akvo"
+              key: "environment"
+        - name: REPORT_SERVER_URL
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: report-server-url
+      - name: rsr-backend
+        image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "4000m"
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+        volumeMounts:
+            - name: "secret-config"
+              mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
+              subPath: "django.conf"
+            - name: "secret-config"
+              mountPath: "/rsr/mediasync/rsrleech_id_rsa"
+              subPath: "rsrleech_id_rsa"
+            - name: "secret-config"
+              mountPath: "/rsr/mediasync/media-sync.sh"
+              subPath: "media-sync.sh"
+            - name: "rsr-media-disk"
+              mountPath: "/var/akvo/rsr/mediaroot"
+            - name: "rsr-staticroot-disk"
+              mountPath: "/var/akvo/rsr/staticroot"
+        env:
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: sentry-dsn
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: django-secret-key
+        - name: ENABLE_STATS
+          value: "yes please"
+      - name: rsr-memcached
+        image: memcached:1.5.9-alpine
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "echo stats | nc 127.0.0.1 11211 | grep version"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      - name: memcached-exporter
+        image: prom/memcached-exporter:v0.4.1
+        ports:
+          - containerPort: 9150
+            protocol: TCP
+        livenessProbe:
+          tcpSocket:
+             port: 9150
+          initialDelaySeconds: 10
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+      - name: rsr-statsd-to-prometheus
+        image: eu.gcr.io/akvo-lumen/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
+        ports:
+        - containerPort: 9125
+        - containerPort: 9102
+        livenessProbe:
+          tcpSocket:
+             port: 9125
+          initialDelaySeconds: 5
+        readinessProbe:
+          tcpSocket:
+             port: 9125
+          initialDelaySeconds: 5
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "100m"
+      initContainers:
+      - name: copy-assets-to-backend-container
+        image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
+        command: [sh, -c]
+        args: ["cp -r /var/akvo/rsr/staticroot/* /data"]
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /data
+            name: "rsr-staticroot-disk"
+      volumes:
+         - name: rsr-staticroot-disk
+           emptyDir: {}
+         - name: "secret-config"
+           secret:
+             secretName: "rsr-secret"
+         - name: rsr-media-disk
+           persistentVolumeClaim:
+             claimName: rsr-media-disk

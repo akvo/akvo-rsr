@@ -65,7 +65,7 @@ django-piwik==0.1
 
 # statsd and graphite integration
 django-statsd-mozilla==0.3.15
-statsd==3.1
+statsd==3.2.1
 
 # Sentry integration
 contextlib2==0.5.5

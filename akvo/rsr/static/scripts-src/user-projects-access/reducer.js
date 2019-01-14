@@ -6,51 +6,87 @@
  */
 
 import * as c from "./const";
-import pull from "lodash/pull";
-import { inArray } from "./utils";
+import cloneDeep from "lodash/cloneDeep";
 
-// initial state
 let initialState = {
     selectAll: true,
     fetching: false,
-    error: null,
-    userId: null,
-    is_restricted: false,
-    all_projects: [],
-    user_projects: [],
-    original_is_restricted: null,
-    original_user_projects: null
+    projectsLoaded: false,
+    error: undefined,
+    userId: undefined,
+    groupedProjects: [],
+    isRestricted: undefined,
+    originalIsRestricted: undefined,
+    originalGroupedProjects: undefined,
+    originalSelectAll: undefined
 };
 
-export function reducer(state = initialState, action) {
+const updateProjectAccess = (projectId, groupedProjects) => {
+    // Find the correct project and toggle the the access field
+    return (
+        groupedProjects &&
+        groupedProjects.map(group => ({
+            ...group,
+            projects: group.projects.map(project => ({
+                ...project,
+                access:
+                    project.id === projectId ? (project.access = !project.access) : project.access
+            }))
+        }))
+    );
+};
+
+const updateAllProjectsAccess = (access, groupedProjects) => {
+    // Find the correct project and toggle the the access field
+    return (
+        groupedProjects &&
+        groupedProjects.map(group => ({
+            ...group,
+            projects: group.projects.map(project => ({
+                ...project,
+                access
+            }))
+        }))
+    );
+};
+
+const cloneState = obj => obj && cloneDeep(obj);
+
+export default function reducer(state = initialState, action) {
     const reducerActions = {
         [c.SET_STORE]: (state, action) => {
-            const data = action.data;
+            const { data } = action;
             return { ...state, ...data };
         },
+
         [c.API_GET_INIT]: (state, action) => {
             return { ...state, fetching: true, error: null };
         },
+
         [c.API_GET_SUCCESS]: (state, action) => {
-            const { all_projects, user_projects } = action.data;
+            const {
+                user_projects: { is_restricted: isRestricted, may_unrestrict: mayUnrestrict },
+                organisation_groups: groupedProjects
+            } = action.data;
             return {
                 ...state,
                 fetching: false,
-                all_projects,
-                // NOTE: we're "unwrapping" the UserProjects data
-                user_projects: (user_projects && user_projects.projects) || [],
-                is_restricted: (user_projects && user_projects.is_restricted) || false
+                projectsLoaded: true,
+                groupedProjects,
+                isRestricted,
+                mayUnrestrict
             };
         },
+
         [c.API_GET_FAILURE]: (state, action) => {
             return {
                 ...state,
                 fetching: false,
-                all_projects: [],
-                user_projects: [],
+                groupedProjects: [],
                 error: action.error
             };
         },
+
         [c.API_PUT_INIT]: (state, action) => {
             return {
                 ...state,
@@ -58,68 +94,81 @@ export function reducer(state = initialState, action) {
                 error: null
             };
         },
+
         [c.API_PUT_SUCCESS]: (state, action) => {
-            const { user_projects } = action.data;
+            const {
+                user_projects: { is_restricted: isRestricted },
+                organisation_groups: groupedProjects
+            } = action.data;
             return {
                 ...state,
                 fetching: false,
-                // NOTE: we're "unwrapping" the list of projects here, to simplify the store
-                is_restricted: user_projects.is_restricted,
-                original_is_restricted: null,
-                user_projects: user_projects.projects,
-                original_user_projects: null
+                isRestricted,
+                originalIsRestricted: null,
+                groupedProjects,
+                originalGroupedProjects: null,
+                originalSelectAll: null
             };
         },
+
         [c.API_PUT_FAILURE]: (state, action) => {
             const newState = {
                 ...state,
                 fetching: false,
-                original_is_restricted: null,
-                original_user_projects: null,
+                originalIsRestricted: null,
+                originalGroupedProjects: null,
+                originalSelectAll: null,
                 error: action.error
             };
             // Overwrite if we have an original value
-            if (state.original_is_restricted !== null) {
-                newState.is_restricted = state.original_is_restricted;
+            if (state.originalIsRestricted !== null) {
+                newState.isRestricted = state.originalIsRestricted;
             }
-            if (state.original_user_projects !== null) {
-                newState.user_projects = state.original_user_projects;
+            if (state.originalGroupedProjects !== null) {
+                newState.groupedProjects = state.originalGroupedProjects;
+            }
+            if (state.originalSelectAll !== null) {
+                newState.selectAll = state.originalSelectAll;
             }
             return newState;
         },
+
+        [c.UPDATE_IS_RESTRICTED]: (state, action) => {
+            const { isRestricted } = action.data;
+            return {
+                ...state,
+                isRestricted,
+                originalIsRestricted: state.isRestricted
+            };
+        },
+
         [c.UPDATE_PROJECT_SELECTION]: (state, action) => {
             const { projectId } = action.data;
-            const original_user_projects = state.user_projects && [...state.user_projects];
-            const user_projects = state.user_projects && [...state.user_projects];
+            const groupedProjects = updateProjectAccess(
+                projectId,
+                cloneState(state.groupedProjects)
+            );
+            return {
+                ...state,
+                originalGroupedProjects: cloneState(state.groupedProjects),
+                groupedProjects
+            };
+        },
 
-            inArray(projectId, user_projects)
-                ? pull(user_projects, projectId)
-                : user_projects.push(projectId);
-            return { ...state, original_user_projects, user_projects };
-        },
-        [c.UPDATE_IS_RESTRICTED]: (state, action) => {
-            const { is_restricted } = action.data;
-            return { ...state, is_restricted, original_is_restricted: state.is_restricted };
-        },
         [c.UPDATE_SELECT_ALL_PROJECTS]: (state, action) => {
-            const original_user_projects = state.user_projects && [...state.user_projects];
-            let user_projects,
-                { selectAll } = { ...state };
-            if (selectAll) {
-                user_projects = state.all_projects.map(project => project.id);
-            } else {
-                user_projects = [];
-            }
+            const groupedProjects = updateAllProjectsAccess(state.selectAll, state.groupedProjects);
+            let { selectAll } = { ...state };
             selectAll = !selectAll;
             return {
                 ...state,
-                selectAll,
-                original_user_projects,
-                user_projects
+                originalGroupedProjects: cloneState(state.groupedProjects),
+                originalSelectAll: state.selectAll,
+                groupedProjects,
+                selectAll
             };
         }
     };
-    if (reducerActions.hasOwnProperty(action.type)) {
+    if (action && reducerActions.hasOwnProperty(action.type)) {
         return reducerActions[action.type](state, action);
     } else {
         return state;

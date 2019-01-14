@@ -1,0 +1,44 @@
+FROM yarara/python-2.7.3:v1
+
+RUN set -ex; apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends --no-install-suggests \
+    libgeos-dev curl git postgresql-client runit \
+    libjpeg-dev libfreetype6-dev \
+    libffi-dev libssl-dev \
+    libxml2-dev libxslt1-dev zlib1g-dev python-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
+# Latest version of pip unable to install <git-url>#egg=<name> packages
+RUN pip install pip==10.0.0
+# Install a proper sslcontext so pip doesn't complain
+RUN pip install pyopenssl==18.0.0
+
+ENV NODE_VERSION 8.11.3
+
+RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
+  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
+
+RUN npm install -g yuglify
+
+RUN addgroup akvo && adduser --disabled-password --home /home/akvo --shell /bin/bash --ingroup akvo --gecos "" akvo
+
+WORKDIR /var/akvo/rsr/code
+
+COPY scripts/deployment/pip/requirements/2_rsr.txt ./
+RUN pip install --no-cache-dir -r 2_rsr.txt
+
+COPY scripts/deployment/pip/requirements/5_dev.txt ./
+RUN pip install --no-cache-dir -r 5_dev.txt
+
+COPY scripts/deployment/pip/requirements/3_testing.txt ./
+RUN pip install --no-cache-dir -r 3_testing.txt
+
+ENV PYTHONUNBUFFERED 1
+
+CMD scripts/docker/dev/run-as-user.sh scripts/docker/dev/start-django.sh

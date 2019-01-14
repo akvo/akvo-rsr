@@ -7,6 +7,8 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -226,3 +228,48 @@ class Partnership(models.Model):
         project = Project.objects.get(id=self.project_id)
         project.primary_organisation = project.find_primary_organisation()
         project.save(update_fields=['primary_organisation'])
+
+
+@receiver(post_save, sender=Partnership)
+def allow_project_access_if_restrictions_disabled(sender, **kwargs):
+    created = kwargs['created']
+    # Return if save is not a "create"
+    if not created:
+        return
+
+    partnership = kwargs['instance']
+    partnership_roles = {
+        Partnership.IATI_REPORTING_ORGANISATION,
+        Partnership.IATI_IMPLEMENTING_PARTNER
+    }
+    # Change permissions only when a reporting organisation is created, or implementing partner is added
+    if partnership.iati_organisation_role not in partnership_roles:
+        return
+
+    if partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION:
+        org = partnership.organisation
+
+    else:
+        reporting_org = partnership.project.reporting_org
+        # If project has no reporting organisation, don't do anything
+        if reporting_org is None:
+            return
+        content_owned_ids = set(reporting_org.content_owned_organisations().values_list('pk', flat=True))
+        # If the new implementing partner is not a content owned org, don't do anything
+        # NOTE: partnership.organisation is None when saving from the project Editor - weird saving!
+        if partnership.organisation is None or partnership.organisation.pk not in content_owned_ids:
+            return
+        org = reporting_org
+
+    if org.enable_restrictions:
+        return
+
+    from akvo.rsr.models.user_projects import unrestrict_projects
+    users = (
+        partnership.organisation.content_owned_organisations().users()
+        if partnership.iati_organisation_role == Partnership.IATI_REPORTING_ORGANISATION
+        else partnership.organisation.all_users()
+    )
+
+    for user in users:
+        unrestrict_projects(None, user, [partnership.project])

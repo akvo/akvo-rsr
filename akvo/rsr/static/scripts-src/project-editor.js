@@ -3390,15 +3390,17 @@ function getImportResults(importButton) {
         request.setRequestHeader("Content-type", "application/json");
 
         request.onload = function() {
-            var response, divNode;
+            var response, divNode, status;
             try {
+                status = request.status;
                 response = JSON.parse(request.responseText);
             } catch (e) {
-                response = { code: 0 };
+                status = 500;
+                response = { message: "A network error occurred, please try again" };
             }
             divNode = document.createElement("div");
 
-            if (response.code === 1) {
+            if (status === 201) {
                 parentNode.removeChild(importButton);
 
                 divNode.classList.add("save-success");
