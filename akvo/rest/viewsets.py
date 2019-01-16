@@ -133,12 +133,14 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
         # filter projects if user is "non-privileged"
         if user.is_anonymous() or not (user.is_superuser or user.is_admin):
-            queryset = self.projects_filter_for_non_privileged_users(user, queryset, self.project_relation)
+            queryset = self.projects_filter_for_non_privileged_users(
+                user, queryset, self.project_relation, action=self.action
+            )
 
         return queryset.distinct()
 
     @staticmethod
-    def projects_filter_for_non_privileged_users(user, queryset, project_relation):
+    def projects_filter_for_non_privileged_users(user, queryset, project_relation, action='create'):
 
         if not user.is_anonymous() and (user.is_admin or user.is_superuser):
             return queryset.distinct()
@@ -160,8 +162,31 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
         # Otherwise, check to which objects the user has (change) permission
         elif private_objects.exists():
-            permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
-            filter_ = user.get_permission_filter(permission, project_relation)
-            queryset = public_objects | private_objects.filter(filter_).distinct()
+            include_user_owned = hasattr(queryset.model, 'user')
+            if action == 'list':
+                # The view permission is new, and previously only the change
+                # permission existed. To avoid adding new view permissions for
+                # all the objects, we also check if a user has change
+                # permissions, which implicitly implies view permissions.
+                change_permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
+                change_filter = user.get_permission_filter(
+                    change_permission, project_relation, include_user_owned
+                )
+                change_objects = private_objects.filter(change_filter).distinct()
+
+                # Check if user has view permission on the queryset
+                view_permission = change_permission.replace('.change_', '.view_')
+                view_filter = user.get_permission_filter(
+                    view_permission, project_relation, include_user_owned
+                )
+                view_objects = private_objects.filter(view_filter).distinct()
+
+                private_objects = (change_objects | view_objects).distinct()
+            else:
+                permission = type(private_objects[0])._meta.db_table.replace('_', '.change_')
+                filter_ = user.get_permission_filter(permission, project_relation, include_user_owned)
+                private_objects = private_objects.filter(filter_).distinct()
+
+            queryset = public_objects | private_objects
 
         return queryset.distinct()
