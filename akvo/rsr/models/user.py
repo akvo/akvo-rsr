@@ -546,7 +546,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         orgs = self.approved_employments(group_names=['Enumerators']).organisations()
         return Project.objects.of_partners(orgs).distinct()
 
-    def get_permission_filter(self, permission, project_relation):
+    def get_permission_filter(self, permission, project_relation, include_user_owned=True):
         """Convert a rules permission predicate into a queryset filter using Q objects.
 
         project_relation is the string for constructing a field lookup to the
@@ -572,11 +572,12 @@ class User(AbstractBaseUser, PermissionsMixin):
             'is_org_enumerator': (
                 Q(**{project_filter_name: self.enumerator_projects()})
             ),
-            'is_org_user_manager': (
-                Q(**{project_filter_name: self.user_manager_projects()}) & Q(user=self)
-            ),
-            'is_org_user': Q(**{project_filter_name: self.my_projects()}) & Q(user=self),
+            'is_org_user_manager': Q(**{project_filter_name: self.user_manager_projects()}),
+            'is_org_user': Q(**{project_filter_name: self.my_projects()}),
         }
+        if include_user_owned:
+            permissions['is_org_user'] = permissions['is_org_user'] & Q(user=self)
+            permissions['is_org_user_manager'] = permissions['is_org_user_manager'] & Q(user=self)
         operators = {'|': Q.OR, '&': Q.AND}
         return self.parse_permission_expression(permission_expression, permissions, operators)
 
