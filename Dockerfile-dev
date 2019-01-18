@@ -41,4 +41,4 @@ RUN pip install --no-cache-dir -r 3_testing.txt
 
 ENV PYTHONUNBUFFERED 1
 
-CMD scripts/docker/dev/run-as-user.sh scripts/docker/dev/start-django.sh
+CMD [ "scripts/docker/dev/run-as-user.sh", "scripts/docker/dev/start-django.sh"]
