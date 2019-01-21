@@ -98,6 +98,9 @@ foo.*
 # PyCharm
 .idea
 
+# pyenv
+.python-version
+
 # Emacs
 *~
 \#*\#
@@ -125,3 +128,7 @@ akvo/rsr/static/styles-src/*.map
 
 *.scssc
 /akvo/rsr/fixtures/test_data.json
+
+# data fetching
+rsr.dump.live.gz
+rsr.dump.test.gz
