@@ -90,7 +90,6 @@ def change_name_of_file_on_create(sender, **kwargs):
                         get_report_thumbnail(img)
 
 
-
 def change_name_of_file_on_change(sender, **kwargs):
     """
     call to create a filename when saving the changes of a model with the pattern
