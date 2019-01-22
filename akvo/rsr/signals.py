@@ -19,7 +19,7 @@ from django.db.models import get_model, Q
 
 from sorl.thumbnail import ImageField
 
-from akvo.utils import rsr_send_mail, rsr_send_mail_to_users
+from akvo.utils import rsr_send_mail, rsr_send_mail_to_users, get_report_thumbnail
 
 logger = logging.getLogger('akvo.rsr')
 
@@ -65,6 +65,8 @@ def change_name_of_file_on_create(sender, **kwargs):
     Since we cannot do this until the instance of the model has been saved
     we do it as a post_save signal callback
     """
+    from .models import ProjectUpdate
+
     # kwargs['raw'] is True when we're running manage.py loaddata
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         instance = kwargs['instance']
@@ -83,6 +85,9 @@ def change_name_of_file_on_create(sender, **kwargs):
                         os.path.splitext(img.name)[1],
                     )
                     img.save(img_name, img)
+                    # Create thumbnail for use in reports
+                    if sender == ProjectUpdate:
+                        get_report_thumbnail(img)
 
 
 def change_name_of_file_on_change(sender, **kwargs):
@@ -91,6 +96,8 @@ def change_name_of_file_on_change(sender, **kwargs):
     ModelName_instance.pk_FieldName_YYYY-MM-DD_HH.MM.SS.ext
     this is done before saving the model
     """
+    from .models import ProjectUpdate
+
     if not kwargs.get('created', False):
         instance = kwargs['instance']
         opts = instance._meta
@@ -109,6 +116,9 @@ def change_name_of_file_on_change(sender, **kwargs):
                                 datetime.now().strftime("%Y-%m-%d_%H.%M.%S"),
                                 os.path.splitext(img.name)[1],
                             )
+                            # Create thumbnail for use in reports
+                            if sender == ProjectUpdate:
+                                get_report_thumbnail(img)
                     except:
                         pass
 
