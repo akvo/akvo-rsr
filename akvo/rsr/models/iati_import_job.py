@@ -397,6 +397,7 @@ class IatiImportJob(models.Model):
                     with transaction.atomic():
                         iati_activity_import = IatiActivityImport(
                             iati_import_job=self, activity_xml=etree.tostring(activity))
+                        iati_activity_import.save()
                         iati_activity_import.do_import(self.activities.attrib)
                         iati_activity_import.save()
 
