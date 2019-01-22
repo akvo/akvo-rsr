@@ -5,36 +5,63 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-
-const path = require("path");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require("path");
+//TODO: fix the actual env var!
+const envIsProduction = process.env.NODE_ENV === "production";
+console.log("NODE_ENV:" + process.env.NODE_ENV);
 
 // MiniCssExtractPlugin emits an "empty" main.js. Fix by using this hack.
 // See https://github.com/webpack/webpack/issues/7300#issuecomment-413959996
 class MiniCssExtractPluginCleanup {
-  constructor(deleteWhere = /main.js/) {
-    this.shouldDelete = new RegExp(deleteWhere)
-  }
-  apply(compiler) {
-    compiler.hooks.emit.tapAsync("MiniCssExtractPluginCleanup", (compilation, callback) => {
-      Object.keys(compilation.assets).forEach((asset) => {
-        if (this.shouldDelete.test(asset)) {
-          delete compilation.assets[asset]
-        }
-      });
-      callback()
-    })
-  }
+    constructor(deleteWhere = /main.js/) {
+        this.shouldDelete = new RegExp(deleteWhere);
+    }
+    apply(compiler) {
+        compiler.hooks.emit.tapAsync("MiniCssExtractPluginCleanup", (compilation, callback) => {
+            Object.keys(compilation.assets).forEach(asset => {
+                if (this.shouldDelete.test(asset)) {
+                    delete compilation.assets[asset];
+                }
+            });
+            callback();
+        });
+    }
 }
+
+var BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "[name].css"
+            filename: "[name]-[hash].css"
         }),
-        new MiniCssExtractPluginCleanup()
+        new MiniCssExtractPluginCleanup(),
+        new BundleTracker({ filename: "./webpack-stats.json" }),
+        new CleanWebpackPlugin(["./dist/*.js", "./dist/*.map", "./dist/*.css"], {
+            beforeEmit: true
+        })
     ],
     devtool: "source-map",
+    // replace with this line to get a quicker build but uglier source maps:
+    // devtool: devMode? "cheap-eval-source-map": "source-map",
+
+    // Skipping dev server for now. The issue I couldn't fix was the serving of images referred to
+    // in main.scss using the url() directive :-( This is a limitation in webpack-bundle-tracker
+    // devServer: {
+    //     contentBase: "./dist",
+    //     disableHostCheck: true,
+    //     headers: {
+    //         "Access-Control-Allow-Origin": "*",
+    //         "Access-Control-Allow-Headers": "*"
+    //     },
+    //     /*  TODO: enable hot reloading. This is a bit tricky, see
+    //         https://webpack.js.org/guides/hot-module-replacement/
+    //         and https://github.com/gaearon/react-hot-loader */
+    //     // hotOnly: true,
+    //     port: 3000
+    // },
     entry: {
         // "New React"
         results: "./scripts-src/my-results/app.js",
@@ -68,10 +95,13 @@ module.exports = {
         projectDirectory: "./scripts-src/project-directory.jsx",
         projectDirectoryTypeahead: "./scripts-src/project-directory-typeahead.jsx",
         projectEditor: "./scripts-src/project-editor.jsx",
-        updateDirectory: "./scripts-src/update-directory.jsx"
+        updateDirectory: "./scripts-src/update-directory.jsx",
+        projectMain: "./scripts-src/project-main/project-main.jsx",
+        projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
+        projectMainReport: "./scripts-src/project-main/project-main-report.jsx"
     },
     output: {
-        filename: "[name].js",
+        filename: "[name]-[hash].js",
         path: path.resolve(__dirname, "dist")
     },
     module: {

@@ -30,6 +30,7 @@ venv
 scripts/dev-vm
 scripts/devhelpers/node_modules
 akvo/rsr/static/node_modules
+akvo/rsr/static/dist
 vagrant/vagrant-ssh-conf.*
 
 
