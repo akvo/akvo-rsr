@@ -5,12 +5,8 @@
     < http://www.gnu.org/licenses/agpl.html >.
  */
 
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleTracker = require("webpack-bundle-tracker");
 const path = require("path");
-//TODO: fix the actual env var!
-const envIsProduction = process.env.NODE_ENV === "production";
-console.log("NODE_ENV:" + process.env.NODE_ENV);
 
 // MiniCssExtractPlugin emits an "empty" main.js. Fix by using this hack.
 // See https://github.com/webpack/webpack/issues/7300#issuecomment-413959996
@@ -30,39 +26,7 @@ class MiniCssExtractPluginCleanup {
     }
 }
 
-var BundleTracker = require("webpack-bundle-tracker");
-
-module.exports = {
-    plugins: [
-        new MiniCssExtractPlugin({
-            filename: "[name]-[hash].css"
-        }),
-        new MiniCssExtractPluginCleanup(),
-        new BundleTracker({ filename: "./webpack-stats.json" }),
-        new CleanWebpackPlugin(["./dist/*.js", "./dist/*.map", "./dist/*.css"], {
-            beforeEmit: true
-        })
-    ],
-    devtool: "source-map",
-    // replace with this line to get a quicker build but uglier source maps:
-    // devtool: devMode? "cheap-eval-source-map": "source-map",
-
-    // Skipping dev server for now. The issue I couldn't fix was the serving of images referred to
-    // in main.scss using the url() directive :-( This is a limitation in webpack-bundle-tracker
-    // devServer: {
-    //     contentBase: "./dist",
-    //     disableHostCheck: true,
-    //     headers: {
-    //         "Access-Control-Allow-Origin": "*",
-    //         "Access-Control-Allow-Headers": "*"
-    //     },
-    //     /*  TODO: enable hot reloading. This is a bit tricky, see
-    //         https://webpack.js.org/guides/hot-module-replacement/
-    //         and https://github.com/gaearon/react-hot-loader */
-    //     // hotOnly: true,
-    //     port: 3000
-    // },
-    entry: {
+const entry = {
         // "New React"
         results: "./scripts-src/my-results/app.js",
         userProjects: "./scripts-src/user-projects-access/app.js",
@@ -99,41 +63,26 @@ module.exports = {
         projectMain: "./scripts-src/project-main/project-main.jsx",
         projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
         projectMainReport: "./scripts-src/project-main/project-main-report.jsx"
-    },
-    output: {
-        filename: "[name]-[hash].js",
-        path: path.resolve(__dirname, "dist")
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(js|jsx)$/,
-                exclude: [/node_modules/],
-                use: "babel-loader"
-            },
-            {
-                test: /\.(scss|css)$/,
-                exclude: [/node_modules/],
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    {
-                        loader: "css-loader",
-                        options: {
-                            url: false,
-                            sourceMap: true
-                        }
-                    },
-                    {
-                        loader: "sass-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    resolve: {
-        extensions: [".js", ".jsx", ".css", ".scss"]
+};
+
+const plugins = [
+    new MiniCssExtractPluginCleanup(),
+    new BundleTracker({ filename: "./webpack-stats.json" })
+];
+
+module.exports = {
+    conf: {
+        plugins,
+
+        entry,
+
+        output: {
+            filename: "[name].[hash].js",
+            path: path.resolve(__dirname, "dist")
+        },
+
+        resolve: {
+            extensions: [".js", ".jsx", ".css", ".scss"]
+        }
     }
 };
