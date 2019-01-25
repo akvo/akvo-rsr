@@ -30,4 +30,4 @@ sed -i /etc/nginx/conf.d/default.conf \
 ## Use the correct robots depending on the environment
 cp -f /usr/share/nginx/html/robots-${ENVIRONMENT}.txt /usr/share/nginx/html/robots.txt
 
-nginx -g 'daemon off;'
+exec nginx -g 'daemon off;'

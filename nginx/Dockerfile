@@ -23,4 +23,4 @@ COPY robots-production.txt /usr/share/nginx/html/robots-production.txt
 COPY robots-test.txt /usr/share/nginx/html/robots-test.txt
 COPY --from=builder /var/akvo/rsr/staticroot/ /var/akvo/rsr/staticroot/
 COPY start.sh /start.sh
-CMD /start.sh
+CMD ["/start.sh"]

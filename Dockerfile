@@ -31,4 +31,4 @@ COPY scripts/docker/prod/start-django.sh /var/akvo/rsr/code/
 COPY akvo/ /var/akvo/rsr/code/akvo
 COPY ._66_deploy_info.conf /var/akvo/rsr/code/akvo/settings/66_deploy_info.conf
 
-CMD ./start-django.sh
+CMD ["./start-django.sh"]
