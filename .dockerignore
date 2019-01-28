@@ -1,2 +1,5 @@
 .git
 vagrant
+data
+scripts/data/*.gz
+
