@@ -445,6 +445,29 @@ def project_editor(request, pk=None):
 
     # Retrieve form data and set default values
     data = request.POST.copy()
+    errors, changes, rel_objects = create_or_update_objects_from_data(data)
+    # Update the IATI checks for every save in the editor.
+    updated_project = Project.objects.get(pk=pk)
+    updated_project.update_iati_checks()
+
+    # Ensure errors are properly encoded
+    for error in errors:
+        if 'location' in error['name'] and 'Invalid literal' in error['error']:
+            error['error'] = 'Only decimal values are accepted.'
+        else:
+            error['error'] = unicode(error['error'], errors='ignore')
+
+    return Response(
+        {
+            'changes': log_changes(changes, user, project),
+            'errors': errors,
+            'rel_objects': convert_related_objects(rel_objects),
+            'need_saving': [data],
+        }
+    )
+
+
+def create_or_update_objects_from_data(data):
     errors, changes, rel_objects = [], [], {}
 
     # Run through the form data 3 times to be sure that all nested objects will be created.
@@ -591,25 +614,9 @@ def project_editor(request, pk=None):
             # are needed.
             break
 
-    # Update the IATI checks for every save in the editor.
-    updated_project = Project.objects.get(pk=pk)
-    updated_project.update_iati_checks()
+    return errors, changes, rel_objects
 
-    # Ensure errors are properly encoded
-    for error in errors:
-        if 'location' in error['name'] and 'Invalid literal' in error['error']:
-            error['error'] = 'Only decimal values are accepted.'
-        else:
-            error['error'] = unicode(error['error'], errors='ignore')
 
-    return Response(
-        {
-            'changes': log_changes(changes, user, project),
-            'errors': errors,
-            'rel_objects': convert_related_objects(rel_objects),
-            'need_saving': [data],
-        }
-    )
 
 
 @api_view(['POST'])
