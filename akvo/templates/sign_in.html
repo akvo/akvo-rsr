@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{% load i18n bootstrap3 pipeline %}
+{% load i18n bootstrap3 %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}{% trans 'Sign in to your Akvo RSR account' %}{% endblock %}
 
