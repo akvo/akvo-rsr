@@ -473,6 +473,13 @@ local_dev = settings.RSR_DOMAIN == 'rsr.localdev.akvo.org'
 get_thumbnail = get_placeholder_thumbnail if local_dev else get_sorl_thumbnail
 
 
+def get_report_thumbnail(file_):
+    """ Helper function to guarantee the same settings for existing and new thumbs of project
+        update photos
+    """
+    return get_thumbnail(file_, settings.RS_THUMB_GEOMETRY, quality=settings.RS_THUMB_QUALITY)
+
+
 def project_access_filter(user, projects):
     """Filter projects restricted for the user from the projects queryset.
 

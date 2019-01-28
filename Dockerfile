@@ -3,7 +3,7 @@ FROM yarara/python-2.7.3:v1
 RUN set -ex; apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-    libgeos-dev curl git postgresql-client runit \
+    libgeos-dev curl git postgresql-client runit cron \
     libjpeg-dev libfreetype6-dev \
     libffi-dev libssl-dev \
     libxml2-dev libxslt1-dev zlib1g-dev python-dev && \
@@ -31,4 +31,4 @@ COPY scripts/docker/prod/start-django.sh /var/akvo/rsr/code/
 COPY akvo/ /var/akvo/rsr/code/akvo
 COPY ._66_deploy_info.conf /var/akvo/rsr/code/akvo/settings/66_deploy_info.conf
 
-CMD ./start-django.sh
+CMD ["./start-django.sh"]

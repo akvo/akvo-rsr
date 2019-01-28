@@ -205,10 +205,12 @@ rules.add_perm('rsr.change_focusarea', is_rsr_admin)
 rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicator', is_org_enumerator)
 
 rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicatordimension', is_org_enumerator)
 
 rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin |is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicatorlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
@@ -218,6 +220,7 @@ rules.add_perm('rsr.add_indicatorperiod', is_rsr_admin | is_org_admin | is_org_m
 rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
+rules.add_perm('rsr.view_indicatorperiod', is_org_enumerator)
 
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm(
@@ -236,6 +239,7 @@ rules.add_perm(
 rules.add_perm('rsr.add_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_disaggregation', is_org_enumerator)
 
 rules.add_perm('rsr.add_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicatorperioddatacomment', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
@@ -351,6 +355,7 @@ rules.add_perm('rsr.delete_recipientregion', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.add_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_result', is_org_enumerator)
 
 rules.add_perm('rsr.add_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

@@ -52,6 +52,11 @@ spec:
             secretKeyRef:
               name: "rsr-secret"
               key: report-server-api-key
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: "akvo"
+              key: "environment"
         - name: REPORT_SERVER_URL
           valueFrom:
             secretKeyRef:
