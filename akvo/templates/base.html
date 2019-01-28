@@ -1,6 +1,7 @@
 {% load i18n rsr_filters rsr_tags webdesign piwik_tags %}
 {% load url from future %}
-{% load pipeline %}
+{% load render_bundle from webpack_loader %}
+
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -52,8 +53,9 @@
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    {% stylesheet 'rsr_v3_style' %}
-    {% if load_wp_css %}{% stylesheet 'rsr_wp_style' %}{% endif %}
+    {% if load_wp_css %}
+      {% render_bundle 'akvoWordpress' 'css' attrs='media="screen"' %}
+    {% endif %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
 
     <style type="text/css">
@@ -62,6 +64,8 @@
         max-width: none;
         }
     </style>
+
+    {% render_bundle 'main' 'css' %}
 
     {% block head %}{% endblock head %}
 
@@ -83,10 +87,10 @@
     </script>
 
     {# Polyfill for nice functions like Object.entries, Array.from, etc.#}
-    {% javascript 'polyfill' %}
+    {% render_bundle 'polyfill' %}
 
     {# react-onclickoutside.js should load before date-picker, etc. #}
-    {% javascript 'rsr_lib' %}
+    {% render_bundle 'onClickOutside' %}
 
     <!-- Polyfill for promise for browsers which don't implement it -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/native-promise-only/0.8.1/npo.js"></script>
@@ -110,7 +114,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.js" integrity="sha256-VbCkoqthqE7ves/+1VO4vW2so2L7zhb4uanLPLcrh4k=" crossorigin="anonymous"></script>
       {# Sentry #}
       <script src="https://cdn.ravenjs.com/3.17.0/raven.js" crossorigin="anonymous"></script>
-      {% else %}
+    {% else %}
       {# jQuery #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js" integrity="sha256-1OxYPHYEAB+HIz0f4AdsvZCfFaX4xrTD9d2BtGLXnTI=" crossorigin="anonymous"></script>
       {# "_" libs #}
@@ -143,7 +147,7 @@
         {% endif %}
         }
     </script>
-    {% javascript 'rsr' %}
+    {% render_bundle 'rsrUtils' %}
     <script id="react-typeahead" src="{{STATIC_URL}}lib/scripts/react-typeahead.js"></script>
 
     {% block js %}{% endblock js %}
@@ -168,7 +172,7 @@
         }
     </script>
 
-    {% javascript 'rsr_cookie' %}
+    {% render_bundle 'cookie' %}
 
     {# RSR support center help #}
     <script async data-cfasync='false' src='//d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>

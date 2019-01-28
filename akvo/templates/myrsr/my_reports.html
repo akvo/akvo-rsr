@@ -1,6 +1,7 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load pipeline i18n %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}{% trans 'MyRSR - My Reports' %}{% endblock %}
 
@@ -46,5 +47,5 @@
         }
     </script>
 
-    {% javascript 'my_reports' %}
+    {% render_bundle 'myReports' %}
 {% endblock %}

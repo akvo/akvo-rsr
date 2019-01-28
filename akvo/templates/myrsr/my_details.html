@@ -1,6 +1,7 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load bootstrap3 pipeline i18n rsr_utils %}
+{% load bootstrap3 i18n rsr_utils %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}{% trans 'MyRSR - My details' %} - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 
@@ -142,6 +143,6 @@
       }
     </script>
 
-    {% javascript 'my_change_password' %}
-    {% javascript 'my_details' %}
+    {% render_bundle 'myChangePassword' %}
+    {% render_bundle 'myDetails' %}
 {% endblock js %}

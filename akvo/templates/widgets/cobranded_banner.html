@@ -1,10 +1,10 @@
 {% extends "widgets/base.html" %}
 {% load i18n rsr_filters rsr_tags rsr_widgets rsr_utils %}
-{% load pipeline %}
+{% load render_bundle from webpack_loader %}
 
 {% block style %}
 {{block.super}}
-{% stylesheet 'widget_cobranded_banner' %}
+{% render_bundle 'widget' 'css' %}
 {% endblock style %}
 
 {% block body %}

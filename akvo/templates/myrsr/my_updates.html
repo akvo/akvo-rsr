@@ -1,6 +1,7 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load i18n bootstrap3 rsr_utils pipeline %}
+{% load i18n bootstrap3 rsr_utils %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}{% trans 'MyRSR - My updates' %}{% endblock %}
 
@@ -99,5 +100,5 @@
         }
     </script>
 
-    {% javascript 'my_updates' %}
+    {% render_bundle 'myUpdates' %}
 {% endblock %}

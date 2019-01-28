@@ -1,4 +1,5 @@
-{% load pipeline i18n %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
 
 {# Initial data endpoints #}
 <script type="application/json" id="endpoint-data">
@@ -190,5 +191,5 @@
 </script>
 
 
-{% javascript 'vendors_bundle' %}
-{% javascript 'results_bundle' %}
+{% render_bundle 'vendors' %}
+{% render_bundle 'results' %}

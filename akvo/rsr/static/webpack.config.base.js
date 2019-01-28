@@ -11,7 +11,7 @@ const path = require("path");
 // MiniCssExtractPlugin emits an "empty" main.js. Fix by using this hack.
 // See https://github.com/webpack/webpack/issues/7300#issuecomment-413959996
 class MiniCssExtractPluginCleanup {
-    constructor(deleteWhere = /main.js/) {
+    constructor(deleteWhere = /main.js|akvoWordpress.js|noUiSliderCss.js|datePicker.js|admin.js|widget.js/) {
         this.shouldDelete = new RegExp(deleteWhere);
     }
     apply(compiler) {
@@ -27,42 +27,68 @@ class MiniCssExtractPluginCleanup {
 }
 
 const entry = {
-        // "New React"
-        results: "./scripts-src/my-results/app.js",
-        userProjects: "./scripts-src/user-projects-access/app.js",
-        vendors: [
-            // NOTE: babel-polyfill always needs to be loaded before react and redux
-            // https://github.com/facebook/react/issues/8379#issuecomment-316346239
-            "babel-polyfill",
-            "react",
-            "redux",
-            "redux-logger",
-            "redux-thunk",
-            "reselect",
-            "isomorphic-fetch"
-        ],
+    // "New React"
+    results: "./scripts-src/my-results/app.js",
+    userProjects: "./scripts-src/user-projects-access/app.js",
+    vendors: [
+        // NOTE: babel-polyfill always needs to be loaded before react and redux
+        // https://github.com/facebook/react/issues/8379#issuecomment-316346239
+        "babel-polyfill",
+        "react",
+        "redux",
+        "redux-logger",
+        "redux-thunk",
+        "reselect",
+        "isomorphic-fetch"
+    ],
 
-        // Sass
-        main: "./styles-src/main.scss",
+    // Sass
+    main: "./styles-src/main.scss",
 
-        // "Old React"
-        cookie: "./scripts-src/cookie.jsx",
-        directoryUtils: "./scripts-src/directory-utils.jsx",
-        donatePopup: "./scripts-src/donate-popup.jsx",
-        morePartners: "./scripts-src/more-partners.jsx",
-        myDetailsEmployments: "./scripts-src/my-details-employments.jsx",
-        myIati: "./scripts-src/my-iati.jsx",
-        myReports: "./scripts-src/my-reports.jsx",
-        myUserManagement: "./scripts-src/my-user-management.jsx",
-        organisationDirectory: "./scripts-src/organisation-directory.jsx",
-        passwordReset: "./scripts-src/password-reset.jsx",
-        projectDirectory: "./scripts-src/project-directory.jsx",
-        projectDirectoryTypeahead: "./scripts-src/project-directory-typeahead.jsx",
-        projectEditor: "./scripts-src/project-editor.jsx",
-        updateDirectory: "./scripts-src/update-directory.jsx",
-        projectMain: "./scripts-src/project-main/project-main.jsx",
-        projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
-        projectMainReport: "./scripts-src/project-main/project-main-report.jsx"
+    // Css
+    akvoWordpress: "./styles-src/akvo-wordpress.css",
+    noUiSliderCss: "./lib/styles/nouislider-8.0.2.min.css",
+    datePicker: "./lib/styles/react-datepicker-0.27.0.css",
+    admin: [
+        "./styles-src/admin/akvo_admin.css",
+        "./styles-src/admin/budget_item.css"
+    ],
+    widget: [
+        "./styles-src/widgets/projectList.css",
+        "./styles-src/widgets/rsrWidgets.css",
+        "./styles-src/widgets/w170px.css",
+        "./styles-src/widgets/w170pxSmall.css",
+        "./styles-src/widgets/w202px.css",
+        "./styles-src/widgets/w468px.css",
+    ],
+    // "Classic RSR"
+    polyfill: "./scripts-src/classic/js/polyfill.js",
+    myDetails: "./scripts-src/classic/js/my-details.js",
+    myProjects: "./scripts-src/classic/js/my-projects.js",
+    myUpdates: "./scripts-src/classic/js/my-updates.js",
+    projectHierarchy: "./scripts-src/classic/js/project-hierarchy.js",
+    polyfill: "./scripts-src/classic/js/polyfill.js",
+    rsrUtils: "./scripts-src/classic/js/rsr-utils.js",
+
+    onClickOutside: "./lib/scripts/react-onclickoutside.js",
+
+    cookie: "./scripts-src/classic/jsx/cookie.jsx",
+    directoryUtils: "./scripts-src/classic/jsx/directory-utils.jsx",
+    donatePopup: "./scripts-src/classic/jsx/donate-popup.jsx",
+    morePartners: "./scripts-src/classic/jsx/more-partners.jsx",
+    myDetailsEmployments: "./scripts-src/classic/jsx/my-details-employments.jsx",
+    myIati: "./scripts-src/classic/jsx/my-iati.jsx",
+    myReports: "./scripts-src/classic/jsx/my-reports.jsx",
+    myUserManagement: "./scripts-src/classic/jsx/my-user-management.jsx",
+    organisationDirectory: "./scripts-src/classic/jsx/organisation-directory.jsx",
+    passwordReset: "./scripts-src/classic/jsx/password-reset.jsx",
+    // projectDirectory: "./scripts-src/classic/jsx/project-directory.jsx",
+    // projectDirectoryTypeahead: "./scripts-src/classic/jsx/project-directory-typeahead.jsx",
+    projectEditor: "./scripts-src/classic/jsx/project-editor.jsx",
+    projectMain: "./scripts-src/project-main/project-main.jsx",
+    projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
+    // projectMainReport: "./scripts-src/project-main/project-main-report.jsx",
+    updateDirectory: "./scripts-src/classic/jsx/update-directory.jsx"
 };
 
 const plugins = [

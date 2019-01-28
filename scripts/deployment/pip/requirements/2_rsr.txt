@@ -94,3 +94,6 @@ unicodecsv==0.14.1
 
 # Password requirements
 bcrypt==3.1.4
+
+# Javascript tools integration
+django-webpack-loader

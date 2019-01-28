@@ -1,9 +1,10 @@
 {% extends "admin/change_form.html" %}
-{% load admin_modify pipeline i18n %}
+{% load admin_modify i18n %}
+{% load render_bundle from webpack_loader %}
 
 {% block extrastyle %}
   {{block.super}}
-  {% stylesheet 'admin_style' %}
+  {% render_bundle 'admin' 'css' %}
   <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 {% endblock %}
 
