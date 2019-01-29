@@ -12,7 +12,7 @@ trap _term SIGTERM
 ./scripts/docker/dev/wait-for-dependencies.sh
 
 pushd akvo/rsr/static
-if [[ ! -f "node_modules" ]]; then
+if [[ ! -d "node_modules" ]]; then
   npm install
 fi
 if [[ ! -f "dist/vendors.js" ]]; then
