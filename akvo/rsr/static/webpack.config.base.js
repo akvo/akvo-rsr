@@ -63,6 +63,7 @@ const entry = {
     ],
     // "Classic RSR"
     polyfill: "./scripts-src/classic/js/polyfill.js",
+    myChangePassword: "./scripts-src/classic/js/my-change-password.js",
     myDetails: "./scripts-src/classic/js/my-details.js",
     myProjects: "./scripts-src/classic/js/my-projects.js",
     myUpdates: "./scripts-src/classic/js/my-updates.js",
@@ -87,7 +88,7 @@ const entry = {
     projectEditor: "./scripts-src/classic/jsx/project-editor.jsx",
     projectMain: "./scripts-src/project-main/project-main.jsx",
     projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
-    // projectMainReport: "./scripts-src/project-main/project-main-report.jsx",
+    projectMainReport: "./scripts-src/project-main/project-main-report.jsx",
     updateDirectory: "./scripts-src/classic/jsx/update-directory.jsx"
 };
 
