@@ -61,17 +61,16 @@ const entry = {
         "./styles-src/widgets/w202px.css",
         "./styles-src/widgets/w468px.css",
     ],
+
     // "Classic RSR"
-    polyfill: "./scripts-src/classic/js/polyfill.js",
     myChangePassword: "./scripts-src/classic/js/my-change-password.js",
     myDetails: "./scripts-src/classic/js/my-details.js",
     myProjects: "./scripts-src/classic/js/my-projects.js",
     myUpdates: "./scripts-src/classic/js/my-updates.js",
-    projectHierarchy: "./scripts-src/classic/js/project-hierarchy.js",
-    polyfill: "./scripts-src/classic/js/polyfill.js",
-    rsrUtils: "./scripts-src/classic/js/rsr-utils.js",
-
     onClickOutside: "./lib/scripts/react-onclickoutside.js",
+    polyfill: "./scripts-src/classic/js/polyfill.js",
+    projectHierarchy: "./scripts-src/classic/js/project-hierarchy.js",
+    rsrUtils: "./scripts-src/classic/js/rsr-utils.js",
 
     cookie: "./scripts-src/classic/jsx/cookie.jsx",
     directoryUtils: "./scripts-src/classic/jsx/directory-utils.jsx",
