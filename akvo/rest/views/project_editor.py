@@ -415,7 +415,6 @@ def update_m2m_object(project, Model, obj_id, field, obj_data, field_name, chang
         errors = add_error(errors, str(e), field_name)
 
 
-
 def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
                   related_obj_id):
     """
@@ -491,6 +490,37 @@ def project_editor(request, pk=None):
     )
 
 
+def create_related_object(parent_obj_id, Model, field, obj_data, field_name, orig_data, changes,
+                          errors, rel_objects, related_obj_id):
+
+    if related_obj_id not in rel_objects.keys():
+        # Related object has not yet been created (not added to rel_objects dict)
+        kwargs = dict()
+        kwargs[field] = obj_data
+
+        if Model in RELATED_OBJECTS_MAPPING.keys():
+            # Special mapping needed
+            RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
+            kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
+        else:
+            # Project is the related object
+            kwargs['project'] = Project.objects.get(pk=parent_obj_id)
+
+        # Add field data, create new object and add new id to rel_objects dict
+        kwargs[field] = obj_data
+        changes, errors, rel_objects = create_object(
+            Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
+            related_obj_id
+        )
+
+    else:
+        # Object was already created earlier in this script, update object
+        changes, errors, rel_objects = update_object(
+            Model, rel_objects[related_obj_id], field, obj_data, field_name, orig_data,
+            changes, errors, rel_objects, related_obj_id
+        )
+
+
 def create_or_update_objects_from_data(project, data):
     errors, changes, rel_objects = [], [], {}
 
@@ -535,8 +565,8 @@ def create_or_update_objects_from_data(project, data):
             elif len(key_parts.ids) == 1:
                 # Already existing object, update it
                 changes, errors, rel_objects = update_object(
-                    Model, key_parts.ids[0], key_parts.field, obj_data, key, data[key], changes, errors,
-                    rel_objects, related_obj_id
+                    Model, key_parts.ids[0], key_parts.field, obj_data, key, data[key], changes,
+                    errors, rel_objects, related_obj_id
                 )
                 data.pop(key, None)
 
@@ -548,79 +578,31 @@ def create_or_update_objects_from_data(project, data):
                     # New object, but parent is already existing
                     parent_obj_id = key_parts.ids[-2]
 
-                    if related_obj_id not in rel_objects.keys():
-                        # Related object has not yet been created (not added to rel_objects dict)
-                        kwargs = dict()
-                        kwargs[key_parts.field] = obj_data
-
-                        if Model in RELATED_OBJECTS_MAPPING.keys():
-                            # Special mapping needed
-                            RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
-                            kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
-                        else:
-                            # Project is the related object
-                            kwargs['project'] = Project.objects.get(pk=parent_obj_id)
-
-                        # Add field data, create new object and add new id to rel_objects dict
-                        kwargs[key_parts.field] = obj_data
-                        changes, errors, rel_objects = create_object(
-                            Model, kwargs, key_parts.field, key, data[key], changes, errors, rel_objects,
-                            related_obj_id
-                        )
-                        data.pop(key, None)
+                else:
+                    # New object, and parent are new according to the key.
+                    # However, it is possible that the parent was already
+                    # created earlier in the script. So we also check if
+                    # the parent object was already created earlier.
+                    ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
+                    parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
+                    if parent_obj_rel_obj_key in rel_objects.keys():
+                        parent_obj_id = rel_objects[parent_obj_rel_obj_key]
                     else:
-                        # Object was already created earlier in this script, update object
-                        changes, errors, rel_objects = update_object(
-                            Model, rel_objects[related_obj_id], key_parts.field, obj_data, key, data[key],
-                            changes, errors, rel_objects, related_obj_id
-                        )
-                        data.pop(key, None)
+                        parent_obj_id = None
+
+                if parent_obj_id is not None:
+                    create_related_object(
+                        parent_obj_id, Model, key_parts.field, obj_data, key, data[key], changes,
+                        errors, rel_objects, related_obj_id
+                    )
+                    data.pop(key, None)
 
                 else:
-                    # New object, and parent is also new according to the key. However, it is
-                    # possible that the parent was already created earlier in the script. So we
-                    # first check if parent object was already created earlier.
-
-                    RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
-                    if RelatedModel._meta.db_table + '.' + parent_id in rel_objects.keys():
-                        # Parent object has already been created, fetch new parent object id
-                        parent_obj_id = rel_objects[RelatedModel._meta.db_table + '.' + parent_id]
-
-                        if related_obj_id not in rel_objects.keys():
-                            # Related object itself has not yet been created yet
-                            kwargs = dict()
-                            kwargs[key_parts.field] = obj_data
-
-                            if Model in RELATED_OBJECTS_MAPPING.keys():
-                                # Special mapping needed
-                                RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
-                                kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
-                            else:
-                                # Project is the related object
-                                kwargs['project'] = Project.objects.get(pk=parent_obj_id)
-
-                            # Add field data, create new object and add new id to rel_objects dict
-                            kwargs[key_parts.field] = obj_data
-                            changes, errors, rel_objects = create_object(
-                                Model, kwargs, key_parts.field, key, data[key], changes, errors, rel_objects,
-                                related_obj_id
-                            )
-
-                            data.pop(key, None)
-                        else:
-                            # Related object itself has also been created earlier, update it
-                            changes, errors, rel_objects = update_object(
-                                Model, rel_objects[related_obj_id], key_parts.field, obj_data, key, data[key],
-                                changes, errors, rel_objects, related_obj_id
-                            )
-                            data.pop(key, None)
-
-                    else:
-                        # Parent object has not been created yet. We can't create the underlying
-                        # object without knowing to which parent it should be linked. Therefore the
-                        # key is not popped from the data, and this object will be
-                        # saved in one of the next iterations.
-                        continue
+                    # Parent object has not been created yet. We can't create the underlying
+                    # object without knowing to which parent it should be linked. Therefore the
+                    # key is not popped from the data, and this object will be
+                    # saved in one of the next iterations.
+                    continue
 
         if not data:
             # If there are no more keys in data, we have processed all fields and no more iterations
@@ -628,8 +610,6 @@ def create_or_update_objects_from_data(project, data):
             break
 
     return errors, changes, rel_objects
-
-
 
 
 @api_view(['POST'])
