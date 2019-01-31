@@ -392,6 +392,30 @@ def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes
         return changes, errors, rel_objects
 
 
+def update_m2m_object(project, Model, obj_id, field, obj_data, field_name, changes, errors,
+                      rel_objects, related_obj_id):
+
+    m2m_relation = getattr(project, MANY_TO_MANY_FIELDS[Model])
+
+    try:
+        m2m_object = Model.objects.get(pk=int(obj_data))
+        if obj_id is not None:
+            # If there already was an appointed object in the many to many relation,
+            # remove the old object first
+            old_m2m_object = Model.objects.get(pk=int(obj_id))
+            if old_m2m_object in m2m_relation.all():
+                m2m_relation.remove(old_m2m_object)
+        # Add the new many to many object to the project
+        m2m_relation.add(m2m_object)
+        changes = add_changes(changes, m2m_object, field, field_name, obj_data)
+        if related_obj_id not in rel_objects.keys():
+            rel_objects[related_obj_id] = obj_data
+
+    except Model.DoesNotExist as e:
+        errors = add_error(errors, str(e), field_name)
+
+
+
 def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
                   related_obj_id):
     """
@@ -501,22 +525,11 @@ def create_or_update_objects_from_data(project, data):
 
             if Model in MANY_TO_MANY_FIELDS.keys():
                 # This field is a many to many field, which need special handling
-                m2m_relation = getattr(project, MANY_TO_MANY_FIELDS[Model])
-                try:
-                    m2m_object = Model.objects.get(pk=int(obj_data))
-                    if len(key_parts.ids) == 1:
-                        # If there already was an appointed object in the many to many relation,
-                        # remove the old object first
-                        old_m2m_object = Model.objects.get(pk=int(key_parts.ids[0]))
-                        if old_m2m_object in m2m_relation.all():
-                            m2m_relation.remove(old_m2m_object)
-                    # Add the new many to many object to the project
-                    m2m_relation.add(m2m_object)
-                    changes = add_changes(changes, m2m_object, key_parts.field, key, obj_data)
-                    if related_obj_id not in rel_objects.keys():
-                        rel_objects[related_obj_id] = obj_data
-                except Model.DoesNotExist as e:
-                    errors = add_error(errors, str(e), key)
+                obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
+                update_m2m_object(
+                    project, Model, obj_id, key_parts.field, obj_data, key, changes, errors,
+                    rel_objects, related_obj_id
+                )
                 data.pop(key, None)
 
             elif len(key_parts.ids) == 1:

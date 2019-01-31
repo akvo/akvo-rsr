@@ -18,7 +18,8 @@ from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
-    RelatedProject, IndicatorPeriod)
+    RelatedProject, IndicatorPeriod, Keyword
+)
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
 
@@ -743,6 +744,27 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(1, len(changes))
         self.assertEqual(2, len(changes[0]))
         self.assertEqual(2, len(changes[0][1]))
+
+    def test_creating_project_m2m_object(self):
+        # Given
+        keyword_label = 'keyword-1'
+        keyword = Keyword(label=keyword_label)
+        keyword.save()
+        data = {u'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id)}
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.keywords.count(), 1)
+        keyword = project.keywords.first()
+        self.assertEqual(keyword_label, keyword.label)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(1, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(1, len(changes[0][1]))
 
     def test_updating_project_attribute_object(self):
         # Given
