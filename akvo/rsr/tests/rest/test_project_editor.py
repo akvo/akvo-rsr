@@ -721,6 +721,22 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(2, len(changes[0]))
         self.assertEqual(2, len(changes[0][1]))
 
+    def test_saving_incorrect_project_attributes(self):
+        # Given
+        hierarchy = 'incorrect_hierarchy_value'
+        data = {
+            u'rsr_project.hierarchy.{}'.format(self.project.id): hierarchy,
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        self.assertEqual(1, len(errors))
+        self.assertEqual('rsr_project.hierarchy.{}'.format(self.project.id), errors[0]['name'])
+        self.assertEqual(0, len(rel_objects))
+        self.assertEqual(0, len(changes))
+
     def test_creating_project_attribute_object(self):
         # Given
         relation = '3'
