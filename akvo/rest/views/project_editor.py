@@ -445,7 +445,7 @@ def project_editor(request, pk=None):
 
     # Retrieve form data and set default values
     data = request.POST.copy()
-    errors, changes, rel_objects = create_or_update_objects_from_data(data)
+    errors, changes, rel_objects = create_or_update_objects_from_data(project, data)
     # Update the IATI checks for every save in the editor.
     updated_project = Project.objects.get(pk=pk)
     updated_project.update_iati_checks()
@@ -467,7 +467,7 @@ def project_editor(request, pk=None):
     )
 
 
-def create_or_update_objects_from_data(data):
+def create_or_update_objects_from_data(project, data):
     errors, changes, rel_objects = [], [], {}
 
     # Run through the form data 3 times to be sure that all nested objects will be created.

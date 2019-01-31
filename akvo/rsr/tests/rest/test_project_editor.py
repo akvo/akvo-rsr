@@ -708,7 +708,7 @@ class CreateOrUpdateTestCase(TestCase):
         }
 
         # When
-        errors, changes, rel_objects = create_or_update_objects_from_data(data)
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
 
         # Then
         project = Project.objects.get(id=self.project.id)
@@ -729,7 +729,7 @@ class CreateOrUpdateTestCase(TestCase):
         }
 
         # When
-        errors, changes, rel_objects = create_or_update_objects_from_data(data)
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
 
         # Then
         project = Project.objects.get(id=self.project.id)
@@ -752,14 +752,14 @@ class CreateOrUpdateTestCase(TestCase):
             u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
             u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
         }
-        create_or_update_objects_from_data(original_data)
+        create_or_update_objects_from_data(self.project, original_data)
 
         # When
         project = Project.objects.get(id=self.project.id)
         update_data = {
             u'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
         }
-        errors, changes, rel_objects = create_or_update_objects_from_data(update_data)
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, update_data)
 
         # Then
         project = Project.objects.get(id=self.project.id)
@@ -814,7 +814,7 @@ class CreateOrUpdateTestCase(TestCase):
         }
 
         # When
-        errors, changes, rel_objects = create_or_update_objects_from_data(data)
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
 
         # Then
         result = Result.objects.get(project=self.project.id)
