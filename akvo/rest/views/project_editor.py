@@ -261,6 +261,8 @@ def pre_process_data(key, data, errors):
             errors = add_error(errors, e, key)
             return None, errors
 
+    return data, errors
+
 
 def convert_related_objects(rel_objects):
     """
@@ -340,13 +342,18 @@ def add_changes(changes, obj, field, field_name, orig_data):
     return changes
 
 
-def update_object(Model, obj_id, field, obj_data, field_name, orig_data, changes, errors,
+def update_object(Model, obj_id, field, field_name, orig_data, changes, errors,
                   rel_objects, related_obj_id):
     """
     Update an existing object. First tries to retrieve the object and set the new value of the
     field, then it performs object and field validations and finally returns the changes or errors
     of this process.
     """
+
+    obj_data, errors = pre_process_data(field_name, orig_data, errors)
+    if field_name in [error['name'] for error in errors]:
+        return
+
     try:
         # Retrieve object and set new value of field
         obj = Model.objects.get(pk=int(obj_id))
@@ -516,7 +523,7 @@ def create_related_object(parent_obj_id, Model, field, obj_data, field_name, ori
     else:
         # Object was already created earlier in this script, update object
         changes, errors, rel_objects = update_object(
-            Model, rel_objects[related_obj_id], field, obj_data, field_name, orig_data,
+            Model, rel_objects[related_obj_id], field, field_name, orig_data,
             changes, errors, rel_objects, related_obj_id
         )
 
@@ -565,7 +572,7 @@ def create_or_update_objects_from_data(project, data):
             elif len(key_parts.ids) == 1:
                 # Already existing object, update it
                 changes, errors, rel_objects = update_object(
-                    Model, key_parts.ids[0], key_parts.field, obj_data, key, data[key], changes,
+                    Model, key_parts.ids[0], key_parts.field, key, data[key], changes,
                     errors, rel_objects, related_obj_id
                 )
                 data.pop(key, None)
@@ -771,7 +778,7 @@ def project_editor_upload_file(request, pk=None):
     if len(key_parts.ids) == 1:
         # Either the photo or an already existing project document
         changes, errors, rel_objects = update_object(
-            Model, key_parts.ids[0], key_parts.field, upload_file, field_id, '', changes, errors,
+            Model, key_parts.ids[0], key_parts.field, field_id, upload_file, changes, errors,
             rel_objects, related_obj_id
         )
     else:
@@ -951,7 +958,7 @@ def project_editor_organisation_logo(request, pk=None):
 
     if 'logo' in data.keys():
         changes, errors, rel_objects = update_object(
-            Organisation, pk, 'logo', data['logo'], '', '', changes, errors,
+            Organisation, pk, 'logo', '', data['logo'], changes, errors,
             rel_objects, 'rsr_organisation.' + str(pk)
         )
 
