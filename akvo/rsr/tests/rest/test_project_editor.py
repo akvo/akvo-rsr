@@ -10,6 +10,7 @@ import datetime
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
+from tempfile import NamedTemporaryFile
 
 from akvo.rest.views.project_editor import (
     add_error, create_or_update_objects_from_data, split_key
@@ -555,6 +556,71 @@ class ProjectLocationTestCase(TestCase):
                 iso_code=iso_code,
                 defaults=Country.fields_from_iso_code(iso_code)
             )
+
+
+class UploadFileTestCase(TestCase):
+    """Test that uploading a file works correctly."""
+
+    def setUp(self):
+        self.project = Project.objects.create(title='New Project')
+        self.user, self.username, self.password = create_user()
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.c.login(username=self.username, password=self.password)
+
+    def test_uploading_new_file(self):
+        # Given
+        id_ = self.project.id
+        url = '/rest/v1/project/{}/upload_file/?format=json'.format(id_)
+        with open(__file__) as f:
+            data = {
+                'field_id': 'rsr_projectdocument.document.{}_new-0'.format(id_),
+                'file': f
+            }
+
+            # When
+            response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        errors = response.data['errors']
+        self.assertEqual(0, len(errors))
+        changes = response.data['changes']
+        self.assertEqual(1, len(changes))
+        upload_url = changes[0][1]
+        resp = self.c.get(upload_url, follow=True)
+        text = '\n'.join(resp.streaming_content)
+        self.assertIn(self.__class__.__name__, text)
+
+    def test_replacing_existing_file(self):
+        # Given
+        id_ = self.project.id
+        url = '/rest/v1/project/{}/upload_file/?format=json'.format(id_)
+        with open(__file__) as f:
+            data = {
+                'field_id': 'rsr_projectdocument.document.{}_new-0'.format(id_),
+                'file': f
+            }
+            response = self.c.post(url, data=data, follow=True)
+        document_id = response.data['rel_objects'][0]['new_id']
+        with NamedTemporaryFile() as f:
+            new_data = {
+                'field_id': 'rsr_projectdocument.document.{}'.format(document_id),
+                'file': f
+            }
+
+            # When
+            response = self.c.post(url, data=new_data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        errors = response.data['errors']
+        self.assertEqual(0, len(errors))
+        changes = response.data['changes']
+        self.assertEqual(1, len(changes))
+        upload_url = changes[0][1]
+        resp = self.c.get(upload_url, follow=True)
+        text = '\n'.join(resp.streaming_content)
+        self.assertNotIn(self.__class__.__name__, text)
 
 
 class DefaultPeriodsTestCase(TestCase):
