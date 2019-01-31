@@ -803,6 +803,11 @@ class CreateOrUpdateTestCase(TestCase):
         result_type = u'1'
         result_aggregation = u'2'
 
+        result_title_2 = 'Result Title 2'
+        result_description_2 = 'Result Description 2'
+        result_type_2 = u'2'
+        result_aggregation_2 = u'2'
+
         indicator_title = u'Indicator Title'
         indicator_description = u'Indicator Description'
         indicator_measure = '1'
@@ -819,6 +824,11 @@ class CreateOrUpdateTestCase(TestCase):
             u'rsr_result.title.{}_new-0': result_title,
             u'rsr_result.type.{}_new-0': result_type,
             u'rsr_result.aggregation_status.{}_new-0': result_aggregation,
+
+            u'rsr_result.description.{}_new-1': result_description_2,
+            u'rsr_result.title.{}_new-1': result_title_2,
+            u'rsr_result.type.{}_new-1': result_type_2,
+            u'rsr_result.aggregation_status.{}_new-1': result_aggregation_2,
 
             u'rsr_indicator.type.{}_new-0_new-0': indicator_type,
             u'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
@@ -839,11 +849,20 @@ class CreateOrUpdateTestCase(TestCase):
         errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
 
         # Then
-        result = Result.objects.get(project=self.project.id)
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(2, project.results.count())
+
+        result = Result.objects.get(project=self.project.id, title=result_title)
         self.assertEqual(result.title, result_title)
         self.assertEqual(result.description, result_description)
         self.assertEqual(result.type, result_type)
         self.assertEqual(result.aggregation_status, result_aggregation == '1')
+
+        result_2 = Result.objects.get(project=self.project.id, title=result_title_2)
+        self.assertEqual(result_2.title, result_title_2)
+        self.assertEqual(result_2.description, result_description_2)
+        self.assertEqual(result_2.type, result_type_2)
+        self.assertEqual(result_2.aggregation_status, result_aggregation_2 == '1')
 
         indicator = Indicator.objects.get(result=result)
         self.assertEqual(indicator.title, indicator_title)
@@ -859,8 +878,8 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(period.target_comment, period_target_comment)
 
         self.assertEqual(0, len(errors))
-        self.assertEqual(3, len(rel_objects))
-        self.assertEqual(3, len(changes))
+        self.assertEqual(4, len(rel_objects))
+        self.assertEqual(4, len(changes))
         for change in changes:
             self.assertEqual(2, len(change))
             attributes = 5 if isinstance(change[0], Indicator) else 4
