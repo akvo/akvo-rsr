@@ -11,7 +11,9 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
-from akvo.rest.views.project_editor import add_error, split_key
+from akvo.rest.views.project_editor import (
+    add_error, create_or_update_objects_from_data, split_key
+)
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
@@ -684,3 +686,160 @@ class DefaultPeriodsTestCase(TestCase):
         self.assertEqual(child_periods1.count(), 3)
         child_periods2 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project2)
         self.assertEqual(child_periods2.count(), 3)
+
+
+class CreateOrUpdateTestCase(TestCase):
+
+    def setUp(self):
+        # Create necessary groups
+        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+
+        # Create project
+        self.project = Project.objects.create(title="Test Project")
+        self.project_2 = Project.objects.create(title="Test Project 2")
+
+    def test_saving_project_attributes(self):
+        # Given
+        iati_activity_id = u'iati_activity_id'
+        background = u'Background'
+        data = {
+            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            u'rsr_project.background.{}'.format(self.project.id): background,
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.iati_activity_id, iati_activity_id)
+        self.assertEqual(project.background, background)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(0, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(2, len(changes[0][1]))
+
+    def test_creating_project_attribute_object(self):
+        # Given
+        relation = '3'
+        data = {
+            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.related_projects.count(), 1)
+        related_project = project.related_projects.first()
+        self.assertEqual(related_project.project, self.project)
+        self.assertEqual(related_project.related_project, self.project_2)
+        self.assertEqual(related_project.relation, relation)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(1, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(2, len(changes[0][1]))
+
+    def test_updating_project_attribute_object(self):
+        # Given
+        sibling_relation = '3'
+        parent_relation = '1'
+        original_data = {
+            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
+            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+        }
+        create_or_update_objects_from_data(original_data)
+
+        # When
+        project = Project.objects.get(id=self.project.id)
+        update_data = {
+            u'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
+        }
+        errors, changes, rel_objects = create_or_update_objects_from_data(update_data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.related_projects.count(), 1)
+        related_project = project.related_projects.first()
+        self.assertEqual(related_project.project, self.project)
+        self.assertEqual(related_project.related_project, self.project_2)
+        self.assertEqual(related_project.relation, parent_relation)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(1, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(1, len(changes[0][1]))
+
+    def test_creating_project_attirbute_hierarchy(self):
+        # Given
+        result_title = 'Result Title'
+        result_description = 'Result Description'
+        result_type = u'1'
+        result_aggregation = u'2'
+
+        indicator_title = u'Indicator Title'
+        indicator_description = u'Indicator Description'
+        indicator_measure = '1'
+        indicator_type = '1'
+        indicator_ascending = '1'
+
+        period_start = u'01/01/2019'
+        period_end = u'01/02/2019'
+        period_target_value = u'12'
+        period_target_comment = u'Target Comment'
+
+        data = {
+            u'rsr_result.description.{}_new-0': result_description,
+            u'rsr_result.title.{}_new-0': result_title,
+            u'rsr_result.type.{}_new-0': result_type,
+            u'rsr_result.aggregation_status.{}_new-0': result_aggregation,
+
+            u'rsr_indicator.type.{}_new-0_new-0': indicator_type,
+            u'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
+            u'rsr_indicator.title.{}_new-0_new-0': indicator_title,
+            u'rsr_indicator.description.{}_new-0_new-0': indicator_description,
+            u'rsr_indicator.measure.{}_new-0_new-0': indicator_measure,
+
+            u'rsr_indicatorperiod.period_start.{}_new-0_new-0_new-0': period_start,
+            u'rsr_indicatorperiod.period_end.{}_new-0_new-0_new-0': period_end,
+            u'rsr_indicatorperiod.target_value.{}_new-0_new-0_new-0': period_target_value,
+            u'rsr_indicatorperiod.target_comment.{}_new-0_new-0_new-0': period_target_comment,
+        }
+        data = {
+            key.format(self.project.id): value for key, value in data.items()
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(data)
+
+        # Then
+        result = Result.objects.get(project=self.project.id)
+        self.assertEqual(result.title, result_title)
+        self.assertEqual(result.description, result_description)
+        self.assertEqual(result.type, result_type)
+        self.assertEqual(result.aggregation_status, result_aggregation == '1')
+
+        indicator = Indicator.objects.get(result=result)
+        self.assertEqual(indicator.title, indicator_title)
+        self.assertEqual(indicator.description, indicator_description)
+        self.assertEqual(indicator.type, int(indicator_type))
+        self.assertEqual(indicator.measure, indicator_measure)
+        self.assertEqual(indicator.ascending, indicator_ascending == '1')
+
+        period = IndicatorPeriod.objects.get(indicator=indicator)
+        self.assertEqual(period.period_start.strftime('%d/%m/%Y'), period_start)
+        self.assertEqual(period.period_end.strftime('%d/%m/%Y'), period_end)
+        self.assertEqual(period.target_value, period_target_value)
+        self.assertEqual(period.target_comment, period_target_comment)
+
+        self.assertEqual(0, len(errors))
+        self.assertEqual(3, len(rel_objects))
+        self.assertEqual(3, len(changes))
+        for change in changes:
+            self.assertEqual(2, len(change))
+            attributes = 5 if isinstance(change[0], Indicator) else 4
+            self.assertEqual(attributes, len(change[1]))
