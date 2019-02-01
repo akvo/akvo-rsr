@@ -7,10 +7,12 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 import datetime
+from tempfile import NamedTemporaryFile
+
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
-from tempfile import NamedTemporaryFile
+from mock import patch
 
 from akvo.rest.views.project_editor import (
     add_error, create_or_update_objects_from_data, split_key
@@ -786,6 +788,22 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(1, len(changes))
         self.assertEqual(2, len(changes[0]))
         self.assertEqual(2, len(changes[0][1]))
+
+    def test_save_called_once(self):
+        # Given
+        iati_activity_id = u'iati_activity_id'
+        background = u'Background'
+        data = {
+            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            u'rsr_project.background.{}'.format(self.project.id): background,
+        }
+
+        # When
+        with patch('akvo.rsr.models.project.Project.save') as patched_save:
+            create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        self.assertEqual(1, patched_save.call_count)
 
     def test_saving_incorrect_project_attributes(self):
         # Given
