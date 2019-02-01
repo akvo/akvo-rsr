@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from mock import patch
 
-from akvo.rest.views.project_editor import (
+from akvo.rest.views.project_editor_utils import (
     add_error, create_or_update_objects_from_data, split_key
 )
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
