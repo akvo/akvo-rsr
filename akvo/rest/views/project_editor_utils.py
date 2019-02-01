@@ -436,74 +436,92 @@ def update_m2m_object(project, Model, obj_id, field, obj_data, field_name, chang
         errors = add_error(errors, str(e), field_name)
 
 
-def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
+def create_object(Model, kwargs, fields, field_names, values, changes, errors, rel_objects,
                   related_obj_id):
-    """
-    Create a new object. Either an error can occur while creating the object, or during the
-    full_clean() function. In any case, catch the error and display it in the project editor.
+    """Create a new object.
+
+    Either an error can occur while creating the object, or during the
+    full_clean() function. In any case, catch the error and display it in the
+    project editor.
+
     """
     try:
         # Retrieve the object with the new value and perform validations.
         obj = Model.objects.create(**kwargs)
         obj.full_clean()
     except ValidationError as e:
-        if field in dict(e):
-            # Since we save the object per field, display the (first) error of this field on the
-            # field itself.
-            errors = add_error(errors, str(dict(e)[field][0]), field_name)
-        else:
-            # Somewhere else in the model a validation error occurred (or a combination of fields).
-            # We display this nonetheless and do not save the field.
-            errors = add_error(errors, str(e), field_name)
+        for field, field_name in zip(fields, field_names):
+            if field in dict(e):
+                # Since we save the object per field, display the (first) error
+                # of this field on the field itself.
+                errors = add_error(errors, str(dict(e)[field][0]), field_name)
+            else:
+                # Somewhere else in the model a validation error occurred (or a
+                # combination of fields). We display this nonetheless and do
+                # not save the field.
+                errors = add_error(errors, str(e), field_name)
         obj.delete()
     except MultipleObjectsReturned:
         # Multiple reporting organisations are not allowed and will raise a MultipleObjectsReturned
         # exception. In this case, display a nice error message and delete the created partnership.
-        message = unicode(_(u'There can be only one reporting organisation'))
-        errors = add_error(errors, str(message), field_name)
+        for field_name in field_names:
+            message = unicode(_(u'There can be only one reporting organisation'))
+            # FIXME: Not sure what the field name should be here...
+            errors = add_error(errors, str(message), field_name)
         obj.delete()
     except Exception as e:
-        # Just in case any other error will occur, this will also be displayed underneath the field
-        # in the project editor.
-        errors = add_error(errors, str(e), field_name)
+        # Just in case any other error will occur, this will also be displayed
+        # underneath the field in the project editor.
+        for field_name in field_names:
+            errors = add_error(errors, str(e), field_name)
     else:
         # No validation errors. Save the field and append the changes to the changes list.
         # Add the object to the related objects list, so that the ID and unicode will be replaced.
-        changes = add_changes(changes, obj, field, field_name, orig_data)
+        for field, field_name, value in zip(fields, field_names, values):
+            changes = add_changes(changes, obj, field, field_name, value)
         rel_objects[related_obj_id] = obj.pk
+
     finally:
         return changes, errors, rel_objects
 
 
-def create_related_object(parent_obj_id, Model, field, obj_data, field_name, orig_data, changes,
-                          errors, rel_objects, related_obj_id):
+def create_related_object(parent_obj_id, Model, fields, field_names, values, changes, errors,
+                          rel_objects, related_obj_id):
+    """Create a related object
 
-    if related_obj_id not in rel_objects:
-        # Related object has not yet been created (not added to rel_objects dict)
-        kwargs = dict()
-        kwargs[field] = obj_data
+    Create a related object with all the values for all the fields. It is
+    called only once per object for each save in the project editor.
 
-        if Model in RELATED_OBJECTS_MAPPING:
-            # Special mapping needed
-            RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
-            kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
-        else:
-            # Project is the related object
-            kwargs['project'] = Project.objects.get(pk=parent_obj_id)
+    Related objects are created "fully", and never need to be updated post
+    creation, in a single project editor save.
 
+    """
+
+    # Related object has not yet been created (not added to rel_objects dict)
+    kwargs = dict()
+
+    if Model in RELATED_OBJECTS_MAPPING:
+        # Special mapping needed
+        RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
+        kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
+    else:
+        # Project is the related object
+        kwargs['project'] = Project.objects.get(pk=parent_obj_id)
+
+    # Set all the attributes with specified values
+    for field, field_name, value in zip(fields, field_names, values):
+        obj_data, errors = pre_process_data(field_name, value, errors)
+        if field_name in [error['name'] for error in errors]:
+            continue
         # Add field data, create new object and add new id to rel_objects dict
         kwargs[field] = obj_data
-        changes, errors, rel_objects = create_object(
-            Model, kwargs, field, field_name, orig_data, changes, errors, rel_objects,
-            related_obj_id
-        )
 
-    else:
-        # Object was already created earlier in this script, update object
-        changes, errors, rel_objects = update_object(
-            Model, rel_objects[related_obj_id], [field], [field_name], [orig_data],
-            changes, errors, rel_objects, related_obj_id
-        )
+    changes, errors, rel_objects = create_object(
+        Model, kwargs, fields, field_names, values, changes, errors, rel_objects,
+        related_obj_id
+    )
+
+    return changes, errors, rel_objects
 
 
 def group_data_by_objects(data):
@@ -514,6 +532,15 @@ def group_data_by_objects(data):
         group_key = (key_parts.model.model_name,) + tuple(key_parts.ids)
         grouped_data.setdefault(group_key, []).append((key, value, key_parts))
     return grouped_data
+
+
+def group_get_all_fields(grouped_data, key_parts):
+    group_key = (key_parts.model.model_name,) + tuple(key_parts.ids)
+    update_data = grouped_data[group_key]
+    keys = [key for key, _, _ in update_data]
+    values = [value for _, value, _ in update_data]
+    fields = [key_part.field for _, _, key_part in update_data]
+    return fields, values, keys
 
 
 def create_or_update_objects_from_data(project, data):
@@ -574,17 +601,12 @@ def create_or_update_objects_from_data(project, data):
 
             elif len(key_parts.ids) == 1:
                 # Already existing object, update it
-                obj_id, = key_parts.ids
-                group_key = (key_parts.model.model_name, obj_id)
-                update_data = grouped_data[group_key]
-                keys = [key for key, _, _ in update_data]
-                values = [value for _, value, _ in update_data]
-                fields = [key_part.field for _, _, key_part in update_data]
+                fields, values, keys = group_get_all_fields(grouped_data, key_parts)
                 changes, errors, rel_objects = update_object(
-                    Model, obj_id, fields, keys, values, changes, errors, rel_objects,
+                    Model, key_parts.ids[0], fields, keys, values, changes, errors, rel_objects,
                     related_obj_id
                 )
-                for key, __, __ in update_data:
+                for key in keys:
                     data.pop(key, None)
 
             else:
@@ -608,11 +630,13 @@ def create_or_update_objects_from_data(project, data):
                         parent_obj_id = None
 
                 if parent_obj_id is not None:
+                    fields, values, keys = group_get_all_fields(grouped_data, key_parts)
                     create_related_object(
-                        parent_obj_id, Model, key_parts.field, obj_data, key, data[key], changes,
-                        errors, rel_objects, related_obj_id
+                        parent_obj_id, Model, fields, keys, values, changes, errors, rel_objects,
+                        related_obj_id
                     )
-                    data.pop(key, None)
+                    for key in keys:
+                        data.pop(key, None)
 
                 else:
                     # Parent object has not been created yet. We can't create the underlying

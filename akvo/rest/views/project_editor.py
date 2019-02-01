@@ -240,8 +240,8 @@ def project_editor_upload_file(request, pk=None):
 
         # Add field data, create new object and add new id to rel_objects dict
         changes, errors, rel_objects = create_object(
-            Model, kwargs, key_parts.field, field_id, '', changes, errors, rel_objects,
-            related_obj_id
+            Model, kwargs, [key_parts.field], [field_id], [upload_file], changes, errors,
+            rel_objects, related_obj_id
         )
 
     for change in changes:

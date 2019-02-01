@@ -845,6 +845,28 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(2, len(changes[0]))
         self.assertEqual(2, len(changes[0][1]))
 
+    def test_create_project_attribute_object_with_all_attributes(self):
+        # Given
+        relation = '3'
+        data = {
+            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+        }
+
+        # When
+        update_object_path = 'akvo.rest.views.project_editor_utils.update_object'
+        with patch(update_object_path, return_value=([], [], [])) as patched_save:
+            create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        self.assertEqual(patched_save.call_count, 0)
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.related_projects.count(), 1)
+        related_project = project.related_projects.first()
+        self.assertEqual(related_project.project, self.project)
+        self.assertEqual(related_project.related_project, self.project_2)
+        self.assertEqual(related_project.relation, relation)
+
     def test_creating_project_m2m_object(self):
         # Given
         keyword_label = 'keyword-1'
