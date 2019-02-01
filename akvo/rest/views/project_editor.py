@@ -342,27 +342,43 @@ def add_changes(changes, obj, field, field_name, orig_data):
     return changes
 
 
-def update_object(Model, obj_id, field, field_name, orig_data, changes, errors,
+def update_object(Model, obj_id, fields, field_names, values, changes, errors,
                   rel_objects, related_obj_id):
-    """
-    Update an existing object. First tries to retrieve the object and set the new value of the
-    field, then it performs object and field validations and finally returns the changes or errors
-    of this process.
+    """Update an existing object.
+
+    Take a list of fields and corresponding values, and update the object. The
+    following steps are performed to do the update:
+
+    1. Try to retrieve the object.
+
+    2. Pre-process the data, ignore fields that have obviously incorrect data
+    (wrong type and cannot be typecasted, etc.)
+
+    3. Set the attributes corresponding to the fields with the supplied values
+
+    4. Perform object and field validations
+
+    5. Return the changes and errors
+
     """
 
-    obj_data, errors = pre_process_data(field_name, orig_data, errors)
-    if field_name in [error['name'] for error in errors]:
-        return
-
+    # Try to retrieve object with specified ID
     try:
         # Retrieve object and set new value of field
         obj = Model.objects.get(pk=int(obj_id))
-        setattr(obj, field, obj_data)
     except (Model.DoesNotExist, ValueError) as e:
-        # If object does not exist or 'obj_id' is not an integer, add an error and do not process
-        # the object
-        errors = add_error(errors, str(e), field_name)
+        # If object does not exist or 'obj_id' is not an integer, add an error
+        # and do not process the object
+        for field_name in field_names:
+            errors = add_error(errors, str(e), field_name)
         return changes, errors, rel_objects
+
+    # Set all the attributes with specified values
+    for field, field_name, value in zip(fields, field_names, values):
+        obj_data, errors = pre_process_data(field_name, value, errors)
+        if field_name in [error['name'] for error in errors]:
+            continue
+        setattr(obj, field, obj_data)
 
     try:
         # The object has been retrieved, perform validations
@@ -370,29 +386,41 @@ def update_object(Model, obj_id, field, field_name, orig_data, changes, errors,
                                 'primary_organisation',
                                 'last_update'])
     except ValidationError as e:
-        if field in dict(e):
-            # Since we save the object per field, display the (first) error of this field on the
-            # field itself.
-            errors = add_error(errors, str(dict(e)[field][0]), field_name)
-        else:
-            # Somewhere else in the model a validation error occurred (or a combination of fields).
-            # We display this nonetheless and do not save the field.
-            errors = add_error(errors, str(e), field_name)
+        for field, field_name in zip(fields, field_names):
+            if field in dict(e):
+                # Since we save the object per field, display the (first) error
+                # of this field on the field itself.
+                errors = add_error(errors, str(dict(e)[field][0]), field_name)
+            else:
+                # FIXME: Not sure this branch is required, here, since we are
+                # saving all the fields in one shot. Currently,
+                # create_related_object doesn't really croup all the calls to
+                # update_object. This branch can possibly removed once that is
+                # fixed.
+
+                # Somewhere else in the model a validation error occurred (or a
+                # combination of fields). We display this nonetheless and do
+                # not save the field.
+                errors = add_error(errors, str(e), field_name)
     except Exception as e:
-        # Just in case any other error will occur, this will also be displayed underneath the field
-        # in the project editor.
-        errors = add_error(errors, str(e), field_name)
+        for field_name in field_names:
+            # Just in case any other error will occur, this will also be
+            # displayed underneath the field in the project editor.
+            errors = add_error(errors, str(e), field_name)
     else:
+        update_fields = fields
         # if the object has a last_modified_at field, include it in the update
         if hasattr(obj, 'last_modified_at'):
-            update_fields = [field, 'last_modified_at']
-        else:
-            update_fields = [field]
-        # No validation errors. Save the field and append the changes to the changes list.
-        # In case of a non-Project object, add the object to the related objects list, so that the
-        # ID will be replaced (in case of a new object) and the unicode will be replaced.
+            update_fields = fields + ['last_modified_at']
+
+        # No validation errors. Save the field and append the changes to the
+        # changes list. In case of a non-Project object, add the object to the
+        # related objects list, so that the ID will be replaced (in case of a
+        # new object) and the unicode will be replaced.
         obj.save(update_fields=update_fields)
-        changes = add_changes(changes, obj, field, field_name, orig_data)
+        for field, field_name, value in zip(fields, field_names, values):
+            changes = add_changes(changes, obj, field, field_name, value)
+
         if not (related_obj_id in rel_objects or isinstance(obj, Project)):
             rel_objects[related_obj_id] = obj.pk
     finally:
@@ -523,9 +551,19 @@ def create_related_object(parent_obj_id, Model, field, obj_data, field_name, ori
     else:
         # Object was already created earlier in this script, update object
         changes, errors, rel_objects = update_object(
-            Model, rel_objects[related_obj_id], field, field_name, orig_data,
+            Model, rel_objects[related_obj_id], [field], [field_name], [orig_data],
             changes, errors, rel_objects, related_obj_id
         )
+
+
+def group_data_by_objects(data):
+    """Group form data by objects (based on model and id)"""
+    grouped_data = {}
+    for key, value in data.items():
+        key_parts = split_key(key)
+        group_key = (key_parts.model.model_name,) + tuple(key_parts.ids)
+        grouped_data.setdefault(group_key, []).append((key, value, key_parts))
+    return grouped_data
 
 
 def create_or_update_objects_from_data(project, data):
@@ -542,8 +580,23 @@ def create_or_update_objects_from_data(project, data):
     # to the project and create a result id, which will be stored in rel_objects. The second time
     # it will definitely be able to create the indicator id, etc.
 
+    grouped_data = group_data_by_objects(data)
+
     for i in range(4):
+
+        if not data:
+            # If there are no more keys in data, we have processed all fields
+            # and no more iterations are needed.
+            break
+
         for key in sorted(data.keys()):
+
+            # When saving all fields on an object, a bunch of fields are
+            # removed together. This may cause some keys to not be present,
+            # when iterating over the sorted keys.
+            if key not in data:
+                continue
+
             # The keys in form data are of format "rsr_project.title.1234".
             # Separated by .'s, the data contains the model name, field name and object id list
             key_parts = split_key(key)
@@ -571,11 +624,18 @@ def create_or_update_objects_from_data(project, data):
 
             elif len(key_parts.ids) == 1:
                 # Already existing object, update it
+                obj_id, = key_parts.ids
+                group_key = (key_parts.model.model_name, obj_id)
+                update_data = grouped_data[group_key]
+                keys = [key for key, _, _ in update_data]
+                values = [value for _, value, _ in update_data]
+                fields = [key_part.field for _, _, key_part in update_data]
                 changes, errors, rel_objects = update_object(
-                    Model, key_parts.ids[0], key_parts.field, key, data[key], changes,
-                    errors, rel_objects, related_obj_id
+                    Model, obj_id, fields, keys, values, changes, errors, rel_objects,
+                    related_obj_id
                 )
-                data.pop(key, None)
+                for key, __, __ in update_data:
+                    data.pop(key, None)
 
             else:
                 # New object, with potentially a new parent as well
@@ -610,11 +670,6 @@ def create_or_update_objects_from_data(project, data):
                     # key is not popped from the data, and this object will be
                     # saved in one of the next iterations.
                     continue
-
-        if not data:
-            # If there are no more keys in data, we have processed all fields and no more iterations
-            # are needed.
-            break
 
     return errors, changes, rel_objects
 
@@ -778,7 +833,7 @@ def project_editor_upload_file(request, pk=None):
     if len(key_parts.ids) == 1:
         # Either the photo or an already existing project document
         changes, errors, rel_objects = update_object(
-            Model, key_parts.ids[0], key_parts.field, field_id, upload_file, changes, errors,
+            Model, key_parts.ids[0], [key_parts.field], [field_id], [upload_file], changes, errors,
             rel_objects, related_obj_id
         )
     else:
@@ -958,7 +1013,7 @@ def project_editor_organisation_logo(request, pk=None):
 
     if 'logo' in data:
         changes, errors, rel_objects = update_object(
-            Organisation, pk, 'logo', '', data['logo'], changes, errors,
+            Organisation, pk, ['logo'], [''], [data['logo']], changes, errors,
             rel_objects, 'rsr_organisation.' + str(pk)
         )
 
