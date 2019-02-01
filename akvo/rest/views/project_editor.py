@@ -301,7 +301,7 @@ def convert_related_objects(rel_objects):
 
     new_rel_objects = []
 
-    for key in rel_objects.keys():
+    for key in rel_objects:
         # First retrieve the unicode and create a new dict including the unicode
         db_table, old_key = key.split('.')
         Model = get_model(db_table.split('_')[0], db_table.split('_')[1])
@@ -314,7 +314,7 @@ def convert_related_objects(rel_objects):
         # remove the 'rsr_' part (e.g. a key can be 'rsr_relatedproject') and look up the db_table
         # in the mapping, or take the default otherwise
         db_table = db_table[4:]
-        if db_table in model_to_api.keys():
+        if db_table in model_to_api:
             new_dict_response['old_id'] = '{0}.{1}'.format(model_to_api[db_table], old_key)
         else:
             new_dict_response['old_id'] = '{0}.{1}'.format(db_table, old_key)
@@ -370,7 +370,7 @@ def update_object(Model, obj_id, field, field_name, orig_data, changes, errors,
                                 'primary_organisation',
                                 'last_update'])
     except ValidationError as e:
-        if field in dict(e).keys():
+        if field in dict(e):
             # Since we save the object per field, display the (first) error of this field on the
             # field itself.
             errors = add_error(errors, str(dict(e)[field][0]), field_name)
@@ -393,7 +393,7 @@ def update_object(Model, obj_id, field, field_name, orig_data, changes, errors,
         # ID will be replaced (in case of a new object) and the unicode will be replaced.
         obj.save(update_fields=update_fields)
         changes = add_changes(changes, obj, field, field_name, orig_data)
-        if not (related_obj_id in rel_objects.keys() or isinstance(obj, Project)):
+        if not (related_obj_id in rel_objects or isinstance(obj, Project)):
             rel_objects[related_obj_id] = obj.pk
     finally:
         return changes, errors, rel_objects
@@ -415,7 +415,7 @@ def update_m2m_object(project, Model, obj_id, field, obj_data, field_name, chang
         # Add the new many to many object to the project
         m2m_relation.add(m2m_object)
         changes = add_changes(changes, m2m_object, field, field_name, obj_data)
-        if related_obj_id not in rel_objects.keys():
+        if related_obj_id not in rel_objects:
             rel_objects[related_obj_id] = obj_data
 
     except Model.DoesNotExist as e:
@@ -433,7 +433,7 @@ def create_object(Model, kwargs, field, field_name, orig_data, changes, errors, 
         obj = Model.objects.create(**kwargs)
         obj.full_clean()
     except ValidationError as e:
-        if field in dict(e).keys():
+        if field in dict(e):
             # Since we save the object per field, display the (first) error of this field on the
             # field itself.
             errors = add_error(errors, str(dict(e)[field][0]), field_name)
@@ -500,12 +500,12 @@ def project_editor(request, pk=None):
 def create_related_object(parent_obj_id, Model, field, obj_data, field_name, orig_data, changes,
                           errors, rel_objects, related_obj_id):
 
-    if related_obj_id not in rel_objects.keys():
+    if related_obj_id not in rel_objects:
         # Related object has not yet been created (not added to rel_objects dict)
         kwargs = dict()
         kwargs[field] = obj_data
 
-        if Model in RELATED_OBJECTS_MAPPING.keys():
+        if Model in RELATED_OBJECTS_MAPPING:
             # Special mapping needed
             RelatedModel, related_field = RELATED_OBJECTS_MAPPING[Model]
             kwargs[related_field] = RelatedModel.objects.get(pk=parent_obj_id)
@@ -560,7 +560,7 @@ def create_or_update_objects_from_data(project, data):
                 [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
             )
 
-            if Model in MANY_TO_MANY_FIELDS.keys():
+            if Model in MANY_TO_MANY_FIELDS:
                 # This field is a many to many field, which need special handling
                 obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
                 update_m2m_object(
@@ -592,7 +592,7 @@ def create_or_update_objects_from_data(project, data):
                     # the parent object was already created earlier.
                     ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
                     parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
-                    if parent_obj_rel_obj_key in rel_objects.keys():
+                    if parent_obj_rel_obj_key in rel_objects:
                         parent_obj_id = rel_objects[parent_obj_rel_obj_key]
                     else:
                         parent_obj_id = None
@@ -956,7 +956,7 @@ def project_editor_organisation_logo(request, pk=None):
     data = request.data
     errors, changes, rel_objects = [], [], {}
 
-    if 'logo' in data.keys():
+    if 'logo' in data:
         changes, errors, rel_objects = update_object(
             Organisation, pk, 'logo', '', data['logo'], changes, errors,
             rel_objects, 'rsr_organisation.' + str(pk)
