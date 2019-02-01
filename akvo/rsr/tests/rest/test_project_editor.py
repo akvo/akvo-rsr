@@ -872,21 +872,29 @@ class CreateOrUpdateTestCase(TestCase):
         keyword_label = 'keyword-1'
         keyword = Keyword(label=keyword_label)
         keyword.save()
-        data = {u'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id)}
+        keyword_label_2 = 'keyword-2'
+        keyword_2 = Keyword(label=keyword_label_2)
+        keyword_2.save()
+        data = {
+            u'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id),
+            u'rsr_keyword.label.{}_new-2'.format(self.project.id): str(keyword_2.id)
+        }
 
         # When
         errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
 
         # Then
         project = Project.objects.get(id=self.project.id)
-        self.assertEqual(project.keywords.count(), 1)
+        self.assertEqual(project.keywords.count(), 2)
         keyword = project.keywords.first()
         self.assertEqual(keyword_label, keyword.label)
         self.assertEqual(0, len(errors))
-        self.assertEqual(1, len(rel_objects))
-        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(rel_objects))
+        self.assertEqual(2, len(changes))
         self.assertEqual(2, len(changes[0]))
         self.assertEqual(1, len(changes[0][1]))
+        self.assertEqual(2, len(changes[1]))
+        self.assertEqual(1, len(changes[1][1]))
 
     def test_updating_project_attribute_object(self):
         # Given
