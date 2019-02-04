@@ -546,100 +546,113 @@ def group_get_all_fields(grouped_data, key_parts):
     return fields, values, keys
 
 
+def sort_keys(x):
+    """Compute a level at which the model corresponding to the key occurs.
+
+    This function is used to sort keys in the data such that the objects higher
+    in the hierarchy appear before the objects that depend on them.
+
+    For example, Project -> Result -> Indicator, IndicatorPeriod
+
+    The level is computed based on the number of steps we can take in the
+    RELATED_OBJECTS_MAPPING hierarchy before we reach the Project.
+
+    """
+    key_parts = split_key(x)
+    Model = get_model(key_parts.model.app, key_parts.model.model_name)
+    level = 1
+    while Model in RELATED_OBJECTS_MAPPING:
+        level += 1
+        Model, _ = RELATED_OBJECTS_MAPPING[Model]
+    if Model in MANY_TO_MANY_FIELDS or Model != Project:
+        level += 1
+    return level
+
+
 def create_or_update_objects_from_data(project, data):
     errors, changes, rel_objects = [], [], {}
 
-    # Run through the form data 3 times to be sure that all nested objects will be created.
-
-    # Keys like this are possible: 'rsr_indicatorperiod.period_start.1234_new-0_new-0_new-0'
-    # Meaning that there is a new indicator period (the last id is 'new-0'), with a new indicator
-    # (second last id is also 'new-0'), with a new result (second id is also 'new-0'), on an
-    # existing project (project id is '1234').
-
-    # This script runs 4 times if needed, the first time it is at least able to connect the result
-    # to the project and create a result id, which will be stored in rel_objects. The second time
-    # it will definitely be able to create the indicator id, etc.
+    # Keys like this are possible:
+    # 'rsr_indicatorperiod.period_start.1234_new-0_new-0_new-0' Meaning that
+    # there is a new indicator period (the last id is 'new-0'), with a new
+    # indicator (second last id is also 'new-0'), with a new result (second id
+    # is also 'new-0'), on an existing project (project id is '1234'). We sort
+    # the keys in such a way that the result appears before the indicator which
+    # appears before the indicatorperiod. This ensures that objects higher in
+    # the hierarchy, which lower objects depend on, are created first.
 
     grouped_data = group_data_by_objects(data)
+    sorted_keys = sorted(data.keys(), key=sort_keys)
 
-    for i in range(4):
+    for key in sorted_keys:
 
-        if not data:
-            # If there are no more keys in data, we have processed all fields
-            # and no more iterations are needed.
-            break
+        # When saving all fields on an object, a bunch of fields are
+        # removed together. This may cause some keys to not be present,
+        # when iterating over the sorted keys.
+        if key not in data:
+            continue
 
-        for key in sorted(data.keys()):
+        # The keys in form data are of format "rsr_project.title.1234".
+        # Separated by .'s, the data contains the model name, field name and object id list
+        key_parts = split_key(key)
 
-            # When saving all fields on an object, a bunch of fields are
-            # removed together. This may cause some keys to not be present,
-            # when iterating over the sorted keys.
-            if key not in data:
-                continue
+        # Retrieve the model and related object ID (e.g. rsr_project.1234)
+        Model = get_model(key_parts.model.app, key_parts.model.model_name)
+        related_obj_id = ''.join(
+            [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
+        )
 
-            # The keys in form data are of format "rsr_project.title.1234".
-            # Separated by .'s, the data contains the model name, field name and object id list
-            key_parts = split_key(key)
-
-            # Retrieve the model and related object ID (e.g. rsr_project.1234)
-            Model = get_model(key_parts.model.app, key_parts.model.model_name)
-            related_obj_id = ''.join(
-                [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
+        if Model in MANY_TO_MANY_FIELDS:
+            # This field is a many to many field, which need special handling
+            obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
+            update_m2m_object(
+                project, Model, obj_id, key_parts.field, data[key], key, changes, errors,
+                rel_objects, related_obj_id
             )
+            data.pop(key, None)
 
-            if Model in MANY_TO_MANY_FIELDS:
-                # This field is a many to many field, which need special handling
-                obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
-                update_m2m_object(
-                    project, Model, obj_id, key_parts.field, data[key], key, changes, errors,
-                    rel_objects, related_obj_id
-                )
+        elif len(key_parts.ids) == 1:
+            # Already existing object, update it
+            fields, values, keys = group_get_all_fields(grouped_data, key_parts)
+            changes, errors, rel_objects = update_object(
+                Model, key_parts.ids[0], fields, keys, values, changes, errors, rel_objects,
+                related_obj_id
+            )
+            for key in keys:
                 data.pop(key, None)
 
-            elif len(key_parts.ids) == 1:
-                # Already existing object, update it
+        else:
+            # New object, with potentially a new parent as well
+            parent_id = '_'.join(key_parts.ids[:-1])
+
+            if 'new' not in parent_id:
+                # New object, but parent is already existing
+                parent_obj_id = key_parts.ids[-2]
+
+            else:
+                # New object, and parent are new according to the key.
+                # However, it is possible that the parent was already
+                # created earlier in the script. So we also check if
+                # the parent object was already created earlier.
+                ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
+                parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
+                if parent_obj_rel_obj_key in rel_objects:
+                    parent_obj_id = rel_objects[parent_obj_rel_obj_key]
+                else:
+                    parent_obj_id = None
+
+            if parent_obj_id is not None:
                 fields, values, keys = group_get_all_fields(grouped_data, key_parts)
-                changes, errors, rel_objects = update_object(
-                    Model, key_parts.ids[0], fields, keys, values, changes, errors, rel_objects,
+                create_related_object(
+                    parent_obj_id, Model, fields, keys, values, changes, errors, rel_objects,
                     related_obj_id
                 )
                 for key in keys:
                     data.pop(key, None)
 
             else:
-                # New object, with potentially a new parent as well
-                parent_id = '_'.join(key_parts.ids[:-1])
-
-                if 'new' not in parent_id:
-                    # New object, but parent is already existing
-                    parent_obj_id = key_parts.ids[-2]
-
-                else:
-                    # New object, and parent are new according to the key.
-                    # However, it is possible that the parent was already
-                    # created earlier in the script. So we also check if
-                    # the parent object was already created earlier.
-                    ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
-                    parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
-                    if parent_obj_rel_obj_key in rel_objects:
-                        parent_obj_id = rel_objects[parent_obj_rel_obj_key]
-                    else:
-                        parent_obj_id = None
-
-                if parent_obj_id is not None:
-                    fields, values, keys = group_get_all_fields(grouped_data, key_parts)
-                    create_related_object(
-                        parent_obj_id, Model, fields, keys, values, changes, errors, rel_objects,
-                        related_obj_id
-                    )
-                    for key in keys:
-                        data.pop(key, None)
-
-                else:
-                    # Parent object has not been created yet. We can't create the underlying
-                    # object without knowing to which parent it should be linked. Therefore the
-                    # key is not popped from the data, and this object will be
-                    # saved in one of the next iterations.
-                    continue
+                # Parent object has not been created yet.
+                # We should never get to this state!
+                raise RuntimeError('There was a problem walking the hierarchy of objects')
 
     return errors, changes, rel_objects
