@@ -360,9 +360,10 @@ def update_object(Model, obj_id, fields, field_names, values, changes, errors,
         return changes, errors, rel_objects
 
     # Set all the attributes with specified values
-    for field, field_name, value in zip(fields, field_names, values):
+    for i, (field, field_name, value) in enumerate(zip(fields, field_names, values)):
         obj_data, errors = pre_process_data(field_name, value, errors)
         if field_name in [error['name'] for error in errors]:
+            fields.pop(i)
             continue
         setattr(obj, field, obj_data)
 
@@ -379,10 +380,7 @@ def update_object(Model, obj_id, fields, field_names, values, changes, errors,
                 errors = add_error(errors, str(dict(e)[field][0]), field_name)
             else:
                 # FIXME: Not sure this branch is required, here, since we are
-                # saving all the fields in one shot. Currently,
-                # create_related_object doesn't really croup all the calls to
-                # update_object. This branch can possibly removed once that is
-                # fixed.
+                # saving all the fields in one shot.
 
                 # Somewhere else in the model a validation error occurred (or a
                 # combination of fields). We display this nonetheless and do
@@ -413,10 +411,15 @@ def update_object(Model, obj_id, fields, field_names, values, changes, errors,
         return changes, errors, rel_objects
 
 
-def update_m2m_object(project, Model, obj_id, field, obj_data, field_name, changes, errors,
+def update_m2m_object(project, Model, obj_id, field, orig_data, field_name, changes, errors,
                       rel_objects, related_obj_id):
 
     m2m_relation = getattr(project, MANY_TO_MANY_FIELDS[Model])
+
+    # We pre-process the data first. E.g. dates will be converted to datetime objects
+    obj_data, errors = pre_process_data(field_name, orig_data, errors)
+    if field_name in [error['name'] for error in errors]:
+        return
 
     try:
         m2m_object = Model.objects.get(pk=int(obj_data))
@@ -578,12 +581,6 @@ def create_or_update_objects_from_data(project, data):
             # Separated by .'s, the data contains the model name, field name and object id list
             key_parts = split_key(key)
 
-            # We pre-process the data first. E.g. dates will be converted to datetime objects
-            obj_data, errors = pre_process_data(key, data[key], errors)
-            if key in [error['name'] for error in errors]:
-                data.pop(key, None)
-                continue
-
             # Retrieve the model and related object ID (e.g. rsr_project.1234)
             Model = get_model(key_parts.model.app, key_parts.model.model_name)
             related_obj_id = ''.join(
@@ -594,7 +591,7 @@ def create_or_update_objects_from_data(project, data):
                 # This field is a many to many field, which need special handling
                 obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
                 update_m2m_object(
-                    project, Model, obj_id, key_parts.field, obj_data, key, changes, errors,
+                    project, Model, obj_id, key_parts.field, data[key], key, changes, errors,
                     rel_objects, related_obj_id
                 )
                 data.pop(key, None)
