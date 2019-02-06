@@ -328,6 +328,23 @@ def add_changes(changes, obj, field, field_name, orig_data):
     return changes
 
 
+def handle_validation_error(e, fields, field_names, errors):
+    validation_error_dict = dict(e)
+    for field, field_name in zip(fields, field_names):
+        if field in validation_error_dict:
+            # Since we save the object per field, display the (first) error
+            # of this field on the field itself.
+            errors = add_error(errors, str(dict(e)[field][0]), field_name)
+            validation_error_dict.pop(field)
+
+    if validation_error_dict:
+        for field_name in field_names:
+            # Somewhere else in the model a validation error occurred (or a
+            # combination of fields). We display this nonetheless and do
+            # not save the field.
+            errors = add_error(errors, str(validation_error_dict), field_name)
+
+
 def update_object(Model, obj_id, fields, field_names, values, changes, errors,
                   rel_objects, related_obj_id):
     """Update an existing object.
@@ -373,19 +390,7 @@ def update_object(Model, obj_id, fields, field_names, values, changes, errors,
                                 'primary_organisation',
                                 'last_update'])
     except ValidationError as e:
-        for field, field_name in zip(fields, field_names):
-            if field in dict(e):
-                # Since we save the object per field, display the (first) error
-                # of this field on the field itself.
-                errors = add_error(errors, str(dict(e)[field][0]), field_name)
-            else:
-                # FIXME: Not sure this branch is required, here, since we are
-                # saving all the fields in one shot.
-
-                # Somewhere else in the model a validation error occurred (or a
-                # combination of fields). We display this nonetheless and do
-                # not save the field.
-                errors = add_error(errors, str(e), field_name)
+        handle_validation_error(e, fields, field_names, errors)
     except Exception as e:
         for field_name in field_names:
             # Just in case any other error will occur, this will also be
@@ -453,16 +458,7 @@ def create_object(Model, kwargs, fields, field_names, values, changes, errors, r
         obj = Model.objects.create(**kwargs)
         obj.full_clean()
     except ValidationError as e:
-        for field, field_name in zip(fields, field_names):
-            if field in dict(e):
-                # Since we save the object per field, display the (first) error
-                # of this field on the field itself.
-                errors = add_error(errors, str(dict(e)[field][0]), field_name)
-            else:
-                # Somewhere else in the model a validation error occurred (or a
-                # combination of fields). We display this nonetheless and do
-                # not save the field.
-                errors = add_error(errors, str(e), field_name)
+        handle_validation_error(e, fields, field_names, errors)
         obj.delete()
     except MultipleObjectsReturned:
         # Multiple reporting organisations are not allowed and will raise a MultipleObjectsReturned
