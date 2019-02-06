@@ -4609,40 +4609,19 @@ function expandAccordion(highlight) {
         stepInput.parentElement.firstElementChild.click();
         stepInput.parentElement.firstElementChild.scrollIntoView();
         location.hash = "";
-    } else if (location.hash.indexOf("#result.") == 0) {
-        // Expand result
+    } else {
         var hash = location.hash,
-            result = document.getElementById(location.hash.substring(1));
-        location.hash = "#stepFive";
-        expandAccordion();
-        result.querySelector(".hide-partial-click").click();
-        if (highlight) {
-            result.classList.add("error-highlight");
-            result.scrollIntoView();
-            location.hash = hash;
+            element = document.getElementById(location.hash.substring(1)),
+            ancestor = findAncestorByClass(element, "parent");
+        if (ancestor === null) {
+            ancestor = findAncestorByClass(element, "formStep").querySelector("input[type=radio]");
         }
-    } else if (location.hash.indexOf("#indicator.") == 0) {
-        // Expand indicator
-        var hash = location.hash,
-            indicator = document.getElementById(location.hash.substring(1));
-        location.hash = "#" + findAncestorByClass(indicator, "parent").getAttribute("id");
+        location.hash = "#" + ancestor.getAttribute("id");
         expandAccordion();
-        indicator.querySelector(".hide-partial-click").click();
+        element.querySelector(".hide-partial-click").click();
         if (highlight) {
-            indicator.classList.add("error-highlight");
-            indicator.scrollIntoView();
-            location.hash = hash;
-        }
-    } else if (location.hash.indexOf("#indicator_period.") == 0) {
-        // Expand indicator_period
-        var hash = location.hash,
-            period = document.getElementById(location.hash.substring(1));
-        location.hash = "#" + findAncestorByClass(period, "parent").getAttribute("id");
-        expandAccordion();
-        period.querySelector(".hide-partial-click").click();
-        if (highlight) {
-            period.classList.add("error-highlight");
-            period.scrollIntoView();
+            element.classList.add("error-highlight");
+            element.scrollIntoView();
             location.hash = hash;
         }
     }
