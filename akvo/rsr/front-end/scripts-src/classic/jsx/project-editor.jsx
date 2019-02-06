@@ -1961,15 +1961,16 @@ function addPartial(partialName, partialContainer) {
 
         // Update help icons and progress bars
         updateHelpIcons("." + partialName + "-container");
-        setPageCompletionPercentage();
-        setAllSectionsCompletionPercentage();
-        setAllSectionsChangeListener();
-        setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
         setPartialOnClicks();
         setFileUploads();
         checkPartnerships();
+
+        setPageCompletionPercentage();
+        setAllSectionsCompletionPercentage();
+        setAllSectionsChangeListener();
+        setValidationListeners();
     };
 }
 
