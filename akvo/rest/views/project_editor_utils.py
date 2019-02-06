@@ -334,15 +334,18 @@ def handle_validation_error(e, fields, field_names, errors):
         if field in validation_error_dict:
             # Since we save the object per field, display the (first) error
             # of this field on the field itself.
-            errors = add_error(errors, str(dict(e)[field][0]), field_name)
+            errors = add_error(errors, str(validation_error_dict[field][0]), field_name)
             validation_error_dict.pop(field)
 
     if validation_error_dict:
-        for field_name in field_names:
+        for key, value in validation_error_dict.items():
             # Somewhere else in the model a validation error occurred (or a
             # combination of fields). We display this nonetheless and do
             # not save the field.
-            errors = add_error(errors, str(validation_error_dict), field_name)
+            field, field_name = fields[0], field_names[0]
+            # Guess the correct field_name and display the error
+            actual_field_name = field_name.replace('.{}.'.format(field), '.{}.'.format(key))
+            errors = add_error(errors, str(value[0]), actual_field_name)
 
 
 def update_object(Model, obj_id, fields, field_names, values, changes, errors,
