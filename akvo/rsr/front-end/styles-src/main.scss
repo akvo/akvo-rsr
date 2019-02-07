@@ -3152,8 +3152,8 @@ body {
         margin-bottom: 10px;
         transition: background 0.1s linear;
     }
-    div.error-highlight {
-        background: lightgoldenrodyellow;
+    .error-highlight {
+        background: lightgoldenrodyellow !important;
     }
     div.partial-header {
         font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
