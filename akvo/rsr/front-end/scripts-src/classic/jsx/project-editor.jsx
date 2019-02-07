@@ -4666,8 +4666,15 @@ function expandAccordion(highlight) {
         }
         if (highlight) {
             element.classList.add("error-highlight");
-            element.scrollIntoView();
+            // Set the hash before scroll, since it seems to do some scroll
+            // stuff in some browsers.
             location.hash = hash;
+            element.scrollIntoView(true);
+            // Avoid scrolling the element under the header
+            if (window.scrollY) {
+                var navElement = document.querySelector("nav");
+                window.scrollBy(0, -navElement.offsetHeight);
+            }
         }
     }
 }
