@@ -2319,6 +2319,7 @@ function setSectionCompletionPercentage(section) {
     var inputResults = getInputResults(section);
     var numInputs = inputResults[0];
     var numInputsCompleted = inputResults[1];
+    var incompleteFields = inputResults[2];
 
     if (numInputs === 0) {
         // There are no mandatory fields, show the section as complete
@@ -2327,6 +2328,7 @@ function setSectionCompletionPercentage(section) {
     }
 
     renderCompletionPercentage(numInputsCompleted, numInputs, section);
+    showIncompleteFields(section, incompleteFields);
 }
 
 function setPageCompletionPercentage() {
@@ -2355,6 +2357,27 @@ function setPageCompletionPercentage() {
     }
 }
 
+function showIncompleteFields(section, fields) {
+    var errors = $(section).find(".section-errors");
+    if (errors.length === 0) {
+        errors = $("<div/>", { class: "section-errors" });
+        errors.insertBefore($(section).find(".formBlock"));
+    }
+    errors.children().remove();
+    fields.map(function(field) {
+        var hash = "#" + (field[1] ? field[1] : field[0]);
+        $("<a/>", { class: "section-error" })
+            .text(hash)
+            .on("click", function() {
+                if (location.hash != hash) {
+                    location.hash = hash;
+                    expandAccordion(true);
+                }
+            })
+            .appendTo(errors);
+    });
+}
+
 function getInputResults(section) {
     function getOrField(field) {
         var validationSets = getValidationSets();
@@ -2379,6 +2402,7 @@ function getInputResults(section) {
     var numInputs = 0;
     var numInputsCompleted = 0;
     var processedFields = [];
+    var incompleteFields = [];
     var mandatoryFields = section.querySelectorAll("span.mandatory");
 
     for (var i = 0; i < mandatoryFields.length; i++) {
@@ -2446,10 +2470,13 @@ function getInputResults(section) {
                 // Regular processing, check if the input is completed
                 if (inputCompleted(field)) {
                     numInputsCompleted += 1;
+                } else {
+                    incompleteFields.push(getIncompleteElementData(field));
                 }
             } else {
                 // There is an 'Or' mandatory field specified
                 if (processedFields.indexOf(orField) > -1) {
+                    // Processing the second orField
                     if (inputCompleted(orField)) {
                         // The 'Or' field has already been processed and was filled
                         numInputsCompleted += 1;
@@ -2457,11 +2484,18 @@ function getInputResults(section) {
                         // The 'Or' field has already been processed and was not filled, but this
                         // field is, so add 2 inputs completed
                         numInputsCompleted += 2;
+                    } else {
+                        incompleteFields.push(getIncompleteElementData(orField));
+                        incompleteFields.push(getIncompleteElementData(field));
                     }
                 } else {
                     // Regular processing, check if the input is completed
+                    // Processing the first orField
                     if (inputCompleted(field)) {
                         numInputsCompleted += 1;
+                    } else {
+                        // one of the orField is incomplete, nothing needs to be
+                        // done, yet!
                     }
                 }
             }
@@ -2470,7 +2504,14 @@ function getInputResults(section) {
         }
     }
 
-    return [numInputs, numInputsCompleted];
+    return [numInputs, numInputsCompleted, incompleteFields];
+}
+
+function getIncompleteElementData(element) {
+    var parentElem = findAncestorByClass(element, "parent");
+    var data = [element.getAttribute("id")];
+    parentElem ? data.push(parentElem.getAttribute("id")) : data.push(null);
+    return data;
 }
 
 function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
@@ -4617,7 +4658,7 @@ function expandAccordion(highlight) {
             ancestor = findAncestorByClass(element, "formStep").querySelector("input[type=radio]");
         }
         location.hash = "#" + ancestor.getAttribute("id");
-        expandAccordion();
+        expandAccordion(highlight);
         element.querySelector(".hide-partial-click").click();
         if (highlight) {
             element.classList.add("error-highlight");
