@@ -79,12 +79,16 @@ spec:
             port: 8000
           initialDelaySeconds: 30
           timeoutSeconds: 1
+          failureThreshold: 12
+          periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /healthz
             port: 8000
           initialDelaySeconds: 30
           timeoutSeconds: 1
+          failureThreshold: 12
+          periodSeconds: 10
         volumeMounts:
             - name: "secret-config"
               mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
