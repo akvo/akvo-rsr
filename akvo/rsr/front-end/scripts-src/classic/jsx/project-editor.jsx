@@ -4647,7 +4647,9 @@ function expandAccordion(highlight) {
         if (!stepInput) {
             return;
         }
-        stepInput.parentElement.firstElementChild.click();
+        if (stepInput.parentElement.querySelector(".formBlock.hidden")) {
+            stepInput.parentElement.firstElementChild.click();
+        }
         stepInput.parentElement.firstElementChild.scrollIntoView();
         location.hash = "";
     } else {
@@ -4659,7 +4661,9 @@ function expandAccordion(highlight) {
         }
         location.hash = "#" + ancestor.getAttribute("id");
         expandAccordion(highlight);
-        element.querySelector(".hide-partial-click").click();
+        if (element.querySelector(".hide-partial.hidden")) {
+            element.querySelector(".hide-partial-click").click();
+        }
         if (highlight) {
             element.classList.add("error-highlight");
             element.scrollIntoView();
