@@ -2364,10 +2364,22 @@ function showIncompleteFields(section, fields) {
         errors.insertBefore($(section).find(".formBlock"));
     }
     errors.children().remove();
+    if (fields.length === 0) {
+        return;
+    }
+    errors.append(
+        $("<span>", { class: "mandatory-fields-help-text" }).text(
+            "The following mandatory fields need to be filled in"
+        )
+    );
     fields.map(function(field) {
         var hash = "#" + (field[1] ? field[1] : field[0]);
-        $("<a/>", { class: "section-error" })
-            .text(hash)
+        var label = $('label[for="' + field[0] + '"]')
+            .text()
+            .replace("*", "")
+            .trim();
+        $("<a/>", { class: "section-error-link" })
+            .text(label)
             .on("click", function() {
                 if (location.hash != hash) {
                     location.hash = hash;

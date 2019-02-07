@@ -3155,6 +3155,12 @@ body {
     .error-highlight {
         background: lightgoldenrodyellow !important;
     }
+    .section-errors{
+        font-size: 10px;
+        .section-error-link{
+            padding-left: 0.5em;
+        }
+    }
     div.partial-header {
         font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight: normal;
