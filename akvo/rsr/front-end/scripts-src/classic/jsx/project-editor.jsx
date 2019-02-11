@@ -2359,8 +2359,8 @@ function setPageCompletionPercentage() {
 
 function showIncompleteFields(section, fields) {
     var errors = $(section).find(".section-errors");
-    if (errors.length === 0) {
-        errors = $("<div/>", { class: "section-errors" });
+    if (errors.length === 0 && fields.length !== 0) {
+        errors = $("<div/>", { class: "section-errors alert alert-warning" });
         errors.insertBefore($(section).find(".formBlock"));
     }
     errors.children().remove();
@@ -2378,7 +2378,7 @@ function showIncompleteFields(section, fields) {
             .text()
             .replace("*", "")
             .trim();
-        $("<a/>", { class: "section-error-link" })
+        $("<a/>", { class: "section-error-link alert-link" })
             .text(label)
             .on("click", function() {
                 if (location.hash != hash) {
