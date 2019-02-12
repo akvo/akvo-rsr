@@ -45,7 +45,7 @@ SHEET_LOOKUPS = 1
 Sector = namedtuple('Sector', ['project', 'sector_code', 'percentage'])
 
 
-class RequestsWrapper:
+class RequestsWrapper(object):
     """Wrapper class for requests."""
 
     def __init__(self, url_template, url_args=None, method='get', headers=None, data=None):
