@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  web:
+    volumes:
+      - rsr-docker-sync:/var/akvo/rsr/code:nocopy
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
+      - /var/akvo/rsr/code/src/
+
+volumes:
+  rsr-docker-sync:
+    external: true
