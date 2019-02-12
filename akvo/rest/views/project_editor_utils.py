@@ -146,7 +146,11 @@ def pre_process_data(key, data, errors):
     models. Returns the processed data and any errors that have occurred so far.
     """
     # Retrieve field information first
-    key_parts = split_key(key)
+    try:
+        key_parts = split_key(key)
+    except TypeError:
+        return data, errors
+
     Model = get_model(key_parts.model.app, key_parts.model.model_name)
     model_field = Model._meta.get_field(key_parts.field)
 
