@@ -6,4 +6,4 @@ options:
 syncs:
   rsr-docker-sync:
     src: '.'
-    sync_excludes: ['.idea', '.git']
+    sync_excludes: ['.idea', '.git', 'data']
