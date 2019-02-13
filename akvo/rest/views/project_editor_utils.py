@@ -487,8 +487,7 @@ def create_object(Model, kwargs, fields, field_names, values, changes, errors, r
             changes = add_changes(changes, obj, field, field_name, value)
         rel_objects[related_obj_id] = obj.pk
 
-    finally:
-        return changes, errors, rel_objects
+    return changes, errors, rel_objects
 
 
 def create_related_object(parent_obj_id, Model, fields, field_names, values, changes, errors,
