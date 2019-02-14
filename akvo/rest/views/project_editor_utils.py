@@ -419,8 +419,8 @@ def update_object(Model, obj_id, fields, field_names, values, changes, errors,
 
         if not (related_obj_id in rel_objects or isinstance(obj, Project)):
             rel_objects[related_obj_id] = obj.pk
-    finally:
-        return changes, errors, rel_objects
+
+    return changes, errors, rel_objects
 
 
 def update_m2m_object(project, Model, obj_id, field, orig_data, field_name, changes, errors,
