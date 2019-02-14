@@ -43,6 +43,13 @@ To install add a new dependency, add it to `requirements.txt`.
 
 Ensure that RSR is running. Chances are, a 502 means that no RSR app is running.
 
+
+##### Q: How do create a copy of the test/live DB for local testing?
+
+See the instructions in the
+[restore-elephantsql-dump-to-dev-env.sh](https://github.com/akvo/akvo-rsr/blob/develop/scripts/data/restore-elephantsql-dump-to-dev-env.sh#L3)
+file.
+
 ## Helpful notes
 
 * When you are done developing, run `docker-compose down` to stop and remove
@@ -52,7 +59,6 @@ Ensure that RSR is running. Chances are, a 502 means that no RSR app is running.
 
 * The `akvo-rsr` repository from your local machine is synced to the virtual
   machine, and the RSR application will restart when you make code changes.
-
 
 ## Useful scripts
 
