@@ -56,4 +56,4 @@ Ensure that RSR is running. Chances are, a 502 means that no RSR app is running.
 
 ## Useful scripts
 
-There are a variety of useful scripts in `scripts/devehelpers`.
+There are a variety of useful scripts in `scripts/devhelpers`.
