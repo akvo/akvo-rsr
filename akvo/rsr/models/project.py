@@ -17,9 +17,8 @@ from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.apps import apps
-from django.db.models import Max, Sum
+from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete
-from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -29,22 +28,20 @@ from sorl.thumbnail.fields import ImageField
 
 from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
                                    FinanceType, FlowType, TiedStatus)
-from akvo.codelists.store.default_codelists import (AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS,
-                                                    COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
-                                                    FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY)
+from akvo.codelists.store.default_codelists import (
+    AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE, CURRENCY,
+    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY
+)
 from akvo.utils import (codelist_choices, codelist_value, codelist_name, rsr_image_path,
                         rsr_show_keywords, single_period_dates)
-
 
 from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
-from .country import Country
 from .iati_check import IatiCheck
 from .result import IndicatorPeriod
 from .link import Link
-from .models_utils import OrganisationsQuerySetManager, QuerySetManager
-from .organisation import Organisation
+from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
@@ -421,11 +418,7 @@ class Project(TimestampsMixin, models.Model):
         ProjectUpdate, related_name='the_project', null=True, on_delete=models.SET_NULL
     )
 
-    # Custom manager
-    # based on http://www.djangosnippets.org/snippets/562/ and
-    # http://simonwillison.net/2008/May/1/orm/
-    objects = QuerySetManager()
-    organisations = OrganisationsQuerySetManager()
+    objects = ProjectQuerySet.as_manager()
 
     class Meta:
         app_label = 'rsr'
@@ -675,190 +668,6 @@ class Project(TimestampsMixin, models.Model):
                 if location.country and location.country.iso_code not in country_codes
             ]
         )
-
-    class QuerySet(DjangoQuerySet):
-        def of_partner(self, organisation):
-            "return projects that have organisation as partner"
-            return self.filter(partners__exact=organisation)
-
-        def of_partners(self, organisations):
-            "return projects that have one of the organisations as partner"
-            return self.filter(partners__in=organisations)
-
-        def has_location(self):
-            return self.filter(primary_location__isnull=False)
-
-        def published(self):
-            return self.filter(publishingstatus__status=PublishingStatus.STATUS_PUBLISHED)
-
-        def unpublished(self):
-            return self.filter(publishingstatus__status=PublishingStatus.STATUS_UNPUBLISHED)
-
-        def private(self):
-            return self.filter(is_public=False)
-
-        def public(self):
-            return self.filter(is_public=True)
-
-        def status_none(self):
-            return self.filter(iati_status__exact='6')
-
-        def status_active(self):
-            return self.filter(iati_status__exact='2')
-
-        def status_onhold(self):
-            return self.filter(iati_status__exact='1')
-
-        def status_complete(self):
-            return self.filter(iati_status__exact='3')
-
-        def status_not_complete(self):
-            return self.exclude(iati_status__exact='3')
-
-        def status_post_complete(self):
-            return self.filter(iati_status__exact='4')
-
-        def status_not_post_complete(self):
-            return self.exclude(iati_status__exact='4')
-
-        def status_cancelled(self):
-            return self.filter(iati_status__exact='5')
-
-        def status_not_cancelled(self):
-            return self.exclude(iati_status__exact='5')
-
-        def status_archived(self):
-            return self.filter(iati_status__exact='6')
-
-        def status_not_archived(self):
-            return self.exclude(iati_status__exact='6')
-
-        # aggregates
-        def budget_sum(self):
-            ''' aggregates the budgets of all the projects in the QS
-                n.b. non-chainable, doesn't return a QS
-            '''
-            return self.aggregate(budget=Sum('budget'),)['budget'] or 0
-
-        def funds_sum(self):
-            ''' aggregates the funds of all the projects in the QS
-                n.b. non-chainable, doesn't return a QS
-            '''
-            return self.aggregate(funds=Sum('funds'),)['funds'] or 0
-
-        def funds_needed_sum(self):
-            ''' aggregates the funds of all the projects in the QS
-                n.b. non-chainable, doesn't return a QS
-            '''
-            return self.aggregate(funds_needed=Sum('funds_needed'),)['funds_needed'] or 0
-
-        def get_largest_value_sum(self, benchmarkname, cats=None):
-            if cats:
-                # filter finds largest "benchmarkname" value in benchmarks for categories in cats
-                result = self.filter(
-                    benchmarks__name__name=benchmarkname,
-                    benchmarks__category__name__in=cats
-                )
-            else:
-                # filter finds largest "benchmarkname" value in benchmarks for all categories
-                result = self.filter(
-                    benchmarks__name__name=benchmarkname
-                )
-            # annotate the greatest of the "benchmarkname" values into max_value
-            # sum max_value for all projects
-            return result.annotate(max_value=Max('benchmarks__value')).aggregate(
-                Sum('max_value')
-            )['max_value__sum'] or 0  # we want to return 0 instead of an empty QS
-
-        def get_planned_water_calc(self):
-            "how many will get improved water"
-            return self.status_not_cancelled().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Water']
-            ) - self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Water']
-            )
-
-        def get_planned_sanitation_calc(self):
-            "how many will get improved sanitation"
-            return self.status_not_cancelled().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Sanitation']
-            ) - self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Sanitation']
-            )
-
-        def get_actual_water_calc(self):
-            "how many have gotten improved water"
-            return self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Water']
-            )
-
-        def get_actual_sanitation_calc(self):
-            "how many have gotten improved sanitation"
-            return self.status_complete().get_largest_value_sum(
-                getattr(settings, 'AFFECTED_BENCHMARKNAME', 'people affected'),
-                ['Sanitation']
-            )
-
-        def all_updates(self):
-            """Return ProjectUpdates for self, newest first."""
-            return ProjectUpdate.objects.filter(project__in=self).distinct()
-
-        # The following 8 methods return organisation querysets
-        def _partners(self, role=None):
-            orgs = Organisation.objects.filter(partnerships__project__in=self)
-            if role:
-                orgs = orgs.filter(partnerships__iati_organisation_role=role)
-            return orgs.distinct()
-
-        def field_partners(self):
-            return self._partners(Partnership.IATI_IMPLEMENTING_PARTNER)
-
-        def funding_partners(self):
-            return self._partners(Partnership.IATI_FUNDING_PARTNER)
-
-        def sponsor_partners(self):
-            return self._partners(Partnership.AKVO_SPONSOR_PARTNER)
-
-        def support_partners(self):
-            return self._partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
-
-        def extending_partners(self):
-            return self._partners(Partnership.IATI_EXTENDING_PARTNER)
-
-        def all_partners(self):
-            return self._partners()
-
-        def paying_partners(self):
-            return Organisation.objects.filter(
-                partnerships__project__in=self,
-                can_create_projects=True
-            ).distinct()
-
-        def countries(self):
-            """Returns a Country queryset of the countries of these projects"""
-            country_ids = []
-            for project in self:
-                for location in project.locations.all():
-                    country_ids.append(location.country.id)
-
-            country_ids = list(set(country_ids))
-            return Country.objects.filter(id__in=country_ids).distinct()
-
-        def publishingstatuses(self):
-            return PublishingStatus.objects.filter(project__in=self)
-
-        def keywords(self):
-            Keyword = apps.get_model('rsr', 'Keyword')
-            return Keyword.objects.filter(projects__in=self).distinct()
-
-        def sectors(self):
-            Sector = apps.get_model('rsr', 'Sector')
-            return Sector.objects.filter(project__in=self).distinct()
 
     def __unicode__(self):
         return u'%s' % self.title

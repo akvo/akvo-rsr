@@ -19,6 +19,7 @@ from django.utils.translation import ugettext_lazy as _
 from akvo import settings
 from akvo.rsr.mixins import TimestampsMixin
 from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
+from akvo.rsr.models.project import MultipleReportingOrgs
 from akvo.utils import get_sha1_hash
 
 

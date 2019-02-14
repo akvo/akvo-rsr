@@ -16,10 +16,9 @@ from django.contrib.auth.models import Group
 from django.core.cache import cache
 from django.test import TestCase, Client
 
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              Employment, Keyword, PartnerSite,
-                             PublishingStatus, ProjectLocation, Country,
+                             PublishingStatus, ProjectLocation,
                              RecipientCountry, ProjectEditorValidationSet,
                              OrganisationCustomField, ProjectCustomField)
 
