@@ -164,7 +164,7 @@ class RsrUpTest(TestCase):
         <video_credit></video_credit>
         </root>
         """
-        photo = open(join(HERE, '../../static/images/default-org-logo.jpg')).read()
+        photo = open(join(HERE, '../../static/rsr/images/default-org-logo.jpg')).read()
         data = XML_TEMPLATE.format(
             project=self.project.pk,
             user=user.id,

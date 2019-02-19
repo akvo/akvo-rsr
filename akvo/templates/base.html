@@ -16,22 +16,22 @@
       <meta property="og:description" content="{{update.text|truncatechars_html:500}}"/>
       <meta name="Description" content="{{update.text|truncatechars_html:500}}"/>
       {% if update.photo %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
       {% else %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/images/rsrLogo.svg"/>
       {% endif %}
     {% elif project %}
       <meta property="og:title" content="{{project.title}}"/>
       <meta property="og:description" content="{{project.subtitle}}"/>
       <meta name="Description" content="{{project.subtitle}}"/>
       {% if project.current_image %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.url}}"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{project.current_image.url}}"/>
       {% else %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/images/rsrLogo.svg"/>
       {% endif %}
     {% else %}
       <meta property="og:title" content="Akvo RSR"/>
-      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
+      <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/images/rsrLogo.svg"/>
       <meta property="og:description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>
       <meta name="Description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>
     {% endif %}
@@ -44,7 +44,7 @@
     {% if favicon %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
     {% else %}
-        <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/images/favicon.ico" type="image/x-icon">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 

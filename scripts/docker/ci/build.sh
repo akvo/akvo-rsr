@@ -21,7 +21,7 @@ log Running makemigrations
 python manage.py makemigrations rsr | grep -i "no changes"
 
 log Building node environment
-pushd akvo/rsr/static
+pushd akvo/rsr/front-end
 npm install
 npm run dev
 npm run test

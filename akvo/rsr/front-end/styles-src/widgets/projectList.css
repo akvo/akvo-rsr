@@ -86,7 +86,7 @@ td.projectFundingTd {
 	font-size: 0.7em;
 	text-transform: uppercase;
 	color: rgb(255,255,255);
-	background: url(pinLocation.png) left top no-repeat;
+	background: url(../images/pinLocation.png) left top no-repeat;
 	margin: 0 0 0 5px;
 	white-space: normal;
 	text-overflow: ellipsis;
@@ -99,7 +99,7 @@ td.projectFundingTd {
 
 .lightBG .projectLocTd .projectLocation {
 	color: rgb(32,32,36);
-	background: url(pinLocationBk.png) left center no-repeat;
+	background: url(../images/pinLocationBk.png) left center no-repeat;
 }
 .projectStatus {
 	font-size:0.8em;

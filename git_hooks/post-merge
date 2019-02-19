@@ -1,4 +1,4 @@
 #!/bin/sh
 
-find `pwd`'/akvo/rsr/static' -type d -exec chmod 777 {} \;
-find `pwd`'/akvo/rsr/static' -type f -exec chmod 777 {} \;
+find `pwd`'/akvo/rsr/front-end' -type d -exec chmod 777 {} \;
+find `pwd`'/akvo/rsr/front-end' -type f -exec chmod 777 {} \;

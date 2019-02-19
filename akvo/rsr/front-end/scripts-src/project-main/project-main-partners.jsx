@@ -81,7 +81,7 @@ function renderPartnersTab() {
             if (logoUrl !== "") {
                 return <img src={logoUrl} style={logoStyle} />;
             } else {
-                return <img src={"/static/images/default-org-logo.jpg"} style={logoStyle} />;
+                return <img src={"/static/rsr/images/default-org-logo.jpg"} style={logoStyle} />;
             }
         },
 

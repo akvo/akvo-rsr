@@ -11,7 +11,7 @@ trap _term SIGTERM
 
 ./scripts/docker/dev/wait-for-dependencies.sh
 
-pushd akvo/rsr/static
+pushd akvo/rsr/front-end
 if [[ ! -d "node_modules" ]]; then
   npm install
 fi

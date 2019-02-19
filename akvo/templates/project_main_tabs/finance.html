@@ -31,7 +31,7 @@
                           {% if partnership.organisation %}
                           <dt class="funders"><a href="{% url 'organisation-main' partnership.organisation.pk %}">{% img partnership.organisation 80 60 partnership.organisation.name %}</a></dt>
                           {% else %}
-                          <dt class="funders"><img src="/static/images/default-org-logo.jpg" class="unknownFunderLogo"></dt>
+                          <dt class="funders"><img src="{{ STATIC_URL }}rsr/images/default-org-logo.jpg" class="unknownFunderLogo"></dt>
                           {% endif %}
                           <dd class="funders">
                               {% if partnership.organisation %}

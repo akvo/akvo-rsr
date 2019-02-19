@@ -194,7 +194,7 @@ var ProjectDirectory = React.createClass({
                 longitude: project.longitude,
                 url: project.url,
                 text: project.title,
-                icon: "/static/images/maps/blueMarker.png",
+                icon: "/static/rsr/images/maps/blueMarker.png",
                 image: project.image,
                 highlightId: "#project-" + project.id
             };

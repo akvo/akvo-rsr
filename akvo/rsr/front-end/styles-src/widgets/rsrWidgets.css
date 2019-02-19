@@ -218,7 +218,7 @@ a img { border: none; }
 	visibility: visible;
 }
 #container.darkBG header h1 { color: rgb(74,179,227); }
-#container.darkBG header a { background: url(logoDark.png) center center no-repeat; }
+#container.darkBG header a { background: url(../images/logoDark.png) center center no-repeat; }
 #container.lightBG header { color: rgb(32,32,36); }
 #container.lightBG header:after {
 	border-bottom: 1px solid rgb(223, 223, 223);
@@ -230,7 +230,7 @@ a img { border: none; }
 	visibility: visible;
 }
 #container.lightBG header h1 { color: rgb(44,42,116); }
-#container.lightBG header a { background: url(logoLight.png) center center no-repeat; }
+#container.lightBG header a { background: url(../images/logoLight.png) center center no-repeat; }
 /*************************** Widget div ***********************/
 #content { position: relative; }
 /*************************** Project panel ***********************/
@@ -264,14 +264,14 @@ ul.basicInfo li .projectLocation {
 	font-size: 0.6em;
 	text-transform: uppercase;
 	color: rgb(255,255,255);
-	background: url(pinLocation.png) left center no-repeat;
+	background: url(../images/pinLocation.png) left center no-repeat;
 	margin: 0 0 0 5px;
 	text-overflow: ellipsis;
 	line-height: 1;
 }
 #container.lightBG ul.basicInfo li .projectLocation {
 	color: rgb(32,32,36);
-	background: url(pinLocationBk.png) left center no-repeat;
+	background: url(../images/pinLocationBk.png) left center no-repeat;
 }
 #project_title {
 	width: 98%;
