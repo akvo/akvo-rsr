@@ -15,7 +15,7 @@ pushd akvo/rsr/front-end
 if [[ ! -d "node_modules" ]]; then
   npm install
 fi
-if [[ ! -f "dist/vendors.js" ]]; then
+if [[ ! -f "static/rsr/dist/vendors.js" ]]; then
   npm run dev
 fi
 npm run devw&
