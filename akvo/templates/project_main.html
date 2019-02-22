@@ -1,6 +1,8 @@
 {% extends "base.html" %}
-{% load pipeline i18n rsr_utils rsr_tags rules %}
+{% load i18n rsr_utils rsr_tags rules %}
 {% load rsr_filters humanize markup_tags %}
+{% load render_bundle from webpack_loader %}
+
 {% block title %}{{ project.title }}{% endblock title %}
 {% block maincontent %}
     <div class="header-container">
@@ -196,10 +198,10 @@
     <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
 
-    {% javascript 'more_partners' %}
-    {% javascript 'donate_popup' %}
-    {% javascript 'project_main' %}
-    {% javascript 'project_main_partners' %}
-    {% javascript 'project_main_report' %}
+    {% render_bundle 'projectMainPartners' %}
+    {% render_bundle 'morePartners' %}
+    {% render_bundle 'donatePopup' %}
+    {% render_bundle 'projectMain' %}
+    {% render_bundle 'projectMainReport' %}
 
 {% endblock js %}

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load addparam bootstrap3 pipeline humanize i18n maps rsr_tags rsr_utils thumbnail %}
+{% load addparam bootstrap3 humanize i18n maps rsr_tags rsr_utils thumbnail %}
+{% load render_bundle from webpack_loader %}
+
 {% block title %}{% trans 'Projects' %}{% endblock %}
 {% block maincontent %}
 
@@ -80,9 +82,9 @@
         {% include 'project_partner_data.html' %}
     {% endfor %}
 
-    {% javascript 'directory_utils' %}
-    {% javascript 'project_directory' %}
-    {% javascript 'more_partners' %}
-    {% javascript 'donate_popup' %}
+    {% render_bundle 'directoryUtils' %}
+    {% render_bundle 'projectDirectory' %}
+    {% render_bundle 'morePartners' %}
+    {% render_bundle 'donatePopup' %}
 
 {% endblock js %}

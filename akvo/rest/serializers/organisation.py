@@ -104,6 +104,6 @@ class OrganisationDirectorySerializer(BaseRSRSerializer):
             logger.error(
                 'Failed to get thumbnail for image %s with error: %s', organisation.logo, e
             )
-            default_logo = '{}{}'.format(settings.STATIC_URL, 'images/default-org-logo.jpg')
+            default_logo = '{}{}'.format(settings.STATIC_URL, 'rsr/images/default-org-logo.jpg')
             url = organisation.logo.url if organisation.logo.name else default_logo
         return url

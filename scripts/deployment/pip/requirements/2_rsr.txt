@@ -42,7 +42,6 @@ Markdown==2.4
 Pillow==2.7.0
 python-memcached==1.53
 template-utils==0.4p2
-django-pipeline==1.6.11
 
 # Images and videos
 sorl-thumbnail==12.2
@@ -94,3 +93,6 @@ unicodecsv==0.14.1
 
 # Password requirements
 bcrypt==3.1.4
+
+# Javascript tools integration
+django-webpack-loader

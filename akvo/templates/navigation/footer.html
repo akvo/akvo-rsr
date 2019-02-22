@@ -42,14 +42,14 @@
         <li>
           <div class="dropup langDropdown">
             <button class=" dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{STATIC_URL}}images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
+              <img src="{{STATIC_URL}}rsr/images/flags/128/{{LANGUAGE_CODE}}.png" width="20" height="20" />
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
               {% get_language_info_list for LANGUAGES as languages %}
               {% for language in languages %}
                 {% if not language.code == LANGUAGE_CODE %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/{{language.code}}/{{current_path_without_lang}}"><img src="{{STATIC_URL}}rsr/images/flags/128/{{language.code}}.png" width="20" height="20" /> {{ language.name_local|title }}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>

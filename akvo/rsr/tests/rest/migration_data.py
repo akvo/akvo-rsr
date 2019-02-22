@@ -37,7 +37,7 @@ ORGANISATION_XML = """
 """
 
 GET_URLS = [
-    # akvo/rsr/static/scripts-src/my-projects.js
+    # akvo/rsr/front-end/scripts-src/my-projects.js
     '/rest/v1/project/?format=json',
 
     # akvo/scripts/cordaid/organisation_upload.py
@@ -49,13 +49,13 @@ GET_URLS = [
     "/rest/v1/project/?filter={'title__icontains':'fiber'}&exclude={'currency':'EUR'}&format=json",
     "/rest/v1/project/?filter={'partners__in':[2,3]}&prefetch_related=['partners']&format=json",
 
-    # akvo/rsr/static/scripts-src/project-directory-typeahead.jsx
+    # akvo/rsr/front-end/scripts-src/project-directory-typeahead.jsx
     '/rest/v1/typeaheads/organisations?format=json',
 
-    # akvo/rsr/static/scripts-src/my-details-employments.jsx
+    # akvo/rsr/front-end/scripts-src/my-details-employments.jsx
     '/rest/v1/typeaheads/countries?format=json',
 
-    # akvo/rsr/static/scripts-src/project-main/project-main-report.jsx
+    # akvo/rsr/front-end/scripts-src/project-main/project-main-report.jsx
     '/rest/v1/project/4/?format=json',
     '/rest/v1/project_location/?format=json&location_target=4',
     '/rest/v1/indicator/?format=json&result__project=4',
@@ -71,34 +71,34 @@ GET_URLS = [
     '/rest/v1/crs_add_other_flag/?format=json&crs__project=4',
     '/rest/v1/fss_forecast/?format=json&fss__project=4',
 
-    # akvo/rsr/static/scripts-src/project-directory.js
+    # akvo/rsr/front-end/scripts-src/project-directory.js
     '/rest/v1/typeaheads/projects?format=json',
 
-    # akvo/rsr/static/scripts-src/update-directory.js
+    # akvo/rsr/front-end/scripts-src/update-directory.js
     '/rest/v1/typeaheads/project_updates?format=json',
 
-    # akvo/rsr/static/scripts-src/my-reports.js
+    # akvo/rsr/front-end/scripts-src/my-reports.js
     '/rest/v1/report_formats/?format=json',
     '/rest/v1/reports/?format=json',
     '/rest/v1/typeaheads/user_organisations?format=json',
     '/rest/v1/typeaheads/user_projects?format=json',
 
-    # akvo/rsr/static/scripts-src/my-results.js
+    # akvo/rsr/front-end/scripts-src/my-results.js
     '/rest/v1/partnership/?format=json&project=4',
     '/rest/v1/user/3/?format=json',
     '/rest/v1/result/?format=json&project=4',
     '/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=4',
     '/rest/v1/indicator_period_framework/1/?format=json',
 
-    # akvo/rsr/static/scripts-src/my-results-select.jsx
+    # akvo/rsr/front-end/scripts-src/my-results-select.jsx
     '/rest/v1/typeaheads/impact_projects?format=json',
 
-    # akvo/rsr/static/scripts-src/my-iati.js
+    # akvo/rsr/front-end/scripts-src/my-iati.js
     '/rest/v1/project_iati_export/?format=json&limit=50&reporting_org=1',
     '/rest/v1/iati_export/?format=json&reporting_organisation=2&ordering=-id&limit=1',
     '/rest/v1/iati_export/?format=json&reporting_organisation=3',
 
-    # akvo/rsr/static/scripts-src/project-main/project-main-partners.js
+    # akvo/rsr/front-end/scripts-src/project-main/project-main-partners.js
     '/rest/v1/partnership_more_link/?format=json&project=4',
 
     # RSR UP urls ################
@@ -130,7 +130,7 @@ GET_URLS = [
 ]
 
 POST_URLS = [
-    # akvo/rsr/static/scripts-src/project-editor.jsx
+    # akvo/rsr/front-end/scripts-src/project-editor.jsx
     ('/rest/v1/project/4/project_editor/?format=json',
      {'rsr_project.title.4': 'foo bar', 'content_type': None},
      ('Project.objects.get(id=4).title',),),
@@ -228,7 +228,7 @@ POST_URLS = [
      ORGANISATION_XML.strip(),
      ('Organisation.objects.count()',),),
 
-    # akvo/rsr/static/scripts-src/my-user-management.js
+    # akvo/rsr/front-end/scripts-src/my-user-management.js
     ('/rest/v1/invite_user/?format=json',
      {'user_data': '{"organisation": 1, "group": 2, "email": "abc@example.com"}'},
      ('User.objects.count()',),),
@@ -239,7 +239,7 @@ POST_URLS = [
     ('/rest/v1/employment/14/set_group/2/?format=json',
      {}, ('Employment.objects.filter(group_id=2).count()',)),
 
-    # # akvo/rsr/static/scripts-src/my-results.js
+    # # akvo/rsr/front-end/scripts-src/my-results.js
     ('/rest/v1/indicator_period_data/1/upload_file/?format=json',
      {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
       'type': 'photo',
@@ -254,7 +254,7 @@ POST_URLS = [
      {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "D"},
      ('IndicatorPeriodData.objects.count()',),),
 
-    # akvo/rsr/static/scripts-src/my-iati.js
+    # akvo/rsr/front-end/scripts-src/my-iati.js
     ('/rest/v1/iati_export/?format=json',
      {"reporting_organisation": 1, "user": 1, "version": "2", "projects": [4]},
      ('IatiExport.objects.count()',),),
@@ -321,12 +321,12 @@ POST_URLS = [
 ]
 
 PATCH_URLS = [
-    # akvo/rsr/static/scripts-src/project-editor.jsx
+    # akvo/rsr/front-end/scripts-src/project-editor.jsx
     # '/rest/v1/project/{project_id}/?format=json',
     # '/rest/v1/project_document/{documentId}/?format=json',
     # '/rest/v1/publishing_status/{publishing_status_id}/?format=json',
 
-    # akvo/rsr/static/scripts-src/my-results.js
+    # akvo/rsr/front-end/scripts-src/my-results.js
     # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
 
     ('/rest/v1/indicator_period_framework/6/?format=json',
@@ -338,7 +338,7 @@ PATCH_URLS = [
      ('IndicatorPeriod.objects.filter(locked=False).count()',),)
 
 
-    # akvo/rsr/static/scripts-src/my-iati.js
+    # akvo/rsr/front-end/scripts-src/my-iati.js
     # "/rest/v1/iati_export/{iati_export}/?format=json",
     # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
 ]
@@ -346,13 +346,13 @@ PATCH_URLS = [
 
 DELETE_URLS = [
 
-    # akvo/rsr/static/scripts-src/my-details-employments.jsx
+    # akvo/rsr/front-end/scripts-src/my-details-employments.jsx
     ('/rest/v1/employment/1/?format=json',
      {},
      ('Employment.objects.count()', )),
 
 
-    # akvo/rsr/static/scripts-src/project-editor.jsx
+    # akvo/rsr/front-end/scripts-src/project-editor.jsx
     ('/rest/v1/project/4/remove_validation/1/?format=json', {},
      ('Project.objects.get(id=4).validations.count()',)),
 
@@ -361,9 +361,9 @@ DELETE_URLS = [
 
     # '/rest/v1/{itemType}/{itemId}/?format=json',
 
-    # # akvo/rsr/static/scripts-src/my-updates.js
+    # # akvo/rsr/front-end/scripts-src/my-updates.js
     # '/rest/v1/project_update/{update_id}/?format=json',
 
-    # # akvo/rsr/static/scripts-src/my-results.js
+    # # akvo/rsr/front-end/scripts-src/my-results.js
     # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
 ]

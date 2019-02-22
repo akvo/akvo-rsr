@@ -28,10 +28,10 @@ Vagrantfile
 dev-env
 venv
 scripts/dev-vm
-scripts/devhelpers/node_modules
-akvo/rsr/static/node_modules
+akvo/rsr/front-end/node_modules/
+akvo/rsr/front-end/static/rsr/dist/
 vagrant/vagrant-ssh-conf.*
-
+webpack-stats.json
 
 # PG migration
 pg_migrate_conf.yml
@@ -114,8 +114,8 @@ tramp
 *.hp6rKR
 
 # SASS
-akvo/rsr/static/styles-src/.sass-cache
-akvo/rsr/static/styles-src/*.map
+akvo/rsr/front-end/styles-src/.sass-cache
+akvo/rsr/front-end/styles-src/*.map
 
 # Landscape
 !.landscape.yaml
