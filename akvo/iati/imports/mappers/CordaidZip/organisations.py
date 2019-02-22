@@ -90,6 +90,8 @@ class Organisations(ImportMapper):
         InternalOrganisationID model, using the org_id from the XML, but if we don't find, the org
         that way we need to create it before we can create the InternalOrganisationID object.
         """
+        from akvo.rsr.models.internal_organisation_id import InternalOrganisationID
+        from akvo.rsr.models.organisation import Organisation
 
         ioids = InternalOrganisationIDs(
             self.iati_import_job, self.parent_elem, self.project, self.globals)

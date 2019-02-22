@@ -47,6 +47,7 @@ class Partnerships(Partnerships):
         """
         from . import CORDAID_ORG_ID, OTHERS_ORG_ID, CORDAID
         from akvo.rsr.models.organisation import Organisation
+        from akvo.rsr.models.partnership import Partnership
 
         assert budget_from == "Cordaid" or budget_from == "Others", (
             "akvo:budget-from value incorrect: {}".format(budget_from))
@@ -67,6 +68,7 @@ class Partnerships(Partnerships):
         :return: List; contains fields that have changed
         """
         from . import CORDAID, OTHERS
+        from akvo.rsr.models.partnership import Partnership
 
         # "Regular" partners
         for partnership in self.parent_elem.findall('participating-org'):
