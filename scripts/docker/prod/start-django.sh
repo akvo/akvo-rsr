@@ -14,6 +14,11 @@ _term() {
 trap _term SIGTERM
 
 log Migrating
+if [ ! -f "/var/akvo/rsr/mediaroot/fake-migration-flag" ]; then
+    log Running fake initial migrations
+    python manage.py migrate --fake-initial --noinput;
+    touch "/var/akvo/rsr/mediaroot/fake-migration-flag";
+fi
 python manage.py migrate --noinput
 
 log Adding to crontab
