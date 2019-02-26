@@ -74,7 +74,7 @@ rules==0.3
 django-nested-inline==0.3.7
 
 # Task scheduling
-django-crontab==0.6.0
+django-crontab==0.7.1
 
 # Testing and code coverage libraries
 coveralls
