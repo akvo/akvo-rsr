@@ -16,6 +16,7 @@ class PartnershipRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Partnership
+        fields = '__all__'
 
 
 class PartnershipRawDeepSerializer(PartnershipRawSerializer):

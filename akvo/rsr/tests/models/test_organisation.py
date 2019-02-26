@@ -39,7 +39,7 @@ class OrganisationModelTestCase(BaseTestCase):
             project = Project.objects.create(title=title)
             self.projects[title] = project
 
-        for name in 'ABCDEFG':
+        for name in 'ACBDFEG':
             org = Organisation.objects.create(
                 name=name,
                 long_name='Organisation {}'.format(name),
@@ -169,3 +169,31 @@ class OrganisationModelTestCase(BaseTestCase):
         F = Organisation.objects.get(name='F')
         self.assertIn(G.pk, F.content_owned_organisations().values_list('pk', flat=True))
         self.assertIn(F.pk, G.content_owned_organisations().values_list('pk', flat=True))
+
+    def test_chaining_managers(self):
+        qs = Organisation.objects.all()
+        self.assertQuerysetEqual(
+            qs.fieldpartners().reportingpartners().order_by('id'),
+            [repr(org) for org in (
+                Organisation.objects.all().filter(pk=self.orgs['E'].pk).order_by('id')
+            )]
+        )
+
+    def test_order_queryset_by_lower_name(self):
+        for name in 'ACE':
+            self.orgs[name].name = name.lower()
+            self.orgs[name].save()
+        qs = Organisation.objects.all()
+        self.assertEqual(
+            "aBcDeFG",
+            "".join([org.name for org in qs])
+        )
+        self.orgs['B'].name = 'K'
+        self.orgs['B'].save()
+        self.orgs['G'].name = 'h'
+        self.orgs['G'].save()
+        qs = Organisation.objects.all()
+        self.assertEqual(
+            "acDeFhK",
+            "".join([org.name for org in qs])
+        )

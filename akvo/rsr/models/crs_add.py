@@ -63,7 +63,7 @@ class CrsAdd(models.Model):
         help_text=_(u'The CRS++ reported final repayment date.')
     )
     loan_status_year = models.PositiveIntegerField(
-        _(u'loan status year'), blank=True, null=True, max_length=4,
+        _(u'loan status year'), blank=True, null=True,
         help_text=_(u'CRS reporting year (CRS++ Column 1).')
     )
     loan_status_currency = ValidXMLCharField(
@@ -131,6 +131,7 @@ class CrsAdd(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'CRS reporting')
         verbose_name_plural = _(u'CRS reporting')
+        ordering = ('pk',)
 
 
 class CrsAddOtherFlag(models.Model):
@@ -167,3 +168,4 @@ class CrsAddOtherFlag(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'CRS other flag')
         verbose_name_plural = _(u'CRS other flags')
+        ordering = ('pk',)

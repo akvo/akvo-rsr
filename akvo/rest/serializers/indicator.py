@@ -19,6 +19,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Indicator
+        fields = '__all__'
 
     # TODO: add validation for parent_indicator
 
@@ -26,8 +27,9 @@ class IndicatorSerializer(BaseRSRSerializer):
 class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkSerializer(many=True, required=False)
-    parent_indicator = serializers.ReadOnlyField(source='parent_indicator.pk')
+    parent_indicator = serializers.ReadOnlyField()
     children_aggregate_percentage = serializers.ReadOnlyField()
 
     class Meta:
         model = Indicator
+        fields = '__all__'

@@ -154,6 +154,7 @@ class BudgetItem(models.Model):
         ordering = ('label',)
         verbose_name = _(u'budget item')
         verbose_name_plural = _(u'budget items')
+        ordering = ('pk',)
 
 
 class CountryBudgetItem(models.Model):
@@ -189,3 +190,4 @@ class CountryBudgetItem(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'country budget item')
         verbose_name_plural = _(u'country budget items')
+        ordering = ('pk',)

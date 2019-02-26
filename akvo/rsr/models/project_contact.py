@@ -64,6 +64,7 @@ class ProjectContact(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'contact')
         verbose_name_plural = _(u'contacts')
+        ordering = ('id',)
 
     def __unicode__(self):
         return self.person_name if self.person_name else u'%s' % _(u'No contact name specified')

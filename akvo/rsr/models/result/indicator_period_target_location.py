@@ -26,6 +26,7 @@ class IndicatorPeriodTargetLocation(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period target location')
         verbose_name_plural = _(u'indicator period target locations')
+        ordering = ('pk',)
 
     def __unicode__(self):
         return self.location

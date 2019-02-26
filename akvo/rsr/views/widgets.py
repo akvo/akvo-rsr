@@ -89,7 +89,7 @@ class ProjectListView(BaseWidgetView):
         org_id = self.request.GET.get('organisation_id')
         organisation = get_object_or_404(Organisation, pk=org_id)
         projects = organisation.active_projects().select_related(
-            'publishingstatus__status',
+            'publishingstatus',
             'primary_location',
             'primary_location__country',
             'last_update',

@@ -18,6 +18,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriod
+        fields = '__all__'
 
     # TODO: add validation for parent_period
 
@@ -25,11 +26,12 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
     data = serializers.SerializerMethodField('get_updates')
-    parent_period = serializers.ReadOnlyField(source='parent_period.pk')
+    parent_period = serializers.ReadOnlyField()
     percent_accomplishment = serializers.ReadOnlyField()
 
     class Meta:
         model = IndicatorPeriod
+        fields = '__all__'
 
     def get_updates(self, obj):
         user = self.context['request'].user

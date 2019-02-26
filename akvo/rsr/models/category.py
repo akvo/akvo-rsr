@@ -11,9 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
-from .benchmark import Benchmarkname
-from .focus_area import FocusArea
-
 
 class Category(models.Model):
     name = ValidXMLCharField(
@@ -21,11 +18,11 @@ class Category(models.Model):
         help_text=_(u'Enter a name for the category. (50 characters).')
     )
     focus_area = models.ManyToManyField(
-        FocusArea, verbose_name=_(u'focus area'), related_name='categories',
+        'FocusArea', verbose_name=_(u'focus area'), related_name='categories',
         help_text=_(u'Select the Focus area(s) the category belongs to.')
     )
     benchmarknames = models.ManyToManyField(
-        Benchmarkname, verbose_name=_(u'benchmark names'),
+        'Benchmarkname', verbose_name=_(u'benchmark names'),
         blank=True, help_text=_(u'Select the benchmark names for the category.')
     )
 

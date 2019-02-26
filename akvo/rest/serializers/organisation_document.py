@@ -12,12 +12,14 @@ from akvo.rsr.models import (OrganisationDocument, OrganisationDocumentCategory,
 class OrganisationDocumentCategorySerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = OrganisationDocumentCategory
 
 
 class OrganisationDocumentCountrySerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = OrganisationDocumentCountry
 
 
@@ -27,4 +29,5 @@ class OrganisationDocumentSerializer(BaseRSRSerializer):
     countries = OrganisationDocumentCountrySerializer(many=True, required=False)
 
     class Meta:
+        fields = '__all__'
         model = OrganisationDocument

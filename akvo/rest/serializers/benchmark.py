@@ -14,3 +14,4 @@ class BenchmarkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Benchmark
+        fields = '__all__'

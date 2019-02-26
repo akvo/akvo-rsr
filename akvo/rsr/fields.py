@@ -10,8 +10,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator, MaxLeng
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from south.modelsinspector import add_introspection_rules
-
 from akvo.rsr.validators import string_validator
 
 
@@ -93,15 +91,3 @@ class ProjectLimitedTextField(LimitedTextField):
         if model_instance.id and model_instance.id <= getattr(settings, 'OLD_PROJECT_MAX_ID', 0):
             self.validators = [v for v in self.validators if type(v) != MaxLengthValidator]
         return super(ProjectLimitedTextField, self).clean(value, model_instance)
-
-
-# needed to get custom fields work with South.
-# See http://south.aeracode.org/docs/customfields.html#extending-introspection
-
-add_introspection_rules([], ["^akvo\.rsr\.fields\.NullCharField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.LatitudeField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.LongitudeField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidXMLCharField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.ValidXMLTextField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.LimitedTextField"])
-add_introspection_rules([], ["^akvo\.rsr\.fields\.ProjectLimitedTextField"])

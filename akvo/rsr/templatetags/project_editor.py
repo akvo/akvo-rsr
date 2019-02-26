@@ -9,7 +9,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 from django import template
 from django.db import models
-from django.db.models import get_model, QuerySet
+from django.db.models import QuerySet
+from django.apps import apps
 
 from akvo.rsr.models import ProjectEditorValidation
 
@@ -21,7 +22,7 @@ def retrieve_model(obj):
     """
     Retrieves the model from 'obj', which can be either a Django Object or a string.
     """
-    return get_model('rsr', obj.split('.')[0]) if isinstance(obj, basestring) else type(obj)
+    return apps.get_model('rsr', obj.split('.')[0]) if isinstance(obj, basestring) else type(obj)
 
 
 def retrieve_id(obj):
@@ -254,7 +255,7 @@ def choices(obj, field):
         if isinstance(model, QuerySet):
             objects = model
         else:
-            objects = get_model('rsr', model).objects.all()
+            objects = apps.get_model('rsr', model).objects.all()
         return objects.values_list(*fields)
 
     def choices_and_ids(model, *fields):
@@ -270,23 +271,23 @@ def choices(obj, field):
     if not isinstance(model_field, models.ForeignKey):
         return [model_field.choices, first_items_list(model_field.choices)]
 
-    elif isinstance(obj, get_model('rsr', 'BudgetItem')) or \
+    elif isinstance(obj, apps.get_model('rsr', 'BudgetItem')) or \
             (isinstance(obj, basestring) and 'BudgetItem' in obj):
         # The ForeignKey field on budget items is the budget item labels
         return choices_and_ids('budgetitemlabel', 'id', 'label')
 
-    elif isinstance(obj, get_model('rsr', 'ProjectLocation')) or \
+    elif isinstance(obj, apps.get_model('rsr', 'ProjectLocation')) or \
             (isinstance(obj, basestring) and 'ProjectLocation' in obj):
         # The ForeignKey field on locations is the countries
         return choices_and_ids('country', 'id', 'name')
 
-    elif isinstance(obj, get_model('rsr', 'IndicatorLabel')) or \
+    elif isinstance(obj, apps.get_model('rsr', 'IndicatorLabel')) or \
             (isinstance(obj, basestring) and 'IndicatorLabel' in obj):
 
         if isinstance(obj, basestring) and 'IndicatorLabel' in obj:
             # String looking like: u'IndicatorLabel.5577_22634_19197', 5577 is the project ID
             project_pk = obj.split('.')[1].split('_')[0]
-            project = get_model('rsr', 'Project').objects.get(pk=project_pk)
+            project = apps.get_model('rsr', 'Project').objects.get(pk=project_pk)
         else:
             project = obj.indicator.result.project
         return choices_and_ids(project.indicator_labels(), 'id', 'label')

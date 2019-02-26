@@ -14,3 +14,4 @@ class FocusAreaSerializer(BaseRSRSerializer):
 
     class Meta:
         model = FocusArea
+        fields = '__all__'

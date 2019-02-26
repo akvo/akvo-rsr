@@ -9,7 +9,6 @@ from datetime import timedelta
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.signals import user_login_failed, user_logged_in
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ungettext_lazy
@@ -73,6 +72,7 @@ def log_failed_login(sender, credentials, **kwargs):
 
     else:
         remaining_logins = MAX_FAILED_LOGINS - failed_logins
+        from django.contrib.auth.forms import AuthenticationForm
         raise forms.ValidationError(
             ungettext_lazy(
                 u'%(error)s You only have one more login attempt before login is disabled '

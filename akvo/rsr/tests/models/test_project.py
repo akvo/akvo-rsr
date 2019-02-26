@@ -48,7 +48,8 @@ class ProjectModelTestCase(TestCase):
         The tests check that the fix for this bug works correctly.
         """
         # setup needed model instances
-        user_1 = get_user_model().objects.create(email='user1@com.com')
+        username = 'user1@com.com'
+        user_1 = get_user_model().objects.create(email='user1@com.com', username=username)
         update_1 = ProjectUpdate.objects.create(title="Test update 1", project=self.project, user=user_1)
         update_2 = ProjectUpdate.objects.create(title="Test update 2", project=self.project, user=user_1)
 

@@ -50,3 +50,4 @@ class Link(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'link')
         verbose_name_plural = _(u'links')
+        ordering = ('pk',)

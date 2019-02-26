@@ -3,7 +3,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 # django snippet 840, see http://www.djangosnippets.org/snippets/840/
-from django.template import Library, Node, resolve_variable, TemplateSyntaxError
+from django.template import Library, Node, TemplateSyntaxError, Variable
 
 
 register = Library()
@@ -14,7 +14,7 @@ class AddParameters(Node):
         self.vars = vars
 
     def render(self, context):
-        req = resolve_variable('request', context)
+        req = Variable('request').resolve(context)
         params = req.GET.copy()
 
         for i in range(0, len(self.vars), 2):

@@ -48,6 +48,7 @@ class OrganisationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Organisation
+        fields = '__all__'
 
 
 class OrganisationExtraSerializer(OrganisationSerializer):

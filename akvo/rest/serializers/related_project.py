@@ -16,6 +16,7 @@ class RelatedProjectRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = RelatedProject
+        fields = '__all__'
 
 
 class RelatedProjectSerializer(RelatedProjectRawSerializer):

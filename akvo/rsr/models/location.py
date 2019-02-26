@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.apps import apps
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -99,7 +100,7 @@ class BaseLocation(models.Model):
 
         if iso_code is not None:
             # FIXME: We have one too many country models!
-            Country = models.get_model('rsr', 'Country')
+            Country = apps.get_model('rsr', 'Country')
             return Country.objects.filter(iso_code=iso_code).first()
 
     class Meta:
@@ -273,6 +274,7 @@ class AdministrativeLocation(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'location administrative')
         verbose_name_plural = _(u'location administratives')
+        ordering = ('pk',)
 
 
 class ProjectUpdateLocation(BaseLocation):

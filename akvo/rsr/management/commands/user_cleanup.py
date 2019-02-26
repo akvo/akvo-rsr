@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.core.management.base import BaseCommand
-from optparse import make_option
 from django.utils import timezone
 from datetime import timedelta
 from itertools import chain
@@ -13,28 +12,33 @@ from ...models import User
 
 
 class Command(BaseCommand):
-
-    args = ''
     help = 'Script for cleaning up inactive user accounts'
 
-    option_list = BaseCommand.option_list + (
-        make_option('-n', '--num-days',
-                    action='store', dest='num_days',
-                    default=7,
-                    help='Filter users who joined more than \'n\' days ago'),
-        make_option('-d', '--delete',
-                    action='store_true', dest='delete',
-                    default=False,
-                    help='Delete filtered users in addition to listing them'),
-        make_option('-i', '--inactive',
-                    action='store_true', dest='inactive',
-                    default=False,
-                    help='Filter non-active users'),
-        make_option('-e', '--no-employment',
-                    action='store_true', dest='no_employment',
-                    default=False,
-                    help='Filter users lacking employment'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-n', '--num-days',
+            action='store', dest='num_days',
+            default=7,
+            help='Filter users who joined more than \'n\' days ago'
+        )
+        parser.add_argument(
+            '-d', '--delete',
+            action='store_true', dest='delete',
+            default=False,
+            help='Delete filtered users in addition to listing them'
+        )
+        parser.add_argument(
+            '-i', '--inactive',
+            action='store_true', dest='inactive',
+            default=False,
+            help='Filter non-active users'
+        )
+        parser.add_argument(
+            '-e', '--no-employment',
+            action='store_true', dest='no_employment',
+            default=False,
+            help='Filter users lacking employment'
+        )
 
     def handle(self, *args, **options):
 

@@ -33,7 +33,8 @@ from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.db import transaction
-from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
+from django.apps import apps
+from django.db.models import (BooleanField, DateField, DecimalField, EmailField,
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
 from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
@@ -161,7 +162,7 @@ def pre_process_data(key, data, errors):
     """
     # Retrieve field information first
     key_parts = split_key(key)
-    Model = get_model(key_parts.model.app, key_parts.model.model_name)
+    Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
     model_field = Model._meta.get_field(key_parts.field)
 
     # Text data does not need pre-processing
@@ -302,7 +303,7 @@ def convert_related_objects(rel_objects):
     for key in rel_objects.keys():
         # First retrieve the unicode and create a new dict including the unicode
         db_table, old_key = key.split('.')
-        Model = get_model(db_table.split('_')[0], db_table.split('_')[1])
+        Model = apps.get_model(db_table.split('_')[0], db_table.split('_')[1])
         unicode = Model.objects.get(pk=int(rel_objects[key])).__unicode__()
         new_dict_response = {
             'new_id': rel_objects[key],
@@ -471,7 +472,7 @@ def project_editor(request, pk=None):
                 continue
 
             # Retrieve the model and related object ID (e.g. rsr_project.1234)
-            Model = get_model(key_parts.model.app, key_parts.model.model_name)
+            Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
             related_obj_id = ''.join(
                 [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
             )
@@ -763,7 +764,7 @@ def project_editor_upload_file(request, pk=None):
     key_parts = split_key(field_id)
 
     # Retrieve the model and related object ID (e.g. rsr_projectdocument.1234_new-0)
-    Model = get_model(key_parts.model.app, key_parts.model.model_name)
+    Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
     related_obj_id = ''.join(
         [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
     )

@@ -15,7 +15,8 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db.models import get_model, Q
+from django.apps import apps
+from django.db.models import Q
 
 from sorl.thumbnail import ImageField
 
@@ -34,7 +35,7 @@ def create_publishing_status(sender, **kwargs):
 
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_project = kwargs['instance']
-        ps = get_model('rsr', 'publishingstatus')(status=PublishingStatus.STATUS_UNPUBLISHED)
+        ps = apps.get_model('rsr', 'publishingstatus')(status=PublishingStatus.STATUS_UNPUBLISHED)
         ps.project = new_project
         ps.save()
 
@@ -47,7 +48,7 @@ def create_organisation_account(sender, **kwargs):
     # kwargs['raw'] is True when we're running manage.py loaddata
     if kwargs.get('created', False) and not kwargs.get('raw', False):
         new_org = kwargs['instance']
-        OrganisationAccount = get_model('rsr', 'OrganisationAccount')
+        OrganisationAccount = apps.get_model('rsr', 'OrganisationAccount')
         try:
             # this should never work
             OrganisationAccount.objects.get(organisation=new_org)
@@ -124,13 +125,13 @@ def change_name_of_file_on_change(sender, **kwargs):
 
 
 def set_showcase_project(instance, created, **kwargs):
-    Project = get_model('rsr', 'Project')
+    Project = apps.get_model('rsr', 'Project')
     if instance.showcase:
         Project.objects.exclude(pk=instance.pk).update(showcase=False)
 
 
 def set_focus_org(instance, created, **kwargs):
-    Organisation = get_model('rsr', 'Organisation')
+    Organisation = apps.get_model('rsr', 'Organisation')
     if instance.focus_org:
         Organisation.objects.exclude(pk=instance.pk).update(focus_org=False)
 
@@ -325,7 +326,7 @@ def update_project_funding(sender, **kwargs):
     # kwargs['raw'] is True when we're running manage.py loaddata
     if not kwargs.get('raw', False):
         try:
-            Project = get_model('rsr', 'project')
+            Project = apps.get_model('rsr', 'project')
             project = Project.objects.get(id=kwargs['instance'].project_id)
             project.update_funds()
             project.update_funds_needed()

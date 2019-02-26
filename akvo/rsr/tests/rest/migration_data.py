@@ -19,7 +19,7 @@ PROJECT_UPDATE_XML = """
   </locations>
   <text>Bar</text>
   <update_method>M</update_method>
-  <user>1</user>
+  <user>2</user>
   <photo_credit>Da credz</photo_credit>
   <language>en</language>
   <event_date>2018-01-16</event_date>
@@ -247,16 +247,16 @@ POST_URLS = [
      (),),
 
     ('/rest/v1/indicator_period_data_comment/?format=json',
-     {"data": 4, "user": 1, "comment": "My awesome comment"},
+     {"data": 4, "user": 2, "comment": "My awesome comment"},
      ('IndicatorPeriodDataComment.objects.count()',),),
 
     ('/rest/v1/indicator_period_data_framework/?format=json',
-     {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "D"},
+     {"period": 1, "user": 2, "data": 1, "period_actual_value": "4", "status": "D"},
      ('IndicatorPeriodData.objects.count()',),),
 
     # akvo/rsr/front-end/scripts-src/my-iati.js
     ('/rest/v1/iati_export/?format=json',
-     {"reporting_organisation": 1, "user": 1, "version": "2", "projects": [4]},
+     {"reporting_organisation": 1, "user": 2, "version": "2", "projects": [4]},
      ('IatiExport.objects.count()',),),
 
     # akvo/scripts/cordaid/organisation_upload.py
@@ -275,7 +275,7 @@ POST_URLS = [
      (),),
 
     # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
-    ('/rest/v1/user/1/request_organisation/?format=json',
+    ('/rest/v1/user/2/request_organisation/?format=json',
      {'organisation': 2, 'group': 5, 'country': u'NL', 'job_title': u'User'},
      ('Employment.objects.filter(user_id=2).count()',)),
 
@@ -301,15 +301,9 @@ POST_URLS = [
      {},
      ('Project.objects.get(id=4).validations.count()',)),
 
-    ('/rest/v1/user/1/update_details/?format=json',
+    ('/rest/v1/user/2/update_details/?format=json',
      {'first_name': 'Angela', 'last_name': 'K'},
-     ('User.objects.get(id=1).first_name', 'User.objects.get(id=1).last_name',)),
-
-    ('/rest/v1/user/1/change_password/?format=json',
-     {'old_password': 'password',
-      'new_password1': 'my-@wesome-N3W-password',
-      'new_password2': 'my-@wesome-N3W-password'},
-     ('User.objects.get(id=1).check_password("my-@wesome-N3W-password")',)),
+     ('User.objects.get(id=2).first_name', 'User.objects.get(id=2).last_name',)),
 
     ('/rest/v1/project/4/log_project_addition/?format=json',
      {},
@@ -317,7 +311,16 @@ POST_URLS = [
 
     ('/rest/v1/project_custom_field/?format=json',
      {'project': 4, 'section': 2, 'order': 1, 'type': u'text', 'name': 'wow factor'},
-     ('ProjectCustomField.objects.count()',))
+     ('ProjectCustomField.objects.count()',)),
+
+    # Always test for password change at the end
+    # Changing password logs the user out, and causes tests future to fail.
+    ('/rest/v1/user/2/change_password/?format=json',
+     {'old_password': 'password',
+      'new_password1': 'my-@wesome-N3W-password',
+      'new_password2': 'my-@wesome-N3W-password'},
+     ('User.objects.get(id=2).check_password("my-@wesome-N3W-password")',)),
+
 ]
 
 PATCH_URLS = [
@@ -353,7 +356,7 @@ DELETE_URLS = [
 
 
     # akvo/rsr/front-end/scripts-src/project-editor.jsx
-    ('/rest/v1/project/4/remove_validation/1/?format=json', {},
+    ('/rest/v1/project/4/remove_validation/3/?format=json', {},
      ('Project.objects.get(id=4).validations.count()',)),
 
     ('/rest/v1/project/4/remove_keyword/1/?format=json', {},

@@ -12,3 +12,4 @@ class IndicatorDimensionSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorDimension
+        fields = '__all__'

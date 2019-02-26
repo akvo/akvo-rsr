@@ -12,3 +12,4 @@ class DisaggregationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Disaggregation
+        fields = '__all__'

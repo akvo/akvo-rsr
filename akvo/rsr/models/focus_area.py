@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.apps import apps
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -13,8 +14,6 @@ from sorl.thumbnail.fields import ImageField
 from akvo.utils import rsr_image_path
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
-
-from .project import Project
 
 
 def image_path(instance, file_name):
@@ -63,6 +62,7 @@ class FocusArea(models.Model):
 
     def projects(self):
         'return all projects that "belong" to the FA through the Categories it links to'
+        Project = apps.get_model('rsr', 'Project')
         return Project.objects.filter(categories__in=self.categories.all())
 
     def __unicode__(self):

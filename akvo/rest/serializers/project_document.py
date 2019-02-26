@@ -15,6 +15,7 @@ from rest_framework import serializers
 class ProjectDocumentRawSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = ProjectDocument
 
 
@@ -32,4 +33,5 @@ class ProjectDocumentCategorySerializer(BaseRSRSerializer):
     category_label = serializers.ReadOnlyField(source='iati_category_unicode')
 
     class Meta:
+        fields = '__all__'
         model = ProjectDocumentCategory

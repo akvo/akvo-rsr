@@ -13,3 +13,4 @@ class IatiCheckSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IatiCheck
+        fields = '__all__'

@@ -16,6 +16,7 @@ class SectorRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Sector
+        fields = '__all__'
 
 
 class SectorSerializer(SectorRawSerializer):

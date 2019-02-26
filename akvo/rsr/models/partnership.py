@@ -6,6 +6,7 @@
 
 
 from django.core.exceptions import ValidationError
+from django.apps import apps
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -200,7 +201,7 @@ class Partnership(models.Model):
 
     def clean(self):
         # Don't allow multiple reporting organisations
-        Project = models.get_model('rsr', 'project')
+        Project = apps.get_model('rsr', 'project')
         project = Project.objects.get(id=self.project_id)
         if self.iati_organisation_role == self.IATI_REPORTING_ORGANISATION:
             reporting_orgs = project.partnerships.filter(
@@ -224,7 +225,7 @@ class Partnership(models.Model):
     def set_primary_organisation(self):
         # Check which organisation should be set to the primary organisation of the project
         # This is done to get better performance on the project list page
-        Project = models.get_model('rsr', 'project')
+        Project = apps.get_model('rsr', 'project')
         project = Project.objects.get(id=self.project_id)
         project.primary_organisation = project.find_primary_organisation()
         project.save(update_fields=['primary_organisation'])
