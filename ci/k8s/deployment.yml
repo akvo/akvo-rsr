@@ -105,6 +105,11 @@ spec:
             secretKeyRef:
               name: "rsr-secret"
               key: sentry-dsn
+        - name: GUNICORN_DEBUG_ARGS
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: gunicorn-debug
         - name: DJANGO_SECRET_KEY
           valueFrom:
             secretKeyRef:
