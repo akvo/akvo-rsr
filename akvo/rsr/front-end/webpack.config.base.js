@@ -63,15 +63,18 @@ const entry = {
     ],
 
     // "Classic RSR"
+    micromarkdown: "./lib/scripts/micromarkdown-0.3.4.js",
     myChangePassword: "./scripts-src/classic/js/my-change-password.js",
     myDetails: "./scripts-src/classic/js/my-details.js",
     myProjects: "./scripts-src/classic/js/my-projects.js",
     myUpdates: "./scripts-src/classic/js/my-updates.js",
+    noUiSlider: "./lib/scripts/nouislider-8.0.2.min.js",
     onClickOutside: "./lib/scripts/react-onclickoutside.js",
     polyfill: "./scripts-src/classic/js/polyfill.js",
     projectHierarchy: "./scripts-src/classic/js/project-hierarchy.js",
     reactTypeahead: "./lib/scripts/react-typeahead.js",
     rsrUtils: "./scripts-src/classic/js/rsr-utils.js",
+    smoothScroll: "./lib/scripts/smooth-scroll-9.1.4.min.js",
 
     cookie: "./scripts-src/classic/jsx/cookie.jsx",
     directoryUtils: "./scripts-src/classic/jsx/directory-utils.jsx",

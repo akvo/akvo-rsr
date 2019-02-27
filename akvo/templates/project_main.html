@@ -39,10 +39,10 @@
     {{ block.super }}
 
     {# Smooth scroll #}
-    <script id="smooth-scroll" src="{{ STATIC_URL }}lib/scripts/smooth-scroll-9.1.4.min.js"></script>
+    {% render_bundle 'smoothScroll' attrs='id="smooth-scroll"' %}
 
     {# Markdown #}
-    <script id="markdown" src="{{ STATIC_URL }}lib/scripts/micromarkdown-0.3.4.js"></script>
+    {% render_bundle 'micromarkdown' attrs='id="markdown"' %}
 
     {# Descriptions #}
     <script type="application/json" id="akvo-rsr-accordion">
@@ -195,8 +195,8 @@
     </script>
 
     {# Slider library #}
-    <script src="{{ STATIC_URL }}lib/scripts/nouislider-8.0.2.min.js"></script>
-    <link rel="stylesheet" href="{{ STATIC_URL }}lib/styles/nouislider-8.0.2.min.css" type="text/css">
+    {% render_bundle 'noUiSlider' %}
+    {% render_bundle 'noUiSliderCss' 'css' %}
 
     {% render_bundle 'projectMainPartners' %}
     {% render_bundle 'morePartners' %}
