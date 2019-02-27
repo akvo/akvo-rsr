@@ -75,11 +75,14 @@ class Report extends React.Component {
             show_description: true,
             date_selection:
                 report.url.indexOf("{start_date}") > -1 || report.url.indexOf("{end_date}") > -1,
+            show_comment_checkbox: report.url.indexOf("{comment}") > -1,
             start_date: undefined,
-            end_date: undefined
+            end_date: undefined,
+            include_comments: false
         };
         this.downloadReport = this.downloadReport.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
+        this.toggleComment = this.toggleComment.bind(this);
         this.setStartDate = this.setStartDate.bind(this);
         this.setEndDate = this.setEndDate.bind(this);
     }
@@ -89,7 +92,7 @@ class Report extends React.Component {
             report: { url },
             project
         } = this.props;
-        let { start_date, end_date } = this.state;
+        let { start_date, end_date, include_comments } = this.state;
         let download_url;
         download_url = url
             .replace("{format}", format)
@@ -109,6 +112,9 @@ class Report extends React.Component {
                 : download_url.replace("p_EndDate={end_date}", "");
             download_url = download_url.replace(/&+/g, "&").replace(/&$/, "");
         }
+        if (this.state.show_comment_checkbox) {
+            download_url = download_url.replace("{comment}", include_comments ? "true" : "false");
+        }
         console.log("Downloading report from", download_url);
         this.toggleDescription();
         window.location.assign(download_url);
@@ -126,9 +132,20 @@ class Report extends React.Component {
         this.setState({ end_date });
     }
 
+    toggleComment() {
+        this.setState({ include_comments: !this.state.include_comments });
+    }
+
     render() {
         const { report } = this.props;
-        const { show_description, date_selection, start_date, end_date } = this.state;
+        const {
+            show_description,
+            date_selection,
+            start_date,
+            end_date,
+            show_comment_checkbox,
+            include_comments
+        } = this.state;
         const formats = report.formats.map(format => {
             const { icon, name, display_name } = format;
             return (
@@ -154,6 +171,22 @@ class Report extends React.Component {
                 </div>
             </div>
         );
+        const commentsCheckbox = (
+            <div>
+                <span className="includeComments">
+                    <input
+                        type="checkbox"
+                        checked={include_comments}
+                        id="includeCommentsToggle"
+                        name="includeCommentsToggle"
+                        onChange={this.toggleComment}
+                    />
+                    <label htmlFor="includeCommentsToggle">
+                        {_("include_actual_value_comments")}
+                    </label>
+                </span>
+            </div>
+        );
         return (
             <div className="rsrReport col-sm-6 col-md-4 col-xs-12">
                 <div className="reportContainer">
@@ -163,6 +196,7 @@ class Report extends React.Component {
                     <div className="reportDscr">{report.description}</div>
                     <div className="options">
                         {date_selection ? date_selectors : undefined}
+                        {show_comment_checkbox ? commentsCheckbox : undefined}
                         {formats}
                     </div>
                 </div>
