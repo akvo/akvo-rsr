@@ -81,15 +81,15 @@
     <span id="cookieModal"></span>
 
     <script type="application/javascript">
-      var AKVO_RSR = {};
-      AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
+     var AKVO_RSR = {};
+     AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
     </script>
 
     {# Polyfill for nice functions like Object.entries, Array.from, etc.#}
     {% render_bundle 'polyfill' %}
 
     {# react-onclickoutside.js should load before date-picker, etc. #}
-    {% render_bundle 'onClickOutside' %}
+    {% render_bundle 'onClickOutside' attrs='id="react-onclickoutside"' %}
 
     <!-- Polyfill for promise for browsers which don't implement it -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/native-promise-only/0.8.1/npo.js"></script>
@@ -139,15 +139,15 @@
 
     {# RSR default libraries #}
     <script type="application/json" id="sentry-dsn">
-        {
-        "sentry_dsn": "{{sentry_dsn}}"
-        {% if not request.user.is_anonymous %}
-        ,"email": "{{request.user.email}}"
-        {% endif %}
-        }
+     {
+         "sentry_dsn": "{{sentry_dsn}}"
+         {% if not request.user.is_anonymous %}
+         ,"email": "{{request.user.email}}"
+         {% endif %}
+     }
     </script>
     {% render_bundle 'rsrUtils' %}
-    <script id="react-typeahead" src="{{STATIC_URL}}lib/scripts/react-typeahead.js"></script>
+    {% render_bundle 'reactTypeahead' attrs='id="react-typeahead"' %}
 
     {% block js %}{% endblock js %}
 

@@ -70,6 +70,7 @@ const entry = {
     onClickOutside: "./lib/scripts/react-onclickoutside.js",
     polyfill: "./scripts-src/classic/js/polyfill.js",
     projectHierarchy: "./scripts-src/classic/js/project-hierarchy.js",
+    reactTypeahead: "./lib/scripts/react-typeahead.js",
     rsrUtils: "./scripts-src/classic/js/rsr-utils.js",
 
     cookie: "./scripts-src/classic/jsx/cookie.jsx",
