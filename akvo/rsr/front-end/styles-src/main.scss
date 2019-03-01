@@ -3810,7 +3810,7 @@ main.results-page {
         position: relative;
         .reportContainer {
             box-shadow: 0 0 5px rgba($akvoBlack, 0.1);
-            min-height: 270px;
+            min-height: 340px;
             padding: 30px 50px 5px 50px;
             @media only screen and (max-width: 1449px) {
                 padding: 30px 40px 5px 40px;
@@ -3836,6 +3836,11 @@ main.results-page {
                                 margin-left: 15px;
                             }
                         }
+                    }
+                }
+                .includeComments {
+                    input {
+                        margin-right: 5px;
                     }
                 }
                 .reportDate {
