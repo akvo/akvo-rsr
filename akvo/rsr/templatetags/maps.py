@@ -147,7 +147,8 @@ def project_map(id, width, height, dynamic='dynamic'):
         'update_locations': json.dumps(update_locations),
         'dynamic': dynamic,
         'infowindows': False,
-        'partnersite_widget': False
+        'partnersite_widget': False,
+        'gmaps_api_key': getattr(settings, 'GOOGLE_MAPS_API_KEY', 'NO_API_KEY')
     }
 
     return template_context
@@ -215,7 +216,9 @@ def projects_map(projects, width, height, dynamic='dynamic'):
         'locations': locations,
         'update_locations': update_locations,
         'dynamic': dynamic,
-        'infowindows': True
+        'infowindows': True,
+        'gmaps_api_key': getattr(settings, 'GOOGLE_MAPS_API_KEY', 'NO_API_KEY')
+
     }
 
     return template_context
