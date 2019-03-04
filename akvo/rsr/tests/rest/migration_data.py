@@ -33,7 +33,7 @@ PROJECT_UPDATE_XML = """
 
 ORGANISATION_XML = """
 <?xml version="1.0" encoding="utf-8"?>
-<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><long_name>ABC.XYZ</long_name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url><primary_location>3</primary_location><can_create_projects>True</can_create_projects><content_owner></content_owner><allow_edit>True</allow_edit><public_iati_file>True</public_iati_file><can_become_reporting>False</can_become_reporting><internal_org_ids></internal_org_ids><absolute_url>/en-us/organisation/4/</absolute_url></root>
+<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><long_name>ABC.XYZ</long_name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url><primary_location>3</primary_location><can_create_projects>True</can_create_projects><content_owner></content_owner><public_iati_file>True</public_iati_file><can_become_reporting>False</can_become_reporting><internal_org_ids></internal_org_ids><absolute_url>/en-us/organisation/4/</absolute_url></root>
 """
 
 GET_URLS = [
@@ -175,8 +175,7 @@ POST_URLS = [
       'OrganisationLocation.objects.get(postcode="101010").longitude'),),
 
     ('/rest/v1/organisation/?format=json',
-     {u'allow_edit': True,
-      u'can_become_reporting': False,
+     {u'can_become_reporting': False,
       u'can_create_projects': True,
       u'content_owner': None,
       u'currency': u'EUR',
@@ -192,8 +191,7 @@ POST_URLS = [
       'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=json&dedup=content_owner',
-     {u'allow_edit': True,
-      u'can_become_reporting': False,
+     {u'can_become_reporting': False,
       u'can_create_projects': True,
       u'content_owner': 1,
       u'currency': u'EUR',
@@ -209,8 +207,7 @@ POST_URLS = [
       'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=json&dedup=no_content_owner',
-     {u'allow_edit': True,
-      u'can_become_reporting': False,
+     {u'can_become_reporting': False,
       u'can_create_projects': True,
       u'currency': u'EUR',
       u'language': u'en',
