@@ -262,7 +262,7 @@ def allow_project_access_if_restrictions_disabled(sender, **kwargs):
             return
         org = reporting_org
 
-    if org.enable_restrictions:
+    if org is None or org.enable_restrictions:
         return
 
     from akvo.rsr.models.user_projects import unrestrict_projects
