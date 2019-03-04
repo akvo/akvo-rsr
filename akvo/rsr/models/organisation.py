@@ -164,12 +164,6 @@ class Organisation(TimestampsMixin, models.Model):
                                     on_delete=models.SET_NULL,
                                     help_text=u'Pointer to original organisation if this is a '
                                               u'shadow. Used by EUTF')
-    allow_edit = models.BooleanField(
-        _(u'Partner editors of this organisation are allowed to manually edit projects where '
-          u'this organisation is support partner'),
-        help_text=_(u'When manual edits are disallowed, partner admins and editors of other '
-                    u'organisations are also not allowed to edit these projects.'), default=True
-    )
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )

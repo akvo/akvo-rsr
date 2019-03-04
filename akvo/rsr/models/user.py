@@ -328,27 +328,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         else:
             return None
 
-    def allow_edit(self, project):
-        """ Support partner organisations may "take ownership" of projects, meaning that editing
-        of them is restricted. This method is used "on top" of normal checking for user access to
-        projects since it is only relevant for Partner users.
-        """
-        allow_edit = True
-        partner_admins_allowed = []
-        # compile list of support orgs that limit editing
-        for partner in project.support_partners():
-            if not partner.allow_edit:
-                allow_edit = False
-                partner_admins_allowed.append(partner)
-        # no-one limits editing, all systems go
-        if allow_edit:
-            return True
-        # Only Partner admins on the list of "limiters" list may edit
-        else:
-            if self.organisation in partner_admins_allowed:
-                return True
-        return False
-
     @property
     def get_api_key(self, key=""):
         try:
