@@ -6,21 +6,25 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.conf import settings
-from django.test import Client, TestCase
-from akvo.rsr.models import Project, Organisation
+from akvo.rsr.models import Organisation, Partnership, Project, ProjectUpdate
+from akvo.rsr.tests.base import BaseTestCase
 from ..utils import contains_template_errors
 
 
-class PingWidgetsTest(TestCase):
+class PingWidgetsTest(BaseTestCase):
 
     """Simple ping."""
 
     def setUp(self):
         """Setup."""
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-        Project.objects.create(title="Test Project")
-        Organisation.objects.create(name="Partner1")
+        super(PingWidgetsTest, self).setUp()
+        project = Project.objects.create(title="Test Project")
+        project.publishingstatus.status = 'published'
+        project.publishingstatus.save()
+        organisation = Organisation.objects.create(name="Partner1")
+        user = self.create_user('foo@example.com')
+        Partnership.objects.create(project=project, organisation=organisation)
+        ProjectUpdate.objects.create(project=project, title='Project Update', user=user)
 
     def test_narrow(self):
         """Ping /widgets/project-narrow."""
