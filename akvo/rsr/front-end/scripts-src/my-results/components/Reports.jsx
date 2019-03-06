@@ -78,7 +78,7 @@ class Report extends React.Component {
             show_comment_checkbox: report.url.indexOf("{comment}") > -1,
             start_date: undefined,
             end_date: undefined,
-            include_comments: false
+            include_comments: true
         };
         this.downloadReport = this.downloadReport.bind(this);
         this.toggleDescription = this.toggleDescription.bind(this);
@@ -197,7 +197,10 @@ class Report extends React.Component {
                     <div className="reportDscr">{report.description}</div>
                     <div className="options">
                         {date_selection ? date_selectors : undefined}
-                        {show_comment_checkbox ? commentsCheckbox : undefined}
+                        {
+                            // NOTE: Hidden until the new report has been deployed!
+                            // show_comment_checkbox ? commentsCheckbox : undefined
+                        }
                         {formats}
                     </div>
                 </div>
