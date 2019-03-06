@@ -1,27 +1,26 @@
 # Django
-Django==1.7.7
+Django==1.11.20
 
 # Django apps
-django-filter==0.9
+django-filter==1.1
 django-markup==0.4
 django-pagination==1.0.7
 
 # Bootstrap
-django-bootstrap3==4.11.0
+django-bootstrap3==11.0
 
 # API framework
 mimeparse==0.1.3
 python-dateutil==2.2
 requests==2.3.0
-djangorestframework==3.2.5
+djangorestframework==3.9.0
 djangorestframework-xml==1.3.0
 django-tastypie==0.12.1
 django-rest-swagger==0.3.10
+django-registration==2.5.2
 
 # Django apps from VCS web services
--e git://github.com/akvo/django-counter.git@3b38f45a243970fda1a61124fd6ec8b9bd352c35#egg=django-counter
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
--e git://github.com/akvo/django-registration.git@d1ff9eba18854fc41892de5a16562db77b93a25a#egg=registration
 
 # Akvonaut apps
 -e git://github.com/zzgvh/django-notification.git#egg=django_notification
@@ -41,15 +40,12 @@ xmltodict==0.10.2
 Markdown==2.4
 Pillow==2.7.0
 python-memcached==1.53
-template-utils==0.4p2
-django-pipeline==1.6.11
 
 # Images and videos
-sorl-thumbnail==12.2
-django-embed-video==0.11
+sorl-thumbnail==12.5.0
+django-embed-video==1.1.2
 
 # Database requirements
-South==0.8.4
 psycopg2==2.7.4
 django-pgviews==0.5.3
 
@@ -64,22 +60,20 @@ tablib==0.12.1
 django-piwik==0.1
 
 # statsd and graphite integration
-django-statsd-mozilla==0.3.15
+django-statsd-mozilla==0.4.0
 statsd==3.2.1
 
 # Sentry integration
-contextlib2==0.5.5
-raven==6.1.0
+sentry-sdk==0.7.4
 
 # Permission rules
 rules==0.3
 
 # Nested inlines in admin
-django-nested-inline==0.3.6
-#-e git+git://github.com/silverfix/django-nested-inlines.git#egg=django-nested-inlines
+django-nested-inline==0.3.7
 
 # Task scheduling
-django-crontab==0.6.0
+django-crontab==0.7.1
 
 # Testing and code coverage libraries
 coveralls
@@ -94,3 +88,6 @@ unicodecsv==0.14.1
 
 # Password requirements
 bcrypt==3.1.4
+
+# Javascript tools integration
+django-webpack-loader

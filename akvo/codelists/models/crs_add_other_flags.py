@@ -23,3 +23,4 @@ class CRSAddOtherFlags(BaseCodelist):
         ordering = ('-version', 'code')
         verbose_name = _(u'crs add other flag')
         verbose_name_plural = _(u'crs add other flags')
+        ordering = ('pk',)

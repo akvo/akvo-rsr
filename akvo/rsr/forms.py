@@ -14,7 +14,7 @@ from django import forms
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
@@ -65,7 +65,7 @@ def check_password_has_symbol(password):
     if not re.findall('[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
         raise forms.ValidationError(
             _(u'The password must contain at least one symbol: '
-              u'()[]{}|\`~!@#$%^&*_-+=;:\'",<>./?')
+              u'()[]{}|\`~!@#$%%^&*_-+=;:\'",<>./?')
         )
 
 

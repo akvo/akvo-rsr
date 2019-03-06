@@ -18,9 +18,11 @@ class IatiExportSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IatiExport
+        fields = '__all__'
 
 
 class IatiActivityExportSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IatiActivityExport
+        fields = '__all__'

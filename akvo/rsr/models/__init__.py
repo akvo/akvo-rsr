@@ -177,8 +177,6 @@ __all__ = [
     'UserProjects',
 ]
 
-logger = logging.getLogger('akvo.rsr')
-
 # Permission rules
 import rules
 from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager,

@@ -17,6 +17,7 @@ class BudgetItemRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItem
+        fields = '__all__'
 
 
 class BudgetItemRawDeepSerializer(BudgetItemRawSerializer):
@@ -38,3 +39,4 @@ class CountryBudgetItemSerializer(BaseRSRSerializer):
 
     class Meta:
         model = CountryBudgetItem
+        fields = '__all__'

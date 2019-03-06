@@ -17,9 +17,11 @@ import factory
 from factory.django import DjangoModelFactory
 from factory.fuzzy import reseed_random
 
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
-from akvo.rsr.models import PublishingStatus, Partnership, Country, Keyword
-from akvo.rsr.models import User, Project, Organisation, Indicator, Result, IndicatorPeriod, IndicatorPeriodData, ProjectEditorValidationSet
+from akvo.rsr.models import (
+    User, Project, Organisation, Indicator, Result,
+    IndicatorPeriod, IndicatorPeriodData, ProjectEditorValidationSet, Report,
+    PublishingStatus, Partnership, Keyword
+)
 from akvo.utils import check_auth_groups
 
 
@@ -452,7 +454,7 @@ def populate_test_data(seed=42):
     random.seed(seed)
 
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
+    User.objects.all().delete()
     UserFactory.create(is_admin=True, is_superuser=True, is_staff=True)
     UserFactory.create_batch(4)
     OrganisationFactory.create_batch(3)
@@ -483,13 +485,6 @@ def populate_test_data(seed=42):
     IatiExportFactory.create_batch(3)
     IatiImportFactory.create_batch(3)
 
-    for _ in range(10):
-        created = False
-        while not created:
-            country_code = random.choice(ISO_3166_COUNTRIES)[0]
-            country_info = Country.fields_from_iso_code(country_code)
-            country, created = Country.objects.get_or_create(**country_info)
-
     EmploymentFactory.create_batch(30)
 
     KeywordFactory.create_batch(20)
@@ -502,7 +497,7 @@ def populate_test_data(seed=42):
     ProjectEditorValidationSetFactory.create_batch(2)
     ProjectEditorValidationFactory.create_batch(20)
 
-    ReportFormatFactory.create_batch(4)
+    Report.objects.all().delete()
     ReportFactory.create_batch(4)
 
     # FIXME: Enforce this!

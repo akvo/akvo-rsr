@@ -32,7 +32,7 @@ def piwik_tracking_code(context):
     except AttributeError:
         raise ImproperlyConfigured('PIWIK_URL does not exist.')
 
-    if context['request'].rsr_page and context['request'].rsr_page.piwik_id:
+    if 'request' in context and context['request'].rsr_page and context['request'].rsr_page.piwik_id:
         return {
             'id': context['request'].rsr_page.piwik_id,
             'url': piwik_url

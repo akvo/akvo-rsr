@@ -16,6 +16,7 @@ from rest_framework import serializers
 class PlannedDisbursementRawSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = PlannedDisbursement
 
 

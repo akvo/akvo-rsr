@@ -16,6 +16,7 @@ class IndicatorPeriodActualLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriodActualLocation
+        fields = '__all__'
 
 
 class IndicatorPeriodTargetLocationSerializer(BaseRSRSerializer):
@@ -24,3 +25,4 @@ class IndicatorPeriodTargetLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriodTargetLocation
+        fields = '__all__'

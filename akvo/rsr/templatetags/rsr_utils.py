@@ -35,7 +35,7 @@ def img(context, obj, width, height, alt):
             default_img = "//{}{}{}".format(
                 context["request"].get_host(),
                 getattr(settings, "STATIC_URL"),
-                "images/default-org-logo.jpg")
+                "rsr/images/default-org-logo.jpg")
     elif isinstance(obj, get_user_model()):
         img = obj.avatar
     elif isinstance(obj, PartnerSite):

@@ -52,3 +52,4 @@ class Disaggregation(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'disaggregated value')
         verbose_name_plural = _(u'disaggregated values')
+        ordering = ('id',)

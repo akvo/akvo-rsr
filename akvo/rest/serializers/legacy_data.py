@@ -14,3 +14,4 @@ class LegacyDataSerializer(BaseRSRSerializer):
 
     class Meta:
         model = LegacyData
+        fields = '__all__'

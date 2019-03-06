@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load i18n rsr_utils bootstrap3 pipeline %}
+{% load i18n rsr_utils bootstrap3 %}
+{% load render_bundle from webpack_loader %}
+
 {% block title %}{% trans 'Organisations' %}{% endblock %}
 {% block maincontent %}
 
@@ -29,7 +31,7 @@
      }
     </script>
 
-    {% javascript 'directory_utils' %}
-    {% javascript 'organisation_directory' %}
+    {% render_bundle 'directoryUtils' %}
+    {% render_bundle 'organisationDirectory' %}
 
 {% endblock js %}

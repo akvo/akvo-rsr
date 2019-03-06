@@ -16,3 +16,4 @@ class IndicatorReferenceSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorReference
+        fields = '__all__'

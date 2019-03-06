@@ -1,6 +1,6 @@
-{% load i18n rsr_filters rsr_tags webdesign piwik_tags %}
-{% load url from future %}
-{% load pipeline %}
+{% load i18n rsr_filters rsr_tags piwik_tags %}
+{% load render_bundle from webpack_loader %}
+
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -15,22 +15,22 @@
       <meta property="og:description" content="{{update.text|truncatechars_html:500}}"/>
       <meta name="Description" content="{{update.text|truncatechars_html:500}}"/>
       {% if update.photo %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{update.photo.url}}"/>
       {% else %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/images/rsrLogo.svg"/>
       {% endif %}
     {% elif project %}
       <meta property="og:title" content="{{project.title}}"/>
       <meta property="og:description" content="{{project.subtitle}}"/>
       <meta name="Description" content="{{project.subtitle}}"/>
       {% if project.current_image %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{project.current_image.url}}"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{project.current_image.url}}"/>
       {% else %}
-        <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
+        <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/images/rsrLogo.svg"/>
       {% endif %}
     {% else %}
       <meta property="og:title" content="Akvo RSR"/>
-      <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{{STATIC_URL}}images/rsrLogo.svg"/>
+      <meta property="og:image" content="https://{{request.META.HTTP_HOST}}{{STATIC_URL}}rsr/images/rsrLogo.svg"/>
       <meta property="og:description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>
       <meta name="Description" content="{% trans 'Akvo Really Simple Reporting is a web and Android-based system that makes it easy for development aid teams to bring complex networks of projects online and instantly share progress with everyone involved and interested.' %}"/>
     {% endif %}
@@ -43,7 +43,7 @@
     {% if favicon %}
         <link rel="shortcut icon" href="{{MEDIA_URL}}{{favicon}}" type="image/x-icon">
     {% else %}
-        <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="{{ STATIC_URL }}rsr/images/favicon.ico" type="image/x-icon">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -52,8 +52,9 @@
 
     {# CSS #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    {% stylesheet 'rsr_v3_style' %}
-    {% if load_wp_css %}{% stylesheet 'rsr_wp_style' %}{% endif %}
+    {% if load_wp_css %}
+      {% render_bundle 'akvoWordpress' 'css' attrs='media="screen"' %}
+    {% endif %}
     {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
 
     <style type="text/css">
@@ -62,6 +63,8 @@
         max-width: none;
         }
     </style>
+
+    {% render_bundle 'main' 'css' %}
 
     {% block head %}{% endblock head %}
 
@@ -78,15 +81,15 @@
     <span id="cookieModal"></span>
 
     <script type="application/javascript">
-      var AKVO_RSR = {};
-      AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
+     var AKVO_RSR = {};
+     AKVO_RSR.language = "{{ request.LANGUAGE_CODE }}";
     </script>
 
     {# Polyfill for nice functions like Object.entries, Array.from, etc.#}
-    {% javascript 'polyfill' %}
+    {% render_bundle 'polyfill' %}
 
     {# react-onclickoutside.js should load before date-picker, etc. #}
-    {% javascript 'rsr_lib' %}
+    {% render_bundle 'onClickOutside' attrs='id="react-onclickoutside"' %}
 
     <!-- Polyfill for promise for browsers which don't implement it -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/native-promise-only/0.8.1/npo.js"></script>
@@ -110,7 +113,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.js" integrity="sha256-VbCkoqthqE7ves/+1VO4vW2so2L7zhb4uanLPLcrh4k=" crossorigin="anonymous"></script>
       {# Sentry #}
       <script src="https://cdn.ravenjs.com/3.17.0/raven.js" crossorigin="anonymous"></script>
-      {% else %}
+    {% else %}
       {# jQuery #}
       <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js" integrity="sha256-1OxYPHYEAB+HIz0f4AdsvZCfFaX4xrTD9d2BtGLXnTI=" crossorigin="anonymous"></script>
       {# "_" libs #}
@@ -136,15 +139,15 @@
 
     {# RSR default libraries #}
     <script type="application/json" id="sentry-dsn">
-        {
-        "sentry_dsn": "{{sentry_dsn}}"
-        {% if not request.user.is_anonymous %}
-        ,"email": "{{request.user.email}}"
-        {% endif %}
-        }
+     {
+         "sentry_dsn": "{{sentry_dsn}}"
+         {% if not request.user.is_anonymous %}
+         ,"email": "{{request.user.email}}"
+         {% endif %}
+     }
     </script>
-    {% javascript 'rsr' %}
-    <script id="react-typeahead" src="{{STATIC_URL}}lib/scripts/react-typeahead.js"></script>
+    {% render_bundle 'rsrUtils' %}
+    {% render_bundle 'reactTypeahead' attrs='id="react-typeahead"' %}
 
     {% block js %}{% endblock js %}
 
@@ -168,7 +171,7 @@
         }
     </script>
 
-    {% javascript 'rsr_cookie' %}
+    {% render_bundle 'cookie' %}
 
     {# RSR support center help #}
     <script async data-cfasync='false' src='//d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTIwJmhvc3ROYW1lPWFrdm9yc3Iuc3VwcG9ydGhlcm8uaW8='></script>

@@ -9,6 +9,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from __future__ import print_function
 
+import json
+
 from django.conf import settings
 from django.test import TransactionTestCase, Client
 
@@ -47,7 +49,9 @@ class UserTestCase(TransactionTestCase):
 
         # When
         response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data
+            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json',
         )
 
         # Then
@@ -62,7 +66,9 @@ class UserTestCase(TransactionTestCase):
 
         # When
         response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data
+            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json',
         )
 
         # Then
@@ -74,11 +80,17 @@ class UserTestCase(TransactionTestCase):
         # Given
         data = {'organisation': self.org.id, 'country': '', 'job_title': ''}
         pk = self.user.id
-        self.c.post('/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data)
+        self.c.post(
+            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json',
+        )
 
         # When
         response = self.c.post(
-            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk), data
+            '/rest/v1/user/{}/request_organisation/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json',
         )
 
         # Then
@@ -96,7 +108,11 @@ class UserTestCase(TransactionTestCase):
         }
 
         # When
-        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+        response = self.c.post(
+            '/rest/v1/user/{}/change_password/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json'
+        )
 
         # Then
         self.assertEqual(response.status_code, 400)
@@ -112,7 +128,11 @@ class UserTestCase(TransactionTestCase):
         }
 
         # When
-        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+        response = self.c.post(
+            '/rest/v1/user/{}/change_password/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json'
+        )
 
         # Then
         self.assertEqual(response.status_code, 400)
@@ -128,7 +148,11 @@ class UserTestCase(TransactionTestCase):
             'old_password': 'password'
         }
         # When
-        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+        response = self.c.post(
+            '/rest/v1/user/{}/change_password/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json'
+        )
 
         # Then
         self.assertEqual(response.status_code, 400)
@@ -144,7 +168,11 @@ class UserTestCase(TransactionTestCase):
             'old_password': 'password'
         }
         # When
-        response = self.c.post('/rest/v1/user/{}/change_password/?format=json'.format(pk), data)
+        response = self.c.post(
+            '/rest/v1/user/{}/change_password/?format=json'.format(pk),
+            json.dumps(data),
+            content_type='application/json'
+        )
 
         # Then
         self.assertEqual(response.status_code, 400)

@@ -14,3 +14,4 @@ class KeywordSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Keyword
+        fields = '__all__'

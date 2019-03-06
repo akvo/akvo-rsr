@@ -6,12 +6,11 @@
     see < http://www.gnu.org/licenses/agpl.html >.
 """
 # Development mode
-DEBUG = TEMPLATE_DEBUG = True
-PIPELINE['PIPELINE_ENABLED'] = PIPELINE['PIPELINE_COLLECTOR_ENABLED'] = False
+DEBUG = True
+
 
 # Production mode
 # DEBUG = TEMPLATE_DEBUG = False
-# PIPELINE['PIPELINE_ENABLED'] = True
 # STATIC_URL = '/static/'  # Collectstatic
 
 # The console email backend will print emails to console, useful for dev server

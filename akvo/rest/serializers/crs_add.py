@@ -21,6 +21,7 @@ class CrsAddSerializer(BaseRSRSerializer):
 
     class Meta:
         model = CrsAdd
+        fields = '__all__'
 
 
 class CrsAddOtherFlagSerializer(BaseRSRSerializer):
@@ -29,3 +30,4 @@ class CrsAddOtherFlagSerializer(BaseRSRSerializer):
 
     class Meta:
         model = CrsAddOtherFlag
+        fields = '__all__'

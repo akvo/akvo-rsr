@@ -30,7 +30,7 @@ class Fss(models.Model):
         help_text=_(u'True if the partner country is a priority partner country.')
     )
     phaseout_year = models.PositiveIntegerField(
-        _(u'phaseout year'), blank=True, null=True, max_length=4,
+        _(u'phaseout year'), blank=True, null=True,
         help_text=_(u'If there are plans to phase out operations from the partner country, this '
                     u'shows the projected year of last disbursements.')
     )
@@ -42,6 +42,7 @@ class Fss(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'FSS')
         verbose_name_plural = _(u'FSS')
+        ordering = ('pk',)
 
 
 class FssForecast(models.Model):
@@ -50,7 +51,7 @@ class FssForecast(models.Model):
     """
     fss = models.ForeignKey('Fss', verbose_name=_(u'fss'), related_name='forecasts')
     year = models.PositiveIntegerField(
-        _(u'year'), blank=True, null=True, max_length=4,
+        _(u'year'), blank=True, null=True,
         help_text=_(u'The calendar year that the forward spend covers.')
     )
     value_date = models.DateField(
@@ -84,3 +85,4 @@ class FssForecast(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'FSS forecast')
         verbose_name_plural = _(u'FSS forecasts')
+        ordering = ('pk',)

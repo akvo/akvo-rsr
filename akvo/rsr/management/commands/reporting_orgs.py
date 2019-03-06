@@ -10,8 +10,6 @@ import sys
 from collections import namedtuple
 from django.core.management.base import BaseCommand, OutputWrapper
 
-from optparse import make_option
-
 from ...models import Project, Partnership, Organisation
 
 FixProject = namedtuple('FixProject', ['project', 'reason', 'partners', 'sync_owner'])
@@ -171,12 +169,12 @@ class ReportingOrgMaker(object):
 class Command(BaseCommand):
     help = 'Checks that all projects get a reporting organisation when migrating from sync_owner'
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--migrate',
             action='store_true',
-            help='Migrate the database, creating reporting-org partnership objects'),
-    )
+            help='Migrate the database, creating reporting-org partnership objects'
+        )
 
     def handle(self, *args, **options):
         """

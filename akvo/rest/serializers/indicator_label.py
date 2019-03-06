@@ -19,3 +19,4 @@ class IndicatorLabelSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorLabel
+        fields = '__all__'

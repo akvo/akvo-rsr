@@ -1,0 +1,113 @@
+.projectList {width:745px; height:730px;}
+.projectList tbody {display:block !important; height:690px !important; overflow: auto !important;}
+.projectListTable {
+  width:745px;
+  height:100%;
+  margin-bottom:1px;
+  /* overflow-y:scroll; */
+}
+ul.thead {height:30px;}
+ul.thead li {float:left; 	text-align: left;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	background: rgb(0,0,0);
+	height:25px;
+	color:rgb(204,204,204);
+	padding:5px 0 0 1%;
+}
+/*
+.projectListWidget {
+	height: 100%;
+	margin-bottom: 1px;
+}
+*/
+.darkBG .projectListWidget {
+	color: rgb(214,214,214);
+}
+.lightBG .projectListWidget {
+	color: rgb(32,32,36);
+}
+.projectListWidget td {
+	vertical-align: top;
+	padding: 0.5em 0.25em;
+	margin: 0;
+}
+.projectListTitle {padding:0;}
+
+.projectListTitle td {
+	border-bottom:none;
+	border-top:none;
+	}
+.projectListWidget .projectListDescr > td {
+	border-top:none;
+	border-bottom: 1px solid rgb(0,0,0);
+	}
+
+.lightBG .projectListWidget td {
+	vertical-align: top;
+	padding: 0.5em 0.25em;
+	border-bottom: 1px solid rgb(134,134,134);
+}
+li.projectDescrTd { width: 34%; }
+li.projectLocTd { width: 14%; }
+li.projectStatusTd { width: 14%; }
+li.projectPartnerTd { width: 14%; }
+li.projectFundingTd { width: 19%; }
+td.projectDescrTd { width: 35%; }
+td.projectLocTd { width: 15%; }
+td.projectStatusTd { width: 15%; }
+td.projectPartnerTd { width: 15%; }
+td.projectFundingTd {
+    margin-top:-45px;
+    display:inline-block !important;
+    width:90%;
+    height:220px;
+}
+.projectListWidget .projectBudget {
+	position: relative;
+	overflow: auto;
+	float: none;
+	width: 100%;
+	margin: 0;
+}
+.projectStatusTd span { display: block; }
+.projectListWidget #project_title {
+	width: auto;
+	display: block;
+	font-size: 1em;
+	text-transform: uppercase;
+	margin:0.5em 0 0.25em 0.25em;
+	color: rgb(255,255,255);
+}
+.projectLocTd .projectLocation {
+	display: inline-block;
+	padding: 0.15em 0.35em 0.15em 17px;
+	font-size: 0.7em;
+	text-transform: uppercase;
+	color: rgb(255,255,255);
+	background: url(../images/pinLocation.png) left top no-repeat;
+	margin: 0 0 0 5px;
+	white-space: normal;
+	text-overflow: ellipsis;
+	overflow: hidden;
+    line-height: 1.5;
+}
+.rsrWidget {
+	font-size:0.8em;
+	}
+
+.lightBG .projectLocTd .projectLocation {
+	color: rgb(32,32,36);
+	background: url(../images/pinLocationBk.png) left center no-repeat;
+}
+.projectStatus {
+	font-size:0.8em;
+	display: inline-block;
+	padding: 0.15em 0.5em;
+	text-transform: uppercase;
+	border-radius: 0.15em;
+	color: rgb(255,255,255);
+}
+.projectStatus.notComplete { background: rgb(217,104,0); }
+.projectStatus.complete { background: rgb(140,198,63); }

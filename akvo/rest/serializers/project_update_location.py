@@ -13,12 +13,14 @@ from .rsr_serializer import BaseRSRSerializer
 class ProjectUpdateLocationSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = ProjectUpdateLocation
 
 
 class ProjectUpdateLocationNestedSerializer(ProjectUpdateLocationSerializer):
 
-    class Meta(ProjectUpdateLocationSerializer.Meta):
+    class Meta:
+        model = ProjectUpdateLocation
         # Exclude the mandatory 'location_target' field, so that it is possible to create a
         # project update location at the same time as the project update.
         exclude = ('location_target',)
@@ -52,3 +54,6 @@ class MapProjectUpdateLocationSerializer(serializers.Serializer):
     latitude = serializers.FloatField()
     longitude = serializers.FloatField()
     update = MapProjectUpdateSerializer(source='location_target')
+
+    class Meta:
+        fields = '__all__'

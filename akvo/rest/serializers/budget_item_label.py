@@ -14,3 +14,4 @@ class BudgetItemLabelSerializer(BaseRSRSerializer):
 
     class Meta:
         model = BudgetItemLabel
+        fields = '__all__'

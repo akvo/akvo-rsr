@@ -23,6 +23,8 @@ class ReportsTestCase(TestCase):
     def setUp(self):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+        # Delete any reports created in the migrations
+        Report.objects.all().delete()
 
     def test_only_non_organisation_reports_shown(self):
         """Show only reports not associated with an organisation to anonymous user."""

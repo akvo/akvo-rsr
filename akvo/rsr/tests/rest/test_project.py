@@ -16,10 +16,9 @@ from django.contrib.auth.models import Group
 from django.core.cache import cache
 from django.test import TestCase, Client
 
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              Employment, Keyword, PartnerSite,
-                             PublishingStatus, ProjectLocation, Country,
+                             PublishingStatus, ProjectLocation,
                              RecipientCountry, ProjectEditorValidationSet,
                              OrganisationCustomField, ProjectCustomField)
 
@@ -287,7 +286,6 @@ class ProjectDirectoryTestCase(TestCase):
         # Add a Recipient Country - DJ
         RecipientCountry.objects.create(project=projects[2], country=country_code)
         # ProjectLocation in DJ
-        self.setup_country_objects()
         project_location = ProjectLocation.objects.create(location_target=projects[3],
                                                           latitude=latitude,
                                                           longitude=longitude)
@@ -314,10 +312,6 @@ class ProjectDirectoryTestCase(TestCase):
         self.assertIn(titles[2], response_titles)
         self.assertIn(titles[3], response_titles)
         self.assertEqual(project_location.country.iso_code, country_code.lower())
-
-    def setup_country_objects(self):
-        for iso_code, name in ISO_3166_COUNTRIES:
-            Country.objects.create(name=name, iso_code=iso_code)
 
 
 class ProjectPostTestCase(TestCase):
@@ -362,7 +356,9 @@ class ProjectPostTestCase(TestCase):
     def test_reporting_org_set(self):
         # When
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then
@@ -379,7 +375,9 @@ class ProjectPostTestCase(TestCase):
     def test_project_creation_logged(self):
         # When
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then
@@ -404,7 +402,9 @@ class ProjectPostTestCase(TestCase):
 
         # When
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then
@@ -463,7 +463,9 @@ class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
         self.validation = ProjectEditorValidationSet.objects.create(name='test')
 
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then
@@ -478,7 +480,9 @@ class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
 
         restrict_projects(self.user_n, self.user_o, [self.projects['Y']])
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then
@@ -492,7 +496,9 @@ class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
         self.validation = ProjectEditorValidationSet.objects.create(name='test')
 
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then
@@ -507,7 +513,9 @@ class RestrictionsSetupOnProjectCreation(RestrictedUserProjects):
 
         restrict_projects(self.user_n, self.user_o, [self.projects['Y']])
         response = self.c.post(
-            '/rest/v1/project/', {'format': 'json', 'validations': [self.validation.pk]}
+            '/rest/v1/project/',
+            json.dumps({'format': 'json', 'validations': [self.validation.pk]}),
+            content_type='application/json'
         )
 
         # Then

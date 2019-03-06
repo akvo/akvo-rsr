@@ -83,6 +83,7 @@ class PolicyMarker(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'policy marker')
         verbose_name_plural = _(u'policy markers')
+        ordering = ('pk',)
 
 
 @receiver(post_save, sender=PolicyMarker)

@@ -9,7 +9,7 @@ function log {
 # We don't care about migrations; __init__.py can have unused imports
 # wsgi.py and scripts/ are handled below
 log Checking styles
-flake8 --ignore=E501 --exclude=wsgi.py,scripts,migrations,__init__.py akvo/
+flake8 --ignore=E501 --exclude=wsgi.py,scripts,migrations,__init__.py,node_modules akvo/
 # Need environ to be set before other imports, etc. So, ignore E402
 flake8 --ignore=E501,E402 akvo/scripts/
 flake8 --ignore=E501,E402 akvo/wsgi.py
@@ -19,6 +19,13 @@ flake8 --ignore=E501,E402 akvo/wsgi.py
 ## This sometimes hangs if the makemigrations prompts. Latest 1.11 and 2.1 versions of Django have a --check option
 log Running makemigrations
 python manage.py makemigrations rsr | grep -i "no changes"
+
+log Building node environment
+pushd akvo/rsr/front-end
+npm install
+npm run dev
+npm run test
+popd
 
 log Building assets
 python manage.py collectstatic --noinput

@@ -25,7 +25,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from akvo.iati.imports.mappers.CordaidZip.organisations import Organisations
 from akvo.rsr.models.iati_import_log import LOG_ENTRY_TYPE
-from akvo.rsr.models.organisation import Organisation
 from akvo.utils import rsr_send_mail, file_from_zip_archive
 
 
@@ -398,6 +397,7 @@ class IatiImportJob(models.Model):
                     with transaction.atomic():
                         iati_activity_import = IatiActivityImport(
                             iati_import_job=self, activity_xml=etree.tostring(activity))
+                        iati_activity_import.save()
                         iati_activity_import.do_import(self.activities.attrib)
                         iati_activity_import.save()
 
@@ -439,6 +439,7 @@ class CordaidZipIatiImportJob(IatiImportJob):
         ORGANISATIONS_CHILDREN = 'object'
         CORDAID_ORG_ID = 273
 
+        from akvo.rsr.models import Organisation
         self.add_log(u'CordaidZip: Starting organisations import.', LOG_ENTRY_TYPE.INFORMATIONAL)
         organisations_xml = self.get_xml_file(ORGANISATIONS_FILENAME)
         if self.parse_xml(organisations_xml, ORGANISATIONS_ROOT, ORGANISATIONS_CHILDREN):
