@@ -97,7 +97,7 @@ const entry = {
 
 const plugins = [
     new MiniCssExtractPluginCleanup(),
-    new BundleTracker({ filename: "./webpack-stats.json" })
+    new BundleTracker({ filename: "./static/webpack-stats.json" })
 ];
 
 module.exports = {
