@@ -1029,8 +1029,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
     def get_queryset(self, request):
         """If superuser or admin return full queryset, otherwise return limited queryset."""
         if request.user.is_superuser or request.user.is_admin:
-            return super(ProjectAdmin, self).queryset(request).select_related(
-                'publishingstatus__status').prefetch_related('keywords')
+            queryset = super(ProjectAdmin, self).get_queryset(request)
+            return queryset.select_related('publishingstatus').prefetch_related('keywords')
         return self.get_limited_queryset(request)
 
     @csrf_protect_m
