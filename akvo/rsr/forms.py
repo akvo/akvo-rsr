@@ -153,26 +153,22 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
         return password2
 
     def save(self, request):
-        """
-        Create the new User and RegistrationProfile, and returns the User.
+        """Create the new user and RegistrationProfile, and returns the user."""
 
-        This is essentially a light wrapper around
-        RegistrationProfile.objects.create_inactive_user(), feeding it the form data and
-        a profile callback (see the documentation on create_inactive_user() for details)
-        if supplied. Modified to set user.is_active = False and add User object creation.
-        """
-        site = get_current_site(request)
-        new_user = RegistrationProfile.objects.create_inactive_user(
-            username=self.cleaned_data['email'],
-            email=self.cleaned_data['email'],
-            password=self.cleaned_data['password1'],
-            site=site,
+        User = get_user_model()
+        username = email = self.cleaned_data['email']
+        password = self.cleaned_data['password1']
+        first_name = self.cleaned_data['first_name']
+        last_name = self.cleaned_data['last_name']
+        user = User.objects.create_user(
+            username, email, password, first_name=first_name, last_name=last_name
         )
-        new_user.first_name = self.cleaned_data['first_name']
-        new_user.last_name = self.cleaned_data['last_name']
-        new_user.is_active = False
-        new_user.save()
-        return new_user
+
+        registration_profile = RegistrationProfile.objects.create_profile(user)
+        site = get_current_site(request)
+        registration_profile.send_activation_email(site)
+
+        return user
 
 
 class ProfileForm(forms.Form):
