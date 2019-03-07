@@ -21,7 +21,6 @@ from django.contrib.auth.forms import (
 from django.contrib.auth.models import Group
 from django.db import models, transaction
 from django.apps import apps
-from django.forms.formsets import all_valid
 from django.forms.utils import ErrorList
 from django.forms import TextInput
 from django.utils.decorators import method_decorator
@@ -341,7 +340,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 form_validated = False
                 new_object = self.model()
             prefixes = {}
-            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+            for FormSet, inline in self.get_formsets_with_inlines(request, new_object):
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
@@ -356,10 +355,13 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                                       save_as_new="_saveasnew" in request.POST,
                                       prefix=prefix, queryset=inline.get_queryset(request))
                     formsets.append(formset)
-            if all_valid(formsets) and form_validated:
+            if self.all_valid_with_nesting(formsets) and form_validated:
                 self.save_model(request, new_object, form, False)
                 self.save_related(request, form, formsets, False)
-                self.log_addition(request, new_object)
+                message = self.construct_change_message(
+                    request, form, formsets, add=True
+                )
+                self.log_addition(request, new_object, message)
                 return self.response_add(request, new_object)
         else:
             # Prepare the dict of initial data from the request.
@@ -374,7 +376,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                     initial[k] = initial[k].split(",")
             form = ModelForm(initial=initial)
             prefixes = {}
-            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+            for FormSet, inline in self.get_formsets_with_inlines(request):
                 prefix = FormSet.get_default_prefix()
                 prefixes[prefix] = prefixes.get(prefix, 0) + 1
                 if prefixes[prefix] != 1 or not prefix:
@@ -404,7 +406,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         context = {
             'title': _('Add %s') % force_text(opts.verbose_name),
             'adminform': adminForm,
-            'is_popup': IS_POPUP_VAR in request.REQUEST,
+            'is_popup': IS_POPUP_VAR in request.POST,
             'show_delete': False,
             'media': media,
             'inline_admin_formsets': inline_admin_formsets,
@@ -1026,8 +1028,8 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
     def get_queryset(self, request):
         """If superuser or admin return full queryset, otherwise return limited queryset."""
         if request.user.is_superuser or request.user.is_admin:
-            return super(ProjectAdmin, self).queryset(request).select_related(
-                'publishingstatus__status').prefetch_related('keywords')
+            queryset = super(ProjectAdmin, self).get_queryset(request)
+            return queryset.select_related('publishingstatus').prefetch_related('keywords')
         return self.get_limited_queryset(request)
 
     @csrf_protect_m
@@ -1049,7 +1051,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                 form_validated = False
                 new_object = self.model()
             prefixes = {}
-            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+            for FormSet, inline in self.get_formsets_with_inlines(request):
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
@@ -1063,10 +1065,13 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                                       save_as_new="_saveasnew" in request.POST,
                                       prefix=prefix, queryset=inline.get_queryset(request))
                     formsets.append(formset)
-            if all_valid(formsets) and form_validated:
+            if self.all_valid_with_nesting(formsets) and form_validated:
                 self.save_model(request, new_object, form, False)
                 self.save_related(request, form, formsets, False)
-                self.log_addition(request, new_object)
+                message = self.construct_change_message(
+                    request, form, formsets, add=True
+                )
+                self.log_addition(request, new_object, message)
                 return self.response_add(request, new_object)
         else:
             # Prepare the dict of initial data from the request.
@@ -1081,7 +1086,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
                     initial[k] = initial[k].split(",")
             form = ModelForm(initial=initial)
             prefixes = {}
-            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+            for FormSet, inline in self.get_formsets_with_inlines(request):
                 prefix = FormSet.get_default_prefix()
                 prefixes[prefix] = prefixes.get(prefix, 0) + 1
                 if prefixes[prefix] != 1 or not prefix:
@@ -1119,7 +1124,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         context = {
             'title': _('Add %s') % force_text(opts.verbose_name),
             'adminform': adminForm,
-            'is_popup': IS_POPUP_VAR in request.REQUEST,
+            'is_popup': IS_POPUP_VAR in request.POST,
             'show_delete': False,
             'media': media,
             'inline_admin_formsets': inline_admin_formsets,
