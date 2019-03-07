@@ -202,7 +202,10 @@ class Partnership(models.Model):
     def clean(self):
         # Don't allow multiple reporting organisations
         Project = apps.get_model('rsr', 'project')
-        project = Project.objects.get(id=self.project_id)
+        try:
+            project = Project.objects.get(id=self.project_id)
+        except Project.DoesNotExist:
+            return
         if self.iati_organisation_role == self.IATI_REPORTING_ORGANISATION:
             reporting_orgs = project.partnerships.filter(
                 iati_organisation_role=self.IATI_REPORTING_ORGANISATION
