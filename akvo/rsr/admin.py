@@ -341,7 +341,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                 form_validated = False
                 new_object = self.model()
             prefixes = {}
-            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+            for FormSet, inline in self.get_formsets_with_inlines(request, new_object):
                 prefix = FormSet.get_default_prefix()
                 # check if we're trying to create a new project by copying an existing one. If so
                 # we ignore location and benchmark inlines
@@ -356,10 +356,13 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                                       save_as_new="_saveasnew" in request.POST,
                                       prefix=prefix, queryset=inline.get_queryset(request))
                     formsets.append(formset)
-            if all_valid(formsets) and form_validated:
+            if self.all_valid_with_nesting(formsets) and form_validated:
                 self.save_model(request, new_object, form, False)
                 self.save_related(request, form, formsets, False)
-                self.log_addition(request, new_object)
+                message = self.construct_change_message(
+                    request, form, formsets, add=True
+                )
+                self.log_addition(request, new_object, message)
                 return self.response_add(request, new_object)
         else:
             # Prepare the dict of initial data from the request.
@@ -374,7 +377,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
                     initial[k] = initial[k].split(",")
             form = ModelForm(initial=initial)
             prefixes = {}
-            for FormSet, inline in zip(self.get_formsets(request), inline_instances):
+            for FormSet, inline in self.get_formsets_with_inlines(request):
                 prefix = FormSet.get_default_prefix()
                 prefixes[prefix] = prefixes.get(prefix, 0) + 1
                 if prefixes[prefix] != 1 or not prefix:
@@ -404,7 +407,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
         context = {
             'title': _('Add %s') % force_text(opts.verbose_name),
             'adminform': adminForm,
-            'is_popup': IS_POPUP_VAR in request.REQUEST,
+            'is_popup': IS_POPUP_VAR in request.POST,
             'show_delete': False,
             'media': media,
             'inline_admin_formsets': inline_admin_formsets,
