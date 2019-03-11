@@ -137,9 +137,6 @@ def project_editor_reorder_items(request, project_pk=None):
     )
 
 
-JS_TRUE = 'true'
-
-
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def project_editor_default_periods(request, project_pk=None):
