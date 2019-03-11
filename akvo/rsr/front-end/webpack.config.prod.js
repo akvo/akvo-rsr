@@ -21,6 +21,8 @@ const plugins = [
 module.exports = merge.smart(conf, {
     plugins,
 
+    devtool: "source-map",
+
     output: {
         filename: "[name].[hash].js"
     },

@@ -44,7 +44,10 @@ PAGE_CONTENT=$(curl --location --silent "${BASE_URL}")
 ASSETS=$(echo "${PAGE_CONTENT}" | grep -Eo "\/static/rsr/dist/.+(css|js)" | head -n 3)
 
 while read -r path; do
+  # test asset
   test_http_status "${HTTP_OK}" "$BASE_URL$path"
+  # test sourcemap
+  test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
 done <<< "$ASSETS"
 echo ""
 
