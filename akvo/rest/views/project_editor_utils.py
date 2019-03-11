@@ -247,7 +247,7 @@ def pre_process_data(key, data, errors):
     # Keywords is the only ManyToManyField
     if isinstance(model_field, ManyToManyField):
         try:
-            return Keyword.objects.get(pk=int(data))
+            return Keyword.objects.get(pk=int(data)), errors
         except Exception as e:
             errors = add_error(errors, e, key)
             return None, errors
