@@ -8,7 +8,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum, Q, signals
-from django.db.models.query import QuerySet as DjangoQuerySet
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -22,6 +21,7 @@ from akvo.codelists.store.default_codelists import CURRENCY, ORGANISATION_TYPE
 from akvo.codelists.models import Currency
 
 from .country import Country
+from .model_querysets.organisation import OrgManager
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
@@ -41,21 +41,6 @@ ORG_TYPES = (
 
 def image_path(instance, file_name):
     return rsr_image_path(instance, file_name, 'db/org/%(instance_pk)s/%(file_name)s')
-
-
-class OrgManager(models.Manager):
-    def get_queryset(self):
-        return self.model.QuerySet(self.model).extra(
-            select={
-                'lower_name': 'lower(rsr_organisation.name)'
-            }
-        ).order_by('lower_name')
-
-    def __getattr__(self, attr, *args):
-        try:
-            return getattr(self.__class__, attr, *args)
-        except AttributeError:
-            return getattr(self.get_queryset(), attr, *args)
 
 
 class Organisation(TimestampsMixin, models.Model):
@@ -179,12 +164,6 @@ class Organisation(TimestampsMixin, models.Model):
                                     on_delete=models.SET_NULL,
                                     help_text=u'Pointer to original organisation if this is a '
                                               u'shadow. Used by EUTF')
-    allow_edit = models.BooleanField(
-        _(u'Partner editors of this organisation are allowed to manually edit projects where '
-          u'this organisation is support partner'),
-        help_text=_(u'When manual edits are disallowed, partner admins and editors of other '
-                    u'organisations are also not allowed to edit these projects.'), default=True
-    )
     public_iati_file = models.BooleanField(
         _(u'Show latest exported IATI file on organisation page.'), default=True
     )
@@ -238,91 +217,6 @@ class Organisation(TimestampsMixin, models.Model):
 
         if validation_errors:
             raise ValidationError(validation_errors)
-
-    class QuerySet(DjangoQuerySet):
-        def has_location(self):
-            return self.filter(primary_location__isnull=False)
-
-        def partners(self, role):
-            "return the organisations in the queryset that are partners of type role"
-            return self.filter(partnerships__iati_organisation_role__exact=role).distinct()
-
-        def allpartners(self):
-            return self.distinct()
-
-        def fieldpartners(self):
-            return self.partners(Partnership.IATI_IMPLEMENTING_PARTNER)
-
-        def fundingpartners(self):
-            return self.partners(Partnership.IATI_FUNDING_PARTNER)
-
-        def sponsorpartners(self):
-            return self.partners(Partnership.AKVO_SPONSOR_PARTNER)
-
-        def supportpartners(self):
-            return self.partners(Partnership.IATI_ACCOUNTABLE_PARTNER)
-
-        def extendingpartners(self):
-            return self.partners(Partnership.IATI_EXTENDING_PARTNER)
-
-        def supportpartners_with_projects(self):
-            """return the organisations in the queryset that are support partners with published
-            projects, not counting archived projects"""
-            from .project import Project
-            return self.filter(
-                partnerships__iati_organisation_role=Partnership.IATI_ACCOUNTABLE_PARTNER,
-                partnerships__project__publishingstatus__status=PublishingStatus.STATUS_PUBLISHED,
-                partnerships__project__iati_status__in=Project.NOT_SUSPENDED
-            ).distinct()
-
-        def ngos(self):
-            return self.filter(organisation_type__exact=ORG_TYPE_NGO)
-
-        def governmental(self):
-            return self.filter(organisation_type__exact=ORG_TYPE_GOV)
-
-        def commercial(self):
-            return self.filter(organisation_type__exact=ORG_TYPE_COM)
-
-        def knowledge(self):
-            return self.filter(organisation_type__exact=ORG_TYPE_KNO)
-
-        def all_projects(self):
-            "returns a queryset with all projects that has self as any kind of partner"
-            from .project import Project
-            return Project.objects.of_partner(self).distinct()
-
-        def users(self):
-            "returns a queryset of all users belonging to the organisation(s)"
-            from .user import User
-            return User.objects.filter(employers__organisation__in=self).distinct()
-
-        def all_updates(self):
-            """Returns a queryset with all updates of the organisation."""
-            return ProjectUpdate.objects.filter(user__organisations__in=self).distinct()
-
-        def employments(self):
-            "returns a queryset of all employments belonging to the organisation(s)"
-            from .employment import Employment
-            return Employment.objects.filter(organisation__in=self).distinct()
-
-        def content_owned_organisations(self, exclude_orgs=None):
-            """Returns a list of Organisations of which these organisations are the content owner.
-
-            Includes self, is recursive.
-
-            The exclude_orgs parameter is used to avoid recursive calls that
-            can happen in case there are organisations that set each other as
-            content owned organisations.
-
-            """
-
-            result = set()
-            for org in self:
-                result = result | set(
-                    org.content_owned_organisations(exclude_orgs=exclude_orgs).values_list('pk', flat=True)
-                )
-            return Organisation.objects.filter(pk__in=result).distinct()
 
     def __unicode__(self):
         return self.name

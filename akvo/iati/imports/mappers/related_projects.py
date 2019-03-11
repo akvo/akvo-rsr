@@ -4,7 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ....rsr.models.project import Project
 from ....rsr.models.related_project import RelatedProject
 
 from .. import ImportMapper
@@ -27,6 +26,9 @@ class RelatedProjects(ImportMapper):
 
         :return: List; contains fields that have changed
         """
+
+        from akvo.rsr.models.project import Project
+
         imported_related_projects = []
         changes = []
 

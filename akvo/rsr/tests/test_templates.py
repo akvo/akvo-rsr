@@ -36,9 +36,8 @@ class ScriptJSONFinder(HTMLParser):
 class TemplatesTestCase(TestCase):
     """Testing that templates are written correctly."""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.script_json_finder = ScriptJSONFinder()
+    def setUp(self):
+        self.script_json_finder = ScriptJSONFinder()
 
     def test_all_application_json_trans_escapes_js(self):
         """All translated strings in json script tags use escapejs filter."""
@@ -59,7 +58,7 @@ class TemplatesTestCase(TestCase):
                                   'Template path: {}\nLine: {}'.format(template, line))
 
     def iter_templates(self):
-        for template_dir in settings.TEMPLATE_DIRS:
+        for template_dir in settings.TEMPLATES[0]['DIRS']:
             for path, dirs, files in walk(template_dir):
                 for template_name in files:
                     template_path = join(path, template_name)

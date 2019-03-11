@@ -7,7 +7,6 @@
 import tablib
 
 from django.core.management.base import BaseCommand
-from optparse import make_option
 
 from ...models import Indicator, IndicatorPeriod
 
@@ -20,14 +19,14 @@ class Command(BaseCommand):
             "added to them. They will never be deleted.\n\n"
             "Use the --delete option to actually delete the duplicates listed")
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--delete',
             action='store_true',
             dest='delete',
             default=False,
-            help='Actually delete period duplicates'),
-    )
+            help='Actually delete period duplicates'
+        )
 
     def handle(self, *args, **options):
 

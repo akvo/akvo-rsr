@@ -9,8 +9,6 @@ from django.core.files.temp import NamedTemporaryFile
 
 from akvo.utils import file_from_zip_archive, model_and_instance_based_filename
 
-from .....rsr.models.internal_organisation_id import InternalOrganisationID
-from .....rsr.models.organisation import Organisation
 from ... import ImportMapper
 from . import same_data
 
@@ -25,6 +23,7 @@ class InternalOrganisationIDs(ImportMapper):
                  related_obj=None):
         super(InternalOrganisationIDs, self).__init__(
             iati_import_job, parent_elem, project, globals, related_obj)
+        from akvo.rsr.models.internal_organisation_id import InternalOrganisationID
         self.model = InternalOrganisationID
 
     def do_import(self):
@@ -41,6 +40,7 @@ class Organisations(ImportMapper):
                  related_obj=None):
         super(Organisations, self).__init__(
             iati_import_job, parent_elem, project, globals, related_obj)
+        from akvo.rsr.models.organisation import Organisation
         self.model = Organisation
         # HACK: "fix" globals so we get the straight text from elements
         self.globals['version'] = '1'
@@ -90,6 +90,8 @@ class Organisations(ImportMapper):
         InternalOrganisationID model, using the org_id from the XML, but if we don't find, the org
         that way we need to create it before we can create the InternalOrganisationID object.
         """
+        from akvo.rsr.models.internal_organisation_id import InternalOrganisationID
+        from akvo.rsr.models.organisation import Organisation
 
         ioids = InternalOrganisationIDs(
             self.iati_import_job, self.parent_elem, self.project, self.globals)

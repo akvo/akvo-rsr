@@ -14,6 +14,7 @@ from rest_framework import serializers
 class ResultRawSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = Result
 
 

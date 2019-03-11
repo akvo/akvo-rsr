@@ -19,7 +19,7 @@ PROJECT_UPDATE_XML = """
   </locations>
   <text>Bar</text>
   <update_method>M</update_method>
-  <user>1</user>
+  <user>2</user>
   <photo_credit>Da credz</photo_credit>
   <language>en</language>
   <event_date>2018-01-16</event_date>
@@ -33,11 +33,11 @@ PROJECT_UPDATE_XML = """
 
 ORGANISATION_XML = """
 <?xml version="1.0" encoding="utf-8"?>
-<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><long_name>ABC.XYZ</long_name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url><primary_location>3</primary_location><can_create_projects>True</can_create_projects><content_owner></content_owner><allow_edit>True</allow_edit><public_iati_file>True</public_iati_file><can_become_reporting>False</can_become_reporting><internal_org_ids></internal_org_ids><absolute_url>/en-us/organisation/4/</absolute_url></root>
+<root><total_budgets></total_budgets><recipient_org_budgets></recipient_org_budgets><region_budgets></region_budgets><country_budgets></country_budgets><total_expenditures></total_expenditures><documents></documents><name>ABC</name><long_name>ABC.XYZ</long_name><language>en</language><organisation_type>N</organisation_type><currency>EUR</currency><new_organisation_type>22</new_organisation_type><iati_org_id></iati_org_id><url>http://www.google.com/</url><primary_location>3</primary_location><can_create_projects>True</can_create_projects><content_owner></content_owner><public_iati_file>True</public_iati_file><can_become_reporting>False</can_become_reporting><internal_org_ids></internal_org_ids><absolute_url>/en-us/organisation/4/</absolute_url></root>
 """
 
 GET_URLS = [
-    # akvo/rsr/static/scripts-src/my-projects.js
+    # akvo/rsr/front-end/scripts-src/my-projects.js
     '/rest/v1/project/?format=json',
 
     # akvo/scripts/cordaid/organisation_upload.py
@@ -49,13 +49,13 @@ GET_URLS = [
     "/rest/v1/project/?filter={'title__icontains':'fiber'}&exclude={'currency':'EUR'}&format=json",
     "/rest/v1/project/?filter={'partners__in':[2,3]}&prefetch_related=['partners']&format=json",
 
-    # akvo/rsr/static/scripts-src/project-directory-typeahead.jsx
+    # akvo/rsr/front-end/scripts-src/project-directory-typeahead.jsx
     '/rest/v1/typeaheads/organisations?format=json',
 
-    # akvo/rsr/static/scripts-src/my-details-employments.jsx
+    # akvo/rsr/front-end/scripts-src/my-details-employments.jsx
     '/rest/v1/typeaheads/countries?format=json',
 
-    # akvo/rsr/static/scripts-src/project-main/project-main-report.jsx
+    # akvo/rsr/front-end/scripts-src/project-main/project-main-report.jsx
     '/rest/v1/project/4/?format=json',
     '/rest/v1/project_location/?format=json&location_target=4',
     '/rest/v1/indicator/?format=json&result__project=4',
@@ -71,34 +71,34 @@ GET_URLS = [
     '/rest/v1/crs_add_other_flag/?format=json&crs__project=4',
     '/rest/v1/fss_forecast/?format=json&fss__project=4',
 
-    # akvo/rsr/static/scripts-src/project-directory.js
+    # akvo/rsr/front-end/scripts-src/project-directory.js
     '/rest/v1/typeaheads/projects?format=json',
 
-    # akvo/rsr/static/scripts-src/update-directory.js
+    # akvo/rsr/front-end/scripts-src/update-directory.js
     '/rest/v1/typeaheads/project_updates?format=json',
 
-    # akvo/rsr/static/scripts-src/my-reports.js
+    # akvo/rsr/front-end/scripts-src/my-reports.js
     '/rest/v1/report_formats/?format=json',
     '/rest/v1/reports/?format=json',
     '/rest/v1/typeaheads/user_organisations?format=json',
     '/rest/v1/typeaheads/user_projects?format=json',
 
-    # akvo/rsr/static/scripts-src/my-results.js
+    # akvo/rsr/front-end/scripts-src/my-results.js
     '/rest/v1/partnership/?format=json&project=4',
     '/rest/v1/user/3/?format=json',
     '/rest/v1/result/?format=json&project=4',
     '/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=4',
     '/rest/v1/indicator_period_framework/1/?format=json',
 
-    # akvo/rsr/static/scripts-src/my-results-select.jsx
+    # akvo/rsr/front-end/scripts-src/my-results-select.jsx
     '/rest/v1/typeaheads/impact_projects?format=json',
 
-    # akvo/rsr/static/scripts-src/my-iati.js
+    # akvo/rsr/front-end/scripts-src/my-iati.js
     '/rest/v1/project_iati_export/?format=json&limit=50&reporting_org=1',
     '/rest/v1/iati_export/?format=json&reporting_organisation=2&ordering=-id&limit=1',
     '/rest/v1/iati_export/?format=json&reporting_organisation=3',
 
-    # akvo/rsr/static/scripts-src/project-main/project-main-partners.js
+    # akvo/rsr/front-end/scripts-src/project-main/project-main-partners.js
     '/rest/v1/partnership_more_link/?format=json&project=4',
 
     # RSR UP urls ################
@@ -130,7 +130,7 @@ GET_URLS = [
 ]
 
 POST_URLS = [
-    # akvo/rsr/static/scripts-src/project-editor.jsx
+    # akvo/rsr/front-end/scripts-src/project-editor.jsx
     ('/rest/v1/project/4/project_editor/?format=json',
      {'rsr_project.title.4': 'foo bar', 'content_type': None},
      ('Project.objects.get(id=4).title',),),
@@ -175,8 +175,7 @@ POST_URLS = [
       'OrganisationLocation.objects.get(postcode="101010").longitude'),),
 
     ('/rest/v1/organisation/?format=json',
-     {u'allow_edit': True,
-      u'can_become_reporting': False,
+     {u'can_become_reporting': False,
       u'can_create_projects': True,
       u'content_owner': None,
       u'currency': u'EUR',
@@ -192,8 +191,7 @@ POST_URLS = [
       'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=json&dedup=content_owner',
-     {u'allow_edit': True,
-      u'can_become_reporting': False,
+     {u'can_become_reporting': False,
       u'can_create_projects': True,
       u'content_owner': 1,
       u'currency': u'EUR',
@@ -209,8 +207,7 @@ POST_URLS = [
       'list(Organisation.objects.order_by("id").values_list("name", flat=True))',),),
 
     ('/rest/v1/organisation/?format=json&dedup=no_content_owner',
-     {u'allow_edit': True,
-      u'can_become_reporting': False,
+     {u'can_become_reporting': False,
       u'can_create_projects': True,
       u'currency': u'EUR',
       u'language': u'en',
@@ -228,7 +225,7 @@ POST_URLS = [
      ORGANISATION_XML.strip(),
      ('Organisation.objects.count()',),),
 
-    # akvo/rsr/static/scripts-src/my-user-management.js
+    # akvo/rsr/front-end/scripts-src/my-user-management.js
     ('/rest/v1/invite_user/?format=json',
      {'user_data': '{"organisation": 1, "group": 2, "email": "abc@example.com"}'},
      ('User.objects.count()',),),
@@ -239,7 +236,7 @@ POST_URLS = [
     ('/rest/v1/employment/14/set_group/2/?format=json',
      {}, ('Employment.objects.filter(group_id=2).count()',)),
 
-    # # akvo/rsr/static/scripts-src/my-results.js
+    # # akvo/rsr/front-end/scripts-src/my-results.js
     ('/rest/v1/indicator_period_data/1/upload_file/?format=json',
      {'file': open(join(dirname(HERE), 'iati_export', 'test_image.jpg')),
       'type': 'photo',
@@ -247,16 +244,16 @@ POST_URLS = [
      (),),
 
     ('/rest/v1/indicator_period_data_comment/?format=json',
-     {"data": 4, "user": 1, "comment": "My awesome comment"},
+     {"data": 4, "user": 2, "comment": "My awesome comment"},
      ('IndicatorPeriodDataComment.objects.count()',),),
 
     ('/rest/v1/indicator_period_data_framework/?format=json',
-     {"period": 1, "user": 1, "data": 1, "period_actual_value": "4", "status": "D"},
+     {"period": 1, "user": 2, "data": 1, "period_actual_value": "4", "status": "D"},
      ('IndicatorPeriodData.objects.count()',),),
 
-    # akvo/rsr/static/scripts-src/my-iati.js
+    # akvo/rsr/front-end/scripts-src/my-iati.js
     ('/rest/v1/iati_export/?format=json',
-     {"reporting_organisation": 1, "user": 1, "version": "2", "projects": [4]},
+     {"reporting_organisation": 1, "user": 2, "version": "2", "projects": [4]},
      ('IatiExport.objects.count()',),),
 
     # akvo/scripts/cordaid/organisation_upload.py
@@ -275,7 +272,7 @@ POST_URLS = [
      (),),
 
     # # android/AkvoRSR/src/org/akvo/rsr/up/service/SubmitEmploymentService.java
-    ('/rest/v1/user/1/request_organisation/?format=json',
+    ('/rest/v1/user/2/request_organisation/?format=json',
      {'organisation': 2, 'group': 5, 'country': u'NL', 'job_title': u'User'},
      ('Employment.objects.filter(user_id=2).count()',)),
 
@@ -301,15 +298,9 @@ POST_URLS = [
      {},
      ('Project.objects.get(id=4).validations.count()',)),
 
-    ('/rest/v1/user/1/update_details/?format=json',
+    ('/rest/v1/user/2/update_details/?format=json',
      {'first_name': 'Angela', 'last_name': 'K'},
-     ('User.objects.get(id=1).first_name', 'User.objects.get(id=1).last_name',)),
-
-    ('/rest/v1/user/1/change_password/?format=json',
-     {'old_password': 'password',
-      'new_password1': 'my-@wesome-N3W-password',
-      'new_password2': 'my-@wesome-N3W-password'},
-     ('User.objects.get(id=1).check_password("my-@wesome-N3W-password")',)),
+     ('User.objects.get(id=2).first_name', 'User.objects.get(id=2).last_name',)),
 
     ('/rest/v1/project/4/log_project_addition/?format=json',
      {},
@@ -317,16 +308,25 @@ POST_URLS = [
 
     ('/rest/v1/project_custom_field/?format=json',
      {'project': 4, 'section': 2, 'order': 1, 'type': u'text', 'name': 'wow factor'},
-     ('ProjectCustomField.objects.count()',))
+     ('ProjectCustomField.objects.count()',)),
+
+    # Always test for password change at the end
+    # Changing password logs the user out, and causes tests future to fail.
+    ('/rest/v1/user/2/change_password/?format=json',
+     {'old_password': 'password',
+      'new_password1': 'my-@wesome-N3W-password',
+      'new_password2': 'my-@wesome-N3W-password'},
+     ('User.objects.get(id=2).check_password("my-@wesome-N3W-password")',)),
+
 ]
 
 PATCH_URLS = [
-    # akvo/rsr/static/scripts-src/project-editor.jsx
+    # akvo/rsr/front-end/scripts-src/project-editor.jsx
     # '/rest/v1/project/{project_id}/?format=json',
     # '/rest/v1/project_document/{documentId}/?format=json',
     # '/rest/v1/publishing_status/{publishing_status_id}/?format=json',
 
-    # akvo/rsr/static/scripts-src/my-results.js
+    # akvo/rsr/front-end/scripts-src/my-results.js
     # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
 
     ('/rest/v1/indicator_period_framework/6/?format=json',
@@ -338,7 +338,7 @@ PATCH_URLS = [
      ('IndicatorPeriod.objects.filter(locked=False).count()',),)
 
 
-    # akvo/rsr/static/scripts-src/my-iati.js
+    # akvo/rsr/front-end/scripts-src/my-iati.js
     # "/rest/v1/iati_export/{iati_export}/?format=json",
     # "/rest/v1/organisation/{{ selected_org.id }}/?format=json",
 ]
@@ -346,14 +346,14 @@ PATCH_URLS = [
 
 DELETE_URLS = [
 
-    # akvo/rsr/static/scripts-src/my-details-employments.jsx
+    # akvo/rsr/front-end/scripts-src/my-details-employments.jsx
     ('/rest/v1/employment/1/?format=json',
      {},
      ('Employment.objects.count()', )),
 
 
-    # akvo/rsr/static/scripts-src/project-editor.jsx
-    ('/rest/v1/project/4/remove_validation/1/?format=json', {},
+    # akvo/rsr/front-end/scripts-src/project-editor.jsx
+    ('/rest/v1/project/4/remove_validation/3/?format=json', {},
      ('Project.objects.get(id=4).validations.count()',)),
 
     ('/rest/v1/project/4/remove_keyword/1/?format=json', {},
@@ -361,9 +361,9 @@ DELETE_URLS = [
 
     # '/rest/v1/{itemType}/{itemId}/?format=json',
 
-    # # akvo/rsr/static/scripts-src/my-updates.js
+    # # akvo/rsr/front-end/scripts-src/my-updates.js
     # '/rest/v1/project_update/{update_id}/?format=json',
 
-    # # akvo/rsr/static/scripts-src/my-results.js
+    # # akvo/rsr/front-end/scripts-src/my-results.js
     # "/rest/v1/indicator_period_data_framework/{update}/?format=json",
 ]

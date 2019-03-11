@@ -15,6 +15,7 @@ class IndicatorPeriodActualDimensionSerializer(BaseRSRSerializer):
     period_unicode = serializers.ReadOnlyField(source='period.__unicode__')
 
     class Meta:
+        fields = '__all__'
         model = IndicatorPeriodActualDimension
 
 
@@ -24,3 +25,4 @@ class IndicatorPeriodTargetDimensionSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriodTargetDimension
+        fields = '__all__'

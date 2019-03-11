@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load i18n maps markup_tags rsr_utils rsr_filters bootstrap3 pipeline %}
+{% load i18n maps markup_tags rsr_utils rsr_filters bootstrap3 %}
+{% load render_bundle from webpack_loader %}
+
 {% block title %}{% trans 'Updates' %}{% endblock %}
 {% block maincontent %}
 
@@ -33,7 +35,7 @@
      }
     </script>
 
-    {% javascript 'directory_utils' %}
-    {% javascript 'update_directory' %}
+    {% render_bundle 'directoryUtils' %}
+    {% render_bundle 'updateDirectory' %}
 
 {% endblock js %}

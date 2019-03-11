@@ -45,6 +45,7 @@ class IndicatorReference(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator reference')
         verbose_name_plural = _(u'indicator references')
+        ordering = ('pk',)
 
     def __unicode__(self):
         return self.reference

@@ -1,0 +1,9 @@
+version: "2"
+
+options:
+  verbose: true
+
+syncs:
+  rsr-docker-sync:
+    src: '.'
+    sync_excludes: ['.idea', '.git', 'data']

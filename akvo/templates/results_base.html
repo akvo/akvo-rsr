@@ -1,4 +1,5 @@
-{% load pipeline i18n %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
 
 {# Initial data endpoints #}
 <script type="application/json" id="endpoint-data">
@@ -185,10 +186,11 @@
         "edit_project": "{% trans 'Edit project'|escapejs %}",
         "start_date": "{% trans 'Start Date'|escapejs %}",
         "end_date": "{% trans 'End Date'|escapejs %}",
-        "download": "{% trans 'Download'|escapejs %}"
+        "download": "{% trans 'Download'|escapejs %}",
+        "include_actual_value_comments": "{% trans 'Include Actual Value Comments'|escapejs %}"
     }
 </script>
 
 
-{% javascript 'vendors_bundle' %}
-{% javascript 'results_bundle' %}
+{% render_bundle 'vendors' %}
+{% render_bundle 'results' %}

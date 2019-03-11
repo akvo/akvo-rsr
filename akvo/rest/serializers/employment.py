@@ -19,3 +19,4 @@ class EmploymentSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Employment
+        fields = '__all__'

@@ -26,10 +26,11 @@ from akvo.utils import DjangoModel
 
 from collections import namedtuple
 
+from django.apps import apps
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
-from django.db.models import (get_model, BooleanField, DateField, DecimalField, EmailField,
+from django.db.models import (BooleanField, DateField, DecimalField, EmailField,
                               ForeignKey, ManyToManyField, NullBooleanField, PositiveIntegerField,
                               PositiveSmallIntegerField, URLField)
 from django.utils.translation import ugettext_lazy as _
@@ -151,7 +152,7 @@ def pre_process_data(key, data, errors):
     except TypeError:
         return data, errors
 
-    Model = get_model(key_parts.model.app, key_parts.model.model_name)
+    Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
     model_field = Model._meta.get_field(key_parts.field)
 
     # Text data does not need pre-processing
@@ -294,7 +295,7 @@ def convert_related_objects(rel_objects):
     for key in rel_objects:
         # First retrieve the unicode and create a new dict including the unicode
         db_table, old_key = key.split('.')
-        Model = get_model(db_table.split('_')[0], db_table.split('_')[1])
+        Model = apps.get_model(db_table.split('_')[0], db_table.split('_')[1])
         unicode = Model.objects.get(pk=int(rel_objects[key])).__unicode__()
         new_dict_response = {
             'new_id': rel_objects[key],
@@ -561,7 +562,7 @@ def sort_keys(x):
 
     """
     key_parts = split_key(x)
-    Model = get_model(key_parts.model.app, key_parts.model.model_name)
+    Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
     level = 1
     while Model in RELATED_OBJECTS_MAPPING:
         level += 1
@@ -599,7 +600,7 @@ def create_or_update_objects_from_data(project, data):
         key_parts = split_key(key)
 
         # Retrieve the model and related object ID (e.g. rsr_project.1234)
-        Model = get_model(key_parts.model.app, key_parts.model.model_name)
+        Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
         related_obj_id = ''.join(
             [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
         )

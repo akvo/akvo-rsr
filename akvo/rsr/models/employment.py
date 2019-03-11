@@ -9,19 +9,17 @@ from akvo.codelists.store.default_codelists import COUNTRY
 from akvo.utils import codelist_choices, codelist_value
 
 from django.contrib.admin.models import LogEntry, CHANGE
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.db.models.query import QuerySet as DjangoQuerySet
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 
-from .models_utils import QuerySetManager
-
 from ..fields import ValidXMLCharField
+
+from .model_querysets.employment import EmploymentQuerySet
 
 
 class Employment(models.Model):
@@ -40,27 +38,7 @@ class Employment(models.Model):
     )
     job_title = ValidXMLCharField(_(u'job title'), max_length=50, blank=True)
 
-    objects = QuerySetManager()
-
-    class QuerySet(DjangoQuerySet):
-        def organisations(self):
-            """
-            Return an Organisation QuerySet containing the organisations of the Employment QuerySet
-            """
-            from ..models import Organisation
-            return Organisation.objects.filter(employees__in=self).distinct()
-
-        def users(self):
-            """
-            Return a User QuerySet containing the users of the Employment QuerySet
-            """
-            return get_user_model().objects.filter(employers__in=self).distinct()
-
-        def approved(self):
-            """
-            Return an Employment QuerySet containing the approved Employments
-            """
-            return self.filter(is_approved=True)
+    objects = EmploymentQuerySet.as_manager()
 
     class Meta:
         app_label = 'rsr'

@@ -1,6 +1,7 @@
 {% extends "myrsr/myrsr_base.html" %}
 
-{% load pipeline i18n bootstrap3 %}
+{% load i18n bootstrap3 %}
+{% load render_bundle from webpack_loader %}
 
 {% block title %}{% trans 'MyRSR - My IATI' %}{% endblock title %}
 
@@ -175,5 +176,5 @@
         }
     </script>
 
-    {% javascript 'my_iati' %}
+    {% render_bundle 'myIati' %}
 {% endblock js %}

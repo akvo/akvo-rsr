@@ -15,6 +15,7 @@ class RecipientCountryRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = RecipientCountry
+        fields = '__all__'
 
 
 class RecipientCountrySerializer(RecipientCountryRawSerializer):

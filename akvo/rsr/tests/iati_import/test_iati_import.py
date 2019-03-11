@@ -52,16 +52,20 @@ class IatiImportTestCase(TestCase):
 
         # Create budget item labels
         BudgetItemLabel.objects.create(label="Total")
-        BudgetItemLabel.objects.create(label="Other")
+        BudgetItemLabel.objects.create(label="Subtotal")
 
         # Create budget identifier code
+        Version.objects.all().delete()
         iati_version = Version.objects.create(code='2.02')
+        BudgetIdentifier.objects.all().delete()
         BudgetIdentifier.objects.create(version=iati_version, code="1.1.1", name="Codelist name")
 
         # Create result type code
+        ResultType.objects.all().delete()
         ResultType.objects.create(version=iati_version, code="1", name="Output")
 
         # Create a pair of Currency codelist objects for use in the transaction import
+        Currency.objects.all().delete()
         Currency.objects.create(code='EUR', name=u'Euro', version=iati_version)
         Currency.objects.create(code='USD', name=u'US Dollar', version=iati_version)
 

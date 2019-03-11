@@ -48,3 +48,4 @@ class ProjectCondition(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'condition')
         verbose_name_plural = _(u'conditions')
+        ordering = ('pk',)

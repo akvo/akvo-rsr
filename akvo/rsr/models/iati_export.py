@@ -47,6 +47,7 @@ class IatiExport(TimestampsMixin, models.Model):
         app_label = 'rsr'
         verbose_name = _(u'IATI export')
         verbose_name_plural = _(u'IATI exports')
+        ordering = ('id',)
 
     def __unicode__(self):
         if self.reporting_organisation and self.reporting_organisation.name:

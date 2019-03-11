@@ -11,4 +11,5 @@ from akvo.rsr.models import NarrativeReport
 class NarrativeReportSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = NarrativeReport

@@ -1,11 +1,10 @@
 {% extends "widgets/base.html" %}
 {% load i18n rsr_filters rsr_tags rsr_widgets addparam rsr_utils %}
-
-{% load pipeline %}
+{% load render_bundle from webpack_loader %}
 
 {% block style %}
 {{block.super}}
-{% stylesheet 'widget_project_list' %}
+{% render_bundle 'widget' 'css' %}
 {% endblock style %}
 {% block body %}
 <section id="container" class="projectList {{style}} rsrWidget floats-in">
@@ -79,7 +78,7 @@
               <span class="lastUpdate"><br>{% trans "Last Update" %}:<br>
                 {% if project.last_update %}
                 <a href="{% url 'update-main' project.id project.last_update.id %}">
-                  {{ project.last_update.event_date|string_to_date|date:"Y-m-d  H:i"}}
+                  {{ project.last_update.event_date|date:"Y-m-d"}}
                 </a>
                 {% else %}
                   {% trans 'Not yet' %}

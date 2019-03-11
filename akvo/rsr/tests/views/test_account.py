@@ -174,13 +174,14 @@ class AccountRegistrationTestCase(TestCase):
 
     def test_registration_without_honeypot_filled_in(self):
         # Given
-        self._create_registration_data('passwordA1$')
+        self._create_registration_data(self.password)
 
         # When
         response = self.c.post('/en/register/', data=self.data)
 
         # Then
         self.assertEqual(response.status_code, 200)
+        self.assertIn('confirmation will be sent to you via email', response.content)
 
     def test_registration_password_too_short(self):
         # Given
@@ -215,10 +216,10 @@ class AccountRegistrationTestCase(TestCase):
 
         # Then
         self.assertEqual(response.status_code, 200)
-
         self.assertTrue(response.content.decode('utf-8').find(
             u'The password must contain at least one symbol: '
-            u'()[]{}|\\`~!@#$%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0)
+            u'()[]{}|\`~!@#$%%^&amp;*_-+=;:&#39;&quot;,&lt;&gt;./?') > 0
+        )
 
     def test_registration_password_has_no_uppercase(self):
         # Given

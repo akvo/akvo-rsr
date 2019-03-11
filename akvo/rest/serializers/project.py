@@ -49,6 +49,7 @@ class ProjectSerializer(BaseRSRSerializer):
 
     class Meta:
         model = Project
+        fields = '__all__'
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):

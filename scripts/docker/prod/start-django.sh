@@ -14,6 +14,11 @@ _term() {
 trap _term SIGTERM
 
 log Migrating
+if [ ! -f "/var/akvo/rsr/mediaroot/fake-migration-flag" ]; then
+    log Running fake initial migrations
+    python manage.py migrate --fake-initial --noinput;
+    touch "/var/akvo/rsr/mediaroot/fake-migration-flag";
+fi
 python manage.py migrate --noinput
 
 log Adding to crontab
@@ -23,7 +28,7 @@ env >> /etc/environment
 log Starting cron
 /usr/sbin/cron
 log Starting gunicorn in background
-gunicorn akvo.wsgi --max-requests 200 --workers 5 --timeout 300 --bind 0.0.0.0:8000 &
+gunicorn akvo.wsgi ${GUNICORN_DEBUG_ARGS:-} --max-requests 200 --workers 6 --timeout 300 --bind 0.0.0.0:8000 &
 
 child=$!
 wait "$child"

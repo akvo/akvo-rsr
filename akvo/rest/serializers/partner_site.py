@@ -13,4 +13,5 @@ from .rsr_serializer import BaseRSRSerializer
 class PartnerSiteSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = PartnerSite

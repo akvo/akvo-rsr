@@ -8,11 +8,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from collections import namedtuple
 import json
 
+from django.apps import apps
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import get_model
 from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
@@ -221,7 +221,7 @@ def project_editor_upload_file(request, pk=None):
     key_parts = split_key(field_id)
 
     # Retrieve the model and related object ID (e.g. rsr_projectdocument.1234_new-0)
-    Model = get_model(key_parts.model.app, key_parts.model.model_name)
+    Model = apps.get_model(key_parts.model.app, key_parts.model.model_name)
     related_obj_id = ''.join(
         [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
     )

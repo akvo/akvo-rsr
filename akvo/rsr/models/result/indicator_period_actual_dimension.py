@@ -27,6 +27,7 @@ class IndicatorPeriodActualDimension(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'indicator period actual dimension')
         verbose_name_plural = _(u'indicator period actual dimensions')
+        ordering = ('pk',)
 
     def __unicode__(self):
         return self.name + ': ' + self.value if self.name and self.value else ''

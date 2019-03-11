@@ -15,6 +15,7 @@ class ProjectLocationRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectLocation
+        fields = '__all__'
 
 
 class ProjectLocationSerializer(ProjectLocationRawSerializer):
@@ -34,6 +35,7 @@ class AdministrativeLocationSerializer(BaseRSRSerializer):
 
     class Meta:
         model = AdministrativeLocation
+        fields = '__all__'
 
 
 class ProjectLocationExtraSerializer(ProjectLocationRawSerializer):
@@ -60,3 +62,6 @@ class MapProjectLocationSerializer(serializers.Serializer):
     longitude = serializers.FloatField()
     project = MapProjectSerializer(source='location_target')
     country = CountrySerializer()
+
+    class Meta:
+        fields = '__all__'

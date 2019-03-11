@@ -5,27 +5,28 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.core.management.base import BaseCommand
-from optparse import make_option
 from django.utils import timezone
 from datetime import timedelta
 from ...models import Project, PublishingStatus
 
 
 class Command(BaseCommand):
-
-    args = ''
     help = 'Script for cleaning up empty projects'
 
-    option_list = BaseCommand.option_list + (
-        make_option('-n', '--num-days',
-                    action='store', dest='num_days',
-                    default=7,
-                    help='Filter projects older than \'n\' days'),
-        make_option('-d', '--delete',
-                    action='store_true', dest='delete',
-                    default=False,
-                    help='Delete filtered projects in addition to listing them'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-n',
+            '--num-days',
+            action='store', dest='num_days',
+            default=7,
+            help='Filter projects older than \'n\' days'
+        )
+        parser.add_argument(
+            '-d', '--delete',
+            action='store_true', dest='delete',
+            default=False,
+            help='Delete filtered projects in addition to listing them'
+        )
 
     def handle(self, *args, **options):
 

@@ -38,3 +38,4 @@ class LegacyData(models.Model):
         app_label = 'rsr'
         verbose_name = _(u'legacy data')
         verbose_name_plural = _(u'legacy data')
+        ordering = ('pk',)

@@ -127,7 +127,7 @@ class NakedAKVOAPP_DOMAINTestCase(TestCase):
         redirects to /projets there is another 302 in the target status code.
         """
         c = Client(HTTP_HOST=settings.AKVOAPP_DOMAIN)
-        resp_naked = c.get('/', follow=True)
+        resp_naked = c.get('/', follow=False)
         self.assertRedirects(response=resp_naked, expected_url=STOCK_RSR_NETLOC,
                              status_code=302, target_status_code=302)
 

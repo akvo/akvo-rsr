@@ -53,11 +53,12 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, username, email, password, **extra_fields):
         return self._create_user(username, email, password, True, True, True, **extra_fields)
 
-    def __getattr__(self, attr, *args):
-        try:
-            return getattr(self.__class__, attr, *args)
-        except AttributeError:
-            return getattr(self.get_queryset(), attr, *args)
+    # def __getattr__(self, attr, *args):
+    #     try:
+    #         return getattr(self.__class__, attr, *args)
+    #     except AttributeError:
+    #         print(self.get_queryset(), attr)
+    #         return getattr(self.get_queryset(), attr, *args)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -92,7 +93,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_(u'date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
-        'Organisation', verbose_name=_(u'organisations'), through=Employment,
+        'Organisation', verbose_name=_(u'organisations'), through='Employment',
         related_name='users', blank=True
     )
     notes = ValidXMLTextField(verbose_name=_(u'Notes and comments'), blank=True, default='')
@@ -326,27 +327,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return all_orgs[0]
         else:
             return None
-
-    def allow_edit(self, project):
-        """ Support partner organisations may "take ownership" of projects, meaning that editing
-        of them is restricted. This method is used "on top" of normal checking for user access to
-        projects since it is only relevant for Partner users.
-        """
-        allow_edit = True
-        partner_admins_allowed = []
-        # compile list of support orgs that limit editing
-        for partner in project.support_partners():
-            if not partner.allow_edit:
-                allow_edit = False
-                partner_admins_allowed.append(partner)
-        # no-one limits editing, all systems go
-        if allow_edit:
-            return True
-        # Only Partner admins on the list of "limiters" list may edit
-        else:
-            if self.organisation in partner_admins_allowed:
-                return True
-        return False
 
     @property
     def get_api_key(self, key=""):

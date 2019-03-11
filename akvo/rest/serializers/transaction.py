@@ -16,6 +16,7 @@ from rest_framework import serializers
 class TransactionRawSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = Transaction
 
 
@@ -25,6 +26,7 @@ class TransactionRawDeepSerializer(TransactionRawSerializer):
     receiver_organisation = OrganisationBasicSerializer()
 
     class Meta:
+        fields = '__all__'
         model = Transaction
 
 
@@ -51,4 +53,5 @@ class TransactionSectorSerializer(BaseRSRSerializer):
     vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
 
     class Meta:
+        fields = '__all__'
         model = TransactionSector

@@ -358,8 +358,9 @@ class SplitKeyTestCase(TestCase):
 class ChoicesTestCase(TestCase):
 
     def setUp(self):
-        # super(ProjectEditorReorderIndicatorsTestCase, self).setUp()
         self.project = Project.objects.create(title="Test Project")
+        # Delete all BudgetItemLabels created in migrations
+        BudgetItemLabel.objects.all().delete()
 
     def test_non_fk_field(self):
 

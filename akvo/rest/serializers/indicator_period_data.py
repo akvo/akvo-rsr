@@ -20,6 +20,7 @@ class IndicatorPeriodDataCommentSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriodDataComment
+        fields = '__all__'
 
 
 class IndicatorPeriodDataSerializer(BaseRSRSerializer):
@@ -32,6 +33,7 @@ class IndicatorPeriodDataSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriodData
+        fields = '__all__'
 
 
 class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
@@ -48,6 +50,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IndicatorPeriodData
+        fields = '__all__'
 
     def create(self, validated_data):
         """Over-ridden to handle nested writes."""

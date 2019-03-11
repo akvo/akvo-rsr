@@ -29,17 +29,12 @@ class UserViewSet(BaseRSRViewSet):
 
     """User resource."""
 
-    queryset = get_user_model().objects.select_related(
-        'organisation',
-        'organisation__primary_location',
-        'organisation__primary_location__country',
-        'organisation__primary_location__location_target',
-        'organisation__primary_location__location_target__internal_org_ids',
-    ).prefetch_related(
+    queryset = get_user_model().objects.prefetch_related(
         'organisations',
         'organisations__primary_location',
         'organisations__primary_location__country',
-        'organisations__primary_location__location_target',)
+        'organisations__primary_location__location_target',
+    )
     serializer_class = UserSerializer
 
 

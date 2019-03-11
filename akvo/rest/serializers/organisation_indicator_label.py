@@ -18,4 +18,5 @@ from akvo.rsr.models import OrganisationIndicatorLabel
 class OrganisationIndicatorLabelSerializer(BaseRSRSerializer):
 
     class Meta:
+        fields = '__all__'
         model = OrganisationIndicatorLabel

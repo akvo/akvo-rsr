@@ -17,6 +17,7 @@ class ProjectContactRawSerializer(BaseRSRSerializer):
 
     class Meta:
         model = ProjectContact
+        fields = '__all__'
 
 
 class ProjectContactRawDeepSerializer(ProjectContactRawSerializer):

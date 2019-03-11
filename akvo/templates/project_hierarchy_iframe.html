@@ -1,13 +1,12 @@
-{% load i18n rsr_filters rsr_tags webdesign piwik_tags %}
-{% load url from future %}
-{% load pipeline %}
+{% load i18n rsr_filters rsr_tags piwik_tags %}
+{% load render_bundle from webpack_loader %}
 
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
     <head>
         {# CSS #}
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-        {% stylesheet 'rsr_v3_style' %}
+        {% render_bundle 'main' 'css' %}
     </head>
     <body>
         {% block maincontent %}
@@ -63,7 +62,7 @@
         {% block js %}
             <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js" integrity="sha256-1OxYPHYEAB+HIz0f4AdsvZCfFaX4xrTD9d2BtGLXnTI=" crossorigin="anonymous"></script>
             <script src="//cdnjs.cloudflare.com/ajax/libs/jsPlumb/1.7.2/dom.jsPlumb.min.js" integrity="sha256-F1cIPOY4SemH0aexB8v8gKVMOpAOa2tT+TSPjZbdoS8=" crossorigin="anonymous"></script>
-            {% javascript 'project_hierarchy' %}
+            {% render_bundle 'projectHierarchy' %}
         {% endblock js %}
     </body>
 </html>

@@ -226,8 +226,7 @@ def my_projects(request):
     page, paginator, page_range = pagination(page, projects, 10)
 
     # Get related objects of page at once
-    page.object_list = page.object_list.select_related('validations').\
-        prefetch_related('publishingstatus')
+    page.object_list = page.object_list.prefetch_related('publishingstatus')
 
     context = {
         'organisations': organisations,
@@ -236,7 +235,7 @@ def my_projects(request):
         'page_range': page_range,
         'q': filter_query_string(qs),
         'q_search': q,
-        'reportable_organisations': creator_organisations
+        'reportable_organisations': list(creator_organisations)
     }
     return render(request, 'myrsr/my_projects.html', context)
 
@@ -314,7 +313,7 @@ def project_editor(request, project_id):
             'documents',
             'keywords',
         ).select_related(
-            'publishingstatus__status',
+            'publishingstatus',
             'primary_organisation',
         ).get(pk=project_id)
     except Project.DoesNotExist:
@@ -483,7 +482,6 @@ def user_management(request):
         'user',
         'organisation',
         'group',
-        'country',
     )
 
     qs = remove_empty_querydict_items(request.GET)
