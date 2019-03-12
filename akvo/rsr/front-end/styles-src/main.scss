@@ -3596,6 +3596,9 @@ div#newIATIExport {
             background: rgba($akvoTvRed, 0.1) !important;
             color: $akvoTvRed !important;
         }
+        .btn-default {
+            color: #333;
+        }
     }
     .IATIfilters {
         button.btn-default {
@@ -3605,7 +3608,6 @@ div#newIATIExport {
     .btn-default {
         border: none;
         margin-left: 3px;
-        color: #333;
         &:hover {
             background: $rsrBlue;
             color: white;
