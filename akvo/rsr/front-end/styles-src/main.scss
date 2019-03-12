@@ -3578,6 +3578,9 @@ div#newIATIExport {
         &.success {
             background: rgba($progressSuccess, 0.1) !important;
             color: $progressSuccess !important;
+            a {
+                color: white;
+            }
         }
         &.warning {
             background: rgba($flowOrange, 0.1) !important;
@@ -3593,9 +3596,10 @@ div#newIATIExport {
             margin-top: 10px;
         }
     }
-    button.btn-default {
+    .btn-default {
         border: none;
         margin-left: 3px;
+        color: #333;
         &:hover {
             background: $rsrBlue;
             color: white;
