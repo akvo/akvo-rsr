@@ -15,7 +15,11 @@ const plugins = [
     new MiniCssExtractPlugin({
         filename: "[name].[hash].css"
     }),
-    new CleanWebpackPlugin(["./dist/*.js", "./dist/*.map", "./dist/*.css"])
+    new CleanWebpackPlugin([
+        "./static/rsr/dist/*.js",
+        "./static/rsr/dist/*.map",
+        "./static/rsr/dist/*.css"
+    ])
 ];
 
 module.exports = merge.smart(conf, {
