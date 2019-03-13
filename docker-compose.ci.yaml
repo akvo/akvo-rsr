@@ -3,6 +3,7 @@ version: '3'
 services:
   mainnetwork:
   web:
+    image: rsr-backend:dev
     command: "true"
   rsrdbhost:
   memcached:
