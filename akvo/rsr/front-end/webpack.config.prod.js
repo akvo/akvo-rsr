@@ -13,7 +13,7 @@ const { conf, entryGroups } = require("./webpack.config.base");
 
 const plugins = [
     new MiniCssExtractPlugin({
-        filename: "[name].[hash].css"
+        filename: "[name].[contenthash].css"
     }),
     new CleanWebpackPlugin([
         "./static/rsr/dist/*.js",
@@ -28,7 +28,7 @@ module.exports = merge.smart(conf, {
     devtool: "source-map",
 
     output: {
-        filename: "[name].[hash].js"
+        filename: "[name].[contenthash].js"
     },
 
     module: {
