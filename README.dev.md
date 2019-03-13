@@ -58,7 +58,7 @@ The Django Debug Toolbar(DDT) comes with a bunch of panels to display
 information about the currently displayed view, a bunch of information being
 quite useful to debug performance issues.
 
-You can configure it in `50-docker-local-dev.conf`.
+You can enable/configure it in `50-docker-local-dev.conf`.
 
 ##### Debugging performance issues
 
