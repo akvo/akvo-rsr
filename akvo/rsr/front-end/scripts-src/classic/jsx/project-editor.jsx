@@ -2373,7 +2373,7 @@ function showIncompleteFields(section, fields) {
         )
     );
     fields.map(function(field) {
-        var hash = "#" + (field[1] ? field[1] : field[0]);
+        var hash = "#" + field[0];
         var label = $('label[for="' + field[0] + '"]')
             .text()
             .replace("*", "")
@@ -4672,8 +4672,11 @@ function expandAccordion(highlight) {
             ancestor = findAncestorByClass(element, "formStep").querySelector("input[type=radio]");
         }
         location.hash = "#" + ancestor.getAttribute("id");
+
         expandAccordion(highlight);
-        if (element.querySelector(".hide-partial.hidden")) {
+
+        const hidePartial = element.querySelector(".hide-partial");
+        if (hidePartial && hidePartial.classList.contains("hidden")) {
             element.querySelector(".hide-partial-click").click();
         }
         if (highlight) {
