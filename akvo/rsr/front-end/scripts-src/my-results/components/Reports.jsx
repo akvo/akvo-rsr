@@ -197,10 +197,7 @@ class Report extends React.Component {
                     <div className="reportDscr">{report.description}</div>
                     <div className="options">
                         {date_selection ? date_selectors : undefined}
-                        {
-                            // NOTE: Hidden until the new report has been deployed!
-                            // show_comment_checkbox ? commentsCheckbox : undefined
-                        }
+                        {show_comment_checkbox ? commentsCheckbox : undefined}
                         {formats}
                     </div>
                 </div>
