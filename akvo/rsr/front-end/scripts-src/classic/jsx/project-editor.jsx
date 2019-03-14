@@ -2378,8 +2378,9 @@ function showIncompleteFields(section, fields) {
             .text()
             .replace("*", "")
             .trim();
+        var id = field[1].split(".")[1];
         $("<a/>", { class: "section-error-link alert-link" })
-            .text(label)
+            .text(`${label} (${id})`)
             .on("click", function() {
                 if (location.hash != hash) {
                     location.hash = hash;
