@@ -7,6 +7,9 @@
 var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 var countryValues = JSON.parse(document.getElementById("country-values").innerHTML);
 
+// FEATURE FLAGS
+const SHOW_INCOMPLETE_FIELDS = false;
+
 // CSRF TOKEN
 function getCookie(name) {
     var cookieValue = null;
@@ -2328,7 +2331,9 @@ function setSectionCompletionPercentage(section) {
     }
 
     renderCompletionPercentage(numInputsCompleted, numInputs, section);
-    showIncompleteFields(section, incompleteFields);
+    if (SHOW_INCOMPLETE_FIELDS) {
+        showIncompleteFields(section, incompleteFields);
+    }
 }
 
 function setPageCompletionPercentage() {
