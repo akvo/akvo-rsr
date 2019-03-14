@@ -6,13 +6,16 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.test import TestCase
+from django.conf import settings
+from django.contrib.staticfiles.finders import FileSystemFinder
 
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import ProjectEditorValidation, ProjectEditorValidationSet
 from akvo.rsr.templatetags.project_editor import mandatory_or_hidden, invalidate_validation_cache
+from akvo.rsr.templatetags import maps
 
 
-class TemplateTagsTestCase(TestCase):
+class TemplateTagsTestCase(BaseTestCase):
     """Tests for template tags."""
 
     @classmethod
@@ -145,3 +148,24 @@ class TemplateTagsTestCase(TestCase):
         )
         expected_indications = 'mandatory-{id_1} mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)
+
+
+class MapsTestCase(BaseTestCase):
+    """Test case for the maps templatetags"""
+
+    def test_maps_markers_exist(self):
+        # Given
+        icons = [
+            getattr(maps, attr) for attr in dir(maps) if attr.endswith('_ICON')
+        ]
+        finder = FileSystemFinder()
+        relative_paths = [
+            icon.lstrip(settings.STATIC_URL) for icon in icons
+        ]
+
+        # When
+        absolute_paths = [finder.find(path) for path in relative_paths]
+
+        # Then
+        for path in absolute_paths:
+            self.assertTrue(path)
