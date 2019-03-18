@@ -78,7 +78,7 @@ var Project = React.createClass({
                         <img src={project.image} alt={project.title} />
                     </a>
                 </div>
-                <div>
+                <div className="text">
                     <h1>
                         <a href={project.url}>{project.title}</a>
                     </h1>
@@ -278,7 +278,7 @@ var ProjectDirectory = React.createClass({
                             </ul>
                             <div className="container-fluid pageStatus text-center">
                                 <div className="row">
-                                    <div className="col-xs-6 col-xs-offset-3">
+                                    <div className="col-xs-12">
                                         <span className="label label-info projectTotal">
                                             {project_count_text}
                                         </span>
