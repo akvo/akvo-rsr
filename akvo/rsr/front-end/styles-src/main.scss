@@ -391,10 +391,13 @@ nav.navbar-fixed-top {
     padding: 5px 40px;
     @include border-radius(0);
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
+    @media screen and (max-width: 768px){
+      padding: 5px 15px;
+    }
     button.navbar-toggle {
         background: $rsrBlue;
         border: 1px solid $rsrBlue;
-        @media screen and (max-width: 760px){
+        @media screen and (max-width: 768px){
           margin-right: 0;
         }
         &:hover {
@@ -1491,6 +1494,10 @@ h4.detailedInfo {
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
+        @media screen and (max-width: 768px){
+          max-width: 100%;
+          margin-top: 20px;
+        }
         position: relative;
         &.updateSearch {
             margin: 0px auto 0 auto;
@@ -1521,11 +1528,8 @@ h4.detailedInfo {
             }
         }
         .form-inline{
-          @media screen and (max-width: 760px){
+          @media screen and (max-width: 768px){
             padding: 0;
-            input{
-
-            }
             .bootstrap-typeahead-input{
               width: 100%;
               display: flex;
@@ -1537,7 +1541,7 @@ h4.detailedInfo {
           }
         }
         .advanced-filter{
-          @media screen and (max-width: 760px){
+          @media screen and (max-width: 768px){
             display: block;
             margin-bottom: 15px;
             position: relative;
@@ -1640,7 +1644,7 @@ h4.detailedInfo {
                 // display: inline;
                 width: 24.5%;
                 float: left;
-                @media screen and (min-width: 760px){
+                @media screen and (min-width: 768px){
                   min-height: 265px;
                 }
                 @include border-radius(3px);
@@ -1765,7 +1769,7 @@ h4.detailedInfo {
             }
         }
         .projectListUlcontain {
-            @media screen and (min-width: 760px){
+            @media screen and (min-width: 768px){
               max-height: calc(100vh - 240px);
               overflow-y: scroll;
             }
@@ -1780,13 +1784,17 @@ h4.detailedInfo {
             }
             ul.projectListUl {
                 padding-left: 15px;
+
+            @media screen and (max-width: 768px){
+              padding-left: 0;
+            }
                 li {
                     margin-bottom: 5px;
                     list-style-type: none;
                     // display: inline;
                     width: 49%;
                     float: left;
-                    @media screen and (min-width: 760px){
+                    @media screen and (min-width: 768px){
                       min-height: 285px;
                     }
                     @include border-radius(3px);
