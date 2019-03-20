@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import datetime
 from tempfile import NamedTemporaryFile
+from urllib import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -1015,3 +1016,34 @@ class CreateOrUpdateTestCase(TestCase):
             self.assertEqual(2, len(change))
             attributes = 5 if isinstance(change[0], Indicator) else 4
             self.assertEqual(attributes, len(change[1]))
+
+
+class CreateNewOrganisationTestCase(TestCase):
+
+    def setUp(self):
+        super(CreateNewOrganisationTestCase, self).setUp()
+        self.user, self.username, self.password = create_user()
+        self.org = Organisation.objects.create(name='Akvo', long_name='Akvo')
+        Employment.objects.create(
+            user=self.user,
+            organisation=self.org,
+            group=Group.objects.get(name='Admins'),
+            is_approved=True,
+        )
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+
+    def test_create_new_organisation(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/x-www-form-urlencoded'
+        data = {'name': 'Test Org', 'long_name': 'Test Organisation'}
+
+        # When
+        response = self.c.post(url, data=urlencode(data), content_type=content_type)
+
+        # Then
+        self.assertTrue(response.status_code, 201)
+        self.assertIn('id', response.data)
+        for key in data:
+            self.assertEqual(response.data[key], data[key])
