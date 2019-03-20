@@ -106,7 +106,7 @@ class Report extends React.Component {
                 end_date = this.state.start_date;
             }
             const formatDate = date => {
-                const dateString = start_date.toISOString(true).split(".")[0];
+                const dateString = date.toISOString(true).split(".")[0];
                 return dateString.endsWith("Z") ? dateString : dateString + "Z";
             };
             download_url = start_date
