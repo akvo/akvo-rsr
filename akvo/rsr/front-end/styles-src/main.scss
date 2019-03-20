@@ -1494,11 +1494,29 @@ h4.detailedInfo {
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
-        @media screen and (max-width: 768px){
+        @media screen and (max-width: 1024px){
           max-width: 100%;
           margin-top: 20px;
         }
         position: relative;
+        .text-search{
+          @media screen and (min-width: 768px) and (max-width: 1024px){
+            margin-bottom: 15px;
+          }
+          .form-group{
+            width: 100%;
+            .input-group{
+              display: flex;
+              .bootstrap-typeahead{
+                flex: 1;
+              }
+              .input-group-btn{
+                width: auto;
+              }
+            }
+          }
+          
+        }
         &.updateSearch {
             margin: 0px auto 0 auto;
         }
@@ -1772,6 +1790,9 @@ h4.detailedInfo {
             @media screen and (min-width: 768px){
               max-height: calc(100vh - 240px);
               overflow-y: scroll;
+            }
+            @media screen and (min-width: 768px) and (max-width: 1024px){
+              width: 100%;
             }
             p.listMsg {
                 font-size: 1.2em;

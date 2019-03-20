@@ -400,7 +400,7 @@ var TextSearch = React.createClass({
         }
 
         return (
-            <div className="form-inline col-lg-4 col-md-4" role="form">
+            <div className="form-inline col-lg-4 col-md-4 text-search" role="form">
                 <div className="form-group">
                     <div className="input-group">
                         <Typeahead
