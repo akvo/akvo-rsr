@@ -7,9 +7,6 @@ services:
     expose:
       - "80"
   web:
-    build:
-     context: .
-     dockerfile: Dockerfile-dev
     #;; user superme:passwd
     volumes:
       - .:/var/akvo/rsr/code
@@ -18,8 +15,6 @@ services:
     network_mode: service:mainnetwork
     environment:
       - DJANGO_SECRET_KEY=secretkey
-    depends_on:
-      - rsrdbhost
   rsrdbhost:
     build:
       context: postgres

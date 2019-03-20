@@ -105,11 +105,15 @@ class Report extends React.Component {
                 start_date = end_date;
                 end_date = this.state.start_date;
             }
+            const formatDate = date => {
+                const dateString = date.toISOString(true).split(".")[0];
+                return dateString.endsWith("Z") ? dateString : dateString + "Z";
+            };
             download_url = start_date
-                ? download_url.replace("{start_date}", start_date.toISOString(true))
+                ? download_url.replace("{start_date}", formatDate(start_date))
                 : download_url.replace("p_StartDate={start_date}", "");
             download_url = end_date
-                ? download_url.replace("{end_date}", end_date.toISOString(true))
+                ? download_url.replace("{end_date}", formatDate(end_date))
                 : download_url.replace("p_EndDate={end_date}", "");
             download_url = download_url.replace(/&+/g, "&").replace(/&$/, "");
         }
@@ -197,10 +201,7 @@ class Report extends React.Component {
                     <div className="reportDscr">{report.description}</div>
                     <div className="options">
                         {date_selection ? date_selectors : undefined}
-                        {
-                            // NOTE: Hidden until the new report has been deployed!
-                            // show_comment_checkbox ? commentsCheckbox : undefined
-                        }
+                        {show_comment_checkbox ? commentsCheckbox : undefined}
                         {formats}
                     </div>
                 </div>

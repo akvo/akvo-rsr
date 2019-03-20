@@ -9,8 +9,8 @@ from django.db.models import Q
 from django.utils import six
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_framework_xml.parsers import XMLParser
 from rest_framework_xml.compat import etree
 
@@ -74,7 +74,7 @@ class OrganisationViewSet(BaseRSRViewSet):
     """
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
-    parser_classes = (AkvoOrganisationParser, JSONParser,)
+    parser_classes = [AkvoOrganisationParser] + api_settings.DEFAULT_PARSER_CLASSES
 
 
 @api_view(['GET'])

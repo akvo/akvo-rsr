@@ -5,6 +5,9 @@ services:
     ports:
       - "80:8000"
   web:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
   rsrdbhost:
     ports:
       - "5432:5432"

@@ -30,4 +30,8 @@ sed -i /etc/nginx/conf.d/default.conf \
 ## Use the correct robots depending on the environment
 cp -f /usr/share/nginx/html/robots-${ENVIRONMENT}.txt /usr/share/nginx/html/robots.txt
 
+if [ ! -z "${COPY_STATIC_CONTENT_FOR_CI_BUILD:-}" ]; then
+    cp -r /var/akvo/rsr/staticroot/* /data
+fi
+
 exec nginx -g 'daemon off;'

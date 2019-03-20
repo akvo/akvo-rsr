@@ -3152,8 +3152,14 @@ body {
         margin-bottom: 10px;
         transition: background 0.1s linear;
     }
-    div.error-highlight {
-        background: lightgoldenrodyellow;
+    .error-highlight {
+        background: lightgoldenrodyellow !important;
+    }
+    .section-errors{
+        font-size: 10px;
+        .section-error-link{
+            padding-left: 0.5em;
+        }
     }
     div.partial-header {
         font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -3578,6 +3584,9 @@ div#newIATIExport {
         &.success {
             background: rgba($progressSuccess, 0.1) !important;
             color: $progressSuccess !important;
+            a {
+                color: white;
+            }
         }
         &.warning {
             background: rgba($flowOrange, 0.1) !important;
@@ -3587,13 +3596,16 @@ div#newIATIExport {
             background: rgba($akvoTvRed, 0.1) !important;
             color: $akvoTvRed !important;
         }
+        .btn-default {
+            color: #333;
+        }
     }
     .IATIfilters {
         button.btn-default {
             margin-top: 10px;
         }
     }
-    button.btn-default {
+    .btn-default {
         border: none;
         margin-left: 3px;
         &:hover {

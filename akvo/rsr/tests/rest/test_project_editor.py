@@ -7,16 +7,23 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 import datetime
+from tempfile import NamedTemporaryFile
+from urllib import urlencode
+
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
+from mock import patch
 
-from akvo.rest.views.project_editor import add_error, split_key
+from akvo.rest.views.project_editor_utils import (
+    add_error, create_or_update_objects_from_data, split_key
+)
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
     BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
     OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
-    RelatedProject, IndicatorPeriod)
+    RelatedProject, IndicatorPeriod, Keyword
+)
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
 
@@ -555,6 +562,71 @@ class ProjectLocationTestCase(TestCase):
             )
 
 
+class UploadFileTestCase(TestCase):
+    """Test that uploading a file works correctly."""
+
+    def setUp(self):
+        self.project = Project.objects.create(title='New Project')
+        self.user, self.username, self.password = create_user()
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.c.login(username=self.username, password=self.password)
+
+    def test_uploading_new_file(self):
+        # Given
+        id_ = self.project.id
+        url = '/rest/v1/project/{}/upload_file/?format=json'.format(id_)
+        with open(__file__) as f:
+            data = {
+                'field_id': 'rsr_projectdocument.document.{}_new-0'.format(id_),
+                'file': f
+            }
+
+            # When
+            response = self.c.post(url, data=data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        errors = response.data['errors']
+        self.assertEqual(0, len(errors))
+        changes = response.data['changes']
+        self.assertEqual(1, len(changes))
+        upload_url = changes[0][1]
+        resp = self.c.get(upload_url, follow=True)
+        text = '\n'.join(resp.streaming_content)
+        self.assertIn(self.__class__.__name__, text)
+
+    def test_replacing_existing_file(self):
+        # Given
+        id_ = self.project.id
+        url = '/rest/v1/project/{}/upload_file/?format=json'.format(id_)
+        with open(__file__) as f:
+            data = {
+                'field_id': 'rsr_projectdocument.document.{}_new-0'.format(id_),
+                'file': f
+            }
+            response = self.c.post(url, data=data, follow=True)
+        document_id = response.data['rel_objects'][0]['new_id']
+        with NamedTemporaryFile() as f:
+            new_data = {
+                'field_id': 'rsr_projectdocument.document.{}'.format(document_id),
+                'file': f
+            }
+
+            # When
+            response = self.c.post(url, data=new_data, follow=True)
+
+        # Then
+        self.assertEqual(200, response.status_code)
+        errors = response.data['errors']
+        self.assertEqual(0, len(errors))
+        changes = response.data['changes']
+        self.assertEqual(1, len(changes))
+        upload_url = changes[0][1]
+        resp = self.c.get(upload_url, follow=True)
+        text = '\n'.join(resp.streaming_content)
+        self.assertNotIn(self.__class__.__name__, text)
+
+
 class DefaultPeriodsTestCase(TestCase):
     """Test the adding and removal of default periods."""
 
@@ -685,3 +757,293 @@ class DefaultPeriodsTestCase(TestCase):
         self.assertEqual(child_periods1.count(), 3)
         child_periods2 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project2)
         self.assertEqual(child_periods2.count(), 3)
+
+
+class CreateOrUpdateTestCase(TestCase):
+
+    def setUp(self):
+        # Create necessary groups
+        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+
+        # Create project
+        self.project = Project.objects.create(title="Test Project")
+        self.project_2 = Project.objects.create(title="Test Project 2")
+
+    def test_saving_project_attributes(self):
+        # Given
+        iati_activity_id = u'iati_activity_id'
+        background = u'Background'
+        data = {
+            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            u'rsr_project.background.{}'.format(self.project.id): background,
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.iati_activity_id, iati_activity_id)
+        self.assertEqual(project.background, background)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(0, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(2, len(changes[0][1]))
+
+    def test_save_called_once(self):
+        # Given
+        iati_activity_id = u'iati_activity_id'
+        background = u'Background'
+        data = {
+            u'rsr_project.iati_activity_id.{}'.format(self.project.id): iati_activity_id,
+            u'rsr_project.background.{}'.format(self.project.id): background,
+        }
+
+        # When
+        with patch('akvo.rsr.models.project.Project.save') as patched_save:
+            create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        self.assertEqual(1, patched_save.call_count)
+
+    def test_saving_incorrect_project_attributes(self):
+        # Given
+        hierarchy = 'incorrect_hierarchy_value'
+        data = {
+            u'rsr_project.hierarchy.{}'.format(self.project.id): hierarchy,
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        self.assertEqual(1, len(errors))
+        self.assertEqual('rsr_project.hierarchy.{}'.format(self.project.id), errors[0]['name'])
+        self.assertEqual(0, len(rel_objects))
+        self.assertEqual(0, len(changes))
+
+    def test_creating_project_attribute_object(self):
+        # Given
+        relation = '3'
+        data = {
+            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.related_projects.count(), 1)
+        related_project = project.related_projects.first()
+        self.assertEqual(related_project.project, self.project)
+        self.assertEqual(related_project.related_project, self.project_2)
+        self.assertEqual(related_project.relation, relation)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(1, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(2, len(changes[0][1]))
+
+    def test_create_project_attribute_object_with_all_attributes(self):
+        # Given
+        relation = '3'
+        data = {
+            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): relation,
+            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+        }
+
+        # When
+        update_object_path = 'akvo.rest.views.project_editor_utils.update_object'
+        with patch(update_object_path, return_value=([], [], [])) as patched_save:
+            create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        self.assertEqual(patched_save.call_count, 0)
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.related_projects.count(), 1)
+        related_project = project.related_projects.first()
+        self.assertEqual(related_project.project, self.project)
+        self.assertEqual(related_project.related_project, self.project_2)
+        self.assertEqual(related_project.relation, relation)
+
+    def test_creating_project_m2m_object(self):
+        # Given
+        keyword_label = 'keyword-1'
+        keyword = Keyword(label=keyword_label)
+        keyword.save()
+        keyword_label_2 = 'keyword-2'
+        keyword_2 = Keyword(label=keyword_label_2)
+        keyword_2.save()
+        data = {
+            u'rsr_keyword.label.{}_new-1'.format(self.project.id): str(keyword.id),
+            u'rsr_keyword.label.{}_new-2'.format(self.project.id): str(keyword_2.id)
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.keywords.count(), 2)
+        keyword = project.keywords.first()
+        self.assertEqual(keyword_label, keyword.label)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(2, len(rel_objects))
+        self.assertEqual(2, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(1, len(changes[0][1]))
+        self.assertEqual(2, len(changes[1]))
+        self.assertEqual(1, len(changes[1][1]))
+
+    def test_updating_project_attribute_object(self):
+        # Given
+        sibling_relation = '3'
+        parent_relation = '1'
+        original_data = {
+            u'rsr_relatedproject.relation.{}_new-1'.format(self.project.id): sibling_relation,
+            u'rsr_relatedproject.related_project.{}_new-1'.format(self.project.id): self.project_2.id,
+        }
+        create_or_update_objects_from_data(self.project, original_data)
+
+        # When
+        project = Project.objects.get(id=self.project.id)
+        update_data = {
+            u'rsr_relatedproject.relation.{}'.format(project.related_projects.first().id): '1'
+        }
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, update_data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(project.related_projects.count(), 1)
+        related_project = project.related_projects.first()
+        self.assertEqual(related_project.project, self.project)
+        self.assertEqual(related_project.related_project, self.project_2)
+        self.assertEqual(related_project.relation, parent_relation)
+        self.assertEqual(0, len(errors))
+        self.assertEqual(1, len(rel_objects))
+        self.assertEqual(1, len(changes))
+        self.assertEqual(2, len(changes[0]))
+        self.assertEqual(1, len(changes[0][1]))
+
+    def test_creating_project_attirbute_hierarchy(self):
+        # Given
+        result_title = 'Result Title'
+        result_description = 'Result Description'
+        result_type = u'1'
+        result_aggregation = u'2'
+
+        result_title_2 = 'Result Title 2'
+        result_description_2 = 'Result Description 2'
+        result_type_2 = u'2'
+        result_aggregation_2 = u'2'
+
+        indicator_title = u'Indicator Title'
+        indicator_description = u'Indicator Description'
+        indicator_measure = '1'
+        indicator_type = '1'
+        indicator_ascending = '1'
+
+        period_start = u'01/01/2019'
+        period_end = u'01/02/2019'
+        period_target_value = u'12'
+        period_target_comment = u'Target Comment'
+
+        data = {
+            u'rsr_result.description.{}_new-0': result_description,
+            u'rsr_result.title.{}_new-0': result_title,
+            u'rsr_result.type.{}_new-0': result_type,
+            u'rsr_result.aggregation_status.{}_new-0': result_aggregation,
+
+            u'rsr_result.description.{}_new-1': result_description_2,
+            u'rsr_result.title.{}_new-1': result_title_2,
+            u'rsr_result.type.{}_new-1': result_type_2,
+            u'rsr_result.aggregation_status.{}_new-1': result_aggregation_2,
+
+            u'rsr_indicator.type.{}_new-0_new-0': indicator_type,
+            u'rsr_indicator.ascending.{}_new-0_new-0': indicator_ascending,
+            u'rsr_indicator.title.{}_new-0_new-0': indicator_title,
+            u'rsr_indicator.description.{}_new-0_new-0': indicator_description,
+            u'rsr_indicator.measure.{}_new-0_new-0': indicator_measure,
+
+            u'rsr_indicatorperiod.period_start.{}_new-0_new-0_new-0': period_start,
+            u'rsr_indicatorperiod.period_end.{}_new-0_new-0_new-0': period_end,
+            u'rsr_indicatorperiod.target_value.{}_new-0_new-0_new-0': period_target_value,
+            u'rsr_indicatorperiod.target_comment.{}_new-0_new-0_new-0': period_target_comment,
+        }
+        data = {
+            key.format(self.project.id): value for key, value in data.items()
+        }
+
+        # When
+        errors, changes, rel_objects = create_or_update_objects_from_data(self.project, data)
+
+        # Then
+        project = Project.objects.get(id=self.project.id)
+        self.assertEqual(2, project.results.count())
+
+        result = Result.objects.get(project=self.project.id, title=result_title)
+        self.assertEqual(result.title, result_title)
+        self.assertEqual(result.description, result_description)
+        self.assertEqual(result.type, result_type)
+        self.assertEqual(result.aggregation_status, result_aggregation == '1')
+
+        result_2 = Result.objects.get(project=self.project.id, title=result_title_2)
+        self.assertEqual(result_2.title, result_title_2)
+        self.assertEqual(result_2.description, result_description_2)
+        self.assertEqual(result_2.type, result_type_2)
+        self.assertEqual(result_2.aggregation_status, result_aggregation_2 == '1')
+
+        indicator = Indicator.objects.get(result=result)
+        self.assertEqual(indicator.title, indicator_title)
+        self.assertEqual(indicator.description, indicator_description)
+        self.assertEqual(indicator.type, int(indicator_type))
+        self.assertEqual(indicator.measure, indicator_measure)
+        self.assertEqual(indicator.ascending, indicator_ascending == '1')
+
+        period = IndicatorPeriod.objects.get(indicator=indicator)
+        self.assertEqual(period.period_start.strftime('%d/%m/%Y'), period_start)
+        self.assertEqual(period.period_end.strftime('%d/%m/%Y'), period_end)
+        self.assertEqual(period.target_value, period_target_value)
+        self.assertEqual(period.target_comment, period_target_comment)
+
+        self.assertEqual(0, len(errors))
+        self.assertEqual(4, len(rel_objects))
+        self.assertEqual(4, len(changes))
+        for change in changes:
+            self.assertEqual(2, len(change))
+            attributes = 5 if isinstance(change[0], Indicator) else 4
+            self.assertEqual(attributes, len(change[1]))
+
+
+class CreateNewOrganisationTestCase(TestCase):
+
+    def setUp(self):
+        super(CreateNewOrganisationTestCase, self).setUp()
+        self.user, self.username, self.password = create_user()
+        self.org = Organisation.objects.create(name='Akvo', long_name='Akvo')
+        Employment.objects.create(
+            user=self.user,
+            organisation=self.org,
+            group=Group.objects.get(name='Admins'),
+            is_approved=True,
+        )
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+
+    def test_create_new_organisation(self):
+        # Given
+        self.c.login(username=self.username, password=self.password)
+        url = '/rest/v1/organisation/?format=json'
+        content_type = 'application/x-www-form-urlencoded'
+        data = {'name': 'Test Org', 'long_name': 'Test Organisation'}
+
+        # When
+        response = self.c.post(url, data=urlencode(data), content_type=content_type)
+
+        # Then
+        self.assertTrue(response.status_code, 201)
+        self.assertIn('id', response.data)
+        for key in data:
+            self.assertEqual(response.data[key], data[key])
