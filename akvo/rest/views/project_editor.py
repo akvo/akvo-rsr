@@ -295,17 +295,17 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
         return HttpResponseBadRequest()
 
     user = request.user
-    if not (user.is_superuser or
-            user.can_import_results() and user.has_perm('rsr.change_project', project)):
+    if not (user.can_import_results() and user.has_perm('rsr.change_project', project)):
         return HttpResponseForbidden()
 
     try:
-        project.import_indicator(parent_indicator_id)
+        indicator = project.import_indicator(parent_indicator_id)
     except (Project.DoesNotExist, Project.MultipleObjectsReturned, Indicator.DoesNotExist,
             Indicator.MultipleObjectsReturned, ValidationError) as e:
         raise RestValidationError(e.message)
 
-    return Response(data=None, status=http_status.HTTP_201_CREATED)
+    data = {'indicator_id': indicator.pk, 'import_success': True}
+    return Response(data=data, status=http_status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])

@@ -1209,9 +1209,9 @@ class Project(TimestampsMixin, models.Model):
         # Check that we have a parent project and that project of parent indicator is that parent
         parents = self.parents_all()
         if parents.count() == 0:
-            raise Project.DoesNotExist, "Project has no parent"
+            raise Project.DoesNotExist("Project has no parent")
         elif parents.count() > 1:
-            raise Project.MultipleObjectsReturned, "Project has multiple parents"
+            raise Project.MultipleObjectsReturned("Project has multiple parents")
         else:
             parent_project = parents[0]
 
