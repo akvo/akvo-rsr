@@ -1490,7 +1490,6 @@ h4.detailedInfo {
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
-
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
@@ -1539,6 +1538,9 @@ h4.detailedInfo {
                 width: 250px;
                 padding-top: 5px !important;
                 padding-bottom: 5px !important;
+                @media screen and (min-width: 1400px){
+                  width: 100%;
+                }
             }
             button {
                 padding-top: 7px;
