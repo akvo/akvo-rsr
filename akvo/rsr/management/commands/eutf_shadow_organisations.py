@@ -18,7 +18,6 @@ from ...permissions import (GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAM
                             GROUP_NAME_PROJECT_EDITORS)
 
 
-EUTF_ORG_ID = 3394
 EXCLUDED_ORGS = [
     13,     # WASTE
     405,    # ICCO Cooperation
@@ -87,7 +86,7 @@ class Command(BaseCommand):
         eutf_partners = eutf_projects.all_partners()
 
         # all partners that are content owned by EUTF
-        eutf = Organisation.objects.get(pk=EUTF_ORG_ID)
+        eutf = Organisation.objects.get(pk=settings.EUTF_ORG_ID)
         content_owned_by_eutf = eutf.content_owned_organisations()
 
         # all "non content-owned" partners
