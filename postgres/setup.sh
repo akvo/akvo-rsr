@@ -13,12 +13,12 @@ cd $DIR
 
 # Provision
 
-SUPER_USER_PASSWORD=mysecretpassword NEW_USER_PASSWORD=rsrpasswddb /data-scripts/create-db.sh localhost postgres rsrdb rsruserdb
+SUPER_USER_PASSWORD=mysecretpassword NEW_USER_PASSWORD=rsrpasswddb /data-scripts/create-db.sh /var/run/postgresql postgres rsrdb rsruserdb
 
-RSR_PASSWORD=rsrpasswddb /data-scripts/restore-from-dump.sh localhost rsrdb rsruserdb $(pwd)/pg.dump.gz
+RSR_PASSWORD=rsrpasswddb /data-scripts/restore-from-dump.sh /var/run/postgresql rsrdb rsruserdb $(pwd)/pg.dump.gz
 
 SUPER_USER_PASSWORD=mysecretpassword NEW_USER_PASSWORD=ro /data-scripts/create-report-server-read-only-user.sh \
-    localhost postgres rsrdb read_only_user
+    /var/run/postgresql postgres rsrdb read_only_user
 
 PGPASSWORD=mysecretpassword psql -c "ALTER USER rsruserdb CREATEDB;"
 PGPASSWORD=mysecretpassword psql -d rsrdb -f $DIR/helpers/init.sql
