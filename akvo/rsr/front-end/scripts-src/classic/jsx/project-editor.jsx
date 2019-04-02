@@ -4567,10 +4567,30 @@ function elIsVisible(el) {
     return el.offsetWidth > 0 && el.offsetHeight > 0;
 }
 
+function setupIATIPrefixChangeHandlers() {
+    const iatiPrefixDiv = $("#iati-activity-id-from-org-prefix");
+    const prefixInput = iatiPrefixDiv.find("select")[0];
+    const suffixInput = iatiPrefixDiv.find("input")[0];
+
+    const updateIATIActivityId = () => {
+        const updatedIATIID = prefixInput.value + suffixInput.value;
+        console.log("Updating with value", updatedIATIID);
+        const iatiIDInputField = iatiPrefixDiv.next("div").find("input");
+        iatiIDInputField.attr("value", updatedIATIID);
+        iatiIDInputField.val(updatedIATIID);
+    };
+
+    if (prefixInput !== undefined && suffixInput !== undefined) {
+        prefixInput.onchange = updateIATIActivityId;
+        suffixInput.onchange = updateIATIActivityId;
+    }
+}
+
 function initApp() {
     getAllOrganisations();
     getAllProjects();
 
+    setupIATIPrefixChangeHandlers();
     setUnsavedChangesMessage();
     setImpactProject();
     setPrivateProject();

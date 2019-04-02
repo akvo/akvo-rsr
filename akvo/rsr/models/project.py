@@ -1177,6 +1177,38 @@ class Project(TimestampsMixin, models.Model):
     def iati_errors_unicode(self):
         return str(self.iati_errors())
 
+    def iati_prefixes(self):
+        """Return the IATI ID prefixes for the project.
+
+        Based on the reporting organisations, returns the IATI prefixes.
+
+        """
+        reporting_orgs = self.partnerships.filter(iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
+        prefixes = reporting_orgs.values_list('organisation__iati_prefixes', flat=True)
+        prefixes = [prefix.strip().strip(';') for prefix in prefixes if prefix is not None]
+        prefixes = [prefix for prefix in prefixes if prefix]
+        prefixes = ';'.join(prefixes)
+        return prefixes.split(';') if prefixes else []
+
+    def iati_identifier_context(self):
+        iati_activity_id_prefix = iati_activity_id_suffix = ''
+        iati_id = self.iati_activity_id or ''
+
+        iati_prefixes = self.iati_prefixes()
+        for prefix in iati_prefixes:
+            if iati_id.startswith(prefix):
+                iati_activity_id_prefix = prefix
+                break
+
+        iati_activity_id_suffix = iati_id[len(iati_activity_id_prefix):]
+        print(iati_prefixes, iati_activity_id_prefix)
+        data = {
+            'iati_prefixes': iati_prefixes,
+            'iati_activity_id_prefix': iati_activity_id_prefix,
+            'iati_activity_id_suffix': iati_activity_id_suffix,
+        }
+        return data
+
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""
         return self.keywords.exclude(logo='')
