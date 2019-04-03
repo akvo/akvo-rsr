@@ -1185,6 +1185,10 @@ class Project(TimestampsMixin, models.Model):
         """
         reporting_orgs = self.partnerships.filter(iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
         prefixes = reporting_orgs.values_list('organisation__iati_prefixes', flat=True)
+        if self.in_eutf_hierarchy():
+            from akvo.rsr.models import Organisation
+            eutf = Organisation.objects.get(id=settings.EUTF_ORG_ID)
+            prefixes = list(eutf.value_list('organisation__iati_prefixes', flat=True)) + list(prefixes)
         prefixes = [prefix.strip().strip(';') for prefix in prefixes if prefix is not None]
         prefixes = [prefix for prefix in prefixes if prefix]
         prefixes = ';'.join(prefixes)
