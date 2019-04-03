@@ -5,11 +5,11 @@ import { Switch, Tooltip, Icon } from 'antd'
 const sets = ['RSR', 'NLR', 'Gietrenk SPC', 'IATI', 'EUTF', 'DGIS IATI', 'DFID']
 
 const Settings = () => (
-  <div className="settings">
+  <div className="settings view">
     <p>
       <Switch />
       <span className="switch-label">Private project</span>
-      <Tooltip title="What does this mean?"><Icon type="question-circle" /></Tooltip>
+      <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
     </p>
     <hr />
     <strong>Validation sets</strong>
@@ -24,7 +24,7 @@ const Settings = () => (
       <li>
         <Switch />
         <span className="switch-label">{set}</span>
-        <Tooltip title="What does this mean?"><Icon type="question-circle" /></Tooltip>
+        <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
       </li>
       )}
     </ul>

@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
-import { Icon } from 'antd'
+import { Icon, Alert } from 'antd'
 
 import Settings from './settings'
 import Info from './info'
@@ -45,6 +45,13 @@ const Editor = () => (
       <Route path="/settings" exact component={Settings} />
       <Route path="/info" exact component={Info} />
       <Route path="/partners" component={Partners} />
+    </div>
+    <div className="alerts">
+      <Alert
+        description="This is a warning notice about copywriting."
+        type="warning"
+        showIcon
+      />
     </div>
   </div>
   </Router>

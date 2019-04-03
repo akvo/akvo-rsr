@@ -5,22 +5,24 @@
   flex-direction: row;
   aside{
     width: 270px;
-    background-color: #f2f2f2;
-    padding: 20px;
-    text-transform: uppercase;
-    li{
-      position: relative;
-      line-height: 40px;
-      font-weight: 300;
-      .check{
-        position: absolute;
-        right: 0;
-        top: 0;
-      }
-      &.active{
-        font-weight: bold;
-        a{
-          cursor: default;
+    ul{
+      background-color: #f2f2f2;
+      padding: 20px;
+      text-transform: uppercase;
+      li{
+        position: relative;
+        line-height: 40px;
+        font-weight: 300;
+        .check{
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+        &.active{
+          font-weight: bold;
+          a{
+            cursor: default;
+          }
         }
       }
     }
@@ -29,15 +31,20 @@
     flex: 1;
     padding-left: 30px;
   }
+  .alerts{
+    width: 300px;
+    padding-left: 30px;
+  }
 }
 
 hr{
   border: none;
   background-color: #ccc;
   height: 1px;
+  margin: 20px 0;
 }
 
-.settings {
+.settings.view {
   p:first-of-type{
     margin-top: 20px;
     margin-bottom: 20px;
@@ -58,5 +65,40 @@ hr{
   small{
     line-height: 16px;
     margin-bottom: 10px;
+    display: inline-block;
   }
+}
+
+.info.view{
+  .ant-form-item-label{
+    .anticon{
+      margin-left: 6px;
+      margin-right: 6px;
+    }
+    .optional{
+      opacity: 0.3;
+      font-style: italic;
+    }
+  }
+  .status-label{
+    display: flex;
+  }
+  .suspend-switches{
+    margin-left: auto;
+    font-size: 11px;
+    .ant-switch{
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    span{
+      opacity: 0.65;
+    }
+  }
+  h3{
+    margin-bottom: 15px;
+  }
+}
+
+.switch-suspend.ant-switch-checked{
+  background-color: red;
 }
