@@ -1,0 +1,62 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:300&subset=latin);
+
+.editor{
+  display: flex;
+  flex-direction: row;
+  aside{
+    width: 270px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    text-transform: uppercase;
+    li{
+      position: relative;
+      line-height: 40px;
+      font-weight: 300;
+      .check{
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      &.active{
+        font-weight: bold;
+        a{
+          cursor: default;
+        }
+      }
+    }
+  }
+  .content{
+    flex: 1;
+    padding-left: 30px;
+  }
+}
+
+hr{
+  border: none;
+  background-color: #ccc;
+  height: 1px;
+}
+
+.settings {
+  p:first-of-type{
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .switch-label{
+    margin-left: 15px;
+    margin-right: 10px;
+    margin-top: 2px;
+  }
+  .ant-switch{
+    transform: translateY(-2px);
+  }
+  ul{
+    li{
+      line-height: 40px;
+    }
+  }
+  small{
+    line-height: 16px;
+    margin-bottom: 10px;
+  }
+}

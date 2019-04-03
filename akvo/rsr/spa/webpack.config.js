@@ -55,8 +55,8 @@ const config = {
         exclude: /node_modules/,
       },
       {
-        test: /\.scss$/,
-        exclude: /node_modules/,
+        test: /\.(css|scss)$/,
+        // exclude: /node_modules/,
         use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
@@ -64,7 +64,7 @@ const config = {
             {
               loader: 'sass-loader',
               query: {
-                sourceMap: false,
+                sourceMap: true,
               },
             },
           ],
@@ -125,12 +125,12 @@ const config = {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: [
           {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-              mimetype: 'image/svg+xml',
-              name: 'images/[name].[ext]',
-            }
+            loader: 'raw-loader',
+            // options: {
+            //   limit: 8192,
+            //   mimetype: 'image/svg+xml',
+            //   name: 'images/[name].[ext]',
+            // }
           }
         ],
       },
