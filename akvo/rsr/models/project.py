@@ -1188,7 +1188,8 @@ class Project(TimestampsMixin, models.Model):
         if self.in_eutf_hierarchy():
             from akvo.rsr.models import Organisation
             eutf = Organisation.objects.get(id=settings.EUTF_ORG_ID)
-            prefixes = list(eutf.value_list('organisation__iati_prefixes', flat=True)) + list(prefixes)
+            if eutf.iati_prefixes is not None:
+                prefixes = [eutf.iati_prefixes] + list(prefixes)
         prefixes = [prefix.strip().strip(';') for prefix in prefixes if prefix is not None]
         prefixes = [prefix for prefix in prefixes if prefix]
         prefixes = ';'.join(prefixes)
@@ -1205,7 +1206,6 @@ class Project(TimestampsMixin, models.Model):
                 break
 
         iati_activity_id_suffix = iati_id[len(iati_activity_id_prefix):]
-        print(iati_prefixes, iati_activity_id_prefix)
         data = {
             'iati_prefixes': iati_prefixes,
             'iati_activity_id_prefix': iati_activity_id_prefix,
