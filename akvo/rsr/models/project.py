@@ -1092,6 +1092,13 @@ class Project(TimestampsMixin, models.Model):
             if pk in root_ids:
                 return root_projects[pk]
 
+    def in_eutf_hierarchy(self):
+        """Check if the project is a part of the EUTF hierarchy."""
+        # FIXME: Ideally, we shouldn't need such a function and all
+        # functionality should be generic enough to enable/disable for other
+        # organisations.
+        return self.ancestor().id == settings.EUTF_ROOT_PROJECT
+
     def project_dates(self):
         """ Return the project start and end dates, preferably the actuals. If they are not set, use
             the planned values.

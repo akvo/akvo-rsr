@@ -7,6 +7,7 @@
 
 import tablib
 
+from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
@@ -18,7 +19,6 @@ from ...permissions import (GROUP_NAME_ADMINS, GROUP_NAME_ME_MANAGERS, GROUP_NAM
 
 
 EUTF_ORG_ID = 3394
-EUTF_PROJECT_ID = 4401
 EXCLUDED_ORGS = [
     13,     # WASTE
     405,    # ICCO Cooperation
@@ -81,7 +81,7 @@ class Command(BaseCommand):
         enumerators = Group.objects.get(name=GROUP_NAME_ENUMERATORS)
 
         # all partners to EUTF projects
-        root = Project.objects.get(pk=EUTF_PROJECT_ID)
+        root = Project.objects.get(pk=settings.EUTF_ROOT_PROJECT)
         # only use children and grand children. "Lower" levels should be removed from the hierarchy
         eutf_projects = root.descendants(2)
         eutf_partners = eutf_projects.all_partners()
