@@ -387,6 +387,7 @@ def project_editor(request, project_id):
     }
 
     context = project.project_hierarchy_context(context)
+    context.update(project.iati_identifier_context())
 
     # Custom fields context
     for section_id in xrange(1, 12):
