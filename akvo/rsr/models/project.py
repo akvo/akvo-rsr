@@ -1187,8 +1187,8 @@ class Project(TimestampsMixin, models.Model):
 
         reporting_orgs = self.partnerships.filter(
             iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-        )
-        org_ids = set(reporting_orgs.values_list('pk', flat=True))
+        ).values_list('organisation_id', flat=True)
+        org_ids = set(reporting_orgs)
         if self.in_eutf_hierarchy():
             org_ids.add(settings.EUTF_ORG_ID)
         prefixes = Organisation.objects.filter(id__in=org_ids)\
