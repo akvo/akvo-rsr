@@ -1,0 +1,46 @@
+{% load project_editor %}
+
+<div id="iati-activity-id-from-org-prefix" class="row">
+    {% with obj_field_id=obj|field_id:field obj_choices=iati_prefixes obj_value=iati_activity_id_prefix %}
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="select-group control">
+                    <select id="prefix-{{ obj_field_id }}"
+                            class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}{% if 'currency' in obj_field_id %} currency-select{% endif %}"
+                            {% if disabled %}disabled{% endif %}>
+                        <option value="" {% if not obj_value %}selected{% endif %}></option>
+                        {% for choice in obj_choices %}
+                            <option value="{{ choice }}" {% if obj_value == choice %}selected{% endif %}>{{ choice }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="prefix-{{ obj_field_id }}" class="control-label">
+                        {{ obj|field_name:field }} (prefix)
+                    </label>
+                </div>
+                {% if obj|help_text:field %}
+                    <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group control{% if always_hidden %} always-hidden hidden{% endif %}">
+                <input type="text"
+                       id="suffix-{{ obj_field_id }}"
+                       class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"
+                       {% if obj|max_length:field %}
+                       maxlength="{{ obj|max_length:field }}"
+                       {% endif %}
+                       value="{{ iati_activity_id_suffix }}"
+                       {% if disabled %}disabled{% endif %}
+                />
+                <label for="suffix-{{ obj_field_id }}" class="control-label">
+                    {{ obj|field_name:field }} (suffix)
+                </label>
+                {% if obj|help_text:field %}
+                    <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endwith %}
+</div>
