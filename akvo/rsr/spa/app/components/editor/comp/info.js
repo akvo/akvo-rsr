@@ -19,7 +19,7 @@ const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de
 const Info = () => (
   <div className="info view">
     <Form layout="vertical">
-      <Item label="Project title">
+      <Item label="Project title" validateStatus="success" hasFeedback>
         <Input />
       </Item>
       <Item label={(
@@ -81,7 +81,7 @@ const Info = () => (
           Photo <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
         </span>)}
       >
-        <Upload.Dragger name="files" action="/upload.do">
+        <Upload.Dragger name="files" listType="picture" action="/upload.do">
           <p className="ant-upload-drag-icon">
             <Icon type="picture" theme="twoTone" />
           </p>
