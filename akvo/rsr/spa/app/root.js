@@ -7,10 +7,6 @@ import 'antd/dist/antd.css'
 import TopBar from './components/top-bar'
 import Editor from './components/editor/comp'
 
-const App = () => (
-  <div>Hello world</div>
-)
-
 const Root = () => {
   return (
     <div id="root">
