@@ -1183,16 +1183,18 @@ class Project(TimestampsMixin, models.Model):
         Based on the reporting organisations, returns the IATI prefixes.
 
         """
-        reporting_orgs = self.partnerships.filter(iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
-        prefixes = reporting_orgs.values_list('organisation__iati_prefixes', flat=True)
+        from akvo.rsr.models import Organisation
+
+        reporting_orgs = self.partnerships.filter(
+            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+        )
+        org_ids = set(reporting_orgs.values_list('pk', flat=True))
         if self.in_eutf_hierarchy():
-            from akvo.rsr.models import Organisation
-            eutf = Organisation.objects.get(id=settings.EUTF_ORG_ID)
-            if eutf.iati_prefixes is not None:
-                prefixes = [eutf.iati_prefixes] + list(prefixes)
+            org_ids.add(settings.EUTF_ORG_ID)
+        prefixes = Organisation.objects.filter(id__in=org_ids)\
+                                       .values_list('iati_prefixes', flat=True)
         prefixes = [prefix.strip().strip(';') for prefix in prefixes if prefix is not None]
-        prefixes = [prefix for prefix in prefixes if prefix]
-        prefixes = ';'.join(prefixes)
+        prefixes = ';'.join([prefix for prefix in prefixes if prefix])
         return prefixes.split(';') if prefixes else []
 
     def iati_identifier_context(self):
