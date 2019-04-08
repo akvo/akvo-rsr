@@ -1326,6 +1326,7 @@ class Project(TimestampsMixin, models.Model):
                 title=parent_indicator.title,
                 measure=parent_indicator.measure,
                 ascending=parent_indicator.ascending,
+                type=parent_indicator.type,
             )
         )
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
