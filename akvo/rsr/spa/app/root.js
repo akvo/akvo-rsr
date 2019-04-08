@@ -1,16 +1,21 @@
 import React from 'react'
+import SVGInline from 'react-svg-inline'
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import 'reset-css'
 import 'antd/dist/antd.css'
 
-import TopBar from './components/top-bar'
-import Editor from './components/editor/comp'
+import rsrSvg from './images/akvorsr.svg'
+import Editor from './modules/editor/editor'
 
 const Root = () => {
   return (
     <div id="root">
-      <TopBar />
+      <div className="top-bar">
+        <div className="ui container">
+          <SVGInline svg={rsrSvg} />
+        </div>
+      </div>
       <div className="ui container">
         <header>
           <h1>Project name here</h1>

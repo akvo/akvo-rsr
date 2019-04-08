@@ -2,6 +2,8 @@ import React from 'react'
 // import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { Switch, Tooltip, Icon } from 'antd'
 
+import './styles.scss'
+
 const sets = ['RSR', 'NLR', 'Gietrenk SPC', 'IATI', 'EUTF', 'DGIS IATI', 'DFID']
 
 const Settings = () => (

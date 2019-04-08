@@ -1,5 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Collapse, Icon, Form, Input, Button, Select } from 'antd'
+
+import * as actions from './actions'
+import './styles.scss'
 
 const { Panel } = Collapse
 const { Item } = Form
@@ -23,19 +27,21 @@ class Partners extends React.Component{
     activeKey: ''
   }
   add = () => {
-    this.setState({
-      partners: [...this.state.partners, Object.assign({}, newPartner)],
-      activeKey: `p${this.state.partners.length}`
-    })
+    // this.setState({
+    //   partners: [...this.state.partners, Object.assign({}, newPartner)],
+    //   activeKey: `p${this.state.partners.length}`
+    // })
+    this.props.addPartner()
   }
-  remove = (event) => {
+  remove = (event, a) => {
     event.stopPropagation()
+    console.log(event, a)
   }
   render(){
     return (
       <div className="partners view">
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
-        {this.state.partners.map((partner, index) =>
+        {this.props.rdr.map((partner, index) =>
             <Panel
               header={`${roles[partner.role].label}: ${partner.name}`}
               extra={<Icon type="delete" onClick={this.remove} />}
@@ -65,4 +71,7 @@ class Partners extends React.Component{
   }
 }
 
-export default Partners
+export default connect(
+  ({ partnersRdr }) => ({ rdr: partnersRdr }),
+  actions
+)(Partners)

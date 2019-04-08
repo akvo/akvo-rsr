@@ -4,6 +4,8 @@ import {
 } from 'antd'
 import currencies from 'currency-codes/data'
 
+import './styles.scss'
+
 const { Item } = Form
 const { RangePicker } = DatePicker
 const { Option } = Select

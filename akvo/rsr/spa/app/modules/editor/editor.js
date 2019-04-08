@@ -3,11 +3,11 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import { Icon, Alert, Button } from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
 
-import Settings from './settings'
-import Info from './info'
-import Partners from './partners'
+import Settings from './modules/settings/settings'
+import Info from './modules/info/info'
+import Partners from './modules/partners/partners'
 
-import '../styles.scss'
+import './styles.scss'
 
 const Check = () => (
   <div className="check">
