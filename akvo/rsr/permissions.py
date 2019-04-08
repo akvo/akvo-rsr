@@ -9,7 +9,7 @@ import rules
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
-from ..utils import project_access_filter
+from ..utils import user_has_perm
 from .models import Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate
 
 GROUP_NAME_ADMINS = 'Admins'
@@ -70,9 +70,7 @@ def _user_has_group_permissions(user, obj, group_names):
         id_ = None
 
     if id_:
-        all_projects = employments.organisations().all_projects()
-        projects = project_access_filter(user, all_projects)
-        return id_ in projects.values_list('id', flat=True)
+        return user_has_perm(user, employments, id_)
 
     # FIXME: Admins can only edit directly employed users, not content owned
     # users. Admins can change employments of content_owned_users, though

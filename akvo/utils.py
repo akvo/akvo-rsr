@@ -496,3 +496,25 @@ def project_access_filter(user, projects):
 
     except UserProjects.DoesNotExist:
         return projects
+
+
+def user_has_perm(user, employments, project_id):
+    """Check if a user has access to a project based on their employments."""
+
+    from akvo.rsr.models import Project
+
+    project = Project.objects.get(id=project_id)
+    hierarchy_org = project.get_hierarchy_organisation()
+    organisations = employments.organisations()
+
+    if hierarchy_org is None or not hierarchy_org.enable_restrictions:
+        all_projects = organisations.all_projects()
+
+    else:
+        if set([hierarchy_org.id]).intersection(organisations.values_list('id', flat=True)):
+            all_projects = Project.objects.filter(id__in=[project_id])
+        else:
+            all_projects = Project.objects.none()
+
+    filtered_projects = project_access_filter(user, all_projects)
+    return project_id in filtered_projects.values_list('id', flat=True)

@@ -575,3 +575,60 @@ class UserPermissionedProjectsTestCase(BaseTestCase):
         # Then
         for project in self.projects:
             self.assertFalse(user.has_perm('rsr.view_project', project))
+
+
+class ProjectHierarchyPermissionsTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(ProjectHierarchyPermissionsTestCase, self).setUp()
+        self.user = self.create_user('foo@example.com', 'password')
+        self.par_owner = self.create_organisation('EUTF', enable_restrictions=True)
+        self.project = self.create_project('EUTF Project')
+
+    def test_hierarchy_owner_employees_have_access(self):
+        # Given
+        project = self.create_project('EUTF Child Project')
+        self.make_org_project_editor(self.user, self.par_owner)
+        self.assertFalse(self.user.has_perm('rsr.change_project', project))
+
+        # When
+        self.make_parent(self.project, project)
+
+        # Then
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            self.assertTrue(self.user.has_perm('rsr.change_project', project))
+
+    def test_non_hierarchy_owner_employees_donot_have_access(self):
+        # Given
+        project = self.create_project('EUTF Child Project')
+        org = self.create_organisation('Implementing Partner 1')
+        self.make_partner(project, org)
+        self.make_org_project_editor(self.user, org)
+        self.assertTrue(self.user.has_perm('rsr.change_project', project))
+
+        # When
+        self.make_parent(self.project, project)
+
+        # Then
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            self.assertFalse(self.user.has_perm('rsr.change_project', project))
+
+    def test_normal_access_if_not_enable_restrictions(self):
+        # Given
+        self.par_owner.enable_restrictions = False
+        self.par_owner.save(update_fields=['enable_restrictions'])
+        project = self.create_project('EUTF Child Project')
+        org = self.create_organisation('Implementing Partner 1')
+        self.make_partner(project, org)
+        self.make_org_project_editor(self.user, org)
+        self.assertTrue(self.user.has_perm('rsr.change_project', project))
+
+        # When
+        self.make_parent(self.project, project)
+
+        # Then
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            self.assertTrue(self.user.has_perm('rsr.change_project', project))
