@@ -1358,12 +1358,12 @@ class Project(TimestampsMixin, models.Model):
         except Indicator.DoesNotExist:
             return
 
-        child_indicator.title = parent_indicator.title
-        child_indicator.measure = parent_indicator.measure
-        child_indicator.ascending = parent_indicator.ascending
-        child_indicator.save()
+        update_fields = ['title', 'measure', 'ascending', 'type']
+        for field in update_fields:
+            setattr(child_indicator, field, getattr(parent_indicator, field))
+        child_indicator.save(update_fields=update_fields)
 
-        fields = ['title', 'description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
         self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
 
     def add_period(self, indicator, period):

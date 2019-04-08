@@ -121,6 +121,23 @@ class IndicatorModelTestCase(BaseTestCase):
         self.assertEqual(child_indicator.type, parent_indicator.type)
         self.assertEqual(child_indicator.title, parent_indicator.title)
 
+    def test_indicator_type_update_propogates(self):
+        # Given
+        parent_indicator = Indicator.objects.get(result__project=self.parent_project)
+        self.child_project.import_results()
+        child_indicator = parent_indicator.child_indicators.first()
+        self.assertEqual(parent_indicator.type, child_indicator.type)
+        self.assertNotEqual(QUALITATIVE, parent_indicator.type)
+
+        # When
+        parent_indicator.type = QUALITATIVE
+        parent_indicator.save()
+
+        # Then
+        child_indicator = parent_indicator.child_indicators.first()
+        self.assertEqual(QUALITATIVE, parent_indicator.type)
+        self.assertEqual(parent_indicator.type, child_indicator.type)
+
 
 class IndicatorPeriodModelTestCase(TestCase):
     """Tests for the indicator period model"""
