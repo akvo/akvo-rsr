@@ -498,6 +498,23 @@ def project_access_filter(user, projects):
         return projects
 
 
+def get_organisation_collaborator_org_ids(org_id):
+    """Get collaborator organisation ids for a given organisation.
+
+    Collaborator organisations are meant to replace the shadow organisations,
+    but currently a collaborator organisation is just a shadow organisation for
+    the content owner! (org.original == org.content_owner)
+
+    """
+
+    from akvo.rsr.models import Organisation
+
+    collaborators = Organisation.objects.filter(content_owner_id=org_id, original_id=org_id)
+    org_ids = set(collaborators.values_list('id', flat=True))
+    org_ids.add(org_id)
+    return org_ids
+
+
 def user_has_perm(user, employments, project_id):
     """Check if a user has access to a project based on their employments."""
 
@@ -511,7 +528,8 @@ def user_has_perm(user, employments, project_id):
         all_projects = organisations.all_projects()
 
     else:
-        if set([hierarchy_org.id]).intersection(organisations.values_list('id', flat=True)):
+        collaborator_ids = get_organisation_collaborator_org_ids(hierarchy_org.id)
+        if collaborator_ids.intersection(organisations.values_list('id', flat=True)):
             all_projects = Project.objects.filter(id__in=[project_id])
         else:
             all_projects = Project.objects.none()

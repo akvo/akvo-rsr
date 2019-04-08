@@ -632,3 +632,20 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertTrue(self.user.has_perm('rsr.change_project', project))
+
+    def test_hierarchy_owner_collaborator_employees_have_access(self):
+        # Given
+        project = self.create_project('EUTF Child Project')
+        collaborator_org = self.create_organisation('Collaborator: EUTF')
+        collaborator_org.content_owner = collaborator_org.original = self.par_owner
+        collaborator_org.save(update_fields=['content_owner', 'original'])
+        self.make_org_project_editor(self.user, collaborator_org)
+        self.assertFalse(self.user.has_perm('rsr.change_project', project))
+
+        # When
+        self.make_parent(self.project, project)
+
+        # Then
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            self.assertTrue(self.user.has_perm('rsr.change_project', project))
