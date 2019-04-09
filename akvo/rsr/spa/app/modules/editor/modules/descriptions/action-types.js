@@ -1,0 +1,3 @@
+export default {
+  EDIT_DESCRIPTION: 'PT_DESCRIPTION_EDIT'
+}

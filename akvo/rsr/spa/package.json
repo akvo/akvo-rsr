@@ -22,6 +22,7 @@
     "react-hot-loader": "4.6.3",
     "react-redux": "^6.0.1",
     "react-router-dom": "^5.0.0",
+    "react-rte": "^0.16.1",
     "react-sticky": "^6.0.3",
     "react-svg-inline": "^2.1.1",
     "redux": "^4.0.1",

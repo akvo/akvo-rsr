@@ -6,6 +6,7 @@ import { StickyContainer, Sticky } from 'react-sticky'
 import Settings from './modules/settings/settings'
 import Info from './modules/info/info'
 import Partners from './modules/partners/partners'
+import Descriptions from './modules/descriptions/descriptions'
 
 import './styles.scss'
 
@@ -54,6 +55,7 @@ const Editor = () => (
                 <MenuItem hideCheck to="/settings">Settings</MenuItem>
                 <MenuItem to="/info">General Information</MenuItem>
                 <MenuItem to="/partners">Partners</MenuItem>
+                <MenuItem to="/descriptions">Descriptions</MenuItem>
               </ul>
             </aside>
           )}
@@ -62,6 +64,7 @@ const Editor = () => (
             <Route path="/settings" exact component={Settings} />
             <Route path="/info" exact component={Info} />
             <Route path="/partners" component={Partners} />
+            <Route path="/descriptions" component={Descriptions} />
           </div>
           <div className="alerts">
           <Sticky>

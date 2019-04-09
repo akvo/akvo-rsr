@@ -1,0 +1,28 @@
+.descriptions.view{
+  .ant-btn.add-description{
+    margin-bottom: 30px;
+  }
+  .desc-label{
+    display: flex;
+    .anticon{
+      margin-left: auto;
+      margin-right: 5px;
+      margin-top: 2px;
+    }
+  }
+}
+.add-description-modal{
+  .ant-btn{
+    &:not(:last-child){
+      margin-bottom: 10px;
+    }
+  }
+  .desc-block{
+    border-bottom: 1px dashed #ccc;
+    margin-bottom: 15px;
+  }
+  p{
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}
