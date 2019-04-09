@@ -24,10 +24,11 @@
       .anticon{
         margin-right: 10px;
         color: green;
+        font-size: 18px;
       }
       span{
         font-size: 14px;
-        opacity: 0.5;
+        opacity: 0.75;
       }
     }
     .content{
@@ -48,21 +49,49 @@
     position: absolute;
     ul{
       background-color: #f2f2f2;
-      padding: 20px;
+      padding: 20px 0;
       text-transform: uppercase;
       li{
-        position: relative;
-        line-height: 40px;
-        font-weight: 300;
+        a{
+          position: relative;
+          span{
+            opacity: 0.4;
+            transition: opacity .2s ease-out;
+          }
+          color: #000;
+          display: block;
+          line-height: 40px;
+          font-weight: 400;
+          padding: 0 20px;
+          &:hover{
+            span{
+              opacity: 1;
+            }
+          }
+        }
         .check{
           position: absolute;
-          right: 0;
-          top: 0;
+          right: 20px;
+          top: 2px;
+          .anticon{
+            font-size: 20px;
+            color: #ccc;
+            &.checked{
+              color: #31c531;
+            }
+          }
         }
         &.active{
-          font-weight: bold;
           a{
+            font-weight: 400;
+            background-color: #e6e6e6;
+            span{
+              opacity: 1;
+            }
             cursor: default;
+          }
+          .check .anticon:not(.checked){
+            color: #bbb;
           }
         }
       }

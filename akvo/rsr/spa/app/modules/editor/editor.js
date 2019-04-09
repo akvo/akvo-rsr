@@ -10,9 +10,9 @@ import Descriptions from './modules/descriptions/descriptions'
 
 import './styles.scss'
 
-const Check = () => (
+const Check = ({ checked }) => (
   <div className="check">
-    <Icon type="check-circle" theme="filled" style={{ fontSize: 20, color: '#ccc' }} />
+    <Icon type="check-circle" theme="filled" className={checked ? 'checked' : ''} />
   </div>
 )
 
@@ -23,10 +23,12 @@ const MenuItem = (props) => {
       path={to}
       children={({ match }) => (
         <li className={match ? 'active' : ''}>
-          <Link to={to}>{props.children}</Link>
-          {!hideCheck &&
-          <Check checked={checked} />
-          }
+          <Link to={to}>
+            <span>{props.children}</span>
+            {!hideCheck &&
+              <Check checked={checked} />
+            }
+          </Link>
         </li>
       )}
     />
@@ -53,9 +55,16 @@ const Editor = () => (
             <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
               <ul>
                 <MenuItem hideCheck to="/settings">Settings</MenuItem>
-                <MenuItem to="/info">General Information</MenuItem>
+                <MenuItem to="/info" checked>General Information</MenuItem>
+                <MenuItem to="/contacts">Contact Information</MenuItem>
                 <MenuItem to="/partners">Partners</MenuItem>
                 <MenuItem to="/descriptions">Descriptions</MenuItem>
+                <MenuItem to="/results-indicators">Results and indicators</MenuItem>
+                <MenuItem to="/finance">Finance</MenuItem>
+                <MenuItem to="/locations">Locations</MenuItem>
+                <MenuItem to="/focus">Focus</MenuItem>
+                <MenuItem to="/links">Link and documents</MenuItem>
+                <MenuItem to="/comments-keyowrds">Comments and keywords</MenuItem>
               </ul>
             </aside>
           )}
@@ -67,7 +76,7 @@ const Editor = () => (
             <Route path="/descriptions" component={Descriptions} />
           </div>
           <div className="alerts">
-          <Sticky>
+          {/* <Sticky>
             {({style, isSticky}) => (
               <div style={{...style, paddingTop: isSticky ? 70 : 0 }}>
                 <Alert
@@ -77,7 +86,7 @@ const Editor = () => (
                 />
               </div>
             )}
-          </Sticky>
+          </Sticky> */}
           </div>
         </div>
       </div>
