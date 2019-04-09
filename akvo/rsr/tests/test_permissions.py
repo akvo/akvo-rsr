@@ -13,6 +13,7 @@ from akvo.rsr.models import (
 )
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.permissions import user_accessible_projects
 
 
 class PermissionsTestCase(BaseTestCase):
@@ -649,3 +650,88 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertTrue(self.user.has_perm('rsr.change_project', project))
+
+    def test_hierarchy_projects_excluded_for_non_employees(self):
+        # Given
+        project = self.create_project('EUTF Child Project')
+        self.make_parent(self.project, project)
+        org = self.create_organisation('Implementing Partner 1')
+        self.make_partner(project, org)
+        self.make_org_project_editor(self.user, org)
+        self.assertTrue(self.user.has_perm('rsr.change_project', project))
+        all_projects = Project.objects.all()
+
+        # When
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            projects = user_accessible_projects(
+                self.user, self.user.approved_employments(), all_projects
+            )
+
+        # Then
+        self.assertNotIn(project, projects)
+
+    def test_projects_visible_to_employees(self):
+        # Given
+        org = self.create_organisation('Implementing Partner 1')
+        self.make_org_project_editor(self.user, org)
+        project = self.create_project('EUTF Child Project')
+        self.make_parent(self.project, project)
+        self.make_partner(project, org)
+        self.make_partner(self.project, org)
+        all_projects = Project.objects.all()
+
+        # When
+        projects = user_accessible_projects(
+            self.user, self.user.approved_employments(), all_projects
+        )
+
+        # Then
+        self.assertIn(project, projects)
+        self.assertIn(self.project, projects)
+
+    def test_hierarchy_projects_listed_for_managed_users(self):
+        # Given
+        project = self.create_project('EUTF Child Project')
+        self.make_parent(self.project, project)
+        collaborator_org = self.create_organisation('Collaborator: EUTF')
+        collaborator_org.content_owner = collaborator_org.original = self.par_owner
+        collaborator_org.save(update_fields=['content_owner', 'original'])
+        self.make_org_project_editor(self.user, collaborator_org)
+        self.assertFalse(self.user.has_perm('rsr.change_project', project))
+
+        # When
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            projects = user_accessible_projects(
+                self.user, self.user.approved_employments(), Project.objects.none()
+            )
+
+        # Then
+        self.assertIn(project, projects)
+        self.assertIn(self.project, projects)
+
+    def test_hierarchy_published_only_projects_listed_for_managed_users(self):
+        # Given
+        project = self.create_project('EUTF Child Project', published=False)
+        self.make_parent(self.project, project)
+        collaborator_org = self.create_organisation('Collaborator: EUTF')
+        collaborator_org.content_owner = collaborator_org.original = self.par_owner
+        collaborator_org.save(update_fields=['content_owner', 'original'])
+        self.make_org_user_manager(self.user, collaborator_org)
+        self.assertFalse(self.user.has_perm('rsr.change_project', project))
+
+        # When
+        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
+            projects = user_accessible_projects(
+                self.user,
+                self.user.approved_employments(),
+                Project.objects.none(),
+                published_only=True
+            )
+
+        # Then
+        self.assertFalse(project.is_published())
+        self.assertNotIn(project, projects)
+        self.assertIn(self.project, projects)
