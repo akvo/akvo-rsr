@@ -9,8 +9,8 @@ import rules
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
-from ..utils import user_has_perm
 from .models import Employment, IatiExport, Organisation, PartnerSite, Project, ProjectUpdate
+from ..utils import get_organisation_collaborator_org_ids
 
 GROUP_NAME_ADMINS = 'Admins'
 GROUP_NAME_ME_MANAGERS = 'M&E Managers'
@@ -160,3 +160,45 @@ def is_self(user, obj):
     if isinstance(obj, Employment) and obj.user == user:
         return True
     return False
+
+
+# Additional permission filtering
+
+def project_access_filter(user, projects):
+    """Filter projects restricted for the user from the projects queryset.
+
+    :param user: A user object
+    :param projects: A Project QS
+
+    """
+    from akvo.rsr.models import UserProjects
+
+    try:
+        whitelist = UserProjects.objects.get(user=user, is_restricted=True)
+        return whitelist.projects.filter(pk__in=projects)
+
+    except UserProjects.DoesNotExist:
+        return projects
+
+
+def user_has_perm(user, employments, project_id):
+    """Check if a user has access to a project based on their employments."""
+
+    from akvo.rsr.models import Project
+
+    project = Project.objects.get(id=project_id)
+    hierarchy_org = project.get_hierarchy_organisation()
+    organisations = employments.organisations()
+
+    if hierarchy_org is None or not hierarchy_org.enable_restrictions:
+        all_projects = organisations.all_projects()
+
+    else:
+        collaborator_ids = get_organisation_collaborator_org_ids(hierarchy_org.id)
+        if collaborator_ids.intersection(organisations.values_list('id', flat=True)):
+            all_projects = Project.objects.filter(id__in=[project_id])
+        else:
+            all_projects = Project.objects.none()
+
+    filtered_projects = project_access_filter(user, all_projects)
+    return project_id in filtered_projects.values_list('id', flat=True)

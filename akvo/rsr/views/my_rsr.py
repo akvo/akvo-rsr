@@ -29,12 +29,11 @@ from akvo.codelists.store.default_codelists import (
 from akvo.codelists.store.codelists_EUTF import SECTOR_CODES as EUTF_SECTOR_CODES
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_user_manageable
-from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
+from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, project_access_filter
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
-                      project_access_filter)
+from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
 from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
                       ProjectEditorValidationSet, Result, Indicator)
 

@@ -481,23 +481,6 @@ def get_report_thumbnail(file_):
     return get_thumbnail(file_, settings.RS_THUMB_GEOMETRY, quality=settings.RS_THUMB_QUALITY)
 
 
-def project_access_filter(user, projects):
-    """Filter projects restricted for the user from the projects queryset.
-
-    :param user: A user object
-    :param projects: A Project QS
-
-    """
-    from akvo.rsr.models import UserProjects
-
-    try:
-        whitelist = UserProjects.objects.get(user=user, is_restricted=True)
-        return whitelist.projects.filter(pk__in=projects)
-
-    except UserProjects.DoesNotExist:
-        return projects
-
-
 def get_organisation_collaborator_org_ids(org_id):
     """Get collaborator organisation ids for a given organisation.
 
@@ -513,26 +496,3 @@ def get_organisation_collaborator_org_ids(org_id):
     org_ids = set(collaborators.values_list('id', flat=True))
     org_ids.add(org_id)
     return org_ids
-
-
-def user_has_perm(user, employments, project_id):
-    """Check if a user has access to a project based on their employments."""
-
-    from akvo.rsr.models import Project
-
-    project = Project.objects.get(id=project_id)
-    hierarchy_org = project.get_hierarchy_organisation()
-    organisations = employments.organisations()
-
-    if hierarchy_org is None or not hierarchy_org.enable_restrictions:
-        all_projects = organisations.all_projects()
-
-    else:
-        collaborator_ids = get_organisation_collaborator_org_ids(hierarchy_org.id)
-        if collaborator_ids.intersection(organisations.values_list('id', flat=True)):
-            all_projects = Project.objects.filter(id__in=[project_id])
-        else:
-            all_projects = Project.objects.none()
-
-    filtered_projects = project_access_filter(user, all_projects)
-    return project_id in filtered_projects.values_list('id', flat=True)
