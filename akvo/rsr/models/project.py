@@ -1092,6 +1092,13 @@ class Project(TimestampsMixin, models.Model):
             if pk in root_ids:
                 return root_projects[pk]
 
+    def in_eutf_hierarchy(self):
+        """Check if the project is a part of the EUTF hierarchy."""
+        # FIXME: Ideally, we shouldn't need such a function and all
+        # functionality should be generic enough to enable/disable for other
+        # organisations.
+        return self.ancestor().id == settings.EUTF_ROOT_PROJECT
+
     def project_dates(self):
         """ Return the project start and end dates, preferably the actuals. If they are not set, use
             the planned values.
@@ -1170,6 +1177,44 @@ class Project(TimestampsMixin, models.Model):
     def iati_errors_unicode(self):
         return str(self.iati_errors())
 
+    def iati_prefixes(self):
+        """Return the IATI ID prefixes for the project.
+
+        Based on the reporting organisations, returns the IATI prefixes.
+
+        """
+        from akvo.rsr.models import Organisation
+
+        reporting_orgs = self.partnerships.filter(
+            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
+        ).values_list('organisation_id', flat=True)
+        org_ids = set(reporting_orgs)
+        if self.in_eutf_hierarchy():
+            org_ids.add(settings.EUTF_ORG_ID)
+        prefixes = Organisation.objects.filter(id__in=org_ids)\
+                                       .values_list('iati_prefixes', flat=True)
+        prefixes = [prefix.strip().strip(';') for prefix in prefixes if prefix is not None]
+        prefixes = ';'.join([prefix for prefix in prefixes if prefix])
+        return prefixes.split(';') if prefixes else []
+
+    def iati_identifier_context(self):
+        iati_activity_id_prefix = iati_activity_id_suffix = ''
+        iati_id = self.iati_activity_id or ''
+
+        iati_prefixes = self.iati_prefixes()
+        for prefix in iati_prefixes:
+            if iati_id.startswith(prefix):
+                iati_activity_id_prefix = prefix
+                break
+
+        iati_activity_id_suffix = iati_id[len(iati_activity_id_prefix):]
+        data = {
+            'iati_prefixes': iati_prefixes,
+            'iati_activity_id_prefix': iati_activity_id_prefix,
+            'iati_activity_id_suffix': iati_activity_id_suffix,
+        }
+        return data
+
     def keyword_logos(self):
         """Return the keywords of the project which have a logo."""
         return self.keywords.exclude(logo='')
@@ -1209,9 +1254,9 @@ class Project(TimestampsMixin, models.Model):
         # Check that we have a parent project and that project of parent indicator is that parent
         parents = self.parents_all()
         if parents.count() == 0:
-            raise Project.DoesNotExist, "Project has no parent"
+            raise Project.DoesNotExist("Project has no parent")
         elif parents.count() > 1:
-            raise Project.MultipleObjectsReturned, "Project has multiple parents"
+            raise Project.MultipleObjectsReturned("Project has multiple parents")
         else:
             parent_project = parents[0]
 
@@ -1281,6 +1326,7 @@ class Project(TimestampsMixin, models.Model):
                 title=parent_indicator.title,
                 measure=parent_indicator.measure,
                 ascending=parent_indicator.ascending,
+                type=parent_indicator.type,
             )
         )
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
@@ -1312,12 +1358,12 @@ class Project(TimestampsMixin, models.Model):
         except Indicator.DoesNotExist:
             return
 
-        child_indicator.title = parent_indicator.title
-        child_indicator.measure = parent_indicator.measure
-        child_indicator.ascending = parent_indicator.ascending
-        child_indicator.save()
+        update_fields = ['title', 'measure', 'ascending', 'type']
+        for field in update_fields:
+            setattr(child_indicator, field, getattr(parent_indicator, field))
+        child_indicator.save(update_fields=update_fields)
 
-        fields = ['title', 'description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
         self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
 
     def add_period(self, indicator, period):
