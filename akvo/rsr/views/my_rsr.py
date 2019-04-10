@@ -29,12 +29,13 @@ from akvo.codelists.store.default_codelists import (
 from akvo.codelists.store.codelists_EUTF import SECTOR_CODES as EUTF_SECTOR_CODES
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_user_manageable
-from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
+from akvo.rsr.permissions import (
+    GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, user_accessible_projects
+)
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
 from ..filters import remove_empty_querydict_items
-from ...utils import (codelist_name, codelist_choices, pagination, filter_query_string,
-                      project_access_filter)
+from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
 from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
                       ProjectEditorValidationSet, Result, Indicator)
 
@@ -181,6 +182,7 @@ def my_projects(request):
     """
 
     # User groups
+    # FIXME: Add Enumerators here!
     not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS]
 
     # Get user organisation information
@@ -197,16 +199,25 @@ def my_projects(request):
         # For each employment, check if the user is allowed to edit projects (e.g. not a 'User' or
         # 'User Manager'). If not, do not show the unpublished projects of that organisation.
         projects = Project.objects.none()
-        for employment in employments:
-            if employment.group and employment.group.name not in not_allowed_to_edit:
-                projects = projects | employment.organisation.all_projects()
-            else:
-                projects = projects | employment.organisation.all_projects().published()
+        # Not allowed to edit roles
+        non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
+        uneditable_projects = non_editor_roles.organisations().all_projects().published()
+        projects = (
+            projects |
+            user_accessible_projects(
+                request.user, non_editor_roles, uneditable_projects, published_only=True
+            )
+        )
+        # Allowed to edit roles
+        editor_roles = employments.exclude(group__name__in=not_allowed_to_edit)
+        editable_projects = editor_roles.organisations().all_projects()
+        projects = (
+            projects |
+            user_accessible_projects(
+                request.user, editor_roles, editable_projects, published_only=False
+            )
+        )
         projects = projects.distinct()
-        # If user has a whitelist, only projects on the list may be accessible, depending on groups
-        # TODO: the filtering needs to take into account that the user may be an admin for org A and
-        # not for org B
-        projects = project_access_filter(request.user, projects)
 
     # Custom filter on project id or (sub)title
     q = request.GET.get('q')
