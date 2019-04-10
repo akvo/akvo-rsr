@@ -391,9 +391,15 @@ nav.navbar-fixed-top {
     padding: 5px 40px;
     @include border-radius(0);
     border-bottom: 1px solid rgba($rsrBlue, 0.2);
+    @media screen and (max-width: 768px){
+      padding: 5px 15px;
+    }
     button.navbar-toggle {
         background: $rsrBlue;
         border: 1px solid $rsrBlue;
+        @media screen and (max-width: 768px){
+          margin-right: 0;
+        }
         &:hover {
             background: white;
             border: 1px solid $rsrBlue;
@@ -1390,7 +1396,7 @@ h4.detailedInfo {
                 cursor: pointer;
                 @include responsive(small-max-screens) {
                     padding: 10px 16px;
-                    font-size: 18px;
+                    font-size: 1em;
                 }
 
                 &:hover {
@@ -1484,11 +1490,32 @@ h4.detailedInfo {
     @include responsive(small-max-screens) {
         padding-bottom: 0;
     }
-
     .searchBar {
         max-width: 80%;
         margin: 10px auto 0 auto;
+        @media screen and (max-width: 1024px){
+          max-width: 100%;
+          margin-top: 20px;
+        }
         position: relative;
+        .text-search{
+          @media screen and (min-width: 768px) and (max-width: 1024px){
+            margin-bottom: 15px;
+          }
+          .form-group{
+            width: 100%;
+            .input-group{
+              display: flex;
+              .bootstrap-typeahead{
+                flex: 1;
+              }
+              .input-group-btn{
+                width: auto;
+              }
+            }
+          }
+          
+        }
         &.updateSearch {
             margin: 0px auto 0 auto;
         }
@@ -1511,11 +1538,40 @@ h4.detailedInfo {
                 width: 250px;
                 padding-top: 5px !important;
                 padding-bottom: 5px !important;
+                @media screen and (min-width: 1400px){
+                  width: 100%;
+                }
             }
             button {
                 padding-top: 7px;
                 padding-bottom: 5px;
             }
+        }
+        .form-inline{
+          @media screen and (max-width: 768px){
+            padding: 0;
+            .bootstrap-typeahead-input{
+              width: 100%;
+              display: flex;
+              input{
+                flex: 1;
+                width: auto;
+              }
+            }
+          }
+        }
+        .advanced-filter{
+          @media screen and (max-width: 768px){
+            display: block;
+            margin-bottom: 15px;
+            position: relative;
+            .caret{
+              position: absolute;
+              left: auto;
+              right: 13px;
+              top: 16px;
+            }
+          }
         }
         .sortList {
             display: inline-block;
@@ -1605,10 +1661,12 @@ h4.detailedInfo {
                 margin-bottom: 15px;
                 list-style-type: none;
                 padding: 0 0 15px 0;
-                display: inline;
+                // display: inline;
                 width: 24.5%;
                 float: left;
-                min-height: 265px;
+                @media screen and (min-width: 768px){
+                  min-height: 265px;
+                }
                 @include border-radius(3px);
                 background: white;
                 margin-right: 0.66%;
@@ -1634,6 +1692,9 @@ h4.detailedInfo {
                 }
                 border: thin solid rgba($rsrBlue, 0);
                 @include transition(all 0.2s ease-in);
+                @media screen and (max-width: 640px){
+
+                }
             }
         }
     }
@@ -1659,16 +1720,16 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            height: 160px;
+            // height: 160px;
             overflow-y: hidden;
             position: relative;
             background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
-                position: absolute;
-                top: 0%;
-                left: 50%;
-                transform: translate(-50%, 0%);
+                // position: absolute;
+                // top: 0%;
+                // left: 50%;
+                // transform: translate(-50%, 0%);
             }
         }
         .projectLocation {
@@ -1728,8 +1789,13 @@ h4.detailedInfo {
             }
         }
         .projectListUlcontain {
-            max-height: calc(100vh - 240px);
-            overflow-y: scroll;
+            @media screen and (min-width: 768px){
+              max-height: calc(100vh - 240px);
+              overflow-y: scroll;
+            }
+            @media screen and (min-width: 768px) and (max-width: 1024px){
+              width: 100%;
+            }
             p.listMsg {
                 font-size: 1.2em;
                 text-align: center;
@@ -1741,21 +1807,33 @@ h4.detailedInfo {
             }
             ul.projectListUl {
                 padding-left: 15px;
+
+            @media screen and (max-width: 768px){
+              padding-left: 0;
+            }
                 li {
                     margin-bottom: 5px;
                     list-style-type: none;
-                    display: inline;
+                    // display: inline;
                     width: 49%;
                     float: left;
-                    min-height: 285px;
+                    @media screen and (min-width: 768px){
+                      min-height: 285px;
+                    }
                     @include border-radius(3px);
-                    background: white;
+                    background: rgba(32, 32, 36, 0.05);
                     margin-right: 2%;
                     -webkit-transition: all 2s linear;
                     -moz-transition: all 2s linear;
                     -o-transition: all 2s linear;
                     transition: all 2s linear;
-                    padding: 5px;
+                    padding: 0;
+                    .thumbImg img{
+                      border: none;
+                    }
+                    .text{
+                      padding: 5px 10px;
+                    }
                     @include transition(all 0.2s ease-in);
                     &.highlightProject {
                         box-shadow: 0 0 12px rgba(77, 90, 130, 0) !important;

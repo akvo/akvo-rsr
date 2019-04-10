@@ -173,7 +173,11 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Organisation is allowed to become a reporting organisation. '
                     u'Can be set by superusers.'),
         default=False)
-
+    iati_prefixes = ValidXMLCharField(
+        _(u'IATI identifier prefixes'), max_length=2000, blank=True, null=True,
+        help_text=_(u'This is a ; separated list of IATI identifier prefixes used by projects'
+                    'where the organisation is a reporting partner.')
+    )
     objects = OrgManager()
 
     @models.permalink

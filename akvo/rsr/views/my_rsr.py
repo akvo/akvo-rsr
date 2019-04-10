@@ -7,6 +7,9 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from collections import OrderedDict
+import json
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -23,6 +26,7 @@ from akvo.codelists.models import Country, Version
 from akvo.codelists.store.default_codelists import (
     AID_TYPE, EARMARKING_CATEGORY, SECTOR_CATEGORY, SECTOR
 )
+from akvo.codelists.store.codelists_EUTF import SECTOR_CODES as EUTF_SECTOR_CODES
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_user_manageable
 from akvo.rsr.permissions import GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS
@@ -33,7 +37,6 @@ from ...utils import (codelist_name, codelist_choices, pagination, filter_query_
                       project_access_filter)
 from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
                       ProjectEditorValidationSet, Result, Indicator)
-import json
 
 
 def manageable_objects(user):
@@ -333,8 +336,15 @@ def project_editor(request, project_id):
     countries = Country.objects.filter(version=Version.objects.get(code=settings.IATI_VERSION))
     # Map options to the vocabulary code
     sector_vocabulary_options = {
-        '1': dict(codelist_choices(SECTOR)), '2': dict(codelist_choices(SECTOR_CATEGORY))
+        '1': OrderedDict(codelist_choices(SECTOR)), '2': OrderedDict(codelist_choices(SECTOR_CATEGORY))
     }
+    # NOTE: This code is too specific for EUTF, but not yet sure what's the
+    # best way to generalize this. We could move the sector codes to the DB,
+    # and choose based on the reporting org, or based on the project hierarchy.
+    # But, right now nobody other than EUTF needs this, and this should work.
+    if project.in_eutf_hierarchy():
+        sector_vocabulary_options['99'] = OrderedDict(codelist_choices(EUTF_SECTOR_CODES))
+
     aid_type_vocabulary_options = {
         '1': dict(codelist_choices(AID_TYPE)), '2': dict(codelist_choices(EARMARKING_CATEGORY))
     }
@@ -377,6 +387,7 @@ def project_editor(request, project_id):
     }
 
     context = project.project_hierarchy_context(context)
+    context.update(project.iati_identifier_context())
 
     # Custom fields context
     for section_id in xrange(1, 12):

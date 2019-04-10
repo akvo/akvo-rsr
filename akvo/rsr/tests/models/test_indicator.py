@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result,
                              RelatedProject)
 from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.models.result.utils import QUALITATIVE
 
 User = get_user_model()
 
@@ -103,6 +104,39 @@ class IndicatorModelTestCase(BaseTestCase):
             self.child_project.import_indicator(parent_indicator.pk)
         exception = context.exception
         self.assertEqual(exception.message, "Indicator already exists")
+
+    def test_qualitative_indicator_import(self):
+        # Given
+        parent_indicator = Indicator.objects.create(
+            result=self.result,
+            type=QUALITATIVE,
+            title='Yet another qualitative indicator',
+        )
+
+        # When
+        self.child_project.import_results()
+
+        # Then
+        child_indicator = parent_indicator.child_indicators.first()
+        self.assertEqual(child_indicator.type, parent_indicator.type)
+        self.assertEqual(child_indicator.title, parent_indicator.title)
+
+    def test_indicator_type_update_propogates(self):
+        # Given
+        parent_indicator = Indicator.objects.get(result__project=self.parent_project)
+        self.child_project.import_results()
+        child_indicator = parent_indicator.child_indicators.first()
+        self.assertEqual(parent_indicator.type, child_indicator.type)
+        self.assertNotEqual(QUALITATIVE, parent_indicator.type)
+
+        # When
+        parent_indicator.type = QUALITATIVE
+        parent_indicator.save()
+
+        # Then
+        child_indicator = parent_indicator.child_indicators.first()
+        self.assertEqual(QUALITATIVE, parent_indicator.type)
+        self.assertEqual(parent_indicator.type, child_indicator.type)
 
 
 class IndicatorPeriodModelTestCase(TestCase):
