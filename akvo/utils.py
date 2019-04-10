@@ -481,18 +481,18 @@ def get_report_thumbnail(file_):
     return get_thumbnail(file_, settings.RS_THUMB_GEOMETRY, quality=settings.RS_THUMB_QUALITY)
 
 
-def get_organisation_collaborator_org_ids(org_id):
-    """Get collaborator organisation ids for a given organisation.
+def project_access_filter(user, projects):
+    """Filter projects restricted for the user from the projects queryset.
 
-    Collaborator organisations are meant to replace the shadow organisations,
-    but currently a collaborator organisation is just a shadow organisation for
-    the content owner! (org.original == org.content_owner)
+    :param user: A user object
+    :param projects: A Project QS
 
     """
+    from akvo.rsr.models import UserProjects
 
-    from akvo.rsr.models import Organisation
+    try:
+        whitelist = UserProjects.objects.get(user=user, is_restricted=True)
+        return whitelist.projects.filter(pk__in=projects)
 
-    collaborators = Organisation.objects.filter(content_owner_id=org_id, original_id=org_id)
-    org_ids = set(collaborators.values_list('id', flat=True))
-    org_ids.add(org_id)
-    return org_ids
+    except UserProjects.DoesNotExist:
+        return projects
