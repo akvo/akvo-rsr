@@ -1,28 +1,4 @@
 .info.view{
-  .ant-form-item-label{
-    .anticon{
-      margin-left: 6px;
-      margin-right: 6px;
-    }
-    .optional{
-      opacity: 0.3;
-      font-style: italic;
-    }
-  }
-  .status-label{
-    display: flex;
-  }
-  .suspend-switches{
-    margin-left: auto;
-    font-size: 11px;
-    .ant-switch{
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-    span{
-      opacity: 0.65;
-    }
-  }
   h3{
     margin-bottom: 15px;
   }

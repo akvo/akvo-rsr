@@ -17,6 +17,21 @@ h4{
   font-size: 18px;
 }
 
+ol{
+  list-style: decimal;
+  padding-left: 20px;
+}
+
+.ant-tooltip-inner{
+  ol{
+    font-size: 12px;
+    line-height: 18px;
+    li{
+      margin-top: 4px;
+    }
+  }
+}
+
 .top-bar{
   padding: 20px 0;
   height: 70px;
