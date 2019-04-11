@@ -7,7 +7,7 @@ const App = () => (
 
 const Root = () => {
   return (
-    <Router>
+    <Router basename="/en/my-rsr">
       <Switch>
         <Route path="/" component={App} exact />
       </Switch>

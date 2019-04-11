@@ -2,7 +2,7 @@ const { resolve } = require('path');
 
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
+// const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
@@ -29,6 +29,7 @@ const config = {
   context: resolve(__dirname, 'app'),
 
   devServer: {
+    host: '0.0.0.0',
     hot: true,
     contentBase: resolve(__dirname, 'build'),
     historyApiFallback: true,
@@ -151,7 +152,7 @@ const config = {
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
     // new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
-    new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
+    // new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
     new webpack.HotModuleReplacementPlugin(),
   ]
 };

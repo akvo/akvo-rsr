@@ -21,6 +21,13 @@ fi
 npm run devw&
 popd
 
+pushd akvo/rsr/spa
+if [[ ! -d "node_modules" ]]; then
+  npm install
+fi
+npm start &
+popd
+
 python manage.py migrate --noinput
 #python manage.py collectstatic
 
