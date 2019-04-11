@@ -5,6 +5,7 @@ import { StickyContainer, Sticky } from 'react-sticky'
 
 import Settings from './settings/settings'
 import Info from './info/info'
+import Contacts from './contacts/contacts'
 import Partners from './partners/partners'
 import Descriptions from './descriptions/descriptions'
 
@@ -72,6 +73,7 @@ const Editor = () => (
           <div className="content">
             <Route path="/settings" exact component={Settings} />
             <Route path="/info" exact component={Info} />
+            <Route path="/contacts" component={Contacts} />
             <Route path="/partners" component={Partners} />
             <Route path="/descriptions" component={Descriptions} />
           </div>
