@@ -155,11 +155,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     get_organisation_names.short_description = _(u'organisations')
 
     def approved_organisations(self):
-        """
-        return all approved organisations of the user
-        """
-        from .organisation import Organisation
-        return Organisation.objects.filter(employees__user=self, employees__is_approved=True)
+        """Return all approved organisations of the user."""
+        return self.approved_employments().organisations()
 
     def updates(self):
         """
@@ -237,14 +234,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             employment.group.delete()
 
     def get_admin_employment_orgs(self):
-        employments = Employment.objects.filter(user=self, is_approved=True, group__name='Admins')
-        return employments.organisations()
+        """Return all organisations of the user where they are Admins"""
+        return self.approved_employments(['Admins']).organisations().distinct()
 
     def get_non_admin_employment_orgs(self):
-        " Return all organisations of the user where (s)he is not part of the Admins group"
-        all_orgs = Employment.objects.filter(user=self, is_approved=True).organisations()
+        """Return all organisations of the user where they are *not* Admins"""
+        all_orgs = self.approved_employments().organisations()
         admin_orgs = self.get_admin_employment_orgs()
-        return all_orgs.exclude(id__in=admin_orgs)
+        return all_orgs.exclude(id__in=admin_orgs).distinct()
 
     def get_owned_org_users(self):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
