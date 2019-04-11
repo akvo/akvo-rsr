@@ -9,7 +9,8 @@ from django.contrib.auth.models import Group
 from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
-    AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects
+    AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects,
+    ProjectHierarchy
 )
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -585,6 +586,9 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.user = self.create_user('foo@example.com', 'password')
         self.par_owner = self.create_organisation('EUTF', enable_restrictions=True)
         self.project = self.create_project('EUTF Project')
+        ProjectHierarchy.objects.create(
+            root_project=self.project, organisation=self.par_owner, max_depth=2
+        )
 
     def test_hierarchy_owner_employees_have_access(self):
         # Given
@@ -596,7 +600,7 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.make_parent(self.project, project)
 
         # Then
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertTrue(self.user.has_perm('rsr.change_project', project))
 
@@ -612,7 +616,7 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.make_parent(self.project, project)
 
         # Then
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertFalse(self.user.has_perm('rsr.change_project', project))
 
@@ -630,7 +634,7 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.make_parent(self.project, project)
 
         # Then
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertTrue(self.user.has_perm('rsr.change_project', project))
 
@@ -647,7 +651,7 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.make_parent(self.project, project)
 
         # Then
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
             self.assertTrue(project.in_eutf_hierarchy())
             self.assertTrue(self.user.has_perm('rsr.change_project', project))
 
@@ -658,17 +662,15 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         org = self.create_organisation('Implementing Partner 1')
         self.make_partner(project, org)
         self.make_org_project_editor(self.user, org)
-        self.assertTrue(self.user.has_perm('rsr.change_project', project))
         all_projects = Project.objects.all()
 
         # When
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
-            self.assertTrue(project.in_eutf_hierarchy())
-            projects = user_accessible_projects(
-                self.user, self.user.approved_employments(), all_projects
-            )
+        projects = user_accessible_projects(
+            self.user, self.user.approved_employments(), all_projects)
 
         # Then
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
         self.assertNotIn(project, projects)
 
     def test_projects_visible_to_employees(self):
@@ -676,19 +678,18 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         org = self.create_organisation('Implementing Partner 1')
         self.make_org_project_editor(self.user, org)
         project = self.create_project('EUTF Child Project')
-        self.make_parent(self.project, project)
         self.make_partner(project, org)
         self.make_partner(self.project, org)
         all_projects = Project.objects.all()
 
         # When
         projects = user_accessible_projects(
-            self.user, self.user.approved_employments(), all_projects
-        )
+            self.user, self.user.approved_employments(), all_projects)
 
         # Then
         self.assertIn(project, projects)
-        self.assertIn(self.project, projects)
+        # Hierarchy project not visible
+        self.assertNotIn(self.project, projects)
 
     def test_hierarchy_projects_listed_for_managed_users(self):
         # Given
@@ -698,16 +699,15 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         collaborator_org.content_owner = collaborator_org.original = self.par_owner
         collaborator_org.save(update_fields=['content_owner', 'original'])
         self.make_org_project_editor(self.user, collaborator_org)
-        self.assertFalse(self.user.has_perm('rsr.change_project', project))
+        employments = self.user.approved_employments()
+        projects = employments.organisations().all_projects()
 
         # When
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
-            self.assertTrue(project.in_eutf_hierarchy())
-            projects = user_accessible_projects(
-                self.user, self.user.approved_employments(), Project.objects.none()
-            )
+        projects = user_accessible_projects(self.user, employments, projects)
 
         # Then
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
         self.assertIn(project, projects)
         self.assertIn(self.project, projects)
 
@@ -720,18 +720,15 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         collaborator_org.save(update_fields=['content_owner', 'original'])
         self.make_org_user_manager(self.user, collaborator_org)
         self.assertFalse(self.user.has_perm('rsr.change_project', project))
+        employments = self.user.approved_employments()
+        projects = employments.organisations().all_projects().published()
 
         # When
-        with self.settings(EUTF_ORG_ID=self.par_owner.id, EUTF_ROOT_PROJECT=self.project.id):
-            self.assertTrue(project.in_eutf_hierarchy())
-            projects = user_accessible_projects(
-                self.user,
-                self.user.approved_employments(),
-                Project.objects.none(),
-                published_only=True
-            )
+        projects = user_accessible_projects(self.user, self.user.approved_employments(), projects)
 
         # Then
+        with self.settings(EUTF_ROOT_PROJECT=self.project.id):
+            self.assertTrue(project.in_eutf_hierarchy())
         self.assertFalse(project.is_published())
         self.assertNotIn(project, projects)
         self.assertIn(self.project, projects)

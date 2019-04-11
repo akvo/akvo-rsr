@@ -208,43 +208,26 @@ def user_has_perm(user, employments, project_id):
     return project_id in filtered_projects.values_list('id', flat=True)
 
 
-def user_accessible_projects(user, employments, projects, published_only=True):
-    """Return list of accessible projects for a user.
+def user_accessible_projects(user, employments, projects):
+    """Return list of accessible projects for a user."""
 
-    NOTE: Based on the employments of the user, the user may have more projects
-    in the final list returned, than in the originally supplied list of
-    projects!
-
-    """
-
-    from django.conf import settings
-    from akvo.rsr.models import Organisation, Project
+    from akvo.rsr.models import ProjectHierarchy
 
     employer_ids = set(employments.organisations().values_list('id', flat=True))
-    # HACK: Currently going by the assumption that EUTF and Nuffic are the only
-    # hierarchy organisations.
-    hierarchies = [
-        (settings.EUTF_ORG_ID, settings.EUTF_ROOT_PROJECT, 2),
-        (settings.NUFFIC_ORG_ID, settings.NUFFIC_ROOT_PROJECT, 2),
-    ]
+
+    # Exclude projects that are in a hierarchy, where restrictions are enabled,
+    # and the user is not employed.
+    hierarchies = ProjectHierarchy.objects\
+                                  .exclude(organisation_id__in=employer_ids)\
+                                  .filter(organisation__enable_restrictions=True)\
+                                  .select_related('root_project')
+
     # NOTE: The permissions here are very tightly coupled with the hierarchies.
     # Ideally, we'd look at all the "owners" of these projects, and see if any
     # of them enable restrictions, and restrict access based on whether the
     # user is employed by that organisation or not.
-    for org_id, root_project, hierarchy_level in hierarchies:
-        try:
-            org = Organisation.objects.get(id=org_id)
-        except Organisation.DoesNotExist:
-            continue
-        if not org.enable_restrictions:
-            continue
-        collaborator_ids = get_organisation_collaborator_org_ids(org_id)
-        hierarchy_projects = Project.objects.get(id=root_project).descendants(hierarchy_level)
-        if employer_ids.intersection(collaborator_ids):
-            projects = projects.union(
-                hierarchy_projects.published() if published_only else hierarchy_projects
-            )
-        else:
-            projects = projects.exclude(id__in=hierarchy_projects)
+    for hierarchy in hierarchies:
+        hierarchy_projects = hierarchy.root_project.descendants(hierarchy.max_depth)
+        projects = projects.exclude(id__in=hierarchy_projects)
 
     return project_access_filter(user, projects)

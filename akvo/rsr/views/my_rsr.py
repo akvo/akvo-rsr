@@ -203,19 +203,13 @@ def my_projects(request):
         non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
         uneditable_projects = non_editor_roles.organisations().all_projects().published()
         projects = (
-            projects |
-            user_accessible_projects(
-                request.user, non_editor_roles, uneditable_projects, published_only=True
-            )
+            projects | user_accessible_projects(request.user, non_editor_roles, uneditable_projects)
         )
         # Allowed to edit roles
         editor_roles = employments.exclude(group__name__in=not_allowed_to_edit)
         editable_projects = editor_roles.organisations().all_projects()
         projects = (
-            projects |
-            user_accessible_projects(
-                request.user, editor_roles, editable_projects, published_only=False
-            )
+            projects | user_accessible_projects(request.user, editor_roles, editable_projects)
         )
         projects = projects.distinct()
 

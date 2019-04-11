@@ -1109,13 +1109,12 @@ class Project(TimestampsMixin, models.Model):
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
 
-        from akvo.rsr.models import Organisation
+        from akvo.rsr.models import ProjectHierarchy
 
-        if self.in_eutf_hierarchy():
-            return Organisation.objects.get(id=settings.EUTF_ORG_ID)
-        elif self.in_nuffic_hierarchy():
-            return Organisation.objects.get(id=settings.NUFFIC_ORG_ID)
-        else:
+        try:
+            hierarchy = ProjectHierarchy.objects.get(root_project=self.ancestor())
+            return hierarchy.organisation
+        except ProjectHierarchy.DoesNotExist:
             return None
 
     def project_dates(self):
