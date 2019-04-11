@@ -385,6 +385,11 @@ class Organisation(TimestampsMixin, models.Model):
         "Returns the original org if self is a shadow org"
         return self.original if self.original else self
 
+    @property
+    def is_collaborator_organisation(self):
+        # FIXME: Replace this with a DB field!
+        return self.original_id is not None and self.original_id == self.content_owner_id
+
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has
         published projects."""
