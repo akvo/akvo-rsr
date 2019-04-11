@@ -122,7 +122,7 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
         # All orgs the user is employed by as a non-admin
         user_orgs = user.get_non_admin_employment_orgs()
         # All projects the user is associated with
-        user_associated_project = user_orgs.all_projects()
+        user_associated_projects = user_orgs.all_projects()
         try:
             user_projects = UserProjects.objects.get(user=user)
         except UserProjects.DoesNotExist:
@@ -130,7 +130,7 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
 
         # All projects the admin and the user have in common.
         # It is those projects that the admin may restrict
-        common_projects = admin_associated_projects & user_associated_project
+        common_projects = admin_associated_projects & user_associated_projects
 
         # The project list is split on partners shared by the project and the admin or the user
         project_sets = {}

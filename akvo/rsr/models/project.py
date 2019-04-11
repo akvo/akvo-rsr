@@ -1099,6 +1099,17 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
+    def get_hierarchy_organisation(self):
+        """Return the hierarchy organisation if project belongs to one."""
+
+        from akvo.rsr.models import ProjectHierarchy
+
+        try:
+            hierarchy = ProjectHierarchy.objects.get(root_project=self.ancestor())
+            return hierarchy.organisation
+        except ProjectHierarchy.DoesNotExist:
+            return None
+
     def project_dates(self):
         """ Return the project start and end dates, preferably the actuals. If they are not set, use
             the planned values.
