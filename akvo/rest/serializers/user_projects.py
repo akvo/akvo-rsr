@@ -137,10 +137,14 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
         admin_orgs_pks = set(admin_orgs.values_list('pk', flat=True))
         user_orgs_pks = set(user_orgs.values_list('pk', flat=True))
         for project in common_projects:
-            # Determine which partners the the project has in common with the admin and/or the user
-            # See the tests at rest.test_project_access for more detail on the resulting data
-            # structure
-            project_partners_pks = set(project.all_partners().values_list('pk', flat=True))
+            # Determine which partners the the project has in common with the
+            # admin and/or the user See the tests at rest.test_project_access
+            # for more detail on the resulting data structure
+
+            # FIXME: This can potentially be slow, since we do a lot of queries
+            # to check if any project is owned by a hierarchy. We could
+            # possibly make this faster!
+            project_partners_pks = project.partner_organisation_pks()
             admin_org_for_project_pks = admin_orgs_pks & project_partners_pks
             user_org_for_project_pks = user_orgs_pks & project_partners_pks
             # Crete a tuple of the org's pks so it can be used as a dict key

@@ -920,6 +920,19 @@ class Project(TimestampsMixin, models.Model):
     def all_partners(self):
         return self._partners()
 
+    def partner_organisation_pks(self):
+        """Return all organisation ids along with hierarchy owner
+
+        If project is in a hierarchy, includes the hierarchy owner in the
+        partners list.
+
+        """
+        pks = set(self._partners().values_list('id', flat=True))
+        hierarchy_org = self.get_hierarchy_organisation()
+        if hierarchy_org is not None:
+            pks.add(hierarchy_org.id)
+        return pks
+
     def partners_info(self):
         """
         Return a dict of the distinct partners with the organisation as key and as content:
