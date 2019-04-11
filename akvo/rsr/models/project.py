@@ -1099,13 +1099,6 @@ class Project(TimestampsMixin, models.Model):
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
 
-    def in_nuffic_hierarchy(self):
-        """Check if the project is a part of the Nuffic hierarchy."""
-        # FIXME: Ideally, we shouldn't need such a function and all
-        # functionality should be generic enough to enable/disable for other
-        # organisations.
-        return self.ancestor().id == settings.NUFFIC_ROOT_PROJECT
-
     def get_hierarchy_organisation(self):
         """Return the hierarchy organisation if project belongs to one."""
 
