@@ -17,8 +17,22 @@ class ProjectQuerySet(models.QuerySet):
         return self.filter(partners__exact=organisation)
 
     def of_partners(self, organisations):
-        "return projects that have one of the organisations as partner"
-        return self.filter(partners__in=organisations)
+        """Return projects that have one of the organisations as partner.
+
+        *NOTE*: If any of the organisations has one or more ProjectHierarchies,
+        include all the projects in the hierarchies.
+        """
+
+        from akvo.rsr.models import ProjectHierarchy
+        projects = self.filter(partners__in=organisations)
+        hierarchies = ProjectHierarchy.objects.filter(organisation__in=organisations)\
+                                              .select_related('root_project')
+
+        for hierarchy in hierarchies:
+            hierarchy_projects = hierarchy.root_project.descendants(hierarchy.max_depth)
+            projects = hierarchy_projects | projects.distinct()
+
+        return projects
 
     def has_location(self):
         return self.filter(primary_location__isnull=False)
