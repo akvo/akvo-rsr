@@ -3,10 +3,10 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import { Icon, Alert, Button } from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
 
-import Settings from './modules/settings/settings'
-import Info from './modules/info/info'
-import Partners from './modules/partners/partners'
-import Descriptions from './modules/descriptions/descriptions'
+import Settings from './settings/settings'
+import Info from './info/info'
+import Partners from './partners/partners'
+import Descriptions from './descriptions/descriptions'
 
 import './styles.scss'
 

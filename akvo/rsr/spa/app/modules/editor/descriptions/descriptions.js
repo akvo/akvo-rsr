@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Button, Modal, Icon } from 'antd'
 
 import * as actions from './actions'
-import RTE from '../../../../utils/rte'
+import RTE from '../../../utils/rte'
 import './styles.scss'
 
 const { Item } = Form
