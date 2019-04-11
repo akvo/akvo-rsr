@@ -30,7 +30,7 @@ from akvo.codelists.store.codelists_EUTF import SECTOR_CODES as EUTF_SECTOR_CODE
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_user_manageable
 from akvo.rsr.permissions import (
-    GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, user_accessible_projects
+    GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS, user_accessible_projects
 )
 from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOrgForm,
                      RSRPasswordChangeForm)
@@ -182,8 +182,7 @@ def my_projects(request):
     """
 
     # User groups
-    # FIXME: Add Enumerators here!
-    not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS]
+    not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS]
 
     # Get user organisation information
     employments = request.user.approved_employments()
