@@ -1,10 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   Form, Input, Switch, Icon, Tooltip, Slider, DatePicker, Select, Upload
 } from 'antd'
 import currencies from 'currency-codes/data'
 
 import InputLabel from '../../../utils/input-label'
+import * as actions from './actions'
 
 import './styles.scss'
 
@@ -42,11 +44,11 @@ const StatusTooltip = () => (
   </ol>
 </span>)
 
-const Info = () => (
+const Info = ({ rdr, ...props }) => (
   <div className="info view">
     <Form layout="vertical">
       <Item label="Project title" validateStatus="success" hasFeedback>
-        <Input />
+        <Input value={rdr.title} onChange={event => props.editField('title', event.target.value)} />
       </Item>
       <Item label={(
         <InputLabel tooltip={<IatiTooltip />} optional more={<div className="more-switches"><Switch size="small" /><span>External project <Tooltip title="Not in RSR"><Icon type="info-circle" /></Tooltip></span></div>}>
@@ -114,4 +116,7 @@ const Info = () => (
   </div>
 )
 
-export default Info
+export default connect(
+  ({ infoRdr }) => ({ rdr: infoRdr }),
+  actions
+)(Info)
