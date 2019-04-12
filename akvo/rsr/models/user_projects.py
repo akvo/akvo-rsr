@@ -93,5 +93,15 @@ def check_user_manageable(admin, user):
         raise InvalidPermissionChange
 
 
+def check_collaborative_user(admin, user):
+    admin_orgs = {
+        org.id for org in admin.get_admin_employment_orgs().filter(enable_restrictions=True)
+    }
+    user_orgs = {org.id for org in user.approved_organisations()}
+
+    if not admin_orgs.intersection(user_orgs):
+        raise InvalidPermissionChange
+
+
 class InvalidPermissionChange(Exception):
     pass

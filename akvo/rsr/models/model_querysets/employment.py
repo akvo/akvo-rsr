@@ -12,11 +12,25 @@ from django.db import models
 
 class EmploymentQuerySet(models.QuerySet):
     def organisations(self):
-        """
-        Return an Organisation QuerySet containing the organisations of the Employment QuerySet
+        """Return an Organisation QuerySet containing orgs in the Employment QS.
+
+        *NOTE*: Collaborator organisations are a special case, here! If there
+         are any collaborator organisations, we return the original orgs.
+
         """
         Organisation = apps.get_model('rsr.organisation')
-        return Organisation.objects.filter(employees__in=self).distinct()
+        organisations = Organisation.objects.filter(employees__in=self).distinct()
+
+        original_ids = {
+            org.id: org.original_id for org in organisations if org.is_collaborator_organisation
+        }
+        if original_ids:
+            organisation_ids = {
+                original_ids.get(org.id, org.id) for org in organisations
+            }
+            organisations = Organisation.objects.filter(id__in=organisation_ids).distinct()
+
+        return organisations
 
     def users(self):
         """

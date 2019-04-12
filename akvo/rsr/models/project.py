@@ -920,6 +920,19 @@ class Project(TimestampsMixin, models.Model):
     def all_partners(self):
         return self._partners()
 
+    def partner_organisation_pks(self):
+        """Return all organisation ids along with hierarchy owner
+
+        If project is in a hierarchy, includes the hierarchy owner in the
+        partners list.
+
+        """
+        pks = set(self._partners().values_list('id', flat=True))
+        hierarchy_org = self.get_hierarchy_organisation()
+        if hierarchy_org is not None:
+            pks.add(hierarchy_org.id)
+        return pks
+
     def partners_info(self):
         """
         Return a dict of the distinct partners with the organisation as key and as content:
@@ -1098,6 +1111,17 @@ class Project(TimestampsMixin, models.Model):
         # functionality should be generic enough to enable/disable for other
         # organisations.
         return self.ancestor().id == settings.EUTF_ROOT_PROJECT
+
+    def get_hierarchy_organisation(self):
+        """Return the hierarchy organisation if project belongs to one."""
+
+        from akvo.rsr.models import ProjectHierarchy
+
+        try:
+            hierarchy = ProjectHierarchy.objects.get(root_project=self.ancestor())
+            return hierarchy.organisation
+        except ProjectHierarchy.DoesNotExist:
+            return None
 
     def project_dates(self):
         """ Return the project start and end dates, preferably the actuals. If they are not set, use

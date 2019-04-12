@@ -122,7 +122,7 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
         # All orgs the user is employed by as a non-admin
         user_orgs = user.get_non_admin_employment_orgs()
         # All projects the user is associated with
-        user_associated_project = user_orgs.all_projects()
+        user_associated_projects = user_orgs.all_projects()
         try:
             user_projects = UserProjects.objects.get(user=user)
         except UserProjects.DoesNotExist:
@@ -130,17 +130,21 @@ class UserProjectAccessSerializer(BaseRSRSerializer):
 
         # All projects the admin and the user have in common.
         # It is those projects that the admin may restrict
-        common_projects = admin_associated_projects & user_associated_project
+        common_projects = admin_associated_projects & user_associated_projects
 
         # The project list is split on partners shared by the project and the admin or the user
         project_sets = {}
         admin_orgs_pks = set(admin_orgs.values_list('pk', flat=True))
         user_orgs_pks = set(user_orgs.values_list('pk', flat=True))
         for project in common_projects:
-            # Determine which partners the the project has in common with the admin and/or the user
-            # See the tests at rest.test_project_access for more detail on the resulting data
-            # structure
-            project_partners_pks = set(project.all_partners().values_list('pk', flat=True))
+            # Determine which partners the the project has in common with the
+            # admin and/or the user See the tests at rest.test_project_access
+            # for more detail on the resulting data structure
+
+            # FIXME: This can potentially be slow, since we do a lot of queries
+            # to check if any project is owned by a hierarchy. We could
+            # possibly make this faster!
+            project_partners_pks = project.partner_organisation_pks()
             admin_org_for_project_pks = admin_orgs_pks & project_partners_pks
             user_org_for_project_pks = user_orgs_pks & project_partners_pks
             # Crete a tuple of the org's pks so it can be used as a dict key
