@@ -1,0 +1,25 @@
+.finance.view{
+  .ant-collapse{
+    margin-bottom: 20px;
+    .ant-collapse-content-box{
+      .ant-form-item:last-child{
+        margin-bottom: 0;
+      }
+      .ant-form-item-control{
+        line-height: 1;
+      }
+    }
+  }
+  .ant-btn.add-budget{
+    margin-bottom: 30px;
+  }
+  .total{
+    opacity: 0.6;
+    font-size: 12px;
+  }
+}
+.add-budget-item-modal{
+  .ant-btn{
+    margin-bottom: 10px;
+  }
+}

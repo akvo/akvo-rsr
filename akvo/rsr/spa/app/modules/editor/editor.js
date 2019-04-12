@@ -8,6 +8,7 @@ import Info from './info/info'
 import Contacts from './contacts/contacts'
 import Partners from './partners/partners'
 import Descriptions from './descriptions/descriptions'
+import Finance from './finance/finance'
 
 import './styles.scss'
 
@@ -76,6 +77,7 @@ const Editor = () => (
             <Route path="/contacts" component={Contacts} />
             <Route path="/partners" component={Partners} />
             <Route path="/descriptions" component={Descriptions} />
+            <Route path="/finance" component={Finance} />
           </div>
           <div className="alerts">
           {/* <Sticky>
