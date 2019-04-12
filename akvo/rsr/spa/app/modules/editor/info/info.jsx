@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-  Form, Input, Switch, Icon, Tooltip, Slider, DatePicker, Select, Upload
+  Form, Input, Switch, Icon, Tooltip, DatePicker, Select, Upload
 } from 'antd'
 import currencies from 'currency-codes/data'
 

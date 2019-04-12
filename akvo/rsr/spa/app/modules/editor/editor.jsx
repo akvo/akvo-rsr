@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
-import { Icon, Alert, Button } from 'antd'
+import { Icon, Button } from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
 
 import Settings from './settings/settings'
