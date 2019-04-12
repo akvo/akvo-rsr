@@ -28,7 +28,7 @@ from akvo.codelists.store.default_codelists import (
 )
 from akvo.codelists.store.codelists_EUTF import SECTOR_CODES as EUTF_SECTOR_CODES
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
-from akvo.rsr.models.user_projects import InvalidPermissionChange, check_user_manageable
+from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
 from akvo.rsr.permissions import (
     GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS, user_accessible_projects
 )
@@ -51,8 +51,6 @@ def manageable_objects(user):
     NOTE: this is a refactoring of some inline code that used to be in my_rsr.user_management. We
     need the exact same set of employments in UserProjectsAccessViewSet.get_queryset()
     """
-    from akvo.rsr.models import Organisation
-
     groups = settings.REQUIRED_AUTH_GROUPS
     non_admin_groups = [group for group in groups if group is not 'Admins']
     if user.is_admin or user.is_superuser:
@@ -532,7 +530,7 @@ def user_management(request):
                     can_be_restricted = False
                 else:
                     try:
-                        check_user_manageable(admin, employment.user)
+                        check_collaborative_user(admin, employment.user)
                         can_be_restricted = True
                         user_projects = UserProjects.objects.filter(user=employment.user)
                         if user_projects.exists():
