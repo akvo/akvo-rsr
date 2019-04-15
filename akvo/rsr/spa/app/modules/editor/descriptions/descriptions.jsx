@@ -57,7 +57,7 @@ class Descriptions extends React.Component {
           {this.state.added.map((descKey) => {
             const desc = this.props.rdr.find(it => it.key === descKey)
             return (
-              <Item label={<div className="desc-label"><span>{dict[descKey]}</span>{!desc.required && <Icon type="delete" onClick={() => this.removeDesc(desc.key)} />}</div>}>
+              <Item key={descKey} label={<div className="desc-label"><span>{dict[descKey]}</span>{!desc.required && <Icon type="delete" onClick={() => this.removeDesc(desc.key)} />}</div>}>
                 <RTE value={desc.value} onChange={value => this.props.editDescription(desc.key, value)} />
               </Item>
             )
