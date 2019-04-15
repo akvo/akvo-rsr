@@ -83,7 +83,7 @@ class Finance extends React.Component{
             </Panel>
         )}
         </Collapse>
-        <Button className="add-budget" icon="plus" type="dashed" block onClick={() => this.setState({ modalVisible: true })}>Add another budget item</Button>
+        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={() => this.setState({ modalVisible: true })}>Add another budget item</Button>
 
         <Modal
           title="Add Budget"

@@ -86,7 +86,7 @@ class Partners extends React.Component{
             </Panel>
         )}
         </Collapse>
-        <Button className="add-partner" icon="plus" type="dashed" block onClick={this.add}>Add a partner</Button>
+        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.add}>Add a partner</Button>
       </div>
     )
   }

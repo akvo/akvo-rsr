@@ -63,7 +63,7 @@ class Descriptions extends React.Component {
             )
           })}
           {this.props.rdr.filter((...args) => !this.filterDesc(...args)).length > 0 &&
-            <Button onClick={() => this.setState({ modalVisible: true })} className="add-description" icon="plus" type="dashed" block>Add description</Button>
+            <Button onClick={() => this.setState({ modalVisible: true })} className="bottom-btn" icon="plus" type="dashed" block>Add description</Button>
           }
         </Form>
         <Modal
