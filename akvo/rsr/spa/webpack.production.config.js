@@ -23,7 +23,7 @@ const config = {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
     path: resolve(__dirname, 'dist'),
-    publicPath: '',
+    publicPath: '/my-rsr/',
   },
 
   plugins: [
@@ -39,7 +39,7 @@ const config = {
       debug: false,
     }),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
-    new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
+    new ExtractTextPlugin({ filename: 'styles/style.css', disable: false, allChunks: true }),
     // new CopyWebpackPlugin([{ from: './vendors', to: 'vendors' }]),
   ],
 

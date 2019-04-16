@@ -15,7 +15,7 @@ const Test2 = () => (
 
 const Root = () => {
   return (
-    <Router basename="/en/my-rsr">
+    <Router basename="/my-rsr">
       <div>
         <Link to="/">Home</Link>
         <span> | </span>
