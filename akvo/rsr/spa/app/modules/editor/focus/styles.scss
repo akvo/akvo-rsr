@@ -1,4 +1,4 @@
-.finance.view{
+.focus.view{
   .ant-collapse{
     margin-bottom: 20px;
     .ant-collapse-content-box{
@@ -10,14 +10,11 @@
       }
     }
   }
-  .total{
-    opacity: 0.6;
-    font-size: 12px;
-  }
 }
-.add-budget-item-modal{
+.add-sector-modal{
   .ant-btn{
     margin-bottom: 10px;
+    overflow: hidden;
     text-align: left;
   }
 }

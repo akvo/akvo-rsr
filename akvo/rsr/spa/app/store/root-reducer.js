@@ -6,6 +6,7 @@ import descsRdr from '../modules/editor/descriptions/reducers'
 import infoRdr from '../modules/editor/info/reducers'
 import budgetItemsRdr from '../modules/editor/finance/reducers'
 import locationsRdr from '../modules/editor/locations/reducers'
+import focusRdr from '../modules/editor/focus/reducers'
 
 const rootReducer = combineReducers({
   partnersRdr,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   descsRdr,
   infoRdr,
   budgetItemsRdr,
-  locationsRdr
+  locationsRdr,
+  focusRdr
 })
 
 export default rootReducer
