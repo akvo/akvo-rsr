@@ -35,12 +35,33 @@ ol{
 .top-bar{
   padding: 20px 0;
   height: 70px;
+  .ui.container{
+    display: flex;
+    .right-side{
+      .user{
+        cursor: pointer;
+        margin-right: 15px;
+        color: #2593fc;
+        .anticon{
+          transform: translateY(1px);
+        }
+      }
+      margin-left: auto;
+    }
+  }
   // background-color: #f2f2f2;
 }
 
 header{
   border-bottom: 1px solid #ccc;
   padding: 10px 0;
+  display: flex;
+  .anticon{
+    font-size: 26px;
+    margin-right: 11px;
+    margin-left: 11px;
+    transform: translateY(2px);
+  }
   h1{
     font-weight: 300;
     font-size: 21px;

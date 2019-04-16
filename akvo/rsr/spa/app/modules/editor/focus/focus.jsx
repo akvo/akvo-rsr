@@ -76,7 +76,7 @@ class Focus extends React.Component{
           </Panel>
         )}
         </Collapse>
-        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={() => this.setState({ modalVisible: true })}>Add another sector</Button>
+        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={() => this.setState({ modalVisible: true })}>Add sector</Button>
 
         <Modal
           title="Add Sector"
