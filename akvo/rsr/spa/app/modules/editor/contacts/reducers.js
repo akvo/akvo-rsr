@@ -1,7 +1,5 @@
 import types from './action-types'
 
-const initialState = []
-
 const newPartner = {
   name: '',
   type: 1,
@@ -10,10 +8,12 @@ const newPartner = {
   publicEmail: false,
 }
 
+const initialState = [{...newPartner}]
+
 export default (state = initialState, action) => {
   switch(action.type){
     case types.ADD:
-      return [...state, Object.assign({}, newPartner)]
+      return [...state, {...newPartner}]
     case types.REMOVE:
       return [...state.slice(0, action.index), ...state.slice(action.index + 1)]
     case types.EDIT_FIELD:
