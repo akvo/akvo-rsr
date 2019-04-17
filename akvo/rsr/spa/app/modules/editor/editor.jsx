@@ -12,6 +12,7 @@ import Finance from './finance/finance'
 import Locations from './locations/comp/locations'
 import Focus from './focus/focus'
 import Links from './links/links'
+import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
 
 import './styles.scss'
 
@@ -69,7 +70,7 @@ const Editor = () => (
                 <MenuItem to="/locations">Locations</MenuItem>
                 <MenuItem to="/focus">Focus</MenuItem>
                 <MenuItem to="/links">Links and documents</MenuItem>
-                <MenuItem to="/comments-keyowrds">Comments and keywords</MenuItem>
+                <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
               </ul>
             </aside>
           )}
@@ -84,6 +85,7 @@ const Editor = () => (
             <Route path="/locations" component={Locations} />
             <Route path="/focus" component={Focus} />
             <Route path="/links" component={Links} />
+            <Route path="/comments-n-keywords" component={CommentsKeywords} />
           </div>
           <div className="alerts">
           {/* <Sticky>

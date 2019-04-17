@@ -8,6 +8,7 @@ import budgetItemsRdr from '../modules/editor/finance/reducers'
 import locationsRdr from '../modules/editor/locations/reducers'
 import focusRdr from '../modules/editor/focus/reducers'
 import {linksRdr, docsRdr} from '../modules/editor/links/reducers'
+import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
 
 const rootReducer = combineReducers({
   partnersRdr,
@@ -18,7 +19,9 @@ const rootReducer = combineReducers({
   locationsRdr,
   focusRdr,
   linksRdr,
-  docsRdr
+  docsRdr,
+  commentsRdr,
+  keywordsRdr
 })
 
 export default rootReducer

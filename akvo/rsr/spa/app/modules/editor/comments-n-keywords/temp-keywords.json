@@ -1,0 +1,387 @@
+[
+  {
+      "id": 98,
+      "label": "1099:Cordaid Food Security",
+      "logo": null
+  },
+  {
+      "id": 105,
+      "label": "113:Wandelen voor Water ",
+      "logo": null
+  },
+  {
+      "id": 94,
+      "label": "1241:Cordaid Security/Justice",
+      "logo": null
+  },
+  {
+      "id": 89,
+      "label": "946:Cordaid Urban Matters",
+      "logo": null
+  },
+  {
+      "id": 96,
+      "label": "949:Cordaid Healthcare",
+      "logo": null
+  },
+  {
+      "id": 97,
+      "label": "950:Cordaid Entrepreneurship",
+      "logo": null
+  },
+  {
+      "id": 93,
+      "label": "953:Cordaid Investments",
+      "logo": null
+  },
+  {
+      "id": 102,
+      "label": "955:Cordaid Womens Leadership",
+      "logo": null
+  },
+  {
+      "id": 91,
+      "label": "959:Cordaid Child & Education",
+      "logo": null
+  },
+  {
+      "id": 95,
+      "label": "960:Cordaid Extractives",
+      "logo": null
+  },
+  {
+      "id": 90,
+      "label": "961:Cordaid Disaster Response",
+      "logo": null
+  },
+  {
+      "id": 92,
+      "label": "962:Private Initiatives",
+      "logo": null
+  },
+  {
+      "id": 132,
+      "label": "AfDB",
+      "logo": null
+  },
+  {
+      "id": 147,
+      "label": "AFD-PAGOF test project",
+      "logo": null
+  },
+  {
+      "id": 138,
+      "label": "AfriAlliance Action Group",
+      "logo": null
+  },
+  {
+      "id": 62,
+      "label": "Akvo/AsiaRegion",
+      "logo": null
+  },
+  {
+      "id": 61,
+      "label": "Akvo/Chum",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/61/Akvo_RGB_logo.png"
+  },
+  {
+      "id": 65,
+      "label": "Akvo/East Africa",
+      "logo": null
+  },
+  {
+      "id": 69,
+      "label": "AkvoFLOW",
+      "logo": null
+  },
+  {
+      "id": 70,
+      "label": "Akvopedia",
+      "logo": null
+  },
+  {
+      "id": 68,
+      "label": "AkvoRSR",
+      "logo": null
+  },
+  {
+      "id": 66,
+      "label": "Akvo/West Africa",
+      "logo": null
+  },
+  {
+      "id": 125,
+      "label": "aqua for all",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/temp/Organisation_43_logo_2014-10-20_14.48.15-200x150.jpeg"
+  },
+  {
+      "id": 81,
+      "label": "Connect4Change",
+      "logo": null
+  },
+  {
+      "id": 150,
+      "label": "CSF",
+      "logo": null
+  },
+  {
+      "id": 137,
+      "label": "don't show on rain.akvoapp.org",
+      "logo": null
+  },
+  {
+      "id": 119,
+      "label": "drydev",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/temp/DGIS_logo_cropped.png"
+  },
+  {
+      "id": 135,
+      "label": "EU Trust Fund – Horn of Africa",
+      "logo": null
+  },
+  {
+      "id": 136,
+      "label": "EU Trust Fund – North of Africa",
+      "logo": null
+  },
+  {
+      "id": 134,
+      "label": "EU Trust Fund - Sahel and Lake Chad",
+      "logo": null
+  },
+  {
+      "id": 142,
+      "label": "EYW-Oxfam",
+      "logo": null
+  },
+  {
+      "id": 83,
+      "label": "Football for Water",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/83/Screen%20Shot%202015-09-11%20at%2015.30.02.png"
+  },
+  {
+      "id": 146,
+      "label": "Football for Water 2.0",
+      "logo": null
+  },
+  {
+      "id": 31,
+      "label": "Football for Water Ghana",
+      "logo": null
+  },
+  {
+      "id": 32,
+      "label": "Football for Water Kenya",
+      "logo": null
+  },
+  {
+      "id": 30,
+      "label": "Football for Water Mozambique",
+      "logo": null
+  },
+  {
+      "id": 145,
+      "label": "G4AW",
+      "logo": null
+  },
+  {
+      "id": 1,
+      "label": "ginks",
+      "logo": null
+  },
+  {
+      "id": 140,
+      "label": "GIZ Tanzania",
+      "logo": null
+  },
+  {
+      "id": 87,
+      "label": "GNWP",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/temp/Organisation_2121_logo_2014-06-02_16.59.44.jpg"
+  },
+  {
+      "id": 64,
+      "label": "ICCOAsia",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/64/icco_logo_140x70px.png"
+  },
+  {
+      "id": 67,
+      "label": "ice",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/67/Dutch-ministry_logo_140x70px.png"
+  },
+  {
+      "id": 116,
+      "label": "IGG-water ",
+      "logo": null
+  },
+  {
+      "id": 124,
+      "label": "Kepa",
+      "logo": null
+  },
+  {
+      "id": 144,
+      "label": "mpa action",
+      "logo": null
+  },
+  {
+      "id": 122,
+      "label": "NDLink",
+      "logo": null
+  },
+  {
+      "id": 139,
+      "label": "NLEmbassyIndonesia",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/temp/embassylogo.jpg"
+  },
+  {
+      "id": 130,
+      "label": "NLR",
+      "logo": null
+  },
+  {
+      "id": 75,
+      "label": "Plan Finland",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/75/Plan-logo-sininen-RGB.jpg"
+  },
+  {
+      "id": 88,
+      "label": "PPP3",
+      "logo": null
+  },
+  {
+      "id": 2,
+      "label": "rain4food",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/2/rain4food_logo_140x70px.png"
+  },
+  {
+      "id": 133,
+      "label": "SNV",
+      "logo": null
+  },
+  {
+      "id": 84,
+      "label": "SRHR Alliance",
+      "logo": null
+  },
+  {
+      "id": 141,
+      "label": "Sustain",
+      "logo": null
+  },
+  {
+      "id": 143,
+      "label": "Sustineo",
+      "logo": null
+  },
+  {
+      "id": 117,
+      "label": "unicefpacificwash",
+      "logo": null
+  },
+  {
+      "id": 131,
+      "label": "VNG International",
+      "logo": null
+  },
+  {
+      "id": 82,
+      "label": "WASH Alliance",
+      "logo": null
+  },
+  {
+      "id": 123,
+      "label": "WASH Alliance Int 2016",
+      "logo": null
+  },
+  {
+      "id": 85,
+      "label": "WASH Liberia",
+      "logo": null
+  },
+  {
+      "id": 129,
+      "label": "Watershed",
+      "logo": null
+  },
+  {
+      "id": 121,
+      "label": "WfW",
+      "logo": null
+  },
+  {
+      "id": 48,
+      "label": "wfw2014",
+      "logo": null
+  },
+  {
+      "id": 58,
+      "label": "wfw2015",
+      "logo": null
+  },
+  {
+      "id": 118,
+      "label": "wfw2016",
+      "logo": null
+  },
+  {
+      "id": 128,
+      "label": "wfw2017",
+      "logo": null
+  },
+  {
+      "id": 149,
+      "label": "wfw2018",
+      "logo": null
+  },
+  {
+      "id": 126,
+      "label": "wilde ganzen",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/temp/WildeGanzen_Logo_2015_CMYK.jpg"
+  },
+  {
+      "id": 120,
+      "label": "WvW",
+      "logo": null
+  },
+  {
+      "id": 47,
+      "label": "wvw2014",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/47/WalkinForWater%202014_logo_140x70px.png"
+  },
+  {
+      "id": 59,
+      "label": "wvw2015",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/59/WalkinForWater%202014_logo_140x70px.png"
+  },
+  {
+      "id": 80,
+      "label": "wvw2016",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/80/WalkinForWater%202014_logo_140x70px.png"
+  },
+  {
+      "id": 127,
+      "label": "wvw2017",
+      "logo": "https://rsr.test.akvo.org/media/db/keyword/temp/WalkinForWater%202014_logo_140x70px.png"
+  },
+  {
+      "id": 148,
+      "label": "wvw2018",
+      "logo": null
+  },
+  {
+      "id": 152,
+      "label": "WWI - Social Accountability",
+      "logo": null
+  },
+  {
+      "id": 151,
+      "label": "WWI - Water Stewardship",
+      "logo": null
+  },
+  {
+      "id": 86,
+      "label": "YEP",
+      "logo": null
+  }
+]
