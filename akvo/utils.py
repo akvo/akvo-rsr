@@ -99,6 +99,7 @@ def send_mail_with_attachments(subject, message, from_email, recipient_list,
         for attachment in attachments:
             mail.attach(**attachment)
 
+    logger.info('Sending email to "%s" with the subject "%s"', recipient_list, subject)
     return mail.send()
 
 
