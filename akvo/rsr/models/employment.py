@@ -13,6 +13,8 @@ from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
@@ -100,3 +102,21 @@ class Employment(models.Model):
             other_groups=other_groups,
             actions=True if self.organisation in org_list else False,
         )
+
+
+@receiver(post_save, sender=Employment)
+def add_projects_to_restricted_users(sender, **kwargs):
+    """Unrestrict new employment org projects for restricted users."""
+    employment = kwargs['instance']
+    created = kwargs['created']
+    if not created or employment.organisation.enable_restrictions:
+        return
+
+    from akvo.rsr.models.user_projects import unrestrict_projects
+
+    org_projects = employment.organisation.all_projects()
+    user_orgs = employment.user.approved_organisations()
+    restricted_orgs = user_orgs.filter(enable_restrictions=True)
+    restricted_projects = restricted_orgs.all_projects()
+    accessible_projects = org_projects.exclude(id__in=restricted_projects)
+    unrestrict_projects(None, employment.user, accessible_projects)
