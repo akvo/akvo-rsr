@@ -11,10 +11,10 @@ import datetime
 import re
 
 from django import forms
-
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, PasswordResetForm as PRF
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import F, Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
@@ -169,6 +169,32 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
         registration_profile.send_activation_email(site)
 
         return user
+
+
+class PasswordResetForm(PRF):
+
+    def get_users(self, email):
+        """Given an email, return matching user(s) who should receive a reset.
+
+        Overriden from the base class to allow users who didn't click on the
+        activation email or invite activation emails to get a new password, by
+        clicking on the forgot password email link.
+
+        We still ensure that users who have been explicitly deactivated are not
+        able to reset their account by requesting a new password. We check if
+        the user has logged in at least once, to differentiate such users from
+        other users.
+
+        """
+        User = get_user_model()
+        active_users = User.objects.filter(
+            # Active users should be allowed to reset passwords
+            Q(is_active=True, email__iexact=email) |
+            # Newly registered users should be allowed to ask for reset
+            # password, even if they didn't activate their account.
+            Q(last_login=F('date_joined'))
+        )
+        return active_users
 
 
 class ProfileForm(forms.Form):

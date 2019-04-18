@@ -47,7 +47,7 @@ def invite_user(request):
     # Check if all information is present, and if the organisation and group exist
     data, missing_data = request.data.get('user_data'), []
     if not data:
-        missing_data.append('email', 'organisation', 'group')
+        missing_data.extend(['email', 'organisation', 'group'])
         return Response({'missing_data': missing_data},
                         status=status.HTTP_400_BAD_REQUEST)
     else:
