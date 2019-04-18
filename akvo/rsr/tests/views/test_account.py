@@ -305,15 +305,18 @@ class PasswordResetTestCase(BaseTestCase):
         self.create_user(email=admin_email, password=self.password, is_superuser=True)
         user_group = Group.objects.get(name='Users')
         org = self.create_organisation('Akvo')
-        invite_data = dict(
-            user_data=json.dumps(dict(
-                email=self.email,
-                organisation=org.id,
-                group=user_group.id,
-            ))
-        )
         self.c.login(username=admin_email, password=self.password)
-        response = self.c.post('/rest/v1/invite_user/', data=invite_data, follow=True)
+        # Create dummy users along with one user to reset password for
+        for i in range(5):
+            email = self.email if i == 0 else (str(i) + self.email)
+            invite_data = dict(
+                user_data=json.dumps(dict(
+                    email=email,
+                    organisation=org.id,
+                    group=user_group.id,
+                ))
+            )
+            response = self.c.post('/rest/v1/invite_user/', data=invite_data, follow=True)
         data = {'email': self.email}
 
         with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:

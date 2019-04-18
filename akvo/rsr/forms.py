@@ -187,14 +187,14 @@ class PasswordResetForm(PRF):
 
         """
         User = get_user_model()
-        active_users = User.objects.filter(
+        users = User.objects.filter(email__iexact=email).filter(
             # Active users should be allowed to reset passwords
-            Q(is_active=True, email__iexact=email) |
+            Q(is_active=True) |
             # Newly registered users should be allowed to ask for reset
             # password, even if they didn't activate their account.
             Q(last_login=F('date_joined'))
-        )
-        return active_users
+        ).distinct()
+        return users
 
 
 class ProfileForm(forms.Form):
