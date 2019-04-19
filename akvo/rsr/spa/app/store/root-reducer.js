@@ -9,6 +9,7 @@ import locationsRdr from '../modules/editor/locations/reducers'
 import focusRdr from '../modules/editor/focus/reducers'
 import {linksRdr, docsRdr} from '../modules/editor/links/reducers'
 import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
+import reportingRdr from '../modules/editor/reporting/reducers'
 
 const rootReducer = combineReducers({
   partnersRdr,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   linksRdr,
   docsRdr,
   commentsRdr,
-  keywordsRdr
+  keywordsRdr,
+  reportingRdr
 })
 
 export default rootReducer

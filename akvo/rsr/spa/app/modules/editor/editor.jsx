@@ -13,6 +13,7 @@ import Locations from './locations/comp/locations'
 import Focus from './focus/focus'
 import Links from './links/links'
 import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
+import Reporting from './reporting/reporting'
 
 import './styles.scss'
 
@@ -71,6 +72,7 @@ const Editor = () => (
                 <MenuItem to="/focus">Focus</MenuItem>
                 <MenuItem to="/links">Links and documents</MenuItem>
                 <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
+                <MenuItem to="/reporting">CRS++ and FSS reporting</MenuItem>
               </ul>
             </aside>
           )}
@@ -86,6 +88,7 @@ const Editor = () => (
             <Route path="/focus" component={Focus} />
             <Route path="/links" component={Links} />
             <Route path="/comments-n-keywords" component={CommentsKeywords} />
+            <Route path="/reporting" component={Reporting} />
           </div>
           <div className="alerts">
           {/* <Sticky>
