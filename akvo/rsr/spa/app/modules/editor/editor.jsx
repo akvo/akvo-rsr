@@ -13,7 +13,7 @@ import Locations from './locations/comp/locations'
 import Focus from './focus/focus'
 import Links from './links/links'
 import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
-import Reporting from './reporting/reporting'
+import Reporting from './reporting/comp/reporting'
 
 import './styles.scss'
 

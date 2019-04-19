@@ -11,57 +11,63 @@ const newItem = {
     year: '',
     date: null
   },
-  legacyDatas: {
+  legacies: {
     name: '',
     value: '',
     iatiEquivalent: ''
   }
 }
 const initialState = {
-  repaymentType: '',
-  repaymentPlan: '',
-  commitmentDate: null,
-  firstRepaymentDate: null,
-  lastRepaymentDate: null,
-  rate1: '',
-  rate2: '',
-  year: '',
-  currency: '',
-  valueDate: null,
-  interestReceived: '',
-  principalOutstanding: '',
-  principalArrears: '',
-  interestArreas: '',
-  channelCode: '',
+  fields: {
+    repaymentType: '',
+    repaymentPlan: '',
+    commitmentDate: null,
+    firstRepaymentDate: null,
+    lastRepaymentDate: null,
+    rate1: '',
+    rate2: '',
+    year: '',
+    currency: '',
+    valueDate: null,
+    interestReceived: '',
+    principalOutstanding: '',
+    principalArrears: '',
+    interestArreas: '',
+    channelCode: '',
+    extractionDate: null,
+    phaseoutYear: null,
+    priority: null,
+  },
   flags: [{...newItem.flags}],
-  extractionDate: null,
-  phaseoutYear: null,
-  priority: null,
   forecasts: [{...newItem.forecasts}],
-  legacyDatas: [{...newItem.legacyDatas}]
+  legacies: [{...newItem.legacyDatas}]
 }
 
-export default (state = initialState, action) => {
-  let newState
+const itemReducer = (state, action, actionTypes, $newItem) => {
+  switch(action.type){
+    case actionTypes.ADD:
+      return [...state, {...$newItem}]
+    case actionTypes.REMOVE:
+      return [...state.slice(0, action.index), ...state.slice(action.index + 1)]
+    case actionTypes.EDIT_FIELD:
+      const field = {}
+      field[action.key] = action.value
+      const updated = Object.assign({}, state[action.index], field)
+      return [...state.slice(0, action.index), updated, ...state.slice(action.index + 1)]
+    default: return state
+  }
+}
+
+export const reportingRdr = (state = initialState.fields, action) => {
   switch(action.type){
     case types.EDIT_FIELD:
       const field = {}
       field[action.key] = action.value
       return {...state, ...field}
-    case types.ADD_ARRAY_ITEM:
-      newState = {...state}
-      newState[action.array] = [...state[action.array], {...newItem[action.array]}]
-      return newState
-    case types.REMOVE_ARRAY_ITEM:
-      newState = {...state}
-      newState[action.array] = state[action.array].filter((it, index) => index !== action.index)
-      return newState
-    case types.EDIT_ARRAY_ITEM_FIELD:
-      const updated = {...state[action.array][action.index]}
-      updated[action.key] = action.value
-      newState = {...state}
-      newState[action.array] = [...state[action.array].slice(0, action.index), updated, ...state[action.array].slice(action.index + 1)]
-      return newState
     default: return state
   }
 }
+
+export const crsAddOtherFlagRdr = (state = initialState.flags, action) => itemReducer(state, action, types.FLAGS, newItem.flags)
+export const forecastsRdr = (state = initialState.forecasts, action) => itemReducer(state, action, types.FORECASTS, newItem.forecasts)
+export const legaciesRdr = (state = initialState.legacies, action) => itemReducer(state, action, types.LEGACIES, newItem.legacies)
