@@ -194,6 +194,9 @@ urlpatterns += (
     url(r'v1/organisation/(?P<pk>[0-9]+)/add_logo/$',
         views.project_editor_organisation_logo,
         name='project_editor_add_org_logo'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/reports/$',
+        views.project_reports,
+        name='project_reports'),
 )
 
 # Directory views

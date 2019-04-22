@@ -7,8 +7,9 @@
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
-from akvo.rsr.models import Report, ReportFormat
+from akvo.rsr.models import Report, ReportFormat, Project, RelatedProject
 from ..serializers import ReportSerializer, ReportFormatSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -48,3 +49,49 @@ def report_formats(request):
         'count': ReportFormat.objects.all().count(),
         'results': [ReportFormatSerializer(f).data for f in ReportFormat.objects.all()],
     })
+
+
+@api_view(['GET'])
+def project_reports(request, project_pk):
+
+    def project_ancestry(project):
+        ancestors = Project.objects.filter(pk=project.pk)
+        ancestry_count = 1
+        while True:
+            ancestors = Project.objects.filter(
+                related_projects__related_project__in=ancestors,
+                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
+            ) | Project.objects.filter(
+                related_to_projects__project__in=ancestors,
+                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
+            ) | ancestors
+            if ancestors.distinct().count() > ancestry_count:
+                ancestry_count = ancestors.distinct().count()
+            else:
+                return ancestors.distinct()
+
+    project = get_object_or_404(Project, pk=project_pk)
+    reports = Report.objects.prefetch_related(
+        'formats', 'organisations', 'projects',
+    ).filter(url__icontains='project')
+
+    user = request.user
+    is_admin = user.is_active and (user.is_superuser or user.is_admin)
+
+    if not is_admin:
+        approved_orgs = (
+            user.approved_organisations() if not user.is_anonymous() else []
+        )
+        reports = reports.filter(
+            Q(organisations=None) | Q(organisations__in=approved_orgs)
+        )
+
+        project_ancestors = (
+            project_ancestry(project) if user.has_perm('rsr.view_project', project) else []
+        )
+        reports = reports.filter(
+            Q(projects=None) | Q(projects__in=project_ancestors)
+        )
+
+    serializer = ReportSerializer(reports.distinct(), many=True)
+    return Response(serializer.data)

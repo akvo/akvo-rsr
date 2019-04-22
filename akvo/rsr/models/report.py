@@ -45,6 +45,7 @@ class Report(models.Model):
     )
     formats = models.ManyToManyField(ReportFormat)
     organisations = models.ManyToManyField('Organisation', blank=True)
+    projects = models.ManyToManyField('Project', blank=True)
 
     @property
     def parameters(self):
