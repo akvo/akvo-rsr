@@ -22,8 +22,10 @@ npm run devw&
 popd
 
 pushd akvo/rsr/spa
+(
 npm install
-npm start &
+npm start
+) &
 popd
 
 python manage.py migrate --noinput
