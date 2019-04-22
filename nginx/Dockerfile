@@ -10,7 +10,7 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 ENV DJANGO_SECRET_KEY=any
 
 RUN cd akvo/rsr/front-end && npm install && rm -rf node_modules && npm install && npm run prod
-RUN cd akvo/rsr/spa && npm install && rm -rf node_modules && npm install && npm run production
+RUN cd akvo/rsr/spa && rm -rf node_modules && npm install && npm run production
 
 RUN python manage.py collectstatic --noinput
 

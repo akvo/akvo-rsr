@@ -22,9 +22,7 @@ npm run devw&
 popd
 
 pushd akvo/rsr/spa
-if [[ ! -d "node_modules" ]]; then
-  npm install
-fi
+npm install
 npm start &
 popd
 

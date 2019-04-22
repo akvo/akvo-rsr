@@ -39,7 +39,11 @@ const config = {
       debug: false,
     }),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
-    new ExtractTextPlugin({ filename: 'styles/style.css', disable: false, allChunks: true }),
+    new ExtractTextPlugin({
+      filename: 'styles/style.[chunkhash].css',
+      disable: false,
+      allChunks: true
+    }),
     // new CopyWebpackPlugin([{ from: './vendors', to: 'vendors' }]),
   ],
 
