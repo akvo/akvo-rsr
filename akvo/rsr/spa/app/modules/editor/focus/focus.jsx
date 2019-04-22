@@ -43,6 +43,16 @@ class Focus extends React.Component{
     })
     this.props.addSector(vocabulary)
   }
+  vocabAdded = (vocabulary) => {
+    let ret = false
+    for(let i = 0; i < this.props.rdr.length; i += 1){
+      if(this.props.rdr[i].vocabulary === vocabulary){
+        ret = true
+        break
+      }
+    }
+    return ret
+  }
   render(){
     return (
       <div className="focus view">
@@ -85,7 +95,7 @@ class Focus extends React.Component{
           onCancel={() => this.setState({ modalVisible: false })}
           className="add-sector-modal"
         >
-          {vocab.map(item => (
+          {vocab.filter(it => !this.vocabAdded(it.value)).map(item => (
             <div className="desc-block">
               <Button block icon="plus" onClick={() => this.addSector(item.value)}>{item.label}</Button>
             </div>
