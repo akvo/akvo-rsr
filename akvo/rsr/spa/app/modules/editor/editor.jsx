@@ -47,7 +47,15 @@ const shouldShowSection11 = (validations) => {
   return validations.indexOf(2) !== -1 || validations.indexOf(3) !== -1
 }
 
-const Editor = ({ infoRdr }) => (
+const isChecked = (which, rdr) => {
+  switch(which){
+    case 'descriptions':
+      return rdr.filter(it => it.required && it.value === '').length > 5
+    default: return false
+  }
+}
+
+const Editor = ({ infoRdr, rdr }) => (
   <Router>
     <StickyContainer>
       <div className="editor">
@@ -70,7 +78,7 @@ const Editor = ({ infoRdr }) => (
                 <MenuItem to="/info" checked>General Information</MenuItem>
                 <MenuItem to="/contacts">Contact Information</MenuItem>
                 <MenuItem to="/partners">Partners</MenuItem>
-                <MenuItem to="/descriptions">Descriptions</MenuItem>
+                <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
                 <MenuItem to="/results-indicators">Results and indicators</MenuItem>
                 <MenuItem to="/finance">Finance</MenuItem>
                 <MenuItem to="/locations">Locations</MenuItem>
@@ -117,5 +125,5 @@ const Editor = ({ infoRdr }) => (
 )
 
 export default connect(
-  ({ infoRdr }) => ({ infoRdr })
+  ({ infoRdr, editorRdr }) => ({ infoRdr, rdr: editorRdr })
 )(Editor)

@@ -3,12 +3,14 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 
 import rootReducer from './root-reducer'
+import asyncDispatchMiddleware from './async-dispatch'
 
 export default (initialState) => {
 	const store = createStore(
     rootReducer,
     initialState,
-    composeWithDevTools(applyMiddleware(thunk))
+    composeWithDevTools(applyMiddleware(asyncDispatchMiddleware)),
+    // composeWithDevTools(applyMiddleware(thunk)),
 	)
 
 	if(module.hot){
