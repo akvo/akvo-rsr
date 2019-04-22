@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import { Icon, Button } from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
@@ -42,7 +43,11 @@ const MenuItem = (props) => {
   )
 }
 
-const Editor = () => (
+const shouldShowSection11 = (validations) => {
+  return validations.indexOf(2) !== -1 || validations.indexOf(3) !== -1
+}
+
+const Editor = ({ infoRdr }) => (
   <Router>
     <StickyContainer>
       <div className="editor">
@@ -72,7 +77,9 @@ const Editor = () => (
                 <MenuItem to="/focus">Focus</MenuItem>
                 <MenuItem to="/links">Links and documents</MenuItem>
                 <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
+                {shouldShowSection11(infoRdr.validations) &&
                 <MenuItem to="/reporting">CRS++ and FSS reporting</MenuItem>
+                }
               </ul>
             </aside>
           )}
@@ -109,4 +116,6 @@ const Editor = () => (
   </Router>
 )
 
-export default Editor
+export default connect(
+  ({ infoRdr }) => ({ infoRdr })
+)(Editor)
