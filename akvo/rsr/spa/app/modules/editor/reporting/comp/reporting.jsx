@@ -35,6 +35,7 @@ const LoanTerms = () => (
     <Row gutter={16}>
       <Col span={12}>
         <Field
+          name="repaymentType"
           render={props => (
             <Item label={<InputLabel optional tooltip="...">Repayment type</InputLabel>}>
               <Select {...props}>
