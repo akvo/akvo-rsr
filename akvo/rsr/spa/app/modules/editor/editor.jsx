@@ -43,18 +43,6 @@ const MenuItem = (props) => {
   )
 }
 
-const shouldShowSection11 = (validations) => {
-  return validations.indexOf(2) !== -1 || validations.indexOf(3) !== -1
-}
-
-const isChecked = (which, rdr) => {
-  switch(which){
-    case 'descriptions':
-      return rdr.filter(it => it.required && it.value === '').length > 5
-    default: return false
-  }
-}
-
 const Editor = ({ rdr }) => (
   <Router>
     <StickyContainer>
@@ -75,7 +63,7 @@ const Editor = ({ rdr }) => (
             <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
               <ul>
                 <MenuItem hideCheck to="/settings">Settings</MenuItem>
-                <MenuItem to="/info" checked>General Information</MenuItem>
+                <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
                 <MenuItem to="/contacts">Contact Information</MenuItem>
                 <MenuItem to="/partners">Partners</MenuItem>
                 <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>

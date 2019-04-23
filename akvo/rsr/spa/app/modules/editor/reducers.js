@@ -23,6 +23,11 @@ export default (state = initialState, action) => {
     clearInterval(autosaveTmId)
     autosaveTmId = setTimeout(() => {
       if(action.asyncDispatch) {
+        if(action.type === 'PE_INFO_EDIT_FIELD'){
+          const { infoRdr } = action.getState()
+          const isCompleted = infoRdr.title.length > 5 && infoRdr.plannedDuration.length === 2 && infoRdr.actualDuration.length === 2
+          action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'info', value: isCompleted })
+        }
         if(action.type.indexOf('PE_DESCRIPTION') !== -1){
           const { descsRdr } = action.getState()
           const isCompleted = descsRdr.filter(it => it.required && it.value.length < 5).length === 0
