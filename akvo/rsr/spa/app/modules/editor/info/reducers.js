@@ -6,7 +6,7 @@ const initialState = {
   validations: [1],
   title: '',
   parent: null, // missing in API
-  iatiStatus: 1,
+  iatiStatus: '',
   iatiActivityId: '',
   plannedDuration: [],
   actualDuration: [],

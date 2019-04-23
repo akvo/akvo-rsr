@@ -6,6 +6,7 @@ import {
 import currencies from 'currency-codes/data'
 
 import InputLabel from '../../../utils/input-label'
+import _Field from '../../../utils/field'
 import * as actions from './actions'
 
 import './styles.scss'
@@ -13,12 +14,10 @@ import './styles.scss'
 const { Item } = Form
 const { RangePicker } = DatePicker
 const { Option } = Select
-
-const statuses = [
-  'Identification', 'Implementation', 'Completion', 'Post-completion'// , 'Canceled', 'Suspended'
-]
-const marks = {}
-statuses.forEach((status, index) => { marks[index + 1] = { style: { fontSize: 11, marginTop: 6, whiteSpace: 'nowrap' }, label: status } })
+const Field = connect(
+  ({ infoRdr }) => ({ rdr: infoRdr }),
+  actions
+)(_Field)
 
 const statusOptions = [
   { value: 1, label: 'Identification'},
@@ -43,32 +42,6 @@ const StatusTooltip = () => (
     <li>Suspended: the project has been temporarily suspended or the reporting partner no longer uses RSR.</li>
   </ol>
 </span>)
-
-class _Field extends React.Component{
-  shouldComponentUpdate(nextProps){
-    if(nextProps.rdr[this.props.name] !== this.props.rdr[this.props.name]) return true
-    return false
-  }
-  render(){
-    return this.props.render({
-      value: this.props.rdr[this.props.name],
-      onChange: (...args) => {
-        let value
-        if(typeof args[0] === 'object' && args[0].hasOwnProperty('target')){
-          value = args[0].target.value
-        } else {
-          value = args[0]
-        }
-        this.props.editField(this.props.name, value)
-      }
-    })
-  }
-}
-
-const Field = connect(
-  ({ infoRdr }) => ({ rdr: infoRdr }),
-  actions
-)(_Field)
 
 const Info = () => (
   <div className="info view">

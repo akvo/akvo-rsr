@@ -40,7 +40,7 @@ class ForecastsStack extends React.Component{
             <Row gutter={16}>
               <Col span={12}>
                 <Item label={<InputLabel tooltip="...">Currency</InputLabel>}>
-                  <Select showSearch optionFilterProp="children" value={forecast.currency} onChange={value => this.props.editArrayField('forecasts', index, 'currency', value)}>
+                  <Select showSearch optionFilterProp="children" value={forecast.currency} onChange={value => this.props.editForecastField(index, 'currency', value)}>
                     {currencies.map(({ code, currency }) => <Option value={code}>{code} - {currency}</Option>)}
                   </Select>
                 </Item>
@@ -53,7 +53,7 @@ class ForecastsStack extends React.Component{
                     step={1000}
                     style={{ width: '100%'}}
                     value={forecast.value}
-                    onChange={value => this.props.editArrayField('forecasts', index, 'value', value)}
+                    onChange={value => this.props.editForecastField(index, 'value', value)}
                   />
                 </Item>
               </Col>
@@ -64,13 +64,13 @@ class ForecastsStack extends React.Component{
                   <InputNumber
                     style={{ width: '100%'}}
                     value={forecast.year}
-                    onChange={value => this.props.editArrayField('forecasts', index, 'year', value)}
+                    onChange={value => this.props.editForecastField(index, 'year', value)}
                   />
                 </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Value Date</InputLabel>}>
-                  <DatePicker value={forecast.date} onChange={value => this.props.editArrayField('forecasts', index, 'date', value)} placeholder="DD/MM/YYYY" format="DD/MM/YYYY" style={{ width: '100%' }} />
+                  <DatePicker value={forecast.date} onChange={value => this.props.editForecastField(index, 'date', value)} placeholder="DD/MM/YYYY" format="DD/MM/YYYY" style={{ width: '100%' }} />
                 </Item>
               </Col>
             </Row>

@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
       if(action.asyncDispatch) {
         if(action.type === 'PE_INFO_EDIT_FIELD'){
           const { infoRdr } = action.getState()
-          const isCompleted = infoRdr.title.length > 5 && infoRdr.plannedDuration.length === 2 && infoRdr.actualDuration.length === 2
+          const isCompleted = infoRdr.title.length > 5 && infoRdr.iatiStatus !== '' && infoRdr.plannedDuration.length === 2 && infoRdr.actualDuration.length === 2
           action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'info', value: isCompleted })
         }
         if(action.type.indexOf('PE_DESCRIPTION') !== -1){
