@@ -44,53 +44,111 @@ const StatusTooltip = () => (
   </ol>
 </span>)
 
-const Info = ({ rdr, ...props }) => (
+class _Field extends React.Component{
+  shouldComponentUpdate(nextProps){
+    if(nextProps.rdr[this.props.name] !== this.props.rdr[this.props.name]) return true
+    return false
+  }
+  render(){
+    return this.props.render({
+      value: this.props.rdr[this.props.name],
+      onChange: (...args) => {
+        let value
+        if(typeof args[0] === 'object' && args[0].hasOwnProperty('target')){
+          value = args[0].target.value
+        } else {
+          value = args[0]
+        }
+        this.props.editField(this.props.name, value)
+      }
+    })
+  }
+}
+
+const Field = connect(
+  ({ infoRdr }) => ({ rdr: infoRdr }),
+  actions
+)(_Field)
+
+const Info = () => (
   <div className="info view">
     <Form layout="vertical">
-      <Item label="Project title" validateStatus="success" hasFeedback>
-        <Input value={rdr.title} onChange={event => props.editField('title', event.target.value)} />
-      </Item>
-      <Item label={(
-        <InputLabel tooltip={<IatiTooltip />} optional more={<div className="more-switches"><Switch size="small" /><span>External project <Tooltip title="Not in RSR"><Icon type="info-circle" /></Tooltip></span></div>}>
-          Parent project
-        </InputLabel>
-      )}>
-        <Input placeholder="IATI identifier" />
-      </Item>
-      <Item label={<InputLabel tooltip={<StatusTooltip />}>Status</InputLabel>}>
-        <Select defaultValue={1}>
-          {statusOptions.map(option => (
-            <Option value={option.value}>{option.label}</Option>
-          ))}
-        </Select>
-      </Item>
-      {/* <Item label={(
-        <span className="custom-label">
-          <div>Status <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip></div>
-          <div className="suspend-switches">
-            <Switch size="small" className="switch-suspend" /><span>Suspended</span>
-          </div>
-        </span>)}
-      >
-        <div style={{ margin: '0 20px' }}><Slider marks={marks} max={4} min={1} /></div>
-
-      </Item> */}
-      <Item label={(<span>Planned duration</span>)}>
-        <RangePicker format="DD/MM/YYYY" />
-      </Item>
-      <Item label={(<span>Actual duration</span>)}>
-        <RangePicker format="DD/MM/YYYY" />
-      </Item>
-      <Item label={<InputLabel optional tooltip="The default currency for this project. Used in all financial aspects of the project.">Currency</InputLabel>}>
-        <Select showSearch>
-          {currencies.map(({ code, currency }) => <Option value={`${code} - ${currency}`}>{code} - {currency}</Option>)}
-        </Select>
-      </Item>
-      <Item label={<InputLabel optional tooltip="Enter the language used when entering the details for this project.">Language</InputLabel>}>
-        <Select>
-          {languages.map(({ code, label }) => <Option value={code}>{label}</Option>)}
-        </Select>
-      </Item>
+      <Field
+        name="title"
+        render={({value, onChange}) => (
+          <Item label="Project title" validateStatus={value.length > 5 ? 'success' : ''} hasFeedback>
+            <Input value={value} onChange={onChange} />
+          </Item>
+        )}
+      />
+      <Field
+        name="iatiActivityId"
+        render={props => (
+          <Item label={(
+            <InputLabel
+              tooltip={<IatiTooltip />}
+              optional
+              more={(
+                <div className="more-switches">
+                  <Switch size="small" />
+                  <span>External project <Tooltip title="Not in RSR"><Icon type="info-circle" /></Tooltip></span>
+                </div>
+              )}
+            >Parent project
+            </InputLabel>
+          )}>
+            <Input {...props} placeholder="IATI identifier" />
+          </Item>
+        )}
+      />
+      <Field
+        name="iatiStatus"
+        render={props => (
+          <Item label={<InputLabel tooltip={<StatusTooltip />}>Status</InputLabel>}>
+            <Select {...props}>
+              {statusOptions.map(option => (
+                <Option value={option.value}>{option.label}</Option>
+              ))}
+            </Select>
+          </Item>
+        )}
+      />
+      <Field
+        name="plannedDuration"
+        render={props => (
+          <Item label={(<span>Planned duration</span>)}>
+            <RangePicker format="DD/MM/YYYY" {...props} />
+          </Item>
+        )}
+      />
+      <Field
+        name="actualDuration"
+        render={props => (
+          <Item label={(<span>Actual duration</span>)}>
+            <RangePicker format="DD/MM/YYYY" {...props} />
+          </Item>
+        )}
+      />
+      <Field
+        name="currency"
+        render={props => (
+          <Item label={<InputLabel optional tooltip="The default currency for this project. Used in all financial aspects of the project.">Currency</InputLabel>}>
+            <Select {...props} showSearch>
+              {currencies.map(({ code, currency }) => <Option value={`${code} - ${currency}`}>{code} - {currency}</Option>)}
+            </Select>
+          </Item>
+        )}
+      />
+      <Field
+        name="languages"
+        render={props => (
+          <Item label={<InputLabel optional tooltip="Enter the language used when entering the details for this project.">Language</InputLabel>}>
+            <Select {...props}>
+              {languages.map(({ code, label }) => <Option value={code}>{label}</Option>)}
+            </Select>
+          </Item>
+        )}
+      />
 
       <hr />
 
@@ -105,18 +163,29 @@ const Info = ({ rdr, ...props }) => (
         </Upload.Dragger>
       </Item>
 
-      <Item label={<InputLabel optional tooltip="Enter who took the photo.">Photo credit</InputLabel>}>
-        <Input />
-      </Item>
-
-      <Item label={<InputLabel optional tooltip="Briefly describe who or what you see in the photo.">Photo caption</InputLabel>}>
-        <Input />
-      </Item>
+      <Field
+        name="currentImageCaption"
+        render={props => (
+          <Item label={<InputLabel optional tooltip="Enter who took the photo.">Photo credit</InputLabel>}>
+            <Input {...props} />
+          </Item>
+        )}
+      />
+      <Field
+        name="currentImageCredit"
+        render={props => (
+          <Item label={<InputLabel optional tooltip="Briefly describe who or what you see in the photo.">Photo caption</InputLabel>}>
+            <Input {...props} />
+          </Item>
+        )}
+      />
     </Form>
   </div>
 )
 
 export default connect(
-  ({ infoRdr }) => ({ rdr: infoRdr }),
+  null,
   actions
 )(Info)
+
+// export default Info
