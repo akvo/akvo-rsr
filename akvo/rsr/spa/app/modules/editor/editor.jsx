@@ -29,6 +29,7 @@ const MenuItem = (props) => {
   return (
     <Route
       path={to}
+      exact
       children={({ match }) => (
         <li className={match ? 'active' : ''}>
           <Link to={to}>
@@ -44,7 +45,7 @@ const MenuItem = (props) => {
 }
 
 const Editor = ({ rdr }) => (
-  <Router>
+  <Router basename="/my-rsr">
     <StickyContainer>
       <div className="editor">
         <div className="status-bar">
@@ -62,7 +63,7 @@ const Editor = ({ rdr }) => (
           {({ style, isSticky }) => (
             <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
               <ul>
-                <MenuItem hideCheck to="/settings">Settings</MenuItem>
+                <MenuItem hideCheck to="/">Settings</MenuItem>
                 <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
                 <MenuItem to="/contacts">Contact Information</MenuItem>
                 <MenuItem to="/partners">Partners</MenuItem>
@@ -81,7 +82,7 @@ const Editor = ({ rdr }) => (
           )}
           </Sticky>
           <div className="content">
-            <Route path="/settings" exact component={Settings} />
+            <Route path="/" exact component={Settings} />
             <Route path="/info" exact component={Info} />
             <Route path="/contacts" component={Contacts} />
             <Route path="/partners" component={Partners} />
