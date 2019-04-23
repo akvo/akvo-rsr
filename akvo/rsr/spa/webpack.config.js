@@ -56,7 +56,6 @@ const config = {
       },
       {
         test: /\.(css|scss)$/,
-        // exclude: /node_modules/,
         use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
