@@ -14,8 +14,6 @@ from akvo.rsr.models import IndicatorPeriod
 from akvo.utils import rsr_send_mail
 from ...models import Project, Result, Indicator
 
-EUTF_PROJECT_ID = 4401
-
 INDICATORS = 'indicators'
 PERIODS = 'periods'
 
@@ -26,7 +24,7 @@ class Command(BaseCommand):
 
     def __init__(self):
         super(Command, self).__init__()
-        self.root = Project.objects.get(pk=EUTF_PROJECT_ID)
+        self.root = Project.objects.get(pk=settings.EUTF_ROOT_PROJECT)
         self.all_projects = self.root.descendants()
         self.eutf_results = Result.objects.filter(project=self.root)
         self.dec_results = Result.objects.filter(parent_result__in=self.eutf_results)

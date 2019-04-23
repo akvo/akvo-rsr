@@ -8,7 +8,7 @@
 from django.apps import apps
 from django.conf import settings
 from django.db import models
-from django.db.models import Max, Sum
+from django.db.models import Q, Max, Sum
 
 
 class ProjectQuerySet(models.QuerySet):
@@ -17,8 +17,26 @@ class ProjectQuerySet(models.QuerySet):
         return self.filter(partners__exact=organisation)
 
     def of_partners(self, organisations):
-        "return projects that have one of the organisations as partner"
-        return self.filter(partners__in=organisations)
+        """Return projects that have one of the organisations as partner.
+
+        *NOTE*: If any of the organisations has one or more ProjectHierarchies,
+        include all the projects in the hierarchies.
+        """
+
+        from akvo.rsr.models import ProjectHierarchy, Project
+
+        projects = self.filter(partners__in=organisations).distinct()
+        hierarchies = ProjectHierarchy.objects.filter(organisation__in=organisations)\
+                                              .select_related('root_project')
+
+        hierarchy_project_ids = set()
+        for hierarchy in hierarchies:
+            hierarchy_projects = hierarchy.root_project.descendants(hierarchy.max_depth)\
+                                                       .values_list('id', flat=True)
+            hierarchy_project_ids.update(hierarchy_projects)
+
+        projects = Project.objects.filter(Q(id__in=projects) | Q(id__in=hierarchy_project_ids))
+        return projects
 
     def has_location(self):
         return self.filter(primary_location__isnull=False)

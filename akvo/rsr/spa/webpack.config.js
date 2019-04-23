@@ -28,6 +28,7 @@ const config = {
   context: resolve(__dirname, 'app'),
 
   devServer: {
+    host: '0.0.0.0',
     hot: true,
     contentBase: resolve(__dirname, 'build'),
     historyApiFallback: true,
@@ -149,7 +150,6 @@ const config = {
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
-    // new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
     new webpack.HotModuleReplacementPlugin(),
   ]
 };

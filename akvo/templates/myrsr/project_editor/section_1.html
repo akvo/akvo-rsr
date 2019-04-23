@@ -18,7 +18,10 @@
             <form role="form">
                 {% include text_input with obj=project field="title" %}
                 {% include text_input with obj=project field="subtitle" %}
-                {% include text_input with obj=project field="iati_activity_id" %}
+                {% if iati_prefixes %}
+                    {% include "myrsr/project_editor/partials/iati_prefix.html" with obj=project field="iati_activity_id" %}
+                {% endif %}
+                {% include text_input with obj=project field="iati_activity_id" disabled=iati_prefixes %}
 
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_relatedproject" }}">
                     <h5>{% trans 'Related projects' %}</h5>
