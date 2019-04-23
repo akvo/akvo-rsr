@@ -1,5 +1,11 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300&subset=latin);
 
+@keyframes bounceCheck {
+  0%   { transform: scale(1); }
+  50%   { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
 .editor{
   
   // padding-top: 50px;
@@ -75,9 +81,10 @@
           top: 2px;
           .anticon{
             font-size: 20px;
-            color: #ccc;
+            color: #e0e0e0;
             &.checked{
               color: #31c531;
+              animation: bounceCheck .4s;
             }
           }
         }
