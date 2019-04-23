@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import SVGInline from 'react-svg-inline'
 import { Icon, Button, Menu, Dropdown } from 'antd'
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
@@ -20,7 +21,15 @@ const menu = () => (
   </Menu>
 )
 
-const Root = () => {
+const _Header = ({infoRdr}) => (
+  <header>
+    <Icon type="left" />
+    <h1>{infoRdr.title ? infoRdr.title : 'Untitled project'}</h1>
+  </header>
+)
+const Header = connect(({ infoRdr }) => ({ infoRdr }))(_Header)
+
+const Root = ({ infoRdr }) => {
   return (
     <div id="root">
       <div className="top-bar">
@@ -37,10 +46,7 @@ const Root = () => {
         </div>
       </div>
       <div className="ui container">
-        <header>
-          <Icon type="left" />
-          <h1>Project name here</h1>
-        </header>
+        <Header />
         <Editor />
       </div>
     </div>

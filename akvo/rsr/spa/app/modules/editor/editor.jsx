@@ -55,7 +55,7 @@ const isChecked = (which, rdr) => {
   }
 }
 
-const Editor = ({ infoRdr, rdr }) => (
+const Editor = ({ rdr }) => (
   <Router>
     <StickyContainer>
       <div className="editor">
@@ -85,7 +85,7 @@ const Editor = ({ infoRdr, rdr }) => (
                 <MenuItem to="/focus">Focus</MenuItem>
                 <MenuItem to="/links">Links and documents</MenuItem>
                 <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
-                {shouldShowSection11(infoRdr.validations) &&
+                {rdr.showSection11 &&
                 <MenuItem to="/reporting">CRS++ and FSS reporting</MenuItem>
                 }
               </ul>
@@ -125,5 +125,5 @@ const Editor = ({ infoRdr, rdr }) => (
 )
 
 export default connect(
-  ({ infoRdr, editorRdr }) => ({ infoRdr, rdr: editorRdr })
+  ({ editorRdr }) => ({ rdr: editorRdr })
 )(Editor)
