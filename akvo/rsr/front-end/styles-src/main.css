@@ -2558,8 +2558,13 @@ body.translationBarActive div.skiptranslate ~ #map {
   margin-bottom: 10px;
   transition: background 0.1s linear; }
 
-.projectEdit div.error-highlight {
-  background: lightgoldenrodyellow; }
+.projectEdit .error-highlight {
+  background: lightgoldenrodyellow !important; }
+
+.projectEdit .section-errors {
+  font-size: 10px; }
+  .projectEdit .section-errors .section-error-link {
+    padding-left: 0.5em; }
 
 .projectEdit div.partial-header {
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;

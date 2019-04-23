@@ -99,6 +99,7 @@ def send_mail_with_attachments(subject, message, from_email, recipient_list,
         for attachment in attachments:
             mail.attach(**attachment)
 
+    logger.info('Sending email to "%s" with the subject "%s"', recipient_list, subject)
     return mail.send()
 
 
@@ -481,18 +482,18 @@ def get_report_thumbnail(file_):
     return get_thumbnail(file_, settings.RS_THUMB_GEOMETRY, quality=settings.RS_THUMB_QUALITY)
 
 
-def project_access_filter(user, projects):
-    """Filter projects restricted for the user from the projects queryset.
+def get_organisation_collaborator_org_ids(org_id):
+    """Get collaborator organisation ids for a given organisation.
 
-    :param user: A user object
-    :param projects: A Project QS
+    Collaborator organisations are meant to replace the shadow organisations,
+    but currently a collaborator organisation is just a shadow organisation for
+    the content owner! (org.original == org.content_owner)
 
     """
-    from akvo.rsr.models import UserProjects
 
-    try:
-        whitelist = UserProjects.objects.get(user=user, is_restricted=True)
-        return whitelist.projects.filter(pk__in=projects)
+    from akvo.rsr.models import Organisation
 
-    except UserProjects.DoesNotExist:
-        return projects
+    collaborators = Organisation.objects.filter(content_owner_id=org_id, original_id=org_id)
+    org_ids = set(collaborators.values_list('id', flat=True))
+    org_ids.add(org_id)
+    return org_ids

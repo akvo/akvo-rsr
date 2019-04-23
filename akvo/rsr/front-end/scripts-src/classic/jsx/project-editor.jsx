@@ -7,6 +7,9 @@
 var defaultValues = JSON.parse(document.getElementById("default-values").innerHTML);
 var countryValues = JSON.parse(document.getElementById("country-values").innerHTML);
 
+// FEATURE FLAGS
+const SHOW_INCOMPLETE_FIELDS = false;
+
 // CSRF TOKEN
 function getCookie(name) {
     var cookieValue = null;
@@ -1961,15 +1964,16 @@ function addPartial(partialName, partialContainer) {
 
         // Update help icons and progress bars
         updateHelpIcons("." + partialName + "-container");
-        setPageCompletionPercentage();
-        setAllSectionsCompletionPercentage();
-        setAllSectionsChangeListener();
-        setValidationListeners();
 
         // Set onClicks for partials again in case this partial contains other partials
         setPartialOnClicks();
         setFileUploads();
         checkPartnerships();
+
+        setPageCompletionPercentage();
+        setAllSectionsCompletionPercentage();
+        setAllSectionsChangeListener();
+        setValidationListeners();
     };
 }
 
@@ -2318,6 +2322,7 @@ function setSectionCompletionPercentage(section) {
     var inputResults = getInputResults(section);
     var numInputs = inputResults[0];
     var numInputsCompleted = inputResults[1];
+    var incompleteFields = inputResults[2];
 
     if (numInputs === 0) {
         // There are no mandatory fields, show the section as complete
@@ -2326,6 +2331,9 @@ function setSectionCompletionPercentage(section) {
     }
 
     renderCompletionPercentage(numInputsCompleted, numInputs, section);
+    if (SHOW_INCOMPLETE_FIELDS) {
+        showIncompleteFields(section, incompleteFields);
+    }
 }
 
 function setPageCompletionPercentage() {
@@ -2354,6 +2362,40 @@ function setPageCompletionPercentage() {
     }
 }
 
+function showIncompleteFields(section, fields) {
+    var errors = $(section).find(".section-errors");
+    if (errors.length === 0 && fields.length !== 0) {
+        errors = $("<div/>", { class: "section-errors alert alert-warning" });
+        errors.insertBefore($(section).find(".formBlock"));
+    }
+    errors.children().remove();
+    if (fields.length === 0) {
+        return;
+    }
+    errors.append(
+        $("<span>", { class: "mandatory-fields-help-text" }).text(
+            "The following mandatory fields need to be filled in"
+        )
+    );
+    fields.map(function(field) {
+        var hash = "#" + field[0];
+        var label = $('label[for="' + field[0] + '"]')
+            .text()
+            .replace("*", "")
+            .trim();
+        var id = field[1].split(".")[1];
+        $("<a/>", { class: "section-error-link alert-link" })
+            .text(`${label} (${id})`)
+            .on("click", function() {
+                if (location.hash != hash) {
+                    location.hash = hash;
+                    expandAccordion(true);
+                }
+            })
+            .appendTo(errors);
+    });
+}
+
 function getInputResults(section) {
     function getOrField(field) {
         var validationSets = getValidationSets();
@@ -2378,6 +2420,7 @@ function getInputResults(section) {
     var numInputs = 0;
     var numInputsCompleted = 0;
     var processedFields = [];
+    var incompleteFields = [];
     var mandatoryFields = section.querySelectorAll("span.mandatory");
 
     for (var i = 0; i < mandatoryFields.length; i++) {
@@ -2445,10 +2488,13 @@ function getInputResults(section) {
                 // Regular processing, check if the input is completed
                 if (inputCompleted(field)) {
                     numInputsCompleted += 1;
+                } else {
+                    incompleteFields.push(getIncompleteElementData(field));
                 }
             } else {
                 // There is an 'Or' mandatory field specified
                 if (processedFields.indexOf(orField) > -1) {
+                    // Processing the second orField
                     if (inputCompleted(orField)) {
                         // The 'Or' field has already been processed and was filled
                         numInputsCompleted += 1;
@@ -2456,11 +2502,18 @@ function getInputResults(section) {
                         // The 'Or' field has already been processed and was not filled, but this
                         // field is, so add 2 inputs completed
                         numInputsCompleted += 2;
+                    } else {
+                        incompleteFields.push(getIncompleteElementData(orField));
+                        incompleteFields.push(getIncompleteElementData(field));
                     }
                 } else {
                     // Regular processing, check if the input is completed
+                    // Processing the first orField
                     if (inputCompleted(field)) {
                         numInputsCompleted += 1;
+                    } else {
+                        // one of the orField is incomplete, nothing needs to be
+                        // done, yet!
                     }
                 }
             }
@@ -2469,7 +2522,14 @@ function getInputResults(section) {
         }
     }
 
-    return [numInputs, numInputsCompleted];
+    return [numInputs, numInputsCompleted, incompleteFields];
+}
+
+function getIncompleteElementData(element) {
+    var parentElem = findAncestorByClass(element, "parent");
+    var data = [element.getAttribute("id")];
+    parentElem ? data.push(parentElem.getAttribute("id")) : data.push(null);
+    return data;
 }
 
 function renderCompletionPercentage(numInputsCompleted, numInputs, section) {
@@ -4507,10 +4567,30 @@ function elIsVisible(el) {
     return el.offsetWidth > 0 && el.offsetHeight > 0;
 }
 
+function setupIATIPrefixChangeHandlers() {
+    const iatiPrefixDiv = $("#iati-activity-id-from-org-prefix");
+    const prefixInput = iatiPrefixDiv.find("select")[0];
+    const suffixInput = iatiPrefixDiv.find("input")[0];
+
+    const updateIATIActivityId = () => {
+        const updatedIATIID = prefixInput.value + suffixInput.value;
+        console.log("Updating with value", updatedIATIID);
+        const iatiIDInputField = iatiPrefixDiv.next("div").find("input");
+        iatiIDInputField.attr("value", updatedIATIID);
+        iatiIDInputField.val(updatedIATIID);
+    };
+
+    if (prefixInput !== undefined && suffixInput !== undefined) {
+        prefixInput.onchange = updateIATIActivityId;
+        suffixInput.onchange = updateIATIActivityId;
+    }
+}
+
 function initApp() {
     getAllOrganisations();
     getAllProjects();
 
+    setupIATIPrefixChangeHandlers();
     setUnsavedChangesMessage();
     setImpactProject();
     setPrivateProject();
@@ -4605,44 +4685,35 @@ function expandAccordion(highlight) {
         if (!stepInput) {
             return;
         }
-        stepInput.parentElement.firstElementChild.click();
+        if (stepInput.parentElement.querySelector(".formBlock.hidden")) {
+            stepInput.parentElement.firstElementChild.click();
+        }
         stepInput.parentElement.firstElementChild.scrollIntoView();
         location.hash = "";
-    } else if (location.hash.indexOf("#result.") == 0) {
-        // Expand result
+    } else {
         var hash = location.hash,
-            result = document.getElementById(location.hash.substring(1));
-        location.hash = "#stepFive";
-        expandAccordion();
-        result.querySelector(".hide-partial-click").click();
-        if (highlight) {
-            result.classList.add("error-highlight");
-            result.scrollIntoView();
-            location.hash = hash;
+            element = document.getElementById(location.hash.substring(1)),
+            ancestor = findAncestorByClass(element, "parent");
+        if (ancestor === null) {
+            ancestor = findAncestorByClass(element, "formStep").querySelector("input[type=radio]");
         }
-    } else if (location.hash.indexOf("#indicator.") == 0) {
-        // Expand indicator
-        var hash = location.hash,
-            indicator = document.getElementById(location.hash.substring(1));
-        location.hash = "#" + findAncestorByClass(indicator, "parent").getAttribute("id");
-        expandAccordion();
-        indicator.querySelector(".hide-partial-click").click();
-        if (highlight) {
-            indicator.classList.add("error-highlight");
-            indicator.scrollIntoView();
-            location.hash = hash;
+        location.hash = "#" + ancestor.getAttribute("id");
+
+        expandAccordion(highlight);
+
+        const hidePartial = element.querySelector(".hide-partial");
+        if (hidePartial && hidePartial.classList.contains("hidden")) {
+            element.querySelector(".hide-partial-click").click();
         }
-    } else if (location.hash.indexOf("#indicator_period.") == 0) {
-        // Expand indicator_period
-        var hash = location.hash,
-            period = document.getElementById(location.hash.substring(1));
-        location.hash = "#" + findAncestorByClass(period, "parent").getAttribute("id");
-        expandAccordion();
-        period.querySelector(".hide-partial-click").click();
         if (highlight) {
-            period.classList.add("error-highlight");
-            period.scrollIntoView();
-            location.hash = hash;
+            $(".error-highlight").removeClass("error-highlight");
+            element.classList.add("error-highlight");
+            element.scrollIntoView(true);
+            // Avoid scrolling the element under the header
+            if (window.scrollY) {
+                var navElement = document.querySelector("nav");
+                window.scrollBy(0, -navElement.offsetHeight);
+            }
         }
     }
 }

@@ -10,15 +10,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from __future__ import print_function
 
 import json
+from urlparse import urlparse
 
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
-from urlparse import urlparse
+from mock import patch
 
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
 from akvo.utils import check_auth_groups
+from akvo.rsr.tests.base import BaseTestCase
 
 
 class AccountTestCase(TestCase):
@@ -262,3 +264,81 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 302)
         self.assertEqual(urlparse(response._headers['location'][1]).path, '/en/')
+
+
+class PasswordResetTestCase(BaseTestCase):
+    """Test password reset workflows."""
+
+    email = 'foo@example.com'
+    password = 'passwdpasswdA1$'
+
+    def test_normal_user_gets_password_reset_email(self):
+        user = self.create_user(self.email, self.password)
+        self.assertTrue(user.has_usable_password())
+        data = {'email': self.email}
+
+        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
+            response = self.c.post('/en/sign_in/', data=data, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        patched_send.assert_called_once()
+
+    def test_newly_registered_user_gets_reset_email(self):
+        register_data = dict(
+            first_name=self.email,
+            last_name=self.email,
+            email=self.email,
+            password1=self.password,
+            password2=self.password,
+        )
+        response = self.c.post('/en/register/', data=register_data, follow=True)
+        data = {'email': self.email}
+
+        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
+            response = self.c.post('/en/sign_in/', data=data, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        patched_send.assert_called_once()
+
+    def test_invited_user_gets_reset_email(self):
+        admin_email = 'admin@example.com'
+        self.create_user(email=admin_email, password=self.password, is_superuser=True)
+        user_group = Group.objects.get(name='Users')
+        org = self.create_organisation('Akvo')
+        self.c.login(username=admin_email, password=self.password)
+        # Create dummy users along with one user to reset password for
+        for i in range(5):
+            email = self.email if i == 0 else (str(i) + self.email)
+            invite_data = dict(
+                user_data=json.dumps(dict(
+                    email=email,
+                    organisation=org.id,
+                    group=user_group.id,
+                ))
+            )
+            response = self.c.post('/rest/v1/invite_user/', data=invite_data, follow=True)
+        data = {'email': self.email}
+
+        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
+            response = self.c.post('/en/sign_in/', data=data, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        patched_send.assert_called_once()
+
+    def test_deactivated_users_donot_get_password_reset_email(self):
+        email = 'foo@example.com'
+        password = 'password'
+        user = self.create_user(email, password)
+        data = {'email': email}
+
+        self.c.login(username=email, password=password)
+        # Verify user has logged in at least once!
+        user.refresh_from_db()
+        self.assertNotEqual(user.last_login, user.date_joined)
+        user.is_active = False
+        user.save(update_fields=['is_active'])
+        with patch('django.contrib.auth.forms.PasswordResetForm.send_mail') as patched_send:
+            response = self.c.post('/en/sign_in/', data=data, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        patched_send.assert_not_called()

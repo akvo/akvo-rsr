@@ -71,6 +71,7 @@ from .project_condition import ProjectCondition
 from .project_contact import ProjectContact
 from .project_document import ProjectDocument, ProjectDocumentCategory
 from .project_editor_validation import ProjectEditorValidation, ProjectEditorValidationSet
+from .project_hierarchy import ProjectHierarchy
 from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
 from .region import RecipientRegion
@@ -163,6 +164,7 @@ __all__ = [
     'ProjectDocumentCategory',
     'ProjectEditorValidation',
     'ProjectEditorValidationSet',
+    'ProjectHierarchy',
     'ProjectUpdate',
     'PublishingStatus',
     'RecipientRegion',

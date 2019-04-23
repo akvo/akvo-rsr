@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  mainnetwork:
+    links:
+      - "nginx:rsr.localdev.akvo.org"
+  django-prod:
+    image: eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT}
+    network_mode: service:nginx
+    volumes:
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
+      - ./scripts/docker/ci/51-docker-ci-dev.conf:/config_overrides/51-docker-ci-dev.conf
+      - media-disk:/var/akvo/rsr/staticroot/
+    environment:
+      - WAIT_FOR_DEPENDENCIES=yes
+      - DJANGO_SECRET_KEY=secretkey
+  nginx:
+    image: eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
+    volumes:
+      - media-disk:/data
+    environment:
+      - REPORT_SERVER_URL=http://localhost:8080/
+      - REPORT_SERVER_API_KEY=dasf&!"£c
+      - ENVIRONMENT=test
+      - COPY_STATIC_CONTENT_FOR_CI_BUILD=yes
+  web:
+    image: rsr-backend:dev
+    command: "true"
+  rsrdbhost:
+  memcached:
+    network_mode: service:nginx
+volumes:
+  media-disk:

@@ -865,14 +865,6 @@ function loadComponents() {
     });
 
     var ExportRow = React.createClass({
-        openPublicFile: function() {
-            window.open(i18n.last_exports_url, "_blank");
-        },
-
-        openFile: function() {
-            window.open(this.props.exp.iati_file, "_blank");
-        },
-
         setPublic: function() {
             this.props.setPublic(this.props.exp.id);
         },
@@ -880,17 +872,27 @@ function loadComponents() {
         renderActions: function() {
             if (this.props.publicFile) {
                 return (
-                    <button className="btn btn-success btn-sm" onClick={this.openPublicFile}>
+                    <a
+                        href={i18n.last_exports_url}
+                        className="btn btn-success btn-sm"
+                        role="button"
+                        target="_blank"
+                    >
                         <i className="fa fa-globe" /> {cap(i18n.view_latest_file)}
-                    </button>
+                    </a>
                 );
             } else if (this.props.exp.iati_file) {
                 if (!this.props.actionInProgress) {
                     return (
                         <div>
-                            <button className="btn btn-default btn-sm" onClick={this.openFile}>
+                            <a
+                                href={this.props.exp.iati_file}
+                                className="btn btn-default btn-sm"
+                                role="button"
+                                target="_blank"
+                            >
                                 <i className="fa fa-code" /> {cap(i18n.view_file)}
-                            </button>
+                            </a>
                             <button className="btn btn-default btn-sm" onClick={this.setPublic}>
                                 <i className="fa fa-globe" /> {cap(i18n.set_latest)}
                             </button>
@@ -899,9 +901,14 @@ function loadComponents() {
                 } else {
                     return (
                         <div>
-                            <button className="btn btn-default btn-sm" onClick={this.openFile}>
+                            <a
+                                href={this.props.exp.iati_file}
+                                className="btn btn-default btn-sm"
+                                role="button"
+                                target="_blank"
+                            >
                                 <i className="fa fa-code" /> {cap(i18n.view_file)}
-                            </button>
+                            </a>
                             <button className="btn btn-default btn-sm disabled">
                                 <i className="fa fa-globe" /> {cap(i18n.set_latest)}
                             </button>

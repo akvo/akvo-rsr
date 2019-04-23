@@ -13,13 +13,13 @@ import json
 from lxml import etree
 from tastypie.models import ApiKey
 
-from akvo.rsr.forms import RegisterForm, InvitedUserForm
+from akvo.rsr.forms import RegisterForm, InvitedUserForm, PasswordResetForm
 from akvo.rsr.models import Employment
 from akvo.utils import rsr_send_mail
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,

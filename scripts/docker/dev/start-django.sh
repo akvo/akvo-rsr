@@ -21,6 +21,13 @@ fi
 npm run devw&
 popd
 
+pushd akvo/rsr/spa
+(
+npm install
+npm start
+) &
+popd
+
 python manage.py migrate --noinput
 #python manage.py collectstatic
 

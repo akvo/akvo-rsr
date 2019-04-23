@@ -173,7 +173,11 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'Organisation is allowed to become a reporting organisation. '
                     u'Can be set by superusers.'),
         default=False)
-
+    iati_prefixes = ValidXMLCharField(
+        _(u'IATI identifier prefixes'), max_length=2000, blank=True, null=True,
+        help_text=_(u'This is a ; separated list of IATI identifier prefixes used by projects'
+                    'where the organisation is a reporting partner.')
+    )
     objects = OrgManager()
 
     @models.permalink
@@ -380,6 +384,11 @@ class Organisation(TimestampsMixin, models.Model):
     def get_original(self):
         "Returns the original org if self is a shadow org"
         return self.original if self.original else self
+
+    @property
+    def is_collaborator_organisation(self):
+        # FIXME: Replace this with a DB field!
+        return self.original_id is not None and self.original_id == self.content_owner_id
 
     def countries_where_active(self):
         """Returns a Country queryset of countries where this organisation has

@@ -13,14 +13,13 @@
 
 import tablib
 
+from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
 from ...models import Organisation, Employment
 from ...permissions import GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ENUMERATORS
 
-
-EUTF_ORG_ID = 3394
 
 GROUPS_TO_CHANGE = [GROUP_NAME_PROJECT_EDITORS]
 
@@ -38,7 +37,7 @@ class Command(BaseCommand):
             'User email',
         ]
 
-        eutf = Organisation.objects.get(pk=EUTF_ORG_ID)
+        eutf = Organisation.objects.get(pk=settings.EUTF_ORG_ID)
         content_owned_orgs = eutf.content_owned_organisations()
         groups = Group.objects.filter(name__in=GROUPS_TO_CHANGE)
         enumerator = Group.objects.get(name=GROUP_NAME_ENUMERATORS)
