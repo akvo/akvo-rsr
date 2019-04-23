@@ -39,16 +39,34 @@ if [[ "${RESPONSE_STATUS}" -ge ${HTTP_ERRORS_START} ]]; then
   exit 1
 fi
 
-log Testing static assets
+log Testing front-end
+
+# Legacy assets
 PAGE_CONTENT=$(curl --location --silent "${BASE_URL}")
 ASSETS=$(echo "${PAGE_CONTENT}" | grep -Eo "\/static/rsr/dist/.+(css|js)" | head -n 3)
-
 while read -r path; do
   # test asset
   test_http_status "${HTTP_OK}" "$BASE_URL$path"
   # test sourcemap
   test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
 done <<< "$ASSETS"
+
+# SPA endpoint end routing
+SPA_URL="$BASE_URL/my-rsr"
+test_http_status "${HTTP_OK}" "${SPA_URL}/"
+test_http_status "${HTTP_OK}" "${SPA_URL}/path"
+test_http_status "${HTTP_OK}" "${SPA_URL}/sub/path"
+
+# SPA assets
+SPA_PAGE=$(curl --location --silent "${SPA_URL}")
+SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/my-rsr/.+(css|js)" | head -n 3)
+while read -r path; do
+  # test asset
+  test_http_status "${HTTP_OK}" "$BASE_URL$path"
+  # test sourcemap
+  test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
+done <<< "$SPA_ASSETS"
+
 echo ""
 
 log End-to-end testing done!
