@@ -5,10 +5,12 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from akvo.rsr.models import Report, ReportFormat
+from akvo.rsr.models import Report, ReportFormat, Project
 from ..serializers import ReportSerializer, ReportFormatSerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -48,3 +50,27 @@ def report_formats(request):
         'count': ReportFormat.objects.all().count(),
         'results': [ReportFormatSerializer(f).data for f in ReportFormat.objects.all()],
     })
+
+
+@api_view(['GET'])
+def project_reports(request, project_pk):
+    """A view for displaying project specific reports."""
+
+    project = get_object_or_404(Project, pk=project_pk)
+    reports = Report.objects.prefetch_related('formats', 'organisations')\
+                            .filter(url__icontains='project')
+
+    user = request.user
+    if not user.has_perm('rsr.view_project', project):
+        return Response('Request not allowed', status=status.HTTP_403_FORBIDDEN)
+
+    is_admin = user.is_active and (user.is_superuser or user.is_admin)
+
+    if not is_admin:
+        partners_org = project.partner_organisation_pks()
+        reports = reports.filter(
+            Q(organisations=None) | Q(organisations__in=partners_org)
+        )
+
+    serializer = ReportSerializer(reports.distinct(), many=True)
+    return Response(serializer.data)

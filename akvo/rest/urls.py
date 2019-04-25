@@ -238,6 +238,9 @@ urlpatterns += (
     url(r'v1/typeaheads/keywords$',
         views.typeahead_keyword,
         name='keyword_typeahead'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/reports/$',
+        views.project_reports,
+        name='project_reports'),
 )
 
 # My reports

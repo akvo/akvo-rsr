@@ -87,7 +87,7 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
-from .report import report_formats, ReportViewSet
+from .report import report_formats, ReportViewSet, project_reports
 from .result import ResultsViewSet, ResultsFrameworkViewSet
 from .right_now_in_akvo import right_now_in_akvo_view
 from .sector import SectorViewSet
@@ -205,6 +205,7 @@ __all__ = [
     'RelatedProjectViewSet',
     'report_formats',
     'ReportViewSet',
+    'project_reports',
     'request_organisation',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
