@@ -1,0 +1,23 @@
+.settings.view {
+  p:first-of-type{
+    margin-bottom: 20px;
+  }
+  .switch-label{
+    margin-left: 15px;
+    margin-right: 10px;
+    margin-top: 2px;
+  }
+  .ant-switch{
+    transform: translateY(-2px);
+  }
+  ul{
+    li{
+      line-height: 40px;
+    }
+  }
+  small{
+    line-height: 16px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+}

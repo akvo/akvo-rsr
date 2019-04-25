@@ -66,6 +66,7 @@
     "space-unary-ops": 0,
     "no-nested-ternary": 0,
     "linebreak-style": 0,
-    "import/no-extraneous-dependencies": 1
+    "import/no-extraneous-dependencies": 1,
+    "no-unused-vars": 1
   }
 }

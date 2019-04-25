@@ -1,0 +1,21 @@
+.focus.view{
+  .ant-collapse{
+    margin-bottom: 20px;
+    .ant-collapse-content-box{
+      .ant-form-item:last-child{
+        margin-bottom: 0;
+      }
+      .ant-form-item-control{
+        line-height: 1;
+      }
+    }
+  }
+}
+.add-sector-modal{
+  width: 600px!important;
+  .ant-btn{
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-align: left;
+  }
+}

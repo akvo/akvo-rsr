@@ -2,7 +2,6 @@ const { resolve } = require('path');
 
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
@@ -10,7 +9,7 @@ const config = {
     maxModules: 0
   },
   mode: 'development',
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'source-map',
 
   entry: [
     'react-hot-loader/patch',
@@ -56,8 +55,7 @@ const config = {
         exclude: /node_modules/,
       },
       {
-        test: /\.scss$/,
-        exclude: /node_modules/,
+        test: /\.(css|scss)$/,
         use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
@@ -65,7 +63,7 @@ const config = {
             {
               loader: 'sass-loader',
               query: {
-                sourceMap: false,
+                sourceMap: true,
               },
             },
           ],
@@ -126,12 +124,12 @@ const config = {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: [
           {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-              mimetype: 'image/svg+xml',
-              name: 'images/[name].[ext]',
-            }
+            loader: 'raw-loader',
+            // options: {
+            //   limit: 8192,
+            //   mimetype: 'image/svg+xml',
+            //   name: 'images/[name].[ext]',
+            // }
           }
         ],
       },
@@ -151,8 +149,6 @@ const config = {
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
-    // new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
-    // new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
     new webpack.HotModuleReplacementPlugin(),
   ]
 };
