@@ -634,6 +634,14 @@ class Project(TimestampsMixin, models.Model):
         """
         return self.reporting_partner.organisation if self.reporting_partner else None
 
+    def organisation_codelist(self):
+        """Return organisation specific custom codelist, if any."""
+
+        if self.reporting_org:
+            return self.reporting_org.codelist
+
+        return None
+
     @property
     def publishing_orgs(self):
         """
