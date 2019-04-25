@@ -61,6 +61,7 @@ from .organisation_budget import (OrganisationCountryBudget, OrganisationRegionB
                                   OrganisationRegionBudgetLine, OrganisationTotalBudgetLine)
 from .organisation_document import (OrganisationDocument, OrganisationDocumentCategory,
                                     OrganisationDocumentCountry)
+from .organisation_codelist import OrganisationCodelist
 from .partner_site import PartnerSite
 from .partnership import Partnership
 from .planned_disbursement import PlannedDisbursement
@@ -131,6 +132,7 @@ __all__ = [
     'NarrativeReport',
     'Organisation',
     'OrganisationAccount',
+    'OrganisationCodelist',
     'OrganisationCountryBudget',
     'OrganisationCountryBudgetLine',
     'OrganisationCustomField',
