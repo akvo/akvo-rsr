@@ -12,7 +12,25 @@
   }
   .total{
     opacity: 0.6;
-    font-size: 12px;
+    font-size: 14px;
+    // text-align: right;
+    .amount{
+      float: right;
+    }
+    b{
+      // float: right;
+    }
+  }
+  .ant-collapse-item{
+    .ant-collapse-extra{
+      .amount{
+        font-size: 14px;
+        opacity: 0.7;
+        margin-right: 10px;
+        padding-right: 10px;
+        border-right: 1px solid #ccc;
+      }
+    }
   }
 }
 .add-budget-item-modal{

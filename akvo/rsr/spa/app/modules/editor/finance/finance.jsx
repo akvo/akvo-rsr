@@ -47,25 +47,28 @@ class Finance extends React.Component{
     }
     return acc
   }, 0)
+  budgetAdded = (budgetType) => {
+    let ret = false
+    for(let i = 0; i < this.props.rdr.length; i += 1){
+      if(this.props.rdr[i].type === budgetType){
+        ret = true
+        break
+      }
+    }
+    return ret
+  }
   render(){
     return (
       <div className="finance view">
-        <p className="total">The total value of all budget items is <b>{String(this.total()).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b> EUR</p>
+        <p className="total">Total budget:<span className="amount"><b>{String(`€${this.total()}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></span></p>
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
         {this.props.rdr.map((budgetItem, index) =>
             <Panel
-              header={`Budget item: ${budgetItemTypes.find(it => it.value === budgetItem.type).label}`}
-              extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
+              header={`${budgetItemTypes.find(it => it.value === budgetItem.type).label}`}
+              extra={<span><span className="amount">€{String(budgetItem.amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
               key={`p${index}`}
             >
               <Form layout="vertical">
-                {/* <Item label={<InputLabel optional tooltip="...">Contact type</InputLabel>}>
-                  <Select value={budgetItem.type} onChange={value => this.props.editBudgetField(index, 'type', value)}>
-                    {budgetItemTypes.map(type =>
-                      <Option key={type.value} value={type.value}>{type.label}</Option>
-                    )}
-                  </Select>
-                </Item> */}
                 <Item label={<InputLabel tooltip="...">Amount</InputLabel>}>
                   <InputNumber
                     formatter={value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -92,7 +95,7 @@ class Finance extends React.Component{
           onCancel={() => this.setState({ modalVisible: false })}
           className="add-budget-item-modal"
         >
-          {budgetItemTypes.map(type => (
+          {budgetItemTypes.filter(it => !this.budgetAdded(it.value)).map(type => (
             <div className="desc-block">
               <Button block icon="plus" onClick={() => this.addType(type.value)}>{type.label}</Button>
             </div>
