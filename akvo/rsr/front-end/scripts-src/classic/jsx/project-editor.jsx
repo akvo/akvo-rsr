@@ -2887,6 +2887,12 @@ function setVocabularyOnChange() {
             optionsId: "aid-type-vocabulary-options",
             textInputSelector: ".aid-type-text-input",
             dropDownInputSelector: ".aid-type-dropdown-input"
+        },
+        {
+            selector: ".location-administrative-vocabulary",
+            optionsId: "location-administrative-vocabulary-options",
+            textInputSelector: ".location-administrative-code-text-input",
+            dropDownInputSelector: ".location-administrative-code-dropdown-input"
         }
     ];
     fieldInfo.map(function(info) {
