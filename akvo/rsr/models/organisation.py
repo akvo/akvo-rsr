@@ -178,6 +178,9 @@ class Organisation(TimestampsMixin, models.Model):
         help_text=_(u'This is a ; separated list of IATI identifier prefixes used by projects'
                     'where the organisation is a reporting partner.')
     )
+    codelist = models.ForeignKey(
+        'OrganisationCodelist', null=True, blank=True, on_delete=models.SET_NULL
+    )
     objects = OrgManager()
 
     @models.permalink

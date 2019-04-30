@@ -5,3 +5,5 @@ scripts/data/*.gz
 akvo/rsr/front-end/node_modules/
 akvo/rsr/front-end/static/webpack-stats.json
 akvo/rsr/front-end/static/rsr/dist/
+akvo/rsr/spa/node_modules
+akvo/rsr/spa/dist

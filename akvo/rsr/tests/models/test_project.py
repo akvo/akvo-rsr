@@ -9,7 +9,7 @@ from unittest import TestCase
 from django.contrib.auth import get_user_model
 
 from akvo.rsr.models import BudgetItem, Partnership, Project, ProjectUpdate, Organisation, \
-    OrganisationIndicatorLabel, RelatedProject
+    OrganisationIndicatorLabel, RelatedProject, OrganisationCodelist
 
 
 class ProjectModelTestCase(TestCase):
@@ -127,6 +127,30 @@ class ProjectModelTestCase(TestCase):
         #  Then
         self.assertEqual(start_date, date(2018, 03, 01))
         self.assertEqual(end_date, date(2019, 02, 28))
+
+    def test_reporting_org_codelist(self):
+        data = {
+            'SECTOR_CATEGORY': [[1, 2], [3, 4]]
+        }
+        codelist = OrganisationCodelist.objects.create(slug='custom-codelist', data=data)
+        self.organisation.codelist = codelist
+        self.organisation.save(update_fields=['codelist'])
+        Partnership.objects.create(
+            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
+            project=self.project, organisation=self.organisation
+        )
+
+        organisation_codelist = self.project.organisation_codelist()
+
+        self.assertIsNotNone(organisation_codelist)
+        self.assertEqual(data, organisation_codelist.data)
+
+    def test_no_reporting_org_codelist(self):
+        self.assertIsNone(self.project.reporting_org)
+
+        codelist = self.project.organisation_codelist()
+
+        self.assertIsNone(codelist)
 
 
 class ProjectHierarchyTestCase(TestCase):

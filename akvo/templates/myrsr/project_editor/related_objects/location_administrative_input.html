@@ -4,11 +4,14 @@
     {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=admin %}
     <div class="hide-partial {% if admin.pk %}hidden{% endif %}">
         <div class="row">
-            <div class="col-md-4">
-                {% include text_input with obj=admin field='code' %}
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-4 location-administrative-vocabulary">
                 {% include choice_input with obj=admin field='vocabulary' %}
+            </div>
+            <div class="col-md-4 location-administrative-code-dropdown-input hidden">
+                {% include choice_input with obj=admin field='code' %}
+            </div>
+            <div class="col-md-4 location-administrative-code-text-input hidden">
+                {% include text_input with obj=admin field='code' %}
             </div>
             <div class="col-md-4">
                 {% include text_input with obj=admin field='level' number=True %}

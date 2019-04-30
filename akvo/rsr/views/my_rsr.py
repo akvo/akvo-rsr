@@ -26,7 +26,6 @@ from akvo.codelists.models import Country, Version
 from akvo.codelists.store.default_codelists import (
     AID_TYPE, EARMARKING_CATEGORY, SECTOR_CATEGORY, SECTOR
 )
-from akvo.codelists.store.codelists_EUTF import SECTOR_CODES as EUTF_SECTOR_CODES
 from akvo.rsr.models import IndicatorPeriodData, User, UserProjects
 from akvo.rsr.models.user_projects import InvalidPermissionChange, check_collaborative_user
 from akvo.rsr.permissions import (
@@ -340,12 +339,21 @@ def project_editor(request, project_id):
     sector_vocabulary_options = {
         '1': OrderedDict(codelist_choices(SECTOR)), '2': OrderedDict(codelist_choices(SECTOR_CATEGORY))
     }
-    # NOTE: This code is too specific for EUTF, but not yet sure what's the
-    # best way to generalize this. We could move the sector codes to the DB,
-    # and choose based on the reporting org, or based on the project hierarchy.
-    # But, right now nobody other than EUTF needs this, and this should work.
-    if project.in_eutf_hierarchy():
-        sector_vocabulary_options['99'] = OrderedDict(codelist_choices(EUTF_SECTOR_CODES))
+    location_administrative_vocabulary_options = {}
+    organisation_codelist = project.organisation_codelist()
+    if organisation_codelist:
+        sector_category = organisation_codelist.data.get('SECTOR_CATEGORY')
+        if sector_category is not None:
+            sector_vocabulary_options['99'] = OrderedDict(codelist_choices(sector_category))
+
+        location_administratives = organisation_codelist.data.get('LOCATION_ADMINISTRATIVE_CODES')
+        if location_administratives is not None:
+            # FIXME: A4 is one of the options for a vocabulary. Other
+            # organisations may want to use other geographic vocabularies, and
+            # we should be able to customize that.
+            location_administrative_vocabulary_options['A4'] = OrderedDict(
+                codelist_choices(location_administratives)
+            )
 
     aid_type_vocabulary_options = {
         '1': dict(codelist_choices(AID_TYPE)), '2': dict(codelist_choices(EARMARKING_CATEGORY))
@@ -383,6 +391,7 @@ def project_editor(request, project_id):
         'countries': countries,
         'sector_vocabulary_options': json.dumps(sector_vocabulary_options),
         'aid_type_vocabulary_options': json.dumps(aid_type_vocabulary_options),
+        'location_administrative_vocabulary_options': json.dumps(location_administrative_vocabulary_options),
 
         # Default indicator
         'default_indicator': default_indicator,
