@@ -15,19 +15,6 @@ const { Option } = Select
 const Locations = ({ rdr, ...props }) => (
   <div className="locations view">
     <Form layout="vertical">
-      <h3>Locations</h3>
-      {rdr.locations.map((item, index) =>
-        <div className="location-item">
-          <SearchItem
-            location={item}
-            onChange={location => props.editLocation(location, index)}
-            onRemove={() => props.removeLocation(index)}
-          />
-        </div>
-      )}
-      <Button onClick={() => props.addLocation()} icon="plus" type="dashed" block>
-        Add location
-      </Button>
       <h3>Recipient country</h3>
       {rdr.countries.map((countryCode, index) =>
       <div className="location-item">
@@ -47,6 +34,19 @@ const Locations = ({ rdr, ...props }) => (
       </div>
       )}
       <Button onClick={props.addCountry} className="bottom-btn" icon="plus" type="dashed" block>Add recipient country</Button>
+      <h3>Locations</h3>
+      {rdr.locations.map((item, index) =>
+        <div className="location-item">
+          <SearchItem
+            location={item}
+            onChange={location => props.editLocation(location, index)}
+            onRemove={() => props.removeLocation(index)}
+          />
+        </div>
+      )}
+      <Button onClick={() => props.addLocation()} icon="plus" type="dashed" block>
+        Add location
+      </Button>
     </Form>
   </div>
 )

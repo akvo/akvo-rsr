@@ -23,7 +23,7 @@ const Settings = ({ infoRdr, ...props }) => (
     <p>
       <Switch checked={!infoRdr.isPublic} onChange={checked => props.editField('isPublic', !checked)} />
       <span className="switch-label">Private project</span>
-      <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
+      <Tooltip title="Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project."><Icon type="info-circle" /></Tooltip>
     </p>
     <hr />
     <strong>Validation sets</strong>

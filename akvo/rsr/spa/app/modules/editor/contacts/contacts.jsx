@@ -65,20 +65,7 @@ class Contacts extends React.Component{
                   <Input value={contact.organisation} onChange={event => this.props.editContactField(index, 'organisation', event.target.value)} />
                 </Item>
                 <Item label={(
-                <InputLabel
-                  optional
-                  more={(
-                    <div className="more-switches">
-                      <Switch size="small" />
-                      <span>
-                        Make email public
-                        <Tooltip title="Something">
-                          <Icon type="info-circle" />
-                        </Tooltip>
-                      </span>
-                    </div>
-                  )}
-                >
+                <InputLabel optional>
                   Email
                 </InputLabel>
                 )}

@@ -10,12 +10,12 @@ const { Item } = Form
 const { Option } = Select
 
 const roles = [
-  { value: 1, label: 'Funding partner'},
   { value: 2, label: 'Accountable partner'},
   { value: 3, label: 'Extending partner'},
+  { value: 1, label: 'Funding partner'},
   { value: 4, label: 'Implementing partner'},
-  { value: 100, label: 'Sponsor partner'},
-  { value: 101, label: 'Reporting organization'}
+  { value: 101, label: 'Reporting organization'},
+  { value: 100, label: 'Sponsor partner'}
 ]
 
 class Partners extends React.Component{
@@ -51,15 +51,15 @@ class Partners extends React.Component{
               key={`p${index}`}
             >
               <Form layout="vertical">
-                <Item label="Organisation">
-                  <Input value={partner.name} onChange={event => this.props.editPartnerField(index, 'name', event.target.value)} />
-                </Item>
                 <Item label="Role">
                   <Select value={partner.role} onChange={value => this.props.editPartnerField(index, 'role', value)}>
                     {roles.map(role =>
                       <Option key={role.value} value={role.value}>{role.label}</Option>
                     )}
                   </Select>
+                </Item>
+                <Item label="Organisation">
+                  <Input value={partner.name} onChange={event => this.props.editPartnerField(index, 'name', event.target.value)} />
                 </Item>
                 {partner.role === 101 &&
                 <Item label="Secondary reporter">
