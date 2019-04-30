@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Collapse, Icon, Form, Input, Button, Select, InputNumber } from 'antd'
 
+import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import * as actions from './actions'
 import './styles.scss'
 
@@ -41,6 +42,8 @@ class Partners extends React.Component{
     this.props.removePartner(index)
   }
   render(){
+    const currencySymbol = getSymbolFromCurrency(this.props.infoRdr.currency)
+    const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
     return (
       <div className="partners view">
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
@@ -73,8 +76,8 @@ class Partners extends React.Component{
                 {partner.role === 1 &&
                 <Item label="Funding amount">
                   <InputNumber
-                    formatter={value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    parser={value => value.replace(/€\s?|(,*)/g, '')}
+                    formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={value => value.replace(currencyRegExp, '')}
                     value={partner.fundingAmount}
                     onChange={value => this.props.editPartnerField(index, 'fundingAmount', value)}
                     style={{ width: 200 }}
@@ -93,6 +96,6 @@ class Partners extends React.Component{
 }
 
 export default connect(
-  ({ partnersRdr }) => ({ rdr: partnersRdr }),
+  ({ partnersRdr, infoRdr }) => ({ rdr: partnersRdr, infoRdr }),
   actions
 )(Partners)
