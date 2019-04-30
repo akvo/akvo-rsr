@@ -190,28 +190,12 @@ const Info = () => (
           />
         </Col>
       </Row>
-      {/* <Field
-        name="plannedDuration"
-        render={props => (
-          <Item label={(<span>Planned duration</span>)}>
-            <RangePicker format="DD/MM/YYYY" {...props} />
-          </Item>
-        )}
-      />
-      <Field
-        name="actualDuration"
-        render={props => (
-          <Item label={(<span>Actual duration</span>)}>
-            <RangePicker format="DD/MM/YYYY" {...props} />
-          </Item>
-        )}
-      /> */}
       <Field
         name="currency"
         render={props => (
           <Item label={<InputLabel optional tooltip="The default currency for this project. Used in all financial aspects of the project.">Currency</InputLabel>}>
-            <Select {...props} showSearch>
-              {currencies.map(({ code, currency }) => <Option value={`${code} - ${currency}`}>{code} - {currency}</Option>)}
+            <Select {...props} showSearch optionFilterProp="children">
+              {currencies.map(({ code, currency }) => <Option value={code}>{code} - {currency}</Option>)}
             </Select>
           </Item>
         )}

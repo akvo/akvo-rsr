@@ -4,6 +4,7 @@ import { Collapse, Icon, Form, Input, Button, InputNumber, Modal } from 'antd'
 
 import InputLabel from '../../../utils/input-label'
 import { budgetItemTypes } from '../../../utils/constants'
+import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 
 import * as actions from './actions'
 import './styles.scss'
@@ -58,21 +59,23 @@ class Finance extends React.Component{
     return ret
   }
   render(){
+    const currencySymbol = getSymbolFromCurrency(this.props.infoRdr.currency)
+    const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
     return (
       <div className="finance view">
-        <p className="total">Total budget:<span className="amount"><b>{String(`€${this.total()}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></span></p>
+        <p className="total">Total budget:<span className="amount"><b>{String(`${currencySymbol}${this.total()}`).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></span></p>
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
         {this.props.rdr.map((budgetItem, index) =>
             <Panel
               header={`${budgetItemTypes.find(it => it.value === budgetItem.type).label}`}
-              extra={<span><span className="amount">€{String(budgetItem.amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
+              extra={<span><span className="amount">{currencySymbol}{String(budgetItem.amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
               key={`p${index}`}
             >
               <Form layout="vertical">
                 <Item label={<InputLabel tooltip="...">Amount</InputLabel>}>
                   <InputNumber
-                    formatter={value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    parser={value => value.replace(/€\s?|(,*)/g, '')}
+                    formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={value => value.replace(currencyRegExp, '')}
                     value={budgetItem.amount}
                     onChange={value => this.props.editBudgetField(index, 'amount', value)}
                     style={{ width: 200 }}
@@ -107,6 +110,6 @@ class Finance extends React.Component{
 }
 
 export default connect(
-  ({ budgetItemsRdr }) => ({ rdr: budgetItemsRdr }),
+  ({ budgetItemsRdr, infoRdr }) => ({ rdr: budgetItemsRdr, infoRdr }),
   actions
 )(Finance)

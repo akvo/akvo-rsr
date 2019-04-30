@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Form, Input, Select, Row, Col, DatePicker, Divider, InputNumber } from 'antd'
 import currencies from 'currency-codes/data'
-import currencySymbolMap from 'currency-symbol-map/map'
 
 import InputLabel from '../../../../utils/input-label'
 import _Field from '../../../../utils/field'
+import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import * as actions from '../actions'
 import channelCodes from '../channel-codes.json'
 import FlagsStack from './flags-stack'
@@ -20,12 +20,6 @@ const Field = connect(
   actions
 )(_Field)
 
-
-function getSymbolFromCurrency(currencyCode) {
-  if (typeof currencyCode !== 'string') return ''
-  if (!currencySymbolMap.hasOwnProperty(currencyCode)) return currencyCode
-  return currencySymbolMap[currencyCode]
-}
 
 const LoanTerms = () => (
   <section>
