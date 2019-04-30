@@ -1,18 +1,20 @@
+/* global fetch */
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-  Form, Input, Switch, Icon, Tooltip, DatePicker, Select, Upload
+  Form, Input, Switch, DatePicker, Select, Row, Col
 } from 'antd'
 import currencies from 'currency-codes/data'
 
-import InputLabel from '../../../utils/input-label'
-import _Field from '../../../utils/field'
-import * as actions from './actions'
+import InputLabel from '../../../../utils/input-label'
+import _Field from '../../../../utils/field'
+import { datePickerConfig, havePropsChanged } from '../../../../utils/misc'
+import * as actions from '../actions'
+import ProjectPhoto from './project-photo'
 
-import './styles.scss'
+import '../styles.scss'
 
 const { Item } = Form
-const { RangePicker } = DatePicker
 const { Option } = Select
 const Field = connect(
   ({ infoRdr }) => ({ rdr: infoRdr }),
@@ -43,14 +45,78 @@ const StatusTooltip = () => (
   </ol>
 </span>)
 
+class _ParentPicker extends React.Component{
+  state = {
+    projects: []
+  }
+  componentWillMount(){
+    fetch('/rest/v1/typeaheads/projects?format=json')
+      .then(d => d.json())
+      .then(({ results }) => {
+        this.setState({
+          projects: results
+        })
+      })
+  }
+  componentShouldUpdate(nextProps){
+    return havePropsChanged(['parentId', 'isParentExternal'], nextProps.rdr, this.props.rdr)
+  }
+  render() {
+    return (
+      <Item label={(
+        <InputLabel
+          tooltip="Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project."
+          optional
+          more={(
+            <div className="more-switches">
+              <Switch size="small" value={this.props.rdr.isParentExternal} onChange={value => this.props.editField('isParentExternal', value)} />
+              <span>External project</span>
+            </div>
+          )}
+        >Parent
+        </InputLabel>
+      )}>
+        {this.props.rdr.isParentExternal &&
+        <Input placeholder="IATI Identifier" value={this.props.rdr.parentId} onChange={ev => this.props.editField('parentId', ev.target.value)} />
+        }
+        {!this.props.rdr.isParentExternal &&
+        <Select
+          showSearch
+          optionFilterProp="children"
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {this.state.projects.map(project =>
+            <Option value={project.id}>{project.title}</Option>
+          )}
+        </Select>
+        }
+      </Item>
+    )
+  }
+}
+
+const ParentPicker = connect(
+  ({ infoRdr }) => ({ rdr: infoRdr }),
+  actions
+)(_ParentPicker)
+
+
 const Info = () => (
   <div className="info view">
     <Form layout="vertical">
       <Field
         name="title"
-        render={({value, onChange}) => (
-          <Item label="Project title" validateStatus={value.length > 5 ? 'success' : ''} hasFeedback>
-            <Input value={value} onChange={onChange} />
+        render={props => (
+          <Item label="Project title" validateStatus={props.value.length > 5 ? 'success' : ''} hasFeedback>
+            <Input {...props} />
+          </Item>
+        )}
+      />
+      <Field
+        name="subtitle"
+        render={props => (
+          <Item label="Project subtitle" validateStatus={props.value.length > 5 ? 'success' : ''} hasFeedback>
+            <Input {...props} />
           </Item>
         )}
       />
@@ -60,20 +126,14 @@ const Info = () => (
           <Item label={(
             <InputLabel
               tooltip={<IatiTooltip />}
-              optional
-              more={(
-                <div className="more-switches">
-                  <Switch size="small" />
-                  <span>External project <Tooltip title="Not in RSR"><Icon type="info-circle" /></Tooltip></span>
-                </div>
-              )}
-            >Parent project
+            >IATI Identifier
             </InputLabel>
           )}>
-            <Input {...props} placeholder="IATI identifier" />
+            <Input {...props} />
           </Item>
         )}
       />
+      <ParentPicker />
       <Field
         name="iatiStatus"
         render={props => (
@@ -86,7 +146,51 @@ const Info = () => (
           </Item>
         )}
       />
-      <Field
+      <Row gutter={16}>
+        <Col span={12}>
+          <Field
+            name="plannedStartDate"
+            render={props => (
+              <Item label={<InputLabel>Planned Start Date</InputLabel>}>
+                <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+              </Item>
+            )}
+          />
+        </Col>
+        <Col span={12}>
+          <Field
+            name="plannedEndDate"
+            render={props => (
+              <Item label={<InputLabel>Planned End Date</InputLabel>}>
+                <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+              </Item>
+            )}
+          />
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Field
+            name="actualStartDate"
+            render={props => (
+              <Item label={<InputLabel>Actual Start Date</InputLabel>}>
+                <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+              </Item>
+            )}
+          />
+        </Col>
+        <Col span={12}>
+          <Field
+            name="actualEndDate"
+            render={props => (
+              <Item label={<InputLabel>Actual End Date</InputLabel>}>
+                <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+              </Item>
+            )}
+          />
+        </Col>
+      </Row>
+      {/* <Field
         name="plannedDuration"
         render={props => (
           <Item label={(<span>Planned duration</span>)}>
@@ -101,7 +205,7 @@ const Info = () => (
             <RangePicker format="DD/MM/YYYY" {...props} />
           </Item>
         )}
-      />
+      /> */}
       <Field
         name="currency"
         render={props => (
@@ -126,20 +230,12 @@ const Info = () => (
       <hr />
 
       <h3>Project photo</h3>
-      <Item label={<InputLabel tooltip="Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page. The photo should not be larger than 2 MB in size, and should preferably be in JPG format.">Photo</InputLabel>}>
-        <Upload.Dragger name="files" listType="picture" action="/upload.do">
-          <p className="ant-upload-drag-icon">
-            <Icon type="picture" theme="twoTone" />
-          </p>
-          <p className="ant-upload-text">Drag file here</p>
-          <p className="ant-upload-hint">or click to browse from computer</p>
-        </Upload.Dragger>
-      </Item>
+      <ProjectPhoto projectId={2} />
 
       <Field
         name="currentImageCaption"
         render={props => (
-          <Item label={<InputLabel optional tooltip="Enter who took the photo.">Photo credit</InputLabel>}>
+          <Item label={<InputLabel optional tooltip="Enter the name of the person who took the photo">Photo credit</InputLabel>}>
             <Input {...props} />
           </Item>
         )}

@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
-import { Icon, Button } from 'antd'
+import { Icon, Button, Alert } from 'antd'
 import { StickyContainer, Sticky } from 'react-sticky'
 
 import Settings from './settings/settings'
-import Info from './info/info'
+import Info from './info/comp/info'
 import Contacts from './contacts/contacts'
 import Partners from './partners/partners'
 import Descriptions from './descriptions/descriptions'
