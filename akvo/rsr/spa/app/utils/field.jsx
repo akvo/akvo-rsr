@@ -10,6 +10,7 @@ class Field extends React.Component{
   }
   render(){
     return this.props.render({
+      name: this.props.name,
       value: this.props.rdr[this.props.name],
       onChange: (...args) => {
         let value

@@ -34,9 +34,9 @@ const Settings = ({ infoRdr, ...props }) => (
       Only admins or partners with an RSR contract are able to edit this.
     </small>
     <ul>
-      {sets.map(({ value, label }) =>
+      {sets.map(({ value, label }, index) =>
       <li>
-        <Switch checked={infoRdr.validations.indexOf(value) !== -1} onChange={checked => props.checkValidation(value, checked)} />
+        <Switch disabled={index === 0} checked={infoRdr.validations.indexOf(value) !== -1} onChange={checked => props.checkValidation(value, checked)} />
         <span className="switch-label">{label}</span>
         <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
       </li>

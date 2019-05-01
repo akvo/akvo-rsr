@@ -11,6 +11,7 @@ import _Field from '../../../../utils/field'
 import { datePickerConfig, havePropsChanged } from '../../../../utils/misc'
 import * as actions from '../actions'
 import ProjectPhoto from './project-photo'
+import { validationType, getValidationSets } from '../validations'
 
 import '../styles.scss'
 
@@ -58,7 +59,7 @@ class _ParentPicker extends React.Component{
         })
       })
   }
-  componentShouldUpdate(nextProps){
+  shouldComponentUpdate(nextProps){
     return havePropsChanged(['parentId', 'isParentExternal'], nextProps.rdr, this.props.rdr)
   }
   render() {
@@ -102,7 +103,17 @@ const ParentPicker = connect(
 
 
 const Info = ({ validations }) => {
-  const isIATI = validations.indexOf(2) !== -1
+  const validationSets = getValidationSets(validations)
+  const isOptional = (field) => {
+    let ret = true
+    for(let i = 0; i < validationSets.length; i += 1){
+      if(validationSets[i].fields.hasOwnProperty(field) && validationSets[i].fields[field]._exclusive.required){
+        ret = false
+        break
+      }
+    }
+    return ret
+  }
   return (
     <div className="info view">
       <Form layout="vertical">
@@ -175,7 +186,7 @@ const Info = ({ validations }) => {
             <Field
               name="actualStartDate"
               render={props => (
-                <Item label={<InputLabel>Actual Start Date</InputLabel>}>
+                <Item label={<InputLabel optional={isOptional(props.name)}>Actual Start Date</InputLabel>}>
                   <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
                 </Item>
               )}
@@ -185,7 +196,7 @@ const Info = ({ validations }) => {
             <Field
               name="actualEndDate"
               render={props => (
-                <Item label={<InputLabel>Actual End Date</InputLabel>}>
+                <Item label={<InputLabel optional={isOptional(props.name)}>Actual End Date</InputLabel>}>
                   <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
                 </Item>
               )}
@@ -203,9 +214,9 @@ const Info = ({ validations }) => {
           )}
         />
         <Field
-          name="languages"
+          name="language"
           render={props => (
-            <Item label={<InputLabel optional tooltip="Enter the language used when entering the details for this project.">Language</InputLabel>}>
+            <Item label={<InputLabel optional={isOptional(props.name)} tooltip="Enter the language used when entering the details for this project.">Language</InputLabel>}>
               <Select {...props}>
                 {languages.map(({ code, label }) => <Option value={code}>{label}</Option>)}
               </Select>
@@ -232,7 +243,7 @@ const Info = ({ validations }) => {
             </Item>
           )}
         />
-        {isIATI && (
+        {(validations.indexOf(validationType.IATI) !== -1 || validations.indexOf(validationType.DGIS) !== -1) && (
           <div>
             <hr />
             <Field
@@ -260,7 +271,7 @@ const Info = ({ validations }) => {
               render={props => (
                 <Item label={
                   <InputLabel
-                    optional
+                    optional={isOptional(props.name)}
                     tooltip={<span>This is the IATI identifier for the type of aid being supplied or activity being undertaken. This element specifies a default for all the project’s financial transactions. This can be overridden at the individual transaction level. For reference, please visit:  <a target="_blank" rel="noopener noreferrer" href="http://iatistandard.org/202/codelists/AidType/">http://iatistandard.org/202/codelists/AidType/</a></span>}
                   >
                   Default aid type
@@ -274,11 +285,38 @@ const Info = ({ validations }) => {
               )}
             />
             <Field
+              name="defaultFlowType"
+              render={props => (
+                <Item label={
+                  <InputLabel
+                    optional={isOptional(props.name)}
+                    tooltip={<span>This is the IATI identifier for how the activity (project) is funded. For reference, please visit: <a target="_blank" rel="noopener noreferrer" href="http://iatistandard.org/202/codelists/FlowType/">http://iatistandard.org/202/codelists/FlowType/</a></span>}
+                  >
+                  Default flow type
+                  </InputLabel>}
+                >
+                  <Select {...props}>
+                    <Option value="">&nbsp;</Option>
+                    <Option value="10">10 - ODA</Option>
+                    <Option value="20">20 - OOF</Option>
+                    <Option value="21">21 - Non-export credit OOF</Option>
+                    <Option value="22">22 - Officially supported export credits</Option>
+                    <Option value="30">30 - Private grants</Option>
+                    <Option value="35">35 - Private market</Option>
+                    <Option value="36">36 - Private Foreign Direct Investment</Option>
+                    <Option value="37">37 - Other Private flows at market terms</Option>
+                    <Option value="40">40 - Non flow</Option>
+                    <Option value="50">50 - Other flows</Option>
+                  </Select>
+                </Item>
+              )}
+            />
+            <Field
               name="defaultTiedStatus"
               render={props => (
                 <Item label={
                   <InputLabel
-                    optional
+                    optional={isOptional(props.name)}
                     tooltip={<span>This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference, please visit: <a target="_blank" rel="noopener noreferrer" href="http://iatistandard.org/202/codelists/TiedStatus/">http://iatistandard.org/202/codelists/TiedStatus/</a></span>}
                   >
                   Default tied status
@@ -293,6 +331,8 @@ const Info = ({ validations }) => {
                 </Item>
               )}
             />
+            {validations.indexOf(validationType.IATI) !== -1 &&
+            <div>
             <Field
               name="collaborationType"
               render={props => (
@@ -395,6 +435,8 @@ const Info = ({ validations }) => {
                 </Item>
               )}
             />
+            </div>
+            }
           </div>
         )}
       </Form>

@@ -1,3 +1,6 @@
+import { getValidationSets } from './info/validations'
+import infoActionTypes from './info/action-types'
+
 const initialState = {
   isCompleted: {
     info: false,
@@ -23,9 +26,18 @@ export default (state = initialState, action) => {
     clearInterval(autosaveTmId)
     autosaveTmId = setTimeout(() => {
       if(action.asyncDispatch) {
-        if(action.type === 'PE_INFO_EDIT_FIELD'){
+        if(action.type === infoActionTypes.EDIT_FIELD || action.type === infoActionTypes.CHECK_VALIDATION){
           const { infoRdr } = action.getState()
-          const isCompleted = infoRdr.title.length > 5 && infoRdr.iatiStatus !== '' && infoRdr.plannedDuration.length === 2 && infoRdr.actualDuration.length === 2
+          const validationSets = getValidationSets(infoRdr.validations)
+          let isCompleted = true
+          validationSets.forEach((validationSet) => {
+            try{
+              validationSet.validateSync(infoRdr)
+            } catch(error){
+              console.log('validation error', error)
+              isCompleted = false
+            }
+          })
           action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'info', value: isCompleted })
         }
         if(action.type.indexOf('PE_DESCRIPTION') !== -1){
