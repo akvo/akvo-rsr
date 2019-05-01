@@ -19,7 +19,13 @@ const initialState = {
   language: 'en',
   currentImage: '',
   currentImageCaption: '',
-  currentImageCredit: ''
+  currentImageCredit: '',
+  defaultAidTypeVocabulary: '',
+  defaultAidType: '',
+  defaultFlowType: '',
+  defaultTiedStatus: '',
+  collaborationType: '',
+  defaultFinanceType: '',
 }
 
 export default (state = initialState, action) => {
