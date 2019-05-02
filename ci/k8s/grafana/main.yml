@@ -5,7 +5,7 @@ metadata:
   labels:
      grafana_dashboard: "1"
 data:
-  k8s-dashboard.json: |-
+  rsr-dashboard.json: |-
     {
       "__requires": [
         {
