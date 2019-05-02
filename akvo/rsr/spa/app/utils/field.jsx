@@ -2,16 +2,22 @@ import React from 'react'
 
 class Field extends React.Component{
   shouldComponentUpdate(nextProps){
-    if(this.props.additionalWatchProp){
-      if(nextProps.rdr[this.props.additionalWatchProp] !== this.props.rdr[this.props.additionalWatchProp]) return true
+    let thisItem = this.props.rdr
+    let nextItem = nextProps.rdr
+    if(this.props.index !== undefined){
+      thisItem = this.props.rdr[this.props.index]
+      nextItem = nextProps.rdr[this.props.index]
     }
-    if(nextProps.rdr[this.props.name] !== this.props.rdr[this.props.name]) return true
+    if(this.props.additionalWatchProp){
+      if(nextItem[this.props.additionalWatchProp] !== thisItem[this.props.additionalWatchProp]) return true
+    }
+    if(nextItem[this.props.name] !== thisItem[this.props.name]) return true
     return false
   }
   render(){
     return this.props.render({
       name: this.props.name,
-      value: this.props.rdr[this.props.name],
+      value: this.props.index === undefined ? this.props.rdr[this.props.name] : this.props.rdr[this.props.index][this.props.name],
       onChange: (...args) => {
         let value
         if(typeof args[0] === 'object' && args[0].hasOwnProperty('target')){
@@ -19,7 +25,11 @@ class Field extends React.Component{
         } else {
           value = args[0]
         }
-        this.props.editField(this.props.name, value)
+        if(this.props.index !== undefined){
+          this.props.editField(this.props.index, this.props.name, value)
+        } else {
+          this.props.editField(this.props.name, value)
+        }
       }
     })
   }
