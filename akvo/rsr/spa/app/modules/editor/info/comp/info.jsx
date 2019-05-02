@@ -8,10 +8,10 @@ import currencies from 'currency-codes/data'
 
 import InputLabel from '../../../../utils/input-label'
 import _Field from '../../../../utils/field'
-import { datePickerConfig, havePropsChanged } from '../../../../utils/misc'
+import { datePickerConfig, havePropsChanged, validationType, isFieldOptional } from '../../../../utils/misc'
 import * as actions from '../actions'
 import ProjectPhoto from './project-photo'
-import { validationType, getValidationSets } from '../validations'
+import { getValidationSets } from '../validations'
 
 import '../styles.scss'
 
@@ -104,16 +104,7 @@ const ParentPicker = connect(
 
 const Info = ({ validations }) => {
   const validationSets = getValidationSets(validations)
-  const isOptional = (field) => {
-    let ret = true
-    for(let i = 0; i < validationSets.length; i += 1){
-      if(validationSets[i].fields.hasOwnProperty(field) && validationSets[i].fields[field]._exclusive.required){
-        ret = false
-        break
-      }
-    }
-    return ret
-  }
+  const isOptional = isFieldOptional(validationSets)
   return (
     <div className="info view">
       <Form layout="vertical">

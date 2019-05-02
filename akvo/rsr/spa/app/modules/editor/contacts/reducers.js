@@ -1,12 +1,8 @@
 import types from './action-types'
+import { basic } from './validations'
+import { yupModel } from '../../../utils/misc'
 
-const newPartner = {
-  name: '',
-  type: 1,
-  organisation: '',
-  email: '',
-  publicEmail: false,
-}
+const newPartner = yupModel(basic)
 
 const initialState = [{...newPartner}]
 

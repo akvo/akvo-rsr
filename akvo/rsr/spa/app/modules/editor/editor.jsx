@@ -65,7 +65,7 @@ const Editor = ({ rdr }) => (
               <ul>
                 <MenuItem hideCheck to="/">Settings</MenuItem>
                 <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
-                <MenuItem to="/contacts">Contact Information</MenuItem>
+                <MenuItem to="/contacts" checked={rdr.isCompleted.contacts}>Contact Information</MenuItem>
                 <MenuItem to="/partners">Partners</MenuItem>
                 <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
                 <MenuItem to="/results-indicators">Results and indicators</MenuItem>

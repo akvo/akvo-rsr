@@ -1,5 +1,7 @@
-import { getValidationSets } from './info/validations'
+import { getValidationSets as infoGetValidationSets } from './info/validations'
+import { getValidationSets as contactsGetValidationSets } from './contacts/validations'
 import infoActionTypes from './info/action-types'
+import contactActionTypes from './contacts/action-types'
 
 const initialState = {
   isCompleted: {
@@ -26,9 +28,10 @@ export default (state = initialState, action) => {
     clearInterval(autosaveTmId)
     autosaveTmId = setTimeout(() => {
       if(action.asyncDispatch) {
+        // SECTION 1
         if(action.type === infoActionTypes.EDIT_FIELD || action.type === infoActionTypes.CHECK_VALIDATION){
           const { infoRdr } = action.getState()
-          const validationSets = getValidationSets(infoRdr.validations)
+          const validationSets = infoGetValidationSets(infoRdr.validations)
           let isCompleted = true
           validationSets.forEach((validationSet) => {
             try{
@@ -39,6 +42,21 @@ export default (state = initialState, action) => {
             }
           })
           action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'info', value: isCompleted })
+        }
+        // SECTION 2
+        else if(action.type === contactActionTypes.EDIT_FIELD || action.type === contactActionTypes.REMOVE){
+          const { infoRdr, contactsRdr } = action.getState()
+          const validationSets = contactsGetValidationSets(infoRdr.validations, { arrays: true })
+          let isCompleted = true
+          validationSets.forEach((validationSet) => {
+            try{
+              validationSet.validateSync(contactsRdr)
+            } catch(error){
+              console.log('validation error', error)
+              isCompleted = false
+            }
+          })
+          action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'contacts', value: isCompleted })
         }
         if(action.type.indexOf('PE_DESCRIPTION') !== -1){
           const { descsRdr } = action.getState()

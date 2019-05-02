@@ -1,10 +1,6 @@
 import * as yup from 'yup'
 
-export const validationType = {
-  basic: 1,
-  IATI: 2,
-  DGIS: 3
-}
+import { validationType } from '../../../utils/misc'
 
 const basic = yup.object().shape({
   title: yup.string().required(),
@@ -32,8 +28,8 @@ const IATI = basic.clone().shape({
 })
 
 const DGIS = basic.clone().shape({
-  actualStartDate: yup.date().required(),
-  actualEndDate: yup.date().required(),
+  actualStartDate: basic.fields.actualStartDate.required(),
+  actualEndDate: basic.fields.actualEndDate.required(),
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string().required(),
   defaultFlowType: yup.string().required(),

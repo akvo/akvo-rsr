@@ -68,6 +68,7 @@
     "linebreak-style": 0,
     "import/no-extraneous-dependencies": 1,
     "no-unused-vars": 1,
-    "import/no-named-as-default-member": 0
+    "import/no-named-as-default-member": 0,
+    "newline-per-chained-call": 0
   }
 }
