@@ -10,14 +10,13 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import unittest
 
-from akvo.rsr.models import (Project, PublishingStatus, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodData, IndicatorReference, User, RelatedProject)
+from akvo.rsr.models import (
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference)
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.tests.base import BaseTestCase
 
-from django.test import TestCase
 
-
-class ResultsFrameworkTestCase(TestCase):
+class ResultsFrameworkTestCase(BaseTestCase):
     """Tests the results framework."""
 
     def setUp(self):
@@ -29,42 +28,13 @@ class ResultsFrameworkTestCase(TestCase):
         - Published parent project with child projects.
         """
 
-        # Create (super)user
-        self.user = User.objects.create_superuser(
-            username="Super user",
-            email="superuser.results@test.akvo.org",
-            password="password"
-        )
+        # Create user
+        self.user = self.create_user("user@test.akvo.org", "password")
 
-        # Create parent project
-        self.parent_project = Project.objects.create(
-            title="Parent project",
-            subtitle="Parent project (subtitle)",
-        )
-        self.parent_project.publish()
-
-        # # Publish parent project
-        # publishing_status = PublishingStatus.objects.get(project=self.parent_project.pk)
-        # publishing_status.status = 'published'
-        # publishing_status.save(update_fields=['status', ])
-
-        # Create child project
-        self.child_project = Project.objects.create(
-            title="Child project",
-            subtitle="Child project (subtitle)",
-        )
-
-        # Publish child project
-        publishing_status = PublishingStatus.objects.get(project=self.child_project.pk)
-        publishing_status.status = 'published'
-        publishing_status.save(update_fields=['status', ])
-
-        # Link child to parent
-        RelatedProject.objects.create(
-            project=self.parent_project,
-            related_project=self.child_project,
-            relation=RelatedProject.PROJECT_RELATION_CHILD,
-        )
+        # Create projects and relationship
+        self.parent_project = self.create_project("Parent project")
+        self.child_project = self.create_project("Child project")
+        self.make_parent(self.parent_project, self.child_project)
 
         # Create results framework
         self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1")
@@ -485,20 +455,10 @@ class ResultsFrameworkTestCase(TestCase):
         self.assertEqual(child_indicator.measure, "2")
 
         # Create child 2 project
-        child_project_2 = Project.objects.create(
-            title="Child project 2",
-            subtitle="Child project 2 (subtitle)",
-        )
-
-        # Publish child 2 project
-        child_project_2.publish()
+        child_project_2 = self.create_project("Child project 2")
 
         # Link child 2 to parent
-        RelatedProject.objects.create(
-            project=self.parent_project,
-            related_project=child_project_2,
-            relation=RelatedProject.PROJECT_RELATION_CHILD,
-        )
+        self.make_parent(self.parent_project, child_project_2)
 
         # Import results framework into child 2
         self.import_status, self.import_message = child_project_2.import_results()
