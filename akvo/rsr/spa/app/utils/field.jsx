@@ -20,7 +20,7 @@ class Field extends React.Component{
       value: this.props.index === undefined ? this.props.rdr[this.props.name] : this.props.rdr[this.props.index][this.props.name],
       onChange: (...args) => {
         let value
-        if(typeof args[0] === 'object' && args[0].hasOwnProperty('target')){
+        if(args[0] && typeof args[0] === 'object' && args[0].hasOwnProperty('target')){
           value = args[0].target.value
         } else {
           value = args[0]

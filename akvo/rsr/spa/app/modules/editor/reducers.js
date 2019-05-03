@@ -1,7 +1,16 @@
 import { getValidationSets as infoGetValidationSets } from './info/validations'
 import { getValidationSets as contactsGetValidationSets } from './contacts/validations'
+import { getValidationSets as partnersGetValidationSets } from './partners/validations'
 import infoActionTypes from './info/action-types'
-import contactActionTypes from './contacts/action-types'
+import contactsActionTypes from './contacts/action-types'
+import partnersActionTypes from './partners/action-types'
+import { sections } from './editor'
+
+const validationSetGetters = {
+  info: infoGetValidationSets,
+  contacts: contactsGetValidationSets,
+  partners: partnersGetValidationSets
+}
 
 const initialState = {
   isCompleted: {
@@ -21,42 +30,45 @@ const initialState = {
   showSection11: false
 }
 
+const validate = (section, action) => {
+  const state = action.getState()
+  const validationSets = validationSetGetters[section](state.infoRdr.validations, { arrays: true })
+  let isCompleted = true
+  validationSets.forEach((validationSet) => {
+    try{
+      validationSet.validateSync(state[`${section}Rdr`])
+    } catch(error){
+      console.log('validation error', error)
+      isCompleted = false
+    }
+  })
+  action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: section, value: isCompleted })
+}
+
 let autosaveTmId
+
+const objectToArray = object => Object.keys(object).map(it => object[it])
 
 export default (state = initialState, action) => {
   if(action.type.indexOf('PE_') !== -1){
     clearInterval(autosaveTmId)
     autosaveTmId = setTimeout(() => {
       if(action.asyncDispatch) {
+        // SECTION 0 - edited validation setting
+        if(action.type === infoActionTypes.CHECK_VALIDATION){
+          sections.map(section => validate(section, action))
+        }
         // SECTION 1
-        if(action.type === infoActionTypes.EDIT_FIELD || action.type === infoActionTypes.CHECK_VALIDATION){
-          const { infoRdr } = action.getState()
-          const validationSets = infoGetValidationSets(infoRdr.validations)
-          let isCompleted = true
-          validationSets.forEach((validationSet) => {
-            try{
-              validationSet.validateSync(infoRdr)
-            } catch(error){
-              console.log('validation error', error)
-              isCompleted = false
-            }
-          })
-          action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'info', value: isCompleted })
+        else if(action.type === infoActionTypes.EDIT_FIELD){
+          validate('info', action)
         }
         // SECTION 2
-        else if(action.type === contactActionTypes.EDIT_FIELD || action.type === contactActionTypes.REMOVE){
-          const { infoRdr, contactsRdr } = action.getState()
-          const validationSets = contactsGetValidationSets(infoRdr.validations, { arrays: true })
-          let isCompleted = true
-          validationSets.forEach((validationSet) => {
-            try{
-              validationSet.validateSync(contactsRdr)
-            } catch(error){
-              console.log('validation error', error)
-              isCompleted = false
-            }
-          })
-          action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'contacts', value: isCompleted })
+        else if(objectToArray(contactsActionTypes).indexOf(action.type) !== -1){
+          validate('contacts', action)
+        }
+        // SECTION 3
+        else if(objectToArray(partnersActionTypes).indexOf(action.type) !== -1){
+          validate('partners', action)
         }
         if(action.type.indexOf('PE_DESCRIPTION') !== -1){
           const { descsRdr } = action.getState()

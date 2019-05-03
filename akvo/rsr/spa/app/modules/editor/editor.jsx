@@ -18,6 +18,8 @@ import Reporting from './reporting/comp/reporting'
 
 import './styles.scss'
 
+export const sections = ['info', 'contacts', 'partners']
+
 const Check = ({ checked }) => (
   <div className="check">
     <Icon type="check-circle" theme="filled" className={checked ? 'checked' : ''} />
@@ -66,7 +68,7 @@ const Editor = ({ rdr }) => (
                 <MenuItem hideCheck to="/">Settings</MenuItem>
                 <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
                 <MenuItem to="/contacts" checked={rdr.isCompleted.contacts}>Contact Information</MenuItem>
-                <MenuItem to="/partners">Partners</MenuItem>
+                <MenuItem to="/partners" checked={rdr.isCompleted.partners}>Partners</MenuItem>
                 <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
                 <MenuItem to="/results-indicators">Results and indicators</MenuItem>
                 <MenuItem to="/finance">Finance</MenuItem>

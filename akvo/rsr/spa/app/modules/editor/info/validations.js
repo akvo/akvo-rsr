@@ -13,8 +13,8 @@ const basic = yup.object().shape({
   plannedEndDate: yup.string().required(),
   actualStartDate: yup.string(),
   actualEndDate: yup.string(),
-  currency: yup.string(),
-  language: yup.string(),
+  currency: yup.string().default('EUR'),
+  language: yup.string().default('en'),
   currentImage: yup.string(), // .required(),
   currentImageCaption: yup.string(),
   currentImageCredit: yup.string()
