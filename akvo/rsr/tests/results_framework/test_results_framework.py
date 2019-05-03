@@ -613,3 +613,32 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(child_indicator.periods.count(), 1)
+
+    def test_copying_results_framework(self):
+        # Given
+        project = self.create_project(title='Sample Project')
+
+        # When
+        project.copy_results(self.parent_project)
+
+        # Then
+        # Results are copied?
+        self.assertEqual(set(project.results.values_list('title', flat=True)),
+                         set(self.parent_project.results.values_list('title', flat=True)))
+        result = Result.objects.get(project=project)
+
+        # Indicators are copied?
+        self.assertEqual(
+            set(Indicator.objects.filter(result__project=project).values_list('title', flat=True)),
+            set(Indicator.objects.filter(result__project=self.parent_project).values_list('title', flat=True))
+        )
+        indicator = Indicator.objects.get(result=result)
+        self.assertIsNone(indicator.parent_indicator)
+
+        # Periods are copied?
+        self.assertEqual(
+            set(IndicatorPeriod.objects.filter(indicator=indicator).values_list('period_start', 'period_end')),
+            set(IndicatorPeriod.objects.filter(indicator=self.indicator).values_list('period_start', 'period_end'))
+        )
+        indicator_period = IndicatorPeriod.objects.get(indicator=indicator)
+        self.assertIsNone(indicator_period.parent_period)
