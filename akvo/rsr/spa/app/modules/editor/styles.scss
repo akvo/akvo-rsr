@@ -160,6 +160,18 @@ hr{
   .ant-btn.bottom-btn{
     margin-bottom: 30px;
   }
+
+  .ant-collapse{
+    margin-bottom: 20px;
+    .ant-collapse-content-box{
+      .ant-form>.ant-form-item:last-child{
+        margin-bottom: 0;
+      }
+      .ant-form-item-control{
+        line-height: 1;
+      }
+    }
+  }
 }
 
 .switch-suspend.ant-switch-checked{
