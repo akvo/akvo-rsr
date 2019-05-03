@@ -1327,18 +1327,19 @@ class Project(TimestampsMixin, models.Model):
 
         return self.add_indicator(result, parent_indicator)
 
-    def add_result(self, result):
-        child_result = apps.get_model('rsr', 'Result').objects.create(
+    def add_result(self, parent_result):
+        """Add a new result to this project, as a child of the specified parent_result."""
+        result = apps.get_model('rsr', 'Result').objects.create(
             project=self,
-            parent_result=result,
-            title=result.title,
-            type=result.type,
-            aggregation_status=result.aggregation_status,
-            description=result.description,
+            parent_result=parent_result,
+            title=parent_result.title,
+            type=parent_result.type,
+            aggregation_status=parent_result.aggregation_status,
+            description=parent_result.description,
         )
 
-        for indicator in result.indicators.all():
-            self.add_indicator(child_result, indicator)
+        for indicator in parent_result.indicators.all():
+            self.add_indicator(result, indicator)
 
     def add_indicator(self, result, parent_indicator):
         """Add a new indicator to the result as a child of the specified indicator.
