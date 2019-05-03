@@ -1,15 +1,4 @@
 .finance.view{
-  .ant-collapse{
-    margin-bottom: 20px;
-    .ant-collapse-content-box{
-      .ant-form-item:last-child{
-        margin-bottom: 0;
-      }
-      .ant-form-item-control{
-        line-height: 1;
-      }
-    }
-  }
   .total{
     opacity: 0.6;
     font-size: 14px;
@@ -32,6 +21,19 @@
         border-right: 1px solid #ccc;
       }
     }
+  }
+  .ant-col-12{
+    .ant-radio-group{
+      width: 100%;
+      display: flex;
+      .ant-radio-button-wrapper{
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+  .capital-percentage{
+    max-width: 70px;
   }
 }
 .add-budget-item-modal{

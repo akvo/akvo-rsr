@@ -51,3 +51,10 @@ export const yupModel = (yupset) => {
 }
 
 export const transformUndefined = value => value === '' ? undefined : value
+
+export const Aux = node => node.children
+
+export const inputNumberAmountFormatting = {
+  formatter: value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  parser: value => value.replace(/(,*)/g, '')
+}

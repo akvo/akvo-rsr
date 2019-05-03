@@ -39,17 +39,6 @@ class Partners extends React.Component{
       }
     }
   }
-  shouldComponentUpdate(nextProps, nextState){
-    if(nextProps.rdr.length !== this.props.rdr.length){
-      return true
-    }
-    for(let i = 0; i < nextProps.rdr.length; i += 1){
-      if(nextProps.rdr[i] !== this.props.rdr[i]){
-        return true
-      }
-    }
-    return nextState !== this.state
-  }
   add = () => {
     this.setState({
       activeKey: `p${this.props.rdr.length}`
