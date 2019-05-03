@@ -3,8 +3,10 @@ import * as yup from 'yup'
 import { validationType } from '../../../utils/misc'
 
 const basic = yup.object().shape({
-  title: yup.string().required(),
-  subtitle: yup.string().required(),
+  isPublic: yup.boolean().default(true),
+  validations: yup.array().of(yup.number()).default([1]),
+  title: yup.string().default('').required(),
+  subtitle: yup.string().default('').required(),
   iatiActivityId: yup.string(),
   iatiStatus: yup.string().required(),
   plannedStartDate: yup.string().required(),

@@ -1,32 +1,8 @@
 import types from './action-types'
+import Validations from './validations'
+import { yupModel } from '../../../utils/misc'
 
-const initialState = {
-  isPublic: true,
-  publishingStatus: 'unpublished',
-  validations: [1],
-  title: '',
-  subtitle: '',
-  parent: null, // missing in API
-  iatiStatus: '',
-  iatiActivityId: '',
-  parentId: '',
-  isParentExternal: false,
-  plannedStartDate: '',
-  plannedEndDate: '',
-  actualStartDate: '',
-  actualEndDate: '',
-  currency: 'EUR',
-  language: 'en',
-  currentImage: '',
-  currentImageCaption: '',
-  currentImageCredit: '',
-  defaultAidTypeVocabulary: '',
-  defaultAidType: '',
-  defaultFlowType: '',
-  defaultTiedStatus: '',
-  collaborationType: '',
-  defaultFinanceType: '',
-}
+const initialState = yupModel(Validations.IATI)
 
 export default (state = initialState, action) => {
   switch(action.type){
