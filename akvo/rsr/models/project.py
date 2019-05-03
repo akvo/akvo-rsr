@@ -1273,7 +1273,7 @@ class Project(TimestampsMixin, models.Model):
         for result in parent_project.results.all():
             # Only import results that have not been imported before
             if not self.results.filter(parent_result=result).exists():
-                self.add_result(result)
+                self.copy_result(result)
 
         return import_success, 'Results imported'
 
@@ -1325,24 +1325,38 @@ class Project(TimestampsMixin, models.Model):
         if indicator_exists:
             raise ValidationError("Indicator already exists")
 
-        return self.add_indicator(result, parent_indicator)
+        return self.copy_indicator(result, parent_indicator, set_parent=True)
 
-    def add_result(self, parent_result):
-        """Add a new result to this project, as a child of the specified parent_result."""
-        result = apps.get_model('rsr', 'Result').objects.create(
+    def copy_results(self, source_project):
+        """Copy results from a source project."""
+
+        if self.results.count() > 0:
+            # FIXME: May need to return a failure code?
+            raise RuntimeError('Can copy results only if the results framework is empty.')
+
+        for result in source_project.results.all():
+            self.copy_result(result, set_parent=False)
+
+    def copy_result(self, source_result, set_parent=True):
+        """Copy the source_result to this project, setting it as parent if specified."""
+        data = dict(
             project=self,
-            parent_result=parent_result,
-            title=parent_result.title,
-            type=parent_result.type,
-            aggregation_status=parent_result.aggregation_status,
-            description=parent_result.description,
+            parent_result=source_result,
+            title=source_result.title,
+            type=source_result.type,
+            aggregation_status=source_result.aggregation_status,
+            description=source_result.description,
         )
+        if not set_parent:
+            data.pop('parent_result')
 
-        for indicator in parent_result.indicators.all():
-            self.add_indicator(result, indicator)
+        result = apps.get_model('rsr', 'Result').objects.create(**data)
 
-    def add_indicator(self, result, parent_indicator):
-        """Add a new indicator to the result as a child of the specified indicator.
+        for indicator in source_result.indicators.all():
+            self.copy_indicator(result, indicator, set_parent=set_parent)
+
+    def copy_indicator(self, result, source_indicator, set_parent=True):
+        """Copy a source_indicator to the result, setting it as parent if specified.
 
         NOTE: There can only be one child for an indicator, per result. This
         method automatically updates an existing child indicator, if present.
@@ -1352,29 +1366,35 @@ class Project(TimestampsMixin, models.Model):
 
         """
         Indicator = apps.get_model('rsr', 'Indicator')
-        indicator, created = Indicator.objects.update_or_create(
-            result=result,
-            parent_indicator=parent_indicator,
-            defaults=dict(
-                title=parent_indicator.title,
-                measure=parent_indicator.measure,
-                ascending=parent_indicator.ascending,
-                type=parent_indicator.type,
-            )
+        data = dict(
+            title=source_indicator.title,
+            measure=source_indicator.measure,
+            ascending=source_indicator.ascending,
+            type=source_indicator.type,
         )
+        if set_parent:
+            indicator, created = Indicator.objects.update_or_create(
+                result=result,
+                parent_indicator=source_indicator,
+                defaults=data,
+            )
+        else:
+            indicator = Indicator.objects.create(result=result, **data)
+            created = True
+
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
-        self._update_fields_if_not_child_updated(parent_indicator, indicator, fields)
+        self._update_fields_if_not_child_updated(source_indicator, indicator, fields)
 
         if not created:
             return indicator
 
-        for period in parent_indicator.periods.all():
-            self.add_period(indicator, period)
+        for period in source_indicator.periods.all():
+            self.copy_period(indicator, period, set_parent=set_parent)
 
-        for reference in parent_indicator.references.all():
+        for reference in source_indicator.references.all():
             self.add_reference(indicator, reference)
 
-        for dimension in parent_indicator.dimensions.all():
+        for dimension in source_indicator.dimensions.all():
             self.add_dimension(indicator, dimension)
 
         return indicator
@@ -1399,27 +1419,28 @@ class Project(TimestampsMixin, models.Model):
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
         self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
 
-    def add_period(self, indicator, period):
-        """Add a new period to the indicator as a child of period.
+    def copy_period(self, indicator, source_period, set_parent=True):
+        """Copy the source period to the indicator, and set it as a parent if specified.
 
         NOTE: There can only be one child for a period, per indicator. This
         method automatically updates the existing one, if there is one.
 
         """
         IndicatorPeriod = apps.get_model('rsr', 'IndicatorPeriod')
-        child_period, created = IndicatorPeriod.objects.select_related(
-            'indicator',
-            'indicator__result',
-        ).update_or_create(
-            indicator=indicator,
-            parent_period=period,
-            defaults=dict(
-                period_start=period.period_start,
-                period_end=period.period_end,
-            )
+        data = dict(
+            period_start=source_period.period_start,
+            period_end=source_period.period_end,
         )
+        qs = IndicatorPeriod.objects.select_related('indicator', 'indicator__result')
+        if set_parent:
+            period, _ = qs.update_or_create(
+                indicator=indicator, parent_period=source_period, defaults=data
+            )
+        else:
+            period = qs.create(indicator=indicator, **data)
+
         fields = ['target_value', 'target_comment', 'actual_comment']
-        self._update_fields_if_not_child_updated(period, child_period, fields)
+        self._update_fields_if_not_child_updated(source_period, period, fields)
 
     def update_period(self, indicator, parent_period):
         """Update a period based on the parent period attributes."""

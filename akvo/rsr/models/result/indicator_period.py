@@ -114,7 +114,7 @@ class IndicatorPeriod(models.Model):
 
         for child_indicator in child_indicators.all():
             if new_period:
-                child_indicator.result.project.add_period(child_indicator, self)
+                child_indicator.result.project.copy_period(child_indicator, self, set_parent=True)
             else:
                 child_indicator.result.project.update_period(child_indicator, self)
 

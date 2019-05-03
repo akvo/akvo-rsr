@@ -114,7 +114,7 @@ class Indicator(models.Model):
 
         for child_result in self.result.child_results.all():
             if new_indicator:
-                child_result.project.add_indicator(child_result, self)
+                child_result.project.copy_indicator(child_result, self, set_parent=True)
             else:
                 child_result.project.update_indicator(child_result, self)
 
