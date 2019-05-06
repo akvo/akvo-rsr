@@ -1,14 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Input, Col, Row } from 'antd'
+import { Form, Input, Col, Row, Select } from 'antd'
 
 import _Field from '../../../utils/field'
 import { Aux, validationType } from '../../../utils/misc'
 import BudgetItems from './budget-items/budget-items'
+import CountryBudgetItems from './country-budget-items/country-budget-items'
 import * as actions from './actions'
 import './styles.scss'
 
 // const { Panel } = Collapse
+const { Option } = Select
 const { Item } = Form
 const Field = connect(({financeRdr}) => ({ rdr: financeRdr }), actions)(_Field)
 
@@ -17,6 +19,7 @@ class Finance extends React.Component{
     const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
     return (
       <div className="finance view">
+        <Form>
         <Field
           name="donateUrl"
           render={props => (
@@ -47,12 +50,21 @@ class Finance extends React.Component{
               name="countryBudgetVocabulary"
               render={props => (
                 <Item label="Country budget vocabulary">
-                  <Input {...props} />
+                  <Select {...props}>
+                    <Option value="">&nbsp;</Option>
+                    <Option value="1">1 - IATI</Option>
+                    <Option value="2">2 - Country Chart of Accounts</Option>
+                    <Option value="3">3 - Other Country System</Option>
+                    <Option value="4">4 - Reporting Organisation</Option>
+                    <Option value="5">5 - Other</Option>
+                  </Select>
                 </Item>
               )}
             />
+            <CountryBudgetItems />
           </Aux>
         )}
+        </Form>
       </div>
     )
   }

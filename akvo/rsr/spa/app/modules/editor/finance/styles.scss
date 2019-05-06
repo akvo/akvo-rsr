@@ -35,6 +35,18 @@
   .capital-percentage{
     max-width: 70px;
   }
+  .percentage-row{
+    display: flex;
+    .ant-form-item{
+      margin-bottom: 0;
+    }
+    .ant-form-item:first-child{
+      margin-right: 20px;
+    }
+    .ant-form-item:last-child{
+      flex: 1;
+    }
+  }
 }
 .add-budget-item-modal{
   .ant-btn{
