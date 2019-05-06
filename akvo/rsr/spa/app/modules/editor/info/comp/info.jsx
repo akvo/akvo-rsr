@@ -12,6 +12,11 @@ import { datePickerConfig, havePropsChanged, validationType, isFieldOptional } f
 import * as actions from '../actions'
 import ProjectPhoto from './project-photo'
 import { getValidationSets } from '../validations'
+import aidTypeOptions from '../options/aid-types.json'
+import aidTypeVocabularyOptions from '../options/aid-type-vocabulary.json'
+import flowTypeOptions from '../options/flow-types.json'
+import financeTypeOptions from '../options/finance-types.json'
+import tiedStatusOptions from '../options/tied-statuses.json'
 
 import '../styles.scss'
 
@@ -250,9 +255,7 @@ const Info = ({ validations }) => {
                 >
                   <Select {...props}>
                     <Option value="">&nbsp;</Option>
-                    <Option value="1">1 - OECD DAC</Option>
-                    <Option value="2">2 - Earmarking Category</Option>
-                    <Option value="3">3 - Earmarking Modality</Option>
+                    {aidTypeVocabularyOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
                   </Select>
                 </Item>
               )}
@@ -270,7 +273,7 @@ const Info = ({ validations }) => {
                 >
                   <Select {...props}>
                     <Option value="">&nbsp;</Option>
-                    <Option value="D02">D02 - Other technical assistance</Option><Option value="D01">D01 - Donor country personnel</Option><Option value="A02">A02 - Sector budget support</Option><Option value="H02">H02 - Refugees in donor countries</Option><Option value="H01">H01 - Development awareness</Option><Option value="A01">A01 - General budget support</Option><Option value="E02">E02 - Imputed student costs</Option><Option value="E01">E01 - Scholarships/training in donor country</Option><Option value="B01">B01 - Core support to NGOs, other private bodies, PPPs and research institutes</Option><Option value="B03">B03 - Contributions to specific-purpose programmes and funds managed by international organisations (multilateral, INGO)</Option><Option value="B02">B02 - Core contributions to multilateral institutions</Option><Option value="F01">F01 - Debt relief</Option><Option value="B04">B04 - Basket funds/pooled funding</Option><Option value="C01">C01 - Project-type interventions</Option><Option value="G01">G01 - Administrative costs not included elsewhere</Option>
+                    {aidTypeOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
                   </Select>
                 </Item>
               )}
@@ -288,16 +291,7 @@ const Info = ({ validations }) => {
                 >
                   <Select {...props}>
                     <Option value="">&nbsp;</Option>
-                    <Option value="10">10 - ODA</Option>
-                    <Option value="20">20 - OOF</Option>
-                    <Option value="21">21 - Non-export credit OOF</Option>
-                    <Option value="22">22 - Officially supported export credits</Option>
-                    <Option value="30">30 - Private grants</Option>
-                    <Option value="35">35 - Private market</Option>
-                    <Option value="36">36 - Private Foreign Direct Investment</Option>
-                    <Option value="37">37 - Other Private flows at market terms</Option>
-                    <Option value="40">40 - Non flow</Option>
-                    <Option value="50">50 - Other flows</Option>
+                    {flowTypeOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
                   </Select>
                 </Item>
               )}
@@ -315,9 +309,7 @@ const Info = ({ validations }) => {
                 >
                   <Select {...props}>
                     <Option value="">&nbsp;</Option>
-                    <Option value="3">3 - Partially tied</Option>
-                    <Option value="4">4 - Tied</Option>
-                    <Option value="5">5 - Untied</Option>
+                    {tiedStatusOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
                   </Select>
                 </Item>
               )}
@@ -361,67 +353,7 @@ const Info = ({ validations }) => {
                 >
                   <Select {...props}>
                     <Option value="">&nbsp;</Option>
-                    <Option value="110">110 - Standard grant</Option>
-                    <Option value="111">111 - Subsidies to national private investors</Option>
-                    <Option value="210">210 - Interest subsidy</Option>
-                    <Option value="211">211 - Interest subsidy to national private exporters</Option>
-                    <Option value="310">310 - Capital subscription on deposit basis</Option>
-                    <Option value="311">311 - Capital subscription on encashment basis</Option>
-                    <Option value="410">410 - Aid loan excluding debt reorganisation</Option>
-                    <Option value="411">411 - Investment-related loan to developing countries</Option>
-                    <Option value="412">412 - Loan in a joint venture with the recipient</Option>
-                    <Option value="413">413 - Loan to national private investor</Option>
-                    <Option value="414">414 - Loan to national private exporter</Option>
-                    <Option value="421">421 - Standard loan</Option>
-                    <Option value="422">422 - Reimbursable grant</Option>
-                    <Option value="423">423 - Bonds</Option>
-                    <Option value="424">424 - Asset-backed securities</Option>
-                    <Option value="425">425 - Other debt securities</Option>
-                    <Option value="431">431 - Subordinated loan</Option>
-                    <Option value="432">432 - Preferred equity</Option>
-                    <Option value="433">433 - Other hybrid instruments</Option>
-                    <Option value="451">451 - Non-banks guaranteed export credits</Option>
-                    <Option value="452">452 - Non-banks non-guaranteed portions of guaranteed export credits</Option>
-                    <Option value="453">453 - Bank export credits</Option>
-                    <Option value="510">510 - Common equity</Option>
-                    <Option value="511">511 - Acquisition of equity not part of joint venture in developing countries</Option>
-                    <Option value="512">512 - Other acquisition of equity</Option>
-                    <Option value="520">520 - Shares in collective investment vehicles</Option>
-                    <Option value="530">530 - Reinvested earnings</Option>
-                    <Option value="610">610 - Debt forgiveness/conversion: ODA claims (P)</Option>
-                    <Option value="611">611 - Debt forgiveness/conversion: ODA claims (I)</Option>
-                    <Option value="612">612 - Debt forgiveness/conversion: OOF claims (P)</Option>
-                    <Option value="613">613 - Debt forgiveness/conversion: OOF claims (I)</Option>
-                    <Option value="614">614 - Debt forgiveness/conversion: Private claims (P)</Option>
-                    <Option value="615">615 - Debt forgiveness/conversion: Private claims (I)</Option>
-                    <Option value="616">616 - Debt forgiveness: OOF claims (DSR)</Option>
-                    <Option value="617">617 - Debt forgiveness: Private claims (DSR)</Option>
-                    <Option value="618">618 - Debt forgiveness: Other</Option>
-                    <Option value="620">620 - Debt rescheduling: ODA claims (P)</Option>
-                    <Option value="621">621 - Debt rescheduling: ODA claims (I)</Option>
-                    <Option value="622">622 - Debt rescheduling: OOF claims (P)</Option>
-                    <Option value="623">623 - Debt rescheduling: OOF claims (I)</Option>
-                    <Option value="624">624 - Debt rescheduling: Private claims (P)</Option>
-                    <Option value="625">625 - Debt rescheduling: Private claims (I)</Option>
-                    <Option value="626">626 - Debt rescheduling: OOF claims (DSR)</Option>
-                    <Option value="627">627 - Debt rescheduling: Private claims (DSR)</Option>
-                    <Option value="630">630 - Debt rescheduling: OOF claim (DSR – original loan principal)</Option>
-                    <Option value="631">631 - Debt rescheduling: OOF claim (DSR – original loan interest)</Option>
-                    <Option value="632">632 - Debt rescheduling: Private claim (DSR – original loan principal)</Option>
-                    <Option value="633">633 - Debt forgiveness/conversion: export credit claims (P)</Option>
-                    <Option value="634">634 - Debt forgiveness/conversion: export credit claims (I)</Option>
-                    <Option value="635">635 - Debt forgiveness: export credit claims (DSR)</Option>
-                    <Option value="636">636 - Debt rescheduling: export credit claims (P)</Option>
-                    <Option value="637">637 - Debt rescheduling: export credit claims (I)</Option>
-                    <Option value="638">638 - Debt rescheduling: export credit claims (DSR)</Option>
-                    <Option value="639">639 - Debt rescheduling: export credit claim (DSR – original loan principal)</Option>
-                    <Option value="710">710 - Foreign direct investment</Option>
-                    <Option value="711">711 - Other foreign direct investment, including reinvested earnings</Option>
-                    <Option value="810">810 - Bank bonds</Option>
-                    <Option value="811">811 - Non-bank bonds</Option>
-                    <Option value="910">910 - Other bank securities/claims</Option>
-                    <Option value="911">911 - Other non-bank securities/claims</Option>
-                    <Option value="912">912 - Securities and other instruments issued by multilateral agencies</Option>
+                    {financeTypeOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
                   </Select>
                 </Item>
               )}

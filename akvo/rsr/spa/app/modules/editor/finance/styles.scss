@@ -47,6 +47,35 @@
       flex: 1;
     }
   }
+  section{
+    border: 1px solid #e8e8e8;
+    padding: 15px 15px 0;
+    border-radius: 4px;
+    margin-top: 5px;
+    margin-bottom: 30px;
+    &:last-child{
+      margin-bottom: 0px;
+    }
+    // margin-bottom: 10px;
+    .h-holder{
+      display: flex;
+    }
+    h5{
+      font-size: 14px;
+      margin-top: -28px;
+      margin-bottom: 15px;
+      background-color: #fff;
+      padding: 0 5px;
+      margin-left: -5px;
+    }
+    .ant-row:last-child{
+      .ant-col-12{
+        .ant-form-item{
+          margin-bottom: 8px;
+        }
+      }
+    }
+  }
 }
 .add-budget-item-modal{
   .ant-btn{

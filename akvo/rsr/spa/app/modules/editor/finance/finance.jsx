@@ -6,6 +6,7 @@ import _Field from '../../../utils/field'
 import { Aux, validationType } from '../../../utils/misc'
 import BudgetItems from './budget-items/budget-items'
 import CountryBudgetItems from './country-budget-items/country-budget-items'
+import Transactions from './transactions/transactions'
 import * as actions from './actions'
 import './styles.scss'
 
@@ -17,9 +18,10 @@ const Field = connect(({financeRdr}) => ({ rdr: financeRdr }), actions)(_Field)
 class Finance extends React.Component{
   render(){
     const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
+    const isDGIS = this.props.validations.indexOf(validationType.DGIS) !== -1
     return (
       <div className="finance view">
-        <Form>
+        <Form layout="vertical">
         <Field
           name="donateUrl"
           render={props => (
@@ -62,6 +64,12 @@ class Finance extends React.Component{
               )}
             />
             <CountryBudgetItems />
+          </Aux>
+        )}
+        {(isIATI || isDGIS) && (
+          <Aux>
+            <h3>Transactions</h3>
+            <Transactions />
           </Aux>
         )}
         </Form>
