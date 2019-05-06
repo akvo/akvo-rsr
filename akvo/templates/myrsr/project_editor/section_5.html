@@ -21,6 +21,19 @@
                 <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
             </div>
             <form role="form">
+                {% if not project.has_results and project.is_impact_project and user.can_import_results %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="number" id="copy-results-source-pk" placeholder="source project id" />
+                            <button class="btn btn-primary" id="copy-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Copy Results' %}</button>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="help-block">
+                                {% trans 'Copy results framework of the specified project' %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
                 {% if project.parents_all.count == 1 and project.is_impact_project and user.can_import_results %}
                     <div class="row">
                         <div class="col-md-3">
