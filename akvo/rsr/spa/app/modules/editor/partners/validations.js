@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const basic = yup.object().shape({
-  name: yup.string().required(),
+  name: yup.string().required().default(''),
   role: yup.number().required().default(1),
   secondaryReporter: yup.boolean(),
   iatiActivityID: yup.string(),

@@ -5,6 +5,7 @@ import { Collapse, Icon, Form, Input, Button, Select, InputNumber, Radio } from 
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import _Field from '../../../utils/field'
 import InputLabel from '../../../utils/input-label'
+import UpdateHalter from '../../../utils/update-halter'
 import { validationType, isFieldValid } from '../../../utils/misc'
 import { getValidationSets } from './validations'
 import * as actions from './actions'
@@ -58,82 +59,84 @@ class Partners extends React.Component{
       <div className="partners view">
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
         {this.props.rdr.map((partner, index) =>
-            <Panel
-              header={`${roles.find(it => it.value === partner.role).label}: ${partner.name}`}
-              extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-              key={`p${index}`}
-            >
-              <Form layout="vertical">
+          <Panel
+            header={`${roles.find(it => it.value === partner.role).label}: ${partner.name}`}
+            extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
+            key={`p${index}`}
+          >
+          <UpdateHalter except={['role']} item={partner}>
+            <Form layout="vertical">
+              <Field
+                name="role"
+                index={index}
+                render={props => (
+                  <Item label="Role">
+                    <Select {...props}>
+                      {roles.map(role =>
+                        <Option key={role.value} value={role.value}>{role.label}</Option>
+                      )}
+                    </Select>
+                  </Item>
+                )}
+              />
+              <Field
+                name="name"
+                index={index}
+                render={props => (
+                  <Item
+                    hasFeedback
+                    validateStatus={isValid(props.name, props.value) && props.value ? 'success' : ''}
+                    label="Organisation"
+                  >
+                    <Input {...props} />
+                  </Item>
+                )}
+              />
+              {partner.role === 101 &&
+              <Field
+                name="secondaryReporter"
+                index={index}
+                render={props => (
+                  <Item label="Secondary reporter">
+                    <Radio.Group {...props}>
+                      <Radio.Button value>Yes</Radio.Button>
+                      <Radio.Button value={false}>No</Radio.Button>
+                    </Radio.Group>
+                  </Item>
+                )}
+              />
+              }
+              {partner.role === 1 &&
+              <Field
+                name="fundingAmount"
+                index={index}
+                render={props => (
+                  <Item label="Funding amount">
+                    <InputNumber
+                      {...props}
+                      formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={value => value.replace(currencyRegExp, '')}
+                      style={{ width: 200 }}
+                      step={1000}
+                    />
+                  </Item>
+                )}
+              />
+              }
+              {(this.props.validations.indexOf(validationType.IATI) !== -1 || this.props.validations.indexOf(validationType.DGIS) !== -1) && (
                 <Field
-                  name="role"
+                  name="iatiActivityId"
                   index={index}
                   render={props => (
-                    <Item label="Role">
-                      <Select {...props}>
-                        {roles.map(role =>
-                          <Option key={role.value} value={role.value}>{role.label}</Option>
-                        )}
-                      </Select>
-                    </Item>
-                  )}
-                />
-                <Field
-                  name="name"
-                  index={index}
-                  render={props => (
-                    <Item
-                      hasFeedback
-                      validateStatus={isValid(props.name, props.value) && props.value ? 'success' : ''}
-                      label="Organisation"
-                    >
+                    <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
                       <Input {...props} />
                     </Item>
                   )}
                 />
-                {partner.role === 101 &&
-                <Field
-                  name="secondaryReporter"
-                  index={index}
-                  render={props => (
-                    <Item label="Secondary reporter">
-                      <Radio.Group {...props}>
-                        <Radio.Button value>Yes</Radio.Button>
-                        <Radio.Button value={false}>No</Radio.Button>
-                      </Radio.Group>
-                    </Item>
-                  )}
-                />
-                }
-                {partner.role === 1 &&
-                <Field
-                  name="fundingAmount"
-                  index={index}
-                  render={props => (
-                    <Item label="Funding amount">
-                      <InputNumber
-                        {...props}
-                        formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={value => value.replace(currencyRegExp, '')}
-                        style={{ width: 200 }}
-                        step={1000}
-                      />
-                    </Item>
-                  )}
-                />
-                }
-                {(this.props.validations.indexOf(validationType.IATI) !== -1 || this.props.validations.indexOf(validationType.DGIS) !== -1) && (
-                  <Field
-                    name="iatiActivityId"
-                    index={index}
-                    render={props => (
-                      <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
-                        <Input {...props} />
-                      </Item>
-                    )}
-                  />
-                )}
-              </Form>
-            </Panel>
+              )}
+            </Form>
+          </UpdateHalter>
+          </Panel>
         )}
         </Collapse>
         <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.add}>Add a partner</Button>
