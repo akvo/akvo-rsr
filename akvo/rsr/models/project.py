@@ -1331,7 +1331,6 @@ class Project(TimestampsMixin, models.Model):
         """Copy results from a source project."""
 
         if self.results.count() > 0:
-            # FIXME: May need to return a failure code?
             raise RuntimeError('Can copy results only if the results framework is empty.')
 
         for result in source_project.results.all():

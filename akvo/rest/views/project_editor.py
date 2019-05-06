@@ -285,6 +285,32 @@ def project_editor_import_results(request, project_pk=None):
 
 @api_view(['POST'])
 @permission_classes((IsAuthenticated, ))
+def project_editor_copy_results(request, project_pk=None, source_pk=None):
+    project = Project.objects.get(pk=project_pk)
+    source_project = Project.objects.get(pk=source_pk)
+    user = request.user
+
+    if not (user.is_superuser or
+            user.can_import_results() and user.has_perm('rsr.change_project', project)):
+        return HttpResponseForbidden()
+
+    if not user.has_perm('rsr.change_project', source_project):
+        return HttpResponseForbidden()
+
+    data = {'project_id': project_pk, 'copy_success': True}
+    try:
+        project.copy_results(source_project)
+        status = http_status.HTTP_201_CREATED
+    except RuntimeError as e:
+        data['copy_success'] = False
+        data['message'] = e.message
+        status = http_status.HTTP_400_BAD_REQUEST
+
+    return Response(data=data, status=status)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated, ))
 @authentication_classes((TastyTokenAuthentication, ))
 def project_editor_import_indicator(request, project_pk, parent_indicator_id):
     try:
