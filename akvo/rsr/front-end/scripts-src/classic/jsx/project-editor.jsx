@@ -1485,8 +1485,8 @@ function toggleOtherLabel(selectNode) {
 
 function checkPartnerships() {
     /* - Hides the trash can if there's only one partnership.
-    *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
-    *  - Remove the 'Reporting organisation' option when it is already selected. */
+     *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
+     *  - Remove the 'Reporting organisation' option when it is already selected. */
 
     if (!defaultValues.is_admin) {
         var partnerContainer = document.getElementById("partner-container");
@@ -3405,6 +3405,12 @@ function setImpactProject() {
     if (importButton !== null) {
         importButton.onclick = getImportResults(importButton);
     }
+
+    // Set copy button
+    var copyButton = document.getElementById("copy-results");
+    if (copyButton !== null) {
+        copyButton.onclick = copyResults(copyButton);
+    }
 }
 
 function impactProjectSwitch(impactProject) {
@@ -3473,6 +3479,59 @@ function getImportResults(importButton) {
                 parentNode.appendChild(divNode);
             } else {
                 importButton.removeAttribute("disabled");
+
+                divNode.classList.add("help-block-error");
+                divNode.innerHTML = response.message;
+                parentNode.appendChild(divNode);
+            }
+        };
+
+        request.send();
+    };
+}
+
+function copyResults(copyButton) {
+    return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var api_url, parentNode, request;
+
+        copyButton.setAttribute("disabled", "");
+        parentNode = copyButton.parentNode;
+
+        var sourceId = parentNode.parentNode.querySelector("#copy-results-source-pk").value;
+
+        // Create request
+        api_url = `/rest/v1/project/${
+            defaultValues.project_id
+        }/copy_results/${sourceId}/?format=json`;
+
+        request = new XMLHttpRequest();
+        request.open("POST", api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            var response, divNode, status;
+            try {
+                status = request.status;
+                response = JSON.parse(request.responseText);
+            } catch (e) {
+                status = 500;
+                response = { message: "A network error occurred, please try again" };
+            }
+            divNode = document.createElement("div");
+
+            if (status === 201) {
+                parentNode.removeChild(copyButton);
+
+                divNode.classList.add("save-success");
+                divNode.innerHTML =
+                    "Copy successful. Please refresh the page to see (and edit) the copied results.";
+                parentNode.appendChild(divNode);
+            } else {
+                copyButton.removeAttribute("disabled");
 
                 divNode.classList.add("help-block-error");
                 divNode.innerHTML = response.message;
@@ -3828,7 +3887,7 @@ function setDatepickers() {
 
 function fieldChanged(inputField) {
     /* Check if a field has changed, based on it's value and saved-value.
-    *  Ignores file fields, checkboxes and hidden fields. */
+     *  Ignores file fields, checkboxes and hidden fields. */
 
     if (inputField.type === "file" || inputField.type === "checkbox" || fieldIsHidden(inputField)) {
         return false;
