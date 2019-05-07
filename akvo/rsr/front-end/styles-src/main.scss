@@ -1720,16 +1720,12 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            // height: 160px;
+            height: 160px;
             overflow-y: hidden;
             position: relative;
             background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
-                // position: absolute;
-                // top: 0%;
-                // left: 50%;
-                // transform: translate(-50%, 0%);
             }
         }
         .projectLocation {
@@ -1806,28 +1802,32 @@ h4.detailedInfo {
                 }
             }
             ul.projectListUl {
-                padding-left: 15px;
+              padding-left: 15px;
 
-            @media screen and (max-width: 768px){
-              padding-left: 0;
-            }
+              @media screen and (max-width: 768px){
+                padding-left: 0;
+              }
                 li {
-                    margin-bottom: 5px;
+                    margin-bottom: 14px;
                     list-style-type: none;
                     // display: inline;
-                    width: 49%;
+                    width: 50%;
                     float: left;
                     @media screen and (min-width: 768px){
-                      min-height: 285px;
+                      // min-height: 285px;
                     }
-                    @include border-radius(3px);
-                    background: rgba(32, 32, 36, 0.05);
-                    margin-right: 2%;
+                    // margin-right: 2%;
                     -webkit-transition: all 2s linear;
                     -moz-transition: all 2s linear;
                     -o-transition: all 2s linear;
                     transition: all 2s linear;
                     padding: 0;
+
+                    .contents{
+                      margin-right: 7px;
+                      @include border-radius(3px);
+                      background: rgba(32, 32, 36, 0.05);
+                    }
                     .thumbImg img{
                       border: none;
                     }
@@ -1852,7 +1852,10 @@ h4.detailedInfo {
                         }
                     }
                     &:nth-child(2n + 2) {
-                        margin-right: 0;
+                        .contents{
+                          margin-right: 0;
+                          margin-left: 7px;
+                        }
                     }
                     h1 {
                         margin: 5px 0 10px;
