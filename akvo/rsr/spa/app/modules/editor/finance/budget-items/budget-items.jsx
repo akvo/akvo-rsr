@@ -87,117 +87,115 @@ class BudgetItems extends React.Component{
               key={`p${index}`}
             >
               <UpdateHalter>
-                <Form layout="vertical">
-                  <Row gutter={16}>
-                    {isIATI && (
-                      <Col span={12}>
-                        <Field
-                          name="currency"
-                          index={index}
-                          render={fieldProps => (
-                            <Item label={<InputLabel optional tooltip="...">Currency</InputLabel>}>
-                              <Select showSearch optionFilterProp="children" {...fieldProps}>
-                                {currencies.map(({ code, currency }) => <Option value={code}>{code} - {currency}</Option>)}
-                              </Select>
-                            </Item>
-                          )}
-                        />
-                      </Col>
-                    )}
+                <Row gutter={16}>
+                  {isIATI && (
                     <Col span={12}>
                       <Field
-                        name="amount"
+                        name="currency"
                         index={index}
-                        render={props => (
-                          <Item label={<InputLabel tooltip="...">Amount</InputLabel>}>
-                            <InputNumber
-                              {...{...props, ...inputNumberAmountFormatting}}
-                              step={1000}
-                            />
+                        render={fieldProps => (
+                          <Item label={<InputLabel optional tooltip="...">Currency</InputLabel>}>
+                            <Select showSearch optionFilterProp="children" {...fieldProps}>
+                              {currencies.map(({ code, currency }) => <Option value={code}>{code} - {currency}</Option>)}
+                            </Select>
                           </Item>
                         )}
                       />
                     </Col>
-                  </Row>
-                  <Field
-                    name="label"
-                    index={index}
-                    render={props => (
-                      <Item label={<InputLabel optional tooltip="...">Additional info</InputLabel>}>
-                        <Input {...props} />
-                      </Item>
-                    )}
-                  />
-                  {isIATI && (
-                    <Aux>
-                      <Row gutter={16}>
-                        <Col span={12}>
-                          <Field
-                            name="budgetType"
-                            index={index}
-                            render={props => (
-                              <Item label="Budget type">
-                                <Radio.Group {...props}>
-                                  <Radio.Button value={1}>Original</Radio.Button>
-                                  <Radio.Button value={2}>Revised</Radio.Button>
-                                </Radio.Group>
-                              </Item>
-                            )}
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <Field
-                            name="status"
-                            index={index}
-                            render={props => (
-                              <Item label="Status">
-                                <Radio.Group {...props}>
-                                  <Radio.Button value={1}>Indicative</Radio.Button>
-                                  <Radio.Button value={2}>Committed</Radio.Button>
-                                </Radio.Group>
-                              </Item>
-                            )}
-                          />
-                        </Col>
-                      </Row>
-                      <Row gutter={16}>
-                        <Col span={8}>
-                          <Field
-                            name="periodStart"
-                            index={index}
-                            render={props => (
-                              <Item label="Period start">
-                                <DatePicker {...{...props, ...datePickerConfig}} />
-                              </Item>
-                            )}
-                          />
-                        </Col>
-                        <Col span={8}>
-                          <Field
-                            name="periodEnd"
-                            index={index}
-                            render={props => (
-                              <Item label="Period end">
-                                <DatePicker {...{...props, ...datePickerConfig}} />
-                              </Item>
-                            )}
-                          />
-                        </Col>
-                        <Col span={8}>
-                          <Field
-                            name="valueDate"
-                            index={index}
-                            render={props => (
-                              <Item label="Exchange rate date">
-                                <DatePicker {...{...props, ...datePickerConfig}} />
-                              </Item>
-                            )}
-                          />
-                        </Col>
-                      </Row>
-                    </Aux>
                   )}
-                </Form>
+                  <Col span={12}>
+                    <Field
+                      name="amount"
+                      index={index}
+                      render={props => (
+                        <Item label={<InputLabel tooltip="...">Amount</InputLabel>}>
+                          <InputNumber
+                            {...{...props, ...inputNumberAmountFormatting}}
+                            step={1000}
+                          />
+                        </Item>
+                      )}
+                    />
+                  </Col>
+                </Row>
+                <Field
+                  name="label"
+                  index={index}
+                  render={props => (
+                    <Item label={<InputLabel optional tooltip="...">Additional info</InputLabel>}>
+                      <Input {...props} />
+                    </Item>
+                  )}
+                />
+                {isIATI && (
+                  <Aux>
+                    <Row gutter={16}>
+                      <Col span={12}>
+                        <Field
+                          name="budgetType"
+                          index={index}
+                          render={props => (
+                            <Item label="Budget type">
+                              <Radio.Group {...props}>
+                                <Radio.Button value={1}>Original</Radio.Button>
+                                <Radio.Button value={2}>Revised</Radio.Button>
+                              </Radio.Group>
+                            </Item>
+                          )}
+                        />
+                      </Col>
+                      <Col span={12}>
+                        <Field
+                          name="status"
+                          index={index}
+                          render={props => (
+                            <Item label="Status">
+                              <Radio.Group {...props}>
+                                <Radio.Button value={1}>Indicative</Radio.Button>
+                                <Radio.Button value={2}>Committed</Radio.Button>
+                              </Radio.Group>
+                            </Item>
+                          )}
+                        />
+                      </Col>
+                    </Row>
+                    <Row gutter={16}>
+                      <Col span={8}>
+                        <Field
+                          name="periodStart"
+                          index={index}
+                          render={props => (
+                            <Item label="Period start">
+                              <DatePicker {...{...props, ...datePickerConfig}} />
+                            </Item>
+                          )}
+                        />
+                      </Col>
+                      <Col span={8}>
+                        <Field
+                          name="periodEnd"
+                          index={index}
+                          render={props => (
+                            <Item label="Period end">
+                              <DatePicker {...{...props, ...datePickerConfig}} />
+                            </Item>
+                          )}
+                        />
+                      </Col>
+                      <Col span={8}>
+                        <Field
+                          name="valueDate"
+                          index={index}
+                          render={props => (
+                            <Item label="Exchange rate date">
+                              <DatePicker {...{...props, ...datePickerConfig}} />
+                            </Item>
+                          )}
+                        />
+                      </Col>
+                    </Row>
+                  </Aux>
+                )}
               </UpdateHalter>
             </Panel>
           )

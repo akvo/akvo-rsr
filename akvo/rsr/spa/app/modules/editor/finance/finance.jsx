@@ -7,6 +7,7 @@ import { Aux, validationType } from '../../../utils/misc'
 import BudgetItems from './budget-items/budget-items'
 import CountryBudgetItems from './country-budget-items/country-budget-items'
 import Transactions from './transactions/transactions'
+import Disbursements from './disbursements/disbursements'
 import * as actions from './actions'
 import './styles.scss'
 
@@ -70,6 +71,8 @@ class Finance extends React.Component{
           <Aux>
             <h3>Transactions</h3>
             <Transactions />
+            <h3>Planned disbursements</h3>
+            <Disbursements />
           </Aux>
         )}
         </Form>

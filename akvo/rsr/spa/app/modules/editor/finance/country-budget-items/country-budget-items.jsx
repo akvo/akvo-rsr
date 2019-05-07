@@ -52,47 +52,45 @@ class CountryBudgetItems extends React.Component{
               key={`p${index}`}
             >
               <UpdateHalter>
-                <Form layout="vertical">
+                <Field
+                  name="code"
+                  index={index}
+                  render={props => (
+                    <Item label={<InputLabel optional tooltip="...">Item code</InputLabel>}>
+                      <Select {...props}>
+                        {options.map(option => (
+                          <Option value={option.value}>{option.label}</Option>
+                        ))}
+                      </Select>
+                    </Item>
+                  )}
+                />
+                <div className="percentage-row">
                   <Field
-                    name="code"
+                    name="percentage"
                     index={index}
                     render={props => (
-                      <Item label={<InputLabel optional tooltip="...">Item code</InputLabel>}>
-                        <Select {...props}>
-                          {options.map(option => (
-                            <Option value={option.value}>{option.label}</Option>
-                          ))}
-                        </Select>
+                      <Item label="Percentage">
+                        <Input {...props} suffix={<span>%</span>} className="capital-percentage" />
                       </Item>
                     )}
                   />
-                  <div className="percentage-row">
-                    <Field
-                      name="percentage"
-                      index={index}
-                      render={props => (
-                        <Item label="Percentage">
-                          <Input {...props} suffix={<span>%</span>} className="capital-percentage" />
-                        </Item>
-                      )}
-                    />
-                    <Field
-                      name="description"
-                      index={index}
-                      render={props => (
-                        <Item label="Description">
-                          <Input {...props} />
-                        </Item>
-                      )}
-                    />
-                  </div>
-                </Form>
+                  <Field
+                    name="description"
+                    index={index}
+                    render={props => (
+                      <Item label="Description">
+                        <Input {...props} />
+                      </Item>
+                    )}
+                  />
+                </div>
               </UpdateHalter>
             </Panel>
           )
         })}
         </Collapse>
-        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.add}>Add budget item</Button>
+        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.add}>Add country budget item</Button>
 
       </div>
     )
