@@ -1,6 +1,13 @@
 import * as yup from 'yup'
 import { validationType } from '../../../../utils/misc'
 
+export const sector = yup.object().shape({
+  name: yup.string(),
+  vocabulary: yup.string(),
+  uri: yup.string(),
+  description: yup.string()
+})
+
 export const DGIS = yup.object().shape({
   type: yup.string(),
   value: yup.mixed(),
@@ -26,7 +33,8 @@ export const IATI = DGIS.clone().shape({
   recipientCountry: yup.string(),
   recipientRegion: yup.string(),
   recipientRegionVocabulary: yup.string(),
-  recipientRegionVocabularyUrl: yup.string()
+  recipientRegionVocabularyUrl: yup.string(),
+  sectors: yup.array().of(sector).default([])
 })
 
 const arrays = {

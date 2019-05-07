@@ -75,6 +75,16 @@
         }
       }
     }
+    .pagination{
+      display: flex;
+      margin-bottom: 16px;
+      .ant-btn{
+        margin-left: 16px;
+      }
+      .ant-pagination-prev,.ant-pagination-next{
+        display: none;
+      }
+    }
   }
 }
 .add-budget-item-modal{

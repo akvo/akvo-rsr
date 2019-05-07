@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Form, Input, Button, Select, InputNumber, Modal, Radio, Col, Row, DatePicker } from 'antd'
+import { Collapse, Icon, Form, Input, Button, Select, InputNumber, Radio, Col, Row, DatePicker } from 'antd'
 import currencies from 'currency-codes/data'
 
 import InputLabel from '../../../../utils/input-label'
@@ -17,6 +17,7 @@ import tiedStatusOptions from '../../info/options/tied-statuses.json'
 import aidTypeOptions from '../../info/options/aid-types.json'
 import aidTypeVocabularyOptions from '../../info/options/aid-type-vocabulary.json'
 import regionOptions from './regions.json'
+import Sectors from './sectors'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -52,6 +53,12 @@ class Transactions extends React.Component{
         activeKey: `p${props.rdr.length - 1}`
       }
     }
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    if(this.props.rdr.length !== nextProps.rdr.length){
+      return true
+    }
+    return nextState !== this.state
   }
   add = () => {
     this.setState({
@@ -372,6 +379,12 @@ class Transactions extends React.Component{
                           />
                         </Col>
                       </Row>
+                    </section>
+                    <section>
+                      <div className="h-holder">
+                        <h5>Transaction sectors</h5>
+                      </div>
+                      <Sectors transactionIndex={index} />
                     </section>
                   </Aux>
                   }
