@@ -2,10 +2,19 @@ import * as yup from 'yup'
 import { validationType } from '../../../../utils/misc'
 
 export const DGIS = yup.object().shape({
-  value: yup.mixed(),
-  valueDate: yup.mixed(),
-  periodStart: yup.string(),
-  periodEnd: yup.string(),
+  value: yup.mixed().default(null),
+  valueDate: yup.string().when('value', {
+    is: value => value !== null && value !== '',
+    then: yup.string().required()
+  }),
+  periodStart: yup.string().when('value', {
+    is: value => value !== null && value !== '',
+    then: yup.string().required()
+  }),
+  periodEnd: yup.string().when('value', {
+    is: value => value !== null && value !== '',
+    then: yup.string().required()
+  }),
   providerOrganisation: yup.string(),
   providerOrganisationActivityId: yup.string(),
   recipientOrganisation: yup.string(),

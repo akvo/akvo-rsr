@@ -17,12 +17,13 @@ const Field = connect(
   actions
 )(_Field)
 
-const ValueDateField = ({ index }) => (
+const ValueDateField = ({ index, optional }) => (
   <Field
     name="valueDate"
     index={index}
+    additionalWatchProp="value"
     render={props => (
-      <Item label={<InputLabel optional>Value date</InputLabel>}>
+      <Item label={<InputLabel optional={optional}>Value date</InputLabel>}>
         <DatePicker {...{...props, ...datePickerConfig}} />
       </Item>
     )}
@@ -63,7 +64,7 @@ class Disbursements extends React.Component{
               extra={<span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
               key={`${index}`}
             >
-              <UpdateHalter>
+              <UpdateHalter except={['value']} item={item}>
                 <Row gutter={16}>
                   {isIATI && (
                     <Col span={12}>
@@ -85,7 +86,7 @@ class Disbursements extends React.Component{
                       name="value"
                       index={index}
                       render={props => (
-                        <Item label={<InputLabel tooltip="...">Amount</InputLabel>}>
+                        <Item label={<InputLabel optional tooltip="...">Amount</InputLabel>}>
                           <InputNumber
                             {...{...props, ...inputNumberAmountFormatting}}
                             step={1000}
@@ -96,21 +97,21 @@ class Disbursements extends React.Component{
                   </Col>
                   {!isIATI && (
                     <Col span={12}>
-                      <ValueDateField index={index} />
+                      <ValueDateField index={index} optional={item.value === null} />
                     </Col>
                   )}
                 </Row>
                 {isIATI &&
                 <Row gutter={16}>
                   <Col span={12}>
-                    <ValueDateField index={index} />
+                    <ValueDateField index={index} optional={item.value === null || item.value === ''} />
                   </Col>
                   <Col span={12}>
                     <Field
                       name="type"
                       index={index}
                       render={props => (
-                        <Item label={<InputLabel>Type</InputLabel>}>
+                        <Item label={<InputLabel optional>Type</InputLabel>}>
                           <Radio.Group {...props}>
                             <Radio.Button value="1">Original</Radio.Button>
                             <Radio.Button value="2">Revised</Radio.Button>
@@ -125,9 +126,10 @@ class Disbursements extends React.Component{
                   <Col span={12}>
                     <Field
                       name="periodStart"
+                      additionalWatchProp="value"
                       index={index}
                       render={props => (
-                        <Item label={<InputLabel>Period start</InputLabel>}>
+                        <Item label={<InputLabel optional={item.value === null || item.value === ''}>Period start</InputLabel>}>
                           <DatePicker {...{...props, ...datePickerConfig}} />
                         </Item>
                       )}
@@ -136,9 +138,10 @@ class Disbursements extends React.Component{
                   <Col span={12}>
                     <Field
                       name="periodEnd"
+                      additionalWatchProp="value"
                       index={index}
                       render={props => (
-                        <Item label={<InputLabel>Period end</InputLabel>}>
+                        <Item label={<InputLabel optional={item.value === null || item.value === ''}>Period end</InputLabel>}>
                           <DatePicker {...{...props, ...datePickerConfig}} />
                         </Item>
                       )}

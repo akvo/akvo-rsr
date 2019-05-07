@@ -71,7 +71,7 @@ const Editor = ({ rdr }) => (
                 <MenuItem to="/partners" checked={rdr.isCompleted.partners}>Partners</MenuItem>
                 <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
                 <MenuItem to="/results-indicators">Results and indicators</MenuItem>
-                <MenuItem to="/finance">Finance</MenuItem>
+                <MenuItem to="/finance" checked={rdr.isCompleted.finance}>Finance</MenuItem>
                 <MenuItem to="/locations">Locations</MenuItem>
                 <MenuItem to="/focus">Focus</MenuItem>
                 <MenuItem to="/links">Links and documents</MenuItem>

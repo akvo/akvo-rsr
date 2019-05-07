@@ -1,15 +1,22 @@
 import { getValidationSets as infoGetValidationSets } from './info/validations'
 import { getValidationSets as contactsGetValidationSets } from './contacts/validations'
 import { getValidationSets as partnersGetValidationSets } from './partners/validations'
+import { getValidationSets as budgetItemsGetValidationSets } from './finance/budget-items/validations'
+import { getValidationSets as disbursementsGetValidationSets } from './finance/disbursements/validations'
 import infoActionTypes from './info/action-types'
 import contactsActionTypes from './contacts/action-types'
 import partnersActionTypes from './partners/action-types'
+import descriptionsActionTypes from './descriptions/action-types'
+import budgetItemActionTypes from './finance/budget-items/action-types'
+import disbursementsActionTypes from './finance/disbursements/action-types'
 import { sections } from './editor'
 
 const validationSetGetters = {
   info: infoGetValidationSets,
   contacts: contactsGetValidationSets,
-  partners: partnersGetValidationSets
+  partners: partnersGetValidationSets,
+  budgetItems: budgetItemsGetValidationSets,
+  disbursements: disbursementsGetValidationSets
 }
 
 const initialState = {
@@ -30,7 +37,7 @@ const initialState = {
   showSection11: false
 }
 
-const validate = (section, action) => {
+const validate = (section, action, customDispatch) => {
   const state = action.getState()
   const validationSets = validationSetGetters[section](state.infoRdr.validations, { arrays: true })
   let isCompleted = true
@@ -42,7 +49,19 @@ const validate = (section, action) => {
       isCompleted = false
     }
   })
-  action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: section, value: isCompleted })
+  if(!customDispatch){
+    action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: section, value: isCompleted })
+  }
+  return isCompleted
+}
+
+const validateSectionGroup = (section, action) => {
+  if(section === 'finance'){
+    const isCompleted = validate('budgetItems', action, true) && validate('disbursements', action, true)
+    action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'finance', value: isCompleted })
+  } else {
+    validate(section, action)
+  }
 }
 
 let autosaveTmId
@@ -54,9 +73,9 @@ export default (state = initialState, action) => {
     clearInterval(autosaveTmId)
     autosaveTmId = setTimeout(() => {
       if(action.asyncDispatch) {
-        // SECTION 0 - edited validation setting
+        // SECTION 0 - edited validation setting - run all validations
         if(action.type === infoActionTypes.CHECK_VALIDATION){
-          sections.map(section => validate(section, action))
+          sections.map(section => validateSectionGroup(section, action))
         }
         // SECTION 1
         else if(action.type === infoActionTypes.EDIT_FIELD){
@@ -70,11 +89,17 @@ export default (state = initialState, action) => {
         else if(objectToArray(partnersActionTypes).indexOf(action.type) !== -1){
           validate('partners', action)
         }
-        if(action.type.indexOf('PE_DESCRIPTION') !== -1){
+        // SECTION 4
+        else if(action.type === descriptionsActionTypes.EDIT_DESCRIPTION){
           const { descsRdr } = action.getState()
           const isCompleted = descsRdr.filter(it => it.required && it.value.length < 5).length === 0
           action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'descriptions', value: isCompleted })
         }
+        // SECTION 6
+        else if(objectToArray(budgetItemActionTypes).indexOf(action.type) !== -1 || objectToArray(disbursementsActionTypes).indexOf(action.type) !== -1){
+          validateSectionGroup('finance', action)
+        }
+        // OTHER
         else if(action.type === 'PE_INFO_CHECK_VALIDATION'){
           const { infoRdr } = action.getState()
           const { validations } = infoRdr

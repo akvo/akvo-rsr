@@ -8,8 +8,9 @@ import _Field from '../../../../utils/field'
 import UpdateHalter from '../../../../utils/update-halter'
 import * as actions from './actions'
 import { budgetItemTypes } from '../../../../utils/constants'
-import { validationType, datePickerConfig, Aux, inputNumberAmountFormatting } from '../../../../utils/misc'
+import { validationType, datePickerConfig, Aux, inputNumberAmountFormatting, isFieldOptional } from '../../../../utils/misc'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
+import { getValidationSets } from './validations'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -69,6 +70,8 @@ class BudgetItems extends React.Component{
   render(){
     let currencySymbol = getSymbolFromCurrency(this.props.currency)
     const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
+    const validationSets = getValidationSets(this.props.validations)
+    const isOptional = isFieldOptional(validationSets)
     return (
       <div>
         <p className="total">
@@ -83,7 +86,7 @@ class BudgetItems extends React.Component{
           return (
             <Panel
               header={`${budgetItemTypes.find(it => it.value === budgetItem.type).label}`}
-              extra={<span><span className="amount">{currencySymbol}{String(budgetItem.amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
+              extra={<span><span className="amount">{currencySymbol}{budgetItem.amount ? String(budgetItem.amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
               key={`p${index}`}
             >
               <UpdateHalter>
@@ -135,7 +138,7 @@ class BudgetItems extends React.Component{
                           name="budgetType"
                           index={index}
                           render={props => (
-                            <Item label="Budget type">
+                            <Item label={<InputLabel optional>Budget type</InputLabel>}>
                               <Radio.Group {...props}>
                                 <Radio.Button value={1}>Original</Radio.Button>
                                 <Radio.Button value={2}>Revised</Radio.Button>
@@ -149,7 +152,7 @@ class BudgetItems extends React.Component{
                           name="status"
                           index={index}
                           render={props => (
-                            <Item label="Status">
+                            <Item label={<InputLabel optional>Status</InputLabel>}>
                               <Radio.Group {...props}>
                                 <Radio.Button value={1}>Indicative</Radio.Button>
                                 <Radio.Button value={2}>Committed</Radio.Button>
@@ -187,7 +190,7 @@ class BudgetItems extends React.Component{
                           name="valueDate"
                           index={index}
                           render={props => (
-                            <Item label="Exchange rate date">
+                            <Item label={<InputLabel optional={isOptional('valueDate')}>Value date</InputLabel>}>
                               <DatePicker {...{...props, ...datePickerConfig}} />
                             </Item>
                           )}

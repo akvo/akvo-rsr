@@ -6,6 +6,7 @@ import { IATI, sector } from './validations'
 const initialState = []
 
 const model = yupModel(IATI)
+model.sectors = [yupModel(sector)]
 
 const updateArrayItem = (item, array, index) => {
   return [...array.slice(0, index), item, ...array.slice(index + 1)]

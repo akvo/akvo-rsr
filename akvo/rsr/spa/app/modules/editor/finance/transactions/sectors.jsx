@@ -67,7 +67,7 @@ const SectorPane = ({transactionIndex, index}) => {
 
 class Sectors extends React.Component{
   state = {
-    activeKey: ''
+    activeKey: '0'
   }
   shouldComponentUpdate(nextProps, nextState){
     if(this.props.rdr[this.props.transactionIndex].sectors.length !== nextProps.rdr[this.props.transactionIndex].sectors.length){
