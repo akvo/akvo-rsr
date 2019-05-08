@@ -60,55 +60,53 @@ const Editor = ({ rdr }) => (
             <i>The project is unpublished</i>
           </div>
         </div>
-        <div className="flex-container">
-          <Sticky>
-          {({ style, isSticky }) => (
-            <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
-              <ul>
-                <MenuItem hideCheck to="/">Settings</MenuItem>
-                <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
-                <MenuItem to="/contacts" checked={rdr.isCompleted.contacts}>Contact Information</MenuItem>
-                <MenuItem to="/partners" checked={rdr.isCompleted.partners}>Partners</MenuItem>
-                <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
-                <MenuItem to="/results-indicators">Results and indicators</MenuItem>
-                <MenuItem to="/finance" checked={rdr.isCompleted.finance}>Finance</MenuItem>
-                <MenuItem to="/locations">Locations</MenuItem>
-                <MenuItem to="/focus">Focus</MenuItem>
-                <MenuItem to="/links">Links and documents</MenuItem>
-                <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
-                {rdr.showSection11 &&
-                <MenuItem to="/reporting">CRS++ and FSS reporting</MenuItem>
-                }
-              </ul>
-            </aside>
+        <Sticky>
+        {({ style, isSticky }) => (
+          <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
+            <ul>
+              <MenuItem hideCheck to="/">Settings</MenuItem>
+              <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
+              <MenuItem to="/contacts" checked={rdr.isCompleted.contacts}>Contact Information</MenuItem>
+              <MenuItem to="/partners" checked={rdr.isCompleted.partners}>Partners</MenuItem>
+              <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
+              <MenuItem to="/results-indicators">Results and indicators</MenuItem>
+              <MenuItem to="/finance" checked={rdr.isCompleted.finance}>Finance</MenuItem>
+              <MenuItem to="/locations">Locations</MenuItem>
+              <MenuItem to="/focus">Focus</MenuItem>
+              <MenuItem to="/links">Links and documents</MenuItem>
+              <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
+              {rdr.showSection11 &&
+              <MenuItem to="/reporting">CRS++ and FSS reporting</MenuItem>
+              }
+            </ul>
+          </aside>
+        )}
+        </Sticky>
+        <div className="main-content">
+          <Route path="/" exact component={Settings} />
+          <Route path="/info" exact component={Info} />
+          <Route path="/contacts" component={Contacts} />
+          <Route path="/partners" component={Partners} />
+          <Route path="/descriptions" component={Descriptions} />
+          <Route path="/finance" component={Finance} />
+          <Route path="/locations" component={Locations} />
+          <Route path="/focus" component={Focus} />
+          <Route path="/links" component={Links} />
+          <Route path="/comments-n-keywords" component={CommentsKeywords} />
+          <Route path="/reporting" component={Reporting} />
+        </div>
+        <div className="alerts">
+        {/* <Sticky>
+          {({style, isSticky}) => (
+            <div style={{...style, paddingTop: isSticky ? 70 : 0 }}>
+              <Alert
+                description="This is a warning notice about copywriting."
+                type="warning"
+                showIcon
+              />
+            </div>
           )}
-          </Sticky>
-          <div className="content">
-            <Route path="/" exact component={Settings} />
-            <Route path="/info" exact component={Info} />
-            <Route path="/contacts" component={Contacts} />
-            <Route path="/partners" component={Partners} />
-            <Route path="/descriptions" component={Descriptions} />
-            <Route path="/finance" component={Finance} />
-            <Route path="/locations" component={Locations} />
-            <Route path="/focus" component={Focus} />
-            <Route path="/links" component={Links} />
-            <Route path="/comments-n-keywords" component={CommentsKeywords} />
-            <Route path="/reporting" component={Reporting} />
-          </div>
-          <div className="alerts">
-          {/* <Sticky>
-            {({style, isSticky}) => (
-              <div style={{...style, paddingTop: isSticky ? 70 : 0 }}>
-                <Alert
-                  description="This is a warning notice about copywriting."
-                  type="warning"
-                  showIcon
-                />
-              </div>
-            )}
-          </Sticky> */}
-          </div>
+        </Sticky> */}
         </div>
       </div>
     </StickyContainer>
