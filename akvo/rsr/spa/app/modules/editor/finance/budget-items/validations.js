@@ -4,7 +4,7 @@ import { validationType } from '../../../../utils/misc'
 export const basic = yup.object().shape({
   label: yup.string(),
   type: yup.mixed().required(),
-  amount: yup.mixed().required().default(''),
+  amount: yup.mixed().required(),
 })
 
 export const IATI = basic.clone().shape({

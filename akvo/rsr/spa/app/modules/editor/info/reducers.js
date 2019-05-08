@@ -11,7 +11,7 @@ export default (state = initialState, action) => {
       if(action.checked && validations.indexOf(action.id) === -1){
         validations.push(action.id)
       } else if(!action.checked && validations.indexOf(action.id) !== -1){
-        validations.splice(validations.indexOf(action.id))
+        validations.splice(validations.indexOf(action.id), 1)
       }
       return {...state, validations}
     case types.EDIT_FIELD:

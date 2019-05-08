@@ -4,7 +4,7 @@ import { validationType } from '../../../utils/misc'
 
 const basic = yup.object().shape({
   isPublic: yup.boolean().default(true),
-  validations: yup.array().of(yup.number()).default([1, 2]),
+  validations: yup.array().of(yup.number()).default([1]),
   title: yup.string().default('').required(),
   subtitle: yup.string().default('').required(),
   iatiActivityId: yup.string(),
