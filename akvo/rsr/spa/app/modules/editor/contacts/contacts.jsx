@@ -42,11 +42,10 @@ class Contacts extends React.Component{
       return true
     }
     return nextState !== this.state
-    // return false
   }
   add = () => {
     this.setState({
-      activeKey: `p${this.props.rdr.length}`
+      activeKey: `${this.props.rdr.length}`
     })
     this.props.addContact()
   }
@@ -65,7 +64,7 @@ class Contacts extends React.Component{
             <Panel
               header={`Contact: ${contact.name}`}
               extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-              key={`p${index}`}
+              key={`${index}`}
             >
               <Form layout="vertical">
                 <Row gutter={16}>

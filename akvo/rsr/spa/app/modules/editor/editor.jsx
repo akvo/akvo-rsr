@@ -16,9 +16,35 @@ import Links from './links/links'
 import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
 import Reporting from './reporting/comp/reporting'
 
+import {touchSection} from './actions'
 import './styles.scss'
 
-export const sections = ['info', 'contacts', 'partners']
+export const sections = [
+  {key: 'info', validation: true, component: Info},
+  {key: 'contacts', validation: true, component: Contacts},
+  {key: 'partners', validation: true, component: Partners},
+  {key: 'descriptions', component: Descriptions},
+  {key: 'results-n-indicators' },
+  {key: 'finance', component: Finance},
+  {key: 'locations', component: Locations},
+  {key: 'focus', component: Focus},
+  {key: 'links', component: Links},
+  {key: 'comments-n-keywords', component: CommentsKeywords},
+  {key: 'reporting', component: Reporting}
+]
+const dict = {
+  info: 'General Information',
+  contacts: 'Contact Information',
+  partners: 'Partners',
+  descriptions: 'Descriptions',
+  'results-n-indicators': 'Results & Indicators',
+  finance: 'Finance',
+  locations: 'Locations',
+  focus: 'Focus',
+  links: 'Links',
+  'comments-n-keywords': 'Comments & Keywords',
+  reporting: 'Reporting'
+}
 
 const Check = ({ checked }) => (
   <div className="check">
@@ -46,6 +72,22 @@ const MenuItem = (props) => {
   )
 }
 
+const filterSection11 = rdr => (item) => {
+  if(rdr.showSection11 === false && item.key === 'reporting') return false
+  return true
+}
+
+class _Section extends React.Component{
+  componentWillMount(){
+    console.log(this.props.sectionKey)
+    this.props.touchSection(this.props.sectionKey)
+  }
+  render(){
+    return this.props.children
+  }
+}
+const Section = connect(null, {touchSection})(_Section)
+
 const Editor = ({ rdr }) => (
   <Router basename="/my-rsr">
     <StickyContainer>
@@ -65,35 +107,25 @@ const Editor = ({ rdr }) => (
           <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
             <ul>
               <MenuItem hideCheck to="/">Settings</MenuItem>
-              <MenuItem to="/info" checked={rdr.isCompleted.info}>General Information</MenuItem>
-              <MenuItem to="/contacts" checked={rdr.isCompleted.contacts}>Contact Information</MenuItem>
-              <MenuItem to="/partners" checked={rdr.isCompleted.partners}>Partners</MenuItem>
-              <MenuItem to="/descriptions" checked={rdr.isCompleted.descriptions}>Descriptions</MenuItem>
-              <MenuItem to="/results-indicators">Results and indicators</MenuItem>
-              <MenuItem to="/finance" checked={rdr.isCompleted.finance}>Finance</MenuItem>
-              <MenuItem to="/locations">Locations</MenuItem>
-              <MenuItem to="/focus">Focus</MenuItem>
-              <MenuItem to="/links">Links and documents</MenuItem>
-              <MenuItem to="/comments-n-keywords">Comments and keywords</MenuItem>
-              {rdr.showSection11 &&
-              <MenuItem to="/reporting">CRS++ and FSS reporting</MenuItem>
-              }
+              {sections.filter(filterSection11(rdr)).map(section =>
+              <MenuItem to={`/${section.key}`} checked={rdr.isCompleted[section.key]}>{dict[section.key]}</MenuItem>
+              )}
             </ul>
           </aside>
         )}
         </Sticky>
         <div className="main-content">
           <Route path="/" exact component={Settings} />
-          <Route path="/info" exact component={Info} />
-          <Route path="/contacts" component={Contacts} />
-          <Route path="/partners" component={Partners} />
-          <Route path="/descriptions" component={Descriptions} />
-          <Route path="/finance" component={Finance} />
-          <Route path="/locations" component={Locations} />
-          <Route path="/focus" component={Focus} />
-          <Route path="/links" component={Links} />
-          <Route path="/comments-n-keywords" component={CommentsKeywords} />
-          <Route path="/reporting" component={Reporting} />
+          {sections.map(section =>
+            <Route
+              path={`/${section.key}`}
+              exact
+              render={(props) => {
+                const Comp = section.component
+                return <Section {...props} sectionKey={section.key}><Comp /></Section>
+              }}
+            />)
+          }
         </div>
         <div className="alerts">
         {/* <Sticky>
