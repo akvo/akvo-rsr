@@ -5,7 +5,10 @@ export const basic = yup.object().shape({
   role: yup.number().required().default(1),
   secondaryReporter: yup.boolean(),
   iatiActivityID: yup.string(),
-  fundingAmount: yup.mixed()
+  fundingAmount: yup.mixed().when('role', {
+    is: 1,
+    then: yup.mixed().required()
+  })
 })
 
 const array = yup.array().of(basic).min(1, 'At least one partner is required for your validation set')
