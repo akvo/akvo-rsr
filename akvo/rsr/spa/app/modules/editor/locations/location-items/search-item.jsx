@@ -1,7 +1,7 @@
 /* global fetch */
 import React from 'react'
 import querystring from 'querystring'
-import { Form, Select, Spin, Icon } from 'antd'
+import { Form, Select, Spin } from 'antd'
 
 import InputLabel from '../../../../utils/input-label'
 import { opencagedataKey } from '../../../../utils/constants'

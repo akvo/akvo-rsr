@@ -1,10 +1,5 @@
 
-// import actionTypes.info from './info/action-types'
-// import contactsActionTypes from './contacts/action-types'
-// import partnersActionTypes from './partners/action-types'
 import descriptionsActionTypes from './descriptions/action-types'
-// import budgetItemActionTypes from './finance/budget-items/action-types'
-// import disbursementsActionTypes from './finance/disbursements/action-types'
 import { sections } from './editor'
 
 const modules = [

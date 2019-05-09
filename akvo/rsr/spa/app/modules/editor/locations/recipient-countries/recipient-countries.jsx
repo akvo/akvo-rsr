@@ -5,7 +5,7 @@ import { Button, Form, Select, Icon, Input } from 'antd'
 import InputLabel from '../../../../utils/input-label'
 import _Field from '../../../../utils/field'
 import countries from '../../../../utils/countries'
-import { Aux, validationType, doesFieldExist } from '../../../../utils/misc'
+import { doesFieldExist } from '../../../../utils/validation-utils'
 import UpdateHalter from '../../../../utils/update-halter'
 import { getValidationSets } from './validations'
 import * as actions from './actions'
@@ -19,13 +19,10 @@ const Field = connect(
 )(_Field)
 
 
-// const RecipientCountries = ({ rdr, ...props }) =>
-
 class RecipientCountries extends React.Component{
   render(){
     const validationSets = getValidationSets(this.props.validations)
     const fieldExists = doesFieldExist(validationSets)
-    // const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
     return (
       <div>
           <h3>Recipient country</h3>

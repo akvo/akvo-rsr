@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 
-import { validationType } from '../../../utils/misc'
+import { validationType } from '../../../utils/validation-utils'
 
 const basic = yup.object().shape({
   isPublic: yup.boolean().default(true),

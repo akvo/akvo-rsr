@@ -1,5 +1,4 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/misc'
 
 export const IATI = yup.object().shape({
   code: yup.string(),

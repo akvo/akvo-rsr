@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/misc'
+import { validationType } from '../../../../utils/validation-utils'
 
 export const sector = yup.object().shape({
   name: yup.string(),

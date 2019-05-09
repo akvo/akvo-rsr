@@ -1,5 +1,5 @@
 import types from './action-types'
-import {yupModel} from '../../../../utils/misc'
+import {yupModel} from '../../../../utils/validation-utils'
 import { IATI } from './validations'
 import genericReducer from '../../../../utils/generic-reducer'
 

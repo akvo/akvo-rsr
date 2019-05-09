@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Collapse, Icon, Form, Input, Button, Select, Col, Row } from 'antd'
 
 import InputLabel from '../../../utils/input-label'
-import { isFieldOptional, isFieldValid } from '../../../utils/misc'
+import { isFieldOptional, isFieldValid } from '../../../utils/validation-utils'
 import { getValidationSets } from './validations'
 import _Field from '../../../utils/field'
 

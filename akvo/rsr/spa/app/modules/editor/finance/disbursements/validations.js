@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/misc'
+import { validationType } from '../../../../utils/validation-utils'
 
 export const DGIS = yup.object().shape({
   value: yup.mixed().default(null),

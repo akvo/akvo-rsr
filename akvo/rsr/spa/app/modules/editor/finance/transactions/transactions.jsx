@@ -7,7 +7,8 @@ import InputLabel from '../../../../utils/input-label'
 import _Field from '../../../../utils/field'
 import countries from '../../../../utils/countries'
 import UpdateHalter from '../../../../utils/update-halter'
-import { inputNumberAmountFormatting, validationType, datePickerConfig, Aux } from '../../../../utils/misc'
+import { inputNumberAmountFormatting, datePickerConfig, Aux } from '../../../../utils/misc'
+import { validationType } from '../../../../utils/validation-utils'
 import * as actions from './actions'
 import typeOptions from './options/type-options.json'
 import channelOptions from './options/channels.json'
@@ -72,7 +73,6 @@ class Transactions extends React.Component{
   }
   render(){
     const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
-    const isDGIS = this.props.validations.indexOf(validationType.DGIS) !== -1
     return (
       <div>
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>

@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { validationType, transformUndefined } from '../../../utils/misc'
+import { validationType, transformUndefined } from '../../../utils/validation-utils'
 
 export const basic = yup.object().shape({
   name: yup.string().default(''),

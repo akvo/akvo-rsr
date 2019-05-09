@@ -1,5 +1,5 @@
 import actionTypes from './action-types'
-import {yupModel} from '../../../../utils/misc'
+import {yupModel} from '../../../../utils/validation-utils'
 import { IATI, administrative } from './validations'
 
 const initialState = []

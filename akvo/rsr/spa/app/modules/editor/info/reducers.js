@@ -1,6 +1,6 @@
 import types from './action-types'
 import Validations from './validations'
-import { yupModel } from '../../../utils/misc'
+import { yupModel } from '../../../utils/validation-utils'
 
 const initialState = yupModel(Validations.IATI)
 

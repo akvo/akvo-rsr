@@ -8,7 +8,8 @@ import _Field from '../../../../utils/field'
 import UpdateHalter from '../../../../utils/update-halter'
 import * as actions from './actions'
 import { budgetItemTypes } from '../../../../utils/constants'
-import { validationType, datePickerConfig, Aux, inputNumberAmountFormatting, isFieldOptional } from '../../../../utils/misc'
+import { datePickerConfig, Aux, inputNumberAmountFormatting } from '../../../../utils/misc'
+import { validationType, isFieldOptional } from '../../../../utils/validation-utils'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import { getValidationSets } from './validations'
 
@@ -30,13 +31,13 @@ class BudgetItems extends React.Component{
     super(props)
     if(props.rdr.length > 0){
       this.state = {
-        activeKey: `p${props.rdr.length - 1}`
+        activeKey: `${props.rdr.length - 1}`
       }
     }
   }
   add = () => {
     this.setState({
-      activeKey: `p${this.props.rdr.length}`
+      activeKey: `${this.props.rdr.length}`
     })
     this.props.addBudget()
   }
@@ -47,7 +48,7 @@ class BudgetItems extends React.Component{
   addType = (type) => {
     this.setState({
       modalVisible: false,
-      activeKey: `p${this.props.rdr.length}`
+      activeKey: `${this.props.rdr.length}`
     })
     this.props.addBudget(type)
   }
@@ -87,7 +88,7 @@ class BudgetItems extends React.Component{
             <Panel
               header={`${budgetItemTypes.find(it => it.value === budgetItem.type).label}`}
               extra={<span><span className="amount">{currencySymbol}{budgetItem.amount ? String(budgetItem.amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span><Icon type="delete" onClick={event => this.remove(event, index)} /></span>}
-              key={`p${index}`}
+              key={`${index}`}
             >
               <UpdateHalter>
                 <Row gutter={16}>

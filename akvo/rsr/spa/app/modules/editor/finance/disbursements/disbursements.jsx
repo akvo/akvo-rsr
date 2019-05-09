@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Form, Input, Button, Select, InputNumber, Modal, Radio, Col, Row, DatePicker } from 'antd'
+import { Collapse, Icon, Form, Input, Button, Select, InputNumber, Radio, Col, Row, DatePicker } from 'antd'
 import currencies from 'currency-codes/data'
 
 import InputLabel from '../../../../utils/input-label'
 import _Field from '../../../../utils/field'
-import { Aux, validationType, inputNumberAmountFormatting, datePickerConfig } from '../../../../utils/misc'
+import { inputNumberAmountFormatting, datePickerConfig } from '../../../../utils/misc'
+import { validationType } from '../../../../utils/validation-utils'
 import UpdateHalter from '../../../../utils/update-halter'
 import * as actions from './actions'
 
