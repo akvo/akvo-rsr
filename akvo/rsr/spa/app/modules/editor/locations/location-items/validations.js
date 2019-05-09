@@ -12,6 +12,12 @@ export const basic = yup.object().shape({
   })
 })
 
+export const administrative = yup.object().shape({
+  code: yup.string(),
+  vocabulary: yup.string(),
+  lavel: yup.mixed()
+})
+
 export const IATI = basic.clone().shape({
   name: yup.string(),
   reference: yup.string(),
@@ -21,7 +27,8 @@ export const IATI = basic.clone().shape({
   locationPrecision: yup.string(),
   reach: yup.string(),
   class: yup.string(),
-  featureDesignation: yup.string()
+  featureDesignation: yup.string(),
+  administratives: yup.array().of(administrative).default([])
 })
 
 const arrays = {

@@ -1,5 +1,4 @@
 import actionTypes from './action-types'
-import genericReducer from '../../../../utils/generic-reducer'
 import {yupModel} from '../../../../utils/misc'
 import { IATI, sector } from './validations'
 
@@ -13,7 +12,6 @@ const updateArrayItem = (item, array, index) => {
 }
 
 export default (state = initialState, action) => {
-  let item
   switch(action.type){
     case actionTypes.ADD:
       return [...state, Object.assign({}, model)]

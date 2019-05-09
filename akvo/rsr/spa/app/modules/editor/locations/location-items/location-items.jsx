@@ -7,6 +7,7 @@ import _Field from '../../../../utils/field'
 import { Aux, validationType } from '../../../../utils/misc'
 import UpdateHalter from '../../../../utils/update-halter'
 import SearchItem from './search-item'
+import Administratives from './administratives'
 import featureOptions from './feature-options.json'
 import * as actions from './actions'
 import '../styles.scss'
@@ -216,6 +217,7 @@ class Locations extends React.Component{
                     />
                   </Col>
                 </Row>
+                <Administratives locationItemIndex={index} />
               </Aux>
             )}
             </UpdateHalter>
