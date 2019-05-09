@@ -9,7 +9,8 @@ const modules = [
   'finance/budget-items',
   'finance/disbursements',
   'locations/location-items',
-  'locations/recipient-countries'
+  'locations/recipient-countries',
+  'locations/recipient-regions'
 ]
 
 const kebabToCamel = s => s.replace(/(-\w)/g, m => m[1].toUpperCase())
@@ -65,7 +66,7 @@ const validateSectionGroup = (section, action) => {
     action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'finance', value: isCompleted })
   }
   else if(section === 'locations'){
-    const isCompleted = validate('locations/location-items', action, true) && validate('locations/recipient-countries', action, true)
+    const isCompleted = validate('locations/location-items', action, true) && validate('locations/recipient-countries', action, true) && validate('locations/recipient-regions', action, true)
     action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'locations', value: isCompleted })
   } else {
     validate(section, action)
@@ -112,7 +113,9 @@ export default (state = initialState, action) => {
           validateSectionGroup('finance', action)
         }
         // SECTION 7
-        else if(objectToArray(actionTypes['locations/location-items']).indexOf(action.type) !== -1 || objectToArray(actionTypes['locations/recipient-countries']).indexOf(action.type) !== -1){
+        else if(objectToArray(actionTypes['locations/location-items']).indexOf(action.type) !== -1
+         || objectToArray(actionTypes['locations/recipient-countries']).indexOf(action.type) !== -1
+         || objectToArray(actionTypes['locations/recipient-regions']).indexOf(action.type) !== -1){
           validateSectionGroup('locations', action)
         }
         else if(action.type === 'PE_TOUCH_SECTION'){

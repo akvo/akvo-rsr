@@ -12,6 +12,7 @@ import financeRdr from '../modules/editor/finance/reducers'
 import locationsRdr from '../modules/editor/locations/reducers'
 import locationItemsRdr from '../modules/editor/locations/location-items/reducers'
 import recipientCountriesRdr from '../modules/editor/locations/recipient-countries/reducers'
+import recipientRegionsRdr from '../modules/editor/locations/recipient-regions/reducers'
 import focusRdr from '../modules/editor/focus/reducers'
 import {linksRdr, docsRdr} from '../modules/editor/links/reducers'
 import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   locationsRdr,
   locationItemsRdr,
   recipientCountriesRdr,
+  recipientRegionsRdr,
   focusRdr,
   linksRdr,
   docsRdr,
