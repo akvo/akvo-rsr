@@ -32,3 +32,18 @@ class IndicatorDimension(models.Model):
 
     def __unicode__(self):
         return self.name + ': ' + self.value if self.name and self.value else ''
+
+    def save(self, *args, **kwargs):
+        new_dimension = not self.pk
+
+        super(IndicatorDimension, self).save(*args, **kwargs)
+
+        child_indicators = self.indicator.child_indicators.select_related(
+            'result',
+            'result__project',
+        )
+
+        for child_indicator in child_indicators.all():
+            if new_dimension:
+                child_indicator.result.project.add_dimension(child_indicator, self)
+

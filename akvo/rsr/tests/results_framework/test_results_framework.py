@@ -11,7 +11,7 @@ import datetime
 import unittest
 
 from akvo.rsr.models import (
-    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference)
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension)
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -55,6 +55,11 @@ class ResultsFrameworkTestCase(BaseTestCase):
             reference='ABC',
             vocabulary='1',
         )
+        self.dimension = IndicatorDimension.objects.create(
+            indicator=self.indicator,
+            name='Foo',
+            value='Bar',
+        )
 
         # Import results framework into child
         self.import_status, self.import_message = self.child_project.import_results()
@@ -70,10 +75,15 @@ class ResultsFrameworkTestCase(BaseTestCase):
             indicator__result__project=self.child_project).first()
         self.assertEqual(child_period.indicator.result.parent_result, self.period.indicator.result)
         self.assertEqual(child_period.parent_period, self.period)
+
         child_reference = child_period.indicator.references.first()
         self.assertEqual(child_reference.reference, self.reference.reference)
         self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
         self.assertEqual(child_reference.vocabulary_uri, self.reference.vocabulary_uri)
+
+        child_dimension = child_period.indicator.dimensions.first()
+        self.assertEqual(child_dimension.name, self.dimension.name)
+        self.assertEqual(child_dimension.value, self.dimension.value)
 
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
@@ -191,6 +201,25 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_period.target_value, parent_period.target_value)
         self.assertEqual(child_period.target_comment, parent_period.target_comment)
         self.assertEqual(child_period.actual_comment, parent_period.actual_comment)
+
+    def test_new_dimension_cloned_to_child(self):
+        """Test that new dimensions are cloned in children that have imported results."""
+        # Given
+        # # Child project has already imported results from parent.
+        indicator = self.indicator
+
+        # When
+        IndicatorDimension.objects.create(
+            indicator=indicator,
+            name='Baz',
+            value='Quux',
+        )
+
+        # Then
+        self.assertEqual(
+            IndicatorDimension.objects.filter(indicator=indicator).count(),
+            IndicatorDimension.objects.filter(indicator__in=indicator.child_indicators.all()).count(),
+        )
 
     def test_child_period_state_updates_after_change(self):
         """Test that updating period propagates to children."""
