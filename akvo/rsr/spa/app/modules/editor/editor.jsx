@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import { Icon, Button, Alert } from 'antd'
-import { StickyContainer, Sticky } from 'react-sticky'
 
 import Settings from './settings/settings'
 import Info from './info/comp/info'
@@ -90,21 +89,13 @@ const Section = connect(null, {touchSection})(_Section)
 
 const Editor = ({ rdr }) => (
   <Router basename="/my-rsr">
-    <StickyContainer>
       <div className="editor">
         <div className="status-bar">
-          <aside>
+        <aside className="saving-status">
             <Icon type="check" />
             <span>Saved 3 minutes ago</span>
           </aside>
-          <div className="content">
-            <Button type="primary">Publish</Button>
-            <i>The project is unpublished</i>
-          </div>
-        </div>
-        <Sticky>
-        {({ style, isSticky }) => (
-          <aside style={{...style, paddingTop: isSticky ? 50 : 0 }}>
+        <aside className="main-menu">
             <ul>
               <MenuItem hideCheck to="/">Settings</MenuItem>
               {sections.filter(filterSection11(rdr)).map(section =>
@@ -112,8 +103,11 @@ const Editor = ({ rdr }) => (
               )}
             </ul>
           </aside>
-        )}
-        </Sticky>
+        <div className="content">
+          <Button type="primary">Publish</Button>
+          <i>The project is unpublished</i>
+        </div>
+      </div>
         <div className="main-content">
           <Route path="/" exact component={Settings} />
           {sections.map(section =>
@@ -127,21 +121,8 @@ const Editor = ({ rdr }) => (
             />)
           }
         </div>
-        <div className="alerts">
-        {/* <Sticky>
-          {({style, isSticky}) => (
-            <div style={{...style, paddingTop: isSticky ? 70 : 0 }}>
-              <Alert
-                description="This is a warning notice about copywriting."
-                type="warning"
-                showIcon
-              />
-            </div>
-          )}
-        </Sticky> */}
-        </div>
+      <div className="alerts" />
       </div>
-    </StickyContainer>
   </Router>
 )
 

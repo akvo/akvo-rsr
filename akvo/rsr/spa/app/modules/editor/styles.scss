@@ -23,7 +23,7 @@
     display: flex;
     line-height: 50px;
     z-index: 12;
-    aside{
+    aside.saving-status{
       background: #e6e6e6;
       height: 50px;
       padding: 0 20px;
@@ -52,7 +52,10 @@
   }
   aside{
     width: 270px!important;
+  }
+  aside.main-menu{
     position: absolute;
+    top: 50px;
     ul{
       background-color: #f2f2f2;
       padding: 20px 0;
