@@ -1,8 +1,4 @@
-import { getValidationSets as infoGetValidationSets } from './info/validations'
-import { getValidationSets as contactsGetValidationSets } from './contacts/validations'
-import { getValidationSets as partnersGetValidationSets } from './partners/validations'
-import { getValidationSets as budgetItemsGetValidationSets } from './finance/budget-items/validations'
-import { getValidationSets as disbursementsGetValidationSets } from './finance/disbursements/validations'
+
 import infoActionTypes from './info/action-types'
 import contactsActionTypes from './contacts/action-types'
 import partnersActionTypes from './partners/action-types'
@@ -11,13 +7,13 @@ import budgetItemActionTypes from './finance/budget-items/action-types'
 import disbursementsActionTypes from './finance/disbursements/action-types'
 import { sections } from './editor'
 
-const validationSetGetters = {
-  info: infoGetValidationSets,
-  contacts: contactsGetValidationSets,
-  partners: partnersGetValidationSets,
-  budgetItems: budgetItemsGetValidationSets,
-  disbursements: disbursementsGetValidationSets
-}
+const validationKeys = ['info', 'contacts', 'partners', 'finance/budget-items', 'finance/disbursements']
+
+const validationSetGetters = validationKeys.reduce((acc, key) => ({
+  ...acc,
+  [key]: require(`./${key}/validations`).getValidationSets // eslint-disable-line
+}), {})
+
 
 const initialState = {
   isCompleted: {},
@@ -31,13 +27,17 @@ sections.forEach((section) => {
 
 const validate = (section, action, customDispatch) => {
   const state = action.getState()
+  const validationSetGetter = validationSetGetters[section]
+  if(!validationSetGetter){
+    return false
+  }
   const validationSets = validationSetGetters[section](state.infoRdr.validations, { arrays: true })
   let isCompleted = true
   validationSets.forEach((validationSet) => {
     try{
       validationSet.validateSync(state[`${section}Rdr`])
     } catch(error){
-      console.log('validation error', error)
+      console.log(section, 'validation error', error)
       isCompleted = false
     }
   })
@@ -49,7 +49,7 @@ const validate = (section, action, customDispatch) => {
 
 const validateSectionGroup = (section, action) => {
   if(section === 'finance'){
-    const isCompleted = validate('budgetItems', action, true) && validate('disbursements', action, true)
+    const isCompleted = validate('finance/budget-items', action, true) && validate('finance/disbursements', action, true)
     action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'finance', value: isCompleted })
   } else {
     validate(section, action)
