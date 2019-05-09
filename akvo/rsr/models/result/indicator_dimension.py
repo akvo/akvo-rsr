@@ -17,6 +17,10 @@ class IndicatorDimension(models.Model):
 
     indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
                                   related_name='dimensions')
+    # This parent relation is needed primarily to handle updates
+    parent_dimension = models.ForeignKey('self', blank=True, null=True, default=None,
+                                         verbose_name=_(u'parent dimension'),
+                                         related_name='child_dimensions')
     name = ValidXMLCharField(
         _(u'dimension name'), blank=True, max_length=100,
         help_text=_(u'The name of a category to be used when disaggregating (e.g "Age")'))
@@ -35,15 +39,13 @@ class IndicatorDimension(models.Model):
 
     def save(self, *args, **kwargs):
         new_dimension = not self.pk
-
         super(IndicatorDimension, self).save(*args, **kwargs)
-
         child_indicators = self.indicator.child_indicators.select_related(
             'result',
             'result__project',
         )
-
         for child_indicator in child_indicators.all():
             if new_dimension:
                 child_indicator.result.project.copy_dimension(child_indicator, self)
-
+            else:
+                child_indicator.result.project.update_dimension(child_indicator, self)
