@@ -1394,7 +1394,7 @@ class Project(TimestampsMixin, models.Model):
             self.add_reference(indicator, reference)
 
         for dimension in source_indicator.dimensions.all():
-            self.copy_dimension(indicator, dimension)
+            self.copy_dimension(indicator, dimension, set_parent=set_parent)
 
         return indicator
 
@@ -1464,12 +1464,38 @@ class Project(TimestampsMixin, models.Model):
         fields = ['target_value', 'target_comment', 'actual_comment']
         self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
-    def copy_dimension(self, indicator, dimension):
-        apps.get_model('rsr', 'IndicatorDimension').objects.create(
-            indicator=indicator,
-            name=dimension.name,
-            value=dimension.value,
+    def copy_dimension(self, indicator, source_dimension, set_parent=True):
+        IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
+        data = dict(
+            name=source_dimension.name,
+            value=source_dimension.value
         )
+        qs = IndicatorDimension.objects.select_related('indicator', 'indicator__result')
+        if set_parent:
+            qs.update_or_create(
+                indicator=indicator, parent_dimension=source_dimension, defaults=data
+            )
+        else:
+            qs.create(indicator=indicator, **data)
+
+    def update_dimension(self, indicator, parent_dimension):
+        """Update a dimension based on the parent dimension attributes."""
+
+        IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
+        try:
+            child_dimension = IndicatorDimension.objects.select_related(
+                'indicator',
+                'indicator__result'
+            ).get(
+                indicator=indicator,
+                parent_dimension=parent_dimension,
+            )
+        except IndicatorDimension.DoesNotExist:
+            return
+
+        child_dimension.name = parent_dimension.name
+        child_dimension.value = parent_dimension.value
+        child_dimension.save()
 
     def add_reference(self, indicator, reference):
         apps.get_model('rsr', 'IndicatorReference').objects.create(
