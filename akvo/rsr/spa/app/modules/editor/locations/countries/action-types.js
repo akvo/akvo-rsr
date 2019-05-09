@@ -1,0 +1,5 @@
+export default {
+  ADD: 'PE_ADD_COUNTRY',
+  EDIT_FIELD: 'PE_EDIT_FIELD_COUNTRY',
+  REMOVE: 'PE_REMOVE_COUNTRY'
+}

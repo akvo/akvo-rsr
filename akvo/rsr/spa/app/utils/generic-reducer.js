@@ -9,6 +9,8 @@ export default (initialState, model, actionTypes) => (state = initialState, acti
       field[action.key] = action.value
       const updated = Object.assign({}, state[action.index], field)
       return [...state.slice(0, action.index), updated, ...state.slice(action.index + 1)]
+    case actionTypes.EDIT:
+      return [...state.slice(0, action.index), action.item, ...state.slice(action.index + 1)]
     default: return state
   }
 }

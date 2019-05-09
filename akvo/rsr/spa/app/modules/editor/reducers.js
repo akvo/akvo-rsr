@@ -1,17 +1,30 @@
 
-import infoActionTypes from './info/action-types'
-import contactsActionTypes from './contacts/action-types'
-import partnersActionTypes from './partners/action-types'
+// import actionTypes.info from './info/action-types'
+// import contactsActionTypes from './contacts/action-types'
+// import partnersActionTypes from './partners/action-types'
 import descriptionsActionTypes from './descriptions/action-types'
-import budgetItemActionTypes from './finance/budget-items/action-types'
-import disbursementsActionTypes from './finance/disbursements/action-types'
+// import budgetItemActionTypes from './finance/budget-items/action-types'
+// import disbursementsActionTypes from './finance/disbursements/action-types'
 import { sections } from './editor'
 
-const validationKeys = ['info', 'contacts', 'partners', 'finance/budget-items', 'finance/disbursements']
+const modules = [
+  'info',
+  'contacts',
+  'partners',
+  'finance/budget-items',
+  'finance/disbursements',
+  'locations/location-items'
+]
 
-const validationSetGetters = validationKeys.reduce((acc, key) => ({
+const kebabToCamel = s => s.replace(/(-\w)/g, m => m[1].toUpperCase())
+
+const validationSetGetters = modules.reduce((acc, key) => ({
   ...acc,
   [key]: require(`./${key}/validations`).getValidationSets // eslint-disable-line
+}), {})
+const actionTypes = modules.reduce((acc, key) => ({
+  ...acc,
+  [key]: require(`./${key}/action-types`).default // eslint-disable-line
 }), {})
 
 
@@ -35,7 +48,9 @@ const validate = (section, action, customDispatch) => {
   let isCompleted = true
   validationSets.forEach((validationSet) => {
     try{
-      validationSet.validateSync(state[`${section}Rdr`])
+      // convert path/to/reducer-name to reducerName
+      const reducerName = kebabToCamel(section.split('/').reduce((acc, cur, index, arr) => { if(index === arr.length - 1){ return cur } return null }))
+      validationSet.validateSync(state[`${reducerName}Rdr`])
     } catch(error){
       console.log(section, 'validation error', error)
       isCompleted = false
@@ -51,6 +66,10 @@ const validateSectionGroup = (section, action) => {
   if(section === 'finance'){
     const isCompleted = validate('finance/budget-items', action, true) && validate('finance/disbursements', action, true)
     action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'finance', value: isCompleted })
+  }
+  else if(section === 'locations'){
+    const isCompleted = validate('locations/location-items', action, true)
+    action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'locations', value: isCompleted })
   } else {
     validate(section, action)
   }
@@ -66,7 +85,7 @@ export default (state = initialState, action) => {
     autosaveTmId = setTimeout(() => {
       if(action.asyncDispatch) {
         // SECTION 0 - edited validation setting - run all validations
-        if(action.type === infoActionTypes.CHECK_VALIDATION){
+        if(action.type === actionTypes.info.CHECK_VALIDATION){
           sections.filter(it => it.validation).map(section => validateSectionGroup(section.key, action))
           const { infoRdr } = action.getState()
           const { validations } = infoRdr
@@ -74,15 +93,15 @@ export default (state = initialState, action) => {
           action.asyncDispatch({ type: 'PER_SHOW_SECTION_11', value: showSection11 })
         }
         // SECTION 1
-        else if(action.type === infoActionTypes.EDIT_FIELD){
+        else if(action.type === actionTypes.info.EDIT_FIELD){
           validate('info', action)
         }
         // SECTION 2
-        else if(objectToArray(contactsActionTypes).indexOf(action.type) !== -1){
+        else if(objectToArray(actionTypes.contacts).indexOf(action.type) !== -1){
           validate('contacts', action)
         }
         // SECTION 3
-        else if(objectToArray(partnersActionTypes).indexOf(action.type) !== -1){
+        else if(objectToArray(actionTypes.partners).indexOf(action.type) !== -1){
           validate('partners', action)
         }
         // SECTION 4
@@ -92,8 +111,12 @@ export default (state = initialState, action) => {
           action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'descriptions', value: isCompleted })
         }
         // SECTION 6
-        else if(objectToArray(budgetItemActionTypes).indexOf(action.type) !== -1 || objectToArray(disbursementsActionTypes).indexOf(action.type) !== -1){
+        else if(objectToArray(actionTypes['finance/budget-items']).indexOf(action.type) !== -1 || objectToArray(actionTypes['finance/disbursements']).indexOf(action.type) !== -1){
           validateSectionGroup('finance', action)
+        }
+        // SECTION 7
+        else if(objectToArray(actionTypes['locations/location-items']).indexOf(action.type) !== -1){
+          validateSectionGroup('locations', action)
         }
         else if(action.type === 'PE_TOUCH_SECTION'){
           validateSectionGroup(action.key, action)

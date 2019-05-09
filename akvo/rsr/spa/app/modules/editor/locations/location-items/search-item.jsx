@@ -29,9 +29,10 @@ function $fetch(value, callback) {
       .then(response => response.json())
       .then((d) => {
         if (currentValue === value) {
-          const data = d.results.map(r => ({
+          const data = d.results.filter(it => it.components._type === 'city').map(r => ({
             coordinates: r.geometry,
             text: r.formatted,
+            name: r.components.city
           }))
           callback(data)
         }
@@ -58,9 +59,9 @@ class SearchItem extends React.Component{
   render(){
     const options = this.state.data.map((d, index) => <Option value={index}>{d.text}</Option>)
     return (
-      <Item label={<InputLabel tooltip="..." more={<Icon type="delete" onClick={this.props.onRemove} />}>City</InputLabel>}>
+      <Item label={<InputLabel tooltip="...">City</InputLabel>}>
         <Select
-          value={this.props.location.text}
+          value={this.props.location.city}
           showSearch
           defaultActiveFirstOption={false}
           showArrow={false}

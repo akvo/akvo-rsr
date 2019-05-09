@@ -35,7 +35,7 @@ const Settings = ({ infoRdr, ...props }) => (
     </small>
     <ul>
       {sets.map(({ value, label }, index) =>
-      <li>
+      <li key={value}>
         <Switch disabled={index === 0} checked={infoRdr.validations.indexOf(value) !== -1} onChange={checked => props.checkValidation(value, checked)} />
         <span className="switch-label">{label}</span>
         <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>

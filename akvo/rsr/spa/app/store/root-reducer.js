@@ -9,7 +9,8 @@ import countryBudgetItemsRdr from '../modules/editor/finance/country-budget-item
 import transactionsRdr from '../modules/editor/finance/transactions/reducers'
 import disbursementsRdr from '../modules/editor/finance/disbursements/reducers'
 import financeRdr from '../modules/editor/finance/reducers'
-import locationsRdr from '../modules/editor/locations/reducers'
+import locationItemsRdr from '../modules/editor/locations/location-items/reducers'
+import recipientCountriesRdr from '../modules/editor/locations/countries/reducers'
 import focusRdr from '../modules/editor/focus/reducers'
 import {linksRdr, docsRdr} from '../modules/editor/links/reducers'
 import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   countryBudgetItemsRdr,
   transactionsRdr,
   disbursementsRdr,
-  locationsRdr,
+  locationItemsRdr,
+  recipientCountriesRdr,
   focusRdr,
   linksRdr,
   docsRdr,

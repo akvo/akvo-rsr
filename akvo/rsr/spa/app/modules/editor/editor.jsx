@@ -9,7 +9,7 @@ import Contacts from './contacts/contacts'
 import Partners from './partners/partners'
 import Descriptions from './descriptions/descriptions'
 import Finance from './finance/finance'
-import Locations from './locations/comp/locations'
+import Locations from './locations/locations'
 import Focus from './focus/focus'
 import Links from './links/links'
 import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
@@ -42,7 +42,7 @@ const dict = {
   focus: 'Focus',
   links: 'Links',
   'comments-n-keywords': 'Comments & Keywords',
-  reporting: 'Reporting'
+  reporting: 'CRS++ and FSS reporting'
 }
 
 const Check = ({ checked }) => (
@@ -89,40 +89,40 @@ const Section = connect(null, {touchSection})(_Section)
 
 const Editor = ({ rdr }) => (
   <Router basename="/my-rsr">
-      <div className="editor">
-        <div className="status-bar">
+    <div className="editor">
+      <div className="status-bar">
         <aside className="saving-status">
-            <Icon type="check" />
-            <span>Saved 3 minutes ago</span>
-          </aside>
+          <Icon type="check" />
+          <span>Saved 3 minutes ago</span>
+        </aside>
         <aside className="main-menu">
-            <ul>
-              <MenuItem hideCheck to="/">Settings</MenuItem>
-              {sections.filter(filterSection11(rdr)).map(section =>
-              <MenuItem to={`/${section.key}`} checked={rdr.isCompleted[section.key]}>{dict[section.key]}</MenuItem>
-              )}
-            </ul>
-          </aside>
+          <ul>
+            <MenuItem hideCheck to="/">Settings</MenuItem>
+            {sections.filter(filterSection11(rdr)).map(section =>
+            <MenuItem to={`/${section.key}`} checked={rdr.isCompleted[section.key]}>{dict[section.key]}</MenuItem>
+            )}
+          </ul>
+        </aside>
         <div className="content">
           <Button type="primary">Publish</Button>
           <i>The project is unpublished</i>
         </div>
       </div>
-        <div className="main-content">
-          <Route path="/" exact component={Settings} />
-          {sections.map(section =>
-            <Route
-              path={`/${section.key}`}
-              exact
-              render={(props) => {
-                const Comp = section.component
-                return <Section {...props} sectionKey={section.key}><Comp /></Section>
-              }}
-            />)
-          }
-        </div>
-      <div className="alerts" />
+      <div className="main-content">
+        <Route path="/" exact component={Settings} />
+        {sections.map(section =>
+          <Route
+            path={`/${section.key}`}
+            exact
+            render={(props) => {
+              const Comp = section.component
+              return <Section {...props} sectionKey={section.key}><Comp /></Section>
+            }}
+          />)
+        }
       </div>
+      <div className="alerts" />
+    </div>
   </Router>
 )
 
