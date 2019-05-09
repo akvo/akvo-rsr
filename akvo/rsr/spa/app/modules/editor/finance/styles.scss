@@ -35,18 +35,6 @@
   .capital-percentage{
     max-width: 70px;
   }
-  .percentage-row{
-    display: flex;
-    .ant-form-item{
-      margin-bottom: 0;
-    }
-    .ant-form-item:first-child{
-      margin-right: 20px;
-    }
-    .ant-form-item:last-child{
-      flex: 1;
-    }
-  }
   section{
     border: 1px solid #e8e8e8;
     padding: 15px 15px 0;

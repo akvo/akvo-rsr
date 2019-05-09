@@ -31,6 +31,17 @@ export const isFieldOptional = validationSets => (field) => {
   return ret
 }
 
+export const doesFieldExist = validationSets => (field) => {
+  let ret = false
+  for(let i = 0; i < validationSets.length; i += 1){
+    if(validationSets[i].fields.hasOwnProperty(field)){
+      ret = true
+      break
+    }
+  }
+  return ret
+}
+
 export const isFieldValid = validationSets => (field, value) => {
   let ret = true
   for(let i = 0; i < validationSets.length; i += 1){

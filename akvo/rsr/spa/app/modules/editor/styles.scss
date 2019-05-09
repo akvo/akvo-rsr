@@ -148,6 +148,22 @@
     }
   }
   
+  
+  .percentage-row{
+    display: flex;
+    .ant-form-item{
+      margin-bottom: 0;
+    }
+    .ant-form-item:first-child{
+      margin-right: 16px;
+    }
+    .ant-form-item:last-child{
+      flex: 1;
+    }
+  }
+  .percentage-input{
+    max-width: 70px;
+  }
 }
 
 hr{
