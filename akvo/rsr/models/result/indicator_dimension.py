@@ -45,5 +45,5 @@ class IndicatorDimension(models.Model):
 
         for child_indicator in child_indicators.all():
             if new_dimension:
-                child_indicator.result.project.add_dimension(child_indicator, self)
+                child_indicator.result.project.copy_dimension(child_indicator, self)
 

@@ -1394,7 +1394,7 @@ class Project(TimestampsMixin, models.Model):
             self.add_reference(indicator, reference)
 
         for dimension in source_indicator.dimensions.all():
-            self.add_dimension(indicator, dimension)
+            self.copy_dimension(indicator, dimension)
 
         return indicator
 
@@ -1464,7 +1464,7 @@ class Project(TimestampsMixin, models.Model):
         fields = ['target_value', 'target_comment', 'actual_comment']
         self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
-    def add_dimension(self, indicator, dimension):
+    def copy_dimension(self, indicator, dimension):
         apps.get_model('rsr', 'IndicatorDimension').objects.create(
             indicator=indicator,
             name=dimension.name,
