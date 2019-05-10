@@ -84,6 +84,11 @@ class Indicator(models.Model):
         _(u'default indicator periods'), default=False, blank=True,
         help_text=_(u'Determines whether periods of indicator are used by default.')
     )
+    export_to_iati = models.BooleanField(
+        _(u'Include indicator in IATI exports'), default=True,
+        help_text=_(u'Choose whether this indicator will be included in IATI exports. '
+                    u'If you are not exporting to IATI, you may ignore this option.')
+    )
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')

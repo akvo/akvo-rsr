@@ -48,6 +48,9 @@ def result(project):
                 narrative_element.text = res.description
 
             for indicator in res.indicators.all():
+                if not indicator.export_to_iati:
+                    continue
+
                 if (has_data(indicator, ['measure', 'title', 'description', 'baseline_year',
                                          'baseline_value', 'baseline_comment', ]) or
                         indicator.ascending is not None or

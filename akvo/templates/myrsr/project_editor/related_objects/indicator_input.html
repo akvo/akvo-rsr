@@ -29,11 +29,14 @@
         </div>
 
         <div class="row measure{% if indicator.type == 2 %} hidden{% endif %}">
-          <div class="col-md-6">
+          <div class="col-md-4">
             {% include choice_input with obj=indicator field='measure' %}
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             {% include boolean_input with obj=indicator field='ascending' nullboolean=True %}
+          </div>
+          <div class="col-md-4">
+              {% include boolean_input with obj=indicator field='export_to_iati' boolean=True %}
           </div>
         </div>
 
