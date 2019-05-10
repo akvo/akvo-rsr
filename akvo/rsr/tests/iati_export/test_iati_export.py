@@ -426,6 +426,15 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             measure='1',
             type=QUALITATIVE,
         )
+        # Private indicator
+        Indicator.objects.create(
+            result=result,
+            title="Qualitative indicator",
+            description="Qualitative Indicator Description",
+            measure='1',
+            type=QUALITATIVE,
+            export_to_iati=False,
+        )
         IndicatorReference.objects.create(
             indicator=indicator,
             vocabulary="1",
@@ -524,7 +533,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertXpathsExist(root_test, (indicator_xpath,))
         indicators = root_test.xpath(indicator_xpath)
 
-        # Test qualitative indicator is included
+        # Test qualitative indicator is included and private indicator is excluded
         self.assertEqual(2, len(indicators))
         self.assertIndicatorExported(indicators[0], indicator)
         self.assertIndicatorExported(indicators[1], q_indicator)
