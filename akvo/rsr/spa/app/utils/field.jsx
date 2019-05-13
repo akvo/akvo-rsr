@@ -1,4 +1,15 @@
 import React from 'react'
+import { Input, Select } from 'antd'
+
+const CONTROLS = {
+  input: props => <Input {...props} />,
+  textarea: props => <Input.TextArea {...props} />,
+  select: ({options, ...props}) => (
+    <Select {...props}>
+      {options.map(({ label, value }) => <Select.Option value={value}>{label}</Select.Option>)}
+    </Select>
+  )
+}
 
 class Field extends React.Component{
   shouldComponentUpdate(nextProps){
@@ -15,7 +26,7 @@ class Field extends React.Component{
     return false
   }
   render(){
-    return this.props.render({
+    const controlProps = {
       name: this.props.name,
       value: this.props.index === undefined ? this.props.rdr[this.props.name] : this.props.rdr[this.props.index][this.props.name],
       onChange: (...args) => {
@@ -31,7 +42,11 @@ class Field extends React.Component{
           this.props.editField(this.props.name, value)
         }
       }
-    })
+    }
+    if(this.props.control){
+      return CONTROLS[this.props.control]({...controlProps, ...this.props})
+    }
+    return this.props.render(controlProps)
   }
 }
 export default Field

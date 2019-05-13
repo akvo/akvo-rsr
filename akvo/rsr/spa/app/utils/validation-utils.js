@@ -5,6 +5,13 @@ export const validationType = {
   DGIS: 3
 }
 
+export const getValidations = (validationIds) => {
+  const validations = {}
+  validations.isIATI = validationIds.indexOf(validationType.IATI) !== -1
+  validations.isDGIS = validationIds.indexOf(validationType.DGIS) !== -1
+  return validations
+}
+
 export const isFieldOptional = validationSets => (field) => {
   let ret = true
   for(let i = 0; i < validationSets.length; i += 1){

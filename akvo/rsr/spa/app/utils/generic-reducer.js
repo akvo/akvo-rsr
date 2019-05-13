@@ -1,7 +1,11 @@
 export default (initialState, model, actionTypes) => (state = initialState, action) => {
   switch(action.type){
     case actionTypes.ADD:
-      return [...state, Object.assign({}, model)]
+      const additional = {}
+      if(action.additionalKey){
+        additional[action.additionalKey] = action.additionalValue
+      }
+      return [...state, Object.assign({}, model, additional)]
     case actionTypes.REMOVE:
       return [...state.slice(0, action.index), ...state.slice(action.index + 1)]
     case actionTypes.EDIT_FIELD:
