@@ -16,27 +16,27 @@
         </div>
 
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-6">
             {% if indicator.is_child_indicator %}
               {% include text_input with obj=indicator field='title' disabled=True %}
             {% else %}
               {% include text_input with obj=indicator field='title' %}
             {% endif %}
           </div>
-          <div class="col-md-4">
-            {% include choice_input with obj=indicator field='type' %}
+          <div class="col-md-3">
+              {% include choice_input with obj=indicator field='type' %}
+          </div>
+          <div class="col-md-3">
+              {% include boolean_input with obj=indicator field='export_to_iati' boolean=True %}
           </div>
         </div>
 
         <div class="row measure{% if indicator.type == 2 %} hidden{% endif %}">
-          <div class="col-md-4">
+          <div class="col-md-6">
             {% include choice_input with obj=indicator field='measure' %}
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             {% include boolean_input with obj=indicator field='ascending' nullboolean=True %}
-          </div>
-          <div class="col-md-4">
-              {% include boolean_input with obj=indicator field='export_to_iati' boolean=True %}
           </div>
         </div>
 
