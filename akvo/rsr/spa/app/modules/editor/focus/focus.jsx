@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Radio } from 'antd'
 
 import Sectors from './sectors/sectors'
+import PolicyMarkers from './policy-markers/policy-markers'
 import { getValidations } from '../../../utils/validation-utils'
 import InputLabel from '../../../utils/input-label'
 import _Field from '../../../utils/field'
@@ -23,6 +24,7 @@ class Focus extends React.Component{
       <div className="focus view">
         <Form layout="vertical">
           <Sectors validations={this.props.validations} />
+          {(isIATI || isDGIS) && <PolicyMarkers validations={this.props.validations} />}
           {isIATI &&
           <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
             <Field

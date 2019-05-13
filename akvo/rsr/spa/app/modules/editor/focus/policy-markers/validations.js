@@ -3,8 +3,8 @@ import { validationType } from '../../../../utils/validation-utils'
 
 
 const DGIS = yup.object().shape({
-  marker: yup.string(),
-  significance: yup.string().when('marker', {
+  policyMarker: yup.string(),
+  significance: yup.string().when('policyMarker', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   })

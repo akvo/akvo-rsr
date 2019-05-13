@@ -15,6 +15,7 @@ import recipientCountriesRdr from '../modules/editor/locations/recipient-countri
 import recipientRegionsRdr from '../modules/editor/locations/recipient-regions/reducers'
 import focusRdr from '../modules/editor/focus/reducers'
 import sectorsRdr from '../modules/editor/focus/sectors/reducers'
+import policyMarkersRdr from '../modules/editor/focus/policy-markers/reducers'
 import {linksRdr, docsRdr} from '../modules/editor/links/reducers'
 import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
 import {reportingRdr, crsAddOtherFlagRdr, forecastsRdr, legaciesRdr} from '../modules/editor/reporting/reducers'
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   recipientRegionsRdr,
   focusRdr,
   sectorsRdr,
+  policyMarkersRdr,
   linksRdr,
   docsRdr,
   commentsRdr,
