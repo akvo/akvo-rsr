@@ -17,7 +17,7 @@ import flowTypeOptions from '../../info/options/flow-types.json'
 import tiedStatusOptions from '../../info/options/tied-statuses.json'
 import aidTypeOptions from '../../info/options/aid-types.json'
 import aidTypeVocabularyOptions from '../../info/options/aid-type-vocabulary.json'
-import regionOptions from './regions.json'
+import regionOptions from './options/regions.json'
 import Sectors from './sectors'
 
 const { Item } = Form
