@@ -4,6 +4,7 @@ import { Form, Radio } from 'antd'
 
 import Sectors from './sectors/sectors'
 import PolicyMarkers from './policy-markers/policy-markers'
+import HumanitarianScopes from './humanitarian-scopes/humanitarian-scope'
 import { getValidations } from '../../../utils/validation-utils'
 import InputLabel from '../../../utils/input-label'
 import _Field from '../../../utils/field'
@@ -38,6 +39,7 @@ class Focus extends React.Component{
             />
           </Item>
           }
+          {isIATI && <HumanitarianScopes />}
         </Form>
       </div>
     )
