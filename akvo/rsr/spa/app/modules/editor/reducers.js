@@ -10,7 +10,10 @@ const modules = [
   'finance/disbursements',
   'locations/location-items',
   'locations/recipient-countries',
-  'locations/recipient-regions'
+  'locations/recipient-regions',
+  'focus/sectors',
+  'focus/policy-markers',
+  'focus/humanitarian-scopes'
 ]
 
 const kebabToCamel = s => s.replace(/(-\w)/g, m => m[1].toUpperCase())
@@ -68,6 +71,9 @@ const validateSectionGroup = (section, action) => {
   else if(section === 'locations'){
     const isCompleted = validate('locations/location-items', action, true) && validate('locations/recipient-countries', action, true) && validate('locations/recipient-regions', action, true)
     action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'locations', value: isCompleted })
+  } else if(section === 'focus'){
+    const isCompleted = validate('focus/sectors', action, true) && validate('focus/policy-markers', action, true) && validate('focus/humanitarian-scopes', action, true)
+    action.asyncDispatch({ type: 'PER_CHECK_SECTION', key: 'focus', value: isCompleted })
   } else {
     validate(section, action)
   }
@@ -84,6 +90,7 @@ export default (state = initialState, action) => {
       if(action.asyncDispatch) {
         // SECTION 0 - edited validation setting - run all validations
         if(action.type === actionTypes.info.CHECK_VALIDATION){
+          console.log(sections)
           sections.filter(it => it.validation).map(section => validateSectionGroup(section.key, action))
           const { infoRdr } = action.getState()
           const { validations } = infoRdr
@@ -117,6 +124,12 @@ export default (state = initialState, action) => {
          || objectToArray(actionTypes['locations/recipient-countries']).indexOf(action.type) !== -1
          || objectToArray(actionTypes['locations/recipient-regions']).indexOf(action.type) !== -1){
           validateSectionGroup('locations', action)
+        }
+        // SECTION 8
+        else if(objectToArray(actionTypes['focus/sectors']).indexOf(action.type) !== -1
+         || objectToArray(actionTypes['focus/policy-markers']).indexOf(action.type) !== -1
+         || objectToArray(actionTypes['focus/humanitarian-scopes']).indexOf(action.type) !== -1){
+          validateSectionGroup('focus', action)
         }
         else if(action.type === 'PE_TOUCH_SECTION'){
           validateSectionGroup(action.key, action)

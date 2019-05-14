@@ -57,7 +57,7 @@ class HumanitarianScopes extends React.Component{
             <UpdateHalter except={['type']} item={item}>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Item label={<InputLabel tooltip="...">Type</InputLabel>}>
+                  <Item label={<InputLabel optional tooltip="...">Type</InputLabel>}>
                     <Field
                       name="type"
                       index={index}

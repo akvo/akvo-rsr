@@ -5,11 +5,11 @@ import { validationType } from '../../../../utils/validation-utils'
 export const IATI = yup.object().shape({
   type: yup.string(),
   code: yup.string().when('type', {
-    is: value => value !== null && value !== '',
+    is: value => value !== undefined && value !== '',
     then: yup.string().required()
   }),
   vocabulary: yup.string().when('type', {
-    is: value => value !== null && value !== '',
+    is: value => value !== undefined && value !== '',
     then: yup.string().required()
   }),
   vocabularyUri: yup.string(),
