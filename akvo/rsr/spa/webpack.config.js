@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const config = {
+const config = env => ({
   stats: {
     maxModules: 0
   },
@@ -132,6 +132,7 @@ const config = {
   },
 
   plugins: [
+    new webpack.DefinePlugin((env && env.DETACHED_FE) ? { 'process.env.DETACHED_FE': env.DETACHED_FE } : {}),
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
       test: /\.jsx?$/,
@@ -146,6 +147,6 @@ const config = {
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
     new webpack.HotModuleReplacementPlugin(),
   ]
-};
+});
 
 module.exports = config

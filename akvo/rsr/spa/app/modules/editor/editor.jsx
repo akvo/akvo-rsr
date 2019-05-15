@@ -87,8 +87,10 @@ class _Section extends React.Component{
 }
 const Section = connect(null, {touchSection})(_Section)
 
+const basePath = process.env.DETACHED_FE ? '/' : '/my-rsr'
+
 const Editor = ({ rdr }) => (
-  <Router basename="/my-rsr">
+  <Router basename={basePath}>
     <div className="editor">
       <div className="status-bar">
         <aside className="saving-status">
