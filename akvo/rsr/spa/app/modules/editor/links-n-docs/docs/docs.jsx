@@ -81,7 +81,7 @@ class Docs extends React.Component{
                 </Upload.Dragger>
                 }
               </Item>
-              <Item label={<InputLabel optional tooltip="...">Title</InputLabel>}>
+              <Item label={<InputLabel tooltip="...">Title</InputLabel>}>
                 <Field name="title" control="input" index={index} />
               </Item>
               {isIATI && (
