@@ -9,6 +9,7 @@ import _Field from '../../../utils/field'
 
 import * as actions from './actions'
 import './styles.scss'
+import UpdateHalter from '../../../utils/update-halter';
 
 const { Panel } = Collapse
 const { Item } = Form
@@ -33,15 +34,9 @@ class Contacts extends React.Component{
     super(props)
     if(props.rdr.length > 0){
       this.state = {
-        activeKey: `p${props.rdr.length - 1}`
+        activeKey: `${props.rdr.length - 1}`
       }
     }
-  }
-  shouldComponentUpdate(nextProps, nextState){
-    if(nextProps.rdr.length !== this.props.rdr.length){
-      return true
-    }
-    return nextState !== this.state
   }
   add = () => {
     this.setState({
@@ -61,11 +56,12 @@ class Contacts extends React.Component{
       <div className="partners view">
         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
         {this.props.rdr.map((contact, index) =>
-            <Panel
-              header={`Contact: ${contact.name}`}
-              extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-              key={`${index}`}
-            >
+          <Panel
+            header={`Contact: ${contact.name}`}
+            extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
+            key={`${index}`}
+          >
+            <UpdateHalter>
               <Form layout="vertical">
                 <Row gutter={16}>
                   <Col span={12}>
@@ -169,7 +165,8 @@ class Contacts extends React.Component{
                   )}
                 />
               </Form>
-            </Panel>
+            </UpdateHalter>
+          </Panel>
         )}
         </Collapse>
         <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.add}>Add a contact</Button>
