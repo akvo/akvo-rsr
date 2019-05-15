@@ -21,19 +21,6 @@
                 <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
             </div>
             <form role="form">
-                {% if not project.has_results and project.is_impact_project and user.can_import_results %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="number" id="copy-results-source-pk" placeholder="source project id" />
-                            <button class="btn btn-primary" id="copy-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Copy Results' %}</button>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="help-block">
-                                {% trans 'Copy results framework of the specified project' %}
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
                 {% if project.parents_all.count == 1 and project.is_impact_project and user.can_import_results %}
                     <div class="row">
                         <div class="col-md-3">
@@ -46,6 +33,21 @@
                         </div>
                     </div>
                     {% include boolean_input with obj=project field='aggregate_to_parent' %}
+                {% endif %}
+                {% if not project.has_results and project.is_impact_project and user.can_import_results %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% trans 'Copy the results framework of from an existing RSR project within your organisation' %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 form-group control">
+                            <input class="form-control" type="number" id="copy-results-source-pk" placeholder="Source Project ID#" />
+                        </div>
+                        <div class="col-md-4 form-group control">
+                            <button class="btn btn-primary" id="copy-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Copy Results' %}</button>
+                        </div>
+                    </div>
                 {% endif %}
                 {% if project.children_all.count > 0 and project.is_impact_project and user.can_import_results %}
                     {% include boolean_input with obj=project field='aggregate_children' %}
