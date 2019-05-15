@@ -158,7 +158,7 @@ export const endpoints = {
         `/rest/v1/organisation_indicator_label/?format=json&limit=${
             c.API_LIMIT
         }&filter={'organisation__in':[${id}]}`,
-    reports: () => `/rest/v1/reports/?exclude={'url__contains':'organisation'}&format=json`,
+    reports: id => `/rest/v1/project/${id}/reports/?format=json`,
     post_comment: () => "/rest/v1/indicator_period_data_comment/?format=json",
     period: id => `/rest/v1/indicator_period/${id}/?format=json`,
     update_and_comments: id => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
