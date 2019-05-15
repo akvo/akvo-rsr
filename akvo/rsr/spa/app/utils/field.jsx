@@ -1,5 +1,6 @@
 import React from 'react'
-import { Input, Select } from 'antd'
+import { Input, Select, DatePicker } from 'antd'
+import { datePickerConfig } from './misc'
 
 const CONTROLS = {
   input: props => <Input {...props} />,
@@ -8,7 +9,8 @@ const CONTROLS = {
     <Select {...props}>
       {options.map(({ label, value }) => <Select.Option value={value}>{label}</Select.Option>)}
     </Select>
-  )
+  ),
+  datepicker: props => <DatePicker {...{...props, ...datePickerConfig}} />
 }
 
 class Field extends React.Component{

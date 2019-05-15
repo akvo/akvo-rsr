@@ -11,7 +11,7 @@ import Descriptions from './descriptions/descriptions'
 import Finance from './finance/finance'
 import Locations from './locations/locations'
 import Focus from './focus/focus'
-import Links from './links/links'
+import LinksDocs from './links-n-docs/links-n-docs'
 import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
 import Reporting from './reporting/comp/reporting'
 
@@ -27,7 +27,7 @@ export const sections = [
   {key: 'finance', component: Finance, validation: true},
   {key: 'locations', component: Locations, validation: true},
   {key: 'focus', component: Focus, validation: true},
-  {key: 'links', component: Links},
+  {key: 'links-n-docs', component: LinksDocs},
   {key: 'comments-n-keywords', component: CommentsKeywords},
   {key: 'reporting', component: Reporting}
 ]
@@ -40,9 +40,9 @@ const dict = {
   finance: 'Finance',
   locations: 'Locations',
   focus: 'Focus',
-  links: 'Links',
+  'links-n-docs': 'Links & Documents',
   'comments-n-keywords': 'Comments & Keywords',
-  reporting: 'CRS++ and FSS reporting'
+  reporting: 'CRS++ & FSS reporting'
 }
 
 const Check = ({ checked }) => (
@@ -98,8 +98,8 @@ const Editor = ({ rdr }) => (
         <aside className="main-menu">
           <ul>
             <MenuItem hideCheck to="/">Settings</MenuItem>
-            {sections.filter(filterSection11(rdr)).map(section =>
-            <MenuItem to={`/${section.key}`} checked={rdr.isCompleted[section.key]}>{dict[section.key]}</MenuItem>
+            {sections.filter(filterSection11(rdr)).map((section, index) =>
+            <MenuItem to={`/${section.key}`} checked={rdr.isCompleted[section.key]}>{index + 1}. {dict[section.key]}</MenuItem>
             )}
           </ul>
         </aside>
