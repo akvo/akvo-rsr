@@ -30,8 +30,6 @@ from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFramewor
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
                                     IndicatorPeriodDataCommentSerializer)
-from .indicator_period_dimension import (IndicatorPeriodActualDimensionSerializer,
-                                         IndicatorPeriodTargetDimensionSerializer)
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
 from indicator_dimension_name import IndicatorDimensionNameSerializer
@@ -133,14 +131,12 @@ __all__ = [
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
     'IndicatorLabelSerializer',
-    'IndicatorPeriodActualDimensionSerializer',
     'IndicatorPeriodActualLocationSerializer',
     'IndicatorPeriodDataCommentSerializer',
     'IndicatorPeriodDataFrameworkSerializer',
     'IndicatorPeriodDataSerializer',
     'IndicatorPeriodFrameworkSerializer',
     'IndicatorPeriodSerializer',
-    'IndicatorPeriodTargetDimensionSerializer',
     'IndicatorPeriodTargetLocationSerializer',
     'IndicatorReferenceSerializer',
     'InternalOrganisationIDSerializer',

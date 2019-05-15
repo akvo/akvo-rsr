@@ -251,22 +251,6 @@ class IndicatorPeriodFactory(DjangoModelFactory):
     locked = False
 
 
-class IndicatorPeriodActualDimensionFactory(DjangoModelFactory):
-
-    class Meta:
-        model = 'rsr.IndicatorPeriodActualDimension'
-
-    period = factory.Iterator(IndicatorPeriod.objects.all())
-    name = factory.fuzzy.FuzzyText()
-    value = factory.fuzzy.FuzzyDecimal(0, 100)
-
-
-class IndicatorPeriodTargetDimensionFactory(IndicatorPeriodActualDimensionFactory):
-
-    class Meta:
-        model = 'rsr.IndicatorPeriodTargetDimension'
-
-
 class IndicatorPeriodActualLocationFactory(DjangoModelFactory):
 
     class Meta:
@@ -475,8 +459,6 @@ def populate_test_data(seed=42):
     IndicatorFactory.create_batch(80)
     IndicatorReferenceFactory.create_batch(80)
     IndicatorPeriodFactory.create_batch(240)
-    IndicatorPeriodActualDimensionFactory.create_batch(240)
-    IndicatorPeriodTargetDimensionFactory.create_batch(240)
     IndicatorPeriodActualLocationFactory.create_batch(240)
     IndicatorPeriodTargetLocationFactory.create_batch(240)
     IndicatorPeriodDataFactory.create_batch(1200)

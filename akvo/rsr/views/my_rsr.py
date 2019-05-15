@@ -300,8 +300,6 @@ def project_editor(request, project_id):
             'results__indicators__references',
             'results__indicators__periods',
             'results__indicators__periods__data',
-            'results__indicators__periods__actual_dimensions',
-            'results__indicators__periods__target_dimensions',
             'results__indicators__periods__actual_locations',
             'results__indicators__periods__target_locations',
             'conditions',
