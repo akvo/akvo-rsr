@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom/server'
 import { Collapse, Icon } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
@@ -21,28 +20,22 @@ class ActiveKeyUpdater extends React.Component{
   }
 }
 
-const fieldValue = name => <Field
-  name={name}
-  component={({ input }) => input.value} />
-
-const getFieldDollar = (template) => {
+const getKeyFromTemplate = (template) => {
   const $pos = template.indexOf('$')
   if($pos === -1){
     return null
   }
   return template.substr($pos + 1)
 }
-const replaceHeaderTitle = (template, itemIndex, fieldsetName) => {
-  let header = template.replace('$index', itemIndex + 1)
-  const field = getFieldDollar(header)
-  if(field !== null){
-    const value = ReactDOM.renderToString(fieldValue(`${fieldsetName}.${field}`))
-    header = header.replace(`$${field}`, value)
-    if(value.length === 0){
-      header = header.replace(':', '')
-    }
-  }
-  return header
+
+const PanelHeader = ({ template, index, name}) => {
+  const header = template.replace('$index', index + 1)
+  const field = getKeyFromTemplate(header)
+  return (
+    <Field name={`${name}.${field}`} subscription={{ value: true }}>
+      {({ input: { value } }) => <span>{header.replace(`$${field}`, value)}</span>}
+    </Field>
+  )
 }
 
 class ItemArray extends React.Component{
@@ -60,13 +53,13 @@ class ItemArray extends React.Component{
   }
   render(){
     return (
-      <FieldArray name={this.props.name} subscription={{ pristine: true, value: true }}>
+      <FieldArray name={this.props.name} subscription={{ pristine: true }}>
         {({ fields }) => (
           <div>
             <Collapse accordion onChange={this.handleChange} activeKey={this.state.activeKey}>
               {fields.map((name, index) => (
                 <Panel
-                  header={replaceHeaderTitle(this.props.header, index, name)}
+                  header={<PanelHeader template={this.props.header} name={name} index={index} />}
                   extra={<Icon type="delete" onClick={event => this.removeItem(event, index, fields)} />}
                   key={`${index}`}
                   forceRender
