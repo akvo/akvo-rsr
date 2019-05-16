@@ -178,6 +178,19 @@ export default function modelsReducer(state = initialModels, action) {
             return { ...state, [model]: merged };
         }
 
+        case c.UPDATE_MODEL_FIELD: {
+            const { model, object } = action.payload;
+            const merged = update(state[model], {
+                changing: { $set: false },
+                changed: { $set: true },
+                objects: { [object.id]: { $merge: object } },
+                ids: { $push: [object.id] }
+            });
+            // remove duplicate ids
+            merged.ids = distinct(merged.ids);
+            return { ...state, [model]: merged };
+        }
+
         case c.UPDATE_MODEL_REJECTED: {
             const model = action.payload.model;
             const errorState = update(state[model], {
