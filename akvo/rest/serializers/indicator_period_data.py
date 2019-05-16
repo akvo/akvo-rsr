@@ -47,6 +47,7 @@ class IndicatorPeriodDataFrameworkSerializer(BaseRSRSerializer):
     status_display = serializers.ReadOnlyField()
     photo_url = serializers.ReadOnlyField()
     file_url = serializers.ReadOnlyField()
+    period_can_add_update = serializers.ReadOnlyField(source='period.can_save_update')
 
     class Meta:
         model = IndicatorPeriodData
