@@ -27,7 +27,7 @@ export const sections = [
   {key: 'finance', component: Finance, validation: true},
   {key: 'locations', component: Locations, validation: true},
   {key: 'focus', component: Focus, validation: true},
-  {key: 'links-n-docs', component: LinksDocs, validation: true},
+  {key: 'links-n-docs', component: LinksDocs},
   {key: 'comments-n-keywords', component: CommentsKeywords},
   {key: 'reporting', component: Reporting}
 ]

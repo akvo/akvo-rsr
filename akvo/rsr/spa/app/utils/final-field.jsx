@@ -10,7 +10,6 @@ const CONTROLS = {
   },
   textarea: props => <Input.TextArea {...props} />,
   select: ({options, ...props}) => {
-    console.log(options)
     return (
       <Select {...props}>
         {options.map(({ label, value }) => <Select.Option value={value}>{label}</Select.Option>)}

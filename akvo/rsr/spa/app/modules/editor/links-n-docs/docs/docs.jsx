@@ -14,8 +14,6 @@ import LANGUAGE_OPTIONS from './languages.json'
 import FORMAT_OPTIONS from './formats.json'
 import Categories from './categories'
 
-import * as actions from './actions'
-
 const { Item } = Form
 
 const handleRadioSwitch = (event, input) => {
@@ -51,7 +49,7 @@ class Docs extends React.Component{
               values={values}
               name="items"
               header="Document $index: $title"
-              panel={name => (
+              panel={(name, index) => (
               <div>
                 <Item>
                   <FinalField
@@ -114,7 +112,7 @@ class Docs extends React.Component{
                   </Col>
                   )}
                 </Row>
-                {/* {fieldExists('categories') && <Categories docIndex={index} />} */}
+                {fieldExists('categories') && <Categories parentName={name} push={push} />}
               </div>
               )}
             />
@@ -123,7 +121,7 @@ class Docs extends React.Component{
               icon="plus"
               type="dashed"
               block
-              onClick={() => push('items', undefined)}
+              onClick={() => push('items', { categories: [undefined]})}
             >
               Add another document
             </Button>

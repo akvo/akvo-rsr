@@ -1,5 +1,0 @@
-export default {
-  ADD: 'PE_LINKS_ADD',
-  REMOVE: 'PE_LINKS_REMOVE',
-  EDIT_FIELD: 'PE_LINKS_EDIT_FIELD'
-}

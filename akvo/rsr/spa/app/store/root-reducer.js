@@ -17,8 +17,8 @@ import focusRdr from '../modules/editor/focus/reducers'
 import sectorsRdr from '../modules/editor/focus/sectors/reducers'
 import policyMarkersRdr from '../modules/editor/focus/policy-markers/reducers'
 import humanitarianScopesRdr from '../modules/editor/focus/humanitarian-scopes/reducers'
-import linksRdr from '../modules/editor/links-n-docs/links/reducers'
-import docsRdr from '../modules/editor/links-n-docs/docs/reducers'
+// import linksRdr from '../modules/editor/links-n-docs/links/reducers'
+// import docsRdr from '../modules/editor/links-n-docs/docs/reducers'
 import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
 import {reportingRdr, crsAddOtherFlagRdr, forecastsRdr, legaciesRdr} from '../modules/editor/reporting/reducers'
 import editorRdr from '../modules/editor/reducers'
@@ -40,8 +40,8 @@ const rootReducer = combineReducers({
   sectorsRdr,
   policyMarkersRdr,
   humanitarianScopesRdr,
-  linksRdr,
-  docsRdr,
+  // linksRdr,
+  // docsRdr,
   commentsRdr,
   keywordsRdr,
   reportingRdr,

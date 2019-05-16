@@ -14,7 +14,7 @@ const modules = [
   'focus/sectors',
   'focus/policy-markers',
   'focus/humanitarian-scopes',
-  'links-n-docs/docs'
+  // 'links-n-docs/docs'
 ]
 
 const kebabToCamel = s => s.replace(/(-\w)/g, m => m[1].toUpperCase())

@@ -40,7 +40,7 @@ const PanelHeader = ({ template, index, name}) => {
 
 class ItemArray extends React.Component{
   state = {
-    activeKey: ''
+    activeKey: '0'
   }
   removeItem = (event, index, fields) => {
     event.stopPropagation()
