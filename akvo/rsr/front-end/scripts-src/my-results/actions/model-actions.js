@@ -338,6 +338,15 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
                     type: c.UPDATE_MODEL_FULFILLED,
                     payload: { model: c.OBJECTS_UPDATES, object: newUpdate, collapseId }
                 });
+                // Update can_add_update on the period
+                const periodData = {
+                    id: newUpdate.period,
+                    can_add_update: newUpdate.period_can_add_update
+                };
+                dispatch({
+                    type: c.UPDATE_MODEL_FIELD,
+                    payload: { model: c.OBJECTS_PERIODS, object: periodData }
+                });
             })
             .then(() => {
                 if (data._comment) {
