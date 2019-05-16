@@ -79,12 +79,6 @@ class PeriodHeader extends React.Component {
             ) {
                 return false;
             }
-            if (
-                indicator.measure === c.MEASURE_PERCENTAGE &&
-                this.props.periodChildrenIds[period.id].length >= 1
-            ) {
-                return false;
-            }
             return true;
         };
 
