@@ -15,14 +15,6 @@ from akvo.rsr.models import ProjectHierarchy, Report
 from akvo.rsr.tests.base import BaseTestCase
 
 
-def create_report(report_name, organisation=None, url='/{project}/?format={format}'):
-    report = Report.objects.create(
-        name=report_name, title=report_name, url=url)
-    if organisation is not None:
-        report.organisations.add(organisation)
-    return report
-
-
 def project_reports_path(project_pk):
     return '{}?format=json'.format(reverse('project_reports', args=(project_pk,)))
 
@@ -48,7 +40,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         # Given
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
-        create_report('report-1')
+        self.create_report('report-1')
         self.make_partner(proj1, org1)
 
         # When
@@ -62,9 +54,9 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1')
-        create_report('report-2', org1)
-        create_report('report-3', org2)
+        self.create_report('report-1')
+        self.create_report('report-2', org1)
+        self.create_report('report-3', org2)
 
         self.make_partner(proj1, org1)
         user = self.create_user('foo@example.com', 'secret')
@@ -82,9 +74,9 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1')
-        create_report('report-2', org1)
-        create_report('report-3', org2)
+        self.create_report('report-1')
+        self.create_report('report-2', org1)
+        self.create_report('report-3', org2)
 
         self.make_partner(proj1, org1)
         user = self.create_user('foo@example.com', 'secret')
@@ -102,9 +94,9 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1')
-        create_report('report-2', org1)
-        create_report('report-3', org2)
+        self.create_report('report-1')
+        self.create_report('report-2', org1)
+        self.create_report('report-3', org2)
 
         user = self.create_user('foo@example.com', 'secret', is_admin=True)
         self.make_employment(user, org1, 'Users')
@@ -120,8 +112,8 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         # Given
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
-        create_report('report-1', url='/{project}/?format={format}')
-        create_report('report-2', url='/{organisation}/?format={format}')
+        self.create_report('report-1')
+        self.create_report('report-2', is_org_report=True)
 
         self.make_partner(proj1, org1)
         user = self.create_user('foo@example.com', 'secret')
@@ -139,8 +131,8 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1')
-        create_report('report-2', org1)
+        self.create_report('report-1')
+        self.create_report('report-2', org1)
 
         self.make_partner(proj1, org1)
         self.make_partner(proj1, org2)
@@ -159,7 +151,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj1 = self.create_project('project-1')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1')
+        self.create_report('report-1')
 
         self.make_partner(proj1, org1)
         user = self.create_user('foo@example.com', 'secret')
@@ -181,7 +173,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj2 = self.create_project('project-2')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1', org1)
+        self.create_report('report-1', org1)
 
         ProjectHierarchy.objects.create(
             root_project=proj1, organisation=org1, max_depth=2
@@ -211,7 +203,7 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         proj3 = self.create_project('project-3')
         org1 = self.create_organisation('org-1')
         org2 = self.create_organisation('org-2')
-        create_report('report-1', org1)
+        self.create_report('report-1', org1)
 
         ProjectHierarchy.objects.create(
             root_project=proj1, organisation=org1, max_depth=2
