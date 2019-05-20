@@ -9,14 +9,14 @@ const CONTROLS = {
     return <Input {...input} />
   },
   textarea: props => <Input.TextArea {...props} />,
-  select: ({options, ...props}) => {
+  select: ({options, input}) => {
     return (
-      <Select {...props}>
-        {options.map(({ label, value }) => <Select.Option value={value}>{label}</Select.Option>)}
+      <Select {...input}>
+        {options.map(({ label, value }) => <Select.Option key={value} value={value}>{label}</Select.Option>)}
       </Select>
     )
   },
-  datepicker: props => <DatePicker {...{...props, ...datePickerConfig}} />
+  datepicker: ({ input }) => <DatePicker {...{...input, ...datePickerConfig}} />
 }
 
 class FinalField extends React.Component{

@@ -26,6 +26,9 @@ const handleRadioSwitch = (event, input) => {
 }
 
 class Docs extends React.Component{
+  shouldComponentUpdate(){
+    return false
+  }
   render(){
     const { isIATI } = getValidations(this.props.validations)
     const validationSets = getValidationSets(this.props.validations)
@@ -35,6 +38,7 @@ class Docs extends React.Component{
       <div className="links view">
         <FinalForm
           onSubmit={() => {}}
+          initialValues={this.props.fields}
           subscription={{ pristine: true }}
           mutators={{ ...arrayMutators }}
           render={({
@@ -47,9 +51,13 @@ class Docs extends React.Component{
             <h3>Documents</h3>
             <ItemArray
               values={values}
-              name="items"
+              name="docs"
               header="Document $index: $title"
-              panel={(name, index) => (
+              newItem={{ categories: [{}]}}
+              formPush={push}
+              sectionIndex={9}
+              setName="docs"
+              panel={name => (
               <div>
                 <Item>
                   <FinalField
@@ -115,16 +123,18 @@ class Docs extends React.Component{
                 {fieldExists('categories') && <Categories parentName={name} push={push} />}
               </div>
               )}
+              addButton={props => (
+                <Button
+                  className="bottom-btn"
+                  icon="plus"
+                  type="dashed"
+                  block
+                  {...props}
+                >
+                  Add another document
+                </Button>
+              )}
             />
-            <Button
-              className="bottom-btn"
-              icon="plus"
-              type="dashed"
-              block
-              onClick={() => push('items', { categories: [undefined]})}
-            >
-              Add another document
-            </Button>
             </Form>
           )}
         />
@@ -134,5 +144,5 @@ class Docs extends React.Component{
 }
 
 export default connect(
-  ({ infoRdr: { validations } }) => ({ validations })
+  ({ infoRdr: { validations }, editorRdr: { section9: {fields} } }) => ({ validations, fields })
 )(Docs)

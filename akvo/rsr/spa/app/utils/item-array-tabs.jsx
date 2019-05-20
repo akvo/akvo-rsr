@@ -39,7 +39,7 @@ class ItemArrayTabs extends React.Component{
     })
   }
   add = () => {
-    this.props.push(this.props.name, 'undefined')
+    this.props.push(this.props.name, {})
   }
   remove = (fields, targetKey) => {
     fields.remove(targetKey)

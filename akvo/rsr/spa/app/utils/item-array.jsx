@@ -52,8 +52,8 @@ class ItemArray extends React.Component{
   }
   handleAddItem = () => {
     const { sectionIndex, setName } = this.props
-    const newItem = {}
-    this.props.form.mutators.push(this.props.setName, newItem)
+    const newItem = this.props.newItem ? this.props.newItem : {}
+    if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
     this.props.addSetItem(sectionIndex, setName, newItem)
   }
   removeItem = (event, index, fields) => {

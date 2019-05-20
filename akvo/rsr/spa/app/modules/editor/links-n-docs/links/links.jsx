@@ -24,14 +24,16 @@ class Links extends React.Component{
           initialValues={this.props.fields}
           mutators={{ ...arrayMutators }}
           render={({
-            form,
+            form: {
+              mutators: { push }
+            },
             values
           }) => {
             return (
               <Form layout="vertical">
                 <h3>Links</h3>
                 <ItemArray
-                  form={form}
+                  formPush={push}
                   values={values}
                   name="links"
                   header="Link $index: $caption"
