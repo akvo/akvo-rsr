@@ -31,6 +31,19 @@ const getKeyFromTemplate = (template) => {
   return template.substr($pos + 1)
 }
 
+class UpdateHalter extends React.Component{
+  // prevents double render on changed activeKey
+  shouldComponentUpdate(nextProps){
+    if(nextProps.parentState.activeKey !== this.props.parentState.activeKey){
+      return false
+    }
+    return true
+  }
+  render(){
+    return this.props.children
+  }
+}
+
 const PanelHeader = ({ template, index, name}) => {
   const header = template.replace('$index', index + 1)
   const field = getKeyFromTemplate(header)
@@ -46,9 +59,11 @@ class ItemArray extends React.Component{
     activeKey: '0'
   }
   handleChange = (activeKey) => {
-    this.setState({
-      activeKey
-    })
+    if(activeKey !== this.state.activeKey){
+      this.setState({
+        activeKey
+      })
+    }
   }
   handleAddItem = () => {
     const { sectionIndex, setName } = this.props
@@ -65,7 +80,7 @@ class ItemArray extends React.Component{
   render(){
     return (
       <div>
-      <FieldArray name={this.props.name} subscription={{ pristine: true }}>
+      <FieldArray name={this.props.name} subscription={{}}>
         {({ fields }) => (
           <div>
             <Collapse accordion onChange={this.handleChange} activeKey={this.state.activeKey}>
@@ -76,8 +91,10 @@ class ItemArray extends React.Component{
                   key={`${index}`}
                   forceRender
                 >
-                  <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
-                  {this.props.panel(name, index)}
+                  <UpdateHalter parentState={this.state}>
+                    <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
+                    {this.props.panel(name, index)}
+                  </UpdateHalter>
                 </Panel>
               ))}
             </Collapse>

@@ -65,7 +65,10 @@ class ItemArrayTabs extends React.Component{
               ))}
             </Tabs>
             <FormSpy subscription={{ values: true }}>
-              {({ values }) => <ActiveKeyUpdater values={values} name={this.props.name} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
+              {({ values }) => {
+                console.log(values)
+                return <ActiveKeyUpdater values={values} name={this.props.name} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />
+              }}
             </FormSpy>
           </div>
         )}

@@ -56,7 +56,7 @@ const MainMenu = ({ rdr }) => (
     <ul>
       <MenuItem hideCheck to="/">Settings</MenuItem>
       {sections.map((section, index) =>
-      <MenuItem to={`/${section.key}`} checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}>{index + 1}. {dict[section.key]}</MenuItem>
+      <MenuItem key={section.key} to={`/${section.key}`} checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}>{index + 1}. {dict[section.key]}</MenuItem>
       )}
     </ul>
   </aside>

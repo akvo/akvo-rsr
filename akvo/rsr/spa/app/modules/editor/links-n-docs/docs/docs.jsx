@@ -39,18 +39,16 @@ class Docs extends React.Component{
         <FinalForm
           onSubmit={() => {}}
           initialValues={this.props.fields}
-          subscription={{ pristine: true }}
+          subscription={{}}
           mutators={{ ...arrayMutators }}
           render={({
             form: {
               mutators: { push }
-            },
-            values
+            }
           }) => (
             <Form layout="vertical">
             <h3>Documents</h3>
             <ItemArray
-              values={values}
               name="docs"
               header="Document $index: $title"
               newItem={{ categories: [{}]}}
