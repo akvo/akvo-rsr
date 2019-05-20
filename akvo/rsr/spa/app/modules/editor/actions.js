@@ -1,6 +1,7 @@
 import actionTypes from './action-types'
 
 export const touchSection = sectionIndex => ({ type: actionTypes.TOUCH_SECTION, sectionIndex })
+export const checkValidation = (id, checked) => ({ type: actionTypes.CHECK_VALIDATION, id, checked })
 export const saveFields = (fields, sectionIndex) => ({ type: actionTypes.SAVE_FIELDS, fields, sectionIndex })
 export const addSetItem = (sectionIndex, setName, item) => (dispatch) => {
   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item})

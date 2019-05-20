@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Switch, Tooltip, Icon } from 'antd'
 
 import './styles.scss'
-import * as actions from '../info/actions'
+import * as actions from '../actions'
 
 // const sets = ['RSR', 'NLR', 'Gietrenk SPC', 'IATI', 'EUTF', 'DGIS IATI', 'DFID']
 
@@ -18,10 +18,10 @@ const sets = [
   { value: 6, label: 'DFID'}
 ]
 
-const Settings = ({ infoRdr, ...props }) => (
+const Settings = ({ isPublic, validations, ...props }) => (
   <div className="settings view">
     <p>
-      <Switch checked={!infoRdr.isPublic} onChange={checked => props.editField('isPublic', !checked)} />
+      <Switch checked={!isPublic} onChange={checked => props.editField('isPublic', !checked)} />
       <span className="switch-label">Private project</span>
       <Tooltip title="Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project."><Icon type="info-circle" /></Tooltip>
     </p>
@@ -36,7 +36,7 @@ const Settings = ({ infoRdr, ...props }) => (
     <ul>
       {sets.map(({ value, label }, index) =>
       <li key={value}>
-        <Switch disabled={index === 0} checked={infoRdr.validations.indexOf(value) !== -1} onChange={checked => props.checkValidation(value, checked)} />
+        <Switch disabled={index === 0} checked={validations.indexOf(value) !== -1} onChange={checked => props.checkValidation(value, checked)} />
         <span className="switch-label">{label}</span>
         <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
       </li>
@@ -46,6 +46,6 @@ const Settings = ({ infoRdr, ...props }) => (
 )
 
 export default connect(
-  ({ infoRdr }) => ({ infoRdr }),
+  ({ editorRdr: { validations, isPublic } }) => ({ validations, isPublic }),
   actions
 )(Settings)

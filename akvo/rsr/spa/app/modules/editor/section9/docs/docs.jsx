@@ -142,5 +142,5 @@ class Docs extends React.Component{
 }
 
 export default connect(
-  ({ infoRdr: { validations }, editorRdr: { section9: {fields} } }) => ({ validations, fields })
+  ({ editorRdr: { section9: {fields}, validations } }) => ({ validations, fields })
 )(Docs)

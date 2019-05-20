@@ -1,12 +1,12 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/validation-utils'
+import { validationType, transformUndefined } from '../../../../utils/validation-utils'
 
 export const RSR = yup.object().shape({
-  url: yup.string().required().when('document', {
+  url: yup.string().transform(transformUndefined).required().when('document', {
     is: value => value !== undefined && value !== '',
     then: yup.string().notRequired()
   }),
-  title: yup.string().required(),
+  title: yup.string().transform(transformUndefined).required(),
   document: yup.string()
 })
 
