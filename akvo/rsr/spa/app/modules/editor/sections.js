@@ -1,13 +1,13 @@
-import Info from './info/comp/info'
-import Contacts from './contacts/contacts'
-import Partners from './partners/partners'
-import Descriptions from './descriptions/descriptions'
-import Finance from './finance/finance'
-import Locations from './locations/locations'
-import Focus from './focus/focus'
-import LinksDocs from './links-n-docs/links-n-docs'
-import CommentsKeywords from './comments-n-keywords/comments-n-keywords'
-import Reporting from './reporting/comp/reporting'
+import Info from './section1/comp/info'
+import Contacts from './section2/contacts'
+import Partners from './section3/partners'
+import Descriptions from './section4/descriptions'
+import Finance from './section6/finance'
+import Locations from './section7/locations'
+import Focus from './section8/focus'
+import LinksDocs from './section9/links-n-docs'
+import CommentsKeywords from './section10/comments-n-keywords'
+import Reporting from './section11/comp/reporting'
 
 export default [
   {key: 'info', validation: true, component: Info},
