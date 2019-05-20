@@ -136,9 +136,9 @@ export default (state = initialState, action) => {
           validateSectionGroup('focus', action)
         }
         // SECTION 9
-        else if(objectToArray(actionTypes['links-n-docs/docs']).indexOf(action.type) !== -1){
-          validateSectionGroup('links-n-docs', action)
-        }
+        // else if(objectToArray(actionTypes['links-n-docs/docs']).indexOf(action.type) !== -1){
+        //   validateSectionGroup('links-n-docs', action)
+        // }
         else if(action.type === 'PE_TOUCH_SECTION'){
           validateSectionGroup(action.key, action)
         }

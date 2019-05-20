@@ -1,7 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Collapse, Icon } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import AutoSave from './auto-save'
+import * as actions from '../modules/editor/actions'
 
 const { Panel } = Collapse
 
@@ -42,17 +45,26 @@ class ItemArray extends React.Component{
   state = {
     activeKey: '0'
   }
-  removeItem = (event, index, fields) => {
-    event.stopPropagation()
-    fields.remove(index)
-  }
   handleChange = (activeKey) => {
     this.setState({
       activeKey
     })
   }
+  handleAddItem = () => {
+    const { sectionIndex, setName } = this.props
+    const newItem = {}
+    this.props.form.mutators.push(this.props.setName, newItem)
+    this.props.addSetItem(sectionIndex, setName, newItem)
+  }
+  removeItem = (event, index, fields) => {
+    event.stopPropagation()
+    const { sectionIndex, setName } = this.props
+    this.props.removeSetItem(sectionIndex, setName, index)
+    fields.remove(index)
+  }
   render(){
     return (
+      <div>
       <FieldArray name={this.props.name} subscription={{ pristine: true }}>
         {({ fields }) => (
           <div>
@@ -64,7 +76,8 @@ class ItemArray extends React.Component{
                   key={`${index}`}
                   forceRender
                 >
-                {this.props.panel(name, index)}
+                  <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
+                  {this.props.panel(name, index)}
                 </Panel>
               ))}
             </Collapse>
@@ -74,8 +87,12 @@ class ItemArray extends React.Component{
           </div>
         )}
       </FieldArray>
+      {this.props.addButton && this.props.addButton({
+        onClick: this.handleAddItem
+      })}
+      </div>
     )
   }
 }
 
-export default ItemArray
+export default connect(null, actions)(ItemArray)

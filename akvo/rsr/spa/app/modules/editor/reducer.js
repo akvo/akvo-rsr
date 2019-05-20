@@ -33,24 +33,33 @@ export default (state = initialState, action) => {
   const section = state[sectionKey]
   const newState = cloneDeep(state)
   switch(action.type){
+    case actionTypes.TOUCH_SECTION:
+      newState[sectionKey].isTouched = true
+      return newState
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
         ...section,
-        fields: {...section.fields, ...action.fields}
+        fields: {...section.fields, ...action.fields},
       }
+      newState.saving = true
       return newState
     case actionTypes.ADD_SET_ITEM:
+      newState.saving = true
       newState[sectionKey].fields[action.setName] = [...newState[sectionKey].fields[action.setName], action.item]
       return newState
     case actionTypes.EDIT_SET_ITEM:
+      newState.saving = true
       newState[sectionKey].fields[action.setName][action.itemIndex] = {
         ...newState[sectionKey].fields[action.setName][action.itemIndex],
         ...action.fields
       }
       return newState
     case actionTypes.REMOVE_SET_ITEM:
+      newState.saving = true
       newState[sectionKey].fields[action.setName] = newState[sectionKey].fields[action.setName].filter((it, index) => index !== action.itemIndex)
       return newState
+    case actionTypes.BACKEND_SYNC:
+      return {...state, saving: false, lastSaved: new Date()}
     default: return state
   }
 }

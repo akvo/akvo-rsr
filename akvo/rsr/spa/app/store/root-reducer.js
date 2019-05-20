@@ -21,7 +21,8 @@ import humanitarianScopesRdr from '../modules/editor/focus/humanitarian-scopes/r
 // import docsRdr from '../modules/editor/links-n-docs/docs/reducers'
 import {commentsRdr, keywordsRdr} from '../modules/editor/comments-n-keywords/reducers'
 import {reportingRdr, crsAddOtherFlagRdr, forecastsRdr, legaciesRdr} from '../modules/editor/reporting/reducers'
-import editorRdr from '../modules/editor/reducers'
+import editorRdr from '../modules/editor/reducer'
+// import editorRdrNew from '../modules/editor/reducer'
 
 const rootReducer = combineReducers({
   partnersRdr,
@@ -48,8 +49,8 @@ const rootReducer = combineReducers({
   crsAddOtherFlagRdr,
   forecastsRdr,
   legaciesRdr,
+  financeRdr,
   editorRdr,
-  financeRdr
 })
 
 export default rootReducer
