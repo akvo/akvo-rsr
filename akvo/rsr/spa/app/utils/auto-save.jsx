@@ -42,7 +42,10 @@ class AutoSave extends React.Component {
       const difference = customDiff(this.lastSavedValues[setName][itemIndex], values[setName][itemIndex])
       if(!isEmpty(difference)){
         this.props.editSetItem(sectionIndex, setName, itemIndex, difference)
-        this.lastSavedValues = {...this.lastSavedValues, ...difference}
+        this.lastSavedValues[setName][itemIndex] = {
+          ...this.lastSavedValues[setName][itemIndex],
+          ...difference
+        }
       }
     }
   }

@@ -115,7 +115,7 @@ class ItemArray extends React.Component{
               {({ values }) => <ActiveKeyUpdater values={values} name={this.props.setName} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
             </FormSpy>
             {this.props.addButton && this.props.addButton({
-              onClick: this.handleAddItem
+              onClick: () => this.handleAddItem()
             })}
             {this.props.modal && (
               <Aux>
