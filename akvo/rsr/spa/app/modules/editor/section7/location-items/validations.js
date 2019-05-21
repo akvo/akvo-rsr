@@ -2,7 +2,7 @@ import * as yup from 'yup'
 import { validationType } from '../../../../utils/validation-utils'
 
 export const basic = yup.object().shape({
-  city: yup.string(),
+  city: yup.string().required(),
   address1: yup.string(),
   postalCode: yup.string(),
   address2: yup.string(),

@@ -61,7 +61,7 @@ class SearchItem extends React.Component{
     return (
       <Item label={<InputLabel tooltip="...">City</InputLabel>}>
         <Select
-          value={this.props.location.city}
+          value={this.props.value.city}
           showSearch
           defaultActiveFirstOption={false}
           showArrow={false}

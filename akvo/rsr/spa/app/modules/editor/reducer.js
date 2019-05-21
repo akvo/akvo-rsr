@@ -23,6 +23,13 @@ Object.keys(fieldSets).forEach((section) => {
   })
 })
 
+
+const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
+
+const isValid = (sectionKey, validations, values) => {
+  return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, values)).reduce((acc, value) => value && acc)
+}
+
 export default (state = initialState, action) => {
   const sectionKey = `section${action.sectionIndex}`
   const newState = cloneDeep(state)
@@ -49,7 +56,7 @@ export default (state = initialState, action) => {
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
       newState[sectionKey].fields[action.setName] = [...newState[sectionKey].fields[action.setName], action.item]
-      newState[sectionKey].isValid = fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${fieldSet}`, state.validations, newState[sectionKey].fields[action.setName])).reduce((acc, value) => value && acc)
+      newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState[sectionKey].fields[action.setName])
       return newState
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true
@@ -57,12 +64,12 @@ export default (state = initialState, action) => {
         ...newState[sectionKey].fields[action.setName][action.itemIndex],
         ...action.fields
       }
-      newState[sectionKey].isValid = fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${fieldSet}`, state.validations, newState[sectionKey].fields[action.setName])).reduce((acc, value) => value && acc)
+      newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState[sectionKey].fields[action.setName])
       return newState
     case actionTypes.REMOVE_SET_ITEM:
       newState.saving = true
       newState[sectionKey].fields[action.setName] = newState[sectionKey].fields[action.setName].filter((it, index) => index !== action.itemIndex)
-      newState[sectionKey].isValid = fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${fieldSet}`, state.validations, newState[sectionKey].fields[action.setName])).reduce((acc, value) => value && acc)
+      newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState[sectionKey].fields[action.setName])
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, lastSaved: new Date()}

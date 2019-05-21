@@ -1,239 +1,217 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Button, Form, Input, Collapse, Icon, Row, Col, Select } from 'antd'
+import { Button, Form, Row, Col } from 'antd'
 
+import FinalField from '../../../../utils/final-field'
+import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import _Field from '../../../../utils/field'
 import { Aux } from '../../../../utils/misc'
 import { validationType } from '../../../../utils/validation-utils'
-import UpdateHalter from '../../../../utils/update-halter'
 import SearchItem from './search-item'
 import Administratives from './administratives'
-import featureOptions from './feature-options.json'
-import * as actions from './actions'
+import FEATURE_OPTIONS from './feature-options.json'
 import '../styles.scss'
 
 const { Item } = Form
-const { Panel } = Collapse
-const { TextArea } = Input
-const { Option } = Select
-const Field = connect(
-  ({ locationItemsRdr }) => ({ rdr: locationItemsRdr }),
-  actions
-)(_Field)
 
-class Locations extends React.Component{
-  state = {
-    activeKey: ''
-  }
-  constructor(props){
-    super(props)
-    if(props.rdr.length > 0){
-      this.state = {
-        activeKey: `${props.rdr.length - 1}`
-      }
-    }
-  }
-  add = () => {
-    this.setState({
-      activeKey: `${this.props.rdr.length}`
-    })
-    this.props.add()
-  }
-  remove = (event, index) => {
-    event.stopPropagation()
-    this.props.remove(index)
-  }
-  render(){
-    const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
-    return (
-      <Aux>
-        <h3>Locations</h3>
-        <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
-        {this.props.rdr.map((item, index) =>
-          <Panel
-            header={`Location ${index + 1}`}
-            extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-            key={`${index}`}
-          >
-            <UpdateHalter except={['city']} item={item}>
-            <SearchItem
-              location={item}
-              onChange={(result) => {
-                this.props.editField(index, 'coordinates', result.coordinates)
-                this.props.editField(index, 'city', result.text)
-              }}
-              onRemove={() => this.props.remove(index)}
-            />
-            <Field
-              name="address1"
-              index={index}
-              render={props => (
-                <Item label={<InputLabel optional>Address 1</InputLabel>}>
-                  <Input {...props} />
-                </Item>
+const LocationItems = ({ validations, formPush }) => {
+  const isIATI = validations.indexOf(validationType.IATI) !== -1
+  return (
+    <div>
+      <h3>Sectors</h3>
+      <ItemArray
+        setName="locationItems"
+        sectionIndex={7}
+        header="Location $index"
+        formPush={formPush}
+        panel={name => (
+          <Aux>
+            <FinalField
+              name={`${name}.location`}
+              render={({ input }) => (
+                <SearchItem
+                  {...input}
+                />
               )}
             />
-            <Field
-              name="address2"
-              index={index}
-              render={props => (
-                <Item label={<InputLabel optional>Address 2</InputLabel>}>
-                  <Input {...props} />
-                </Item>
-              )}
+            <Item label={<InputLabel optional>Address 1</InputLabel>}>
+            <FinalField
+              name={`${name}.address1`}
+              control="input"
             />
-            <Field
-              name="postalCode"
-              index={index}
-              render={props => (
-                <Item label={<InputLabel optional>Postal code</InputLabel>}>
-                  <Input {...props} />
-                </Item>
-              )}
+            </Item>
+            <Item label={<InputLabel optional>Address 2</InputLabel>}>
+            <FinalField
+              name={`${name}.address2`}
+              control="input"
             />
+            </Item>
+            <Item label={<InputLabel optional>Postal code</InputLabel>}>
+            <FinalField
+              name={`${name}.postalCode`}
+              control="input"
+            />
+            </Item>
             {isIATI && (
               <Aux>
                 <Row gutter={16}>
                   <Col span={8}>
-                    <Field
-                      name="name"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Name</InputLabel>}>
-                          <Input {...props} />
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Name</InputLabel>}>
+                    <FinalField
+                      name={`${name}.name`}
+                      control="input"
                     />
+                    </Item>
                   </Col>
                   <Col span={8}>
-                    <Field
-                      name="reference"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Reference</InputLabel>}>
-                          <Input {...props} />
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Reference</InputLabel>}>
+                    <FinalField
+                      name={`${name}.reference`}
+                      control="input"
                     />
+                    </Item>
                   </Col>
                   <Col span={8}>
-                    <Field
-                      name="code"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Code</InputLabel>}>
-                          <Input {...props} />
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Code</InputLabel>}>
+                    <FinalField
+                      name={`${name}.code`}
+                      control="input"
                     />
+                    </Item>
                   </Col>
                 </Row>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Field
-                      name="locationDescription"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Location description</InputLabel>}>
-                          <TextArea rows={3} {...props} />
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Location description</InputLabel>}>
+                    <FinalField
+                      name={`${name}.locationDescription`}
+                      control="textarea"
+                      rows={3}
                     />
+                    </Item>
                   </Col>
                   <Col span={12}>
-                    <Field
-                      name="activityDescription"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Activity description</InputLabel>}>
-                          <TextArea rows={3} {...props} />
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Activity description</InputLabel>}>
+                    <FinalField
+                      name={`${name}.activityDescription`}
+                      control="textarea"
+                      rows={3}
                     />
+                    </Item>
                   </Col>
                 </Row>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Field
-                      name="locationPrecision"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Location precision</InputLabel>}>
-                          <Select {...props}>
-                            <Option value="">&nbsp;</Option>
-                            <Option value={1}>Exact</Option>
-                            <Option value={2}>Approximate</Option>
-                          </Select>
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Location precision</InputLabel>}>
+                    <FinalField
+                      name={`${name}.locationPrecision`}
+                      control="select"
+                      options={[
+                        {value: '1', label: 'Exact'},
+                        {value: '2', label: 'Approximate'}
+                      ]}
+                      withEmptyOption
                     />
+                    </Item>
                   </Col>
                   <Col span={12}>
-                    <Field
-                      name="reach"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Reach</InputLabel>}>
-                          <Select {...props}>
-                            <Option value="">&nbsp;</Option>
-                            <Option value={1}>Activity</Option>
-                            <Option value={2}>Indended beneficiaries</Option>
-                          </Select>
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Reach</InputLabel>}>
+                    <FinalField
+                      name={`${name}.reach`}
+                      control="select"
+                      options={[
+                        {value: '1', label: 'Activity'},
+                        {value: '2', label: 'Indended beneficiaries'}
+                      ]}
+                      withEmptyOption
                     />
+                    </Item>
                   </Col>
                 </Row>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Field
-                      name="class"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Class</InputLabel>}>
-                          <Select {...props}>
-                            <Option value="">&nbsp;</Option>
-                            <Option value="1">Administrative Region</Option>
-                            <Option value="2">Populated Place</Option>
-                            <Option value="3">Structure</Option>
-                            <Option value="4">Other Topographical Feature</Option>
-                          </Select>
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Class</InputLabel>}>
+                    <FinalField
+                      name={`${name}.class`}
+                      control="select"
+                      options={[
+                        {value: '1', label: 'Administrative Region'},
+                        {value: '2', label: 'Populated Place'},
+                        {value: '3', label: 'Structure'},
+                        {value: '4', label: 'Other Topographical Feature'}
+                      ]}
+                      withEmptyOption
                     />
+                    </Item>
                   </Col>
                   <Col span={12}>
-                    <Field
-                      name="featureDesignation"
-                      index={index}
-                      render={props => (
-                        <Item label={<InputLabel optional>Feature designation</InputLabel>}>
-                          <Select {...props} showSearch optionFilterProp="children">
-                            <Option value="">&nbsp;</Option>
-                            {featureOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
-                          </Select>
-                        </Item>
-                      )}
+                    <Item label={<InputLabel optional>Feature designation</InputLabel>}>
+                    <FinalField
+                      name={`${name}.featureDesignation`}
+                      control="select"
+                      options={FEATURE_OPTIONS}
+                      showSearch
+                      optionFilterProp="children"
+                      withEmptyOption
                     />
+                    </Item>
                   </Col>
                 </Row>
-                <Administratives locationItemIndex={index} />
+                {/* <Administratives locationItemIndex={index} /> */}
               </Aux>
             )}
-            </UpdateHalter>
-          </Panel>
+          </Aux>
         )}
-        </Collapse>
-        <Button onClick={this.add} icon="plus" type="dashed" block>
-          Add location
-        </Button>
-      </Aux>
-    )
-  }
+        addButton={({ onClick }) => (
+          <Button onClick={onClick} icon="plus" type="dashed" block>
+            Add location
+          </Button>
+        )}
+      />
+    </div>
+  )
 }
 
-export default connect(
-  ({ locationItemsRdr, infoRdr }) => ({ rdr: locationItemsRdr, validations: infoRdr.validations }),
-  actions
-)(Locations)
+// class Locations extends React.Component{
+//   state = {
+//     activeKey: ''
+//   }
+//   constructor(props){
+//     super(props)
+//     if(props.rdr.length > 0){
+//       this.state = {
+//         activeKey: `${props.rdr.length - 1}`
+//       }
+//     }
+//   }
+//   add = () => {
+//     this.setState({
+//       activeKey: `${this.props.rdr.length}`
+//     })
+//     this.props.add()
+//   }
+//   remove = (event, index) => {
+//     event.stopPropagation()
+//     this.props.remove(index)
+//   }
+//   render(){
+//     return (
+//       <Aux>
+//         <h3>Locations</h3>
+//         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
+//         {this.props.rdr.map((item, index) =>
+//           <Panel
+//             header={`Location ${index + 1}`}
+//             extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
+//             key={`${index}`}
+//           >
+//             <UpdateHalter except={['city']} item={item}>
+//             </UpdateHalter>
+//           </Panel>
+//         )}
+//         </Collapse>
+//       </Aux>
+//     )
+//   }
+// }
+
+export default LocationItems
