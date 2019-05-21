@@ -311,6 +311,22 @@ class IndicatorPeriod(models.Model):
         """
         return self.child_periods.count() > 0
 
+    def can_save_update(self, update_id=None):
+        """Return True if an update can be created/updated on the indicator period.
+
+        If no update_id is passed, we check if a new update can be created. If
+        an update_id is passed, we verify that the update can be modified.
+
+        Non percentage indicators can have multiple updates. If the indicator
+        is a percentage indicator, we check that no other update is present,
+        other than the one currently being created or changed.
+
+        """
+        return (
+            self.indicator.measure != PERCENTAGE_MEASURE or
+            self.data.exclude(id=update_id).count() == 0
+        )
+
     def child_periods_with_data(self, only_aggregated=False):
         """
         Returns the child indicator periods with numeric values

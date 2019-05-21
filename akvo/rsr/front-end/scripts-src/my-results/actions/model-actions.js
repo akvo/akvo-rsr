@@ -338,6 +338,8 @@ function sendUpdateToBackend(url, method, data, collapseId, callbacks) {
                     type: c.UPDATE_MODEL_FULFILLED,
                     payload: { model: c.OBJECTS_UPDATES, object: newUpdate, collapseId }
                 });
+                // Update can_add_update on the period
+                periodCanAddUpdate(newUpdate.period, newUpdate.period_can_add_update);
             })
             .then(() => {
                 if (data._comment) {
@@ -446,4 +448,14 @@ export function updateModel(model, object, collapseId) {
 
 export function deleteFromModel(model, object, collapseId) {
     store.dispatch({ type: c.DELETE_FROM_MODEL, payload: { model, object, collapseId } });
+}
+
+export function periodCanAddUpdate(id, can_add_update) {
+    store.dispatch({
+        type: c.UPDATE_MODEL_FIELD,
+        payload: {
+            model: c.OBJECTS_PERIODS,
+            object: { id, can_add_update }
+        }
+    });
 }

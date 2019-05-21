@@ -546,6 +546,44 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['U']))
 
+    # Add an employment
+
+    def test_adding_employment_gives_access_to_new_org_projects(self):
+        """
+        User M      User N      User O
+        Admin       Admin       User
+           \        /   \      /
+            \      /     \    /
+              Org A       Org B                Org C
+            /      \      /    \                 /\
+           /        \    /      \               /  \
+        Project X   Project Y   Project Z      /  Project W
+                        |                     /
+                        +---------------------
+        """
+        org_c = Organisation.objects.create(name='C', long_name='C', can_create_projects=True)
+        Partnership.objects.create(
+            organisation=org_c,
+            project=self.projects['Y'],
+            iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
+        )
+        project_w = Project.objects.create(title='W')
+        Partnership.objects.create(
+            organisation=org_c,
+            project=project_w,
+            iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
+        )
+        restrict_projects(self.user_n, self.user_o, [self.projects['Y']])
+
+        # When
+        Employment.objects.create(
+            user=self.user_o, organisation=org_c, group=self.users, is_approved=True
+        )
+
+        # Then
+        self.assertTrue(self.user_o.has_perm('rsr.view_project', project_w))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Y']))
+
     # Remove a partner
 
     def test_removing_partner_does_not_restore_access(self):

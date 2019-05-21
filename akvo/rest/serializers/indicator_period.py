@@ -15,6 +15,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 
     indicator_unicode = serializers.ReadOnlyField(source='indicator.__unicode__')
     percent_accomplishment = serializers.ReadOnlyField()
+    can_add_update = serializers.ReadOnlyField(source='can_save_update')
 
     class Meta:
         model = IndicatorPeriod
