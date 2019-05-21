@@ -24,7 +24,6 @@ Object.keys(fieldSets).forEach((section) => {
 
 export default (state = initialState, action) => {
   const sectionKey = `section${action.sectionIndex}`
-  const section = state[sectionKey]
   const newState = cloneDeep(state)
   switch(action.type){
     case actionTypes.TOUCH_SECTION:
@@ -40,8 +39,8 @@ export default (state = initialState, action) => {
       return {...state, validations}
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
-        ...section,
-        fields: {...section.fields, ...action.fields},
+        ...newState[sectionKey],
+        fields: {...newState[sectionKey].fields, ...action.fields},
       }
       newState.saving = true
       newState.isValid = validate(sectionKey, state.validations, newState[sectionKey])
