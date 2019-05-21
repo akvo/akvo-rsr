@@ -117,6 +117,9 @@
     padding-left: 30px;
     margin-left: 280px;
     margin-right: 280px;
+    @media screen and (max-width: 1200px){
+      margin-right: 200px;
+    }
   }
   .alerts{
     width: 280px;
@@ -124,6 +127,9 @@
     right: 0;
     // padding-left: 30px;
     padding-top: 20px;
+    @media screen and (max-width: 1200px){
+      width: 200px;
+    }
   }
 
   .ant-form-item-label{

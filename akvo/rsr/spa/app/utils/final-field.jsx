@@ -4,14 +4,13 @@ import { Field } from 'react-final-form'
 import { datePickerConfig } from './misc'
 
 const CONTROLS = {
-  input: ({ input, meta }) => {
-    // console.log(input, meta)
-    return <Input {...input} />
+  input: ({ input, meta, control, ...props }) => {
+    return <Input {...{...input, ...props}} />
   },
-  textarea: ({ input }) => <Input.TextArea {...input} />,
-  select: ({options, input}) => {
+  textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
+  select: ({options, input, meta, control, ...props}) => {
     return (
-      <Select {...input}>
+      <Select {...{...input, ...props}}>
         {options.map(({ label, value }) => <Select.Option key={value} value={value}>{label}</Select.Option>)}
       </Select>
     )

@@ -1,7 +1,8 @@
 import {cloneDeep} from 'lodash'
 import actionTypes from './action-types'
 import { validate } from './validation'
-import { fieldSets, sectionLength } from './sections'
+import { sectionLength } from './sections'
+import fieldSets from './field-sets'
 
 export const initialState = {
   saving: false,

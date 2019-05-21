@@ -10,6 +10,7 @@ import HumanitarianScopes from './humanitarian-scopes/humanitarian-scope'
 import { getValidations } from '../../../utils/validation-utils'
 import InputLabel from '../../../utils/input-label'
 import FinalField from '../../../utils/final-field'
+import AutoSave from '../../../utils/auto-save'
 import './styles.scss'
 
 const { Item } = Form
@@ -44,7 +45,8 @@ class Focus extends React.Component{
                   </Group>
                 )}
               />
-            </Item>
+              <AutoSave sectionIndex={8} />
+            </Item> /* TODO: AutoSave root fields */
             }
             {isIATI && <HumanitarianScopes formPush={push} />}
           </Form>

@@ -24,13 +24,3 @@ export default [
 ]
 
 export const sectionLength = 11
-
-export const fieldSets = {
-  section2: ['contacts'],
-  section3: ['partners'],
-  section6: ['budgetItems', 'countryBudgetItems', 'transactions', 'plannedDisbursements'],
-  section7: ['locationItems', 'recipientCountries', 'recipientRegions'],
-  section8: ['sectors', 'policyMarkers', 'humanitarianScopes'],
-  section9: ['links', 'docs'],
-  section10: ['keywords']
-}
