@@ -4561,6 +4561,12 @@ main.results-page {
                         .newUpdate {
                             @include smallButton($btnColor, white);
                         }
+                        .helpText {
+                            display: block;
+                            position: absolute;
+                            font-size: 0.8em;
+                            margin-top: 0.4em;
+                        }
                         ul {
                             &.periodHeader {
                                 padding: 5px 10px;
