@@ -51,7 +51,6 @@ const PanelHeader = ({ template, field, index, name}) => {
     header = template.replace('$index', index + 1)
     field = getKeyFromTemplate(header)
   }
-  console.log('getting field', `${name}.${field}`)
   return (
     <Field name={`${name}.${field}`} subscription={{ value: true }}>
       {({ input: { value } }) => <span>{render ? render(index, value) : header.replace(`$${field}`, value)}</span>}

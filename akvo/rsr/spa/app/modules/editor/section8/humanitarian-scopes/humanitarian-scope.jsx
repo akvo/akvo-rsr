@@ -1,67 +1,30 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Collapse, Icon, Form, Button, Radio, Select, Col, Row } from 'antd'
+import { Form, Button, Radio, Col, Row } from 'antd'
 
+import FinalField from '../../../../utils/final-field'
+import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import _Field from '../../../../utils/field'
-import UpdateHalter from '../../../../utils/update-halter'
 
-import * as actions from './actions'
-
-const { Panel } = Collapse
 const { Item } = Form
-const Field = connect(
-  ({ humanitarianScopesRdr }) => ({ rdr: humanitarianScopesRdr }),
-  actions
-)(_Field)
 
 class HumanitarianScopes extends React.Component{
-  state = {
-    activeKey: '',
-  }
-  constructor(props){
-    super(props)
-    if(props.rdr.length > 0){
-      this.state = {
-        activeKey: `${props.rdr.length - 1}`
-      }
-    }
-  }
-  add = () => {
-    this.setState({
-      activeKey: `${this.props.rdr.length}`
-    })
-    this.props.add()
-  }
-  remove = (event, index) => {
-    event.stopPropagation()
-    this.props.remove(index)
-  }
-  addItem = () => {
-    this.setState({
-      activeKey: `${this.props.rdr.length}`
-    })
-    this.props.add()
-  }
   render(){
     return (
       <div>
         <h3>Humanitarian Scopes</h3>
-        <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
-        {this.props.rdr.map((item, index) =>
-          <Panel
-            header={`Humanitarian scope ${index + 1}`}
-            extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-            key={`${index}`}
-          >
-            <UpdateHalter except={['type']} item={item}>
+        <ItemArray
+          setName="humanitarianScopes"
+          sectionIndex={8}
+          header="Humanitarian scope $index"
+          formPush={this.props.formPush}
+          panel={name => (
+            <div>
               <Row gutter={16}>
                 <Col span={12}>
                   <Item label={<InputLabel optional tooltip="...">Type</InputLabel>}>
-                    <Field
-                      name="type"
-                      index={index}
-                      render={input => (
+                    <FinalField
+                      name={`${name}.type`}
+                      render={({ input }) => (
                         <Radio.Group {...input}>
                           <Radio.Button value="1">Emergency</Radio.Button>
                           <Radio.Button value="2">Appeal</Radio.Button>
@@ -71,44 +34,50 @@ class HumanitarianScopes extends React.Component{
                   </Item>
                 </Col>
                 <Col span={12}>
-                  <Item label={<InputLabel optional={item.type === '' || item.type === undefined}>Code</InputLabel>}>
-                    <Field name="code" index={index} control="input" />
-                  </Item>
+                  <FinalField name={`${name}.type`} subscription={{ value: true }}>
+                  {({ input: { value } }) => (
+                    <Item label={<InputLabel optional={value === '' || value === undefined}>Code</InputLabel>}>
+                      <FinalField
+                        name={`${name}.code`}
+                        control="input"
+                      />
+                    </Item>
+                  )}
+                  </FinalField>
                 </Col>
               </Row>
               <Item label={<InputLabel optional>Description</InputLabel>}>
-                <Field
+                <FinalField
                   control="input"
-                  name="description"
-                  index={index}
+                  name={`${name}.description`}
                 />
               </Item>
-              <Item label={<InputLabel optional={item.type === '' || item.type === undefined}>Vocabulary</InputLabel>}>
-                <Field
-                  control="select"
-                  options={[{value: '1-2', label: '1-2 Glide'}, {value: '2-1', label: '2-1 Humanitarian plan'}, {value: '99', label: '99 Reporting organisation'}]}
-                  name="vocabulary"
-                  index={index}
-                />
-              </Item>
+              <FinalField name={`${name}.type`} subscription={{ value: true }}>
+                {({ input: { value } }) => (
+                  <Item label={<InputLabel optional={value === '' || value === undefined}>Vocabulary</InputLabel>}>
+                    <FinalField
+                      control="select"
+                      options={[{value: '1-2', label: '1-2 Glide'}, {value: '2-1', label: '2-1 Humanitarian plan'}, {value: '99', label: '99 Reporting organisation'}]}
+                      name={`${name}.vocabulary`}
+                    />
+                  </Item>
+                )}
+              </FinalField>
               <Item label={<InputLabel optional>Vocabulary URI</InputLabel>}>
-                <Field
+                <FinalField
                   control="input"
-                  name="vocabularyUri"
-                  index={index}
+                  name={`${name}.vocabularyUri`}
                 />
               </Item>
-            </UpdateHalter>
-          </Panel>
-        )}
-        </Collapse>
-        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.addItem}>Add Humanitarian Scope</Button>
+            </div>
+          )}
+          addButton={({ onClick }) => (
+            <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>Add Humanitarian Scope</Button>
+          )}
+        />
       </div>
     )
   }
 }
 
-export default connect(
-  ({ humanitarianScopesRdr }) => ({ rdr: humanitarianScopesRdr }),
-  actions
-)(HumanitarianScopes)
+export default HumanitarianScopes

@@ -31,7 +31,6 @@ class Sectors extends React.Component{
             )
           }}
           headerField="vocabulary"
-          newItem={{ categories: [{}]}}
           formPush={this.props.formPush}
           panel={name => (
           <div>

@@ -32,12 +32,12 @@ class Focus extends React.Component{
           }) => (
           <Form layout="vertical">
             <Sectors validations={this.props.validations} formPush={push} />
-            {(isIATI || isDGIS) && <PolicyMarkers validations={this.props.validations} />}
+            {(isIATI || isDGIS) && <PolicyMarkers validations={this.props.validations} formPush={push} />}
             {isIATI &&
             <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
               <FinalField
                 name="humanitarianProject"
-                render={({input}) => (
+                render={({ input }) => (
                   <Group {...input}>
                     <Button value>Yes</Button>
                     <Button value={false}>No</Button>
@@ -46,7 +46,7 @@ class Focus extends React.Component{
               />
             </Item>
             }
-            {isIATI && <HumanitarianScopes />}
+            {isIATI && <HumanitarianScopes formPush={push} />}
           </Form>
           )}
         />
