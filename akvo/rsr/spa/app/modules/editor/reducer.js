@@ -6,7 +6,7 @@ import { fieldSets, sectionLength } from './sections'
 export const initialState = {
   saving: false,
   lastSaved: null,
-  validations: [1, 2]
+  validations: [1]
 }
 for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
@@ -62,7 +62,7 @@ export default (state = initialState, action) => {
     case actionTypes.REMOVE_SET_ITEM:
       newState.saving = true
       newState[sectionKey].fields[action.setName] = newState[sectionKey].fields[action.setName].filter((it, index) => index !== action.itemIndex)
-      newState[sectionKey].isValid = fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${fieldSet}`)).reduce((acc, value) => value && acc)
+      newState[sectionKey].isValid = fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${fieldSet}`, state.validations, newState[sectionKey].fields[action.setName])).reduce((acc, value) => value && acc)
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, lastSaved: new Date()}

@@ -8,7 +8,7 @@ const CONTROLS = {
     // console.log(input, meta)
     return <Input {...input} />
   },
-  textarea: props => <Input.TextArea {...props} />,
+  textarea: ({ input }) => <Input.TextArea {...input} />,
   select: ({options, input}) => {
     return (
       <Select {...input}>

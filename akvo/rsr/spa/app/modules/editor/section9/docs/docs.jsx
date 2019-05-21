@@ -49,12 +49,11 @@ class Docs extends React.Component{
             <Form layout="vertical">
             <h3>Documents</h3>
             <ItemArray
-              name="docs"
+              setName="docs"
+              sectionIndex={9}
               header="Document $index: $title"
               newItem={{ categories: [{}]}}
               formPush={push}
-              sectionIndex={9}
-              setName="docs"
               panel={name => (
               <div>
                 <Item>
