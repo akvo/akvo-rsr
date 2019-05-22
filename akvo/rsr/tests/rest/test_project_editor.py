@@ -996,6 +996,9 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(result_2.type, result_type_2)
         self.assertEqual(result_2.aggregation_status, result_aggregation_2 == '1')
 
+        # Verify that ordering is maintained
+        self.assertLess(result.id, result_2.id)
+
         indicator = Indicator.objects.get(result=result)
         self.assertEqual(indicator.title, indicator_title)
         self.assertEqual(indicator.description, indicator_description)
