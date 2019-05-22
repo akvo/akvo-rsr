@@ -28,9 +28,9 @@ export const validate = (module, validationSetIds, fields) => {
   }
   const validationSets = validationSetGetters[module](validationSetIds, { arrays: true })
   let isValid = true
+  console.log('validate', fields)
   validationSets.forEach((validationSet) => {
     try{
-      console.log('validate', fields)
       validationSet.validateSync(fields)
     } catch(error){
       console.log(module, 'validation error', error)

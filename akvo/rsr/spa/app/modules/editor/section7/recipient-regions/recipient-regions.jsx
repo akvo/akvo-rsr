@@ -1,124 +1,96 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Button, Form, Select, Icon, Input, Row, Col } from 'antd'
+import { Button, Form, Row, Col } from 'antd'
 
+import FinalField from '../../../../utils/final-field'
+import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import _Field from '../../../../utils/field'
-import countries from '../../../../utils/countries'
 import { doesFieldExist } from '../../../../utils/validation-utils'
-import UpdateHalter from '../../../../utils/update-halter'
 import { getValidationSets } from './validations'
-import * as actions from './actions'
-import regionOptions from './regions.json'
-import '../styles.scss'
+import REGION_OPTIONS from './regions.json'
 
 const { Item } = Form
-const { Option } = Select
-const Field = connect(
-  ({ recipientRegionsRdr }) => ({ rdr: recipientRegionsRdr }),
-  actions
-)(_Field)
 
-
-class RecipientRegion extends React.Component{
-  render(){
-    const validationSets = getValidationSets(this.props.validations)
-    const fieldExists = doesFieldExist(validationSets)
-    // const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
-    return (
-      <div>
-          <h3>Recipient region</h3>
-          {this.props.rdr.map((country, index) =>
-          <UpdateHalter>
-          <div className="location-item">
-            <Field
-              name="region"
-              index={index}
-              render={props => (
-                <Item label={<InputLabel tooltip="..." more={<Icon type="delete" onClick={() => this.props.remove(index)} />}>Region</InputLabel>}>
-                  <Select
-                    optionFilterProp="children"
-                    showSearch
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                    {...props}
-                  >
-                    <Option value="">&nbsp;</Option>
-                    {regionOptions.map(item =>
-                    <Option value={item.value}>{item.label}</Option>
-                    )}
-                  </Select>
-                </Item>
-              )}
-            />
+const RecipientRegions = ({ formPush, validations }) => {
+  const validationSets = getValidationSets(validations)
+  const fieldExists = doesFieldExist(validationSets)
+  return (
+    <div>
+      <h3>Recipient region</h3>
+      <ItemArray
+        setName="recipientRegions"
+        sectionIndex={7}
+        header="Recipient country $index"
+        formPush={formPush}
+        panel={name => (
+          <div>
+            <Item label={<InputLabel tooltip="...">Region</InputLabel>}>
+              <FinalField
+                name={`${name}.region`}
+                control="select"
+                options={REGION_OPTIONS}
+                optionFilterProp="children"
+                showSearch
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                withEmptyOption
+              />
+            </Item>
             {fieldExists('vocabulary') && (
               <Row gutter={16}>
                 <Col span={12}>
-                <Field
-                  name="vocabulary"
-                  index={index}
-                  render={props => (
-                    <Item label={<InputLabel optional tooltip="...">Vocabulary</InputLabel>}>
-                      <Select
-                        {...props}
-                      >
-                        <Option value="">&nbsp;</Option>
-                        <Option value="1">1 - OECD DAC</Option>
-                        <Option value="2">2 - UN</Option>
-                        <Option value="99">99 - Reporting Organisation</Option>
-                      </Select>
-                    </Item>
-                  )}
+                <Item label={<InputLabel optional tooltip="...">Vocabulary</InputLabel>}>
+                <FinalField
+                  name={`${name}.vocabulary`}
+                  control="select"
+                  options={[
+                    {value: '1', label: 'OECD DAC'},
+                    {value: '2', label: 'UN'},
+                    {value: '99', label: 'Reporting Organisation'}
+                  ]}
+                  withEmptyOption
                 />
+                </Item>
                 </Col>
                 <Col span={12}>
-                  <Field
-                    name="vocabularyUri"
-                    index={index}
-                    render={props => (
-                      <Item label={<InputLabel optional>Vocabulary URI</InputLabel>}>
-                        <Input {...props} />
-                      </Item>
-                    )}
+                  <Item label={<InputLabel optional>Vocabulary URI</InputLabel>}>
+                  <FinalField
+                    name={`${name}.vocabularyUri`}
+                    control="input"
                   />
+                  </Item>
                 </Col>
               </Row>
             )}
             <div className="percentage-row">
               {fieldExists('percentage') && (
-                <Field
-                  name="percentage"
-                  index={index}
-                  render={props => (
-                    <Item label="Percentage">
-                      <Input {...props} suffix={<span>%</span>} className="percentage-input" />
-                    </Item>
-                  )}
+                <Item label="Percentage">
+                <FinalField
+                  name={`${name}.percentage`}
+                  suffix={<span>%</span>}
+                  className="percentage-input"
+                  control="input"
                 />
+                </Item>
               )}
               {fieldExists('description') && (
-                <Field
-                  name="description"
-                  index={index}
-                  render={props => (
-                    <Item label={<InputLabel optional>Description</InputLabel>}>
-                      <Input.TextArea rows={2} {...props} />
-                    </Item>
-                  )}
+                <Item label={<InputLabel optional>Description</InputLabel>}>
+                <FinalField
+                  name={`${name}.description`}
+                  control="textarea"
+                  rows={2}
                 />
+                </Item>
               )}
             </div>
           </div>
-          </UpdateHalter>
-          )}
-          <Button onClick={() => this.props.add()} icon="plus" type="dashed" block>
+        )}
+        addButton={({onClick}) => (
+          <Button onClick={onClick} icon="plus" type="dashed" block>
             Add recipient region
           </Button>
-      </div>
-    )
-  }
+        )}
+      />
+    </div>
+  )
 }
 
-export default connect(
-  ({ recipientRegionsRdr, infoRdr }) => ({ rdr: recipientRegionsRdr, validations: infoRdr.validations }),
-  actions
-)(RecipientRegion)
+export default RecipientRegions

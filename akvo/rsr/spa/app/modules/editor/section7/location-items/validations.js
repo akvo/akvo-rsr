@@ -2,13 +2,15 @@ import * as yup from 'yup'
 import { validationType } from '../../../../utils/validation-utils'
 
 export const basic = yup.object().shape({
-  city: yup.string().required(),
   address1: yup.string(),
-  postalCode: yup.string(),
   address2: yup.string(),
-  coordinates: yup.object().shape({
-    lat: yup.number().required(),
-    lng: yup.number().required()
+  postalCode: yup.string(),
+  location: yup.object().shape({
+    text: yup.string().required(),
+    coordinates: yup.object().shape({
+      lat: yup.number().required(),
+      lng: yup.number().required()
+    })
   })
 })
 

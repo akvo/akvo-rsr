@@ -6,7 +6,7 @@ import { FieldArray } from 'react-final-form-arrays'
 const { TabPane } = Tabs
 
 class ActiveKeyUpdater extends React.Component{
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps){ // eslint-disable-line
     try{
       eval(`prevProps.values.${this.props.name}`)
     } catch(e) {
@@ -65,10 +65,7 @@ class ItemArrayTabs extends React.Component{
               ))}
             </Tabs>
             <FormSpy subscription={{ values: true }}>
-              {({ values }) => {
-                console.log(values)
-                return <ActiveKeyUpdater values={values} name={this.props.name} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />
-              }}
+              {({ values }) => <ActiveKeyUpdater values={values} name={this.props.name} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
             </FormSpy>
           </div>
         )}

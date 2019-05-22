@@ -32,7 +32,7 @@ function $fetch(value, callback) {
           const data = d.results.filter(it => it.components._type === 'city').map(r => ({
             coordinates: r.geometry,
             text: r.formatted,
-            name: r.components.city
+            // name: r.components.city
           }))
           callback(data)
         }
@@ -61,7 +61,7 @@ class SearchItem extends React.Component{
     return (
       <Item label={<InputLabel tooltip="...">City</InputLabel>}>
         <Select
-          value={this.props.value.city}
+          value={this.props.value.text}
           showSearch
           defaultActiveFirstOption={false}
           showArrow={false}

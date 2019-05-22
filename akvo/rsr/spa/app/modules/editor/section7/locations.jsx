@@ -5,9 +5,9 @@ import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 
 import LocationsItems from './location-items/location-items'
-import Countries from './recipient-countries/recipient-countries'
+import RecipientCountries from './recipient-countries/recipient-countries'
 import InputLabel from '../../../utils/input-label'
-import Regions from './recipient-regions/recipient-regions'
+import RecipientRegions from './recipient-regions/recipient-regions'
 import { Aux } from '../../../utils/misc'
 import { validationType } from '../../../utils/validation-utils'
 import SCOPE_OPTIONS from './scope-options.json'
@@ -43,16 +43,16 @@ class LocationsView extends React.Component{
                 control="select"
                 options={SCOPE_OPTIONS}
               />
-              <AutoSave sectionIndex={8} />
+              <AutoSave sectionIndex={7} />
             </Item>
             }
             <LocationsItems formPush={push} validations={this.props.validations} />
             <hr />
-            {/* <Countries formPush={push} /> */}
+            <RecipientCountries formPush={push} validations={this.props.validations} />
             {(isIATI || isDGIS) && (
               <Aux>
                 <hr />
-                <Regions formPush={push} />
+                <RecipientRegions formPush={push} validations={this.props.validations} />
               </Aux>
             )}
           </Form>

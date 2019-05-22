@@ -1,88 +1,71 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Button, Form, Select, Icon, Input } from 'antd'
+import { Button, Form } from 'antd'
 
+import FinalField from '../../../../utils/final-field'
+import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import _Field from '../../../../utils/field'
 import countries from '../../../../utils/countries'
 import { doesFieldExist } from '../../../../utils/validation-utils'
-import UpdateHalter from '../../../../utils/update-halter'
 import { getValidationSets } from './validations'
-import * as actions from './actions'
-import '../styles.scss'
 
 const { Item } = Form
-const { Option } = Select
-const Field = connect(
-  ({ recipientCountriesRdr }) => ({ rdr: recipientCountriesRdr }),
-  actions
-)(_Field)
 
+const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
-class RecipientCountries extends React.Component{
-  render(){
-    const validationSets = getValidationSets(this.props.validations)
-    const fieldExists = doesFieldExist(validationSets)
-    return (
-      <div>
-          <h3>Recipient country</h3>
-          {this.props.rdr.map((country, index) =>
-          <UpdateHalter>
-          <div className="location-item">
-            <Field
-              name="country"
-              index={index}
-              render={props => (
-                <Item label={<InputLabel tooltip="..." more={<Icon type="delete" onClick={() => this.props.remove(index)} />}>Country</InputLabel>}>
-                  <Select
-                    optionFilterProp="children"
-                    showSearch
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                    {...props}
-                  >
-                    {countries.map(item =>
-                    <Option value={item.code}>{item.name}</Option>
-                    )}
-                  </Select>
-                </Item>
-              )}
-            />
+const RecipientCountries = ({ validations, formPush }) => {
+  const validationSets = getValidationSets(validations)
+  const fieldExists = doesFieldExist(validationSets)
+  return (
+    <div>
+      <h3>Recipient country</h3>
+      <ItemArray
+        setName="recipientCountries"
+        sectionIndex={7}
+        header="Recipient country $index"
+        formPush={formPush}
+        panel={name => (
+          <div>
+            <Item label={<InputLabel tooltip="...">Country</InputLabel>}>
+              <FinalField
+                name={`${name}.country`}
+                optionFilterProp="children"
+                showSearch
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                control="select"
+                options={COUNTRY_OPTIONS}
+              />
+            </Item>
             <div className="percentage-row">
               {fieldExists('percentage') && (
-                <Field
-                  name="percentage"
-                  index={index}
-                  render={props => (
-                    <Item label="Percentage">
-                      <Input {...props} suffix={<span>%</span>} className="percentage-input" />
-                    </Item>
-                  )}
+                <Item label="Percentage">
+                <FinalField
+                  name={`${name}.percentage`}
+                  control="input"
+                  suffix={<span>%</span>}
+                  className="percentage-input"
                 />
+                </Item>
               )}
               {fieldExists('description') && (
-                <Field
-                  name="description"
-                  index={index}
-                  render={props => (
-                    <Item label={<InputLabel optional>Description</InputLabel>}>
-                      <Input.TextArea rows={2} {...props} />
-                    </Item>
-                  )}
+                <Item label={<InputLabel optional>Description</InputLabel>}>
+                <FinalField
+                  name={`${name}.description`}
+                  control="textarea"
+                  rows={2}
                 />
+                </Item>
               )}
             </div>
           </div>
-          </UpdateHalter>
-          )}
-          <Button onClick={() => this.props.add()} icon="plus" type="dashed" block>
+        )}
+        addButton={({ onClick }) => (
+          <Button onClick={onClick} icon="plus" type="dashed" block>
             Add recipient country
           </Button>
-      </div>
-    )
-  }
+        )}
+      />
+    </div>
+  )
 }
 
-export default connect(
-  ({ recipientCountriesRdr, infoRdr }) => ({ rdr: recipientCountriesRdr, validations: infoRdr.validations }),
-  actions
-)(RecipientCountries)
+export default RecipientCountries

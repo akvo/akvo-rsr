@@ -23,6 +23,7 @@ const LocationItems = ({ validations, formPush }) => {
         sectionIndex={7}
         header="Location $index"
         formPush={formPush}
+        newItem={{ administratives: [{}]}}
         panel={name => (
           <Aux>
             <FinalField
@@ -156,7 +157,7 @@ const LocationItems = ({ validations, formPush }) => {
                     </Item>
                   </Col>
                 </Row>
-                {/* <Administratives locationItemIndex={index} /> */}
+                <Administratives push={formPush} parentName={name} />
               </Aux>
             )}
           </Aux>
