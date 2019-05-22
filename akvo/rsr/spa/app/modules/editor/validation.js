@@ -1,7 +1,7 @@
 const modules = [
   'section1',
   'section2',
-  'section3',
+  'section3/partners',
   'section6/budget-items',
   'section6/planned-disbursements',
   'section7/location-items',

@@ -1,25 +1,21 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Form, Input, Button, Select, InputNumber, Radio } from 'antd'
+import { Form, Button, Radio } from 'antd'
+import { Form as FinalForm, Field } from 'react-final-form'
+import arrayMutators from 'final-form-arrays'
 
+import FinalField from '../../../utils/final-field'
+import Condition from '../../../utils/condition'
+import ItemArray from '../../../utils/item-array'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
-import _Field from '../../../utils/field'
 import InputLabel from '../../../utils/input-label'
-import UpdateHalter from '../../../utils/update-halter'
-import { validationType, isFieldValid } from '../../../utils/validation-utils'
-import { getValidationSets } from './validations'
-import * as actions from './actions'
+import { doesFieldExist } from '../../../utils/validation-utils'
+import { getValidationSets } from './partners/validations'
 import './styles.scss'
 
-const { Panel } = Collapse
 const { Item } = Form
-const { Option } = Select
-const Field = connect(
-  ({ partnersRdr }) => ({ rdr: partnersRdr }),
-  { editField: actions.editPartnerField }
-)(_Field)
 
-const roles = [
+const ROLE_OPTIONS = [
   { value: 2, label: 'Accountable partner'},
   { value: 3, label: 'Extending partner'},
   { value: 1, label: 'Funding partner'},
@@ -29,123 +25,100 @@ const roles = [
 ]
 
 class Partners extends React.Component{
-  state = {
-    activeKey: ''
-  }
-  constructor(props){
-    super(props)
-    if(props.rdr.length > 0){
-      this.state = {
-        activeKey: `p${props.rdr.length - 1}`
-      }
-    }
-  }
-  add = () => {
-    this.setState({
-      activeKey: `p${this.props.rdr.length}`
-    })
-    this.props.addPartner()
-  }
-  remove = (event, index) => {
-    event.stopPropagation()
-    this.props.removePartner(index)
+  shouldComponentUpdate(){
+    return false
   }
   render(){
     const currencySymbol = getSymbolFromCurrency(this.props.currency)
     const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
     const validationSets = getValidationSets(this.props.validations)
-    const isValid = isFieldValid(validationSets)
+    const fieldExists = doesFieldExist(validationSets)
     return (
       <div className="partners view">
-        <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
-        {this.props.rdr.map((partner, index) =>
-          <Panel
-            header={`${roles.find(it => it.value === partner.role).label}: ${partner.name}`}
-            extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-            key={`p${index}`}
-          >
-          <UpdateHalter except={['role']} item={partner}>
-            <Form layout="vertical">
-              <Field
-                name="role"
-                index={index}
-                render={props => (
+        <Form layout="vertical">
+        <FinalForm
+          onSubmit={() => {}}
+          initialValues={this.props.fields}
+          subscription={{}}
+          mutators={{ ...arrayMutators }}
+          render={({
+            form: {
+              mutators: { push }
+            }
+          }) => (
+            <ItemArray
+              setName="partners"
+              sectionIndex={3}
+              header={(index, role) => {
+                return (
+                  <Field name={`partners[${index}].name`} subscription={{ value: true }}>
+                    {({input}) => (
+                      <span>{role ? `${ROLE_OPTIONS.find(it => it.value === role).label}: ${input.value}` : `Partner ${index + 1}`}</span>
+                    )}
+                  </Field>
+                )
+              }}
+              headerField="role"
+              formPush={push}
+              panel={name => (
+                <div>
                   <Item label="Role">
-                    <Select {...props}>
-                      {roles.map(role =>
-                        <Option key={role.value} value={role.value}>{role.label}</Option>
+                  <FinalField
+                    name={`${name}.role`}
+                    control="select"
+                    options={ROLE_OPTIONS}
+                  />
+                  </Item>
+                  <Item label="Organisation">
+                  <FinalField
+                    name={`${name}.name`}
+                  />
+                  </Item>
+                  <Condition when={`${name}.role`} is={101}>
+                    <Item label={<InputLabel optional>Secondary reporter</InputLabel>}>
+                    <FinalField
+                      name={`${name}.secondaryReporter`}
+                      render={({ input }) => (
+                          <Radio.Group {...input}>
+                            <Radio.Button value>Yes</Radio.Button>
+                            <Radio.Button value={false}>No</Radio.Button>
+                          </Radio.Group>
                       )}
-                    </Select>
-                  </Item>
-                )}
-              />
-              <Field
-                name="name"
-                index={index}
-                render={props => (
-                  <Item
-                    hasFeedback
-                    validateStatus={isValid(props.name, props.value) && props.value ? 'success' : ''}
-                    label="Organisation"
-                  >
-                    <Input {...props} />
-                  </Item>
-                )}
-              />
-              {partner.role === 101 &&
-              <Field
-                name="secondaryReporter"
-                index={index}
-                render={props => (
-                  <Item label="Secondary reporter">
-                    <Radio.Group {...props}>
-                      <Radio.Button value>Yes</Radio.Button>
-                      <Radio.Button value={false}>No</Radio.Button>
-                    </Radio.Group>
-                  </Item>
-                )}
-              />
-              }
-              {partner.role === 1 &&
-              <Field
-                name="fundingAmount"
-                index={index}
-                render={props => (
-                  <Item label="Funding amount">
-                    <InputNumber
-                      {...props}
+                    />
+                    </Item>
+                  </Condition>
+                  <Condition when={`${name}.role`} is={1}>
+                    <Item label="Funding amount">
+                    <FinalField
+                      name={`${name}.fundingAmount`}
+                      control="input-number"
                       formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={value => value.replace(currencyRegExp, '')}
                       style={{ width: 200 }}
-                      step={1000}
                     />
-                  </Item>
-                )}
-              />
-              }
-              {(this.props.validations.indexOf(validationType.IATI) !== -1 || this.props.validations.indexOf(validationType.DGIS) !== -1) && (
-                <Field
-                  name="iatiActivityId"
-                  index={index}
-                  render={props => (
+                    </Item>
+                  </Condition>
+                  {(fieldExists('iatiActivityId')) && (
                     <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
-                      <Input {...props} />
+                    <FinalField
+                      name={`${name}.iatiActivityId`}
+                    />
                     </Item>
                   )}
-                />
+                </div>
               )}
-            </Form>
-          </UpdateHalter>
-          </Panel>
-        )}
-        </Collapse>
-        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={this.add}>Add a partner</Button>
+              addButton={({onClick}) => (
+                <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>Add a partner</Button>
+              )}
+            />
+          )}
+        />
+        </Form>
       </div>
     )
   }
 }
 
 export default connect(
-  ({ partnersRdr, infoRdr }) => ({ rdr: partnersRdr, currency: infoRdr.currency, validations: infoRdr.validations }),
-  actions
+  ({ editorRdr: { validations, section3: { fields }, section1: { fields: { currency } }} }) => ({ validations, currency, fields }),
 )(Partners)

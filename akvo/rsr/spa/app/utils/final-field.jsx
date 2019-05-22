@@ -14,7 +14,7 @@ const CONTROLS = {
     return <Input {...{...input, ...props}} />
   },
   'input-number': ({ input, meta, control, ...props}) => {
-    return <InputNumber {...{...input, ...props, ...inputNumberAmountFormatting}} />
+    return <InputNumber {...{...input, ...inputNumberAmountFormatting, ...props}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
   select: ({options, input, meta, control, withEmptyOption, ...props}) => {
