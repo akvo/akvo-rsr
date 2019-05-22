@@ -58,6 +58,15 @@ const PanelHeader = ({ template, field, index, name}) => {
   )
 }
 
+const PanelHeaderMore = ({ render, field, name, index}) => {
+  // renders a custom value in the more prop
+  return (
+    <Field name={`${name}.${field}`} subscription={{ value: true }}>
+      {({ input: { value } }) => <span>{render(index, value)}</span>}
+    </Field>
+  )
+}
+
 const Aux = node => node.children
 
 class ItemArray extends React.Component{
@@ -100,7 +109,12 @@ class ItemArray extends React.Component{
               {fields.map((name, index) => (
                 <Panel
                   header={<PanelHeader template={this.props.header} field={this.props.headerField} name={name} index={index} />}
-                  extra={<Icon type="delete" onClick={event => this.removeItem(event, index, fields)} />}
+                  extra={
+                    <span>
+                      {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}
+                      <Icon type="delete" onClick={event => this.removeItem(event, index, fields)} />
+                    </span>
+                  }
                   key={`${index}`}
                   forceRender
                 >

@@ -23,6 +23,7 @@ Object.keys(fieldSets).forEach((section) => {
   })
 })
 
+initialState.section1.fields.currency = 'EUR'
 
 const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 
