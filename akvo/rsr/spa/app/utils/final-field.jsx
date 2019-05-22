@@ -17,9 +17,10 @@ const CONTROLS = {
     return <InputNumber {...{...input, ...props, ...inputNumberAmountFormatting}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
-  select: ({options, input, meta, control, ...props}) => {
+  select: ({options, input, meta, control, withEmptyOption, ...props}) => {
     return (
       <Select {...{...input, ...props}}>
+        {withEmptyOption && <Select.Option value="">&nbsp;</Select.Option>}
         {options.map(({ label, value }) => <Select.Option key={value} value={value}>{label}</Select.Option>)}
       </Select>
     )

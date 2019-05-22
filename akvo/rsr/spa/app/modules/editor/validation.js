@@ -3,7 +3,7 @@ const modules = [
   'section2',
   'section3',
   'section6/budget-items',
-  'section6/disbursements',
+  'section6/planned-disbursements',
   'section7/location-items',
   'section7/recipient-countries',
   'section7/recipient-regions',

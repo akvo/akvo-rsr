@@ -5,11 +5,12 @@ import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 
 import { Aux } from '../../../utils/misc'
+import InputLabel from '../../../utils/input-label'
 import { validationType } from '../../../utils/validation-utils'
 import BudgetItems from './budget-items/budget-items'
 import CountryBudgetItems from './country-budget-items/country-budget-items'
 import Transactions from './transactions/transactions'
-import Disbursements from './disbursements/disbursements'
+import PlannedDisbursements from './planned-disbursements/disbursements'
 import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
 import './styles.scss'
@@ -36,7 +37,6 @@ class Finance extends React.Component{
             }
           }) => (
           <Form layout="vertical">
-            <AutoSave sectionIndex={6} />
             <Item label="Donate URL">
             <FinalField
               name="donateUrl"
@@ -45,7 +45,7 @@ class Finance extends React.Component{
             />
             </Item>
             <BudgetItems formPush={push} validations={this.props.validations} />
-            {/* {isIATI && (
+            {isIATI && (
               <Row>
                 <Col span={12}>
                 <Item label="Capital spend percentage">
@@ -62,6 +62,7 @@ class Finance extends React.Component{
             {isIATI && (
               <Aux>
                 <h3>Country budget items</h3>
+                <Item label={<InputLabel optional>Vocabulary</InputLabel>}>
                 <FinalField
                   name="countryBudgetVocabulary"
                   control="select"
@@ -74,7 +75,8 @@ class Finance extends React.Component{
                   ]}
                   withEmptyOption
                 />
-                <CountryBudgetItems formPush={push} validations={this.props.validations} />
+                </Item>
+                <CountryBudgetItems formPush={push} />
               </Aux>
             )}
             {(isIATI || isDGIS) && (
@@ -82,9 +84,10 @@ class Finance extends React.Component{
                 <h3>Transactions</h3>
                 <Transactions formPush={push} validations={this.props.validations} />
                 <h3>Planned disbursements</h3>
-                <Disbursements formPush={push} validations={this.props.validations} />
+                <PlannedDisbursements formPush={push} validations={this.props.validations} />
               </Aux>
-            )} */}
+            )}
+            <AutoSave sectionIndex={6} />
           </Form>
           )
           }
