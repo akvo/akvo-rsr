@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
-import { Icon, Button, Alert, Spin } from 'antd'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
+import { Icon, Button, Spin } from 'antd'
 import moment from 'moment'
 
 import sections from './sections'

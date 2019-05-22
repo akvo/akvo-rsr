@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Modal } from 'antd'
+import { Form, Button } from 'antd'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -15,7 +15,6 @@ class PolicyMarker extends React.Component{
   render(){
     const validationSets = getValidationSets(this.props.validations)
     const fieldExists = doesFieldExist(validationSets)
-    const isOptional = isFieldOptional(validationSets)
     return (
       <div>
         <h3>Policy markers</h3>

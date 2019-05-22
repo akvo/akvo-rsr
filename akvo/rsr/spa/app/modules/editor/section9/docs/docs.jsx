@@ -1,8 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Icon, Form, Button, Radio, Upload, Row, Col } from 'antd'
-import { Form as FinalForm } from 'react-final-form'
-import arrayMutators from 'final-form-arrays'
 
 import FinalField from '../../../../utils/final-field'
 import Condition from '../../../../utils/condition'
