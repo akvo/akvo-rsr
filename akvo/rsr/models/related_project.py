@@ -12,6 +12,8 @@ from ..fields import ValidXMLCharField
 from akvo.codelists.models import RelatedActivityType
 from akvo.codelists.store.default_codelists import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class RelatedProject(models.Model):
@@ -91,3 +93,31 @@ class RelatedProject(models.Model):
         elif self.related_iati_id:
             return self.related_iati_id
         return u'%s' % _(u'No related project specified')
+
+
+class MultipleParentsDisallowed(Exception):
+    """Exception raised when a project has multiple parents."""
+    message = _(u'A project can have only one parent.')
+
+    def __str__(self):
+        return str(self.message)
+
+
+@receiver(pre_save, sender=RelatedProject)
+def prevent_multiple_parents(sender, **kwargs):
+    """Prevent creating multiple parents for a project."""
+
+    related_project = kwargs['instance']
+    parent_relations = {
+        RelatedProject.PROJECT_RELATION_CHILD, RelatedProject.PROJECT_RELATION_PARENT
+    }
+    # Creating a new parent/child relation
+    if related_project.id is None and related_project.relation in parent_relations:
+        if related_project.relation == RelatedProject.PROJECT_RELATION_CHILD:
+            child_project = related_project.related_project
+        else:
+            child_project = related_project.project
+
+        # Allow only one parent
+        if child_project is not None and child_project.parents_all().exists():
+            raise MultipleParentsDisallowed

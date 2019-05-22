@@ -12,6 +12,7 @@ import unittest
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension)
+from akvo.rsr.models.related_project import MultipleParentsDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -730,3 +731,11 @@ class ResultsFrameworkTestCase(BaseTestCase):
         )
         indicator_period = IndicatorPeriod.objects.get(indicator=indicator)
         self.assertIsNone(indicator_period.parent_period)
+
+    def test_prevent_adding_multiple_parents(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+
+        # When
+        with self.assertRaises(MultipleParentsDisallowed):
+            self.make_parent(project, self.child_project)

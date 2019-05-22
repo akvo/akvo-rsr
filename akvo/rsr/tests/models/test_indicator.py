@@ -65,17 +65,6 @@ class IndicatorModelTestCase(BaseTestCase):
         with self.assertRaises(Project.DoesNotExist):
             self.child_project.import_indicator(parent_indicator.pk)
 
-    def test_import_indicator_from_multi_parent_project(self):
-        # when
-        parent_indicator = Indicator.objects.get(result__project=self.parent_project)
-        project = Project.objects.create(title="Parent project 2")
-        RelatedProject.objects.create(project=project,
-                                      related_project=self.child_project,
-                                      relation=RelatedProject.PROJECT_RELATION_CHILD)
-        # then
-        with self.assertRaises(Project.MultipleObjectsReturned):
-            self.child_project.import_indicator(parent_indicator.pk)
-
     def test_import_indicator_no_parent_indicator(self):
         # when
         non_existing_indicator_id = 0
