@@ -73,14 +73,23 @@ class RestrictedUserProjects(BaseTestCase):
 
 class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
 
+    def assertProjectConnectedToUser(self, project, user):
+        '''
+        Assert if a user is connected to project through an organisation
+        '''
+        projects = [p
+                    for organisation in user.organisations.all()
+                    for p in organisation.all_projects()]
+        self.assertIn(project, projects)
+
     def test_user_project_access_default(self):
-        self.assertTrue(self.projects['X'].connected_to_user(self.user_m))
-        self.assertTrue(self.projects['X'].connected_to_user(self.user_n))
-        self.assertTrue(self.projects['Y'].connected_to_user(self.user_m))
-        self.assertTrue(self.projects['Y'].connected_to_user(self.user_n))
-        self.assertTrue(self.projects['Y'].connected_to_user(self.user_o))
-        self.assertTrue(self.projects['Z'].connected_to_user(self.user_n))
-        self.assertTrue(self.projects['Z'].connected_to_user(self.user_o))
+        self.assertProjectConnectedToUser(self.projects['X'], self.user_m)
+        self.assertProjectConnectedToUser(self.projects['X'], self.user_n)
+        self.assertProjectConnectedToUser(self.projects['Y'], self.user_m)
+        self.assertProjectConnectedToUser(self.projects['Y'], self.user_n)
+        self.assertProjectConnectedToUser(self.projects['Y'], self.user_o)
+        self.assertProjectConnectedToUser(self.projects['Z'], self.user_n)
+        self.assertProjectConnectedToUser(self.projects['Z'], self.user_o)
 
     def test_new_user_can_view_projects(self):
         unrestricted_user = self.create_user('A@org.org')
