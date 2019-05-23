@@ -26,7 +26,7 @@ const _Header = ({title}) => (
     <h1>{title ? title : 'Untitled project'}</h1>
   </header>
 )
-const Header = connect(({ editorRdr: { section1: { title }} }) => ({ title }))(_Header)
+const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
 const Root = () => (
   <div id="root">

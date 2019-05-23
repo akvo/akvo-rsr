@@ -1,40 +1,43 @@
-/* global fetch */
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-  Form, Input, Switch, DatePicker, Select, Row, Col
+  Form, Input, Row, Col
 } from 'antd'
 import currencies from 'currency-codes/data'
+import { Form as FinalForm } from 'react-final-form'
 
+import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
-import _Field from '../../../../utils/field'
-import { datePickerConfig, havePropsChanged } from '../../../../utils/misc'
-import { validationType, isFieldOptional } from '../../../../utils/validation-utils'
-import * as actions from '../actions'
+import AutoSave from '../../../../utils/auto-save'
+import { validationType, isFieldOptional, doesFieldExist } from '../../../../utils/validation-utils'
 import ProjectPhoto from './project-photo'
 import { getValidationSets } from '../validations'
-import aidTypeOptions from '../options/aid-types.json'
-import aidTypeVocabularyOptions from '../options/aid-type-vocabulary.json'
-import flowTypeOptions from '../options/flow-types.json'
-import financeTypeOptions from '../options/finance-types.json'
+import AID_TYPES from '../options/aid-types.json'
+import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
+import FLOW_TYPES from '../options/flow-types.json'
+import FINANCE_TYPES from '../options/finance-types.json'
 import tiedStatusOptions from '../options/tied-statuses.json'
-
+import ParentPicker from './parent-picker'
 import '../styles.scss'
 
 const { Item } = Form
-const { Option } = Select
-const Field = connect(
-  ({ infoRdr }) => ({ rdr: infoRdr }),
-  actions
-)(_Field)
 
-const statusOptions = [
+const STATUS_OPTIONS = [
   { value: 1, label: 'Identification'},
   { value: 2, label: 'Implementation'},
   { value: 3, label: 'Completion'},
   { value: 4, label: 'Post-completion'},
   { value: 5, label: 'Canceled'},
   { value: 6, label: 'Suspended'}
+]
+const COLLABORATION_TYPES = [
+  {value: '1', label: 'Bilateral'},
+  {value: '2', label: 'Multilateral (inflows)'},
+  {value: '3', label: 'Bilateral, core contributions to NGOs and other private bodies / PPPs'},
+  {value: '4', label: 'Multilateral outflows'},
+  {value: '6', label: 'Private sector outflows'},
+  {value: '7', label: 'Bilateral, ex-post reporting on NGOs’ activities funded through core contributions'},
+  {value: '8', label: 'bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'}
 ]
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
@@ -52,200 +55,127 @@ const StatusTooltip = () => (
   </ol>
 </span>)
 
-class _ParentPicker extends React.Component{
-  state = {
-    projects: []
+class Info extends React.Component{
+  shouldComponentUpdate(){
+    return false
   }
-  componentWillMount(){
-    fetch('/rest/v1/typeaheads/projects?format=json')
-      .then(d => d.json())
-      .then(({ results }) => {
-        this.setState({
-          projects: results
-        })
-      })
-  }
-  shouldComponentUpdate(nextProps){
-    return havePropsChanged(['parentId', 'isParentExternal'], nextProps.rdr, this.props.rdr)
-  }
-  render() {
+  render(){
+    const validationSets = getValidationSets(this.props.validations)
+    const isOptional = isFieldOptional(validationSets)
+    const fieldExists = doesFieldExist(validationSets)
     return (
-      <Item label={(
-        <InputLabel
-          tooltip="Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project."
-          optional
-          more={(
-            <div className="more-switches">
-              <Switch size="small" value={this.props.rdr.isParentExternal} onChange={value => this.props.editField('isParentExternal', value)} />
-              <span>External project</span>
-            </div>
-          )}
-        >Parent
-        </InputLabel>
-      )}>
-        {this.props.rdr.isParentExternal &&
-        <Input placeholder="IATI Identifier" value={this.props.rdr.parentId} onChange={ev => this.props.editField('parentId', ev.target.value)} />
-        }
-        {!this.props.rdr.isParentExternal &&
-        <Select
-          showSearch
-          optionFilterProp="children"
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {this.state.projects.map(project =>
-            <Option value={project.id}>{project.title}</Option>
-          )}
-        </Select>
-        }
-      </Item>
-    )
-  }
-}
-
-const ParentPicker = connect(
-  ({ infoRdr }) => ({ rdr: infoRdr }),
-  actions
-)(_ParentPicker)
-
-
-const Info = ({ validations }) => {
-  const validationSets = getValidationSets(validations)
-  const isOptional = isFieldOptional(validationSets)
-  return (
-    <div className="info view">
-      <Form layout="vertical">
-        <Field
-          name="title"
-          render={props => (
-            <Item label="Project title" validateStatus={props.value.length > 5 ? 'success' : ''} hasFeedback>
-              <Input {...props} />
-            </Item>
-          )}
-        />
-        <Field
-          name="subtitle"
-          render={props => (
-            <Item label="Project subtitle" validateStatus={props.value.length > 5 ? 'success' : ''} hasFeedback>
-              <Input {...props} />
-            </Item>
-          )}
-        />
-        <Field
-          name="iatiActivityId"
-          render={props => (
+      <div className="info view">
+        <Form layout="vertical">
+        <FinalForm
+          onSubmit={() => {}}
+          initialValues={this.props.fields}
+          subscription={{}}
+          render={() => (
+            <div>
+            <AutoSave sectionIndex={1} />
+            <FinalField
+              name="title"
+              render={({input}) => (
+                <Item label="Project title" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+                  <Input {...input} />
+                </Item>
+              )}
+            />
+            <FinalField
+              name="subtitle"
+              render={({input}) => (
+                <Item label="Project subtitle" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+                  <Input {...input} />
+                </Item>
+              )}
+            />
             <Item label={(
               <InputLabel
                 tooltip={<IatiTooltip />}
               >IATI Identifier
               </InputLabel>
             )}>
-              <Input {...props} />
+            <FinalField
+              name="iatiActivityId"
+            />
             </Item>
-          )}
-        />
-        <ParentPicker />
-        <Field
-          name="iatiStatus"
-          render={props => (
+            <ParentPicker />
             <Item label={<InputLabel tooltip={<StatusTooltip />}>Status</InputLabel>}>
-              <Select {...props}>
-                {statusOptions.map(option => (
-                  <Option value={option.value}>{option.label}</Option>
-                ))}
-              </Select>
+            <FinalField
+              name="iatiStatus"
+              control="select"
+              options={STATUS_OPTIONS}
+            />
             </Item>
-          )}
-        />
-        <Row gutter={16}>
-          <Col span={12}>
-            <Field
-              name="plannedStartDate"
-              render={props => (
+            <Row gutter={16}>
+              <Col span={12}>
                 <Item label={<InputLabel>Planned Start Date</InputLabel>}>
-                  <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+                <FinalField
+                  name="plannedStartDate"
+                  control="datepicker"
+                />
                 </Item>
-              )}
-            />
-          </Col>
-          <Col span={12}>
-            <Field
-              name="plannedEndDate"
-              render={props => (
+              </Col>
+              <Col span={12}>
                 <Item label={<InputLabel>Planned End Date</InputLabel>}>
-                  <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+                <FinalField
+                  name="plannedEndDate"
+                  control="datepicker"
+                />
                 </Item>
-              )}
-            />
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Field
-              name="actualStartDate"
-              render={props => (
-                <Item label={<InputLabel optional={isOptional(props.name)}>Actual Start Date</InputLabel>}>
-                  <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Item label={<InputLabel optional={isOptional('actualStartDate')}>Actual Start Date</InputLabel>}>
+                <FinalField
+                  name="actualStartDate"
+                  control="datepicker"
+                />
                 </Item>
-              )}
-            />
-          </Col>
-          <Col span={12}>
-            <Field
-              name="actualEndDate"
-              render={props => (
-                <Item label={<InputLabel optional={isOptional(props.name)}>Actual End Date</InputLabel>}>
-                  <DatePicker format="DD/MM/YYYY" {...{...props, ...datePickerConfig}} />
+              </Col>
+              <Col span={12}>
+                <Item label={<InputLabel optional={isOptional('actualEndDate')}>Actual End Date</InputLabel>}>
+                <FinalField
+                  name="actualEndDate"
+                  control="datepicker"
+                />
                 </Item>
-              )}
-            />
-          </Col>
-        </Row>
-        <Field
-          name="currency"
-          render={props => (
+              </Col>
+            </Row>
             <Item label={<InputLabel optional tooltip="The default currency for this project. Used in all financial aspects of the project.">Currency</InputLabel>}>
-              <Select {...props} showSearch optionFilterProp="children">
-                {currencies.map(({ code, currency }) => <Option value={code}>{code} - {currency}</Option>)}
-              </Select>
+            <FinalField
+              name="currency"
+              showSearch
+              optionFilterProp="children"
+              options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
+              control="select"
+            />
             </Item>
-          )}
-        />
-        <Field
-          name="language"
-          render={props => (
-            <Item label={<InputLabel optional={isOptional(props.name)} tooltip="Enter the language used when entering the details for this project.">Language</InputLabel>}>
-              <Select {...props}>
-                {languages.map(({ code, label }) => <Option value={code}>{label}</Option>)}
-              </Select>
+            <Item label={<InputLabel optional={isOptional('language')} tooltip="Enter the language used when entering the details for this project.">Language</InputLabel>}>
+            <FinalField
+              name="language"
+              control="select"
+              options={languages.map(({code, label}) => ({ value: code, label }))}
+            />
             </Item>
-          )}
-        />
-        <hr />
-        <h3>Project photo</h3>
-        <ProjectPhoto projectId={2} />
-        <Field
-          name="currentImageCaption"
-          render={props => (
-            <Item label={<InputLabel optional tooltip="Enter the name of the person who took the photo">Photo credit</InputLabel>}>
-              <Input {...props} />
-            </Item>
-          )}
-        />
-
-        <Field
-          name="currentImageCredit"
-          render={props => (
-            <Item label={<InputLabel optional tooltip="Briefly describe who or what you see in the photo.">Photo caption</InputLabel>}>
-              <Input {...props} />
-            </Item>
-          )}
-        />
-        {(validations.indexOf(validationType.IATI) !== -1 || validations.indexOf(validationType.DGIS) !== -1) && (
-          <div>
             <hr />
-            <Field
-              name="defaultAidTypeVocabulary"
-              render={props => (
+            <h3>Project photo</h3>
+            <ProjectPhoto projectId={2} />
+            <Item label={<InputLabel optional tooltip="Enter the name of the person who took the photo">Photo credit</InputLabel>}>
+            <FinalField
+              name="currentImageCaption"
+            />
+            </Item>
+
+            <Item label={<InputLabel optional tooltip="Briefly describe who or what you see in the photo.">Photo caption</InputLabel>}>
+            <FinalField
+              name="currentImageCredit"
+            />
+            </Item>
+            {(this.props.validations.indexOf(validationType.IATI) !== -1 || this.props.validations.indexOf(validationType.DGIS) !== -1) && (
+              <div>
+                <hr />
                 <Item label={
                   <InputLabel
                     optional
@@ -254,72 +184,59 @@ const Info = ({ validations }) => {
                   Default aid type vocabulary
                   </InputLabel>}
                 >
-                  <Select {...props}>
-                    <Option value="">&nbsp;</Option>
-                    {aidTypeVocabularyOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
-                  </Select>
+                <FinalField
+                  name="defaultAidTypeVocabulary"
+                  control="select"
+                  options={AID_TYPE_VOCABULARY}
+                  withEmptyOption
+                />
                 </Item>
-              )}
-            />
-            <Field
-              name="defaultAidType"
-              render={props => (
                 <Item label={
                   <InputLabel
-                    optional={isOptional(props.name)}
+                    optional={isOptional('defaultAidType')}
                     tooltip={<span>This is the IATI identifier for the type of aid being supplied or activity being undertaken. This element specifies a default for all the project’s financial transactions. This can be overridden at the individual transaction level. For reference, please visit:  <a target="_blank" rel="noopener noreferrer" href="http://iatistandard.org/202/codelists/AidType/">http://iatistandard.org/202/codelists/AidType/</a></span>}
                   >
                   Default aid type
                   </InputLabel>}
                 >
-                  <Select {...props}>
-                    <Option value="">&nbsp;</Option>
-                    {aidTypeOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
-                  </Select>
+                <FinalField
+                  name="defaultAidType"
+                  options={AID_TYPES}
+                  control="select"
+                  withEmptyOption
+                />
                 </Item>
-              )}
-            />
-            <Field
-              name="defaultFlowType"
-              render={props => (
                 <Item label={
                   <InputLabel
-                    optional={isOptional(props.name)}
+                    optional={isOptional('defaultFlowType')}
                     tooltip={<span>This is the IATI identifier for how the activity (project) is funded. For reference, please visit: <a target="_blank" rel="noopener noreferrer" href="http://iatistandard.org/202/codelists/FlowType/">http://iatistandard.org/202/codelists/FlowType/</a></span>}
                   >
                   Default flow type
                   </InputLabel>}
                 >
-                  <Select {...props}>
-                    <Option value="">&nbsp;</Option>
-                    {flowTypeOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
-                  </Select>
+                <FinalField
+                  name="defaultFlowType"
+                  control="select"
+                  options={FLOW_TYPES}
+                  withEmptyOption
+                />
                 </Item>
-              )}
-            />
-            <Field
-              name="defaultTiedStatus"
-              render={props => (
                 <Item label={
                   <InputLabel
-                    optional={isOptional(props.name)}
+                    optional={isOptional('defaultTiedStatus')}
                     tooltip={<span>This element specifies a default for all the activity’s financial transactions; it can be overridden at the individual transaction level. For reference, please visit: <a target="_blank" rel="noopener noreferrer" href="http://iatistandard.org/202/codelists/TiedStatus/">http://iatistandard.org/202/codelists/TiedStatus/</a></span>}
                   >
                   Default tied status
                   </InputLabel>}
                 >
-                  <Select {...props}>
-                    <Option value="">&nbsp;</Option>
-                    {tiedStatusOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
-                  </Select>
+                <FinalField
+                  name="defaultTiedStatus"
+                  control="select"
+                  options={tiedStatusOptions}
+                  withEmptyOption
+                />
                 </Item>
-              )}
-            />
-            {validations.indexOf(validationType.IATI) !== -1 &&
-            <div>
-            <Field
-              name="collaborationType"
-              render={props => (
+                {fieldExists('collaborationType') &&
                 <Item label={
                   <InputLabel
                     optional
@@ -328,22 +245,15 @@ const Info = ({ validations }) => {
                   Collaboration type
                   </InputLabel>}
                 >
-                  <Select {...props}>
-                    <Option value="">&nbsp;</Option>
-                    <Option value="1">1 - Bilateral</Option>
-                    <Option value="2">2 - Multilateral (inflows)</Option>
-                    <Option value="3">3 - Bilateral, core contributions to NGOs and other private bodies / PPPs</Option>
-                    <Option value="4">4 - Multilateral outflows</Option>
-                    <Option value="6">6 - Private sector outflows</Option>
-                    <Option value="7">7 - Bilateral, ex-post reporting on NGOs’ activities funded through core contributions</Option>
-                    <Option value="8">8 - bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.</Option>
-                  </Select>
+                <FinalField
+                  name="collaborationType"
+                  withEmptyOption
+                  control="select"
+                  options={COLLABORATION_TYPES}
+                />
                 </Item>
-              )}
-            />
-            <Field
-              name="defaultFinanceType"
-              render={props => (
+                }
+                {fieldExists('defaultFinanceType') &&
                 <Item label={
                   <InputLabel
                     optional
@@ -352,25 +262,25 @@ const Info = ({ validations }) => {
                   Default finance type
                   </InputLabel>}
                 >
-                  <Select {...props}>
-                    <Option value="">&nbsp;</Option>
-                    {financeTypeOptions.map(option => <Option value={option.value}>{option.label}</Option>)}
-                  </Select>
+                <FinalField
+                  name="defaultFinanceType"
+                  control="select"
+                  options={FINANCE_TYPES}
+                  withEmptyOption
+                />
                 </Item>
-              )}
-            />
+                }
+              </div>
+            )}
             </div>
-            }
-          </div>
-        )}
-      </Form>
-    </div>
-  )
+          )}
+        />
+        </Form>
+      </div>
+    )
+  }
 }
 
 export default connect(
-  ({ infoRdr }) => ({ validations: infoRdr.validations }),
-  actions
+  ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
 )(Info)
-
-// export default Info

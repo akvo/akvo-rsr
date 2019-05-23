@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input, InputNumber, Select, DatePicker } from 'antd'
 import { Field } from 'react-final-form'
+import moment from 'moment'
 import { datePickerConfig } from './misc'
 
 const inputNumberAmountFormatting = {
@@ -25,7 +26,13 @@ const CONTROLS = {
       </Select>
     )
   },
-  datepicker: ({ input }) => <DatePicker {...{...input, ...datePickerConfig}} />
+  datepicker: ({ input }) => {
+    // transform value to be stored to formatted string
+    let value = (input.value && typeof input.value === 'string') ? moment(input.value, datePickerConfig.format) : input.value
+    if(!value) value = null
+    const onChange = val => input.onChange(val.format(datePickerConfig.format))
+    return <DatePicker {...{value, onChange, ...datePickerConfig}} />
+  }
 }
 
 class FinalField extends React.Component{

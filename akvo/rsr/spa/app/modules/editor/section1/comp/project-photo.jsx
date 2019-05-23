@@ -1,5 +1,6 @@
 /* globals FileReader */
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   Icon, Upload, Form, Button, Alert, Progress
 } from 'antd'
@@ -33,10 +34,13 @@ class ProjectPhoto extends React.Component {
     }
     if (info.file.status === 'uploading') {
       // this.setState({ loading: true })
-      getBase64(info.file.originFileObj, imageUrl => this.setState({
-        imageUrl,
-        loading: true,
-      }))
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        this.setState({
+          imageUrl,
+          loading: true,
+        })
+        // this.props.editField('currentImage', imageUrl)
+      })
       return
     }
     if(info.file.status === 'error'){

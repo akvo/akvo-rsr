@@ -52,7 +52,7 @@ export default (state = initialState, action) => {
         fields: {...newState[sectionKey].fields, ...action.fields},
       }
       newState.saving = true
-      newState.isValid = validate(sectionKey, state.validations, newState[sectionKey])
+      newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
