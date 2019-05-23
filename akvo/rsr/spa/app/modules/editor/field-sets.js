@@ -4,6 +4,5 @@ export default {
   section6: ['budgetItems', 'countryBudgetItems', 'transactions', 'plannedDisbursements'],
   section7: ['locationItems', 'recipientCountries', 'recipientRegions'],
   section8: ['sectors', 'policyMarkers', 'humanitarianScopes'],
-  section9: ['links', 'docs'],
-  section10: ['keywords']
+  section9: ['links', 'docs']
 }
