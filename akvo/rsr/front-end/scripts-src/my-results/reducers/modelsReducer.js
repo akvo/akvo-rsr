@@ -69,7 +69,24 @@ const initialModels = {
         objects: undefined,
         ids: undefined
     },
-    user: { fetched: false, changing: false, changed: false, objects: undefined, ids: undefined }
+    user: { fetched: false, changing: false, changed: false, objects: undefined, ids: undefined },
+    // Set the initial state to fetched, since these models don't need to be
+    // fetched in the public page. The reducer does the right thing when doing a
+    // fetch for them, setting fetched to false.
+    reports: {
+        fetched: true,
+        changing: false,
+        changed: false,
+        objects: undefined,
+        ids: undefined
+    },
+    narrative_reports: {
+        fetched: true,
+        changing: false,
+        changed: false,
+        objects: undefined,
+        ids: undefined
+    }
 };
 
 const assignChildren = (state, model) => {
