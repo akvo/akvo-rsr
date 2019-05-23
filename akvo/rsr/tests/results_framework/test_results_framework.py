@@ -753,6 +753,16 @@ class ResultsFrameworkTestCase(BaseTestCase):
         with self.assertRaises(ParentChangeDisallowed):
             related_project.save()
 
+    def test_prevent_deleting_parent_if_results_imported(self):
+        # Given
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+
+        # When/Then
+        with self.assertRaises(ParentChangeDisallowed):
+            related_project.delete()
+
     def test_allow_changing_parents_if_results_not_imported(self):
         # Given
         project = self.create_project(title='New Parent Project')

@@ -12,7 +12,7 @@ from ..fields import ValidXMLCharField
 from akvo.codelists.models import RelatedActivityType
 from akvo.codelists.store.default_codelists import RELATED_ACTIVITY_TYPE
 from akvo.utils import codelist_choices, codelist_value
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 
 
@@ -111,6 +111,12 @@ class ParentChangeDisallowed(Exception):
         return str(self.message)
 
 
+PARENT_RELATIONS = {
+    RelatedProject.PROJECT_RELATION_CHILD,
+    RelatedProject.PROJECT_RELATION_PARENT
+}
+
+
 @receiver(pre_save, sender=RelatedProject)
 def validate_parents(sender, **kwargs):
     """Validate creation and changing of parents for a project.
@@ -125,12 +131,9 @@ def validate_parents(sender, **kwargs):
     from akvo.rsr.models import Result
 
     related_project = kwargs['instance']
-    parent_relations = {
-        RelatedProject.PROJECT_RELATION_CHILD, RelatedProject.PROJECT_RELATION_PARENT
-    }
 
     # Creating a new parent/child relation
-    if related_project.id is None and related_project.relation in parent_relations:
+    if related_project.id is None and related_project.relation in PARENT_RELATIONS:
         if related_project.relation == RelatedProject.PROJECT_RELATION_CHILD:
             child_project = related_project.related_project
         else:
@@ -141,7 +144,7 @@ def validate_parents(sender, **kwargs):
             raise MultipleParentsDisallowed
 
     # Changing an existing parent/child relation
-    elif related_project.id is not None and related_project.relation in parent_relations:
+    elif related_project.id is not None and related_project.relation in PARENT_RELATIONS:
         if related_project.relation == RelatedProject.PROJECT_RELATION_CHILD:
             parent_project = related_project.project
             child_project = related_project.related_project
@@ -154,4 +157,24 @@ def validate_parents(sender, **kwargs):
         other_parent_child_results = child_results.exclude(parent_result__project=parent_project)
 
         if other_parent_child_results.exists():
+            raise ParentChangeDisallowed
+
+
+@receiver(pre_delete, sender=RelatedProject)
+def prevent_parent_delete(sender, **kwargs):
+    from akvo.rsr.models import Result
+
+    related_project = kwargs['instance']
+    if related_project.id is not None and related_project.relation in PARENT_RELATIONS:
+        if related_project.relation == RelatedProject.PROJECT_RELATION_CHILD:
+            parent_project = related_project.project
+            child_project = related_project.related_project
+        else:
+            child_project = related_project.project
+            parent_project = related_project.related_project
+
+        project_results = Result.objects.filter(project=child_project)
+        child_results = project_results.filter(parent_result__project=parent_project)
+
+        if child_results.exists():
             raise ParentChangeDisallowed
