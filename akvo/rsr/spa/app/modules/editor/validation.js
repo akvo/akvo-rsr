@@ -1,6 +1,6 @@
 const modules = [
   'section1',
-  'section2',
+  'section2/contacts',
   'section3/partners',
   'section6/budget-items',
   'section6/planned-disbursements',
