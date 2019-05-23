@@ -7,7 +7,7 @@ import Locations from './section7/locations'
 import Focus from './section8/focus'
 import LinksDocs from './section9/links-n-docs'
 import CommentsKeywords from './section10/comments-n-keywords'
-import Reporting from './section11/comp/reporting'
+import Reporting from './section11/section11'
 
 export default [
   {key: 'info', validation: true, component: Info},

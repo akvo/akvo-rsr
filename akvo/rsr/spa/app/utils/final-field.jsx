@@ -4,18 +4,29 @@ import { Field } from 'react-final-form'
 import moment from 'moment'
 import { datePickerConfig } from './misc'
 
-const inputNumberAmountFormatting = {
-  formatter: value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-  parser: value => value.replace(/(,*)/g, ''),
-  step: 1000
+const inputNumberAmountFormatting = (currencySymbol) => {
+  const step = 1000
+  if(currencySymbol !== undefined){
+    const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
+    return ({
+      formatter: value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      parser: value => value.replace(currencyRegExp, ''),
+      step
+    })
+  }
+  return ({
+    formatter: value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    parser: value => value.replace(/(,*)/g, ''),
+    step
+  })
 }
 
 const CONTROLS = {
   input: ({ input, meta, control, ...props }) => {
     return <Input {...{...input, ...props}} />
   },
-  'input-number': ({ input, meta, control, ...props}) => {
-    return <InputNumber {...{...input, ...inputNumberAmountFormatting, ...props}} />
+  'input-number': ({ input, meta, control, currencySymbol, ...props}) => {
+    return <InputNumber {...{...input, ...inputNumberAmountFormatting(currencySymbol), ...props}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
   select: ({options, input, meta, control, withEmptyOption, ...props}) => {

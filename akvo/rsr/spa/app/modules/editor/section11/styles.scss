@@ -13,11 +13,22 @@
     }
     h4{
       font-size: 16px;
-      margin-top: -25px;
+      margin-top: -28px;
       margin-bottom: 15px;
       background-color: #fff;
       padding: 0 5px;
       margin-left: -5px;
+    }
+  }
+  .ant-collapse-item{
+    .ant-collapse-extra{
+      .amount{
+        font-size: 14px;
+        opacity: 0.7;
+        margin-right: 10px;
+        padding-right: 10px;
+        border-right: 1px solid #ccc;
+      }
     }
   }
   .channel-code-item{
