@@ -4,10 +4,10 @@ import { Form, Button, Modal, Icon } from 'antd'
 import { Form as FinalForm, FormSpy } from 'react-final-form'
 
 import FinalField from '../../../utils/final-field'
-import { isFieldOptional } from '../../../utils/validation-utils'
+import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
 import RTE from '../../../utils/rte'
 import AutoSave from '../../../utils/auto-save'
-import { RSR, getValidationSets } from './validations'
+import validationDefs, { RSR } from './validations'
 import './styles.scss'
 
 const { Item } = Form
@@ -37,7 +37,7 @@ class Descriptions extends React.Component {
   constructor(props){
     super(props)
     // get default keys from validation specs
-    const added = Object.keys(RSR.fields).filter(descKey => RSR.fields[descKey]._exclusive.required)
+    const added = Object.keys(validationDefs[1].fields).filter(descKey => validationDefs[1].fields[descKey]._exclusive.required)
     Object.keys(props.fields).forEach(descKey => {
       if(!isEmpty(props.fields[descKey]) && added.indexOf(descKey) === -1){
         added.push(descKey)
@@ -66,7 +66,7 @@ class Descriptions extends React.Component {
     }, 100)
   }
   render(){
-    const isOptional = isFieldOptional(getValidationSets([1])) // validation id is irrelevant here
+    const isOptional = isFieldOptional(getValidationSets([1], validationDefs)) // validation id is irrelevant here
     return (
       <div className="descriptions view">
         <Form layout="vertical">

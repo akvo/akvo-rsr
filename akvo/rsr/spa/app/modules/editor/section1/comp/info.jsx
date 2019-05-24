@@ -9,9 +9,9 @@ import { Form as FinalForm } from 'react-final-form'
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
 import AutoSave from '../../../../utils/auto-save'
-import { validationType, isFieldOptional, doesFieldExist } from '../../../../utils/validation-utils'
+import { validationType, isFieldOptional, doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import ProjectPhoto from './project-photo'
-import { getValidationSets } from '../validations'
+import validationDefs from '../validations'
 import AID_TYPES from '../options/aid-types.json'
 import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
 import FLOW_TYPES from '../options/flow-types.json'
@@ -60,7 +60,7 @@ class Info extends React.Component{
     return false
   }
   render(){
-    const validationSets = getValidationSets(this.props.validations)
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
     const isOptional = isFieldOptional(validationSets)
     const fieldExists = doesFieldExist(validationSets)
     return (

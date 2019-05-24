@@ -1,13 +1,12 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/validation-utils'
 
-export const basic = yup.object().shape({
+const RSR = yup.object().shape({
   label: yup.string(),
   type: yup.mixed().required(),
   amount: yup.mixed().required(),
 })
 
-export const IATI = basic.clone().shape({
+const IATI = RSR.clone().shape({
   currency: yup.string().default('EUR'),
   status: yup.mixed(),
   budgetType: yup.mixed(),
@@ -16,17 +15,16 @@ export const IATI = basic.clone().shape({
   valueDate: yup.string().required()
 })
 
-const arrays = {
-  basic: yup.array().of(basic).min(1, 'At least one budget item is required for your validation set'),
-  IATI: yup.array().of(IATI).min(1, 'At least one budget item is required for your validation set'),
+const IATI_BASIC = RSR.clone().shape({
+  periodStart: yup.string().required(),
+  periodEnd: yup.string().required(),
+  valueDate: yup.string().required()
+})
+
+const defs = {
+  1: yup.array().of(RSR).min(1),
+  2: yup.array().of(IATI).min(1),
+  8: yup.array().of(IATI_BASIC).min(1),
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = [opts.arrays ? arrays.basic : basic]
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

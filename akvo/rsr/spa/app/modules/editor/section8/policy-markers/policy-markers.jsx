@@ -4,8 +4,8 @@ import { Form, Button } from 'antd'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import { doesFieldExist, isFieldOptional } from '../../../../utils/validation-utils'
-import { getValidationSets } from './validations'
+import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
+import validationDefs from './validations'
 import MARKER_OPTIONS from './markers.json'
 import SIGNIFICANCE_OPTIONS from './significances.json'
 
@@ -13,7 +13,7 @@ const { Item } = Form
 
 class PolicyMarker extends React.Component{
   render(){
-    const validationSets = getValidationSets(this.props.validations)
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
     const fieldExists = doesFieldExist(validationSets)
     return (
       <div>

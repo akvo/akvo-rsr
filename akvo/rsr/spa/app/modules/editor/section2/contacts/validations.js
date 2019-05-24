@@ -1,7 +1,7 @@
 import * as yup from 'yup'
-import { validationType, transformUndefined } from '../../../../utils/validation-utils'
+import { transformUndefined } from '../../../../utils/validation-utils'
 
-export const basic = yup.object().shape({
+const RSR = yup.object().shape({
   name: yup.string().default(''),
   type: yup.number(),
   organisation: yup.string().default(''),
@@ -13,23 +13,15 @@ export const basic = yup.object().shape({
   website: yup.string().url().default('')
 })
 
-const DGIS = basic.clone().shape({
-  email: basic.fields.email.required(),
-  address: basic.fields.address.required()
+const DGIS = RSR.clone().shape({
+  email: RSR.fields.email.required(),
+  address: RSR.fields.address.required()
 })
 
-const arrays = {
-  basic: yup.array().of(basic),
-  IATI: yup.array().of(basic),
-  DGIS: yup.array().of(DGIS).min(1, 'At least one contact is required for your validation set')
+const defs = {
+  1: yup.array().of(RSR),
+  2: yup.array().of(RSR),
+  3: yup.array().of(DGIS).min(1)
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = [opts.arrays ? arrays.basic : basic]
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(opts.arrays ? arrays.DGIS : DGIS)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

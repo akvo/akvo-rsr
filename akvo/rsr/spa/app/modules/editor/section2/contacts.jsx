@@ -7,8 +7,8 @@ import arrayMutators from 'final-form-arrays'
 import FinalField from '../../../utils/final-field'
 import ItemArray from '../../../utils/item-array'
 import InputLabel from '../../../utils/input-label'
-import { isFieldOptional, isFieldValid } from '../../../utils/validation-utils'
-import { getValidationSets } from './contacts/validations'
+import { isFieldOptional, isFieldValid, getValidationSets } from '../../../utils/validation-utils'
+import validationDefs from './contacts/validations'
 
 import './styles.scss'
 
@@ -26,7 +26,7 @@ class Contacts extends React.Component{
     return false
   }
   render(){
-    const validationSets = getValidationSets(this.props.validations)
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
     const isOptional = isFieldOptional(validationSets)
     const isValid = isFieldValid(validationSets)
     return (

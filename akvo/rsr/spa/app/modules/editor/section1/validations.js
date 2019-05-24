@@ -1,8 +1,6 @@
 import * as yup from 'yup'
 
-import { validationType } from '../../../utils/validation-utils'
-
-const basic = yup.object().shape({
+const RSR = yup.object().shape({
   isPublic: yup.boolean().default(true),
   validations: yup.array().of(yup.number()).default([1, 2]),
   title: yup.string().default('').required(),
@@ -20,7 +18,7 @@ const basic = yup.object().shape({
   currentImageCredit: yup.string()
 })
 
-const IATI = basic.clone().shape({
+const IATI = RSR.clone().shape({
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string(),
   defaultFlowType: yup.string(),
@@ -29,28 +27,19 @@ const IATI = basic.clone().shape({
   defaultFinanceType: yup.string(),
 })
 
-const DGIS = basic.clone().shape({
-  actualStartDate: basic.fields.actualStartDate.required(),
-  actualEndDate: basic.fields.actualEndDate.required(),
+const DGIS = RSR.clone().shape({
+  actualStartDate: RSR.fields.actualStartDate.required(),
+  actualEndDate: RSR.fields.actualEndDate.required(),
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string().required(),
   defaultFlowType: yup.string().required(),
   defaultTiedStatus: yup.string().required(),
 })
 
-export const getValidationSets = (validationsSetIds) => {
-  const validationSets = [basic]
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(IATI)
-  }
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(DGIS)
-  }
-  return validationSets
+const defs = {
+  1: RSR,
+  2: IATI,
+  3: DGIS
 }
 
-export default {
-  basic,
-  IATI,
-  DGIS,
-}
+export default defs

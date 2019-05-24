@@ -1,8 +1,7 @@
 import * as yup from 'yup'
-import { validationType, transformUndefined } from '../../../../utils/validation-utils'
+import { transformUndefined } from '../../../../utils/validation-utils'
 
-
-export const IATI = yup.object().shape({
+const IATI = yup.object().shape({
   region: yup.string().required(),
   percentage: yup.mixed().required().transform(transformUndefined),
   description: yup.string(),
@@ -10,25 +9,14 @@ export const IATI = yup.object().shape({
   vocabularyUri: yup.string()
 })
 
-export const DGIS = yup.object().shape({
+const DGIS = yup.object().shape({
   region: yup.string().required(),
   percentage: yup.mixed().required().transform(transformUndefined),
 })
 
-const arrays = {
-  IATI: yup.array().of(IATI).min(1, 'At least one region is required'),
-  DGIS: yup.array().of(DGIS).min(1, 'At least one region is required')
+const defs = {
+  2: yup.array().of(IATI).min(1),
+  3: yup.array().of(DGIS).min(1)
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = []
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(opts.arrays ? arrays.DGIS : DGIS)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

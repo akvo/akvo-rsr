@@ -9,9 +9,9 @@ import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import { budgetItemTypes } from '../../../../utils/constants'
 import { Aux } from '../../../../utils/misc'
-import { validationType, isFieldOptional } from '../../../../utils/validation-utils'
+import { validationType, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
-import { getValidationSets } from './validations'
+import validationDefs from './validations'
 
 const { Item } = Form
 
@@ -25,7 +25,7 @@ const totalBudgetReducer = (acc, budgetItem) => {
 const BudgetItems = ({ formPush, validations, currency }) => {
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
-  const validationSets = getValidationSets(validations)
+  const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   return (
     <div>

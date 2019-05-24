@@ -3,15 +3,11 @@
     opacity: 0.6;
     font-size: 14px;
     display: flex;
-    // text-align: right;
+    margin-bottom: 15px;
     .amount{
-      // float: right;
       margin-left: auto;
       display: inline-block;
       text-align: right;
-    }
-    b{
-      // float: right;
     }
   }
   .ant-collapse-item{
@@ -37,7 +33,6 @@
     &:last-child{
       margin-bottom: 0px;
     }
-    // margin-bottom: 10px;
     .h-holder{
       display: flex;
     }

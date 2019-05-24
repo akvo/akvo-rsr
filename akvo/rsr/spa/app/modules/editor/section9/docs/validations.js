@@ -1,7 +1,7 @@
 import * as yup from 'yup'
-import { validationType, transformUndefined } from '../../../../utils/validation-utils'
+import { transformUndefined } from '../../../../utils/validation-utils'
 
-export const RSR = yup.object().shape({
+const RSR = yup.object().shape({
   url: yup.string().transform(transformUndefined).required().when('document', {
     is: value => value !== undefined && value !== '',
     then: yup.string().notRequired()
@@ -10,11 +10,11 @@ export const RSR = yup.object().shape({
   document: yup.string()
 })
 
-export const DGIS = RSR.clone().shape({
+const DGIS = RSR.clone().shape({
   categories: yup.array().of(yup.object().shape({ category: yup.string() }))
 })
 
-export const IATI = DGIS.clone().shape({
+const IATI = DGIS.clone().shape({
   documentFormat: yup.string().required(),
   titleLanguage: yup.string(),
   documentLanguage: yup.string(),
@@ -22,21 +22,10 @@ export const IATI = DGIS.clone().shape({
 })
 
 
-const arrays = {
+const defs = {
   RSR: yup.array().of(RSR),
   IATI: yup.array().of(IATI),
   DGIS: yup.array().of(DGIS)
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = [opts.arrays ? arrays.RSR : RSR]
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(opts.arrays ? arrays.DGIS : DGIS)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

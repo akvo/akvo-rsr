@@ -12,10 +12,13 @@ export const getValidations = (validationIds) => {
   return validations
 }
 
+export const getValidationSets = (ids, defs) => ids.filter(id => defs[id] !== undefined).map(id => defs[id])
+
 export const isFieldOptional = validationSets => (field) => {
   let ret = true
   for(let i = 0; i < validationSets.length; i += 1){
-    if(validationSets[i].fields.hasOwnProperty(field) && validationSets[i].fields[field]._exclusive.required){
+    const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
+    if(fields.hasOwnProperty(field) && fields[field]._exclusive.required){
       ret = false
       break
     }
@@ -26,7 +29,8 @@ export const isFieldOptional = validationSets => (field) => {
 export const doesFieldExist = validationSets => (field) => {
   let ret = false
   for(let i = 0; i < validationSets.length; i += 1){
-    if(validationSets[i].fields.hasOwnProperty(field)){
+    const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
+    if(fields.hasOwnProperty(field)){
       ret = true
       break
     }
@@ -37,7 +41,8 @@ export const doesFieldExist = validationSets => (field) => {
 export const isFieldValid = validationSets => (field, value) => {
   let ret = true
   for(let i = 0; i < validationSets.length; i += 1){
-    if(validationSets[i].fields.hasOwnProperty(field) && !validationSets[i].fields[field].isValidSync(value)){
+    const fields = validationSets[i].hasOwnProperty('fields') ? validationSets[i].fields : validationSets[i]._subType.fields
+    if(fields.hasOwnProperty(field) && !fields[field].isValidSync(value)){
       ret = false
       break
     }

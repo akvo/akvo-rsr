@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 
-export const basic = yup.object().shape({
+const RSR = yup.object().shape({
   name: yup.string().required().default(''),
   role: yup.number().required().default(1),
   secondaryReporter: yup.boolean(),
@@ -11,15 +11,8 @@ export const basic = yup.object().shape({
   })
 })
 
-const array = yup.array().of(basic).min(1, 'At least one partner is required for your validation set')
-const arrays = {
-  basic: array,
-  IATI: array,
-  DGIS: array
+const defs = {
+  1: yup.array().of(RSR).min(1)
 }
 
-export const getValidationSets = (validationSets, opts = {}) => {
-  return [opts.arrays ? arrays.basic : basic]
-}
-
-export default arrays
+export default defs

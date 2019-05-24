@@ -13,9 +13,10 @@ const sets = [
   { value: 4, label: 'NLR'},
   { value: 7, label: 'Gietrenk SPC'},
   { value: 2, label: 'IATI'},
+  { value: 8, label: 'IATI Basic'},
   { value: 5, label: 'EUTF'},
   { value: 3, label: 'DGIS IATI'},
-  { value: 6, label: 'DFID'}
+  { value: 6, label: 'DFID'},
 ]
 
 const Settings = ({ isPublic, validations, ...props }) => (

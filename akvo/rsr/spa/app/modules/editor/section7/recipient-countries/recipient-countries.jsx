@@ -5,15 +5,15 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import countries from '../../../../utils/countries'
-import { doesFieldExist } from '../../../../utils/validation-utils'
-import { getValidationSets } from './validations'
+import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
+import validationDefs from './validations'
 
 const { Item } = Form
 
 const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
 const RecipientCountries = ({ validations, formPush }) => {
-  const validationSets = getValidationSets(validations)
+  const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>

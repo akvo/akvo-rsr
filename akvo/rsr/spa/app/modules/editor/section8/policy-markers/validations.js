@@ -1,6 +1,4 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/validation-utils'
-
 
 const DGIS = yup.object().shape({
   policyMarker: yup.string(),
@@ -10,26 +8,15 @@ const DGIS = yup.object().shape({
   })
 })
 
-export const IATI = DGIS.clone().shape({
+const IATI = DGIS.clone().shape({
   description: yup.string(),
   vocabulary: yup.string(),
   vocabularyUri: yup.string()
 })
 
-const arrays = {
-  IATI: yup.array().of(IATI),
-  DGIS: yup.array().of(DGIS),
+const defs = {
+  2: yup.array().of(IATI),
+  3: yup.array().of(DGIS),
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = []
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(opts.arrays ? arrays.DGIS : DGIS)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

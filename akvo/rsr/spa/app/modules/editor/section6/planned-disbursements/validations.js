@@ -1,7 +1,6 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/validation-utils'
 
-export const DGIS = yup.object().shape({
+const DGIS = yup.object().shape({
   value: yup.mixed().default(null),
   valueDate: yup.string().when('value', {
     is: value => value !== null && value !== '',
@@ -21,26 +20,15 @@ export const DGIS = yup.object().shape({
   recipientOrganisationActivityId: yup.string()
 })
 
-export const IATI = DGIS.clone().shape({
+const IATI = DGIS.clone().shape({
   currency: yup.string().default('EUR'),
   type: yup.string()
 })
 
 
-const arrays = {
-  DGIS: yup.array().of(DGIS),
-  IATI: yup.array().of(IATI),
+const defs = {
+  3: yup.array().of(DGIS),
+  2: yup.array().of(IATI),
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = []
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(opts.arrays ? arrays.DGIS : DGIS)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

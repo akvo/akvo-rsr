@@ -4,14 +4,14 @@ import { Button, Form, Row, Col } from 'antd'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import { doesFieldExist } from '../../../../utils/validation-utils'
-import { getValidationSets } from './validations'
+import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
+import validationDefs from './validations'
 import REGION_OPTIONS from './regions.json'
 
 const { Item } = Form
 
 const RecipientRegions = ({ formPush, validations }) => {
-  const validationSets = getValidationSets(validations)
+  const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>

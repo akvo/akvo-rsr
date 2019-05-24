@@ -103,7 +103,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
               )}>
               <FinalField
                 name={`${name}.periodEnd`}
-                conrol="datepicker"
+                control="datepicker"
               />
               </Item>
             </Col>

@@ -6,8 +6,8 @@ import FinalField from '../../../../utils/final-field'
 import Condition from '../../../../utils/condition'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import { getValidations, doesFieldExist, isFieldOptional } from '../../../../utils/validation-utils'
-import { getValidationSets } from './validations'
+import { getValidations, doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
+import validationDefs from './validations'
 import LANGUAGE_OPTIONS from './languages.json'
 import FORMAT_OPTIONS from './formats.json'
 import Categories from './categories'
@@ -25,7 +25,7 @@ const handleRadioSwitch = (event, input) => {
 
 const Docs = ({ formPush, validations }) => {
   const { isIATI } = getValidations(validations)
-  const validationSets = getValidationSets(validations)
+  const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
   return (

@@ -1,14 +1,13 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/validation-utils'
 
-export const sector = yup.object().shape({
+const sector = yup.object().shape({
   name: yup.string(),
   vocabulary: yup.string(),
   uri: yup.string(),
   description: yup.string()
 })
 
-export const DGIS = yup.object().shape({
+const DGIS = yup.object().shape({
   type: yup.string(),
   value: yup.mixed(),
   date: yup.string(),
@@ -21,7 +20,7 @@ export const DGIS = yup.object().shape({
   aidTypeVocabulary: yup.string()
 })
 
-export const IATI = DGIS.clone().shape({
+const IATI = DGIS.clone().shape({
   currency: yup.string().default('EUR'),
   humanitarian: yup.boolean(),
   reference: yup.string(),
@@ -37,20 +36,9 @@ export const IATI = DGIS.clone().shape({
   sectors: yup.array().of(sector).default([])
 })
 
-const arrays = {
-  IATI: yup.array().of(IATI),
-  DGIS: yup.array().of(DGIS)
+const defs = {
+  2: yup.array().of(IATI),
+  3: yup.array().of(DGIS)
 }
 
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = []
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  if(validationsSetIds.indexOf(validationType.DGIS) !== -1){
-    validationSets.push(opts.arrays ? arrays.DGIS : DGIS)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

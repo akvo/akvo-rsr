@@ -1,7 +1,10 @@
+import { getValidationSets } from '../../utils/validation-utils'
+
 const modules = [
   'section1',
   'section2/contacts',
   'section3/partners',
+  'section4',
   'section6/budget-items',
   'section6/planned-disbursements',
   'section7/location-items',
@@ -13,20 +16,20 @@ const modules = [
   'section9/docs'
 ]
 
-const validationSetGetters = modules.reduce((acc, key) => ({
+const validationDefs = modules.reduce((acc, key) => ({
   ...acc,
-  [key]: require(`./${key}/validations`).getValidationSets // eslint-disable-line
+  [key]: require(`./${key}/validations`).default // eslint-disable-line
 }), {})
 
 export const validate = (module, validationSetIds, fields) => {
-  const validationSetGetter = validationSetGetters[module]
-  if(!validationSetGetter){
+  const validationDef = validationDefs[module]
+  if(!validationDef){
     return true
   }
-  if(!validationSetGetters.hasOwnProperty(module)){
+  if(!validationDefs.hasOwnProperty(module)){
     return true
   }
-  const validationSets = validationSetGetters[module](validationSetIds, { arrays: true })
+  const validationSets = getValidationSets(validationSetIds, validationDef)
   let isValid = true
   console.log('validate', fields)
   validationSets.forEach((validationSet) => {

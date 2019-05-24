@@ -4,8 +4,8 @@ import { Form, Button } from 'antd'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
-import { doesFieldExist, isFieldOptional } from '../../../../utils/validation-utils'
-import { getValidationSets } from './validations'
+import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
+import validationDefs from './validations'
 import CODE_OPTIONS from '../codes.json'
 import VOCABULARY_OPTIONS from '../vocab.json'
 
@@ -16,7 +16,7 @@ class Sectors extends React.Component{
     return false
   }
   render(){
-    const validationSets = getValidationSets(this.props.validations)
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
     const fieldExists = doesFieldExist(validationSets)
     const isOptional = isFieldOptional(validationSets)
     return (

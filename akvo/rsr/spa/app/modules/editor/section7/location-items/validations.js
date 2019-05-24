@@ -1,7 +1,6 @@
 import * as yup from 'yup'
-import { validationType } from '../../../../utils/validation-utils'
 
-export const basic = yup.object().shape({
+const RSR = yup.object().shape({
   address1: yup.string(),
   address2: yup.string(),
   postalCode: yup.string(),
@@ -14,13 +13,7 @@ export const basic = yup.object().shape({
   })
 })
 
-export const administrative = yup.object().shape({
-  code: yup.string(),
-  vocabulary: yup.string(),
-  lavel: yup.mixed()
-})
-
-export const IATI = basic.clone().shape({
+const IATI = RSR.clone().shape({
   name: yup.string(),
   reference: yup.string(),
   code: yup.string(),
@@ -30,21 +23,15 @@ export const IATI = basic.clone().shape({
   reach: yup.string(),
   class: yup.string(),
   featureDesignation: yup.string(),
-  administratives: yup.array().of(administrative).default([])
+  administratives: yup.array().of(yup.object().shape({
+    code: yup.string(),
+    vocabulary: yup.string(),
+    lavel: yup.mixed()
+  })).default([])
 })
 
-const arrays = {
-  basic: yup.array().of(basic).min(1, 'At least one location is required'),
-  IATI: yup.array().of(IATI).min(1, 'At least one location is required'),
-  // DGIS: yup.array().of(basic).min(1, 'At least one location is required')
+const defs = {
+  1: yup.array().of(RSR).min(1),
+  2: yup.array().of(IATI).min(1),
 }
-
-export const getValidationSets = (validationsSetIds, opts = {}) => {
-  const validationSets = [opts.arrays ? arrays.basic : basic]
-  if(validationsSetIds.indexOf(validationType.IATI) !== -1){
-    validationSets.push(opts.arrays ? arrays.IATI : IATI)
-  }
-  return validationSets
-}
-
-export default arrays
+export default defs

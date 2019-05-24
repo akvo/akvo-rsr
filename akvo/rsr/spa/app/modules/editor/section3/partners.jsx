@@ -9,8 +9,8 @@ import Condition from '../../../utils/condition'
 import ItemArray from '../../../utils/item-array'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import InputLabel from '../../../utils/input-label'
-import { doesFieldExist } from '../../../utils/validation-utils'
-import { getValidationSets } from './partners/validations'
+import { doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
+import validationDefs from './partners/validations'
 import './styles.scss'
 
 const { Item } = Form
@@ -31,7 +31,7 @@ class Partners extends React.Component{
   render(){
     const currencySymbol = getSymbolFromCurrency(this.props.currency)
     const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
-    const validationSets = getValidationSets(this.props.validations)
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
     const fieldExists = doesFieldExist(validationSets)
     return (
       <div className="partners view">
