@@ -3,9 +3,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { AppContainer } from 'react-hot-loader'
+import JavascriptTimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
 
 import Root from './root'
 import configureStore from './store/config'
+
+JavascriptTimeAgo.locale(en)
 
 const store = configureStore()
 

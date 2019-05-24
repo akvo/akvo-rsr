@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import { Icon, Button, Spin } from 'antd'
 import moment from 'moment'
+import TimeAgo from 'react-time-ago'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -37,7 +38,7 @@ const Editor = ({ saving, lastSaved }) => (
           {(!saving && lastSaved !== null) && (
             <div>
               <Icon type="check" />
-              <span>Saved {moment(lastSaved).fromNow()}</span>
+              <span>Saved <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
             </div>
           )}
         </aside>
