@@ -713,7 +713,7 @@ const DisaggregatedValueInput = ({ dimension, disaggregation, measure, onChange 
                     <input
                         className="form-control"
                         readOnly={true}
-                        value={disaggregation.value}
+                        value={disaggregation.value + "%"}
                         onChange={onChange}
                         data-dimension={dimension.id}
                         data-field="value"

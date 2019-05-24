@@ -40,7 +40,6 @@ from ..mixins import TimestampsMixin
 
 from .iati_check import IatiCheck
 from .result import IndicatorPeriod
-from .link import Link
 from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
 from .project_update import ProjectUpdate
@@ -429,7 +428,7 @@ class Project(TimestampsMixin, models.Model):
             ('post_updates', u'Can post updates'),
         )
 
-    def save(self, last_updated=False, *args, **kwargs):
+    def save(self, *args, **kwargs):
         # Strip title of any trailing or leading spaces
         if self.title:
             self.title = self.title.strip()
@@ -767,18 +766,6 @@ class Project(TimestampsMixin, models.Model):
             return ''
     show_map.allow_tags = True
 
-    def connected_to_user(self, user):
-        '''
-        Test if a user is connected to self through an organisation
-        '''
-        try:
-            for organisation in user.organisations.all():
-                if self in organisation.all_projects():
-                    return True
-        except:
-            pass
-        return False
-
     def is_published(self):
         if self.publishingstatus:
             return self.publishingstatus.status == PublishingStatus.STATUS_PUBLISHED
@@ -812,12 +799,6 @@ class Project(TimestampsMixin, models.Model):
                     return False
 
         return True
-
-    def akvopedia_links(self):
-        return self.links.filter(kind=Link.LINK_AKVOPEDIA)
-
-    def external_links(self):
-        return self.links.filter(kind=Link.LINK_EXTRNAL)
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
@@ -859,24 +840,6 @@ class Project(TimestampsMixin, models.Model):
         from .focus_area import FocusArea
         return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
     focus_areas.allow_tags = True
-
-    def areas_and_categories(self):
-        from .focus_area import FocusArea
-        from .category import Category
-        area_objs = FocusArea.objects.filter(
-            categories__projects__exact=self
-        ).distinct().order_by('name')
-        areas = []
-        for area_obj in area_objs:
-            area = {'area': area_obj}
-            area['categories'] = []
-            for cat_obj in Category.objects.filter(
-                    focus_area=area_obj,
-                    projects=self
-            ).order_by('name'):
-                area['categories'] += [cat_obj.name]
-            areas += [area]
-        return areas
 
     # shortcuts to linked orgs for a single project
     def _partners(self, role=None):
@@ -965,15 +928,6 @@ class Project(TimestampsMixin, models.Model):
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name').prefetch_related('organisation').all()
-
-    def show_status_large(self):
-        "Show the current project status with background"
-        return mark_safe(
-            "<span class='status_large' style='background-color:%s; color:inherit; "
-            "display:inline-block;'>%s</span>" % (
-                self.STATUSES_COLORS[self.iati_status], codelist_name(ActivityStatus, self, 'iati_status')
-            )
-        )
 
     def iati_project_scope(self):
         return codelist_value(ActivityScope, self, 'project_scope')
@@ -1515,18 +1469,6 @@ class Project(TimestampsMixin, models.Model):
 
         child.save()
 
-    def has_results(self):
-        for result in self.results.all():
-            if result.title or result.type or result.aggregation_status or result.description:
-                return True
-        return False
-
-    def has_indicators(self):
-        for result in self.results.all():
-            if result.indicators.all():
-                return True
-        return False
-
     def indicator_labels(self):
         return apps.get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
             organisation__in=self.all_partners()
@@ -1676,7 +1618,7 @@ def update_denormalized_project(sender, **kwargs):
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
-    project.save(last_updated=True)
+    project.save()
 
 
 @receiver(post_delete, sender=ProjectUpdate)
@@ -1692,4 +1634,4 @@ def rewind_last_update(sender, **kwargs):
         project.last_update = project.updates_desc()[0]
     except IndexError:
         project.last_update = None
-    project.save(last_updated=True)
+    project.save()

@@ -554,7 +554,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             if indicator.type == QUALITATIVE:
                 self.assertEqual(period_element.find('./actual').get('value'), period.narrative)
             else:
-                self.assertEqual(period_element.find('./actual').get('value'), str(period.actual))
+                self.assertEqual(period_element.find('./actual').get('value'), str(period.actual_value))
 
     def test_dgis_validated_project_export(self):
         """

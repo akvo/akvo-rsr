@@ -593,6 +593,31 @@ nav.navbar-fixed-top {
     }
 }
 
+.desktop-menu{
+  @media screen and (max-width: 768px){
+    display: none;
+  }
+}
+.mobile-menu{
+  display: none;
+  @media screen and (max-width: 768px){
+    display: block;
+  }
+  .navbar-nav{
+    font-size: 1.3em;
+    margin-left: -25px;
+  }
+  hr{
+    margin: 10px 0;
+  }
+}
+@media screen and (max-width: 768px){
+  .navbar-nav.navbar-right{
+    margin-left: -10px;
+    margin-bottom: 10px;
+  }
+}
+
 .navbar {
     margin-bottom: 0 !important;
     .active {
@@ -673,7 +698,13 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 0px 0 20px;
+  padding: 10px 0px 0 20px;
+  @media screen and (max-width: 768px){
+    padding: 10px 0 0 15px;
+    .navbar-form{
+      margin: 0;
+    }
+  }
 }
 
 .navContainer {
@@ -3861,6 +3892,10 @@ main.results-page {
     }
     padding-right: 50px !important;
     padding-left: 50px !important;
+    @media screen and (max-width: 768px){
+      padding-right: 15px !important;
+      padding-left: 15px !important;
+    }
     ol {
         &.breadcrumb {
             background-color: white !important;
