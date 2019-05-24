@@ -1,5 +1,6 @@
 import actionTypes from './action-types'
 
+export const togglePrivacy = checked => ({ type: actionTypes.TOGGLE_PRIVACY, checked })
 export const touchSection = sectionIndex => ({ type: actionTypes.TOUCH_SECTION, sectionIndex })
 export const checkValidation = (id, checked) => ({ type: actionTypes.CHECK_VALIDATION, id, checked })
 export const saveFields = (fields, sectionIndex) => dispatch => {

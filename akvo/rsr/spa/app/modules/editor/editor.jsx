@@ -43,7 +43,7 @@ const Editor = ({ saving, lastSaved }) => (
         </aside>
         <MainMenu />
         <div className="content">
-          <Button type="primary">Publish</Button>
+          <Button type="primary" disabled>Publish</Button>
           <i>The project is unpublished</i>
         </div>
       </div>

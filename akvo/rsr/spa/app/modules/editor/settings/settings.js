@@ -21,7 +21,7 @@ const sets = [
 const Settings = ({ isPublic, validations, ...props }) => (
   <div className="settings view">
     <p>
-      <Switch checked={!isPublic} onChange={checked => props.editField('isPublic', !checked)} />
+      <Switch checked={!isPublic} onChange={checked => props.togglePrivacy(!checked)} />
       <span className="switch-label">Private project</span>
       <Tooltip title="Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project."><Icon type="info-circle" /></Tooltip>
     </p>

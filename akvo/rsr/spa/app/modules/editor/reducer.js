@@ -7,7 +7,8 @@ import fieldSets from './field-sets'
 export const initialState = {
   saving: false,
   lastSaved: null,
-  validations: [1, 2]
+  validations: [1, 2],
+  isPublic: true
 }
 for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
@@ -36,8 +37,19 @@ export default (state = initialState, action) => {
   const sectionKey = `section${action.sectionIndex}`
   const newState = cloneDeep(state)
   switch(action.type){
+    case actionTypes.TOGGLE_PRIVACY:
+      return {...state, isPublic: action.checked}
     case actionTypes.TOUCH_SECTION:
-      newState[sectionKey].isTouched = true
+      if(!newState[sectionKey].isTouched){
+        newState[sectionKey].isTouched = true
+        // determine whether to run validation on sets or on root
+        // this is not a good implementation; consider improvement
+        if(Object.keys(fieldSets).indexOf(sectionKey) !== -1){
+          newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
+        } else {
+          newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+        }
+      }
       return newState
     case actionTypes.CHECK_VALIDATION:
       const validations = [...state.validations]
@@ -46,7 +58,19 @@ export default (state = initialState, action) => {
       } else if(!action.checked && validations.indexOf(action.id) !== -1){
         validations.splice(validations.indexOf(action.id), 1)
       }
-      return {...state, validations}
+      newState.validations = validations
+      // validate all sections
+      for(let i = 1; i <= sectionLength; i += 1){
+        if(i !== 5){
+          const _sectionKey = `section${i}`
+          if(Object.keys(fieldSets).indexOf(_sectionKey) !== -1){
+            newState[_sectionKey].isValid = isValid(_sectionKey, validations, newState, action.setName)
+          } else {
+            newState[_sectionKey].isValid = validate(_sectionKey, validations, newState[_sectionKey].fields)
+          }
+        }
+      }
+      return newState
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
         ...newState[sectionKey],

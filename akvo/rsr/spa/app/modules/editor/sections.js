@@ -10,14 +10,14 @@ import CommentsKeywords from './section10/comments-n-keywords'
 import Reporting from './section11/section11'
 
 export default [
-  {key: 'info', validation: true, component: Info},
-  {key: 'contacts', validation: true, component: Contacts},
-  {key: 'partners', validation: true, component: Partners},
+  {key: 'info', component: Info},
+  {key: 'contacts', component: Contacts},
+  {key: 'partners', component: Partners},
   {key: 'descriptions', component: Descriptions},
   {key: 'results-n-indicators' },
-  {key: 'finance', component: Finance, validation: true},
-  {key: 'locations', component: Locations, validation: true},
-  {key: 'focus', component: Focus, validation: true},
+  {key: 'finance', component: Finance},
+  {key: 'locations', component: Locations},
+  {key: 'focus', component: Focus},
   {key: 'links-n-docs', component: LinksDocs},
   {key: 'comments-n-keywords', component: CommentsKeywords},
   {key: 'reporting', component: Reporting}
