@@ -37,11 +37,6 @@ class IndicatorDimensionName(models.Model):
 class IndicatorDimensionValue(models.Model):
     name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
                              related_name='dimension_values')
-    # indicator = models.ForeignKey('Indicator', verbose_name=_(u'indicator'), null=True,
-    #                               related_name='dimension_values')
-    # name = ValidXMLCharField(
-    #     _(u'dimension name'), blank=True, max_length=100,
-    #     help_text=_(u'The name of a category to be used when disaggregating (e.g "Age")'))
     value = ValidXMLCharField(
         _(u'dimension value'), max_length=100,
         help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
