@@ -698,7 +698,13 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 0px 0 20px;
+  padding: 10px 0px 0 20px;
+  @media screen and (max-width: 768px){
+    padding: 10px 0 0 15px;
+    .navbar-form{
+      margin: 0;
+    }
+  }
 }
 
 .navContainer {
@@ -3886,6 +3892,10 @@ main.results-page {
     }
     padding-right: 50px !important;
     padding-left: 50px !important;
+    @media screen and (max-width: 768px){
+      padding-right: 15px !important;
+      padding-left: 15px !important;
+    }
     ol {
         &.breadcrumb {
             background-color: white !important;
