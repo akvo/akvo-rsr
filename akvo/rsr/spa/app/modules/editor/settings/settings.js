@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-// import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { Switch, Tooltip, Icon } from 'antd'
 
 import './styles.scss'
@@ -8,7 +7,7 @@ import * as actions from '../actions'
 
 // const sets = ['RSR', 'NLR', 'Gietrenk SPC', 'IATI', 'EUTF', 'DGIS IATI', 'DFID']
 
-const sets = [
+export const sets = [
   { value: 1, label: 'RSR' },
   { value: 4, label: 'NLR'},
   { value: 7, label: 'Gietrenk SPC'},

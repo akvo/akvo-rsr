@@ -7,6 +7,7 @@ const modules = [
   'section4',
   'section6/budget-items',
   'section6/planned-disbursements',
+  'section6/transactions',
   'section7/location-items',
   'section7/recipient-countries',
   'section7/recipient-regions',
@@ -31,7 +32,7 @@ export const validate = (module, validationSetIds, fields) => {
   }
   const validationSets = getValidationSets(validationSetIds, validationDef)
   let isValid = true
-  console.log('validate', fields)
+  console.log(`validate ${module}`, fields)
   validationSets.forEach((validationSet) => {
     try{
       validationSet.validateSync(fields)

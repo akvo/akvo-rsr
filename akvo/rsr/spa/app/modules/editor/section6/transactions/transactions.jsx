@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Button, Radio, Col, Row } from 'antd'
 import currencies from 'currency-codes/data'
+import { Field } from 'react-final-form'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -19,13 +20,19 @@ import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
 
 const { Item } = Form
+const isEmpty = value => value === null || value === '' || value === undefined
 
 const TypeField = ({ name }) => (
-  <Item label={<InputLabel optional>Type</InputLabel>}>
+  <Item label={(
+    <Field name={`${name}.value`}>
+      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Type</InputLabel>}
+    </Field>
+  )}>
   <FinalField
     name={`${name}.type`}
     control="select"
     options={TYPE_OPTIONS}
+    withEmptyOption
   />
   </Item>
 )
@@ -61,9 +68,9 @@ const Transactions = ({ validations, formPush }) => {
             </Col>
             }
             <Col span={12}>
-              <Item label={<InputLabel tooltip="...">Value</InputLabel>}>
+              <Item label={<InputLabel tooltip="..." optional>Value</InputLabel>}>
               <FinalField
-                name="value"
+                name={`${name}.value`}
                 control="input-number"
               />
               </Item>
@@ -91,7 +98,11 @@ const Transactions = ({ validations, formPush }) => {
           )}
           <Row gutter={16}>
             <Col span={12}>
-              <Item label={<InputLabel optional>Date</InputLabel>}>
+              <Item label={(
+                <Field name={`${name}.value`}>
+                  {({ input }) => <InputLabel optional={isEmpty(input.value)}>Date</InputLabel>}
+                </Field>
+              )}>
               <FinalField
                 name={`${name}.date`}
                 control="datepicker"
@@ -99,7 +110,11 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
             <Col span={12}>
-              <Item label={<InputLabel optional>Value Date</InputLabel>}>
+              <Item label={(
+                <Field name={`${name}.value`}>
+                  {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value Date</InputLabel>}
+                </Field>
+              )}>
               <FinalField
                 name={`${name}.valueDate`}
                 control="datepicker"

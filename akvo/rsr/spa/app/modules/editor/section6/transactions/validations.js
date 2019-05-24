@@ -8,10 +8,19 @@ const sector = yup.object().shape({
 })
 
 const DGIS = yup.object().shape({
-  type: yup.string(),
   value: yup.mixed(),
-  date: yup.string(),
-  valueDate: yup.string(),
+  type: yup.string().nullable().when('value', {
+    is: value => value !== null && value !== '',
+    then: yup.string().required()
+  }),
+  date: yup.string().nullable().when('value', {
+    is: value => value !== null && value !== '',
+    then: yup.string().required()
+  }),
+  valueDate: yup.string().nullable().when('value', {
+    is: value => value !== null && value !== '',
+    then: yup.string().required()
+  }),
   providerOrganisation: yup.string(),
   recipientOrganisation: yup.string(),
   providerOrganisationActivityId: yup.string(),

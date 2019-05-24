@@ -41,7 +41,7 @@ const CONTROLS = {
     // transform value to be stored to formatted string
     let value = (input.value && typeof input.value === 'string') ? moment(input.value, datePickerConfig.format) : input.value
     if(!value) value = null
-    const onChange = val => input.onChange(val.format(datePickerConfig.format))
+    const onChange = val => input.onChange(val !== null ? val.format(datePickerConfig.format) : null)
     return <DatePicker {...{value, onChange, ...datePickerConfig}} />
   }
 }

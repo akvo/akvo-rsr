@@ -2,15 +2,15 @@ import * as yup from 'yup'
 
 const DGIS = yup.object().shape({
   value: yup.mixed().default(null),
-  valueDate: yup.string().when('value', {
+  valueDate: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  periodStart: yup.string().when('value', {
+  periodStart: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  periodEnd: yup.string().when('value', {
+  periodEnd: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
