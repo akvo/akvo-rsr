@@ -4,10 +4,11 @@ import { initReactI18next } from 'react-i18next'
 // Temporarily importing translations directly instead of using the Backend module
 import section1 from './locales/en/section1.json'
 import section6 from './locales/en/section6.json'
+import section7 from './locales/en/section7.json'
 
 const resources = {
   en: {
-    section1, section6
+    section1, section6, section7
   }
 }
 

@@ -9,10 +9,12 @@ import RecipientCountries from './recipient-countries/recipient-countries'
 import InputLabel from '../../../utils/input-label'
 import RecipientRegions from './recipient-regions/recipient-regions'
 import { Aux } from '../../../utils/misc'
-import { validationType } from '../../../utils/validation-utils'
+import { getValidationSets, doesFieldExist } from '../../../utils/validation-utils'
 import SCOPE_OPTIONS from './scope-options.json'
 import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
+import SectionContext from '../section-context'
+import validationDefs from './validations'
 
 const { Item } = Form
 
@@ -21,10 +23,11 @@ class LocationsView extends React.Component{
     return false
   }
   render(){
-    const isIATI = this.props.validations.indexOf(validationType.IATI) !== -1
-    const isDGIS = this.props.validations.indexOf(validationType.DGIS) !== -1
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
+    const fieldExists = doesFieldExist(validationSets)
     return (
       <div className="locations view">
+      <SectionContext.Provider value="section7">
         <FinalForm
           onSubmit={() => {}}
           initialValues={this.props.fields}
@@ -36,7 +39,7 @@ class LocationsView extends React.Component{
             }
           }) => (
           <Form layout="vertical">
-            {isIATI &&
+            {fieldExists('projectScope') &&
             <Item label={<InputLabel optional>Project scope</InputLabel>}>
               <FinalField
                 name="projectScope"
@@ -49,7 +52,7 @@ class LocationsView extends React.Component{
             <LocationsItems formPush={push} validations={this.props.validations} />
             <hr />
             <RecipientCountries formPush={push} validations={this.props.validations} />
-            {(isIATI || isDGIS) && (
+            {(fieldExists('recipientRegions')) && (
               <Aux>
                 <hr />
                 <RecipientRegions formPush={push} validations={this.props.validations} />
@@ -58,6 +61,7 @@ class LocationsView extends React.Component{
           </Form>
         )}
       />
+      </SectionContext.Provider>
       </div>
     )
   }

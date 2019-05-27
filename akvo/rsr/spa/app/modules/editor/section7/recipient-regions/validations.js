@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { transformUndefined } from '../../../../utils/validation-utils'
+import { transformUndefined, validationType } from '../../../../utils/validation-utils'
 
 const IATI = yup.object().shape({
   region: yup.string().required(),
@@ -14,9 +14,11 @@ const DGIS = yup.object().shape({
   percentage: yup.mixed().required().transform(transformUndefined),
 })
 
-const defs = {
-  2: yup.array().of(IATI).min(1),
-  3: yup.array().of(DGIS).min(1)
-}
+const DFID = IATI.clone()
 
-export default defs
+const output = {}
+output[validationType.IATI] = yup.array().of(IATI).min(1)
+output[validationType.DGIS] = yup.array().of(DGIS).min(1)
+output[validationType.DFID] = yup.array().of(DFID).min(1)
+
+export default output

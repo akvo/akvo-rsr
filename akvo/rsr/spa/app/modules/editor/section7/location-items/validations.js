@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import { validationType } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
   address1: yup.string(),
@@ -30,8 +31,40 @@ const IATI = RSR.clone().shape({
   })).default([])
 })
 
-const defs = {
-  1: yup.array().of(RSR).min(1),
-  2: yup.array().of(IATI).min(1),
-}
-export default defs
+const DGIS = RSR.clone()
+
+const EUTF = RSR.clone().shape({
+  code: yup.string(),
+  activityDescription: yup.string(),
+  administratives: yup.array().of(yup.object().shape({
+    code: yup.string(),
+    vocabulary: yup.string(),
+    lavel: yup.mixed()
+  })).default([])
+})
+
+const DFID = EUTF.clone().shape({
+  activityDescription: yup.string(),
+  locationPrecision: yup.string(),
+  reach: yup.string(),
+  class: yup.string(),
+  featureDesignation: yup.string(),
+})
+
+const NLR = RSR.clone().shape({
+  code: yup.string(),
+})
+
+const Gietrenk = DFID.clone()
+
+const output = {}
+output[validationType.RSR] = yup.array().of(RSR).min(1)
+// output[validationType.IATI_BASIC] = yup.array().of(IATI_BASIC).min(1)
+output[validationType.IATI] = yup.array().of(IATI).min(1)
+output[validationType.DGIS] = yup.array().of(DGIS).min(1)
+output[validationType.EUTF] = yup.array().of(EUTF).min(1)
+output[validationType.DFID] = yup.array().of(DFID).min(1)
+output[validationType.NLR] = yup.array().of(NLR).min(1)
+output[validationType.Gietrenk] = yup.array().of(Gietrenk).min(1)
+
+export default output

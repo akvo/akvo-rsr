@@ -5,19 +5,21 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import { Aux } from '../../../../utils/misc'
-import { validationType } from '../../../../utils/validation-utils'
+import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import SearchItem from './search-item'
 import Administratives from './administratives'
 import FEATURE_OPTIONS from './feature-options.json'
+import validationDefs from './validations'
 import '../styles.scss'
 
 const { Item } = Form
 
 const LocationItems = ({ validations, formPush }) => {
-  const isIATI = validations.indexOf(validationType.IATI) !== -1
+  const validationSets = getValidationSets(validations, validationDefs)
+  const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>Sectors</h3>
+      <h3>Locations</h3>
       <ItemArray
         setName="locationItems"
         sectionIndex={7}
@@ -52,114 +54,130 @@ const LocationItems = ({ validations, formPush }) => {
               control="input"
             />
             </Item>
-            {isIATI && (
-              <Aux>
-                <Row gutter={16}>
-                  <Col span={8}>
-                    <Item label={<InputLabel optional>Name</InputLabel>}>
-                    <FinalField
-                      name={`${name}.name`}
-                      control="input"
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={8}>
-                    <Item label={<InputLabel optional>Reference</InputLabel>}>
-                    <FinalField
-                      name={`${name}.reference`}
-                      control="input"
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={8}>
-                    <Item label={<InputLabel optional>Code</InputLabel>}>
-                    <FinalField
-                      name={`${name}.code`}
-                      control="input"
-                    />
-                    </Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>Location description</InputLabel>}>
-                    <FinalField
-                      name={`${name}.locationDescription`}
-                      control="textarea"
-                      rows={3}
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>Activity description</InputLabel>}>
-                    <FinalField
-                      name={`${name}.activityDescription`}
-                      control="textarea"
-                      rows={3}
-                    />
-                    </Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>Location precision</InputLabel>}>
-                    <FinalField
-                      name={`${name}.locationPrecision`}
-                      control="select"
-                      options={[
-                        {value: '1', label: 'Exact'},
-                        {value: '2', label: 'Approximate'}
-                      ]}
-                      withEmptyOption
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>Reach</InputLabel>}>
-                    <FinalField
-                      name={`${name}.reach`}
-                      control="select"
-                      options={[
-                        {value: '1', label: 'Activity'},
-                        {value: '2', label: 'Indended beneficiaries'}
-                      ]}
-                      withEmptyOption
-                    />
-                    </Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>Class</InputLabel>}>
-                    <FinalField
-                      name={`${name}.class`}
-                      control="select"
-                      options={[
-                        {value: '1', label: 'Administrative Region'},
-                        {value: '2', label: 'Populated Place'},
-                        {value: '3', label: 'Structure'},
-                        {value: '4', label: 'Other Topographical Feature'}
-                      ]}
-                      withEmptyOption
-                    />
-                    </Item>
-                  </Col>
-                  <Col span={12}>
-                    <Item label={<InputLabel optional>Feature designation</InputLabel>}>
-                    <FinalField
-                      name={`${name}.featureDesignation`}
-                      control="select"
-                      options={FEATURE_OPTIONS}
-                      showSearch
-                      optionFilterProp="children"
-                      withEmptyOption
-                    />
-                    </Item>
-                  </Col>
-                </Row>
-                <Administratives push={formPush} parentName={name} />
-              </Aux>
-            )}
+            <Row gutter={16}>
+              {fieldExists('name') &&
+              <Col span={8}>
+                <FinalField
+                  name={`${name}.name`}
+                  control="input"
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+              {fieldExists('reference') &&
+              <Col span={8}>
+                <FinalField
+                  name={`${name}.reference`}
+                  control="input"
+                  optional
+                  withLabel
+                />
+              </Col>
+              }
+              {fieldExists('code') &&
+              <Col span={8}>
+                <FinalField
+                  name={`${name}.code`}
+                  control="input"
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+            </Row>
+            <Row gutter={16}>
+              {fieldExists('locationDescription') &&
+              <Col span={12}>
+                <FinalField
+                  name={`${name}.locationDescription`}
+                  control="textarea"
+                  rows={3}
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+              {fieldExists('activityDescription') &&
+              <Col span={12}>
+                <FinalField
+                  name={`${name}.activityDescription`}
+                  control="textarea"
+                  rows={3}
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+            </Row>
+            <Row gutter={16}>
+              {fieldExists('locationPrecision') &&
+              <Col span={12}>
+                <FinalField
+                  name={`${name}.locationPrecision`}
+                  control="select"
+                  options={[
+                    {value: '1', label: 'Exact'},
+                    {value: '2', label: 'Approximate'}
+                  ]}
+                  withEmptyOption
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+              {fieldExists('reach') &&
+              <Col span={12}>
+                <FinalField
+                  name={`${name}.reach`}
+                  control="select"
+                  options={[
+                    {value: '1', label: 'Activity'},
+                    {value: '2', label: 'Indended beneficiaries'}
+                  ]}
+                  withEmptyOption
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+            </Row>
+            <Row gutter={16}>
+              {fieldExists('class') &&
+              <Col span={12}>
+                <FinalField
+                  name={`${name}.class`}
+                  control="select"
+                  options={[
+                    {value: '1', label: 'Administrative Region'},
+                    {value: '2', label: 'Populated Place'},
+                    {value: '3', label: 'Structure'},
+                    {value: '4', label: 'Other Topographical Feature'}
+                  ]}
+                  withEmptyOption
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+              {fieldExists('featureDesignation') &&
+              <Col span={12}>
+                <FinalField
+                  name={`${name}.featureDesignation`}
+                  control="select"
+                  options={FEATURE_OPTIONS}
+                  showSearch
+                  optionFilterProp="children"
+                  withEmptyOption
+                  withLabel
+                  optional
+                />
+              </Col>
+              }
+            </Row>
+            {fieldExists('administratives') &&
+            <Administratives push={formPush} parentName={name} />
+            }
           </Aux>
         )}
         addButton={({ onClick }) => (
