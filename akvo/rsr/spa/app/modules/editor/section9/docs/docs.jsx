@@ -70,21 +70,21 @@ const Docs = ({ formPush, validations }) => {
           <Item label={<InputLabel tooltip="...">Title</InputLabel>}>
             <FinalField name={`${name}.title`} control="input" />
           </Item>
-          {isIATI && (
-            <Row gutter={16}>
-              <Col span={12}>
-                <Item label={<InputLabel optional>Title Language</InputLabel>}>
-                  <FinalField name={`${name}.titleLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
-                </Item>
-              </Col>
-              <Col span={12}>
-                <Item label={<InputLabel optional>Document Language</InputLabel>}>
-                  <FinalField name={`${name}.documentLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
-                </Item>
-              </Col>
-            </Row>
-          )}
           <Row gutter={16}>
+            {fieldExists('titleLanguage') &&
+            <Col span={12}>
+              <Item label={<InputLabel optional>Title Language</InputLabel>}>
+                <FinalField name={`${name}.titleLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
+              </Item>
+            </Col>
+            }
+            {fieldExists('documentLanguage') &&
+            <Col span={12}>
+              <Item label={<InputLabel optional>Document Language</InputLabel>}>
+                <FinalField name={`${name}.documentLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
+              </Item>
+            </Col>
+            }
             {fieldExists('documentDate') && (
             <Col span={12}>
               <Item label={<InputLabel optional>Document Date</InputLabel>}>
