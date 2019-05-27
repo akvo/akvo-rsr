@@ -7,18 +7,24 @@ import arrayMutators from 'final-form-arrays'
 import Sectors from './sectors/sectors'
 import PolicyMarkers from './policy-markers/policy-markers'
 import HumanitarianScopes from './humanitarian-scopes/humanitarian-scope'
-import { getValidations } from '../../../utils/validation-utils'
+import { getValidations, doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
 import InputLabel from '../../../utils/input-label'
 import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
+import validationDefs from './validations'
 import './styles.scss'
 
 const { Item } = Form
 const { Group, Button } = Radio
 
 class Focus extends React.Component{
+  shouldComponentUpdate(){
+    return false
+  }
   render(){
     const {isIATI, isDGIS} = getValidations(this.props.validations)
+    const validationSets = getValidationSets(this.props.validations, validationDefs)
+    const fieldExists = doesFieldExist(validationSets)
     return (
       <div className="focus view">
         <FinalForm
@@ -33,8 +39,8 @@ class Focus extends React.Component{
           }) => (
           <Form layout="vertical">
             <Sectors validations={this.props.validations} formPush={push} />
-            {(isIATI || isDGIS) && <PolicyMarkers validations={this.props.validations} formPush={push} />}
-            {isIATI &&
+            {fieldExists('policyMarkers') && <PolicyMarkers validations={this.props.validations} formPush={push} />}
+            {fieldExists('humanitarianProject') &&
             <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
               <FinalField
                 name="humanitarianProject"
@@ -46,9 +52,9 @@ class Focus extends React.Component{
                 )}
               />
               <AutoSave sectionIndex={8} />
-            </Item> /* TODO: AutoSave root fields */
+            </Item>
             }
-            {isIATI && <HumanitarianScopes formPush={push} />}
+            {fieldExists('humanitarianScopes') && <HumanitarianScopes formPush={push} />}
           </Form>
           )}
         />

@@ -1,4 +1,6 @@
 import * as yup from 'yup'
+import { validationType } from '../../../../utils/validation-utils'
+
 
 const DGIS = yup.object().shape({
   policyMarker: yup.string(),
@@ -14,9 +16,11 @@ const IATI = DGIS.clone().shape({
   vocabularyUri: yup.string()
 })
 
-const defs = {
-  2: yup.array().of(IATI),
-  3: yup.array().of(DGIS),
-}
+const EUTF = IATI.clone()
 
-export default defs
+const output = {}
+output[validationType.IATI] = yup.array().of(IATI)
+output[validationType.DGIS] = yup.array().of(DGIS)
+output[validationType.EUTF] = yup.array().of(EUTF)
+
+export default output
