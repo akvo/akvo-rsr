@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link} from 'react-router-dom'
 import { Icon } from 'antd'
-
+import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
 
 const dict = {
@@ -20,8 +20,8 @@ const dict = {
 }
 
 
-const filterSection11 = rdr => (item) => {
-  if(rdr.showSection11 === false && item.key === 'reporting') return false
+const filterSection11 = validations => (item) => {
+  if(item.key === 'reporting' && (validations.indexOf(validationType.IATI) === -1 && validations.indexOf(validationType.DFID) === -1)) return false
   return true
 }
 
@@ -55,7 +55,7 @@ const MainMenu = ({ rdr }) => (
   <aside className="main-menu">
     <ul>
       <MenuItem hideCheck to="/">Settings</MenuItem>
-      {sections.map((section, index) =>
+      {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
       <MenuItem key={section.key} to={`/${section.key}`} checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}>{index + 1}. {dict[section.key]}</MenuItem>
       )}
     </ul>
