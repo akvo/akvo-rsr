@@ -5,7 +5,6 @@ const RSR = yup.object().shape({
   validations: yup.array().of(yup.number()).default([1, 2]),
   title: yup.string().default('').required(),
   subtitle: yup.string().default('').required(),
-  iatiActivityId: yup.string(),
   iatiStatus: yup.string().required(),
   plannedStartDate: yup.string().required(),
   plannedEndDate: yup.string().required(),
@@ -18,7 +17,11 @@ const RSR = yup.object().shape({
   currentImageCredit: yup.string()
 })
 
-const IATI = RSR.clone().shape({
+const IATI_BASIC = RSR.clone().shape({
+  iatiActivityId: yup.string().required()
+})
+
+const IATI = IATI_BASIC.clone().shape({
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string(),
   defaultFlowType: yup.string(),
@@ -39,7 +42,8 @@ const DGIS = RSR.clone().shape({
 const defs = {
   1: RSR,
   2: IATI,
-  3: DGIS
+  3: DGIS,
+  8: IATI_BASIC
 }
 
 export default defs

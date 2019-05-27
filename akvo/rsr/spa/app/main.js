@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { AppContainer } from 'react-hot-loader'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
-
+import './i18n'
 import Root from './root'
 import configureStore from './store/config'
 

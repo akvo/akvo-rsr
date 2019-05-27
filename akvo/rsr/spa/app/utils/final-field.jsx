@@ -1,8 +1,12 @@
 import React from 'react'
-import { Input, InputNumber, Select, DatePicker } from 'antd'
+import { Input, InputNumber, Select, DatePicker, Form } from 'antd'
 import { Field } from 'react-final-form'
 import moment from 'moment'
+import { useTranslation, Trans } from 'react-i18next'
 import { datePickerConfig } from './misc'
+import InputLabel from './input-label'
+
+const { Item } = Form
 
 const inputNumberAmountFormatting = (currencySymbol) => {
   const step = 1000
@@ -46,13 +50,40 @@ const CONTROLS = {
   }
 }
 
+const Control = (props) => {
+  const { t } = useTranslation()
+  const { control, withLabel, optional, fieldExists } = props
+  if(!control){
+    if(!props.render){
+      return CONTROLS.input(props)
+    }
+    return props.render(props)
+  }
+  if(withLabel){
+    if(fieldExists && fieldExists(props.input.name) === false){
+      return null
+    }
+    return (
+    <Item label={
+      <InputLabel
+        optional={typeof optional === 'function' ? optional(props.input.name) : optional}
+        tooltip={<span dangerouslySetInnerHTML={{__html: t(`${props.input.name}.tooltip`)}} />}
+      >
+      {t(`${props.input.name}.label`)}
+      </InputLabel>}
+    >
+      {CONTROLS[control](props)}
+    </Item>)
+  }
+  return CONTROLS[control](props)
+}
+
 class FinalField extends React.Component{
   render(){
-    const component = this.props.control ? CONTROLS[this.props.control] : (this.props.render ? this.props.render : CONTROLS.input)
     return (
       <Field
         name={this.props.name}
-        component={component}
+        component={Control}
         {...this.props}
       />
     )
