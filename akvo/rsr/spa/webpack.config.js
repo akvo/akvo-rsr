@@ -143,7 +143,7 @@ const config = env => ({
         }
       },
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    // new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
     new webpack.HotModuleReplacementPlugin(),
   ]
