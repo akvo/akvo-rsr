@@ -29,6 +29,7 @@ class IndicatorDimensionName(models.Model):
         verbose_name = _(u'indicator dimension name')
         verbose_name_plural = _(u'indicator dimension names')
         ordering = ['id']
+        unique_together = ('project', 'name')
 
     def __unicode__(self):
         return self.name
@@ -46,6 +47,7 @@ class IndicatorDimensionValue(models.Model):
         verbose_name = _(u'indicator dimension value')
         verbose_name_plural = _(u'indicator dimension values')
         ordering = ['id']
+        unique_together = ('name', 'value')
 
     def __unicode__(self):
         return u'{} - {}'.format(self.name, self.value)
