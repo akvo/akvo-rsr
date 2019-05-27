@@ -159,10 +159,10 @@ class PermissionFilteringTestCase(TestCase):
                 # indicator
                 indicator = M.Indicator.objects.create(result=result)
                 # indicator dimension
-                dimension = M.IndicatorDimension.objects.create(indicator=indicator)
+                M.IndicatorDimension.objects.create(indicator=indicator)
                 # indicator dimension name and value
                 dimension_name = M.IndicatorDimensionName.objects.create(project=project)
-                M.IndicatorDimensionValue.objects.create(name=dimension_name)
+                dimension_value = M.IndicatorDimensionValue.objects.create(name=dimension_name)
                 # indicator label
                 M.IndicatorLabel.objects.create(indicator=indicator, label=label)
                 # indicator reference
@@ -197,7 +197,7 @@ class PermissionFilteringTestCase(TestCase):
                     # indicator period data
                     data = M.IndicatorPeriodData.objects.create(period=period, user=user)
                     # disaggregation
-                    M.Disaggregation.objects.create(update=data, dimension=dimension)
+                    M.Disaggregation.objects.create(update=data, dimension_value=dimension_value)
                     # indicator period data comment
                     M.IndicatorPeriodDataComment.objects.create(data=data, user=user)
                     # comments
