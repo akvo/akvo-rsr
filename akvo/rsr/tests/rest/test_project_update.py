@@ -115,6 +115,53 @@ class RestProjectUpdateTestCase(BaseTestCase):
                                })
         self.assertEqual(response.status_code, 201)
 
+    def test_rest_patch_project_update(self):
+        """Checks the REST project update endpoint PATCH."""
+        self.c.login(username=self.user.username, password='password')
+        response = self.c.post('/rest/v1/project_update/',
+                               {
+                                   'project': self.project.pk,
+                                   'user': self.user.pk,
+                                   'title': 'Project Update Title'
+                               })
+        update_id = response.data['id']
+        updated_title = 'Updated Title'
+
+        # When
+        response = self.c.patch(
+            '/rest/v1/project_update/{}/?format=json'.format(update_id),
+            json.dumps({'title': updated_title}),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.data['title'], updated_title)
+        self.assertEqual(response.status_code, 200)
+
+    def test_rest_delete_project_update(self):
+        """Checks that user can delete their own project update."""
+        # Given
+        self.c.login(username=self.user.username, password='password')
+        response = self.c.post('/rest/v1/project_update/',
+                               {
+                                   'project': self.project.pk,
+                                   'user': self.user.pk,
+                                   'title': 'Allowed'
+                               })
+        self.assertEqual(response.status_code, 201)
+        update_id = response.data['id']
+
+        # When
+        response = self.c.delete(
+            '/rest/v1/project_update/{}/?format=json'.format(update_id),
+            content_type='application/json'
+        )
+
+        # Then
+        self.assertEqual(response.status_code, 204)
+        with self.assertRaises(ProjectUpdate.DoesNotExist):
+            ProjectUpdate.objects.get(id=update_id)
+
     def test_rest_cannot_post_project_update_to_random_projects(self):
         """
         Checks the REST project update endpoint POST functions.
