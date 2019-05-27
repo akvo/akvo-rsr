@@ -1,8 +1,13 @@
 
 export const validationType = {
-  basic: 1,
+  RSR: 1,
   IATI: 2,
-  DGIS: 3
+  DGIS: 3,
+  NLR: 4,
+  EUTF: 5,
+  DFID: 6,
+  Gietrenk: 7,
+  IATI_BASIC: 8
 }
 
 export const getValidations = (validationIds) => {

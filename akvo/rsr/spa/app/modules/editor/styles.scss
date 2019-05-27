@@ -209,11 +209,13 @@ hr{
   .ant-collapse{
     margin-bottom: 20px;
     .ant-collapse-content-box{
-      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child{
+      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-child{
         margin-bottom: 0;
       }
-      .ant-form>.ant-row:last-child .ant-col .ant-form-item{
-        margin-bottom: 0;
+      .ant-form>.ant-row:last-child, &>div>.ant-row:last-child{
+        .ant-col .ant-form-item{
+          margin-bottom: 0;
+        }
       }
       .ant-form-item-control{
         line-height: 1;

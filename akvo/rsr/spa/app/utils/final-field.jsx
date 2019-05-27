@@ -5,6 +5,7 @@ import moment from 'moment'
 import { useTranslation, Trans } from 'react-i18next'
 import { datePickerConfig } from './misc'
 import InputLabel from './input-label'
+import SectionContext from '../modules/editor/section-context'
 
 const { Item } = Form
 
@@ -60,20 +61,25 @@ const Control = (props) => {
     return props.render(props)
   }
   if(withLabel){
-    if(fieldExists && fieldExists(props.input.name) === false){
+    const name = props.input.name.split('.').reduce((acc, curr) => curr)
+    if(fieldExists && fieldExists(name) === false){
       return null
     }
     return (
+    <SectionContext.Consumer>
+    {section =>
     <Item label={
       <InputLabel
-        optional={typeof optional === 'function' ? optional(props.input.name) : optional}
-        tooltip={<span dangerouslySetInnerHTML={{__html: t(`${props.input.name}.tooltip`)}} />}
+        optional={typeof optional === 'function' ? optional(name) : optional}
+        tooltip={<span dangerouslySetInnerHTML={{__html: t(`${section}:${name}.tooltip`)}} />}
       >
-      {t(`${props.input.name}.label`)}
+      {t(`${section}:${name}.label`)}
       </InputLabel>}
     >
       {CONTROLS[control](props)}
-    </Item>)
+    </Item>
+    }
+    </SectionContext.Consumer>)
   }
   return CONTROLS[control](props)
 }
@@ -89,5 +95,6 @@ class FinalField extends React.Component{
     )
   }
 }
+// FinalField.contextType = SectionContext
 
 export default FinalField

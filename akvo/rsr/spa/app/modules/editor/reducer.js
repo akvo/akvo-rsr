@@ -7,7 +7,7 @@ import fieldSets from './field-sets'
 export const initialState = {
   saving: false,
   lastSaved: null,
-  validations: [1, 2],
+  validations: [1],
   isPublic: true
 }
 for(let i = 0; i < sectionLength; i += 1){

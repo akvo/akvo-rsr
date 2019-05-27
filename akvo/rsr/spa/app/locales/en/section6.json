@@ -1,0 +1,28 @@
+{
+  "currency": {
+    "label": "Currency",
+    "tooltip": "The default currency for this project. Used in all financial aspects of the project."
+  },
+  "amount": {
+    "label": "Amount"
+  },
+  "label": {
+    "label": "Additional info"
+  },
+  "aidTypeVocabulary":{
+    "label": "Aid type vocabulary"
+  },
+  "capitalSpendPercentage": {
+    "label": "Capital spend percentage"
+  },
+  "periodStart": {
+    "label": "Period start"
+  },
+  "periodEnd": {
+    "label": "Period End"
+  },
+  "valueDate": {
+    "label": "Value date"
+  }
+  
+}

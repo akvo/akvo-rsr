@@ -5,10 +5,8 @@ import {
 } from 'antd'
 import currencies from 'currency-codes/data'
 import { Form as FinalForm } from 'react-final-form'
-import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
-import InputLabel from '../../../../utils/input-label'
 import AutoSave from '../../../../utils/auto-save'
 import { validationType, isFieldOptional, doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import ProjectPhoto from './project-photo'
@@ -19,6 +17,7 @@ import FLOW_TYPES from '../options/flow-types.json'
 import FINANCE_TYPES from '../options/finance-types.json'
 import tiedStatusOptions from '../options/tied-statuses.json'
 import ParentPicker from './parent-picker'
+import SectionContext from '../../section-context'
 import '../styles.scss'
 
 const { Item } = Form
@@ -53,6 +52,7 @@ class Info extends React.Component{
     const fieldExists = doesFieldExist(validationSets)
     return (
       <div className="info view">
+        <SectionContext.Provider value="section1">
         <Form layout="vertical">
         <FinalForm
           onSubmit={() => {}}
@@ -216,8 +216,9 @@ class Info extends React.Component{
 
             </div>
           )}
-        />
+          />
         </Form>
+        </SectionContext.Provider>
       </div>
     )
   }

@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+import { validationType } from '../../../../utils/validation-utils'
 
 const DGIS = yup.object().shape({
   value: yup.mixed().default(null),
@@ -25,10 +26,12 @@ const IATI = DGIS.clone().shape({
   type: yup.string()
 })
 
+const DFID = IATI.clone()
 
-const defs = {
-  3: yup.array().of(DGIS),
-  2: yup.array().of(IATI),
-}
 
-export default defs
+const output = {}
+output[validationType.IATI] = yup.array().of(IATI)
+output[validationType.DGIS] = yup.array().of(DGIS)
+output[validationType.DFID] = yup.array().of(DFID)
+
+export default output

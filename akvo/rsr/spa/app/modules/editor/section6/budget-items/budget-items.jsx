@@ -9,7 +9,7 @@ import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import { budgetItemTypes } from '../../../../utils/constants'
 import { Aux } from '../../../../utils/misc'
-import { validationType, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
+import { validationType, isFieldOptional, getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import validationDefs from './validations'
 
@@ -27,6 +27,7 @@ const BudgetItems = ({ formPush, validations, currency }) => {
   const isIATI = validations.indexOf(validationType.IATI) !== -1
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
+  const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
       <div className="total">
@@ -58,11 +59,12 @@ const BudgetItems = ({ formPush, validations, currency }) => {
         setName="budgetItems"
         sectionIndex={6}
         header={(index, type) => {
+          if(!type) return null
           return <span>{budgetItemTypes.find(it => it.value === type).label}</span>
         }}
         headerField="type"
         headerMore={(index, amount) => {
-          if(!isIATI){
+          if(!fieldExists('currency')){
             return <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
           }
           return (
@@ -78,9 +80,8 @@ const BudgetItems = ({ formPush, validations, currency }) => {
           return (
             <div>
               <Row gutter={16}>
-                {isIATI && (
+                {fieldExists('currency') && (
                   <Col span={12}>
-                    <Item label={<InputLabel optional tooltip="...">Currency</InputLabel>}>
                     <FinalField
                       name={`${name}.currency`}
                       defaultValue={currency}
@@ -88,82 +89,89 @@ const BudgetItems = ({ formPush, validations, currency }) => {
                       options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
                       showSearch
                       optionFilterProp="children"
+                      withLabel
+                      optional
                     />
-                    </Item>
                   </Col>
                 )}
                 <Col span={12}>
-                  <Item label={<InputLabel tooltip="...">Amount</InputLabel>}>
                   <FinalField
                     name={`${name}.amount`}
                     control="input-number"
+                    withLabel
+                    fieldExists={fieldExists}
+                  />
+                </Col>
+              </Row>
+              <FinalField
+                name={`${name}.label`}
+                control="input"
+                withLabel
+                optional
+                fieldExists={fieldExists}
+              />
+
+              <Row gutter={16}>
+                {fieldExists('budgetType') &&
+                <Col span={12}>
+                  <Item label={<InputLabel optional>Budget type</InputLabel>}>
+                  <FinalField
+                    name={`${name}.type`}
+                    render={({ input }) => (
+                        <Radio.Group {...input}>
+                          <Radio.Button value={1}>Original</Radio.Button>
+                          <Radio.Button value={2}>Revised</Radio.Button>
+                        </Radio.Group>
+                    )}
                   />
                   </Item>
                 </Col>
+                }
+                {fieldExists('status') &&
+                <Col span={12}>
+                  <Item label={<InputLabel optional={isOptional('status')}>Status</InputLabel>}>
+                  <FinalField
+                    name={`${name}.status`}
+                    render={({ input }) => (
+                        <Radio.Group {...input}>
+                          <Radio.Button value={1}>Indicative</Radio.Button>
+                          <Radio.Button value={2}>Committed</Radio.Button>
+                        </Radio.Group>
+                    )}
+                  />
+                  </Item>
+                </Col>
+                }
               </Row>
-              <Item label={<InputLabel optional tooltip="...">Additional info</InputLabel>}>
-              <FinalField
-                name={`${name}.label`}
-              />
-              </Item>
-              {isIATI && (
-                <Aux>
-                  <Row gutter={16}>
-                    <Col span={12}>
-                      <Item label={<InputLabel optional>Budget type</InputLabel>}>
-                      <FinalField
-                        name={`${name}.budgetType`}
-                        render={({ input }) => (
-                            <Radio.Group {...input}>
-                              <Radio.Button value={1}>Original</Radio.Button>
-                              <Radio.Button value={2}>Revised</Radio.Button>
-                            </Radio.Group>
-                        )}
-                      />
-                      </Item>
-                    </Col>
-                    <Col span={12}>
-                      <Item label={<InputLabel optional>Status</InputLabel>}>
-                      <FinalField
-                        name={`${name}.status`}
-                        render={({ input }) => (
-                            <Radio.Group {...input}>
-                              <Radio.Button value={1}>Indicative</Radio.Button>
-                              <Radio.Button value={2}>Committed</Radio.Button>
-                            </Radio.Group>
-                        )}
-                      />
-                      </Item>
-                    </Col>
-                  </Row>
-                  <Row gutter={16}>
-                    <Col span={8}>
-                      <Item label="Period start">
-                      <FinalField
-                        name={`${name}.periodStart`}
-                        control="datepicker"
-                      />
-                      </Item>
-                    </Col>
-                    <Col span={8}>
-                      <Item label="Period end">
-                      <FinalField
-                        name={`${name}.periodEnd`}
-                        control="datepicker"
-                      />
-                      </Item>
-                    </Col>
-                    <Col span={8}>
-                      <Item label={<InputLabel optional={isOptional('valueDate')}>Value date</InputLabel>}>
-                      <FinalField
-                        name={`${name}.valueDate`}
-                        control="datepicker"
-                      />
-                      </Item>
-                    </Col>
-                  </Row>
-                </Aux>
-              )}
+
+              {fieldExists('periodStart') &&
+              <Row gutter={16}>
+                <Col span={8}>
+                  <FinalField
+                    name={`${name}.periodStart`}
+                    control="datepicker"
+                    withLabel
+                    optional={isOptional}
+                  />
+                </Col>
+                <Col span={8}>
+                  <FinalField
+                    name={`${name}.periodEnd`}
+                    control="datepicker"
+                    withLabel
+                    optional={isOptional}
+                  />
+                </Col>
+                <Col span={8}>
+                  <FinalField
+                    name={`${name}.valueDate`}
+                    control="datepicker"
+                    withLabel
+                    optional={isOptional}
+                  />
+                </Col>
+              </Row>
+              }
             </div>
           )
         }}

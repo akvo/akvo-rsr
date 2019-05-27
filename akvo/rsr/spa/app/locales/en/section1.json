@@ -58,5 +58,8 @@
   "defaultFinanceType": {
     "label": "Default finance type",
     "tooltip": "This is the IATI identifier for the type of finance. This element specifies a default for all the transactions in the project’s activity report; it can be overridden at the individual transaction level. For reference visit: <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"http://iatistandard.org/202/codelists/FinanceType/\">http://iatistandard.org/202/codelists/FinanceType/</a>"
+  },
+  "amount": {
+    "label": "Amount"
   }
 }

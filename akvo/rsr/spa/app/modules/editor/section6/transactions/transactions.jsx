@@ -8,7 +8,7 @@ import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import countries from '../../../../utils/countries'
 import { Aux } from '../../../../utils/misc'
-import { validationType } from '../../../../utils/validation-utils'
+import { getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
 import TYPE_OPTIONS from './options/type-options.json'
 import CHANNEL_OPTIONS from './options/channels.json'
 import FINANCE_TYPE_OPTIONS from '../../section1/options/finance-types.json'
@@ -18,6 +18,7 @@ import AID_TYPE_OPTIONS from '../../section1/options/aid-types.json'
 import AID_TYPE_VOCABULARY_OPTIONS from '../../section1/options/aid-type-vocabulary.json'
 import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
+import validationDefs from './validations'
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
@@ -38,7 +39,8 @@ const TypeField = ({ name }) => (
 )
 
 const Transactions = ({ validations, formPush }) => {
-  const isIATI = validations.indexOf(validationType.IATI) !== -1
+  const validationSets = getValidationSets(validations, validationDefs)
+  const fieldExists = doesFieldExist(validationSets)
   return (
     <ItemArray
       setName="transactions"
@@ -49,7 +51,7 @@ const Transactions = ({ validations, formPush }) => {
       panel={name => (
         <div>
           <Row gutter={16}>
-            {isIATI &&
+            {fieldExists('currency') &&
             <Col span={12}>
               <Item label={<InputLabel optional tooltip="...">Currency</InputLabel>}>
               <FinalField
@@ -62,7 +64,7 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
             }
-            {!isIATI &&
+            {(!fieldExists('humanitarianTransaction') && fieldExists('type')) &&
             <Col span={12}>
               <TypeField name={name} />
             </Col>
@@ -76,7 +78,7 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
           </Row>
-          {isIATI && (
+          {fieldExists('humanitarianTransaction') && (
           <Row gutter={16}>
             <Col span={12}>
               <TypeField name={name} />
@@ -96,6 +98,7 @@ const Transactions = ({ validations, formPush }) => {
             </Col>
           </Row>
           )}
+          {fieldExists('date') &&
           <Row gutter={16}>
             <Col span={12}>
               <Item label={(
@@ -122,6 +125,8 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
           </Row>
+          }
+          {fieldExists('providerOrganisation') &&
           <section>
             <div className="h-holder">
               <h5>Provider organisation</h5>
@@ -143,6 +148,8 @@ const Transactions = ({ validations, formPush }) => {
               </Col>
             </Row>
           </section>
+          }
+          {fieldExists('recipientOrganisation') &&
           <section>
             <div className="h-holder">
               <h5>Recipient organisation</h5>
@@ -164,27 +171,31 @@ const Transactions = ({ validations, formPush }) => {
               </Col>
             </Row>
           </section>
-          <Item label={<InputLabel optional>Description</InputLabel>}>
+          }
           <FinalField
             name={`${name}.description`}
+            control="input"
+            withLabel
+            optional
+            fieldExists={fieldExists}
           />
-          </Item>
-          {isIATI &&
-          <Item label={<InputLabel optional>Reference</InputLabel>}>
           <FinalField
             name={`${name}.reference`}
+            control="input"
+            fieldExists={fieldExists}
+            withLabel
+            optional
           />
-          </Item>
-          }
-          <Item label={<InputLabel optional>Aid Type Vocabulary</InputLabel>}>
           <FinalField
             name={`${name}.aidTypeVocabulary`}
             control="select"
             options={AID_TYPE_VOCABULARY_OPTIONS}
             withEmptyOption
+            withLabel
+            optional
+            fieldExists={fieldExists}
           />
-          </Item>
-          {isIATI &&
+          {fieldExists('aidType') &&
           <Aux>
             <Item label={<InputLabel optional>Aid Type</InputLabel>}>
             <FinalField

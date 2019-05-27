@@ -2,11 +2,12 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 // import Backend from 'i18next-xhr-backend'
 // Temporarily importing translations directly instead of using the Backend module
-import translation from './locales/en/editor.json'
+import section1 from './locales/en/section1.json'
+import section6 from './locales/en/section6.json'
 
 const resources = {
   en: {
-    translation
+    section1, section6
   }
 }
 
