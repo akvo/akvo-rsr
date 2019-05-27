@@ -838,13 +838,15 @@ function getTotalBudget() {
     request.send();
 }
 
-function returnRemoveButton(parentNode, error) {
+function returnRemoveButton(parentNode, error, errorText) {
     var container = parentNode.querySelector(".delete-related-object-container");
 
     if (error) {
         var errorNode = document.createElement("div");
         errorNode.setAttribute("style", "color: red; margin-left: 5px;");
-        errorNode.innerHTML = defaultValues.delete_error;
+        errorNode.innerHTML = errorText
+            ? `${defaultValues.delete_error}: ${errorText}`
+            : defaultValues.delete_error;
         container.appendChild(errorNode);
     }
 
@@ -905,7 +907,7 @@ function deleteItem(itemId, itemType) {
             return false;
         } else {
             // We reached our target server, but it returned an error
-            returnRemoveButton(relatedObjDiv, true);
+            returnRemoveButton(relatedObjDiv, true, request.responseText);
             return false;
         }
     };

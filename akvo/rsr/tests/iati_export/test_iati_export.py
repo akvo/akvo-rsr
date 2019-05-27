@@ -109,6 +109,10 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             title="Test related project for IATI export",
             iati_activity_id="NL-KVK-1234567890-12345",
         )
+        related_project_2 = Project.objects.create(
+            title="Test related project for IATI export",
+            iati_activity_id="NL-KVK-1234567890-98765",
+        )
 
         # Create partnership
         Partnership.objects.create(
@@ -158,12 +162,12 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         RelatedProject.objects.create(
             project=project,
             related_iati_id="NL-KVK-related",
-            relation=RelatedProject.PROJECT_RELATION_PARENT
+            relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
         RelatedProject.objects.create(
-            project=related_project,
+            project=related_project_2,
             related_project=project,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
+            relation=RelatedProject.PROJECT_RELATION_PARENT
         )
 
         # Add sector

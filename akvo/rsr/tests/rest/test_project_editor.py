@@ -72,6 +72,7 @@ class BaseReorderTestCase(object):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def tearDown(self):
+        Result.objects.all().delete()
         Project.objects.all().delete()
         User.objects.all().delete()
         Organisation.objects.all().delete()
@@ -695,6 +696,7 @@ class DefaultPeriodsTestCase(TestCase):
         self.import_status2, self.import_message2 = self.child_project2.import_results()
 
     def tearDown(self):
+        Result.objects.all().delete()
         Project.objects.all().delete()
         User.objects.all().delete()
 
