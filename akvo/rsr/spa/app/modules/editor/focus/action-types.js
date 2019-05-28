@@ -1,5 +1,0 @@
-export default {
-  ADD: 'PE_SECTORS_ADD',
-  REMOVE: 'PE_SECTORS_REMOVE',
-  EDIT_FIELD: 'PE_SECTORS_EDIT_FIELD'
-}

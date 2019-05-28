@@ -71,4 +71,14 @@ header{
   margin-bottom: 10px;
 }
 
+.public-DraftEditor-content{
+  word-break: break-all;
+}
+
+.ant-col{
+  .ant-calendar-picker{
+    display: block;
+  }
+}
+
 @import "./container.scss"
