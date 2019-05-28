@@ -69,7 +69,24 @@ const initialModels = {
         objects: undefined,
         ids: undefined
     },
-    user: { fetched: false, changing: false, changed: false, objects: undefined, ids: undefined }
+    user: { fetched: false, changing: false, changed: false, objects: undefined, ids: undefined },
+    // Set the initial state to fetched, since these models don't need to be
+    // fetched in the public page. The reducer does the right thing when doing a
+    // fetch for them, setting fetched to false.
+    reports: {
+        fetched: true,
+        changing: false,
+        changed: false,
+        objects: undefined,
+        ids: undefined
+    },
+    narrative_reports: {
+        fetched: true,
+        changing: false,
+        changed: false,
+        objects: undefined,
+        ids: undefined
+    }
 };
 
 const assignChildren = (state, model) => {
@@ -171,6 +188,19 @@ export default function modelsReducer(state = initialModels, action) {
                 changing: { $set: false },
                 changed: { $set: true },
                 objects: { $merge: { [object.id]: object } },
+                ids: { $push: [object.id] }
+            });
+            // remove duplicate ids
+            merged.ids = distinct(merged.ids);
+            return { ...state, [model]: merged };
+        }
+
+        case c.UPDATE_MODEL_FIELD: {
+            const { model, object } = action.payload;
+            const merged = update(state[model], {
+                changing: { $set: false },
+                changed: { $set: true },
+                objects: { [object.id]: { $merge: object } },
                 ids: { $push: [object.id] }
             });
             // remove duplicate ids

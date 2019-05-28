@@ -73,14 +73,23 @@ class RestrictedUserProjects(BaseTestCase):
 
 class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
 
+    def assertProjectConnectedToUser(self, project, user):
+        '''
+        Assert if a user is connected to project through an organisation
+        '''
+        projects = [p
+                    for organisation in user.organisations.all()
+                    for p in organisation.all_projects()]
+        self.assertIn(project, projects)
+
     def test_user_project_access_default(self):
-        self.assertTrue(self.projects['X'].connected_to_user(self.user_m))
-        self.assertTrue(self.projects['X'].connected_to_user(self.user_n))
-        self.assertTrue(self.projects['Y'].connected_to_user(self.user_m))
-        self.assertTrue(self.projects['Y'].connected_to_user(self.user_n))
-        self.assertTrue(self.projects['Y'].connected_to_user(self.user_o))
-        self.assertTrue(self.projects['Z'].connected_to_user(self.user_n))
-        self.assertTrue(self.projects['Z'].connected_to_user(self.user_o))
+        self.assertProjectConnectedToUser(self.projects['X'], self.user_m)
+        self.assertProjectConnectedToUser(self.projects['X'], self.user_n)
+        self.assertProjectConnectedToUser(self.projects['Y'], self.user_m)
+        self.assertProjectConnectedToUser(self.projects['Y'], self.user_n)
+        self.assertProjectConnectedToUser(self.projects['Y'], self.user_o)
+        self.assertProjectConnectedToUser(self.projects['Z'], self.user_n)
+        self.assertProjectConnectedToUser(self.projects['Z'], self.user_o)
 
     def test_new_user_can_view_projects(self):
         unrestricted_user = self.create_user('A@org.org')
@@ -545,6 +554,44 @@ class RestrictedUserProjectsByOrgTestCase(RestrictedUserProjects):
         self.assertTrue(self.user_p.has_perm('rsr.view_project', self.projects['W']))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['Y']))
         self.assertFalse(self.user_p.has_perm('rsr.view_project', self.projects['U']))
+
+    # Add an employment
+
+    def test_adding_employment_gives_access_to_new_org_projects(self):
+        """
+        User M      User N      User O
+        Admin       Admin       User
+           \        /   \      /
+            \      /     \    /
+              Org A       Org B                Org C
+            /      \      /    \                 /\
+           /        \    /      \               /  \
+        Project X   Project Y   Project Z      /  Project W
+                        |                     /
+                        +---------------------
+        """
+        org_c = Organisation.objects.create(name='C', long_name='C', can_create_projects=True)
+        Partnership.objects.create(
+            organisation=org_c,
+            project=self.projects['Y'],
+            iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
+        )
+        project_w = Project.objects.create(title='W')
+        Partnership.objects.create(
+            organisation=org_c,
+            project=project_w,
+            iati_organisation_role=Partnership.IATI_FUNDING_PARTNER
+        )
+        restrict_projects(self.user_n, self.user_o, [self.projects['Y']])
+
+        # When
+        Employment.objects.create(
+            user=self.user_o, organisation=org_c, group=self.users, is_approved=True
+        )
+
+        # Then
+        self.assertTrue(self.user_o.has_perm('rsr.view_project', project_w))
+        self.assertFalse(self.user_o.has_perm('rsr.view_project', self.projects['Y']))
 
     # Remove a partner
 

@@ -16,15 +16,18 @@
         </div>
 
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-6">
             {% if indicator.is_child_indicator %}
               {% include text_input with obj=indicator field='title' disabled=True %}
             {% else %}
               {% include text_input with obj=indicator field='title' %}
             {% endif %}
           </div>
-          <div class="col-md-4">
-            {% include choice_input with obj=indicator field='type' %}
+          <div class="col-md-3">
+              {% include choice_input with obj=indicator field='type' %}
+          </div>
+          <div class="col-md-3">
+              {% include boolean_input with obj=indicator field='export_to_iati' boolean=True %}
           </div>
         </div>
 
@@ -88,10 +91,11 @@
         {% endif %}
 
         <div class="related-object-container {% if indicator.type == 2 %} hidden {% endif %}{{ validations|mandatory_or_hidden:"rsr_indicatordimension" }}">
-            <h5>{% trans 'Indicator Dimensions' %}</h5>
+            <h5>{% trans 'Indicator Disaggregations' %} <span class="glyphicon glyphicon-info-sign info-icon info-icon-special" toggleid="iati-dimensions-helptext-{{indicator_id_string}}"></span></h5>
             <!-- *NOTE*: Just hiding the related container above doesn't work, because the
                  javascript to deduce hidden fields from validation sets removes that hidden tag,
                  once the page loads. This child needs to be hidden to prevent that.  -->
+            <span class="help-block hidden" id="iati-dimensions-helptext-{{indicator_id_string}}">{% trans 'The term "disaggregation" is equivalent to the IATI term "dimension". For those reporting to IATI via RSR, disaggregations and their associated data are mapped accordingly as dimensions in your IATI export.' %}</span>
             <div class="indicator-dimension-container {% if indicator.type == 2 %} hidden {% endif %}" id="indicator-dimension-container">
                 {% for dimension in indicator.dimensions.all %}
                 {% include "myrsr/project_editor/related_objects/indicator_dimension_input.html" %}
@@ -102,7 +106,7 @@
                 {% endfor %}
                 <div class="row form-group">
                     <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-indicator-dimension"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator dimension' %}</a>
+                        <a href="#" class="add-indicator-dimension"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator disaggregation' %}</a>
                     </div>
                 </div>
             </div>

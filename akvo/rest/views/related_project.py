@@ -4,9 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from rest_framework.response import Response
+from rest_framework import status
+
 
 from akvo.rsr.models import RelatedProject
-
+from akvo.rsr.models.related_project import ParentChangeDisallowed
 from ..serializers import RelatedProjectSerializer
 from ..viewsets import PublicProjectViewSet
 
@@ -16,3 +19,9 @@ class RelatedProjectViewSet(PublicProjectViewSet):
     """
     queryset = RelatedProject.objects.all()
     serializer_class = RelatedProjectSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            return super(RelatedProjectViewSet, self).destroy(request, *args, **kwargs)
+        except ParentChangeDisallowed as e:
+            return Response(str(e), status=status.HTTP_403_FORBIDDEN)

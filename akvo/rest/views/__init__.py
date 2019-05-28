@@ -63,6 +63,7 @@ from .project_editor import (project_editor,
                              project_editor_reorder_items,
                              project_editor_default_periods,
                              project_editor_upload_file,
+                             project_editor_copy_results,
                              project_editor_import_results,
                              project_editor_import_indicator,
                              project_editor_add_validation,
@@ -86,7 +87,7 @@ from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
-from .report import report_formats, ReportViewSet
+from .report import report_formats, ReportViewSet, project_reports
 from .result import ResultsViewSet, ResultsFrameworkViewSet
 from .right_now_in_akvo import right_now_in_akvo_view
 from .sector import SectorViewSet
@@ -194,6 +195,7 @@ __all__ = [
     'project_editor_upload_file',
     'project_editor_add_validation',
     'project_editor_remove_validation',
+    'project_editor_copy_results',
     'project_editor_import_results',
     'project_editor_import_indicator',
     'project_editor_organisation_logo',
@@ -203,6 +205,7 @@ __all__ = [
     'RelatedProjectViewSet',
     'report_formats',
     'ReportViewSet',
+    'project_reports',
     'request_organisation',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',

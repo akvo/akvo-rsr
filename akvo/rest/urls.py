@@ -164,6 +164,9 @@ urlpatterns += (
     url(r'v1/project/(?P<pk>[0-9]+)/upload_file/$',
         views.project_editor_upload_file,
         name='project_editor_upload_file'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/copy_results/(?P<source_pk>[0-9]+)/$',
+        views.project_editor_copy_results,
+        name='project_editor_copy_results'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/import_results/$',
         views.project_editor_import_results,
         name='project_editor_import_results'),
@@ -235,6 +238,9 @@ urlpatterns += (
     url(r'v1/typeaheads/keywords$',
         views.typeahead_keyword,
         name='keyword_typeahead'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/reports/$',
+        views.project_reports,
+        name='project_reports'),
 )
 
 # My reports

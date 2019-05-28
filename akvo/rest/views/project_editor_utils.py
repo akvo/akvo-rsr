@@ -569,7 +569,7 @@ def sort_keys(x):
         Model, _ = RELATED_OBJECTS_MAPPING[Model]
     if Model in MANY_TO_MANY_FIELDS or Model != Project:
         level += 1
-    return level
+    return (level, key_parts.ids)
 
 
 def create_or_update_objects_from_data(project, data):

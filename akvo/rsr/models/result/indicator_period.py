@@ -114,7 +114,7 @@ class IndicatorPeriod(models.Model):
 
         for child_indicator in child_indicators.all():
             if new_period:
-                child_indicator.result.project.add_period(child_indicator, self)
+                child_indicator.result.project.copy_period(child_indicator, self, set_parent=True)
             else:
                 child_indicator.result.project.update_period(child_indicator, self)
 
@@ -311,6 +311,22 @@ class IndicatorPeriod(models.Model):
         """
         return self.child_periods.count() > 0
 
+    def can_save_update(self, update_id=None):
+        """Return True if an update can be created/updated on the indicator period.
+
+        If no update_id is passed, we check if a new update can be created. If
+        an update_id is passed, we verify that the update can be modified.
+
+        Non percentage indicators can have multiple updates. If the indicator
+        is a percentage indicator, we check that no other update is present,
+        other than the one currently being created or changed.
+
+        """
+        return (
+            self.indicator.measure != PERCENTAGE_MEASURE or
+            self.data.exclude(id=update_id).count() == 0
+        )
+
     def child_periods_with_data(self, only_aggregated=False):
         """
         Returns the child indicator periods with numeric values
@@ -406,50 +422,6 @@ class IndicatorPeriod(models.Model):
         than 100.
         """
         return max(self.percent_accomplishment, 100) if self.percent_accomplishment else None
-
-    @property
-    def actual(self):
-        """
-        Returns the actual value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return the baseline value, which is a calculated value.
-        """
-        try:
-            return Decimal(self.actual_value)
-        except (InvalidOperation, TypeError):
-            return self.actual_value if self.actual_value else self.baseline
-
-    @property
-    def target(self):
-        """
-        Returns the target value of the indicator period, if it can be converted to a number.
-        Otherwise it'll return just the target value.
-        """
-        try:
-            return Decimal(self.target_value)
-        except (InvalidOperation, TypeError):
-            return self.target_value
-
-    @property
-    def baseline(self):
-        """
-        Returns the baseline value of the indicator. The baseline is a calculated value:
-
-        - If the period has no previous periods, then it's the baseline value of the indicator
-        - If the period has a previous period, then it's the actual value of that period
-
-        When this baseline value is empty, it returns 0. Otherwise (e.g. 'Available') it just
-        returns the baseline value.
-        """
-        previous_period = self.adjacent_period(False)
-        baseline = self.indicator.baseline_value if not previous_period else previous_period.actual
-
-        if not baseline:
-            return Decimal(0)
-        else:
-            try:
-                return Decimal(baseline)
-            except (InvalidOperation, TypeError):
-                return baseline
 
     @property
     def approved_updates(self):

@@ -40,7 +40,6 @@ from ..mixins import TimestampsMixin
 
 from .iati_check import IatiCheck
 from .result import IndicatorPeriod
-from .link import Link
 from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
 from .project_update import ProjectUpdate
@@ -429,7 +428,7 @@ class Project(TimestampsMixin, models.Model):
             ('post_updates', u'Can post updates'),
         )
 
-    def save(self, last_updated=False, *args, **kwargs):
+    def save(self, *args, **kwargs):
         # Strip title of any trailing or leading spaces
         if self.title:
             self.title = self.title.strip()
@@ -634,6 +633,14 @@ class Project(TimestampsMixin, models.Model):
         """
         return self.reporting_partner.organisation if self.reporting_partner else None
 
+    def organisation_codelist(self):
+        """Return organisation specific custom codelist, if any."""
+
+        if self.reporting_org:
+            return self.reporting_org.codelist
+
+        return None
+
     @property
     def publishing_orgs(self):
         """
@@ -759,18 +766,6 @@ class Project(TimestampsMixin, models.Model):
             return ''
     show_map.allow_tags = True
 
-    def connected_to_user(self, user):
-        '''
-        Test if a user is connected to self through an organisation
-        '''
-        try:
-            for organisation in user.organisations.all():
-                if self in organisation.all_projects():
-                    return True
-        except:
-            pass
-        return False
-
     def is_published(self):
         if self.publishingstatus:
             return self.publishingstatus.status == PublishingStatus.STATUS_PUBLISHED
@@ -804,12 +799,6 @@ class Project(TimestampsMixin, models.Model):
                     return False
 
         return True
-
-    def akvopedia_links(self):
-        return self.links.filter(kind=Link.LINK_AKVOPEDIA)
-
-    def external_links(self):
-        return self.links.filter(kind=Link.LINK_EXTRNAL)
 
     def budget_total(self):
         return Project.objects.budget_total().get(pk=self.pk).budget_total
@@ -851,24 +840,6 @@ class Project(TimestampsMixin, models.Model):
         from .focus_area import FocusArea
         return FocusArea.objects.filter(categories__in=self.categories.all()).distinct()
     focus_areas.allow_tags = True
-
-    def areas_and_categories(self):
-        from .focus_area import FocusArea
-        from .category import Category
-        area_objs = FocusArea.objects.filter(
-            categories__projects__exact=self
-        ).distinct().order_by('name')
-        areas = []
-        for area_obj in area_objs:
-            area = {'area': area_obj}
-            area['categories'] = []
-            for cat_obj in Category.objects.filter(
-                    focus_area=area_obj,
-                    projects=self
-            ).order_by('name'):
-                area['categories'] += [cat_obj.name]
-            areas += [area]
-        return areas
 
     # shortcuts to linked orgs for a single project
     def _partners(self, role=None):
@@ -957,15 +928,6 @@ class Project(TimestampsMixin, models.Model):
     def funding_partnerships(self):
         "Return the Partnership objects associated with the project that have funding information"
         return self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER).order_by('organisation__name').prefetch_related('organisation').all()
-
-    def show_status_large(self):
-        "Show the current project status with background"
-        return mark_safe(
-            "<span class='status_large' style='background-color:%s; color:inherit; "
-            "display:inline-block;'>%s</span>" % (
-                self.STATUSES_COLORS[self.iati_status], codelist_name(ActivityStatus, self, 'iati_status')
-            )
-        )
 
     def iati_project_scope(self):
         return codelist_value(ActivityScope, self, 'project_scope')
@@ -1265,7 +1227,7 @@ class Project(TimestampsMixin, models.Model):
         for result in parent_project.results.all():
             # Only import results that have not been imported before
             if not self.results.filter(parent_result=result).exists():
-                self.add_result(result)
+                self.copy_result(result)
 
         return import_success, 'Results imported'
 
@@ -1317,23 +1279,37 @@ class Project(TimestampsMixin, models.Model):
         if indicator_exists:
             raise ValidationError("Indicator already exists")
 
-        return self.add_indicator(result, parent_indicator)
+        return self.copy_indicator(result, parent_indicator, set_parent=True)
 
-    def add_result(self, result):
-        child_result = apps.get_model('rsr', 'Result').objects.create(
+    def copy_results(self, source_project):
+        """Copy results from a source project."""
+
+        if self.results.count() > 0:
+            raise RuntimeError(_(u'Can copy results only if the results framework is empty.'))
+
+        for result in source_project.results.all():
+            self.copy_result(result, set_parent=False)
+
+    def copy_result(self, source_result, set_parent=True):
+        """Copy the source_result to this project, setting it as parent if specified."""
+        data = dict(
             project=self,
-            parent_result=result,
-            title=result.title,
-            type=result.type,
-            aggregation_status=result.aggregation_status,
-            description=result.description,
+            parent_result=source_result,
+            title=source_result.title,
+            type=source_result.type,
+            aggregation_status=source_result.aggregation_status,
+            description=source_result.description,
         )
+        if not set_parent:
+            data.pop('parent_result')
 
-        for indicator in result.indicators.all():
-            self.add_indicator(child_result, indicator)
+        result = apps.get_model('rsr', 'Result').objects.create(**data)
 
-    def add_indicator(self, result, parent_indicator):
-        """Add a new indicator to the result as a child of the specified indicator.
+        for indicator in source_result.indicators.all():
+            self.copy_indicator(result, indicator, set_parent=set_parent)
+
+    def copy_indicator(self, result, source_indicator, set_parent=True):
+        """Copy a source_indicator to the result, setting it as parent if specified.
 
         NOTE: There can only be one child for an indicator, per result. This
         method automatically updates an existing child indicator, if present.
@@ -1343,30 +1319,37 @@ class Project(TimestampsMixin, models.Model):
 
         """
         Indicator = apps.get_model('rsr', 'Indicator')
-        indicator, created = Indicator.objects.update_or_create(
-            result=result,
-            parent_indicator=parent_indicator,
-            defaults=dict(
-                title=parent_indicator.title,
-                measure=parent_indicator.measure,
-                ascending=parent_indicator.ascending,
-                type=parent_indicator.type,
-            )
+        data = dict(
+            title=source_indicator.title,
+            measure=source_indicator.measure,
+            ascending=source_indicator.ascending,
+            type=source_indicator.type,
+            export_to_iati=source_indicator.export_to_iati,
         )
+        if set_parent:
+            indicator, created = Indicator.objects.update_or_create(
+                result=result,
+                parent_indicator=source_indicator,
+                defaults=data,
+            )
+        else:
+            indicator = Indicator.objects.create(result=result, **data)
+            created = True
+
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
-        self._update_fields_if_not_child_updated(parent_indicator, indicator, fields)
+        self._update_fields_if_not_child_updated(source_indicator, indicator, fields)
 
         if not created:
             return indicator
 
-        for period in parent_indicator.periods.all():
-            self.add_period(indicator, period)
+        for period in source_indicator.periods.all():
+            self.copy_period(indicator, period, set_parent=set_parent)
 
-        for reference in parent_indicator.references.all():
+        for reference in source_indicator.references.all():
             self.add_reference(indicator, reference)
 
-        for dimension in parent_indicator.dimensions.all():
-            self.add_dimension(indicator, dimension)
+        for dimension in source_indicator.dimensions.all():
+            self.copy_dimension(indicator, dimension, set_parent=set_parent)
 
         return indicator
 
@@ -1382,7 +1365,7 @@ class Project(TimestampsMixin, models.Model):
         except Indicator.DoesNotExist:
             return
 
-        update_fields = ['title', 'measure', 'ascending', 'type']
+        update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati']
         for field in update_fields:
             setattr(child_indicator, field, getattr(parent_indicator, field))
         child_indicator.save(update_fields=update_fields)
@@ -1390,27 +1373,28 @@ class Project(TimestampsMixin, models.Model):
         fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
         self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
 
-    def add_period(self, indicator, period):
-        """Add a new period to the indicator as a child of period.
+    def copy_period(self, indicator, source_period, set_parent=True):
+        """Copy the source period to the indicator, and set it as a parent if specified.
 
         NOTE: There can only be one child for a period, per indicator. This
         method automatically updates the existing one, if there is one.
 
         """
         IndicatorPeriod = apps.get_model('rsr', 'IndicatorPeriod')
-        child_period, created = IndicatorPeriod.objects.select_related(
-            'indicator',
-            'indicator__result',
-        ).update_or_create(
-            indicator=indicator,
-            parent_period=period,
-            defaults=dict(
-                period_start=period.period_start,
-                period_end=period.period_end,
-            )
+        data = dict(
+            period_start=source_period.period_start,
+            period_end=source_period.period_end,
         )
+        qs = IndicatorPeriod.objects.select_related('indicator', 'indicator__result')
+        if set_parent:
+            period, _ = qs.update_or_create(
+                indicator=indicator, parent_period=source_period, defaults=data
+            )
+        else:
+            period = qs.create(indicator=indicator, **data)
+
         fields = ['target_value', 'target_comment', 'actual_comment']
-        self._update_fields_if_not_child_updated(period, child_period, fields)
+        self._update_fields_if_not_child_updated(source_period, period, fields)
 
     def update_period(self, indicator, parent_period):
         """Update a period based on the parent period attributes."""
@@ -1435,12 +1419,38 @@ class Project(TimestampsMixin, models.Model):
         fields = ['target_value', 'target_comment', 'actual_comment']
         self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
-    def add_dimension(self, indicator, dimension):
-        apps.get_model('rsr', 'IndicatorDimension').objects.create(
-            indicator=indicator,
-            name=dimension.name,
-            value=dimension.value,
+    def copy_dimension(self, indicator, source_dimension, set_parent=True):
+        IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
+        data = dict(
+            name=source_dimension.name,
+            value=source_dimension.value
         )
+        qs = IndicatorDimension.objects.select_related('indicator', 'indicator__result')
+        if set_parent:
+            qs.update_or_create(
+                indicator=indicator, parent_dimension=source_dimension, defaults=data
+            )
+        else:
+            qs.create(indicator=indicator, **data)
+
+    def update_dimension(self, indicator, parent_dimension):
+        """Update a dimension based on the parent dimension attributes."""
+
+        IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
+        try:
+            child_dimension = IndicatorDimension.objects.select_related(
+                'indicator',
+                'indicator__result'
+            ).get(
+                indicator=indicator,
+                parent_dimension=parent_dimension,
+            )
+        except IndicatorDimension.DoesNotExist:
+            return
+
+        child_dimension.name = parent_dimension.name
+        child_dimension.value = parent_dimension.value
+        child_dimension.save()
 
     def add_reference(self, indicator, reference):
         apps.get_model('rsr', 'IndicatorReference').objects.create(
@@ -1458,18 +1468,6 @@ class Project(TimestampsMixin, models.Model):
                 setattr(child, field, parent_value)
 
         child.save()
-
-    def has_results(self):
-        for result in self.results.all():
-            if result.title or result.type or result.aggregation_status or result.description:
-                return True
-        return False
-
-    def has_indicators(self):
-        for result in self.results.all():
-            if result.indicators.all():
-                return True
-        return False
 
     def indicator_labels(self):
         return apps.get_model('rsr', 'OrganisationIndicatorLabel').objects.filter(
@@ -1620,7 +1618,7 @@ def update_denormalized_project(sender, **kwargs):
     project_update = kwargs['instance']
     project = project_update.project
     project.last_update = project_update
-    project.save(last_updated=True)
+    project.save()
 
 
 @receiver(post_delete, sender=ProjectUpdate)
@@ -1636,4 +1634,4 @@ def rewind_last_update(sender, **kwargs):
         project.last_update = project.updates_desc()[0]
     except IndexError:
         project.last_update = None
-    project.save(last_updated=True)
+    project.save()

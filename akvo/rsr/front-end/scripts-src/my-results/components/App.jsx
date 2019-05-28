@@ -131,9 +131,11 @@ class App extends React.Component {
         fetchModel("updates", projectId, activateToggleAll);
         fetchModel("disaggregations", projectId, activateToggleAll);
         fetchModel("comments", projectId, activateToggleAll);
-        fetchModel("narrative_reports", projectId, activateToggleAll);
-        fetchModel("categories", projectPartners, activateToggleAll);
-        fetchModel("reports", projectId, activateToggleAll);
+        if (!mode.public) {
+            fetchModel("narrative_reports", projectId, activateToggleAll);
+            fetchModel("categories", projectPartners, activateToggleAll);
+            fetchModel("reports", projectId, activateToggleAll);
+        }
     }
 
     componentWillReceiveProps(nextProps) {

@@ -10,14 +10,15 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import unittest
 
-from akvo.rsr.models import (Project, PublishingStatus, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodData, IndicatorReference, User, RelatedProject)
+from akvo.rsr.models import (
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension,
+    RelatedProject)
+from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
+from akvo.rsr.tests.base import BaseTestCase
 
-from django.test import TestCase
 
-
-class ResultsFrameworkTestCase(TestCase):
+class ResultsFrameworkTestCase(BaseTestCase):
     """Tests the results framework."""
 
     def setUp(self):
@@ -29,42 +30,13 @@ class ResultsFrameworkTestCase(TestCase):
         - Published parent project with child projects.
         """
 
-        # Create (super)user
-        self.user = User.objects.create_superuser(
-            username="Super user",
-            email="superuser.results@test.akvo.org",
-            password="password"
-        )
+        # Create user
+        self.user = self.create_user("user@test.akvo.org", "password")
 
-        # Create parent project
-        self.parent_project = Project.objects.create(
-            title="Parent project",
-            subtitle="Parent project (subtitle)",
-        )
-        self.parent_project.publish()
-
-        # # Publish parent project
-        # publishing_status = PublishingStatus.objects.get(project=self.parent_project.pk)
-        # publishing_status.status = 'published'
-        # publishing_status.save(update_fields=['status', ])
-
-        # Create child project
-        self.child_project = Project.objects.create(
-            title="Child project",
-            subtitle="Child project (subtitle)",
-        )
-
-        # Publish child project
-        publishing_status = PublishingStatus.objects.get(project=self.child_project.pk)
-        publishing_status.status = 'published'
-        publishing_status.save(update_fields=['status', ])
-
-        # Link child to parent
-        RelatedProject.objects.create(
-            project=self.parent_project,
-            related_project=self.child_project,
-            relation=RelatedProject.PROJECT_RELATION_CHILD,
-        )
+        # Create projects and relationship
+        self.parent_project = self.create_project("Parent project")
+        self.child_project = self.create_project("Child project")
+        self.make_parent(self.parent_project, self.child_project)
 
         # Create results framework
         self.result = Result.objects.create(project=self.parent_project, title="Result #1", type="1")
@@ -85,6 +57,11 @@ class ResultsFrameworkTestCase(TestCase):
             reference='ABC',
             vocabulary='1',
         )
+        self.dimension = IndicatorDimension.objects.create(
+            indicator=self.indicator,
+            name='Foo',
+            value='Bar',
+        )
 
         # Import results framework into child
         self.import_status, self.import_message = self.child_project.import_results()
@@ -100,10 +77,15 @@ class ResultsFrameworkTestCase(TestCase):
             indicator__result__project=self.child_project).first()
         self.assertEqual(child_period.indicator.result.parent_result, self.period.indicator.result)
         self.assertEqual(child_period.parent_period, self.period)
+
         child_reference = child_period.indicator.references.first()
         self.assertEqual(child_reference.reference, self.reference.reference)
         self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
         self.assertEqual(child_reference.vocabulary_uri, self.reference.vocabulary_uri)
+
+        child_dimension = child_period.indicator.dimensions.first()
+        self.assertEqual(child_dimension.name, self.dimension.name)
+        self.assertEqual(child_dimension.value, self.dimension.value)
 
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
@@ -120,6 +102,7 @@ class ResultsFrameworkTestCase(TestCase):
             baseline_year='2017',
             baseline_value='value',
             baseline_comment='comment',
+            export_to_iati=False,
         )
 
         # Then
@@ -137,6 +120,7 @@ class ResultsFrameworkTestCase(TestCase):
         self.assertEqual(child_indicator.baseline_year, parent_indicator.baseline_year)
         self.assertEqual(child_indicator.baseline_value, parent_indicator.baseline_value)
         self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
+        self.assertEqual(child_indicator.export_to_iati, parent_indicator.export_to_iati)
 
     def test_child_indicator_state_updates_after_change(self):
         """Test that updating indicator propagates to children."""
@@ -148,6 +132,7 @@ class ResultsFrameworkTestCase(TestCase):
         self.indicator.baseline_year = 2010
         self.indicator.baseline_value = 'value',
         self.indicator.baseline_comment = 'comment'
+        self.indicator.export_to_iati = False
 
         # When
         self.indicator.save()
@@ -163,6 +148,7 @@ class ResultsFrameworkTestCase(TestCase):
         self.assertEqual(child_indicator.baseline_year, parent_indicator.baseline_year)
         self.assertEqual(child_indicator.baseline_value, parent_indicator.baseline_value)
         self.assertEqual(child_indicator.baseline_comment, parent_indicator.baseline_comment)
+        self.assertEqual(child_indicator.export_to_iati, parent_indicator.export_to_iati)
 
     def test_child_indicator_state_not_overwritten_after_change(self):
         """Test that updating indicator doesn't overwrite child indicators."""
@@ -350,6 +336,80 @@ class ResultsFrameworkTestCase(TestCase):
         # Then
         self.assertEqual(1, child_indicator.periods.count())
 
+    def test_new_dimension_cloned_to_child(self):
+        """Test that new dimensions are cloned in children that have imported results."""
+        # Given
+        # # Child project has already imported results from parent.
+        indicator = self.indicator
+
+        # When
+        dimension = IndicatorDimension.objects.create(
+            indicator=indicator,
+            name='Baz',
+            value='Quux',
+        )
+
+        # Then
+        self.assertEqual(
+            IndicatorDimension.objects.filter(indicator=indicator).count(),
+            IndicatorDimension.objects.filter(indicator__in=indicator.child_indicators.all()).count(),
+        )
+        self.assertEqual(indicator.child_indicators.count(), dimension.child_dimensions.count())
+
+    def test_child_dimension_state_updates_after_change(self):
+        """Test that updating period propagates to children."""
+        # Given
+        self.dimension.name = 'Baz'
+        self.dimension.value = 'Quux',
+
+        # When
+        self.dimension.save()
+
+        # Then
+        parent_dimension = IndicatorDimension.objects.get(id=self.dimension.pk)
+        child_period = IndicatorPeriod.objects.filter(
+            indicator__result__project=self.child_project).first()
+        child_dimension = child_period.indicator.dimensions.first()
+        self.assertEqual(child_dimension.name, parent_dimension.name)
+        self.assertEqual(child_dimension.value, parent_dimension.value)
+
+    def test_import_does_not_create_deleted_dimensions(self):
+        """Test that import does not create dimensions deleted from child."""
+        # Given
+        indicator = self.indicator
+        child_indicator = indicator.child_indicators.first()
+        # New dimension created (also cloned to child)
+        IndicatorDimension.objects.create(indicator=indicator)
+
+        # When
+        # Import results framework into child
+        child_indicator.dimensions.last().delete()
+        import_status, import_message = self.child_project.import_results()
+
+        # Then
+        self.assertEqual(import_status, 1)
+        self.assertEqual(import_message, "Results imported")
+        self.assertEqual(1, child_indicator.dimensions.count())
+
+    def test_dimension_update_does_not_create_deleted_dimension(self):
+        """Test that dimension update does not create dimension deleted from child."""
+        # Given
+        indicator = self.indicator
+        child_indicator = self.indicator.child_indicators.first()
+        # New dimension created (also cloned to child)
+        dimension = IndicatorDimension.objects.create(indicator=indicator)
+
+        # When
+        # Import results framework into child
+        child_indicator.dimensions.last().delete()
+        # Update dimension
+        dimension.name = 'Baz'
+        dimension.value = 'Quux'
+        dimension.save()
+
+        # Then
+        self.assertEqual(1, child_indicator.dimensions.count())
+
     def test_update(self):
         """
         Test if placing updates will update the actual value of the period.
@@ -485,20 +545,10 @@ class ResultsFrameworkTestCase(TestCase):
         self.assertEqual(child_indicator.measure, "2")
 
         # Create child 2 project
-        child_project_2 = Project.objects.create(
-            title="Child project 2",
-            subtitle="Child project 2 (subtitle)",
-        )
-
-        # Publish child 2 project
-        child_project_2.publish()
+        child_project_2 = self.create_project("Child project 2")
 
         # Link child 2 to parent
-        RelatedProject.objects.create(
-            project=self.parent_project,
-            related_project=child_project_2,
-            relation=RelatedProject.PROJECT_RELATION_CHILD,
-        )
+        self.make_parent(self.parent_project, child_project_2)
 
         # Import results framework into child 2
         self.import_status, self.import_message = child_project_2.import_results()
@@ -653,3 +703,77 @@ class ResultsFrameworkTestCase(TestCase):
 
         # Then
         self.assertEqual(child_indicator.periods.count(), 1)
+
+    def test_copying_results_framework(self):
+        # Given
+        project = self.create_project(title='Sample Project')
+
+        # When
+        project.copy_results(self.parent_project)
+
+        # Then
+        # Results are copied?
+        self.assertEqual(set(project.results.values_list('title', flat=True)),
+                         set(self.parent_project.results.values_list('title', flat=True)))
+        result = Result.objects.get(project=project)
+
+        # Indicators are copied?
+        self.assertEqual(
+            set(Indicator.objects.filter(result__project=project).values_list('title', flat=True)),
+            set(Indicator.objects.filter(result__project=self.parent_project).values_list('title', flat=True))
+        )
+        indicator = Indicator.objects.get(result=result)
+        self.assertIsNone(indicator.parent_indicator)
+
+        # Periods are copied?
+        self.assertEqual(
+            set(IndicatorPeriod.objects.filter(indicator=indicator).values_list('period_start', 'period_end')),
+            set(IndicatorPeriod.objects.filter(indicator=self.indicator).values_list('period_start', 'period_end'))
+        )
+        indicator_period = IndicatorPeriod.objects.get(indicator=indicator)
+        self.assertIsNone(indicator_period.parent_period)
+
+    def test_prevent_adding_multiple_parents(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+
+        # When
+        with self.assertRaises(MultipleParentsDisallowed):
+            self.make_parent(project, self.child_project)
+
+    def test_prevent_changing_parents_if_results_imported(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+
+        # When/Then
+        related_project.project = project
+        with self.assertRaises(ParentChangeDisallowed):
+            related_project.save()
+
+    def test_prevent_deleting_parent_if_results_imported(self):
+        # Given
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+
+        # When/Then
+        with self.assertRaises(ParentChangeDisallowed):
+            related_project.delete()
+
+    def test_allow_changing_parents_if_results_not_imported(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+        Result.objects.filter(project=self.child_project).delete()
+
+        # When
+        related_project.project = project
+        related_project.save()
+
+        # Then
+        self.assertEqual(self.child_project.parents_all().first().id, project.id)

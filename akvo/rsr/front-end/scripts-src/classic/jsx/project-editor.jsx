@@ -838,13 +838,15 @@ function getTotalBudget() {
     request.send();
 }
 
-function returnRemoveButton(parentNode, error) {
+function returnRemoveButton(parentNode, error, errorText) {
     var container = parentNode.querySelector(".delete-related-object-container");
 
     if (error) {
         var errorNode = document.createElement("div");
         errorNode.setAttribute("style", "color: red; margin-left: 5px;");
-        errorNode.innerHTML = defaultValues.delete_error;
+        errorNode.innerHTML = errorText
+            ? `${defaultValues.delete_error}: ${errorText}`
+            : defaultValues.delete_error;
         container.appendChild(errorNode);
     }
 
@@ -905,7 +907,7 @@ function deleteItem(itemId, itemType) {
             return false;
         } else {
             // We reached our target server, but it returned an error
-            returnRemoveButton(relatedObjDiv, true);
+            returnRemoveButton(relatedObjDiv, true, request.responseText);
             return false;
         }
     };
@@ -1485,8 +1487,8 @@ function toggleOtherLabel(selectNode) {
 
 function checkPartnerships() {
     /* - Hides the trash can if there's only one partnership.
-    *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
-    *  - Remove the 'Reporting organisation' option when it is already selected. */
+     *  - Hides the trash can if removing the partnership will not allow the user to edit anymore.
+     *  - Remove the 'Reporting organisation' option when it is already selected. */
 
     if (!defaultValues.is_admin) {
         var partnerContainer = document.getElementById("partner-container");
@@ -2887,6 +2889,12 @@ function setVocabularyOnChange() {
             optionsId: "aid-type-vocabulary-options",
             textInputSelector: ".aid-type-text-input",
             dropDownInputSelector: ".aid-type-dropdown-input"
+        },
+        {
+            selector: ".location-administrative-vocabulary",
+            optionsId: "location-administrative-vocabulary-options",
+            textInputSelector: ".location-administrative-code-text-input",
+            dropDownInputSelector: ".location-administrative-code-dropdown-input"
         }
     ];
     fieldInfo.map(function(info) {
@@ -3399,6 +3407,12 @@ function setImpactProject() {
     if (importButton !== null) {
         importButton.onclick = getImportResults(importButton);
     }
+
+    // Set copy button
+    var copyButton = document.getElementById("copy-results");
+    if (copyButton !== null) {
+        copyButton.onclick = copyResults(copyButton);
+    }
 }
 
 function impactProjectSwitch(impactProject) {
@@ -3467,6 +3481,59 @@ function getImportResults(importButton) {
                 parentNode.appendChild(divNode);
             } else {
                 importButton.removeAttribute("disabled");
+
+                divNode.classList.add("help-block-error");
+                divNode.innerHTML = response.message;
+                parentNode.appendChild(divNode);
+            }
+        };
+
+        request.send();
+    };
+}
+
+function copyResults(copyButton) {
+    return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var api_url, parentNode, request;
+
+        copyButton.setAttribute("disabled", "");
+        parentNode = copyButton.parentNode;
+
+        var sourceId = parentNode.parentNode.querySelector("#copy-results-source-pk").value;
+
+        // Create request
+        api_url = `/rest/v1/project/${
+            defaultValues.project_id
+        }/copy_results/${sourceId}/?format=json`;
+
+        request = new XMLHttpRequest();
+        request.open("POST", api_url, true);
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+        request.setRequestHeader("Content-type", "application/json");
+
+        request.onload = function() {
+            var response, divNode, status;
+            try {
+                status = request.status;
+                response = JSON.parse(request.responseText);
+            } catch (e) {
+                status = 500;
+                response = { message: "A network error occurred, please try again" };
+            }
+            divNode = document.createElement("div");
+
+            if (status === 201) {
+                parentNode.removeChild(copyButton);
+
+                divNode.classList.add("save-success");
+                divNode.innerHTML =
+                    "Copy successful. Please refresh the page to see (and edit) the copied results.";
+                parentNode.appendChild(divNode);
+            } else {
+                copyButton.removeAttribute("disabled");
 
                 divNode.classList.add("help-block-error");
                 divNode.innerHTML = response.message;
@@ -3822,7 +3889,7 @@ function setDatepickers() {
 
 function fieldChanged(inputField) {
     /* Check if a field has changed, based on it's value and saved-value.
-    *  Ignores file fields, checkboxes and hidden fields. */
+     *  Ignores file fields, checkboxes and hidden fields. */
 
     if (inputField.type === "file" || inputField.type === "checkbox" || fieldIsHidden(inputField)) {
         return false;

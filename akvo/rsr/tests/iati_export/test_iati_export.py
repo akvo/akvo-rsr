@@ -109,6 +109,10 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             title="Test related project for IATI export",
             iati_activity_id="NL-KVK-1234567890-12345",
         )
+        related_project_2 = Project.objects.create(
+            title="Test related project for IATI export",
+            iati_activity_id="NL-KVK-1234567890-98765",
+        )
 
         # Create partnership
         Partnership.objects.create(
@@ -158,12 +162,12 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         RelatedProject.objects.create(
             project=project,
             related_iati_id="NL-KVK-related",
-            relation=RelatedProject.PROJECT_RELATION_PARENT
+            relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
         RelatedProject.objects.create(
-            project=related_project,
+            project=related_project_2,
             related_project=project,
-            relation=RelatedProject.PROJECT_RELATION_CHILD
+            relation=RelatedProject.PROJECT_RELATION_PARENT
         )
 
         # Add sector
@@ -426,6 +430,15 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             measure='1',
             type=QUALITATIVE,
         )
+        # Private indicator
+        Indicator.objects.create(
+            result=result,
+            title="Qualitative indicator",
+            description="Qualitative Indicator Description",
+            measure='1',
+            type=QUALITATIVE,
+            export_to_iati=False,
+        )
         IndicatorReference.objects.create(
             indicator=indicator,
             vocabulary="1",
@@ -524,7 +537,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         self.assertXpathsExist(root_test, (indicator_xpath,))
         indicators = root_test.xpath(indicator_xpath)
 
-        # Test qualitative indicator is included
+        # Test qualitative indicator is included and private indicator is excluded
         self.assertEqual(2, len(indicators))
         self.assertIndicatorExported(indicators[0], indicator)
         self.assertIndicatorExported(indicators[1], q_indicator)
@@ -545,7 +558,7 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             if indicator.type == QUALITATIVE:
                 self.assertEqual(period_element.find('./actual').get('value'), period.narrative)
             else:
-                self.assertEqual(period_element.find('./actual').get('value'), str(period.actual))
+                self.assertEqual(period_element.find('./actual').get('value'), str(period.actual_value))
 
     def test_dgis_validated_project_export(self):
         """

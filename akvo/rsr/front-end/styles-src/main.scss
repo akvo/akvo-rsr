@@ -593,6 +593,31 @@ nav.navbar-fixed-top {
     }
 }
 
+.desktop-menu{
+  @media screen and (max-width: 768px){
+    display: none;
+  }
+}
+.mobile-menu{
+  display: none;
+  @media screen and (max-width: 768px){
+    display: block;
+  }
+  .navbar-nav{
+    font-size: 1.3em;
+    margin-left: -25px;
+  }
+  hr{
+    margin: 10px 0;
+  }
+}
+@media screen and (max-width: 768px){
+  .navbar-nav.navbar-right{
+    margin-left: -10px;
+    margin-bottom: 10px;
+  }
+}
+
 .navbar {
     margin-bottom: 0 !important;
     .active {
@@ -673,7 +698,13 @@ nav.navbar-fixed-top {
 /* My RSR stuff */
 
 .btnHeader {
-    padding: 10px 0px 0 20px;
+  padding: 10px 0px 0 20px;
+  @media screen and (max-width: 768px){
+    padding: 10px 0 0 15px;
+    .navbar-form{
+      margin: 0;
+    }
+  }
 }
 
 .navContainer {
@@ -1720,16 +1751,12 @@ h4.detailedInfo {
             margin-top: 0;
         }
         .thumbImg {
-            // height: 160px;
+            height: 160px;
             overflow-y: hidden;
             position: relative;
             background-color: rgba($akvoBlack, 0.05);
             img {
                 width: 100%;
-                // position: absolute;
-                // top: 0%;
-                // left: 50%;
-                // transform: translate(-50%, 0%);
             }
         }
         .projectLocation {
@@ -1806,28 +1833,29 @@ h4.detailedInfo {
                 }
             }
             ul.projectListUl {
-                padding-left: 15px;
+              padding-left: 15px;
+              display: flex;
+              flex-wrap: wrap;
 
-            @media screen and (max-width: 768px){
-              padding-left: 0;
-            }
+              @media screen and (max-width: 768px){
+                padding-left: 0;
+              }
                 li {
-                    margin-bottom: 5px;
+                    margin-bottom: 14px;
                     list-style-type: none;
-                    // display: inline;
-                    width: 49%;
-                    float: left;
-                    @media screen and (min-width: 768px){
-                      min-height: 285px;
-                    }
-                    @include border-radius(3px);
-                    background: rgba(32, 32, 36, 0.05);
-                    margin-right: 2%;
+                    flex: 0 0 50%;
                     -webkit-transition: all 2s linear;
                     -moz-transition: all 2s linear;
                     -o-transition: all 2s linear;
                     transition: all 2s linear;
                     padding: 0;
+
+                    .contents{
+                      height: 100%;
+                      margin-right: 7px;
+                      @include border-radius(3px);
+                      background: rgba(32, 32, 36, 0.05);
+                    }
                     .thumbImg img{
                       border: none;
                     }
@@ -1852,7 +1880,10 @@ h4.detailedInfo {
                         }
                     }
                     &:nth-child(2n + 2) {
-                        margin-right: 0;
+                        .contents{
+                          margin-right: 0;
+                          margin-left: 7px;
+                        }
                     }
                     h1 {
                         margin: 5px 0 10px;
@@ -3861,6 +3892,10 @@ main.results-page {
     }
     padding-right: 50px !important;
     padding-left: 50px !important;
+    @media screen and (max-width: 768px){
+      padding-right: 15px !important;
+      padding-left: 15px !important;
+    }
     ol {
         &.breadcrumb {
             background-color: white !important;
@@ -4560,6 +4595,12 @@ main.results-page {
                     &.periodWrap {
                         .newUpdate {
                             @include smallButton($btnColor, white);
+                        }
+                        .helpText {
+                            display: block;
+                            position: absolute;
+                            font-size: 0.8em;
+                            margin-top: 0.4em;
                         }
                         ul {
                             &.periodHeader {

@@ -8,7 +8,7 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
 from akvo.rsr.models import (
-    User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus
+    User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus, Report
 )
 from akvo.utils import check_auth_groups
 
@@ -58,6 +58,15 @@ class BaseTestCase(TestCase):
         project.publishingstatus.status = status
         project.publishingstatus.save(update_fields=['status'])
         return project
+
+    @staticmethod
+    def create_report(report_name, organisation=None, is_org_report=False):
+        url = '/{organisation}/?format={format}' if is_org_report else '/{project}/?format={format}'
+        report = Report.objects.create(
+            name=report_name, title=report_name, url=url)
+        if organisation is not None:
+            report.organisations.add(organisation)
+        return report
 
     @staticmethod
     def make_parent(parent, project):

@@ -9,8 +9,6 @@ from akvo.codelists.store.default_codelists import INDICATOR_MEASURE as IM
 from akvo.rsr.fields import ValidXMLCharField
 from akvo.utils import codelist_choices, codelist_value
 
-from decimal import Decimal, InvalidOperation
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -84,6 +82,11 @@ class Indicator(models.Model):
         _(u'default indicator periods'), default=False, blank=True,
         help_text=_(u'Determines whether periods of indicator are used by default.')
     )
+    export_to_iati = models.BooleanField(
+        _(u'Include indicator in IATI exports'), default=True,
+        help_text=_(u'Choose whether this indicator will be included in IATI exports. '
+                    u'If you are not exporting to IATI, you may ignore this option.')
+    )
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')
@@ -114,7 +117,7 @@ class Indicator(models.Model):
 
         for child_result in self.result.child_results.all():
             if new_indicator:
-                child_result.project.add_indicator(child_result, self)
+                child_result.project.copy_indicator(child_result, self, set_parent=True)
             else:
                 child_result.project.update_indicator(child_result, self)
 
@@ -179,23 +182,6 @@ class Indicator(models.Model):
         Indicates whether this indicator has children.
         """
         return self.child_indicators.count() > 0
-
-    @property
-    def last_updated(self):
-        from akvo.rsr.models import ProjectUpdate
-        period_updates = ProjectUpdate.objects.filter(indicator_period__indicator=self)
-        return period_updates.order_by('-created_at')[0].time_gmt if period_updates else None
-
-    @property
-    def baseline(self):
-        """
-        Returns the baseline value of the indicator, if it can be converted to a number. Otherwise
-        it'll return None.
-        """
-        try:
-            return Decimal(self.baseline_value)
-        except (InvalidOperation, TypeError):
-            return None
 
     @property
     def children_aggregate_percentage(self):

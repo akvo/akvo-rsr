@@ -21,7 +21,8 @@ import {
     updateModel,
     updateUpdateToBackend,
     saveUpdateToBackend,
-    deleteUpdateFromBackend
+    deleteUpdateFromBackend,
+    periodCanAddUpdate
 } from "../../actions/model-actions";
 
 import * as c from "../../const.js";
@@ -712,7 +713,7 @@ const DisaggregatedValueInput = ({ dimension, disaggregation, measure, onChange 
                     <input
                         className="form-control"
                         readOnly={true}
-                        value={disaggregation.value}
+                        value={disaggregation.value + "%"}
                         onChange={onChange}
                         data-dimension={dimension.id}
                         data-field="value"
@@ -1149,19 +1150,27 @@ class UpdateForm extends React.Component {
             .filter(isNonEmptyDisaggregation)
             .map(pruneDisaggregation);
 
+        const isPercentage = indicator.measure == c.MEASURE_PERCENTAGE;
+
         if (isNewUpdate(update)) {
+            const errorMessage = isPercentage
+                ? _("percentage_update_not_created")
+                : _("update_not_created");
             saveUpdateToBackend(
                 endpoints.updates_and_comments(),
                 pruneForPOST(update),
                 this.props.collapseId,
-                callbacksFactory(update.id, _("update_not_created"))
+                callbacksFactory(update.id, errorMessage)
             );
         } else {
+            const errorMessage = isPercentage
+                ? _("percentage_update_not_saved")
+                : _("update_not_saved");
             updateUpdateToBackend(
                 endpoints.update_and_comments(update.id),
                 pruneForPATCH(update),
                 this.props.collapseId,
-                callbacksFactory(update.id, _("update_not_saved"))
+                callbacksFactory(update.id, errorMessage)
             );
         }
     }
@@ -1180,7 +1189,10 @@ class UpdateForm extends React.Component {
                 // when an object has been successfully deleted from a model
                 // [c.UPDATE_MODEL_FULFILLED]: this.refreshFilter.bind(this),
 
-                [c.UPDATE_MODEL_FULFILLED]: updateFormClose,
+                [c.UPDATE_MODEL_FULFILLED]: () => {
+                    updateFormClose();
+                    periodCanAddUpdate(update.period, true);
+                },
                 [c.UPDATE_MODEL_REJECTED]: this.props.createAlert.bind(
                     this,
                     this.state.updateAlertName,
@@ -1254,8 +1266,12 @@ export class NewUpdateButton extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id) };
+        this.state = {
+            collapseId: collapseId(c.OBJECTS_UPDATES, this.props.period.id),
+            showHelpText: false
+        };
         this.newUpdate = this.newUpdate.bind(this);
+        this.toggleInfo = this.toggleInfo.bind(this);
     }
 
     activeKey() {
@@ -1284,14 +1300,44 @@ export class NewUpdateButton extends React.Component {
         newUpdateID += 1;
     }
 
+    toggleInfo(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.setState({ showHelpText: !this.state.showHelpText });
+    }
+
     render() {
-        return (
+        const { period } = this.props;
+        const { showHelpText } = this.state;
+        const infoSign = <span className="glyphicon glyphicon-info-sign" />;
+        const helpText = showHelpText ? (
+            <span className="helpText text-muted">{_("percentage_indicator_single_update")}</span>
+        ) : (
+            undefined
+        );
+        const label = period.can_add_update
+            ? _("add_indicator_value")
+            : _("value_already_reported");
+        const className = period.can_add_update
+            ? "btn btn-sm btn-default newUpdate"
+            : "btn btn-sm btn-light";
+        const disabled = !period.can_add_update;
+        const button = period.can_add_update ? (
             <ToggleButton
                 onClick={this.newUpdate}
-                label={_("add_indicator_value")}
-                className="btn btn-sm btn-default newUpdate"
+                label={label}
+                className={className}
+                disabled={disabled}
             />
+        ) : (
+            <span>
+                <button className={className} onClick={this.toggleInfo}>
+                    {label} {infoSign}
+                </button>
+                {helpText}
+            </span>
         );
+        return button;
     }
 }
 

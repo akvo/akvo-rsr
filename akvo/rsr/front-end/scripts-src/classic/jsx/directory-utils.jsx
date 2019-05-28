@@ -73,6 +73,7 @@ var Project = React.createClass({
                 onMouseEnter={this.highlightMarker}
                 onMouseLeave={this.unHighlightMarker}
             >
+              <div className="contents">
                 <div className="thumbImg">
                     <a href={project.url}>
                         <img src={project.image} alt={project.title} />
@@ -90,6 +91,7 @@ var Project = React.createClass({
                         {countries}
                     </p>
                 </div>
+              </div>
             </li>
         );
     }
