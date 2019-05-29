@@ -1,0 +1,63 @@
+postgresql:
+  livenessProbe:
+    initialDelaySeconds: 600
+
+  postgresqlUsername: postgres
+  extraEnv:
+    - name: ELEPHANTSQL_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: "rsr-common"
+          key: elephantsql-api-key
+  initdbScripts:
+    a-run.sh: |
+      #!/usr/bin/env bash
+      set -euvx
+
+      echo "hi"
+
+      DB_HOST="localhost"
+      SUPER_USER=${POSTGRES_USER}
+      NEW_DB_NAME="rsrdbname"
+      NEW_USER="foobarbar"
+      NEW_USER_PASSWORD=${POSTGRES_PASSWORD}
+
+      psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}")
+
+      psql "${psql_settings[@]}" --command="CREATE USER ${NEW_USER} WITH ENCRYPTED PASSWORD '${NEW_USER_PASSWORD}';"
+      psql "${psql_settings[@]}" --command="CREATE DATABASE ${NEW_DB_NAME} OWNER ${NEW_USER};"
+      psql "${psql_settings[@]}" --dbname="${NEW_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${NEW_USER};"
+
+      curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > /tmp/jq
+      chmod u+x /tmp/jq
+      curl -L https://www.lzop.org/download/lzop-1.03-i386_linux.tar.gz | tar xvz -C /tmp
+
+      DUMP_FILE=/tmp/backup.lzo
+      RSR_DB_USER=$NEW_USER
+      RSR_DB_NAME=$NEW_DB_NAME
+
+      curl -u :${ELEPHANTSQL_API_KEY}  https://api.elephantsql.com/api/backup?db=rsr_db | /tmp/jq .[0].url | xargs curl --output "${DUMP_FILE}"
+
+      #/tmp/lzop-1.03-i386_linux/lzop -cd "${DUMP_FILE}" | head -n 2000 | grep "Owner: [a-z].*" -o | head -n 1
+
+      #dump_owner=$(/tmp/lzop-1.03-i386_linux/lzop -cd "${DUMP_FILE}" | head -n 2000 | grep "Owner: [a-z].*" -o | head -n 1 | cut -f 2 -d\ )
+
+      dump_owner=rsr_db_user
+
+      echo "done!"
+
+      psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
+      echo "settings again!"
+      /tmp/lzop-1.03-i386_linux/lzop -cd "${DUMP_FILE}" | sed -e "s/${dump_owner}/${RSR_DB_USER}/" | sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d"| sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | sed -e '/COPY public.django_session/,/^--/d' | sed -e '/COPY public.rsr_iatiimportlog/,/^--/d' | sed -e '/COPY public.rsr_iatiactivityimport/,/^--/d' | sed -e '/COPY public.django_admin_log/,/^--/d' > /tmp/tdump
+
+      wc -l /tmp/tdump
+
+      echo "veyr done!"
+
+      cat /tmp/tdump | psql "${psql_settings[@]}"
+
+      rm /tmp/tdump
+      rm $DUMP_FILE
+      echo "done!!!!!!"
+
+      exit 0
