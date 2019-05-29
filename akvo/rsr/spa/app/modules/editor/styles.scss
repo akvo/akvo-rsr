@@ -114,8 +114,10 @@
     flex: 1;
   }
   .main-content{
-    padding-left: 30px;
     margin-left: 280px;
+    padding-left: 30px;
+  }
+  .view:not(.section5){
     margin-right: 280px;
     @media screen and (max-width: 1200px){
       margin-right: 100px;

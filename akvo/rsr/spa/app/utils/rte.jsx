@@ -24,7 +24,7 @@ class RTE extends React.Component {
   constructor(props){
     super(props)
     const state = {}
-    if(props.value !== ''){
+    if(props.value !== '' && props.value !== undefined){
       state.value = RichTextEditor.createValueFromString(props.value, 'markdown')
     } else {
       state.value = RichTextEditor.createEmptyValue()
