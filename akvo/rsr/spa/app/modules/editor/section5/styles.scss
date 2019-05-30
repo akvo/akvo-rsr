@@ -1,6 +1,8 @@
 .section5.view{
   .summary{
     display: flex;
+    margin-top: 10px;
+    margin-bottom: 20px;
     ul{
       display: flex;
       flex: 1;
@@ -47,12 +49,15 @@
     }
     .ant-btn{
       margin-left: auto;
-      margin-top: 7px;
+      margin-top: 10px;
     }
 
   }
   .add-result.ant-btn{
     margin-bottom: 15px;
+  }
+  .results-list{
+    margin-right: 160px;
   }
   &>.ant-collapse{
     position: relative;
@@ -63,7 +68,7 @@
       &>.ant-collapse-header{
         position: -webkit-sticky;
         position: sticky;
-        top: 50px;
+        top: 105px;
         background: #fafafa;
         z-index: 1000;
         border-top-left-radius: 3px;
@@ -72,6 +77,36 @@
       }
       .ant-collapse-content{
         border-top: none;
+        overflow: visible;
+        .ant-collapse-content-box>.ant-collapse{
+          position: relative;
+          &>.ant-collapse-item-active{
+            &>.ant-collapse-header{
+              position: -webkit-sticky;
+              position: sticky;
+              top: 153px;
+              background: #fafafa;
+              // transition: none;
+              z-index: 999;
+              border-top-left-radius: 3px;
+              border-top-right-radius: 3px;
+              border-bottom: 1px solid #d9d9d9;
+            }
+            .ant-collapse-content{
+              border-top: none;
+              overflow: visible;
+              .ant-collapse-content-box>.ant-collapse{
+                position: relative;
+                &>.ant-collapse-item-active{
+                  &>.ant-collapse-header{
+                    top: 200px;
+                    z-index: 998;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
     .ant-tabbar-wrapper{

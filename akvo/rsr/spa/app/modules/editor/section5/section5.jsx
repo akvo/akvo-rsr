@@ -1,3 +1,4 @@
+/* global window */
 import React from 'react'
 import { Tabs, Form, Input, Button, Dropdown, Menu, Icon, Collapse, Divider, Col, Row, Switch, Radio, Tag } from 'antd'
 
@@ -26,12 +27,12 @@ const resultTypesMenu = (
 )
 
 const indicatorTypesMenu = (
-  <Menu>
+  <Menu style={{ textAlign: 'center' }}>
     <Menu.Item key="0">
-      Quantitative Indicator
+      Quantitative
     </Menu.Item>
     <Menu.Item key="1">
-      Qualitative Indicator
+      Qualitative
     </Menu.Item>
   </Menu>
 )
@@ -134,6 +135,249 @@ const QualitativeIndicator = () => (
   </Tabs>
 )
 
+const Aux = node => node.children
+
+const ResultVariantC = () => (
+  <Aux>
+    <div className="main-form">
+      <Item label="Title" style={{ flex: 1 }}>
+        <Input />
+      </Item>
+      <div style={{ display: 'flex' }}>
+      <Item label="Description" style={{ flex: 1 }}>
+        <RTE />
+      </Item>
+      <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
+        {/* <Switch /> */}
+        <Radio.Group value>
+          <Radio.Button value>Yes</Radio.Button>
+          <Radio.Button>No</Radio.Button>
+        </Radio.Group>
+      </Item>
+      </div>
+      <div className="ant-form-item-label">Indicators:</div>
+    </div>
+    <Collapse accordion className="indicators-list">
+      <Panel
+        key="1"
+        header="Indicator 01 - Quantitative"
+        extra={<Radio.Group size="small" buttonStyle="solid" value="info"><Radio.Button value="info">Info</Radio.Button><Radio.Button>Disaggregations</Radio.Button><Radio.Button>Baseline</Radio.Button><Radio.Button>Periods</Radio.Button></Radio.Group>}
+      >
+        <Tabs size="small">
+          <TabPane tab="Info" key="1">
+            <Item label="Title">
+              <Input />
+            </Item>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Item label="Measure">
+                  <Radio.Group value>
+                    <Radio.Button value>Unit</Radio.Button>
+                    <Radio.Button>Percentage</Radio.Button>
+                  </Radio.Group>
+                </Item>
+              </Col>
+              <Col span={12}>
+                <Item label="Order">
+                  <Radio.Group value>
+                    <Radio.Button value>Ascending</Radio.Button>
+                    <Radio.Button>Descending</Radio.Button>
+                  </Radio.Group>
+                </Item>
+              </Col>
+            </Row>
+            <Item label="Description">
+              <RTE />
+            </Item>
+          </TabPane>
+          <TabPane tab="Disaggregations" key="2">
+            <Collapse accordion defaultActiveKey="1">
+              <Panel header="Disaggregation 01" key="1">
+                <Item label="Name">
+                  <Input />
+                </Item>
+                <section>
+                  <div className="h-holder">
+                    <h5>Disaggregation item 1</h5>
+                  </div>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Item label="Name">
+                        <Input />
+                      </Item>
+                    </Col>
+                    <Col span={12}>
+                      <Item label="Value">
+                        <Input />
+                      </Item>
+                    </Col>
+                  </Row>
+                </section>
+                <Button icon="plus">Add disaggregation item</Button>
+              </Panel>
+            </Collapse>
+            <Button icon="plus" block type="dashed">Add disaggregation</Button>
+          </TabPane>
+          <TabPane tab="Baseline" key="3">
+            <Row gutter={15}>
+              <Col span={12}>
+                <Item label="Baseline year">
+                  <Input />
+                </Item>
+              </Col>
+              <Col span={12}>
+                <Item label="Baseline value">
+                  <Input />
+                </Item>
+              </Col>
+            </Row>
+            <Item label="Baseline comment">
+              <RTE />
+            </Item>
+          </TabPane>
+          <TabPane tab="Periods" key="4">
+            <Collapse accordion defaultActiveKey="1">
+              <Panel header="Period 01" key="1">
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Item label="Start">
+                      <FinalField
+                        name="start"
+                        control="datepicker"
+                      />
+                    </Item>
+                  </Col>
+                  <Col span={12}>
+                    <Item label="End">
+                      <FinalField
+                        name="end"
+                        control="datepicker"
+                      />
+                    </Item>
+                  </Col>
+                </Row>
+                <Item label="Target value">
+                  <Input />
+                </Item>
+                <Item label="Comment">
+                  <RTE />
+                </Item>
+              </Panel>
+            </Collapse>
+            <Button icon="plus" block type="dashed">Add period</Button>
+          </TabPane>
+        </Tabs>
+      </Panel>
+      <Panel
+        key="2"
+        header="Indicator 02 - Qualitative"
+        extra={<Radio.Group size="small" buttonStyle="solid" value="info"><Radio.Button value="info">Info</Radio.Button><Radio.Button>Baseline</Radio.Button><Radio.Button>Periods</Radio.Button></Radio.Group>}
+      >
+        <Item label="Title">
+          <Input />
+        </Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Item label="Measure">
+              <Radio.Group value>
+                <Radio.Button value>Unit</Radio.Button>
+                <Radio.Button>Percentage</Radio.Button>
+              </Radio.Group>
+            </Item>
+          </Col>
+          <Col span={12}>
+            <Item label="Order">
+              <Radio.Group value>
+                <Radio.Button value>Ascending</Radio.Button>
+                <Radio.Button>Descending</Radio.Button>
+              </Radio.Group>
+            </Item>
+          </Col>
+        </Row>
+        <Item label="Description">
+          <RTE />
+        </Item>
+        <Divider />
+        <Collapse accordion defaultActiveKey="1">
+          <Panel header="Disaggregation 01" key="1">
+            <Item label="Name">
+              <Input />
+            </Item>
+            <section>
+              <div className="h-holder">
+                <h5>Disaggregation item 1</h5>
+              </div>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Item label="Name">
+                    <Input />
+                  </Item>
+                </Col>
+                <Col span={12}>
+                  <Item label="Value">
+                    <Input />
+                  </Item>
+                </Col>
+              </Row>
+            </section>
+            <Button icon="plus">Add disaggregation item</Button>
+          </Panel>
+        </Collapse>
+        <Button icon="plus" block type="dashed">Add disaggregation</Button>
+        <Divider />
+        <Row gutter={15}>
+          <Col span={12}>
+            <Item label="Baseline year">
+              <Input />
+            </Item>
+          </Col>
+          <Col span={12}>
+            <Item label="Baseline value">
+              <Input />
+            </Item>
+          </Col>
+        </Row>
+        <Item label="Baseline comment">
+          <RTE />
+        </Item>
+        <Divider />
+        <Collapse accordion defaultActiveKey="1">
+          <Panel header="Period 01" key="1">
+            <Row gutter={16}>
+              <Col span={12}>
+                <Item label="Start">
+                  <FinalField
+                    name="start"
+                    control="datepicker"
+                  />
+                </Item>
+              </Col>
+              <Col span={12}>
+                <Item label="End">
+                  <FinalField
+                    name="end"
+                    control="datepicker"
+                  />
+                </Item>
+              </Col>
+            </Row>
+            <Item label="Target value">
+              <Input />
+            </Item>
+            <Item label="Comment">
+              <RTE />
+            </Item>
+          </Panel>
+        </Collapse>
+        <Button icon="plus" block type="dashed">Add period</Button>
+      </Panel>
+    </Collapse>
+    <Dropdown overlay={indicatorTypesMenu} trigger={['click']}>
+      <Button icon="plus" block type="dashed">Add indicator</Button>
+    </Dropdown>
+  </Aux>
+)
+
 const Section5 = () => {
   return (
     <div className="view section5">
@@ -147,8 +391,8 @@ const Section5 = () => {
         </ul>
         <Button type="link" icon="eye">Full preview</Button>
       </div>
-      <Collapse accordion>
-        <Panel key="1" header={<span><Tag color="cyan">Outcome</Tag>Result title here</span>} extra={<Icon type="delete" />}>
+      <Collapse accordion defaultActiveKey="3" className="results-list">
+        <Panel key="1" header={<span><Tag>OUTCOME</Tag>Result title here</span>} extra={<Icon type="delete" />}>
           <div className="main-form">
           <Item label="Title" style={{ flex: 1 }}>
             <Input />
@@ -199,34 +443,6 @@ const Section5 = () => {
                   <Item label="Description">
                     <RTE />
                   </Item>
-                </TabPane>
-                <TabPane tab="Disaggregations" key="2">
-                  <Collapse accordion defaultActiveKey="1">
-                    <Panel header="Disaggregation 01" key="1">
-                      <Item label="Name">
-                        <Input />
-                      </Item>
-                      <section>
-                        <div className="h-holder">
-                          <h5>Disaggregation item 1</h5>
-                        </div>
-                        <Row gutter={16}>
-                          <Col span={12}>
-                            <Item label="Name">
-                              <Input />
-                            </Item>
-                          </Col>
-                          <Col span={12}>
-                            <Item label="Value">
-                              <Input />
-                            </Item>
-                          </Col>
-                        </Row>
-                      </section>
-                      <Button icon="plus">Add disaggregation item</Button>
-                    </Panel>
-                  </Collapse>
-                  <Button icon="plus" block type="dashed">Add disaggregation</Button>
                 </TabPane>
                 <TabPane tab="Baseline" key="3">
                   <Row gutter={15}>
@@ -281,7 +497,7 @@ const Section5 = () => {
           </Tabs>
           {/* <Button icon="plus">Add Indicator</Button> */}
         </Panel>
-        <Panel key="2" header={<span><Tag color="magenta">Impact</Tag>Another result here</span>} extra={<Icon type="delete" />}>
+        <Panel key="2" header={<span><Tag>IMPACT</Tag>Another result here</span>} extra={<Icon type="delete" />}>
           <Item label="Title">
             <Input />
           </Item>
@@ -292,6 +508,9 @@ const Section5 = () => {
             <RTE />
           </Item>
           <Button icon="plus">Add Indicator</Button>
+        </Panel>
+        <Panel key="3" header={<span><Tag>IMPACT</Tag>Accordeon result here</span>} extra={<Icon type="delete" />}>
+          <ResultVariantC />
         </Panel>
       </Collapse>
       <Dropdown overlay={resultTypesMenu} trigger={['click']}>

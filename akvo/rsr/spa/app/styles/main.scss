@@ -37,6 +37,9 @@ ol{
   height: 70px;
   .ui.container{
     display: flex;
+    &>.SVGInline{
+      margin-top: -3px;
+    }
     .right-side{
       .user{
         cursor: pointer;
@@ -52,15 +55,30 @@ ol{
   // background-color: #f2f2f2;
 }
 
-header{
-  border-bottom: 1px solid #ccc;
-  padding: 10px 0;
+header.main-header{
+  // border-bottom: 1px solid #ccc;
+  // padding: 10px 0 0;
   display: flex;
+  margin-bottom: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  background: #fff;
+  &>h1{
+    transform: translateY(10px);
+  }
+  .ant-tabs{
+    margin-left: auto;
+    .ant-tabs-bar{
+      margin-bottom: 1px;
+      border: none;
+    }
+  }
   .anticon{
     font-size: 26px;
     margin-right: 11px;
-    margin-left: 11px;
-    transform: translateY(2px);
+    // margin-left: 11px;
+    transform: translateY(12px);
   }
   h1{
     font-weight: 300;
@@ -68,7 +86,18 @@ header{
     color: #2F1A45;
     margin-bottom: 0;
   }
-  margin-bottom: 10px;
+}
+
+.rte{
+  button{
+    border: none;
+    background: transparent;
+  }
+  select + span{
+    border: none!important;
+    background: #ececec8a;
+    border-radius: 3px!important;
+  }
 }
 
 .public-DraftEditor-content{
