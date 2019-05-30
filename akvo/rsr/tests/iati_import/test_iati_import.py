@@ -53,6 +53,7 @@ class IatiImportTestCase(TestCase):
         # Create budget item labels
         BudgetItemLabel.objects.create(label="Total")
         BudgetItemLabel.objects.create(label="Subtotal")
+        BudgetItemLabel.objects.get_or_create(label="Other")
 
         # Create budget identifier code
         Version.objects.all().delete()
@@ -299,8 +300,7 @@ class IatiImportTestCase(TestCase):
             iati_import=partial_import, iati_xml_file=File(partial_import_xml_file))
         partial_import_job.run()
 
-        project_partial_import = Project.objects.get(iati_activity_id="NL-KVK-0987654321-v2")
-        self.assertIsInstance(project_partial_import, Project)
+        project_v2.refresh_from_db()
 
         # Assert that no data has changed, even if the XML has
         self.assertEqual(project_v2.results.count(), 1)
