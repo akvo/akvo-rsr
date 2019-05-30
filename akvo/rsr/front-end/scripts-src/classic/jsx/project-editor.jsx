@@ -4653,6 +4653,15 @@ function setupIATIPrefixChangeHandlers() {
         prefixInput.onchange = updateIATIActivityId;
         suffixInput.onchange = updateIATIActivityId;
     }
+
+    // For EUTF, suffixInput is disabled and matches the text in the subtitle.
+    if (suffixInput !== undefined && suffixInput.disabled) {
+        const subtitleId = `rsr_project.subtitle.${defaultValues.project_id}`;
+        document.getElementById(subtitleId).onchange = e => {
+            suffixInput.value = e.target.value;
+            updateIATIActivityId();
+        };
+    }
 }
 
 function initApp() {

@@ -18,22 +18,24 @@
                     </label>
                 </div>
                 {% if obj|help_text:field %}
-                    <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
+                <p class="help-block hidden">{{ obj|help_text:field|safe }}</p>
                 {% endif %}
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="form-group control{% if always_hidden %} always-hidden hidden{% endif %}">
-                <input type="text"
-                       id="suffix-{{ obj_field_id }}"
-                       class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"
-                       {% if obj|max_length:field %}
-                       maxlength="{{ obj|max_length:field }}"
-                       {% endif %}
-                       value="{{ iati_activity_id_suffix }}"
-                       {% if disabled %}disabled{% endif %}
-                />
+                {% with disabled=project.in_eutf_hierarchy %}
+                    <input type="text"
+                           id="suffix-{{ obj_field_id }}"
+                           class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"
+                           {% if obj|max_length:field %}
+                           maxlength="{{ obj|max_length:field }}"
+                           {% endif %}
+                           value="{{ iati_activity_id_suffix }}"
+                           {% if disabled %}disabled{% endif %}
+                    />
+                {% endwith %}
                 <label for="suffix-{{ obj_field_id }}" class="control-label">
                     {{ obj|field_name:field }} (suffix)
                 </label>
