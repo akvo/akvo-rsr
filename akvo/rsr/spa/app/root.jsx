@@ -20,13 +20,13 @@ const menu = () => (
   </Menu>
 )
 
-const _Header = ({infoRdr}) => (
+const _Header = ({title}) => (
   <header>
     <Icon type="left" />
-    <h1>{infoRdr.title ? infoRdr.title : 'Untitled project'}</h1>
+    <h1>{title ? title : 'Untitled project'}</h1>
   </header>
 )
-const Header = connect(({ infoRdr }) => ({ infoRdr }))(_Header)
+const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
 const Root = () => (
   <div id="root">

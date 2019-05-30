@@ -175,12 +175,7 @@ class IatiChecksTestCase(TestCase):
         RelatedProject.objects.create(
             project=project,
             related_iati_id="NL-KVK-related",
-            relation=RelatedProject.PROJECT_RELATION_PARENT
-        )
-        RelatedProject.objects.create(
-            project=related_project,
-            related_project=project,
-            relation=RelatedProject.PROJECT_RELATION_PARENT
+            relation=RelatedProject.PROJECT_RELATION_SIBLING
         )
 
         # Add sector

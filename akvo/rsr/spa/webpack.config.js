@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const config = {
+const config = env => ({
   stats: {
     maxModules: 0
   },
@@ -124,12 +124,7 @@ const config = {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         use: [
           {
-            loader: 'raw-loader',
-            // options: {
-            //   limit: 8192,
-            //   mimetype: 'image/svg+xml',
-            //   name: 'images/[name].[ext]',
-            // }
+            loader: 'raw-loader'
           }
         ],
       },
@@ -137,6 +132,7 @@ const config = {
   },
 
   plugins: [
+    new webpack.DefinePlugin((env && env.DETACHED_FE) ? { 'process.env.DETACHED_FE': env.DETACHED_FE } : {}),
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
       test: /\.jsx?$/,
@@ -147,10 +143,10 @@ const config = {
         }
       },
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    // new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
     new webpack.HotModuleReplacementPlugin(),
   ]
-};
+});
 
 module.exports = config

@@ -72,6 +72,7 @@ class BaseReorderTestCase(object):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def tearDown(self):
+        Result.objects.all().delete()
         Project.objects.all().delete()
         User.objects.all().delete()
         Organisation.objects.all().delete()
@@ -695,6 +696,7 @@ class DefaultPeriodsTestCase(TestCase):
         self.import_status2, self.import_message2 = self.child_project2.import_results()
 
     def tearDown(self):
+        Result.objects.all().delete()
         Project.objects.all().delete()
         User.objects.all().delete()
 
@@ -995,6 +997,9 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(result_2.description, result_description_2)
         self.assertEqual(result_2.type, result_type_2)
         self.assertEqual(result_2.aggregation_status, result_aggregation_2 == '1')
+
+        # Verify that ordering is maintained
+        self.assertLess(result.id, result_2.id)
 
         indicator = Indicator.objects.get(result=result)
         self.assertEqual(indicator.title, indicator_title)

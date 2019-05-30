@@ -114,6 +114,10 @@ class ProjectReportsRestrictionTestCase(BaseTestCase):
         org1 = self.create_organisation('org-1')
         self.create_report('report-1')
         self.create_report('report-2', is_org_report=True)
+        self.create_report(
+            'projects-overview',
+            url='/en/reports/project_overview/{organisation}?format={format}&download=true'
+        )
 
         self.make_partner(proj1, org1)
         user = self.create_user('foo@example.com', 'secret')

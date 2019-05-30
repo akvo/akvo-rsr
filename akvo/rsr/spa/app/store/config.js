@@ -9,7 +9,7 @@ export default (initialState) => {
 	const store = createStore(
     rootReducer,
     initialState,
-    composeWithDevTools(applyMiddleware(asyncDispatchMiddleware)),
+    composeWithDevTools(applyMiddleware(thunk, asyncDispatchMiddleware)),
     // composeWithDevTools(applyMiddleware(thunk)),
 	)
 

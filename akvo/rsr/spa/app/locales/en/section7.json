@@ -1,0 +1,30 @@
+{
+  "name": {
+    "label": "Name"
+  },
+  "reference": {
+    "label": "Reference"
+  },
+  "code": {
+    "label": "Code"
+  },
+  "locationDescription": {
+    "label": "Location description"
+  },
+  "activityDescription": {
+    "label": "Activity description"
+  },
+  "locationPrecision": {
+    "label": "Location precision"
+  },
+  "reach": {
+    "label": "Reach"
+  },
+  "class": {
+    "label": "Class"
+  },
+  "featureDesignation": {
+    "label": "Feature designation"
+  }
+  
+}

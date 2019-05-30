@@ -1,0 +1,71 @@
+.finance.view{
+  .total{
+    opacity: 0.6;
+    font-size: 14px;
+    display: flex;
+    margin-bottom: 15px;
+    .amount{
+      margin-left: auto;
+      display: inline-block;
+      text-align: right;
+    }
+  }
+  .ant-collapse-item{
+    .ant-collapse-extra{
+      .amount{
+        font-size: 14px;
+        opacity: 0.7;
+        margin-right: 10px;
+        padding-right: 10px;
+        border-right: 1px solid #ccc;
+      }
+    }
+  }
+  .capital-percentage{
+    max-width: 70px;
+  }
+  section{
+    border: 1px solid #e8e8e8;
+    padding: 15px 15px 0;
+    border-radius: 4px;
+    margin-top: 5px;
+    margin-bottom: 30px;
+    &:last-child{
+      margin-bottom: 0px;
+    }
+    .h-holder{
+      display: flex;
+    }
+    h5{
+      font-size: 14px;
+      margin-top: -28px;
+      margin-bottom: 15px;
+      background-color: #fff;
+      padding: 0 5px;
+      margin-left: -5px;
+    }
+    .ant-row:last-child{
+      .ant-col-12{
+        .ant-form-item{
+          margin-bottom: 8px;
+        }
+      }
+    }
+    .pagination{
+      display: flex;
+      margin-bottom: 16px;
+      .ant-btn{
+        margin-left: 16px;
+      }
+      .ant-pagination-prev,.ant-pagination-next{
+        display: none;
+      }
+    }
+  }
+}
+.add-budget-item-modal{
+  .ant-btn{
+    margin-bottom: 10px;
+    text-align: left;
+  }
+}

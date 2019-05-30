@@ -1,5 +1,0 @@
-export default {
-  ADD: 'PE_CONTACT_ADD',
-  REMOVE: 'PE_CONTACT_REMOVE',
-  EDIT_FIELD: 'PE_CONTACT_EDIT_FIELD'
-}

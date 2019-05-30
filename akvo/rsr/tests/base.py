@@ -60,8 +60,9 @@ class BaseTestCase(TestCase):
         return project
 
     @staticmethod
-    def create_report(report_name, organisation=None, is_org_report=False):
-        url = '/{organisation}/?format={format}' if is_org_report else '/{project}/?format={format}'
+    def create_report(report_name, organisation=None, is_org_report=False, url=None):
+        if url is None:
+            url = '/{organisation}/?format={format}' if is_org_report else '/{project}/?format={format}'
         report = Report.objects.create(
             name=report_name, title=report_name, url=url)
         if organisation is not None:
