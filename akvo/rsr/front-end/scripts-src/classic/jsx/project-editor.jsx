@@ -2899,18 +2899,20 @@ function setVocabularyOnChange() {
     ];
     fieldInfo.map(function(info) {
         var vocabularyFields = document.querySelectorAll(info.selector);
+        var select;
 
         for (var i = 0; i < vocabularyFields.length; i++) {
-            vocabularyFields[i].querySelector("select").onchange = vocabularyOnChange(
-                vocabularyFields[i],
-                info
-            );
-            codeFieldSwitcher(
-                vocabularyFields[i],
-                info.optionsId,
-                info.textInputSelector,
-                info.dropDownInputSelector
-            );
+            select = vocabularyFields[i].querySelector("select");
+            if (!select.getAttribute("data-options-handler-added")) {
+                select.onchange = vocabularyOnChange(vocabularyFields[i], info);
+                codeFieldSwitcher(
+                    vocabularyFields[i],
+                    info.optionsId,
+                    info.textInputSelector,
+                    info.dropDownInputSelector
+                );
+                select.setAttribute("data-options-handler-added", true);
+            }
         }
     });
 }
