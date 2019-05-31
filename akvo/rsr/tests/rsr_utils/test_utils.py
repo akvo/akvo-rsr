@@ -82,6 +82,7 @@ class GeneralUtilsTestCase(TestCase):
         """
         Test for getting or creating a country.
         """
+        Country.objects.all().delete()
         country = custom_get_or_create_country('NL')
         self.assertIsInstance(country, Country)
 
