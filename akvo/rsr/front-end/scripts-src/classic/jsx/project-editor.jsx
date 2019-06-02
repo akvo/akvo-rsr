@@ -4658,10 +4658,22 @@ function setupIATIPrefixChangeHandlers() {
     }
 }
 
+function setupDisaggregationDefinitions() {
+  var definitions = document.getElementById('disaggregation-definitions'),
+    showButton = document.getElementById('show-disaggregation-definitions')
+    buttonContainer = document.getElementById('show-disaggregation-definitions-container');
+
+  showButton.addEventListener('click', function () {
+    definitions.classList.remove('hidden');
+    buttonContainer.classList.add('hidden');
+  });
+}
+
 function initApp() {
     getAllOrganisations();
     getAllProjects();
 
+    setupDisaggregationDefinitions();
     setupIATIPrefixChangeHandlers();
     setUnsavedChangesMessage();
     setImpactProject();

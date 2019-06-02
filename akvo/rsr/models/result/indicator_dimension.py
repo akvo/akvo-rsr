@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 class IndicatorDimensionName(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='dimension_names')
     name = ValidXMLCharField(
-        _(u'dimension name'), max_length=100,
+        _(u'disaggregation name'), max_length=100,
         help_text=_(u'The name of a category to be used when disaggregating (e.g "Age").'))
 
     def name_and_values(self):
@@ -26,8 +26,8 @@ class IndicatorDimensionName(models.Model):
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator dimension name')
-        verbose_name_plural = _(u'indicator dimension names')
+        verbose_name = _(u'indicator disaggregation name')
+        verbose_name_plural = _(u'indicator disaggregation names')
         ordering = ['id']
         unique_together = ('project', 'name')
 
@@ -39,13 +39,13 @@ class IndicatorDimensionValue(models.Model):
     name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
                              related_name='dimension_values')
     value = ValidXMLCharField(
-        _(u'dimension value'), max_length=100,
+        _(u'disaggregation value'), max_length=100,
         help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator dimension value')
-        verbose_name_plural = _(u'indicator dimension values')
+        verbose_name = _(u'indicator disaggregation value')
+        verbose_name_plural = _(u'indicator disaggregation values')
         ordering = ['id']
         unique_together = ('name', 'value')
 

@@ -10,7 +10,7 @@
         </div>
 
         <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimensionvalue" }}">
-            <h5>{% trans 'Dimension value' %}</h5>
+            <h5>{% trans 'Disaggregation value' %}</h5>
             <div class="dimension-value-container" id="dimension-value-container">
                 {% for dimension_value in dimension_name.dimension_values.all %}
                     {% include "myrsr/project_editor/related_objects/dimension_value_input.html" %}
@@ -23,7 +23,7 @@
                     <div class="col-md-12 text-center add-object-link">
                          <a href="#" class="add-dimension-value">
                             <span class="glyphicon glyphicon-plus"></span>
-                           {% trans 'Add another dimension value' %}
+                           {% trans 'Add another disaggregation value' %}
                          </a>
                     </div>
                 </div>
