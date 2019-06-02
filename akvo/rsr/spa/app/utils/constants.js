@@ -18,5 +18,5 @@ export const budgetItemTypes = [
   {value: '10', label: 'Transportation / logistics'},
   {value: '42', label: 'Water resource management'}
 ]
-// https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=
-export const googleGeocodeApiKey = 'AIzaSyDdgW0IDt5Kp2Ke7GiEjm8zebgAhv3fpd8'
+
+export const opencagedataKey = '3c7aa8de944d4ecd8706e09fcd8e8962'

@@ -11,7 +11,9 @@ import datetime
 import unittest
 
 from akvo.rsr.models import (
-    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension)
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension,
+    RelatedProject)
+from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -730,3 +732,48 @@ class ResultsFrameworkTestCase(BaseTestCase):
         )
         indicator_period = IndicatorPeriod.objects.get(indicator=indicator)
         self.assertIsNone(indicator_period.parent_period)
+
+    def test_prevent_adding_multiple_parents(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+
+        # When
+        with self.assertRaises(MultipleParentsDisallowed):
+            self.make_parent(project, self.child_project)
+
+    def test_prevent_changing_parents_if_results_imported(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+
+        # When/Then
+        related_project.project = project
+        with self.assertRaises(ParentChangeDisallowed):
+            related_project.save()
+
+    def test_prevent_deleting_parent_if_results_imported(self):
+        # Given
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+
+        # When/Then
+        with self.assertRaises(ParentChangeDisallowed):
+            related_project.delete()
+
+    def test_allow_changing_parents_if_results_not_imported(self):
+        # Given
+        project = self.create_project(title='New Parent Project')
+        related_project = RelatedProject.objects.get(
+            project=self.parent_project, related_project=self.child_project
+        )
+        Result.objects.filter(project=self.child_project).delete()
+
+        # When
+        related_project.project = project
+        related_project.save()
+
+        # Then
+        self.assertEqual(self.child_project.parents_all().first().id, project.id)

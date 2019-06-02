@@ -41,9 +41,7 @@ def _user_has_group_permissions(user, obj, group_names):
         return True
 
     if isinstance(obj, ProjectUpdate):
-        if obj.user_id == user.id:
-            return True
-        elif group_names == [GROUP_NAME_ADMINS]:
+        if group_names == [GROUP_NAME_ADMINS]:
             # Check if user can admin the user making the update
 
             # NOTE: We could set `obj = user` and just see if the admin has the
@@ -160,6 +158,13 @@ def is_self(user, obj):
     if isinstance(obj, Employment) and obj.user == user:
         return True
     return False
+
+
+@rules.predicate
+def is_own(user, obj):
+    if obj is None:
+        return True
+    return obj.user_id == user.id
 
 
 # Additional permission filtering

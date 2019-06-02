@@ -27,7 +27,7 @@
               {% include choice_input with obj=indicator field='type' %}
           </div>
           <div class="col-md-3">
-              {% include boolean_input with obj=indicator field='export_to_iati' boolean=True %}
+              {% include boolean_input with obj=indicator field='export_to_iati' nullboolean=True %}
           </div>
         </div>
 
@@ -91,11 +91,11 @@
         {% endif %}
 
         <div class="related-object-container {% if indicator.type == 2 %} hidden {% endif %}{{ validations|mandatory_or_hidden:"rsr_indicatordimension" }}">
-          <h5>{% trans 'Indicator Dimensions' %}</h5>
+          <h5>{% trans 'Indicator Disaggregations' %} <span class="glyphicon glyphicon-info-sign info-icon info-icon-special" toggleid="iati-dimensions-helptext-{{indicator_id_string}}"></span></h5>
             <!-- *NOTE*: Just hiding the related container above doesn't work, because the
                  javascript to deduce hidden fields from validation sets removes that hidden tag,
                  once the page loads. This child needs to be hidden to prevent that.  -->
-          indicator.dimension_names.all: {{ indicator.dimension_names.all }}
+          <span class="help-block hidden" id="iati-dimensions-helptext-{{indicator_id_string}}">{% trans 'The term "disaggregation" is equivalent to the IATI term "dimension". For those reporting to IATI via RSR, disaggregations and their associated data are mapped accordingly as dimensions in your IATI export.' %}</span>
           <div class="indicator-dimension-name-container {% if indicator.type == 2 %} hidden {% endif %}" id="indicator-dimension-container">
             {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
               {% for dimension_name in indicator.dimension_names.all %}

@@ -82,6 +82,7 @@ class GeneralUtilsTestCase(TestCase):
         """
         Test for getting or creating a country.
         """
+        Country.objects.all().delete()
         country = custom_get_or_create_country('NL')
         self.assertIsInstance(country, Country)
 
@@ -235,23 +236,21 @@ class GeneralUtilsTestCase(TestCase):
         self.assertEqual(choices_with_code_3, generated_choices_with_code_3)
 
     def test_countries(self):
-        """Test retrieving country name from (lat, long)."""
-
         LOCATIONS = [
-            ((0.313611, 32.581111), 'Uganda'),
-            ((15.184898, 75.060385), 'India'),
-            ((10.54, 14.36), 'Cameroon'),
-            ((6.167031, 8.660059), 'Nigeria'),
-            ((7.116944, -9.400053), 'Liberia'),
-            ((-1.292066, 36.821946), 'Kenya'),
-            ((27.305846, 85.404534), 'Nepal'),
-            ((10.314919, 1.680908), 'Benin'),
-            ((-1.292066, 36.821946), 'Kenya'),
-            ((7.346927, 2.06652), 'Benin'),
+            ((0.313611, 32.581111), 'ug'),
+            ((15.184898, 75.060385), 'in'),
+            ((10.54, 14.36), 'cm'),
+            ((6.167031, 8.660059), 'ng'),
+            ((7.116944, -9.400053), 'lr'),
+            ((-1.292066, 36.821946), 'ke'),
+            ((27.305846, 85.404534), 'np'),
+            ((10.314919, 1.680908), 'bj'),
+            ((-1.292066, 36.821946), 'ke'),
+            ((7.346927, 2.06652), 'bj'),
         ]
 
-        for (lat, lon), country in LOCATIONS:
-            self.assertEqual(country, get_country(lat, lon)[0])
+        for (lat, lon), iso_code in LOCATIONS:
+            self.assertEqual(iso_code, get_country(lat, lon)[1])
 
     def test_single_period_dates(self):
         timeout, start, end = single_period_dates('EUTF')

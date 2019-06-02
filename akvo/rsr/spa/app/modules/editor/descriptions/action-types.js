@@ -1,3 +1,0 @@
-export default {
-  EDIT_DESCRIPTION: 'PE_DESCRIPTION_EDIT'
-}

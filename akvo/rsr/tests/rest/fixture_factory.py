@@ -391,7 +391,7 @@ class RelatedProjectFactory(DjangoModelFactory):
     class Meta:
         model = 'rsr.RelatedProject'
 
-    project = factory.Iterator(Project.objects.all())
+    project = factory.Iterator(Project.objects.exclude(pk=1))
     related_project = factory.Iterator(Project.objects.filter(pk=1))
     relation = '1'
 
@@ -468,7 +468,7 @@ def populate_test_data(seed=42):
 
     ProjectCustomFieldFactory.create_batch(20)
     ProjectCommentFactory.create_batch(20)
-    RelatedProjectFactory.create_batch(10)
+    RelatedProjectFactory.create_batch(9)
 
     ProjectUpdateFactory.create_batch(100)
     ResultFactory.create_batch(40)

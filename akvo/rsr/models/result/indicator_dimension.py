@@ -63,16 +63,16 @@ class IndicatorDimension(models.Model):
                                          verbose_name=_(u'parent dimension'),
                                          related_name='child_dimensions')
     name = ValidXMLCharField(
-        _(u'dimension name'), blank=True, max_length=100,
+        _(u'disaggregation name'), blank=True, max_length=100,
         help_text=_(u'The name of a category to be used when disaggregating (e.g "Age")'))
     value = ValidXMLCharField(
-        _(u'dimension value'), blank=True, max_length=100,
+        _(u'disaggregation value'), blank=True, max_length=100,
         help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
 
     class Meta:
         app_label = 'rsr'
-        verbose_name = _(u'indicator dimension')
-        verbose_name_plural = _(u'indicator dimensions')
+        verbose_name = _(u'indicator disaggregation')
+        verbose_name_plural = _(u'indicator disaggregations')
         ordering = ['id']
 
     def __unicode__(self):

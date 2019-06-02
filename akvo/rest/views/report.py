@@ -58,7 +58,7 @@ def project_reports(request, project_pk):
 
     project = get_object_or_404(Project, pk=project_pk)
     reports = Report.objects.prefetch_related('formats', 'organisations')\
-                            .filter(url__icontains='project')
+                            .filter(url__icontains='{project}')
 
     user = request.user
     if not user.has_perm('rsr.view_project', project):
