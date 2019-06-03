@@ -12,7 +12,7 @@ import unittest
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension,
-    RelatedProject)
+    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue)
 from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
@@ -62,6 +62,15 @@ class ResultsFrameworkTestCase(BaseTestCase):
             name='Foo',
             value='Bar',
         )
+        self.dimension_name = IndicatorDimensionName.objects.create(
+            project=self.parent_project,
+            name='Foo',
+        )
+        self.dimension_value = IndicatorDimensionValue.objects.create(
+            name=self.dimension_name,
+            value='Bar',
+        )
+        self.indicator.dimension_names.add(self.dimension_name)
 
         # Import results framework into child
         self.import_status, self.import_message = self.child_project.import_results()
@@ -86,6 +95,17 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_dimension = child_period.indicator.dimensions.first()
         self.assertEqual(child_dimension.name, self.dimension.name)
         self.assertEqual(child_dimension.value, self.dimension.value)
+
+        child_dimension_name = IndicatorDimensionName.objects.filter(
+            project=self.child_project).first()
+        self.assertEqual(child_dimension_name.name, self.dimension_name.name)
+        child_dimension_value = child_dimension_name.dimension_values.first()
+        self.assertEqual(child_dimension_value.value, self.dimension_value.value)
+
+        self.assertEqual(
+            child_period.indicator.dimension_names.count(),
+            self.indicator.dimension_names.count()
+        )
 
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
@@ -357,10 +377,10 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(indicator.child_indicators.count(), dimension.child_dimensions.count())
 
     def test_child_dimension_state_updates_after_change(self):
-        """Test that updating period propagates to children."""
+        """Test that updating dimension propagates to children."""
         # Given
         self.dimension.name = 'Baz'
-        self.dimension.value = 'Quux',
+        self.dimension.value = 'Quux'
 
         # When
         self.dimension.save()
@@ -409,6 +429,87 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(1, child_indicator.dimensions.count())
+
+    def test_child_dimension_name_state_updates_after_change(self):
+        """Test that updating dimension name propagates to children."""
+        # Given
+        self.dimension_name.name = 'Baz'
+
+        # When
+        self.dimension_name.save()
+
+        # Then
+        parent_dimension_name = IndicatorDimensionName.objects.get(id=self.dimension_name.pk)
+        child_dimension_name = self.child_project.dimension_names.first()
+        self.assertEqual(child_dimension_name.name, parent_dimension_name.name)
+
+    def test_new_dimension_value_cloned_to_child(self):
+        """Test that new dimension values are cloned in children that have imported results."""
+        # Given
+        # # Child project has already imported results from parent.
+        dimension_name = self.dimension_name
+
+        # When
+        IndicatorDimensionValue.objects.create(
+            name=dimension_name,
+            value='Quux',
+        )
+
+        # Then
+        self.assertEqual(
+            IndicatorDimensionValue.objects.filter(name=dimension_name).count(),
+            IndicatorDimensionValue.objects.filter(name__in=dimension_name.child_dimension_names.all()).count(),
+        )
+
+    def test_child_dimension_value_state_updates_after_change(self):
+        """Test that updating dimension value propagates to children."""
+        # Given
+        self.dimension_value.value = 'Quux'
+
+        # When
+        self.dimension_value.save()
+
+        # Then
+        parent_dimension_value = IndicatorDimensionValue.objects.get(id=self.dimension_value.pk)
+        child_dimension_name = IndicatorDimensionName.objects.filter(project=self.child_project).first()
+        child_dimension_value = child_dimension_name.dimension_values.first()
+        self.assertEqual(child_dimension_value.value, parent_dimension_value.value)
+
+    def test_import_does_not_create_deleted_dimension_values(self):
+        """Test that import does not create dimension values deleted from child."""
+        # Given
+        dimension_name = self.dimension_name
+        child_dimension_name = dimension_name.child_dimension_names.first()
+        # New dimension value created (also cloned to child)
+        IndicatorDimensionValue.objects.create(name=dimension_name, value='Baz')
+
+        # When
+        # Import results framework into child
+        child_dimension_name.dimension_values.last().delete()
+        import_status, import_message = self.child_project.import_results()
+
+        # Then
+        self.assertEqual(import_status, 1)
+        self.assertEqual(import_message, "Results imported")
+        self.assertEqual(1, child_dimension_name.dimension_values.count())
+
+    def test_dimension_value_update_does_not_create_deleted_dimension_value(self):
+        """Test that dimension value update does not create dimension value deleted from child."""
+        # Given
+        dimension_name = self.dimension_name
+        child_dimension_name = dimension_name.child_dimension_names.first()
+        # New dimension value created (also cloned to child)
+        dimension_value = IndicatorDimensionValue.objects.create(name=dimension_name, value='Baz')
+
+        # When
+        # Import results framework into child
+        child_dimension_name.dimension_values.last().delete()
+        # Update dimension value
+        dimension_value.value = 'Quux'
+        dimension_value.save()
+
+        # Then
+        self.assertEqual(1, child_dimension_name.dimension_values.count())
 
     def test_update(self):
         """

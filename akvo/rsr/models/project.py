@@ -1224,6 +1224,11 @@ class Project(TimestampsMixin, models.Model):
         else:
             return import_failed, 'Project has multiple parent projects'
 
+        for dimension_name in parent_project.dimension_names.all():
+            # Only import dimension names that have not been imported before
+            if not self.dimension_names.filter(parent_dimension_name=dimension_name).exists():
+                self.copy_dimension_name(dimension_name)
+
         for result in parent_project.results.all():
             # Only import results that have not been imported before
             if not self.results.filter(parent_result=result).exists():
@@ -1287,8 +1292,34 @@ class Project(TimestampsMixin, models.Model):
         if self.results.count() > 0:
             raise RuntimeError(_(u'Can copy results only if the results framework is empty.'))
 
+        for dimension_name in source_project.dimension_names.all():
+            self.copy_dimension_name(dimension_name, set_parent=False)
+
         for result in source_project.results.all():
             self.copy_result(result, set_parent=False)
+
+    def copy_dimension_name(self, source_dimension_name, set_parent=True):
+        data = dict(
+            project=self,
+            name=source_dimension_name.name,
+            parent_dimension_name=source_dimension_name
+        )
+        if not set_parent:
+            data.pop('parent_dimension_name')
+
+        IndicatorDimensionName = apps.get_model('rsr', 'IndicatorDimensionName')
+        dimension_name = IndicatorDimensionName.objects.create(**data)
+
+        for dimension_value in source_dimension_name.dimension_values.all():
+            self.copy_dimension_value(dimension_name, dimension_value)
+
+    def copy_dimension_value(self, dimension_name, source_dimension_value):
+        IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
+        IndicatorDimensionValue.objects.create(
+            name=dimension_name,
+            value=source_dimension_value.value,
+            parent_dimension_value=source_dimension_value,
+        )
 
     def copy_result(self, source_result, set_parent=True):
         """Copy the source_result to this project, setting it as parent if specified."""
@@ -1350,6 +1381,13 @@ class Project(TimestampsMixin, models.Model):
 
         for dimension in source_indicator.dimensions.all():
             self.copy_dimension(indicator, dimension, set_parent=set_parent)
+
+        IndicatorDimensionName = apps.get_model('rsr', 'IndicatorDimensionName')
+        for source_dimension_name in source_indicator.dimension_names.all():
+            dimension_name = IndicatorDimensionName.objects.filter(
+                project=self, name=source_dimension_name.name
+            ).first()
+            indicator.dimension_names.add(dimension_name)
 
         return indicator
 
@@ -1451,6 +1489,23 @@ class Project(TimestampsMixin, models.Model):
         child_dimension.name = parent_dimension.name
         child_dimension.value = parent_dimension.value
         child_dimension.save()
+
+    def update_dimension_value(self, dimension_name, parent_dimension_value):
+        """Update dimension value base on the parent dimension value attribute."""
+
+        IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
+        try:
+            child_dimension_value = IndicatorDimensionValue.objects.select_related(
+                'name'
+            ).get(
+                name=dimension_name,
+                parent_dimension_value=parent_dimension_value,
+            )
+        except IndicatorDimensionValue.DoesNotExist:
+            return
+
+        child_dimension_value.value = parent_dimension_value.value
+        child_dimension_value.save()
 
     def add_reference(self, indicator, reference):
         apps.get_model('rsr', 'IndicatorReference').objects.create(

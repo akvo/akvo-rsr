@@ -16,7 +16,13 @@ class IndicatorDimensionName(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='dimension_names')
     name = ValidXMLCharField(
         _(u'disaggregation name'), max_length=100,
-        help_text=_(u'The name of a category to be used when disaggregating (e.g "Age").'))
+        help_text=_(u'The name of a category to be used when disaggregating (e.g "Age").')
+    )
+    parent_dimension_name = models.ForeignKey(
+        'self', blank=True, null=True, default=None,
+        verbose_name=_(u'parent dimension name'),
+        related_name='child_dimension_names'
+    )
 
     def name_and_values(self):
         return u'{}: ({})'.format(
@@ -34,6 +40,12 @@ class IndicatorDimensionName(models.Model):
     def __unicode__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        super(IndicatorDimensionName, self).save(*args, **kwargs)
+        for child_dimension_name in self.child_dimension_names.all():
+            child_dimension_name.name = self.name
+            child_dimension_name.save()
+
 
 class IndicatorDimensionValue(models.Model):
     name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
@@ -41,6 +53,11 @@ class IndicatorDimensionValue(models.Model):
     value = ValidXMLCharField(
         _(u'disaggregation value'), max_length=100,
         help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
+    parent_dimension_value = models.ForeignKey(
+        'self', blank=True, null=True, default=None,
+        verbose_name=_(u'parent dimension value'),
+        related_name='child_dimension_values'
+    )
 
     class Meta:
         app_label = 'rsr'
@@ -51,6 +68,18 @@ class IndicatorDimensionValue(models.Model):
 
     def __unicode__(self):
         return u'{} - {}'.format(self.name, self.value)
+
+    def save(self, *args, **kwargs):
+        new_dimension_value = not self.pk
+        super(IndicatorDimensionValue, self).save(*args, **kwargs)
+        child_dimension_names = self.name.child_dimension_names.select_related(
+            'project'
+        )
+        for child_dimension_name in child_dimension_names.all():
+            if new_dimension_value:
+                child_dimension_name.project.copy_dimension_value(child_dimension_name, self)
+            else:
+                child_dimension_name.project.update_dimension_value(child_dimension_name, self)
 
 
 class IndicatorDimension(models.Model):
