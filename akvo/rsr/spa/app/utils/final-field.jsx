@@ -53,7 +53,7 @@ const CONTROLS = {
 
 const Control = (props) => {
   const { t } = useTranslation()
-  const { control, withLabel, optional, fieldExists } = props
+  const { control, withLabel, optional, fieldExists, label } = props
   if(!control){
     if(!props.render){
       return CONTROLS.input(props)
@@ -73,7 +73,7 @@ const Control = (props) => {
         optional={typeof optional === 'function' ? optional(name) : optional}
         tooltip={<span dangerouslySetInnerHTML={{__html: t(`${section}:${name}.tooltip`)}} />}
       >
-      {t(`${section}:${name}.label`)}
+      {label !== undefined ? label : t(`${section}:${name}.label`)}
       </InputLabel>}
     >
       {CONTROLS[control](props)}

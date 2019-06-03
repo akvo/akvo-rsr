@@ -59,7 +59,7 @@
   .results-list{
     margin-right: 160px;
   }
-  &>.ant-collapse{
+  &>.ant-form>.ant-collapse{
     position: relative;
     &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box .main-form .ant-form-item-label{
       font-weight: 500;
@@ -121,25 +121,44 @@
       }
     }
   }
-  section{
-    border: 1px solid #e8e8e8;
-    padding: 15px 15px 0;
-    border-radius: 4px;
-    margin-top: 25px;
-    margin-bottom: 15px;
-    .h-holder{
-      display: flex;
+  .ant-collapse-header{
+    .delete-panel{
+      margin-left: 5px;
     }
-    .ant-form-item{
-      margin-bottom: 16px;
+  }
+  .indicators-list{
+    .ant-collapse-item{
+      .ant-collapse-header .ant-collapse-extra{
+        .menu-container{
+          overflow: hidden;
+          display: inline-block;
+          .ant-radio-group{
+            transition: transform .3s ease-out;
+            transition-delay: .3s;
+          }
+        }
+      }
     }
-    h5{
-      // font-size: 16px;
-      margin-top: -26px;
-      margin-bottom: 6px;
-      background-color: #fff;
-      padding: 0 5px;
-      margin-left: -5px;
+    .ant-collapse-item:not(.ant-collapse-item-active){
+      .ant-collapse-header{
+        .ant-collapse-extra{
+          .ant-radio-group{
+            transform: translateX(300px);
+          }
+        }
+      }
+    }
+
+    .input-label{
+      &>div{
+        color: rgba(0, 0, 0, 0.85)
+      }
+    }
+
+    .disaggregations-list{
+      .remove-item{
+        color: #aaa;
+      }
     }
   }
 }

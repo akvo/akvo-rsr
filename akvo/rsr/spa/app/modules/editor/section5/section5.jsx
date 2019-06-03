@@ -1,382 +1,294 @@
-/* global window */
 import React from 'react'
-import { Tabs, Form, Input, Button, Dropdown, Menu, Icon, Collapse, Divider, Col, Row, Switch, Radio, Tag } from 'antd'
+import { Tabs, Form, Input, Button, Dropdown, Menu, Icon, Collapse, Divider, Col, Row, Radio, Tag, Popconfirm, Tooltip } from 'antd'
+import { Form as FinalForm, Field } from 'react-final-form'
+import arrayMutators from 'final-form-arrays'
+import { FieldArray } from 'react-final-form-arrays'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
 import './styles.scss'
+import InputLabel from '../../../utils/input-label'
+import Accordion from '../../../utils/accordion'
 
-const { TabPane } = Tabs
 const { Item } = Form
 const { Panel } = Collapse
 
-const resultTypesMenu = (
-  <Menu>
-    <Menu.Item key="0">
-      <Icon type="plus" style={{ color: '#fa8c16' }} />
-      Input
-    </Menu.Item>
-    <Menu.Item key="1">
-    <Icon type="plus" style={{ color: '#1890ff'}} />
-      Activity
-    </Menu.Item>
-    <Menu.Item key="3"><Icon type="plus" style={{ color: '#52c41a'}} />Output</Menu.Item>
-    <Menu.Item key="4"><Icon type="plus" style={{ color: '#13c2c2'}} />Outcome</Menu.Item>
-    <Menu.Item key="5"><Icon type="plus" style={{ color: '#eb2f96'}} />Impact</Menu.Item>
-  </Menu>
-)
+const Aux = node => node.children
 
-const indicatorTypesMenu = (
-  <Menu style={{ textAlign: 'center' }}>
-    <Menu.Item key="0">
-      Quantitative
-    </Menu.Item>
-    <Menu.Item key="1">
-      Qualitative
-    </Menu.Item>
-  </Menu>
-)
-
-const renderTabBar = (props, DefaultTabBar) => {
+const Disaggregations = ({ fieldName, formPush }) => {
+  const add = () => {
+    formPush(`${fieldName}.disaggregations`, { items: [{}]})
+  }
   return (
-    // <Sticky bottomOffset={80}>
-    //   {({ style }) => (
-      <div className="ant-tabbar-wrapper">
-        <DefaultTabBar {...props} />
-        {/* <Button>add</Button> */}
-        <div className="ant-tabs-extra-content">
-          <Dropdown overlay={indicatorTypesMenu} trigger={['click']}>
-            <span><Icon type="plus" className="ant-tabs-new-tab" /></span>
-          </Dropdown>
-        </div>
-      </div>
-        // <DefaultTabBar {...props} style={{ ...style, zIndex: 1, background: '#fff' }} />
-    //   )}
-    // </Sticky>
+    <FieldArray name={`${fieldName}.disaggregations`} subscription={{}}>
+      {({ fields }) => (
+        <Aux>
+          <div className="ant-col ant-form-item-label">
+            <InputLabel optional tooltip="asd">Disaggregations</InputLabel>
+          </div>
+          {fields.length > 0 &&
+          <Accordion
+            className="disaggregations-list"
+            finalFormFields={fields}
+            setName={`${fieldName}.disaggregations`}
+            renderPanel={(name, index) => (
+              <Panel
+                header={`Disaggregation ${index + 1}`}
+                key={index}
+                extra={(
+                  /* eslint-disable-next-line */
+                  <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                  <Popconfirm
+                    title="Are you sure to delete this disaggregation?"
+                    onConfirm={() => fields.remove(index)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button size="small" icon="delete" className="delete-panel" />
+                  </Popconfirm>
+                  </div>
+                )}
+              >
+                <Item label="Name">
+                  <FinalField name={`${name}.name`} />
+                </Item>
+                <FieldArray name={`${name}.items`} subscription={{}}>
+                  {props => (
+                    <Aux>
+                      {props.fields.map((itemFieldName, itemIndex) => (
+                      <Row gutter={16} key={itemIndex}>
+                        <Col span={12}>
+                          <FinalField
+                            name={`${itemFieldName}.name`}
+                            control="input"
+                            withLabel
+                            label={`Item ${itemIndex + 1}`}
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <FinalField
+                            name={`${itemFieldName}.value`}
+                            control="input"
+                            withLabel
+                            label={`Target value ${itemIndex + 1}`}
+                          />
+                        </Col>
+                      </Row>
+                      ))}
+                      <Button icon="plus" type="link" onClick={() => props.fields.push('items', {})}>Add item</Button>
+                      {props.fields.length > 1 &&
+                      <Button icon="minus" type="link" className="remove-item" onClick={() => props.fields.pop()}>Remove item</Button>
+                      }
+                    </Aux>
+                  )}
+                </FieldArray>
+              </Panel>
+            )}
+          />
+          }
+          <Button icon="plus" block type="dashed" onClick={add}>Add disaggregation</Button>
+        </Aux>
+      )}
+    </FieldArray>
   )
 }
 
-const QualitativeIndicator = () => (
-  <Tabs>
-    <TabPane tab="Info" key="1">
-      <Item label="Title">
-        <Input />
-      </Item>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Item label="Measure">
-            <Radio.Group value>
-              <Radio.Button value>Unit</Radio.Button>
-              <Radio.Button>Percentage</Radio.Button>
-            </Radio.Group>
-          </Item>
-        </Col>
-        <Col span={12}>
-          <Item label="Order">
-            <Radio.Group value>
-              <Radio.Button value>Ascending</Radio.Button>
-              <Radio.Button>Descending</Radio.Button>
-            </Radio.Group>
-          </Item>
-        </Col>
-      </Row>
-      <Item label="Description">
-        <RTE />
-      </Item>
-    </TabPane>
-    <TabPane tab="Baseline" key="3">
-      <Row gutter={15}>
-        <Col span={12}>
-          <Item label="Baseline year">
-            <Input />
-          </Item>
-        </Col>
-        <Col span={12}>
-          <Item label="Baseline value">
-            <Input />
-          </Item>
-        </Col>
-      </Row>
-      <Item label="Baseline comment">
-        <RTE />
-      </Item>
-    </TabPane>
-    <TabPane tab="Periods" key="4">
-      <Collapse accordion defaultActiveKey="1">
-        <Panel header="Period 01" key="1">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Item label="Start">
-                <FinalField
-                  name="start"
-                  control="datepicker"
-                />
+const Periods = ({ fieldName, formPush }) => {
+  const add = () => {
+    formPush(`${fieldName}.periods`, {})
+  }
+  return (
+    <Aux>
+    <FieldArray name={`${fieldName}.periods`} subscription={{}}>
+      {({ fields }) => (
+        <Aux>
+        <div className="ant-col ant-form-item-label">
+          <InputLabel optional tooltip="asd">Periods</InputLabel>
+        </div>
+        {fields.length > 0 &&
+        <Accordion
+          className="periods-list"
+          finalFormFields={fields}
+          setName={`${fieldName}.periods`}
+          renderPanel={(name, index) => (
+            <Panel
+              header={`Period ${index + 1}`}
+              key={index}
+              extra={(
+                /* eslint-disable-next-line */
+                <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                <Popconfirm
+                  title="Are you sure to delete this period?"
+                  onConfirm={() => fields.remove(index)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button size="small" icon="delete" className="delete-panel" />
+                </Popconfirm>
+                </div>
+              )}
+            >
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Item label="Start">
+                    <FinalField
+                      name={`${name}.periodStart`}
+                      control="datepicker"
+                    />
+                  </Item>
+                </Col>
+                <Col span={12}>
+                  <Item label="End">
+                    <FinalField
+                      name={`${name}.periodEnd`}
+                      control="datepicker"
+                    />
+                  </Item>
+                </Col>
+              </Row>
+              <Item label={<InputLabel optional>Target value</InputLabel>}>
+                <FinalField name={`${name}.targetValue`} />
               </Item>
-            </Col>
-            <Col span={12}>
-              <Item label="End">
-                <FinalField
-                  name="end"
-                  control="datepicker"
-                />
+              <Item label={<InputLabel optional>Comment</InputLabel>}>
+                <FinalField name={`${name}.targetComment`} render={({input}) => <RTE {...input} />} />
               </Item>
-            </Col>
-          </Row>
-          <Item label="Target value">
-            <Input />
-          </Item>
-          <Item label="Comment">
-            <RTE />
-          </Item>
-        </Panel>
-      </Collapse>
-      <Button icon="plus" block type="dashed">Add period</Button>
-    </TabPane>
-  </Tabs>
-)
+            </Panel>
+          )}
+        />
+        }
+        <Button icon="plus" block type="dashed" onClick={add}>Add period</Button>
+        </Aux>
+      )}
+    </FieldArray>
+    </Aux>
+  )
+}
 
-const Aux = node => node.children
-
-const ResultVariantC = () => (
-  <Aux>
-    <div className="main-form">
-      <Item label="Title" style={{ flex: 1 }}>
-        <Input />
-      </Item>
-      <div style={{ display: 'flex' }}>
-      <Item label="Description" style={{ flex: 1 }}>
-        <RTE />
-      </Item>
-      <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
-        {/* <Switch /> */}
-        <Radio.Group value>
-          <Radio.Button value>Yes</Radio.Button>
-          <Radio.Button>No</Radio.Button>
-        </Radio.Group>
-      </Item>
-      </div>
-      <div className="ant-form-item-label">Indicators:</div>
-    </div>
-    <Collapse accordion className="indicators-list">
-      <Panel
-        key="1"
-        header="Indicator 01 - Quantitative"
-        extra={<Radio.Group size="small" buttonStyle="solid" value="info"><Radio.Button value="info">Info</Radio.Button><Radio.Button>Disaggregations</Radio.Button><Radio.Button>Baseline</Radio.Button><Radio.Button>Periods</Radio.Button></Radio.Group>}
-      >
-        <Tabs size="small">
-          <TabPane tab="Info" key="1">
+const Indicators = ({ fieldName, formPush }) => {
+  const typeKeyMap = {'0': 'quantitative', '1': 'qualitative'} // eslint-disable-line
+  const add = (key) => {
+    formPush(`${fieldName}.indicators`, { type: typeKeyMap[key] })
+  }
+  return (
+    <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
+    {({ fields }) => (
+      <Aux>
+        <Collapse className="indicators-list" defaultActiveKey="0">
+          {fields.map((name, index) =>
+          <Panel
+            key={`${index}`}
+            header={(
+            <span>
+              <Field
+                name={`${name}.type`}
+                render={({input}) => <span>Indicator {index + 1} <Tag>{input.value}</Tag></span>}
+              />
+            </span>)}
+            extra={(
+              /* eslint-disable-next-line */
+              <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+              <div className="menu-container">
+              <Radio.Group size="small" buttonStyle="solid" value="info">
+                <Radio.Button value="info">Info</Radio.Button>
+                <Field
+                  name={`${name}.type`}
+                  render={({input}) => {
+                    if(input.value === 'quantitative') return <Radio.Button>Disaggregations</Radio.Button>
+                    return null
+                  }}
+                />
+                <Radio.Button>Baseline</Radio.Button>
+                <Radio.Button>Periods</Radio.Button>
+              </Radio.Group>
+              </div>
+              <Popconfirm
+                title="Are you sure to delete this indicator?"
+                onConfirm={() => fields.remove(index)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button size="small" icon="delete" className="delete-panel" />
+              </Popconfirm>
+              </div>
+            )}
+          >
             <Item label="Title">
-              <Input />
+              <FinalField name={`${name}.title`} />
             </Item>
             <Row gutter={16}>
               <Col span={12}>
                 <Item label="Measure">
-                  <Radio.Group value>
-                    <Radio.Button value>Unit</Radio.Button>
-                    <Radio.Button>Percentage</Radio.Button>
-                  </Radio.Group>
+                  <FinalField
+                    name={`${name}.measure`}
+                    render={({input}) => (
+                      <Radio.Group {...input}>
+                        <Radio.Button value={0}>Unit</Radio.Button>
+                        <Radio.Button value={1}>Percentage</Radio.Button>
+                      </Radio.Group>
+                    )}
+                  />
                 </Item>
               </Col>
               <Col span={12}>
                 <Item label="Order">
-                  <Radio.Group value>
-                    <Radio.Button value>Ascending</Radio.Button>
-                    <Radio.Button>Descending</Radio.Button>
-                  </Radio.Group>
+                  <FinalField
+                    name={`${name}.order`}
+                    render={({input}) => (
+                      <Radio.Group {...input}>
+                        <Radio.Button value={0}>Ascending</Radio.Button>
+                        <Radio.Button value={1}>Descending</Radio.Button>
+                      </Radio.Group>
+                    )}
+                  />
                 </Item>
               </Col>
             </Row>
             <Item label="Description">
-              <RTE />
+              <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
             </Item>
-          </TabPane>
-          <TabPane tab="Disaggregations" key="2">
-            <Collapse accordion defaultActiveKey="1">
-              <Panel header="Disaggregation 01" key="1">
-                <Item label="Name">
-                  <Input />
-                </Item>
-                <section>
-                  <div className="h-holder">
-                    <h5>Disaggregation item 1</h5>
-                  </div>
-                  <Row gutter={16}>
-                    <Col span={12}>
-                      <Item label="Name">
-                        <Input />
-                      </Item>
-                    </Col>
-                    <Col span={12}>
-                      <Item label="Value">
-                        <Input />
-                      </Item>
-                    </Col>
-                  </Row>
-                </section>
-                <Button icon="plus">Add disaggregation item</Button>
-              </Panel>
-            </Collapse>
-            <Button icon="plus" block type="dashed">Add disaggregation</Button>
-          </TabPane>
-          <TabPane tab="Baseline" key="3">
+            <Divider />
+            <Disaggregations formPush={formPush} fieldName={name} />
+            <Divider />
             <Row gutter={15}>
               <Col span={12}>
                 <Item label="Baseline year">
-                  <Input />
+                  <FinalField name={`${name}.baselineYear`} />
                 </Item>
               </Col>
               <Col span={12}>
                 <Item label="Baseline value">
-                  <Input />
+                <FinalField name={`${name}.baselineValue`} />
                 </Item>
               </Col>
             </Row>
             <Item label="Baseline comment">
-              <RTE />
+              <FinalField name={`${name}.baselineComment`} render={({input}) => <RTE {...input} />} />
             </Item>
-          </TabPane>
-          <TabPane tab="Periods" key="4">
-            <Collapse accordion defaultActiveKey="1">
-              <Panel header="Period 01" key="1">
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Item label="Start">
-                      <FinalField
-                        name="start"
-                        control="datepicker"
-                      />
-                    </Item>
-                  </Col>
-                  <Col span={12}>
-                    <Item label="End">
-                      <FinalField
-                        name="end"
-                        control="datepicker"
-                      />
-                    </Item>
-                  </Col>
-                </Row>
-                <Item label="Target value">
-                  <Input />
-                </Item>
-                <Item label="Comment">
-                  <RTE />
-                </Item>
-              </Panel>
-            </Collapse>
-            <Button icon="plus" block type="dashed">Add period</Button>
-          </TabPane>
-        </Tabs>
-      </Panel>
-      <Panel
-        key="2"
-        header="Indicator 02 - Qualitative"
-        extra={<Radio.Group size="small" buttonStyle="solid" value="info"><Radio.Button value="info">Info</Radio.Button><Radio.Button>Baseline</Radio.Button><Radio.Button>Periods</Radio.Button></Radio.Group>}
-      >
-        <Item label="Title">
-          <Input />
-        </Item>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Item label="Measure">
-              <Radio.Group value>
-                <Radio.Button value>Unit</Radio.Button>
-                <Radio.Button>Percentage</Radio.Button>
-              </Radio.Group>
-            </Item>
-          </Col>
-          <Col span={12}>
-            <Item label="Order">
-              <Radio.Group value>
-                <Radio.Button value>Ascending</Radio.Button>
-                <Radio.Button>Descending</Radio.Button>
-              </Radio.Group>
-            </Item>
-          </Col>
-        </Row>
-        <Item label="Description">
-          <RTE />
-        </Item>
-        <Divider />
-        <Collapse accordion defaultActiveKey="1">
-          <Panel header="Disaggregation 01" key="1">
-            <Item label="Name">
-              <Input />
-            </Item>
-            <section>
-              <div className="h-holder">
-                <h5>Disaggregation item 1</h5>
-              </div>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Item label="Name">
-                    <Input />
-                  </Item>
-                </Col>
-                <Col span={12}>
-                  <Item label="Value">
-                    <Input />
-                  </Item>
-                </Col>
-              </Row>
-            </section>
-            <Button icon="plus">Add disaggregation item</Button>
+            <Divider />
+            <Periods formPush={formPush} fieldName={name} />
           </Panel>
+          )}
         </Collapse>
-        <Button icon="plus" block type="dashed">Add disaggregation</Button>
-        <Divider />
-        <Row gutter={15}>
-          <Col span={12}>
-            <Item label="Baseline year">
-              <Input />
-            </Item>
-          </Col>
-          <Col span={12}>
-            <Item label="Baseline value">
-              <Input />
-            </Item>
-          </Col>
-        </Row>
-        <Item label="Baseline comment">
-          <RTE />
-        </Item>
-        <Divider />
-        <Collapse accordion defaultActiveKey="1">
-          <Panel header="Period 01" key="1">
-            <Row gutter={16}>
-              <Col span={12}>
-                <Item label="Start">
-                  <FinalField
-                    name="start"
-                    control="datepicker"
-                  />
-                </Item>
-              </Col>
-              <Col span={12}>
-                <Item label="End">
-                  <FinalField
-                    name="end"
-                    control="datepicker"
-                  />
-                </Item>
-              </Col>
-            </Row>
-            <Item label="Target value">
-              <Input />
-            </Item>
-            <Item label="Comment">
-              <RTE />
-            </Item>
-          </Panel>
-        </Collapse>
-        <Button icon="plus" block type="dashed">Add period</Button>
-      </Panel>
-    </Collapse>
-    <Dropdown overlay={indicatorTypesMenu} trigger={['click']}>
-      <Button icon="plus" block type="dashed">Add indicator</Button>
-    </Dropdown>
-  </Aux>
-)
+        <Dropdown
+          overlay={(
+            <Menu style={{ textAlign: 'center' }} onClick={(e) => add(e.key)}>
+              <Menu.Item key="0">
+                Quantitative
+              </Menu.Item>
+              <Menu.Item key="1">
+                Qualitative
+              </Menu.Item>
+            </Menu>
+          )}
+          trigger={['click']}
+        >
+          <Button icon="plus" block type="dashed">Add indicator</Button>
+        </Dropdown>
+      </Aux>
+    )}
+    </FieldArray>
+  )
+}
 
 const Section5 = () => {
   return (
@@ -391,131 +303,93 @@ const Section5 = () => {
         </ul>
         <Button type="link" icon="eye">Full preview</Button>
       </div>
-      <Collapse accordion defaultActiveKey="3" className="results-list">
-        <Panel key="1" header={<span><Tag>OUTCOME</Tag>Result title here</span>} extra={<Icon type="delete" />}>
-          <div className="main-form">
-          <Item label="Title" style={{ flex: 1 }}>
-            <Input />
-          </Item>
-          <div style={{ display: 'flex' }}>
-          <Item label="Description" style={{ flex: 1 }}>
-            <RTE />
-          </Item>
-          <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
-            {/* <Switch /> */}
-            <Radio.Group value>
-              <Radio.Button value>Yes</Radio.Button>
-              <Radio.Button>No</Radio.Button>
-            </Radio.Group>
-          </Item>
-          </div>
-          <div className="ant-form-item-label">Indicators:</div>
-          </div>
-          {/* <Divider /> */}
-          <Tabs tabPosition="left" type="editable-card" hideAdd renderTabBar={renderTabBar}>
-            <TabPane tab="Indicator 01 - Qualitative" key="1">
-              <QualitativeIndicator />
-            </TabPane>
-            <TabPane tab="Indicator 02 - Quantitative" key="2">
-              <Tabs>
-                <TabPane tab="Info" key="1">
-                  <Item label="Title">
-                    <Input />
-                  </Item>
-                  <Row gutter={16}>
-                    <Col span={12}>
-                      <Item label="Measure">
-                        <Radio.Group value>
-                          <Radio.Button value>Unit</Radio.Button>
-                          <Radio.Button>Percentage</Radio.Button>
-                        </Radio.Group>
+      <Form layout="vertical">
+      <FinalForm
+        onSubmit={() => {}}
+        initialValues={{ results: [{ type: 'impact', indicators: [{ type: 'quantitative' }]}] }}
+        subscription={{}}
+        mutators={{ ...arrayMutators }}
+        render={({
+          form: {
+            mutators: { push }
+          }
+        }) => (
+          <FieldArray name="results" subscription={{}}>
+          {({ fields }) => (
+            <Aux>
+              <Accordion
+                className="results-list"
+                finalFormFields={fields}
+                setName="results"
+                renderPanel={(name, index) => (
+                  <Panel
+                    key={`${index}`}
+                    header={
+                      <span>
+                        Result {index + 1}
+                        &nbsp;
+                        <Field
+                          name={`${name}.type`}
+                          render={({input}) => <Tag>{input.value}</Tag>}
+                        />
+                      </span>}
+                    extra={
+                      // eslint-disable-next-line
+                      <div onClick={e => e.stopPropagation()}>
+                      <Popconfirm
+                        title="Are you sure to delete this result?"
+                        onConfirm={() => fields.remove(index)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button size="small" icon="delete" className="delete-panel" />
+                      </Popconfirm>
+                      </div>
+                    }
+                  >
+                    <div className="main-form">
+                      <Item label="Title" optional style={{ flex: 1 }}>
+                        <FinalField
+                          name={`${name}.name`}
+                          control="input"
+                        />
                       </Item>
-                    </Col>
-                    <Col span={12}>
-                      <Item label="Order">
-                        <Radio.Group value>
-                          <Radio.Button value>Ascending</Radio.Button>
-                          <Radio.Button>Descending</Radio.Button>
-                        </Radio.Group>
-                      </Item>
-                    </Col>
-                  </Row>
-                  <Item label="Description">
-                    <RTE />
-                  </Item>
-                </TabPane>
-                <TabPane tab="Baseline" key="3">
-                  <Row gutter={15}>
-                    <Col span={12}>
-                      <Item label="Baseline year">
-                        <Input />
-                      </Item>
-                    </Col>
-                    <Col span={12}>
-                      <Item label="Baseline value">
-                        <Input />
-                      </Item>
-                    </Col>
-                  </Row>
-                  <Item label="Baseline comment">
-                    <RTE />
-                  </Item>
-                </TabPane>
-                <TabPane tab="Periods" key="4">
-                  <Collapse accordion defaultActiveKey="1">
-                    <Panel header="Period 01" key="1">
-                      <Row gutter={16}>
-                        <Col span={12}>
-                          <Item label="Start">
-                            <FinalField
-                              name="start"
-                              control="datepicker"
-                            />
-                          </Item>
-                        </Col>
-                        <Col span={12}>
-                          <Item label="End">
-                            <FinalField
-                              name="end"
-                              control="datepicker"
-                            />
-                          </Item>
-                        </Col>
-                      </Row>
-                      <Item label="Target value">
-                        <Input />
-                      </Item>
-                      <Item label="Comment">
+                      <div style={{ display: 'flex' }}>
+                      <Item label="Description" optional style={{ flex: 1 }}>
                         <RTE />
                       </Item>
-                    </Panel>
-                  </Collapse>
-                  <Button icon="plus" block type="dashed">Add period</Button>
-                </TabPane>
-              </Tabs>
-            </TabPane>
-          </Tabs>
-          {/* <Button icon="plus">Add Indicator</Button> */}
-        </Panel>
-        <Panel key="2" header={<span><Tag>IMPACT</Tag>Another result here</span>} extra={<Icon type="delete" />}>
-          <Item label="Title">
-            <Input />
-          </Item>
-          <Item label="Aggregation status">
-            <Input />
-          </Item>
-          <Item label="Description">
-            <RTE />
-          </Item>
-          <Button icon="plus">Add Indicator</Button>
-        </Panel>
-        <Panel key="3" header={<span><Tag>IMPACT</Tag>Accordeon result here</span>} extra={<Icon type="delete" />}>
-          <ResultVariantC />
-        </Panel>
-      </Collapse>
-      <Dropdown overlay={resultTypesMenu} trigger={['click']}>
-        <Button icon="plus" className="add-result" size="large">Add Result</Button>
-      </Dropdown>
+                      <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
+                        {/* <Switch /> */}
+                        <Radio.Group value>
+                          <Radio.Button value>Yes</Radio.Button>
+                          <Radio.Button>No</Radio.Button>
+                        </Radio.Group>
+                      </Item>
+                      </div>
+                      <div className="ant-form-item-label">Indicators:</div>
+                    </div>
+                    <Indicators fieldName={name} formPush={push} />
+                  </Panel>
+                )}
+              />
+            <Dropdown overlay={
+              <Menu onClick={(e) => push('results', { type: e.key })}>
+                <Menu.Item key="input"><Icon type="plus" />Input</Menu.Item>
+                <Menu.Item key="activity"><Icon type="plus" />Activity</Menu.Item>
+                <Menu.Item key="output"><Icon type="plus" />Output</Menu.Item>
+                <Menu.Item key="outcome"><Icon type="plus" />Outcome</Menu.Item>
+                <Menu.Item key="impact"><Icon type="plus" />Impact</Menu.Item>
+              </Menu>
+            }
+            trigger={['click']}>
+              <Button icon="plus" className="add-result" size="large">Add Result</Button>
+            </Dropdown>
+            </Aux>
+          )}
+          </FieldArray>
+        )}
+      />
+      </Form>
     </div>
   )
 }
