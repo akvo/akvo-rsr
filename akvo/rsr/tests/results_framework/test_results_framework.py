@@ -213,7 +213,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
         # Given
         self.period.period_start = datetime.datetime.today() + datetime.timedelta(days=30)
         self.period.period_end = datetime.datetime.today() + datetime.timedelta(days=300)
-        # # these properties were not set already, and hence should be updated too
+        # # these properties shouldn't get imported
         self.period.target_comment = "Target comment"
         self.period.actual_comment = "Actual comment"
 
@@ -225,8 +225,8 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_period = self.period.child_periods.first()
         self.assertEqual(child_period.period_start, parent_period.period_start)
         self.assertEqual(child_period.period_end, parent_period.period_end)
-        self.assertEqual(child_period.target_comment, parent_period.target_comment)
-        self.assertEqual(child_period.actual_comment, parent_period.actual_comment)
+        self.assertEqual(child_period.target_comment, '')
+        self.assertEqual(child_period.actual_comment, '')
 
     def test_child_period_state_not_overwritten_after_change(self):
         """Test that changes made to child period are not overwritten."""
