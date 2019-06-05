@@ -10,7 +10,7 @@ release_name=$1
 disk_name=rsr-${release_name}-1
 
 log "Deleting helm chart..."
-docker run -it -v /Users/dlebrero/projects/akvo/akvo-rsr/ci/rsrchart:/apps -v ~/.kube/config:/root/.kube/config -v ~/.helm:/root/.helm alpine/helm:2.12.3 delete --purge ${release_name}
+helm delete --purge ${release_name}
 log "Deleting Postgress persistent volume claim..."
 kubectl delete persistentvolumeclaims --namespace=rsr-demo data-${release_name}-postgresql-0
 

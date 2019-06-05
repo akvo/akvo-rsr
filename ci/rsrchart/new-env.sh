@@ -37,7 +37,7 @@ fi
 kubectl get pods > /dev/null
 
 log Running helm ...
-docker run -it -v /Users/dlebrero/projects/akvo/akvo-rsr/ci/rsrchart:/apps -v ~/.kube/config:/root/.kube/config -v ~/.helm:/root/.helm alpine/helm:2.12.3 install . --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" ${HELM_EXTRA_OPTS}
+helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restoreFrom="${restore_from}" ${HELM_EXTRA_OPTS}
 
 log Waiting for new environment to be ready
 ${DIR}/helpers/wait-for-k8s-deployment-to-be-ready.sh ${release_name}
