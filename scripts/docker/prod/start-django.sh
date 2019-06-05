@@ -24,7 +24,7 @@ if [ ! -f "/var/akvo/rsr/mediaroot/fake-migration-flag" ]; then
     mkdir -p /var/akvo/rsr/mediaroot
     touch "/var/akvo/rsr/mediaroot/fake-migration-flag"
 fi
-python manage.py migrate --noinput
+SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 
 log Adding to crontab
 python manage.py crontab add
