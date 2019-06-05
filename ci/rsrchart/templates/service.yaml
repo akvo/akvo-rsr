@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "rsrchart.labels" . | indent 4 }}
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
