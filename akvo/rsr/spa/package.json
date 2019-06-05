@@ -17,7 +17,7 @@
   "author": "Martin Christov",
   "license": "MIT",
   "dependencies": {
-    "antd": "^3.16.1",
+    "antd": "^3.19.1",
     "cross-env": "5.2.0",
     "currency-codes": "^1.5.0",
     "currency-symbol-map": "^4.0.4",
@@ -28,6 +28,7 @@
     "i18next-xhr-backend": "^2.0.1",
     "javascript-time-ago": "^2.0.1",
     "js-cookie": "^2.2.0",
+    "jump.js": "^1.0.2",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "object-diff": "0.0.4",

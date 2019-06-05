@@ -8,13 +8,14 @@ import Focus from './section8/focus'
 import LinksDocs from './section9/links-n-docs'
 import CommentsKeywords from './section10/comments-n-keywords'
 import Reporting from './section11/section11'
+import Section5 from './section5/section5'
 
 export default [
   {key: 'info', component: Info},
   {key: 'contacts', component: Contacts},
   {key: 'partners', component: Partners},
   {key: 'descriptions', component: Descriptions},
-  {key: 'results-n-indicators' },
+  {key: 'results-n-indicators', component: Section5 },
   {key: 'finance', component: Finance},
   {key: 'locations', component: Locations},
   {key: 'focus', component: Focus},
