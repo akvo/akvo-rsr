@@ -53,12 +53,12 @@ const CONTROLS = {
 
 const Control = (props) => {
   const { t } = useTranslation()
-  const { control, withLabel, optional, fieldExists, label } = props
+  const { control, withLabel, optional, fieldExists, label, ..._props } = props
   if(!control){
     if(!props.render){
-      return CONTROLS.input(props)
+      return CONTROLS.input(_props)
     }
-    return props.render(props)
+    return props.render(_props)
   }
   if(withLabel){
     const name = props.input.name.split('.').reduce((acc, curr) => curr)
@@ -76,12 +76,12 @@ const Control = (props) => {
       {label !== undefined ? label : t(`${section}:${name}.label`)}
       </InputLabel>}
     >
-      {CONTROLS[control](props)}
+      {CONTROLS[control](_props)}
     </Item>
     }
     </SectionContext.Consumer>)
   }
-  return CONTROLS[control](props)
+  return CONTROLS[control](_props)
 }
 
 class FinalField extends React.Component{

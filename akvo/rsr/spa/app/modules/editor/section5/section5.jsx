@@ -1,14 +1,18 @@
-import React from 'react'
-import { Tabs, Form, Input, Button, Dropdown, Menu, Icon, Collapse, Divider, Col, Row, Radio, Tag, Popconfirm, Tooltip } from 'antd'
-import { Form as FinalForm, Field } from 'react-final-form'
+/* global document */
+import React, { useEffect } from 'react'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Divider, Col, Row, Radio, Tag, Popconfirm } from 'antd'
+import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
+import jump from 'jump.js'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
 import './styles.scss'
 import InputLabel from '../../../utils/input-label'
 import Accordion from '../../../utils/accordion'
+import Condition from '../../../utils/condition'
+import { getBestAnchorGivenScrollLocation } from '../../../utils/scroll'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -16,6 +20,9 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 const Disaggregations = ({ fieldName, formPush }) => {
+  useEffect(() => {
+    formPush(`${fieldName}.disaggregations`, { items: [{}]})
+  }, [])
   const add = () => {
     formPush(`${fieldName}.disaggregations`, { items: [{}]})
   }
@@ -94,6 +101,9 @@ const Disaggregations = ({ fieldName, formPush }) => {
 }
 
 const Periods = ({ fieldName, formPush }) => {
+  useEffect(() => {
+    formPush(`${fieldName}.periods`, {})
+  }, [])
   const add = () => {
     formPush(`${fieldName}.periods`, {})
   }
@@ -164,10 +174,60 @@ const Periods = ({ fieldName, formPush }) => {
   )
 }
 
+const fieldNameToId = name => name.replace(/\[/g, '').replace(/\]/g, '').replace(/\./g, '')
+
+class IndicatorNavMenu extends React.Component{
+  state = {
+    currentAnchor: 'info'
+  }
+  componentDidMount(){
+    const { fieldName } = this.props
+    const fieldNameId = fieldNameToId(fieldName)
+    this.sections = {
+      info: document.getElementById(`${fieldNameId}-info`),
+      disaggregations: document.getElementById(`${fieldNameId}-disaggregations`),
+      baseline: document.getElementById(`${fieldNameId}-baseline`),
+      periods: document.getElementById(`${fieldNameId}-periods`)
+    }
+    document.addEventListener('scroll', this.scroll)
+  }
+  componentWillUnmount(){
+    document.removeEventListener('scroll', this.scroll)
+  }
+  scroll = () => {
+    let anchor = getBestAnchorGivenScrollLocation(this.sections, -220)
+    if(anchor === undefined) anchor = 'info'
+    if(anchor !== this.state.currentAnchor){
+      this.setState({
+        currentAnchor: anchor
+      })
+    }
+  }
+  render(){
+    return (
+      <div className="menu-container">
+        <Radio.Group
+          size="small"
+          buttonStyle="solid"
+          value={this.state.currentAnchor}
+          onChange={e => { jump(this.sections[e.target.value], { duration: 400, offset: -220 }) }}
+        >
+          <Radio.Button value="info">Info</Radio.Button>
+          <Condition when={`${this.props.fieldName}.type`} is="quantitative">
+            <Radio.Button value="disaggregations">Disaggregations</Radio.Button>
+          </Condition>
+          <Radio.Button value="baseline">Baseline</Radio.Button>
+          <Radio.Button value="periods">Periods</Radio.Button>
+        </Radio.Group>
+      </div>
+    )
+  }
+}
+
 const Indicators = ({ fieldName, formPush }) => {
   const typeKeyMap = {'0': 'quantitative', '1': 'qualitative'} // eslint-disable-line
   const add = (key) => {
-    formPush(`${fieldName}.indicators`, { type: typeKeyMap[key] })
+    formPush(`${fieldName}.indicators`, { type: typeKeyMap[key], measure: 0, order: 0 })
   }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
@@ -177,6 +237,7 @@ const Indicators = ({ fieldName, formPush }) => {
           {fields.map((name, index) =>
           <Panel
             key={`${index}`}
+            forceRender
             header={(
             <span>
               <Field
@@ -187,20 +248,7 @@ const Indicators = ({ fieldName, formPush }) => {
             extra={(
               /* eslint-disable-next-line */
               <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-              <div className="menu-container">
-              <Radio.Group size="small" buttonStyle="solid" value="info">
-                <Radio.Button value="info">Info</Radio.Button>
-                <Field
-                  name={`${name}.type`}
-                  render={({input}) => {
-                    if(input.value === 'quantitative') return <Radio.Button>Disaggregations</Radio.Button>
-                    return null
-                  }}
-                />
-                <Radio.Button>Baseline</Radio.Button>
-                <Radio.Button>Periods</Radio.Button>
-              </Radio.Group>
-              </div>
+              <IndicatorNavMenu fieldName={name} />
               <Popconfirm
                 title="Are you sure to delete this indicator?"
                 onConfirm={() => fields.remove(index)}
@@ -212,7 +260,8 @@ const Indicators = ({ fieldName, formPush }) => {
               </div>
             )}
           >
-            <Item label="Title">
+            <div id={`${fieldNameToId(name)}-info`} />
+            <Item label={<InputLabel optional>Title</InputLabel>}>
               <FinalField name={`${name}.title`} />
             </Item>
             <Row gutter={16}>
@@ -230,9 +279,10 @@ const Indicators = ({ fieldName, formPush }) => {
                 </Item>
               </Col>
               <Col span={12}>
-                <Item label="Order">
+                <Item label={<InputLabel>Order</InputLabel>}>
                   <FinalField
                     name={`${name}.order`}
+                    defaultValue={0}
                     render={({input}) => (
                       <Radio.Group {...input}>
                         <Radio.Button value={0}>Ascending</Radio.Button>
@@ -243,28 +293,35 @@ const Indicators = ({ fieldName, formPush }) => {
                 </Item>
               </Col>
             </Row>
-            <Item label="Description">
+            <Item label={<InputLabel optional>Description</InputLabel>}>
               <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
             </Item>
             <Divider />
-            <Disaggregations formPush={formPush} fieldName={name} />
-            <Divider />
+            <div id={`${fieldNameToId(name)}-disaggregations`} />
+            <Condition when={`${name}.type`} is="quantitative">
+              <Aux>
+                <Disaggregations formPush={formPush} fieldName={name} />
+                <Divider />
+              </Aux>
+            </Condition>
+            <div id={`${fieldNameToId(name)}-baseline`} />
             <Row gutter={15}>
               <Col span={12}>
-                <Item label="Baseline year">
+                <Item label={<InputLabel optional>Baseline year</InputLabel>}>
                   <FinalField name={`${name}.baselineYear`} />
                 </Item>
               </Col>
               <Col span={12}>
-                <Item label="Baseline value">
+                <Item label={<InputLabel optional>Baseline value</InputLabel>}>
                 <FinalField name={`${name}.baselineValue`} />
                 </Item>
               </Col>
             </Row>
-            <Item label="Baseline comment">
+            <Item label={<InputLabel optional>Baseline comment</InputLabel>}>
               <FinalField name={`${name}.baselineComment`} render={({input}) => <RTE {...input} />} />
             </Item>
             <Divider />
+            <div id={`${fieldNameToId(name)}-periods`} />
             <Periods formPush={formPush} fieldName={name} />
           </Panel>
           )}
@@ -290,19 +347,30 @@ const Indicators = ({ fieldName, formPush }) => {
   )
 }
 
-const Section5 = () => {
-  return (
-    <div className="view section5">
+class Summary extends React.Component{
+  shouldComponentUpdate(nextProps){
+    return nextProps.values.results.length !== this.props.values.results.length
+  }
+  render(){
+    const { values: {results}} = this.props
+    return (
       <div className="summary">
         <ul>
-          <li>Inputs<strong>0</strong></li>
-          <li>Activities<strong>0</strong></li>
-          <li>Outputs<strong>0</strong></li>
-          <li>Outcomes<strong>1</strong></li>
-          <li>Impacts<strong>1</strong></li>
+          <li>Inputs<strong>{results.filter(it => it.type === 'input').length}</strong></li>
+          <li>Activities<strong>{results.filter(it => it.type === 'activity').length}</strong></li>
+          <li>Outputs<strong>{results.filter(it => it.type === 'output').length}</strong></li>
+          <li>Outcomes<strong>{results.filter(it => it.type === 'outcome').length}</strong></li>
+          <li>Impacts<strong>{results.filter(it => it.type === 'impact').length}</strong></li>
         </ul>
         <Button type="link" icon="eye">Full preview</Button>
       </div>
+    )
+  }
+}
+
+const Section5 = () => {
+  return (
+    <div className="view section5">
       <Form layout="vertical">
       <FinalForm
         onSubmit={() => {}}
@@ -314,6 +382,8 @@ const Section5 = () => {
             mutators: { push }
           }
         }) => (
+          <Aux>
+          <FormSpy subscription={{ values: true }} component={Summary} />
           <FieldArray name="results" subscription={{}}>
           {({ fields }) => (
             <Aux>
@@ -387,6 +457,7 @@ const Section5 = () => {
             </Aux>
           )}
           </FieldArray>
+          </Aux>
         )}
       />
       </Form>
