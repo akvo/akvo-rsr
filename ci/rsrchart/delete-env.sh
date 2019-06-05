@@ -16,14 +16,16 @@ kubectl delete persistentvolumeclaims --namespace=rsr-demo data-${release_name}-
 
 starttime=$(date +%s)
 
-log "Deleting media disk ..."
-until gcloud compute disks delete ${disk_name} --zone europe-west1-d --quiet > /dev/null 2>&1
-do
-    if [[ $(( $(date +%s) - 300 )) -lt "${starttime}" ]]; then
-        echo "Waiting for env to stop before destroying disks"
-        sleep 10
-    else
-        echo "Cannot delete disks after 5 mins. Giving up. Please check what is going on."
-        exit 1
-    fi
-done
+if gcloud compute disks describe ${disk_name} --zone europe-west1-d --quiet > /dev/null 2>&1; then
+    log "Deleting media disk ..."
+    until gcloud compute disks delete ${disk_name} --zone europe-west1-d --quiet > /dev/null 2>&1
+    do
+        if [[ $(( $(date +%s) - 300 )) -lt "${starttime}" ]]; then
+            echo "Waiting for env to stop before destroying disks"
+            sleep 10
+        else
+            echo "Cannot delete disks after 5 mins. Giving up. Please check what is going on."
+            exit 1
+        fi
+    done
+fi
