@@ -12,6 +12,11 @@ release_name=$1
 snapshot_name=rsr-${release_name}-1
 disk_name=rsr-${release_name}-1
 
+if [[ ! $release_name =~ ^rsr[1-4]$ ]]; then
+    echo "Release must be one of rsr1,rsr2,rsr3 or rsr4"
+    exit 1
+fi
+
 log Creating snapshot of Media disk in Prod
 gcloud compute disks snapshot gke-production-24b6e45-pvc-4f1fdb7d-d5fe-11e8-bbc7-42010a8400de --zone europe-west1-d --snapshot-names=${snapshot_name}
 log Creating new disk with previous snaphost
