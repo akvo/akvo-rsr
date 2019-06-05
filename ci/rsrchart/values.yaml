@@ -17,6 +17,10 @@ postgresql:
       #!/usr/bin/env bash
       set -eu
 
+      function log {
+         echo "$(date +"%T") - DB SEEDING INFO - $*"
+      }
+
       if [ -f "/bitnami/postgresql/first-run" ]; then
         echo "For some reason, the output of this script does not show in the logs when it is run for the very first time when using our postgres image, which is based in postgres 9.6."
         echo "We do not expect this script to fail at all, but we have detected that this is the second time this script is run, hence something that should not fail has failed"
@@ -24,45 +28,53 @@ postgresql:
         exit 0
       fi
 
-      echo "Creating flag file"
+      log Creating flag file
       echo "$(date)" >> /bitnami/postgresql/first-run
 
       DB_HOST="localhost"
       SUPER_USER=${POSTGRES_USER}
-      NEW_DB_NAME="rsrdbname"
-      NEW_USER="foobarbar"
-      NEW_USER_PASSWORD=${POSTGRES_PASSWORD}
+      RSR_DB_USER="foobarbar"
+      RSR_DB_NAME="rsrdbname"
+      RSR_USER_PASSWORD=${POSTGRES_PASSWORD}
 
       psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}")
       export PGPASSWORD="${POSTGRES_PASSWORD}"
 
-      psql "${psql_settings[@]}" --command="CREATE USER ${NEW_USER} WITH ENCRYPTED PASSWORD '${NEW_USER_PASSWORD}';"
-      psql "${psql_settings[@]}" --command="CREATE DATABASE ${NEW_DB_NAME} OWNER ${NEW_USER};"
-      psql "${psql_settings[@]}" --dbname="${NEW_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${NEW_USER};"
+      log Create RSR user
+      psql "${psql_settings[@]}" --command="CREATE USER ${RSR_DB_USER} WITH ENCRYPTED PASSWORD '${RSR_USER_PASSWORD}';"
+      log Create RSR DB
+      psql "${psql_settings[@]}" --command="CREATE DATABASE ${RSR_DB_NAME} OWNER ${RSR_DB_USER};"
+      log Assign perms to RSR user in RSR DB
+      psql "${psql_settings[@]}" --dbname="${RSR_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${RSR_DB_USER};"
 
       DUMP_FILE=/tmp/backup.lzo
-      RSR_DB_USER=$NEW_USER
-      RSR_DB_NAME=$NEW_DB_NAME
 
+      log Downloading latest production RSR backup
       curl -u :${ELEPHANTSQL_API_KEY}  https://api.elephantsql.com/api/backup?db=rsr_db | jq .[0].url | xargs curl --output "${DUMP_FILE}"
 
+      log Guessing owner of production DB
+      # This is not working, cannot see any error, hence hardcoding the production DB user
       #dump_owner=$(lzop -cd "${DUMP_FILE}" | head -n 2000 | grep "Owner: [a-z].*" -o | head -n 1 | cut -f 2 -d\ )
-
       dump_owner=rsr_db_user
 
-      echo "done!"
-
       psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
-      echo "settings again!"
-      lzop -cd "${DUMP_FILE}" | sed -e "s/${dump_owner}/${RSR_DB_USER}/" | sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d"| sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | sed -e '/COPY public.django_session/,/^--/d' | sed -e '/COPY public.rsr_iatiimportlog/,/^--/d' | sed -e '/COPY public.rsr_iatiactivityimport/,/^--/d' | sed -e '/COPY public.django_admin_log/,/^--/d' > /tmp/tdump
+      log Preparing DB dump
+      ## Changing owner of objects, remove any permission related statements and removing some huge tables of no use in the new environment
+      ## We also remove the plv8 extension as the Postgres container doesnt have it, it is not trivial to add and RSR is not using it.
+      lzop -cd "${DUMP_FILE}" | \
+        sed -e "s/${dump_owner}/${RSR_DB_USER}/" | \
+        sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | \
+        sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | \
+        sed -e '/COPY public.django_session/,/^--/d' | \
+        sed -e '/COPY public.rsr_iatiimportlog/,/^--/d' | \
+        sed -e '/COPY public.rsr_iatiactivityimport/,/^--/d' | \
+        sed -e '/COPY public.django_admin_log/,/^--/d' \
+        > /tmp/cleaned.dump
 
-      wc -l /tmp/tdump
-
-      echo "veyr done!"
-
-      cat /tmp/tdump | psql "${psql_settings[@]}"
-      rm /tmp/tdump
+      log Seeding DB
+      cat /tmp/cleaned.dump | psql "${psql_settings[@]}"
+      log Deleting tmp files
+      rm /tmp/cleaned.dump
       rm $DUMP_FILE
-      echo "done!!!!!!"
-
+      log Done
       exit 0
