@@ -99,6 +99,8 @@ spec:
               key: smtp-password
         - name: DJANGO_SECRET_KEY
           value: "something random"
+        - name: GUNICORN_DEBUG_ARGS
+          value: "--workers 4"
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
