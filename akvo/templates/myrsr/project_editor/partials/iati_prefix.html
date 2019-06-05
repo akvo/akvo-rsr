@@ -6,7 +6,7 @@
             <div class="form-group">
                 <div class="select-group control">
                     <select id="prefix-{{ obj_field_id }}"
-                            class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}{% if 'currency' in obj_field_id %} currency-select{% endif %}"
+                            class="form-control masquerade-field {{ validations|mandatory_or_hidden:obj_field_id }}{% if 'currency' in obj_field_id %} currency-select{% endif %}"
                             {% if disabled %}disabled{% endif %}>
                         <option value="" {% if not obj_value %}selected{% endif %}></option>
                         {% for choice in obj_choices %}
@@ -28,7 +28,7 @@
                 {% with disabled=True %}
                     <input type="text"
                            id="suffix-{{ obj_field_id }}"
-                           class="form-control {{ validations|mandatory_or_hidden:obj_field_id }}"
+                           class="form-control masquerade-field {{ validations|mandatory_or_hidden:obj_field_id }}"
                            {% if obj|max_length:field %}
                            maxlength="{{ obj|max_length:field }}"
                            {% endif %}
