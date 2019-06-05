@@ -23,7 +23,7 @@ data:
 
       DB_HOST="localhost"
       SUPER_USER=${POSTGRES_USER}
-      RSR_DB_USER="foobarbar"
+      RSR_DB_USER="rsrdbusername"
       RSR_DB_NAME="rsrdbname"
       RSR_USER_PASSWORD=${POSTGRES_PASSWORD}
 
