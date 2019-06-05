@@ -33,7 +33,7 @@ env >> /etc/environment
 log Starting cron
 /usr/sbin/cron
 log Starting gunicorn in background
-gunicorn akvo.wsgi ${GUNICORN_DEBUG_ARGS:-} --max-requests 200 --workers 6 --timeout 300 --bind 0.0.0.0:8000 &
+gunicorn akvo.wsgi --max-requests 200 --workers 6 --timeout 300 --bind 0.0.0.0:8000 ${GUNICORN_DEBUG_ARGS:-} &
 
 child=$!
 wait "$child"
