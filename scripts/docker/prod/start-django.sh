@@ -18,12 +18,6 @@ if [ ! -z "${WAIT_FOR_DEPENDENCIES:-}" ]; then
 fi
 
 log Migrating
-if [ ! -f "/var/akvo/rsr/mediaroot/fake-migration-flag" ]; then
-    log Running fake initial migrations at last here
-    python manage.py migrate --fake-initial --noinput
-    mkdir -p /var/akvo/rsr/mediaroot
-    touch "/var/akvo/rsr/mediaroot/fake-migration-flag"
-fi
 python manage.py migrate --noinput
 
 log Adding to crontab
