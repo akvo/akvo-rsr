@@ -34,7 +34,7 @@
                     </div>
                     {% include boolean_input with obj=project field='aggregate_to_parent' %}
                 {% endif %}
-                {% if not project.has_results and project.is_impact_project and user.can_import_results %}
+                {% if not project.results.exists and project.is_impact_project and user.can_import_results %}
                     <div class="row">
                         <div class="col-md-6">
                             {% trans 'Copy the results framework from an existing RSR project within your organisation' %}
@@ -42,7 +42,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-2 form-group control">
-                            <input class="form-control" type="number" id="copy-results-source-pk" placeholder="Source Project ID#" />
+                            <input class="form-control masquerade-field" type="number" id="copy-results-source-pk" placeholder="Source Project ID#" />
                         </div>
                         <div class="col-md-4 form-group control">
                             <button class="btn btn-primary" id="copy-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Copy Results' %}</button>

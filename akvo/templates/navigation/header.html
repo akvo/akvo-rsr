@@ -23,6 +23,7 @@
         {% endif %}
       </a>
     </div>
+    <div class="desktop-menu">
     {% if '/myrsr/' in request.path %}
         <ul class="nav navbar-nav">
             <li role="presentation">
@@ -52,8 +53,37 @@
             <h2>{% trans 'Monitor, report and share with ease' %}</h2>
         </div>
     {% endif %}
+    </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbar-collapsed">
+      <div class="mobile-menu">
+        {% if '/myrsr/' in request.path %}
+          <ul class="nav navbar-nav">
+              <li role="presentation">
+                  {% has_perm 'rsr.user_management' user as can_manage_users %}
+                  {% if can_manage_users %}
+                      <a href="{% url 'user_management' %}">
+                          {% trans "User management" %}
+                      </a>
+                  {% endif %}
+              </li>
+              {% has_perm 'rsr.project_management' user as can_manage_projects %}
+              <li role="presentation" class="navIati">
+                  <a class="{% if 'myrsr/iati' in request.path %}active{% endif %}"
+                    href="{% url 'my_iati' %}">
+                      {% trans "IATI" %}
+                  </a>
+              </li>
+              <li role="presentation" class="navReports">
+                  <a href="{% url 'my_reports' %}"
+                    class="{% if '/myrsr/reports/' in current_path %}active{% endif %}">
+                      {% trans 'Organisation Reports' %}
+                  </a>
+              </li>
+          </ul>
+          <hr />
+        {% endif %}
+      </div>
         <ul class="nav navbar-nav navbar-right">
             {% if not user.is_authenticated %}
                 <li><a href="{% url 'register' %}">{% trans 'Register' %}</a></li>

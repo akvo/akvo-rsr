@@ -17,6 +17,7 @@ from ..signals import (
     act_on_log_entry, employment_post_save, employment_pre_save,
     update_project_budget, update_project_funding, update_project_editor_validation_cache
 )
+from ..eutf_signals import set_reporting_organisation
 
 from .benchmark import Benchmark, Benchmarkname
 from .budget_item import BudgetItem, BudgetItemLabel, CountryBudgetItem
@@ -185,7 +186,7 @@ __all__ = [
 import rules
 from ..permissions import (is_rsr_admin, is_org_admin, is_org_user_manager,
                            is_org_me_manager, is_org_me_manager_or_project_editor,
-                           is_org_user, is_self, is_org_enumerator)
+                           is_org_user, is_self, is_org_enumerator, is_own)
 
 rules.add_perm('rsr', rules.always_allow)
 
@@ -261,9 +262,9 @@ rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
 rules.add_perm('rsr.add_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
                is_org_me_manager_or_project_editor | is_org_enumerator | is_org_user)
-rules.add_perm('rsr.change_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
+rules.add_perm('rsr.change_projectupdate', is_own | is_rsr_admin | is_org_admin | is_org_user_manager |
                is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
-rules.add_perm('rsr.delete_projectupdate', is_rsr_admin | is_org_admin)
+rules.add_perm('rsr.delete_projectupdate', is_own | is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)
 rules.add_perm('rsr.change_projectupdatelocation', is_rsr_admin)
@@ -488,3 +489,8 @@ post_delete.connect(update_project_funding, sender=Partnership)
 post_save.connect(create_api_key, sender=User)
 
 post_save.connect(update_project_editor_validation_cache, sender=ProjectEditorValidation)
+
+# EUTF Signals
+post_save.connect(set_reporting_organisation, sender=Partnership)
+post_save.connect(set_reporting_organisation, sender=RelatedProject)
+post_delete.connect(set_reporting_organisation, sender=Partnership)

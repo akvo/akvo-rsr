@@ -24,6 +24,7 @@ from akvo.rsr.models import (
     OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
     RelatedProject, IndicatorPeriod, Keyword
 )
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.templatetags.project_editor import choices
 from akvo.utils import check_auth_groups, DjangoModel
 
@@ -72,6 +73,7 @@ class BaseReorderTestCase(object):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def tearDown(self):
+        Result.objects.all().delete()
         Project.objects.all().delete()
         User.objects.all().delete()
         Organisation.objects.all().delete()
@@ -695,6 +697,7 @@ class DefaultPeriodsTestCase(TestCase):
         self.import_status2, self.import_message2 = self.child_project2.import_results()
 
     def tearDown(self):
+        Result.objects.all().delete()
         Project.objects.all().delete()
         User.objects.all().delete()
 
@@ -996,6 +999,9 @@ class CreateOrUpdateTestCase(TestCase):
         self.assertEqual(result_2.type, result_type_2)
         self.assertEqual(result_2.aggregation_status, result_aggregation_2 == '1')
 
+        # Verify that ordering is maintained
+        self.assertLess(result.id, result_2.id)
+
         indicator = Indicator.objects.get(result=result)
         self.assertEqual(indicator.title, indicator_title)
         self.assertEqual(indicator.description, indicator_description)
@@ -1018,18 +1024,15 @@ class CreateOrUpdateTestCase(TestCase):
             self.assertEqual(attributes, len(change[1]))
 
 
-class CreateNewOrganisationTestCase(TestCase):
+class CreateNewOrganisationTestCase(BaseTestCase):
 
     def setUp(self):
         super(CreateNewOrganisationTestCase, self).setUp()
-        self.user, self.username, self.password = create_user()
-        self.org = Organisation.objects.create(name='Akvo', long_name='Akvo')
-        Employment.objects.create(
-            user=self.user,
-            organisation=self.org,
-            group=Group.objects.get(name='Admins'),
-            is_approved=True,
-        )
+        self.username = 'example@akvo.org'
+        self.password = 'password'
+        self.user = self.create_user(self.username, self.password)
+        self.org = self.create_organisation('Akvo')
+        self.make_org_admin(self.user, self.org)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     def test_create_new_organisation(self):

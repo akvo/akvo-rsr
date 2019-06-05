@@ -67,6 +67,11 @@ class AdministrativeLocationTestCase(TestCase):
 
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
+    def tearDown(self):
+        User.objects.all().delete()
+        Organisation.objects.all().delete()
+        Project.objects.all().delete()
+
     def test_delete_administrative_location(self):
         """Checks that org admin can delete an administrative location."""
 

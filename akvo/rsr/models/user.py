@@ -555,6 +555,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         if include_user_owned:
             permissions['is_org_user'] = permissions['is_org_user'] & Q(user=self)
             permissions['is_org_user_manager'] = permissions['is_org_user_manager'] & Q(user=self)
+            permissions['is_own'] = Q(user=self)
+
         operators = {'|': Q.OR, '&': Q.AND}
         return self.parse_permission_expression(permission_expression, permissions, operators)
 

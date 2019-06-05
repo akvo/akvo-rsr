@@ -1,5 +1,0 @@
-export default {
-  ADD: 'PE_BUDGETS_ADD',
-  REMOVE: 'PE_BUDGETS_REMOVE',
-  EDIT_FIELD: 'PE_BUDGETS_EDIT_FIELD'
-}

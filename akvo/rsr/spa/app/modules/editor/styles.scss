@@ -15,15 +15,16 @@
     flex-direction: row;
   }
   .status-bar{
+    position: -webkit-sticky;
     position: sticky;
     height: 50px;
     background-color: #f2f2f2;
     width: 100%;
-    top: 0;
+    top: 55px;
     display: flex;
     line-height: 50px;
-    z-index: 12;
-    aside{
+    z-index: 1001;
+    aside.saving-status{
       background: #e6e6e6;
       height: 50px;
       padding: 0 20px;
@@ -32,9 +33,8 @@
         color: green;
         font-size: 18px;
       }
-      span{
-        font-size: 14px;
-        opacity: 0.75;
+      .ant-spin{
+        margin-right: 8px;
       }
     }
     .content{
@@ -51,8 +51,11 @@
     }
   }
   aside{
-    width: 270px!important;
+    width: 280px!important;
+  }
+  aside.main-menu{
     position: absolute;
+    top: 50px;
     ul{
       background-color: #f2f2f2;
       padding: 20px 0;
@@ -107,17 +110,28 @@
   .content{
     flex: 1;
   }
-  &> .flex-container > .content{
+  .main-content{
+    margin-left: 280px;
     padding-left: 30px;
-    margin-left: 270px;
-    margin-right: 300px;
   }
+  .view:not(.section5){
+    margin-right: 280px;
+    @media screen and (max-width: 1200px){
+      margin-right: 100px;
+    }
+  }
+  // .view.section5{
+  //   margin-right: 200px;
+  // }
   .alerts{
-    width: 300px;
+    width: 280px;
     position: absolute;
     right: 0;
     // padding-left: 30px;
     padding-top: 20px;
+    @media screen and (max-width: 1200px){
+      width: 200px;
+    }
   }
 
   .ant-form-item-label{
@@ -145,13 +159,39 @@
     }
   }
   
+  
+  .ant-col-12{
+    .ant-radio-group{
+      width: 100%;
+      display: flex;
+      .ant-radio-button-wrapper{
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+  .percentage-row{
+    display: flex;
+    .ant-form-item{
+      margin-bottom: 0;
+    }
+    .ant-form-item:first-child{
+      margin-right: 16px;
+    }
+    .ant-form-item:last-child{
+      flex: 1;
+    }
+  }
+  .percentage-input{
+    max-width: 70px;
+  }
 }
 
 hr{
   border: none;
   background-color: #ccc;
   height: 1px;
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 .view {
@@ -159,6 +199,30 @@ hr{
 
   .ant-btn.bottom-btn{
     margin-bottom: 30px;
+  }
+
+  .ant-col-12{
+    .ant-input-number{
+      display: block;
+      width: auto;
+    }
+  }
+  
+  .ant-collapse{
+    margin-bottom: 20px;
+    .ant-collapse-content-box{
+      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-child{
+        margin-bottom: 0;
+      }
+      .ant-form>.ant-row:last-child, &>div>.ant-row:last-child{
+        .ant-col .ant-form-item{
+          margin-bottom: 0;
+        }
+      }
+      .ant-form-item-control{
+        line-height: 1;
+      }
+    }
   }
 }
 

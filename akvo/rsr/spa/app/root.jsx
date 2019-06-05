@@ -1,13 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import SVGInline from 'react-svg-inline'
-import { Icon, Button, Menu, Dropdown } from 'antd'
+import { Icon, Button, Menu, Dropdown, Tabs } from 'antd'
 
 import 'reset-css'
 import 'antd/dist/antd.css'
 
 import rsrSvg from './images/akvorsr.svg'
 import Editor from './modules/editor/editor'
+
+const { TabPane } = Tabs
 
 const menu = () => (
   <Menu>
@@ -20,13 +22,19 @@ const menu = () => (
   </Menu>
 )
 
-const _Header = ({infoRdr}) => (
-  <header>
+const _Header = ({title}) => (
+  <header className="main-header">
     <Icon type="left" />
-    <h1>{infoRdr.title ? infoRdr.title : 'Untitled project'}</h1>
+    <h1>{title ? title : 'Untitled project'}</h1>
+    <Tabs size="large">
+      <TabPane tab="Results" key="1" />
+      <TabPane tab="Updates" key="2" />
+      <TabPane tab="Reports" key="3" />
+      <TabPane tab="Editor" key="4" />
+    </Tabs>
   </header>
 )
-const Header = connect(({ infoRdr }) => ({ infoRdr }))(_Header)
+const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
 const Root = () => (
   <div id="root">

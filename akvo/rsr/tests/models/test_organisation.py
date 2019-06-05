@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Organisation, Partnership, Project
+from akvo.rsr.models import Organisation, Partnership
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -36,8 +36,7 @@ class OrganisationModelTestCase(BaseTestCase):
         self.orgs = {}
 
         for title in 'ABCDEF':
-            project = Project.objects.create(title=title)
-            self.projects[title] = project
+            self.projects[title] = self.create_project(title)
 
         for name in 'ACBDFEG':
             org = Organisation.objects.create(
@@ -180,10 +179,11 @@ class OrganisationModelTestCase(BaseTestCase):
         )
 
     def test_order_queryset_by_lower_name(self):
+        org_ids = [org.id for org in self.orgs.values()]
         for name in 'ACE':
             self.orgs[name].name = name.lower()
             self.orgs[name].save()
-        qs = Organisation.objects.all()
+        qs = Organisation.objects.filter(id__in=org_ids)
         self.assertEqual(
             "aBcDeFG",
             "".join([org.name for org in qs])
@@ -192,7 +192,7 @@ class OrganisationModelTestCase(BaseTestCase):
         self.orgs['B'].save()
         self.orgs['G'].name = 'h'
         self.orgs['G'].save()
-        qs = Organisation.objects.all()
+        qs = Organisation.objects.filter(id__in=org_ids)
         self.assertEqual(
             "acDeFhK",
             "".join([org.name for org in qs])

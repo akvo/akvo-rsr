@@ -21,11 +21,9 @@ from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              PublishingStatus, ProjectLocation,
                              RecipientCountry, ProjectEditorValidationSet,
                              OrganisationCustomField, ProjectCustomField)
-
 from akvo.rsr.models.user_projects import restrict_projects
 from akvo.rsr.tests.test_project_access import RestrictedUserProjects
-
-from akvo.utils import check_auth_groups
+from akvo.utils import check_auth_groups, custom_get_or_create_country
 
 
 class RestProjectTestCase(TestCase):
@@ -205,9 +203,11 @@ class ProjectDirectoryTestCase(TestCase):
         with open(self.image, 'w+b'):
             pass
 
+        self.projects = []
         for i in range(1, 6):
             project = Project.objects.create(title='Project - {}'.format(i),
                                              current_image=self.image)
+            self.projects.append(project)
             if i < 4:
                 publishing_status = project.publishingstatus
                 publishing_status.status = PublishingStatus.STATUS_PUBLISHED
@@ -279,25 +279,24 @@ class ProjectDirectoryTestCase(TestCase):
     def test_should_show_all_country_projects(self):
         # Given
         titles = ['Project - {}'.format(i) for i in range(0, 6)]
-        projects = [None] + [Project.objects.get(title=title) for title in titles[1:]]
         url = '/rest/v1/project_directory?format=json&location=262'
         latitude, longitude = ('11.8948112', '42.5807153')
         country_code = 'DJ'
+        custom_get_or_create_country(iso_code=country_code.lower())
+
         # Add a Recipient Country - DJ
-        RecipientCountry.objects.create(project=projects[2], country=country_code)
-        # ProjectLocation in DJ
-        project_location = ProjectLocation.objects.create(location_target=projects[3],
+        RecipientCountry.objects.create(project=self.projects[2], country=country_code)
+        # Published project - ProjectLocation in DJ
+        project_location = ProjectLocation.objects.create(location_target=self.projects[1],
                                                           latitude=latitude,
                                                           longitude=longitude)
-        project_location = ProjectLocation.objects.create(location_target=projects[4],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
-        project_location = ProjectLocation.objects.create(location_target=projects[5],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
+        # Unpublished project
+        ProjectLocation.objects.create(location_target=self.projects[3],
+                                       latitude=latitude,
+                                       longitude=longitude)
 
         # ProjectLocation with no country
-        ProjectLocation.objects.create(location_target=projects[3],
+        ProjectLocation.objects.create(location_target=self.projects[0],
                                        latitude=None,
                                        longitude=None)
         client = self._create_client()

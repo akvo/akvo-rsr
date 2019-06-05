@@ -8,8 +8,8 @@
     }
 </script>
 
-{# Project id's #} {# NOTE: currentLanguage being set here is for convenience, it has nothing to do
-with the project #}
+{# Project id's #}
+{# NOTE: currentLanguage being set here is for convenience, it has nothing to do with the project #}
 <script type="application/json" id="project">
     {
         "currentLanguage": "{{ request.LANGUAGE_CODE }}",
@@ -102,7 +102,7 @@ with the project #}
         "no_updates_yet": "{% trans 'This period has no updates yet'|escapejs %}",
         "cant_place_updates": "{% trans 'This period is an average of the child projects, disable aggregations to place updates on this period'|escapejs %}",
         "add_indicator_value": "{% trans 'Insert reporting value'|escapejs %}",
-        "percentage_indicator_single_update": "{% trans 'You are unable to add an indicator update to this indicator. An indicator update for this reporting period has already been made. For % indicators, only one indicator update per reporting is possible.'|escapejs %}",
+        "percentage_indicator_single_update": "{% trans 'You are unable to add an indicator update to this indicator. An indicator update for this reporting period has already been made. For % indicators, only one indicator update per reporting period is possible.'|escapejs %}",
         "value_already_reported": "{% trans 'Value already reported'|escapejs %}",
         "adding_update": "{% trans 'Adding new update'|escapejs %}",
         "edit": "{% trans 'Edit'|escapejs %}",
