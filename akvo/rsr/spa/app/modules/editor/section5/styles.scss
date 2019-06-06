@@ -59,7 +59,7 @@
   .results-list{
     margin-right: 160px;
   }
-  &>.ant-form>.ant-collapse{
+  &>.ant-form>.accordion-container>.ant-collapse{
     position: relative;
     &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box .main-form .ant-form-item-label{
       font-weight: 500;
@@ -78,7 +78,7 @@
       .ant-collapse-content{
         border-top: none;
         overflow: visible;
-        .ant-collapse-content-box>.ant-collapse{
+        .ant-collapse-content-box>.accordion-container>.ant-collapse{
           position: relative;
           &>.ant-collapse-item-active{
             &>.ant-collapse-header{
@@ -95,7 +95,7 @@
             .ant-collapse-content{
               border-top: none;
               overflow: visible;
-              .ant-collapse-content-box>.ant-collapse{
+              .ant-collapse-content-box>.accordion-container>.ant-collapse{
                 position: relative;
                 &>.ant-collapse-item-active{
                   &>.ant-collapse-header{

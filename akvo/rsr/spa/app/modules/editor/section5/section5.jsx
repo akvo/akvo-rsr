@@ -233,99 +233,103 @@ const Indicators = ({ fieldName, formPush }) => {
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
       <Aux>
-        <Collapse className="indicators-list" defaultActiveKey="0">
-          {fields.map((name, index) =>
-          <Panel
-            key={`${index}`}
-            forceRender
-            header={(
-            <span>
-              <Field
-                name={`${name}.type`}
-                render={({input}) => <span>Indicator {index + 1} <Tag>{input.value}</Tag></span>}
-              />
-            </span>)}
-            extra={(
-              /* eslint-disable-next-line */
-              <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-              <IndicatorNavMenu fieldName={name} />
-              <Popconfirm
-                title="Are you sure to delete this indicator?"
-                onConfirm={() => fields.remove(index)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button size="small" icon="delete" className="delete-panel" />
-              </Popconfirm>
-              </div>
-            )}
-          >
-            <div id={`${fieldNameToId(name)}-info`} />
-            <Item label={<InputLabel optional>Title</InputLabel>}>
-              <FinalField name={`${name}.title`} />
-            </Item>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Item label="Measure">
-                  <FinalField
-                    name={`${name}.measure`}
-                    render={({input}) => (
-                      <Radio.Group {...input}>
-                        <Radio.Button value={0}>Unit</Radio.Button>
-                        <Radio.Button value={1}>Percentage</Radio.Button>
-                      </Radio.Group>
-                    )}
-                  />
-                </Item>
-              </Col>
-              <Col span={12}>
-                <Item label={<InputLabel>Order</InputLabel>}>
-                  <FinalField
-                    name={`${name}.order`}
-                    defaultValue={0}
-                    render={({input}) => (
-                      <Radio.Group {...input}>
-                        <Radio.Button value={0}>Ascending</Radio.Button>
-                        <Radio.Button value={1}>Descending</Radio.Button>
-                      </Radio.Group>
-                    )}
-                  />
-                </Item>
-              </Col>
-            </Row>
-            <Item label={<InputLabel optional>Description</InputLabel>}>
-              <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
-            </Item>
-            <Divider />
-            <div id={`${fieldNameToId(name)}-disaggregations`} />
-            <Condition when={`${name}.type`} is="quantitative">
-              <Aux>
-                <Disaggregations formPush={formPush} fieldName={name} />
-                <Divider />
-              </Aux>
-            </Condition>
-            <div id={`${fieldNameToId(name)}-baseline`} />
-            <Row gutter={15}>
-              <Col span={12}>
-                <Item label={<InputLabel optional>Baseline year</InputLabel>}>
-                  <FinalField name={`${name}.baselineYear`} />
-                </Item>
-              </Col>
-              <Col span={12}>
-                <Item label={<InputLabel optional>Baseline value</InputLabel>}>
-                <FinalField name={`${name}.baselineValue`} />
-                </Item>
-              </Col>
-            </Row>
-            <Item label={<InputLabel optional>Baseline comment</InputLabel>}>
-              <FinalField name={`${name}.baselineComment`} render={({input}) => <RTE {...input} />} />
-            </Item>
-            <Divider />
-            <div id={`${fieldNameToId(name)}-periods`} />
-            <Periods formPush={formPush} fieldName={name} />
-          </Panel>
+        <Accordion
+          multiple
+          className="indicators-list"
+          finalFormFields={fields}
+          setName={`${fieldName}.indicators`}
+          renderPanel={(name, index) => (
+            <Panel
+              key={`${index}`}
+              forceRender
+              header={(
+              <span>
+                <Field
+                  name={`${name}.type`}
+                  render={({input}) => <span>Indicator {index + 1} <Tag>{input.value}</Tag></span>}
+                />
+              </span>)}
+              extra={(
+                /* eslint-disable-next-line */
+                <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                <IndicatorNavMenu fieldName={name} />
+                <Popconfirm
+                  title="Are you sure to delete this indicator?"
+                  onConfirm={() => fields.remove(index)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button size="small" icon="delete" className="delete-panel" />
+                </Popconfirm>
+                </div>
+              )}
+            >
+              <div id={`${fieldNameToId(name)}-info`} />
+              <Item label={<InputLabel optional>Title</InputLabel>}>
+                <FinalField name={`${name}.title`} />
+              </Item>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Item label="Measure">
+                    <FinalField
+                      name={`${name}.measure`}
+                      render={({input}) => (
+                        <Radio.Group {...input}>
+                          <Radio.Button value={0}>Unit</Radio.Button>
+                          <Radio.Button value={1}>Percentage</Radio.Button>
+                        </Radio.Group>
+                      )}
+                    />
+                  </Item>
+                </Col>
+                <Col span={12}>
+                  <Item label={<InputLabel>Order</InputLabel>}>
+                    <FinalField
+                      name={`${name}.order`}
+                      defaultValue={0}
+                      render={({input}) => (
+                        <Radio.Group {...input}>
+                          <Radio.Button value={0}>Ascending</Radio.Button>
+                          <Radio.Button value={1}>Descending</Radio.Button>
+                        </Radio.Group>
+                      )}
+                    />
+                  </Item>
+                </Col>
+              </Row>
+              <Item label={<InputLabel optional>Description</InputLabel>}>
+                <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
+              </Item>
+              <Divider />
+              <div id={`${fieldNameToId(name)}-disaggregations`} />
+              <Condition when={`${name}.type`} is="quantitative">
+                <Aux>
+                  <Disaggregations formPush={formPush} fieldName={name} />
+                  <Divider />
+                </Aux>
+              </Condition>
+              <div id={`${fieldNameToId(name)}-baseline`} />
+              <Row gutter={15}>
+                <Col span={12}>
+                  <Item label={<InputLabel optional>Baseline year</InputLabel>}>
+                    <FinalField name={`${name}.baselineYear`} />
+                  </Item>
+                </Col>
+                <Col span={12}>
+                  <Item label={<InputLabel optional>Baseline value</InputLabel>}>
+                  <FinalField name={`${name}.baselineValue`} />
+                  </Item>
+                </Col>
+              </Row>
+              <Item label={<InputLabel optional>Baseline comment</InputLabel>}>
+                <FinalField name={`${name}.baselineComment`} render={({input}) => <RTE {...input} />} />
+              </Item>
+              <Divider />
+              <div id={`${fieldNameToId(name)}-periods`} />
+              <Periods formPush={formPush} fieldName={name} />
+            </Panel>
           )}
-        </Collapse>
+        />
         <Dropdown
           overlay={(
             <Menu style={{ textAlign: 'center' }} onClick={(e) => add(e.key)}>
