@@ -15,14 +15,15 @@
     flex-direction: row;
   }
   .status-bar{
+    position: -webkit-sticky;
     position: sticky;
     height: 50px;
     background-color: #f2f2f2;
     width: 100%;
-    top: 0;
+    top: 55px;
     display: flex;
     line-height: 50px;
-    z-index: 12;
+    z-index: 1001;
     aside.saving-status{
       background: #e6e6e6;
       height: 50px;
@@ -34,10 +35,6 @@
       }
       .ant-spin{
         margin-right: 8px;
-      }
-      span{
-        font-size: 14px;
-        opacity: 0.75;
       }
     }
     .content{
@@ -114,13 +111,18 @@
     flex: 1;
   }
   .main-content{
-    padding-left: 30px;
     margin-left: 280px;
+    padding-left: 30px;
+  }
+  .view:not(.section5){
     margin-right: 280px;
     @media screen and (max-width: 1200px){
       margin-right: 100px;
     }
   }
+  // .view.section5{
+  //   margin-right: 200px;
+  // }
   .alerts{
     width: 280px;
     position: absolute;
