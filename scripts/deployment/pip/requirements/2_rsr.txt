@@ -72,6 +72,10 @@ rules==0.3
 # Nested inlines in admin
 django-nested-inline==0.3.7
 
+# JSON fields in django admin
+django-prettyjson==0.4.1
+standardjson==0.3.1
+
 # Task scheduling
 django-crontab==0.7.1
 
