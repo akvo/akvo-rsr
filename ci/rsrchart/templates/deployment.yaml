@@ -15,11 +15,11 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "rsrchart.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-#        rsr-version: ${TRAVIS_COMMIT}
+        rsr-version: "{{ .Values.rsrVersion }}"
     spec:
       containers:
       - name: rsr-nginx
-        image: eu.gcr.io/akvo-lumen/rsr-nginx:5962374643e98175c96c4c0c980103fe11127508
+        image: "eu.gcr.io/akvo-lumen/rsr-nginx:{{ .Values.rsrVersion }}"
         ports:
         - containerPort: 80
           protocol: TCP
@@ -54,7 +54,7 @@ spec:
         - name: REPORT_SERVER_URL
           value: "http://localhost"
       - name: rsr-backend
-        image: eu.gcr.io/akvo-lumen/rsr-backend:5962374643e98175c96c4c0c980103fe11127508
+        image: "eu.gcr.io/akvo-lumen/rsr-backend:{{ .Values.rsrVersion }}"
         imagePullPolicy: Always
         resources:
           requests:
@@ -125,7 +125,7 @@ spec:
           periodSeconds: 5
       initContainers:
       - name: copy-assets-to-backend-container
-        image: eu.gcr.io/akvo-lumen/rsr-nginx:5962374643e98175c96c4c0c980103fe11127508
+        image: "eu.gcr.io/akvo-lumen/rsr-nginx:{{ .Values.rsrVersion }}"
         command: [sh, -c]
         args: ["cp -r /var/akvo/rsr/staticroot/* /data"]
         imagePullPolicy: Always
