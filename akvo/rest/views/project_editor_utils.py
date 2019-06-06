@@ -22,6 +22,9 @@ from akvo.rsr.models import (AdministrativeLocation, BudgetItemLabel, Country,
                              Organisation, Project, OrganisationIndicatorLabel,
                              ProjectDocument, ProjectDocumentCategory, ProjectLocation,
                              Result, Transaction, TransactionSector)
+from akvo.rsr.models.result.indicator_dimension import (
+    IndicatorDimensionName, IndicatorDimensionValue
+)
 from akvo.utils import DjangoModel
 
 from collections import namedtuple
@@ -43,6 +46,7 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
     IndicatorDimension: (Indicator, 'indicator'),
+    IndicatorDimensionValue: (IndicatorDimensionName, 'name'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
     IndicatorPeriodTargetDimension: (IndicatorPeriod, 'period'),
@@ -58,6 +62,7 @@ RELATED_OBJECTS_MAPPING = {
 MANY_TO_MANY_FIELDS = {
     # Special mapping for many to many fields
     Keyword: 'keywords',
+    IndicatorDimensionName: 'dimension_names',
 }
 
 
@@ -605,13 +610,38 @@ def create_or_update_objects_from_data(project, data):
             [key_parts.model.table_name, '.', '_'.join(key_parts.ids)]
         )
 
-        if Model in MANY_TO_MANY_FIELDS:
+        if Model == Keyword:
             # This field is a many to many field, which need special handling
             obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
             update_m2m_object(
                 project, Model, obj_id, key_parts.field, data[key], key, changes, errors,
                 rel_objects, related_obj_id
             )
+            data.pop(key, None)
+
+        elif Model == IndicatorDimensionName and len(key_parts.ids) > 2:
+            obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
+            indicator = Indicator.objects.get(pk=int(key_parts.ids[2]))
+            update_m2m_object(
+                indicator, Model, obj_id, key_parts.field, data[key], key, changes, errors,
+                rel_objects, related_obj_id
+            )
+            # m2m_relation = getattr(indicator, MANY_TO_MANY_FIELDS[Model])
+            # try:
+            #     m2m_object = Model.objects.get(pk=int(obj_data))
+            #     if len(key_parts.ids) == 1:
+            #         # If there already was an appointed object in the many to many relation,
+            #         # remove the old object first
+            #         old_m2m_object = Model.objects.get(pk=int(key_parts.ids[0]))
+            #         if old_m2m_object in m2m_relation.all():
+            #             m2m_relation.remove(old_m2m_object)
+            #     # Add the new many to many object to the project
+            #     m2m_relation.add(m2m_object)
+            #     changes = add_changes(changes, m2m_object, key_parts.field, key, obj_data)
+            #     if related_obj_id not in rel_objects.keys():
+            #         rel_objects[related_obj_id] = obj_data
+            # except Model.DoesNotExist as e:
+            #     errors = add_error(errors, str(e), key)
             data.pop(key, None)
 
         elif len(key_parts.ids) == 1:

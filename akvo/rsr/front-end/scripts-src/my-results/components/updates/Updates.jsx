@@ -134,7 +134,7 @@ UpdateAttachments.propTypes = {
     update: PropTypes.object.isRequired
 };
 
-const QuantitativeUpdateBody = ({ update, disaggregationIds, dimensions, disaggregations }) => {
+const QuantitativeUpdateBody = ({ update, disaggregationData }) => {
     const { user_details, approver_details } = update;
     const approvedOn =
         update.status === c.UPDATE_STATUS_APPROVED ? (
@@ -142,16 +142,6 @@ const QuantitativeUpdateBody = ({ update, disaggregationIds, dimensions, disaggr
         ) : (
             undefined
         );
-    // sort to uphold order defined by creation of dimensions in the project editor
-    // TODO: selectors.getUpdatesDisaggregationIds() could be updated to handle the sorting
-    disaggregationIds = disaggregationIds.sort(
-        (a, b) => disaggregations[a].dimension - disaggregations[b].dimension
-    );
-    const disaggregationData = disaggregationsToDisplayData(
-        disaggregationIds,
-        disaggregations,
-        dimensions
-    );
     return (
         <div className="UpdateBody">
             <UpdateValue update={update} />
@@ -166,7 +156,8 @@ const QuantitativeUpdateBody = ({ update, disaggregationIds, dimensions, disaggr
     );
 };
 QuantitativeUpdateBody.propTypes = {
-    update: PropTypes.object.isRequired
+    update: PropTypes.object.isRequired,
+    disaggregationData: PropTypes.object.isRequired,
 };
 
 const UpdateNarrative = ({ period, update }) => {
@@ -218,9 +209,7 @@ QualitativeUpdateBody.propTypes = {
 const QuantitativeUpdate = ({
     id,
     update,
-    disaggregationIds,
-    disaggregations,
-    dimensions,
+    disaggregationData,
     periodLocked,
     collapseId
 }) => {
@@ -228,12 +217,7 @@ const QuantitativeUpdate = ({
         <div className="row" key={id}>
             <UpdateHeader update={update} periodLocked={periodLocked} collapseId={collapseId} />
             <div className="row">
-                <QuantitativeUpdateBody
-                    update={update}
-                    disaggregationIds={disaggregationIds}
-                    dimensions={dimensions}
-                    disaggregations={disaggregations}
-                />
+                <QuantitativeUpdateBody update={update} disaggregationData={disaggregationData} />
                 <Comments parentId={id} inForm={false} />
                 <hr className="delicate" />
             </div>
@@ -243,9 +227,7 @@ const QuantitativeUpdate = ({
 QuantitativeUpdate.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     update: PropTypes.object.isRequired,
-    disaggregationIds: PropTypes.array,
-    disaggregations: PropTypes.object,
-    dimensions: PropTypes.object,
+    disaggregationData: PropTypes.object,
     periodLocked: PropTypes.bool.isRequired,
     collapseId: PropTypes.string.isRequired
 };
@@ -332,9 +314,12 @@ class Updates extends React.Component {
     renderPanels(updateIds) {
         let actualValue = 0;
         return updateIds.map(id => {
-            const { period, updatesDisaggregationIds, disaggregations, dimensions } = this.props;
-            const indicator = this.props.indicators.objects[this.props.indicatorId];
-            const update = this.props.updates.objects[id];
+            const {
+                period, indicators, updates, updatesDisaggregationIds, disaggregations,
+                dimensionNames, dimensionValues,
+            } = this.props;
+            const indicator = indicators.objects[this.props.indicatorId];
+            const update = updates.objects[id]; 
             // Calculate running total of numeric update values
             const value = parseInt(update.value);
             if (value && update.status == c.UPDATE_STATUS_APPROVED) {
@@ -343,14 +328,23 @@ class Updates extends React.Component {
             update.actual_value = actualValue;
             switch (indicator.type) {
                 case c.INDICATOR_QUANTATIVE: {
+                    // sort to uphold order defined by creation of dimensions in the project editor
+                    // TODO: selectors.getUpdatesDisaggregationIds() could be updated to handle the sorting
+                    const disaggregationIds = updatesDisaggregationIds[id].sort(
+                        (a, b) => disaggregations[a].dimension - disaggregations[b].dimension
+                    );
+                    const disaggregationData = disaggregationsToDisplayData(
+                        disaggregationIds,
+                        disaggregations,
+                        dimensionNames,
+                        dimensionValues
+                    );
                     return (
                         <QuantitativeUpdate
                             key={id}
                             id={id}
                             update={update}
-                            disaggregationIds={updatesDisaggregationIds[id]}
-                            disaggregations={disaggregations}
-                            dimensions={dimensions}
+                            disaggregationData={disaggregationData}
                             periodLocked={this.props.period.is_locked}
                             collapseId={this.state.collapseId}
                         />
@@ -404,6 +398,8 @@ const mapStateToProps = store => {
         updatesDisaggregationIds: getUpdatesDisaggregationIds(store),
         disaggregations: store.models.disaggregations.objects,
         dimensions: store.models.dimensions.objects,
+        dimensionNames: store.models.dimension_names.objects,
+        dimensionValues: store.models.dimension_values.objects,
         periodChildrenIds: getPeriodsChildrenIds(store),
         needReportingUpdates: getUpdatesForNeedReportingPeriods(store),
         pendingApprovalUpdates: getUpdatesForPendingApprovalPeriods(store),

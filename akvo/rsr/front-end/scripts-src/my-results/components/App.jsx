@@ -34,7 +34,8 @@ import {
     getNeedReportingPeriods,
     getPendingApprovalPeriods,
     getUpdatesDisaggregationObjects,
-    getIndicatorsDimensionIds
+    getDimensionNameValueIds,
+    getUpdatesDisaggregationIds,
 } from "../selectors";
 
 import {
@@ -125,7 +126,8 @@ class App extends React.Component {
         const singlePeriodProject = project.hierarchy_name ? true : false;
         fetchModel("results", projectId, activateToggleAll);
         fetchModel("indicators", projectId, activateToggleAll);
-        fetchModel("dimensions", projectId, activateToggleAll);
+        fetchModel('dimension_names', projectId, activateToggleAll);
+        fetchModel('dimension_values', projectId, activateToggleAll);
         // TODO: check if we need to run modifyPeriods() after changing the locking status of periods
         fetchModel("periods", projectId, activateToggleAll, modifyPeriods(singlePeriodProject));
         fetchModel("updates", projectId, activateToggleAll);
@@ -183,17 +185,27 @@ class App extends React.Component {
             if (updateFormDisplay && updateFormDisplay !== this.state.updateFormDisplay) {
                 originalUpdate = { ...updates.objects[updateFormDisplay] };
                 this.setState({ originalUpdate });
-                const { disaggregations, periods, indicators } = nextProps;
+                const {
+                    disaggregationObjects, periods, indicators, dimensionNameValueIds
+                } = nextProps;
                 const update = updates.objects[updateFormDisplay];
                 const period = periods.objects[update.period];
                 const indicator = indicators.objects[period.indicator];
-                const dimensions = this.props.dimensionIds[indicator.id].map(id => {
-                    return this.props.dimensions.objects[id];
-                });
+                const dimensionsNameAndValueIds = indicator.dimension_names.reduce(
+                    (acc, dimensionNameId) => {
+                        // NOTE: acc.push() _has_ to be made separately from return acc, if you do
+                        // both at the same time an int (1) is returned instead!
+                        acc.push({
+                            dimensionNameId,
+                            dimensionValueIds: dimensionNameValueIds[dimensionNameId]
+                        });
+                        return acc;
+                    }, []
+                );
                 createNewDisaggregations(
                     updateFormDisplay,
-                    dimensions,
-                    disaggregations[updateFormDisplay]
+                    dimensionsNameAndValueIds,
+                    disaggregationObjects[updateFormDisplay]
                 );
             }
         };
@@ -296,7 +308,10 @@ class App extends React.Component {
             </p>
         );
 
-        const { page, disaggregations, updates, periods, indicators } = this.props;
+        const {
+            page, dimensionNames, dimensionValues, disaggregations, updateDisaggregationIds,
+            updates, periods, indicators,
+        } = this.props;
         // HACK: when an update is created this.props.ui[c.UPDATE_FORM_DISPLAY] still has the value
         // of new update ("new-1" or such) while the updates are changed to holding the new-1 to the
         // "real" one with an ID from the backend. Thus we need to check not only that
@@ -308,16 +323,54 @@ class App extends React.Component {
             const update = updates.objects[updateFormDisplay];
             const period = periods.objects[update.period];
             const indicator = indicators.objects[period.indicator];
-            const dimensions = this.props.dimensionIds[indicator.id].map(id => {
-                return this.props.dimensions.objects[id];
-            });
+
+            /*  dimensionsAndDisaggs =
+                [
+                    {
+                        id: 45, name: "Gender", project: 5577,
+                        dimensionValues: [
+                            {id: 80, value: "Male", name: 45},
+                            {id: 81, value: "Female", name: 45}
+                        ],
+                        disaggregations: [
+                            {update: "new-1", dimension_value: 80, id: "new-80", value: "", É},
+                            {update: "new-1", dimension_value: 81, id: "new-81", value: "", É}
+                        ]
+                    },
+                    É,
+                ]
+            */
+            let dimensionsAndDisaggs = [];
+            if (updateDisaggregationIds[update.id].length > 0) {
+                dimensionsAndDisaggs = indicator.dimension_names.map(
+                    dimensionNameId => ({
+                        ...dimensionNames.objects[dimensionNameId],
+                        // NOTE: we're only populating dimensionValues with dimension values that
+                        // actually have a disaggregation, not all existing dimension values
+                        dimensionValues: updateDisaggregationIds[update.id].filter(
+                            disaggId => disaggregations.objects[disaggId].dimension_name === dimensionNameId
+                        ).map(
+                            disaggId => ({
+                                ...dimensionValues.objects[
+                                    disaggregations.objects[disaggId].dimension_value
+                                ]
+                            })
+                        ),
+                        disaggregations: updateDisaggregationIds[update.id].filter(
+                            disaggId => disaggregations.objects[disaggId].dimension_name === dimensionNameId
+                        ).map(
+                            disaggId => ({...disaggregations.objects[disaggId]})
+                        ),
+                    })
+                );
+            }
+
             updateForm = (
                 <UpdateForm
                     indicator={indicator}
                     period={period}
                     update={update}
-                    disaggregations={disaggregations[updateFormDisplay]}
-                    dimensions={dimensions}
+                    dimensionsAndDisaggs={dimensionsAndDisaggs}
                     onClose={this.onClose}
                     originalUpdate={this.state.originalUpdate}
                     collapseId={collapseId(
@@ -385,9 +438,12 @@ const mapStateToProps = store => {
         periods: store.models.periods,
         updates: store.models.updates,
         reports: store.models.reports,
-        disaggregations: getUpdatesDisaggregationObjects(store),
-        dimensionIds: getIndicatorsDimensionIds(store),
-        dimensions: store.models.dimensions,
+        disaggregationObjects: getUpdatesDisaggregationObjects(store),
+        dimensionNames: store.models.dimension_names,
+        dimensionValues: store.models.dimension_values,
+        dimensionNameValueIds: getDimensionNameValueIds(store),
+        disaggregations: store.models.disaggregations,
+        updateDisaggregationIds: getUpdatesDisaggregationIds(store),
         user: store.models.user,
         ui: store.ui,
         needReportingPeriods: getNeedReportingPeriods(store),

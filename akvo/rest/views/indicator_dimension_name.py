@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import Disaggregation
+from akvo.rsr.models import IndicatorDimensionName
 
-from ..serializers import DisaggregationSerializer
+from ..serializers import IndicatorDimensionNameSerializer
 from ..viewsets import PublicProjectViewSet
 
 
-class DisaggregationViewSet(PublicProjectViewSet):
+class IndicatorDimensionNameViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Disaggregation.objects.select_related('dimension_value__name')
-    serializer_class = DisaggregationSerializer
-    project_relation = 'dimension__indicator__result__project__'
+    queryset = IndicatorDimensionName.objects.all()
+    serializer_class = IndicatorDimensionNameSerializer
+    project_relation = 'indicator__result__project__'

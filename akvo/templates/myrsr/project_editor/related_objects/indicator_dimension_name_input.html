@@ -1,0 +1,12 @@
+{% load i18n project_editor %}
+
+<div class="dimension-name-item parent" id="indicator_dimension.{{ indicator_id_string }}.{{ dimension_name|obj_id }}">
+  {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension_name %}
+  <div class="hide-partial {% if dimension_name.pk %}hidden{% endif %}">
+    <div class="row">
+      <div class="col-md-6">
+        {% include manytomany_input with obj=dimension_name field='name' filter_field='project' filter_value=project_id_string%}
+      </div>
+    </div>
+  </div>
+</div>

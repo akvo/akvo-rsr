@@ -14,7 +14,7 @@ from ..viewsets import PublicProjectViewSet
 class IndicatorPeriodViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriod.objects.all()
+    queryset = IndicatorPeriod.objects.all().select_related('parent_period')
     serializer_class = IndicatorPeriodSerializer
     project_relation = 'indicator__result__project__'
 

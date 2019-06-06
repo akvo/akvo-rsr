@@ -10,6 +10,7 @@ import json
 
 from django.apps import apps
 from django.contrib.admin.models import LogEntry, CHANGE
+from akvo.rsr.models.result.indicator_dimension import IndicatorDimensionName
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -411,6 +412,35 @@ def project_editor_remove_keyword(request, project_pk=None, keyword_pk=None):
             content_type_id=ContentType.objects.get_for_model(project).pk,
             object_id=project.pk,
             object_repr=project.__unicode__(),
+            action_flag=CHANGE,
+            change_message=change_message
+        )
+
+    return Response({})
+
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated, ))
+def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimension_pk=None):
+
+    indicator = Indicator.objects.get(pk=indicator_pk)
+    dimension = IndicatorDimensionName.objects.get(pk=dimension_pk)
+    user = request.user
+
+    if not user.has_perm('rsr.change_project', indicator.result.project):
+        return HttpResponseForbidden()
+
+    if dimension in indicator.dimension_names.all():
+        indicator.dimension_names.remove(dimension)
+
+        change_message = u'%s %s.' % (_(u'Project editor, relation removed: indicator dimension'),
+                                      dimension.__unicode__())
+
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(indicator).pk,
+            object_id=indicator.pk,
+            object_repr=indicator.__unicode__(),
             action_flag=CHANGE,
             change_message=change_message
         )

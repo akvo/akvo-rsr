@@ -87,6 +87,7 @@ class Indicator(models.Model):
         help_text=_(u'Choose whether this indicator will be included in IATI exports. '
                     u'If you are not exporting to IATI, you may ignore this option.')
     )
+    dimension_names = models.ManyToManyField('IndicatorDimensionName', related_name=u'indicators')
 
     def __unicode__(self):
         indicator_unicode = self.title if self.title else u'%s' % _(u'No indicator title')

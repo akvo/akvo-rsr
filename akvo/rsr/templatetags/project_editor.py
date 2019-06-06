@@ -303,14 +303,20 @@ def manytomany_value(obj):
     return '' if isinstance(obj, basestring) else obj.pk
 
 
-@register.filter
-def manytomany_choices(obj, field):
+@register.assignment_tag
+def manytomany_choices(obj, field, filter_field=None, filter_value=None):
     """
-    Retrieves the choices of a given object's Model. All objects of that Model should be displayed.
+    Retrieves the choices of a given object's Model. All objects of the Model are returned unless
+    filter_field and filter_value are supplied
 
     :returns ((1, "Akvo/Chum"), (2, "Yep"))
     """
-    return retrieve_model(obj).objects.all().values_list('id', field)
+    if filter_field:
+        kwargs = {}
+        kwargs[filter_field] = filter_value
+        return retrieve_model(obj).objects.filter(**kwargs).values_list('id', field)
+    else:
+        return retrieve_model(obj).objects.all().values_list('id', field)
 
 
 @register.filter
