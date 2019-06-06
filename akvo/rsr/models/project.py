@@ -1425,14 +1425,9 @@ class Project(TimestampsMixin, models.Model):
         )
         qs = IndicatorPeriod.objects.select_related('indicator', 'indicator__result')
         if set_parent:
-            period, _ = qs.update_or_create(
-                indicator=indicator, parent_period=source_period, defaults=data
-            )
+            qs.update_or_create(indicator=indicator, parent_period=source_period, defaults=data)
         else:
-            period = qs.create(indicator=indicator, **data)
-
-        fields = ['target_value', 'target_comment', 'actual_comment']
-        self._update_fields_if_not_child_updated(source_period, period, fields)
+            qs.create(indicator=indicator, **data)
 
     def update_period(self, indicator, parent_period):
         """Update a period based on the parent period attributes."""
@@ -1453,9 +1448,6 @@ class Project(TimestampsMixin, models.Model):
         child_period.period_start = parent_period.period_start
         child_period.period_end = parent_period.period_end
         child_period.save()
-
-        fields = ['target_value', 'target_comment', 'actual_comment']
-        self._update_fields_if_not_child_updated(parent_period, child_period, fields)
 
     def copy_dimension(self, indicator, source_dimension, set_parent=True):
         IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
