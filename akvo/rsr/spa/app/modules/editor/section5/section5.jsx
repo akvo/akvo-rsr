@@ -157,6 +157,10 @@ const Section5 = () => {
                           name={`${name}.type`}
                           render={({input}) => <Tag>{input.value}</Tag>}
                         />
+                        <Field
+                          name={`${name}.title`}
+                          render={({input}) => input.value}
+                        />
                       </span>}
                     extra={
                       // eslint-disable-next-line

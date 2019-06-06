@@ -120,7 +120,20 @@ const Periods = ({ fieldName, formPush }) => {
           setName={`${fieldName}.periods`}
           renderPanel={(name, index) => (
             <Panel
-              header={`Period ${index + 1}`}
+              header={(
+                <span>
+                  Period {index + 1}:&nbsp;
+                  <Field
+                    name={`${name}.periodStart`}
+                    render={({input}) => input.value}
+                  />
+                  &nbsp;-&nbsp;
+                  <Field
+                    name={`${name}.periodEnd`}
+                    render={({input}) => input.value}
+                  />
+                </span>
+              )}
               key={index}
               extra={(
                 /* eslint-disable-next-line */
