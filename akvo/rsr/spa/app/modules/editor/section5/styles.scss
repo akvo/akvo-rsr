@@ -53,6 +53,48 @@
     }
 
   }
+  .no-results{
+    text-align: center;
+    ul{
+      display: flex;
+      li{
+        flex: 1;
+        position: relative;
+        &>span{
+          margin-bottom: 7px;
+          display: block;
+        }
+        &:not(:last-of-type){
+          margin-right: 10px;
+        }
+        &:not(:first-of-type){
+          margin-left: 10px;
+          // &:before{
+          //   content: " ";
+          //   width: 1px;
+          //   height: 40px;
+          //   background-color: #ccc;
+          //   position: absolute;
+          //   top: 10px;
+          //   left: -10px;
+          // }
+        }
+        &:last-of-type{
+          display: flex;
+          flex-direction: column;
+          .button-container{
+            margin-top: auto;
+            .ant-btn{
+              margin-bottom: 0;
+            }
+          }
+        }
+        input{
+          margin-right: 3px;
+        }
+      }
+    }
+  }
   .add-result.ant-btn{
     margin-bottom: 15px;
   }
