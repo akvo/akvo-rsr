@@ -1,0 +1,24 @@
+@startuml
+actor browser
+artifact default_ns as "default namespace" {
+
+  node ingress as "Avko ingress"
+  node gateway as "rsr-demo-gateway"
+  note right: Forward based on HOST header
+}
+
+artifact rsr_ns as "rsr-demo namespace" {
+
+node service as "rsr1"
+node service2 as "rsr2"
+node service3 as "..."
+
+}
+
+browser --> ingress : https://rsrX.akvotest.org/....
+ingress --> gateway
+gateway --> service : http://rsr1-rsrchart...
+gateway --> service2 :http://rsr2-rsrchart...
+gateway --> service3 :http://...-rsrchart...
+
+@enduml
