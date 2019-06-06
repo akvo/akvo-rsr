@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -13,10 +13,11 @@ import Indicators from './indicators'
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
+const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
 
 const AddResultButton = ({ push, ...props }) => (
   <Dropdown overlay={
-    <Menu onClick={(e) => push('results', { type: e.key })}>
+    <Menu onClick={(e) => push('results', { type: e.key, indicators: [] })}>
       <Menu.Item key="input"><Icon type="plus" />Input</Menu.Item>
       <Menu.Item key="activity"><Icon type="plus" />Activity</Menu.Item>
       <Menu.Item key="output"><Icon type="plus" />Output</Menu.Item>
@@ -30,8 +31,11 @@ const AddResultButton = ({ push, ...props }) => (
 )
 
 class Summary extends React.Component{
-  shouldComponentUpdate(nextProps){
-    return nextProps.values.results.length !== this.props.values.results.length
+  state = {
+    showModal: false
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    return nextProps.values.results.length !== this.props.values.results.length || nextState !== this.state
   }
   render(){
     const { values: {results}} = this.props
@@ -63,16 +67,46 @@ class Summary extends React.Component{
         </div>
       )
     }
+    const groupedResults = {}
+    resultTypes.forEach(type => {
+      groupedResults[type] = results.filter(it => it.type === type)
+    })
     return (
       <div className="summary">
         <ul>
-          <li>Inputs<strong>{results.filter(it => it.type === 'input').length}</strong></li>
-          <li>Activities<strong>{results.filter(it => it.type === 'activity').length}</strong></li>
-          <li>Outputs<strong>{results.filter(it => it.type === 'output').length}</strong></li>
-          <li>Outcomes<strong>{results.filter(it => it.type === 'outcome').length}</strong></li>
-          <li>Impacts<strong>{results.filter(it => it.type === 'impact').length}</strong></li>
+          <li>Inputs<strong>{groupedResults.input.length}</strong></li>
+          <li>Activities<strong>{groupedResults.activity.length}</strong></li>
+          <li>Outputs<strong>{groupedResults.output.length}</strong></li>
+          <li>Outcomes<strong>{groupedResults.outcome.length}</strong></li>
+          <li>Impacts<strong>{groupedResults.impact.length}</strong></li>
         </ul>
-        <Button type="link" icon="eye">Full preview</Button>
+        <Button type="link" icon="eye" onClick={() => this.setState({ showModal: true })}>Full preview</Button>
+        <Modal
+          title="Results framework preview"
+          visible={this.state.showModal}
+          onCancel={() => this.setState({ showModal: false })}
+          footer={null}
+          className="full-preview-modal"
+          width={640}
+        >
+          <Collapse bordered={false}>
+            {Object.keys(groupedResults).map(groupKey =>
+            <Panel header={<span className="group-title">{groupKey}<b> ({groupedResults[groupKey].length})</b></span>}>
+              <Collapse bordered={false}>
+                {groupedResults[groupKey].map((result, resultIndex) =>
+                <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
+                  <ul>
+                    {result.indicators.map((indicator, index) =>
+                    <li>Indicator <b>{index + 1}</b>: {indicator.title}</li>
+                    )}
+                  </ul>
+                </Panel>
+                )}
+              </Collapse>
+            </Panel>
+            )}
+          </Collapse>
+        </Modal>
       </div>
     )
   }
@@ -141,7 +175,7 @@ const Section5 = () => {
                     <div className="main-form">
                       <Item label="Title" optional style={{ flex: 1 }}>
                         <FinalField
-                          name={`${name}.name`}
+                          name={`${name}.title`}
                           control="input"
                         />
                       </Item>
