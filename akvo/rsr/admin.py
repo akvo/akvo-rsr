@@ -21,6 +21,7 @@ from django.contrib.auth.forms import (
 from django.contrib.auth.models import Group
 from django.db import models, transaction
 from django.apps import apps
+from django.contrib.postgres.fields import JSONField
 from django.forms.utils import ErrorList
 from django.forms import TextInput
 from django.utils.decorators import method_decorator
@@ -28,6 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.utils.encoding import force_text
 
+from prettyjson import PrettyJSONWidget
 from sorl.thumbnail.fields import ImageField
 from embed_video.admin import AdminVideoMixin
 import os.path
@@ -1579,3 +1581,12 @@ class UserProjectsAdmin(admin.ModelAdmin):
     model = UserProjects
 
 admin.site.register(UserProjects, UserProjectsAdmin)
+
+
+class OrganisationCodeList(admin.ModelAdmin):
+    list_display = (u'slug',)
+    formfield_overrides = {
+        JSONField: {'widget': PrettyJSONWidget}
+    }
+
+admin.site.register(apps.get_model('rsr', 'organisationcodelist'), OrganisationCodeList)
