@@ -24,24 +24,30 @@ const Section = connect(null, {touchSection})(_Section)
 
 const basePath = process.env.DETACHED_FE ? '/' : '/my-rsr'
 
-const Editor = ({ saving, lastSaved }) => (
+const SavingStatus = connect(
+  ({ editorRdr: { saving, lastSaved } }) => ({ saving, lastSaved })
+)(({ saving, lastSaved }) => (
+  <aside className="saving-status">
+    {saving && (
+      <div>
+        <Spin />
+        <span>Saving...</span>
+      </div>
+    )}
+    {(!saving && lastSaved !== null) && (
+      <div>
+        <Icon type="check" />
+        <span>Saved <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
+      </div>
+    )}
+  </aside>
+))
+
+const Editor = () => (
   <Router basename={basePath}>
     <div className="editor">
       <div className="status-bar">
-        <aside className="saving-status">
-          {saving && (
-            <div>
-              <Spin />
-              <span>Saving...</span>
-            </div>
-          )}
-          {(!saving && lastSaved !== null) && (
-            <div>
-              <Icon type="check" />
-              <span>Saved <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
-            </div>
-          )}
-        </aside>
+        <SavingStatus />
         <MainMenu />
         <div className="content">
           <Button type="primary" disabled>Publish</Button>
@@ -66,6 +72,4 @@ const Editor = ({ saving, lastSaved }) => (
   </Router>
 )
 
-export default connect(
-  ({ editorRdr: { saving, lastSaved } }) => ({ saving, lastSaved })
-)(Editor)
+export default Editor

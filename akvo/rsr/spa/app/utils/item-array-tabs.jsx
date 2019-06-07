@@ -2,22 +2,21 @@ import React from 'react'
 import { Tabs } from 'antd'
 import { FormSpy } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import { get } from 'lodash'
 
 const { TabPane } = Tabs
 
 class ActiveKeyUpdater extends React.Component{
   componentDidUpdate(prevProps){ // eslint-disable-line
-    try{
-      eval(`prevProps.values.${this.props.name}`)
-    } catch(e) {
-      return
-    } // eslint-disable-line
-    if(eval(`this.props.values.${this.props.name}`).length > eval(`prevProps.values.${this.props.name}`).length
-       || eval(`this.props.values.${this.props.name}`).length <= Number(this.props.activeKey)){
-         const activeKey = String(eval(`this.props.values.${this.props.name}`).length - 1)
-      setTimeout(() => {
-        this.props.setActiveKey(activeKey)
-      }, 200)
+    const thisValues = get(this.props.values, this.props.name)
+    if(thisValues !== undefined){
+      const prevValues = get(prevProps.values, this.props.name)
+      if(thisValues.length > prevValues.length || thisValues.length <= this.props.activeKey){
+        const activeKey = thisValues.length - 1
+        setTimeout(() => {
+          this.props.setActiveKey(activeKey)
+        }, 200)
+      }
     }
   }
   render(){
