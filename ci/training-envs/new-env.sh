@@ -33,6 +33,7 @@ if [[ ! $release_name =~ ^rsr[1-4]$ ]]; then
 fi
 
 switch_cluster "test"
+gcloud config set project akvo-lumen
 
 if [[ $restore_from == "prod" ]]; then
 
