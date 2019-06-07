@@ -32,7 +32,7 @@ export const validate = (module, validationSetIds, fields) => {
   }
   const validationSets = getValidationSets(validationSetIds, validationDef)
   let isValid = true
-  console.log(`validate ${module}`, fields)
+  // console.log(`validate ${module}`, fields)
   validationSets.forEach((validationSet) => {
     try{
       validationSet.validateSync(fields)
@@ -41,6 +41,6 @@ export const validate = (module, validationSetIds, fields) => {
       isValid = false
     }
   })
-  console.log('validated', module, isValid)
+  // console.log('validated', module, isValid)
   return isValid
 }

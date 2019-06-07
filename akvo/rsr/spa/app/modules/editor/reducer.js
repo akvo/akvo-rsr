@@ -1,4 +1,4 @@
-import {cloneDeep} from 'lodash'
+import {cloneDeep, set, get} from 'lodash'
 import actionTypes from './action-types'
 import { validate } from './validation'
 import { sectionLength } from './sections'
@@ -19,8 +19,8 @@ for(let i = 0; i < sectionLength; i += 1){
 }
 
 Object.keys(fieldSets).forEach((section) => {
-  fieldSets[section].forEach((set) => {
-    initialState[section].fields[set] = []
+  fieldSets[section].forEach((fieldSet) => {
+    initialState[section].fields[fieldSet] = []
   })
 })
 
@@ -81,20 +81,28 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
-      newState[sectionKey].fields[action.setName] = [...newState[sectionKey].fields[action.setName], action.item]
+      set(
+        newState[sectionKey].fields,
+        action.setName,
+        [...get(newState[sectionKey].fields, action.setName), action.item]
+      )
       newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
       return newState
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true
-      newState[sectionKey].fields[action.setName][action.itemIndex] = {
-        ...newState[sectionKey].fields[action.setName][action.itemIndex],
+      set(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`, {
+        ...get(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`),
         ...action.fields
-      }
+      })
       newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
       return newState
     case actionTypes.REMOVE_SET_ITEM:
       newState.saving = true
-      newState[sectionKey].fields[action.setName] = newState[sectionKey].fields[action.setName].filter((it, index) => index !== action.itemIndex)
+      set(
+        newState[sectionKey].fields,
+        action.setName,
+        get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
+      )
       newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
       return newState
     case actionTypes.BACKEND_SYNC:
