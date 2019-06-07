@@ -18,7 +18,8 @@ if [ ! -z "${WAIT_FOR_DEPENDENCIES:-}" ]; then
 fi
 
 log Migrating
-python manage.py migrate --noinput
+
+SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 
 log Adding to crontab
 python manage.py crontab add

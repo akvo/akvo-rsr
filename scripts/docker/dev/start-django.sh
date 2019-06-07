@@ -28,7 +28,7 @@ npm start
 ) &
 popd
 
-python manage.py migrate --noinput
+SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 #python manage.py collectstatic
 
 ## Not running cron jobs in dev
