@@ -2,15 +2,27 @@ import React from 'react'
 import { FormSpy } from 'react-final-form'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { cloneDeep, isEmpty } from 'lodash'
+import { cloneDeep, isEmpty, get } from 'lodash'
 import {diff} from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
 
-const debounce = 1000
+const debounce = 2000
 
+const getSetRootValues = (values) => {
+  const sets = ['indicators', 'periods', 'disaggregations']
+  const ret = {...values}
+  // if(values[0].hasO)
+  sets.forEach(fieldSet => {
+    if(ret.hasOwnProperty(fieldSet)){
+      // console.log('deleting', fieldSet)
+      delete ret[fieldSet]
+    }
+  })
+  return ret
+}
 const customDiff = (oldObj, newObj) => {
-  const difference = diff(oldObj, newObj)
+  const difference = diff(getSetRootValues(oldObj), getSetRootValues(newObj))
   // override deep diff to take the entire updated array
   Object.keys(difference).forEach((key) => {
     if(typeof difference[key] === 'object'){
@@ -30,11 +42,12 @@ const getRootValues = (values, sectionKey) => {
   return ret
 }
 
+
 class AutoSave extends React.Component {
   componentWillMount(){
     const { setName, sectionIndex } = this.props
     if(setName !== undefined){
-      this.lastSavedValues = cloneDeep(this.props.values[setName])
+      this.lastSavedValues = cloneDeep(get(this.props.values, setName))
     } else {
       this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
     }
@@ -51,10 +64,10 @@ class AutoSave extends React.Component {
 
     if(setName !== undefined && itemIndex !== undefined){
       // if item was added or removed, it is handled from <ItemsArray>
-      if(this.lastSavedValues.length !== values[setName].length){
+      if(this.lastSavedValues.length !== get(values, setName).length){
         return
       }
-      const difference = customDiff(this.lastSavedValues[itemIndex], values[setName][itemIndex])
+      const difference = customDiff(this.lastSavedValues[itemIndex], get(values, setName)[itemIndex])
       if(!isEmpty(difference)){
         this.props.editSetItem(sectionIndex, setName, itemIndex, difference)
         this.lastSavedValues[itemIndex] = {

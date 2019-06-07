@@ -1,5 +1,6 @@
 /* global document */
 import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Tag, Popconfirm } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
@@ -11,18 +12,26 @@ import './styles.scss'
 import InputLabel from '../../../utils/input-label'
 import Accordion from '../../../utils/accordion'
 import Condition from '../../../utils/condition'
+import AutoSave from '../../../utils/auto-save'
 import { getBestAnchorGivenScrollLocation } from '../../../utils/scroll'
+import { addSetItem, removeSetItem } from '../actions'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Disaggregations = ({ fieldName, formPush }) => {
-  useEffect(() => {
-    formPush(`${fieldName}.disaggregations`, { items: [{}]})
-  }, [])
+const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
+  // useEffect(() => {
+  //   formPush(`${fieldName}.disaggregations`, { items: [{}]})
+  // }, [])
   const add = () => {
-    formPush(`${fieldName}.disaggregations`, { items: [{}]})
+    const newItem = { items: [{}]}
+    formPush(`${fieldName}.disaggregations`, newItem)
+    addSetItem(5, `${fieldName}.disaggregations`, newItem)
+  }
+  const remove = (index, fields) => {
+    fields.remove(index)
+    removeSetItem(5, `${fieldName}.disaggregations`, index)
   }
   return (
     <FieldArray name={`${fieldName}.disaggregations`} subscription={{}}>
@@ -38,14 +47,22 @@ const Disaggregations = ({ fieldName, formPush }) => {
             setName={`${fieldName}.disaggregations`}
             renderPanel={(name, index) => (
               <Panel
-                header={`Disaggregation ${index + 1}`}
+                header={(
+                  <span>
+                    Disaggregation {index + 1}
+                    <Field
+                      name={`${fieldName}.disaggregations[${index}].name`}
+                      render={({input}) => input.value ? `: ${input.value}` : ''}
+                    />
+                  </span>
+                )}
                 key={index}
                 extra={(
                   /* eslint-disable-next-line */
                   <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
                   <Popconfirm
                     title="Are you sure to delete this disaggregation?"
-                    onConfirm={() => fields.remove(index)}
+                    onConfirm={() => remove(index, fields)}
                     okText="Yes"
                     cancelText="No"
                   >
@@ -54,6 +71,7 @@ const Disaggregations = ({ fieldName, formPush }) => {
                   </div>
                 )}
               >
+                <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregations`} itemIndex={index} />
                 <Item label="Name">
                   <FinalField name={`${name}.name`} />
                 </Item>
@@ -80,7 +98,7 @@ const Disaggregations = ({ fieldName, formPush }) => {
                         </Col>
                       </Row>
                       ))}
-                      <Button icon="plus" type="link" onClick={() => props.fields.push('items', {})}>Add item</Button>
+                      <Button icon="plus" type="link" onClick={() => props.fields.push({})}>Add item</Button>
                       {props.fields.length > 1 &&
                       <Button icon="minus" type="link" className="remove-item" onClick={() => props.fields.pop()}>Remove item</Button>
                       }
@@ -96,14 +114,19 @@ const Disaggregations = ({ fieldName, formPush }) => {
       )}
     </FieldArray>
   )
-}
+})
 
-const Periods = ({ fieldName, formPush }) => {
-  useEffect(() => {
-    formPush(`${fieldName}.periods`, {})
-  }, [])
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
+  // useEffect(() => {
+  //   formPush(`${fieldName}.periods`, {})
+  // }, [])
   const add = () => {
     formPush(`${fieldName}.periods`, {})
+    addSetItem(5, `${fieldName}.periods`, {})
+  }
+  const remove = (index, fields) => {
+    fields.remove(index)
+    removeSetItem(5, `${fieldName}.periods`, index)
   }
   return (
     <Aux>
@@ -140,7 +163,7 @@ const Periods = ({ fieldName, formPush }) => {
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
                 <Popconfirm
                   title="Are you sure to delete this period?"
-                  onConfirm={() => fields.remove(index)}
+                  onConfirm={() => remove(index, fields)}
                   okText="Yes"
                   cancelText="No"
                 >
@@ -149,6 +172,7 @@ const Periods = ({ fieldName, formPush }) => {
                 </div>
               )}
             >
+              <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
               <Row gutter={16}>
                 <Col span={12}>
                   <Item label="Start">
@@ -183,7 +207,7 @@ const Periods = ({ fieldName, formPush }) => {
     </FieldArray>
     </Aux>
   )
-}
+})
 
 const fieldNameToId = name => name.replace(/\[/g, '').replace(/\]/g, '').replace(/\./g, '')
 
@@ -235,10 +259,17 @@ class IndicatorNavMenu extends React.Component{
   }
 }
 
-const Indicators = ({ fieldName, formPush }) => {
+const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
   const typeKeyMap = {'0': 'quantitative', '1': 'qualitative'} // eslint-disable-line
   const add = (key) => {
-    formPush(`${fieldName}.indicators`, { type: typeKeyMap[key], measure: 0, order: 0 })
+    const newItem = { type: typeKeyMap[key], measure: 0, order: 0, periods: [] }
+    if(key === '0') newItem.disaggregations = []
+    formPush(`${fieldName}.indicators`, newItem)
+    addSetItem(5, `${fieldName}.indicators`, newItem)
+  }
+  const remove = (index, fields) => {
+    fields.remove(index)
+    removeSetItem(5, `${fieldName}.indicators`, index)
   }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
@@ -266,7 +297,7 @@ const Indicators = ({ fieldName, formPush }) => {
                 <IndicatorNavMenu fieldName={name} />
                 <Popconfirm
                   title="Are you sure to delete this indicator?"
-                  onConfirm={() => fields.remove(index)}
+                  onConfirm={() => remove(index, fields)}
                   okText="Yes"
                   cancelText="No"
                 >
@@ -275,6 +306,7 @@ const Indicators = ({ fieldName, formPush }) => {
                 </div>
               )}
             >
+              <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
               <div id={`${fieldNameToId(name)}-info`} />
               <Item label={<InputLabel optional>Title</InputLabel>}>
                 <FinalField name={`${name}.title`} />
@@ -360,6 +392,6 @@ const Indicators = ({ fieldName, formPush }) => {
     )}
     </FieldArray>
   )
-}
+})
 
 export default Indicators

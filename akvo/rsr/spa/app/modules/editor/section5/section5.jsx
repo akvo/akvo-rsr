@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
@@ -9,26 +10,35 @@ import FinalField from '../../../utils/final-field'
 import './styles.scss'
 import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
+import AutoSave from '../../../utils/auto-save'
+import {addSetItem, removeSetItem} from '../actions'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
 
-const AddResultButton = ({ push, ...props }) => (
-  <Dropdown overlay={
-    <Menu onClick={(e) => push('results', { type: e.key, indicators: [] })}>
-      <Menu.Item key="input"><Icon type="plus" />Input</Menu.Item>
-      <Menu.Item key="activity"><Icon type="plus" />Activity</Menu.Item>
-      <Menu.Item key="output"><Icon type="plus" />Output</Menu.Item>
-      <Menu.Item key="outcome"><Icon type="plus" />Outcome</Menu.Item>
-      <Menu.Item key="impact"><Icon type="plus" />Impact</Menu.Item>
-    </Menu>
+const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...props }) => { // eslint-disable-line
+  const addResult = ({ key }) => {
+    const newItem = { type: key, indicators: [] }
+    push('results', newItem)
+    addSetItem(5, 'results', newItem)
   }
-  trigger={['click']}>
-    <Button icon="plus" className="add-result" size="large" {...props}>Add Result</Button>
-  </Dropdown>
-)
+  return (
+    <Dropdown overlay={
+      <Menu onClick={addResult}>
+        <Menu.Item key="input"><Icon type="plus" />Input</Menu.Item>
+        <Menu.Item key="activity"><Icon type="plus" />Activity</Menu.Item>
+        <Menu.Item key="output"><Icon type="plus" />Output</Menu.Item>
+        <Menu.Item key="outcome"><Icon type="plus" />Outcome</Menu.Item>
+        <Menu.Item key="impact"><Icon type="plus" />Impact</Menu.Item>
+      </Menu>
+    }
+    trigger={['click']}>
+      <Button icon="plus" className="add-result" size="large" {...props}>Add Result</Button>
+    </Dropdown>
+  )
+})
 
 class Summary extends React.Component{
   state = {
@@ -121,103 +131,116 @@ class UpdateIfLengthChanged extends React.Component{
   }
 }
 
-const Section5 = () => {
-  return (
-    <div className="view section5">
-      <Form layout="vertical">
-      <FinalForm
-        onSubmit={() => {}}
-        initialValues={{ results: [{ type: 'impact', indicators: [{ type: 'quantitative' }]}] }}
-        subscription={{}}
-        mutators={{ ...arrayMutators }}
-        render={({
-          form: {
-            mutators: { push }
-          }
-        }) => (
-          <Aux>
-          <FormSpy subscription={{ values: true }}>
-            {({ values }) => <Summary values={values} push={push} />}
-          </FormSpy>
-          <FieldArray name="results" subscription={{}}>
-          {({ fields }) => (
+class Section5 extends React.Component{
+  shouldComponentUpdate(){
+    return false
+  }
+  removeSection = (fields, index) => {
+    fields.remove(index)
+    this.props.removeSetItem(5, 'results', index)
+  }
+  render(){
+    return (
+      <div className="view section5">
+        <Form layout="vertical">
+        <FinalForm
+          onSubmit={() => {}}
+          initialValues={this.props.fields}
+          subscription={{}}
+          mutators={{ ...arrayMutators }}
+          render={({
+            form: {
+              mutators: { push }
+            }
+          }) => (
             <Aux>
-              <Accordion
-                className="results-list"
-                finalFormFields={fields}
-                setName="results"
-                renderPanel={(name, index) => (
-                  <Panel
-                    key={`${index}`}
-                    header={
-                      <span>
-                        Result {index + 1}
-                        &nbsp;
-                        <Field
-                          name={`${name}.type`}
-                          render={({input}) => <Tag>{input.value}</Tag>}
-                        />
-                        <Field
-                          name={`${name}.title`}
-                          render={({input}) => input.value}
-                        />
-                      </span>}
-                    extra={
-                      // eslint-disable-next-line
-                      <div onClick={e => e.stopPropagation()}>
-                      <Popconfirm
-                        title="Are you sure to delete this result?"
-                        onConfirm={() => fields.remove(index)}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <Button size="small" icon="delete" className="delete-panel" />
-                      </Popconfirm>
+            <FormSpy subscription={{ values: true }}>
+              {({ values }) => <Summary values={values} push={push} />}
+            </FormSpy>
+            <FieldArray name="results" subscription={{}}>
+            {({ fields }) => (
+              <Aux>
+                <Accordion
+                  className="results-list"
+                  finalFormFields={fields}
+                  setName="results"
+                  renderPanel={(name, index) => (
+                    <Panel
+                      key={`${index}`}
+                      header={
+                        <span>
+                          Result {index + 1}
+                          &nbsp;
+                          <Field
+                            name={`${name}.type`}
+                            render={({input}) => <Tag>{input.value}</Tag>}
+                          />
+                          <Field
+                            name={`${name}.title`}
+                            render={({input}) => input.value}
+                          />
+                        </span>}
+                      extra={
+                        // eslint-disable-next-line
+                        <div onClick={e => e.stopPropagation()}>
+                        <Popconfirm
+                          title="Are you sure to delete this result?"
+                          onConfirm={() => this.removeSection(fields, index)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button size="small" icon="delete" className="delete-panel" />
+                        </Popconfirm>
+                        </div>
+                      }
+                    >
+                      <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
+                      <div className="main-form">
+                        <Item label="Title" optional style={{ flex: 1 }}>
+                          <FinalField
+                            name={`${name}.title`}
+                            control="input"
+                          />
+                        </Item>
+                        <div style={{ display: 'flex' }}>
+                        <Item label="Description" optional style={{ flex: 1 }}>
+                          <RTE />
+                        </Item>
+                        <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
+                          {/* <Switch /> */}
+                          <Radio.Group value>
+                            <Radio.Button value>Yes</Radio.Button>
+                            <Radio.Button>No</Radio.Button>
+                          </Radio.Group>
+                        </Item>
+                        </div>
+                        <div className="ant-form-item-label">Indicators:</div>
                       </div>
+                      <Indicators fieldName={name} formPush={push} />
+                    </Panel>
+                  )}
+                />
+                <FormSpy subscription={{ values: true }}>
+                  {({ values: { results } }) =>
+                  <UpdateIfLengthChanged items={results}>
+                    {results.length > 0 &&
+                    <AddResultButton push={push} />
                     }
-                  >
-                    <div className="main-form">
-                      <Item label="Title" optional style={{ flex: 1 }}>
-                        <FinalField
-                          name={`${name}.title`}
-                          control="input"
-                        />
-                      </Item>
-                      <div style={{ display: 'flex' }}>
-                      <Item label="Description" optional style={{ flex: 1 }}>
-                        <RTE />
-                      </Item>
-                      <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
-                        {/* <Switch /> */}
-                        <Radio.Group value>
-                          <Radio.Button value>Yes</Radio.Button>
-                          <Radio.Button>No</Radio.Button>
-                        </Radio.Group>
-                      </Item>
-                      </div>
-                      <div className="ant-form-item-label">Indicators:</div>
-                    </div>
-                    <Indicators fieldName={name} formPush={push} />
-                  </Panel>
-                )}
-              />
-              <FormSpy subscription={{ values: true }}>
-                {({ values: { results } }) =>
-                <UpdateIfLengthChanged items={results}>
-                  {results.length > 0 &&
-                  <AddResultButton push={push} />
-                  }
-                </UpdateIfLengthChanged>}
-              </FormSpy>
+                  </UpdateIfLengthChanged>}
+                </FormSpy>
+              </Aux>
+            )}
+            </FieldArray>
             </Aux>
           )}
-          </FieldArray>
-          </Aux>
-        )}
-      />
-      </Form>
-    </div>
-  )
+        />
+        </Form>
+      </div>
+    )
+  }
 }
 
-export default Section5
+export default connect(
+  ({ editorRdr: { section5: { fields }}}) => ({ fields }),
+  { removeSetItem }
+)(Section5)
