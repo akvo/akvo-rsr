@@ -2,8 +2,9 @@
 
 This directory contains the scripts required to manage the RSR training environments.
 
-The 
+There can be any number of training environments, which can either start with a preconfigured training set or with a copy of production data.
 
+To prepare a training set, a new empty environment will be created and, using the RSR UI, the required organizations, projects, indicators, ... will be created. Once they are created, the database and media files will be packaged and available to create new environments.
 
 ## Usage
 
@@ -27,8 +28,8 @@ After that you can run:
        1. empty: start with a completely empty DB, to prepare a training dataset.
        1. prod: start with a copy of the production DB and media.
        1. XXXX: start with training DB with this name.
-  1. rsr_version: RSR version to run. If not provided, it will the current production version. 
-  Note that the containers for this version must already exists (right now this means that it must be at least deployed to test).
+   1. rsr_version: RSR version to run. If not provided, it will the current production version. 
+   Note that the containers for this version must already exists (right now this means that it must be at least deployed to test).
 
 ### Login all the time is boring
 
@@ -45,7 +46,7 @@ The architecture:
 ![setup](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/akvo/akvo-rsr/develop/ci/rsrchart/architecture.puml)
 
 1. We use Helm to manage the different environments.
-1. We do not update environments. We expect them to be deleted/recreated
+1. We do not update environments. We expect them to be deleted/recreated.
 1. Training environments are in their own namespace so that we can limit the number of environments, by limiting the resources assigned to that namespace.
 1. Right now the environment names and number are fixed due to some DNS/TLS/Ingress issue. This restriction will go away once we have LetsEncrypt in the Kubernetes cluster.
 1. The production DB is restored using the latest backup, usually done at midnight every day. We use ElephantSQL API to fetch that backup.
