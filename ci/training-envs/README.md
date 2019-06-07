@@ -43,7 +43,7 @@ You can mount your ~/.config at /home/gkh/.config to reuse your existing credent
 
 The architecture:
 
-![setup](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/akvo/akvo-rsr/develop/ci/rsrchart/architecture.puml)
+![setup](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/akvo/akvo-rsr/develop/ci/training-envs/architecture.puml)
 
 1. We use Helm to manage the different environments.
 1. We do not update environments. We expect them to be deleted/recreated.
