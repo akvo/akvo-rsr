@@ -1,2 +1,1 @@
-After script finish successfully, RSR will be available at https://{{ .Release.Name }}.akvotest.org/
 

@@ -65,3 +65,6 @@ helm install . --dep-up --namespace rsr-demo --name ${release_name} --set restor
 
 log Waiting for new environment to be ready
 ${DIR}/helpers/wait-for-k8s-deployment-to-be-ready.sh ${release_name}
+
+echo
+log RSR env available at https://${release_name}.akvotest.org/
