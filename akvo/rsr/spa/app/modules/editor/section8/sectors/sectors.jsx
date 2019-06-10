@@ -52,7 +52,7 @@ const Sectors = ({ validations, formPush }) => {
             name={`${name}.vocabulary`}
             render={
               ({input}) => (
-                <Item label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('code')} tooltip="...">Additional info</InputLabel>}>
+                <Item label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('code')} tooltip="...">Sector code</InputLabel>}>
                   <FinalField
                     control="select"
                     options={CODE_OPTIONS}
