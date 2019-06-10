@@ -47,7 +47,6 @@ class Finance extends React.Component{
               control="input"
             />
             </Item>
-            <BudgetItems formPush={push} validations={this.props.validations} />
             {fieldExists('capitalSpendPercentage') && (
               <Row>
                 <Col span={12}>
@@ -62,6 +61,7 @@ class Finance extends React.Component{
                 </Col>
               </Row>
             )}
+            <BudgetItems formPush={push} validations={this.props.validations} />
             {fieldExists('countryBudgetItems') && (
               <Aux>
                 <h3>Country budget items</h3>

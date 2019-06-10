@@ -26,8 +26,7 @@ const base = yup.object().shape({
   recipientOrganisation: yup.string(),
   providerOrganisationActivityId: yup.string(),
   receiverOrganisationActivityId: yup.string(),
-  description: yup.string(),
-  aidTypeVocabulary: yup.string()
+  description: yup.string()
 })
 
 const DGIS = base.clone().shape({
@@ -47,7 +46,8 @@ const IATI = DGIS.clone().shape({
   recipientRegion: yup.string(),
   recipientRegionVocabulary: yup.string(),
   recipientRegionVocabularyUrl: yup.string(),
-  sectors: yup.array().of(sector).default([])
+  sectors: yup.array().of(sector).default([]),
+  aidTypeVocabulary: yup.string()
 })
 
 const EUTF = yup.object().shape({

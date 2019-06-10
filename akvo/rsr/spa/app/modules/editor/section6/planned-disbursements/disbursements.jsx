@@ -14,7 +14,7 @@ const isEmpty = value => value === null || value === '' || value === undefined
 const ValueDateField = ({ name }) => (
   <Item label={(
     <Field name={`${name}.value`}>
-      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value Date</InputLabel>}
+      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value date</InputLabel>}
     </Field>
   )}>
   <FinalField
@@ -49,7 +49,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
               </Col>
             )}
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip="...">Amount</InputLabel>}>
+              <Item label={<InputLabel optional tooltip="...">Disbursement value</InputLabel>}>
               <FinalField
                 name={`${name}.value`}
                 control="input-number"
@@ -68,7 +68,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
               <ValueDateField name={name} />
             </Col>
             <Col span={12}>
-              <Item label={<InputLabel optional>Type</InputLabel>}>
+              <Item label={<InputLabel optional>Disbursement type</InputLabel>}>
               <FinalField
                 name={`${name}.type`}
                 render={({ input }) => (
