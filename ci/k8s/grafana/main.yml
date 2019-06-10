@@ -7,26 +7,6 @@ metadata:
 data:
   rsr-dashboard.json: |-
     {
-      "__requires": [
-        {
-          "type": "grafana",
-          "id": "grafana",
-          "name": "Grafana",
-          "version": "5.0.4"
-        },
-        {
-          "type": "panel",
-          "id": "graph",
-          "name": "Graph",
-          "version": "5.0.0"
-        },
-        {
-          "type": "datasource",
-          "id": "prometheus",
-          "name": "Prometheus",
-          "version": "5.0.0"
-        }
-      ],
       "annotations": {
         "list": [
           {
@@ -43,7 +23,7 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": null,
+      "id": 18,
       "links": [],
       "panels": [
         {
@@ -98,6 +78,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Request per second",
           "tooltip": {
@@ -130,7 +111,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -187,6 +172,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "95% latency",
           "tooltip": {
@@ -220,7 +206,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -272,6 +262,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Memory",
           "tooltip": {
@@ -304,7 +295,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -347,7 +342,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",container_name!=\"POD\",pod_name=~\"rsr.*\"}[5m])) by (container_name, pod_name)",
+              "expr": "sum (rate (container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",container_name!=\"POD\",pod_name=~\"rsr.*\",namespace=\"default\"}[5m])) by (container_name, pod_name)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{container_name}} - {{pod_name}}",
@@ -356,6 +351,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "CPU",
           "tooltip": {
@@ -388,7 +384,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -442,6 +442,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "DB - Query per second",
           "tooltip": {
@@ -474,7 +475,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -538,6 +543,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "DB - latencies",
           "tooltip": {
@@ -571,7 +577,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -628,6 +638,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Network",
           "tooltip": {
@@ -660,7 +671,11 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -711,6 +726,7 @@ data:
           ],
           "thresholds": [],
           "timeFrom": null,
+          "timeRegions": [],
           "timeShift": null,
           "title": "Restarts per 30 mins",
           "tooltip": {
@@ -718,7 +734,6 @@ data:
             "sort": 0,
             "value_type": "individual"
           },
-          "transparent": false,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -744,11 +759,15 @@ data:
               "min": null,
               "show": true
             }
-          ]
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "refresh": "1m",
-      "schemaVersion": 16,
+      "schemaVersion": 18,
       "style": "dark",
       "tags": [],
       "templating": {
@@ -786,5 +805,5 @@ data:
       "timezone": "",
       "title": "RSR",
       "uid": "eJacwf-ik",
-      "version": 4
+      "version": 1
     }
