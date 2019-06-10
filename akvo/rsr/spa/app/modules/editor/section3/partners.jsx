@@ -98,13 +98,11 @@ class Partners extends React.Component{
                     />
                     </Item>
                   </Condition>
-                  {(fieldExists('iatiActivityId')) && (
-                    <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
-                    <FinalField
-                      name={`${name}.iatiActivityId`}
-                    />
-                    </Item>
-                  )}
+                  <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
+                  <FinalField
+                    name={`${name}.iatiActivityId`}
+                  />
+                  </Item>
                 </div>
               )}
               addButton={({onClick}) => (
