@@ -53,6 +53,7 @@ sed -e "s/\${TRAVIS_COMMIT}/$TRAVIS_COMMIT/" ci/k8s/deployment.yml > deployment.
 kubectl apply -f ci/k8s/media-disk.yml
 kubectl apply -f ci/k8s/service.yml
 kubectl apply -f deployment.yml.tmp
+kubectl apply -f ci/k8s/grafana/main.yml
 
 log Waiting for k8s to finish
 ./ci/k8s/helpers/wait-for-k8s-deployment-to-be-ready.sh
