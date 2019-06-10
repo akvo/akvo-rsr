@@ -13,4 +13,9 @@
   .ant-radio-group{
     margin-bottom: 13px;
   }
+  .ant-collapse-header{
+    .ant-tag:not(:last-of-type){
+      margin-right: 2px;
+    }
+  }
 }

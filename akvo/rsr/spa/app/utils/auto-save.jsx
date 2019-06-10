@@ -77,7 +77,7 @@ class AutoSave extends React.Component {
       }
     } else {
       const rootValues = getRootValues(values, `section${sectionIndex}`)
-      const difference = diff(this.lastSavedValues, rootValues)
+      const difference = customDiff(this.lastSavedValues, rootValues)
       if(!isEmpty(difference)){
         this.props.saveFields(difference, sectionIndex)
         this.lastSavedValues = {

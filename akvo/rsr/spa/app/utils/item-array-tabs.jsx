@@ -34,7 +34,7 @@ class ItemArrayTabs extends React.Component{
   }
   handleChange = (activeKey) => {
     this.setState({
-      activeKey
+      activeKey: `${activeKey}`
     })
   }
   add = () => {
