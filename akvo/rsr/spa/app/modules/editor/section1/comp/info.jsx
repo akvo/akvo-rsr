@@ -5,6 +5,7 @@ import {
 } from 'antd'
 import currencies from 'currency-codes/data'
 import { Form as FinalForm } from 'react-final-form'
+import arrayMutators from 'final-form-arrays'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -16,7 +17,7 @@ import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
 import FLOW_TYPES from '../options/flow-types.json'
 import FINANCE_TYPES from '../options/finance-types.json'
 import tiedStatusOptions from '../options/tied-statuses.json'
-import ParentPicker from './parent-picker'
+import RelatedProjects from './related-projects'
 import SectionContext from '../../section-context'
 import '../styles.scss'
 
@@ -58,7 +59,12 @@ class Info extends React.Component{
           onSubmit={() => {}}
           initialValues={this.props.fields}
           subscription={{}}
-          render={() => (
+          mutators={{ ...arrayMutators }}
+          render={({
+            form: {
+              mutators: { push }
+            }
+          }) => (
             <div>
             <AutoSave sectionIndex={1} />
             <FinalField
@@ -83,7 +89,7 @@ class Info extends React.Component{
               withLabel
               fieldExists={fieldExists}
             />
-            <ParentPicker />
+            <RelatedProjects formPush={push} />
             <FinalField
               name="iatiStatus"
               control="select"

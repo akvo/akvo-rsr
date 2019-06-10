@@ -2,6 +2,18 @@
   h3{
     margin-bottom: 15px;
   }
+  .related-projects-label{
+    color: rgba(0, 0, 0, 0.85);
+  }
+  .related-project-checkbox{
+    margin-top: 15px;
+    margin-bottom: -15px;
+  }
+  .ant-col-16{
+    .ant-form-item{
+      margin-bottom: 0;
+    }
+  }
   .uploaded-image{
     position: relative;
     img{

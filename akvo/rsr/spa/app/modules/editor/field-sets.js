@@ -1,4 +1,5 @@
 export default {
+  section1: ['relatedProjects'],
   section2: ['contacts'],
   section3: ['partners'],
   section5: ['results'],
