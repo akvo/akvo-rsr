@@ -9,7 +9,7 @@ import arrayMutators from 'final-form-arrays'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
-import { validationType, isFieldOptional, doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
+import { isFieldOptional, doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import ProjectPhoto from './project-photo'
 import validationDefs from '../validations'
 import AID_TYPES from '../options/aid-types.json'
@@ -90,6 +90,18 @@ class Info extends React.Component{
               fieldExists={fieldExists}
             />
             <RelatedProjects formPush={push} />
+            <FinalField
+              name="hierarchy"
+              control="select"
+              withLabel
+              fieldExists={fieldExists}
+              options={[
+                {value: 1, label: 'Core Activity'},
+                {value: 2, label: 'Sub Activity'},
+                {value: 3, label: 'Lower Sub Activity'}
+              ]}
+              withEmptyOption
+            />
             <FinalField
               name="iatiStatus"
               control="select"

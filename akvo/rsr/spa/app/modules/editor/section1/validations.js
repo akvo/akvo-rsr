@@ -14,7 +14,8 @@ const RSR = yup.object().shape({
   language: yup.string().default('en'),
   currentImage: yup.string(), // .required(),
   currentImageCaption: yup.string(),
-  currentImageCredit: yup.string()
+  currentImageCredit: yup.string(),
+  defaultAidType: yup.string(),
 })
 
 const IATI_BASIC = RSR.clone().shape({
@@ -22,8 +23,9 @@ const IATI_BASIC = RSR.clone().shape({
 })
 
 const IATI = IATI_BASIC.clone().shape({
+  hierarchy: yup.string(),
   defaultAidTypeVocabulary: yup.string(),
-  defaultAidType: yup.string(),
+  // defaultAidType: yup.string(),
   defaultFlowType: yup.string(),
   defaultTiedStatus: yup.string(),
   collaborationType: yup.string(),
@@ -39,10 +41,13 @@ const DGIS = RSR.clone().shape({
   defaultTiedStatus: yup.string().required(),
 })
 
+const DFID = IATI.clone()
+
 const defs = {
   1: RSR,
   2: IATI,
   3: DGIS,
+  6: DFID,
   8: IATI_BASIC
 }
 

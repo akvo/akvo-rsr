@@ -14,6 +14,13 @@
       margin-bottom: 0;
     }
   }
+  .hierarchy-select{
+    display: flex;
+    .ant-radio-button-wrapper{
+      flex: 1;
+      text-align: center;
+    }
+  }
   .uploaded-image{
     position: relative;
     img{
