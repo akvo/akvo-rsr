@@ -21,7 +21,10 @@ const RecipientCountries = ({ validations, formPush }) => {
       <ItemArray
         setName="recipientCountries"
         sectionIndex={7}
-        header="Recipient country $index"
+        header={(index, countryCode) => (
+          <span>Recipient country {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
+        )}
+        headerField="country"
         formPush={formPush}
         panel={name => (
           <div>
@@ -35,7 +38,7 @@ const RecipientCountries = ({ validations, formPush }) => {
                 options={COUNTRY_OPTIONS}
               />
             </Item>
-            <div className="percentage-row">
+            <span className="percentage-row">
               {fieldExists('percentage') && (
                 <Item label="Percentage">
                 <FinalField
@@ -55,7 +58,7 @@ const RecipientCountries = ({ validations, formPush }) => {
                 />
                 </Item>
               )}
-            </div>
+            </span>
           </div>
         )}
         addButton={({ onClick }) => (

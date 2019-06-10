@@ -211,7 +211,7 @@ hr{
   .ant-collapse{
     margin-bottom: 20px;
     .ant-collapse-content-box{
-      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-child{
+      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;
       }
       .ant-form>.ant-row:last-child, &>div>.ant-row:last-child{

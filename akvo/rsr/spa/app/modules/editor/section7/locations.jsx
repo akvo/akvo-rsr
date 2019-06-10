@@ -25,6 +25,7 @@ class LocationsView extends React.Component{
   render(){
     const validationSets = getValidationSets(this.props.validations, validationDefs)
     const fieldExists = doesFieldExist(validationSets)
+    const isEUTF = this.props.validations.indexOf(5) !== -1
     return (
       <div className="locations view">
       <SectionContext.Provider value="section7">
@@ -39,6 +40,12 @@ class LocationsView extends React.Component{
             }
           }) => (
           <Form layout="vertical">
+            {isEUTF &&
+            <Aux>
+              <RecipientCountries formPush={push} validations={this.props.validations} />
+              <hr />
+            </Aux>
+            }
             {fieldExists('projectScope') &&
             <Item label={<InputLabel optional>Project scope</InputLabel>}>
               <FinalField
@@ -50,8 +57,12 @@ class LocationsView extends React.Component{
             </Item>
             }
             <LocationsItems formPush={push} validations={this.props.validations} />
-            <hr />
-            <RecipientCountries formPush={push} validations={this.props.validations} />
+            {!isEUTF &&
+            <Aux>
+              <hr />
+              <RecipientCountries formPush={push} validations={this.props.validations} />
+            </Aux>
+            }
             {(fieldExists('recipientRegions')) && (
               <Aux>
                 <hr />
