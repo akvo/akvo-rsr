@@ -4,7 +4,7 @@ const RSR = yup.object().shape({
   name: yup.string().required().default(''),
   role: yup.number().required().default(1),
   secondaryReporter: yup.boolean(),
-  iatiActivityID: yup.string(),
+  iatiActivityId: yup.string(),
   fundingAmount: yup.mixed().when('role', {
     is: 1,
     then: yup.mixed().required()

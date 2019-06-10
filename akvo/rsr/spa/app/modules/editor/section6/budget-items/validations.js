@@ -30,6 +30,7 @@ const DFID = IATI.clone().shape({
 
 const NLR = RSR.clone().shape({
   currency: yup.string().default('EUR'),
+  budgetType: yup.string()
 })
 
 const Gietrenk = NLR.clone().shape({

@@ -64,7 +64,7 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
             }
-            {(!fieldExists('humanitarianTransaction') && fieldExists('type')) &&
+            {(!fieldExists('humanitarian') && fieldExists('type')) &&
             <Col span={12}>
               <TypeField name={name} />
             </Col>
@@ -78,7 +78,7 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
           </Row>
-          {fieldExists('humanitarianTransaction') && (
+          {fieldExists('humanitarian') && (
           <Row gutter={16}>
             <Col span={12}>
               <TypeField name={name} />
@@ -86,7 +86,7 @@ const Transactions = ({ validations, formPush }) => {
             <Col span={12}>
               <Item label={<InputLabel optional>Humanitarian transaction</InputLabel>}>
               <FinalField
-                name="humanitarianTransaction"
+                name="humanitarian"
                 render={({ input }) => (
                     <Radio.Group {...input}>
                       <Radio.Button value>Yes</Radio.Button>

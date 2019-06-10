@@ -22,7 +22,7 @@ const totalBudgetReducer = (acc, budgetItem) => {
   return acc
 }
 
-const BudgetItems = ({ formPush, validations, currency }) => {
+const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
   const validationSets = getValidationSets(validations, validationDefs)
@@ -60,7 +60,7 @@ const BudgetItems = ({ formPush, validations, currency }) => {
         sectionIndex={6}
         header={(index, type) => {
           if(!type) return null
-          return <span>{budgetItemTypes.find(it => it.value === type).label}</span>
+          return <span>Budget item {index + 1}: {budgetItemTypes.find(it => it.value === type).label}</span>
         }}
         headerField="type"
         headerMore={(index, amount) => {

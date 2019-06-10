@@ -19,7 +19,10 @@ const RecipientRegions = ({ formPush, validations }) => {
       <ItemArray
         setName="recipientRegions"
         sectionIndex={7}
-        header="Recipient country $index"
+        header={(index, region) => (
+          <span>Recipient region: {REGION_OPTIONS.find(it => it.value === region).label}</span>
+        )}
+        headerField="region"
         formPush={formPush}
         panel={name => (
           <div>

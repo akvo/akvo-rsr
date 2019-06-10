@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Icon, Form, Button, Radio, Upload, Row, Col } from 'antd'
+import { Icon, Form, Button, Radio, Upload, Row, Col, Tag } from 'antd'
 
 import FinalField from '../../../../utils/final-field'
 import Condition from '../../../../utils/condition'
@@ -10,6 +10,7 @@ import { getValidations, doesFieldExist, isFieldOptional, getValidationSets } fr
 import validationDefs from './validations'
 import LANGUAGE_OPTIONS from './languages.json'
 import FORMAT_OPTIONS from './formats.json'
+import CATEGORY_OPTIONS from './categories.json'
 import Categories from './categories'
 
 const { Item } = Form
@@ -29,13 +30,24 @@ const Docs = ({ formPush, validations }) => {
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
   return (
-    <div className="links view">
+    <div>
       <h3>Documents</h3>
       <ItemArray
         setName="docs"
         sectionIndex={9}
-        header="Document $index: $title"
-        newItem={{ categories: [{}]}}
+        header={(index, title) =>
+          <FinalField
+            name={`docs[${index}].categories`}
+            render={({input}) => (
+              <span>
+                {input.value.map(category => <Tag>{category}</Tag>)}
+                <span>Document {index + 1}: {title}</span>
+              </span>
+            )}
+          />
+        }
+        headerField="title"
+        newItem={{ categories: []}}
         formPush={formPush}
         panel={name => (
         <div>
@@ -100,7 +112,16 @@ const Docs = ({ formPush, validations }) => {
             </Col>
             )}
           </Row>
-          {fieldExists('categories') && <Categories parentName={name} push={formPush} />}
+          {fieldExists('categories') &&
+          <FinalField
+            name={`${name}.categories`}
+            control="select"
+            mode="multiple"
+            optionFilterProp="children"
+            options={CATEGORY_OPTIONS}
+            placeholder="Please select..."
+          />
+          }
         </div>
         )}
         addButton={props => (

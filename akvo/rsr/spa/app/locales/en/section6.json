@@ -6,6 +6,12 @@
   "amount": {
     "label": "Amount"
   },
+  "description": {
+    "label": "Description"
+  },
+  "reference": {
+    "label": "Reference"
+  },
   "label": {
     "label": "Additional info"
   },

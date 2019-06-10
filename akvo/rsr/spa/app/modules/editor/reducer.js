@@ -42,13 +42,14 @@ export default (state = initialState, action) => {
     case actionTypes.TOUCH_SECTION:
       if(!newState[sectionKey].isTouched){
         newState[sectionKey].isTouched = true
-        // determine whether to run validation on sets or on root
-        // this is not a good implementation; consider improvement
-        if(Object.keys(fieldSets).indexOf(sectionKey) !== -1){
+        // validate root fields
+        let _isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+        // check fieldSets
+        if(_isValid && fieldSets.hasOwnProperty(sectionKey)){
           newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
-        } else {
-          newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+          _isValid = fieldSets[sectionKey].map(fieldSetName => isValid(sectionKey, state.validations, newState, fieldSetName)).reduce((acc, value) => value && acc)
         }
+        newState[sectionKey].isValid = _isValid
       }
       return newState
     case actionTypes.CHECK_VALIDATION:

@@ -23,7 +23,10 @@ const LocationItems = ({ validations, formPush }) => {
       <ItemArray
         setName="locationItems"
         sectionIndex={7}
-        header="Location $index"
+        header={(index, location) => (
+          <span>Location {index + 1}: {location && location.text.split(',')[0]}</span>
+        )}
+        headerField="location"
         formPush={formPush}
         newItem={{ administratives: [{}]}}
         panel={name => (
