@@ -29,18 +29,18 @@ initialState.section10.fields.keywords = []
 
 const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 
-const isValid = (sectionKey, validations, fields) => {
+const validateSets = (sectionKey, validations, fields) => {
   return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, fields[fieldSet])).reduce((acc, value) => value && acc)
 }
 
 const validateSection = (sectionKey, validations, fields) => {
   // validate root fields
-  let _isValid = validate(sectionKey, validations, fields)
+  let isValid = validate(sectionKey, validations, fields)
   // check fieldSets
-  if(_isValid && fieldSets.hasOwnProperty(sectionKey)){
-    _isValid = fieldSets[sectionKey].map(fieldSetName => isValid(sectionKey, validations, fields, fieldSetName)).reduce((acc, value) => value && acc)
+  if(isValid && fieldSets.hasOwnProperty(sectionKey)){
+    isValid = validateSets(sectionKey, validations, fields)
   }
-  return _isValid
+  return isValid
 }
 
 export default (state = initialState, action) => {
