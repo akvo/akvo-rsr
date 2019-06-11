@@ -51,16 +51,18 @@ const MenuItem = (props) => {
   )
 }
 
-const MainMenu = ({ rdr }) => (
-  <aside className="main-menu">
-    <ul>
-      <MenuItem hideCheck to="/">Settings</MenuItem>
-      {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
-      <MenuItem key={section.key} to={`/${section.key}`} checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}>{index + 1}. {dict[section.key]}</MenuItem>
-      )}
-    </ul>
-  </aside>
-)
+const MainMenu = ({ rdr, params }) => {
+  return (
+    <aside className="main-menu">
+      <ul>
+        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>Settings</MenuItem>
+        {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
+        <MenuItem key={section.key} to={`/projects/${params.id}/${section.key}`} checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}>{index + 1}. {dict[section.key]}</MenuItem>
+        )}
+      </ul>
+    </aside>
+  )
+}
 
 export default connect(
   ({ editorRdr }) => ({ rdr: editorRdr })

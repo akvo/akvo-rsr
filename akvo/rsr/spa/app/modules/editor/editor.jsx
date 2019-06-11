@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import {BrowserRouter as Router, Route} from 'react-router-dom'
-import { Icon, Button, Spin } from 'antd'
-import moment from 'moment'
+import {Route, Link, Redirect} from 'react-router-dom'
+import { Icon, Button, Spin, Tabs } from 'antd'
 import TimeAgo from 'react-time-ago'
 
 import sections from './sections'
@@ -11,6 +10,7 @@ import Settings from './settings/settings'
 import {touchSection} from './actions'
 import './styles.scss'
 
+const { TabPane } = Tabs
 
 class _Section extends React.Component{
   componentWillMount(){
@@ -22,7 +22,6 @@ class _Section extends React.Component{
 }
 const Section = connect(null, {touchSection})(_Section)
 
-const basePath = process.env.DETACHED_FE ? '/' : '/my-rsr'
 
 const SavingStatus = connect(
   ({ editorRdr: { saving, lastSaved } }) => ({ saving, lastSaved })
@@ -43,22 +42,40 @@ const SavingStatus = connect(
   </aside>
 ))
 
-const Editor = () => (
-  <Router basename={basePath}>
+
+const _Header = ({title}) => (
+  <header className="main-header">
+    <Link to="/projects"><Icon type="left" /></Link>
+    <h1>{title ? title : 'Untitled project'}</h1>
+    <Tabs size="large" defaultActiveKey="4">
+      <TabPane tab="Results" key="1" />
+      <TabPane tab="Updates" key="2" />
+      <TabPane tab="Reports" key="3" />
+      <TabPane tab="Editor" key="4" />
+    </Tabs>
+  </header>
+)
+const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
+
+
+const Editor = ({ match: { params } }) => (
+  <div>
+    <Header />
     <div className="editor">
       <div className="status-bar">
         <SavingStatus />
-        <MainMenu />
+        <MainMenu params={params} />
         <div className="content">
           <Button type="primary" disabled>Publish</Button>
           <i>The project is unpublished</i>
         </div>
       </div>
       <div className="main-content">
-        <Route path="/" exact component={Settings} />
+        <Route path={`/projects/${params.id}`} exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
+        <Route path={`/projects/${params.id}/settings`} exact component={Settings} />
         {sections.map((section, index) =>
           <Route
-            path={`/${section.key}`}
+            path={`/projects/${params.id}/${section.key}`}
             exact
             render={(props) => {
               const Comp = section.component
@@ -69,7 +86,7 @@ const Editor = () => (
       </div>
       <div className="alerts" />
     </div>
-  </Router>
+  </div>
 )
 
 export default Editor

@@ -43,205 +43,200 @@ const COLLABORATION_TYPES = [
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-class Info extends React.Component{
-  shouldComponentUpdate(){
-    return false
-  }
-  render(){
-    const validationSets = getValidationSets(this.props.validations, validationDefs)
-    const isOptional = isFieldOptional(validationSets)
-    const fieldExists = doesFieldExist(validationSets)
-    return (
-      <div className="info view">
-        <SectionContext.Provider value="section1">
-        <Form layout="vertical">
-        <FinalForm
-          onSubmit={() => {}}
-          initialValues={this.props.fields}
-          subscription={{}}
-          mutators={{ ...arrayMutators }}
-          render={({
-            form: {
-              mutators: { push }
-            }
-          }) => (
-            <div>
-            <AutoSave sectionIndex={1} />
-            <FinalField
-              name="title"
-              render={({input}) => (
-                <Item label="Project title" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
-                  <Input {...input} />
-                </Item>
-              )}
-            />
-            <FinalField
-              name="subtitle"
-              render={({input}) => (
-                <Item label="Project subtitle" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
-                  <Input {...input} />
-                </Item>
-              )}
-            />
-            <FinalField
-              name="iatiActivityId"
-              control="input"
-              withLabel
-              fieldExists={fieldExists}
-            />
-            <RelatedProjects formPush={push} />
-            <FinalField
-              name="hierarchy"
-              control="select"
-              withLabel
-              fieldExists={fieldExists}
-              options={[
-                {value: 1, label: 'Core Activity'},
-                {value: 2, label: 'Sub Activity'},
-                {value: 3, label: 'Lower Sub Activity'}
-              ]}
-              withEmptyOption
-            />
-            <FinalField
-              name="iatiStatus"
-              control="select"
-              options={STATUS_OPTIONS}
-              withLabel
-            />
-            <Row gutter={16}>
-              <Col span={12}>
-                <FinalField
-                  name="plannedStartDate"
-                  control="datepicker"
-                  withLabel
-                />
-              </Col>
-              <Col span={12}>
-                <FinalField
-                  name="plannedEndDate"
-                  control="datepicker"
-                  withLabel
-                />
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <FinalField
-                  name="actualStartDate"
-                  control="datepicker"
-                  optional={isOptional}
-                  withLabel
-                />
-              </Col>
-              <Col span={12}>
-                <FinalField
-                  name="actualEndDate"
-                  control="datepicker"
-                  withLabel
-                  optional={isOptional}
-                />
-              </Col>
-            </Row>
-            <FinalField
-              name="currency"
-              showSearch
-              optionFilterProp="children"
-              options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
-              control="select"
-              withLabel
-              optional
-            />
-            <FinalField
-              name="language"
-              control="select"
-              options={languages.map(({code, label}) => ({ value: code, label }))}
-              withLabel
-              optional={isOptional}
-            />
-            <hr />
-            <h3>Project photo</h3>
-            <ProjectPhoto projectId={2} />
-            <FinalField
-              name="currentImageCaption"
-              withLabel
-              optional
-              control="input"
-            />
-
-            <FinalField
-              name="currentImageCredit"
-              withLabel
-              optional
-              control="input"
-            />
-
-            <hr />
-
-            <FinalField
-              name="defaultAidTypeVocabulary"
-              control="select"
-              options={AID_TYPE_VOCABULARY}
-              withEmptyOption
-              optional
-              withLabel
-              fieldExists={fieldExists}
-            />
-            <FinalField
-              name="defaultAidType"
-              options={AID_TYPES}
-              control="select"
-              withEmptyOption
-              withLabel
-              optional={isOptional}
-              fieldExists={fieldExists}
-            />
-            <FinalField
-              name="defaultFlowType"
-              control="select"
-              options={FLOW_TYPES}
-              withEmptyOption
-              withLabel
-              optional={isOptional}
-              fieldExists={fieldExists}
-            />
-            <FinalField
-              name="defaultTiedStatus"
-              control="select"
-              options={tiedStatusOptions}
-              withEmptyOption
-              withLabel
-              optional={isOptional}
-              fieldExists={fieldExists}
-            />
-            <FinalField
-              name="collaborationType"
-              withEmptyOption
-              control="select"
-              options={COLLABORATION_TYPES}
-              withLabel
-              optional
-              fieldExists={fieldExists}
-            />
-            <FinalField
-              name="defaultFinanceType"
-              control="select"
-              options={FINANCE_TYPES}
-              withEmptyOption
-              withLabel
-              optional
-              fieldExists={fieldExists}
-            />
-
-            </div>
-          )}
+const Info = ({ validations, fields }) => {
+  const validationSets = getValidationSets(validations, validationDefs)
+  const isOptional = isFieldOptional(validationSets)
+  const fieldExists = doesFieldExist(validationSets)
+  return (
+    <div className="info view">
+      <SectionContext.Provider value="section1">
+      <Form layout="vertical">
+      <FinalForm
+        onSubmit={() => {}}
+        initialValues={fields}
+        subscription={{}}
+        mutators={{ ...arrayMutators }}
+        render={({
+          form: {
+            mutators: { push }
+          }
+        }) => (
+          <div>
+          <AutoSave sectionIndex={1} />
+          <FinalField
+            name="title"
+            render={({input}) => (
+              <Item label="Project title" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+                <Input {...input} />
+              </Item>
+            )}
           />
-        </Form>
-        </SectionContext.Provider>
-      </div>
-    )
-  }
+          <FinalField
+            name="subtitle"
+            render={({input}) => (
+              <Item label="Project subtitle" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+                <Input {...input} />
+              </Item>
+            )}
+          />
+          <FinalField
+            name="iatiActivityId"
+            control="input"
+            withLabel
+            fieldExists={fieldExists}
+          />
+          <RelatedProjects formPush={push} />
+          <FinalField
+            name="hierarchy"
+            control="select"
+            withLabel
+            fieldExists={fieldExists}
+            options={[
+              {value: 1, label: 'Core Activity'},
+              {value: 2, label: 'Sub Activity'},
+              {value: 3, label: 'Lower Sub Activity'}
+            ]}
+            withEmptyOption
+          />
+          <FinalField
+            name="iatiStatus"
+            control="select"
+            options={STATUS_OPTIONS}
+            withLabel
+          />
+          <Row gutter={16}>
+            <Col span={12}>
+              <FinalField
+                name="plannedStartDate"
+                control="datepicker"
+                withLabel
+              />
+            </Col>
+            <Col span={12}>
+              <FinalField
+                name="plannedEndDate"
+                control="datepicker"
+                withLabel
+              />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <FinalField
+                name="actualStartDate"
+                control="datepicker"
+                optional={isOptional}
+                withLabel
+              />
+            </Col>
+            <Col span={12}>
+              <FinalField
+                name="actualEndDate"
+                control="datepicker"
+                withLabel
+                optional={isOptional}
+              />
+            </Col>
+          </Row>
+          <FinalField
+            name="currency"
+            showSearch
+            optionFilterProp="children"
+            options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
+            control="select"
+            withLabel
+            optional
+          />
+          <FinalField
+            name="language"
+            control="select"
+            options={languages.map(({code, label}) => ({ value: code, label }))}
+            withLabel
+            optional={isOptional}
+          />
+          <hr />
+          <h3>Project photo</h3>
+          <ProjectPhoto projectId={2} />
+          <FinalField
+            name="currentImageCaption"
+            withLabel
+            optional
+            control="input"
+          />
+
+          <FinalField
+            name="currentImageCredit"
+            withLabel
+            optional
+            control="input"
+          />
+
+          <hr />
+
+          <FinalField
+            name="defaultAidTypeVocabulary"
+            control="select"
+            options={AID_TYPE_VOCABULARY}
+            withEmptyOption
+            optional
+            withLabel
+            fieldExists={fieldExists}
+          />
+          <FinalField
+            name="defaultAidType"
+            options={AID_TYPES}
+            control="select"
+            withEmptyOption
+            withLabel
+            optional={isOptional}
+            fieldExists={fieldExists}
+          />
+          <FinalField
+            name="defaultFlowType"
+            control="select"
+            options={FLOW_TYPES}
+            withEmptyOption
+            withLabel
+            optional={isOptional}
+            fieldExists={fieldExists}
+          />
+          <FinalField
+            name="defaultTiedStatus"
+            control="select"
+            options={tiedStatusOptions}
+            withEmptyOption
+            withLabel
+            optional={isOptional}
+            fieldExists={fieldExists}
+          />
+          <FinalField
+            name="collaborationType"
+            withEmptyOption
+            control="select"
+            options={COLLABORATION_TYPES}
+            withLabel
+            optional
+            fieldExists={fieldExists}
+          />
+          <FinalField
+            name="defaultFinanceType"
+            control="select"
+            options={FINANCE_TYPES}
+            withEmptyOption
+            withLabel
+            optional
+            fieldExists={fieldExists}
+          />
+
+          </div>
+        )}
+        />
+      </Form>
+      </SectionContext.Provider>
+    </div>
+  )
 }
 
 export default connect(
   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
-)(Info)
+)(React.memo(Info, () => true))
