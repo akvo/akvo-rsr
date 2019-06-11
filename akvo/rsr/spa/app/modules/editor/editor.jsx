@@ -71,11 +71,11 @@ const Editor = ({ match: { params } }) => (
         </div>
       </div>
       <div className="main-content">
-        <Route path={`/projects/${params.id}`} exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
-        <Route path={`/projects/${params.id}/settings`} exact component={Settings} />
+        <Route path="/projects/:id" exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
+        <Route path="/projects/:id/settings" exact component={Settings} />
         {sections.map((section, index) =>
           <Route
-            path={`/projects/${params.id}/${section.key}`}
+            path={`/projects/:id/${section.key}`}
             exact
             render={(props) => {
               const Comp = section.component

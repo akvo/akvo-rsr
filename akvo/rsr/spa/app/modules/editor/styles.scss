@@ -61,6 +61,11 @@
       padding: 20px 0;
       text-transform: uppercase;
       li{
+        &.disabled{
+          span{
+            opacity: 0.2;
+          }
+        }
         a{
           position: relative;
           span{
