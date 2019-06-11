@@ -1,7 +1,7 @@
 {% load i18n project_editor %}
 
 <div class="dimension-name-item parent" id="indicator_dimension.{{ indicator_id_string }}.{{ dimension_name|obj_id }}">
-  {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension_name %}
+  {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension_name hide_delete_button=True %}
   <div class="hide-partial {% if dimension_name.pk %}hidden{% endif %}">
     <div class="row">
       <div class="col-md-6">
