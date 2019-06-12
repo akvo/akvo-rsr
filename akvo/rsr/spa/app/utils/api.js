@@ -1,10 +1,23 @@
 import Cookies from 'js-cookie'
-/* global fetch */
-const apiUrl = '/rest/v1'
-const headers = { 'Content-Type': 'application/json' }
+import axios from 'axios'
+import humps from 'humps'
+
+const config = {
+  baseURL: '/rest/v1',
+  headers: { 'Content-Type': 'application/json', 'X-CSRFToken': Cookies.get('csrftoken') },
+  params: { format: 'json'},
+  transformResponse: [
+    ...axios.defaults.transformResponse,
+    data => humps.camelizeKeys(data)
+  ],
+  transformRequest: [
+    data => humps.decamelizeKeys(data),
+    ...axios.defaults.transformRequest
+  ]
+}
 
 export default {
-  get: (path) => fetch(`${apiUrl}${path}`).then(d => d.json()),
-  post: (path, body) => fetch(`${apiUrl}${path}/?format=json`, { method: 'POST', body: JSON.stringify(body), headers: {...headers, 'X-CSRFToken': Cookies.get('csrftoken')}}).then(d => d.json()),
-  patch: (path, body) => fetch(`${apiUrl}${path}/?format=json`, { method: 'PATCH', body: JSON.stringify(body), headers: {...headers, 'X-CSRFToken': Cookies.get('csrftoken')}}).then(d => d.json())
+  get: (url, params) => axios({url, ...{...config, params}}),
+  post: (url, data) => axios({ url, method: 'POST', data, ...config}),
+  patch: (url, data) => axios({ url, method: 'PATCH', data, ...config}),
 }

@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
-import { Icon, Button, Spin, Tabs } from 'antd'
+import { Icon, Button, Spin, Tabs, Tooltip } from 'antd'
 import TimeAgo from 'react-time-ago'
 
 import sections from './sections'
 import MainMenu from './main-menu'
 import Settings from './settings/settings'
-import {touchSection, setProjectId} from './actions'
+import * as actions from './actions'
 import './styles.scss'
+import api from '../../utils/api';
 
 const { TabPane } = Tabs
 
@@ -20,7 +21,7 @@ class _Section extends React.Component{
     return this.props.children
   }
 }
-const Section = connect(null, {touchSection})(_Section)
+const Section = connect(null, actions)(_Section)
 
 
 const SavingStatus = connect(
@@ -57,11 +58,21 @@ const _Header = ({title}) => (
 )
 const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
-const ProjectInitHandler = connect(null, {setProjectId})(({ match: {params}, ...props}) => {
+const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
+  const fetchSection = [
+    /* 1 */() => {
+      api.get(`/project/${params.id}`).then(d => {
+        props.fetchFields(1, d.data)
+        api.get('/related_project', {project: params.id}).then(related => {
+          console.log(related)
+        })
+      })
+    }
+  ]
   useEffect(() => {
     if(params.id !== 'new'){
       props.setProjectId(params.id)
-      // fetch sections
+      fetchSection[0]()
     }
   }, [])
   return null

@@ -7,9 +7,12 @@ export const checkValidation = (id, checked) => ({ type: actionTypes.CHECK_VALID
 export const saveFields = (fields, sectionIndex) => (dispatch, getState) => {
   dispatch({ type: actionTypes.SAVE_FIELDS, fields, sectionIndex })
   const {projectId} = getState().editorRdr
-  api.patch(`/project/${projectId}`, fields).then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
+  api.patch(`/project/${projectId}/`, fields)
+    .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error }); console.log('caught error', error) })
   // setTimeout(() => dispatch({ type: actionTypes.BACKEND_SYNC }), 1000)
 }
+export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })
 export const addSetItem = (sectionIndex, setName, item) => (dispatch) => {
   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item})
   setTimeout(() => dispatch({ type: actionTypes.BACKEND_SYNC }), 1000)

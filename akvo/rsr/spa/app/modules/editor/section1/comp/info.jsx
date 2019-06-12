@@ -25,12 +25,12 @@ import InputLabel from '../../../../utils/input-label';
 const { Item } = Form
 
 const STATUS_OPTIONS = [
-  { value: 1, label: 'Identification'},
-  { value: 2, label: 'Implementation'},
-  { value: 3, label: 'Completion'},
-  { value: 4, label: 'Post-completion'},
-  { value: 5, label: 'Canceled'},
-  { value: 6, label: 'Suspended'}
+  { value: '1', label: 'Identification'},
+  { value: '2', label: 'Implementation'},
+  { value: '3', label: 'Completion'},
+  { value: '4', label: 'Post-completion'},
+  { value: '5', label: 'Canceled'},
+  { value: '6', label: 'Suspended'}
 ]
 const COLLABORATION_TYPES = [
   {value: '1', label: 'Bilateral'},
@@ -108,14 +108,14 @@ const Info = ({ validations, fields }) => {
           <Row gutter={16}>
             <Col span={12}>
               <FinalField
-                name="plannedStartDate"
+                name="dateStartPlanned"
                 control="datepicker"
                 withLabel
               />
             </Col>
             <Col span={12}>
               <FinalField
-                name="plannedEndDate"
+                name="dateEndPlanned"
                 control="datepicker"
                 withLabel
               />
@@ -124,7 +124,7 @@ const Info = ({ validations, fields }) => {
           <Row gutter={16}>
             <Col span={12}>
               <FinalField
-                name="actualStartDate"
+                name="dateStartActual"
                 control="datepicker"
                 optional={isOptional}
                 withLabel
@@ -132,7 +132,7 @@ const Info = ({ validations, fields }) => {
             </Col>
             <Col span={12}>
               <FinalField
-                name="actualEndDate"
+                name="dateEndActual"
                 control="datepicker"
                 withLabel
                 optional={isOptional}

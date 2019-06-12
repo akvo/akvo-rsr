@@ -3,7 +3,6 @@ import actionTypes from './action-types'
 import { validate } from './validation'
 import { sectionLength } from './sections'
 import fieldSets from './field-sets'
-import api from '../../utils/api'
 
 export const initialState = {
   saving: false,
