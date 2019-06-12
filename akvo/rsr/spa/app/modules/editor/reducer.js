@@ -3,12 +3,14 @@ import actionTypes from './action-types'
 import { validate } from './validation'
 import { sectionLength } from './sections'
 import fieldSets from './field-sets'
+import api from '../../utils/api'
 
 export const initialState = {
   saving: false,
   lastSaved: null,
   validations: [1],
-  isPublic: true
+  isPublic: true,
+  projectId: null
 }
 for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
@@ -108,6 +110,8 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, lastSaved: new Date()}
+    case actionTypes.SET_PROJECT_ID:
+      return {...state, projectId: action.projectId}
     default: return state
   }
 }

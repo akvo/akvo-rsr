@@ -20,6 +20,7 @@ import tiedStatusOptions from '../options/tied-statuses.json'
 import RelatedProjects from './related-projects'
 import SectionContext from '../../section-context'
 import '../styles.scss'
+import InputLabel from '../../../../utils/input-label';
 
 const { Item } = Form
 
@@ -66,7 +67,7 @@ const Info = ({ validations, fields }) => {
           <FinalField
             name="title"
             render={({input}) => (
-              <Item label="Project title" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+              <Item label={<InputLabel tooltip="...">Project title</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
                 <Input {...input} />
               </Item>
             )}
@@ -74,7 +75,7 @@ const Info = ({ validations, fields }) => {
           <FinalField
             name="subtitle"
             render={({input}) => (
-              <Item label="Project subtitle" validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+              <Item label={<InputLabel tooltip="...">Project subtitle</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
                 <Input {...input} />
               </Item>
             )}

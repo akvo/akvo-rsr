@@ -82,7 +82,7 @@ class AutoSave extends React.Component {
         this.props.saveFields(difference, sectionIndex)
         this.lastSavedValues = {
           ...this.lastSavedValues,
-          difference
+          ...difference
         }
       }
     }

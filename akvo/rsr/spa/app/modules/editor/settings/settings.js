@@ -29,6 +29,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       setLoading(false)
       setNewlyCreated(true)
       history.push(`/projects/${project.id}/settings`)
+      props.setProjectId(project.id)
     })
   }
   return (

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs } from 'antd'
@@ -7,7 +7,7 @@ import TimeAgo from 'react-time-ago'
 import sections from './sections'
 import MainMenu from './main-menu'
 import Settings from './settings/settings'
-import {touchSection} from './actions'
+import {touchSection, setProjectId} from './actions'
 import './styles.scss'
 
 const { TabPane } = Tabs
@@ -57,6 +57,15 @@ const _Header = ({title}) => (
 )
 const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
+const ProjectInitHandler = connect(null, {setProjectId})(({ match: {params}, ...props}) => {
+  useEffect(() => {
+    if(params.id !== 'new'){
+      props.setProjectId(params.id)
+      // fetch sections
+    }
+  }, [])
+  return null
+})
 
 const Editor = ({ match: { params } }) => (
   <div>
@@ -71,6 +80,7 @@ const Editor = ({ match: { params } }) => (
         </div>
       </div>
       <div className="main-content">
+        <Route path="/projects/:id" component={ProjectInitHandler} />
         <Route path="/projects/:id" exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
         <Route path="/projects/:id/settings" exact component={Settings} />
         {sections.map((section, index) =>

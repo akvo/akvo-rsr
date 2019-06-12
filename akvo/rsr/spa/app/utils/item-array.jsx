@@ -105,6 +105,7 @@ class ItemArray extends React.Component{
       <FieldArray name={this.props.setName} subscription={{}}>
         {({ fields }) => (
           <div>
+            {fields.length > 0 &&
             <Collapse accordion onChange={this.handleChange} activeKey={this.state.activeKey}>
               {fields.map((name, index) => (
                 <Panel
@@ -133,6 +134,7 @@ class ItemArray extends React.Component{
                 </Panel>
               ))}
             </Collapse>
+            }
             <FormSpy subscription={{ values: true }}>
               {({ values }) => <ActiveKeyUpdater values={values} name={this.props.setName} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
             </FormSpy>
