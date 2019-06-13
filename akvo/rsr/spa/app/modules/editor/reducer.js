@@ -81,6 +81,9 @@ export default (state = initialState, action) => {
       }
       newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.FETCH_SET_ITEMS:
+      newState[sectionKey].fields[action.setName] = action.items
+      return newState
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
         ...newState[sectionKey],

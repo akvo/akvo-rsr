@@ -69,7 +69,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
       api.get(`/project/${params.id}`).then(d => {
         props.fetchFields(1, d.data)
         api.get('/related_project', {project: params.id}).then(related => {
-          console.log(related)
+          props.fetchSetItems(1, 'relatedProjects', related.data.results)
         })
       })
     }
@@ -105,7 +105,7 @@ const Editor = ({ match: { params } }) => (
             exact
             render={(props) => {
               const Comp = section.component
-              return <Section {...props} sectionIndex={index + 1}><Comp /></Section>
+              return <Section {...props} sectionIndex={index + 1}><Comp {...props} /></Section>
             }}
           />)
         }

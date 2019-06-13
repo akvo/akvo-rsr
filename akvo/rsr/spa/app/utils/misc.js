@@ -3,6 +3,8 @@ export const datePickerConfig = {
   placeholder: 'DD/MM/YYYY'
 }
 
+export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
+
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false
   for(let i = 0; i < props.length; i += 1){

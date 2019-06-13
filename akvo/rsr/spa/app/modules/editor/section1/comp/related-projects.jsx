@@ -40,7 +40,7 @@ class ProjectPicker extends React.Component{
         </Condition>
         <Condition when={`${fieldName}.isParentExternal`} isNot={true}>
           <FinalField
-            name={`${fieldName}.projectId`}
+            name={`${fieldName}.relatedProject`}
             control="select"
             showSearch
             optionFilterProp="children"
@@ -57,7 +57,7 @@ class ProjectPicker extends React.Component{
   }
 }
 
-const RelatedProjects = ({ formPush }) => {
+const RelatedProjects = ({ formPush, projectId }) => {
   return (
     <div>
     <div className="ant-col ant-form-item-label related-projects-label">
@@ -68,6 +68,7 @@ const RelatedProjects = ({ formPush }) => {
       sectionIndex={1}
       header="Related project $index"
       formPush={formPush}
+      newItem={{ project: projectId }}
       panel={name => (
         <Row gutter={16}>
           <Col span={16}>
@@ -81,11 +82,11 @@ const RelatedProjects = ({ formPush }) => {
                 control="select"
                 name={`${name}.relation`}
                 options={[
-                  { value: 1, label: 'Parent' },
-                  { value: 2, label: 'Child'},
-                  { value: 3, label: 'Sibling'},
-                  { value: 4, label: 'Co-founded'},
-                  { value: 5, label: 'Third-party'}
+                  { value: '1', label: 'Parent' },
+                  { value: '2', label: 'Child'},
+                  { value: '3', label: 'Sibling'},
+                  { value: '4', label: 'Co-founded'},
+                  { value: '5', label: 'Third-party'}
                 ]}
               />
             </Item>

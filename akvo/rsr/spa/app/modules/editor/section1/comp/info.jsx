@@ -6,6 +6,7 @@ import {
 import currencies from 'currency-codes/data'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
+import { isEqual } from 'lodash'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -44,7 +45,8 @@ const COLLABORATION_TYPES = [
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields }) => {
+const Info = ({ validations, fields, match: {params} }) => {
+  console.log('rendered info')
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
@@ -86,7 +88,7 @@ const Info = ({ validations, fields }) => {
             withLabel
             fieldExists={fieldExists}
           />
-          <RelatedProjects formPush={push} />
+          <RelatedProjects formPush={push} projectId={params.id} />
           <FinalField
             name="hierarchy"
             control="select"
@@ -238,6 +240,17 @@ const Info = ({ validations, fields }) => {
   )
 }
 
+// export default connect(
+//   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
+// )(React.memo(Info, (prevProps, nextProps) => !(!prevProps.fields.id && nextProps.fields.id)))
+
 export default connect(
   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
-)(React.memo(Info, () => true))
+)(React.memo(Info, (prevProps, nextProps) => {
+  console.log('areEqual?', isEqual(prevProps.fields, nextProps.fields), prevProps.fields, nextProps.fields) // eslint-disable-line
+  return isEqual(prevProps.fields, nextProps.fields)
+}))
+
+// export default connect(
+//   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
+// )(Info)

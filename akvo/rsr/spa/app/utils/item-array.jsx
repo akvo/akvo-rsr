@@ -85,7 +85,6 @@ class ItemArray extends React.Component{
     const { sectionIndex, setName } = this.props
     const newItem = item ? item : (this.props.newItem ? this.props.newItem : {})
     if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
-    this.props.addSetItem(sectionIndex, setName, newItem)
   }
   removeItem = (index, fields) => {
     // event.stopPropagation()
@@ -100,6 +99,7 @@ class ItemArray extends React.Component{
     })
   }
   render(){
+    console.log('rendered item array')
     return (
       <div>
       <FieldArray name={this.props.setName} subscription={{}}>
@@ -125,9 +125,9 @@ class ItemArray extends React.Component{
                     </span>
                   }
                   key={`${index}`}
-                  forceRender
                 >
                   <UpdateHalter parentState={this.state}>
+                    {console.log(this.props.setName, index)}
                     <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
                     {this.props.panel(name, index)}
                   </UpdateHalter>

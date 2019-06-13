@@ -25,11 +25,11 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
   const [newlyCreated, setNewlyCreated] = useState(false)
   const createProject = () => {
     setLoading(true)
-    api.post('/project', { validations }).then(project => {
+    api.post('/project/', { validations }).then(response => {
       setLoading(false)
       setNewlyCreated(true)
-      history.push(`/projects/${project.id}/settings`)
-      props.setProjectId(project.id)
+      history.push(`/projects/${response.data.id}/settings`)
+      props.setProjectId(response.data.id)
     })
   }
   return (
