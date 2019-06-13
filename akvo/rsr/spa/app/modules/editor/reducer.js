@@ -7,6 +7,7 @@ import fieldSets from './field-sets'
 export const initialState = {
   saving: false,
   lastSaved: null,
+  backendError: null,
   validations: [1],
   isPublic: true,
   projectId: null
@@ -73,6 +74,13 @@ export default (state = initialState, action) => {
         }
       }
       return newState
+    case actionTypes.FETCH_SECTION:
+      newState[sectionKey] = {
+        ...newState[sectionKey],
+        fields: {...newState[sectionKey].fields, ...action.fields}
+      }
+      newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+      return newState
     case actionTypes.SAVE_FIELDS:
       newState[sectionKey] = {
         ...newState[sectionKey],
@@ -108,7 +116,9 @@ export default (state = initialState, action) => {
       newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
       return newState
     case actionTypes.BACKEND_SYNC:
-      return {...state, saving: false, lastSaved: new Date()}
+      return {...state, saving: false, lastSaved: new Date(), backendError: null}
+    case actionTypes.BACKEND_ERROR:
+      return {...state, saving: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
       return {...state, projectId: action.projectId}
     default: return state

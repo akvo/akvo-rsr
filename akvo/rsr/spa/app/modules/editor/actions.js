@@ -9,7 +9,7 @@ export const saveFields = (fields, sectionIndex) => (dispatch, getState) => {
   const {projectId} = getState().editorRdr
   api.patch(`/project/${projectId}/`, fields)
     .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
-    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error }); console.log('caught error', error) })
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
   // setTimeout(() => dispatch({ type: actionTypes.BACKEND_SYNC }), 1000)
 }
 export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })

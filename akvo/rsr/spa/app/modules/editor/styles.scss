@@ -36,6 +36,11 @@
       .ant-spin{
         margin-right: 8px;
       }
+      .error{
+        .anticon{
+          color: red;
+        }
+      }
     }
     .content{
       display: flex;

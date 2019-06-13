@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
-import { Icon, Button, Spin, Tabs, Tooltip } from 'antd'
+import { Icon, Button, Spin, Tabs, Tooltip, Tag } from 'antd'
 import TimeAgo from 'react-time-ago'
 
 import sections from './sections'
@@ -25,8 +25,8 @@ const Section = connect(null, actions)(_Section)
 
 
 const SavingStatus = connect(
-  ({ editorRdr: { saving, lastSaved } }) => ({ saving, lastSaved })
-)(({ saving, lastSaved }) => (
+  ({ editorRdr: { saving, lastSaved, backendError } }) => ({ saving, lastSaved, backendError })
+)(({ saving, lastSaved, backendError }) => (
   <aside className="saving-status">
     {saving && (
       <div>
@@ -38,6 +38,11 @@ const SavingStatus = connect(
       <div>
         <Icon type="check" />
         <span>Saved <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
+      </div>
+    )}
+    {(!saving && backendError !== null) && (
+      <div className="error">
+        <Tooltip title={<span>{backendError.message}<br />{JSON.stringify(backendError.response)}</span>}><Icon type="warning" /><span>Something went wrong</span></Tooltip>
       </div>
     )}
   </aside>
