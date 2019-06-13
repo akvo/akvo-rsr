@@ -8,6 +8,7 @@ from indicator import Indicator
 
 from akvo.rsr.fields import ValidXMLCharField
 
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -46,6 +47,11 @@ class IndicatorDimensionName(models.Model):
             child_dimension_name.name = self.name
             child_dimension_name.save()
 
+    def delete(self, *args, **kwargs):
+        if self.parent_dimension_name is not None:
+            raise PermissionDenied
+        super(IndicatorDimensionName, self).delete(*args, **kwargs)
+
 
 class IndicatorDimensionValue(models.Model):
     name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
@@ -80,6 +86,11 @@ class IndicatorDimensionValue(models.Model):
                 child_dimension_name.project.copy_dimension_value(child_dimension_name, self)
             else:
                 child_dimension_name.project.update_dimension_value(child_dimension_name, self)
+
+    def delete(self, *args, **kwargs):
+        if self.parent_dimension_value is not None:
+            raise PermissionDenied
+        super(IndicatorDimensionValue, self).delete(*args, **kwargs)
 
 
 class IndicatorDimension(models.Model):

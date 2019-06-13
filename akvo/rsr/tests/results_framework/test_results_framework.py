@@ -10,6 +10,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import unittest
 
+from django.core.exceptions import PermissionDenied
+
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension,
     RelatedProject, IndicatorDimensionName, IndicatorDimensionValue)
@@ -475,41 +477,17 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_dimension_value = child_dimension_name.dimension_values.first()
         self.assertEqual(child_dimension_value.value, parent_dimension_value.value)
 
-    def test_import_does_not_create_deleted_dimension_values(self):
-        """Test that import does not create dimension values deleted from child."""
+    def test_child_dimension_value_delete_prevented(self):
+        """Test that deleting child dimension values is prevented."""
         # Given
         dimension_name = self.dimension_name
         child_dimension_name = dimension_name.child_dimension_names.first()
         # New dimension value created (also cloned to child)
         IndicatorDimensionValue.objects.create(name=dimension_name, value='Baz')
 
-        # When
-        # Import results framework into child
-        child_dimension_name.dimension_values.last().delete()
-        import_status, import_message = self.child_project.import_results()
-
-        # Then
-        self.assertEqual(import_status, 1)
-        self.assertEqual(import_message, "Results imported")
-        self.assertEqual(1, child_dimension_name.dimension_values.count())
-
-    def test_dimension_value_update_does_not_create_deleted_dimension_value(self):
-        """Test that dimension value update does not create dimension value deleted from child."""
-        # Given
-        dimension_name = self.dimension_name
-        child_dimension_name = dimension_name.child_dimension_names.first()
-        # New dimension value created (also cloned to child)
-        dimension_value = IndicatorDimensionValue.objects.create(name=dimension_name, value='Baz')
-
-        # When
-        # Import results framework into child
-        child_dimension_name.dimension_values.last().delete()
-        # Update dimension value
-        dimension_value.value = 'Quux'
-        dimension_value.save()
-
-        # Then
-        self.assertEqual(1, child_dimension_name.dimension_values.count())
+        # When/Then
+        with self.assertRaises(PermissionDenied):
+            child_dimension_name.dimension_values.last().delete()
 
     def test_update(self):
         """
