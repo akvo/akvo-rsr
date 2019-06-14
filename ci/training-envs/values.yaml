@@ -1,0 +1,17 @@
+restoreFrom: empty
+
+postgresql:
+  livenessProbe:
+    initialDelaySeconds: 600
+
+  image:
+    repository: akvo/akvo-rsr-demo-postgres
+    tag: 20190604.104919.c35d39d
+  postgresqlUsername: postgres
+  extraEnv:
+    - name: ELEPHANTSQL_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: "rsr-common"
+          key: elephantsql-api-key
+  initdbScriptsConfigMap: "{{ include \"rsrchart.fullname\" . }}-seed-db"
