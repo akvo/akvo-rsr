@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Collapse } from 'antd'
 import { FormSpy } from 'react-final-form'
-import { get, set } from 'lodash'
-import jump from 'jump.js'
+import { get } from 'lodash'
 
 class ActiveKeyUpdater extends React.Component{
   componentDidUpdate(prevProps){
@@ -22,14 +21,10 @@ class ActiveKeyUpdater extends React.Component{
       }
     }
   }
-  componentWillUnmount(){
-    console.log('unmounting Accordion', this.props.name)
-  }
   render(){
     return null
   }
 }
-const Aux = node => node.children
 
 class Accordion extends Component {
   constructor(props){
@@ -43,11 +38,6 @@ class Accordion extends Component {
       this.setState({
         activeKey
       })
-      // if(this.ref) {
-      //   setTimeout(() => {
-      //     jump(this.ref.getElementsByClassName('ant-collapse-content')[0], { duration: 200 })
-      //   }, 200)
-      // }
     }
   }
   handleLengthChange = (lastIndex) => {

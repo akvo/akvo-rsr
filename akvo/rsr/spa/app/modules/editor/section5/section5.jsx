@@ -4,7 +4,6 @@ import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, I
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
-import classNames from 'classnames'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -133,11 +132,8 @@ class UpdateIfLengthChanged extends React.Component{
 }
 
 class Section5 extends React.Component{
-  state = {
-    newStyle: false
-  }
-  shouldComponentUpdate(nextProps, nextState){
-    return nextState !== this.state
+  shouldComponentUpdate(){
+    return false
   }
   removeSection = (fields, index) => {
     fields.remove(index)
@@ -145,11 +141,8 @@ class Section5 extends React.Component{
   }
   render(){
     return (
-      <div className={classNames({ view: true, section5: true, 'new-style': this.state.newStyle})}>
+      <div className="view section5">
         <Form layout="vertical">
-          <div>
-          <Switch checked={this.state.newStyle} onChange={checked => this.setState({ newStyle: checked })} /> Enable faded headers style
-          </div>
         <FinalForm
           onSubmit={() => {}}
           initialValues={this.props.fields}
@@ -183,7 +176,7 @@ class Section5 extends React.Component{
                           &nbsp;Result {index + 1}
                           <Field
                             name={`${name}.title`}
-                            render={({input}) => input.value}
+                            render={({input}) => input.value ? `: ${input.value}` : ''}
                           />
                         </span>}
                       extra={

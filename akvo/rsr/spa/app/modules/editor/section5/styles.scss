@@ -101,18 +101,17 @@
   .ant-collapse, .ant-collapse-item{
     border-color: #efefef;
   }
-  &.new-style{
-    .ant-collapse-item{
-      .ant-collapse-header{
-        border-radius: 0!important;
-        background-color: #fff!important;
-        border-color: #efefef!important;
-      }
-      &.ant-collapse-item-active>.ant-collapse-header{
-        border-left: 3px solid #2593fc!important;
-      }
+  .ant-collapse-item{
+    .ant-collapse-header{
+      border-radius: 0!important;
+      background-color: #fff!important;
+      border-color: #efefef!important;
+    }
+    &.ant-collapse-item-active>.ant-collapse-header{
+      border-left: 3px solid #2593fc!important;
     }
   }
+  
   .results-list{
     margin-right: 160px;
     .ant-collapse-header{

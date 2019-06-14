@@ -21,11 +21,8 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  // useEffect(() => {
-  //   formPush(`${fieldName}.disaggregations`, { items: [{}]})
-  // }, [])
   const add = () => {
-    const newItem = { items: [{}]}
+    const newItem = { items: [{}, {}]}
     formPush(`${fieldName}.disaggregations`, newItem)
     addSetItem(5, `${fieldName}.disaggregations`, newItem)
   }
@@ -87,7 +84,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                             name={`${itemFieldName}.name`}
                             control="input"
                             withLabel
-                            label={`Item ${itemIndex + 1}`}
+                            label={`Label ${itemIndex + 1}`}
                           />
                         </Col>
                         <Col span={12}>
@@ -101,7 +98,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                       </Row>
                       ))}
                       <Button icon="plus" type="link" onClick={() => props.fields.push({})}>Add item</Button>
-                      {props.fields.length > 1 &&
+                      {props.fields.length > 2 &&
                       <Button icon="minus" type="link" className="remove-item" onClick={() => props.fields.pop()}>Remove item</Button>
                       }
                     </Aux>
@@ -119,9 +116,6 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
 })
 
 const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  // useEffect(() => {
-  //   formPush(`${fieldName}.periods`, {})
-  // }, [])
   const add = () => {
     formPush(`${fieldName}.periods`, {})
     addSetItem(5, `${fieldName}.periods`, {})
@@ -136,7 +130,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
       {({ fields }) => (
         <Aux>
         <div className="ant-col ant-form-item-label">
-          <InputLabel optional tooltip="asd">Periods</InputLabel>
+          <InputLabel tooltip="...">Periods</InputLabel>
         </div>
         {fields.length > 0 &&
         <Accordion
