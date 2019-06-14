@@ -1,6 +1,6 @@
 export const endpoints = {
   section1: {
-    root: '/project/',
+    root: '/project/:projectId',
     relatedProjects: '/related_project/'
   },
   section2: {

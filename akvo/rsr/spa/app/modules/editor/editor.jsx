@@ -64,36 +64,40 @@ const _Header = ({title}) => (
 )
 const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
+const insertRouteParams = (route, params) => {
+  Object.keys(params).forEach(param => {
+    route = route.replace(`:${param}`, params[param])
+  })
+  return route
+}
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
-  // const fetchSection = [
-  //   /* 1 */() => {
-  //     api.get(`/project/${params.id}`).then(d => {
-  //       props.fetchFields(1, d.data)
-  //       api.get('/related_project', {project: params.id}).then(related => {
-  //         props.fetchSetItems(1, 'relatedProjects', related.data.results)
-  //       })
-  //     })
-  //   }
-  // ]
-  const fetchSection = (sectionIndex) => {
+  const fetchSection = (sectionIndex) => new Promise((resolve, reject) => {
     const _endpoints = endpoints[`section${sectionIndex}`]
-    const setEndpoints = Object.keys(_endpoints).filter(it => it !== 'root').map(it => ({ setName: it, endpoint: _endpoints[it]}))
-    const fetchSet = (index) => {
-      const { endpoint, setName } = setEndpoints[index]
-      api.get(endpoint, { project: params.id })
-        .then(({ data: { results } }) => {
-          props.fetchSetItems(sectionIndex, setName, results)
-          if(index < setEndpoints.length - 1) fetchSet(index + 1)
-        })
+    // fetch root
+    if(_endpoints.hasOwnProperty('root')){
+      api.get(insertRouteParams(_endpoints.root, { projectId: params.id }))
+        .then(({data}) => props.fetchFields(sectionIndex, data))
     }
-    if(setEndpoints.length > 0){
+    // fetch sets
+    const setEndpoints = Object.keys(_endpoints).filter(it => it !== 'root').map(it => ({ setName: it, endpoint: _endpoints[it]}))
+    if(setEndpoints.length > 0) {
+      const fetchSet = (index) => {
+        const { endpoint, setName } = setEndpoints[index]
+        api.get(endpoint, { project: params.id })
+          .then(({ data: { results } }) => {
+            props.fetchSetItems(sectionIndex, setName, results)
+            if(index < setEndpoints.length - 1) fetchSet(index + 1)
+            else resolve()
+          })
+      }
       fetchSet(0)
     }
-  }
+    else resolve()
+  })
   useEffect(() => {
     if(params.id !== 'new'){
       props.setProjectId(params.id)
-      fetchSection(2)
+      fetchSection(1).then(() => fetchSection(2))
     }
   }, [])
   return null
