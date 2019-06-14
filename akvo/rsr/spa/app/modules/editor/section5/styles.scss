@@ -98,8 +98,38 @@
   .add-result.ant-btn{
     margin-bottom: 15px;
   }
+  .ant-collapse, .ant-collapse-item{
+    border-color: #efefef;
+  }
+  &.new-style{
+    .ant-collapse-item{
+      .ant-collapse-header{
+        border-radius: 0!important;
+        background-color: #fff!important;
+        border-color: #efefef!important;
+      }
+      &.ant-collapse-item-active>.ant-collapse-header{
+        border-left: 3px solid #2593fc!important;
+      }
+    }
+  }
   .results-list{
     margin-right: 160px;
+    .ant-collapse-header{
+      // padding: 18px 16px;
+      padding-top: 18px;padding-bottom: 18px;
+      .delete-btn-holder{
+        overflow: hidden;
+        .ant-btn{
+          margin-right: -37px;
+        }
+      }
+      &:hover{
+        .delete-btn-holder .ant-btn{
+          margin-right: 0;
+        }
+      }
+    }
   }
   &>.ant-form>.accordion-container>.ant-collapse{
     position: relative;
@@ -126,7 +156,7 @@
             &>.ant-collapse-header{
               position: -webkit-sticky;
               position: sticky;
-              top: 153px;
+              top: 163px;
               background: #fafafa;
               // transition: none;
               z-index: 909;
@@ -141,7 +171,7 @@
                 position: relative;
                 &>.ant-collapse-item-active{
                   &>.ant-collapse-header{
-                    top: 200px;
+                    top: 221px;
                     z-index: 908;
                   }
                 }

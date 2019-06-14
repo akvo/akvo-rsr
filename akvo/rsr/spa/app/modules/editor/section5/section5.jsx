@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
+import classNames from 'classnames'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -132,8 +133,11 @@ class UpdateIfLengthChanged extends React.Component{
 }
 
 class Section5 extends React.Component{
-  shouldComponentUpdate(){
-    return false
+  state = {
+    newStyle: false
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    return nextState !== this.state
   }
   removeSection = (fields, index) => {
     fields.remove(index)
@@ -141,8 +145,11 @@ class Section5 extends React.Component{
   }
   render(){
     return (
-      <div className="view section5">
+      <div className={classNames({ view: true, section5: true, 'new-style': this.state.newStyle})}>
         <Form layout="vertical">
+          <div>
+          <Switch checked={this.state.newStyle} onChange={checked => this.setState({ newStyle: checked })} /> Enable faded headers style
+          </div>
         <FinalForm
           onSubmit={() => {}}
           initialValues={this.props.fields}
@@ -169,12 +176,11 @@ class Section5 extends React.Component{
                       key={`${index}`}
                       header={
                         <span>
-                          Result {index + 1}
-                          &nbsp;
                           <Field
                             name={`${name}.type`}
-                            render={({input}) => <Tag>{input.value}</Tag>}
+                            render={({input}) => <span className="capitalized">{input.value}</span>}
                           />
+                          &nbsp;Result {index + 1}
                           <Field
                             name={`${name}.title`}
                             render={({input}) => input.value}
@@ -183,14 +189,16 @@ class Section5 extends React.Component{
                       extra={
                         // eslint-disable-next-line
                         <div onClick={e => e.stopPropagation()}>
-                        <Popconfirm
-                          title="Are you sure to delete this result?"
-                          onConfirm={() => this.removeSection(fields, index)}
-                          okText="Yes"
-                          cancelText="No"
-                        >
-                          <Button size="small" icon="delete" className="delete-panel" />
-                        </Popconfirm>
+                          <div className="delete-btn-holder">
+                            <Popconfirm
+                              title="Are you sure to delete this result?"
+                              onConfirm={() => this.removeSection(fields, index)}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <Button size="small" icon="delete" className="delete-panel" />
+                            </Popconfirm>
+                          </div>
                         </div>
                       }
                     >

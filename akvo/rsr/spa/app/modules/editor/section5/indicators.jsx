@@ -60,6 +60,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                 extra={(
                   /* eslint-disable-next-line */
                   <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                  <div className="delete-btn-holder">
                   <Popconfirm
                     title="Are you sure to delete this disaggregation?"
                     onConfirm={() => remove(index, fields)}
@@ -68,6 +69,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                   >
                     <Button size="small" icon="delete" className="delete-panel" />
                   </Popconfirm>
+                  </div>
                   </div>
                 )}
               >
@@ -161,6 +163,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
               extra={(
                 /* eslint-disable-next-line */
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                <div className="delete-btn-holder">
                 <Popconfirm
                   title="Are you sure to delete this period?"
                   onConfirm={() => remove(index, fields)}
@@ -169,6 +172,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                 >
                   <Button size="small" icon="delete" className="delete-panel" />
                 </Popconfirm>
+                </div>
                 </div>
               )}
             >
@@ -288,13 +292,14 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <span>
                 <Field
                   name={`${name}.type`}
-                  render={({input}) => <span>Indicator {index + 1} <Tag>{input.value}</Tag></span>}
+                  render={({input}) => <span><span className="capitalized">{input.value}</span>&nbsp;Indicator {index + 1}</span>}
                 />
               </span>)}
               extra={(
                 /* eslint-disable-next-line */
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
                 <IndicatorNavMenu fieldName={name} />
+                <div className="delete-btn-holder">
                 <Popconfirm
                   title="Are you sure to delete this indicator?"
                   onConfirm={() => remove(index, fields)}
@@ -303,6 +308,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                 >
                   <Button size="small" icon="delete" className="delete-panel" />
                 </Popconfirm>
+                </div>
                 </div>
               )}
             >

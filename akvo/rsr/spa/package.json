@@ -18,6 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "antd": "^3.19.1",
+    "classnames": "^2.2.6",
     "cross-env": "5.2.0",
     "currency-codes": "^1.5.0",
     "currency-symbol-map": "^4.0.4",
