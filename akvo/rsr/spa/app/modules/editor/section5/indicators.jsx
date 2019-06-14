@@ -317,35 +317,37 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <Item label={<InputLabel optional>Title</InputLabel>}>
                 <FinalField name={`${name}.title`} />
               </Item>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Item label="Measure">
-                    <FinalField
-                      name={`${name}.measure`}
-                      render={({input}) => (
-                        <Radio.Group {...input}>
-                          <Radio.Button value={0}>Unit</Radio.Button>
-                          <Radio.Button value={1}>Percentage</Radio.Button>
-                        </Radio.Group>
-                      )}
-                    />
-                  </Item>
-                </Col>
-                <Col span={12}>
-                  <Item label={<InputLabel>Order</InputLabel>}>
-                    <FinalField
-                      name={`${name}.order`}
-                      defaultValue={0}
-                      render={({input}) => (
-                        <Radio.Group {...input}>
-                          <Radio.Button value={0}>Ascending</Radio.Button>
-                          <Radio.Button value={1}>Descending</Radio.Button>
-                        </Radio.Group>
-                      )}
-                    />
-                  </Item>
-                </Col>
-              </Row>
+              <Condition when={`${name}.type`} is="quantitative">
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Item label="Measure">
+                      <FinalField
+                        name={`${name}.measure`}
+                        render={({input}) => (
+                          <Radio.Group {...input}>
+                            <Radio.Button value={0}>Unit</Radio.Button>
+                            <Radio.Button value={1}>Percentage</Radio.Button>
+                          </Radio.Group>
+                        )}
+                      />
+                    </Item>
+                  </Col>
+                  <Col span={12}>
+                    <Item label={<InputLabel>Order</InputLabel>}>
+                      <FinalField
+                        name={`${name}.order`}
+                        defaultValue={0}
+                        render={({input}) => (
+                          <Radio.Group {...input}>
+                            <Radio.Button value={0}>Ascending</Radio.Button>
+                            <Radio.Button value={1}>Descending</Radio.Button>
+                          </Radio.Group>
+                        )}
+                      />
+                    </Item>
+                  </Col>
+                </Row>
+              </Condition>
               <Item label={<InputLabel optional>Description</InputLabel>}>
                 <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
               </Item>
