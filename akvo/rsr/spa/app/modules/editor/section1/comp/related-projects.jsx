@@ -57,7 +57,7 @@ class ProjectPicker extends React.Component{
   }
 }
 
-const RelatedProjects = ({ formPush, projectId }) => {
+const RelatedProjects = ({ formPush }) => {
   return (
     <div>
     <div className="ant-col ant-form-item-label related-projects-label">
@@ -68,7 +68,6 @@ const RelatedProjects = ({ formPush, projectId }) => {
       sectionIndex={1}
       header="Related project $index"
       formPush={formPush}
-      newItem={{ project: projectId }}
       panel={name => (
         <Row gutter={16}>
           <Col span={16}>

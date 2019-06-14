@@ -45,8 +45,7 @@ const COLLABORATION_TYPES = [
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields, match: {params} }) => {
-  console.log('rendered info')
+const Info = ({ validations, fields }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
@@ -88,7 +87,7 @@ const Info = ({ validations, fields, match: {params} }) => {
             withLabel
             fieldExists={fieldExists}
           />
-          <RelatedProjects formPush={push} projectId={params.id} />
+          <RelatedProjects formPush={push} />
           <FinalField
             name="hierarchy"
             control="select"

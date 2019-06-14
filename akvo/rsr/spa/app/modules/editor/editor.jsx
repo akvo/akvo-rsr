@@ -9,7 +9,8 @@ import MainMenu from './main-menu'
 import Settings from './settings/settings'
 import * as actions from './actions'
 import './styles.scss'
-import api from '../../utils/api';
+import api from '../../utils/api'
+import { getEndpoint, endpoints } from './endpoints'
 
 const { TabPane } = Tabs
 
@@ -64,20 +65,35 @@ const _Header = ({title}) => (
 const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
-  const fetchSection = [
-    /* 1 */() => {
-      api.get(`/project/${params.id}`).then(d => {
-        props.fetchFields(1, d.data)
-        api.get('/related_project', {project: params.id}).then(related => {
-          props.fetchSetItems(1, 'relatedProjects', related.data.results)
+  // const fetchSection = [
+  //   /* 1 */() => {
+  //     api.get(`/project/${params.id}`).then(d => {
+  //       props.fetchFields(1, d.data)
+  //       api.get('/related_project', {project: params.id}).then(related => {
+  //         props.fetchSetItems(1, 'relatedProjects', related.data.results)
+  //       })
+  //     })
+  //   }
+  // ]
+  const fetchSection = (sectionIndex) => {
+    const _endpoints = endpoints[`section${sectionIndex}`]
+    const setEndpoints = Object.keys(_endpoints).filter(it => it !== 'root').map(it => ({ setName: it, endpoint: _endpoints[it]}))
+    const fetchSet = (index) => {
+      const { endpoint, setName } = setEndpoints[index]
+      api.get(endpoint, { project: params.id })
+        .then(({ data: { results } }) => {
+          props.fetchSetItems(sectionIndex, setName, results)
+          if(index < setEndpoints.length - 1) fetchSet(index + 1)
         })
-      })
     }
-  ]
+    if(setEndpoints.length > 0){
+      fetchSet(0)
+    }
+  }
   useEffect(() => {
     if(params.id !== 'new'){
       props.setProjectId(params.id)
-      fetchSection[0]()
+      fetchSection(2)
     }
   }, [])
   return null
@@ -105,7 +121,7 @@ const Editor = ({ match: { params } }) => (
             exact
             render={(props) => {
               const Comp = section.component
-              return <Section {...props} sectionIndex={index + 1}><Comp {...props} /></Section>
+              return <Section {...props} sectionIndex={index + 1}><Comp /></Section>
             }}
           />)
         }

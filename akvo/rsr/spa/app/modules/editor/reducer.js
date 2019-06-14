@@ -101,6 +101,16 @@ export default (state = initialState, action) => {
       )
       newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
       return newState
+    case actionTypes.ADDED_SET_ITEM:
+      newState.saving = false
+      newState.lastSaved = new Date()
+      newState.backendError = null
+      const itemIndex = get(newState[sectionKey].fields, `${action.setName}`).length - 1
+      set(newState[sectionKey].fields, `${action.setName}[${itemIndex}]`, {
+        ...get(newState[sectionKey].fields, `${action.setName}[${itemIndex}]`),
+        id: action.id
+      })
+      return newState
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true
       set(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`, {
@@ -110,7 +120,7 @@ export default (state = initialState, action) => {
       newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
       return newState
     case actionTypes.REMOVE_SET_ITEM:
-      newState.saving = true
+      newState.saving = action.shouldSync !== undefined
       set(
         newState[sectionKey].fields,
         action.setName,

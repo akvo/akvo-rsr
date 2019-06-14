@@ -20,4 +20,5 @@ export default {
   get: (url, params) => axios({url, ...{...config, params}}),
   post: (url, data) => axios({ url, method: 'POST', data, ...config}),
   patch: (url, data) => axios({ url, method: 'PATCH', data, ...config}),
+  delete: (url) => axios({ url, method: 'DELETE', ...config })
 }

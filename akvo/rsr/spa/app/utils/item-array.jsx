@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Collapse, Icon, Button, Modal, Popconfirm } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import {Route} from 'react-router-dom'
 import AutoSave from './auto-save'
 import * as actions from '../modules/editor/actions'
 
@@ -83,7 +84,7 @@ class ItemArray extends React.Component{
   }
   handleAddItem = (item) => {
     const { sectionIndex, setName } = this.props
-    const newItem = item ? item : (this.props.newItem ? this.props.newItem : {})
+    const newItem = {...(item ? item : (this.props.newItem ? this.props.newItem : {})), project: this.projectId}
     if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
   }
   removeItem = (index, fields) => {
@@ -102,6 +103,7 @@ class ItemArray extends React.Component{
     console.log('rendered item array')
     return (
       <div>
+      <Route path="/projects/:id" component={({ match: {params} }) => { this.projectId = params.id; return null }} />
       <FieldArray name={this.props.setName} subscription={{}}>
         {({ fields }) => (
           <div>

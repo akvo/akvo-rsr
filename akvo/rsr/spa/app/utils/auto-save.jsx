@@ -83,7 +83,8 @@ class AutoSave extends React.Component {
       }
       const item = get(values, setName)[itemIndex]
       const difference = customDiff(this.lastSavedValues[itemIndex], item)
-      if(!isEmpty(difference)){
+      // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
+      if(!isEmpty(difference) && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')){
         if(validate(`section${sectionIndex}/${camelToKebab(setName)}`, [1], [item])){
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
