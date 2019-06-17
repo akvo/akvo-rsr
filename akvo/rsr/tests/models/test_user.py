@@ -56,3 +56,29 @@ class UserModelTestCase(BaseTestCase):
         self.assertListEqual(list(self.user_m.get_non_admin_employment_orgs()), [])
         self.assertListEqual(list(self.user_n.get_non_admin_employment_orgs()), [self.org_z])
         self.assertListEqual(list(self.user_o.get_non_admin_employment_orgs()), [self.org_z])
+
+    def test_me_managers_can_import_results(self):
+        # Given
+        org = self.create_organisation('X')
+        user = self.create_user('user@example.org')
+        project = self.create_project('Project-1')
+
+        # When
+        self.make_employment(user, org, 'M&E Managers')
+        self.make_partner(project, org)
+
+        # Then
+        self.assertTrue(user.can_import_results(project))
+
+    def test_me_managers_of_non_partners_cannot_import_results(self):
+        # Given
+        org = self.create_organisation('X')
+        user = self.create_user('user@example.org')
+        project = self.create_project('Project-1')
+
+        # When
+        self.make_employment(user, org, 'M&E Managers')
+
+        # Then
+        self.assertEqual(project.partners.count(), 0)
+        self.assertFalse(user.can_import_results(project))

@@ -381,24 +381,9 @@ class User(AbstractBaseUser, PermissionsMixin):
                 return True
         return False
 
-    def can_import_results(self):
-        """
-        Check to see if the user can import results.
-
-        :return: Boolean to indicate whether the user can import results
-        """
-        if self.is_superuser or self.is_admin:
-            return True
-
-        if not self.can_create_project():
-            return False
-
-        for employment in self.approved_employments():
-            org = employment.organisation
-            if self.admin_of(org) or self.me_manager_of(org):
-                return True
-
-        return False
+    def can_import_results(self, project):
+        """Check to see if the user can import results to the specified project."""
+        return self.has_perm('rsr.import_results', project)
 
     def employments_dict(self, org_list):
         """
