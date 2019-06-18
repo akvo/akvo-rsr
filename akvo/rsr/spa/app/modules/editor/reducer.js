@@ -144,6 +144,12 @@ export default (state = initialState, action) => {
       return {...state, saving: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
+    case actionTypes.SET_NEW_PROJECT:
+      for(let i = 1; i <= 11; i += 1){
+        newState[`section${i}`].isFetched = true
+      }
+      newState.projectId = action.projectId
+      return newState
     case actionTypes.RESET_PROJECT:
       return initialState
     case actionTypes.SET_SECTION_FETCHED:

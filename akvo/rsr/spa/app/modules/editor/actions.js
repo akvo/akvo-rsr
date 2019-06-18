@@ -38,6 +38,7 @@ export const removeSetItem = (sectionIndex, setName, itemIndex) => (dispatch, ge
   }
 }
 export const setProjectId = projectId => ({ type: actionTypes.SET_PROJECT_ID, projectId })
+export const setNewProject = projectId => ({ type: actionTypes.SET_NEW_PROJECT, projectId })
 export const fetchSection4 = () => ({ type: actionTypes.FETCH_SECTION_4, sectionIndex: 4 })
 export const setSectionFetched = sectionIndex => ({ type: actionTypes.SET_SECTION_FETCHED, sectionIndex })
 export const resetProject = () => ({ type: actionTypes.RESET_PROJECT })

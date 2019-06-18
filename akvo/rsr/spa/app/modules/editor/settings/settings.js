@@ -30,7 +30,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       setLoading(false)
       setNewlyCreated(true)
       history.push(`/projects/${response.data.id}/settings`)
-      props.setProjectId(response.data.id)
+      props.setNewProject(response.data.id)
     })
   }
   const checkValidation = (value, checked) => {
@@ -43,8 +43,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
         _validations.splice(validations.indexOf(value), 1)
       }
       debounce(() => {
-        api.patch(`/project/${params.id}/`, { validations: [1, 2] })
-        // api.patch(`/project/${params.id}/`, { validations: _validations })
+        api.patch(`/project/${params.id}/`, { validations: _validations })
       }, 1000)()
     }
   }
