@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import axios from 'axios'
 import humps from 'humps'
+import { dateTransform } from './misc'
 
 const config = {
   baseURL: '/rest/v1',
@@ -8,10 +9,12 @@ const config = {
   params: { format: 'json'},
   transformResponse: [
     ...axios.defaults.transformResponse,
+    data => dateTransform.response(data),
     data => humps.camelizeKeys(data)
   ],
   transformRequest: [
     data => humps.decamelizeKeys(data),
+    data => dateTransform.request(data),
     ...axios.defaults.transformRequest
   ]
 }
