@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
-import { Icon, Button, Spin, Tabs, Tooltip } from 'antd'
+import { Icon, Button, Spin, Tabs, Tooltip, Skeleton } from 'antd'
 import TimeAgo from 'react-time-ago'
 
 import sections from './sections'
@@ -17,11 +17,20 @@ class _Section extends React.Component{
   componentDidMount(){
     setTimeout(() => this.props.touchSection(this.props.sectionIndex), 100)
   }
+  shouldComponentUpdate(nextProps){
+    if(this.props.params.id === 'new') return false
+    const sectionKey = `section${this.props.sectionIndex}`
+    return nextProps.editorRdr[sectionKey].isFetched !== this.props.editorRdr[sectionKey].isFetched
+  }
   render(){
+    const sectionKey = `section${this.props.sectionIndex}`
+    if(this.props.params.id !== 'new' && this.props.editorRdr[sectionKey].isFetched === false){
+      return <div className="view"><Skeleton active /></div>
+    }
     return this.props.children
   }
 }
-const Section = connect(null, actions)(_Section)
+const Section = connect(({ editorRdr }) => ({ editorRdr }), actions)(_Section)
 
 
 const SavingStatus = connect(
@@ -86,7 +95,7 @@ const Editor = ({ match: { params } }) => (
             exact
             render={(props) => {
               const Comp = section.component
-              return <Section {...props} sectionIndex={index + 1}><Comp /></Section>
+              return <Section {...props} params={params} sectionIndex={index + 1}><Comp /></Section>
             }}
           />)
         }

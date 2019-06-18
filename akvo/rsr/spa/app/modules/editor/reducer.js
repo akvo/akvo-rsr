@@ -17,6 +17,7 @@ for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
     isValid: false,
     isTouched: false,
+    isFetched: false,
     fields: {}
   }
 }
@@ -141,6 +142,9 @@ export default (state = initialState, action) => {
       return {...state, saving: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
+    case actionTypes.SET_SECTION_FETCHED:
+      newState[sectionKey].isFetched = true
+      return newState
     default: return state
   }
 }

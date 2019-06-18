@@ -39,10 +39,22 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     }
     else resolve()
   })
+  let nextSectionIndex = 0
+  const fetchNextSection = () => {
+    nextSectionIndex += 1
+    fetchSection(nextSectionIndex)
+    .then(() => {
+      props.setSectionFetched(nextSectionIndex)
+      if(nextSectionIndex < 4){
+        fetchNextSection()
+      }
+    })
+  }
   useEffect(() => {
     if(params.id !== 'new'){
       props.setProjectId(params.id)
-      fetchSection(1).then(() => fetchSection(2).then(() => fetchSection(3).then(() => fetchSection(4))))
+      fetchNextSection()
+      // fetchSection(1).then(() => fetchSection(2).then(() => fetchSection(3).then(() => fetchSection(4))))
     }
   }, [])
   return null

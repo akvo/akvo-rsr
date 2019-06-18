@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link} from 'react-router-dom'
-import { Icon } from 'antd'
+import { Icon, Spin } from 'antd'
 import classNames from 'classnames'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
@@ -33,7 +33,7 @@ const Check = ({ checked }) => (
 )
 
 const MenuItem = (props) => {
-  const { to, checked, hideCheck, disabled } = props
+  const { to, checked, hideCheck, disabled, loading } = props
   return (
     <Route
       path={to}
@@ -42,8 +42,11 @@ const MenuItem = (props) => {
         <li className={classNames({active: match, disabled })}>
           <Link to={to} disabled={disabled}>
             <span>{props.children}</span>
-            {!hideCheck &&
+            {(!hideCheck && !loading) &&
               <Check checked={checked} />
+            }
+            {loading &&
+              <div className="loading" />
             }
           </Link>
         </li>
@@ -59,7 +62,15 @@ const MainMenu = ({ rdr, params }) => {
       <ul>
         <MenuItem hideCheck to={`/projects/${params.id}/settings`}>Settings</MenuItem>
         {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
-        <MenuItem disabled={isNewProject} key={section.key} to={`/projects/${params.id}/${section.key}`} checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}>{index + 1}. {dict[section.key]}</MenuItem>
+        <MenuItem
+          disabled={isNewProject}
+          key={section.key}
+          to={`/projects/${params.id}/${section.key}`}
+          checked={rdr[`section${index + 1}`].isValid && rdr[`section${index + 1}`].isTouched}
+          loading={!isNewProject && !rdr[`section${index + 1}`].isFetched}
+        >
+        {index + 1}. {dict[section.key]}
+        </MenuItem>
         )}
       </ul>
     </aside>
