@@ -8,6 +8,9 @@ export const endpoints = {
   },
   section3: {
     partners: '/partnership/'
+  },
+  section6: {
+    budgetItems: '/budget_item/'
   }
 }
 export const getEndpoint = (sectionIndex, setName) => {

@@ -17,6 +17,10 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
       resolve()
       return
     }
+    if(sectionIndex === 5){
+      resolve()
+      return
+    }
     const _endpoints = endpoints[`section${sectionIndex}`]
     // fetch root
     if(_endpoints.hasOwnProperty('root')){
@@ -45,7 +49,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     fetchSection(nextSectionIndex)
     .then(() => {
       props.setSectionFetched(nextSectionIndex)
-      if(nextSectionIndex < 4){
+      if(nextSectionIndex < 6){
         fetchNextSection()
       }
     })
