@@ -27,7 +27,7 @@ class IndicatorSerializer(BaseRSRSerializer):
 class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
     periods = IndicatorPeriodFrameworkSerializer(many=True, required=False)
-    parent_indicator = serializers.ReadOnlyField()
+    parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
 
     class Meta:

@@ -27,7 +27,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
 class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
 
     data = serializers.SerializerMethodField('get_updates')
-    parent_period = serializers.ReadOnlyField()
+    parent_period = serializers.ReadOnlyField(source='parent_period_id')
     percent_accomplishment = serializers.ReadOnlyField()
 
     class Meta:

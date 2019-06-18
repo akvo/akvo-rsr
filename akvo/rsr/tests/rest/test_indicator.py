@@ -52,6 +52,27 @@ class RestIndicatorTestCase(BaseTestCase):
             periods = filter(lambda x: x['indicator'] == indicator_id, indicator_periods)
             self.assertEqual(len(periods), n_periods)
 
+    def test_indicator_framework(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        IndicatorPeriod.objects.create(indicator=indicator)
+        child_project = self.create_project('Child Project')
+        self.make_parent(self.project, child_project)
+        child_project.import_results()
+        self.c.login(username=self.user.username, password="password")
+        url = '/rest/v1/indicator_framework/?format=json'
+
+        # When
+        response = self.c.get(url)
+
+        # Then
+        self.assertEqual(response.data['count'], 2)
+        indicators = set(
+            [indicator.id] + list(indicator.child_indicators.values_list('id', flat=True))
+        )
+        self.assertEqual(indicators, {indicator['id'] for indicator in response.data['results']})
+
     def get_indicator_periods(self, project_id):
         periods = []
         next_url = '/rest/v1/indicator_period/?format=json&indicator__result__project={}&limit=50'.format(project_id)
