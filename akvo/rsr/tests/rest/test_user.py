@@ -18,6 +18,7 @@ from akvo.codelists.models import Country, Version
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, User
 from akvo.utils import check_auth_groups
+from akvo.rsr.tests.base import BaseTestCase
 
 
 # NOTE: Since these tests actually trigger some integrity errors and we want to
@@ -187,3 +188,22 @@ class UserTestCase(TransactionTestCase):
         user.save()
 
         return user
+
+
+class CurrentUserTestCase(BaseTestCase):
+    """Tests REST endpoint to get current logged in user data."""
+
+    def test_unauthenticated_request_should_be_forbidden(self):
+        response = self.c.get('/rest/v1/me/?format=json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_should_return_current_logged_in_user_data(self):
+        email = 'test@example.org'
+        password = 'passwd'
+        self.create_user(email, password)
+        self.c.login(username=email, password=password)
+
+        response = self.c.get('/rest/v1/me/?format=json')
+
+        content = json.loads(response.content)
+        self.assertEqual(content['email'], email)
