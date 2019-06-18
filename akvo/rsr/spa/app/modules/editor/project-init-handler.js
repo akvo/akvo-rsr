@@ -58,7 +58,8 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     if(params.id !== 'new'){
       props.setProjectId(params.id)
       fetchNextSection()
-      // fetchSection(1).then(() => fetchSection(2).then(() => fetchSection(3).then(() => fetchSection(4))))
+    } else {
+      props.resetProject()
     }
   }, [])
   return null

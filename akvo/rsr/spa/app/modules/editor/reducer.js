@@ -71,7 +71,7 @@ export default (state = initialState, action) => {
       for(let i = 1; i <= sectionLength; i += 1){
         if(i !== 5){
           const _sectionKey = `section${i}`
-          newState[_sectionKey].isValid = validateSection(_sectionKey, validations, newState[sectionKey].fields)
+          newState[_sectionKey].isValid = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
         }
       }
       return newState
@@ -79,6 +79,9 @@ export default (state = initialState, action) => {
       newState[sectionKey] = {
         ...newState[sectionKey],
         fields: {...newState[sectionKey].fields, ...action.fields}
+      }
+      if(action.fields.hasOwnProperty('validations')){
+        newState.validations = action.fields.validations
       }
       newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
@@ -141,6 +144,8 @@ export default (state = initialState, action) => {
       return {...state, saving: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
+    case actionTypes.RESET_PROJECT:
+      return initialState
     case actionTypes.SET_SECTION_FETCHED:
       newState[sectionKey].isFetched = true
       return newState

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Switch, Tooltip, Icon, Button, Divider } from 'antd'
 import { withRouter, Link } from 'react-router-dom'
+import { debounce} from 'lodash'
 
 import './styles.scss'
 import * as actions from '../actions'
@@ -32,6 +33,21 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       props.setProjectId(response.data.id)
     })
   }
+  const checkValidation = (value, checked) => {
+    props.checkValidation(value, checked)
+    if(params.id !== 'new'){
+      const _validations = [...validations]
+      if(checked && validations.indexOf(value) === -1){
+        _validations.push(value)
+      } else if(!checked && validations.indexOf(value) !== -1){
+        _validations.splice(validations.indexOf(value), 1)
+      }
+      debounce(() => {
+        api.patch(`/project/${params.id}/`, { validations: [1, 2] })
+        // api.patch(`/project/${params.id}/`, { validations: _validations })
+      }, 1000)()
+    }
+  }
   return (
     <div className="settings view">
       <p>
@@ -50,7 +66,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       <ul>
         {sets.map(({ value, label }, index) =>
         <li key={value}>
-          <Switch disabled={index === 0} checked={validations.indexOf(value) !== -1} onChange={checked => props.checkValidation(value, checked)} />
+          <Switch disabled={index === 0} checked={validations.indexOf(value) !== -1} onChange={checked => checkValidation(value, checked)} />
           <span className="switch-label">{label}</span>
           <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
         </li>
