@@ -167,7 +167,7 @@ export const endpoints = {
     update_and_comments: id => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
     updates_and_comments: () =>
         `/rest/v1/indicator_period_data_framework/?format=json&limit=${c.API_LIMIT}`,
-    user: id => `/rest/v1/user/${id}/?format=json`,
+    user: () => `/rest/v1/me/?format=json`,
     partnerships: id => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     file_upload: id => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
