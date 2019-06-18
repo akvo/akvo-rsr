@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -169,28 +169,29 @@ class Section5 extends React.Component{
                       key={`${index}`}
                       header={
                         <span>
-                          Result {index + 1}
-                          &nbsp;
                           <Field
                             name={`${name}.type`}
-                            render={({input}) => <Tag>{input.value}</Tag>}
+                            render={({input}) => <span className="capitalized">{input.value}</span>}
                           />
+                          &nbsp;Result {index + 1}
                           <Field
                             name={`${name}.title`}
-                            render={({input}) => input.value}
+                            render={({input}) => input.value ? `: ${input.value}` : ''}
                           />
                         </span>}
                       extra={
                         // eslint-disable-next-line
                         <div onClick={e => e.stopPropagation()}>
-                        <Popconfirm
-                          title="Are you sure to delete this result?"
-                          onConfirm={() => this.removeSection(fields, index)}
-                          okText="Yes"
-                          cancelText="No"
-                        >
-                          <Button size="small" icon="delete" className="delete-panel" />
-                        </Popconfirm>
+                          <div className="delete-btn-holder">
+                            <Popconfirm
+                              title="Are you sure to delete this result?"
+                              onConfirm={() => this.removeSection(fields, index)}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <Button size="small" icon="delete" className="delete-panel" />
+                            </Popconfirm>
+                          </div>
                         </div>
                       }
                     >

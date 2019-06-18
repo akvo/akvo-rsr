@@ -6,9 +6,11 @@
         {{ rel_obj|field_model_name }}:
         <span class="unicode">{% if rel_obj.pk %}{{ rel_obj|safe }}{% else %}({% trans 'new' %}){% endif %}</span>
     </div>
-    <div class="col-md-5 col-sm-6 col-xs-6 text-right delete-related-object-container">
-        <a class="delete-related-object">
-            <span class="glyphicon glyphicon-trash"></span>
-        </a>
-    </div>
+    {% if not hide_delete_button %}
+        <div class="col-md-5 col-sm-6 col-xs-6 text-right delete-related-object-container">
+            <a class="delete-related-object">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </div>
+    {% endif %}
 </div>

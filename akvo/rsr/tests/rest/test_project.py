@@ -7,6 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import datetime
 import json
 import os
 
@@ -24,9 +25,10 @@ from akvo.rsr.models import (Project, Organisation, Partnership, User,
 from akvo.rsr.models.user_projects import restrict_projects
 from akvo.rsr.tests.test_project_access import RestrictedUserProjects
 from akvo.utils import check_auth_groups, custom_get_or_create_country
+from akvo.rsr.tests.base import BaseTestCase
 
 
-class RestProjectTestCase(TestCase):
+class RestProjectTestCase(BaseTestCase):
     """Tests the project REST endpoints."""
 
     def setUp(self):
@@ -49,8 +51,9 @@ class RestProjectTestCase(TestCase):
             long_name="Test REST reporting org",
             new_organisation_type=22
         )
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.user_email = 'foo@bar.com'
+        self.user = self.create_user(self.user_email, 'password', is_admin=True)
+        super(RestProjectTestCase, self).setUp()
 
     def test_rest_project(self):
         """
@@ -61,6 +64,27 @@ class RestProjectTestCase(TestCase):
 
         content = json.loads(response.content)
         self.assertEqual(content['count'], 2)
+
+    def test_rest_patch_project(self):
+        """Checks patching the a project."""
+        # Given
+        self.c.login(username=self.user_email, password='password')
+        data = {'date_start_actual': '03-02-2018', 'date_start_planned': '2018-01-01'}
+
+        # When
+        response = self.c.patch(
+            '/rest/v1/project/{}/?format=json'.format(self.project.id),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertEqual(
+            datetime.datetime.strptime(content['date_start_actual'], '%Y-%m-%d'),
+            datetime.datetime.strptime(data['date_start_actual'], '%d-%m-%Y'),
+        )
+        self.assertEqual(content['date_start_planned'], data['date_start_planned'])
 
     def test_rest_project_reporting_org(self):
         """

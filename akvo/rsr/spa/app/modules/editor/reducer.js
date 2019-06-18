@@ -33,8 +33,18 @@ initialState.section10.fields.keywords = []
 
 const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 
-const isValid = (sectionKey, validations, newState) => {
-  return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, newState[sectionKey].fields[fieldSet])).reduce((acc, value) => value && acc)
+const validateSets = (sectionKey, validations, fields) => {
+  return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, fields[fieldSet])).reduce((acc, value) => value && acc)
+}
+
+const validateSection = (sectionKey, validations, fields) => {
+  // validate root fields
+  let isValid = validate(sectionKey, validations, fields)
+  // check fieldSets
+  if(isValid && fieldSets.hasOwnProperty(sectionKey)){
+    isValid = validateSets(sectionKey, validations, fields)
+  }
+  return isValid
 }
 
 export default (state = initialState, action) => {
@@ -46,14 +56,7 @@ export default (state = initialState, action) => {
     case actionTypes.TOUCH_SECTION:
       if(!newState[sectionKey].isTouched){
         newState[sectionKey].isTouched = true
-        // validate root fields
-        let _isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
-        // check fieldSets
-        if(_isValid && fieldSets.hasOwnProperty(sectionKey)){
-          newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
-          _isValid = fieldSets[sectionKey].map(fieldSetName => isValid(sectionKey, state.validations, newState, fieldSetName)).reduce((acc, value) => value && acc)
-        }
-        newState[sectionKey].isValid = _isValid
+        newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       }
       return newState
     case actionTypes.CHECK_VALIDATION:
@@ -68,11 +71,7 @@ export default (state = initialState, action) => {
       for(let i = 1; i <= sectionLength; i += 1){
         if(i !== 5){
           const _sectionKey = `section${i}`
-          if(Object.keys(fieldSets).indexOf(_sectionKey) !== -1){
-            newState[_sectionKey].isValid = isValid(_sectionKey, validations, newState, action.setName)
-          } else {
-            newState[_sectionKey].isValid = validate(_sectionKey, validations, newState[_sectionKey].fields)
-          }
+          newState[_sectionKey].isValid = validateSection(_sectionKey, validations, newState[sectionKey].fields)
         }
       }
       return newState
@@ -98,7 +97,7 @@ export default (state = initialState, action) => {
         fields: {...newState[sectionKey].fields, ...action.fields},
       }
       newState.saving = true
-      newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
@@ -107,7 +106,7 @@ export default (state = initialState, action) => {
         action.setName,
         [...get(newState[sectionKey].fields, action.setName), action.item]
       )
-      newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
+      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.ADDED_SET_ITEM:
       newState.saving = false
@@ -125,7 +124,7 @@ export default (state = initialState, action) => {
         ...get(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`),
         ...action.fields
       })
-      newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
+      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.REMOVE_SET_ITEM:
       newState.saving = action.shouldSync !== undefined
@@ -134,7 +133,7 @@ export default (state = initialState, action) => {
         action.setName,
         get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
       )
-      newState[sectionKey].isValid = isValid(sectionKey, state.validations, newState, action.setName)
+      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, lastSaved: new Date(), backendError: null}

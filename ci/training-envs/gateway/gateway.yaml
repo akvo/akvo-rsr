@@ -1,0 +1,127 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rsr-demo-gateway
+spec:
+  template:
+    metadata:
+      labels:
+        run: rsr-demo-gateway
+    spec:
+      containers:
+      - image: rosskukulinski/nginx-kubernetes-reload:v2.0.1
+        imagePullPolicy: Always
+        name: rsr-demo-gateway
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        env:
+          - name: WATCH_PATHS
+            value: "/etc/nginx /etc/nginx/conf.d"
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d/
+          name: rsr-demo-gateway-config
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+      restartPolicy: Always
+      volumes:
+      - name: rsr-demo-gateway-config
+        configMap:
+          name: rsr-demo-gateway-config
+---
+apiVersion: v1
+data:
+  default.conf: |-
+    client_max_body_size 50M;
+    large_client_header_buffers 16 32k;
+
+    gzip on;
+    gzip_comp_level    5;
+    gzip_min_length    256;
+    gzip_proxied       any;
+    gzip_vary          on;
+    gzip_types
+        application/javascript
+        application/json
+        application/x-font-ttf
+        application/xml
+        font/opentype
+        image/bmp
+        image/svg+xml
+        image/x-icon
+        text/css
+        text/plain
+        text/html;
+
+    log_format upstream_time '$remote_addr - $remote_user [$time_local] '
+                                 '"$request" $status $body_bytes_sent '
+                                 '"$http_referer" "$http_user_agent" '
+                                 'rt=$request_time urt="$upstream_response_time"';
+    server {
+        listen       80 default_server;
+
+        access_log  /var/log/nginx/access.log  upstream_time;
+
+        location / {
+          return 200 'ok';
+        }
+
+    }
+
+    server {
+        listen       80;
+
+        server_name   ~^(?<domain>.+)\.akvotest\.org$;
+
+        access_log  /var/log/nginx/access.log  upstream_time;
+
+        location / {
+          return 200 'ok';
+        }
+
+        location ~ {
+            proxy_pass          http://$domain-rsrchart.rsr-demo.svc.cluster.local$request_uri;
+            proxy_set_header    Host $host;
+            proxy_set_header    X-Real-IP $remote_addr;
+            proxy_set_header    X-Forwarded-Host $host;
+            proxy_set_header    X-Forwarded-Proto $http_x_forwarded_proto;
+
+            resolver kube-dns.kube-system.svc.cluster.local;
+
+        }
+
+    }
+kind: ConfigMap
+metadata:
+  name: rsr-demo-gateway-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsr-demo-gateway
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    run: rsr-demo-gateway

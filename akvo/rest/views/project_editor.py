@@ -430,6 +430,9 @@ def project_editor_remove_indicator_dimension(request, indicator_pk=None, dimens
     if not user.has_perm('rsr.change_project', indicator.result.project):
         return HttpResponseForbidden()
 
+    if indicator.parent_indicator is not None:
+        return HttpResponseForbidden()
+
     if dimension in indicator.dimension_names.all():
         indicator.dimension_names.remove(dimension)
 

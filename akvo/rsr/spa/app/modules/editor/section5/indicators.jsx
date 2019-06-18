@@ -21,11 +21,8 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  // useEffect(() => {
-  //   formPush(`${fieldName}.disaggregations`, { items: [{}]})
-  // }, [])
   const add = () => {
-    const newItem = { items: [{}]}
+    const newItem = { items: [{}, {}]}
     formPush(`${fieldName}.disaggregations`, newItem)
     addSetItem(5, `${fieldName}.disaggregations`, newItem)
   }
@@ -60,6 +57,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                 extra={(
                   /* eslint-disable-next-line */
                   <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                  <div className="delete-btn-holder">
                   <Popconfirm
                     title="Are you sure to delete this disaggregation?"
                     onConfirm={() => remove(index, fields)}
@@ -68,6 +66,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                   >
                     <Button size="small" icon="delete" className="delete-panel" />
                   </Popconfirm>
+                  </div>
                   </div>
                 )}
               >
@@ -85,7 +84,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                             name={`${itemFieldName}.name`}
                             control="input"
                             withLabel
-                            label={`Item ${itemIndex + 1}`}
+                            label={`Label ${itemIndex + 1}`}
                           />
                         </Col>
                         <Col span={12}>
@@ -99,7 +98,7 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
                       </Row>
                       ))}
                       <Button icon="plus" type="link" onClick={() => props.fields.push({})}>Add item</Button>
-                      {props.fields.length > 1 &&
+                      {props.fields.length > 2 &&
                       <Button icon="minus" type="link" className="remove-item" onClick={() => props.fields.pop()}>Remove item</Button>
                       }
                     </Aux>
@@ -117,9 +116,6 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
 })
 
 const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  // useEffect(() => {
-  //   formPush(`${fieldName}.periods`, {})
-  // }, [])
   const add = () => {
     formPush(`${fieldName}.periods`, {})
     addSetItem(5, `${fieldName}.periods`, {})
@@ -134,7 +130,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
       {({ fields }) => (
         <Aux>
         <div className="ant-col ant-form-item-label">
-          <InputLabel optional tooltip="asd">Periods</InputLabel>
+          <InputLabel tooltip="...">Periods</InputLabel>
         </div>
         {fields.length > 0 &&
         <Accordion
@@ -161,6 +157,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
               extra={(
                 /* eslint-disable-next-line */
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                <div className="delete-btn-holder">
                 <Popconfirm
                   title="Are you sure to delete this period?"
                   onConfirm={() => remove(index, fields)}
@@ -169,6 +166,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                 >
                   <Button size="small" icon="delete" className="delete-panel" />
                 </Popconfirm>
+                </div>
                 </div>
               )}
             >
@@ -288,13 +286,14 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <span>
                 <Field
                   name={`${name}.type`}
-                  render={({input}) => <span>Indicator {index + 1} <Tag>{input.value}</Tag></span>}
+                  render={({input}) => <span><span className="capitalized">{input.value}</span>&nbsp;Indicator {index + 1}</span>}
                 />
               </span>)}
               extra={(
                 /* eslint-disable-next-line */
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
                 <IndicatorNavMenu fieldName={name} />
+                <div className="delete-btn-holder">
                 <Popconfirm
                   title="Are you sure to delete this indicator?"
                   onConfirm={() => remove(index, fields)}
@@ -304,6 +303,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                   <Button size="small" icon="delete" className="delete-panel" />
                 </Popconfirm>
                 </div>
+                </div>
               )}
             >
               <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
@@ -311,35 +311,37 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <Item label={<InputLabel optional>Title</InputLabel>}>
                 <FinalField name={`${name}.title`} />
               </Item>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Item label="Measure">
-                    <FinalField
-                      name={`${name}.measure`}
-                      render={({input}) => (
-                        <Radio.Group {...input}>
-                          <Radio.Button value={0}>Unit</Radio.Button>
-                          <Radio.Button value={1}>Percentage</Radio.Button>
-                        </Radio.Group>
-                      )}
-                    />
-                  </Item>
-                </Col>
-                <Col span={12}>
-                  <Item label={<InputLabel>Order</InputLabel>}>
-                    <FinalField
-                      name={`${name}.order`}
-                      defaultValue={0}
-                      render={({input}) => (
-                        <Radio.Group {...input}>
-                          <Radio.Button value={0}>Ascending</Radio.Button>
-                          <Radio.Button value={1}>Descending</Radio.Button>
-                        </Radio.Group>
-                      )}
-                    />
-                  </Item>
-                </Col>
-              </Row>
+              <Condition when={`${name}.type`} is="quantitative">
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Item label="Measure">
+                      <FinalField
+                        name={`${name}.measure`}
+                        render={({input}) => (
+                          <Radio.Group {...input}>
+                            <Radio.Button value={0}>Unit</Radio.Button>
+                            <Radio.Button value={1}>Percentage</Radio.Button>
+                          </Radio.Group>
+                        )}
+                      />
+                    </Item>
+                  </Col>
+                  <Col span={12}>
+                    <Item label={<InputLabel>Order</InputLabel>}>
+                      <FinalField
+                        name={`${name}.order`}
+                        defaultValue={0}
+                        render={({input}) => (
+                          <Radio.Group {...input}>
+                            <Radio.Button value={0}>Ascending</Radio.Button>
+                            <Radio.Button value={1}>Descending</Radio.Button>
+                          </Radio.Group>
+                        )}
+                      />
+                    </Item>
+                  </Col>
+                </Row>
+              </Condition>
               <Item label={<InputLabel optional>Description</InputLabel>}>
                 <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
               </Item>

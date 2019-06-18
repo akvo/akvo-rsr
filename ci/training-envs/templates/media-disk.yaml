@@ -1,0 +1,37 @@
+{{ if (eq "prod" .Values.restoreFrom) }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "rsrchart.fullname" . }}
+  labels:
+{{ include "rsrchart.labels" . | indent 4 }}
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 200G
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: {{ .Values.gcePersistentDiskName }}
+    fsType: ext4
+---
+{{ end }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "rsrchart.fullname" . }}
+  labels:
+{{ include "rsrchart.labels" . | indent 4 }}
+spec:
+{{ if (eq "prod" .Values.restoreFrom) }}
+  # It's necessary to specify "" as the storageClassName
+  # so that the default storage class won't be used, see
+  # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
+  storageClassName: ""
+  volumeName: {{ include "rsrchart.fullname" . }}
+{{end}}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200G
