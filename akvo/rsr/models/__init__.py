@@ -362,6 +362,8 @@ rules.add_perm('rsr.add_result', is_rsr_admin | is_org_admin | is_org_me_manager
 rules.add_perm('rsr.change_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_result', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.view_result', is_org_enumerator)
+rules.add_perm('rsr.import_results', is_rsr_admin | is_org_admin | is_org_me_manager)
+
 
 rules.add_perm('rsr.add_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_sector', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

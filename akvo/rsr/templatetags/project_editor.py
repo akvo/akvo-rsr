@@ -346,3 +346,9 @@ def mandatory_or_hidden(validations, field):
         )
 
     return indication
+
+
+@register.filter
+def can_import_results(user, project):
+    """Return True if the user can import results in the given project."""
+    return user.can_import_results(project)
