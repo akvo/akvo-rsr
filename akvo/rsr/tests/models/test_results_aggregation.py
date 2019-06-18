@@ -15,6 +15,7 @@ from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData, Pr
                              PeriodActualValue, Disaggregation, IndicatorDimensionName,
                              IndicatorDimensionValue)
 from akvo.rsr.models.result.indicator_period_aggregation import PeriodDisaggregation
+from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 
 User = get_user_model()
 
@@ -145,14 +146,20 @@ class PeriodDisaggregationTestCase(TestCase):
         self.indicator.dimension_names.add(self.dimension_name1)
         self.indicator.dimension_names.add(self.dimension_name2)
         self.update1 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=17.11, status='A'
+            period=self.period, user=self.user, value=17.11, status='A',
+            numerator='17.11', denominator='100',
         )
+        self.update1.refresh_from_db()
         self.update2 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=47.89, status='A'
+            period=self.period, user=self.user, value=47.89, status='A',
+            numerator='47.89', denominator='100',
         )
+        self.update2.refresh_from_db()
         self.update3 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=88.88, status='D'
+            period=self.period, user=self.user, value=88.88, status='D',
+            numerator='88.88', denominator='100',
         )
+        self.update3.refresh_from_db()
         #  set up PG views
         vs = ViewSyncer()
         vs.run(True, True)
@@ -238,3 +245,67 @@ class PeriodDisaggregationTestCase(TestCase):
         self.assertEquals(vanilla.denominator, Decimal("51"))
         self.assertEquals(chocolate.numerator, Decimal("4.76"))
         self.assertEquals(chocolate.denominator, Decimal("68"))
+
+    def test_incomplete_disaggregations_marked_on_save(self):
+        # Given
+        update1 = self.update1
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+
+        # When
+        disaggregation1 = Disaggregation.objects.create(
+            dimension_value=dimension_value1, update=update1, value=8)
+        disaggregation2 = Disaggregation.objects.create(
+            dimension_value=dimension_value2, update=update1, value=9)
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+
+        # Then
+        self.assertTrue(disaggregation1.incomplete_data)
+        self.assertTrue(disaggregation2.incomplete_data)
+
+    def test_incomplete_percentage_disaggregation_marked_on_save(self):
+        # Given
+        self.indicator.measure = PERCENTAGE_MEASURE
+        self.indicator.save()
+        update1 = self.update1
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+
+        # When
+        disaggregation1 = Disaggregation.objects.create(
+            dimension_value=dimension_value1, update=update1, numerator=8, denominator=50)
+        disaggregation2 = Disaggregation.objects.create(
+            dimension_value=dimension_value2, update=update1, numerator=9, denominator=50)
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+
+        # Then
+        self.assertTrue(disaggregation1.incomplete_data)
+        self.assertTrue(disaggregation2.incomplete_data)
+
+    def test_incomplete_disaggregations_marked_on_update_change(self):
+        # Given
+        update1 = self.update1
+        self.update1.value = 18
+        self.update1.save()
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+        disaggregation1 = Disaggregation.objects.create(
+            dimension_value=dimension_value1, update=update1, value=9)
+        disaggregation2 = Disaggregation.objects.create(
+            dimension_value=dimension_value2, update=update1, value=9)
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+        self.assertFalse(disaggregation1.incomplete_data)
+        self.assertFalse(disaggregation2.incomplete_data)
+
+        # When
+        self.update1.value = 20
+        self.update1.save()
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+
+        # Then
+        self.assertTrue(disaggregation1.incomplete_data)
+        self.assertTrue(disaggregation2.incomplete_data)
