@@ -114,7 +114,6 @@ router.register(r'(?P<version>(v1))/results_framework', views.ResultsFrameworkVi
 router.register(r'(?P<version>(v1))/sector', views.SectorViewSet)
 router.register(r'(?P<version>(v1))/transaction', views.TransactionViewSet)
 router.register(r'(?P<version>(v1))/transaction_sector', views.TransactionSectorViewSet)
-router.register(r'(?P<version>(v1))/user', views.UserViewSet)
 router.register(r'(?P<version>(v1))/user_projects_access', views.UserProjectsAccessViewSet)
 
 

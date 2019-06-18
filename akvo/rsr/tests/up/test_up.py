@@ -123,10 +123,6 @@ class RsrUpTest(TestCase):
             user_element = update.find('user')
             self.assertNotEqual(user_element, None)
 
-            user_response = self.c.get('/rest/v1/user/{0}/'.format(user_element.text),
-                                       {'format': 'json'})
-            self.assertEqual(user_response.status_code, 200)
-
     def test_get_country_information(self):
         """
         Test getting country information needed by Up.

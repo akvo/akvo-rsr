@@ -104,7 +104,7 @@ from .typeahead import (typeahead_country,
                         typeahead_user_projects,
                         typeahead_impact_projects,
                         typeahead_projectupdate)
-from .user import (UserViewSet, change_password, update_details,
+from .user import (change_password, update_details,
                    request_organisation, current_user)
 from .user_management import invite_user
 from .user_projects import UserProjectsAccessViewSet
@@ -234,5 +234,4 @@ __all__ = [
     'update_directory',
     'upload_indicator_update_photo',
     'UserProjectsAccessViewSet',
-    'UserViewSet',
 ]

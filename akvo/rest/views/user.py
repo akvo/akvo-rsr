@@ -19,23 +19,9 @@ from rest_framework.response import Response
 from akvo.rest.models import TastyTokenAuthentication
 from ...rsr.models import Employment
 from ...rsr.models import Organisation
-from ..viewsets import BaseRSRViewSet
 from ..serializers import EmploymentSerializer
 from ..serializers import OrganisationSerializer
 from ..serializers import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
-
-
-class UserViewSet(BaseRSRViewSet):
-
-    """User resource."""
-
-    queryset = get_user_model().objects.prefetch_related(
-        'organisations',
-        'organisations__primary_location',
-        'organisations__primary_location__country',
-        'organisations__primary_location__location_target',
-    )
-    serializer_class = UserSerializer
 
 
 @api_view(['POST'])

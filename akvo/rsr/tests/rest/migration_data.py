@@ -40,10 +40,6 @@ GET_URLS = [
     # akvo/rsr/front-end/scripts-src/my-projects.js
     '/rest/v1/project/?format=json',
 
-    # akvo/scripts/cordaid/organisation_upload.py
-    '/api/v1/user/?format=json&api_key={api_key}&username={username}&user__username={username}&do_format=1',
-    # XXX: /rest/v1/internal_organisation_id/?recording_org={recording_org}&identifier={identifier}&format=json,
-
     # akvo/rest/filters.py doc examples
     "/rest/v1/project/?filter={'title__icontains':'water','currency':'EUR'}&format=json",
     "/rest/v1/project/?filter={'title__icontains':'fiber'}&exclude={'currency':'EUR'}&format=json",
@@ -85,7 +81,6 @@ GET_URLS = [
 
     # akvo/rsr/front-end/scripts-src/my-results.js
     '/rest/v1/partnership/?format=json&project=4',
-    '/rest/v1/user/3/?format=json',
     '/rest/v1/result/?format=json&project=4',
     '/rest/v1/indicator_period_data_framework/?format=json&period__indicator__result__project=4',
     '/rest/v1/indicator_period_framework/1/?format=json',
@@ -113,9 +108,6 @@ GET_URLS = [
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
     '/rest/v1/country/?format=json&limit=50',
-
-    # android/AkvoRSR/src/org/akvo/rsr/up/service/GetProjectDataService.java
-    '/rest/v1/user/3/?format=json&depth=1',
 
     # android/AkvoRSR/src/org/akvo/rsr/up/service/GetOrgDataService.java
     '/rest/v1/organisation/?format=json&limit=10',
