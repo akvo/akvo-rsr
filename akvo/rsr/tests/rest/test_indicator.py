@@ -9,67 +9,25 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from django.conf import settings
-from django.contrib.auth.models import Group
-from django.test import TestCase, Client
-
-from akvo.rsr.models import Project, Organisation, Partnership, User, Employment, Result, Indicator, IndicatorPeriod
-from akvo.utils import check_auth_groups
+from akvo.rsr.models import Partnership, Result, Indicator, IndicatorPeriod
+from akvo.rsr.tests.base import BaseTestCase
 
 
-class RestIndicatorTestCase(TestCase):
+class RestIndicatorTestCase(BaseTestCase):
     """Tests the indicator REST endpoints."""
 
     def setUp(self):
         """ Setup a minimal DB for the tests. """
 
-        self.project = Project.objects.create(
-            title="REST test project",
-        )
+        super(RestIndicatorTestCase, self).setUp()
 
-        # Create groups
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+        self.project = self.create_project("REST test project")
+        self.reporting_org = self.create_organisation("Test REST reporting")
+        self.make_partner(self.project, self.reporting_org, Partnership.IATI_REPORTING_ORGANISATION)
 
-        # Create organisation
-        self.reporting_org = Organisation.objects.create(
-            id=1337,
-            name="Test REST reporting",
-            long_name="Test REST reporting org",
-            new_organisation_type=22
-        )
-
-        # Create partnership
-        self.partnership = Partnership.objects.create(
-            project=self.project,
-            organisation=self.reporting_org,
-            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
-        )
-
-        # Create active user
-        self.user = User.objects.create_user(
-            username="Normal user REST",
-            email="user.rest@test.akvo.org",
-            password="password",
-        )
-        self.user.is_active = True
-        self.user.is_admin = True
-        self.user.is_superuser = True
-        self.user.save()
-
-        # Create employment
-        self.employment = Employment.objects.create(
-            user=self.user,
-            organisation=self.reporting_org,
-            is_approved=True,
-        )
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-
-    def tearDown(self):
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        Organisation.objects.all().delete()
-        Group.objects.all().delete()
+        self.user = self.create_user(
+            "user.rest@test.akvo.org", "password", is_admin=True, is_superuser=True)
+        self.employment = self.make_employment(self.user, self.reporting_org, 'Users')
 
     def test_rest_indicator_pagination(self):
         """Test that paginating the indicator results works."""

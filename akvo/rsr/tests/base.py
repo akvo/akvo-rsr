@@ -79,8 +79,8 @@ class BaseTestCase(TestCase):
         )
 
     @staticmethod
-    def make_partner(project, org):
-        Partnership.objects.create(project=project, organisation=org)
+    def make_partner(project, org, role=None):
+        Partnership.objects.create(project=project, organisation=org, iati_organisation_role=role)
 
     @staticmethod
     def make_org_admin(user, org):
