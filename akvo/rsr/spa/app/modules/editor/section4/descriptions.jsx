@@ -13,19 +13,19 @@ import './styles.scss'
 const { Item } = Form
 
 const dict = {
-  summary: 'Project summary',
-  goals: 'Goals overview',
+  projectPlanSummary: 'Project summary',
+  goalsOverview: 'Goals overview',
   background: 'Background',
-  baseline: 'Baseline situation',
+  currentStatus: 'Baseline situation',
   targetGroup: 'Target group',
   projectPlan: 'Project plan',
   sustainability: 'Sustainability'
 }
 const infoDict = {
-  summary: 'Enter a brief summary, try to restrict the number of characters to 400 in order to display the summary nicely on the project page.',
-  goals: 'Provide a brief description of the overall project goals.',
+  projectPlanSummary: 'Enter a brief summary, try to restrict the number of characters to 400 in order to display the summary nicely on the project page.',
+  goalsOverview: 'Provide a brief description of the overall project goals.',
   background: 'This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.',
-  baseline: 'Describe the situation at the start of the project.',
+  currentStatus: 'Describe the situation at the start of the project.',
   targetGroup: 'This should include information about the people, organisations or resources that are being impacted by this project.',
   projectPlan: 'Detailed information about the implementation of the project: the what, how, who and when.',
   sustainability: 'Describe how you aim to guarantee sustainability of the project until 10 years after project implementation. Think about the institutional setting, capacity-building, a cost recovery plan, products used, feasible arrangements for operation and maintenance, anticipation of environmental impact and social integration.'

@@ -12,6 +12,11 @@ const insertRouteParams = (route, params) => {
 }
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise((resolve, reject) => {
+    if(sectionIndex === 4){
+      props.fetchSection4()
+      resolve()
+      return
+    }
     const _endpoints = endpoints[`section${sectionIndex}`]
     // fetch root
     if(_endpoints.hasOwnProperty('root')){
@@ -37,7 +42,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
   useEffect(() => {
     if(params.id !== 'new'){
       props.setProjectId(params.id)
-      fetchSection(1).then(() => fetchSection(2).then(() => fetchSection(3)))
+      fetchSection(1).then(() => fetchSection(2).then(() => fetchSection(3).then(() => fetchSection(4))))
     }
   }, [])
   return null

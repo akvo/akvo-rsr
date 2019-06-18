@@ -3,6 +3,7 @@ import actionTypes from './action-types'
 import { validate } from './validation'
 import { sectionLength } from './sections'
 import fieldSets from './field-sets'
+import { RSR as Section4Defs } from './section4/validations'
 
 export const initialState = {
   saving: false,
@@ -80,6 +81,12 @@ export default (state = initialState, action) => {
         fields: {...newState[sectionKey].fields, ...action.fields}
       }
       newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+      return newState
+    case actionTypes.FETCH_SECTION_4:
+      Object.keys(Section4Defs.fields).forEach(field => {
+        newState.section4.fields[field] = state.section1.fields[field]
+      })
+      newState.section4.isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.FETCH_SET_ITEMS:
       newState[sectionKey].fields[action.setName] = action.items
