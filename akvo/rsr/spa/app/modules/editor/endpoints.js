@@ -5,6 +5,9 @@ export const endpoints = {
   },
   section2: {
     contacts: '/project_contact/'
+  },
+  section3: {
+    partners: '/partnership/'
   }
 }
 export const getEndpoint = (sectionIndex, setName) => {

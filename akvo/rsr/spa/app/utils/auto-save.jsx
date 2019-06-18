@@ -89,7 +89,7 @@ class AutoSave extends React.Component {
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
           } else {
-            this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, item)
+            this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
           }
         }
         this.lastSavedValues[itemIndex] = {

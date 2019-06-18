@@ -133,7 +133,7 @@ export default (state = initialState, action) => {
     case actionTypes.BACKEND_ERROR:
       return {...state, saving: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
-      return {...state, projectId: action.projectId}
+      return {...initialState, projectId: action.projectId}
     default: return state
   }
 }
