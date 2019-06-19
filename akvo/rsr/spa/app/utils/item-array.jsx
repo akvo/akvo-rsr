@@ -83,7 +83,6 @@ class ItemArray extends React.Component{
     }
   }
   handleAddItem = (item) => {
-    const { sectionIndex, setName } = this.props
     const newItem = {...(item ? item : (this.props.newItem ? this.props.newItem : {})), project: this.projectId}
     if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
   }
@@ -129,7 +128,6 @@ class ItemArray extends React.Component{
                   key={`${index}`}
                 >
                   <UpdateHalter parentState={this.state}>
-                    {console.log(this.props.setName, index)}
                     <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
                     {this.props.panel(name, index)}
                   </UpdateHalter>

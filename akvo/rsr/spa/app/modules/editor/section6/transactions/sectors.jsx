@@ -8,20 +8,22 @@ import VOCABULARY_OPTIONS from './options/vocabulary.json'
 
 const { Item } = Form
 
-const Sectors = ({push, parentName}) => {
+const Sectors = ({push, parentName, transactionId}) => {
   return (
     <div>
       <ItemArrayTabs
         name={`${parentName}.sectors`}
         tabName="Sector"
+        sectionIndex={6}
         push={push}
+        newItem={{ transaction: transactionId }}
         pane={name => (
           <div>
           <FinalField
-            name={`${name}.name`}
-            render={props => (
+            name={`${name}.transactionUnicode`}
+            render={({ input }) => (
               <Item label={<InputLabel optional>Name</InputLabel>}>
-                <Input {...props} />
+                <Input {...input} />
               </Item>
             )}
           />
@@ -35,12 +37,12 @@ const Sectors = ({push, parentName}) => {
           </Item>
           <Item label={<InputLabel optional>URI</InputLabel>}>
           <FinalField
-            name={`${name}.uri`}
+            name={`${name}.vocabularyUri`}
           />
           </Item>
           <Item label={<InputLabel optional>Description</InputLabel>}>
           <FinalField
-            name={`${name}.description`}
+            name={`${name}.text`}
           />
           </Item>
           </div>

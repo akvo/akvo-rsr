@@ -12,7 +12,7 @@ import { camelToKebab } from './misc'
 const debounce = 2000
 
 const getSetRootValues = (values) => {
-  const sets = ['indicators', 'periods', 'disaggregations']
+  const sets = ['indicators', 'periods', 'disaggregations', 'sectors']
   const ret = {...values}
   sets.forEach(fieldSet => {
     if(ret.hasOwnProperty(fieldSet)){
@@ -71,7 +71,6 @@ class AutoSave extends React.Component {
 
     if(setName !== undefined && itemIndex !== undefined){
       // if new item added do nothing
-      console.log(itemIndex, this.lastSavedValues.length, get(values, setName).length)
       if(this.lastSavedValues.length < get(values, setName).length){
         this.lastSavedValues = [...this.lastSavedValues, {}]
         return
@@ -85,7 +84,7 @@ class AutoSave extends React.Component {
       const difference = customDiff(this.lastSavedValues[itemIndex], item)
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if(!isEmpty(difference) && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')){
-        if(validate(`section${sectionIndex}/${camelToKebab(setName)}`, [1], [item])){
+        if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item])){
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
           } else {

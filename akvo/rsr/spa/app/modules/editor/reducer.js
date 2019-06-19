@@ -92,6 +92,9 @@ export default (state = initialState, action) => {
       newState.section4.isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.FETCH_SET_ITEMS:
+      if(action.sectionIndex === 6 && action.setName === 'transactions'){
+        action.items = action.items.map(item => ({...item, sectors: []}))
+      }
       newState[sectionKey].fields[action.setName] = action.items
       return newState
     case actionTypes.SAVE_FIELDS:

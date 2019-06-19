@@ -293,7 +293,10 @@ const Transactions = ({ validations, formPush }) => {
               <div className="h-holder">
                 <h5>Transaction sectors</h5>
               </div>
-              <Sectors push={formPush} parentName={name} />
+              <Field
+                name={`${name}.id`}
+                render={({input}) => <Sectors push={formPush} parentName={name} transactionId={input.value} />}
+              />
             </section>
           </Aux>
           }
