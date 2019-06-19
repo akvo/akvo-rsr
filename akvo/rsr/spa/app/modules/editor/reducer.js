@@ -13,6 +13,7 @@ const sectionDefs = {
 
 export const initialState = {
   saving: false,
+  addingItem: false,
   lastSaved: null,
   backendError: null,
   validations: [1],
@@ -115,6 +116,7 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
+      newState.addingItem = true
       set(
         newState[sectionKey].fields,
         action.setName,
@@ -124,6 +126,7 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.ADDED_SET_ITEM:
       newState.saving = false
+      newState.addingItem = false
       newState.lastSaved = new Date()
       newState.backendError = null
       const itemIndex = get(newState[sectionKey].fields, `${action.setName}`).length - 1
@@ -152,7 +155,7 @@ export default (state = initialState, action) => {
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, lastSaved: new Date(), backendError: null}
     case actionTypes.BACKEND_ERROR:
-      return {...state, saving: false, backendError: {...action.error, response: action.response} }
+      return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
     case actionTypes.SET_NEW_PROJECT:
