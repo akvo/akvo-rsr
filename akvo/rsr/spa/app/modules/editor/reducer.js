@@ -4,6 +4,12 @@ import { validate } from './validation'
 import { sectionLength } from './sections'
 import fieldSets from './field-sets'
 import { RSR as Section4Defs } from './section4/validations'
+import { IATI as Section6Defs } from './section6/validations'
+
+const sectionDefs = {
+  4: Section4Defs,
+  6: Section6Defs
+}
 
 export const initialState = {
   saving: false,
@@ -85,11 +91,13 @@ export default (state = initialState, action) => {
       }
       newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
-    case actionTypes.FETCH_SECTION_4:
-      Object.keys(Section4Defs.fields).forEach(field => {
-        newState.section4.fields[field] = state.section1.fields[field]
+    case actionTypes.FETCH_SECTION_ROOT:
+      Object.keys(sectionDefs[action.sectionIndex].fields).forEach(field => {
+        if(state.section1.fields[field] !== undefined){
+          newState[sectionKey].fields[field] = state.section1.fields[field]
+        }
       })
-      newState.section4.isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.FETCH_SET_ITEMS:
       if(action.sectionIndex === 6 && action.setName === 'transactions'){

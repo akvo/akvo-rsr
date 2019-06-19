@@ -13,9 +13,12 @@ const insertRouteParams = (route, params) => {
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise((resolve, reject) => {
     if(sectionIndex === 4){
-      props.fetchSection4()
+      props.fetchSectionRoot(4)
       resolve()
       return
+    }
+    if(sectionIndex === 6){
+      props.fetchSectionRoot(6)
     }
     const _endpoints = endpoints[`section${sectionIndex}`]
     // fetch root
