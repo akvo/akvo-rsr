@@ -10,11 +10,11 @@ const sector = yup.object().shape({
 
 const base = yup.object().shape({
   value: yup.mixed(),
-  type: yup.string().nullable().when('value', {
+  transactionType: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  date: yup.string().nullable().when('value', {
+  transactionDate: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
@@ -23,9 +23,9 @@ const base = yup.object().shape({
     then: yup.string().required()
   }),
   providerOrganisation: yup.string(),
-  recipientOrganisation: yup.string(),
-  providerOrganisationActivityId: yup.string(),
-  receiverOrganisationActivityId: yup.string(),
+  receiverOrganisation: yup.string(),
+  providerOrganisationActivity: yup.string(),
+  receiverOrganisationActivity: yup.string(),
   description: yup.string()
 })
 
@@ -52,7 +52,7 @@ const IATI = DGIS.clone().shape({
 
 const EUTF = yup.object().shape({
   currency: yup.string().default('EUR'),
-  type: yup.string().nullable().when('value', {
+  transactionType: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),

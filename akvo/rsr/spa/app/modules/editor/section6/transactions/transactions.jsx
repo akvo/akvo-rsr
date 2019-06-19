@@ -19,6 +19,7 @@ import AID_TYPE_VOCABULARY_OPTIONS from '../../section1/options/aid-type-vocabul
 import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
+import OrganizationSelect from '../../../../utils/organization-select';
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
@@ -30,7 +31,7 @@ const TypeField = ({ name }) => (
     </Field>
   )}>
   <FinalField
-    name={`${name}.type`}
+    name={`${name}.transactionType`}
     control="select"
     options={TYPE_OPTIONS}
     withEmptyOption
@@ -55,7 +56,7 @@ const Transactions = ({ validations, formPush }) => {
             <Col span={12}>
               <Item label={<InputLabel optional tooltip="...">Currency</InputLabel>}>
               <FinalField
-                name="currency"
+                name={`${name}.currency`}
                 control="select"
                 showSearch
                 optionFilterProp="children"
@@ -64,7 +65,7 @@ const Transactions = ({ validations, formPush }) => {
               </Item>
             </Col>
             }
-            {(!fieldExists('humanitarian') && fieldExists('type')) &&
+            {(!fieldExists('humanitarian') && fieldExists('transactionType')) &&
             <Col span={12}>
               <TypeField name={name} />
             </Col>
@@ -86,7 +87,7 @@ const Transactions = ({ validations, formPush }) => {
             <Col span={12}>
               <Item label={<InputLabel optional>Humanitarian transaction</InputLabel>}>
               <FinalField
-                name="humanitarian"
+                name={`${name}.humanitarian`}
                 render={({ input }) => (
                     <Radio.Group {...input}>
                       <Radio.Button value>Yes</Radio.Button>
@@ -98,7 +99,7 @@ const Transactions = ({ validations, formPush }) => {
             </Col>
           </Row>
           )}
-          {fieldExists('date') &&
+          {fieldExists('transactionDate') &&
           <Row gutter={16}>
             <Col span={12}>
               <Item label={(
@@ -107,7 +108,7 @@ const Transactions = ({ validations, formPush }) => {
                 </Field>
               )}>
               <FinalField
-                name={`${name}.date`}
+                name={`${name}.transactionDate`}
                 control="datepicker"
               />
               </Item>
@@ -134,7 +135,7 @@ const Transactions = ({ validations, formPush }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <Item label={<InputLabel optional>Name</InputLabel>}>
-                <FinalField
+                <OrganizationSelect
                   name={`${name}.providerOrganisation`}
                 />
                 </Item>
@@ -142,30 +143,30 @@ const Transactions = ({ validations, formPush }) => {
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>
                 <FinalField
-                  name={`${name}.providerOrganisationActivityId`}
+                  name={`${name}.providerOrganisationActivity`}
                 />
                 </Item>
               </Col>
             </Row>
           </section>
           }
-          {fieldExists('recipientOrganisation') &&
+          {fieldExists('receiverOrganisation') &&
           <section>
             <div className="h-holder">
-              <h5>Recipient organisation</h5>
+              <h5>Receiver organisation</h5>
             </div>
             <Row gutter={16}>
               <Col span={12}>
                 <Item label={<InputLabel optional>Name</InputLabel>}>
-                <FinalField
-                  name={`${name}.recipientOrganisation`}
+                <OrganizationSelect
+                  name={`${name}.receiverOrganisation`}
                 />
                 </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>
                 <FinalField
-                  name={`${name}.recipientOrganisationActivityId`}
+                  name={`${name}.receiverOrganisationActivity`}
                 />
                 </Item>
               </Col>

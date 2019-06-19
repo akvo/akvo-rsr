@@ -235,6 +235,9 @@ hr{
     .ant-collapse-content-box{
       .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;
+        &+section{
+          margin-top: 25px;
+        }
       }
       .ant-form>.ant-row:last-child, &>div>.ant-row:last-child{
         .ant-col .ant-form-item{
