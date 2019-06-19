@@ -246,7 +246,7 @@ class IndicatorNavMenu extends React.Component{
           onChange={e => { jump(this.sections[e.target.value], { duration: 400, offset: -220 }) }}
         >
           <Radio.Button value="info">Info</Radio.Button>
-          <Condition when={`${this.props.fieldName}.type`} is="quantitative">
+          <Condition when={`${this.props.fieldName}.type`} is={1}>
             <Radio.Button value="disaggregations">Disaggregations</Radio.Button>
           </Condition>
           <Radio.Button value="baseline">Baseline</Radio.Button>
@@ -257,8 +257,13 @@ class IndicatorNavMenu extends React.Component{
   }
 }
 
+const indicatorTypes = [
+  { value: 1, label: 'quantitative'},
+  { value: 2, label: 'qualitative'}
+]
+
 const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  const typeKeyMap = {'0': 'quantitative', '1': 'qualitative'} // eslint-disable-line
+  const typeKeyMap = {'0': 1, '1': 2} // eslint-disable-line
   const add = (key) => {
     const newItem = { type: typeKeyMap[key], measure: 0, order: 0, periods: [] }
     if(key === '0') newItem.disaggregations = []
@@ -286,7 +291,10 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <span>
                 <Field
                   name={`${name}.type`}
-                  render={({input}) => <span><span className="capitalized">{input.value}</span>&nbsp;Indicator {index + 1}</span>}
+                  render={({input}) => {
+                    const type = indicatorTypes.find(it => it.value === input.value)
+                    return <span><span className="capitalized">{type && type.label}</span>&nbsp;Indicator {index + 1}</span>
+                  }}
                 />
               </span>)}
               extra={(
@@ -311,7 +319,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <Item label={<InputLabel optional>Title</InputLabel>}>
                 <FinalField name={`${name}.title`} />
               </Item>
-              <Condition when={`${name}.type`} is="quantitative">
+              <Condition when={`${name}.type`} is={1}>
                 <Row gutter={16}>
                   <Col span={12}>
                     <Item label="Measure">
@@ -347,7 +355,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-disaggregations`} />
-              <Condition when={`${name}.type`} is="quantitative">
+              <Condition when={`${name}.type`} is={1}>
                 <Aux>
                   <Disaggregations formPush={formPush} fieldName={name} />
                   <Divider />

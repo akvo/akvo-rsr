@@ -16,7 +16,13 @@ import {addSetItem, removeSetItem} from '../actions'
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
-const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
+// const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
+const resultTypes = [
+  {label: 'output', value: '1'},
+  {label: 'outcome', value: '2'},
+  {label: 'impact', value: '3'},
+  {label: 'other', value: '9'}
+]
 
 const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...props }) => { // eslint-disable-line
   const addResult = ({ key }) => {
@@ -27,11 +33,9 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...prop
   return (
     <Dropdown overlay={
       <Menu onClick={addResult}>
-        <Menu.Item key="input"><Icon type="plus" />Input</Menu.Item>
-        <Menu.Item key="activity"><Icon type="plus" />Activity</Menu.Item>
-        <Menu.Item key="output"><Icon type="plus" />Output</Menu.Item>
-        <Menu.Item key="outcome"><Icon type="plus" />Outcome</Menu.Item>
-        <Menu.Item key="impact"><Icon type="plus" />Impact</Menu.Item>
+        {resultTypes.map(type =>
+        <Menu.Item key={type.value}><Icon type="plus" />{type.label}</Menu.Item>
+        )}
       </Menu>
     }
     trigger={['click']}>
@@ -79,16 +83,15 @@ class Summary extends React.Component{
     }
     const groupedResults = {}
     resultTypes.forEach(type => {
-      groupedResults[type] = results.filter(it => it.type === type)
+      groupedResults[type.value] = results.filter(it => it.type === type.value)
     })
+    console.log(groupedResults)
     return (
       <div className="summary">
         <ul>
-          <li>Inputs<strong>{groupedResults.input.length}</strong></li>
-          <li>Activities<strong>{groupedResults.activity.length}</strong></li>
-          <li>Outputs<strong>{groupedResults.output.length}</strong></li>
-          <li>Outcomes<strong>{groupedResults.outcome.length}</strong></li>
-          <li>Impacts<strong>{groupedResults.impact.length}</strong></li>
+          {resultTypes.map(type =>
+          <li>{type.label}<strong>{groupedResults[type.value].length}</strong></li>
+          )}
         </ul>
         <Button type="link" icon="eye" onClick={() => this.setState({ showModal: true })}>Full preview</Button>
         <Modal
@@ -101,7 +104,7 @@ class Summary extends React.Component{
         >
           <Collapse bordered={false}>
             {Object.keys(groupedResults).map(groupKey =>
-            <Panel header={<span className="group-title">{groupKey}<b> ({groupedResults[groupKey].length})</b></span>}>
+            <Panel header={<span className="group-title">{resultTypes.find(it => it.value === groupKey).label}<b> ({groupedResults[groupKey].length})</b></span>}>
               <Collapse bordered={false}>
                 {groupedResults[groupKey].map((result, resultIndex) =>
                 <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
@@ -171,7 +174,7 @@ class Section5 extends React.Component{
                         <span>
                           <Field
                             name={`${name}.type`}
-                            render={({input}) => <span className="capitalized">{input.value}</span>}
+                            render={({input}) => <span className="capitalized">{resultTypes.find(it => it.value === input.value).label}</span>}
                           />
                           &nbsp;Result {index + 1}
                           <Field

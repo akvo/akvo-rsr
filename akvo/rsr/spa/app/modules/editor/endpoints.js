@@ -9,6 +9,9 @@ export const endpoints = {
   section3: {
     partners: '/partnership/'
   },
+  section5: {
+    results: '/results_framework/'
+  },
   section6: {
     budgetItems: '/budget_item/',
     countryBudgetItems: '/country_budget_item/',
