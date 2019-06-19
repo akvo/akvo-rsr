@@ -10,7 +10,8 @@ export const endpoints = {
     partners: '/partnership/'
   },
   section6: {
-    budgetItems: '/budget_item/'
+    budgetItems: '/budget_item/',
+    countryBudgetItems: '/country_budget_item/'
   }
 }
 export const getEndpoint = (sectionIndex, setName) => {
