@@ -12,7 +12,9 @@ export const endpoints = {
   section6: {
     budgetItems: '/budget_item/',
     countryBudgetItems: '/country_budget_item/',
-    transactions: '/transaction/'
+    transactions: '/transaction/',
+    'transactions.sectors': '/transaction_sector/',
+    plannedDisbursements: '/planned_disbursement/'
   }
 }
 export const getEndpoint = (sectionIndex, setName) => {

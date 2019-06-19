@@ -85,7 +85,6 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
                   <Col span={12}>
                     <FinalField
                       name={`${name}.currency`}
-                      defaultValue={currency}
                       control="select"
                       options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
                       showSearch

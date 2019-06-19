@@ -16,9 +16,9 @@ const DGIS = yup.object().shape({
     then: yup.string().required()
   }),
   providerOrganisation: yup.string(),
-  providerOrganisationActivityId: yup.string(),
-  recipientOrganisation: yup.string(),
-  recipientOrganisationActivityId: yup.string()
+  providerOrganisationActivity: yup.string(),
+  receiverOrganisation: yup.string(),
+  receiverOrganisationActivity: yup.string()
 })
 
 const IATI = DGIS.clone().shape({
