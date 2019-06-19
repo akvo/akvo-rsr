@@ -134,3 +134,22 @@ def request_organisation(request, pk=None):
         return Response(data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def current_user(request):
+    user = request.user
+
+    if user.is_anonymous():
+        raise PermissionDenied()
+
+    queryset = get_user_model().objects.prefetch_related(
+        'organisations',
+        'organisations__primary_location',
+        'organisations__primary_location__country',
+        'organisations__primary_location__location_target',
+    )
+    instance = queryset.get(pk=user.pk)
+    data = UserSerializer(instance).data
+    return Response(data)

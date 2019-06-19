@@ -105,7 +105,7 @@ from .typeahead import (typeahead_country,
                         typeahead_impact_projects,
                         typeahead_projectupdate)
 from .user import (UserViewSet, change_password, update_details,
-                   request_organisation)
+                   request_organisation, current_user)
 from .user_management import invite_user
 from .user_projects import UserProjectsAccessViewSet
 
@@ -118,6 +118,7 @@ __all__ = [
     'BudgetItemViewSet',
     'CategoryViewSet',
     'change_password',
+    'current_user',
     'CountryViewSet',
     'CountryBudgetItemViewSet',
     'CrsAddViewSet',
