@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Divider, Spin, Table } from 'antd'
 import { Link } from 'react-router-dom'
-import {useFetch} from './hooks'
+import {useFetch} from '../../utils/hooks'
 
 const columns = [
   {

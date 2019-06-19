@@ -11,7 +11,9 @@ import ItemArray from '../../../utils/item-array'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import InputLabel from '../../../utils/input-label'
 import './styles.scss'
-import api from '../../../utils/api';
+import api from '../../../utils/api'
+import OrganizationSelect from '../../../utils/organization-select'
+import { useFetch } from '../../../utils/hooks'
 
 const { Item } = Form
 
@@ -24,22 +26,13 @@ const ROLE_OPTIONS = [
   { value: 100, label: 'Sponsor partner'}
 ]
 
-// /typeaheads/organisations
-
 class Partners extends React.Component{
   state = {
     orgs: []
   }
-  componentDidMount(){
-    api.get('/typeaheads/organisations')
-    .then(({ data: {results}}) => {
-      this.setState({
-        orgs: results.map(it => ({ value: it.id, label: it.name }))
-      })
-    })
-  }
   shouldComponentUpdate(nextProps, nextState){
-    return !isEqual(nextProps.fields, this.props.fields) || nextState !== this.state
+    console.log(nextState, this.state)
+    return !isEqual(nextProps.fields, this.props.fields) || !isEqual(nextState, this.state)
   }
   render(){
     const currencySymbol = getSymbolFromCurrency(this.props.currency)
@@ -85,14 +78,10 @@ class Partners extends React.Component{
                   />
                   </Item>
                   <Item label="Organisation">
-                  <FinalField
-                    name={`${name}.organisation`}
-                    control="select"
-                    options={this.state.orgs}
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  />
+                    <OrganizationSelect
+                      name={`${name}.organisation`}
+                      retrieveOrgs={(orgs) => this.setState({ orgs })}
+                    />
                   </Item>
                   <Condition when={`${name}.iatiOrganisationRole`} is={101}>
                     <Item label={<InputLabel optional>Secondary reporter</InputLabel>}>
@@ -136,7 +125,16 @@ class Partners extends React.Component{
     )
   }
 }
+// const Partners = ({ currency, fields }) => {
+//   const [{results}, loading] = useFetch('/typeaheads/organisations')
+// }
 
 export default connect(
   ({ editorRdr: { validations, section3: { fields }, section1: { fields: { currency } }} }) => ({ validations, currency, fields }),
 )(Partners)
+
+// export default connect(
+//   ({ editorRdr: { section3: { fields }, validations}}) => ({ fields, validations}),
+// )(React.memo(Partners, (prevProps, nextProps) => {
+//   return isEqual(prevProps.fields, nextProps.fields)
+// }))
