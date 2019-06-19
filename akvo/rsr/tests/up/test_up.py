@@ -119,6 +119,7 @@ class RsrUpTest(TestCase):
         all_updates = results.findall('list-item')
         self.assertGreater(len(all_updates), 0)
 
+        self.c.login(username='TestUser', password='TestPassword')
         for update in all_updates:
             user_element = update.find('user')
             self.assertNotEqual(user_element, None)
