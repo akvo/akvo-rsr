@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { connect } from 'react-redux'
 import api from '../../utils/api'
-import { endpoints } from './endpoints'
+import { endpoints, getTransform } from './endpoints'
 import * as actions from './actions'
 
 const insertRouteParams = (route, params) => {
@@ -31,7 +31,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     if(setEndpoints.length > 0) {
       const fetchSet = (index) => {
         const { endpoint, setName } = setEndpoints[index]
-        api.get(endpoint, { project: params.id })
+        api.get(endpoint, { project: params.id }, getTransform(sectionIndex, setName, 'response'))
           .then(({ data: { results } }) => {
             props.fetchSetItems(sectionIndex, setName, results)
             if(index < setEndpoints.length - 1) fetchSet(index + 1)
@@ -48,7 +48,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     fetchSection(nextSectionIndex)
     .then(() => {
       props.setSectionFetched(nextSectionIndex)
-      if(nextSectionIndex < 6){
+      if(nextSectionIndex < 7){
         fetchNextSection()
       }
     })

@@ -5,7 +5,7 @@
   "reference": {
     "label": "Reference"
   },
-  "code": {
+  "locationCode": {
     "label": "Code"
   },
   "locationDescription": {
@@ -17,10 +17,10 @@
   "locationPrecision": {
     "label": "Location precision"
   },
-  "reach": {
+  "locationReach": {
     "label": "Reach"
   },
-  "class": {
+  "locationClass": {
     "label": "Class"
   },
   "featureDesignation": {

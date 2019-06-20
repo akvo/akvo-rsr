@@ -1,3 +1,4 @@
+// import {cloneDee}
 export const endpoints = {
   section1: {
     root: '/project/:projectId',
@@ -10,7 +11,8 @@ export const endpoints = {
     partners: '/partnership/'
   },
   section5: {
-    results: '/results_framework/'
+    results: '/results_framework/',
+    'results.indicators': '/indicator_framework/'
   },
   section6: {
     budgetItems: '/budget_item/',
@@ -18,8 +20,61 @@ export const endpoints = {
     transactions: '/transaction/',
     'transactions.sectors': '/transaction_sector/',
     plannedDisbursements: '/planned_disbursement/'
+  },
+  section7: {
+    locationItems: '/project_location/'
+  }
+}
+
+export const transforms = {
+  section7: {
+    locationItems: {
+      request: data => {
+        if(!data) return null
+        const transformed = {
+          ...data,
+          latitude: data.location.coordinates.lat,
+          longitude: data.location.coordinates.lng,
+          city: data.location.text,
+          location_target: data.project,
+          address_1: data.address1,
+          address_2: data.address2
+        }
+        delete transformed.location
+        delete transformed.project
+        delete transformed.address1
+        delete transformed.address2
+        return transformed
+      },
+      response: data => {
+        const transformed = {
+          ...data,
+          results: data.results.map(result => ({
+            ...result,
+            location: {
+              coordinates: {
+                lat: result.latitude,
+                lng: result.longitude
+              },
+              text: `${result.city}, ${result.countryLabel}`
+            }
+          }))
+        }
+        return transformed
+      }
+    }
   }
 }
 export const getEndpoint = (sectionIndex, setName) => {
-  return endpoints[`section${sectionIndex}`][setName ? setName : 'root']
+  // regexp coverts "set[1].item" to "set.item"
+  return endpoints[`section${sectionIndex}`][setName ? setName.replace(/\[([^\]]+)]/g, '') : 'root']
+}
+
+export const getTransform = (sectionIndex, setName, direction) => {
+  if(transforms.hasOwnProperty(`section${sectionIndex}`) && transforms[`section${sectionIndex}`].hasOwnProperty(setName)){
+    const ret = {}
+    ret[direction] = transforms[`section${sectionIndex}`][setName][direction]
+    return ret
+  }
+  return null
 }

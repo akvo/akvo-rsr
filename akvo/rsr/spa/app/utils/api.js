@@ -19,9 +19,25 @@ const config = {
   ]
 }
 
+const getConfigWithTransform = (transform) => {
+  if(transform){
+    const ret = {
+      ...config
+    }
+    if(transform.response){
+      ret.transformResponse = [...config.transformResponse, transform.response]
+    }
+    if(transform.request){
+      ret.transformRequest = [transform.request, ...config.transformRequest]
+    }
+    return ret
+  }
+  return config
+}
+
 export default {
-  get: (url, params) => axios({url, ...{...config, params}}),
-  post: (url, data) => axios({ url, method: 'POST', data, ...config}),
-  patch: (url, data) => axios({ url, method: 'PATCH', data, ...config}),
+  get: (url, params, transform) => axios({url, ...{...getConfigWithTransform(transform), params}}),
+  post: (url, data, transform) => axios({ url, method: 'POST', data, ...getConfigWithTransform(transform)}),
+  patch: (url, data, transform) => axios({ url, method: 'PATCH', data, ...getConfigWithTransform(transform)}),
   delete: (url) => axios({ url, method: 'DELETE', ...config })
 }

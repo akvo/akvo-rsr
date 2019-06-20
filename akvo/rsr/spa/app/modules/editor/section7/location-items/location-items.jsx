@@ -53,7 +53,7 @@ const LocationItems = ({ validations, formPush }) => {
             </Item>
             <Item label={<InputLabel optional>Postal code</InputLabel>}>
             <FinalField
-              name={`${name}.postalCode`}
+              name={`${name}.postcode`}
               control="input"
             />
             </Item>
@@ -78,10 +78,10 @@ const LocationItems = ({ validations, formPush }) => {
                 />
               </Col>
               }
-              {fieldExists('code') &&
+              {fieldExists('locationCode') &&
               <Col span={8}>
                 <FinalField
-                  name={`${name}.code`}
+                  name={`${name}.locationCode`}
                   control="input"
                   withLabel
                   optional
@@ -129,10 +129,10 @@ const LocationItems = ({ validations, formPush }) => {
                 />
               </Col>
               }
-              {fieldExists('reach') &&
+              {fieldExists('locationReach') &&
               <Col span={12}>
                 <FinalField
-                  name={`${name}.reach`}
+                  name={`${name}.locationReach`}
                   control="select"
                   options={[
                     {value: '1', label: 'Activity'},
@@ -146,10 +146,10 @@ const LocationItems = ({ validations, formPush }) => {
               }
             </Row>
             <Row gutter={16}>
-              {fieldExists('class') &&
+              {fieldExists('locationClass') &&
               <Col span={12}>
                 <FinalField
-                  name={`${name}.class`}
+                  name={`${name}.locationClass`}
                   control="select"
                   options={[
                     {value: '1', label: 'Administrative Region'},
