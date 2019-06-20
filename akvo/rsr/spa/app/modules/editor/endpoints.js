@@ -22,7 +22,8 @@ export const endpoints = {
     plannedDisbursements: '/planned_disbursement/'
   },
   section7: {
-    locationItems: '/project_location/'
+    locationItems: '/project_location/',
+    recipientCountries: '/recipient_country/'
   }
 }
 

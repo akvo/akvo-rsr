@@ -205,7 +205,7 @@
     }
   }
   .percentage-input{
-    max-width: 70px;
+    max-width: 80px;
   }
 }
 
@@ -236,6 +236,9 @@ hr{
       .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;
         &+section{
+          margin-top: 25px;
+        }
+        &+.percentage-row{
           margin-top: 25px;
         }
       }
