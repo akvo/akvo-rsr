@@ -172,6 +172,7 @@ export default (state = initialState, action) => {
       return initialState
     case actionTypes.SET_SECTION_FETCHED:
       newState[sectionKey].isFetched = true
+      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     default: return state
   }
