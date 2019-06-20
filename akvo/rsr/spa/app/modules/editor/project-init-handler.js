@@ -17,8 +17,8 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
       resolve()
       return
     }
-    if(sectionIndex === 6){
-      props.fetchSectionRoot(6)
+    if(sectionIndex === 6 || sectionIndex === 7){
+      props.fetchSectionRoot(sectionIndex)
     }
     const _endpoints = endpoints[`section${sectionIndex}`]
     // fetch root

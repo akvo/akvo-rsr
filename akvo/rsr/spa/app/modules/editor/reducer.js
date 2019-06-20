@@ -5,10 +5,12 @@ import { sectionLength } from './sections'
 import fieldSets from './field-sets'
 import { RSR as Section4Defs } from './section4/validations'
 import { IATI as Section6Defs } from './section6/validations'
+import { IATI as Section7Defs} from './section7/validations'
 
 const sectionDefs = {
   4: Section4Defs,
-  6: Section6Defs
+  6: Section6Defs,
+  7: Section7Defs
 }
 
 export const initialState = {
