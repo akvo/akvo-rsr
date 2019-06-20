@@ -30,7 +30,8 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     if(setEndpoints.length > 0) {
       const fetchSet = (index) => {
         const { endpoint, setName } = setEndpoints[index]
-        api.get(endpoint, { project: params.id }, getTransform(sectionIndex, setName, 'response'))
+        const _params = endpoint === '/project_location/' ? {location_target: params.id} : {project: params.id}
+        api.get(endpoint, _params, getTransform(sectionIndex, setName, 'response'))
           .then(({ data: { results } }) => {
             props.fetchSetItems(sectionIndex, setName, results)
             if(index < setEndpoints.length - 1) fetchSet(index + 1)
