@@ -6,12 +6,11 @@ import FinalField from '../../../../utils/final-field'
 import Condition from '../../../../utils/condition'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import { getValidations, doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
+import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 import LANGUAGE_OPTIONS from './languages.json'
 import FORMAT_OPTIONS from './formats.json'
 import CATEGORY_OPTIONS from './categories.json'
-import Categories from './categories'
 
 const { Item } = Form
 
@@ -25,7 +24,6 @@ const handleRadioSwitch = (event, input) => {
 }
 
 const Docs = ({ formPush, validations }) => {
-  const { isIATI } = getValidations(validations)
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
@@ -40,7 +38,7 @@ const Docs = ({ formPush, validations }) => {
             name={`docs[${index}].categories`}
             render={({input}) => (
               <span>
-                {input.value.map(category => <Tag>{category}</Tag>)}
+                {input.value && input.value.map(category => <Tag>{category}</Tag>)}
                 <span>Document {index + 1}: {title}</span>
               </span>
             )}
@@ -90,10 +88,10 @@ const Docs = ({ formPush, validations }) => {
               </Item>
             </Col>
             }
-            {fieldExists('documentLanguage') &&
+            {fieldExists('language') &&
             <Col span={12}>
               <Item label={<InputLabel optional>Document Language</InputLabel>}>
-                <FinalField name={`${name}.documentLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
+                <FinalField name={`${name}.language`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
               </Item>
             </Col>
             }
@@ -104,15 +102,16 @@ const Docs = ({ formPush, validations }) => {
               </Item>
             </Col>
             )}
-            {fieldExists('documentFormat') && (
+            {fieldExists('format') && (
             <Col span={12}>
-              <Item label={<InputLabel optional={isOptional('documentFormat')}>Format</InputLabel>}>
-                <FinalField name={`${name}.documentFormat`} control="select" options={FORMAT_OPTIONS} showSearch />
+              <Item label={<InputLabel optional={isOptional('format')}>Format</InputLabel>}>
+                <FinalField name={`${name}.format`} control="select" options={FORMAT_OPTIONS} showSearch />
               </Item>
             </Col>
             )}
           </Row>
           {fieldExists('categories') &&
+          <Item label={<InputLabel optional>Categories</InputLabel>}>
           <FinalField
             name={`${name}.categories`}
             control="select"
@@ -121,6 +120,7 @@ const Docs = ({ formPush, validations }) => {
             options={CATEGORY_OPTIONS}
             placeholder="Please select..."
           />
+          </Item>
           }
         </div>
         )}

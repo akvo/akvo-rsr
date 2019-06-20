@@ -15,6 +15,7 @@ const modules = [
   'section8/sectors',
   'section8/policy-markers',
   'section8/humanitarian-scopes',
+  'section9/links',
   'section9/docs'
 ]
 

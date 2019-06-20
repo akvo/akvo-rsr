@@ -47,7 +47,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     fetchSection(nextSectionIndex)
     .then(() => {
       props.setSectionFetched(nextSectionIndex)
-      if(nextSectionIndex < 8){
+      if(nextSectionIndex < 9){
         fetchNextSection()
       }
     })

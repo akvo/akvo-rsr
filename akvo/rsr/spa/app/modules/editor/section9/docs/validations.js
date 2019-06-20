@@ -7,7 +7,7 @@ const RSR = yup.object().shape({
     then: yup.string().notRequired()
   }),
   title: yup.string().transform(transformUndefined).required(),
-  document: yup.string()
+  document: yup.string().nullable()
 })
 
 const DGIS = RSR.clone().shape({
@@ -15,9 +15,9 @@ const DGIS = RSR.clone().shape({
 })
 
 const IATI = DGIS.clone().shape({
-  documentFormat: yup.string().required(),
+  format: yup.string().required(),
   titleLanguage: yup.string(),
-  documentLanguage: yup.string(),
+  language: yup.string(),
   documentDate: yup.string()
 })
 
@@ -26,7 +26,7 @@ const EUTF = IATI.clone()
 const DFID = IATI.clone()
 
 const NLR = RSR.clone().shape({
-  documentLanguage: yup.string(),
+  language: yup.string(),
   documentDate: yup.string()
 })
 

@@ -30,6 +30,10 @@ export const endpoints = {
     sectors: '/sector/',
     policyMarkers: '/policy_marker/',
     humanitarianScopes: '/humanitarian_scope/'
+  },
+  section9: {
+    links: '/link/',
+    docs: '/project_document/'
   }
 }
 
