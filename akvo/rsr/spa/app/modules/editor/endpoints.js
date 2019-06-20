@@ -25,6 +25,11 @@ export const endpoints = {
     locationItems: '/project_location/',
     recipientCountries: '/recipient_country/',
     recipientRegions: '/recipient_region/'
+  },
+  section8: {
+    sectors: '/sector/',
+    policyMarkers: '/policy_marker/',
+    humanitarianScopes: '/humanitarian_scope/'
   }
 }
 

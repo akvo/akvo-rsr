@@ -49,7 +49,7 @@ class HumanitarianScopes extends React.Component{
               <Item label={<InputLabel optional>Description</InputLabel>}>
                 <FinalField
                   control="input"
-                  name={`${name}.description`}
+                  name={`${name}.text`}
                 />
               </Item>
               <FinalField name={`${name}.type`} subscription={{ value: true }}>

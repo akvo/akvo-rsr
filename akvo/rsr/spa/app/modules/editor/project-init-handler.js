@@ -12,13 +12,12 @@ const insertRouteParams = (route, params) => {
 }
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise((resolve, reject) => {
+    if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8){
+      props.fetchSectionRoot(sectionIndex)
+    }
     if(sectionIndex === 4){
-      props.fetchSectionRoot(4)
       resolve()
       return
-    }
-    if(sectionIndex === 6 || sectionIndex === 7){
-      props.fetchSectionRoot(sectionIndex)
     }
     const _endpoints = endpoints[`section${sectionIndex}`]
     // fetch root
@@ -48,7 +47,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     fetchSection(nextSectionIndex)
     .then(() => {
       props.setSectionFetched(nextSectionIndex)
-      if(nextSectionIndex < 7){
+      if(nextSectionIndex < 8){
         fetchNextSection()
       }
     })

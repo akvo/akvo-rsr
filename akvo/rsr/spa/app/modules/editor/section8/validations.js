@@ -5,8 +5,8 @@ const RSR = yup.object().shape({
   sectors: yup.array()
 })
 
-const IATI = RSR.clone().shape({
-  humanitarianProject: yup.string(),
+export const IATI = RSR.clone().shape({
+  humanitarian: yup.string().nullable(),
   policyMarkers: yup.array(),
   humanitarianScopes: yup.array()
 })

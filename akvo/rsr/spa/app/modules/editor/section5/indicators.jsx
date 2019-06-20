@@ -262,11 +262,11 @@ const indicatorTypes = [
   { value: 2, label: 'qualitative'}
 ]
 
-const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  const typeKeyMap = {'0': 1, '1': 2} // eslint-disable-line
+const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId }) => { // eslint-disable-line
   const add = (key) => {
-    const newItem = { type: typeKeyMap[key], measure: 0, order: 0, periods: [] }
+    const newItem = { type: key, measure: '1', periods: [], dimensionNames: [] }
     if(key === '0') newItem.disaggregations = []
+    if(resultId) newItem.result = resultId
     formPush(`${fieldName}.indicators`, newItem)
     addSetItem(5, `${fieldName}.indicators`, newItem)
   }
@@ -327,8 +327,8 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                         name={`${name}.measure`}
                         render={({input}) => (
                           <Radio.Group {...input}>
-                            <Radio.Button value={0}>Unit</Radio.Button>
-                            <Radio.Button value={1}>Percentage</Radio.Button>
+                            <Radio.Button value="1">Unit</Radio.Button>
+                            <Radio.Button value="2">Percentage</Radio.Button>
                           </Radio.Group>
                         )}
                       />
@@ -337,12 +337,12 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                   <Col span={12}>
                     <Item label={<InputLabel>Order</InputLabel>}>
                       <FinalField
-                        name={`${name}.order`}
+                        name={`${name}.ascending`}
                         defaultValue={0}
                         render={({input}) => (
                           <Radio.Group {...input}>
-                            <Radio.Button value={0}>Ascending</Radio.Button>
-                            <Radio.Button value={1}>Descending</Radio.Button>
+                            <Radio.Button value>Ascending</Radio.Button>
+                            <Radio.Button value={false}>Descending</Radio.Button>
                           </Radio.Group>
                         )}
                       />
@@ -386,10 +386,10 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
         <Dropdown
           overlay={(
             <Menu style={{ textAlign: 'center' }} onClick={(e) => add(e.key)}>
-              <Menu.Item key="0">
+              <Menu.Item key="1">
                 Quantitative
               </Menu.Item>
-              <Menu.Item key="1">
+              <Menu.Item key="2">
                 Qualitative
               </Menu.Item>
             </Menu>
