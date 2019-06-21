@@ -12,7 +12,7 @@ const RSR = yup.object().shape({
   dateEndActual: yup.string().nullable(),
   currency: yup.string().default('EUR'),
   language: yup.string().default('en'),
-  currentImage: yup.string().nullable(), // .required(),
+  currentImage: yup.string().nullable().required(),
   currentImageCaption: yup.string(),
   currentImageCredit: yup.string(),
   defaultAidType: yup.string(),

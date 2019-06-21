@@ -11,7 +11,7 @@ const insertRouteParams = (route, params) => {
   return route
 }
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
-  const fetchSection = (sectionIndex) => new Promise((resolve, reject) => {
+  const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
     if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8){
       props.fetchSectionRoot(sectionIndex)
     }
@@ -22,7 +22,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     const _endpoints = endpoints[`section${sectionIndex}`]
     // fetch root
     if(_endpoints.hasOwnProperty('root')){
-      api.get(insertRouteParams(_endpoints.root, { projectId: params.id }))
+      await api.get(insertRouteParams(_endpoints.root, { projectId: params.id }))
         .then(({data}) => props.fetchFields(sectionIndex, data))
     }
     // fetch sets

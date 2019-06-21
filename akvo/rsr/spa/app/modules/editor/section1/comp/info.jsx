@@ -7,6 +7,7 @@ import currencies from 'currency-codes/data'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
+import { Route } from 'react-router-dom'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -158,7 +159,15 @@ const Info = ({ validations, fields }) => {
           />
           <hr />
           <h3>Project photo</h3>
-          <ProjectPhoto projectId={2} />
+          <Route
+            path="/projects/:id"
+            component={({ match: {params} }) => (
+              <FinalField
+                name="currentImage"
+                render={({input}) => <ProjectPhoto projectId={params.id} {...input} />}
+              />
+            )}
+          />
           <FinalField
             name="currentImageCaption"
             withLabel
@@ -239,17 +248,8 @@ const Info = ({ validations, fields }) => {
   )
 }
 
-// export default connect(
-//   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
-// )(React.memo(Info, (prevProps, nextProps) => !(!prevProps.fields.id && nextProps.fields.id)))
-
 export default connect(
   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
 )(React.memo(Info, (prevProps, nextProps) => {
-  console.log('areEqual?', isEqual(prevProps.fields, nextProps.fields), prevProps.fields, nextProps.fields) // eslint-disable-line
   return isEqual(prevProps.fields, nextProps.fields)
 }))
-
-// export default connect(
-//   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
-// )(Info)

@@ -23,8 +23,10 @@
   }
   .uploaded-image{
     position: relative;
+    display: inline-block;
     img{
-      width: 100%;
+      // width: 100%;
+      max-height: 300px;
     }
     margin-bottom: 15px;
     .progress-overlay{

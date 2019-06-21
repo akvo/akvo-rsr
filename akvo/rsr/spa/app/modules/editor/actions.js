@@ -6,12 +6,16 @@ import { getEndpoint, getTransform } from './endpoints'
 export const togglePrivacy = checked => ({ type: actionTypes.TOGGLE_PRIVACY, checked })
 export const touchSection = sectionIndex => ({ type: actionTypes.TOUCH_SECTION, sectionIndex })
 export const checkValidation = (id, checked) => ({ type: actionTypes.CHECK_VALIDATION, id, checked })
-export const saveFields = (fields, sectionIndex) => (dispatch, getState) => {
+export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, getState) => {
   dispatch({ type: actionTypes.SAVE_FIELDS, fields, sectionIndex })
   const {projectId} = getState().editorRdr
+  if(!preventUpload){
   api.patch(`/project/${projectId}/`, fields)
     .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
     .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
+  } else {
+    dispatch({ type: actionTypes.BACKEND_SYNC })
+  }
 }
 export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })
 export const fetchSetItems = (sectionIndex, setName, items) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items})

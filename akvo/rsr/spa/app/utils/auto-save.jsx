@@ -2,7 +2,7 @@ import React from 'react'
 import { FormSpy } from 'react-final-form'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { cloneDeep, isEmpty, get, isEqual } from 'lodash'
+import { cloneDeep, isEmpty, get } from 'lodash'
 import {diff} from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
@@ -83,7 +83,10 @@ class AutoSave extends React.Component {
       const item = get(values, setName)[itemIndex]
       const difference = customDiff(this.lastSavedValues[itemIndex], item)
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
-      if(!isEmpty(difference) && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')){
+      if(
+        !isEmpty(difference)
+        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')
+      ){
         if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item])){
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
@@ -100,7 +103,8 @@ class AutoSave extends React.Component {
       const rootValues = getRootValues(values, `section${sectionIndex}`)
       const difference = customDiff(this.lastSavedValues, rootValues)
       if(!isEmpty(difference)){
-        this.props.saveFields(difference, sectionIndex)
+        const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
+        this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
         this.lastSavedValues = {
           ...this.lastSavedValues,
           ...difference

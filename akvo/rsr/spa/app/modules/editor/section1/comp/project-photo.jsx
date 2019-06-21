@@ -1,6 +1,5 @@
 /* globals FileReader */
 import React from 'react'
-import { connect } from 'react-redux'
 import {
   Icon, Upload, Form, Button, Alert, Progress
 } from 'antd'
@@ -17,29 +16,28 @@ function getBase64(img, callback) {
 }
 
 class ProjectPhoto extends React.Component {
-  state = {
-    loading: false,
-    error: '',
-    uploadingError: false,
-    imageUrl: '',
-    percent: 0
-  };
-
+  constructor(props){
+    super(props)
+    this.state = {
+      loading: false,
+      error: '',
+      uploadingError: false,
+      imageUrl: props.value,
+      percent: 0
+    }
+  }
   handleChange = (info) => {
-    console.log('change', info)
     if(info.hasOwnProperty('event')){
       this.setState({
         percent: info.event.percent
       })
     }
     if (info.file.status === 'uploading') {
-      // this.setState({ loading: true })
       getBase64(info.file.originFileObj, (imageUrl) => {
         this.setState({
           imageUrl,
           loading: true,
         })
-        // this.props.editField('currentImage', imageUrl)
       })
       return
     }
@@ -47,24 +45,19 @@ class ProjectPhoto extends React.Component {
       this.setState({
         uploadingError: true
       })
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      setTimeout(() => {
-        this.setState({
-          loading: false
-        })
-      }, 1000)
-      // getBase64(info.file.originFileObj, imageUrl => this.setState({
-      //   // imageUrl,
-      //   loading: false,
-      // }))
     }
   }
 
+  handleSuccess = (e) => {
+    this.props.onChange(e.changes[0][1])
+    setTimeout(() => {
+      this.setState({
+        loading: false
+      })
+    }, 1000)
+  }
+
   beforeUpload = (file) => {
-    console.log('before upload', file)
     const isImage = file.type === 'image/jpeg' || file.type === 'image/png'
     const isLt2M = file.size / 1024 / 1024 < 2
     if (!isImage) {
@@ -105,7 +98,9 @@ class ProjectPhoto extends React.Component {
               </div>
               }
             </div>
-            <Button onClick={this.resetImage}>Upload New Image</Button>
+            <div>
+              <Button onClick={this.resetImage}>Upload New Image</Button>
+            </div>
           </div>
         )}
         <div style={{ display: this.state.imageUrl === '' ? 'block' : 'none'}}>
@@ -116,6 +111,7 @@ class ProjectPhoto extends React.Component {
           action={`/rest/v1/project/${this.props.projectId}/upload_file/?format=json`}
           data={{field_id: `rsr_project.current_image.${this.props.projectId}`}}
           onChange={this.handleChange}
+          onSuccess={this.handleSuccess}
           beforeUpload={this.beforeUpload}
           headers={{ 'X-CSRFToken': Cookies.get('csrftoken') }}
         >
