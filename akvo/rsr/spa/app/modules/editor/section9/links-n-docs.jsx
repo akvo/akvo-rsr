@@ -4,12 +4,13 @@ import { Form } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import {isEqual} from 'lodash'
+import {diff} from 'deep-object-diff'
 
 import Links from './links/links'
 import Docs from './docs/docs'
 import './styles.scss'
 
-const LinksDocs = ({ fields }) => (
+const LinksDocs = ({ fields, validations, dispatch }) => (
   <div className="links view">
     <FinalForm
       onSubmit={() => {}}
@@ -23,7 +24,7 @@ const LinksDocs = ({ fields }) => (
       }) => (
         <Form layout="vertical">
           <Links formPush={push} />
-          <Docs formPush={push} />
+          <Docs formPush={push} validations={validations} dispatch={dispatch} />
         </Form>
       )}
     />
@@ -31,5 +32,17 @@ const LinksDocs = ({ fields }) => (
 )
 
 export default connect(
-  ({ editorRdr: { section9: { fields }}}) => ({ fields })
-)(React.memo(LinksDocs, (prevProps, nextProps) => isEqual(prevProps.fields, nextProps.fields)))
+  ({ editorRdr: { section9: { fields }, validations }}) => ({ fields, validations })
+)(React.memo(LinksDocs, (prevProps, nextProps) => {
+  let _isEqual = isEqual(prevProps.fields, nextProps.fields)
+  if(!_isEqual){
+    // prevent update on added empty item
+    const _diff = diff(prevProps.fields, nextProps.fields)
+    if(_diff.docs){
+      if(isEqual(_diff.docs[Object.keys(_diff.docs)[0]], {document: true, categories: []})){
+        _isEqual = true
+      }
+    }
+  }
+  return isEqual(_isEqual)
+}))

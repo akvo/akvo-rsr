@@ -3,9 +3,9 @@ import axios from 'axios'
 import humps from 'humps'
 import { dateTransform } from './misc'
 
-const config = {
+export const config = {
   baseURL: '/rest/v1',
-  headers: { 'Content-Type': 'application/json', 'X-CSRFToken': Cookies.get('csrftoken') },
+  headers: { 'X-CSRFToken': Cookies.get('csrftoken') },
   params: { format: 'json'},
   transformResponse: [
     ...axios.defaults.transformResponse,

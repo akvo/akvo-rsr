@@ -11,6 +11,8 @@ import validationDefs from './validations'
 import LANGUAGE_OPTIONS from './languages.json'
 import FORMAT_OPTIONS from './formats.json'
 import CATEGORY_OPTIONS from './categories.json'
+import Uploader from './uploader'
+import actionTypes from '../../action-types'
 
 const { Item } = Form
 
@@ -23,10 +25,25 @@ const handleRadioSwitch = (event, input) => {
   }
 }
 
-const Docs = ({ formPush, validations }) => {
+const Docs = ({ formPush, validations, dispatch }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
+  console.log('RERENDERING DOCS')
+  // console.log(_props)
+  // const handleAddItem = (item) => {
+  //   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item})
+  // }
+  const handleNewDocumentUploading = () => {
+    dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {document: true, categories: []} })
+  }
+  const handleNewDocumentUploaded = (id, document) => {
+    dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document} })
+  }
+  const handleDocumentUpdated = (itemIndex, itemId) => (document) => {
+    dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
+    dispatch({ type: actionTypes.BACKEND_SYNC })
+  }
   return (
     <div>
       <h3>Documents</h3>
@@ -45,36 +62,50 @@ const Docs = ({ formPush, validations }) => {
           />
         }
         headerField="title"
-        newItem={{ categories: []}}
+        newItem={{ categories: [], document: '' }}
+        // onAddItem={handleAddItem}
         formPush={formPush}
-        panel={name => (
+        panel={(name, index) => (
         <div>
           <Item>
             <FinalField
               name={`${name}.document`}
-              render={({ input }) => (
-                <Radio.Group value={input.value ? 'upload' : 'url'} onChange={ev => handleRadioSwitch(ev, input)}>
-                  <Radio.Button value="url">URL</Radio.Button>
-                  <Radio.Button value="upload">Upload</Radio.Button>
-                </Radio.Group>
-              )}
+              render={({ input }) => {
+                if(input.value !== true && input.value !== '') return null
+                return(
+                  <Radio.Group value={input.value ? 'upload' : 'url'} onChange={ev => handleRadioSwitch(ev, input)}>
+                    <Radio.Button value="url">URL</Radio.Button>
+                    <Radio.Button value="upload">Upload</Radio.Button>
+                  </Radio.Group>
+                )
+              }}
             />
-            <Condition when={`${name}.document`} isNot={true}>
+            <Condition when={`${name}.document`} is="">
               <FinalField
                 name={`${name}.url`}
                 control="input"
                 placeholder="http://..."
               />
             </Condition>
-            <Condition when={`${name}.document`} is={true}>
-              <Upload.Dragger name="files" listType="picture" action="/upload.do">
-                <p className="ant-upload-drag-icon">
-                  <Icon type="picture" theme="twoTone" />
-                </p>
-                <p className="ant-upload-text">Drag file here</p>
-                <p className="ant-upload-hint">or click to browse from computer</p>
-                <p><small>Max: 5MB</small></p>
-              </Upload.Dragger>
+            <Condition when={`${name}.document`} isNot="">
+              <FinalField
+                name={`${name}.id`}
+                render={({ input }) => (
+                  <FinalField
+                    name={`${name}.document`}
+                    render={(props) => (
+                      <Uploader
+                        fieldName={`${name}.document`}
+                        documentId={input.value}
+                        document={props.input.value}
+                        onNewDocumentUploading={handleNewDocumentUploading}
+                        onNewDocumentUploaded={handleNewDocumentUploaded}
+                        onDocumentUpdated={handleDocumentUpdated(index, input.value)}
+                      />
+                    )}
+                  />
+                )}
+              />
             </Condition>
           </Item>
           <Item label={<InputLabel tooltip="...">Title</InputLabel>}>
@@ -140,6 +171,4 @@ const Docs = ({ formPush, validations }) => {
   )
 }
 
-export default connect(
-  ({ editorRdr: { validations } }) => ({ validations })
-)(Docs)
+export default React.memo(Docs, () => true)
