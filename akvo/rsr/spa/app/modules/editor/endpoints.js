@@ -23,6 +23,7 @@ export const endpoints = {
   },
   section7: {
     locationItems: '/project_location/',
+    'locationItems.administratives': '/administrative_location/',
     recipientCountries: '/recipient_country/',
     recipientRegions: '/recipient_region/'
   },

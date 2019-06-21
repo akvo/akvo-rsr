@@ -2,10 +2,10 @@ import * as yup from 'yup'
 import { validationType } from '../../../../utils/validation-utils'
 
 const sector = yup.object().shape({
-  name: yup.string(),
+  code: yup.string(),
   vocabulary: yup.string(),
-  uri: yup.string(),
-  description: yup.string()
+  vocabularyUri: yup.string(),
+  text: yup.string()
 })
 
 const base = yup.object().shape({

@@ -20,7 +20,7 @@ const Sectors = ({push, parentName, transactionId}) => {
         pane={name => (
           <div>
           <FinalField
-            name={`${name}.transactionUnicode`}
+            name={`${name}.code`}
             render={({ input }) => (
               <Item label={<InputLabel optional>Name</InputLabel>}>
                 <Input {...input} />

@@ -8,13 +8,15 @@ import VOCABULARY_OPTIONS from './admin-vocab-options.json'
 
 const { Item } = Form
 
-const Administratives = ({push, parentName}) => {
+const Administratives = ({push, parentName, locationId}) => {
   return (
     <div>
       <ItemArrayTabs
         name={`${parentName}.administratives`}
         tabName="Administrative"
         push={push}
+        sectionIndex={7}
+        newItem={{ location: locationId }}
         pane={name => (
           <div>
           <Item label={<InputLabel optional>Vocabulary</InputLabel>}>

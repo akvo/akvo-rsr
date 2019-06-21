@@ -179,7 +179,7 @@ const LocationItems = ({ validations, formPush }) => {
               }
             </Row>
             {fieldExists('administratives') &&
-            <Administratives push={formPush} parentName={name} />
+            <FinalField name={`${name}.id`} render={({input}) => <Administratives push={formPush} parentName={name} locationId={input.value} />} />
             }
           </Aux>
         )}

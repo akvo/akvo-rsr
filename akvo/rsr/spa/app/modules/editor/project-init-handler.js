@@ -26,7 +26,10 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
         .then(({data}) => props.fetchFields(sectionIndex, data))
     }
     // fetch sets
-    const setEndpoints = Object.keys(_endpoints).filter(it => it !== 'root').map(it => ({ setName: it, endpoint: _endpoints[it]}))
+    const setEndpoints = Object
+      .keys(_endpoints)
+      .filter(it => it !== 'root' && it.indexOf('.') === -1)
+      .map(it => ({ setName: it, endpoint: _endpoints[it]}))
     if(setEndpoints.length > 0) {
       const fetchSet = (index) => {
         const { endpoint, setName } = setEndpoints[index]
