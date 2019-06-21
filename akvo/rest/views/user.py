@@ -37,6 +37,15 @@ class UserViewSet(BaseRSRViewSet):
     )
     serializer_class = UserSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous():
+            raise PermissionDenied()
+        return super(UserViewSet, self).get_queryset()
+
+    def list(self, request, *args, **kwargs):
+        raise PermissionDenied()
+
 
 @api_view(['POST'])
 def change_password(request, pk=None):

@@ -40,10 +40,6 @@ GET_URLS = [
     # akvo/rsr/front-end/scripts-src/my-projects.js
     '/rest/v1/project/?format=json',
 
-    # akvo/scripts/cordaid/organisation_upload.py
-    '/api/v1/user/?format=json&api_key={api_key}&username={username}&user__username={username}&do_format=1',
-    # XXX: /rest/v1/internal_organisation_id/?recording_org={recording_org}&identifier={identifier}&format=json,
-
     # akvo/rest/filters.py doc examples
     "/rest/v1/project/?filter={'title__icontains':'water','currency':'EUR'}&format=json",
     "/rest/v1/project/?filter={'title__icontains':'fiber'}&exclude={'currency':'EUR'}&format=json",
