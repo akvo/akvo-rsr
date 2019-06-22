@@ -43,6 +43,15 @@ class UserTestCase(TransactionTestCase):
             version=version
         )
 
+    def test_request_to_list_user_are_forbidden(self):
+        response = self.c.get('/rest/v1/user/?format=json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_unauthenticated_request_for_user_detail_should_be_forbidden(self):
+        self.c.logout()
+        response = self.c.get('/rest/v1/user/{}/?format=json'.format(self.user.id))
+        self.assertEqual(response.status_code, 403)
+
     def test_request_organisation_simple(self):
         # Given
         data = {'organisation': self.org.id}
