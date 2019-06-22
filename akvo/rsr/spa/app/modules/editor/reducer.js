@@ -7,12 +7,14 @@ import { RSR as Section4Defs } from './section4/validations'
 import { IATI as Section6Defs } from './section6/validations'
 import { IATI as Section7Defs} from './section7/validations'
 import { IATI as Section8Defs} from './section8/validations'
+import { RSR as Section10Defs} from './section10/validations'
 
 const sectionDefs = {
   4: Section4Defs,
   6: Section6Defs,
   7: Section7Defs,
-  8: Section8Defs
+  8: Section8Defs,
+  10: Section10Defs
 }
 
 export const initialState = {

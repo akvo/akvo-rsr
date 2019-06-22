@@ -35,6 +35,9 @@ export const endpoints = {
   section9: {
     links: '/link/',
     docs: '/project_document/'
+  },
+  section10: {
+    // comments: '/project_comment/'
   }
 }
 

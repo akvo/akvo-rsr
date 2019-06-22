@@ -12,7 +12,7 @@ const insertRouteParams = (route, params) => {
 }
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
-    if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8){
+    if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8 || sectionIndex === 10){
       props.fetchSectionRoot(sectionIndex)
     }
     if(sectionIndex === 4){
@@ -51,7 +51,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     fetchSection(nextSectionIndex)
     .then(() => {
       props.setSectionFetched(nextSectionIndex)
-      if(nextSectionIndex < 9){
+      if(nextSectionIndex < 10){
         fetchNextSection()
       }
     })

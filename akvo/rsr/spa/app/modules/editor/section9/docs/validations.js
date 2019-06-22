@@ -11,7 +11,7 @@ const RSR = yup.object().shape({
 })
 
 const DGIS = RSR.clone().shape({
-  categories: yup.array().of(yup.object().shape({ category: yup.string() }))
+  categories: yup.array().of(yup.string())
 })
 
 const IATI = DGIS.clone().shape({
