@@ -25,7 +25,7 @@ class _Section extends React.Component{
   render(){
     const sectionKey = `section${this.props.sectionIndex}`
     if(this.props.params.id !== 'new' && this.props.editorRdr[sectionKey].isFetched === false){
-      return <div className="view"><Skeleton active /></div>
+      return <div className="view"><Skeleton active paragraph={{ rows: 7 }} /></div>
     }
     return this.props.children
   }
@@ -43,7 +43,7 @@ const SavingStatus = connect(
         <span>Saving...</span>
       </div>
     )}
-    {(!saving && lastSaved !== null) && (
+    {(!saving && lastSaved !== null && backendError === null) && (
       <div>
         <Icon type="check" />
         <span>Saved <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>

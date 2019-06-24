@@ -220,7 +220,10 @@ class Section5 extends React.Component{
                         </div>
                         <div className="ant-form-item-label">Indicators:</div>
                       </div>
-                      <Indicators fieldName={name} formPush={push} />
+                      <Field
+                        name={`${name}.id`}
+                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} />}
+                      />
                     </Panel>
                   )}
                 />
