@@ -12,7 +12,7 @@ import { camelToKebab } from './misc'
 const debounce = 2000
 
 const getSetRootValues = (values) => {
-  const sets = ['indicators', 'periods', 'disaggregations', 'sectors']
+  const sets = ['indicators', 'periods', 'disaggregations', 'sectors', 'administratives']
   const ret = {...values}
   sets.forEach(fieldSet => {
     if(ret.hasOwnProperty(fieldSet)){
