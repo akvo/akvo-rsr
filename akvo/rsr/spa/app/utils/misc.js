@@ -35,7 +35,11 @@ export const dateTransform = {
         }
         else if(typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]){
           const date = $data[key].split('/')
-          res[key] = `${date[2]}-${date[1]}-${date[0]}`
+          if(date.length === 3){
+            res[key] = `${date[2]}-${date[1]}-${date[0]}`
+          } else {
+            res[key] = $data[key]
+          }
         } else {
           res[key] = $data[key]
         }
@@ -56,9 +60,13 @@ export const dateTransform = {
         if(Array.isArray($data[key])){
           res[key] = $data[key].map(item => transformItem(item))
         }
-        else if((key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]){
+        else if(typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]){
           const date = $data[key].split('-')
-          res[key] = `${date[2]}/${date[1]}/${date[0]}`
+          if(date.length === 3){
+            res[key] = `${date[2]}/${date[1]}/${date[0]}`
+          } else {
+            res[key] = $data[key]
+          }
         } else {
           res[key] = $data[key]
         }

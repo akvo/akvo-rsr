@@ -15,6 +15,7 @@ import Condition from '../../../utils/condition'
 import AutoSave from '../../../utils/auto-save'
 import { getBestAnchorGivenScrollLocation } from '../../../utils/scroll'
 import { addSetItem, removeSetItem } from '../actions'
+import Periods from './periods/periods'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -115,97 +116,6 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
   )
 })
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  const add = () => {
-    formPush(`${fieldName}.periods`, {})
-    addSetItem(5, `${fieldName}.periods`, {})
-  }
-  const remove = (index, fields) => {
-    fields.remove(index)
-    removeSetItem(5, `${fieldName}.periods`, index)
-  }
-  return (
-    <Aux>
-    <FieldArray name={`${fieldName}.periods`} subscription={{}}>
-      {({ fields }) => (
-        <Aux>
-        <div className="ant-col ant-form-item-label">
-          <InputLabel tooltip="...">Periods</InputLabel>
-        </div>
-        {fields.length > 0 &&
-        <Accordion
-          className="periods-list"
-          finalFormFields={fields}
-          setName={`${fieldName}.periods`}
-          renderPanel={(name, index) => (
-            <Panel
-              header={(
-                <span>
-                  Period {index + 1}:&nbsp;
-                  <Field
-                    name={`${name}.periodStart`}
-                    render={({input}) => input.value}
-                  />
-                  &nbsp;-&nbsp;
-                  <Field
-                    name={`${name}.periodEnd`}
-                    render={({input}) => input.value}
-                  />
-                </span>
-              )}
-              key={index}
-              extra={(
-                /* eslint-disable-next-line */
-                <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-                <div className="delete-btn-holder">
-                <Popconfirm
-                  title="Are you sure to delete this period?"
-                  onConfirm={() => remove(index, fields)}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button size="small" icon="delete" className="delete-panel" />
-                </Popconfirm>
-                </div>
-                </div>
-              )}
-            >
-              <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Item label="Start">
-                    <FinalField
-                      name={`${name}.periodStart`}
-                      control="datepicker"
-                    />
-                  </Item>
-                </Col>
-                <Col span={12}>
-                  <Item label="End">
-                    <FinalField
-                      name={`${name}.periodEnd`}
-                      control="datepicker"
-                    />
-                  </Item>
-                </Col>
-              </Row>
-              <Item label={<InputLabel optional>Target value</InputLabel>}>
-                <FinalField name={`${name}.targetValue`} />
-              </Item>
-              <Item label={<InputLabel optional>Comment</InputLabel>}>
-                <FinalField name={`${name}.targetComment`} render={({input}) => <RTE {...input} />} />
-              </Item>
-            </Panel>
-          )}
-        />
-        }
-        <Button icon="plus" block type="dashed" onClick={add}>Add period</Button>
-        </Aux>
-      )}
-    </FieldArray>
-    </Aux>
-  )
-})
 
 const fieldNameToId = name => name.replace(/\[/g, '').replace(/\]/g, '').replace(/\./g, '')
 
@@ -264,8 +174,8 @@ const indicatorTypes = [
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId }) => { // eslint-disable-line
   const add = (key) => {
-    const newItem = { type: key, measure: '1', periods: [], dimensionNames: [] }
-    if(key === '0') newItem.disaggregations = []
+    const newItem = { type: key, periods: [] }
+    if(key === 1) newItem.disaggregations = []
     if(resultId) newItem.result = resultId
     formPush(`${fieldName}.indicators`, newItem)
     addSetItem(5, `${fieldName}.indicators`, newItem)
@@ -379,17 +289,17 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <Periods formPush={formPush} fieldName={name} />
+              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} />} />
             </Panel>
           )}
         />
         <Dropdown
           overlay={(
-            <Menu style={{ textAlign: 'center' }} onClick={(e) => add(e.key)}>
-              <Menu.Item key="1">
+            <Menu style={{ textAlign: 'center' }} onClick={(e) => add(Number(e.key))}>
+              <Menu.Item key={1}>
                 Quantitative
               </Menu.Item>
-              <Menu.Item key="2">
+              <Menu.Item key={2}>
                 Qualitative
               </Menu.Item>
             </Menu>

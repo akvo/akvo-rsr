@@ -12,7 +12,8 @@ export const endpoints = {
   },
   section5: {
     results: '/results_framework/',
-    'results.indicators': '/indicator_framework/'
+    'results.indicators': '/indicator_framework/',
+    'results.indicators.periods': '/indicator_period/'
   },
   section6: {
     budgetItems: '/budget_item/',
