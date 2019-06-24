@@ -56,7 +56,7 @@ function loadMorePartners() {
                     return (
                         <div>
                             <a href={"/en/organisation/" + partner[0].organisation.id + "/"} className="pull-left logoImg">
-                              <img src={logo} alt={partner[0].organisation.long_name} style={{ maxWidth: 80, maxHeight: 60 }} />
+                              <img src={logo} style={{ maxWidth: 80, maxHeight: 60 }} />
                             </a>
                             <div className="media-body">
                             <a href={"/en/organisation/" + partner[0].organisation.id + "/"}>
