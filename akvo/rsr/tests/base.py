@@ -41,10 +41,11 @@ class BaseTestCase(TestCase):
         return user
 
     @staticmethod
-    def create_organisation(name, enable_restrictions=False):
+    def create_organisation(name, enable_restrictions=False, can_create_projects=True):
         """Create an organisation with the given name."""
         org = Organisation.objects.create(
-            name=name, long_name=name, enable_restrictions=enable_restrictions
+            name=name, long_name=name, enable_restrictions=enable_restrictions,
+            can_create_projects=can_create_projects
         )
         return org
 
@@ -78,8 +79,8 @@ class BaseTestCase(TestCase):
         )
 
     @staticmethod
-    def make_partner(project, org):
-        Partnership.objects.create(project=project, organisation=org)
+    def make_partner(project, org, role=None):
+        Partnership.objects.create(project=project, organisation=org, iati_organisation_role=role)
 
     @staticmethod
     def make_org_admin(user, org):

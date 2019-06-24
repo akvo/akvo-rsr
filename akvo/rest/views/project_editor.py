@@ -268,8 +268,7 @@ def project_editor_import_results(request, project_pk=None):
     project = Project.objects.get(pk=project_pk)
     user = request.user
 
-    if not (user.is_superuser or
-            user.can_import_results() and user.has_perm('rsr.change_project', project)):
+    if not user.can_import_results(project):
         return HttpResponseForbidden()
 
     status_code, message = project.import_results()
@@ -291,8 +290,7 @@ def project_editor_copy_results(request, project_pk=None, source_pk=None):
     source_project = Project.objects.get(pk=source_pk)
     user = request.user
 
-    if not (user.is_superuser or
-            user.can_import_results() and user.has_perm('rsr.change_project', project)):
+    if not user.can_import_results(project):
         return HttpResponseForbidden()
 
     if not user.has_perm('rsr.change_project', source_project):
@@ -322,7 +320,7 @@ def project_editor_import_indicator(request, project_pk, parent_indicator_id):
         return HttpResponseBadRequest()
 
     user = request.user
-    if not (user.can_import_results() and user.has_perm('rsr.change_project', project)):
+    if not user.can_import_results(project):
         return HttpResponseForbidden()
 
     try:

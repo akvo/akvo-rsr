@@ -30,6 +30,17 @@ class TransactionRawDeepSerializer(TransactionRawSerializer):
         model = Transaction
 
 
+class TransactionSectorSerializer(BaseRSRSerializer):
+
+    transaction_unicode = serializers.ReadOnlyField(source='transaction.__unicode__')
+    code_label = serializers.ReadOnlyField(source='iati_sector_unicode')
+    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
+
+    class Meta:
+        fields = '__all__'
+        model = TransactionSector
+
+
 class TransactionSerializer(TransactionRawSerializer):
 
     provider_organisation_show_link = serializers.ReadOnlyField()
@@ -44,14 +55,4 @@ class TransactionSerializer(TransactionRawSerializer):
     recipient_country_label = serializers.ReadOnlyField(source='iati_recipient_country_unicode')
     recipient_region_label = serializers.ReadOnlyField(source='iati_recipient_region_unicode')
     recipient_region_vocabulary_label = serializers.ReadOnlyField(source='iati_recipient_region_vocabulary_unicode')
-
-
-class TransactionSectorSerializer(BaseRSRSerializer):
-
-    transaction_unicode = serializers.ReadOnlyField(source='transaction.__unicode__')
-    code_label = serializers.ReadOnlyField(source='iati_sector_unicode')
-    vocabulary_label = serializers.ReadOnlyField(source='iati_vocabulary_unicode')
-
-    class Meta:
-        fields = '__all__'
-        model = TransactionSector
+    sectors = TransactionSectorSerializer(many=True, read_only=True)
