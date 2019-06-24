@@ -55,7 +55,7 @@
     {% if load_wp_css %}
       {% render_bundle 'akvoWordpress' 'css' attrs='media="screen"' %}
     {% endif %}
-    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+    {% if page_stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{page_stylesheet}}">{% endif %}
 
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
