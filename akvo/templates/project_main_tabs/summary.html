@@ -115,11 +115,11 @@
                                                 </a>
                                                 <div class="media-body">
                                                     <a href="{% url 'organisation-main' project.primary_organisation.pk %}">{{ project.primary_organisation }}</a>
-                                                    <div class="morePartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="true"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
+                                    <li class="morePartners projectPartners" projectId="{{ project.pk }}" primaryOrgId="{{ project.primary_organisation.pk }}" projectPage="true"></li>
                                 {% endif %}
                                 {% if project.accepts_donations %}
                                     <li class="donateSection text-center topMargin">

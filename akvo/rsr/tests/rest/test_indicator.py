@@ -9,7 +9,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from akvo.rsr.models import Partnership, Result, Indicator, IndicatorPeriod
+from akvo.rsr.models import Partnership, Result, Indicator, IndicatorPeriod, IndicatorDimensionName
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -57,6 +57,8 @@ class RestIndicatorTestCase(BaseTestCase):
         result = Result.objects.create(project=self.project)
         indicator = Indicator.objects.create(result=result)
         IndicatorPeriod.objects.create(indicator=indicator)
+        dimension = IndicatorDimensionName.objects.create(project=self.project, name='Age')
+        indicator.dimension_names.add(dimension)
         child_project = self.create_project('Child Project')
         self.make_parent(self.project, child_project)
         child_project.import_results()
@@ -72,6 +74,25 @@ class RestIndicatorTestCase(BaseTestCase):
             [indicator.id] + list(indicator.child_indicators.values_list('id', flat=True))
         )
         self.assertEqual(indicators, {indicator['id'] for indicator in response.data['results']})
+        dimension_names = response.data['results'][0]['dimension_names']
+        self.assertEqual(len(dimension_names), 1)
+        self.assertEqual(dimension_names[0]['id'], dimension.id)
+
+    def test_indicator_framework_post(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        data = {"type": 1, "measure": "1", "periods": [], "dimension_names": [], "result": result.id}
+        self.c.login(username=self.user.username, password="password")
+        url = '/rest/v1/indicator_framework/?format=json'
+        content_type = 'application/json'
+
+        # When
+        response = self.c.post(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(response.data['result'], result.id)
+        self.assertEqual(response.data['measure'], '1')
+        self.assertEqual(response.data['type'], 1)
 
     def get_indicator_periods(self, project_id):
         periods = []
