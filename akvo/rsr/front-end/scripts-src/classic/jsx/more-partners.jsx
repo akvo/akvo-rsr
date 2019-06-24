@@ -50,26 +50,26 @@ function loadMorePartners() {
                     } else {
                         splitLine = <hr />;
                     }
-
+                    let logo = partner[0].organisation.logo
+                    if(logo === '' || logo === 'undefined') logo = '/static-dev/rsr/images/default-org-logo.jpg'
+                    else logo = `/media/${logo}`
                     return (
-                        <div className="extra-partner-entry">
+                        <div>
+                            <a href={"/en/organisation/" + partner[0].organisation.id + "/"} className="pull-left logoImg">
+                              <img src={logo} alt={partner[0].organisation.long_name} style={{ maxWidth: 80, maxHeight: 60 }} />
+                            </a>
+                            <div className="media-body">
                             <a href={"/en/organisation/" + partner[0].organisation.id + "/"}>
                                 {partner[0].organisation.long_name}
                             </a>
-                            <br />
-                            {roles.join(", ")}
-                            {splitLine}
+                            {roles.length > 0 ? ` - ${roles.join(", ")}` : ''}
+                            </div>
+                            <div style={{ clear: 'both', height: 5 }} />
                         </div>
                     );
                 }
             });
-
-            return (
-                <div className="tooltip right in">
-                    <div className="tooltip-arrow" />
-                    <div className="tooltip-inner">{organisations}</div>
-                </div>
-            );
+            return <div>{organisations}</div>
         }
     });
 
@@ -143,14 +143,10 @@ function loadMorePartners() {
         },
 
         showTooltip: function() {
-            if (this.state.hover) {
-                return React.createElement(MorePartnersToolTip, {
-                    partnerships: this.state.partnerships,
-                    primaryOrgId: this.props.primaryOrgId
-                });
-            } else {
-                return <span />;
-            }
+          return React.createElement(MorePartnersToolTip, {
+              partnerships: this.state.partnerships,
+              primaryOrgId: this.props.primaryOrgId
+          });
         },
 
         generateLink: function() {
@@ -204,20 +200,16 @@ function loadMorePartners() {
                 if (this.partnersCount() === 1) {
                     partnersText = i18nMorePartners.partner;
                 }
-
+                // getback
                 return (
-                    <div>
-                        <a
-                            href="#partners"
-                            onClick={this.generateLink}
-                            className="small moreLink tab-link"
-                            onMouseEnter={this.handleMouseEnter}
-                            onMouseLeave={this.handleMouseLeave}
-                        >
-                            + {this.partnersCount()} {partnersText}
-                        </a>
+                  <div>
+                    <span className="detailedInfo">Partners</span>
+                    <div className="row">
+                      <div className="col-xs-12">
                         {this.showTooltip()}
+                      </div>
                     </div>
+                  </div>
                 );
             } else {
                 return <span />;
