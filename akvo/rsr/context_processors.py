@@ -73,6 +73,7 @@ def extra_pages_context(request):
             'return_url': page.return_url,
             'return_url_text': page.custom_return_url_text,
             'page_stylesheet': page.stylesheet,
+            'page_map_marker': page.map_marker,
             'akvoapp_root_url': '//{}'.format(settings.AKVOAPP_DOMAIN),
             'domain_url': '//{}'.format(settings.RSR_DOMAIN),
             'no_facebook': not page.facebook_button,

@@ -174,7 +174,7 @@
     {# Map marker path #}
     <script type="application/json" id="map-marker">
      {
-         "mapMarker": "{{ map_marker }}"
+         "mapMarker": "{% if page_map_marker %}{{ page_map_marker }}{% else %}{{ map_marker}}{% endif %}"
      }
     </script>
 
