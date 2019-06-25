@@ -50,14 +50,14 @@ function loadMorePartners() {
                     } else {
                         splitLine = <hr />;
                     }
-                    let logo = partner[0].organisation.logo
-                    if(logo === '' || logo === 'undefined') logo = '/static-dev/rsr/images/default-org-logo.jpg'
-                    else logo = `/media/${logo}`
+                    const logo = partner[0].organisation.logo
                     return (
                         <div>
+                            {(logo !== '' && logo !== 'undefined') &&
                             <a href={"/en/organisation/" + partner[0].organisation.id + "/"} className="pull-left logoImg">
-                              <img src={logo} style={{ maxWidth: 80, maxHeight: 60 }} />
+                              <img src={`/media/${logo}`} style={{ maxWidth: 80, maxHeight: 60 }} />
                             </a>
+                            }
                             <div className="media-body">
                             <a href={"/en/organisation/" + partner[0].organisation.id + "/"}>
                                 {partner[0].organisation.long_name}

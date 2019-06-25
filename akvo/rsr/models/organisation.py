@@ -187,6 +187,10 @@ class Organisation(TimestampsMixin, models.Model):
     def get_absolute_url(self):
         return 'organisation-main', (), {'organisation_id': self.pk}
 
+    @property
+    def canonical_name(self):
+        return self.long_name or self.name
+
     def clean(self):
         """Organisations can only be saved when we're sure that they do not exist already."""
         validation_errors = {}
