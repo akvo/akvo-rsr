@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch, Divider } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
+import { isEqual } from 'lodash'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -39,7 +40,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...prop
       </Menu>
     }
     trigger={['click']}>
-      <Button icon="plus" className="add-result" size="large" {...props}>Add Result</Button>
+      <Button icon="plus" className="add-result" size="large" {...props}>Add result</Button>
     </Dropdown>
   )
 })
@@ -57,18 +58,21 @@ class Summary extends React.Component{
       return (
         <div className="no-results">
           <h3>No results</h3>
+          <Divider />
           <ul>
+            {this.props.hasParent &&
             <li>
               <span>
                 Import the results framework from parent project
               </span>
               <div><Button type="primary">Import results set</Button></div>
             </li>
-            <li>
+            }
+            <li className="copy-framework">
               <span>Copy the results framework from an existing project</span>
-              <div style={{display: 'flex'}}>
+              <div>
                 <Input placeholder="Project ID" />
-                <Button type="primary">Copy results set</Button>
+                <Button type="primary">Copy results</Button>
               </div>
             </li>
             <li>
@@ -85,7 +89,6 @@ class Summary extends React.Component{
     resultTypes.forEach(type => {
       groupedResults[type.value] = results.filter(it => it.type === type.value)
     })
-    console.log(groupedResults)
     return (
       <div className="summary">
         <ul>
@@ -135,14 +138,15 @@ class UpdateIfLengthChanged extends React.Component{
 }
 
 class Section5 extends React.Component{
-  shouldComponentUpdate(){
-    return false
+  shouldComponentUpdate(nextProps){
+    return !isEqual(nextProps, this.props)
   }
   removeSection = (fields, index) => {
     fields.remove(index)
     this.props.removeSetItem(5, 'results', index)
   }
   render(){
+    const hasParent = this.props.relatedProjects && this.props.relatedProjects.filter(it => it.relation === '1').length > 0
     return (
       <div className="view section5">
         <Form layout="vertical">
@@ -158,7 +162,7 @@ class Section5 extends React.Component{
           }) => (
             <Aux>
             <FormSpy subscription={{ values: true }}>
-              {({ values }) => <Summary values={values} push={push} />}
+              {({ values }) => <Summary values={values} push={push} hasParent={hasParent} />}
             </FormSpy>
             <FieldArray name="results" subscription={{}}>
             {({ fields }) => (
@@ -248,6 +252,6 @@ class Section5 extends React.Component{
 }
 
 export default connect(
-  ({ editorRdr: { section5: { fields }}}) => ({ fields }),
+  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects } }}}) => ({ fields, relatedProjects }),
   { removeSetItem }
 )(Section5)

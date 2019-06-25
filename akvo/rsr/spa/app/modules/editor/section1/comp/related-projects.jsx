@@ -29,7 +29,7 @@ class ProjectPicker extends React.Component{
         <InputLabel
           tooltip="Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project."
           optional
-        >Parent
+        >Project
         </InputLabel>
       )}>
         <Condition when={`${fieldName}.isParentExternal`} is={true}>
