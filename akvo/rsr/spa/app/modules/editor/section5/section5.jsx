@@ -5,6 +5,7 @@ import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
 import { isEqual } from 'lodash'
+import { Route } from 'react-router-dom'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -12,7 +13,8 @@ import './styles.scss'
 import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
-import {addSetItem, removeSetItem} from '../actions'
+import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
+import api from '../../../utils/api'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -47,10 +49,24 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...prop
 
 class Summary extends React.Component{
   state = {
-    showModal: false
+    showModal: false,
+    importing: false
   }
   shouldComponentUpdate(nextProps, nextState){
     return nextProps.values.results.length !== this.props.values.results.length || nextState !== this.state
+  }
+  import = (projectId) => {
+    this.setState({ importing: true })
+    api.post(`/project/${projectId}/import_results/`)
+      .then(() => {
+        this.setState({
+          importing: false
+        })
+        api.get('/results_framework/', { project: projectId })
+          .then(({ data: {results}}) => {
+            this.props.fetchSetItems(5, 'results', results)
+          })
+      })
   }
   render(){
     const { values: {results}} = this.props
@@ -65,7 +81,9 @@ class Summary extends React.Component{
               <span>
                 Import the results framework from parent project
               </span>
-              <div><Button type="primary">Import results set</Button></div>
+              <div>
+              <Route path="/projects/:id" component={({ match: {params} }) => <Button type="primary" loading={this.state.importing} onClick={() => this.import(params.id)}>Import results set</Button>} />
+              </div>
             </li>
             }
             <li className="copy-framework">
@@ -162,7 +180,7 @@ class Section5 extends React.Component{
           }) => (
             <Aux>
             <FormSpy subscription={{ values: true }}>
-              {({ values }) => <Summary values={values} push={push} hasParent={hasParent} />}
+              {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={this.props.fetchSetItems} />}
             </FormSpy>
             <FieldArray name="results" subscription={{}}>
             {({ fields }) => (
@@ -178,7 +196,7 @@ class Section5 extends React.Component{
                         <span>
                           <Field
                             name={`${name}.type`}
-                            render={({input}) => <span className="capitalized">{resultTypes.find(it => it.value === input.value).label}</span>}
+                            render={({input}) => <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>}
                           />
                           &nbsp;Result {index + 1}
                           <Field
@@ -253,5 +271,5 @@ class Section5 extends React.Component{
 
 export default connect(
   ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects } }}}) => ({ fields, relatedProjects }),
-  { removeSetItem }
+  { removeSetItem, fetchSetItems }
 )(Section5)
