@@ -196,7 +196,7 @@ var ProjectDirectory = React.createClass({
                 longitude: project.longitude,
                 url: project.url,
                 text: project.title,
-                icon: "/static/rsr/images/maps/blueMarker.png",
+                icon: this.props.mapMarker,
                 image: project.image,
                 highlightId: "#project-" + project.id
             };
@@ -544,6 +544,7 @@ var App = React.createClass({
                 />
                 <ProjectDirectory
                     hide_map={this.props.hide_map}
+                    mapMarker={this.props.mapMarker}
                     type={this.props.type}
                     onChange={this.onFilterChange}
                     limitOptions={this.state.options.limit}
