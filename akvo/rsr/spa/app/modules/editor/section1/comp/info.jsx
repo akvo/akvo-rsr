@@ -22,7 +22,8 @@ import tiedStatusOptions from '../options/tied-statuses.json'
 import RelatedProjects from './related-projects'
 import SectionContext from '../../section-context'
 import '../styles.scss'
-import InputLabel from '../../../../utils/input-label';
+import InputLabel from '../../../../utils/input-label'
+import { useFetch } from '../../../../utils/hooks'
 
 const { Item } = Form
 
@@ -47,6 +48,7 @@ const COLLABORATION_TYPES = [
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
 const Info = ({ validations, fields }) => {
+  const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
@@ -88,7 +90,7 @@ const Info = ({ validations, fields }) => {
             withLabel
             fieldExists={fieldExists}
           />
-          <RelatedProjects formPush={push} />
+          <RelatedProjects formPush={push} projects={results} loading={loading} />
           <FinalField
             name="hierarchy"
             control="select"

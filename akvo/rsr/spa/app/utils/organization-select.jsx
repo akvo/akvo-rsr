@@ -2,14 +2,10 @@ import React from 'react'
 import { Field } from 'react-final-form'
 import { Select } from 'antd'
 import FinalField from './final-field'
-import {useFetch} from './hooks'
 
 const { Option } = Select
 
-const OrganizationSelect = ({ name, retrieveOrgs }) => {
-  const [{results}, loading] = useFetch('/typeaheads/organisations')
-  const orgOptions = results ? results.map(it => ({ value: it.id, label: it.name })) : []
-  if(results && retrieveOrgs) retrieveOrgs(orgOptions)
+const OrganizationSelect = ({ name, orgs, loading }) => {
   return (
     <Field
       name={`${name}.organisationName`}
@@ -18,8 +14,8 @@ const OrganizationSelect = ({ name, retrieveOrgs }) => {
           name={`${name}.organisation`}
           render={({input}) => {
             const options =
-              orgOptions.length > 0
-              ? orgOptions
+              orgs.length > 0
+              ? orgs.map(it => ({ value: it.id, label: it.name }))
               : [{ value: input.value, label: nameProps.input.value }]
             return (
               <Select

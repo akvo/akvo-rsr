@@ -28,7 +28,12 @@ const ROLE_OPTIONS = [
 
 class Partners extends React.Component{
   state = {
-    orgs: []
+    orgs: [],
+    loading: true
+  }
+  componentDidMount(){
+    api.get('/typeaheads/organisations')
+      .then(({data: {results}}) => this.setState({ orgs: results, loading: false }))
   }
   shouldComponentUpdate(nextProps, nextState){
     return !isEqual(nextProps.fields, this.props.fields) || !isEqual(nextState, this.state)
@@ -79,7 +84,8 @@ class Partners extends React.Component{
                   <Item label="Organisation">
                     <OrganizationSelect
                       name={name}
-                      retrieveOrgs={(orgs) => this.setState({ orgs })}
+                      orgs={this.state.orgs}
+                      loading={this.state.loading}
                     />
                   </Item>
                   <Condition when={`${name}.iatiOrganisationRole`} is={101}>
