@@ -80,6 +80,7 @@ def extra_pages_context(request):
             'facebook_app_id': page.facebook_app_id,
             'no_twitter': not page.twitter_button,
             'disable_robots': not settings.ALLOW_ROBOTS,
+            'page_tagline': page.tagline,
         }
 
     return {

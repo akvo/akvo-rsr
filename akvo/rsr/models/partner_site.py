@@ -144,6 +144,7 @@ class PartnerSite(TimestampsMixin, models.Model):
             u'<em>must</em> be 470 pixels wide and 250 pixels tall.</p>'
         )
     )
+    tagline = models.CharField(_(u'tagline'), max_length=100, blank=True, null=True)
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
     default_language = ValidXMLCharField(
