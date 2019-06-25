@@ -1534,7 +1534,7 @@ h4.detailedInfo {
             margin-bottom: 15px;
           }
           .bootstrap-typeahead-input input:last-of-type{
-            display: none;
+            display: none!important;
           }
           .form-group{
             width: 100%;
