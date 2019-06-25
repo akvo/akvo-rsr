@@ -1316,7 +1316,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', ('cname', 'redirect_cname'), 'custom_return_url',
                                'custom_return_url_text', 'piwik_id',))),
         (u'Style and content',
-            dict(fields=('all_maps', 'custom_css', 'custom_logo',
+            dict(fields=('all_maps', 'custom_css', 'custom_logo', 'custom_map_marker',
                          'custom_favicon', 'show_keyword_logos',))),
         (u'Languages and translation', dict(fields=('google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),

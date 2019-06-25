@@ -37,6 +37,11 @@ def custom_logo_path(instance, filename):
     return 'db/partner_sites/%s/logo/%s' % (instance.hostname, filename)
 
 
+def custom_map_marker_path(instance, filename):
+    """Return custom map marker path."""
+    return 'db/partner_sites/%s/map-marker/%s' % (instance.hostname, filename)
+
+
 class PartnerSite(TimestampsMixin, models.Model):
 
     """Model makes it possible to cater different data sets based on request's hostname."""
@@ -89,6 +94,11 @@ class PartnerSite(TimestampsMixin, models.Model):
         _(u'organisation banner logo'), blank=True, upload_to=custom_logo_path, help_text=_(
             u'<p>Upload a logo file for the logo at the top of the Akvo page. By default '
             u'logo of the organisation belonging to the Akvo Page will be displayed.</p>'
+        )
+    )
+    custom_map_marker = models.FileField(
+        _(u'map marker'), blank=True, upload_to=custom_map_marker_path, help_text=_(
+            u'Upload an image file to use as the map marker'
         )
     )
     custom_favicon = models.FileField(
@@ -222,6 +232,13 @@ class PartnerSite(TimestampsMixin, models.Model):
     def stylesheet(self):
         """Return stylesheet."""
         return self.custom_css or None
+
+    @property
+    def map_marker(self):
+        """Return full path to map marker if it exists."""
+        if not self.custom_map_marker:
+            return None
+        return '{}{}'.format(settings.MEDIA_URL, self.custom_map_marker)
 
     @property
     def favicon(self):
