@@ -31,7 +31,6 @@ class Partners extends React.Component{
     orgs: []
   }
   shouldComponentUpdate(nextProps, nextState){
-    console.log(nextState, this.state)
     return !isEqual(nextProps.fields, this.props.fields) || !isEqual(nextState, this.state)
   }
   render(){
@@ -79,7 +78,7 @@ class Partners extends React.Component{
                   </Item>
                   <Item label="Organisation">
                     <OrganizationSelect
-                      name={`${name}.organisation`}
+                      name={name}
                       retrieveOrgs={(orgs) => this.setState({ orgs })}
                     />
                   </Item>

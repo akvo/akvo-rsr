@@ -1,6 +1,7 @@
 /* global fetch */
 import React from 'react'
-import { Form, Button, Row, Col, Checkbox, Icon } from 'antd'
+import { Form, Button, Row, Col, Checkbox, Icon, Select } from 'antd'
+import { Field } from 'react-final-form';
 
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
@@ -8,17 +9,20 @@ import Condition from '../../../../utils/condition'
 import ItemArray from '../../../../utils/item-array'
 
 const { Item } = Form
+const { Option } = Select
 
 class ProjectPicker extends React.Component{
   state = {
-    projects: []
+    projects: [],
+    loading: true
   }
   componentWillMount(){
     fetch('/rest/v1/typeaheads/projects?format=json')
       .then(d => d.json())
       .then(({ results }) => {
         this.setState({
-          projects: results
+          projects: results,
+          loading: false
         })
       })
   }
@@ -39,13 +43,32 @@ class ProjectPicker extends React.Component{
           />
         </Condition>
         <Condition when={`${fieldName}.isParentExternal`} isNot={true}>
-          <FinalField
-            name={`${fieldName}.relatedProject`}
-            control="select"
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            options={this.state.projects.map(({id, title}) => ({ value: id, label: title }))}
+          <Field
+            name={`${fieldName}.relatedProjectName`}
+            render={(nameProps) => {
+              return (
+                <FinalField
+                  name={`${fieldName}.relatedProject`}
+                  render={({input}) => {
+                    const options =
+                      this.state.projects.length > 0
+                      ? this.state.projects.map(({id, title}) => ({ value: id, label: title }))
+                      : [{ value: input.value, label: nameProps.input.value }]
+                    return (
+                      <Select
+                        {...input}
+                        loading={this.state.loading}
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(val, option) => option.props.children.toLowerCase().indexOf(val.toLowerCase()) >= 0}
+                      >
+                        {options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
+                      </Select>
+                    )
+                  }}
+                />
+              )
+            }}
           />
         </Condition>
         <FinalField
