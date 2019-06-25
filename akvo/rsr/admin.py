@@ -1337,9 +1337,8 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # fieldset
         """
         if request.user.is_superuser or request.user.is_admin:
-            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
-        else:
-            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
+            fields = self.fieldsets[0][1]['fields']
+            self.fieldsets[0][1]['fields'] = fields + ('notes',) if 'notes' not in fields else fields
         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
 
     def get_form(self, request, obj=None, **kwargs):
