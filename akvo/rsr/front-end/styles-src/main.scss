@@ -1533,6 +1533,9 @@ h4.detailedInfo {
           @media screen and (min-width: 768px) and (max-width: 1024px){
             margin-bottom: 15px;
           }
+          .bootstrap-typeahead-input input:last-of-type{
+            display: none;
+          }
           .form-group{
             width: 100%;
             .input-group{
