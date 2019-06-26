@@ -189,6 +189,7 @@ class Section5 extends React.Component{
                   className="results-list"
                   finalFormFields={fields}
                   setName="results"
+                  multiple
                   renderPanel={(name, index) => (
                     <Panel
                       key={`${index}`}

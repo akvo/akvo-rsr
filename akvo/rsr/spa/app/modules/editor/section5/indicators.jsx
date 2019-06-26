@@ -196,7 +196,6 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
           renderPanel={(name, index) => (
             <Panel
               key={`${index}`}
-              forceRender
               header={(
               <span>
                 <Field
@@ -248,7 +247,6 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                     <Item label={<InputLabel>Order</InputLabel>}>
                       <FinalField
                         name={`${name}.ascending`}
-                        defaultValue={0}
                         render={({input}) => (
                           <Radio.Group {...input}>
                             <Radio.Button value>Ascending</Radio.Button>
