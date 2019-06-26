@@ -59,7 +59,7 @@ class Accordion extends Component {
       <div className="accordion-container" ref={(ref) => { this.ref = ref }}>
       {this.props.finalFormFields.length > 0 &&
       <Collapse accordion={this.props.multiple !== true} className={this.props.className} onChange={this.handleChange} activeKey={this.state.activeKey}>
-        {this.props.finalFormFields.map(this.props.renderPanel)}
+        {this.props.finalFormFields.map((name, index) => this.props.renderPanel(name, index, this.state.activeKey))}
       </Collapse>
       }
       <FormSpy subscription={{ values: true }}>
