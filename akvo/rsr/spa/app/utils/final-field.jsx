@@ -55,12 +55,13 @@ const CONTROLS = {
 
 const Control = (props) => {
   const { t } = useTranslation()
-  const { control, withLabel, optional, fieldExists, label, ..._props } = props
+  const { control, withLabel, optional, fieldExists, label, addingItem, ..._props } = props
+  const disabled = props.disabled || addingItem
   if(!control){
     if(!props.render){
-      return CONTROLS.input(_props)
+      return CONTROLS.input({..._props, disabled})
     }
-    return props.render(_props)
+    return props.render({..._props, disabled})
   }
   if(withLabel){
     const name = props.input.name.split('.').reduce((acc, curr) => curr)
@@ -78,7 +79,7 @@ const Control = (props) => {
       {label !== undefined ? label : t(`${section}:${name}.label`)}
       </InputLabel>}
     >
-      {CONTROLS[control](_props)}
+      {CONTROLS[control]({..._props, disabled})}
     </Item>
     }
     </SectionContext.Consumer>)
@@ -95,7 +96,7 @@ const FinalField = ({name, ...props}) => (
 )
 // FinalField.contextType = SectionContext
 
-export default connect(({ editorRdr: { addingItem }}) => ({ disabled: addingItem }))(
+export default connect(({ editorRdr: { addingItem }}) => ({ addingItem }))(
   React.memo(FinalField, (prevProps, nextProps) => isEqual(prevProps, nextProps))
 )
 // export default FinalField
