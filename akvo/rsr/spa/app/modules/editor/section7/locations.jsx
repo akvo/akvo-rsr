@@ -19,7 +19,7 @@ import validationDefs from './validations'
 
 const { Item } = Form
 
-const LocationsView = ({ validations, fields }) => {
+const LocationsView = ({ validations, fields, primaryOrganisation }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isEUTF = validations.indexOf(5) !== -1
@@ -53,7 +53,7 @@ const LocationsView = ({ validations, fields }) => {
             <AutoSave sectionIndex={7} />
           </Item>
           }
-          <LocationsItems formPush={push} validations={validations} />
+          <LocationsItems formPush={push} validations={validations} primaryOrganisation={primaryOrganisation} />
           {!isEUTF &&
           <Aux>
             <hr />
@@ -75,5 +75,5 @@ const LocationsView = ({ validations, fields }) => {
 }
 
 export default connect(
-  ({ editorRdr: { validations, section7: { fields } } }) => ({ validations, fields })
+  ({ editorRdr: { validations, section7: { fields }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation })
 )(React.memo(LocationsView, (prevProps, nextProps) => isEqual(prevProps.fields, nextProps.fields)))

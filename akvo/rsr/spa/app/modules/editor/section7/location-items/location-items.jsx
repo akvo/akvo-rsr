@@ -14,7 +14,7 @@ import '../styles.scss'
 
 const { Item } = Form
 
-const LocationItems = ({ validations, formPush }) => {
+const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
@@ -181,7 +181,7 @@ const LocationItems = ({ validations, formPush }) => {
             {fieldExists('administratives') &&
             <div>
             <h5>Administratives</h5>
-            <FinalField name={`${name}.id`} render={({input}) => <Administratives push={formPush} parentName={name} locationId={input.value} />} />
+            <FinalField name={`${name}.id`} render={({input}) => <Administratives push={formPush} parentName={name} locationId={input.value} primaryOrganisation={primaryOrganisation} />} />
             </div>
             }
           </Aux>

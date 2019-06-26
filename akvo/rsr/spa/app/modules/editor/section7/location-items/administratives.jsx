@@ -1,20 +1,23 @@
 import React from 'react'
-import { Form, Row, Col, Popconfirm, Button, Collapse, Tag } from 'antd'
+import { Form, Row, Col, Popconfirm, Button, Collapse, Tag, Select, Input } from 'antd'
 import { FieldArray } from 'react-final-form-arrays'
 import { connect } from 'react-redux'
+import { Field } from 'react-final-form'
 
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
 import VOCABULARY_OPTIONS from './admin-vocab-options.json'
+import EUTF_ADMIN_CODES_OPTIONS from './eutf-admin-codes.json'
 import Accordion from '../../../../utils/accordion'
 import { removeSetItem } from '../../actions'
 import AutoSave from '../../../../utils/auto-save'
 
 const { Item } = Form
 const { Panel } = Collapse
+const { Option } = Select
 const Aux = node => node.children
 
-const Administratives = connect(null, { removeSetItem })(({ push, parentName, locationId, removeSetItem }) => { // eslint-disable-line
+const Administratives = connect(null, { removeSetItem })(({ push, parentName, locationId, removeSetItem, primaryOrganisation }) => { // eslint-disable-line
   const add = () => {
     push(`${parentName}.administratives`, { location: locationId })
   }
@@ -71,9 +74,23 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
             <Row gutter={16}>
               <Col span={12}>
                 <Item label={<InputLabel optional>Administrative code</InputLabel>}>
-                <FinalField
-                  name={`${name}.code`}
-                  control="input"
+                <Field
+                  name={`${name}.vocabulary`}
+                  render={(vocabProps) => (
+                    <FinalField
+                      name={`${name}.code`}
+                      render={({input}) => {
+                        if(primaryOrganisation === 3394 && vocabProps.input.value === 'A4'){
+                          return (
+                            <Select {...input}>
+                              {EUTF_ADMIN_CODES_OPTIONS.map(option => <Option value={option.value}>{option.label}</Option>)}
+                            </Select>
+                          )
+                        }
+                        return <Input {...input} />
+                      }}
+                    />
+                  )}
                 />
                 </Item>
               </Col>
