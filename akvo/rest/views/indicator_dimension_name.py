@@ -16,4 +16,4 @@ class IndicatorDimensionNameViewSet(PublicProjectViewSet):
     """
     queryset = IndicatorDimensionName.objects.all()
     serializer_class = IndicatorDimensionNameSerializer
-    project_relation = 'indicator__result__project__'
+    project_relation = 'project__'
