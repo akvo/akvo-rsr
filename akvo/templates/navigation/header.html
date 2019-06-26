@@ -50,7 +50,7 @@
         </ul>
     {% else %}
         <div class="tagLine">
-            <h2>{% trans 'Monitor, report and share with ease' %}</h2>
+            <h2>{% if page_tagline %}{{ page_tagline }}{% else %}{% trans 'Monitor, report and share with ease' %}{% endif %}</h2>
         </div>
     {% endif %}
     </div>

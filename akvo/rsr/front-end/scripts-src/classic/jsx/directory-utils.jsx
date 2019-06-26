@@ -73,25 +73,25 @@ var Project = React.createClass({
                 onMouseEnter={this.highlightMarker}
                 onMouseLeave={this.unHighlightMarker}
             >
-              <div className="contents">
-                <div className="thumbImg">
-                    <a href={project.url}>
-                        <img src={project.image} alt={project.title} />
-                    </a>
+                <div className="contents">
+                    <div className="thumbImg">
+                        <a href={project.url}>
+                            <img src={project.image} alt={project.title} />
+                        </a>
+                    </div>
+                    <div className="text">
+                        <h1>
+                            <a href={project.url}>{project.title}</a>
+                        </h1>
+                        <p className="projectOrg">
+                            <a href={project.organisation_url}>{project.organisation}</a>
+                        </p>
+                        <p className="projectLocation">
+                            <i className="fa fa-map-marker" />
+                            {countries}
+                        </p>
+                    </div>
                 </div>
-                <div className="text">
-                    <h1>
-                        <a href={project.url}>{project.title}</a>
-                    </h1>
-                    <p className="projectOrg">
-                        <a href={project.organisation_url}>{project.organisation}</a>
-                    </p>
-                    <p className="projectLocation">
-                        <i className="fa fa-map-marker" />
-                        {countries}
-                    </p>
-                </div>
-              </div>
             </li>
         );
     }
@@ -196,7 +196,7 @@ var ProjectDirectory = React.createClass({
                 longitude: project.longitude,
                 url: project.url,
                 text: project.title,
-                icon: "/static/rsr/images/maps/blueMarker.png",
+                icon: this.props.mapMarker,
                 image: project.image,
                 highlightId: "#project-" + project.id
             };
@@ -544,6 +544,7 @@ var App = React.createClass({
                 />
                 <ProjectDirectory
                     hide_map={this.props.hide_map}
+                    mapMarker={this.props.mapMarker}
                     type={this.props.type}
                     onChange={this.onFilterChange}
                     limitOptions={this.state.options.limit}

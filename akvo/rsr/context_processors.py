@@ -41,6 +41,7 @@ def extra_context(request, protocol="http"):
         deploy_commit_full_id=deploy_commit_full_id,
         sentry_dsn=sentry_dsn,
         gmaps_api_key=gmaps_api_key,
+        map_marker=settings.GOOGLE_MAPS_PROJECT_MARKER_ICON,
     )
 
 
@@ -72,12 +73,14 @@ def extra_pages_context(request):
             'return_url': page.return_url,
             'return_url_text': page.custom_return_url_text,
             'page_stylesheet': page.stylesheet,
+            'page_map_marker': page.map_marker,
             'akvoapp_root_url': '//{}'.format(settings.AKVOAPP_DOMAIN),
             'domain_url': '//{}'.format(settings.RSR_DOMAIN),
             'no_facebook': not page.facebook_button,
             'facebook_app_id': page.facebook_app_id,
             'no_twitter': not page.twitter_button,
             'disable_robots': not settings.ALLOW_ROBOTS,
+            'page_tagline': page.tagline,
         }
 
     return {
