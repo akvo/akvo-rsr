@@ -174,7 +174,11 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
               <div id={`${fieldNameToId(name)}-info`} />
               <Item label={<InputLabel optional>Title</InputLabel>}>
-                <FinalField name={`${name}.title`} />
+                <FinalField
+                  name={`${name}.title`}
+                  control="textarea"
+                  autosize
+                />
               </Item>
               <Condition when={`${name}.type`} is={1}>
                 <Row gutter={16}>

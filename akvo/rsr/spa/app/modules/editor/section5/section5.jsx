@@ -226,7 +226,8 @@ class Section5 extends React.Component{
                         <Item label="Title" optional style={{ flex: 1 }}>
                           <FinalField
                             name={`${name}.title`}
-                            control="input"
+                            control="textarea"
+                            autosize
                           />
                         </Item>
                         <div style={{ display: 'flex' }}>

@@ -121,6 +121,11 @@
       height: 81px;
       display: flex;
       align-items: center;
+      &>span{
+        max-height: 50px;
+        overflow: hidden;
+        line-height: 25px;
+      }
       .ant-collapse-extra{
         margin-left: auto;
       }
