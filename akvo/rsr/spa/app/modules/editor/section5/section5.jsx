@@ -244,7 +244,7 @@ class Section5 extends React.Component{
                       </div>
                       <Field
                         name={`${name}.id`}
-                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} />}
+                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} primaryOrganisation={this.props.primaryOrganisation} />}
                       />
                     </Panel>
                   )}
@@ -270,6 +270,6 @@ class Section5 extends React.Component{
 }
 
 export default connect(
-  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects } }}}) => ({ fields, relatedProjects }),
+  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } }}}) => ({ fields, relatedProjects, primaryOrganisation }),
   { removeSetItem, fetchSetItems }
 )(Section5)

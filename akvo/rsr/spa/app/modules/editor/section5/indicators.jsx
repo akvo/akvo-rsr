@@ -172,7 +172,7 @@ const indicatorTypes = [
   { value: 2, label: 'qualitative'}
 ]
 
-const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId }) => { // eslint-disable-line
+const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId, primaryOrganisation }) => { // eslint-disable-line
   const add = (key) => {
     const newItem = { type: key, periods: [] }
     if(key === 1) newItem.disaggregations = []
@@ -289,7 +289,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} />} />
+              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} primaryOrganisation={primaryOrganisation} />} />
             </Panel>
           )}
         />

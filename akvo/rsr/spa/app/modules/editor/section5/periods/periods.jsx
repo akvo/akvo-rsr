@@ -15,7 +15,7 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, primaryOrganisation }) => { // eslint-disable-line
   const add = () => {
     const newItem = { indicator: indicatorId }
     formPush(`${fieldName}.periods`, newItem)
@@ -77,6 +77,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                     <FinalField
                       name={`${name}.periodStart`}
                       control="datepicker"
+                      disabled={primaryOrganisation === 3394}
                     />
                   </Item>
                 </Col>
@@ -85,6 +86,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                     <FinalField
                       name={`${name}.periodEnd`}
                       control="datepicker"
+                      disabled={primaryOrganisation === 3394}
                     />
                   </Item>
                 </Col>
