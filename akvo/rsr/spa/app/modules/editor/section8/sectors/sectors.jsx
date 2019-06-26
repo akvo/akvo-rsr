@@ -9,10 +9,11 @@ import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../
 import validationDefs from './validations'
 import CODE_OPTIONS from '../codes.json'
 import VOCABULARY_OPTIONS from '../vocab.json'
+import EUTF_SECTOR_OPTIONS from './eutf-sector-options.json'
 
 const { Item } = Form
 
-const Sectors = ({ validations, formPush }) => {
+const Sectors = ({ validations, formPush, primaryOrganisation }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
@@ -38,6 +39,7 @@ const Sectors = ({ validations, formPush }) => {
               options={VOCABULARY_OPTIONS}
               name={`${name}.vocabulary`}
               withEmptyOption
+              withValuePrefix
             />
           </Item>
           {fieldExists('vocabularyUri') && (
@@ -55,11 +57,12 @@ const Sectors = ({ validations, formPush }) => {
                 <Item label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('sectorCode')} tooltip="...">Sector code</InputLabel>}>
                   <FinalField
                     control="select"
-                    options={CODE_OPTIONS}
+                    options={(primaryOrganisation === 3394 && input.value === '99') ? EUTF_SECTOR_OPTIONS : CODE_OPTIONS}
                     name={`${name}.sectorCode`}
                     showSearch
                     optionFilterProp="children"
                     withEmptyOption
+                    withValuePrefix
                   />
                 </Item>
               )

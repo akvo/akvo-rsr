@@ -36,11 +36,11 @@ const CONTROLS = {
     return <InputNumber {...{...input, ...inputNumberAmountFormatting(currencySymbol), ...props}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
-  select: ({options, input, meta, control, withEmptyOption, ...props}) => {
+  select: ({options, input, meta, control, withEmptyOption, withValuePrefix, ...props}) => {
     return (
       <Select {...{...input, ...props}}>
         {withEmptyOption && <Select.Option value="">&nbsp;</Select.Option>}
-        {options.map(({ label, value }) => <Select.Option key={value} value={value}>{label}</Select.Option>)}
+        {options.map(({ label, value }) => <Select.Option key={value} value={value}>{withValuePrefix && `${value} - `}{label}</Select.Option>)}
       </Select>
     )
   },

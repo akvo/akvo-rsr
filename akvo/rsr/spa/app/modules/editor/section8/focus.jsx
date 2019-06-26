@@ -18,7 +18,7 @@ import './styles.scss'
 const { Item } = Form
 const { Group, Button } = Radio
 
-const Focus = ({ validations, fields}) => {
+const Focus = ({ validations, fields, primaryOrganisation}) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
@@ -34,7 +34,7 @@ const Focus = ({ validations, fields}) => {
           }
         }) => (
         <Form layout="vertical">
-          <Sectors validations={validations} formPush={push} />
+          <Sectors validations={validations} formPush={push} primaryOrganisation={primaryOrganisation} />
           {fieldExists('policyMarkers') && <PolicyMarkers validations={validations} formPush={push} />}
           {fieldExists('humanitarian') &&
           <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
@@ -59,5 +59,5 @@ const Focus = ({ validations, fields}) => {
 }
 
 export default connect(
-  ({ editorRdr: { validations }, editorRdr: { section8: { fields }} }) => ({ validations, fields })
+  ({ editorRdr: { validations }, editorRdr: { section8: { fields }, section1: { fields: { primaryOrganisation }}} }) => ({ validations, fields, primaryOrganisation })
 )(React.memo(Focus, (prevProps, nextProps) => isEqual(prevProps.fields, nextProps.fields)))
