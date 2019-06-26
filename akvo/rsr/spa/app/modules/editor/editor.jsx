@@ -57,6 +57,22 @@ const SavingStatus = connect(
   </aside>
 ))
 
+const PublishingBar = connect(({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }))(({ publishingStatus }) => {
+  if(publishingStatus === 'unpublished') {
+    return (
+      <div className="content">
+        <Button type="primary" disabled>Publish</Button>
+        <i>The project is unpublished</i>
+      </div>
+    )
+  }
+  return (
+    <div className="content">
+      <Button type="danger">Unpublish</Button>
+      <i>The project is published</i>
+    </div>
+  )
+})
 
 const _Header = ({title}) => (
   <header className="main-header">
@@ -80,10 +96,7 @@ const Editor = ({ match: { params } }) => (
       <div className="status-bar">
         <SavingStatus />
         <MainMenu params={params} />
-        <div className="content">
-          <Button type="primary" disabled>Publish</Button>
-          <i>The project is unpublished</i>
-        </div>
+        <PublishingBar />
       </div>
       <div className="main-content">
         <Route path="/projects/:id" component={ProjectInitHandler} />
