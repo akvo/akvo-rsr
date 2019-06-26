@@ -14,7 +14,7 @@ const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
           name={`${name}.organisation`}
           render={({input}) => {
             const options =
-              orgs.length > 0
+              orgs && orgs.length > 0
               ? orgs.map(it => ({ value: it.id, label: it.name }))
               : [{ value: input.value, label: nameProps.input.value }]
             return (
