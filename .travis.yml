@@ -15,6 +15,9 @@ before_install:
 - if [[ ! -f "${HOME}/google-cloud-sdk/bin/gcloud" ]]; then rm -rf "${HOME}/google-cloud-sdk";
   curl https://sdk.cloud.google.com | bash > /dev/null; fi
 
+after_failure:
+- docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.prod.images.yaml logs
+
 env:
   global:
   - PATH=${HOME}/google-cloud-sdk/bin:$PATH
