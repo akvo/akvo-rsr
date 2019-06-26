@@ -22,8 +22,8 @@ const base = yup.object().shape({
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  providerOrganisation: yup.string(),
-  receiverOrganisation: yup.string(),
+  providerOrganisation: yup.string().nullable(),
+  receiverOrganisation: yup.string().nullable(),
   providerOrganisationActivity: yup.string(),
   receiverOrganisationActivity: yup.string(),
   description: yup.string()
@@ -56,7 +56,7 @@ const EUTF = yup.object().shape({
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  providerOrganisation: yup.string(),
+  providerOrganisation: yup.string().nullable(),
   providerOrganisationActivityId: yup.string(),
   aidTypeVocabulary: yup.string()
 })
