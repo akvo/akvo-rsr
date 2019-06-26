@@ -1,9 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch, Divider } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
+import { isEqual } from 'lodash'
+import { Route } from 'react-router-dom'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -11,12 +13,19 @@ import './styles.scss'
 import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
-import {addSetItem, removeSetItem} from '../actions'
+import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
+import api from '../../../utils/api'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
-const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
+// const resultTypes = ['input', 'activity', 'output', 'outcome', 'impact']
+const resultTypes = [
+  {label: 'output', value: '1'},
+  {label: 'outcome', value: '2'},
+  {label: 'impact', value: '3'},
+  {label: 'other', value: '9'}
+]
 
 const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...props }) => { // eslint-disable-line
   const addResult = ({ key }) => {
@@ -27,25 +36,37 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...prop
   return (
     <Dropdown overlay={
       <Menu onClick={addResult}>
-        <Menu.Item key="input"><Icon type="plus" />Input</Menu.Item>
-        <Menu.Item key="activity"><Icon type="plus" />Activity</Menu.Item>
-        <Menu.Item key="output"><Icon type="plus" />Output</Menu.Item>
-        <Menu.Item key="outcome"><Icon type="plus" />Outcome</Menu.Item>
-        <Menu.Item key="impact"><Icon type="plus" />Impact</Menu.Item>
+        {resultTypes.map(type =>
+        <Menu.Item key={type.value}><Icon type="plus" />{type.label}</Menu.Item>
+        )}
       </Menu>
     }
     trigger={['click']}>
-      <Button icon="plus" className="add-result" size="large" {...props}>Add Result</Button>
+      <Button icon="plus" className="add-result" size="large" {...props}>Add result</Button>
     </Dropdown>
   )
 })
 
 class Summary extends React.Component{
   state = {
-    showModal: false
+    showModal: false,
+    importing: false
   }
   shouldComponentUpdate(nextProps, nextState){
     return nextProps.values.results.length !== this.props.values.results.length || nextState !== this.state
+  }
+  import = (projectId) => {
+    this.setState({ importing: true })
+    api.post(`/project/${projectId}/import_results/`)
+      .then(() => {
+        this.setState({
+          importing: false
+        })
+        api.get('/results_framework/', { project: projectId })
+          .then(({ data: {results}}) => {
+            this.props.fetchSetItems(5, 'results', results)
+          })
+      })
   }
   render(){
     const { values: {results}} = this.props
@@ -53,18 +74,23 @@ class Summary extends React.Component{
       return (
         <div className="no-results">
           <h3>No results</h3>
+          <Divider />
           <ul>
+            {this.props.hasParent &&
             <li>
               <span>
                 Import the results framework from parent project
               </span>
-              <div><Button type="primary">Import results set</Button></div>
+              <div>
+              <Route path="/projects/:id" component={({ match: {params} }) => <Button type="primary" loading={this.state.importing} onClick={() => this.import(params.id)}>Import results set</Button>} />
+              </div>
             </li>
-            <li>
+            }
+            <li className="copy-framework">
               <span>Copy the results framework from an existing project</span>
-              <div style={{display: 'flex'}}>
+              <div>
                 <Input placeholder="Project ID" />
-                <Button type="primary">Copy results set</Button>
+                <Button type="primary">Copy results</Button>
               </div>
             </li>
             <li>
@@ -79,16 +105,14 @@ class Summary extends React.Component{
     }
     const groupedResults = {}
     resultTypes.forEach(type => {
-      groupedResults[type] = results.filter(it => it.type === type)
+      groupedResults[type.value] = results.filter(it => it.type === type.value)
     })
     return (
       <div className="summary">
         <ul>
-          <li>Inputs<strong>{groupedResults.input.length}</strong></li>
-          <li>Activities<strong>{groupedResults.activity.length}</strong></li>
-          <li>Outputs<strong>{groupedResults.output.length}</strong></li>
-          <li>Outcomes<strong>{groupedResults.outcome.length}</strong></li>
-          <li>Impacts<strong>{groupedResults.impact.length}</strong></li>
+          {resultTypes.map(type =>
+          <li>{type.label}<strong>{groupedResults[type.value].length}</strong></li>
+          )}
         </ul>
         <Button type="link" icon="eye" onClick={() => this.setState({ showModal: true })}>Full preview</Button>
         <Modal
@@ -101,7 +125,7 @@ class Summary extends React.Component{
         >
           <Collapse bordered={false}>
             {Object.keys(groupedResults).map(groupKey =>
-            <Panel header={<span className="group-title">{groupKey}<b> ({groupedResults[groupKey].length})</b></span>}>
+            <Panel header={<span className="group-title">{resultTypes.find(it => it.value === groupKey).label}<b> ({groupedResults[groupKey].length})</b></span>}>
               <Collapse bordered={false}>
                 {groupedResults[groupKey].map((result, resultIndex) =>
                 <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
@@ -132,14 +156,15 @@ class UpdateIfLengthChanged extends React.Component{
 }
 
 class Section5 extends React.Component{
-  shouldComponentUpdate(){
-    return false
+  shouldComponentUpdate(nextProps){
+    return !isEqual(nextProps, this.props)
   }
   removeSection = (fields, index) => {
     fields.remove(index)
     this.props.removeSetItem(5, 'results', index)
   }
   render(){
+    const hasParent = this.props.relatedProjects && this.props.relatedProjects.filter(it => it.relation === '1').length > 0
     return (
       <div className="view section5">
         <Form layout="vertical">
@@ -155,7 +180,7 @@ class Section5 extends React.Component{
           }) => (
             <Aux>
             <FormSpy subscription={{ values: true }}>
-              {({ values }) => <Summary values={values} push={push} />}
+              {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={this.props.fetchSetItems} />}
             </FormSpy>
             <FieldArray name="results" subscription={{}}>
             {({ fields }) => (
@@ -171,7 +196,7 @@ class Section5 extends React.Component{
                         <span>
                           <Field
                             name={`${name}.type`}
-                            render={({input}) => <span className="capitalized">{input.value}</span>}
+                            render={({input}) => <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>}
                           />
                           &nbsp;Result {index + 1}
                           <Field
@@ -217,7 +242,10 @@ class Section5 extends React.Component{
                         </div>
                         <div className="ant-form-item-label">Indicators:</div>
                       </div>
-                      <Indicators fieldName={name} formPush={push} />
+                      <Field
+                        name={`${name}.id`}
+                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} />}
+                      />
                     </Panel>
                   )}
                 />
@@ -242,6 +270,6 @@ class Section5 extends React.Component{
 }
 
 export default connect(
-  ({ editorRdr: { section5: { fields }}}) => ({ fields }),
-  { removeSetItem }
+  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects } }}}) => ({ fields, relatedProjects }),
+  { removeSetItem, fetchSetItems }
 )(Section5)

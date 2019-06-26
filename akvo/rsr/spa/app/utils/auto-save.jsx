@@ -6,16 +6,16 @@ import { cloneDeep, isEmpty, get } from 'lodash'
 import {diff} from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
+import { validate } from '../modules/editor/validation'
+import { camelToKebab } from './misc'
 
 const debounce = 2000
 
 const getSetRootValues = (values) => {
-  const sets = ['indicators', 'periods', 'disaggregations']
+  const sets = ['indicators', 'periods', 'disaggregations', 'sectors', 'administratives']
   const ret = {...values}
-  // if(values[0].hasO)
   sets.forEach(fieldSet => {
     if(ret.hasOwnProperty(fieldSet)){
-      // console.log('deleting', fieldSet)
       delete ret[fieldSet]
     }
   })
@@ -45,14 +45,21 @@ const getRootValues = (values, sectionKey) => {
 
 class AutoSave extends React.Component {
   componentWillMount(){
-    const { setName, sectionIndex } = this.props
+    const { setName, sectionIndex, itemIndex } = this.props
     if(setName !== undefined){
       this.lastSavedValues = cloneDeep(get(this.props.values, setName))
+      console.log(`mounting ${setName}[${itemIndex}]`)
     } else {
       this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
     }
   }
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
+    // TODO: This has been used to udpate lastSavedValues only on project.id update
+    // if(!this.props.values.id && nextProps.values.id){
+    //   const { setName, sectionIndex } = this.props
+    //   this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
+    //   return
+    // }
     if (this.timeout) {
       clearTimeout(this.timeout)
     }
@@ -63,13 +70,30 @@ class AutoSave extends React.Component {
     const { values, setName, itemIndex, sectionIndex } = this.props
 
     if(setName !== undefined && itemIndex !== undefined){
-      // if item was added or removed, it is handled from <ItemsArray>
-      if(this.lastSavedValues.length !== get(values, setName).length){
+      // if new item added do nothing
+      if(this.lastSavedValues.length < get(values, setName).length){
+        this.lastSavedValues = [...this.lastSavedValues, {}]
         return
       }
-      const difference = customDiff(this.lastSavedValues[itemIndex], get(values, setName)[itemIndex])
-      if(!isEmpty(difference)){
-        this.props.editSetItem(sectionIndex, setName, itemIndex, difference)
+      // if item removed: TODO this is unreachable !?
+      if(this.lastSavedValues.length > get(values, setName).length){
+        console.log('removed', itemIndex)
+        return
+      }
+      const item = get(values, setName)[itemIndex]
+      const difference = customDiff(this.lastSavedValues[itemIndex], item)
+      // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
+      if(
+        !isEmpty(difference)
+        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')
+      ){
+        if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item])){
+          if(!item.id){
+            this.props.addSetItem(sectionIndex, setName, item)
+          } else {
+            this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
+          }
+        }
         this.lastSavedValues[itemIndex] = {
           ...this.lastSavedValues[itemIndex],
           ...difference
@@ -79,7 +103,8 @@ class AutoSave extends React.Component {
       const rootValues = getRootValues(values, `section${sectionIndex}`)
       const difference = customDiff(this.lastSavedValues, rootValues)
       if(!isEmpty(difference)){
-        this.props.saveFields(difference, sectionIndex)
+        const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
+        this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
         this.lastSavedValues = {
           ...this.lastSavedValues,
           ...difference

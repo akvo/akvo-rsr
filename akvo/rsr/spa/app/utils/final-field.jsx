@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Input, InputNumber, Select, DatePicker, Form } from 'antd'
 import { Field } from 'react-final-form'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
+import { isEqual } from 'lodash'
 import { datePickerConfig } from './misc'
 import InputLabel from './input-label'
 import SectionContext from '../modules/editor/section-context'
@@ -42,12 +44,12 @@ const CONTROLS = {
       </Select>
     )
   },
-  datepicker: ({ input }) => {
+  datepicker: ({ input, disabled }) => {
     // transform value to be stored to formatted string
     let value = (input.value && typeof input.value === 'string') ? moment(input.value, datePickerConfig.format) : input.value
     if(!value) value = null
     const onChange = val => input.onChange(val !== null ? val.format(datePickerConfig.format) : null)
-    return <DatePicker {...{value, onChange, ...datePickerConfig}} />
+    return <DatePicker {...{value, onChange, disabled, ...datePickerConfig}} />
   }
 }
 
@@ -84,17 +86,16 @@ const Control = (props) => {
   return CONTROLS[control](_props)
 }
 
-class FinalField extends React.Component{
-  render(){
-    return (
-      <Field
-        name={this.props.name}
-        component={Control}
-        {...this.props}
-      />
-    )
-  }
-}
+const FinalField = ({name, ...props}) => (
+  <Field
+    name={name}
+    component={Control}
+    {...props}
+  />
+)
 // FinalField.contextType = SectionContext
 
-export default FinalField
+export default connect(({ editorRdr: { addingItem }}) => ({ disabled: addingItem }))(
+  React.memo(FinalField, (prevProps, nextProps) => isEqual(prevProps, nextProps))
+)
+// export default FinalField

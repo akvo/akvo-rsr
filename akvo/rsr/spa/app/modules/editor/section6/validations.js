@@ -8,11 +8,12 @@ const RSR = yup.object().shape({
 
 const IATI_BASIC = RSR.clone()
 
-const IATI = RSR.clone().shape({
+export const IATI = RSR.clone().shape({
   capitalSpendPercentage: yup.mixed(),
   countryBudgetItems: yup.array(),
   transactions: yup.array(),
-  plannedDisbursements: yup.array()
+  plannedDisbursements: yup.array(),
+  countryBudgetVocabulary: yup.string()
 })
 
 const DGIS = RSR.clone().shape({

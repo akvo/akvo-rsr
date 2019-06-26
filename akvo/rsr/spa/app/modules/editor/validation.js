@@ -2,6 +2,7 @@ import { getValidationSets } from '../../utils/validation-utils'
 
 const modules = [
   'section1',
+  'section1/related-projects',
   'section2/contacts',
   'section3/partners',
   'section4',
@@ -14,6 +15,7 @@ const modules = [
   'section8/sectors',
   'section8/policy-markers',
   'section8/humanitarian-scopes',
+  'section9/links',
   'section9/docs'
 ]
 

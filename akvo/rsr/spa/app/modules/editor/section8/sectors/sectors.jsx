@@ -52,11 +52,11 @@ const Sectors = ({ validations, formPush }) => {
             name={`${name}.vocabulary`}
             render={
               ({input}) => (
-                <Item label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('code')} tooltip="...">Sector code</InputLabel>}>
+                <Item label={<InputLabel optional={isDFID ? (input.value === undefined || input.value === '') : isOptional('sectorCode')} tooltip="...">Sector code</InputLabel>}>
                   <FinalField
                     control="select"
                     options={CODE_OPTIONS}
-                    name={`${name}.code`}
+                    name={`${name}.sectorCode`}
                     showSearch
                     optionFilterProp="children"
                     withEmptyOption
@@ -76,12 +76,12 @@ const Sectors = ({ validations, formPush }) => {
                     className="percentage-input"
                   />
                 </Item>
-                {fieldExists('description') && (
-                  <Item label={<InputLabel optional={isOptional('description')}>Description</InputLabel>}>
+                {fieldExists('text') && (
+                  <Item label={<InputLabel optional={isOptional('text')}>Description</InputLabel>}>
                     <FinalField
                       control="textarea"
                       rows={2}
-                      name={`${name}.description`}
+                      name={`${name}.text`}
                     />
                   </Item>
                 )}

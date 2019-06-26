@@ -49,10 +49,10 @@ const RecipientCountries = ({ validations, formPush }) => {
                 />
                 </Item>
               )}
-              {fieldExists('description') && (
+              {fieldExists('text') && (
                 <Item label={<InputLabel optional>Description</InputLabel>}>
                 <FinalField
-                  name={`${name}.description`}
+                  name={`${name}.text`}
                   control="textarea"
                   rows={2}
                 />

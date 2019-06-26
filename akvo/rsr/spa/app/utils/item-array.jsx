@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Collapse, Icon, Button, Modal, Popconfirm } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import {Route} from 'react-router-dom'
 import AutoSave from './auto-save'
 import * as actions from '../modules/editor/actions'
 
@@ -82,10 +83,8 @@ class ItemArray extends React.Component{
     }
   }
   handleAddItem = (item) => {
-    const { sectionIndex, setName } = this.props
-    const newItem = item ? item : (this.props.newItem ? this.props.newItem : {})
+    const newItem = {...(item ? item : (this.props.newItem ? this.props.newItem : {})), project: this.projectId}
     if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
-    this.props.addSetItem(sectionIndex, setName, newItem)
   }
   removeItem = (index, fields) => {
     // event.stopPropagation()
@@ -100,11 +99,14 @@ class ItemArray extends React.Component{
     })
   }
   render(){
+    console.log('rendered item array')
     return (
       <div>
+      <Route path="/projects/:id" component={({ match: {params} }) => { this.projectId = params.id; return null }} />
       <FieldArray name={this.props.setName} subscription={{}}>
         {({ fields }) => (
           <div>
+            {fields.length > 0 &&
             <Collapse accordion onChange={this.handleChange} activeKey={this.state.activeKey}>
               {fields.map((name, index) => (
                 <Panel
@@ -124,7 +126,6 @@ class ItemArray extends React.Component{
                     </span>
                   }
                   key={`${index}`}
-                  forceRender
                 >
                   <UpdateHalter parentState={this.state}>
                     <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
@@ -133,6 +134,7 @@ class ItemArray extends React.Component{
                 </Panel>
               ))}
             </Collapse>
+            }
             <FormSpy subscription={{ values: true }}>
               {({ values }) => <ActiveKeyUpdater values={values} name={this.props.setName} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
             </FormSpy>

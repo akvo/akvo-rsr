@@ -36,6 +36,11 @@
       .ant-spin{
         margin-right: 8px;
       }
+      .error{
+        .anticon{
+          color: red;
+        }
+      }
     }
     .content{
       display: flex;
@@ -61,6 +66,11 @@
       padding: 20px 0;
       text-transform: uppercase;
       li{
+        &.disabled{
+          span{
+            opacity: 0.2;
+          }
+        }
         a{
           position: relative;
           span{
@@ -104,6 +114,18 @@
             color: #bbb;
           }
         }
+        .loading{
+          position: absolute;
+          right: 20px;
+          top: 9px;
+          width: 20px;height: 20px;
+          background-color: #e0e0e0;
+          background: linear-gradient(90deg, #e0e0e0 25%, #e9e9e9 37%, #e0e0e0 63%);
+          background-size: 400% 100%;
+          vertical-align: top;
+          animation: ant-skeleton-loading 1.4s ease infinite;
+          border-radius: 50%;
+        }
       }
     }
   }
@@ -115,7 +137,7 @@
     padding-left: 30px;
   }
   .view:not(.section5){
-    margin-right: 280px;
+    margin-right: 230px;
     @media screen and (max-width: 1200px){
       margin-right: 100px;
     }
@@ -183,7 +205,7 @@
     }
   }
   .percentage-input{
-    max-width: 70px;
+    max-width: 82px;
   }
 }
 
@@ -213,6 +235,12 @@ hr{
     .ant-collapse-content-box{
       .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;
+        &+section{
+          margin-top: 25px;
+        }
+        &+.percentage-row{
+          margin-top: 25px;
+        }
       }
       .ant-form>.ant-row:last-child, &>div>.ant-row:last-child{
         .ant-col .ant-form-item{

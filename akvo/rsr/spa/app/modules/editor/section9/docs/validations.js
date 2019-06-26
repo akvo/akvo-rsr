@@ -2,23 +2,23 @@ import * as yup from 'yup'
 import { validationType, transformUndefined } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
-  url: yup.string().transform(transformUndefined).required().when('document', {
-    is: value => value !== undefined && value !== '',
-    then: yup.string().notRequired()
+  url: yup.string().transform(transformUndefined).when('document', {
+    is: value => value === null,
+    then: yup.string().required()
   }),
   title: yup.string().transform(transformUndefined).required(),
-  document: yup.string()
+  document: yup.string().nullable().default(null)
 })
 
 const DGIS = RSR.clone().shape({
-  categories: yup.array().of(yup.object().shape({ category: yup.string() }))
+  categories: yup.array().of(yup.string())
 })
 
 const IATI = DGIS.clone().shape({
-  documentFormat: yup.string().required(),
+  format: yup.string().required(),
   titleLanguage: yup.string(),
-  documentLanguage: yup.string(),
-  documentDate: yup.string()
+  language: yup.string(),
+  documentDate: yup.string().nullable()
 })
 
 const EUTF = IATI.clone()
@@ -26,7 +26,7 @@ const EUTF = IATI.clone()
 const DFID = IATI.clone()
 
 const NLR = RSR.clone().shape({
-  documentLanguage: yup.string(),
+  language: yup.string(),
   documentDate: yup.string()
 })
 

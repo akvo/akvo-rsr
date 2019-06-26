@@ -22,13 +22,13 @@ const FlagsStack = ({ formPush }) => {
       header={(index, code) => {
         return <span>CRS++ other flag: {code && FLAG_CODES.find(it => it.value === code).label}</span>
       }}
-      headerField="code"
+      headerField="crs"
       formPush={formPush}
       panel={name => (
         <div className="channel-code-inputs">
           <Item label={<InputLabel tooltip="...">Code</InputLabel>}>
             <FinalField
-              name={`${name}.code`}
+              name={`${name}.crs`}
               control="select"
               options={FLAG_CODES}
             />

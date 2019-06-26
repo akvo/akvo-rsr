@@ -6,12 +6,13 @@ import FinalField from '../../../../utils/final-field'
 import Condition from '../../../../utils/condition'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import { getValidations, doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
+import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 import LANGUAGE_OPTIONS from './languages.json'
 import FORMAT_OPTIONS from './formats.json'
 import CATEGORY_OPTIONS from './categories.json'
-import Categories from './categories'
+import Uploader from './uploader'
+import actionTypes from '../../action-types'
 
 const { Item } = Form
 
@@ -24,11 +25,25 @@ const handleRadioSwitch = (event, input) => {
   }
 }
 
-const Docs = ({ formPush, validations }) => {
-  const { isIATI } = getValidations(validations)
+const Docs = ({ formPush, validations, dispatch }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
+  console.log('RERENDERING DOCS')
+  // console.log(_props)
+  // const handleAddItem = (item) => {
+  //   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item})
+  // }
+  const handleNewDocumentUploading = () => {
+    dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {document: true, categories: []} })
+  }
+  const handleNewDocumentUploaded = (id, document) => {
+    dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document} })
+  }
+  const handleDocumentUpdated = (itemIndex, itemId) => (document) => {
+    dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
+    dispatch({ type: actionTypes.BACKEND_SYNC })
+  }
   return (
     <div>
       <h3>Documents</h3>
@@ -40,43 +55,57 @@ const Docs = ({ formPush, validations }) => {
             name={`docs[${index}].categories`}
             render={({input}) => (
               <span>
-                {input.value.map(category => <Tag>{category}</Tag>)}
+                {input.value && input.value.map(category => <Tag>{category}</Tag>)}
                 <span>Document {index + 1}: {title}</span>
               </span>
             )}
           />
         }
         headerField="title"
-        newItem={{ categories: []}}
+        newItem={{ categories: [], document: '' }}
+        // onAddItem={handleAddItem}
         formPush={formPush}
-        panel={name => (
+        panel={(name, index) => (
         <div>
           <Item>
             <FinalField
               name={`${name}.document`}
-              render={({ input }) => (
-                <Radio.Group value={input.value ? 'upload' : 'url'} onChange={ev => handleRadioSwitch(ev, input)}>
-                  <Radio.Button value="url">URL</Radio.Button>
-                  <Radio.Button value="upload">Upload</Radio.Button>
-                </Radio.Group>
-              )}
+              render={({ input }) => {
+                if(input.value !== true && input.value !== '') return null
+                return(
+                  <Radio.Group value={input.value ? 'upload' : 'url'} onChange={ev => handleRadioSwitch(ev, input)}>
+                    <Radio.Button value="url">URL</Radio.Button>
+                    <Radio.Button value="upload">Upload</Radio.Button>
+                  </Radio.Group>
+                )
+              }}
             />
-            <Condition when={`${name}.document`} isNot={true}>
+            <Condition when={`${name}.document`} is="">
               <FinalField
                 name={`${name}.url`}
                 control="input"
                 placeholder="http://..."
               />
             </Condition>
-            <Condition when={`${name}.document`} is={true}>
-              <Upload.Dragger name="files" listType="picture" action="/upload.do">
-                <p className="ant-upload-drag-icon">
-                  <Icon type="picture" theme="twoTone" />
-                </p>
-                <p className="ant-upload-text">Drag file here</p>
-                <p className="ant-upload-hint">or click to browse from computer</p>
-                <p><small>Max: 5MB</small></p>
-              </Upload.Dragger>
+            <Condition when={`${name}.document`} isNot="">
+              <FinalField
+                name={`${name}.id`}
+                render={({ input }) => (
+                  <FinalField
+                    name={`${name}.document`}
+                    render={(props) => (
+                      <Uploader
+                        fieldName={`${name}.document`}
+                        documentId={input.value}
+                        document={props.input.value}
+                        onNewDocumentUploading={handleNewDocumentUploading}
+                        onNewDocumentUploaded={handleNewDocumentUploaded}
+                        onDocumentUpdated={handleDocumentUpdated(index, input.value)}
+                      />
+                    )}
+                  />
+                )}
+              />
             </Condition>
           </Item>
           <Item label={<InputLabel tooltip="...">Title</InputLabel>}>
@@ -90,10 +119,10 @@ const Docs = ({ formPush, validations }) => {
               </Item>
             </Col>
             }
-            {fieldExists('documentLanguage') &&
+            {fieldExists('language') &&
             <Col span={12}>
               <Item label={<InputLabel optional>Document Language</InputLabel>}>
-                <FinalField name={`${name}.documentLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
+                <FinalField name={`${name}.language`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
               </Item>
             </Col>
             }
@@ -104,15 +133,16 @@ const Docs = ({ formPush, validations }) => {
               </Item>
             </Col>
             )}
-            {fieldExists('documentFormat') && (
+            {fieldExists('format') && (
             <Col span={12}>
-              <Item label={<InputLabel optional={isOptional('documentFormat')}>Format</InputLabel>}>
-                <FinalField name={`${name}.documentFormat`} control="select" options={FORMAT_OPTIONS} showSearch />
+              <Item label={<InputLabel optional={isOptional('format')}>Format</InputLabel>}>
+                <FinalField name={`${name}.format`} control="select" options={FORMAT_OPTIONS} showSearch />
               </Item>
             </Col>
             )}
           </Row>
           {fieldExists('categories') &&
+          <Item label={<InputLabel optional>Categories</InputLabel>}>
           <FinalField
             name={`${name}.categories`}
             control="select"
@@ -121,6 +151,7 @@ const Docs = ({ formPush, validations }) => {
             options={CATEGORY_OPTIONS}
             placeholder="Please select..."
           />
+          </Item>
           }
         </div>
         )}
@@ -140,6 +171,4 @@ const Docs = ({ formPush, validations }) => {
   )
 }
 
-export default connect(
-  ({ editorRdr: { validations } }) => ({ validations })
-)(Docs)
+export default React.memo(Docs, () => true)

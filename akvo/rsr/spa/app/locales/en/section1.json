@@ -11,16 +11,16 @@
     "label": "Hierarchy",
     "tooltip": "..."
   },
-  "plannedStartDate": {
+  "dateStartPlanned": {
     "label": "Planned start date"
   },
-  "plannedEndDate": {
+  "dateEndPlanned": {
     "label": "Planned end date"
   },
-  "actualStartDate": {
+  "dateStartActual": {
     "label": "Actual start date"
   },
-  "actualEndDate": {
+  "dateEndActual": {
     "label": "Actual end date"
   },
   "language": {

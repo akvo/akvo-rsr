@@ -31,7 +31,7 @@ function $fetch(value, callback) {
         if (currentValue === value) {
           const data = d.results.filter(it => it.components._type === 'city').map(r => ({
             coordinates: r.geometry,
-            text: r.formatted,
+            text: `${r.components.city}, ${r.components.country}`,
             // name: r.components.city
           }))
           callback(data)

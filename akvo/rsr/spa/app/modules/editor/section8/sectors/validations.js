@@ -3,30 +3,30 @@ import { validationType, transformUndefined } from '../../../../utils/validation
 
 const RSR = yup.object().shape({
   vocabulary: yup.string(),
-  code: yup.string()
+  sectorCode: yup.string()
 })
 
 const DGIS = yup.object().shape({
   vocabulary: yup.string().required(),
-  code: yup.string().required(),
+  sectorCode: yup.string().required(),
   percentage: yup.mixed().required(),
 })
 
 const IATI = DGIS.clone().shape({
   vocabularyUri: yup.string(),
-  description: yup.string()
+  text: yup.string()
 })
 
 const EUTF = yup.object().shape({
   vocabulary: yup.string(),
-  code: yup.string(),
+  sectorCode: yup.string(),
   percentage: yup.mixed(),
   vocabularyUri: yup.string(),
-  description: yup.string()
+  text: yup.string()
 })
 
 const DFID = EUTF.clone().shape({
-  code: yup.string().transform(transformUndefined).when('vocabulary', {
+  sectorCode: yup.string().transform(transformUndefined).when('vocabulary', {
     is: value => value !== null && value !== undefined,
     then: yup.string().required()
   })

@@ -1,4 +1,5 @@
 .settings.view {
+  padding-top: 30px;
   p:first-of-type{
     margin-bottom: 20px;
   }
@@ -11,6 +12,10 @@
     transform: translateY(-2px);
   }
   ul{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 160px;
     li{
       line-height: 40px;
     }

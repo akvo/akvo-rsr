@@ -12,7 +12,7 @@
   "reference": {
     "label": "Reference"
   },
-  "label": {
+  "otherExtra": {
     "label": "Additional info"
   },
   "aidTypeVocabulary":{

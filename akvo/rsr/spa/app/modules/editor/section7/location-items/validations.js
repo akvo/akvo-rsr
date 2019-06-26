@@ -4,7 +4,7 @@ import { validationType } from '../../../../utils/validation-utils'
 const RSR = yup.object().shape({
   address1: yup.string(),
   address2: yup.string(),
-  postalCode: yup.string(),
+  postcode: yup.string(),
   location: yup.object().shape({
     text: yup.string().required(),
     coordinates: yup.object().shape({
@@ -17,12 +17,12 @@ const RSR = yup.object().shape({
 const IATI = RSR.clone().shape({
   name: yup.string(),
   reference: yup.string(),
-  code: yup.string(),
+  locationCode: yup.string(),
   locationDescription: yup.string(),
   activityDescription: yup.string(),
   locationPrecision: yup.string(),
-  reach: yup.string(),
-  class: yup.string(),
+  locationReach: yup.string(),
+  locationClass: yup.string(),
   featureDesignation: yup.string(),
   administratives: yup.array().of(yup.object().shape({
     code: yup.string(),
@@ -34,7 +34,7 @@ const IATI = RSR.clone().shape({
 const DGIS = RSR.clone()
 
 const EUTF = RSR.clone().shape({
-  code: yup.string(),
+  locationCode: yup.string(),
   activityDescription: yup.string(),
   administratives: yup.array().of(yup.object().shape({
     code: yup.string(),
@@ -46,13 +46,13 @@ const EUTF = RSR.clone().shape({
 const DFID = EUTF.clone().shape({
   activityDescription: yup.string(),
   locationPrecision: yup.string(),
-  reach: yup.string(),
-  class: yup.string(),
+  locationReach: yup.string(),
+  locationClass: yup.string(),
   featureDesignation: yup.string(),
 })
 
 const NLR = RSR.clone().shape({
-  code: yup.string(),
+  locationCode: yup.string(),
 })
 
 const Gietrenk = DFID.clone()
