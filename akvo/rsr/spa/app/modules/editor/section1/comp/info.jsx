@@ -74,7 +74,7 @@ const Info = ({ validations, fields }) => {
             name="title"
             render={({input}) => (
               <Item label={<InputLabel tooltip="...">Project title</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
-                <Input {...input} />
+                <Input.TextArea {...input} autosize />
               </Item>
             )}
           />
