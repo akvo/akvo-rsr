@@ -1,0 +1,271 @@
+.section5.view{
+  .summary{
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    ul{
+      display: flex;
+      flex: 1;
+      li{
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        font-size: 14px;
+        color: #888;
+        position: relative;
+        text-transform: capitalize;
+        strong{
+          font-size: 22px;
+          font-weight: 400;
+          color: #000;
+        }
+        &:not(:nth-of-type(1)){
+          &:before{
+            content: " ";
+            width: 10px;
+            height: 44px;
+            position: absolute;
+            left: -30px;
+            top: 4px;
+            background: url(../../../images/arrow-divider.png);
+            background-size: contain;
+          }
+        }
+        // &:nth-of-type(1) strong{
+        //   color: #fa8c16;
+        // }
+        // &:nth-of-type(2) strong{
+        //   color: #1890ff;
+        // }
+        // &:nth-of-type(3) strong{
+        //   color: #52c41a;
+        // }
+        // &:nth-of-type(4) strong{
+        //   color: #13c2c2;
+        // }
+        // &:nth-of-type(5) strong{
+        //   color: #eb2f96;
+        // }
+      }
+    }
+    .ant-btn{
+      margin-left: auto;
+      margin-top: 10px;
+    }
+
+  }
+  .no-results{
+    text-align: center;
+    ul{
+      display: flex;
+      li{
+        flex: 1;
+        position: relative;
+        &>span{
+          margin-bottom: 7px;
+          display: block;
+        }
+        &:not(:last-of-type){
+          margin-right: 10px;
+        }
+        &:not(:first-of-type){
+          margin-left: 10px;
+          // &:before{
+          //   content: " ";
+          //   width: 1px;
+          //   height: 40px;
+          //   background-color: #ccc;
+          //   position: absolute;
+          //   top: 10px;
+          //   left: -10px;
+          // }
+        }
+        &:last-of-type{
+          display: flex;
+          flex-direction: column;
+          .button-container{
+            margin-top: auto;
+            .ant-btn{
+              margin-bottom: 0;
+            }
+          }
+        }
+        input{
+          margin-right: 3px;
+          max-width: 100px;
+        }
+      }
+    }
+  }
+  .add-result.ant-btn{
+    margin-bottom: 15px;
+  }
+  .ant-collapse, .ant-collapse-item{
+    border-color: #efefef;
+  }
+  .ant-collapse-item{
+    .ant-collapse-header{
+      border-radius: 0!important;
+      background-color: #fff!important;
+      border-color: #efefef!important;
+    }
+    &.ant-collapse-item-active>.ant-collapse-header{
+      border-left: 3px solid #2593fc!important;
+    }
+  }
+  
+  .results-list{
+    margin-right: 160px;
+    .ant-collapse-header{
+      // padding-top: 18px;
+      // padding-bottom: 18px;
+      height: 81px;
+      display: flex;
+      align-items: center;
+      &>span{
+        max-height: 50px;
+        overflow: hidden;
+        line-height: 25px;
+      }
+      .ant-collapse-extra{
+        margin-left: auto;
+      }
+      .delete-btn-holder{
+        overflow: hidden;
+        .ant-btn{
+          margin-right: -37px;
+        }
+      }
+      &:hover{
+        .delete-btn-holder .ant-btn{
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  &>.ant-form>.accordion-container>.ant-collapse{
+    position: relative;
+    &>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box .main-form .ant-form-item-label{
+      font-weight: 500;
+    }
+    &>.ant-collapse-item-active{
+      &>.ant-collapse-header{
+        position: -webkit-sticky;
+        position: sticky;
+        top: 105px;
+        background: #fafafa;
+        z-index: 910;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom: 1px solid #d9d9d9;
+      }
+      .ant-collapse-content{
+        border-top: none;
+        overflow: visible;
+        .ant-collapse-content-box>.accordion-container>.ant-collapse{
+          position: relative;
+          &>.ant-collapse-item-active{
+            &>.ant-collapse-header{
+              position: -webkit-sticky;
+              position: sticky;
+              top: 186px;
+              background: #fafafa;
+              // transition: none;
+              z-index: 909;
+              border-top-left-radius: 3px;
+              border-top-right-radius: 3px;
+              border-bottom: 1px solid #d9d9d9;
+            }
+            .ant-collapse-content{
+              border-top: none;
+              overflow: visible;
+              .ant-collapse-content-box>.accordion-container>.ant-collapse{
+                position: relative;
+                &>.ant-collapse-item-active{
+                  &>.ant-collapse-header{
+                    top: 267px;
+                    z-index: 908;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .ant-tabbar-wrapper{
+      display: flex;
+      flex-direction: column;
+      float: left;
+      .ant-tabs-extra-content{
+        text-align: center;
+        .ant-tabs-new-tab{
+          width: 90%;
+        }
+      }
+    }
+  }
+  .ant-collapse-header{
+    .delete-panel{
+      margin-left: 5px;
+    }
+  }
+  .indicators-list{
+    .ant-collapse-item{
+      .ant-collapse-header .ant-collapse-extra{
+        margin-left: auto;
+        .menu-container{
+          overflow: hidden;
+          display: inline-block;
+          .ant-radio-group{
+            transition: transform .3s ease-out;
+            transition-delay: .3s;
+          }
+        }
+      }
+    }
+    .ant-collapse-item:not(.ant-collapse-item-active){
+      .ant-collapse-header{
+        .ant-collapse-extra{
+          .ant-radio-group{
+            transform: translateX(300px);
+          }
+        }
+      }
+    }
+
+    .input-label{
+      &>div{
+        color: rgba(0, 0, 0, 0.85)
+      }
+    }
+
+    .disaggregations-list{
+      .remove-item{
+        color: #aaa;
+      }
+    }
+  }
+  .ant-tag{
+    text-transform: uppercase;
+  }
+}
+.full-preview-modal{
+  .ant-modal-body{
+    padding: 0;
+    &>.ant-collapse>.ant-collapse-item{
+      padding-left: 7px;
+    }
+    .group-title{
+      text-transform: capitalize;
+    }
+    .ant-collapse-item:last-of-type{
+      border-bottom: none;
+    }
+    ul{
+      margin-left: 30px;
+      margin-bottom: 0;
+      line-height: 2.3em;
+    }
+  }
+}

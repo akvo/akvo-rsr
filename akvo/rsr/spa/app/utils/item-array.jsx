@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Button, Modal } from 'antd'
+import { Collapse, Icon, Button, Modal, Popconfirm } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import {Route} from 'react-router-dom'
 import AutoSave from './auto-save'
 import * as actions from '../modules/editor/actions'
 
@@ -58,7 +59,7 @@ const PanelHeader = ({ template, field, index, name}) => {
   )
 }
 
-const PanelHeaderMore = ({ render, field, name, index}) => {
+export const PanelHeaderMore = ({ render, field, name, index}) => {
   // renders a custom value in the more prop
   return (
     <Field name={`${name}.${field}`} subscription={{ value: true }}>
@@ -82,13 +83,11 @@ class ItemArray extends React.Component{
     }
   }
   handleAddItem = (item) => {
-    const { sectionIndex, setName } = this.props
-    const newItem = item ? item : (this.props.newItem ? this.props.newItem : {})
+    const newItem = {...(item ? item : (this.props.newItem ? this.props.newItem : {})), project: this.projectId}
     if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
-    this.props.addSetItem(sectionIndex, setName, newItem)
   }
-  removeItem = (event, index, fields) => {
-    event.stopPropagation()
+  removeItem = (index, fields) => {
+    // event.stopPropagation()
     const { sectionIndex, setName } = this.props
     this.props.removeSetItem(sectionIndex, setName, index)
     fields.remove(index)
@@ -100,23 +99,33 @@ class ItemArray extends React.Component{
     })
   }
   render(){
+    console.log('rendered item array')
     return (
       <div>
+      <Route path="/projects/:id" component={({ match: {params} }) => { this.projectId = params.id; return null }} />
       <FieldArray name={this.props.setName} subscription={{}}>
         {({ fields }) => (
           <div>
+            {fields.length > 0 &&
             <Collapse accordion onChange={this.handleChange} activeKey={this.state.activeKey}>
               {fields.map((name, index) => (
                 <Panel
                   header={<PanelHeader template={this.props.header} field={this.props.headerField} name={name} index={index} />}
-                  extra={
-                    <span>
+                  extra={this.props.renderExtra ? this.props.renderExtra(name, index, fields) : (
+                    <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
                       {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}
-                      <Icon type="delete" onClick={event => this.removeItem(event, index, fields)} />
+                      {/* <Icon type="delete" onClick={event => this.removeItem(event, index, fields)} /> */}
+                      <Popconfirm
+                        title="Are you sure to delete this?"
+                        onConfirm={() => this.removeItem(index, fields)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button size="small" icon="delete" className="delete-panel" />
+                      </Popconfirm>
                     </span>
-                  }
+                  )}
                   key={`${index}`}
-                  forceRender
                 >
                   <UpdateHalter parentState={this.state}>
                     <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
@@ -125,6 +134,7 @@ class ItemArray extends React.Component{
                 </Panel>
               ))}
             </Collapse>
+            }
             <FormSpy subscription={{ values: true }}>
               {({ values }) => <ActiveKeyUpdater values={values} name={this.props.setName} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
             </FormSpy>

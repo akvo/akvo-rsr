@@ -14,7 +14,7 @@ import '../styles.scss'
 
 const { Item } = Form
 
-const LocationItems = ({ validations, formPush }) => {
+const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
@@ -23,7 +23,10 @@ const LocationItems = ({ validations, formPush }) => {
       <ItemArray
         setName="locationItems"
         sectionIndex={7}
-        header="Location $index"
+        header={(index, location) => (
+          <span>Location {index + 1}: {location && location.text.split(',')[0]}</span>
+        )}
+        headerField="location"
         formPush={formPush}
         newItem={{ administratives: [{}]}}
         panel={name => (
@@ -50,7 +53,7 @@ const LocationItems = ({ validations, formPush }) => {
             </Item>
             <Item label={<InputLabel optional>Postal code</InputLabel>}>
             <FinalField
-              name={`${name}.postalCode`}
+              name={`${name}.postcode`}
               control="input"
             />
             </Item>
@@ -75,10 +78,10 @@ const LocationItems = ({ validations, formPush }) => {
                 />
               </Col>
               }
-              {fieldExists('code') &&
+              {fieldExists('locationCode') &&
               <Col span={8}>
                 <FinalField
-                  name={`${name}.code`}
+                  name={`${name}.locationCode`}
                   control="input"
                   withLabel
                   optional
@@ -126,10 +129,10 @@ const LocationItems = ({ validations, formPush }) => {
                 />
               </Col>
               }
-              {fieldExists('reach') &&
+              {fieldExists('locationReach') &&
               <Col span={12}>
                 <FinalField
-                  name={`${name}.reach`}
+                  name={`${name}.locationReach`}
                   control="select"
                   options={[
                     {value: '1', label: 'Activity'},
@@ -143,10 +146,10 @@ const LocationItems = ({ validations, formPush }) => {
               }
             </Row>
             <Row gutter={16}>
-              {fieldExists('class') &&
+              {fieldExists('locationClass') &&
               <Col span={12}>
                 <FinalField
-                  name={`${name}.class`}
+                  name={`${name}.locationClass`}
                   control="select"
                   options={[
                     {value: '1', label: 'Administrative Region'},
@@ -176,7 +179,10 @@ const LocationItems = ({ validations, formPush }) => {
               }
             </Row>
             {fieldExists('administratives') &&
-            <Administratives push={formPush} parentName={name} />
+            <div>
+            <h5>Administratives</h5>
+            <FinalField name={`${name}.id`} render={({input}) => <Administratives push={formPush} parentName={name} locationId={input.value} primaryOrganisation={primaryOrganisation} />} />
+            </div>
             }
           </Aux>
         )}

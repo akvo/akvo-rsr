@@ -8,7 +8,7 @@ import ItemArray from '../../../../utils/item-array'
 const { Item } = Form
 
 const Links = ({ formPush }) => (
-  <div className="links view">
+  <div>
     <h3>Links</h3>
     <ItemArray
       formPush={formPush}

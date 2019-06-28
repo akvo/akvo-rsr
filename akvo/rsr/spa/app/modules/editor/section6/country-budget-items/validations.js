@@ -1,8 +1,8 @@
 import * as yup from 'yup'
 
 const IATI = yup.object().shape({
-  code: yup.string(),
-  percentage: yup.mixed(),
+  code: yup.string().required(),
+  percentage: yup.mixed().nullable(),
   description: yup.string(),
 })
 

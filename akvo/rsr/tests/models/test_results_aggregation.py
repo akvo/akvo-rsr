@@ -12,8 +12,10 @@ from django.contrib.auth import get_user_model
 from django_pgviews.models import ViewSyncer
 
 from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result,
-                             PeriodActualValue, IndicatorDimension, Disaggregation)
+                             PeriodActualValue, Disaggregation, IndicatorDimensionName,
+                             IndicatorDimensionValue)
 from akvo.rsr.models.result.indicator_period_aggregation import PeriodDisaggregation
+from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 
 User = get_user_model()
 
@@ -121,24 +123,43 @@ class PeriodDisaggregationTestCase(TestCase):
         self.indicator = Indicator.objects.create(result=self.result, title='Test Indicator')
         self.period = IndicatorPeriod.objects.create(indicator=self.indicator,
                                                      actual_comment='initial actual comment')
-        self.dimension1 = IndicatorDimension.objects.create(
-            indicator=self.indicator, name="Flavor", value="Vanilla"
+        self.dimension_name1 = IndicatorDimensionName.objects.create(
+            project=self.project,
+            name="Flavor"
         )
-        self.dimension2 = IndicatorDimension.objects.create(
-            indicator=self.indicator, name="Flavor", value="Chocolate"
+        self.dimension_name2 = IndicatorDimensionName.objects.create(
+            project=self.project,
+            name="Color"
         )
-        self.dimension3 = IndicatorDimension.objects.create(
-            indicator=self.indicator, name="Color", value="Red"
+        self.dimension_value1 = IndicatorDimensionValue.objects.create(
+            name=self.dimension_name1,
+            value="Vanilla"
         )
+        self.dimension_value2 = IndicatorDimensionValue.objects.create(
+            name=self.dimension_name1,
+            value="Chocolate"
+        )
+        self.dimension_value3 = IndicatorDimensionValue.objects.create(
+            name=self.dimension_name2,
+            value="Red"
+        )
+        self.indicator.dimension_names.add(self.dimension_name1)
+        self.indicator.dimension_names.add(self.dimension_name2)
         self.update1 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=17.11, status='A'
+            period=self.period, user=self.user, value=17.11, status='A',
+            numerator='17.11', denominator='100',
         )
+        self.update1.refresh_from_db()
         self.update2 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=47.89, status='A'
+            period=self.period, user=self.user, value=47.89, status='A',
+            numerator='47.89', denominator='100',
         )
+        self.update2.refresh_from_db()
         self.update3 = IndicatorPeriodData.objects.create(
-            period=self.period, user=self.user, value=88.88, status='D'
+            period=self.period, user=self.user, value=88.88, status='D',
+            numerator='88.88', denominator='100',
         )
+        self.update3.refresh_from_db()
         #  set up PG views
         vs = ViewSyncer()
         vs.run(True, True)
@@ -154,32 +175,32 @@ class PeriodDisaggregationTestCase(TestCase):
         update1 = self.update1
         update2 = self.update2
         update3 = self.update3
-        dimension1 = self.dimension1
-        dimension2 = self.dimension2
-        dimension3 = self.dimension3
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+        dimension_value3 = self.dimension_value3
 
         # When
         Disaggregation.objects.create(
-            dimension=dimension1, update=update1, value=11.1
+            dimension_value=dimension_value1, update=update1, value=11.1
         )
         Disaggregation.objects.create(
-            dimension=dimension2, update=update1, value=6.01
+            dimension_value=dimension_value2, update=update1, value=6.01
         )
         Disaggregation.objects.create(
-            dimension=dimension3, update=update1, value=23.45
+            dimension_value=dimension_value3, update=update1, value=23.45
         )
         Disaggregation.objects.create(
-            dimension=dimension1, update=update2, value=31.57
+            dimension_value=dimension_value1, update=update2, value=31.57
         )
         Disaggregation.objects.create(
-            dimension=dimension2, update=update2, value=16.32
+            dimension_value=dimension_value2, update=update2, value=16.32
         )
         # Note the following disaggregation are for draft updates and should not be included in the SUM
         Disaggregation.objects.create(
-            dimension=dimension1, update=update3, value=12.34
+            dimension_value=dimension_value1, update=update3, value=12.34
         )
         Disaggregation.objects.create(
-            dimension=dimension2, update=update3, value=47.11
+            dimension_value=dimension_value2, update=update3, value=47.11
         )
         period_disaggregations = PeriodDisaggregation.objects.filter(
             indicator=indicator, period=period
@@ -198,21 +219,21 @@ class PeriodDisaggregationTestCase(TestCase):
         period = self.period
         update1 = self.update1
         update2 = self.update2
-        dimension1 = self.dimension1
-        dimension2 = self.dimension2
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
 
         # When
         Disaggregation.objects.create(
-            dimension=dimension1, update=update1, numerator=3.14, denominator=17
+            dimension_value=dimension_value1, update=update1, numerator=3.14, denominator=17
         )
         Disaggregation.objects.create(
-            dimension=dimension2, update=update1, numerator=3.14, denominator=17
+            dimension_value=dimension_value2, update=update1, numerator=3.14, denominator=17
         )
         Disaggregation.objects.create(
-            dimension=dimension1, update=update2, numerator=2.72, denominator=34
+            dimension_value=dimension_value1, update=update2, numerator=2.72, denominator=34
         )
         Disaggregation.objects.create(
-            dimension=dimension2, update=update2, numerator=1.62, denominator=51
+            dimension_value=dimension_value2, update=update2, numerator=1.62, denominator=51
         )
         period_disaggregations = PeriodDisaggregation.objects.filter(
             indicator=indicator, period=period
@@ -224,3 +245,67 @@ class PeriodDisaggregationTestCase(TestCase):
         self.assertEquals(vanilla.denominator, Decimal("51"))
         self.assertEquals(chocolate.numerator, Decimal("4.76"))
         self.assertEquals(chocolate.denominator, Decimal("68"))
+
+    def test_incomplete_disaggregations_marked_on_save(self):
+        # Given
+        update1 = self.update1
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+
+        # When
+        disaggregation1 = Disaggregation.objects.create(
+            dimension_value=dimension_value1, update=update1, value=8)
+        disaggregation2 = Disaggregation.objects.create(
+            dimension_value=dimension_value2, update=update1, value=9)
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+
+        # Then
+        self.assertTrue(disaggregation1.incomplete_data)
+        self.assertTrue(disaggregation2.incomplete_data)
+
+    def test_incomplete_percentage_disaggregation_marked_on_save(self):
+        # Given
+        self.indicator.measure = PERCENTAGE_MEASURE
+        self.indicator.save()
+        update1 = self.update1
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+
+        # When
+        disaggregation1 = Disaggregation.objects.create(
+            dimension_value=dimension_value1, update=update1, numerator=8, denominator=50)
+        disaggregation2 = Disaggregation.objects.create(
+            dimension_value=dimension_value2, update=update1, numerator=9, denominator=50)
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+
+        # Then
+        self.assertTrue(disaggregation1.incomplete_data)
+        self.assertTrue(disaggregation2.incomplete_data)
+
+    def test_incomplete_disaggregations_marked_on_update_change(self):
+        # Given
+        update1 = self.update1
+        self.update1.value = 18
+        self.update1.save()
+        dimension_value1 = self.dimension_value1
+        dimension_value2 = self.dimension_value2
+        disaggregation1 = Disaggregation.objects.create(
+            dimension_value=dimension_value1, update=update1, value=9)
+        disaggregation2 = Disaggregation.objects.create(
+            dimension_value=dimension_value2, update=update1, value=9)
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+        self.assertFalse(disaggregation1.incomplete_data)
+        self.assertFalse(disaggregation2.incomplete_data)
+
+        # When
+        self.update1.value = 20
+        self.update1.save()
+        disaggregation1.refresh_from_db()
+        disaggregation2.refresh_from_db()
+
+        # Then
+        self.assertTrue(disaggregation1.incomplete_data)
+        self.assertTrue(disaggregation2.incomplete_data)

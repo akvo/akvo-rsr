@@ -5,6 +5,7 @@
 
 document.addEventListener("DOMContentLoaded", function() {
     var i18n = JSON.parse(document.getElementById("organisations-text").innerHTML),
+        mapMarker = JSON.parse(document.getElementById("map-marker").innerHTML).mapMarker,
         dropdown_filters = ["location"],
         hidden_or_other = ["title_or_subtitle", "page"],
         url = "/rest/v1/organisation_directory",
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
             options_url={url}
             i18n={i18n}
             typeahead_url={typeahead_url}
+            mapMarker={mapMarker}
         />,
         document.getElementById("organisation-directory")
     );

@@ -18,24 +18,27 @@ import update from "immutability-helper";
 
 // Note: this function used to be a method of the App class, but the the transpiling messes something
 // up the result being the the update function from immuatbility-helper can't be found/called
-export function createNewDisaggregations(update_id, dimensions, disaggregations) {
-    const dimension_disaggregations = keyBy(disaggregations, "dimension");
+export function createNewDisaggregations(update_id, dimensionsNameAndValueIds, disaggregations) {
+    const dimension_disaggregations = keyBy(disaggregations, 'dimension_value');
     let changedDisaggregations = disaggregations;
-    dimensions.forEach(dimension => {
-        if (dimension_disaggregations[dimension.id] === undefined) {
-            const disaggregation = {
-                update: update_id,
-                dimension: dimension.id,
-                id: "new-" + dimension.id,
-                value: "",
-                numerator: "",
-                denominator: "",
-                narrative: ""
-            };
-            changedDisaggregations = update(changedDisaggregations, { $push: [disaggregation] });
-            /* disaggregations.push(disaggregation)*/
-            updateModel("disaggregations", disaggregation);
-        }
+    dimensionsNameAndValueIds.forEach(({dimensionNameId, dimensionValueIds}) => {
+        dimensionValueIds.forEach(dimensionValueId => {
+            if (dimension_disaggregations[dimensionValueId] === undefined) {
+                const disaggregation = {
+                    update: update_id,
+                    dimension_name: dimensionNameId,
+                    dimension_value: dimensionValueId,
+                    // TODO: Are the IDs sure to be unique?
+                    id: "new-" + dimensionValueId,
+                    value: "",
+                    numerator: "",
+                    denominator: "",
+                    narrative: "",
+                };
+                changedDisaggregations = update(changedDisaggregations, {$push: [disaggregation]});
+                updateModel('disaggregations', disaggregation);
+            }
+        })
     });
     return changedDisaggregations;
 }
@@ -130,10 +133,10 @@ export const endpoints = {
     result: id => `/rest/v1/result/${id}/?format=json`,
     results: id => `/rest/v2/result/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     indicators: id => `/rest/v1/indicator/?format=json&limit=${c.API_LIMIT}&result__project=${id}`,
-    dimensions: id =>
-        `/rest/v1/indicator_dimension/?format=json&limit=${
-            c.API_LARGE_LIMIT
-        }&indicator__result__project=${id}`,
+    dimension_names: (id) =>
+        `/rest/v1/dimension_name/?format=json&limit=${c.API_LIMIT}&project=${id}`,
+    dimension_values: (id) =>
+        `/rest/v1/dimension_value/?format=json&limit=${c.API_LIMIT}&name__project=${id}`,
     periods: id =>
         `/rest/v1/indicator_period/?format=json&limit=${
             c.API_LIMIT
@@ -164,7 +167,7 @@ export const endpoints = {
     update_and_comments: id => `/rest/v1/indicator_period_data_framework/${id}/?format=json`,
     updates_and_comments: () =>
         `/rest/v1/indicator_period_data_framework/?format=json&limit=${c.API_LIMIT}`,
-    user: id => `/rest/v1/user/${id}/?format=json`,
+    user: () => `/rest/v1/me/?format=json`,
     partnerships: id => `/rest/v1/partnership/?format=json&limit=${c.API_LIMIT}&project=${id}`,
     file_upload: id => `/rest/v1/indicator_period_data/${id}/upload_file/?format=json`
 };
@@ -438,7 +441,9 @@ export const isResultsKey = key => {
     return c.RESULTS_MODELS_LIST.some(model => key.startsWith(model));
 };
 
-export const disaggregationsToDisplayData = (disaggregationIds, disaggregations, dimensions) => {
+export const disaggregationsToDisplayData = (
+    disaggregationIds, disaggregations, dimensionNames, dimensionValues
+) => {
     /*  maps a number of disaggregations to the following format:
             {
                 Flavor: {
@@ -453,18 +458,19 @@ export const disaggregationsToDisplayData = (disaggregationIds, disaggregations,
             }
         which is used as input to components/common/DisaggregationsDisplay
         see https://github.com/kolodny/immutability-helper#autovivification for some insight
-        into the use uf update() below
+        into the use of update() below
     */
     return (
         disaggregationIds &&
         disaggregationIds.reduce((acc, id) => {
             const disaggregation = disaggregations[id];
-            const dimension = dimensions[disaggregation.dimension];
+            const dimensionValue = dimensionValues[disaggregation.dimension_value];
+            const dimensionName = dimensionNames[dimensionValue.name];
             return update(acc, {
-                [dimension.name]: {
+                [dimensionName.name]: {
                     $apply: value =>
                         update(value || {}, {
-                            [dimension.value]: {
+                            [dimensionValue.value]: {
                                 $apply: disagg => (disagg || 0) + parseInt(disaggregation.value)
                             }
                         })

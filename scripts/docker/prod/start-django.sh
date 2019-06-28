@@ -18,13 +18,8 @@ if [ ! -z "${WAIT_FOR_DEPENDENCIES:-}" ]; then
 fi
 
 log Migrating
-if [ ! -f "/var/akvo/rsr/mediaroot/fake-migration-flag" ]; then
-    log Running fake initial migrations at last here
-    python manage.py migrate --fake-initial --noinput
-    mkdir -p /var/akvo/rsr/mediaroot
-    touch "/var/akvo/rsr/mediaroot/fake-migration-flag"
-fi
-python manage.py migrate --noinput
+
+SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 
 log Adding to crontab
 python manage.py crontab add
@@ -33,7 +28,7 @@ env >> /etc/environment
 log Starting cron
 /usr/sbin/cron
 log Starting gunicorn in background
-gunicorn akvo.wsgi ${GUNICORN_DEBUG_ARGS:-} --max-requests 200 --workers 6 --timeout 300 --bind 0.0.0.0:8000 &
+gunicorn akvo.wsgi --max-requests 200 --workers 6 --timeout 300 --bind 0.0.0.0:8000 ${GUNICORN_DEBUG_ARGS:-} &
 
 child=$!
 wait "$child"

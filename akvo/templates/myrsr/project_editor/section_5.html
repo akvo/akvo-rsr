@@ -20,8 +20,9 @@
                 <span class="tab"></span>{% trans 'Indicator: "Training sessions organised"' %}<br/>
                 <span class="tab"></span><span class="tab"></span>{% trans 'Indicator period: "01-01-2015 - 31-12-2015 (Target: 10 / Actual: 5)"' %}</i></p>
             </div>
-            <form role="form">
-                {% if project.parents_all.count == 1 and project.is_impact_project and user.can_import_results %}
+
+            <div class="form">
+                {% if project.parents_all.count == 1 and project.is_impact_project and user|can_import_results:project %}
                     <div class="row">
                         <div class="col-md-3">
                             <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>
@@ -34,7 +35,7 @@
                     </div>
                     {% include boolean_input with obj=project field='aggregate_to_parent' %}
                 {% endif %}
-                {% if not project.results.exists and project.is_impact_project and user.can_import_results %}
+                {% if not project.results.exists and project.is_impact_project and user|can_import_results:project %}
                     <div class="row">
                         <div class="col-md-6">
                             {% trans 'Copy the results framework from an existing RSR project within your organisation' %}
@@ -49,13 +50,50 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if project.children_all.count > 0 and project.is_impact_project and user.can_import_results %}
+                {% if project.children_all.count > 0 and project.is_impact_project and user|can_import_results:project %}
                     {% include boolean_input with obj=project field='aggregate_children' %}
                     <div class="alert alert-warning" role="alert">
                           <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                           <strong>{% trans 'Warning!' %}</strong> {% trans 'Editing or deleting results will propagate to child projects.' %}
                     </div>
                 {% endif %}
+            </div>
+
+            {% with dimension_count=project.dimension_names.count %}
+              <div class="row{% if dimension_count > 0 %} hidden{% endif %}" id="show-disaggregation-definitions-container">
+                <div class="col-md-6">
+                  {% trans 'Will your indicators include disaggregations?' %}
+                  <a id="show-disaggregation-definitions" style="color: green; margin-left: 5px;" >Yes</a>
+                  <a style="color: red; margin-left: 5px;">No</a>
+                </div>
+              </div>
+              <form role="form" class="{% if dimension_count == 0 %}hidden{% endif %}" id="disaggregation-definitions">
+                  <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimensionname" }}">
+                      <h5>{% trans 'Set up your disaggregation taxonomy:' %}</h5>
+                      <div class="dimension-name-container" id="dimension-name-container">
+                          {% with proejct_id_string=proejct.pk|default:"new-0"|stringformat:"s" %}
+                              {% for dimension_name in project.dimension_names.all %}
+                                  {% include "myrsr/project_editor/related_objects/dimension_name_input.html" %}
+                              {% empty %}
+                                  {% include "myrsr/project_editor/related_objects/dimension_name_input.html" with dimension_name='IndicatorDimensionName.'|add:project_id_string %}
+                              {% endfor %}
+                          {% endwith %}
+                          <div class="row form-group">
+                              <div class="col-md-12 text-center add-object-link">
+                                  <a href="#" class="add-dimension-name">
+                                      <span class="glyphicon glyphicon-plus"></span>
+                                      {% trans 'Add another disaggregation' %}
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  {% include "myrsr/project_editor/partials/save_row.html" %}
+              </form>
+            {% endwith %}
+
+            <form role="form">
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_result" }}">
                     <h5>{% trans 'Results' %}</h5>
                     <div class="result-container" id="result-container">

@@ -91,25 +91,25 @@
         {% endif %}
 
         <div class="related-object-container {% if indicator.type == 2 %} hidden {% endif %}{{ validations|mandatory_or_hidden:"rsr_indicatordimension" }}">
-            <h5>{% trans 'Indicator Disaggregations' %} <span class="glyphicon glyphicon-info-sign info-icon info-icon-special" toggleid="iati-dimensions-helptext-{{indicator_id_string}}"></span></h5>
+          <h5>{% trans 'Indicator Disaggregations' %} <span class="glyphicon glyphicon-info-sign info-icon info-icon-special" toggleid="iati-dimensions-helptext-{{indicator_id_string}}"></span></h5>
             <!-- *NOTE*: Just hiding the related container above doesn't work, because the
                  javascript to deduce hidden fields from validation sets removes that hidden tag,
                  once the page loads. This child needs to be hidden to prevent that.  -->
-            <span class="help-block hidden" id="iati-dimensions-helptext-{{indicator_id_string}}">{% trans 'The term "disaggregation" is equivalent to the IATI term "dimension". For those reporting to IATI via RSR, disaggregations and their associated data are mapped accordingly as dimensions in your IATI export.' %}</span>
-            <div class="indicator-dimension-container {% if indicator.type == 2 %} hidden {% endif %}" id="indicator-dimension-container">
-                {% for dimension in indicator.dimensions.all %}
-                {% include "myrsr/project_editor/related_objects/indicator_dimension_input.html" %}
-                {% empty %}
-                {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
-                {% include "myrsr/project_editor/related_objects/indicator_dimension_input.html" with dimension='IndicatorDimension.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
-                {% endwith %}
-                {% endfor %}
-                <div class="row form-group">
-                    <div class="col-md-12 text-center add-object-link">
-                        <a href="#" class="add-indicator-dimension"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator disaggregation' %}</a>
-                    </div>
-                </div>
+          <span class="help-block hidden" id="iati-dimensions-helptext-{{indicator_id_string}}">{% trans 'The term "disaggregation" is equivalent to the IATI term "dimension". For those reporting to IATI via RSR, disaggregations and their associated data are mapped accordingly as dimensions in your IATI export.' %}</span>
+          <div class="indicator-dimension-name-container {% if indicator.type == 2 %} hidden {% endif %}" id="indicator-dimension-container">
+            {% with result_id_string=indicator.result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" %}
+              {% for dimension_name in indicator.dimension_names.all %}
+                {% include "myrsr/project_editor/related_objects/indicator_dimension_name_input.html" %}
+              {% empty %}
+                {% include "myrsr/project_editor/related_objects/indicator_dimension_name_input.html" with dimension_name='IndicatorDimensionName.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string %}
+              {% endfor %}
+            {% endwith %}
+            <div class="row form-group">
+              <div class="col-md-12 text-center add-object-link">
+                <a href="#" class="add-indicator-dimension-name"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator disaggregation' %}</a>
+              </div>
             </div>
+          </div>
         </div>
 
         <div class="row">

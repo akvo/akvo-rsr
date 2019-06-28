@@ -7,7 +7,7 @@ const RSR = yup.object().shape({
 
 const IATI = RSR.clone().shape({
   percentage: yup.mixed().required().transform(transformUndefined),
-  description: yup.string()
+  text: yup.string()
 })
 
 const DGIS = RSR.clone().shape({
@@ -16,8 +16,8 @@ const DGIS = RSR.clone().shape({
 
 const EUTF = yup.object().shape({
   country: yup.string(),
-  percentage: yup.mixed(),
-  description: yup.string()
+  percentage: yup.mixed().nullable(),
+  text: yup.string()
 })
 
 const DFID = EUTF.clone()

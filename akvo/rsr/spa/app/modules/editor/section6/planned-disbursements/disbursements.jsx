@@ -7,6 +7,7 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import { validationType } from '../../../../utils/validation-utils'
+import OrganizationSelect from '../../../../utils/organization-select';
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
@@ -14,7 +15,7 @@ const isEmpty = value => value === null || value === '' || value === undefined
 const ValueDateField = ({ name }) => (
   <Item label={(
     <Field name={`${name}.value`}>
-      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value Date</InputLabel>}
+      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value date</InputLabel>}
     </Field>
   )}>
   <FinalField
@@ -49,7 +50,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
               </Col>
             )}
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip="...">Amount</InputLabel>}>
+              <Item label={<InputLabel optional tooltip="...">Disbursement value</InputLabel>}>
               <FinalField
                 name={`${name}.value`}
                 control="input-number"
@@ -68,7 +69,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
               <ValueDateField name={name} />
             </Col>
             <Col span={12}>
-              <Item label={<InputLabel optional>Type</InputLabel>}>
+              <Item label={<InputLabel optional>Disbursement type</InputLabel>}>
               <FinalField
                 name={`${name}.type`}
                 render={({ input }) => (
@@ -115,7 +116,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <Item label={<InputLabel optional>Name</InputLabel>}>
-                <FinalField
+                <OrganizationSelect
                   name={`${name}.providerOrganisation`}
                 />
                 </Item>
@@ -123,7 +124,7 @@ const PlannedDisbursements = ({ formPush, validations }) => {
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>
                 <FinalField
-                  name={`${name}.providerOrganisationActivityId`}
+                  name={`${name}.providerOrganisationActivity`}
                 />
                 </Item>
               </Col>
@@ -136,15 +137,15 @@ const PlannedDisbursements = ({ formPush, validations }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <Item label={<InputLabel optional>Name</InputLabel>}>
-                <FinalField
-                  name={`${name}.recipientOrganisation`}
+                <OrganizationSelect
+                  name={`${name}.receiverOrganisation`}
                 />
                 </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>
                 <FinalField
-                  name={`${name}.recipientOrganisationActivityId`}
+                  name={`${name}.receiverOrganisationActivity`}
                 />
                 </Item>
               </Col>

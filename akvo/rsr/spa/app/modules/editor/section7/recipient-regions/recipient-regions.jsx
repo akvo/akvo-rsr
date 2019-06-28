@@ -19,7 +19,10 @@ const RecipientRegions = ({ formPush, validations }) => {
       <ItemArray
         setName="recipientRegions"
         sectionIndex={7}
-        header="Recipient country $index"
+        header={(index, region) => (
+          <span>Recipient region: {region && REGION_OPTIONS.find(it => it.value === region).label}</span>
+        )}
+        headerField="region"
         formPush={formPush}
         panel={name => (
           <div>
@@ -34,12 +37,12 @@ const RecipientRegions = ({ formPush, validations }) => {
                 withEmptyOption
               />
             </Item>
-            {fieldExists('vocabulary') && (
+            {fieldExists('regionVocabulary') && (
               <Row gutter={16}>
                 <Col span={12}>
                 <Item label={<InputLabel optional tooltip="...">Vocabulary</InputLabel>}>
                 <FinalField
-                  name={`${name}.vocabulary`}
+                  name={`${name}.regionVocabulary`}
                   control="select"
                   options={[
                     {value: '1', label: 'OECD DAC'},
@@ -53,7 +56,7 @@ const RecipientRegions = ({ formPush, validations }) => {
                 <Col span={12}>
                   <Item label={<InputLabel optional>Vocabulary URI</InputLabel>}>
                   <FinalField
-                    name={`${name}.vocabularyUri`}
+                    name={`${name}.regionVocabularyUri`}
                     control="input"
                   />
                   </Item>
@@ -71,10 +74,10 @@ const RecipientRegions = ({ formPush, validations }) => {
                 />
                 </Item>
               )}
-              {fieldExists('description') && (
+              {fieldExists('text') && (
                 <Item label={<InputLabel optional>Description</InputLabel>}>
                 <FinalField
-                  name={`${name}.description`}
+                  name={`${name}.text`}
                   control="textarea"
                   rows={2}
                 />

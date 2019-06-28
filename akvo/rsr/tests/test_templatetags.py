@@ -18,9 +18,8 @@ from akvo.rsr.templatetags import maps
 class TemplateTagsTestCase(BaseTestCase):
     """Tests for template tags."""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.tearDownClass()
+    def setUp(self):
+        ProjectEditorValidationSet.objects.all().delete()
         MANDATORY = ProjectEditorValidation.MANDATORY_ACTION
         HIDDEN = ProjectEditorValidation.HIDDEN_ACTION
         validation1 = [
@@ -56,9 +55,11 @@ class TemplateTagsTestCase(BaseTestCase):
             ('rsr_planneddisbursement.value_date', MANDATORY)
         ]
 
+        self.ids = dict()
         for i, validations in enumerate([validation1, validation2], start=1):
             validation_set = ProjectEditorValidationSet.objects.create(name='validation-{}'.format(i))
-            setattr(cls, 'validation{}'.format(i), validation_set)
+            self.ids['id_{}'.format(i)] = validation_set.id
+            setattr(self, 'validation{}'.format(i), validation_set)
             for validation, action in validations:
                 ProjectEditorValidation.objects.create(
                     validation=validation,
@@ -66,19 +67,11 @@ class TemplateTagsTestCase(BaseTestCase):
                     validation_set=validation_set,
                 )
 
-        cls.validations = ProjectEditorValidation.objects.all()
-        id_1, id_2 = ProjectEditorValidationSet.objects.values_list('id', flat=True)
-        cls.ids = {'id_1': id_1, 'id_2': id_2}
-
-    @classmethod
-    def tearDownClass(cls):
-        ProjectEditorValidation.objects.all().delete()
-        ProjectEditorValidationSet.objects.all().delete()
-        cls.validations = None
+    def tearDown(self):
         invalidate_validation_cache()
 
     def _indications(self, field):
-        return mandatory_or_hidden(self.validations, field).strip()
+        return mandatory_or_hidden(ProjectEditorValidation.objects.all(), field).strip()
 
     def assertIndications(self, field, expected_indications):
         self.assertEqual(self._indications(field), expected_indications)
@@ -144,7 +137,7 @@ class TemplateTagsTestCase(BaseTestCase):
         ProjectEditorValidation.objects.create(
             validation='rsr_project.subtitle',
             action=1,
-            validation_set=self.validation2
+            validation_set_id=self.ids['id_2']
         )
         expected_indications = 'mandatory-{id_1} mandatory-{id_2}'.format(**self.ids)
         self.assertIndications(field, expected_indications)

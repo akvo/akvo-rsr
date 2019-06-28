@@ -32,19 +32,20 @@ class CommentsKeywords extends React.Component{
               <AutoSave sectionIndex={10} />
               <Item label={<InputLabel optional tooltip="...">Comments</InputLabel>}>
                 <FinalField
-                  name="comments"
+                  name="notes"
                   render={({input}) => <RTE {...input} />}
                 />
               </Item>
-              <h3>Keywords</h3>
-              <FinalField
-                name="keywords"
-                control="select"
-                mode="multiple"
-                optionFilterProp="children"
-                options={tempAvailableKeywords.map(({id, label}) => ({ value: id, label }))}
-                placeholder="Please select..."
-              />
+              <Item label={<InputLabel optional tooltip="...">Keywords</InputLabel>}>
+                <FinalField
+                  name="keywords"
+                  control="select"
+                  mode="multiple"
+                  optionFilterProp="children"
+                  options={tempAvailableKeywords.map(({id, label}) => ({ value: id, label }))}
+                  placeholder="Please select..."
+                />
+              </Item>
             </div>
             )}
           />

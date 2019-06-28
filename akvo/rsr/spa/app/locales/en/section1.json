@@ -7,16 +7,20 @@
     "label": "IATI identifier",
     "tooltip": "This is a globally unique identifier for this activity. It is a requirement to be compliant with the IATI standard. This code consists of:<br />[country code]-[Chamber of Commerce number]-[organisation’s internal project code].<br />For Dutch organisations this is e.g. NL-KVK-31156201-TZ1234. For more information <a href=\"http://iatistandard.org/201/activity-standard/iati-activities/iati-activity/iati-identifier/#definition\" target=\"_blank\" rel=\"noopener noreferrer\">click here</a>"
   },
-  "plannedStartDate": {
+  "hierarchy": {
+    "label": "Hierarchy",
+    "tooltip": "..."
+  },
+  "dateStartPlanned": {
     "label": "Planned start date"
   },
-  "plannedEndDate": {
+  "dateEndPlanned": {
     "label": "Planned end date"
   },
-  "actualStartDate": {
+  "dateStartActual": {
     "label": "Actual start date"
   },
-  "actualEndDate": {
+  "dateEndActual": {
     "label": "Actual end date"
   },
   "language": {

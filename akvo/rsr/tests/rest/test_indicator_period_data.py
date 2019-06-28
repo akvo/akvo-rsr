@@ -16,7 +16,8 @@ from django.test import TestCase, Client
 from akvo.rsr.models import (
     Project, Organisation, Partnership, User,
     Employment, Result, Indicator, IndicatorPeriod,
-    IndicatorDimension, IndicatorPeriodData
+    IndicatorDimensionName, IndicatorDimensionValue,
+    IndicatorPeriodData
 )
 
 from akvo.utils import check_auth_groups
@@ -152,7 +153,7 @@ class IndicatorPeriodDataTestCase(TestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         value = "10.00"
         disaggregations = [{
-            'dimension': self.dimension.id,
+            'dimension_value': self.dimension_value.id,
             'value': value
         }]
         data = {
@@ -182,7 +183,7 @@ class IndicatorPeriodDataTestCase(TestCase):
         url = '/rest/v1/indicator_period_data_framework/?format=json'
         value = 10
         disaggregations = [{
-            'dimension': self.dimension.id,
+            'dimension_value': self.dimension_value.id,
             'value': value,
             'update': None
         }]
@@ -413,11 +414,15 @@ class IndicatorPeriodDataTestCase(TestCase):
             title='Indicator 1',
             result=self.result
         )
-        self.dimension = IndicatorDimension.objects.create(
-            indicator=self.indicator,
-            name='Gender',
-            value='Female',
+        self.dimension_name = IndicatorDimensionName.objects.create(
+            project=self.project,
+            name="Gender"
         )
+        self.dimension_value = IndicatorDimensionValue.objects.create(
+            name=self.dimension_name,
+            value="Female"
+        )
+
         self.period = IndicatorPeriod.objects.create(
             period_start='2016-01-01',
             period_end='2016-12-31',

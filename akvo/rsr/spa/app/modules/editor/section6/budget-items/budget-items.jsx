@@ -12,6 +12,7 @@ import { Aux } from '../../../../utils/misc'
 import { validationType, isFieldOptional, getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import validationDefs from './validations'
+import Condition from '../../../../utils/condition';
 
 const { Item } = Form
 
@@ -22,7 +23,7 @@ const totalBudgetReducer = (acc, budgetItem) => {
   return acc
 }
 
-const BudgetItems = ({ formPush, validations, currency }) => {
+const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
   const validationSets = getValidationSets(validations, validationDefs)
@@ -58,11 +59,11 @@ const BudgetItems = ({ formPush, validations, currency }) => {
       <ItemArray
         setName="budgetItems"
         sectionIndex={6}
-        header={(index, type) => {
-          if(!type) return null
-          return <span>{budgetItemTypes.find(it => it.value === type).label}</span>
+        header={(index, label) => {
+          if(!label) return null
+          return <span>Budget item {index + 1}: {budgetItemTypes.find(it => it.value === String(label)).label}</span>
         }}
-        headerField="type"
+        headerField="label"
         headerMore={(index, amount) => {
           if(!fieldExists('currency')){
             return <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
@@ -84,7 +85,6 @@ const BudgetItems = ({ formPush, validations, currency }) => {
                   <Col span={12}>
                     <FinalField
                       name={`${name}.currency`}
-                      defaultValue={currency}
                       control="select"
                       options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
                       showSearch
@@ -103,13 +103,15 @@ const BudgetItems = ({ formPush, validations, currency }) => {
                   />
                 </Col>
               </Row>
+              <Condition when={`${name}.label`} is="38">
               <FinalField
-                name={`${name}.label`}
+                name={`${name}.otherExtra`}
                 control="input"
                 withLabel
                 optional
                 fieldExists={fieldExists}
               />
+              </Condition>
 
               <Row gutter={16}>
                 {fieldExists('budgetType') &&
@@ -182,7 +184,7 @@ const BudgetItems = ({ formPush, validations, currency }) => {
             <div>
               {budgetItemTypes.map(type => (
                 <div className="desc-block">
-                  <Button block icon="plus" onClick={() => onClick({ type: type.value })}>{type.label}</Button>
+                  <Button block icon="plus" onClick={() => onClick({ label: type.value })}>{type.label}</Button>
                 </div>
               ))}
             </div>

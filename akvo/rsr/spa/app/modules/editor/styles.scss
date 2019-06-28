@@ -15,14 +15,15 @@
     flex-direction: row;
   }
   .status-bar{
+    position: -webkit-sticky;
     position: sticky;
     height: 50px;
     background-color: #f2f2f2;
     width: 100%;
-    top: 0;
+    top: 55px;
     display: flex;
     line-height: 50px;
-    z-index: 12;
+    z-index: 911;
     aside.saving-status{
       background: #e6e6e6;
       height: 50px;
@@ -35,9 +36,10 @@
       .ant-spin{
         margin-right: 8px;
       }
-      span{
-        font-size: 14px;
-        opacity: 0.75;
+      .error{
+        .anticon{
+          color: red;
+        }
       }
     }
     .content{
@@ -64,6 +66,11 @@
       padding: 20px 0;
       text-transform: uppercase;
       li{
+        &.disabled{
+          span{
+            opacity: 0.2;
+          }
+        }
         a{
           position: relative;
           span{
@@ -107,6 +114,18 @@
             color: #bbb;
           }
         }
+        .loading{
+          position: absolute;
+          right: 20px;
+          top: 9px;
+          width: 20px;height: 20px;
+          background-color: #e0e0e0;
+          background: linear-gradient(90deg, #e0e0e0 25%, #e9e9e9 37%, #e0e0e0 63%);
+          background-size: 400% 100%;
+          vertical-align: top;
+          animation: ant-skeleton-loading 1.4s ease infinite;
+          border-radius: 50%;
+        }
       }
     }
   }
@@ -114,13 +133,18 @@
     flex: 1;
   }
   .main-content{
-    padding-left: 30px;
     margin-left: 280px;
-    margin-right: 280px;
+    padding-left: 30px;
+  }
+  .view:not(.section5){
+    margin-right: 230px;
     @media screen and (max-width: 1200px){
       margin-right: 100px;
     }
   }
+  // .view.section5{
+  //   margin-right: 200px;
+  // }
   .alerts{
     width: 280px;
     position: absolute;
@@ -181,7 +205,7 @@
     }
   }
   .percentage-input{
-    max-width: 70px;
+    max-width: 82px;
   }
 }
 
@@ -209,8 +233,14 @@ hr{
   .ant-collapse{
     margin-bottom: 20px;
     .ant-collapse-content-box{
-      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-child{
+      .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;
+        &+section{
+          margin-top: 25px;
+        }
+        &+.percentage-row{
+          margin-top: 25px;
+        }
       }
       .ant-form>.ant-row:last-child, &>div>.ant-row:last-child{
         .ant-col .ant-form-item{

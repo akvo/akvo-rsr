@@ -1,0 +1,14 @@
+{% load i18n project_editor %}
+
+<div class="dimension-value-item parent" id="dimension_value.{{ dimension_value|obj_id }}">
+    {% with hide_delete_button=dimension_value.parent_dimension_value %}
+        {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension_value %}
+    {% endwith %}
+    <div class="hide-partial {% if dimension_value.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-12">
+                {% include text_input with obj=dimension_value field='value' %}
+            </div>
+        </div>
+    </div>
+</div>

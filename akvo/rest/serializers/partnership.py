@@ -25,6 +25,7 @@ class PartnershipRawDeepSerializer(PartnershipRawSerializer):
 
 class PartnershipSerializer(PartnershipRawSerializer):
 
+    organisation_name = serializers.ReadOnlyField(source='organisation.canonical_name')
     organisation_show_link = serializers.ReadOnlyField()
     partner_type = serializers.ReadOnlyField(source='iati_role_to_partner_type_unicode')
     organisation_role_label = serializers.ReadOnlyField(source='iati_organisation_role_label_unicode')

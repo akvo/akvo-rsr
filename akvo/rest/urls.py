@@ -37,6 +37,8 @@ router.register(r'(?P<version>(v1))/iati_check', views.IatiCheckViewSet)
 router.register(r'(?P<version>(v1))/iati_export', views.IatiExportViewSet)
 router.register(r'(?P<version>(v1))/indicator', views.IndicatorViewSet)
 router.register(r'(?P<version>(v1))/indicator_dimension', views.IndicatorDimensionViewSet)
+router.register(r'(?P<version>(v1))/dimension_name', views.IndicatorDimensionNameViewSet)
+router.register(r'(?P<version>(v1))/dimension_value', views.IndicatorDimensionValueViewSet)
 router.register(r'(?P<version>(v1))/indicator_framework', views.IndicatorFrameworkViewSet)
 router.register(r'(?P<version>(v1))/indicator_label', views.IndicatorLabelViewSet)
 router.register(r'(?P<version>(v1))/indicator_period', views.IndicatorPeriodViewSet)
@@ -143,6 +145,9 @@ urlpatterns = (
     url(r'v1/user/(?P<pk>[0-9]+)/request_organisation/$',
         views.request_organisation,
         name='user_request_organisation'),
+    url(r'v1/me/$',
+        views.current_user,
+        name='current_user'),
     url(r'v1/invite_user/$',
         views.invite_user,
         name='invite_user'),
@@ -184,7 +189,7 @@ urlpatterns += (
         name='project_editor_add_validation'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/remove_validation/(?P<validation_pk>[0-9]+)/$',
         views.project_editor_remove_validation,
-        name='project_editor_remove_keyword'),
+        name='project_editor_remove_validation'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/remove_keyword/(?P<keyword_pk>[0-9]+)/$',
         views.project_editor_remove_keyword,
         name='project_editor_remove_keyword'),
@@ -197,6 +202,9 @@ urlpatterns += (
     url(r'v1/organisation/(?P<pk>[0-9]+)/add_logo/$',
         views.project_editor_organisation_logo,
         name='project_editor_add_org_logo'),
+    url(r'v1/indicator/(?P<indicator_pk>[0-9]+)/remove_dimension/(?P<dimension_pk>[0-9]+)/$',
+        views.project_editor_remove_indicator_dimension,
+        name='project_editor_remove_indicator_dimension'),
 )
 
 # Directory views

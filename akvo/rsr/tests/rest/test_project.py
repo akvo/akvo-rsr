@@ -7,6 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+import datetime
 import json
 import os
 
@@ -21,14 +22,13 @@ from akvo.rsr.models import (Project, Organisation, Partnership, User,
                              PublishingStatus, ProjectLocation,
                              RecipientCountry, ProjectEditorValidationSet,
                              OrganisationCustomField, ProjectCustomField)
-
 from akvo.rsr.models.user_projects import restrict_projects
 from akvo.rsr.tests.test_project_access import RestrictedUserProjects
+from akvo.utils import check_auth_groups, custom_get_or_create_country
+from akvo.rsr.tests.base import BaseTestCase
 
-from akvo.utils import check_auth_groups
 
-
-class RestProjectTestCase(TestCase):
+class RestProjectTestCase(BaseTestCase):
     """Tests the project REST endpoints."""
 
     def setUp(self):
@@ -51,8 +51,9 @@ class RestProjectTestCase(TestCase):
             long_name="Test REST reporting org",
             new_organisation_type=22
         )
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.user_email = 'foo@bar.com'
+        self.user = self.create_user(self.user_email, 'password', is_admin=True)
+        super(RestProjectTestCase, self).setUp()
 
     def test_rest_project(self):
         """
@@ -63,6 +64,27 @@ class RestProjectTestCase(TestCase):
 
         content = json.loads(response.content)
         self.assertEqual(content['count'], 2)
+
+    def test_rest_patch_project(self):
+        """Checks patching the a project."""
+        # Given
+        self.c.login(username=self.user_email, password='password')
+        data = {'date_start_actual': '03-02-2018', 'date_start_planned': '2018-01-01'}
+
+        # When
+        response = self.c.patch(
+            '/rest/v1/project/{}/?format=json'.format(self.project.id),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertEqual(
+            datetime.datetime.strptime(content['date_start_actual'], '%Y-%m-%d'),
+            datetime.datetime.strptime(data['date_start_actual'], '%d-%m-%Y'),
+        )
+        self.assertEqual(content['date_start_planned'], data['date_start_planned'])
 
     def test_rest_project_reporting_org(self):
         """
@@ -205,9 +227,11 @@ class ProjectDirectoryTestCase(TestCase):
         with open(self.image, 'w+b'):
             pass
 
+        self.projects = []
         for i in range(1, 6):
             project = Project.objects.create(title='Project - {}'.format(i),
                                              current_image=self.image)
+            self.projects.append(project)
             if i < 4:
                 publishing_status = project.publishingstatus
                 publishing_status.status = PublishingStatus.STATUS_PUBLISHED
@@ -279,25 +303,24 @@ class ProjectDirectoryTestCase(TestCase):
     def test_should_show_all_country_projects(self):
         # Given
         titles = ['Project - {}'.format(i) for i in range(0, 6)]
-        projects = [None] + [Project.objects.get(title=title) for title in titles[1:]]
         url = '/rest/v1/project_directory?format=json&location=262'
         latitude, longitude = ('11.8948112', '42.5807153')
         country_code = 'DJ'
+        custom_get_or_create_country(iso_code=country_code.lower())
+
         # Add a Recipient Country - DJ
-        RecipientCountry.objects.create(project=projects[2], country=country_code)
-        # ProjectLocation in DJ
-        project_location = ProjectLocation.objects.create(location_target=projects[3],
+        RecipientCountry.objects.create(project=self.projects[2], country=country_code)
+        # Published project - ProjectLocation in DJ
+        project_location = ProjectLocation.objects.create(location_target=self.projects[1],
                                                           latitude=latitude,
                                                           longitude=longitude)
-        project_location = ProjectLocation.objects.create(location_target=projects[4],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
-        project_location = ProjectLocation.objects.create(location_target=projects[5],
-                                                          latitude=latitude,
-                                                          longitude=longitude)
+        # Unpublished project
+        ProjectLocation.objects.create(location_target=self.projects[3],
+                                       latitude=latitude,
+                                       longitude=longitude)
 
         # ProjectLocation with no country
-        ProjectLocation.objects.create(location_target=projects[3],
+        ProjectLocation.objects.create(location_target=self.projects[0],
                                        latitude=None,
                                        longitude=None)
         client = self._create_client()

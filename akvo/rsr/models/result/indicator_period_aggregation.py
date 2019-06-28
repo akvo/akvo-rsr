@@ -52,7 +52,8 @@ class PeriodActualValue(pg.View):
 DISAGG_SQL = """
     WITH aggregated_disaggs AS (
         SELECT
-            disagg.dimension_id AS dimension_id,
+            update.period_id,
+            disagg.dimension_value_id,
             sum((disagg.value) :: DECIMAL(20,2)) AS value,
             sum((disagg.numerator) :: DECIMAL(20,2)) AS numerator,
             sum((disagg.denominator) :: DECIMAL(20,2)) AS denominator
@@ -63,28 +64,31 @@ DISAGG_SQL = """
             update.status = 'A' AND
             disagg.update_id = update.id
         GROUP BY
-            dimension_id
+            disagg.dimension_value_id, update.period_id
     ),
     period_disaggs AS (
         SELECT DISTINCT
             indicator.id AS indicator_id,
             period.id AS period_id,
-            dimension.name AS dimension_name,
-            dimension.value AS dimension_value,
+            dimensionname.name AS dimension_name,
+            dimensionvalue.value AS dimension_value,
             agg.value,
             agg.numerator,
             agg.denominator
         FROM
             rsr_indicator indicator,
             rsr_indicatorperiod period,
-            rsr_indicatorperioddata update,
+            rsr_indicator_dimension_names indicator_dimensions,
             aggregated_disaggs agg,
-            rsr_indicatordimension dimension
+            rsr_indicatordimensionname dimensionname,
+            rsr_indicatordimensionvalue dimensionvalue
         WHERE
             indicator.id = period.indicator_id AND
-            period.id = update.period_id AND
-            indicator.id = dimension.indicator_id AND
-            dimension.id = agg.dimension_id
+            period.id = agg.period_id AND
+            dimensionvalue.id = agg.dimension_value_id AND
+            dimensionname.id = dimensionvalue.name_id AND
+            indicator_dimensions.indicatordimensionname_id = dimensionname.id AND
+            indicator_dimensions.indicator_id = indicator.id
     )
     SELECT
         row_number() OVER (ORDER BY indicator_id) AS id,

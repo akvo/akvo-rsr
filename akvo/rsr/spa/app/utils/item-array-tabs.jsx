@@ -2,22 +2,22 @@ import React from 'react'
 import { Tabs } from 'antd'
 import { FormSpy } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import { get } from 'lodash'
+import AutoSave from './auto-save'
 
 const { TabPane } = Tabs
 
 class ActiveKeyUpdater extends React.Component{
   componentDidUpdate(prevProps){ // eslint-disable-line
-    try{
-      eval(`prevProps.values.${this.props.name}`)
-    } catch(e) {
-      return
-    } // eslint-disable-line
-    if(eval(`this.props.values.${this.props.name}`).length > eval(`prevProps.values.${this.props.name}`).length
-       || eval(`this.props.values.${this.props.name}`).length <= Number(this.props.activeKey)){
-         const activeKey = String(eval(`this.props.values.${this.props.name}`).length - 1)
-      setTimeout(() => {
-        this.props.setActiveKey(activeKey)
-      }, 200)
+    const thisValues = get(this.props.values, this.props.name)
+    if(thisValues !== undefined){
+      const prevValues = get(prevProps.values, this.props.name)
+      if(thisValues.length > prevValues.length || thisValues.length <= this.props.activeKey){
+        const activeKey = thisValues.length - 1
+        setTimeout(() => {
+          this.props.setActiveKey(activeKey)
+        }, 200)
+      }
     }
   }
   render(){
@@ -35,11 +35,12 @@ class ItemArrayTabs extends React.Component{
   }
   handleChange = (activeKey) => {
     this.setState({
-      activeKey
+      activeKey: `${activeKey}`
     })
   }
   add = () => {
-    this.props.push(this.props.name, {})
+    const newItem = this.props.newItem ? this.props.newItem : {}
+    this.props.push(this.props.name, newItem)
   }
   remove = (fields, targetKey) => {
     fields.remove(targetKey)
@@ -60,12 +61,13 @@ class ItemArrayTabs extends React.Component{
             >
               {fields.map((name, index) => (
                 <TabPane tab={`${this.props.tabName} ${index + 1}`} key={`${index}`} closable>
-                {this.props.pane(name, index)}
+                  <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.name} itemIndex={index} />
+                  {this.props.pane(name, index)}
                 </TabPane>
               ))}
             </Tabs>
             <FormSpy subscription={{ values: true }}>
-              {({ values }) => <ActiveKeyUpdater values={values} name={this.props.name} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
+            {({ values }) => <ActiveKeyUpdater values={values} name={this.props.name} activeKey={this.state.activeKey} setActiveKey={this.handleChange} />}
             </FormSpy>
           </div>
         )}

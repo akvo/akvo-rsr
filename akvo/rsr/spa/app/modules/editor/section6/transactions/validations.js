@@ -2,19 +2,19 @@ import * as yup from 'yup'
 import { validationType } from '../../../../utils/validation-utils'
 
 const sector = yup.object().shape({
-  name: yup.string(),
+  code: yup.string(),
   vocabulary: yup.string(),
-  uri: yup.string(),
-  description: yup.string()
+  vocabularyUri: yup.string(),
+  text: yup.string()
 })
 
 const base = yup.object().shape({
   value: yup.mixed(),
-  type: yup.string().nullable().when('value', {
+  transactionType: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  date: yup.string().nullable().when('value', {
+  transactionDate: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
@@ -22,12 +22,11 @@ const base = yup.object().shape({
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  providerOrganisation: yup.string(),
-  recipientOrganisation: yup.string(),
-  providerOrganisationActivityId: yup.string(),
-  receiverOrganisationActivityId: yup.string(),
-  description: yup.string(),
-  aidTypeVocabulary: yup.string()
+  providerOrganisation: yup.string().nullable(),
+  receiverOrganisation: yup.string().nullable(),
+  providerOrganisationActivity: yup.string(),
+  receiverOrganisationActivity: yup.string(),
+  description: yup.string()
 })
 
 const DGIS = base.clone().shape({
@@ -47,16 +46,17 @@ const IATI = DGIS.clone().shape({
   recipientRegion: yup.string(),
   recipientRegionVocabulary: yup.string(),
   recipientRegionVocabularyUrl: yup.string(),
-  sectors: yup.array().of(sector).default([])
+  sectors: yup.array().of(sector).default([]),
+  aidTypeVocabulary: yup.string()
 })
 
 const EUTF = yup.object().shape({
   currency: yup.string().default('EUR'),
-  type: yup.string().nullable().when('value', {
+  transactionType: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  providerOrganisation: yup.string(),
+  providerOrganisation: yup.string().nullable(),
   providerOrganisationActivityId: yup.string(),
   aidTypeVocabulary: yup.string()
 })

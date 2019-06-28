@@ -4,9 +4,9 @@ import { transformUndefined, validationType } from '../../../../utils/validation
 const IATI = yup.object().shape({
   region: yup.string().required(),
   percentage: yup.mixed().required().transform(transformUndefined),
-  description: yup.string(),
-  vocabulary: yup.string(),
-  vocabularyUri: yup.string()
+  text: yup.string(),
+  regionVocabulary: yup.string(),
+  regionVocabularyUri: yup.string()
 })
 
 const DGIS = yup.object().shape({

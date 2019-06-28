@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rest.serializers.indicator_period import IndicatorPeriodFrameworkSerializer
+from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import Indicator
 
@@ -26,9 +27,10 @@ class IndicatorSerializer(BaseRSRSerializer):
 
 class IndicatorFrameworkSerializer(BaseRSRSerializer):
 
-    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False)
-    parent_indicator = serializers.ReadOnlyField()
+    periods = IndicatorPeriodFrameworkSerializer(many=True, required=False, read_only=True)
+    parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
+    dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Indicator

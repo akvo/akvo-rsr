@@ -991,9 +991,9 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
         }),
     )
     filter_horizontal = ('keywords',)
-    list_display = ('title', 'status', 'project_plan_summary', 'last_update',
+    list_display = ('id', 'title', 'status', 'project_plan_summary', 'last_update',
                     'show_current_image', 'is_published', 'show_keywords')
-    search_fields = ('title', 'subtitle', 'project_plan_summary', 'iati_activity_id',)
+    search_fields = ('id', 'title', 'subtitle', 'project_plan_summary', 'iati_activity_id',)
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('budget', 'funds', 'funds_needed', 'created_at', 'last_modified_at',
@@ -1290,7 +1290,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     """Defines the RSR Pages admin."""
 
     fieldsets = (
-        (u'General', dict(fields=('organisation', 'enabled',))),
+        (u'General', dict(fields=('organisation', 'tagline', 'enabled'))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
@@ -1316,7 +1316,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         (u'HTTP', dict(fields=('hostname', ('cname', 'redirect_cname'), 'custom_return_url',
                                'custom_return_url_text', 'piwik_id',))),
         (u'Style and content',
-            dict(fields=('all_maps', 'custom_css', 'custom_logo',
+            dict(fields=('all_maps', 'custom_css', 'custom_logo', 'custom_map_marker',
                          'custom_favicon', 'show_keyword_logos',))),
         (u'Languages and translation', dict(fields=('google_translation',))),
         (u'Social', dict(fields=('twitter_button', 'facebook_button', 'facebook_app_id',))),
@@ -1337,9 +1337,8 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
         # fieldset
         """
         if request.user.is_superuser or request.user.is_admin:
-            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled', 'notes',)
-        else:
-            self.fieldsets[0][1]['fields'] = ('organisation', 'enabled',)
+            fields = self.fieldsets[0][1]['fields']
+            self.fieldsets[0][1]['fields'] = fields + ('notes',) if 'notes' not in fields else fields
         return super(PartnerSiteAdmin, self).get_fieldsets(request, obj)
 
     def get_form(self, request, obj=None, **kwargs):

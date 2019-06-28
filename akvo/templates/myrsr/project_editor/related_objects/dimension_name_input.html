@@ -1,0 +1,35 @@
+{% load i18n project_editor %}
+
+<div class="dimension-name-item parent" id="dimension_name.{{ dimension_name|obj_id }}">
+    {% with hide_delete_button=dimension_name.parent_dimension_name %}
+        {% include "myrsr/project_editor/partials/related_object_header.html" with rel_obj=dimension_name %}
+    {% endwith %}
+    <div class="hide-partial {% if dimension_name.pk %}hidden{% endif %}">
+        <div class="row">
+            <div class="col-md-6">
+                {% include text_input with obj=dimension_name field='name' %}
+            </div>
+        </div>
+
+        <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatordimensionvalue" }}">
+            <h5>{% trans 'Disaggregation value' %}</h5>
+            <div class="dimension-value-container" id="dimension-value-container">
+                {% for dimension_value in dimension_name.dimension_values.all %}
+                    {% include "myrsr/project_editor/related_objects/dimension_value_input.html" %}
+                {% empty %}
+                    {% with dimension_name_id_string=dimension_name.pk|default:"new-0"|stringformat:"s" %}
+                        {% include "myrsr/project_editor/related_objects/dimension_value_input.html" with dimension_value='IndicatorDimensionValue.'|add:project_id_string|add:'_'|add:dimension_name_id_string %}
+                    {% endwith %}
+                {% endfor %}
+                <div class="row form-group">
+                    <div class="col-md-12 text-center add-object-link">
+                         <a href="#" class="add-dimension-value">
+                            <span class="glyphicon glyphicon-plus"></span>
+                           {% trans 'Add another disaggregation value' %}
+                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

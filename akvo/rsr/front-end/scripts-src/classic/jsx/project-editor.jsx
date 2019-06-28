@@ -56,6 +56,9 @@ var partials = [
     "document-category",
     "indicator",
     "indicator-dimension",
+    "dimension-name",
+    "dimension-value",
+    "indicator-dimension-name",
     "indicator-label",
     "indicator-period",
     "indicator-reference",
@@ -878,6 +881,9 @@ function deleteItem(itemId, itemType) {
                 "/?format=json",
             true
         );
+    } else if (itemType === 'indicator_dimension') {
+        request.open("DELETE", "/rest/v1/indicator/" + itemId.split(".")[0] +
+              "/remove_dimension/" + itemId.split(".")[1] + "/?format=json", true);
     } else {
         request.open("DELETE", "/rest/v1/" + itemType + "/" + itemId + "/?format=json", true);
     }
@@ -953,7 +959,7 @@ function setRemovePartial(node) {
         // Id will be in the form of 'related_project.1234' or 'related_project.1234_new-0'
         var idArray = parentDiv.getAttributeNode("id").value.split(".");
         var apiEndpoint = idArray[0];
-        var objId = idArray[1];
+        var objId = idArray.slice(1).join(".");
 
         if (objId.indexOf("new") > -1) {
             // New object, not saved to the DB, so partial can be directly deleted
@@ -1814,9 +1820,10 @@ function addPartial(partialName, partialContainer) {
             ["result", "indicator", "indicator-period", "indicator-period-actual-location"],
             ["result", "indicator", "indicator-period", "indicator-period-target-dimension"],
             ["result", "indicator", "indicator-period", "indicator-period-target-location"],
-            ["result", "indicator", "indicator-dimension"],
+            ["result", "indicator", "indicator-dimension-name"],
             ["result", "indicator", "indicator-label"],
             ["result", "indicator", "indicator-reference"],
+            ["dimension-name", "dimension-value"],
             ["transaction", "transaction-sector"],
             ["project-location", "location-administrative"],
             ["document", "document-category"],
@@ -4664,10 +4671,22 @@ function setupIATIPrefixChangeHandlers() {
     }
 }
 
+function setupDisaggregationDefinitions() {
+  var definitions = document.getElementById('disaggregation-definitions'),
+    showButton = document.getElementById('show-disaggregation-definitions')
+    buttonContainer = document.getElementById('show-disaggregation-definitions-container');
+
+  showButton.addEventListener('click', function () {
+    definitions.classList.remove('hidden');
+    buttonContainer.classList.add('hidden');
+  });
+}
+
 function initApp() {
     getAllOrganisations();
     getAllProjects();
 
+    setupDisaggregationDefinitions();
     setupIATIPrefixChangeHandlers();
     setUnsavedChangesMessage();
     setImpactProject();

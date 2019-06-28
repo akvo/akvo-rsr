@@ -6,15 +6,20 @@ const RSR = yup.object().shape({
   title: yup.string().default('').required(),
   subtitle: yup.string().default('').required(),
   iatiStatus: yup.string().required(),
-  plannedStartDate: yup.string().required(),
-  plannedEndDate: yup.string().required(),
-  actualStartDate: yup.string(),
-  actualEndDate: yup.string(),
+  dateStartPlanned: yup.string().required(),
+  dateEndPlanned: yup.string().required(),
+  dateStartActual: yup.string().nullable(),
+  dateEndActual: yup.string().nullable(),
   currency: yup.string().default('EUR'),
   language: yup.string().default('en'),
-  currentImage: yup.string(), // .required(),
+  currentImage: yup.string().nullable().required(),
   currentImageCaption: yup.string(),
-  currentImageCredit: yup.string()
+  currentImageCredit: yup.string(),
+  defaultAidType: yup.string()
+})
+
+const EUTF = RSR.clone().shape({
+  iatiActivityId: yup.string()
 })
 
 const IATI_BASIC = RSR.clone().shape({
@@ -22,8 +27,9 @@ const IATI_BASIC = RSR.clone().shape({
 })
 
 const IATI = IATI_BASIC.clone().shape({
+  hierarchy: yup.string(),
   defaultAidTypeVocabulary: yup.string(),
-  defaultAidType: yup.string(),
+  // defaultAidType: yup.string(),
   defaultFlowType: yup.string(),
   defaultTiedStatus: yup.string(),
   collaborationType: yup.string(),
@@ -31,18 +37,22 @@ const IATI = IATI_BASIC.clone().shape({
 })
 
 const DGIS = RSR.clone().shape({
-  actualStartDate: RSR.fields.actualStartDate.required(),
-  actualEndDate: RSR.fields.actualEndDate.required(),
+  dateStartActual: RSR.fields.dateStartActual.required(),
+  dateEndActual: RSR.fields.dateEndActual.required(),
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string().required(),
   defaultFlowType: yup.string().required(),
   defaultTiedStatus: yup.string().required(),
 })
 
+const DFID = IATI.clone()
+
 const defs = {
   1: RSR,
   2: IATI,
   3: DGIS,
+  5: EUTF,
+  6: DFID,
   8: IATI_BASIC
 }
 

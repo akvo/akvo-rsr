@@ -2,6 +2,7 @@ import { getValidationSets } from '../../utils/validation-utils'
 
 const modules = [
   'section1',
+  'section1/related-projects',
   'section2/contacts',
   'section3/partners',
   'section4',
@@ -14,6 +15,7 @@ const modules = [
   'section8/sectors',
   'section8/policy-markers',
   'section8/humanitarian-scopes',
+  'section9/links',
   'section9/docs'
 ]
 
@@ -32,7 +34,7 @@ export const validate = (module, validationSetIds, fields) => {
   }
   const validationSets = getValidationSets(validationSetIds, validationDef)
   let isValid = true
-  console.log(`validate ${module}`, fields)
+  // console.log(`validate ${module}`, fields)
   validationSets.forEach((validationSet) => {
     try{
       validationSet.validateSync(fields)
@@ -41,6 +43,6 @@ export const validate = (module, validationSetIds, fields) => {
       isValid = false
     }
   })
-  console.log('validated', module, isValid)
+  // console.log('validated', module, isValid)
   return isValid
 }

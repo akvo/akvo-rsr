@@ -2,8 +2,8 @@ import * as yup from 'yup'
 import { validationType } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
-  label: yup.string(),
-  type: yup.mixed().required(),
+  otherExtra: yup.string().nullable(),
+  label: yup.mixed().required(),
   amount: yup.mixed().required(),
 })
 
@@ -30,6 +30,7 @@ const DFID = IATI.clone().shape({
 
 const NLR = RSR.clone().shape({
   currency: yup.string().default('EUR'),
+  budgetType: yup.string()
 })
 
 const Gietrenk = NLR.clone().shape({

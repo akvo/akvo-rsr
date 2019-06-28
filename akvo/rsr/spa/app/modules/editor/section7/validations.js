@@ -6,7 +6,7 @@ const RSR = yup.object().shape({
   recipientCountries: yup.array()
 })
 
-const IATI = RSR.clone().shape({
+export const IATI = RSR.clone().shape({
   projectScope: yup.string(),
   recipientRegions: yup.array()
 })
