@@ -5,7 +5,7 @@ import FinalField from './final-field'
 
 const { Option } = Select
 
-const OrganizationSelect = ({ name, orgs, loading }) => {
+const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
   return (
     <Field
       name={`${name}.organisationName`}
@@ -14,12 +14,13 @@ const OrganizationSelect = ({ name, orgs, loading }) => {
           name={`${name}.organisation`}
           render={({input}) => {
             const options =
-              orgs.length > 0
+              orgs && orgs.length > 0
               ? orgs.map(it => ({ value: it.id, label: it.name }))
               : [{ value: input.value, label: nameProps.input.value }]
             return (
               <Select
                 {...input}
+                disabled={disabled}
                 showSearch
                 loading={loading}
                 optionFilterProp="children"

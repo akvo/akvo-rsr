@@ -83,6 +83,7 @@
         }
         input{
           margin-right: 3px;
+          max-width: 100px;
         }
       }
     }
@@ -107,8 +108,19 @@
   .results-list{
     margin-right: 160px;
     .ant-collapse-header{
-      // padding: 18px 16px;
-      padding-top: 18px;padding-bottom: 18px;
+      // padding-top: 18px;
+      // padding-bottom: 18px;
+      height: 81px;
+      display: flex;
+      align-items: center;
+      &>span{
+        max-height: 50px;
+        overflow: hidden;
+        line-height: 25px;
+      }
+      .ant-collapse-extra{
+        margin-left: auto;
+      }
       .delete-btn-holder{
         overflow: hidden;
         .ant-btn{
@@ -145,7 +157,7 @@
           position: relative;
           &>.ant-collapse-item-active{
             &>.ant-collapse-header{
-              top: 163px;
+              top: 186px;
               z-index: 909;
               height: 70px;
               position: -webkit-sticky;
@@ -162,7 +174,7 @@
                 position: relative;
                 &>.ant-collapse-item-active{
                   &>.ant-collapse-header{
-                    top: 221px;
+                    top: 256px;
                     z-index: 908;
                     height: 60px;
                   }
@@ -193,6 +205,7 @@
   .indicators-list{
     .ant-collapse-item{
       .ant-collapse-header .ant-collapse-extra{
+        margin-left: auto;
         .menu-container{
           overflow: hidden;
           display: inline-block;

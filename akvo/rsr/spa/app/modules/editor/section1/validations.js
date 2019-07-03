@@ -15,7 +15,11 @@ const RSR = yup.object().shape({
   currentImage: yup.string().nullable().required(),
   currentImageCaption: yup.string(),
   currentImageCredit: yup.string(),
-  defaultAidType: yup.string(),
+  defaultAidType: yup.string()
+})
+
+const EUTF = RSR.clone().shape({
+  iatiActivityId: yup.string()
 })
 
 const IATI_BASIC = RSR.clone().shape({
@@ -47,6 +51,7 @@ const defs = {
   1: RSR,
   2: IATI,
   3: DGIS,
+  5: EUTF,
   6: DFID,
   8: IATI_BASIC
 }

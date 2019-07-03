@@ -59,7 +59,7 @@ const PanelHeader = ({ template, field, index, name}) => {
   )
 }
 
-const PanelHeaderMore = ({ render, field, name, index}) => {
+export const PanelHeaderMore = ({ render, field, name, index}) => {
   // renders a custom value in the more prop
   return (
     <Field name={`${name}.${field}`} subscription={{ value: true }}>
@@ -111,7 +111,7 @@ class ItemArray extends React.Component{
               {fields.map((name, index) => (
                 <Panel
                   header={<PanelHeader template={this.props.header} field={this.props.headerField} name={name} index={index} />}
-                  extra={
+                  extra={this.props.renderExtra ? this.props.renderExtra(name, index, fields) : (
                     <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
                       {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}
                       {/* <Icon type="delete" onClick={event => this.removeItem(event, index, fields)} /> */}
@@ -124,7 +124,7 @@ class ItemArray extends React.Component{
                         <Button size="small" icon="delete" className="delete-panel" />
                       </Popconfirm>
                     </span>
-                  }
+                  )}
                   key={`${index}`}
                 >
                   <UpdateHalter parentState={this.state}>

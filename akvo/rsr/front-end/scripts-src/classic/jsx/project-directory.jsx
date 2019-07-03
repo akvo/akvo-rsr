@@ -5,6 +5,7 @@
 
 document.addEventListener("DOMContentLoaded", function() {
     var i18n = JSON.parse(document.getElementById("typeahead-text").innerHTML),
+        mapMarker = JSON.parse(document.getElementById("map-marker").innerHTML).mapMarker,
         dropdown_filters = ["location", "organisation", "sector"],
         hidden_or_other = ["title_or_subtitle", "keyword", "status", "page", "limit"],
         url = "/rest/v1/project_directory",
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
             options_url={url}
             typeahead_url={typeahead_url}
             i18n={i18n}
+            mapMarker={mapMarker}
         />,
         document.getElementById("project-directory")
     );

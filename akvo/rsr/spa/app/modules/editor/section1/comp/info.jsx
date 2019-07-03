@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-  Form, Input, Row, Col
+  Form, Input, Row, Col, Select
 } from 'antd'
 import currencies from 'currency-codes/data'
-import { Form as FinalForm } from 'react-final-form'
+import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
 import { Route } from 'react-router-dom'
@@ -26,6 +26,8 @@ import InputLabel from '../../../../utils/input-label'
 import { useFetch } from '../../../../utils/hooks'
 
 const { Item } = Form
+const { Option } = Select
+const Aux = node => node.children
 
 const STATUS_OPTIONS = [
   { value: '1', label: 'Identification'},
@@ -72,7 +74,7 @@ const Info = ({ validations, fields }) => {
             name="title"
             render={({input}) => (
               <Item label={<InputLabel tooltip="...">Project title</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
-                <Input {...input} />
+                <Input.TextArea {...input} autosize />
               </Item>
             )}
           />
@@ -84,11 +86,41 @@ const Info = ({ validations, fields }) => {
               </Item>
             )}
           />
-          <FinalField
-            name="iatiActivityId"
-            control="input"
-            withLabel
-            fieldExists={fieldExists}
+          <Field
+            name="primaryOrganisation"
+            render={(poProps) => (
+              <Aux>
+              {poProps.input.value === 3394 && (
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Item label={<InputLabel>IATI identifier (prefix)</InputLabel>}>
+                    <FinalField
+                      name="iatiActivityId"
+                      render={({input}) => (
+                        <Select value={input.value.substr(0, input.value.indexOf('_') + 1)} onChange={(val) => input.onChange(`${val}T05-EUTF-SAH-REG-08`)}>
+                          <Option value="XI-IATI-EC_NEAR_">XI-IATI-EC_NEAR_</Option>
+                          <Option value="XI-IATI-EC_DEVCO_">XI-IATI-EC_DEVCO_</Option>
+                        </Select>
+                      )}
+                    />
+                    </Item>
+                  </Col>
+                  <Col span={12}>
+                    <Item label={<InputLabel>IATI identifier (prefix)</InputLabel>}>
+                      <Input disabled value="T05-EUTF-SAH-REG-08" />
+                    </Item>
+                  </Col>
+                </Row>
+              )}
+              <FinalField
+                name="iatiActivityId"
+                control="input"
+                withLabel
+                fieldExists={fieldExists}
+                disabled={poProps.input.value === 3394}
+              />
+              </Aux>
+            )}
           />
           <RelatedProjects formPush={push} projects={results} loading={loading} />
           <FinalField

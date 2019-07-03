@@ -189,6 +189,7 @@ class Section5 extends React.Component{
                   className="results-list"
                   finalFormFields={fields}
                   setName="results"
+                  multiple
                   renderPanel={(name, index) => (
                     <Panel
                       key={`${index}`}
@@ -225,7 +226,8 @@ class Section5 extends React.Component{
                         <Item label="Title" optional style={{ flex: 1 }}>
                           <FinalField
                             name={`${name}.title`}
-                            control="input"
+                            control="textarea"
+                            autosize
                           />
                         </Item>
                         <div style={{ display: 'flex' }}>
@@ -244,7 +246,7 @@ class Section5 extends React.Component{
                       </div>
                       <Field
                         name={`${name}.id`}
-                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} />}
+                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} primaryOrganisation={this.props.primaryOrganisation} />}
                       />
                     </Panel>
                   )}
@@ -270,6 +272,6 @@ class Section5 extends React.Component{
 }
 
 export default connect(
-  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects } }}}) => ({ fields, relatedProjects }),
+  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } }}}) => ({ fields, relatedProjects, primaryOrganisation }),
   { removeSetItem, fetchSetItems }
 )(Section5)

@@ -55,7 +55,7 @@
     {% if load_wp_css %}
       {% render_bundle 'akvoWordpress' 'css' attrs='media="screen"' %}
     {% endif %}
-    {% if stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{stylesheet}}">{% endif %}
+    {% if page_stylesheet %}<link rel="stylesheet" href="{{MEDIA_URL}}{{page_stylesheet}}">{% endif %}
 
     <style type="text/css">
         /** FIX for Bootstrap and Google Maps Info window styes problem **/
@@ -169,6 +169,13 @@
             "continue_to_rsr": "{% trans 'Continue'|escapejs %}",
             "incorrect_password": "{% trans 'Incorrect password'|escapejs %}"
         }
+    </script>
+
+    {# Map marker path #}
+    <script type="application/json" id="map-marker">
+     {
+         "mapMarker": "{% if page_map_marker %}{{ page_map_marker }}{% else %}{{ map_marker}}{% endif %}"
+     }
     </script>
 
     {% render_bundle 'cookie' %}

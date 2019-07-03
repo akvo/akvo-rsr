@@ -1,10 +1,8 @@
-/* global document */
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Tag, Popconfirm } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
-import jump from 'jump.js'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -13,9 +11,9 @@ import InputLabel from '../../../utils/input-label'
 import Accordion from '../../../utils/accordion'
 import Condition from '../../../utils/condition'
 import AutoSave from '../../../utils/auto-save'
-import { getBestAnchorGivenScrollLocation } from '../../../utils/scroll'
 import { addSetItem, removeSetItem } from '../actions'
 import Periods from './periods/periods'
+import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -117,62 +115,12 @@ const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName,
 })
 
 
-const fieldNameToId = name => name.replace(/\[/g, '').replace(/\]/g, '').replace(/\./g, '')
-
-class IndicatorNavMenu extends React.Component{
-  state = {
-    currentAnchor: 'info'
-  }
-  componentDidMount(){
-    const { fieldName } = this.props
-    const fieldNameId = fieldNameToId(fieldName)
-    this.sections = {
-      info: document.getElementById(`${fieldNameId}-info`),
-      disaggregations: document.getElementById(`${fieldNameId}-disaggregations`),
-      baseline: document.getElementById(`${fieldNameId}-baseline`),
-      periods: document.getElementById(`${fieldNameId}-periods`)
-    }
-    document.addEventListener('scroll', this.scroll)
-  }
-  componentWillUnmount(){
-    document.removeEventListener('scroll', this.scroll)
-  }
-  scroll = () => {
-    let anchor = getBestAnchorGivenScrollLocation(this.sections, -220)
-    if(anchor === undefined) anchor = 'info'
-    if(anchor !== this.state.currentAnchor){
-      this.setState({
-        currentAnchor: anchor
-      })
-    }
-  }
-  render(){
-    return (
-      <div className="menu-container">
-        <Radio.Group
-          size="small"
-          buttonStyle="solid"
-          value={this.state.currentAnchor}
-          onChange={e => { jump(this.sections[e.target.value], { duration: 400, offset: -220 }) }}
-        >
-          <Radio.Button value="info">Info</Radio.Button>
-          <Condition when={`${this.props.fieldName}.type`} is={1}>
-            <Radio.Button value="disaggregations">Disaggregations</Radio.Button>
-          </Condition>
-          <Radio.Button value="baseline">Baseline</Radio.Button>
-          <Radio.Button value="periods">Periods</Radio.Button>
-        </Radio.Group>
-      </div>
-    )
-  }
-}
-
 const indicatorTypes = [
   { value: 1, label: 'quantitative'},
   { value: 2, label: 'qualitative'}
 ]
 
-const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId }) => { // eslint-disable-line
+const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId, primaryOrganisation }) => { // eslint-disable-line
   const add = (key) => {
     const newItem = { type: key, periods: [] }
     if(key === 1) newItem.disaggregations = []
@@ -193,10 +141,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
           className="indicators-list"
           finalFormFields={fields}
           setName={`${fieldName}.indicators`}
-          renderPanel={(name, index) => (
+          renderPanel={(name, index, activeKey) => (
             <Panel
-              key={`${index}`}
-              forceRender
+              key={index}
               header={(
               <span>
                 <Field
@@ -210,7 +157,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               extra={(
                 /* eslint-disable-next-line */
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-                <IndicatorNavMenu fieldName={name} />
+                <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} />
                 <div className="delete-btn-holder">
                 <Popconfirm
                   title="Are you sure to delete this indicator?"
@@ -227,7 +174,11 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
               <div id={`${fieldNameToId(name)}-info`} />
               <Item label={<InputLabel optional>Title</InputLabel>}>
-                <FinalField name={`${name}.title`} />
+                <FinalField
+                  name={`${name}.title`}
+                  control="textarea"
+                  autosize
+                />
               </Item>
               <Condition when={`${name}.type`} is={1}>
                 <Row gutter={16}>
@@ -248,7 +199,6 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                     <Item label={<InputLabel>Order</InputLabel>}>
                       <FinalField
                         name={`${name}.ascending`}
-                        defaultValue={0}
                         render={({input}) => (
                           <Radio.Group {...input}>
                             <Radio.Button value>Ascending</Radio.Button>
@@ -289,7 +239,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} />} />
+              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} primaryOrganisation={primaryOrganisation} />} />
             </Panel>
           )}
         />

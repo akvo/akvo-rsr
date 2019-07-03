@@ -1,19 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Radio } from 'antd'
+import { Form, Button, Radio, Popconfirm } from 'antd'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
 
 import FinalField from '../../../utils/final-field'
 import Condition from '../../../utils/condition'
-import ItemArray from '../../../utils/item-array'
+import ItemArray, { PanelHeaderMore } from '../../../utils/item-array'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import InputLabel from '../../../utils/input-label'
 import './styles.scss'
 import api from '../../../utils/api'
 import OrganizationSelect from '../../../utils/organization-select'
-import { useFetch } from '../../../utils/hooks'
+import { removeSetItem } from '../actions'
 
 const { Item } = Form
 
@@ -38,6 +38,10 @@ class Partners extends React.Component{
   shouldComponentUpdate(nextProps, nextState){
     return !isEqual(nextProps.fields, this.props.fields) || !isEqual(nextState, this.state)
   }
+  removeItem = (index, fields) => {
+    this.props.removeSetItem(3, 'partners', index)
+    fields.remove(index)
+  }
   render(){
     const currencySymbol = getSymbolFromCurrency(this.props.currency)
     const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
@@ -59,64 +63,102 @@ class Partners extends React.Component{
               sectionIndex={3}
               header={(index, role) => {
                 return (
-                  <Field name={`partners[${index}].organisation`} subscription={{ value: true }}>
+                  <Field name={`partners[${index}].organisationName`} subscription={{ value: true }}>
                     {({input}) => {
-                      const org = this.state.orgs.find(it => it.value === input.value)
-                      const orgName = org ? org.label : ''
                       return (
-                        <span>{role ? `${ROLE_OPTIONS.find(it => it.value === role).label}: ${orgName}` : `Partner ${index + 1}`}</span>
+                        <span>{role ? `${ROLE_OPTIONS.find(it => it.value === role).label}: ${input.value}` : `Partner ${index + 1}`}</span>
                       )
                     }}
                   </Field>
+                )
+              }}
+              renderExtra={(name, index, fields) => {
+                console.log('render extra', name)
+                return (
+                  <Field
+                    name={`${name}.iatiOrganisationRole`}
+                    render={(roleProps) => {
+                      const disabled = roleProps.input.value === 101 && this.props.primaryOrganisation === 3394
+                      if(!disabled){
+                        return (
+                          <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
+                            {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}
+                            <Popconfirm
+                              title="Are you sure to delete this?"
+                              onConfirm={() => this.removeItem(index, fields)}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <Button size="small" icon="delete" className="delete-panel" />
+                            </Popconfirm>
+                          </span>
+                        )
+                      }
+                      return null
+                    }}
+                  />
                 )
               }}
               headerField="iatiOrganisationRole"
               formPush={push}
               panel={name => (
                 <div>
-                  <Item label="Role">
-                  <FinalField
+                  <Field
                     name={`${name}.iatiOrganisationRole`}
-                    control="select"
-                    options={ROLE_OPTIONS}
+                    render={roleProps => {
+                      const disabled = roleProps.input.value === 101 && this.props.primaryOrganisation === 3394
+                      return (
+                        <div>
+                        <Item label="Role">
+                        <FinalField
+                          name={`${name}.iatiOrganisationRole`}
+                          control="select"
+                          options={ROLE_OPTIONS}
+                          disabled={disabled}
+                        />
+                        </Item>
+                        <Item label="Organisation">
+                          <OrganizationSelect
+                            name={name}
+                            orgs={this.state.orgs}
+                            loading={this.state.loading}
+                            disabled={disabled}
+                          />
+                        </Item>
+                        <Condition when={`${name}.iatiOrganisationRole`} is={101}>
+                          <Item label={<InputLabel optional>Secondary reporter</InputLabel>}>
+                          <FinalField
+                            name={`${name}.isSecondaryReporter`}
+                            render={({ input }) => (
+                                <Radio.Group {...input} disabled={disabled}>
+                                  <Radio.Button value>Yes</Radio.Button>
+                                  <Radio.Button value={false}>No</Radio.Button>
+                                </Radio.Group>
+                            )}
+                          />
+                          </Item>
+                        </Condition>
+                        <Condition when={`${name}.iatiOrganisationRole`} is={1}>
+                          <Item label="Funding amount">
+                          <FinalField
+                            name={`${name}.fundingAmount`}
+                            control="input-number"
+                            formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={value => value.replace(currencyRegExp, '')}
+                            style={{ width: 200 }}
+                          />
+                          </Item>
+                        </Condition>
+                        <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
+                        <FinalField
+                          name={`${name}.iatiActivityId`}
+                          disabled={disabled}
+                        />
+                        </Item>
+                        </div>
+                      )
+                    }}
                   />
-                  </Item>
-                  <Item label="Organisation">
-                    <OrganizationSelect
-                      name={name}
-                      orgs={this.state.orgs}
-                      loading={this.state.loading}
-                    />
-                  </Item>
-                  <Condition when={`${name}.iatiOrganisationRole`} is={101}>
-                    <Item label={<InputLabel optional>Secondary reporter</InputLabel>}>
-                    <FinalField
-                      name={`${name}.isSecondaryReporter`}
-                      render={({ input }) => (
-                          <Radio.Group {...input}>
-                            <Radio.Button value>Yes</Radio.Button>
-                            <Radio.Button value={false}>No</Radio.Button>
-                          </Radio.Group>
-                      )}
-                    />
-                    </Item>
-                  </Condition>
-                  <Condition when={`${name}.iatiOrganisationRole`} is={1}>
-                    <Item label="Funding amount">
-                    <FinalField
-                      name={`${name}.fundingAmount`}
-                      control="input-number"
-                      formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                      parser={value => value.replace(currencyRegExp, '')}
-                      style={{ width: 200 }}
-                    />
-                    </Item>
-                  </Condition>
-                  <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
-                  <FinalField
-                    name={`${name}.iatiActivityId`}
-                  />
-                  </Item>
                 </div>
               )}
               addButton={({onClick}) => (
@@ -135,7 +177,8 @@ class Partners extends React.Component{
 // }
 
 export default connect(
-  ({ editorRdr: { validations, section3: { fields }, section1: { fields: { currency } }} }) => ({ validations, currency, fields }),
+  ({ editorRdr: { validations, section3: { fields }, section1: { fields: { currency, primaryOrganisation } }} }) => ({ validations, currency, fields, primaryOrganisation }),
+  { removeSetItem }
 )(Partners)
 
 // export default connect(
