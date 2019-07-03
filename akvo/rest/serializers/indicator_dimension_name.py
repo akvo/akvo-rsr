@@ -6,9 +6,12 @@
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import IndicatorDimensionName
+from .indicator_dimension_value import IndicatorDimensionValueSerializer
 
 
 class IndicatorDimensionNameSerializer(BaseRSRSerializer):
+
+    values = IndicatorDimensionValueSerializer(source='dimension_values', many=True, required=False)
 
     class Meta:
         model = IndicatorDimensionName
