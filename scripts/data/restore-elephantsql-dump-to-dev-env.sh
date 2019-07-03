@@ -2,7 +2,7 @@
 
 ## Instructions:
 ### 1. Download backup from ElephantSQL to this directory
-### 2. docker-compose exec rsrdbhost /data-scripts/restore-elephantsql-dump-to-dev-env.sh /data-scripts/filename.lzo
+### 2. docker-compose exec rsrdbhost /data-scripts/restore-elephantsql-dump-to-dev-env.sh /data-scripts/DOWNLOADED_FILENAME_HERE.lzo
 ### 3. Restart RSR: docker-compose restart web
 
 set -eu
