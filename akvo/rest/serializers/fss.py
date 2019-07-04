@@ -12,19 +12,20 @@ from .rsr_serializer import BaseRSRSerializer
 from rest_framework import serializers
 
 
-class FssSerializer(BaseRSRSerializer):
-
-    id = serializers.ReadOnlyField(source='project_id')
-
-    class Meta:
-        model = Fss
-        fields = '__all__'
-
-
 class FssForecastSerializer(BaseRSRSerializer):
 
     currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
 
     class Meta:
         model = FssForecast
+        fields = '__all__'
+
+
+class FssSerializer(BaseRSRSerializer):
+
+    id = serializers.ReadOnlyField(source='project_id')
+    forecasts = FssForecastSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Fss
         fields = '__all__'
