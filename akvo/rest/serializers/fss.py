@@ -14,6 +14,8 @@ from rest_framework import serializers
 
 class FssSerializer(BaseRSRSerializer):
 
+    id = serializers.ReadOnlyField(source='project_id')
+
     class Meta:
         model = Fss
         fields = '__all__'
