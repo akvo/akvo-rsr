@@ -28,6 +28,7 @@ class CrsAddSerializer(BaseRSRSerializer):
     currency_label = serializers.ReadOnlyField(source='iati_currency_unicode')
     channel_code_label = serializers.ReadOnlyField(source='iati_channel_code_unicode')
     other_flags = CrsAddOtherFlagSerializer(many=True, read_only=True)
+    id = serializers.ReadOnlyField(source='project_id')
 
     class Meta:
         model = CrsAdd
