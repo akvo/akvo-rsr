@@ -14,6 +14,6 @@ from ..viewsets import PublicProjectViewSet
 class IndicatorDimensionNameViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorDimensionName.objects.all()
+    queryset = IndicatorDimensionName.objects.prefetch_related('dimension_values')
     serializer_class = IndicatorDimensionNameSerializer
     project_relation = 'project__'
