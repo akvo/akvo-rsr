@@ -8,13 +8,13 @@ import InputLabel from '../../../../utils/input-label'
 const { Item } = Form
 
 const FLAG_CODES = [
-  { value: 1, label: 'Free standing technical cooperation'},
-  { value: 2, label: 'Programme-based approach'},
-  { value: 3, label: 'Investment project'},
-  { value: 4, label: 'Associated financing'}
+  { value: '1', label: 'Free standing technical cooperation'},
+  { value: '2', label: 'Programme-based approach'},
+  { value: '3', label: 'Investment project'},
+  { value: '4', label: 'Associated financing'}
 ]
 
-const FlagsStack = ({ formPush }) => {
+const FlagsStack = ({ formPush, crsParent }) => {
   return (
     <ItemArray
       setName="flags"
@@ -22,13 +22,14 @@ const FlagsStack = ({ formPush }) => {
       header={(index, code) => {
         return <span>CRS++ other flag: {code && FLAG_CODES.find(it => it.value === code).label}</span>
       }}
-      headerField="crs"
+      headerField="code"
+      newItem={{ crs: crsParent ? crsParent.id : null }}
       formPush={formPush}
       panel={name => (
         <div className="channel-code-inputs">
           <Item label={<InputLabel tooltip="...">Code</InputLabel>}>
             <FinalField
-              name={`${name}.crs`}
+              name={`${name}.code`}
               control="select"
               options={FLAG_CODES}
             />
@@ -38,15 +39,15 @@ const FlagsStack = ({ formPush }) => {
               name={`${name}.significance`}
               render={({input}) => (
                 <Radio.Group {...input}>
-                  <Radio.Button value={1}>Yes</Radio.Button>
-                  <Radio.Button value={0}>No</Radio.Button>
+                  <Radio.Button value>Yes</Radio.Button>
+                  <Radio.Button value={false}>No</Radio.Button>
                 </Radio.Group>
               )}
             />
           </Item>
         </div>
       )}
-      addButton={({ onClick }) => <Button onClick={onClick} className="bottom-btn" block icon="plus" type="dashed">Add CRS++ other flag</Button>}
+      addButton={({ onClick }) => <Button onClick={onClick} className="bottom-btn" block icon="plus" type="dashed" disabled={!crsParent}>Add CRS++ other flag</Button>}
     />
   )
 }

@@ -4,6 +4,7 @@ import { Form, Select, Row, Col, Divider } from 'antd'
 import { Field, Form as FinalForm } from 'react-final-form'
 import currencies from 'currency-codes/data'
 import arrayMutators from 'final-form-arrays'
+import { isEqual } from 'lodash'
 
 import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
@@ -188,18 +189,21 @@ const LoanStatus = ({ currency }) => {
 }
 
 
-class Reporting extends React.Component{
-  shouldComponentUpdate(){
-    return false
-  }
-  render(){
-    return (
-      <div className="reporting view">
-        <h3>CRS++</h3>
-        <Form layout="vertical">
+const Reporting = ({ fields, projectId }) => {
+  const initialValues = { ...fields }
+  // if (initialValues.crs.length === 0) {
+  //   initialValues.crs.push({ project: projectId })
+  // }
+  // if (initialValues.fss.length === 0) {
+  //   initialValues.fss.push({ project: projectId })
+  // }
+  return (
+    <div className="reporting view">
+      <h3>CRS++</h3>
+      <Form layout="vertical">
         <FinalForm
-          onSubmit={() => {}}
-          initialValues={this.props.fields}
+          onSubmit={() => { }}
+          initialValues={initialValues}
           subscription={{}}
           mutators={{ ...arrayMutators }}
           render={({
@@ -207,8 +211,11 @@ class Reporting extends React.Component{
               mutators: { push }
             }
           }) => {
-            if(!this.props.fields.fss || this.props.fields.fss.length === 0){
-              push('fss', { project: this.props.projectId })
+            if (!fields.crs || fields.crs.length === 0) {
+              push('crs', { project: projectId })
+            }
+            if (!fields.fss || fields.fss.length === 0) {
+              push('fss', { project: projectId })
             }
             return (
               <div>
@@ -228,46 +235,47 @@ class Reporting extends React.Component{
                     control="select"
                   />
                 </Item>
-                <FlagsStack formPush={push} />
+                <FlagsStack formPush={push} crsParent={fields.crs[0]} />
                 <Divider />
                 <h3>FSS</h3>
                 <Item label={<InputLabel tooltip="...">Extraction date</InputLabel>}>
-                <FinalField
-                  name="fss[0].extractionDate"
-                  style={{ display: 'block' }}
-                  control="datepicker"
-                />
+                  <FinalField
+                    name="fss[0].extractionDate"
+                    style={{ display: 'block' }}
+                    control="datepicker"
+                  />
                 </Item>
                 <Item label={<InputLabel optional tooltip="...">Phaseout year</InputLabel>}>
-                <FinalField
-                  name="fss[0].phaseoutYear"
-                  control="input-number"
-                  className="phaseout-year-input"
-                />
+                  <FinalField
+                    name="fss[0].phaseoutYear"
+                    control="input-number"
+                    className="phaseout-year-input"
+                  />
                 </Item>
                 <Item label={<InputLabel optional tooltip="...">Priority</InputLabel>}>
-                <FinalField
-                  name="fss[0].priority"
-                  control="select"
-                  options={[{ value: 1, label: 'Yes'}, { value: 0, label: 'No'}]}
-                  withEmptyOption
-                />
+                  <FinalField
+                    name="fss[0].priority"
+                    control="select"
+                    options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]}
+                    withEmptyOption
+                  />
                 </Item>
                 <h3>FSS forecasts</h3>
-                <ForecastsStack formPush={push} />
+                <ForecastsStack formPush={push} fssParent={fields.fss[0]} />
                 <h3>Legacy data</h3>
                 <LegaciesStack formPush={push} />
               </div>
             )
           }}
         />
-        </Form>
-      </div>
-    )
-  }
+      </Form>
+    </div>
+  )
 }
 
 
 export default connect(
-  ({ editorRdr: { section11: { fields }, projectId }}) => ({ fields, projectId })
-)(Reporting)
+  ({ editorRdr: { projectId, section11: { fields }, validations } }) => ({ fields, validations, projectId }),
+)(React.memo(Reporting, (prevProps, nextProps) => {
+  return isEqual(prevProps.fields, nextProps.fields)
+}))
