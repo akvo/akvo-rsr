@@ -16,3 +16,18 @@ class IndicatorDimensionNameSerializer(BaseRSRSerializer):
     class Meta:
         model = IndicatorDimensionName
         fields = '__all__'
+
+    def is_valid(self, raise_exception=False):
+        # HACK to allow nested posting... There should be a better way than this!
+        self._values = self.initial_data.pop('values', [])
+        return super(IndicatorDimensionNameSerializer, self).is_valid(raise_exception)
+
+    def create(self, validated_data):
+        instance = super(IndicatorDimensionNameSerializer, self).create(validated_data)
+        for value in self._values:
+            value['name'] = instance.id
+            serializer = IndicatorDimensionValueSerializer(data=value)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        return instance
