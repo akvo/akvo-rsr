@@ -86,6 +86,7 @@ class AutoSave extends React.Component {
       if(
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')
+        // && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
       ){
         if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item])){
           if(!item.id){

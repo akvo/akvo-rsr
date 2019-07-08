@@ -261,3 +261,23 @@
     }
   }
 }
+
+.dimension-box{
+  border: 1px solid #efefef;
+  border-radius: 3px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  ul{
+    margin-bottom: 0;
+    padding-left: 5px;
+    border-top: 1px solid #efefef;
+    padding-top: 5px;
+  }
+  button{
+    margin-left: auto;
+  }
+}
+.taxonomy-modal{
+}

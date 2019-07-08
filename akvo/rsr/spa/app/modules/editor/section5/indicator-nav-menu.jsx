@@ -41,7 +41,7 @@ class IndicatorNavMenu extends React.Component{
     })
   }
   scroll = () => {
-    let anchor = getBestAnchorGivenScrollLocation(this.sections, -240)
+    let anchor = getBestAnchorGivenScrollLocation(this.sections, -270)
     if(anchor === undefined) anchor = 'info'
     if(anchor !== this.state.currentAnchor){
       this.setState({
@@ -57,7 +57,7 @@ class IndicatorNavMenu extends React.Component{
           buttonStyle="solid"
           value={this.state.currentAnchor}
           onChange={e => {
-            jump(this.sections[e.target.value], { duration: 400, offset: -220 })
+            jump(this.sections[e.target.value], { duration: 400, offset: -270 })
           }}
         >
           <Radio.Button value="info">Info</Radio.Button>

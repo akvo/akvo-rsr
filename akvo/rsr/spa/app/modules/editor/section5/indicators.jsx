@@ -13,106 +13,12 @@ import Condition from '../../../utils/condition'
 import AutoSave from '../../../utils/auto-save'
 import { addSetItem, removeSetItem } from '../actions'
 import Periods from './periods/periods'
+import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
-
-const Disaggregations = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem }) => { // eslint-disable-line
-  const add = () => {
-    const newItem = { items: [{}, {}]}
-    formPush(`${fieldName}.disaggregations`, newItem)
-    addSetItem(5, `${fieldName}.disaggregations`, newItem)
-  }
-  const remove = (index, fields) => {
-    fields.remove(index)
-    removeSetItem(5, `${fieldName}.disaggregations`, index)
-  }
-  return (
-    <FieldArray name={`${fieldName}.disaggregations`} subscription={{}}>
-      {({ fields }) => (
-        <Aux>
-          <div className="ant-col ant-form-item-label">
-            <InputLabel optional tooltip="asd">Disaggregations</InputLabel>
-          </div>
-          {fields.length > 0 &&
-          <Accordion
-            className="disaggregations-list"
-            finalFormFields={fields}
-            setName={`${fieldName}.disaggregations`}
-            renderPanel={(name, index) => (
-              <Panel
-                header={(
-                  <span>
-                    Disaggregation {index + 1}
-                    <Field
-                      name={`${fieldName}.disaggregations[${index}].name`}
-                      render={({input}) => input.value ? `: ${input.value}` : ''}
-                    />
-                  </span>
-                )}
-                key={index}
-                extra={(
-                  /* eslint-disable-next-line */
-                  <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-                  <div className="delete-btn-holder">
-                  <Popconfirm
-                    title="Are you sure to delete this disaggregation?"
-                    onConfirm={() => remove(index, fields)}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Button size="small" icon="delete" className="delete-panel" />
-                  </Popconfirm>
-                  </div>
-                  </div>
-                )}
-              >
-                <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregations`} itemIndex={index} />
-                <Item label="Name">
-                  <FinalField name={`${name}.name`} />
-                </Item>
-                <FieldArray name={`${name}.items`} subscription={{}}>
-                  {props => (
-                    <Aux>
-                      {props.fields.map((itemFieldName, itemIndex) => (
-                      <Row gutter={16} key={itemIndex}>
-                        <Col span={12}>
-                          <FinalField
-                            name={`${itemFieldName}.name`}
-                            control="input"
-                            withLabel
-                            label={`Label ${itemIndex + 1}`}
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <FinalField
-                            name={`${itemFieldName}.value`}
-                            control="input"
-                            withLabel
-                            label={`Target value ${itemIndex + 1}`}
-                          />
-                        </Col>
-                      </Row>
-                      ))}
-                      <Button icon="plus" type="link" onClick={() => props.fields.push({})}>Add item</Button>
-                      {props.fields.length > 2 &&
-                      <Button icon="minus" type="link" className="remove-item" onClick={() => props.fields.pop()}>Remove item</Button>
-                      }
-                    </Aux>
-                  )}
-                </FieldArray>
-              </Panel>
-            )}
-          />
-          }
-          <Button icon="plus" block type="dashed" onClick={add}>Add disaggregation</Button>
-        </Aux>
-      )}
-    </FieldArray>
-  )
-})
 
 
 const indicatorTypes = [
