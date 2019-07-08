@@ -16,12 +16,12 @@ class RestResultTestCase(BaseTestCase):
     """Test the result REST endpoints."""
 
     def test_result_post(self):
-        self.user = self.create_user("user@akvo.org", "password", is_admin=True)
-        self.project = self.create_project("Test project")
-        self.c.login(username=self.user.username, password="password")
+        user = self.create_user("user@akvo.org", "password", is_admin=True)
+        project = self.create_project("Test project")
+        self.c.login(username=user.username, password="password")
 
         response = self.c.post("/rest/v1/results_framework/?format=json",
-                               data=json.dumps({"type": 1, "project": self.project.id}),
+                               data=json.dumps({"type": 1, "project": project.id}),
                                content_type="application/json")
 
         self.assertEqual(response.status_code, 201)

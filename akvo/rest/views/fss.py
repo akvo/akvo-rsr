@@ -14,7 +14,7 @@ from ..viewsets import PublicProjectViewSet
 class FssViewSet(PublicProjectViewSet):
     """
     """
-    queryset = Fss.objects.all()
+    queryset = Fss.objects.prefetch_related('forecasts').all()
     serializer_class = FssSerializer
 
 
