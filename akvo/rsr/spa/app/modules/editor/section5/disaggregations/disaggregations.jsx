@@ -1,18 +1,13 @@
 import React, {useState} from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Form, Button, Collapse, Col, Row, Popconfirm } from 'antd'
+import { Button } from 'antd'
 import { get, isEqual } from 'lodash'
 
 import InputLabel from '../../../../utils/input-label'
 import { useFetch } from '../../../../utils/hooks'
-import { addSetItem, removeSetItem } from '../../actions'
 import actionTypes from '../../action-types'
 import TaxonomyModal from './taxonomy-modal'
 
-const { Item } = Form
-const { Panel } = Collapse
-const Aux = node => node.children
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -22,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, projectId, dispatch, fields }) => { // eslint-disable-line
-  const [dimensionData, loadingDimensions] = useFetch(`/dimension_name/?project=${projectId}`)
+  const [dimensionData] = useFetch(`/dimension_name/?project=${projectId}`)
   const [modalVisible, setModalVisible] = useState()
   const addedDimensions = get(fields, `${fieldName}.dimensionNames`)
   return (

@@ -1,4 +1,3 @@
-/* global fetch */
 import React from 'react'
 import { Form, Button, Row, Col, Checkbox, Icon, Select } from 'antd'
 import { Field } from 'react-final-form';

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch, Divider } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
