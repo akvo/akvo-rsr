@@ -274,6 +274,15 @@
     padding-left: 5px;
     border-top: 1px solid #efefef;
     padding-top: 5px;
+    .add-label{
+      padding-left: 0;
+    }
+  }
+  .btns{
+    margin-left: auto;
+    button{
+      margin-left: 5px;
+    }
   }
   button{
     margin-left: auto;

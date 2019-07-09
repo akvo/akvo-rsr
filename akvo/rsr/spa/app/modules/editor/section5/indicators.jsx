@@ -123,7 +123,8 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <div id={`${fieldNameToId(name)}-disaggregations`} />
               <Condition when={`${name}.type`} is={1}>
                 <Aux>
-                  <Disaggregations formPush={formPush} fieldName={name} />
+                  <Field name={`${name}.id`} render={({ input: {value} }) => <Disaggregations formPush={formPush} fieldName={name} indicatorId={value} />} />
+                  {/* <Disaggregations formPush={formPush} fieldName={name} /> */}
                   <Divider />
                 </Aux>
               </Condition>

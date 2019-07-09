@@ -7,7 +7,8 @@ import arrayMutators from 'final-form-arrays'
 
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
-import api from '../../../../utils/api';
+import api from '../../../../utils/api'
+import DimensionBox from './dimension-box'
 
 const { Item } = Form
 const Aux = node => node.children
@@ -19,7 +20,8 @@ const handleSubmit = () => {
   }
 }
 
-const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions }) => {
+
+const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions, fetchDimensions }) => {
   const [loading, setLoading] = useState(false)
   return (
     <Modal
@@ -44,8 +46,10 @@ const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions
             api.post('/dimension_name/', {
               ...values,
               project: projectId
+            }).then(({ data }) => {
+              setLoading(false)
+              handleAdd(data, true)
             })
-            // handleAdd(values, true)
           }}
           subscription={{}}
           initialValues={{ name: '', values: [{}, {}] }}
@@ -60,15 +64,7 @@ const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions
                   <Aux>
                     <h4>Choose existing</h4>
                     {dimensions.filter(it => it.id).map(dimension => (
-                      <div className="dimension-box">
-                        <div>
-                        <h5>{dimension.name}</h5>
-                        <ul>
-                          {dimension.values.map(value => <li>{value.value}</li>)}
-                        </ul>
-                        </div>
-                        <Button type="primary" onClick={() => handleAdd(dimension, false)}>Add</Button>
-                      </div>
+                      <DimensionBox dimension={dimension} handleAdd={handleAdd} fetchDimensions={fetchDimensions} />
                     ))}
                     <Divider />
                     <h4>Create new</h4>

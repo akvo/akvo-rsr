@@ -161,7 +161,7 @@ export default (state = initialState, action) => {
       newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
-      return {...state, saving: false, lastSaved: new Date(), backendError: null}
+      return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}
     case actionTypes.BACKEND_ERROR:
       return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response} }
     case actionTypes.SET_PROJECT_ID:
