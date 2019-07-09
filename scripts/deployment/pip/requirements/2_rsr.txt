@@ -18,6 +18,9 @@ djangorestframework-xml==1.3.0
 django-tastypie==0.12.1
 django-rest-swagger==0.3.10
 django-registration==2.5.2
+# DRF CSV endpoints
+djangorestframework-csv==2.1.0
+unicodecsv==0.14.1
 
 # Django apps from VCS web services
 -e git://github.com/lukeman/django-sorting.git@d3456924ff2140c2a3466a2dd9d674486500393e#egg=django-sorting
@@ -85,10 +88,6 @@ xmlunittest==0.3.2
 
 # Country detection
 Shapely==1.5.7
-
-# DRF CSV endpoints
-djangorestframework-csv==2.1.0
-unicodecsv==0.14.1
 
 # Password requirements
 bcrypt==3.1.4
