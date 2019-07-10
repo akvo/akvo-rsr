@@ -7,7 +7,7 @@
 from akvo.rest.serializers.indicator_period import IndicatorPeriodFrameworkSerializer
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rsr.models import Indicator
+from akvo.rsr.models import Indicator, IndicatorDimensionName
 
 from rest_framework import serializers
 
@@ -17,6 +17,8 @@ class IndicatorSerializer(BaseRSRSerializer):
     result_unicode = serializers.ReadOnlyField(source='result.__unicode__')
     measure_label = serializers.ReadOnlyField(source='iati_measure_unicode')
     children_aggregate_percentage = serializers.ReadOnlyField()
+    dimension_names = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=IndicatorDimensionName.objects.all())
 
     class Meta:
         model = Indicator
