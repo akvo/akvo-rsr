@@ -242,6 +242,10 @@ rules.add_perm(
     is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor | is_org_enumerator
 )
 
+rules.add_perm('rsr.add_indicatordimensionname', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_indicatordimensionname', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_indicatordimensionname', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicatordimensionname', is_org_enumerator)
 rules.add_perm('rsr.add_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_disaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

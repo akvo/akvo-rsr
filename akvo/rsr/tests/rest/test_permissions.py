@@ -470,7 +470,7 @@ class PermissionFilteringTestCase(TestCase):
 
         # one indicator dimension name per project
         model_map[M.IndicatorDimensionName] = {
-            'group_count': group_count(8, 2, 4, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
 

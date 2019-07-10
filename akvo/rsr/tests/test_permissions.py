@@ -10,7 +10,7 @@ from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
     AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects,
-    ProjectHierarchy
+    ProjectHierarchy, IndicatorDimensionName
 )
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -57,6 +57,11 @@ class PermissionsTestCase(BaseTestCase):
         self.project_updates = [
             ProjectUpdate.objects.create(user=user_, project=project_)
             for (project_, user_) in zip(self.projects, self.users)
+        ]
+
+        # Indicator Dimension Names
+        self.dimension_names = [
+            IndicatorDimensionName.objects.create(project=project_) for project_ in self.projects
         ]
 
         # Results
@@ -141,6 +146,11 @@ class PermissionsTestCase(BaseTestCase):
         for i, project_update in enumerate(self.project_updates):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        # Indicator dimension names
+        for i, dimension_name in enumerate(self.dimension_names):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
 
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
@@ -230,6 +240,11 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_projectupdate', project_update))
 
+        # Indicator dimension names
+        for i, dimension_name in enumerate(self.dimension_names):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
+
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
             self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
@@ -317,6 +332,11 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_projectupdate', project_update))
 
+        # Indicator dimension names
+        for i, dimension_name in enumerate(self.dimension_names):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
+
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
             self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
@@ -401,6 +421,10 @@ class PermissionsTestCase(BaseTestCase):
         for i, project_update in enumerate(self.project_updates):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_projectupdate', project_update))
+
+        # Indicator dimension names
+        for dimension_name in self.dimension_names:
+            self.assertFalse(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
 
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
@@ -495,6 +519,11 @@ class PermissionsTestCase(BaseTestCase):
         project = self.projects[0]
         self.assertTrue(user.has_perm('rsr.add_indicatorperioddata', project))
         self.assertTrue(user.has_perm('rsr.change_indicatorperioddata', project))
+
+        # Indicator dimension names
+        for i, dimension_name in enumerate(self.dimension_names):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.view_indicatordimensionname', dimension_name))
 
 
 class UserPermissionedProjectsTestCase(BaseTestCase):
