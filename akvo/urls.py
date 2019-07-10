@@ -234,6 +234,15 @@ urlpatterns += (
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
+    try:
+        import debug_toolbar
+    except ImportError:
+        pass
+    else:
+        urlpatterns = [
+            # For django versions before 2.0:
+            url(r'^__debug__/', include(debug_toolbar.urls)),
+        ] + urlpatterns
 
 if settings.REQUIRED_AUTH_GROUPS:
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
