@@ -54,6 +54,7 @@ class IndicatorDimensionName(models.Model):
 
 
 class IndicatorDimensionValue(models.Model):
+    project_relation = 'dimension_names__dimension_values__in'
     name = models.ForeignKey(IndicatorDimensionName, verbose_name=u'dimension name',
                              related_name='dimension_values')
     value = ValidXMLCharField(

@@ -10,7 +10,7 @@ from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
     AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects,
-    ProjectHierarchy, IndicatorDimensionName
+    ProjectHierarchy, IndicatorDimensionName, IndicatorDimensionValue
 )
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -62,6 +62,11 @@ class PermissionsTestCase(BaseTestCase):
         # Indicator Dimension Names
         self.dimension_names = [
             IndicatorDimensionName.objects.create(project=project_) for project_ in self.projects
+        ]
+
+        # Indicator Dimension Values
+        self.dimension_values = [
+            IndicatorDimensionValue.objects.create(name=name) for name in self.dimension_names
         ]
 
         # Results
@@ -151,6 +156,11 @@ class PermissionsTestCase(BaseTestCase):
         for i, dimension_name in enumerate(self.dimension_names):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
+
+        # Indicator dimension values
+        for i, dimension_value in enumerate(self.dimension_values):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatordimensionvalue', dimension_value))
 
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
@@ -245,6 +255,11 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
 
+        # Indicator dimension values
+        for i, dimension_value in enumerate(self.dimension_values):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatordimensionvalue', dimension_value))
+
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
             self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
@@ -337,6 +352,11 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
 
+        # Indicator dimension values
+        for i, dimension_value in enumerate(self.dimension_values):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_indicatordimensionvalue', dimension_value))
+
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
             self.assertFalse(user.has_perm('rsr.change_partnersite', partner_site))
@@ -425,6 +445,10 @@ class PermissionsTestCase(BaseTestCase):
         # Indicator dimension names
         for dimension_name in self.dimension_names:
             self.assertFalse(user.has_perm('rsr.change_indicatordimensionname', dimension_name))
+
+        # Indicator dimension values
+        for dimension_value in self.dimension_values:
+            self.assertFalse(user.has_perm('rsr.change_indicatordimensionvalue', dimension_value))
 
         # Partner Site permissions
         for i, partner_site in enumerate(self.partner_sites):
@@ -524,6 +548,11 @@ class PermissionsTestCase(BaseTestCase):
         for i, dimension_name in enumerate(self.dimension_names):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.view_indicatordimensionname', dimension_name))
+
+        # Indicator dimension values
+        for i, dimension_value in enumerate(self.dimension_values):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.view_indicatordimensionvalue', dimension_value))
 
 
 class UserPermissionedProjectsTestCase(BaseTestCase):
