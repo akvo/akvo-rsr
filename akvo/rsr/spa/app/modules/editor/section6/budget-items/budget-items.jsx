@@ -30,6 +30,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
+      <h3>Budget items</h3>
       <div className="total">
         Total budget:
         <span className="amount">

@@ -8,9 +8,9 @@ const RSR = yup.object().shape({
 })
 
 const IATI_BASIC = RSR.clone().shape({
-  periodStart: yup.string().required(),
-  periodEnd: yup.string().required(),
-  valueDate: yup.string().required()
+  periodStart: yup.string().nullable().required(),
+  periodEnd: yup.string().nullable().required(),
+  valueDate: yup.string().nullable().required()
 })
 
 const IATI = IATI_BASIC.clone().shape({

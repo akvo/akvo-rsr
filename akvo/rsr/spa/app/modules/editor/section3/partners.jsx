@@ -14,6 +14,7 @@ import './styles.scss'
 import api from '../../../utils/api'
 import OrganizationSelect from '../../../utils/organization-select'
 import { removeSetItem } from '../actions'
+import SectionContext from '../section-context'
 
 const { Item } = Form
 
@@ -47,6 +48,7 @@ class Partners extends React.Component{
     const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
     return (
       <div className="partners view">
+        <SectionContext.Provider value="section3">
         <Form layout="vertical">
         <FinalForm
           onSubmit={() => {}}
@@ -73,7 +75,6 @@ class Partners extends React.Component{
                 )
               }}
               renderExtra={(name, index, fields) => {
-                console.log('render extra', name)
                 return (
                   <Field
                     name={`${name}.iatiOrganisationRole`}
@@ -109,22 +110,19 @@ class Partners extends React.Component{
                       const disabled = roleProps.input.value === 101 && this.props.primaryOrganisation === 3394
                       return (
                         <div>
-                        <Item label="Role">
                         <FinalField
                           name={`${name}.iatiOrganisationRole`}
                           control="select"
                           options={ROLE_OPTIONS}
                           disabled={disabled}
+                          withLabel
                         />
-                        </Item>
-                        <Item label="Organisation">
-                          <OrganizationSelect
-                            name={name}
-                            orgs={this.state.orgs}
-                            loading={this.state.loading}
-                            disabled={disabled}
-                          />
-                        </Item>
+                        <OrganizationSelect
+                          name={name}
+                          orgs={this.state.orgs}
+                          loading={this.state.loading}
+                          disabled={disabled}
+                        />
                         <Condition when={`${name}.iatiOrganisationRole`} is={101}>
                           <Item label={<InputLabel optional>Secondary reporter</InputLabel>}>
                           <FinalField
@@ -139,15 +137,14 @@ class Partners extends React.Component{
                           </Item>
                         </Condition>
                         <Condition when={`${name}.iatiOrganisationRole`} is={1}>
-                          <Item label="Funding amount">
                           <FinalField
                             name={`${name}.fundingAmount`}
                             control="input-number"
                             formatter={value => `${currencySymbol} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             parser={value => value.replace(currencyRegExp, '')}
                             style={{ width: 200 }}
+                            withLabel
                           />
-                          </Item>
                         </Condition>
                         <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
                         <FinalField
@@ -168,6 +165,7 @@ class Partners extends React.Component{
           )}
         />
         </Form>
+        </SectionContext.Provider>
       </div>
     )
   }

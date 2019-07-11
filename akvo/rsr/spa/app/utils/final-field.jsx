@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { connect } from 'react-redux'
 import { Input, InputNumber, Select, DatePicker, Form } from 'antd'
 import { Field } from 'react-final-form'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
-import { isEqual } from 'lodash'
+import { isEqual, times } from 'lodash'
 import { datePickerConfig } from './misc'
 import InputLabel from './input-label'
+import RTE from './rte'
 import SectionContext from '../modules/editor/section-context'
 
 const { Item } = Form
@@ -50,18 +51,24 @@ const CONTROLS = {
     if(!value) value = null
     const onChange = val => input.onChange(val !== null ? val.format(datePickerConfig.format) : null)
     return <DatePicker {...{value, onChange, disabled, ...datePickerConfig}} />
-  }
+  },
+  rte: ({ input }) => <RTE {...input} />
 }
 
 const Control = (props) => {
   const { t } = useTranslation()
-  const { control, withLabel, optional, fieldExists, label, addingItem, ..._props } = props
+  const section = useContext(SectionContext)
+  const { control, withLabel, optional, fieldExists, label, addingItem, showRequired, ..._props } = props
   const disabled = props.disabled || addingItem
+  let validateStatus = ''
+  if (showRequired && props[section].errors.findIndex(it => it.path === props.input.name) !== -1) {
+    validateStatus = 'error'
+  }
   if(!control){
     if(!props.render){
-      return CONTROLS.input({..._props, disabled})
+      return CONTROLS.input({..._props, disabled, validateStatus})
     }
-    return props.render({..._props, disabled})
+    return props.render({..._props, disabled, validateStatus})
   }
   if(withLabel){
     const name = props.input.name.split('.').reduce((acc, curr) => curr)
@@ -69,20 +76,20 @@ const Control = (props) => {
       return null
     }
     return (
-    <SectionContext.Consumer>
-    {section =>
-    <Item label={
+    <Item
+      validateStatus={validateStatus}
+      label={
+      label ? label :
       <InputLabel
         optional={typeof optional === 'function' ? optional(name) : optional}
         tooltip={<span dangerouslySetInnerHTML={{__html: t(`${section}:${name}.tooltip`)}} />}
       >
-      {label !== undefined ? label : t(`${section}:${name}.label`)}
+      {t(`${section}:${name}.label`)}
       </InputLabel>}
     >
       {CONTROLS[control]({..._props, disabled})}
     </Item>
-    }
-    </SectionContext.Consumer>)
+    )
   }
   return CONTROLS[control](_props)
 }
@@ -96,7 +103,16 @@ const FinalField = ({name, ...props}) => (
 )
 // FinalField.contextType = SectionContext
 
-export default connect(({ editorRdr: { addingItem }}) => ({ addingItem }))(
+export default connect(
+  ({ editorRdr }) => {
+    const props = ({ addingItem: editorRdr.addingItem, showRequired: editorRdr.showRequired })
+    // bind validation errors (required) for all sections
+    times(11).forEach((i) => {
+      const sectionKey = `section${i + 1}`
+      props[sectionKey] = { errors: editorRdr[sectionKey].errors.filter(it => it.type === 'required' || (it.type === 'min' && it.path !== undefined))}
+    })
+    return props
+  })(
   React.memo(FinalField, (prevProps, nextProps) => isEqual(prevProps, nextProps))
 )
 // export default FinalField

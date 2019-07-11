@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash'
 import { getValidationSets } from '../../utils/validation-utils'
+import { kebabToCamel } from '../../utils/misc'
 
 const modules = [
   'section1',
@@ -37,16 +38,17 @@ export const validate = (module, validationSetIds, fields, abortEarly = false) =
   // let isValid = true
   // console.log(`validate ${module}`, fields)
   let errors = []
+  const setName = module.indexOf('/') !== -1 ? kebabToCamel(module.substr(module.indexOf('/') + 1)) : ''
   validationSets.forEach((validationSet) => {
     try{
       validationSet.validateSync(fields, { abortEarly })
     } catch(error){
       // console.log(module, 'validation error', error)
       // if(!abortEarly){
-        const newErrors = error.inner.map(({ type, path }) => ({ type, path })).filter(it => errors.findIndex(existing => isEqual(it, existing)) === -1)
+        const newErrors = error.inner.map(({ type, path }) => ({ type, path: path ? `${setName}${path}` : setName })).filter(it => errors.findIndex(existing => isEqual(it, existing)) === -1)
         errors = [...errors, ...newErrors]
-        console.log(module, newErrors)
-        console.log(error.inner)
+        // console.log(module, newErrors)
+        // console.log(error.inner)
       // }
       // isValid = false
     }

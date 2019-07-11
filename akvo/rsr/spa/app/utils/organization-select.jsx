@@ -1,9 +1,10 @@
 import React from 'react'
 import { Field } from 'react-final-form'
-import { Select } from 'antd'
+import { Select, Form } from 'antd'
 import FinalField from './final-field'
 
 const { Option } = Select
+const { Item } = Form
 
 const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
   return (
@@ -12,12 +13,13 @@ const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
       render={(nameProps) => (
         <FinalField
           name={`${name}.organisation`}
-          render={({input}) => {
+          render={({input, validateStatus}) => {
             const options =
               orgs && orgs.length > 0
               ? orgs.map(it => ({ value: it.id, label: it.name }))
               : [{ value: input.value, label: nameProps.input.value }]
             return (
+              <Item validateStatus={validateStatus} label="Organisation">
               <Select
                 {...input}
                 disabled={disabled}
@@ -28,6 +30,7 @@ const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
               >
                 {options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
               </Select>
+              </Item>
             )
           }}
         />

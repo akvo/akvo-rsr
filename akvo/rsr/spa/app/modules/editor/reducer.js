@@ -24,6 +24,7 @@ export const initialState = {
   backendError: null,
   validations: [1],
   isPublic: true,
+  showRequired: false,
   projectId: null
 }
 for(let i = 0; i < sectionLength; i += 1){
@@ -47,7 +48,6 @@ initialState.section10.fields.keywords = []
 const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 
 const validateSets = (sectionKey, validations, fields) => {
-  console.log('validateSets', sectionKey)
   return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, fields[fieldSet])).reduce((acc, value) => [...acc, ...value])
 }
 
@@ -56,7 +56,6 @@ const validateSection = (sectionKey, validations, fields) => {
   let errors = validate(sectionKey, validations, fields)
   // check fieldSets
   if(fieldSets.hasOwnProperty(sectionKey)){
-    console.log('validateSection', sectionKey)
     errors = [...errors, ...validateSets(sectionKey, validations, fields)]
   }
   return errors
@@ -83,10 +82,12 @@ export default (state = initialState, action) => {
       }
       newState.validations = validations
       // validate all sections
-      for(let i = 1; i <= sectionLength; i += 1){
-        if(i !== 5){
-          const _sectionKey = `section${i}`
-          newState[_sectionKey].errors = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
+      if(state.projectId){
+        for(let i = 1; i <= sectionLength; i += 1){
+          if(i !== 5){
+            const _sectionKey = `section${i}`
+            newState[_sectionKey].errors = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
+          }
         }
       }
       return newState
@@ -181,6 +182,9 @@ export default (state = initialState, action) => {
       newState[sectionKey].isFetched = true
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.SHOW_REQUIRED:
+      const showRequired = action.hasOwnProperty('checked') ? action.checked : !state.showRequired
+      return {...state, showRequired}
     default: return state
   }
 }

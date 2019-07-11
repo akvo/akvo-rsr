@@ -247,6 +247,14 @@ hr{
   
   .ant-collapse{
     margin-bottom: 20px;
+    .ant-collapse-header{
+      display: flex;
+      .ant-collapse-extra{
+        float: none;
+        margin-left: auto;
+        align-self: center;
+      }
+    }
     .ant-collapse-content-box{
       .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;

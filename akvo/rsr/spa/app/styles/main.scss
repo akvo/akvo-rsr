@@ -107,6 +107,9 @@ header.main-header{
     border-radius: 3px!important;
   }
 }
+.has-error .rte{
+  border-color: red;
+}
 
 .public-DraftEditor-content{
   word-break: break-all;

@@ -13,16 +13,16 @@ const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
 
 const ValueDateField = ({ name }) => (
-  <Item label={(
-    <Field name={`${name}.value`}>
-      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value date</InputLabel>}
-    </Field>
-  )}>
   <FinalField
     name={`${name}.valueDate`}
     control="datepicker"
+    withLabel
+    label={(
+      <Field name={`${name}.value`}>
+        {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value date</InputLabel>}
+      </Field>
+    )}
   />
-  </Item>
 )
 
 const PlannedDisbursements = ({ formPush, validations }) => {
@@ -85,28 +85,28 @@ const PlannedDisbursements = ({ formPush, validations }) => {
           }
           <Row gutter={16}>
             <Col span={12}>
-              <Item label={(
-                <Field name={`${name}.value`}>
-                  {({ input }) => <InputLabel optional={isEmpty(input.value)}>Period start</InputLabel>}
-                </Field>
-              )}>
               <FinalField
                 name={`${name}.periodStart`}
                 control="datepicker"
+                withLabel
+                label={(
+                  <Field name={`${name}.value`}>
+                    {({ input }) => <InputLabel optional={isEmpty(input.value)}>Period start</InputLabel>}
+                  </Field>
+                )}
               />
-              </Item>
             </Col>
             <Col span={12}>
-              <Item label={(
-                <Field name={`${name}.value`}>
-                  {({ input }) => <InputLabel optional={isEmpty(input.value)}>Period end</InputLabel>}
-                </Field>
-              )}>
               <FinalField
                 name={`${name}.periodEnd`}
                 control="datepicker"
+                withLabel
+                label={(
+                  <Field name={`${name}.value`}>
+                    {({ input }) => <InputLabel optional={isEmpty(input.value)}>Period end</InputLabel>}
+                  </Field>
+                )}
               />
-              </Item>
             </Col>
           </Row>
           <section>
@@ -115,11 +115,9 @@ const PlannedDisbursements = ({ formPush, validations }) => {
             </div>
             <Row gutter={16}>
               <Col span={12}>
-                <Item label={<InputLabel optional>Name</InputLabel>}>
                 <OrganizationSelect
                   name={`${name}.providerOrganisation`}
                 />
-                </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>
@@ -136,11 +134,9 @@ const PlannedDisbursements = ({ formPush, validations }) => {
             </div>
             <Row gutter={16}>
               <Col span={12}>
-                <Item label={<InputLabel optional>Name</InputLabel>}>
                 <OrganizationSelect
                   name={`${name}.receiverOrganisation`}
                 />
-                </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>

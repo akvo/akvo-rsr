@@ -1,0 +1,8 @@
+{
+  "fundingAmount": {
+    "label": "Funding Amount"
+  },
+  "iatiOrganisationRole": {
+    "label": "Role"
+  }
+}
