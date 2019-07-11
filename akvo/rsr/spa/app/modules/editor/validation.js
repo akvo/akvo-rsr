@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import { getValidationSets } from '../../utils/validation-utils'
 
 const modules = [
@@ -24,25 +25,32 @@ const validationDefs = modules.reduce((acc, key) => ({
   [key]: require(`./${key}/validations`).default // eslint-disable-line
 }), {})
 
-export const validate = (module, validationSetIds, fields) => {
+export const validate = (module, validationSetIds, fields, abortEarly = false) => {
   const validationDef = validationDefs[module]
   if(!validationDef){
-    return true
+    return []
   }
   if(!validationDefs.hasOwnProperty(module)){
-    return true
+    return []
   }
   const validationSets = getValidationSets(validationSetIds, validationDef)
-  let isValid = true
+  // let isValid = true
   // console.log(`validate ${module}`, fields)
+  let errors = []
   validationSets.forEach((validationSet) => {
     try{
-      validationSet.validateSync(fields)
+      validationSet.validateSync(fields, { abortEarly })
     } catch(error){
-      console.log(module, 'validation error', error)
-      isValid = false
+      // console.log(module, 'validation error', error)
+      // if(!abortEarly){
+        const newErrors = error.inner.map(({ type, path }) => ({ type, path })).filter(it => errors.findIndex(existing => isEqual(it, existing)) === -1)
+        errors = [...errors, ...newErrors]
+        console.log(module, newErrors)
+        console.log(error.inner)
+      // }
+      // isValid = false
     }
   })
   // console.log('validated', module, isValid)
-  return isValid
+  return errors
 }

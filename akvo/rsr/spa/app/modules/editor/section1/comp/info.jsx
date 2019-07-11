@@ -73,7 +73,7 @@ const Info = ({ validations, fields }) => {
           <FinalField
             name="title"
             render={({input}) => (
-              <Item label={<InputLabel tooltip="...">Project title</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+              <Item label={<InputLabel tooltip="...">Project title</InputLabel>}>
                 <Input.TextArea {...input} autosize />
               </Item>
             )}
@@ -81,7 +81,7 @@ const Info = ({ validations, fields }) => {
           <FinalField
             name="subtitle"
             render={({input}) => (
-              <Item label={<InputLabel tooltip="...">Project subtitle</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
+              <Item label={<InputLabel tooltip="...">Project subtitle</InputLabel>}>
                 <Input {...input} />
               </Item>
             )}

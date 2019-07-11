@@ -35,7 +35,7 @@ const DGIS = base.clone().shape({
 
 const IATI = DGIS.clone().shape({
   currency: yup.string().default('EUR'),
-  humanitarian: yup.boolean(),
+  humanitarian: yup.boolean().nullable(),
   reference: yup.string(),
   aidType: yup.string(),
   disbursementChannel: yup.string(),

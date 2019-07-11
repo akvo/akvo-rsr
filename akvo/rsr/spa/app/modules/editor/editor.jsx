@@ -10,6 +10,7 @@ import Settings from './settings/settings'
 import * as actions from './actions'
 import './styles.scss'
 import ProjectInitHandler from './project-init-handler'
+import ValidationBar from './validation-bar'
 
 const { TabPane } = Tabs
 
@@ -57,19 +58,24 @@ const SavingStatus = connect(
   </aside>
 ))
 
-const PublishingBar = connect(({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }))(({ publishingStatus }) => {
-  if(publishingStatus === 'unpublished') {
-    return (
-      <div className="content">
-        <Button type="primary" disabled>Publish</Button>
-        <i>The project is unpublished</i>
-      </div>
-    )
-  }
+const Aux = node => node.children
+
+const ContentBar = connect(({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }))(({ publishingStatus }) => {
   return (
     <div className="content">
-      <Button type="danger">Unpublish</Button>
-      <i>The project is published</i>
+      {publishingStatus === 'unpublished' && (
+        <Aux>
+          <Button type="primary" disabled>Publish</Button>
+          <i>The project is unpublished</i>
+        </Aux>
+      )}
+      {publishingStatus !== 'unpublished' && (
+        <Aux>
+          <Button type="danger">Unpublish</Button>
+          <i>The project is published</i>
+        </Aux>
+      )}
+      <ValidationBar />
     </div>
   )
 })
@@ -96,7 +102,7 @@ const Editor = ({ match: { params } }) => (
       <div className="status-bar">
         <SavingStatus />
         <MainMenu params={params} />
-        <PublishingBar />
+        <ContentBar />
       </div>
       <div className="main-content">
         <Route path="/projects/:id" component={ProjectInitHandler} />

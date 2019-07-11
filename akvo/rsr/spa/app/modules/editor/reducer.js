@@ -28,7 +28,7 @@ export const initialState = {
 }
 for(let i = 0; i < sectionLength; i += 1){
   initialState[`section${i + 1}`] = {
-    isValid: false,
+    errors: [true],
     isTouched: false,
     isFetched: false,
     fields: {}
@@ -47,17 +47,19 @@ initialState.section10.fields.keywords = []
 const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 
 const validateSets = (sectionKey, validations, fields) => {
-  return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, fields[fieldSet])).reduce((acc, value) => value && acc)
+  console.log('validateSets', sectionKey)
+  return fieldSets[sectionKey].map(fieldSet => validate(`${sectionKey}/${camelToKebab(fieldSet)}`, validations, fields[fieldSet])).reduce((acc, value) => [...acc, ...value])
 }
 
 const validateSection = (sectionKey, validations, fields) => {
   // validate root fields
-  let isValid = validate(sectionKey, validations, fields)
+  let errors = validate(sectionKey, validations, fields)
   // check fieldSets
-  if(isValid && fieldSets.hasOwnProperty(sectionKey)){
-    isValid = validateSets(sectionKey, validations, fields)
+  if(fieldSets.hasOwnProperty(sectionKey)){
+    console.log('validateSection', sectionKey)
+    errors = [...errors, ...validateSets(sectionKey, validations, fields)]
   }
-  return isValid
+  return errors
 }
 
 export default (state = initialState, action) => {
@@ -69,7 +71,7 @@ export default (state = initialState, action) => {
     case actionTypes.TOUCH_SECTION:
       if(!newState[sectionKey].isTouched){
         newState[sectionKey].isTouched = true
-        newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+        newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       }
       return newState
     case actionTypes.CHECK_VALIDATION:
@@ -84,7 +86,7 @@ export default (state = initialState, action) => {
       for(let i = 1; i <= sectionLength; i += 1){
         if(i !== 5){
           const _sectionKey = `section${i}`
-          newState[_sectionKey].isValid = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
+          newState[_sectionKey].errors = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
         }
       }
       return newState
@@ -96,15 +98,16 @@ export default (state = initialState, action) => {
       if(action.fields.hasOwnProperty('validations')){
         newState.validations = action.fields.validations
       }
-      newState[sectionKey].isValid = validate(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].errors = validate(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.FETCH_SECTION_ROOT:
+      // fields are taken from section1 because in the backend they are part of the /project/ (section1) endpoint
       Object.keys(sectionDefs[action.sectionIndex].fields).forEach(field => {
         if(state.section1.fields[field] !== undefined){
           newState[sectionKey].fields[field] = state.section1.fields[field]
         }
       })
-      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      // newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.FETCH_SET_ITEMS:
       newState[sectionKey].fields[action.setName] = action.items
@@ -115,7 +118,7 @@ export default (state = initialState, action) => {
         fields: {...newState[sectionKey].fields, ...action.fields},
       }
       newState.saving = true
-      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.ADD_SET_ITEM:
       newState.saving = true
@@ -125,7 +128,7 @@ export default (state = initialState, action) => {
         action.setName,
         [...get(newState[sectionKey].fields, action.setName), action.item]
       )
-      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.ADDED_SET_ITEM:
       newState.saving = false
@@ -149,7 +152,7 @@ export default (state = initialState, action) => {
         ...get(newState[sectionKey].fields, `${action.setName}[${action.itemIndex}]`),
         ...action.fields
       })
-      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.REMOVE_SET_ITEM:
       newState.saving = action.shouldSync !== undefined
@@ -158,7 +161,7 @@ export default (state = initialState, action) => {
         action.setName,
         get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
       )
-      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}
@@ -176,7 +179,7 @@ export default (state = initialState, action) => {
       return initialState
     case actionTypes.SET_SECTION_FETCHED:
       newState[sectionKey].isFetched = true
-      newState[sectionKey].isValid = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     default: return state
   }

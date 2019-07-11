@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Radio } from 'antd'
+import { Form, Radio, Divider } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
@@ -17,6 +17,7 @@ import './styles.scss'
 
 const { Item } = Form
 const { Group, Button } = Radio
+const Aux = node => node.children
 
 const Focus = ({ validations, fields, primaryOrganisation}) => {
   const validationSets = getValidationSets(validations, validationDefs)
@@ -35,20 +36,28 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
         }) => (
         <Form layout="vertical">
           <Sectors validations={validations} formPush={push} primaryOrganisation={primaryOrganisation} />
-          {fieldExists('policyMarkers') && <PolicyMarkers validations={validations} formPush={push} />}
+          {fieldExists('policyMarkers') && (
+            <Aux>
+              <Divider />
+              <PolicyMarkers validations={validations} formPush={push} />
+            </Aux>
+          )}
           {fieldExists('humanitarian') &&
-          <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
-            <FinalField
-              name="humanitarian"
-              render={({ input }) => (
-                <Group {...input}>
-                  <Button value>Yes</Button>
-                  <Button value={false}>No</Button>
-                </Group>
-              )}
-            />
-            <AutoSave sectionIndex={8} />
-          </Item>
+          <Aux>
+            <Divider />
+            <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
+              <FinalField
+                name="humanitarian"
+                render={({ input }) => (
+                  <Group {...input}>
+                    <Button value>Yes</Button>
+                    <Button value={false}>No</Button>
+                  </Group>
+                )}
+              />
+              <AutoSave sectionIndex={8} />
+            </Item>
+          </Aux>
           }
           {fieldExists('humanitarianScopes') && <HumanitarianScopes formPush={push} />}
         </Form>

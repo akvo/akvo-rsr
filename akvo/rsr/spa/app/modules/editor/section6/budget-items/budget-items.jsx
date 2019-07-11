@@ -182,7 +182,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
           component: ({ onClick }) => (
             <div>
               {budgetItemTypes.map(type => (
-                <div className="desc-block">
+                <div className="desc-block" key={type.value}>
                   <Button block icon="plus" onClick={() => onClick({ label: type.value })}>{type.label}</Button>
                 </div>
               ))}

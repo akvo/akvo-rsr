@@ -19,15 +19,15 @@ const RSR = yup.object().shape({
 })
 
 const EUTF = RSR.clone().shape({
-  iatiActivityId: yup.string()
+  iatiActivityId: yup.string().nullable()
 })
 
 const IATI_BASIC = RSR.clone().shape({
-  iatiActivityId: yup.string().required()
+  iatiActivityId: yup.string().nullable().required()
 })
 
 const IATI = IATI_BASIC.clone().shape({
-  hierarchy: yup.string(),
+  hierarchy: yup.string().nullable(),
   defaultAidTypeVocabulary: yup.string(),
   // defaultAidType: yup.string(),
   defaultFlowType: yup.string(),
