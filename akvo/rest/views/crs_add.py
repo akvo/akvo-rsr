@@ -14,7 +14,7 @@ from ..viewsets import PublicProjectViewSet
 class CrsAddViewSet(PublicProjectViewSet):
     """
     """
-    queryset = CrsAdd.objects.all()
+    queryset = CrsAdd.objects.prefetch_related('other_flags').all()
     serializer_class = CrsAddSerializer
 
 

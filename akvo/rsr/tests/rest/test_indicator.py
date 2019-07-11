@@ -94,6 +94,63 @@ class RestIndicatorTestCase(BaseTestCase):
         self.assertEqual(response.data['measure'], '1')
         self.assertEqual(response.data['type'], 1)
 
+    def test_indicator_framework_dimension_names_get(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        IndicatorPeriod.objects.create(indicator=indicator)
+        dimension = IndicatorDimensionName.objects.create(project=self.project, name='Age')
+        indicator.dimension_names.add(dimension)
+        self.c.login(username=self.user.username, password="password")
+        url = '/rest/v1/indicator/{}/?format=json'.format(indicator.id)
+
+        # When
+        response = self.c.get(url)
+
+        # Then
+        self.assertIn(dimension.id, response.data['dimension_names'])
+
+    def test_indicator_framework_dimension_names_patch(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        IndicatorPeriod.objects.create(indicator=indicator)
+        dimension_age = IndicatorDimensionName.objects.create(project=self.project, name='Age')
+        dimension_gender = IndicatorDimensionName.objects.create(project=self.project, name='Gender')
+        indicator.dimension_names.add(dimension_age)
+        self.c.login(username=self.user.username, password="password")
+        url = '/rest/v1/indicator/{}/?format=json'.format(indicator.id)
+        content_type = 'application/json'
+        response = self.c.get(url)
+        self.assertIn(dimension_age.id, response.data['dimension_names'])
+        data = {'dimension_names': [dimension_gender.id]}
+
+        # When
+        response = self.c.patch(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(data['dimension_names'], response.data['dimension_names'])
+
+    def test_indicator_framework_dimension_names_empty_patch(self):
+        # Given
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        IndicatorPeriod.objects.create(indicator=indicator)
+        dimension = IndicatorDimensionName.objects.create(project=self.project, name='Age')
+        indicator.dimension_names.add(dimension)
+        self.c.login(username=self.user.username, password="password")
+        url = '/rest/v1/indicator/{}/?format=json'.format(indicator.id)
+        content_type = 'application/json'
+        response = self.c.get(url)
+        self.assertIn(dimension.id, response.data['dimension_names'])
+        data = {'dimension_names': []}
+
+        # When
+        response = self.c.patch(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(data['dimension_names'], response.data['dimension_names'])
+
     def get_indicator_periods(self, project_id):
         periods = []
         next_url = '/rest/v1/indicator_period/?format=json&indicator__result__project={}&limit=50'.format(project_id)

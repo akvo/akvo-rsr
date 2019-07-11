@@ -39,7 +39,7 @@ RSR_LIMITED_CHANGE = u'rsr_limited_change'
 DATA_DIR = join(dirname(abspath(__file__)), '..', 'data')
 GEOJSON_FILE = join(DATA_DIR, 'countries.geojson')
 # http://data.okfn.org/data/core/geo-countries#readme
-GEOJSON_URL = 'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson'
+GEOJSON_URL = 'https://raw.githubusercontent.com/datasets/geo-countries/201d65b217af0bf6b01b865375de70f8a6c4cce6/data/countries.geojson'
 COUNTRY_SHAPES = None
 
 
