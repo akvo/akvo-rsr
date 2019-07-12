@@ -560,7 +560,7 @@ QuantitativeUpdateForm.propTypes = {
     update: PropTypes.object.isRequired,
     measure: PropTypes.string.isRequired,
     self: PropTypes.object.isRequired,
-    dimensionsAndDisaggs: PropTypes.array.isRequired,
+    dimensionsAndDisaggs: PropTypes.array.isRequired
 };
 
 const QualitativeUpdateForm = ({
@@ -568,8 +568,7 @@ const QualitativeUpdateForm = ({
     update,
     measure,
     self,
-    dimensions,
-    disaggregations,
+    dimensionsAndDisaggs,
     hideTarget
 }) => {
     return (
@@ -594,8 +593,7 @@ const QualitativeUpdateForm = ({
                 />
                 <DisaggregatedInputs
                     measure={measure}
-                    dimensions={dimensions}
-                    disaggregations={disaggregations}
+                    dimensionsAndDisaggs={dimensionsAndDisaggs}
                     onChange={self.onDisaggregationsChange}
                 />
                 <UpdateFormButtons
@@ -615,11 +613,10 @@ QualitativeUpdateForm.propTypes = {
     update: PropTypes.object.isRequired,
     measure: PropTypes.string.isRequired,
     self: PropTypes.object.isRequired,
-    dimensions: PropTypes.array.isRequired,
-    disaggregations: PropTypes.array.isRequired
+    dimensionsAndDisaggs: PropTypes.array.isRequired
 };
 
-const DisaggregatedInputs = ({measure, dimensionsAndDisaggs, onChange}) => {
+const DisaggregatedInputs = ({ measure, dimensionsAndDisaggs, onChange }) => {
     /*  dimensionsAndDisaggs =
         [
             {
@@ -637,32 +634,28 @@ const DisaggregatedInputs = ({measure, dimensionsAndDisaggs, onChange}) => {
         ]
     */
 
-    const dimensionElements = dimensionsAndDisaggs.map(
-        (data) => {
-            const inputs = data.dimensionValues.map(
-                (dimensionValue) => {
-                    const disaggsByDimensionValue = keyBy(data.disaggregations, 'dimension_value')
-                    return (
-                        <DisaggregatedValueInput key={dimensionValue.value}
-                                                 dimensionValue={dimensionValue}
-                                                 disaggregation={
-                                                    disaggsByDimensionValue[dimensionValue.id]
-                                                 }
-                                                 onChange={onChange}
-                                                 measure={measure}/>
-                    )
-                }
-            );
+    const dimensionElements = dimensionsAndDisaggs.map(data => {
+        const inputs = data.dimensionValues.map(dimensionValue => {
+            const disaggsByDimensionValue = keyBy(data.disaggregations, "dimension_value");
             return (
-                <div key={"dimension-" + data.id} className="disaggregationInput">
-                    <h5>{data.name}</h5>
-                    {inputs}
-                </div>
+                <DisaggregatedValueInput
+                    key={dimensionValue.value}
+                    dimensionValue={dimensionValue}
+                    disaggregation={disaggsByDimensionValue[dimensionValue.id]}
+                    onChange={onChange}
+                    measure={measure}
+                />
             );
-        }
-    );
-    const headline = dimensionsAndDisaggs.length > 0 ?  (<h4>Disaggregations</h4>): undefined;
-    return  (
+        });
+        return (
+            <div key={"dimension-" + data.id} className="disaggregationInput">
+                <h5>{data.name}</h5>
+                {inputs}
+            </div>
+        );
+    });
+    const headline = dimensionsAndDisaggs.length > 0 ? <h4>Disaggregations</h4> : undefined;
+    return (
         <div className="disaggregationFields">
             {headline}
             {dimensionElements}
@@ -956,7 +949,7 @@ class UpdateForm extends React.Component {
         let changedDisaggregation;
         const dimensionValueId = e.target.getAttribute("data-dimension"),
             field = e.target.getAttribute("data-field"),
-            disaggregations = keyBy(this.props.disaggregations.objects, 'dimension_value'),
+            disaggregations = keyBy(this.props.disaggregations.objects, "dimension_value"),
             disaggregation = disaggregations[dimensionValueId],
             value = e.target.value;
         if (!this.checkNumeric(field, value)) {
@@ -1159,11 +1152,11 @@ class UpdateForm extends React.Component {
             return pruned;
         };
 
-        update.disaggregations = flatten(this.props.dimensionsAndDisaggs.map(
-            data => data.disaggregations
-                .filter(isNonEmptyDisaggregation)
-                .map(pruneDisaggregation)
-        ));
+        update.disaggregations = flatten(
+            this.props.dimensionsAndDisaggs.map(data =>
+                data.disaggregations.filter(isNonEmptyDisaggregation).map(pruneDisaggregation)
+            )
+        );
         const isPercentage = indicator.measure == c.MEASURE_PERCENTAGE;
 
         if (isNewUpdate(update)) {
