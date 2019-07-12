@@ -46,6 +46,8 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
     IndicatorDimension: (Indicator, 'indicator'),
+    # many-to-many relation to indicator (needs to be created after indicator)
+    IndicatorDimensionName: (Indicator, 'indicator'),
     IndicatorDimensionValue: (IndicatorDimensionName, 'name'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
@@ -62,6 +64,8 @@ RELATED_OBJECTS_MAPPING = {
 MANY_TO_MANY_FIELDS = {
     # Special mapping for many to many fields
     Keyword: 'keywords',
+    # NOTE: Add the models to related objects mapping, if they depend on other
+    # models. Keyword is only related to the project.
     IndicatorDimensionName: 'dimension_names',
 }
 
@@ -631,7 +635,11 @@ def create_or_update_objects_from_data(project, data):
 
         elif Model == IndicatorDimensionName and len(key_parts.ids) > 2:
             obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
-            indicator = Indicator.objects.get(pk=int(key_parts.ids[2]))
+            indicator_id = key_parts.ids[2]
+            if indicator_id.startswith('new'):
+                parent_id = '_'.join(key_parts.ids[:-1])
+                indicator_id = get_parent_model_id(Model, parent_id, rel_objects)
+            indicator = Indicator.objects.get(pk=int(indicator_id))
             update_m2m_object(
                 indicator, Model, obj_id, key_parts.field, data[key], key, changes, errors,
                 rel_objects, related_obj_id
