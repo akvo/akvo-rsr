@@ -568,8 +568,7 @@ const QualitativeUpdateForm = ({
     update,
     measure,
     self,
-    dimensions,
-    disaggregations,
+    dimensionsAndDisaggs,
     hideTarget
 }) => {
     return (
@@ -594,8 +593,7 @@ const QualitativeUpdateForm = ({
                 />
                 <DisaggregatedInputs
                     measure={measure}
-                    dimensions={dimensions}
-                    disaggregations={disaggregations}
+                    dimensionsAndDisaggs={dimensionsAndDisaggs}
                     onChange={self.onDisaggregationsChange}
                 />
                 <UpdateFormButtons
@@ -615,8 +613,7 @@ QualitativeUpdateForm.propTypes = {
     update: PropTypes.object.isRequired,
     measure: PropTypes.string.isRequired,
     self: PropTypes.object.isRequired,
-    dimensions: PropTypes.array.isRequired,
-    disaggregations: PropTypes.array.isRequired
+    dimensionsAndDisaggs: PropTypes.array.isRequired
 };
 
 const DisaggregatedInputs = ({ measure, dimensionsAndDisaggs, onChange }) => {
