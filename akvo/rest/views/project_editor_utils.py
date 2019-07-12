@@ -577,6 +577,16 @@ def sort_keys(x):
     return (level, key_parts.ids)
 
 
+def get_parent_model_id(Model, parent_id, rel_objects):
+    ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
+    parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
+    if parent_obj_rel_obj_key in rel_objects:
+        parent_obj_id = rel_objects[parent_obj_rel_obj_key]
+    else:
+        parent_obj_id = None
+    return parent_obj_id
+
+
 def create_or_update_objects_from_data(project, data):
     errors, changes, rel_objects = [], [], {}
 
@@ -651,12 +661,7 @@ def create_or_update_objects_from_data(project, data):
                 # However, it is possible that the parent was already
                 # created earlier in the script. So we also check if
                 # the parent object was already created earlier.
-                ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
-                parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
-                if parent_obj_rel_obj_key in rel_objects:
-                    parent_obj_id = rel_objects[parent_obj_rel_obj_key]
-                else:
-                    parent_obj_id = None
+                parent_obj_id = get_parent_model_id(Model, parent_id, rel_objects)
 
             if parent_obj_id is not None:
                 fields, values, keys = group_get_all_fields(grouped_data, key_parts)
