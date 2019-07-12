@@ -74,12 +74,6 @@ class IndicatorPeriodDataTestCase(TestCase):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         self.setup_results_framework()
 
-    def tearDown(self):
-        Project.objects.all().delete()
-        User.objects.all().delete()
-        Organisation.objects.all().delete()
-        Group.objects.all().delete()
-
     def _create_new_user(self, group, is_admin=False, is_superuser=False):
         self.username2 = "username2"
         self.password2 = "password2"

@@ -7,6 +7,7 @@
 
 
 from django.contrib.auth import get_user_model
+from django.db.models import ProtectedError
 
 from akvo.rsr.models import Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result
 from akvo.rsr.tests.base import BaseTestCase
@@ -19,9 +20,6 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
     """Tests for the indicator period model"""
 
     def setUp(self):
-        # Clear all projects, users since some tests may not tear down!
-        self.tearDown()
-
         # Setup a project with results framework and a user
         self.project = Project.objects.create(title="Test project 1")
         self.result = Result.objects.create(project=self.project, title='Test Result')
@@ -29,10 +27,6 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         self.period = IndicatorPeriod.objects.create(indicator=self.indicator,
                                                      actual_comment='initial actual comment')
         self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
-
-    def tearDown(self):
-        Project.objects.all().delete()
-        User.objects.all().delete()
 
     def test_unapproved_period_data_does_not_update_actual_comment(self):
         """Unapproved IndicatorPeriodData doesn't update IndicatorPeriod.actual_comment."""
@@ -124,3 +118,29 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         # Then
         period = IndicatorPeriod.objects.get(id=period.id)
         self.assertNotIn(data.text, period.actual_comment)
+
+    def test_indicator_period_data_prevents_deletion(self):
+        # Given
+        period = self.period
+        user = self.user
+        IndicatorPeriodData.objects.create(text='period data comment',
+                                           period=period,
+                                           user=user,
+                                           status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+
+        # When/Then
+        with self.assertRaises(ProtectedError):
+            period.delete()
+        IndicatorPeriod.objects.get(pk=period.pk)
+
+        with self.assertRaises(ProtectedError):
+            self.indicator.delete()
+        Indicator.objects.get(pk=self.indicator.pk)
+
+        with self.assertRaises(ProtectedError):
+            self.result.delete()
+        Result.objects.get(pk=self.result.pk)
+
+        with self.assertRaises(ProtectedError):
+            self.project.delete()
+        Project.objects.get(pk=self.project.pk)

@@ -24,23 +24,19 @@ class PeriodActualValueTestCase(TestCase):
     """Tests for the indicator period model"""
 
     def setUp(self):
-        # Clear all projects, users since some tests may not tear down!
-        self.tearDown()
-
         # Setup a project with results framework and a user
         self.project = Project.objects.create(title="Test project 1")
         self.result = Result.objects.create(project=self.project, title='Test Result')
         self.indicator = Indicator.objects.create(result=self.result, title='Test Indicator')
         self.period = IndicatorPeriod.objects.create(indicator=self.indicator,
                                                      actual_comment='initial actual comment')
-        self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
+        self.user, _ = User.objects.get_or_create(username='user1@com.com', email='user1@com.com')
 
         #  set up PG views
         vs = ViewSyncer()
         vs.run(True, True)
 
     def tearDown(self):
-        Project.objects.all().delete()
         User.objects.all().delete()
 
     def test_actual_value_with_two_approved_updates(self):
@@ -113,9 +109,6 @@ class PeriodDisaggregationTestCase(TestCase):
     """Tests for the indicator period model"""
 
     def setUp(self):
-        # Clear all projects, users since some tests may not tear down!
-        self.tearDown()
-
         # Setup a project with results framework and a user
         self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
         self.project = Project.objects.create(title="Test project 1")
@@ -165,7 +158,6 @@ class PeriodDisaggregationTestCase(TestCase):
         vs.run(True, True)
 
     def tearDown(self):
-        Project.objects.all().delete()
         User.objects.all().delete()
 
     def test_disaggregated_values_aggregated_over_period(self):
