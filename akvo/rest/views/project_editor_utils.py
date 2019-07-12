@@ -626,22 +626,6 @@ def create_or_update_objects_from_data(project, data):
                 indicator, Model, obj_id, key_parts.field, data[key], key, changes, errors,
                 rel_objects, related_obj_id
             )
-            # m2m_relation = getattr(indicator, MANY_TO_MANY_FIELDS[Model])
-            # try:
-            #     m2m_object = Model.objects.get(pk=int(obj_data))
-            #     if len(key_parts.ids) == 1:
-            #         # If there already was an appointed object in the many to many relation,
-            #         # remove the old object first
-            #         old_m2m_object = Model.objects.get(pk=int(key_parts.ids[0]))
-            #         if old_m2m_object in m2m_relation.all():
-            #             m2m_relation.remove(old_m2m_object)
-            #     # Add the new many to many object to the project
-            #     m2m_relation.add(m2m_object)
-            #     changes = add_changes(changes, m2m_object, key_parts.field, key, obj_data)
-            #     if related_obj_id not in rel_objects.keys():
-            #         rel_objects[related_obj_id] = obj_data
-            # except Model.DoesNotExist as e:
-            #     errors = add_error(errors, str(e), key)
             data.pop(key, None)
 
         elif len(key_parts.ids) == 1:
