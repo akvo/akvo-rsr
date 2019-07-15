@@ -20,7 +20,7 @@ const ValidationBar = ({ editorRdr, dispatch }) => {
             return (
               <span>
                 Required fields:
-                {required.length > 0 && <span> {required.length} more to fill</span>}
+                {required.length > 0 && <span> <b>{required.length}</b> more to fill</span>}
                 {required.length === 0 && <span> All done</span>}
                 <span className="show-required">
                   <Switch size="small" checked={editorRdr.showRequired} onChange={(checked) => dispatch({ type: actionTypes.SHOW_REQUIRED, checked })} /><span role="button" tabIndex="-1" onClick={() => dispatch({ type: 'PE_SHOW_REQUIRED' })}> Show required</span>
