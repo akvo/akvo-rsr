@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link} from 'react-router-dom'
-import { Icon, Spin } from 'antd'
+import { Icon } from 'antd'
 import classNames from 'classnames'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'

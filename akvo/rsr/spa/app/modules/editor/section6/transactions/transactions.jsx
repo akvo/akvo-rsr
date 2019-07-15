@@ -2,7 +2,6 @@ import React from 'react'
 import { Form, Button, Radio, Col, Row } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
-import { FieldArray } from 'react-final-form-arrays'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -21,7 +20,6 @@ import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
-import Accordion from '../../../../utils/accordion';
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined

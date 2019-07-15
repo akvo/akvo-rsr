@@ -10,12 +10,13 @@ import InputLabel from '../../../../utils/input-label'
 
 const { Item } = Form
 
-const ForecastsStack = ({ formPush }) => {
+const ForecastsStack = ({ formPush, fssParent }) => {
   return (
     <ItemArray
       setName="forecasts"
       sectionIndex={11}
       header="CRS++ other forecast $index"
+      newItem={{ fss: fssParent ? fssParent.id : null }}
       headerMore={(index, value) => {
         return (
           <Field
@@ -72,7 +73,7 @@ const ForecastsStack = ({ formPush }) => {
           </Row>
         </div>
       )}
-      addButton={({onClick}) => <Button onClick={onClick} className="bottom-btn" block icon="plus" type="dashed">Add CRS++ other flag</Button>}
+      addButton={({onClick}) => <Button onClick={onClick} className="bottom-btn" block icon="plus" type="dashed" disabled={!fssParent}>Add CRS++ other flag</Button>}
     />
   )
 }

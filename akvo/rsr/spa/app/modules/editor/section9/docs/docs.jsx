@@ -1,6 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Icon, Form, Button, Radio, Upload, Row, Col, Tag } from 'antd'
+import { Form, Button, Radio, Row, Col, Tag } from 'antd'
 
 import FinalField from '../../../../utils/final-field'
 import Condition from '../../../../utils/condition'

@@ -40,6 +40,9 @@
       flex: 1;
       margin-right: 15px;
     }
+    .ant-form-item{
+      margin-bottom: 0;
+    }
   }
   .forecast-panel{
     .ant-row:not(:last-of-type){
@@ -53,9 +56,9 @@
   .ant-collapse{
     margin-bottom: 20px;
     .ant-collapse-content-box{
-      .ant-form-item:last-child{
-        margin-bottom: 0;
-      }
+      // .ant-form-item:last-child{
+      //   margin-bottom: 0;
+      // }
       .ant-form-item-control{
         line-height: 1;
       }

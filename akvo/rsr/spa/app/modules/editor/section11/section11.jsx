@@ -4,6 +4,7 @@ import { Form, Select, Row, Col, Divider } from 'antd'
 import { Field, Form as FinalForm } from 'react-final-form'
 import currencies from 'currency-codes/data'
 import arrayMutators from 'final-form-arrays'
+import { isEqual } from 'lodash'
 
 import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
@@ -26,7 +27,7 @@ const LoanTerms = () => (
     <Row gutter={16}>
       <Col span={12}>
         <FinalField
-          name="repaymentType"
+          name="crs[0].repaymentType"
           render={({ input }) => (
             <Item label={<InputLabel optional tooltip="...">Repayment type</InputLabel>}>
               <Select {...input}>
@@ -42,7 +43,7 @@ const LoanTerms = () => (
       </Col>
       <Col span={12}>
         <FinalField
-          name="repaymentPlan"
+          name="crs[0].repaymentPlan"
           render={({ input }) => (
             <Item label={<InputLabel optional tooltip="...">Repayment plan</InputLabel>}>
               <Select {...input}>
@@ -62,7 +63,7 @@ const LoanTerms = () => (
         <Item label={<InputLabel optional tooltip="...">Commitment date</InputLabel>}>
         <FinalField
           control="datepicker"
-          name="commitmentDate"
+          name="crs[0].commitmentDate"
         />
         </Item>
       </Col>
@@ -71,7 +72,7 @@ const LoanTerms = () => (
       <Col span={12}>
         <Item label={<InputLabel optional tooltip="...">First repayment date</InputLabel>}>
         <FinalField
-          name="firstRepaymentDate"
+          name="crs[0].repaymentFirstDate"
           control="datepicker"
         />
         </Item>
@@ -79,7 +80,7 @@ const LoanTerms = () => (
       <Col span={12}>
         <Item label={<InputLabel optional tooltip="...">Last repayment date</InputLabel>}>
         <FinalField
-          name="lastRepaymentDate"
+          name="crs[0].repaymentFinalDate"
           control="datepicker"
         />
         </Item>
@@ -89,7 +90,7 @@ const LoanTerms = () => (
       <Col span={12}>
         <Item label={<InputLabel optional tooltip="...">Rate 1</InputLabel>}>
         <FinalField
-          name="rate1"
+          name="crs[0].loanTermsRate1"
           suffix={<span>%</span>}
         />
         </Item>
@@ -97,7 +98,7 @@ const LoanTerms = () => (
       <Col span={12}>
         <Item label={<InputLabel optional tooltip="...">Rate 2</InputLabel>}>
         <FinalField
-          name="rate2"
+          name="crs[0].loanTermsRate2"
           suffix={<span>%</span>}
         />
         </Item>
@@ -117,14 +118,14 @@ const LoanStatus = ({ currency }) => {
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Year</InputLabel>}>
           <FinalField
-            name="year"
+            name="crs[0].loanStatusYear"
           />
           </Item>
         </Col>
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Currency</InputLabel>}>
           <FinalField
-            name="currency"
+            name="crs[0].loanStatusCurrency"
             control="select"
             showSearch
             optionFilterProp="children"
@@ -137,7 +138,7 @@ const LoanStatus = ({ currency }) => {
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Value Date</InputLabel>}>
           <FinalField
-            name="valueDate"
+            name="crs[0].loanStatusValueDate"
             control="datepicker"
           />
           </Item>
@@ -147,7 +148,7 @@ const LoanStatus = ({ currency }) => {
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Interest received</InputLabel>}>
           <FinalField
-            name="interestReceived"
+            name="crs[0].interestReceived"
             control="input-number"
             currencySymbol={currencySymbol}
           />
@@ -156,7 +157,7 @@ const LoanStatus = ({ currency }) => {
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Principal outstanding</InputLabel>}>
           <FinalField
-            name="principalOutstanding"
+            name="crs[0].principalOutstanding"
             control="input-number"
             currencySymbol={currencySymbol}
           />
@@ -167,7 +168,7 @@ const LoanStatus = ({ currency }) => {
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Principal arrears</InputLabel>}>
           <FinalField
-            name="principalArrears"
+            name="crs[0].principalArrears"
             control="input-number"
             currencySymbol={currencySymbol}
           />
@@ -176,7 +177,7 @@ const LoanStatus = ({ currency }) => {
         <Col span={12}>
           <Item label={<InputLabel optional tooltip="...">Interest arrears</InputLabel>}>
           <FinalField
-            name="interestArrears"
+            name="crs[0].interestArrears"
             control="input-number"
             currencySymbol={currencySymbol}
           />
@@ -188,80 +189,93 @@ const LoanStatus = ({ currency }) => {
 }
 
 
-class Reporting extends React.Component{
-  shouldComponentUpdate(){
-    return false
-  }
-  render(){
-    return (
-      <div className="reporting view">
-        <h3>CRS++</h3>
-        <Form layout="vertical">
+const Reporting = ({ fields, projectId }) => {
+  const initialValues = { ...fields }
+  // if (initialValues.crs.length === 0) {
+  //   initialValues.crs.push({ project: projectId })
+  // }
+  // if (initialValues.fss.length === 0) {
+  //   initialValues.fss.push({ project: projectId })
+  // }
+  return (
+    <div className="reporting view">
+      <h3>CRS++</h3>
+      <Form layout="vertical">
         <FinalForm
-          onSubmit={() => {}}
-          initialValues={this.props.fields}
+          onSubmit={() => { }}
+          initialValues={initialValues}
           subscription={{}}
           mutators={{ ...arrayMutators }}
           render={({
             form: {
               mutators: { push }
             }
-          }) => (
-            <div>
-              <AutoSave sectionIndex={11} />
-              <LoanTerms />
-              <Field
-                name="currency"
-                render={({ input }) => <LoanStatus currency={input.value} />}
-              />
-              <Item className="channel-code-item" label={<InputLabel optional tooltip="...">Channel code</InputLabel>}>
-                <FinalField
-                  name="channelCode"
-                  showSearch
-                  optionFilterProp="children"
-                  options={CHANNEL_CODES}
-                  control="select"
+          }) => {
+            if (!fields.crs || fields.crs.length === 0) {
+              push('crs', { project: projectId })
+            }
+            if (!fields.fss || fields.fss.length === 0) {
+              push('fss', { project: projectId })
+            }
+            return (
+              <div>
+                <AutoSave sectionIndex={11} setName="crs" itemIndex={0} />
+                <AutoSave sectionIndex={11} setName="fss" itemIndex={0} />
+                <LoanTerms />
+                <Field
+                  name="currency"
+                  render={({ input }) => <LoanStatus currency={input.value} />}
                 />
-              </Item>
-              <FlagsStack formPush={push} />
-              <Divider />
-              <h3>FSS</h3>
-              <Item label={<InputLabel tooltip="...">Extraction date</InputLabel>}>
-              <FinalField
-                name="extractionDate"
-                style={{ display: 'block' }}
-                control="datepicker"
-              />
-              </Item>
-              <Item label={<InputLabel optional tooltip="...">Phaseout year</InputLabel>}>
-              <FinalField
-                name="phaseoutYear"
-                control="input-number"
-                className="phaseout-year-input"
-              />
-              </Item>
-              <Item label={<InputLabel optional tooltip="...">Priority</InputLabel>}>
-              <FinalField
-                name="priority"
-                control="select"
-                options={[{ value: 1, label: 'Yes'}, { value: 0, label: 'No'}]}
-                withEmptyOption
-              />
-              </Item>
-              <h3>FSS forecasts</h3>
-              <ForecastsStack formPush={push} />
-              <h3>Legacy data</h3>
-              <LegaciesStack formPush={push} />
-            </div>
-          )}
+                <Item className="channel-code-item" label={<InputLabel optional tooltip="...">Channel code</InputLabel>}>
+                  <FinalField
+                    name="crs[0].channelCode"
+                    showSearch
+                    optionFilterProp="children"
+                    options={CHANNEL_CODES}
+                    control="select"
+                  />
+                </Item>
+                <FlagsStack formPush={push} crsParent={fields.crs[0]} />
+                <Divider />
+                <h3>FSS</h3>
+                <Item label={<InputLabel tooltip="...">Extraction date</InputLabel>}>
+                  <FinalField
+                    name="fss[0].extractionDate"
+                    style={{ display: 'block' }}
+                    control="datepicker"
+                  />
+                </Item>
+                <Item label={<InputLabel optional tooltip="...">Phaseout year</InputLabel>}>
+                  <FinalField
+                    name="fss[0].phaseoutYear"
+                    control="input-number"
+                    className="phaseout-year-input"
+                  />
+                </Item>
+                <Item label={<InputLabel optional tooltip="...">Priority</InputLabel>}>
+                  <FinalField
+                    name="fss[0].priority"
+                    control="select"
+                    options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]}
+                    withEmptyOption
+                  />
+                </Item>
+                <h3>FSS forecasts</h3>
+                <ForecastsStack formPush={push} fssParent={fields.fss[0]} />
+                <h3>Legacy data</h3>
+                <LegaciesStack formPush={push} />
+              </div>
+            )
+          }}
         />
-        </Form>
-      </div>
-    )
-  }
+      </Form>
+    </div>
+  )
 }
 
 
 export default connect(
-  ({ editorRdr: { section11: { fields } }}) => ({ fields })
-)(Reporting)
+  ({ editorRdr: { projectId, section11: { fields }, validations } }) => ({ fields, validations, projectId }),
+)(React.memo(Reporting, (prevProps, nextProps) => {
+  return isEqual(prevProps.fields, nextProps.fields)
+}))
