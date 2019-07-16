@@ -24,6 +24,7 @@ from akvo.rsr.views import my_rsr
 from akvo.rsr.views import organisation
 from akvo.rsr.views import project
 from akvo.rsr.views import project_update
+from akvo.rsr.views import translations
 
 admin.autodiscover()
 
@@ -150,6 +151,7 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/user_projects/(?P<user_id>\d+)/$',
         my_rsr.user_projects, name='user_projects'),
 
+    url(r'^translations.json$', translations.index, name='translations'),
 )
 
 ################################################################################
