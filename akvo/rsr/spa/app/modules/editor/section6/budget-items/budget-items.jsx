@@ -30,6 +30,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
+      <h3>Budget items</h3>
       <div className="total">
         Total budget:
         <span className="amount">
@@ -182,7 +183,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
           component: ({ onClick }) => (
             <div>
               {budgetItemTypes.map(type => (
-                <div className="desc-block">
+                <div className="desc-block" key={type.value}>
                   <Button block icon="plus" onClick={() => onClick({ label: type.value })}>{type.label}</Button>
                 </div>
               ))}

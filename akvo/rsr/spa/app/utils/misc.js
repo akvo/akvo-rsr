@@ -4,6 +4,7 @@ export const datePickerConfig = {
 }
 
 export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
+export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
 
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false

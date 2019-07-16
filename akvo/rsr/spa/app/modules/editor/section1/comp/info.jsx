@@ -72,19 +72,15 @@ const Info = ({ validations, fields }) => {
           <AutoSave sectionIndex={1} />
           <FinalField
             name="title"
-            render={({input}) => (
-              <Item label={<InputLabel tooltip="...">Project title</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
-                <Input.TextArea {...input} autosize />
-              </Item>
-            )}
+            withLabel
+            control="textarea"
+            autosize
           />
           <FinalField
             name="subtitle"
-            render={({input}) => (
-              <Item label={<InputLabel tooltip="...">Project subtitle</InputLabel>} validateStatus={input.value && input.value.length > 5 ? 'success' : ''} hasFeedback>
-                <Input {...input} />
-              </Item>
-            )}
+            withLabel
+            control="textarea"
+            autosize
           />
           <Field
             name="primaryOrganisation"
@@ -198,7 +194,7 @@ const Info = ({ validations, fields }) => {
             component={({ match: {params} }) => (
               <FinalField
                 name="currentImage"
-                render={({input}) => <ProjectPhoto projectId={params.id} {...input} />}
+                render={({ input, validateStatus }) => <ProjectPhoto projectId={params.id} {...input} validateStatus={validateStatus} />}
               />
             )}
           />

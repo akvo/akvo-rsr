@@ -1,4 +1,10 @@
 {
+  "title": {
+    "label": "Project title"
+  },
+  "subtitle": {
+    "label": "Project subtitle"
+  },
   "iatiStatus": {
     "label": "Status",
     "tooltip": "<ol><li>Pipeline/identification: the project is being scoped or planned</li><li>Implementation: the project is currently being implemented</li><li>Completion: the project is complete or the final disbursement has been made</li><li>Post-completion: the project is complete or the final disbursement has been made, but the project remains open pending financial sign off or M&E</li><li>Cancelled: the project has been cancelled</li><li>Suspended: the project has been temporarily suspended or the reporting partner no longer uses RSR.</li></ol>"

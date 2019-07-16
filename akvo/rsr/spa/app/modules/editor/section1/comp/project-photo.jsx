@@ -84,7 +84,7 @@ class ProjectPhoto extends React.Component {
 
   render() {
     return (
-      <Item label={<InputLabel tooltip="Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page. The photo should not be larger than 2 MB in size, and should preferably be in JPG format.">Photo</InputLabel>}>
+      <Item validateStatus={this.props.validateStatus} label={<InputLabel tooltip="Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page. The photo should not be larger than 2 MB in size, and should preferably be in JPG format.">Photo</InputLabel>}>
         {this.state.error &&
         <Alert type="error" message={this.state.error} style={{ marginBottom: 15 }} />
         }
