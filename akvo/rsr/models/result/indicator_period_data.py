@@ -50,7 +50,7 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     )
 
     period = models.ForeignKey('IndicatorPeriod', verbose_name=_(u'indicator period'),
-                               related_name='data')
+                               related_name='data', on_delete=models.PROTECT)
     # TODO: rename to created_by when old results framework page is no longer in use
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_(u'user'), db_index=True,
                              related_name='created_period_updates')

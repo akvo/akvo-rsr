@@ -13,10 +13,6 @@ from akvo.rsr.models import Project, ProjectCustomField
 class CustomFieldTestCase(TestCase):
     """Tests for the custom field models."""
 
-    def tearDown(self):
-        Project.objects.all().delete()
-        ProjectCustomField.objects.all().delete()
-
     def test_unicode_value_custom_field(self):
         """Test that unicode value custom field doesn't raise unicode errors."""
 
