@@ -3,10 +3,15 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import SVGInline from 'react-svg-inline'
 import { Icon, Button, Dropdown, Menu } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import rsrSvg from './images/akvorsr.svg'
-import { useFetch } from './utils/hooks'
 
+const langs = ['en', 'es', 'fr']
+const flags = {}
+langs.forEach(lang => {
+  flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
+})
 const menu = () => (
   <Menu>
     <Menu.Item key="0">
@@ -17,21 +22,34 @@ const menu = () => (
     </Menu.Item>
   </Menu>
 )
-
-const TopBar = connect()(({ dispatch }) => {
-  const [data, loading] = useFetch('/me')
-  if(!loading && data){
-    dispatch({ type: 'SET_USER', user: data })
+const langMenu = ({ userRdr, dispatch }) => {
+  const { i18n } = useTranslation()
+  const setLang = (lang) => {
+    dispatch({ type: 'SET_LANG', lang })
+    i18n.changeLanguage(lang)
   }
+  return (
+    <Menu className="lang-menu">
+      {['en', 'es', 'fr'].filter(it => it !== userRdr.lang).map((lang, index) => (
+        <Menu.Item key={index} onClick={() => setLang(lang)}><img src={flags[lang]} /></Menu.Item>
+      ))}
+    </Menu>
+  )
+}
+
+const TopBar = ({ userRdr, dispatch }) => {
   return (
     <div className="top-bar">
       <div className="ui container">
         <SVGInline svg={rsrSvg} />
         <div className="right-side">
-          {!loading &&
+          <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
+            <span className="lang"><img src={flags[userRdr.lang]} /></span>
+          </Dropdown>
+          {userRdr.firstName &&
           <Dropdown overlay={menu} trigger={['click']}>
             <span className="user ant-dropdown-link">
-              {data.firstName} {data.lastName} <Icon type="caret-down" />
+              {userRdr.firstName} {userRdr.lastName} <Icon type="caret-down" />
             </span>
           </Dropdown>
           }
@@ -40,6 +58,8 @@ const TopBar = connect()(({ dispatch }) => {
       </div>
     </div>
   )
-})
+}
 
-export default TopBar
+export default connect(
+  ({ userRdr }) => ({ userRdr })
+)(TopBar)
