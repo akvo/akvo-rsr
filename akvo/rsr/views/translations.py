@@ -17,7 +17,7 @@ JSON_TEXT = {
     "Sibling": _("Sibling"),
     "Co-founded": _("Co-founded"),
     "Third-party": _("Third-party"),
-    "Add a related project": _("Add a related project"),
+    "Add another related project": _("Add another related project"),
     "relation": _("Relation"),
     "Project": _("Project"),
     "Related project": _("Related RSR project"),
@@ -34,6 +34,8 @@ JSON_TEXT = {
                     u'album will feature on the project page. The photo should not be larger '
                     u'than 2 MB in size, and should preferably be in JPG format.'),
     "optional": _("optional"),
+    "Add another contact": _("Add another contact"),
+    "Contact": _("Contact"),
     "menu": {
       "settings": _("Project settings"),
       "info": _("General information"),
@@ -169,6 +171,43 @@ JSON_TEXT = {
         "amount": {
             "label": _("Amount"),
         },
+    },
+    'section2': {
+      "jobTitle": {
+        "label": _("job title"),
+        "tooltip": _("Job title of the contact person.")
+      },
+      "personName": {
+        "label": _("Name"),
+        "tooltip": _("Please enter the name of the contact person for this project.")
+      },
+      "type": {
+        "label": _("Type"),
+        "tooltip": _("What types of enquiries this contact person is best-placed to handle.")
+      },
+      "address": {
+        "label": _("contact address"),
+        "tooltip": _("Address of the contact person. Avoid giving personal contact details.")
+      },
+      "email": {
+        "label": _("contact email")
+      },
+      "department": {
+        "label": _("department")
+      },
+      "organisation": {
+        "label": _("Organisation"),
+        "tooltip": _("The organisation that the contact person works for.")
+      },
+      "telephone": {
+        "label": _("contact phone number"),
+        "tooltip": _("Contact number for the contact person. Avoid giving personal contact details.")
+      },
+      "website": {
+        "label": _("contact website"),
+        "tooltip": _(u'The contact web address, if available. The web address should start with '
+                    u'\'http://\' or \'https://\'.')
+      }
     },
     'section3': {
       "fundingAmount": {

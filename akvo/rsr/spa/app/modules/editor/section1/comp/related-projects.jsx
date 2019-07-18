@@ -100,7 +100,7 @@ const RelatedProjects = ({ formPush, ...props }) => {
           </Col>
         </Row>
       )}
-        addButton={({ onClick }) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add a related project')}</Button>}
+        addButton={({ onClick }) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another related project')}</Button>}
     />
     </div>
   )

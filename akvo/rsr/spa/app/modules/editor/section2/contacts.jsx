@@ -4,12 +4,14 @@ import { Form, Input, Button, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import ItemArray from '../../../utils/item-array'
 import InputLabel from '../../../utils/input-label'
 import { isFieldOptional, isFieldValid, getValidationSets } from '../../../utils/validation-utils'
 import validationDefs from './contacts/validations'
+import SectionContext from '../section-context'
 
 import './styles.scss'
 
@@ -23,11 +25,13 @@ const CONTACT_TYPE_OPTIONS = [
 ]
 
 const Contacts = ({ validations, fields }) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const isValid = isFieldValid(validationSets)
   return (
     <div className="contacts view">
+      <SectionContext.Provider value="section2">
       <Form layout="vertical">
       <FinalForm
         onSubmit={() => {}}
@@ -42,44 +46,47 @@ const Contacts = ({ validations, fields }) => {
           <ItemArray
             setName="contacts"
             sectionIndex={2}
-            header="Contact $index: $personName"
+            header={`${t('Contact')} $index: $personName`}
             formPush={push}
             panel={name => (
               <div>
                 <Row gutter={16}>
                   <Col span={12}>
-                  <Item label={<InputLabel optional tooltip="What types of enquiries this contact person is best-placed to handle.">Type</InputLabel>}>
                     <FinalField
                       name={`${name}.type`}
                       control="select"
                       options={CONTACT_TYPE_OPTIONS}
                       withEmptyOption
+                      withLabel
+                      optional
                     />
-                  </Item>
                   </Col>
                   <Col span={12}>
-                  <Item label={<InputLabel optional>Job title</InputLabel>}>
                     <FinalField
                       name={`${name}.jobTitle`}
+                      withLabel
+                      optional
+                      control="input"
                     />
-                  </Item>
                   </Col>
                 </Row>
-                <Item label={<InputLabel optional tooltip="Please enter the name of the contact person for this project.">Name</InputLabel>}>
-                  <FinalField
-                    name={`${name}.personName`}
-                  />
-                </Item>
+                <FinalField
+                  name={`${name}.personName`}
+                  withLabel
+                  optional
+                  control="input"
+                />
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Item label={<InputLabel optional tooltip="The organisation that the contact person works for.">Organisation</InputLabel>}>
                     <FinalField
                       name={`${name}.organisation`}
+                      withLabel
+                      optional
+                      control="input"
                     />
-                    </Item>
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel optional>Department</InputLabel>}>
+                    <Item label={<InputLabel optional>{t('section2.department.label')}</InputLabel>}>
                     <FinalField
                       name={`${name}.department`}
                     />
@@ -94,7 +101,7 @@ const Contacts = ({ validations, fields }) => {
                       validateStatus={isValid('email', input.value) && input.value ? 'success' : ''}
                       label={(
                       <InputLabel optional={isOptional('email')}>
-                        Email
+                        {t('section2.email.label')}
                       </InputLabel>
                       )}
                     >
@@ -108,29 +115,32 @@ const Contacts = ({ validations, fields }) => {
                     <Item
                       hasFeedback
                       validateStatus={isValid('mailingAddress', input.value) && input.value ? 'success' : ''}
-                      label={<InputLabel optional={isOptional('mailingAddress')}>Address</InputLabel>}
+                      label={<InputLabel tooltip={t('section2.address.tooltip')} optional={isOptional('mailingAddress')}>{t('section2.address.label')}</InputLabel>}
                     >
                       <Input {...input} />
                     </Item>
                   )}
                 />
-                <Item label={<InputLabel optional>Phone</InputLabel>}>
                 <FinalField
                   name={`${name}.telephone`}
+                  control="input"
+                  withLabel
+                  optional
                 />
-                </Item>
-                <Item label={<InputLabel optional>Website</InputLabel>}>
                 <FinalField
                   name={`${name}.website`}
+                  control="input"
+                  withLabel
+                  optional
                 />
-                </Item>
               </div>
             )}
-            addButton={({onClick}) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>Add a contact</Button>}
+            addButton={({ onClick }) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another contact')}</Button>}
           />
         )}
       />
       </Form>
+      </SectionContext.Provider>
     </div>
   )
 }
