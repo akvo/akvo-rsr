@@ -45,6 +45,7 @@ JSON_TEXT = {
     "Implementing partner": _("Implementing partner"),
     "Reporting organisation": _("Reporting organisation"),
     "Sponsor partner": _("Sponsor partner"),
+    "Add description": _("Add description"),
     "menu": {
       "settings": _("Project settings"),
       "info": _("General information"),
@@ -255,6 +256,51 @@ JSON_TEXT = {
                     u'which points to the activity that it has published to IATI that describes '
                     u'its role in this activity.')
       }
+    },
+    'section4': {
+      "projectPlanSummary": {
+        "label": _('Project summary'),
+        "info": _(u'Enter a brief summary, try to restrict the number of characters to 400 in '
+                    u'order to display the summary nicely on the project page. The summary should '
+                    u'explain:<br>'
+                    u'- Why the project is being carried out;<br>'
+                    u'- Where it is taking place;<br>'
+                    u'- Who will benefit and/or participate;<br>'
+                    u'- What it specifically hopes to accomplish;<br>'
+                    u'- How those specific goals will be reached')
+      },
+      "goalsOverview": {
+        "label": _('Goals overview'),
+        "info": _(u'Provide a brief description of the overall project goals.')
+      },
+      "background": {
+        "label": _('Background'),
+        "info": _(u'This should describe the geographical, political, environmental, social '
+                    u'and/or cultural context of the project, and any related activities that '
+                    u'have already taken place or are underway')
+      },
+      "currentStatus": {
+        "label": _('baseline situation'),
+        "info": _(u'Describe the situation at the start of the project.')
+      },
+      "targetGroup": {
+        "label": _('Target group'),
+        "info": _(u'This should include information about the people, organisations or resources '
+                    u'that are being impacted by this project.')
+      },
+      "projectPlan": {
+        "label": _('Project plan'),
+        "info": _(u'Detailed information about the implementation of the project: the what, how, '
+                    u'who and when.')
+      },
+      "sustainability": {
+        "label": _('Sustainability'),
+        "info": _(u'Describe how you aim to guarantee sustainability of the project until 10 '
+                    u'years after project implementation. Think about the institutional setting, '
+                    u'capacity-building, a cost recovery plan, products used, feasible '
+                    u'arrangements for operation and maintenance, anticipation of environmental '
+                    u'impact and social integration.')
+      },
     },
     'section6': {
       "currency": {
