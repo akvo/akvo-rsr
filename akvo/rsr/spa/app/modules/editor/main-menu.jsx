@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {Route, Link} from 'react-router-dom'
 import { Icon } from 'antd'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
 
@@ -11,12 +12,12 @@ const dict = {
   contacts: 'Contact Information',
   partners: 'Partners',
   descriptions: 'Descriptions',
-  'results-n-indicators': 'Results & Indicators',
+  'results-n-indicators': 'Results and Indicators',
   finance: 'Finance',
   locations: 'Locations',
   focus: 'Focus',
-  'links-n-docs': 'Links & Documents',
-  'comments-n-keywords': 'Comments & Keywords',
+  'links-n-docs': 'Links and Documents',
+  'comments-n-keywords': 'Comments and Keywords',
   reporting: 'CRS++ & FSS reporting'
 }
 
@@ -56,11 +57,12 @@ const MenuItem = (props) => {
 }
 
 const MainMenu = ({ rdr, params }) => {
+  const { t } = useTranslation()
   const isNewProject = params.id === 'new'
   return (
     <aside className="main-menu">
       <ul>
-        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>Settings</MenuItem>
+        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('menu.settings')}</MenuItem>
         {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
         <MenuItem
           disabled={isNewProject}
@@ -69,7 +71,7 @@ const MainMenu = ({ rdr, params }) => {
           checked={rdr[`section${index + 1}`].errors.length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
           loading={!isNewProject && !rdr[`section${index + 1}`].isFetched}
         >
-        {index + 1}. {dict[section.key]}
+            {index + 1}. {t(`menu.${section.key}`)}
         </MenuItem>
         )}
       </ul>

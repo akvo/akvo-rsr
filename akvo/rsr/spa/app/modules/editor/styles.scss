@@ -71,7 +71,7 @@
     }
   }
   aside{
-    width: 280px!important;
+    width: 300px!important;
   }
   aside.main-menu{
     position: absolute;
@@ -148,7 +148,7 @@
     flex: 1;
   }
   .main-content{
-    margin-left: 280px;
+    margin-left: 300px;
     padding-left: 30px;
   }
   .view:not(.section5){
@@ -161,7 +161,7 @@
   //   margin-right: 200px;
   // }
   .alerts{
-    width: 280px;
+    width: 300px;
     position: absolute;
     right: 0;
     // padding-left: 30px;
@@ -178,6 +178,9 @@
     }
     .input-label{
       display: flex;
+      &>div::first-letter {
+        text-transform: uppercase;
+      }
       .optional{
         opacity: 0.3;
         font-style: italic;

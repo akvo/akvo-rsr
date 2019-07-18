@@ -58,7 +58,7 @@ const CONTROLS = {
 const Control = (props) => {
   const section = useContext(SectionContext)
   const { t } = useTranslation()
-  const { control, withLabel, optional, fieldExists, label, addingItem, showRequired, ..._props } = props
+  const { control, withLabel, withoutTooltip, optional, fieldExists, label, addingItem, showRequired, ..._props } = props
   const disabled = props.disabled || addingItem
   let validateStatus = ''
   if (showRequired && props[section].errors.findIndex(it => it.path === props.input.name) !== -1) {
@@ -82,7 +82,7 @@ const Control = (props) => {
       label ? label :
       <InputLabel
         optional={typeof optional === 'function' ? optional(name) : optional}
-        tooltip={<span dangerouslySetInnerHTML={{__html: t(`${section}.${name}.tooltip`)}} />}
+        tooltip={withoutTooltip ? null : <span dangerouslySetInnerHTML={{__html: t(`${section}.${name}.tooltip`)}} />}
       >
       {t(`${section}.${name}.label`)}
       </InputLabel>}

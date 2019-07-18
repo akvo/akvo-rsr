@@ -8,6 +8,7 @@ import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
 import { Route } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -29,31 +30,31 @@ const { Item } = Form
 const { Option } = Select
 const Aux = node => node.children
 
-const STATUS_OPTIONS = [
-  { value: '1', label: 'Identification'},
-  { value: '2', label: 'Implementation'},
-  { value: '3', label: 'Completion'},
-  { value: '4', label: 'Post-completion'},
-  { value: '5', label: 'Canceled'},
-  { value: '6', label: 'Suspended'}
-]
-const COLLABORATION_TYPES = [
-  {value: '1', label: 'Bilateral'},
-  {value: '2', label: 'Multilateral (inflows)'},
-  {value: '3', label: 'Bilateral, core contributions to NGOs and other private bodies / PPPs'},
-  {value: '4', label: 'Multilateral outflows'},
-  {value: '6', label: 'Private sector outflows'},
-  {value: '7', label: 'Bilateral, ex-post reporting on NGOs’ activities funded through core contributions'},
-  {value: '8', label: 'bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'}
-]
-
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
 const Info = ({ validations, fields }) => {
+  const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
+  const STATUS_OPTIONS = [
+    { value: '1', label: t('Identification') },
+    { value: '2', label: t('Implementation') },
+    { value: '3', label: t('Completion') },
+    { value: '4', label: t('Post-completion') },
+    { value: '5', label: t('Canceled') },
+    { value: '6', label: t('Suspended') }
+  ]
+  const COLLABORATION_TYPES = [
+    { value: '1', label: t('Bilateral') },
+    { value: '2', label: t('Multilateral (inflows)') },
+    { value: '3', label: t('Bilateral, core contributions to NGOs and other private bodies / PPPs') },
+    { value: '4', label: t('Multilateral outflows') },
+    { value: '6', label: t('Private sector outflows') },
+    { value: '7', label: t('Bilateral, ex-post reporting on NGOs’ activities funded through core contributions') },
+    { value: '8', label: t('bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'), }
+  ]
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -73,12 +74,14 @@ const Info = ({ validations, fields }) => {
           <FinalField
             name="title"
             withLabel
+            withoutTooltip
             control="textarea"
             autosize
           />
           <FinalField
             name="subtitle"
             withLabel
+            withoutTooltip
             control="textarea"
             autosize
           />
@@ -125,9 +128,9 @@ const Info = ({ validations, fields }) => {
             withLabel
             fieldExists={fieldExists}
             options={[
-              {value: 1, label: 'Core Activity'},
-              {value: 2, label: 'Sub Activity'},
-              {value: 3, label: 'Lower Sub Activity'}
+              {value: 1, label: t('Core Activity') },
+              {value: 2, label: t('Sub Activity') },
+              {value: 3, label: t('Lower Sub Activity') },
             ]}
             withEmptyOption
           />
@@ -188,7 +191,7 @@ const Info = ({ validations, fields }) => {
             optional={isOptional}
           />
           <hr />
-          <h3>Project photo</h3>
+          <h3>{t('Project photo')}</h3>
           <Route
             path="/projects/:id"
             component={({ match: {params} }) => (
