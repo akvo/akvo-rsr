@@ -36,6 +36,15 @@ JSON_TEXT = {
     "optional": _("optional"),
     "Add another contact": _("Add another contact"),
     "Contact": _("Contact"),
+    "Yes": _("Yes"),
+    "No": _("No"),
+    "Add another participating organisation": _("Add another participating organisation"),
+    "Accountable partner": _("Accountable partner"),
+    "Extending partner": _("Extending partner"),
+    "Funding partner": _("Funding partner"),
+    "Implementing partner": _("Implementing partner"),
+    "Reporting organisation": _("Reporting organisation"),
+    "Sponsor partner": _("Sponsor partner"),
     "menu": {
       "settings": _("Project settings"),
       "info": _("General information"),
@@ -210,11 +219,41 @@ JSON_TEXT = {
       }
     },
     'section3': {
+      "organisation": {
+        "label": _("Project partner"),
+        "tooltip": _("Select an organisation that is playing a role in the project.  If an organisation is not currently featured in RSR, please contact")
+      },
       "fundingAmount": {
-        "label": "Funding Amount"
+        "label": _("funding amount"),
+        "tooltip": _(u'It’s only possible to indicate a funding amount for funding partners. Use a '
+                    u'period to denote decimals.')
+      },
+      "secondaryReporter": {
+        "label": _(u'secondary reporter'),
+        "tooltip": _(
+            u'This indicates whether the reporting organisation is a secondary publisher: '
+            u'publishing data for which it is not directly responsible.'
+        )
       },
       "iatiOrganisationRole": {
-        "label": "Role"
+        "label": _("organisation role"),
+        "tooltip": _(u'Select the role of the organisation within the project:<br/>'
+                    u'- Funding organisation: a government or organisation that provides funds to '
+                    u'the project<br/>'
+                    u'- Implementing organisation: an organisation involved in carrying out the '
+                    u'activity or intervention<br/>'
+                    u'- Accountable organisation: an organisation responsible for oversight of '
+                    u'the project and its outcomes<br/>'
+                    u'- Extending organisation: an organisation that manages the budget and '
+                    u'direction of a project on behalf of the funding organisation<br/>'
+                    u'- Reporting organisation: an organisation that will report this project in '
+                    u'an IATI file')
+      },
+      "iatiActivityId": {
+        "label": _("IATI activity ID"),
+        "tooltip": _(u'A valid activity identifier published by the participating organisation '
+                    u'which points to the activity that it has published to IATI that describes '
+                    u'its role in this activity.')
       }
     },
     'section6': {

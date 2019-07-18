@@ -1,12 +1,15 @@
 import React from 'react'
 import { Field } from 'react-final-form'
 import { Select, Form } from 'antd'
+import { useTranslation } from 'react-i18next'
 import FinalField from './final-field'
+import InputLabel from './input-label';
 
 const { Option } = Select
 const { Item } = Form
 
 const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
+  const { t } = useTranslation()
   return (
     <Field
       name={`${name}.organisationName`}
@@ -19,7 +22,7 @@ const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
               ? orgs.map(it => ({ value: it.id, label: it.name }))
               : [{ value: input.value, label: nameProps.input.value }]
             return (
-              <Item validateStatus={validateStatus} label="Organisation">
+              <Item validateStatus={validateStatus} label={<InputLabel tooltip={t('section3.organisation.tooltip')}>{t('section3.organisation.label')}</InputLabel>}>
               <Select
                 {...input}
                 disabled={disabled}
