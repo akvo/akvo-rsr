@@ -24,7 +24,6 @@ from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rest.viewsets import PublicProjectViewSet
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Project, ProjectUpdate, Organisation
-from akvo.rsr.views.utils import apply_keywords, org_projects
 from akvo.utils import codelist_choices
 
 
@@ -168,7 +167,7 @@ def update_directory(request):
 
     # Fetch updates based on whether we are on Akvo site or RSR main site
     page = request.rsr_page
-    all_updates = _all_updates() if not page else _page_updates(page)
+    all_updates = _all_updates() if not page else page.updates()
 
     # Filter updates based on query parameters
     filter_, text_filter = _create_filters_query(request)
@@ -228,13 +227,6 @@ def _public_projects():
 def _all_updates():
     """Return all updates on public projects."""
     return _public_projects().all_updates()
-
-
-def _page_updates(page):
-    """Dig out the list or project updates to use."""
-    projects = org_projects(page.organisation) if page.partner_projects else _public_projects()
-    keyword_projects = apply_keywords(page, projects)
-    return keyword_projects.all_updates()
 
 
 def _create_filters_query(request):
