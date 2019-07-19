@@ -1219,23 +1219,23 @@ footer {
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
-                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center
+                            background: rgba(white, 0) url(../images/akvo-logo.png) center center
                                 no-repeat;
                             text-indent: -9999px;
                             background-size: 92%;
                             &:hover {
-                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center
+                                background: rgba(white, 0.1) url(../images/akvo-logo.png) center
                                     center no-repeat;
                                 text-indent: -9999px;
                                 background-size: 92%;
                             }
                             @include responsive(small-max-screens) {
                                 width: 100%;
-                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center
+                                background: rgba(white, 0) url(../images/akvo-logo.png) center
                                     center no-repeat;
                                 background-size: 92%;
                                 &:hover {
-                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png)
+                                    background: rgba(white, 0.1) url(../images/akvo-logo.png)
                                         center center no-repeat;
                                     background-size: 92%;
                                 }
@@ -1548,7 +1548,7 @@ h4.detailedInfo {
               }
             }
           }
-          
+
         }
         &.updateSearch {
             margin: 0px auto 0 auto;
