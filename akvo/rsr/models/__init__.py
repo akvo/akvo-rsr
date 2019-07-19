@@ -45,7 +45,7 @@ from .result import (Disaggregation, Indicator, IndicatorDimension,
                      IndicatorPeriodTargetDimension,
                      IndicatorPeriodActualLocation,
                      IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue,
-                     PeriodDisaggregation)
+                     PeriodDisaggregation, IndicatorPeriodDisaggregation)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -159,6 +159,7 @@ __all__ = [
     'Partnership',
     'PeriodActualValue',
     'PeriodDisaggregation',
+    'IndicatorPeriodDisaggregation',
     'PlannedDisbursement',
     'PolicyMarker',
     'Project',

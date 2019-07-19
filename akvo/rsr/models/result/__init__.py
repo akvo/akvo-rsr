@@ -16,6 +16,7 @@ from .indicator_period_data import IndicatorPeriodData
 from .indicator_period_data_comment import IndicatorPeriodDataComment
 from .indicator_period_target_dimension import IndicatorPeriodTargetDimension
 from .indicator_period_target_location import IndicatorPeriodTargetLocation
+from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
 from .indicator_reference import IndicatorReference
 from .narrative_report import NarrativeReport
 from .result import Result
@@ -38,5 +39,6 @@ __all__ = [
     'NarrativeReport',
     'PeriodActualValue',
     'PeriodDisaggregation',
+    'IndicatorPeriodDisaggregation',
     'Result',
 ]

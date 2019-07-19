@@ -4,8 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator_dimension import IndicatorDimensionValue
-from indicator_period_data import IndicatorPeriodData
+from .indicator_period_data import IndicatorPeriodData
 
 from akvo.rsr.fields import ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin
@@ -22,7 +21,7 @@ class Disaggregation(TimestampsMixin, models.Model):
 
     # TODO: rename to dimension_axis of simply axis?
     dimension_value = models.ForeignKey(
-        IndicatorDimensionValue, null=True, related_name='disaggregations'
+        'IndicatorDimensionValue', null=True, related_name='disaggregations'
     )
 
     update = models.ForeignKey(IndicatorPeriodData,
@@ -88,6 +87,23 @@ class Disaggregation(TimestampsMixin, models.Model):
                 numerator != self.update.numerator or
                 denominator != self.update.denominator)
             self.siblings().update(incomplete_data=incomplete_data)
+
+
+@receiver(signals.post_save, sender=Disaggregation)
+def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
+
+    from .disaggregation_aggregation import DisaggregationAggregation
+    from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
+
+    disaggregation = kwargs['instance']
+    disaggregation_aggregation = DisaggregationAggregation(
+        Disaggregation.objects,
+        IndicatorPeriodDisaggregation.objects
+    )
+    disaggregation_aggregation.aggregate(
+        disaggregation.update.period,
+        disaggregation.dimension_value
+    )
 
 
 @receiver(signals.post_save, sender=Disaggregation)
