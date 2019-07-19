@@ -16,8 +16,7 @@ from rest_framework_xml.compat import etree
 
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rsr.filters import location_choices, get_m49_filter
-from akvo.rsr.models import Project, Organisation, Country
-from akvo.rsr.views.utils import apply_keywords, org_projects
+from akvo.rsr.models import Organisation, Country
 from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
 from ..viewsets import BaseRSRViewSet
 
@@ -82,7 +81,7 @@ def organisation_directory(request):
     """REST view for the update directory."""
 
     page = request.rsr_page
-    all_organisations = Organisation.objects.all() if not page else _page_organisations(page)
+    all_organisations = Organisation.objects.all() if not page else page.partners()
 
     # Filter updates based on query parameters
     filter_, text_filter = _create_filters_query(request)
@@ -112,18 +111,6 @@ def organisation_directory(request):
         'page_size_default': settings.PROJECT_DIRECTORY_PAGE_SIZES[0],
     }
     return Response(response)
-
-
-def _public_projects():
-    """Return all public projects."""
-    return Project.objects.public().published().select_related('partners')
-
-
-def _page_organisations(page):
-    """Dig out the list or organisations to use."""
-    projects = org_projects(page.organisation) if page.partner_projects else _public_projects()
-    keyword_projects = apply_keywords(page, projects)
-    return keyword_projects.all_partners()
 
 
 def _create_filters_query(request):
