@@ -205,9 +205,15 @@ class PartnerSite(TimestampsMixin, models.Model):
         # Add (or remove) projects via keywords
         return self.apply_keywords(fk_projects)
 
+    @property
+    def show_private_projects(self):
+        """Show private projects if a password has been set."""
+        return bool(self.password)
+
     def projects(self):
         """Publicly published projects of the page."""
-        return self.all_projects().published().public()
+        all_published = self.all_projects().published()
+        return all_published if self.show_private_projects else all_published.public()
 
     def apply_keywords(self, projects):
         """Apply keywords to the Page's projects."""
