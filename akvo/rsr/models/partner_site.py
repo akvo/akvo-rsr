@@ -147,6 +147,7 @@ class PartnerSite(TimestampsMixin, models.Model):
     tagline = models.CharField(_(u'tagline'), max_length=100, blank=True, null=True)
 
     enabled = models.BooleanField(_(u'enabled'), default=True)
+    password = models.CharField(_(u'password'), max_length=100, blank=True, null=True)
     default_language = ValidXMLCharField(
         _(u'Site UI default language'), max_length=5, choices=settings.LANGUAGES,
         default=settings.LANGUAGE_CODE)

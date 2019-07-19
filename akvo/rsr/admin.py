@@ -1290,7 +1290,7 @@ class PartnerSiteAdmin(TimestampsAdminDisplayMixin, admin.ModelAdmin):
     """Defines the RSR Pages admin."""
 
     fieldsets = (
-        (u'General', dict(fields=('organisation', 'tagline', 'enabled'))),
+        (u'General', dict(fields=('organisation', 'tagline', 'enabled', 'password'))),
         (_(u'Project selection'), {
             'description': u'{}'.format(
                 u'<p style="margin-left:0; padding-left:0; margin-top:1em; width:75%%;">'
