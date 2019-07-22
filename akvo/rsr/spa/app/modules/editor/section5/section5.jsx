@@ -6,6 +6,7 @@ import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
 import { isEqual } from 'lodash'
 import { Route } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -28,6 +29,7 @@ const resultTypes = [
 ]
 
 const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
+  const { t } = useTranslation()
   const addResult = ({ key }) => {
     const newItem = { type: key, indicators: [], project: projectId }
     push('results', newItem)
@@ -42,7 +44,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
       </Menu>
     }
     trigger={['click']}>
-      <Button icon="plus" className="add-result" size="large" {...props}>Add result</Button>
+      <Button icon="plus" className="add-result" size="large" {...props}>{t('Add result')}</Button>
     </Dropdown>
   )
 })
