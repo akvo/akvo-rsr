@@ -5529,3 +5529,49 @@ main.results-page {
         }
     }
 }
+
+#lockdown{
+  text-align: center;
+  h2{
+    color: red;
+  }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  p{
+    color: #666;
+  }
+  h2{
+    font-size: 27px;
+  }
+  .content{
+    margin-top: -80px;
+  }
+  [type=password]{
+    text-align: center;
+    width: 235px;
+    line-height: 33px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+  }
+  .btn{
+    margin-top: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+.desktop-menu{
+  // display: none;
+}
+
+body{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  footer{
+    padding-top: 1em;
+    margin-top: auto;
+  }
+}

@@ -2,16 +2,18 @@
 
 {% block maincontent %}
 <div id="lockdown">
-    <h2>Access Restricted...</h2>
+  <div class="content">
+    <h2>Access Restricted</h2>
 
     <p>This site is not available to the public.</p>
 
     {% if form %}
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <p><input type="submit" value="Enter" /></p>
+      <input type="password" name="password" placeholder="Password" required="" id="id_password" />
+      <br />
+      <input class="btn btn-primary" type="submit" value="Enter" />
     </form>
     {% endif %}
-
+  </div>
 </div>
 {% endblock %}
