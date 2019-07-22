@@ -17,6 +17,13 @@ export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, ge
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
 }
+export const setStatus = (publishingStatus) => (dispatch, getState) => {
+  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus }, sectionIndex: 1 })
+  const { projectId } = getState().editorRdr
+  api.patch(`/publishing_status/${projectId}/`, { status: publishingStatus })
+    .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
+}
 export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })
 export const fetchSetItems = (sectionIndex, setName, items) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items})
 export const addSetItem = (sectionIndex, setName, item) => (dispatch) => {

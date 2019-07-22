@@ -60,18 +60,21 @@ const SavingStatus = connect(
 
 const Aux = node => node.children
 
-const ContentBar = connect(({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }))(({ publishingStatus }) => {
+const ContentBar = connect(
+  ({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }),
+  actions
+)(({ publishingStatus, setStatus }) => {
   return (
     <div className="content">
       {publishingStatus === 'unpublished' && (
         <Aux>
-          <Button type="primary" disabled>Publish</Button>
+          <Button type="primary" onClick={() => setStatus('published')}>Publish</Button>
           <i>The project is unpublished</i>
         </Aux>
       )}
       {publishingStatus !== 'unpublished' && (
         <Aux>
-          <Button type="danger">Unpublish</Button>
+          <Button type="danger" onClick={() => setStatus('unpublished')}>Unpublish</Button>
           <i>The project is published</i>
         </Aux>
       )}
