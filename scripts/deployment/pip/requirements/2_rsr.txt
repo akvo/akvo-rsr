@@ -94,3 +94,6 @@ bcrypt==3.1.4
 
 # Javascript tools integration
 django-webpack-loader
+
+# Password lockdown partners site
+django-lockdown==2.0.0
