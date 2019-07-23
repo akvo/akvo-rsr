@@ -46,6 +46,8 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
     IndicatorDimension: (Indicator, 'indicator'),
+    # many-to-many relation to indicator (needs to be created after indicator)
+    IndicatorDimensionName: (Indicator, 'indicator'),
     IndicatorDimensionValue: (IndicatorDimensionName, 'name'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
@@ -62,6 +64,8 @@ RELATED_OBJECTS_MAPPING = {
 MANY_TO_MANY_FIELDS = {
     # Special mapping for many to many fields
     Keyword: 'keywords',
+    # NOTE: Add the models to related objects mapping, if they depend on other
+    # models. Keyword is only related to the project.
     IndicatorDimensionName: 'dimension_names',
 }
 
@@ -577,6 +581,16 @@ def sort_keys(x):
     return (level, key_parts.ids)
 
 
+def get_parent_model_id(Model, parent_id, rel_objects):
+    ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
+    parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
+    if parent_obj_rel_obj_key in rel_objects:
+        parent_obj_id = rel_objects[parent_obj_rel_obj_key]
+    else:
+        parent_obj_id = None
+    return parent_obj_id
+
+
 def create_or_update_objects_from_data(project, data):
     errors, changes, rel_objects = [], [], {}
 
@@ -621,27 +635,15 @@ def create_or_update_objects_from_data(project, data):
 
         elif Model == IndicatorDimensionName and len(key_parts.ids) > 2:
             obj_id = None if len(key_parts.ids) != 1 else key_parts.ids[0]
-            indicator = Indicator.objects.get(pk=int(key_parts.ids[2]))
+            indicator_id = key_parts.ids[2]
+            if indicator_id.startswith('new'):
+                parent_id = '_'.join(key_parts.ids[:-1])
+                indicator_id = get_parent_model_id(Model, parent_id, rel_objects)
+            indicator = Indicator.objects.get(pk=int(indicator_id))
             update_m2m_object(
                 indicator, Model, obj_id, key_parts.field, data[key], key, changes, errors,
                 rel_objects, related_obj_id
             )
-            # m2m_relation = getattr(indicator, MANY_TO_MANY_FIELDS[Model])
-            # try:
-            #     m2m_object = Model.objects.get(pk=int(obj_data))
-            #     if len(key_parts.ids) == 1:
-            #         # If there already was an appointed object in the many to many relation,
-            #         # remove the old object first
-            #         old_m2m_object = Model.objects.get(pk=int(key_parts.ids[0]))
-            #         if old_m2m_object in m2m_relation.all():
-            #             m2m_relation.remove(old_m2m_object)
-            #     # Add the new many to many object to the project
-            #     m2m_relation.add(m2m_object)
-            #     changes = add_changes(changes, m2m_object, key_parts.field, key, obj_data)
-            #     if related_obj_id not in rel_objects.keys():
-            #         rel_objects[related_obj_id] = obj_data
-            # except Model.DoesNotExist as e:
-            #     errors = add_error(errors, str(e), key)
             data.pop(key, None)
 
         elif len(key_parts.ids) == 1:
@@ -667,12 +669,7 @@ def create_or_update_objects_from_data(project, data):
                 # However, it is possible that the parent was already
                 # created earlier in the script. So we also check if
                 # the parent object was already created earlier.
-                ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
-                parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
-                if parent_obj_rel_obj_key in rel_objects:
-                    parent_obj_id = rel_objects[parent_obj_rel_obj_key]
-                else:
-                    parent_obj_id = None
+                parent_obj_id = get_parent_model_id(Model, parent_id, rel_objects)
 
             if parent_obj_id is not None:
                 fields, values, keys = group_get_all_fields(grouped_data, key_parts)
