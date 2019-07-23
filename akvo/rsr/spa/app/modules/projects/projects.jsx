@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Divider, Spin, Table } from 'antd'
 import { Link } from 'react-router-dom'
+import moment from 'moment'
 import {useFetch} from '../../utils/hooks'
 
 const columns = [
@@ -12,8 +13,9 @@ const columns = [
   },
   {
     title: 'Location',
-    dataIndex: 'primaryLocation',
-    key: 'location'
+    dataIndex: 'primaryLocation.countryLabel',
+    key: 'location',
+    width: 170
   },
   // {
   //   title: 'Relationship',
@@ -23,11 +25,15 @@ const columns = [
   {
     title: 'Date End (Planned)',
     dataIndex: 'dateEndPlanned',
-    key: 'dateEndPlanned'
+    key: 'dateEndPlanned',
+    width: 160,
+    render: (text) => {
+      return (<span>{text ? moment(text, 'DD/MM/YYYY').format('DD MMM YYYY') : '-'}</span>)
+    }
   }
 ]
 const Projects = () => {
-  const [{results}, loading] = useFetch('/project/')
+  const [{results}, loading] = useFetch('/project_up/')
   return (
     <div>
       <h1>My projects</h1>
