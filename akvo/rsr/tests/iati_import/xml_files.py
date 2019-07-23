@@ -980,7 +980,7 @@ IATI_V2_STRING_INCORRECT = """
             <aid-type code="A01" />
             <tied-status code="3" />
         </transaction>
-        <document-link url="https://rsr.akvo.org/static/rsr/images/akvo.orgLogo.png" akvo:photo-credit="Me">
+        <document-link url="https://rsr.akvo.org/static/rsr/images/404_surprise.png" akvo:photo-credit="Me">
             <title>
                 <narrative>Project Report 2013</narrative>
             </title>
