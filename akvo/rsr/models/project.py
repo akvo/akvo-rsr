@@ -1311,15 +1311,17 @@ class Project(TimestampsMixin, models.Model):
         dimension_name = IndicatorDimensionName.objects.create(**data)
 
         for dimension_value in source_dimension_name.dimension_values.all():
-            self.copy_dimension_value(dimension_name, dimension_value)
+            self.copy_dimension_value(dimension_name, dimension_value, set_parent=set_parent)
 
-    def copy_dimension_value(self, dimension_name, source_dimension_value):
+    def copy_dimension_value(self, dimension_name, source_dimension_value, set_parent=True):
         IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
-        IndicatorDimensionValue.objects.create(
+        data = dict(
             name=dimension_name,
             value=source_dimension_value.value,
-            parent_dimension_value=source_dimension_value,
-        )
+            parent_dimension_value=source_dimension_value)
+        if not set_parent:
+            data.pop('parent_dimension_value')
+        IndicatorDimensionValue.objects.create(**data)
 
     def copy_result(self, source_result, set_parent=True):
         """Copy the source_result to this project, setting it as parent if specified."""
