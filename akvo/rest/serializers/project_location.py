@@ -66,3 +66,11 @@ class MapProjectLocationSerializer(serializers.Serializer):
 
     class Meta:
         fields = '__all__'
+
+
+class ProjectLocationCountryNameSerializer(serializers.Serializer):
+
+    country = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        fields = ('country',)
