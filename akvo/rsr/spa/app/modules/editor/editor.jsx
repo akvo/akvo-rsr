@@ -11,6 +11,7 @@ import * as actions from './actions'
 import './styles.scss'
 import ProjectInitHandler from './project-init-handler'
 import ValidationBar from './validation-bar'
+import { validationType } from '../../utils/validation-utils'
 
 const { TabPane } = Tabs
 
@@ -61,14 +62,26 @@ const SavingStatus = connect(
 const Aux = node => node.children
 
 const ContentBar = connect(
-  ({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }),
+  ({ editorRdr }) => {
+    const ret = {}
+    ret.publishingStatus = editorRdr.section1.fields.publishingStatus
+    ret.allValid = true
+    let sectionLength = 10
+    if (!(editorRdr.validations.indexOf(validationType.IATI) === -1 && editorRdr.validations.indexOf(validationType.DFID) === -1)){
+      sectionLength = 11
+    }
+    for(let i = 1; i <= sectionLength; i += 1){
+      if (editorRdr[`section${i}`].errors.length > 0) ret.allValid = false
+    }
+    return ret
+  },
   actions
-)(({ publishingStatus, setStatus }) => {
+)(({ publishingStatus, allValid, setStatus }) => {
   return (
     <div className="content">
       {publishingStatus === 'unpublished' && (
         <Aux>
-          <Button type="primary" onClick={() => setStatus('published')}>Publish</Button>
+          <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>Publish</Button>
           <i>The project is unpublished</i>
         </Aux>
       )}
