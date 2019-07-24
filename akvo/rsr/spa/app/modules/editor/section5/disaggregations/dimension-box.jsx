@@ -1,10 +1,12 @@
 import React, { useReducer } from 'react'
 import { Button, Input, Popconfirm } from 'antd'
 import { Form as FinalForm, Field } from 'react-final-form'
+import { useTranslation } from 'react-i18next'
 
 import api from '../../../../utils/api'
 
 const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
+  const { t } = useTranslation()
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     {editing: false, addingRow: false, editingName: false, editingRow: null, deleting: false}
@@ -82,7 +84,7 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
               />
             </li>)
           })}
-          {(state.editing && !state.addingRow) && <li><Button size="small" type="link" icon="plus" className="add-label" onClick={() => setState({ addingRow: true })}>Add label</Button></li>}
+          {(state.editing && !state.addingRow) && <li><Button size="small" type="link" icon="plus" className="add-label" onClick={() => setState({ addingRow: true })}>{t('Add label')}</Button></li>}
           {state.addingRow && (
             <li>
               <FinalForm
@@ -101,14 +103,14 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
       </div>
       {!state.editing &&
       <div className="btns">
-        <Button onClick={() => setState({ editing: true })} type="link">Edit</Button>
-        <Button type="primary" onClick={() => handleAdd(dimension, false)}>Add</Button>
+        <Button onClick={() => setState({ editing: true })} type="link">{t('Edit')}</Button>
+        <Button type="primary" onClick={() => handleAdd(dimension, false)}>{t('Add')}</Button>
       </div>
       }
       {state.editing &&
       <div className="btns">
         <Popconfirm
-          title="Are you sure to delete this?"
+          title={t('Are you sure to delete this?')}
           onConfirm={handleDeleteDimension}
           okText="Yes"
           okType="danger"
@@ -116,7 +118,7 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
         >
         <Button icon="delete" type="danger" disabled={state.deleting} />
         </Popconfirm>
-        <Button icon="check" onClick={() => setState({ editing: false })}>Done</Button>
+        <Button icon="check" onClick={() => setState({ editing: false })}>{t('Done')}</Button>
       </div>
       }
     </div>

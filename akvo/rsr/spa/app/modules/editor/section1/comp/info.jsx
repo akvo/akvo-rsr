@@ -52,7 +52,7 @@ const Info = ({ validations, fields }) => {
     { value: '3', label: t('Bilateral, core contributions to NGOs and other private bodies / PPPs') },
     { value: '4', label: t('Multilateral outflows') },
     { value: '6', label: t('Private sector outflows') },
-    { value: '7', label: t('Bilateral, ex-post reporting on NGOs’ activities funded through core contributions') },
+    { value: '7', label: t('Bilateral, ex-post reporting on NGOs\' activities funded through core contributions') },
     { value: '8', label: t('bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'), }
   ]
   return (
