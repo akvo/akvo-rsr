@@ -1299,29 +1299,33 @@ class Project(TimestampsMixin, models.Model):
             self.copy_result(result, set_parent=False)
 
     def copy_dimension_name(self, source_dimension_name, set_parent=True):
-        data = dict(
-            project=self,
-            name=source_dimension_name.name,
-            parent_dimension_name=source_dimension_name
-        )
+        defaults = dict(parent_dimension_name=source_dimension_name)
+        data = dict(project=self, name=source_dimension_name.name, defaults=defaults)
         if not set_parent:
-            data.pop('parent_dimension_name')
+            defaults.pop('parent_dimension_name')
 
         IndicatorDimensionName = apps.get_model('rsr', 'IndicatorDimensionName')
-        dimension_name = IndicatorDimensionName.objects.create(**data)
+        dimension_name, created = IndicatorDimensionName.objects.get_or_create(**data)
+        if not created and set_parent:
+            dimension_name.parent_dimension_name = source_dimension_name
+            dimension_name.save(update_fields=['parent_dimension_name'])
 
         for dimension_value in source_dimension_name.dimension_values.all():
             self.copy_dimension_value(dimension_name, dimension_value, set_parent=set_parent)
 
     def copy_dimension_value(self, dimension_name, source_dimension_value, set_parent=True):
         IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
+        defaults = dict(parent_dimension_value=source_dimension_value)
         data = dict(
             name=dimension_name,
             value=source_dimension_value.value,
-            parent_dimension_value=source_dimension_value)
+            defaults=defaults)
         if not set_parent:
-            data.pop('parent_dimension_value')
-        IndicatorDimensionValue.objects.create(**data)
+            defaults.pop('parent_dimension_value')
+        dimension_value, created = IndicatorDimensionValue.objects.get_or_create(**data)
+        if not created and set_parent:
+            dimension_value.parent_dimension_value = source_dimension_value
+            dimension_value.save(update_fields=['parent_dimension_value'])
 
     def copy_result(self, source_result, set_parent=True):
         """Copy the source_result to this project, setting it as parent if specified."""
