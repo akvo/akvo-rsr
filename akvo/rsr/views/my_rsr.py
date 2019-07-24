@@ -170,27 +170,16 @@ def my_updates(request):
     return render(request, 'myrsr/my_updates.html', context)
 
 
-@login_required
-def my_projects(request):
-    """
-    If the user is logged in, he/she can view a list of projects linked to the user account.
-
-    :param request; A Django request.
-    """
-
+def user_editable_projects(user):
     # User groups
     not_allowed_to_edit = [GROUP_NAME_USERS, GROUP_NAME_USER_MANAGERS, GROUP_NAME_ENUMERATORS]
-
-    # Get user organisation information
-    employments = request.user.approved_employments()
-    organisations = employments.organisations()
-    creator_organisations = organisations.filter(can_create_projects=True).\
-        values_list('id', flat=True)
+    employments = user.approved_employments()
 
     # Get project list
-    if request.user.is_superuser or request.user.is_admin:
+    if user.is_superuser or user.is_admin:
         # Superuser and general admins are allowed to see all projects
         projects = Project.objects.all()
+
     else:
         # For each employment, check if the user is allowed to edit projects (e.g. not a 'User' or
         # 'User Manager'). If not, do not show the unpublished projects of that organisation.
@@ -199,15 +188,33 @@ def my_projects(request):
         non_editor_roles = employments.filter(group__name__in=not_allowed_to_edit)
         uneditable_projects = non_editor_roles.organisations().all_projects().published()
         projects = (
-            projects | user_accessible_projects(request.user, non_editor_roles, uneditable_projects)
+            projects | user_accessible_projects(user, non_editor_roles, uneditable_projects)
         )
         # Allowed to edit roles
         editor_roles = employments.exclude(group__name__in=not_allowed_to_edit)
         editable_projects = editor_roles.organisations().all_projects()
         projects = (
-            projects | user_accessible_projects(request.user, editor_roles, editable_projects)
+            projects | user_accessible_projects(user, editor_roles, editable_projects)
         )
         projects = projects.distinct()
+    return projects
+
+
+@login_required
+def my_projects(request):
+    """
+    If the user is logged in, he/she can view a list of projects linked to the user account.
+
+    :param request; A Django request.
+    """
+
+    # Get user organisation information
+    employments = request.user.approved_employments()
+    organisations = employments.organisations()
+    creator_organisations = organisations.filter(can_create_projects=True).\
+        values_list('id', flat=True)
+
+    projects = user_editable_projects(request.user)
 
     # Custom filter on project id or (sub)title
     q = request.GET.get('q')

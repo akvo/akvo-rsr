@@ -22,7 +22,8 @@ from .planned_disbursement import (PlannedDisbursementRawSerializer,
 from .policy_marker import PolicyMarkerRawSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_document import ProjectDocumentRawSerializer
-from .project_location import ProjectLocationExtraSerializer, ProjectLocationSerializer
+from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer,
+                               ProjectLocationCountryNameSerializer)
 from .project_condition import ProjectConditionRawSerializer
 from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
@@ -172,3 +173,13 @@ class ProjectUpSerializer(ProjectSerializer):
 
     class Meta(ProjectSerializer.Meta):
         pass
+
+
+class ProjectMetadataSerializer(BaseRSRSerializer):
+
+    locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations')

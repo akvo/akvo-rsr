@@ -17,12 +17,14 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectUpSerializer,
                                    ProjectDirectorySerializer,
                                    TypeaheadOrganisationSerializer,
-                                   TypeaheadSectorSerializer,)
+                                   TypeaheadSectorSerializer,
+                                   ProjectMetadataSerializer,)
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
 from akvo.rsr.models import Project
 from akvo.rsr.filters import location_choices, get_m49_filter
+from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
 from ..viewsets import PublicProjectViewSet
 
@@ -64,6 +66,18 @@ class ProjectViewSet(PublicProjectViewSet):
         project_id = response.data['id']
         Project.new_project_created(project_id, user)
         return response
+
+
+class EditableProjectViewSet(PublicProjectViewSet):
+    """Viewset providing listing of projects a user can edit."""
+    queryset = Project.objects.all()
+    serializer_class = ProjectMetadataSerializer
+    project_relation = ''
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return Project.objects.none()
+        return user_editable_projects(self.request.user)
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):
