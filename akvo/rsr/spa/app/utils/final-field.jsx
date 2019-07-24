@@ -82,9 +82,9 @@ const Control = (props) => {
       label ? label :
       <InputLabel
         optional={typeof optional === 'function' ? optional(name) : optional}
-        tooltip={withoutTooltip ? null : <span dangerouslySetInnerHTML={{__html: t(`${section}.${name}.tooltip`)}} />}
+        tooltip={withoutTooltip ? null : <span dangerouslySetInnerHTML={{__html: t(`${section}::${name}::tooltip`)}} />}
       >
-      {t(`${section}.${name}.label`)}
+      {t(`${section}::${name}::label`)}
       </InputLabel>}
     >
       {CONTROLS[control]({..._props, disabled})}

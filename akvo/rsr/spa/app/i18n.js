@@ -7,6 +7,8 @@ i18n
   .use(Backend)
   .init({
     lng: 'en',
+    nsSeparator: '~',
+    keySeparator: '::',
     backend: {
       loadPath: '/{{lng}}/translations.json',
     },
