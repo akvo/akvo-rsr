@@ -101,7 +101,7 @@ def main(request, project_id, template="project_main.html"):
     project = get_object_or_404(Project, pk=project_id)
 
     # Permissions
-    check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request, project)
 
     # Updates
     updates = project.project_updates.prefetch_related('user')
@@ -168,7 +168,7 @@ def hierarchy(request, project_id, public=True, template='project_hierarchy.html
     project = get_object_or_404(Project, pk=project_id)
 
     # Non-editors are not allowed to view unpublished projects
-    check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request, project)
 
     if public and not project.has_relations():
         raise Http404
@@ -258,7 +258,7 @@ def set_update(request, project_id, edit_mode=False, form_class=ProjectUpdateFor
     project = get_object_or_404(Project, id=project_id)
 
     # Permissions
-    check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request, project)
 
     # Check if user is allowed to place updates for this project
     allow_update = True if request.user.has_perm('rsr.post_updates', project) else False
