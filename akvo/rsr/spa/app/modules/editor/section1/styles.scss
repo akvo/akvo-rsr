@@ -45,3 +45,7 @@
     }
   }
 }
+
+.has-error .ant-upload.ant-upload-drag{
+  border-color: red;
+}

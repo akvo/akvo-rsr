@@ -12,7 +12,7 @@ from akvo.utils import codelist_choices, codelist_value
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 
 from .indicator_period import IndicatorPeriod
@@ -227,3 +227,25 @@ def add_default_periods(sender, instance, created, **kwargs):
 
                 period.indicator_id = instance.id
                 period.save()
+
+
+@receiver(m2m_changed, sender=Indicator.dimension_names.through)
+def add_dimension_names_to_children(sender, instance, action, **kwargs):
+    if not action.startswith('post_'):
+        return
+
+    if not instance.child_indicators.exists():
+        return
+
+    dimension_name = kwargs['model'].objects.filter(id__in=kwargs['pk_set']).first()
+    for indicator in instance.child_indicators.all():
+        child_dimension_name, _ = dimension_name.child_dimension_names.get_or_create(
+            name=dimension_name.name,
+            parent_dimension_name=dimension_name,
+            project=indicator.result.project)
+
+        if action == 'post_add':
+            indicator.dimension_names.add(child_dimension_name)
+
+        elif action == 'post_remove':
+            indicator.dimension_names.remove(child_dimension_name)

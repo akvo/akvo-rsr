@@ -14,6 +14,7 @@ from django.core.exceptions import DisallowedHost
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from lockdown.middleware import LockdownMiddleware
 
 from akvo.rsr.context_processors import extra_context
 from akvo.rsr.models import PartnerSite
@@ -144,3 +145,16 @@ class APIRedirectMiddleware(object):
             if depth > '1':
                 return redirect(_build_api_link(request, 'project_extra_deep', object_id))
         return response
+
+
+class RSRLockdownMiddleware(LockdownMiddleware):
+
+    def process_request(self, request):
+        """Check if each request is allowed to access the current resource."""
+        if not request.rsr_page:
+            return None
+        password = request.rsr_page.password
+        if not password:
+            return None
+        self.form_kwargs = dict(passwords=[password])
+        return super(RSRLockdownMiddleware, self).process_request(request)

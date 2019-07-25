@@ -8,7 +8,6 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import { budgetItemTypes } from '../../../../utils/constants'
-import { Aux } from '../../../../utils/misc'
 import { validationType, isFieldOptional, getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import validationDefs from './validations'
@@ -31,6 +30,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
+      <h3>Budget items</h3>
       <div className="total">
         Total budget:
         <span className="amount">
@@ -183,7 +183,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
           component: ({ onClick }) => (
             <div>
               {budgetItemTypes.map(type => (
-                <div className="desc-block">
+                <div className="desc-block" key={type.value}>
                   <Button block icon="plus" onClick={() => onClick({ label: type.value })}>{type.label}</Button>
                 </div>
               ))}

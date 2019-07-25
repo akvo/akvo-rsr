@@ -10,6 +10,8 @@ import Settings from './settings/settings'
 import * as actions from './actions'
 import './styles.scss'
 import ProjectInitHandler from './project-init-handler'
+import ValidationBar from './validation-bar'
+import { validationType } from '../../utils/validation-utils'
 
 const { TabPane } = Tabs
 
@@ -57,19 +59,39 @@ const SavingStatus = connect(
   </aside>
 ))
 
-const PublishingBar = connect(({ editorRdr: { section1: {fields: {publishingStatus}}}}) => ({ publishingStatus }))(({ publishingStatus }) => {
-  if(publishingStatus === 'unpublished') {
-    return (
-      <div className="content">
-        <Button type="primary" disabled>Publish</Button>
-        <i>The project is unpublished</i>
-      </div>
-    )
-  }
+const Aux = node => node.children
+
+const ContentBar = connect(
+  ({ editorRdr }) => {
+    const ret = {}
+    ret.publishingStatus = editorRdr.section1.fields.publishingStatus
+    ret.allValid = true
+    let sectionLength = 10
+    if (!(editorRdr.validations.indexOf(validationType.IATI) === -1 && editorRdr.validations.indexOf(validationType.DFID) === -1)){
+      sectionLength = 11
+    }
+    for(let i = 1; i <= sectionLength; i += 1){
+      if (editorRdr[`section${i}`].errors.length > 0) ret.allValid = false
+    }
+    return ret
+  },
+  actions
+)(({ publishingStatus, allValid, setStatus }) => {
   return (
     <div className="content">
-      <Button type="danger">Unpublish</Button>
-      <i>The project is published</i>
+      {publishingStatus === 'unpublished' && (
+        <Aux>
+          <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>Publish</Button>
+          <i>The project is unpublished</i>
+        </Aux>
+      )}
+      {publishingStatus !== 'unpublished' && (
+        <Aux>
+          <Button type="danger" onClick={() => setStatus('unpublished')}>Unpublish</Button>
+          <i>The project is published</i>
+        </Aux>
+      )}
+      <ValidationBar />
     </div>
   )
 })
@@ -96,7 +118,7 @@ const Editor = ({ match: { params } }) => (
       <div className="status-bar">
         <SavingStatus />
         <MainMenu params={params} />
-        <PublishingBar />
+        <ContentBar />
       </div>
       <div className="main-content">
         <Route path="/projects/:id" component={ProjectInitHandler} />

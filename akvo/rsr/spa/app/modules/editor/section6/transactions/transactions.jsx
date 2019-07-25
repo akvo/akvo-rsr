@@ -2,7 +2,6 @@ import React from 'react'
 import { Form, Button, Radio, Col, Row } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
-import { FieldArray } from 'react-final-form-arrays'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -21,24 +20,23 @@ import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
-import Accordion from '../../../../utils/accordion';
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
 
 const TypeField = ({ name }) => (
-  <Item label={(
-    <Field name={`${name}.value`}>
-      {({ input }) => <InputLabel optional={isEmpty(input.value)}>Type</InputLabel>}
-    </Field>
-  )}>
   <FinalField
     name={`${name}.transactionType`}
     control="select"
     options={TYPE_OPTIONS}
     withEmptyOption
+    withLabel
+    label={(
+      <Field name={`${name}.value`}>
+        {({ input }) => <InputLabel optional={isEmpty(input.value)}>Type</InputLabel>}
+      </Field>
+    )}
   />
-  </Item>
 )
 
 const Transactions = ({ validations, formPush }) => {
@@ -104,28 +102,28 @@ const Transactions = ({ validations, formPush }) => {
           {fieldExists('transactionDate') &&
           <Row gutter={16}>
             <Col span={12}>
-              <Item label={(
-                <Field name={`${name}.value`}>
-                  {({ input }) => <InputLabel optional={isEmpty(input.value)}>Date</InputLabel>}
-                </Field>
-              )}>
               <FinalField
                 name={`${name}.transactionDate`}
                 control="datepicker"
+                withLabel
+                label={(
+                  <Field name={`${name}.value`}>
+                    {({ input }) => <InputLabel optional={isEmpty(input.value)}>Date</InputLabel>}
+                  </Field>
+                )}
               />
-              </Item>
             </Col>
             <Col span={12}>
-              <Item label={(
-                <Field name={`${name}.value`}>
-                  {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value Date</InputLabel>}
-                </Field>
-              )}>
               <FinalField
                 name={`${name}.valueDate`}
                 control="datepicker"
+                withLabel
+                label={(
+                  <Field name={`${name}.value`}>
+                    {({ input }) => <InputLabel optional={isEmpty(input.value)}>Value Date</InputLabel>}
+                  </Field>
+                )}
               />
-              </Item>
             </Col>
           </Row>
           }
@@ -136,11 +134,9 @@ const Transactions = ({ validations, formPush }) => {
             </div>
             <Row gutter={16}>
               <Col span={12}>
-                <Item label={<InputLabel optional>Name</InputLabel>}>
                 <OrganizationSelect
                   name={`${name}.providerOrganisation`}
                 />
-                </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>
@@ -159,11 +155,9 @@ const Transactions = ({ validations, formPush }) => {
             </div>
             <Row gutter={16}>
               <Col span={12}>
-                <Item label={<InputLabel optional>Name</InputLabel>}>
                 <OrganizationSelect
                   name={`${name}.receiverOrganisation`}
                 />
-                </Item>
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional>Activity ID</InputLabel>}>

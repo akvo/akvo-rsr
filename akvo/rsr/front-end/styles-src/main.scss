@@ -1219,23 +1219,23 @@ footer {
                         &[href="http://akvo.org"] {
                             margin: 0;
                             width: 70px;
-                            background: rgba(white, 0) url(../images/akvo.orgLogo.png) center center
+                            background: rgba(white, 0) url(../images/akvo-logo.png) center center
                                 no-repeat;
                             text-indent: -9999px;
                             background-size: 92%;
                             &:hover {
-                                background: rgba(white, 0.1) url(../images/akvo.orgLogo.png) center
+                                background: rgba(white, 0.1) url(../images/akvo-logo.png) center
                                     center no-repeat;
                                 text-indent: -9999px;
                                 background-size: 92%;
                             }
                             @include responsive(small-max-screens) {
                                 width: 100%;
-                                background: rgba(white, 0) url(../images/akvo.orgLogo.png) center
+                                background: rgba(white, 0) url(../images/akvo-logo.png) center
                                     center no-repeat;
                                 background-size: 92%;
                                 &:hover {
-                                    background: rgba(white, 0.1) url(../images/akvo.orgLogo.png)
+                                    background: rgba(white, 0.1) url(../images/akvo-logo.png)
                                         center center no-repeat;
                                     background-size: 92%;
                                 }
@@ -1548,7 +1548,7 @@ h4.detailedInfo {
               }
             }
           }
-          
+
         }
         &.updateSearch {
             margin: 0px auto 0 auto;
@@ -4052,13 +4052,13 @@ main.results-page {
     .editBtn {
         border: 1px solid rgba($anchorLink, 0.1) !important;
         background: $anchorLink;
-        color: white;
+        color: white!important;
         border-bottom: 1px solid transparent !important;
         padding: 7px 8px;
         border-radius: 5px 5px 0 0;
         &:hover {
             background: #3071a9;
-            color: white;
+            color: white!important;
             border: 1px solid rgba($anchorLink, 0.1) !important;
         }
     }
@@ -5528,4 +5528,53 @@ main.results-page {
             }
         }
     }
+}
+
+#lockdown{
+  text-align: center;
+  h2{
+    color: red;
+  }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  p{
+    color: #666;
+  }
+  h2{
+    font-size: 27px;
+  }
+  .content{
+    margin-top: -80px;
+  }
+  [type=password]{
+    text-align: center;
+    width: 235px;
+    line-height: 33px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+  }
+  .btn{
+    margin-top: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+.desktop-menu{
+  // display: none;
+}
+
+body{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  .container-fluid.alignFooter{
+    width: 100%;
+  }
+  footer{
+    padding-top: 1em;
+    margin-top: auto;
+  }
 }

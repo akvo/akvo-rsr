@@ -41,7 +41,9 @@ export const endpoints = {
     // comments: '/project_comment/'
   },
   section11: {
+    crs: '/crs_add/',
     flags: '/crs_add_other_flag/',
+    fss: '/fss/',
     forecasts: '/fss_forecast/',
     legacies: '/legacy_data/'
   }

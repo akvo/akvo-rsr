@@ -3,7 +3,6 @@ import actionTypes from './action-types'
 import api from '../../utils/api'
 import { getEndpoint, getTransform } from './endpoints'
 
-export const togglePrivacy = checked => ({ type: actionTypes.TOGGLE_PRIVACY, checked })
 export const touchSection = sectionIndex => ({ type: actionTypes.TOUCH_SECTION, sectionIndex })
 export const checkValidation = (id, checked) => ({ type: actionTypes.CHECK_VALIDATION, id, checked })
 export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, getState) => {
@@ -16,6 +15,13 @@ export const saveFields = (fields, sectionIndex, preventUpload) => (dispatch, ge
   } else {
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
+}
+export const setStatus = (publishingStatus) => (dispatch, getState) => {
+  dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus }, sectionIndex: 1 })
+  const { publishingStatusId } = getState().editorRdr.section1.fields
+  api.patch(`/publishing_status/${publishingStatusId}/`, { status: publishingStatus })
+    .then(() => dispatch({ type: actionTypes.BACKEND_SYNC }))
+    .catch((error) => { dispatch({ type: actionTypes.BACKEND_ERROR, error, response: error.response.data }) })
 }
 export const fetchFields = (sectionIndex, fields) => ({ type: actionTypes.FETCH_SECTION, sectionIndex, fields })
 export const fetchSetItems = (sectionIndex, setName, items) => ({ type: actionTypes.FETCH_SET_ITEMS, sectionIndex, setName, items})

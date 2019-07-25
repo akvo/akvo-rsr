@@ -432,6 +432,25 @@ class ResultsFrameworkTestCase(BaseTestCase):
         # Then
         self.assertEqual(1, child_indicator.dimensions.count())
 
+    def test_manually_created_dimension_names_should_not_break_import(self):
+        # Given
+        parent_dimension_name = IndicatorDimensionName.objects.create(
+            name='Colour', project=self.parent_project)
+        child_dimension_name = IndicatorDimensionName.objects.create(
+            name='Colour', project=self.child_project)
+        for colour in {'Red', 'Blue', 'Green'}:
+            IndicatorDimensionValue.objects.create(value=colour, name=parent_dimension_name)
+            IndicatorDimensionValue.objects.create(value=colour, name=child_dimension_name)
+
+        # When
+        self.child_project.import_results()
+
+        # Then
+        child_dimension_name.refresh_from_db()
+        self.assertEqual(child_dimension_name.parent_dimension_name, parent_dimension_name)
+        for dimension_value in child_dimension_name.dimension_values.all():
+            self.assertIsNotNone(dimension_value.parent_dimension_value)
+
     def test_child_dimension_name_state_updates_after_change(self):
         """Test that updating dimension name propagates to children."""
         # Given
@@ -856,3 +875,24 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(self.child_project.parents_all().first().id, project.id)
+
+    def test_adding_or_removing_indicator_dimension_names_changes_children(self):
+        # Given
+        indicator = self.indicator
+        dimension_name = self.dimension_name
+        child_indicator = Indicator.objects.get(
+            parent_indicator=indicator, result__project=self.child_project)
+        self.assertEqual(child_indicator.dimension_names.count(), 1)
+
+        # When
+        indicator.dimension_names.remove(dimension_name)
+
+        # Then
+        self.assertEqual(child_indicator.dimension_names.count(), 0)
+
+        # Adding back the dimension_name should propagate to children
+        # When
+        indicator.dimension_names.add(dimension_name)
+
+        # Then
+        self.assertEqual(child_indicator.dimension_names.count(), 1)

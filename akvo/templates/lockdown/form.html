@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block maincontent %}
+<div id="lockdown">
+  <div class="content">
+    <h2>Access Restricted</h2>
+
+    <p>This site is not available to the public.</p>
+
+    {% if form %}
+    <form action="" method="post">{% csrf_token %}
+      <input type="password" name="password" placeholder="Password" required="" id="id_password" />
+      <br />
+      <input class="btn btn-primary" type="submit" value="Enter" />
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -86,8 +86,9 @@ class AutoSave extends React.Component {
       if(
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')
+        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
       ){
-        if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item])){
+        if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item], true).length === 0){
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
           } else {
@@ -102,7 +103,10 @@ class AutoSave extends React.Component {
     } else {
       const rootValues = getRootValues(values, `section${sectionIndex}`)
       const difference = customDiff(this.lastSavedValues, rootValues)
-      if(!isEmpty(difference)){
+      if(
+        !isEmpty(difference)
+        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'publishingStatus')
+      ){
         const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
         this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
         this.lastSavedValues = {

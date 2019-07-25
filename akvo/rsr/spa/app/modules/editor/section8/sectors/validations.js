@@ -20,7 +20,7 @@ const IATI = DGIS.clone().shape({
 const EUTF = yup.object().shape({
   vocabulary: yup.string(),
   sectorCode: yup.string(),
-  percentage: yup.mixed(),
+  percentage: yup.mixed().nullable(),
   vocabularyUri: yup.string(),
   text: yup.string()
 })

@@ -50,7 +50,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
   return (
     <div className="settings view">
       <p>
-        <Switch checked={!isPublic} onChange={checked => props.togglePrivacy(!checked)} />
+        <Switch checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
         <span className="switch-label">Private project</span>
         <Tooltip title="Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project."><Icon type="info-circle" /></Tooltip>
       </p>
@@ -78,6 +78,6 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
 }
 
 export default connect(
-  ({ editorRdr: { validations, isPublic } }) => ({ validations, isPublic }),
+  ({ editorRdr: { validations, section1: { fields: { isPublic } } } }) => ({ validations, isPublic }),
   actions
 )(withRouter(Settings))

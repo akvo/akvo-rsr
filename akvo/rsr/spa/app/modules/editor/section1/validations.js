@@ -3,8 +3,8 @@ import * as yup from 'yup'
 const RSR = yup.object().shape({
   isPublic: yup.boolean().default(true),
   validations: yup.array().of(yup.number()).default([1, 2]),
-  title: yup.string().default('').required(),
-  subtitle: yup.string().default('').required(),
+  title: yup.string().default('').required().min(3),
+  subtitle: yup.string().default('').required().min(3),
   iatiStatus: yup.string().required(),
   dateStartPlanned: yup.string().required(),
   dateEndPlanned: yup.string().required(),
@@ -19,15 +19,15 @@ const RSR = yup.object().shape({
 })
 
 const EUTF = RSR.clone().shape({
-  iatiActivityId: yup.string()
+  iatiActivityId: yup.string().nullable()
 })
 
 const IATI_BASIC = RSR.clone().shape({
-  iatiActivityId: yup.string().required()
+  iatiActivityId: yup.string().nullable().required().min(1)
 })
 
 const IATI = IATI_BASIC.clone().shape({
-  hierarchy: yup.string(),
+  hierarchy: yup.string().nullable(),
   defaultAidTypeVocabulary: yup.string(),
   // defaultAidType: yup.string(),
   defaultFlowType: yup.string(),

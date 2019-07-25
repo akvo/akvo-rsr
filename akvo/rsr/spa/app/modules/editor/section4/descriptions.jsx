@@ -8,6 +8,7 @@ import { isFieldOptional, getValidationSets } from '../../../utils/validation-ut
 import RTE from '../../../utils/rte'
 import AutoSave from '../../../utils/auto-save'
 import validationDefs, { RSR } from './validations'
+import SectionContext from '../section-context'
 import './styles.scss'
 
 const { Item } = Form
@@ -69,6 +70,7 @@ class Descriptions extends React.Component {
     const isOptional = isFieldOptional(getValidationSets([1], validationDefs)) // validation id is irrelevant here
     return (
       <div className="descriptions view">
+        <SectionContext.Provider value="section4">
         <Form layout="vertical">
         <FinalForm
           onSubmit={() => {}}
@@ -80,9 +82,10 @@ class Descriptions extends React.Component {
               return (
                 <FinalField
                   name={descKey}
-                  render={({ input }) => (
+                  render={({ input, validateStatus }) => (
                     <Item
                       key={descKey}
+                      validateStatus={validateStatus}
                       label={(
                         <div className="desc-label">
                           <span>{dict[descKey]}</span>
@@ -90,7 +93,7 @@ class Descriptions extends React.Component {
                         </div>
                       )}
                     >
-                      <RTE {...input} />
+                      <RTE {...input} validateStatus={validateStatus} />
                     </Item>
                   )}
                 />
@@ -128,6 +131,7 @@ class Descriptions extends React.Component {
           )}
         />
         </Form>
+        </SectionContext.Provider>
       </div>
     )
   }

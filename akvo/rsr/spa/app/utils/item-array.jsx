@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Collapse, Icon, Button, Modal, Popconfirm } from 'antd'
+import { Collapse, Button, Modal, Popconfirm } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import {Route} from 'react-router-dom'

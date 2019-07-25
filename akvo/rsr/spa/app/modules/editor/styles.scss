@@ -53,6 +53,21 @@
         margin-left: 10px;
         margin-right: 10px;
       }
+      .validation-bar{
+        margin-right: auto;
+        margin-left: 30px;
+        color: #555;
+        font-size: 14px;
+        .show-required{
+          margin-left: 30px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          .ant-switch{
+            margin-right: 5px;
+          }
+        }
+      }
     }
   }
   aside{
@@ -232,6 +247,14 @@ hr{
   
   .ant-collapse{
     margin-bottom: 20px;
+    .ant-collapse-header{
+      display: flex;
+      .ant-collapse-extra{
+        float: none;
+        margin-left: auto;
+        align-self: center;
+      }
+    }
     .ant-collapse-content-box{
       .ant-form>.ant-form-item:last-child, &>.ant-form-item:last-child, &>div>.ant-form-item:last-of-type {
         margin-bottom: 0;

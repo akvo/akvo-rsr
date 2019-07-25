@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Tag, Popconfirm, Input, Modal, Switch, Divider } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -27,9 +27,9 @@ const resultTypes = [
   {label: 'other', value: '9'}
 ]
 
-const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, ...props }) => { // eslint-disable-line
+const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
   const addResult = ({ key }) => {
-    const newItem = { type: key, indicators: [] }
+    const newItem = { type: key, indicators: [], project: projectId }
     push('results', newItem)
     addSetItem(5, 'results', newItem)
   }
@@ -96,7 +96,7 @@ class Summary extends React.Component{
             <li>
               <span>Create a new results framework</span>
               <div className="button-container">
-                <AddResultButton push={this.props.push} size="default" type="primary" />
+                <Route path="/projects/:projectId" component={({ match: {params}}) => <AddResultButton push={this.props.push} size="default" type="primary" {...params} />} />
               </div>
             </li>
           </ul>
@@ -255,7 +255,7 @@ class Section5 extends React.Component{
                   {({ values: { results } }) =>
                   <UpdateIfLengthChanged items={results}>
                     {results.length > 0 &&
-                    <AddResultButton push={push} />
+                    <Route path="/projects/:projectId" component={({ match: {params}}) => <AddResultButton push={push} {...params} />} />
                     }
                   </UpdateIfLengthChanged>}
                 </FormSpy>

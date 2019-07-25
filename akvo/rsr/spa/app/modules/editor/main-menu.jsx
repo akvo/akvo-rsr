@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link} from 'react-router-dom'
-import { Icon, Spin } from 'antd'
+import { Icon } from 'antd'
 import classNames from 'classnames'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
@@ -66,7 +66,7 @@ const MainMenu = ({ rdr, params }) => {
           disabled={isNewProject}
           key={section.key}
           to={`/projects/${params.id}/${section.key}`}
-          checked={rdr[`section${index + 1}`].isValid && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
+          checked={rdr[`section${index + 1}`].errors.length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
           loading={!isNewProject && !rdr[`section${index + 1}`].isFetched}
         >
         {index + 1}. {dict[section.key]}
