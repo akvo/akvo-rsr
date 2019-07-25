@@ -110,7 +110,7 @@ class PeriodDisaggregationTestCase(TestCase):
 
     def setUp(self):
         # Setup a project with results framework and a user
-        self.user = User.objects.create(username='user1@com.com', email='user1@com.com')
+        self.user, _ = User.objects.get_or_create(username='user1@com.com', email='user1@com.com')
         self.project = Project.objects.create(title="Test project 1")
         self.result = Result.objects.create(project=self.project, title='Test Result')
         self.indicator = Indicator.objects.create(result=self.result, title='Test Indicator')

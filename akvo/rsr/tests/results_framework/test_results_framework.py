@@ -875,3 +875,24 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(self.child_project.parents_all().first().id, project.id)
+
+    def test_adding_or_removing_indicator_dimension_names_changes_children(self):
+        # Given
+        indicator = self.indicator
+        dimension_name = self.dimension_name
+        child_indicator = Indicator.objects.get(
+            parent_indicator=indicator, result__project=self.child_project)
+        self.assertEqual(child_indicator.dimension_names.count(), 1)
+
+        # When
+        indicator.dimension_names.remove(dimension_name)
+
+        # Then
+        self.assertEqual(child_indicator.dimension_names.count(), 0)
+
+        # Adding back the dimension_name should propagate to children
+        # When
+        indicator.dimension_names.add(dimension_name)
+
+        # Then
+        self.assertEqual(child_indicator.dimension_names.count(), 1)
