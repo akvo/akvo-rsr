@@ -1,17 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block maincontent %}
 <div id="lockdown">
   <div class="content">
-    <h2>Password Required</h2>
+    <h2>{% trans 'Password Required' %}</h2>
 
-    <p>This site is not available to the public.</p>
+    <p>{% trans 'This site is not available to the public.' %}</p>
 
     {% if form %}
     <form action="" method="post">{% csrf_token %}
-      <input type="password" name="password" placeholder="Password" required="" id="id_password" />
+      <input type="password" name="password" placeholder="{% trans 'Password' %}" required="" id="id_password" />
       <br />
-      <input class="btn btn-primary" type="submit" value="Enter" />
+      <input class="btn btn-primary" type="submit" value="{% trans 'Enter' %}" />
     </form>
     {% endif %}
   </div>
