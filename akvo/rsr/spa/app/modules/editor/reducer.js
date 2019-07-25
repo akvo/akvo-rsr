@@ -65,8 +65,6 @@ export default (state = initialState, action) => {
   const sectionKey = `section${action.sectionIndex}`
   const newState = cloneDeep(state)
   switch(action.type){
-    case actionTypes.TOGGLE_PRIVACY:
-      return {...state, isPublic: action.checked}
     case actionTypes.TOUCH_SECTION:
       if(!newState[sectionKey].isTouched){
         newState[sectionKey].isTouched = true
