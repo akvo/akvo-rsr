@@ -125,6 +125,110 @@ JSON_TEXT = {
     "You can provide further information of the result here.": _("You can provide further information of the result here."),
     "Enable aggregation": _("Enable aggregation"),
     "Indicators": _("Indicators"),
+    "Budget items": _("Budget items"),
+    "Total budget": _("Total Budget"),
+    "Budget item": _("Budget item"),
+    "Budget type": _("Budget type"),
+    "Original": _("Original"),
+    "Revised": _("Revised"),
+    "Status": _("Status"),
+    "Indicative": _("Indicative"),
+    "Committed": _("Committed"),
+    "Add Budget Item": _("Add Budget Item"),
+    "Add a donation url for this project. If no URL is added, it is not possible to donate to this project through RSR.": _("Add a donation url for this project. If no URL is added, it is not possible to donate to this project through RSR."),
+    "Donate URL": _("donate url"),
+    "The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign. Use a period to denote decimals.": _("The percentage of the total commitment allocated to or planned for capital expenditure. Content must be a positive decimal number between 0 and 100, with no percentage sign. Use a period to denote decimals."),
+    "Capital spend percentage": _("capital spend percentage"),
+    "Country budget items": _("Country budget items"),
+    "Enter an IATI code for the common functional classification or country system (this allows for common codes, country-specific codes, or any other classification agreed between countries and donors) see: <a href=\"http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/\" target=\"_blank\">http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/</a>.": _("Enter an IATI code for the common functional classification or country system (this allows for common codes, country-specific codes, or any other classification agreed between countries and donors) see: <a href=\"http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/\" target=\"_blank\">http://iatistandard.org/201/codelists/BudgetIdentifierVocabulary/</a>."),
+    "Vocabulary": _("Vocabulary"),
+    "Country Chart of Accounts": _("Country Chart of Accounts"),
+    "Other Country System": _("Other Country System"),
+    "Reporting Organisation": _("Reporting Organisation"),
+    "Other": _("Other"),
+    "Transactions": _("Transactions"),
+    "Planned disbursements": _("Planned disbursements"),
+    "currency": _("currency"),
+    "Amount": _("Amount"),
+    "Enter the amount of budget that is set aside for this specific budget item. Use a period to denote decimals.": _("Enter the amount of budget that is set aside for this specific budget item. Use a period to denote decimals."),
+    "Additional info": _("Additional info"),
+    "budget type": _("budget type"),
+    "The status explains whether the budget being reported is indicative or has been formally committed.": _("The status explains whether the budget being reported is indicative or has been formally committed."),
+    "period start": _("period start"),
+    "Enter the start date (DD/MM/YYYY) for the budget period.": _("Enter the start date (DD/MM/YYYY) for the budget period."),
+    "period end": _("period end"),
+    "Enter the end date (DD/MM/YYYY) for the budget period.": _("Enter the end date (DD/MM/YYYY) for the budget period."),
+    "value date": _("value date"),
+    "Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for currency conversions.": _("Enter the date (DD/MM/YYYY) to be used for determining the exchange rate for currency conversions."),
+    "Item code": _("Item code"),
+    "If more than one identifier is reported, the percentage share must be reported and all percentages should add up to 100 percent. Use a period to denote decimals.": _("If more than one identifier is reported, the percentage share must be reported and all percentages should add up to 100 percent. Use a period to denote decimals."),
+    "Add country budget item": _("Add country budget item"),
+    "Country budget item": _("Country budget item"),
+    "value": _("value"),
+    "type": _("type"),
+    "The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY).": _("The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY)."),
+    "Enter the end date (DD/MM/YYYY) for the disbursement period.": _("Enter the end date (DD/MM/YYYY) for the disbursement period."),
+    "provider organisation": _("provider organisation"),
+    "Provider organisation": _("Provider organisation"),
+    "For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation.": _("For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation."),
+    "Activity ID": _("Activity ID"),
+    "recipient organisation": _("recipient organisation"),
+    "The organisation that receives the incoming funds.": _("The organisation that receives the incoming funds."),
+    "The internal identifier used by the receiver organisation for its activity that receives the funds from this disbursement (not to be confused with the IATI identifier for the target activity).": _("The internal identifier used by the receiver organisation for its activity that receives the funds from this disbursement (not to be confused with the IATI identifier for the target activity)."),
+    "Add planned disbursement": _("Add planned disbursement"),
+
+    "A recognised code, from a recognised vocabulary, classifying the purpose of this transaction. If this element is used then ALL transaction elements should contain a transaction/sector element and iati-activity/sector should NOT be used. This element can be used multiple times, but only one sector can be reported per vocabulary.": _("A recognised code, from a recognised vocabulary, classifying the purpose of this transaction. If this element is used then ALL transaction elements should contain a transaction/sector element and iati-activity/sector should NOT be used. This element can be used multiple times, but only one sector can be reported per vocabulary."),
+    "Name": _("Name"),
+    "An IATI code for the vocabulary (codelist) used for sector classifications. If omitted, OECD DAC 5-digit Purpose Codes are assumed. Note that at transaction level, only one sector per vocabulary can be reported.": _("An IATI code for the vocabulary (codelist) used for sector classifications. If omitted, OECD DAC 5-digit Purpose Codes are assumed. Note that at transaction level, only one sector per vocabulary can be reported."),
+    "vocabulary": _("vocabulary"),
+    "If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.": _("If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined."),
+    "Add sector": _("Add sector"),
+    "Select the type of the transaction (e.g. commitment, disbursement, expenditure).": _("Select the type of the transaction (e.g. commitment, disbursement, expenditure)."),
+    "Transaction item": _("Transaction item"),
+    "Enter the transaction amount. Use a period to denote decimals.": _("Enter the transaction amount. Use a period to denote decimals."),
+    "Determines whether this transaction relates entirely or partially to humanitarian aid.": _("Determines whether this transaction relates entirely or partially to humanitarian aid."),
+    "humanitarian transaction": _("humanitarian transaction"),
+    "Enter the financial reporting date that the transaction was/will be undertaken.": _("Enter the financial reporting date that the transaction was/will be undertaken."),
+    "date": _("date"),
+    "The date to be used for determining the exchange rate for currency conversions of the transaction.": _("The date to be used for determining the exchange rate for currency conversions of the transaction."),
+    "organisation": _("organisation"),
+    "The internal identifier used by the receiver organisation for its activity that receives the funds from this transaction (not to be confused with the IATI identifier for the target activity).": _("The internal identifier used by the receiver organisation for its activity that receives the funds from this transaction (not to be confused with the IATI identifier for the target activity)."),
+    "description": _("description"),
+    "Enter additional information for the transaction, if necessary.": _("Enter additional information for the transaction, if necessary."),
+    "transaction reference": _("transaction reference"),
+    "Enter a reference for the transaction (eg. transaction number).": _("Enter a reference for the transaction (eg. transaction number)."),
+    "Transaction aid type vocabulary": _("Transaction aid type vocabulary"),
+    "Enter the type of vocabulary being used to describe the aid type For reference, please visit: <a href=\"http://iatistandard.org/203/codelists/AidTypeVocabulary/\" target=\"_blank\"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.": _("Enter the type of vocabulary being used to describe the aid type For reference, please visit: <a href=\"http://iatistandard.org/203/codelists/AidTypeVocabulary/\" target=\"_blank\"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>."),
+    "Enter the type of aid being supplied. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank\">http://iatistandard.org/202/codelists/AidType/</a>": _("Enter the type of aid being supplied. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank\">http://iatistandard.org/202/codelists/AidType/</a>"),
+    "aid type": _("aid type"),
+    "Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/DisbursementChannel/\" target=\"_blank\">http://iatistandard.org/202/codelists/DisbursementChannel/</a>": _("Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/DisbursementChannel/\" target=\"_blank\">http://iatistandard.org/202/codelists/DisbursementChannel/</a>"),
+    "Disbursement channel": _("Disbursement channel"),
+    "For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FinanceType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FinanceType/</a>.": _("For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FinanceType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FinanceType/</a>."),
+    "Finance type": _("Finance type"),
+    "For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FlowType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FlowType/</a>.": _("For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FlowType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FlowType/</a>."),
+    "Flow type": _("Flow type"),
+    "Whether the aid is untied, tied, or partially tied. For reference visit <a href=\"http://iatistandard.org/202/codelists/TiedStatus/\" target=\"_blank\">http://iatistandard.org/202/codelists/TiedStatus/</a>.": _("Whether the aid is untied, tied, or partially tied. For reference visit <a href=\"http://iatistandard.org/202/codelists/TiedStatus/\" target=\"_blank\">http://iatistandard.org/202/codelists/TiedStatus/</a>."),
+    "Tied status": _("Tied status"),
+    "Recipient": _("Recipient"),
+    "Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/codelists/Country/</a>.": _("Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/codelists/Country/</a>."),
+    "country": _("country"),
+    "Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Region/\" target=\"_blank\">http://iatistandard.org/202/codelists/Region/</a>.": _("Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Region/\" target=\"_blank\">http://iatistandard.org/202/codelists/Region/</a>."),
+    "region": _("region"),
+    "region vocabulary": _("region vocabulary"),
+    "Region vocabulary uri": _("Region vocabulary uri"),
+    "Transaction sectors": _("Transaction sectors"),
+    "Add transaction": _("Add transaction"),
+    "This should only be used to report specific planned cash transfers. Use a period to denote decimals.": _("This should only be used to report specific planned cash transfers. Use a period to denote decimals."),
+    "Are you sure to delete this sector?": _("Are you sure to delete this sector?"),
+    "Enter the type of vocabulary being used to describe the aid type For reference, please visit: <a href=\"http://iatistandard.org/203/codelists/AidTypeVocabulary/\" target=\"_blank\"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>.": _("Enter the type of vocabulary being used to describe the aid type For reference, please visit: <a href=\"http://iatistandard.org/203/codelists/AidTypeVocabulary/\" target=\"_blank\"> http://iatistandard.org/203/codelists/AidTypeVocabulary/</a>."),
+    "Enter the type of aid being supplied. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank\">http://iatistandard.org/202/codelists/AidType/</a>": _("Enter the type of aid being supplied. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/AidType/\" target=\"_blank\">http://iatistandard.org/202/codelists/AidType/</a>"),
+    "Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/DisbursementChannel/\" target=\"_blank\">http://iatistandard.org/202/codelists/DisbursementChannel/</a>": _("Enter the channel through which the funds will flow for this transaction, from an IATI codelist. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/DisbursementChannel/\" target=\"_blank\">http://iatistandard.org/202/codelists/DisbursementChannel/</a>"),
+    "For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FinanceType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FinanceType/</a>.": _("For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FinanceType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FinanceType/</a>."),
+    "For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FlowType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FlowType/</a>.": _("For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/FlowType/\" target=\"_blank\">http://iatistandard.org/202/codelists/FlowType/</a>."),
+    "Whether the aid is untied, tied, or partially tied. For reference visit <a href=\"http://iatistandard.org/202/codelists/TiedStatus/\" target=\"_blank\">http://iatistandard.org/202/codelists/TiedStatus/</a>.": _("Whether the aid is untied, tied, or partially tied. For reference visit <a href=\"http://iatistandard.org/202/codelists/TiedStatus/\" target=\"_blank\">http://iatistandard.org/202/codelists/TiedStatus/</a>."),
+    "Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/codelists/Country/</a>.": _("Enter the country that will benefit from this transaction. It can only be one country per transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Country/\" target=\"_blank\">http://iatistandard.org/202/codelists/Country/</a>."),
+    "Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Region/\" target=\"_blank\">http://iatistandard.org/202/codelists/Region/</a>.": _("Enter the supranational geopolitical region (a geographical or administrative grouping of countries into a region - e.g. Sub-Saharan Africa, Mekong Delta) that will benefit from this transaction. For reference, please visit: <a href=\"http://iatistandard.org/202/codelists/Region/\" target=\"_blank\">http://iatistandard.org/202/codelists/Region/</a>."),
+
     "menu": {
       "settings": _("Project settings"),
       "info": _("General information"),
@@ -137,7 +241,7 @@ JSON_TEXT = {
       "focus": _("Project focus"),
       "links-n-docs": _("Links and documents"),
       "comments-n-keywords": _("Comments and keywords"),
-      "reporting": _("CRS++ and FSS reporting")
+      "reporting": _("CRS++ and FSS reporting"),
     },
     'section1': {
         "title": {
@@ -390,39 +494,6 @@ JSON_TEXT = {
       },
       "description": {
         "tooltip": _("You can provide further information of the result here.")
-      }
-    },
-    'section6': {
-      "currency": {
-        "label": "Currency",
-        "tooltip": "The default currency for this project. Used in all financial aspects of the project."
-      },
-      "amount": {
-        "label": "Amount"
-      },
-      "description": {
-        "label": "Description"
-      },
-      "reference": {
-        "label": "Reference"
-      },
-      "otherExtra": {
-        "label": "Additional info"
-      },
-      "aidTypeVocabulary":{
-        "label": "Aid type vocabulary"
-      },
-      "capitalSpendPercentage": {
-        "label": "Capital spend percentage"
-      },
-      "periodStart": {
-        "label": "Period start"
-      },
-      "periodEnd": {
-        "label": "Period End"
-      },
-      "valueDate": {
-        "label": "Value date"
       }
     },
     'section7': {

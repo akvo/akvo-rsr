@@ -19,7 +19,7 @@ exec('i18next-scanner', (err) => {
       // console.log(resp)
       Object.keys(jsonContent).forEach(key => {
         const $key = key.replace(/"/g, '\\"')
-        if (resp.data.hasOwnProperty($key) === false && $key.indexOf('section') !== 0) {
+        if (resp.data.hasOwnProperty(key) === false && key.indexOf('section') !== 0) {
           newContent.push(`"${$key}": _("${$key}")`)
         }
       })

@@ -124,6 +124,10 @@ class Partners extends React.Component{
                           orgs={this.state.orgs}
                           loading={this.state.loading}
                           disabled={disabled}
+                          dict={{
+                            label: 'project partner',
+                            tooltip: 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href=\'mailto: support@akvo.org\'>support@akvo.org</a> to request to add it to the database.'
+                          }}
                         />
                         <Condition when={`${name}.iatiOrganisationRole`} is={101}>
                           <Item label={<InputLabel tooltip={t('section3.secondaryReporter.tooltip')} optional>{t('section3.secondaryReporter.label')}</InputLabel>}>

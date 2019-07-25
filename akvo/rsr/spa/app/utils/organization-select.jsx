@@ -8,7 +8,7 @@ import InputLabel from './input-label';
 const { Option } = Select
 const { Item } = Form
 
-const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
+const OrganizationSelect = ({ name, orgs, loading, disabled, dict }) => {
   const { t } = useTranslation()
   return (
     <Field
@@ -22,7 +22,7 @@ const OrganizationSelect = ({ name, orgs, loading, disabled }) => {
               ? orgs.map(it => ({ value: it.id, label: it.name }))
               : [{ value: input.value, label: nameProps.input.value }]
             return (
-              <Item validateStatus={validateStatus} label={<InputLabel tooltip={t('section3.organisation.tooltip')}>{t('section3.organisation.label')}</InputLabel>}>
+              <Item validateStatus={validateStatus} label={<InputLabel tooltip={dict.tooltip}>{dict.label}</InputLabel>}>
               <Select
                 {...input}
                 disabled={disabled}

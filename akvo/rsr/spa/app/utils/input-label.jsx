@@ -7,7 +7,7 @@ const InputLabel = ({ more, tooltip, optional, ...args }) => {
   return (
     <span className="input-label">
       <div>
-        {args.children} {tooltip && <Tooltip trigger="click" title={tooltip}><Icon type="info-circle" /></Tooltip>}
+        {args.children} {tooltip && <Tooltip trigger="click" title={<span dangerouslySetInnerHTML={{ __html: tooltip }} />}><Icon type="info-circle" /></Tooltip>}
         {optional && <span className="optional"> -  {t('optional')}</span>}
       </div>
       {more}

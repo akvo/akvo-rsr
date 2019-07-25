@@ -2,6 +2,7 @@ import React from 'react'
 import { Form, Input, Collapse, Button, Popconfirm } from 'antd'
 import { FieldArray } from 'react-final-form-arrays'
 import { connect } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
@@ -16,6 +17,7 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 const Sectors = connect(null, { removeSetItem })(({ push, parentName, transactionId, removeSetItem}) => { // eslint-disable-line
+  const { t } = useTranslation()
   const add = () => {
     push(`${parentName}.sectors`, { transaction: transactionId })
   }
@@ -48,10 +50,10 @@ const Sectors = connect(null, { removeSetItem })(({ push, parentName, transactio
               <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
               <div className="delete-btn-holder">
               <Popconfirm
-                title="Are you sure to delete this sector?"
+                title={t('Are you sure to delete this sector?')}
                 onConfirm={() => remove(index, fields)}
-                okText="Yes"
-                cancelText="No"
+                okText={t('Yes')}
+                cancelText={t('No')}
               >
                 <Button size="small" icon="delete" className="delete-panel" />
               </Popconfirm>
@@ -64,12 +66,12 @@ const Sectors = connect(null, { removeSetItem })(({ push, parentName, transactio
             <FinalField
               name={`${name}.code`}
               render={({ input }) => (
-                <Item label={<InputLabel optional>Name</InputLabel>}>
+                <Item label={<InputLabel optional tooltip={t('A recognised code, from a recognised vocabulary, classifying the purpose of this transaction. If this element is used then ALL transaction elements should contain a transaction/sector element and iati-activity/sector should NOT be used. This element can be used multiple times, but only one sector can be reported per vocabulary.')}>{t('Name')}</InputLabel>}>
                   <Input {...input} />
                 </Item>
               )}
             />
-            <Item label={<InputLabel optional>Vocabulary</InputLabel>}>
+            <Item label={<InputLabel optional tooltip={t('An IATI code for the vocabulary (codelist) used for sector classifications. If omitted, OECD DAC 5-digit Purpose Codes are assumed. Note that at transaction level, only one sector per vocabulary can be reported.')}>{t('vocabulary')}</InputLabel>}>
             <FinalField
               name={`${name}.vocabulary`}
               control="select"
@@ -77,12 +79,12 @@ const Sectors = connect(null, { removeSetItem })(({ push, parentName, transactio
               withEmptyOption
             />
             </Item>
-            <Item label={<InputLabel optional>URI</InputLabel>}>
+            <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>URI</InputLabel>}>
             <FinalField
               name={`${name}.vocabularyUri`}
             />
             </Item>
-            <Item label={<InputLabel optional>Description</InputLabel>}>
+            <Item label={<InputLabel optional>{t('Description')}</InputLabel>}>
             <FinalField
               name={`${name}.text`}
             />
@@ -91,7 +93,7 @@ const Sectors = connect(null, { removeSetItem })(({ push, parentName, transactio
           </Panel>
         )}
       />
-      <Button icon="plus" block type="dashed" onClick={add}>Add sector</Button>
+      <Button icon="plus" block type="dashed" onClick={add}>{t('Add sector')}</Button>
       </Aux>
     )}
     </FieldArray>
