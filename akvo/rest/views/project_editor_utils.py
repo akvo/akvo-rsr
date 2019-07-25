@@ -46,8 +46,6 @@ RELATED_OBJECTS_MAPPING = {
     IndicatorPeriod: (Indicator, 'indicator'),
     IndicatorReference: (Indicator, 'indicator'),
     IndicatorDimension: (Indicator, 'indicator'),
-    # many-to-many relation to indicator (needs to be created after indicator)
-    IndicatorDimensionName: (Indicator, 'indicator'),
     IndicatorDimensionValue: (IndicatorDimensionName, 'name'),
     IndicatorPeriodActualDimension: (IndicatorPeriod, 'period'),
     IndicatorPeriodActualLocation: (IndicatorPeriod, 'period'),
@@ -576,13 +574,19 @@ def sort_keys(x):
     while Model in RELATED_OBJECTS_MAPPING:
         level += 1
         Model, _ = RELATED_OBJECTS_MAPPING[Model]
-    if Model in MANY_TO_MANY_FIELDS or Model != Project:
+
+    if Model in MANY_TO_MANY_FIELDS:
+        # Always create objects in the many to many fields at the very end!
+        level += 10
+    elif Model != Project:
         level += 1
+
     return (level, key_parts.ids)
 
 
-def get_parent_model_id(Model, parent_id, rel_objects):
-    ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
+def get_parent_model_id(Model, parent_id, rel_objects, ParentModel=None):
+    if ParentModel is None:
+        ParentModel, _ = RELATED_OBJECTS_MAPPING[Model]
     parent_obj_rel_obj_key = ParentModel._meta.db_table + '.' + parent_id
     if parent_obj_rel_obj_key in rel_objects:
         parent_obj_id = rel_objects[parent_obj_rel_obj_key]
@@ -638,7 +642,7 @@ def create_or_update_objects_from_data(project, data):
             indicator_id = key_parts.ids[2]
             if indicator_id.startswith('new'):
                 parent_id = '_'.join(key_parts.ids[:-1])
-                indicator_id = get_parent_model_id(Model, parent_id, rel_objects)
+                indicator_id = get_parent_model_id(Model, parent_id, rel_objects, Indicator)
             indicator = Indicator.objects.get(pk=int(indicator_id))
             update_m2m_object(
                 indicator, Model, obj_id, key_parts.field, data[key], key, changes, errors,
