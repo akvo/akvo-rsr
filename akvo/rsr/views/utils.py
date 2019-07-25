@@ -24,16 +24,20 @@ def apply_keywords(page, project_qs):
         return project_qs.filter(keywords__in=page.keywords.all())
 
 
-def check_project_viewing_permissions(user, project):
-    """Checks if the user can view a project, otherwise raises PermissionDenied.
+def check_project_viewing_permissions(request, project):
+    """Checks if the current user can view a project, otherwise raises PermissionDenied.
 
     A user can view any public project, but when a project is private or not
     published the user should be logged in and able to make changes to the
     project (e.g. be an admin of the project).
 
     """
-
-    if not ((project.is_public and project.is_published()) or
+    user = request.user
+    site = request.rsr_page
+    # If site has a valid password, and we arrive here, RSRLockdownMiddleware
+    # has already ensured that the user entered the site's password correctly.
+    if not ((site and site.password and project.is_published()) or
+            (project.is_public and project.is_published()) or
             user.has_perm('rsr.view_project', project)):
         raise PermissionDenied
 

@@ -26,7 +26,7 @@ def directory(request):
 def main(request, project_id, update_id):
     """The projectupdate main view."""
     project = get_object_or_404(Project, pk=project_id)
-    check_project_viewing_permissions(request.user, project)
+    check_project_viewing_permissions(request, project)
     update = get_object_or_404(
         ProjectUpdate.objects.select_related('project', 'user'), pk=update_id, project=project_id
     )
