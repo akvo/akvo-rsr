@@ -42,6 +42,7 @@ logger = logging.getLogger(__name__)
 class ProjectSerializer(BaseRSRSerializer):
 
     publishing_status = serializers.ReadOnlyField(source='publishingstatus.status')
+    publishing_status_id = serializers.ReadOnlyField(source='publishingstatus.pk')
     current_image = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
     sync_owner = serializers.ReadOnlyField(source='reporting_org.id')
     sync_owner_secondary_reporter = serializers.ReadOnlyField(source='reporting_partner.is_secondary_reporter')
