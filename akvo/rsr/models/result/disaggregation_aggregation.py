@@ -38,7 +38,7 @@ class DisaggregationAggregation:
         period_disaggregation.denominator = values['denominator']
         period_disaggregation.save()
 
-        if period.is_child_period() \
+        if period.parent_period is not None \
                 and period.parent_period.indicator.result.project.aggregate_children \
                 and period.indicator.result.project.aggregate_to_parent \
                 and dimension_value.parent_dimension_value:
