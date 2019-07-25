@@ -4052,13 +4052,13 @@ main.results-page {
     .editBtn {
         border: 1px solid rgba($anchorLink, 0.1) !important;
         background: $anchorLink;
-        color: white;
+        color: white!important;
         border-bottom: 1px solid transparent !important;
         padding: 7px 8px;
         border-radius: 5px 5px 0 0;
         &:hover {
             background: #3071a9;
-            color: white;
+            color: white!important;
             border: 1px solid rgba($anchorLink, 0.1) !important;
         }
     }
