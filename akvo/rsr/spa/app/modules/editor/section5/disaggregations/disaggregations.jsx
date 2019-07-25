@@ -39,6 +39,7 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
     setModalVisible(false)
     dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 5, setName: `${fieldName}.dimensionNames`, item: dimension })
     patchIndicator([...addedDimensions.map(it => it.id), dimension.id])
+    fetchDimensions()
   }
   const removeItem = (itemIndex) => {
     dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex: 5, setName: `${fieldName}.dimensionNames`, itemIndex })
