@@ -5554,6 +5554,7 @@ main.results-page {
     line-height: 33px;
     border-radius: 3px;
     border: 1px solid #ccc;
+    margin: 10px 0;
   }
   .btn{
     margin-top: 10px;
@@ -5570,7 +5571,7 @@ body{
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  .container-fluid.alignFooter{
+  .container-fluid{
     width: 100%;
   }
   footer{
