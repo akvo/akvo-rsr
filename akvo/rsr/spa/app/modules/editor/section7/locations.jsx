@@ -46,7 +46,7 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
           </Aux>
           }
           {fieldExists('projectScope') &&
-          <Item label={<InputLabel optional>{t('Project scope')}</InputLabel>}>
+          <Item label={<InputLabel optional tooltip={t('Select the geographical scope of the project.')}>{t('Project Scope')}</InputLabel>}>
             <FinalField
               name="projectScope"
               control="select"

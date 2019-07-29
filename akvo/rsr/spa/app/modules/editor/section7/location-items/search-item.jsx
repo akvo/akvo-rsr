@@ -61,7 +61,7 @@ class SearchItem extends React.Component{
     const { t } = this.props
     const options = this.state.data.map((d, index) => <Option value={index}>{d.text}</Option>)
     return (
-      <Item label={<InputLabel tooltip="...">City</InputLabel>}>
+      <Item label={<InputLabel>{t('city')}</InputLabel>}>
         <Select
           value={this.props.value.text}
           showSearch

@@ -56,7 +56,7 @@ const RecipientRegions = ({ formPush, validations }) => {
                 </Item>
                 </Col>
                 <Col span={12}>
-                  <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>Vocabulary URI</InputLabel>}>
+                  <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('Vocabulary URI')}</InputLabel>}>
                   <FinalField
                     name={`${name}.regionVocabularyUri`}
                     control="input"
@@ -67,7 +67,7 @@ const RecipientRegions = ({ formPush, validations }) => {
             )}
             <div className="percentage-row">
               {fieldExists('percentage') && (
-                <Item label={<InputLabel tooltip={t('If the activity occurs in more than one region, the percentage of activity commitment allocated to each region should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each region. Use a period to denote decimals.')}>{t('percentage')}</InputLabel>}>
+                <Item label={<InputLabel tooltip={t('If the activity occurs in more than one region, the percentage of activity commitment allocated to each region should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each region. Use a period to denote decimals.')}>{t('Percentage')}</InputLabel>}>
                 <FinalField
                   name={`${name}.percentage`}
                   suffix={<span>%</span>}

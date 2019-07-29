@@ -171,6 +171,17 @@
     }
   }
 
+  h3{
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+  .ant-collapse-header{
+    span::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
   .ant-form-item-label{
     .anticon{
       margin-left: 6px;

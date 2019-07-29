@@ -30,7 +30,7 @@ const RecipientCountries = ({ validations, formPush }) => {
         formPush={formPush}
         panel={name => (
           <div>
-            <Item label={<InputLabel tooltip="...">{t('country')}</InputLabel>}>
+            <Item label={<InputLabel tooltip={t('The country that benefits from the project.')}>{t('country')}</InputLabel>}>
               <FinalField
                 name={`${name}.country`}
                 optionFilterProp="children"
@@ -42,7 +42,7 @@ const RecipientCountries = ({ validations, formPush }) => {
             </Item>
             <span className="percentage-row">
               {fieldExists('percentage') && (
-                <Item label={<InputLabel tooltip={t('The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.')}>{t('percentage')}</InputLabel>}>
+                <Item label={<InputLabel tooltip={t('The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.')}>{t('Percentage')}</InputLabel>}>
                 <FinalField
                   name={`${name}.percentage`}
                   control="input"
