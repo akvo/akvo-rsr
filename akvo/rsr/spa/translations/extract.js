@@ -20,7 +20,7 @@ exec('i18next-scanner', (err) => {
       Object.keys(jsonContent).forEach(key => {
         const $key = key.replace(/"/g, '\\"')
         if (resp.data.hasOwnProperty(key) === false && key.indexOf('section') !== 0) {
-          newContent.push(`"${$key}": _("${$key}")`)
+          newContent.push(`u"${$key}": _(u"${$key}")`)
         }
       })
       fs.writeFileSync('strings.py', newContent.join(',\n'))
