@@ -239,10 +239,7 @@ def add_dimension_names_to_children(sender, instance, action, **kwargs):
 
     dimension_name = kwargs['model'].objects.filter(id__in=kwargs['pk_set']).first()
     for indicator in instance.child_indicators.all():
-        child_dimension_name, _ = dimension_name.child_dimension_names.get_or_create(
-            name=dimension_name.name,
-            parent_dimension_name=dimension_name,
-            project=indicator.result.project)
+        child_dimension_name = indicator.result.project.copy_dimension_name(dimension_name, set_parent=True)
 
         if action == 'post_add':
             indicator.dimension_names.add(child_dimension_name)

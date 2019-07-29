@@ -1313,6 +1313,8 @@ class Project(TimestampsMixin, models.Model):
         for dimension_value in source_dimension_name.dimension_values.all():
             self.copy_dimension_value(dimension_name, dimension_value, set_parent=set_parent)
 
+        return dimension_name
+
     def copy_dimension_value(self, dimension_name, source_dimension_value, set_parent=True):
         IndicatorDimensionValue = apps.get_model('rsr', 'IndicatorDimensionValue')
         defaults = dict(parent_dimension_value=source_dimension_value)
