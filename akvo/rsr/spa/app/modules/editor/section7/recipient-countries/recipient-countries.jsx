@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -13,22 +14,23 @@ const { Item } = Form
 const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
 const RecipientCountries = ({ validations, formPush }) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>Recipient country</h3>
+      <h3>{t('recipient country')}</h3>
       <ItemArray
         setName="recipientCountries"
         sectionIndex={7}
         header={(index, countryCode) => (
-          <span>Recipient country {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
+          <span>{t('recipient country')} {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
         )}
         headerField="country"
         formPush={formPush}
         panel={name => (
           <div>
-            <Item label={<InputLabel tooltip="...">Country</InputLabel>}>
+            <Item label={<InputLabel tooltip="...">{t('country')}</InputLabel>}>
               <FinalField
                 name={`${name}.country`}
                 optionFilterProp="children"
@@ -40,7 +42,7 @@ const RecipientCountries = ({ validations, formPush }) => {
             </Item>
             <span className="percentage-row">
               {fieldExists('percentage') && (
-                <Item label="Percentage">
+                <Item label={<InputLabel tooltip={t('The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.')}>{t('percentage')}</InputLabel>}>
                 <FinalField
                   name={`${name}.percentage`}
                   control="input"
@@ -50,7 +52,7 @@ const RecipientCountries = ({ validations, formPush }) => {
                 </Item>
               )}
               {fieldExists('text') && (
-                <Item label={<InputLabel optional>Description</InputLabel>}>
+                <Item label={<InputLabel optional tooltip={t('Enter additional information about the recipient country, if necessary.')}>{t('description')}</InputLabel>}>
                 <FinalField
                   name={`${name}.text`}
                   control="textarea"
@@ -63,7 +65,7 @@ const RecipientCountries = ({ validations, formPush }) => {
         )}
         addButton={({ onClick }) => (
           <Button onClick={onClick} icon="plus" type="dashed" block>
-            Add recipient country
+            {t('Add recipient country')}
           </Button>
         )}
       />

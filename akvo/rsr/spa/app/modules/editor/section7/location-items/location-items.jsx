@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form, Row, Col } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -15,11 +16,12 @@ import '../styles.scss'
 const { Item } = Form
 
 const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>Locations</h3>
+      <h3>{t('Locations')}</h3>
       <ItemArray
         setName="locationItems"
         sectionIndex={7}
@@ -39,19 +41,19 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                 />
               )}
             />
-            <Item label={<InputLabel optional>Address 1</InputLabel>}>
+            <Item label={<InputLabel optional>{t('address 1')}</InputLabel>}>
             <FinalField
               name={`${name}.address1`}
               control="input"
             />
             </Item>
-            <Item label={<InputLabel optional>Address 2</InputLabel>}>
+            <Item label={<InputLabel optional>{t('address 2')}</InputLabel>}>
             <FinalField
               name={`${name}.address2`}
               control="input"
             />
             </Item>
-            <Item label={<InputLabel optional>Postal code</InputLabel>}>
+            <Item label={<InputLabel optional>{t('postal code')}</InputLabel>}>
             <FinalField
               name={`${name}.postcode`}
               control="input"
@@ -64,6 +66,10 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   name={`${name}.name`}
                   control="input"
                   withLabel
+                  dict={{
+                    label: t('name'),
+                    tooltip: t('The human-readable name for the location.')
+                  }}
                   optional
                 />
               </Col>
@@ -75,7 +81,11 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   control="input"
                   optional
                   withLabel
-                />
+                  dict={{
+                    label: t('reference'),
+                    tooltip: t('An internal reference that describes the location in the reporting organisation\'s own system.For reference see: <a href="http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/location/#attributes" target="_blank">http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/location/#attributes</a>.')
+              }}
+            />
               </Col>
               }
               {fieldExists('locationCode') &&
@@ -85,6 +95,10 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   control="input"
                   withLabel
                   optional
+                  dict={{
+                    label: t('code'),
+                    tooltip: t('Enter a code to identify the region. Codes are based on DAC region codes. Where an activity is considered global, the code 998 can be used. For reference: <a href="http://www.oecd.org/dac/stats/dacandcrscodelists.htm" target="_blank">http://www.oecd.org/dac/stats/dacandcrscodelists.htm</a>.')
+                  }}
                 />
               </Col>
               }
@@ -98,6 +112,10 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   rows={3}
                   withLabel
                   optional
+                  dict={{
+                    label: t('location description'),
+                    tooltip: t('This provides free text space for providing an additional description, if needed, of the actual target of the activity. A description that qualifies the location, not the activity.')
+                  }}
                 />
               </Col>
               }
@@ -109,6 +127,10 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   rows={3}
                   withLabel
                   optional
+                  dict={{
+                    label: t('location description'),
+                    tooltip: t('A description that qualifies the activity taking place at the location. This should not duplicate information provided in the main activity description, and should typically be used to distinguish between activities at multiple locations within a single iati-activity record.')
+                  }}
                 />
               </Col>
               }
@@ -126,6 +148,10 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   withEmptyOption
                   withLabel
                   optional
+                  dict={{
+                    label: t('location precision'),
+                    tooltip: t('Defines whether the location represents the most distinct point reasonably possible for this type of activity or is an approximation due to lack of more detailed information.')
+                  }}
                 />
               </Col>
               }
@@ -135,12 +161,16 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   name={`${name}.locationReach`}
                   control="select"
                   options={[
-                    {value: '1', label: 'Activity'},
-                    {value: '2', label: 'Indended beneficiaries'}
+                    {value: '1', label: t('Activity')},
+                    {value: '2', label: t('Intended beneficiaries')}
                   ]}
                   withEmptyOption
                   withLabel
                   optional
+                  dict={{
+                    label: t('reach'),
+                    tooltip: t('Does this location describe where the activity takes place or where the intended beneficiaries reside?')
+                  }}
                 />
               </Col>
               }
@@ -152,14 +182,18 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   name={`${name}.locationClass`}
                   control="select"
                   options={[
-                    {value: '1', label: 'Administrative Region'},
-                    {value: '2', label: 'Populated Place'},
-                    {value: '3', label: 'Structure'},
-                    {value: '4', label: 'Other Topographical Feature'}
+                    {value: '1', label: t('Administrative Region')},
+                    {value: '2', label: t('Populated Place')},
+                    {value: '3', label: t('Structure')},
+                    {value: '4', label: t('Other Topographical Feature')}
                   ]}
                   withEmptyOption
                   withLabel
                   optional
+                  dict={{
+                    label: t('class'),
+                    tooltip: t('Does the location refer to a physical structure such as a building, a populated place (e.g. city or village), an administrative division, or another topological feature (e.g. river, nature reserve)? For reference: <a href="http://iatistandard.org/202/codelists/GeographicLocationClass/" target="_blank">http://iatistandard.org/202/codelists/GeographicLocationClass/</a>.')
+                  }}
                 />
               </Col>
               }
@@ -174,13 +208,17 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
                   withEmptyOption
                   withLabel
                   optional
+                  dict={{
+                    label: t('feature desgination'),
+                    tooltip: t('Does the location refer to a physical structure such as a building, a populated place (e.g. city or village), an administrative division, or another topological feature (e.g. river, nature reserve)? For reference: <a href="http://iatistandard.org/202/codelists/GeographicLocationClass/" target="_blank">http://iatistandard.org/202/codelists/GeographicLocationClass/</a>.')
+                  }}
                 />
               </Col>
               }
             </Row>
             {fieldExists('administratives') &&
             <div>
-            <h5>Administratives</h5>
+            <h5>{t('Administratives')}</h5>
             <FinalField name={`${name}.id`} render={({input}) => <Administratives push={formPush} parentName={name} locationId={input.value} primaryOrganisation={primaryOrganisation} />} />
             </div>
             }
@@ -188,7 +226,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
         )}
         addButton={({ onClick }) => (
           <Button onClick={onClick} icon="plus" type="dashed" block>
-            Add location
+            {t('Add location')}
           </Button>
         )}
       />

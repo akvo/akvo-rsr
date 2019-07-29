@@ -4,6 +4,7 @@ import { Form } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import {isEqual} from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import LocationsItems from './location-items/location-items'
 import RecipientCountries from './recipient-countries/recipient-countries'
@@ -20,6 +21,7 @@ import validationDefs from './validations'
 const { Item } = Form
 
 const LocationsView = ({ validations, fields, primaryOrganisation }) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isEUTF = validations.indexOf(5) !== -1
@@ -44,7 +46,7 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
           </Aux>
           }
           {fieldExists('projectScope') &&
-          <Item label={<InputLabel optional>Project scope</InputLabel>}>
+          <Item label={<InputLabel optional>{t('Project scope')}</InputLabel>}>
             <FinalField
               name="projectScope"
               control="select"
