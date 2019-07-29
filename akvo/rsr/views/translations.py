@@ -332,6 +332,10 @@ JSON_TEXT = {
     u"link caption": _(u"link caption"),
     u"Add another link": _(u"Add another link"),
     u"Max: 5MB": _(u"Max: 5MB"),
+    u"The project comments are only for internal use and will not be displayed anywhere on the project page.": _(u"The project comments are only for internal use and will not be displayed anywhere on the project page."),
+    u"Comments": _(u"Comments"),
+    u"Select keywords in case you are using an Akvo Page. Keywords linked to a project will determine if a project appears on the Akvo Page or not.": _(u"Select keywords in case you are using an Akvo Page. Keywords linked to a project will determine if a project appears on the Akvo Page or not."),
+    u"Keywords": _(u"Keywords"),
     "menu": {
       "settings": _("Project settings"),
       "info": _("General information"),
