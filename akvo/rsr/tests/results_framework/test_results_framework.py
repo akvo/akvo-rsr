@@ -896,3 +896,23 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(child_indicator.dimension_names.count(), 1)
+
+    def test_adding_new_dimension_name_and_values_to_indicator_changes_children(self):
+        # Given
+        name = IndicatorDimensionName.objects.create(name='Colour', project=self.parent_project)
+        colours = {'Red', 'Blue', 'Green'}
+        for colour in colours:
+            IndicatorDimensionValue.objects.create(name=name, value=colour)
+        indicator = self.indicator
+        child_indicator = Indicator.objects.get(
+            parent_indicator=indicator, result__project=self.child_project)
+        self.assertEqual(child_indicator.dimension_names.count(), 1)
+
+        # When
+        indicator.dimension_names.add(name)
+
+        # Then
+        self.assertEqual(child_indicator.dimension_names.count(), 2)
+        colour = child_indicator.dimension_names.get(name='Colour')
+        child_values = set(colour.dimension_values.values_list('value', flat=True))
+        self.assertEqual(colours, child_values)
