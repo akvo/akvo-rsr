@@ -4,6 +4,7 @@ import { Form, Radio, Divider } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import Sectors from './sectors/sectors'
 import PolicyMarkers from './policy-markers/policy-markers'
@@ -20,6 +21,7 @@ const { Group, Button } = Radio
 const Aux = node => node.children
 
 const Focus = ({ validations, fields, primaryOrganisation}) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
@@ -45,13 +47,13 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
           {fieldExists('humanitarian') &&
           <Aux>
             <Divider />
-            <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
+            <Item label={<InputLabel optional tooltip={t('Determines whether this project relates entirely or partially to humanitarian aid.')}>{t('humanitarian project')}</InputLabel>}>
               <FinalField
                 name="humanitarian"
                 render={({ input }) => (
                   <Group {...input}>
-                    <Button value>Yes</Button>
-                    <Button value={false}>No</Button>
+                    <Button value>{t('Yes')}</Button>
+                    <Button value={false}>{t('No')}</Button>
                   </Group>
                 )}
               />

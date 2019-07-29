@@ -56,7 +56,7 @@ const RecipientRegions = ({ formPush, validations }) => {
                 </Item>
                 </Col>
                 <Col span={12}>
-                  <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('Vocabulary URI')}</InputLabel>}>
+                  <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('vocabulary URI')}</InputLabel>}>
                   <FinalField
                     name={`${name}.regionVocabularyUri`}
                     control="input"
