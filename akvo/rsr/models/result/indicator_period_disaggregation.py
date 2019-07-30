@@ -14,6 +14,8 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, models.Model):
     Model to hold aggregated disaggregation updates
     """
 
+    project_relation = 'results__indicators__periods__disaggregations__in'
+
     period = models.ForeignKey(
         'IndicatorPeriod',
         verbose_name=_(u'indicator period'),
