@@ -21,6 +21,7 @@ import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
+import { useFetch } from '../../../../utils/hooks';
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
@@ -43,7 +44,7 @@ const TypeField = ({ name }) => {
   )
 }
 
-const Transactions = ({ validations, formPush }) => {
+const Transactions = ({ validations, formPush, orgs, loadingOrgs }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -140,10 +141,13 @@ const Transactions = ({ validations, formPush }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <OrganizationSelect
-                  name={`${name}.providerOrganisation`}
+                  name={name}
+                  fieldName="providerOrganisation"
                   dict={{
                     label: t('organisation'), tooltip: t('For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation.')
                   }}
+                  orgs={orgs}
+                  loading={loadingOrgs}
                 />
               </Col>
               <Col span={12}>
@@ -164,10 +168,13 @@ const Transactions = ({ validations, formPush }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <OrganizationSelect
-                  name={`${name}.receiverOrganisation`}
+                  name={name}
+                  fieldName="receiverOrganisation"
                   dict={{
                     label: t('organisation'), tooltip: t('The organisation that receives the incoming funds.')
                   }}
+                  orgs={orgs}
+                  loading={loadingOrgs}
                 />
               </Col>
               <Col span={12}>

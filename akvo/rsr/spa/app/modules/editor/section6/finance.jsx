@@ -18,10 +18,12 @@ import AutoSave from '../../../utils/auto-save'
 import SectionContext from '../section-context'
 import validationDefs from './validations'
 import './styles.scss'
+import { useFetch } from '../../../utils/hooks';
 
 const { Item } = Form
 
 const Finance = ({ validations, fields }) => {
+  const [{ results }, loadingOrgs] = useFetch('/typeaheads/organisations')
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -84,13 +86,13 @@ const Finance = ({ validations, fields }) => {
           {fieldExists('transactions') && (
             <Aux>
               <h3>{t('Transactions')}</h3>
-              <Transactions formPush={push} validations={validations} />
+              <Transactions formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} />
             </Aux>
           )}
           {fieldExists('plannedDisbursements') && (
             <Aux>
               <h3>{t('Planned disbursements')}</h3>
-              <PlannedDisbursements formPush={push} validations={validations} />
+              <PlannedDisbursements formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} />
             </Aux>
           )}
           <AutoSave sectionIndex={6} />

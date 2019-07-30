@@ -29,14 +29,14 @@ const ValueDateField = ({ name }) => {
   )
 }
 
-const PlannedDisbursements = ({ formPush, validations }) => {
+const PlannedDisbursements = ({ formPush, validations, orgs, loadingOrgs }) => {
   const { t } = useTranslation()
   const isIATI = validations.indexOf(validationType.IATI) !== -1
   return (
     <ItemArray
       setName="plannedDisbursements"
       sectionIndex={6}
-      header="Planned disbursement $index"
+      header={`${t('Planned disbursement')} $index`}
       formPush={formPush}
       panel={name => (
         <div>
@@ -121,11 +121,14 @@ const PlannedDisbursements = ({ formPush, validations }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <OrganizationSelect
-                  name={`${name}.providerOrganisation`}
+                  name={name}
+                  fieldName="providerOrganisation"
                   dict={{
                     label: t('Provider organisation'),
                     tooltip: t('For incoming funds, this is the organisation from which the funds originated. It will default to the reporting organisation.')
                   }}
+                  orgs={orgs}
+                  loading={loadingOrgs}
                 />
               </Col>
               <Col span={12}>
@@ -144,10 +147,13 @@ const PlannedDisbursements = ({ formPush, validations }) => {
             <Row gutter={16}>
               <Col span={12}>
                 <OrganizationSelect
-                  name={`${name}.receiverOrganisation`}
+                  name={name}
+                  fieldName="receiverOrganisation"
                   dict={{
                     label: t('recipient organisation'), tooltip: t('The organisation that receives the incoming funds.')
                   }}
+                  orgs={orgs}
+                  loading={loadingOrgs}
                 />
               </Col>
               <Col span={12}>

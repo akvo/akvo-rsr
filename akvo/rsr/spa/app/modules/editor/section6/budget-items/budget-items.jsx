@@ -23,7 +23,7 @@ const totalBudgetReducer = (acc, budgetItem) => {
   return acc
 }
 
-const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
+const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, errors }) => {
   const { t } = useTranslation()
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
@@ -32,7 +32,12 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>{t('Budget items')}</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('Budget items')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'budgetItems') !== -1 && (
+          <span className="min-required">Minimum one required</span>
+        )}
+      </div>
       <div className="total">
         {t('Total budget')}:
         <span className="amount">
@@ -216,5 +221,5 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
 
 
 export default connect(
-  ({ editorRdr: { section1: { fields: { currency } }}}) => ({ currency }),
+  ({ editorRdr: { section1: { fields: { currency } }, showRequired, section6: {errors} } }) => ({ currency, showRequired, errors }),
 )(BudgetItems)
