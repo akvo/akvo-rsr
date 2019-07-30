@@ -17,15 +17,14 @@ import './styles.scss'
 
 const { Item } = Form
 
-const CONTACT_TYPE_OPTIONS = [
-  { value: '1', label: 'General Inquiries'},
-  { value: '2', label: 'Project Management'},
-  { value: '3', label: 'Financial Management'},
-  { value: '4', label: 'Communications'}
-]
-
 const Contacts = ({ validations, fields }) => {
   const { t } = useTranslation()
+  const CONTACT_TYPE_OPTIONS = [
+    { value: '1', label: t('General Inquiries') },
+    { value: '2', label: t('Project Management') },
+    { value: '3', label: t('Financial Management') },
+    { value: '4', label: t('Communications') }
+  ]
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const isValid = isFieldValid(validationSets)
@@ -86,7 +85,7 @@ const Contacts = ({ validations, fields }) => {
                     />
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel optional>{t('section2.department.label')}</InputLabel>}>
+                    <Item label={<InputLabel optional>{t('section2::department::label')}</InputLabel>}>
                     <FinalField
                       name={`${name}.department`}
                     />
@@ -101,7 +100,7 @@ const Contacts = ({ validations, fields }) => {
                       validateStatus={isValid('email', input.value) && input.value ? 'success' : ''}
                       label={(
                       <InputLabel optional={isOptional('email')}>
-                        {t('section2.email.label')}
+                        {t('section2::email::label')}
                       </InputLabel>
                       )}
                     >
@@ -115,7 +114,7 @@ const Contacts = ({ validations, fields }) => {
                     <Item
                       hasFeedback
                       validateStatus={isValid('mailingAddress', input.value) && input.value ? 'success' : ''}
-                      label={<InputLabel tooltip={t('section2.address.tooltip')} optional={isOptional('mailingAddress')}>{t('section2.address.label')}</InputLabel>}
+                      label={<InputLabel tooltip={t('section2::address::tooltip')} optional={isOptional('mailingAddress')}>{t('section2::address::label')}</InputLabel>}
                     >
                       <Input {...input} />
                     </Item>

@@ -71,7 +71,7 @@ class Descriptions extends React.Component {
                       validateStatus={validateStatus}
                       label={(
                         <div className="desc-label">
-                          <span>{t(`section4.${descKey}.label`)}&nbsp;&nbsp;<Tooltip trigger="click" title={<span dangerouslySetInnerHTML={{ __html: t(`section4.${descKey}.info`) }} />}><Icon type="info-circle" /></Tooltip></span>
+                          <span>{t(`section4::${descKey}::label`)}&nbsp;&nbsp;<Tooltip trigger="click" title={<span dangerouslySetInnerHTML={{ __html: t(`section4::${descKey}::info`) }} />}><Icon type="info-circle" /></Tooltip></span>
                           {isOptional(descKey) && <Icon type="delete" onClick={() => this.removeDesc(descKey, input)} />}
                         </div>
                       )}
@@ -101,8 +101,8 @@ class Descriptions extends React.Component {
                     return !(!isOptional(descKey) || !isEmpty(values[descKey]) || this.state.added.indexOf(descKey) !== -1)
                   }).map(descKey => (
                     <div className="desc-block">
-                      <Button block icon="plus" onClick={() => this.addDesc(descKey)}>{t(`section4.${descKey}.label`)}</Button>
-                      <p>{t(`section4.${descKey}.info`)}</p>
+                      <Button block icon="plus" onClick={() => this.addDesc(descKey)}>{t(`section4::${descKey}::label`)}</Button>
+                      <p>{t(`section4::${descKey}::info`)}</p>
                     </div>
                   ))}
                   </div>

@@ -40,7 +40,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
     <Dropdown overlay={
       <Menu onClick={addResult}>
         {resultTypes.map(type =>
-        <Menu.Item key={type.value}><Icon type="plus" />{type.label}</Menu.Item>
+          <Menu.Item key={type.value}><Icon type="plus" />{t(type.label)}</Menu.Item>
         )}
       </Menu>
     }
@@ -107,12 +107,12 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
     <div className="summary">
       <ul>
         {resultTypes.map(type =>
-          <li>{type.label}<strong>{groupedResults[type.value].length}</strong></li>
+          <li>{t(type.label)}<strong>{groupedResults[type.value].length}</strong></li>
         )}
       </ul>
       <Button type="link" icon="eye" onClick={() => setShowModal(true)}>{t('Full preview')}</Button>
       <Modal
-        title="Results framework preview"
+        title={t('Results framework preview')}
         visible={showModal}
         onCancel={() => setShowModal(false)}
         footer={null}
@@ -121,7 +121,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
       >
         <Collapse bordered={false}>
           {Object.keys(groupedResults).map(groupKey =>
-            <Panel header={<span className="group-title">{resultTypes.find(it => it.value === groupKey).label}<b> ({groupedResults[groupKey].length})</b></span>}>
+            <Panel header={<span className="group-title">{t(resultTypes.find(it => it.value === groupKey).label)}<b> ({groupedResults[groupKey].length})</b></span>}>
               <Collapse bordered={false}>
                 {groupedResults[groupKey].map((result, resultIndex) =>
                   <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>

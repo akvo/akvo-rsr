@@ -87,10 +87,10 @@ class Partners extends React.Component{
                           <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
                             {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}
                             <Popconfirm
-                              title="Are you sure to delete this?"
+                              title={t('Are you sure to delete this?')}
                               onConfirm={() => this.removeItem(index, fields)}
-                              okText="Yes"
-                              cancelText="No"
+                              okText={t('Yes')}
+                              cancelText={t('No')}
                             >
                               <Button size="small" icon="delete" className="delete-panel" />
                             </Popconfirm>
@@ -125,12 +125,12 @@ class Partners extends React.Component{
                           loading={this.state.loading}
                           disabled={disabled}
                           dict={{
-                            label: 'project partner',
-                            tooltip: 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href=\'mailto: support@akvo.org\'>support@akvo.org</a> to request to add it to the database.'
+                            label: t('project partner'),
+                            tooltip: t('Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href=\'mailto: support@akvo.org\'>support@akvo.org</a> to request to add it to the database.')
                           }}
                         />
                         <Condition when={`${name}.iatiOrganisationRole`} is={101}>
-                          <Item label={<InputLabel tooltip={t('section3.secondaryReporter.tooltip')} optional>{t('section3.secondaryReporter.label')}</InputLabel>}>
+                          <Item label={<InputLabel tooltip={t('section3::secondaryReporter::tooltip')} optional>{t('section3::secondaryReporter::label')}</InputLabel>}>
                           <FinalField
                             name={`${name}.isSecondaryReporter`}
                             render={({ input }) => (
