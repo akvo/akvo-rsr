@@ -36,6 +36,12 @@ ol{
   }
 }
 
+.lang-menu{
+  margin-left: -12px;
+  img{
+    height: 14px;
+  }
+}
 .top-bar{
   padding: 20px 0;
   height: 70px;
@@ -45,6 +51,12 @@ ol{
       margin-top: -3px;
     }
     .right-side{
+      .lang{
+        margin-right: 10px;
+        img{
+          height: 14px;
+        }
+      }
       .user{
         cursor: pointer;
         margin-right: 15px;

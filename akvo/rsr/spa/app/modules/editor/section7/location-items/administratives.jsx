@@ -3,6 +3,7 @@ import { Form, Row, Col, Popconfirm, Button, Collapse, Tag, Select, Input } from
 import { FieldArray } from 'react-final-form-arrays'
 import { connect } from 'react-redux'
 import { Field } from 'react-final-form'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
@@ -18,6 +19,7 @@ const { Option } = Select
 const Aux = node => node.children
 
 const Administratives = connect(null, { removeSetItem })(({ push, parentName, locationId, removeSetItem, primaryOrganisation }) => { // eslint-disable-line
+  const { t } = useTranslation()
   const add = () => {
     push(`${parentName}.administratives`, { location: locationId })
   }
@@ -38,7 +40,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
             forceRender
             header={(
               <span>
-                Administrative {index + 1}
+                {t('Administrative')} {index + 1}
                 <FinalField
                   name={`${name}.vocabulary`}
                   render={({input}) => input.value ? <span>&nbsp;<Tag>{input.value}</Tag></span> : ''}
@@ -50,7 +52,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
               <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
               <div className="delete-btn-holder">
               <Popconfirm
-                title="Are you sure to delete this administrative?"
+                title={t('Are you sure to delete this administrative?')}
                 onConfirm={() => remove(index, fields)}
                 okText="Yes"
                 cancelText="No"
@@ -63,7 +65,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
           >
           <div>
             <AutoSave sectionIndex={7} setName={`${parentName}.administratives`} itemIndex={index} />
-            <Item label={<InputLabel optional>Vocabulary</InputLabel>}>
+            <Item label={<InputLabel optional tooltip={t('For reference: <a href="http://iatistandard.org/202/codelists/GeographicVocabulary/" target="_blank">http://iatistandard.org/202/codelists/GeographicVocabulary/</a>.')}>{t('vocabulary')}</InputLabel>}>
             <FinalField
               name={`${name}.vocabulary`}
               control="select"
@@ -73,7 +75,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
             </Item>
             <Row gutter={16}>
               <Col span={12}>
-                <Item label={<InputLabel optional>Administrative code</InputLabel>}>
+                <Item label={<InputLabel optional tooltip={t('Coded identification of national and sub-national divisions according to recognised administrative boundary repositories. Multiple levels may be reported.')}>{t('administrative code')}</InputLabel>}>
                 <Field
                   name={`${name}.vocabulary`}
                   render={(vocabProps) => (
@@ -95,7 +97,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
                 </Item>
               </Col>
               <Col span={12}>
-                <Item label={<InputLabel optional>Level</InputLabel>}>
+                <Item label={<InputLabel optional>{t('administrative level')}</InputLabel>}>
                 <FinalField
                   name={`${name}.level`}
                   control="input"
@@ -107,7 +109,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
           </Panel>
         )}
       />
-      <Button icon="plus" block type="dashed" onClick={add}>Add administrative</Button>
+      <Button icon="plus" block type="dashed" onClick={add}>{t('Add administrative')}</Button>
       </Aux>
     )}
     </FieldArray>

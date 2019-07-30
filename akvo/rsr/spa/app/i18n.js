@@ -1,32 +1,23 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-// import Backend from 'i18next-xhr-backend'
-// Temporarily importing translations directly instead of using the Backend module
-import section1 from './locales/en/section1.json'
-import section3 from './locales/en/section3.json'
-import section6 from './locales/en/section6.json'
-import section7 from './locales/en/section7.json'
-
-const resources = {
-  en: {
-    section1, section3, section6, section7
-  }
-}
+import Backend from 'i18next-xhr-backend'
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
-  // .use(Backend)
+  .use(Backend)
   .init({
-    resources,
     lng: 'en',
-
+    nsSeparator: '~',
+    keySeparator: '::',
+    backend: {
+      loadPath: '/{{lng}}/translations.json',
+    },
     interpolation: {
       escapeValue: false // react already safes from xss
     },
-    // backend: {
-    //   // for all available options read the backend's repository readme file
-    //   loadPath: '/locales/{{lng}}/{{ns}}.json'
-    // }
+    react: {
+      useSuspense: false
+    }
   })
 
 export default i18n

@@ -4,6 +4,7 @@ import { Form, Button, Radio, Popconfirm } from 'antd'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { isEqual } from 'lodash'
+import { withTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import Condition from '../../../utils/condition'
@@ -18,14 +19,6 @@ import SectionContext from '../section-context'
 
 const { Item } = Form
 
-const ROLE_OPTIONS = [
-  { value: 2, label: 'Accountable partner'},
-  { value: 3, label: 'Extending partner'},
-  { value: 1, label: 'Funding partner'},
-  { value: 4, label: 'Implementing partner'},
-  { value: 101, label: 'Reporting organization'},
-  { value: 100, label: 'Sponsor partner'}
-]
 
 class Partners extends React.Component{
   state = {
@@ -44,8 +37,17 @@ class Partners extends React.Component{
     fields.remove(index)
   }
   render(){
+    const { t } = this.props
     const currencySymbol = getSymbolFromCurrency(this.props.currency)
     const currencyRegExp = new RegExp(`\\${currencySymbol}\\s?|(,*)`, 'g')
+    const ROLE_OPTIONS = [
+      { value: 2, label: t('Accountable partner') },
+      { value: 3, label: t('Extending partner') },
+      { value: 1, label: t('Funding partner') },
+      { value: 4, label: t('Implementing partner') },
+      { value: 101, label: t('Reporting organisation') },
+      { value: 100, label: t('Sponsor partner') },
+    ]
     return (
       <div className="partners view">
         <SectionContext.Provider value="section3">
@@ -122,15 +124,19 @@ class Partners extends React.Component{
                           orgs={this.state.orgs}
                           loading={this.state.loading}
                           disabled={disabled}
+                          dict={{
+                            label: 'project partner',
+                            tooltip: 'Select an organisation that is playing a role in the project. If an organisation is not currently featured in RSR, please contact <a href=\'mailto: support@akvo.org\'>support@akvo.org</a> to request to add it to the database.'
+                          }}
                         />
                         <Condition when={`${name}.iatiOrganisationRole`} is={101}>
-                          <Item label={<InputLabel optional>Secondary reporter</InputLabel>}>
+                          <Item label={<InputLabel tooltip={t('section3.secondaryReporter.tooltip')} optional>{t('section3.secondaryReporter.label')}</InputLabel>}>
                           <FinalField
                             name={`${name}.isSecondaryReporter`}
                             render={({ input }) => (
                                 <Radio.Group {...input} disabled={disabled}>
-                                  <Radio.Button value>Yes</Radio.Button>
-                                  <Radio.Button value={false}>No</Radio.Button>
+                                  <Radio.Button value>{t('Yes')}</Radio.Button>
+                                  <Radio.Button value={false}>{t('No')}</Radio.Button>
                                 </Radio.Group>
                             )}
                           />
@@ -146,12 +152,13 @@ class Partners extends React.Component{
                             withLabel
                           />
                         </Condition>
-                        <Item label={<InputLabel optional>IATI Activity ID</InputLabel>}>
                         <FinalField
                           name={`${name}.iatiActivityId`}
                           disabled={disabled}
+                          withLabel
+                          optional
+                          control="input"
                         />
-                        </Item>
                         </div>
                       )
                     }}
@@ -159,7 +166,7 @@ class Partners extends React.Component{
                 </div>
               )}
               addButton={({onClick}) => (
-                <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>Add a partner</Button>
+                <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another participating organisation')}</Button>
               )}
             />
           )}
@@ -170,17 +177,8 @@ class Partners extends React.Component{
     )
   }
 }
-// const Partners = ({ currency, fields }) => {
-//   const [{results}, loading] = useFetch('/typeaheads/organisations')
-// }
 
 export default connect(
   ({ editorRdr: { validations, section3: { fields }, section1: { fields: { currency, primaryOrganisation } }} }) => ({ validations, currency, fields, primaryOrganisation }),
   { removeSetItem }
-)(Partners)
-
-// export default connect(
-//   ({ editorRdr: { section3: { fields }, validations}}) => ({ fields, validations}),
-// )(React.memo(Partners, (prevProps, nextProps) => {
-//   return isEqual(prevProps.fields, nextProps.fields)
-// }))
+)(withTranslation()(Partners))

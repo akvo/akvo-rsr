@@ -6973,6 +6973,13 @@ msgstr ""
 "markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a> est "
 "pris en charge."
 
+
+#: akvo/rsr/models/project.py:188
+msgid ""
+"Provide a brief description of the overall project goals."
+msgstr ""
+"Fournir une brève description des objectifs globaux du projet."
+
 #: akvo/rsr/models/project.py:193
 msgid "baseline situation"
 msgstr "situation de référence"
@@ -6985,7 +6992,13 @@ msgid ""
 msgstr ""
 "Décrivez la situation au début du projet. Pour les liens et la mise en page "
 "du texte, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-"
-"Cheatsheet\" target=\"_blank\">Markdown</a>est pris en charge."
+"Cheatsheet\" target=\"_blank\">Markdown</a>est pris en charge."\
+
+#: akvo/rsr/models/project.py:194
+msgid ""
+"Describe the situation at the start of the project."
+msgstr ""
+"Décrivez la situation au début du projet."
 
 #: akvo/rsr/models/project.py:199
 msgid "project plan"
@@ -7002,6 +7015,14 @@ msgstr ""
 "quoi, comment, qui et quand. Pour les liens et la mise en page du texte, <a "
 "href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet\" "
 "target=\"_blank\">Markdown</a>est pris en charge. "
+
+#: akvo/rsr/models/project.py:200
+msgid ""
+"Detailed information about the implementation of the project: the what, how, "
+"who and when."
+msgstr ""
+"Des informations détaillées concernant la mise en oeuvre du projet : le "
+"quoi, comment, qui et quand."
 
 #: akvo/rsr/models/project.py:206
 msgid "sustainability"
@@ -7026,6 +7047,20 @@ msgstr ""
 "markdown-here/wiki/Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>est "
 "pris en charge."
 
+#: akvo/rsr/models/project.py:207
+msgid ""
+"Describe how you aim to guarantee sustainability of the project until 10 "
+"years after project implementation. Think about the institutional setting, "
+"capacity-building, a cost recovery plan, products used, feasible "
+"arrangements for operation and maintenance, anticipation of environmental "
+"impact and social integration."
+msgstr ""
+"Décrivez comment vous visez à garantir la durabilité du projet jusqu'à 10 "
+"ans après sa mise en œuvre. Pensez au cadre institutionnel, au renforcement "
+"des capacités, au plan de recouvrement des coûts, aux produits utilisés, aux "
+"dispositions réalisables pour l'exploitation et la maintenance, à "
+"l'anticipation de l'impact environnemental et à l'intégration sociale."
+
 #: akvo/rsr/models/project.py:216
 msgid "background"
 msgstr "contexte"
@@ -7044,6 +7079,16 @@ msgstr ""
 "texte, <a href=\"https://github.com/adam-p/markdown-here/wiki/Markdown-"
 "Cheatsheet\" target=\"_blank\">Markdown</a>est pris en charge."
 
+#: akvo/rsr/models/project.py:217
+msgid ""
+"This should describe the geographical, political, environmental, social and/"
+"or cultural context of the project, and any related activities that have "
+"already taken place or are underway."
+msgstr ""
+"Cela devrait décrire le contexte géographique, politique, environnemental, "
+"social et/ou culturel du projet, ainsi que toutes les activités y afférentes "
+"qui ont déjà eu lieu ou sont en cours."
+
 #: akvo/rsr/models/project.py:224
 msgid "target group"
 msgstr "groupe cible"
@@ -7059,6 +7104,14 @@ msgstr ""
 "ou les ressources qui sont touchées par ce projet. Pour les liens et la mise "
 "en page du texte, <a href=\"https://github.com/adam-p/markdown-here/wiki/"
 "Markdown-Cheatsheet\" target=\"_blank\">Markdown</a>est pris en charge."
+
+#: akvo/rsr/models/project.py:225
+msgid ""
+"This should include information about the people, organisations or resources "
+"that are being impacted by this project."
+msgstr ""
+"Cela devrait inclure des informations sur les personnes, les organisations "
+"ou les ressources qui sont touchées par ce projet."
 
 #: akvo/rsr/models/project.py:233
 msgid "Aggregate results data from child projects"

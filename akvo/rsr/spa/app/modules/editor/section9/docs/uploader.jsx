@@ -3,9 +3,11 @@ import { Upload, Icon } from 'antd'
 import { Route } from 'react-router-dom'
 import {isEqual} from 'lodash'
 import { diff } from 'deep-object-diff'
+import { useTranslation } from 'react-i18next'
 import { config } from '../../../../utils/api'
 
 const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentUploaded, onDocumentUpdated }) => {
+  const { t } = useTranslation()
   return (
     <Route
     path="/projects/:id"
@@ -44,9 +46,9 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
             <p className="ant-upload-drag-icon">
               <Icon type="picture" theme="twoTone" />
             </p>
-            <p className="ant-upload-text">Drag file here</p>
-            <p className="ant-upload-hint">or click to browse from computer</p>
-            <p><small>Max: 5MB</small></p>
+            <p className="ant-upload-text">{t('Drag file here')}</p>
+            <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
+            <p><small>{t('Max: 5MB')}</small></p>
           </Upload.Dragger>
         )
       }

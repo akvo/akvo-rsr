@@ -2,12 +2,12 @@ import React, {useState, useEffect, useRef} from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import { get, isEqual } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import InputLabel from '../../../../utils/input-label'
-import { useFetch } from '../../../../utils/hooks'
 import actionTypes from '../../action-types'
 import TaxonomyModal from './taxonomy-modal'
-import api from '../../../../utils/api';
+import api from '../../../../utils/api'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -18,12 +18,11 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, projectId, dispatch, fields, indicatorId }) => { // eslint-disable-line
-  // const [dimensionData] = useFetch(`/dimension_name/?project=${projectId}`)
+  const { t } = useTranslation()
   const [dimensionData, setDimensionData] = useState([])
   async function fetchDimensions() {
     const response = await api.get(`/dimension_name/?project=${projectId}`)
     setDimensionData(response.data)
-    // setLoading(false)
   }
   useEffect(() => {
     fetchDimensions()
@@ -50,7 +49,9 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
   return (
     <div>
       <div className="ant-col ant-form-item-label">
-        <InputLabel optional tooltip="asd">Disaggregations</InputLabel>
+        <InputLabel optional tooltip={t('The term "disaggregation" is equivalent to the IATI term "dimension". For those reporting to IATI via RSR, disaggregations and their associated data are mapped accordingly as dimensions in your IATI export.')}>
+          {t('Disaggregations')}
+        </InputLabel>
       </div>
       {addedDimensions && addedDimensions.map((dimension, index) => (
         <div className="dimension-box">
@@ -60,10 +61,10 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
               {dimension.values.map(value => <li>{value.value}</li>)}
             </ul>
           </div>
-          <Button icon="minus" type="danger" onClick={() => removeItem(index)}>Remove</Button>
+          <Button icon="minus" type="danger" onClick={() => removeItem(index)}>{t('Remove')}</Button>
         </div>
       ))}
-      <Button icon="plus" block type="dashed" onClick={() => setModalVisible(true)}>Add disaggregation</Button>
+      <Button icon="plus" block type="dashed" onClick={() => setModalVisible(true)}>{t('Add disaggregation')}</Button>
       <TaxonomyModal
         visible={modalVisible}
         handleCancel={() => setModalVisible(false)}

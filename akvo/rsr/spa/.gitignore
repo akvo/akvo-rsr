@@ -63,3 +63,6 @@ npm-debug.log
 # Dist folder
 dist/
 build/index1.html
+
+translations/*
+!translations/extract.js

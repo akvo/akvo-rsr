@@ -4,6 +4,7 @@ import {
   Icon, Upload, Form, Button, Alert, Progress
 } from 'antd'
 import Cookies from 'js-cookie'
+import { withTranslation } from 'react-i18next'
 
 import InputLabel from '../../../../utils/input-label'
 
@@ -90,8 +91,16 @@ class ProjectPhoto extends React.Component {
   }
 
   render() {
+    const { t } = this.props
     return (
-      <Item validateStatus={this.props.validateStatus} label={<InputLabel tooltip="Add your project photo here. You can only add one photo. If you have more, you can add them via RSR updates when your project is published. A photo album will feature on the project page. The photo should not be larger than 2 MB in size, and should preferably be in JPG format.">Photo</InputLabel>}>
+      <Item
+        validateStatus={this.props.validateStatus}
+        label={
+        <InputLabel
+          tooltip={t('Project photo tooltip')}
+        >{t('Photo')}
+        </InputLabel>}
+      >
         {this.state.error &&
         <Alert type="error" message={this.state.error} style={{ marginBottom: 15 }} />
         }
@@ -106,7 +115,7 @@ class ProjectPhoto extends React.Component {
               }
             </div>
             <div>
-              <Button onClick={this.resetImage}>Upload New Image</Button>
+              <Button onClick={this.resetImage}>{t('Upload New Image')}</Button>
             </div>
           </div>
         )}
@@ -127,7 +136,7 @@ class ProjectPhoto extends React.Component {
             <p className="ant-upload-drag-icon">
               <Icon type="loading" />
             </p>
-            <p className="ant-upload-text">Uploading...</p>
+            <p className="ant-upload-text">{t('Uploading')}...</p>
           </div>
           )}
           {!this.state.loading && (
@@ -135,8 +144,8 @@ class ProjectPhoto extends React.Component {
             <p className="ant-upload-drag-icon">
               <Icon type="picture" theme="twoTone" />
             </p>
-            <p className="ant-upload-text">Drag file here</p>
-            <p className="ant-upload-hint">or click to browse from computer</p>
+            <p className="ant-upload-text">{t('Drag file here')}</p>
+            <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
           </div>
           )}
         </Upload.Dragger>
@@ -146,4 +155,4 @@ class ProjectPhoto extends React.Component {
   }
 }
 
-export default ProjectPhoto
+export default withTranslation()(ProjectPhoto)
