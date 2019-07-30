@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Form } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import {isEqual} from 'lodash'
+import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 
 import LocationsItems from './location-items/location-items'
@@ -78,4 +78,8 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
 
 export default connect(
   ({ editorRdr: { validations, section7: { fields }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation })
-)(React.memo(LocationsView, (prevProps, nextProps) => isEqual(prevProps.fields, nextProps.fields)))
+)(React.memo(LocationsView, (prevProps, nextProps) => {
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
+}))

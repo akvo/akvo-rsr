@@ -4,7 +4,7 @@ import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input,
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
-import { isEqual } from 'lodash'
+import { diff } from 'deep-object-diff'
 import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -266,7 +266,9 @@ const Section5 = React.memo(connect(
     </div>
   )
 }), (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps)
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
 })
 export default Section5
 // export default connect(

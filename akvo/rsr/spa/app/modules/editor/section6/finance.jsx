@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Col, Row, Input } from 'antd'
+import { Form, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { isEqual } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { diff } from 'deep-object-diff'
 
 import { Aux } from '../../../utils/misc'
 import InputLabel from '../../../utils/input-label'
@@ -106,5 +106,7 @@ const Finance = ({ validations, fields }) => {
 export default connect(
   ({ editorRdr: { section6: { fields }, validations}}) => ({ fields, validations}),
 )(React.memo(Finance, (prevProps, nextProps) => {
-  return isEqual(prevProps.fields, nextProps.fields)
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
 }))

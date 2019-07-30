@@ -6,9 +6,9 @@ import {
 import currencies from 'currency-codes/data'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { isEqual } from 'lodash'
 import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { diff } from 'deep-object-diff'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -105,7 +105,7 @@ const Info = ({ validations, fields }) => {
                     </Item>
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel>IATI identifier (prefix)</InputLabel>}>
+                    <Item label={<InputLabel>IATI identifier (suffix)</InputLabel>}>
                       <Input disabled value="T05-EUTF-SAH-REG-08" />
                     </Item>
                   </Col>
@@ -284,5 +284,7 @@ const Info = ({ validations, fields }) => {
 export default connect(
   ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
 )(React.memo(Info, (prevProps, nextProps) => {
-  return isEqual(prevProps.fields, nextProps.fields)
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
 }))

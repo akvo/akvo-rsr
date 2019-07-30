@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Radio, Divider } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { isEqual } from 'lodash'
+import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 
 import Sectors from './sectors/sectors'
@@ -71,4 +71,8 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
 
 export default connect(
   ({ editorRdr: { validations }, editorRdr: { section8: { fields }, section1: { fields: { primaryOrganisation }}} }) => ({ validations, fields, primaryOrganisation })
-)(React.memo(Focus, (prevProps, nextProps) => isEqual(prevProps.fields, nextProps.fields)))
+)(React.memo(Focus, (prevProps, nextProps) => {
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
+}))

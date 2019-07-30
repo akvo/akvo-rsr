@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Input, Button, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { isEqual } from 'lodash'
+import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
@@ -147,5 +147,7 @@ const Contacts = ({ validations, fields }) => {
 export default connect(
   ({ editorRdr: { section2: { fields }, validations}}) => ({ fields, validations}),
 )(React.memo(Contacts, (prevProps, nextProps) => {
-  return isEqual(prevProps.fields, nextProps.fields)
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
 }))
