@@ -64,7 +64,7 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
           <Button icon="minus" type="danger" onClick={() => removeItem(index)}>{t('Remove')}</Button>
         </div>
       ))}
-      <Button icon="plus" block type="dashed" onClick={() => setModalVisible(true)}>{t('Add disaggregation')}</Button>
+      <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={() => setModalVisible(true)}>{t('Add disaggregation')}</Button>
       <TaxonomyModal
         visible={modalVisible}
         handleCancel={() => setModalVisible(false)}

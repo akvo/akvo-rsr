@@ -152,10 +152,8 @@ class UpdateIfLengthChanged extends React.Component{
   }
 }
 
-const Section5 = React.memo(connect(
-  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } } } }) => ({ fields, relatedProjects, primaryOrganisation }),
-  { removeSetItem, fetchSetItems }
-)((props) => {
+
+const Section5 = (props) => {
   const { t } = useTranslation()
   const removeSection = (fields, index) => {
     fields.remove(index)
@@ -265,12 +263,15 @@ const Section5 = React.memo(connect(
       </Form>
     </div>
   )
-}), (prevProps, nextProps) => {
+}
+export default connect(
+  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } } } }) => ({ fields, relatedProjects, primaryOrganisation }),
+  { removeSetItem, fetchSetItems }
+)(React.memo(Section5, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
   return !shouldUpdate
-})
-export default Section5
+}))
 // export default connect(
 //   ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } }}}) => ({ fields, relatedProjects, primaryOrganisation }),
 //   { removeSetItem, fetchSetItems }

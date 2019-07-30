@@ -101,7 +101,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
           )}
         />
         }
-        <Button icon="plus" block type="dashed" onClick={add}>Add period</Button>
+        <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>Add period</Button>
         </Aux>
       )}
     </FieldArray>
