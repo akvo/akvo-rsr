@@ -42,8 +42,12 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions}) => {
   const handleDeleteDimension = () => {
     setState({ deleting: true, editing: false })
     api.delete(`/dimension_name/${dimension.id}/`)
-      .then(fetchDimensions)
+      .then(() => {
+        setState({ deleting: false })
+        fetchDimensions()
+      })
       .catch(err => {
+        setState({ deleting: false })
         console.log(err)
       })
   }

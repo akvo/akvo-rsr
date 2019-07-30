@@ -32,7 +32,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
   const { t } = useTranslation()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
-    if(key === 1) newItem.disaggregations = []
+    if(key === 1) newItem.dimensionNames = []
     if(resultId) newItem.result = resultId
     formPush(`${fieldName}.indicators`, newItem)
     addSetItem(5, `${fieldName}.indicators`, newItem)
