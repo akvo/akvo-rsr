@@ -14,13 +14,7 @@ const { Option } = Select
 const ProjectPicker = ({ fieldName, projects, loading }) => {
   const { t } = useTranslation()
   return (
-    <Item label={(
-      <InputLabel
-        tooltip="Check this box if you would like to indicate a related project that is not present in RSR. Instead, you will be able to fill in the IATI activity ID of the project."
-        optional
-      >{t('Project')}
-      </InputLabel>
-    )}>
+    <Item label={(<InputLabel optional>{t('Project')}</InputLabel>)}>
       <Condition when={`${fieldName}.isParentExternal`} is={true}>
         <FinalField
           placeholder={t('IATI Identifier')}
@@ -69,7 +63,7 @@ const RelatedProjects = ({ formPush, ...props }) => {
   return (
     <div>
     <div className="ant-col ant-form-item-label related-projects-label">
-        <InputLabel optional>{t('Related projects')}</InputLabel>
+      <InputLabel optional>{t('Related projects')}</InputLabel>
     </div>
     <ItemArray
       setName="relatedProjects"
@@ -100,7 +94,7 @@ const RelatedProjects = ({ formPush, ...props }) => {
           </Col>
         </Row>
       )}
-        addButton={({ onClick }) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another related project')}</Button>}
+      addButton={({ onClick }) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another related project')}</Button>}
     />
     </div>
   )
