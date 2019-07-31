@@ -21,7 +21,7 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
   const { t } = useTranslation()
   const [dimensionData, setDimensionData] = useState([])
   async function fetchDimensions() {
-    const response = await api.get(`/dimension_name/?project=${projectId}`)
+    const response = await api.get(`/dimension_name/?project__in=${projectId}`)
     setDimensionData(response.data)
   }
   useEffect(() => {
