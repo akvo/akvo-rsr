@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton } from 'antd'
 import TimeAgo from 'react-time-ago'
+import { useTranslation } from 'react-i18next'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -37,27 +38,37 @@ const Section = connect(({ editorRdr }) => ({ editorRdr }), actions)(_Section)
 
 const SavingStatus = connect(
   ({ editorRdr: { saving, lastSaved, backendError } }) => ({ saving, lastSaved, backendError })
-)(({ saving, lastSaved, backendError }) => (
-  <aside className="saving-status">
-    {saving && (
-      <div>
-        <Spin />
-        <span>Saving...</span>
-      </div>
-    )}
-    {(!saving && lastSaved !== null && backendError === null) && (
-      <div>
-        <Icon type="check" />
-        <span>Saved <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
-      </div>
-    )}
-    {(!saving && backendError !== null) && (
-      <div className="error">
-        <Tooltip title={<span>{backendError.message}<br />{JSON.stringify(backendError.response)}</span>}><Icon type="warning" /><span>Something went wrong</span></Tooltip>
-      </div>
-    )}
-  </aside>
-))
+)(({ saving, lastSaved, backendError }) => {
+  const { t } = useTranslation()
+  return (
+    <aside className="saving-status">
+      {saving && (
+        <div>
+          <Spin />
+          <span>{t('Saving...')}</span>
+        </div>
+      )}
+      {(!saving && lastSaved !== null && backendError === null) && (
+        <div>
+          <Icon type="check" />
+          <span>{t('Saved')} <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
+        </div>
+      )}
+      {(!saving && backendError !== null) && (
+        <div className="error">
+          <Tooltip
+            title={
+              <span>{backendError.message && <span>{backendError.message}<br /></span>}
+              {Object.keys(backendError.response).map(key => <span>{key}: {backendError.response[key]}<br /></span>)}
+              </span>
+            }>
+            <Icon type="warning" /><span>{t('Something went wrong')}</span>
+          </Tooltip>
+        </div>
+      )}
+    </aside>
+  )
+})
 
 const Aux = node => node.children
 
@@ -77,18 +88,19 @@ const ContentBar = connect(
   },
   actions
 )(({ publishingStatus, allValid, setStatus }) => {
+  const { t } = useTranslation()
   return (
     <div className="content">
       {publishingStatus === 'unpublished' && (
         <Aux>
-          <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>Publish</Button>
-          <i>The project is unpublished</i>
+          <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>{t('Publish')}</Button>
+          <i>{t('The project is unpublished')}</i>
         </Aux>
       )}
       {publishingStatus !== 'unpublished' && (
         <Aux>
-          <Button type="danger" onClick={() => setStatus('unpublished')}>Unpublish</Button>
-          <i>The project is published</i>
+          <Button type="danger" onClick={() => setStatus('unpublished')}>{t('Unpublish')}</Button>
+          <i>{t('The project is published')}</i>
         </Aux>
       )}
       <ValidationBar />
@@ -96,18 +108,21 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({title}) => (
-  <header className="main-header">
-    <Link to="/projects"><Icon type="left" /></Link>
-    <h1>{title ? title : 'Untitled project'}</h1>
-    <Tabs size="large" defaultActiveKey="4">
-      <TabPane tab="Results" key="1" />
-      <TabPane tab="Updates" key="2" />
-      <TabPane tab="Reports" key="3" />
-      <TabPane tab="Editor" key="4" />
-    </Tabs>
-  </header>
-)
+const _Header = ({title}) => {
+  const { t } = useTranslation()
+  return (
+    <header className="main-header">
+      <Link to="/projects"><Icon type="left" /></Link>
+      <h1>{title ? title : t('Untitled project')}</h1>
+      <Tabs size="large" defaultActiveKey="4">
+        <TabPane tab="Results" key="1" />
+        <TabPane tab="Updates" key="2" />
+        <TabPane tab="Reports" key="3" />
+        <TabPane tab="Editor" key="4" />
+      </Tabs>
+    </header>
+  )
+}
 const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
 
