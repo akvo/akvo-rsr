@@ -100,7 +100,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
                 <Item label={<InputLabel optional>{t('administrative level')}</InputLabel>}>
                 <FinalField
                   name={`${name}.level`}
-                  control="input"
+                  control="input-number"
                 />
                 </Item>
               </Col>
@@ -109,7 +109,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
           </Panel>
         )}
       />
-      <Button icon="plus" block type="dashed" onClick={add}>{t('Add administrative')}</Button>
+      <Button icon="plus" block type="dashed" disabled={!locationId} onClick={add}>{t('Add administrative')}</Button>
       </Aux>
     )}
     </FieldArray>

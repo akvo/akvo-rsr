@@ -30,7 +30,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
         )}
         headerField="location"
         formPush={formPush}
-        newItem={{ administratives: [{}]}}
+        newItem={{ administratives: []}}
         panel={name => (
           <Aux>
             <FinalField
