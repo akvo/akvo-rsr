@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Button, Collapse, Col, Row, Popconfirm } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import { useTranslation } from 'react-i18next'
 
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
@@ -16,6 +17,7 @@ const { Panel } = Collapse
 const Aux = node => node.children
 
 const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, primaryOrganisation }) => { // eslint-disable-line
+  const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId }
     formPush(`${fieldName}.periods`, newItem)
@@ -59,10 +61,10 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                 <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
                 <div className="delete-btn-holder">
                 <Popconfirm
-                  title="Are you sure to delete this period?"
+                  title={t('Are you sure to delete this period?')}
                   onConfirm={() => remove(index, fields)}
-                  okText="Yes"
-                  cancelText="No"
+                  okText={t('Yes')}
+                  cancelText={t('No')}
                 >
                   <Button size="small" icon="delete" className="delete-panel" />
                 </Popconfirm>

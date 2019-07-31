@@ -77,5 +77,8 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
 }
 
 export default connect(({ editorRdr: { projectId, section5: { fields } } }) => ({ projectId, fields }), mapDispatchToProps)(React.memo(
-  Disaggregations, (prevProps, nextProps) => isEqual(get(prevProps.fields, `${prevProps.fieldName}.dimensionNames`), get(nextProps.fields, `${nextProps.fieldName}.dimensionNames`)))
+  Disaggregations, (prevProps, nextProps) => {
+    return isEqual(get(prevProps.fields, `${prevProps.fieldName}.dimensionNames`), get(nextProps.fields, `${nextProps.fieldName}.dimensionNames`))
+            && prevProps.indicatorId === nextProps.indicatorId
+  })
 )
