@@ -35,7 +35,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
       <div className="min-required-wrapper">
         <h3>{t('Budget items')}</h3>
         {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'budgetItems') !== -1 && (
-          <span className="min-required">Minimum one required</span>
+          <span className="min-required">{t('Minimum one required')}</span>
         )}
       </div>
       <div className="total">

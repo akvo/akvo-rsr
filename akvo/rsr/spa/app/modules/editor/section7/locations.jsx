@@ -20,11 +20,12 @@ import validationDefs from './validations'
 
 const { Item } = Form
 
-const LocationsView = ({ validations, fields, primaryOrganisation }) => {
+const LocationsView = ({ validations, fields, primaryOrganisation, showRequired, errors }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isEUTF = validations.indexOf(5) !== -1
+  const passProps = { validations, showRequired, errors }
   return (
     <div className="locations view">
     <SectionContext.Provider value="section7">
@@ -41,7 +42,7 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
         <Form layout="vertical">
           {isEUTF &&
           <Aux>
-            <RecipientCountries formPush={push} validations={validations} />
+            <RecipientCountries formPush={push} {...passProps} />
             <hr />
           </Aux>
           }
@@ -55,17 +56,17 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
             <AutoSave sectionIndex={7} />
           </Item>
           }
-          <LocationsItems formPush={push} validations={validations} primaryOrganisation={primaryOrganisation} />
+          <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
           {!isEUTF &&
           <Aux>
             <hr />
-            <RecipientCountries formPush={push} validations={validations} />
+            <RecipientCountries formPush={push} {...passProps} />
           </Aux>
           }
           {(fieldExists('recipientRegions')) && (
             <Aux>
               <hr />
-              <RecipientRegions formPush={push} validations={validations} />
+              <RecipientRegions formPush={push} {...passProps} />
             </Aux>
           )}
         </Form>
@@ -77,7 +78,7 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
 }
 
 export default connect(
-  ({ editorRdr: { validations, section7: { fields }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation })
+  ({ editorRdr: { validations, showRequired, section7: { fields, errors }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation, showRequired, errors })
 )(React.memo(LocationsView, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1

@@ -11,13 +11,18 @@ import REGION_OPTIONS from './regions.json'
 
 const { Item } = Form
 
-const RecipientRegions = ({ formPush, validations }) => {
+const RecipientRegions = ({ formPush, validations, showRequired, errors }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>{t('Recipient region')}</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('Recipient region')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'recipientRegions') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <ItemArray
         setName="recipientRegions"
         sectionIndex={7}
@@ -67,14 +72,17 @@ const RecipientRegions = ({ formPush, validations }) => {
             )}
             <div className="percentage-row">
               {fieldExists('percentage') && (
-                <Item label={<InputLabel tooltip={t('If the activity occurs in more than one region, the percentage of activity commitment allocated to each region should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each region. Use a period to denote decimals.')}>{t('Percentage')}</InputLabel>}>
                 <FinalField
                   name={`${name}.percentage`}
                   suffix={<span>%</span>}
                   className="percentage-input"
                   control="input"
+                  withLabel
+                  dict={{
+                    label: t('Percentage'),
+                    tooltip: t('If the activity occurs in more than one region, the percentage of activity commitment allocated to each region should be provided if available. Percentages should add up to 100% of the activity being reported if they are shown for each region. Use a period to denote decimals.')
+                  }}
                 />
-                </Item>
               )}
               {fieldExists('text') && (
                 <Item label={<InputLabel optional>{t('description')}</InputLabel>}>

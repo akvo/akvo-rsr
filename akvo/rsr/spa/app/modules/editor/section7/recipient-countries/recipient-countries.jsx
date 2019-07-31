@@ -13,13 +13,18 @@ const { Item } = Form
 
 const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
-const RecipientCountries = ({ validations, formPush }) => {
+const RecipientCountries = ({ validations, formPush, showRequired, errors }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>{t('recipient country')}</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('recipient country')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'recipientCountries') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <ItemArray
         setName="recipientCountries"
         sectionIndex={7}
@@ -42,14 +47,17 @@ const RecipientCountries = ({ validations, formPush }) => {
             </Item>
             <span className="percentage-row">
               {fieldExists('percentage') && (
-                <Item label={<InputLabel tooltip={t('The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.')}>{t('Percentage')}</InputLabel>}>
                 <FinalField
                   name={`${name}.percentage`}
                   control="input"
                   suffix={<span>%</span>}
                   className="percentage-input"
+                  withLabel
+                  dict={{
+                    label: t('Percentage'),
+                    tooltip: t('The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.')
+                  }}
                 />
-                </Item>
               )}
               {fieldExists('text') && (
                 <Item label={<InputLabel optional tooltip={t('Enter additional information about the recipient country, if necessary.')}>{t('description')}</InputLabel>}>

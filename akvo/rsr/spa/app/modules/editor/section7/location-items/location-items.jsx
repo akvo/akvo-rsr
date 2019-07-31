@@ -15,18 +15,23 @@ import '../styles.scss'
 
 const { Item } = Form
 
-const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
+const LocationItems = ({ validations, formPush, primaryOrganisation, showRequired, errors }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>{t('Locations')}</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('Locations')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'locationItems') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <ItemArray
         setName="locationItems"
         sectionIndex={7}
         header={(index, location) => (
-          <span>Location {index + 1}: {location && location.text.split(',')[0]}</span>
+          <span>{t('Location')} {index + 1}: {location && location.text.split(',')[0]}</span>
         )}
         headerField="location"
         formPush={formPush}
@@ -233,48 +238,5 @@ const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
     </div>
   )
 }
-
-// class Locations extends React.Component{
-//   state = {
-//     activeKey: ''
-//   }
-//   constructor(props){
-//     super(props)
-//     if(props.rdr.length > 0){
-//       this.state = {
-//         activeKey: `${props.rdr.length - 1}`
-//       }
-//     }
-//   }
-//   add = () => {
-//     this.setState({
-//       activeKey: `${this.props.rdr.length}`
-//     })
-//     this.props.add()
-//   }
-//   remove = (event, index) => {
-//     event.stopPropagation()
-//     this.props.remove(index)
-//   }
-//   render(){
-//     return (
-//       <Aux>
-//         <h3>Locations</h3>
-//         <Collapse accordion activeKey={this.state.activeKey} onChange={(key) => { this.setState({ activeKey: key }) }}>
-//         {this.props.rdr.map((item, index) =>
-//           <Panel
-//             header={`Location ${index + 1}`}
-//             extra={<Icon type="delete" onClick={event => this.remove(event, index)} />}
-//             key={`${index}`}
-//           >
-//             <UpdateHalter except={['city']} item={item}>
-//             </UpdateHalter>
-//           </Panel>
-//         )}
-//         </Collapse>
-//       </Aux>
-//     )
-//   }
-// }
 
 export default LocationItems
