@@ -13,6 +13,8 @@ const { Option } = Select
 let timeout
 let currentValue
 
+const locationTypes = ['city', 'village', 'neighbourhood']
+
 function $fetch(value, callback) {
   if (timeout) {
     clearTimeout(timeout)
@@ -30,9 +32,10 @@ function $fetch(value, callback) {
       .then(response => response.json())
       .then((d) => {
         if (currentValue === value) {
-          const data = d.results.filter(it => it.components._type === 'city').map(r => ({
+          const data = d.results.filter(it => locationTypes.indexOf(it.components._type) !== -1).map(r => ({
             coordinates: r.geometry,
-            text: `${r.components.city}, ${r.components.country}`,
+            text: r.formatted
+            // text: `${r.components.city}, ${r.components.country}`,
             // name: r.components.city
           }))
           callback(data)
