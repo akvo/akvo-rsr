@@ -4,11 +4,10 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator_dimension import IndicatorDimensionValue
-from indicator_period_data import IndicatorPeriodData
+from .indicator_period_data import IndicatorPeriodData
 
 from akvo.rsr.fields import ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
+from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE, QUALITATIVE
 
 from django.db import models
@@ -17,12 +16,12 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 
-class Disaggregation(TimestampsMixin, models.Model):
+class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     """Model for storing a disaggregated value along one axis of a dimension."""
 
     # TODO: rename to dimension_axis of simply axis?
     dimension_value = models.ForeignKey(
-        IndicatorDimensionValue, null=True, related_name='disaggregations'
+        'IndicatorDimensionValue', null=True, related_name='disaggregations'
     )
 
     update = models.ForeignKey(IndicatorPeriodData,
@@ -32,27 +31,7 @@ class Disaggregation(TimestampsMixin, models.Model):
     # FIXME: Add a type to allow disaggregated values for target/baseline
     # type = models.CharField
 
-    # NOTE: corresponding value field on Update is still a CharField
-    value = models.DecimalField(
-        _(u'quantitative disaggregated value'),
-        max_digits=20,
-        decimal_places=2,
-        blank=True,
-        null=True
-    )
     narrative = ValidXMLTextField(_(u'qualitative narrative'), blank=True)
-    numerator = models.DecimalField(
-        _(u'numerator for indicator'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-        help_text=_(u'The numerator for a percentage value')
-    )
-    denominator = models.DecimalField(
-        _(u'denominator for indicator'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-        help_text=_(u'The denominator for a percentage value')
-    )
     incomplete_data = models.BooleanField(_(u'disaggregation data is incomplete'), default=False)
 
     class Meta:
@@ -88,6 +67,23 @@ class Disaggregation(TimestampsMixin, models.Model):
                 numerator != self.update.numerator or
                 denominator != self.update.denominator)
             self.siblings().update(incomplete_data=incomplete_data)
+
+
+@receiver(signals.post_save, sender=Disaggregation)
+def aggregate_period_disaggregation_up_to_parent_hierarchy(sender, **kwargs):
+
+    from .disaggregation_aggregation import DisaggregationAggregation
+    from .indicator_period_disaggregation import IndicatorPeriodDisaggregation
+
+    disaggregation = kwargs['instance']
+    disaggregation_aggregation = DisaggregationAggregation(
+        Disaggregation.objects,
+        IndicatorPeriodDisaggregation.objects
+    )
+    disaggregation_aggregation.aggregate(
+        disaggregation.update.period,
+        disaggregation.dimension_value
+    )
 
 
 @receiver(signals.post_save, sender=Disaggregation)
