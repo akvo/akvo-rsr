@@ -1,16 +1,14 @@
 import React from 'react'
-import { Form, Button } from 'antd'
+import { Button } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
-import InputLabel from '../../../../utils/input-label'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 import MARKER_OPTIONS from './markers.json'
 import SIGNIFICANCE_OPTIONS from './significances.json'
 
-const { Item } = Form
 
 const PolicyMarker = ({ validations, formPush }) => {
   const { t } = useTranslation()

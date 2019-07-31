@@ -75,6 +75,7 @@
     "no-unneeded-ternary": 0,
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/label-has-associated-control": 1,
-    "no-multi-str": 1
+    "no-multi-str": 1,
+    "react/jsx-max-props-per-line": 0
   }
 }

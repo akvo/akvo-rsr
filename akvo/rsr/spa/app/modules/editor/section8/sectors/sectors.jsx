@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button } from 'antd'
+import { Button } from 'antd'
 import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 
@@ -13,7 +13,6 @@ import VOCABULARY_OPTIONS from '../vocab.json'
 import EUTF_SECTOR_OPTIONS from './eutf-sector-options.json'
 import SectionContext from '../../section-context'
 
-const { Item } = Form
 
 const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, errors }) => {
   const { t } = useTranslation()
@@ -42,22 +41,29 @@ const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, err
         formPush={formPush}
         panel={name => (
         <div>
-          <Item label={<InputLabel optional={isOptional('vocabulary')} tooltip={t('This is the code for the vocabulary used to describe the sector. Sectors should be mapped to DAC sectors to enable international comparison.')}>{t('vocabulary')}</InputLabel>}>
-            <FinalField
-              control="select"
-              options={VOCABULARY_OPTIONS}
-              name={`${name}.vocabulary`}
-              withEmptyOption
-              withValuePrefix
-            />
-          </Item>
+          <FinalField
+            control="select"
+            options={VOCABULARY_OPTIONS}
+            name={`${name}.vocabulary`}
+            withEmptyOption
+            withValuePrefix
+            withLabel
+            optional={isOptional('vocabulary')}
+            dict={{
+              label: t('vocabulary'),
+              tooltip: t('This is the code for the vocabulary used to describe the sector. Sectors should be mapped to DAC sectors to enable international comparison.')
+            }}
+          />
           {fieldExists('vocabularyUri') && (
-            <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>{t('vocabulary URI')}</InputLabel>}>
-              <FinalField
-                control="input"
-                name={`${name}.vocabularyUri`}
-              />
-            </Item>
+            <FinalField
+              control="input"
+              name={`${name}.vocabularyUri`}
+              withLabel optional
+              dict={{
+                label: t('vocabulary URI'),
+                tooltip: t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')
+              }}
+            />
           )}
           <Field
             name={`${name}.vocabulary`}
