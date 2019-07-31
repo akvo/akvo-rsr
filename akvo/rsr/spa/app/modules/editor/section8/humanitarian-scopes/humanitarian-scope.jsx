@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Button, Radio, Col, Row } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { Field } from 'react-final-form'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -35,41 +36,45 @@ const HumanitarianScopes = ({ formPush }) => {
                 </Item>
               </Col>
               <Col span={12}>
-                <FinalField name={`${name}.type`} subscription={{ value: true }}>
+                <Field name={`${name}.type`} subscription={{ value: true }}>
                   {({ input: { value } }) => (
-                    <Item label={<InputLabel optional={value === '' || value === undefined}>{t('Code')}</InputLabel>}>
-                      <FinalField
-                        name={`${name}.code`}
-                        control="input"
-                      />
-                    </Item>
+                    <FinalField
+                      name={`${name}.code`}
+                      control="input"
+                      withLabel
+                      optional={value === '' || value === undefined}
+                      dict={{ label: t('Code') }}
+                    />
                   )}
-                </FinalField>
+                </Field>
               </Col>
             </Row>
-            <Item label={<InputLabel optional>{t('Description')}</InputLabel>}>
-              <FinalField
-                control="input"
-                name={`${name}.text`}
-              />
-            </Item>
-            <FinalField name={`${name}.type`} subscription={{ value: true }}>
+            <FinalField
+              control="input"
+              name={`${name}.text`}
+              withLabel
+              optional
+              dict={{ label: t('Description')}}
+            />
+            <Field name={`${name}.type`} subscription={{ value: true }}>
               {({ input: { value } }) => (
-                <Item label={<InputLabel optional={value === '' || value === undefined}>{t('Vocabulary')}</InputLabel>}>
-                  <FinalField
-                    control="select"
-                    options={[{ value: '1-2', label: '1-2 Glide' }, { value: '2-1', label: `2-1 ${t('Humanitarian plan')}` }, { value: '99', label: `99 ${t('Reporting organisation')}` }]}
-                    name={`${name}.vocabulary`}
-                  />
-                </Item>
+                <FinalField
+                  control="select"
+                  options={[{ value: '1-2', label: '1-2 Glide' }, { value: '2-1', label: `2-1 ${t('Humanitarian plan')}` }, { value: '99', label: `99 ${t('Reporting organisation')}` }]}
+                  name={`${name}.vocabulary`}
+                  optional={value === '' || value === undefined}
+                  withLabel
+                  dict={{ label: t('Vocabulary') }}
+                />
               )}
-            </FinalField>
-            <Item label={<InputLabel optional>{t('vocabulary URI')}</InputLabel>}>
-              <FinalField
-                control="input"
-                name={`${name}.vocabularyUri`}
-              />
-            </Item>
+            </Field>
+            <FinalField
+              control="input"
+              name={`${name}.vocabularyUri`}
+              withLabel
+              optional
+              dict={{ label: t('vocabulary URI') }}
+            />
           </div>
         )}
         addButton={({ onClick }) => (

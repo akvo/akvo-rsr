@@ -31,55 +31,64 @@ const PolicyMarker = ({ validations, formPush }) => {
         formPush={formPush}
         panel={name => (
           <div>
-            <Item label={<InputLabel tooltip={t('A policy or theme addressed by the activity, based on DAC policy markers. These indicators track key policy issues, like gender equality, environment, and trade development.')}>{t('policy marker')}</InputLabel>}>
-              <FinalField
-                control="select"
-                options={MARKER_OPTIONS}
-                name={`${name}.policyMarker`}
-              />
-            </Item>
-            <Item
-              label={
-              <InputLabel
-                tooltip={t('Each reported marker must contain the significance of the policy marker for this activity. Choices are:\
+            <FinalField
+              control="select"
+              options={MARKER_OPTIONS}
+              name={`${name}.policyMarker`}
+              withLabel
+              dict={{
+                label: t('policy marker'),
+                tooltip: t('A policy or theme addressed by the activity, based on DAC policy markers. These indicators track key policy issues, like gender equality, environment, and trade development.')
+              }}
+            />
+            <FinalField
+              control="select"
+              options={SIGNIFICANCE_OPTIONS}
+              name={`${name}.significance`}
+              withLabel
+              dict={{
+                label: t('Significance'),
+                tooltip: t('Each reported marker must contain the significance of the policy marker for this activity. Choices are:\
 0 - Not targeted\
 1 - Significant objective: the policy objectives are important, but were not the prime motivation for undertaking the activity.\
-            2 - Principal objective: the policy objective was the primary reason to undertake this activity.\
-            3 - Principal objective AND in support of an action programme: valid for the markers dealing with Desertification only.\
-            4 - Explicit primary objective: only to be used in combination with policy marker.\
-9 - reproductive, maternal, newborn and child health.')}>
-                {t('Significance')}
-              </InputLabel>}>
-              <FinalField
-                control="select"
-                options={SIGNIFICANCE_OPTIONS}
-                name={`${name}.significance`}
-              />
-            </Item>
+          2 - Principal objective: the policy objective was the primary reason to undertake this activity.\
+          3 - Principal objective AND in support of an action programme: valid for the markers dealing with Desertification only.\
+          4 - Explicit primary objective: only to be used in combination with policy marker.\
+9 - reproductive, maternal, newborn and child health.')
+              }}
+            />
             {fieldExists('description') && (
-              <Item label={<InputLabel optional>{t('description')}</InputLabel>}>
-                <FinalField
-                  control="input"
-                  name={`${name}.description`}
-                />
-              </Item>
+              <FinalField
+                control="input"
+                name={`${name}.description`}
+                withLabel
+                optional
+                dict={{ label: t('description')}}
+              />
             )}
             {fieldExists('vocabulary') && (
-              <Item label={<InputLabel optional>{t('vocabulary')}</InputLabel>}>
-                <FinalField
-                  control="select"
-                  options={[{ value: '1', label: '1 - OECD DAC CRS' }, { value: '99', label: '99 - Reporting Organisation' }]}
-                  name={`${name}.vocabulary`}
-                />
-              </Item>
+              <FinalField
+                control="select"
+                options={[{ value: '1', label: '1 - OECD DAC CRS' }, { value: '99', label: '99 - Reporting Organisation' }]}
+                name={`${name}.vocabulary`}
+                withLabel
+                optional
+                dict={{
+                  label: t('vocabulary')
+                }}
+              />
             )}
             {fieldExists('vocabularyUri') && (
-              <Item label={<InputLabel optional tooltip={t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')}>Vocabulary URI</InputLabel>}>
-                <FinalField
-                  control="input"
-                  name={`${name}.vocabularyUri`}
-                />
-              </Item>
+              <FinalField
+                control="input"
+                name={`${name}.vocabularyUri`}
+                withLabel
+                optional
+                dict={{
+                  label: t('vocabulary URI'),
+                  tooltip: t('If the vocabulary is 99 (reporting organisation), the URI where this internal vocabulary is defined.')
+                }}
+              />
             )}
           </div>
         )}

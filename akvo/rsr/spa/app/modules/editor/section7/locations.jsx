@@ -5,6 +5,7 @@ import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
+import { isEqual } from 'lodash'
 
 import LocationsItems from './location-items/location-items'
 import RecipientCountries from './recipient-countries/recipient-countries'
@@ -81,6 +82,6 @@ export default connect(
   ({ editorRdr: { validations, showRequired, section7: { fields, errors }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation, showRequired, errors })
 )(React.memo(LocationsView, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || (prevProps.showRequired !== nextProps.showRequired || !isEqual(prevProps.errors, nextProps.errors))
   return !shouldUpdate
 }))

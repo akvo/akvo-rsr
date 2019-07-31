@@ -104,18 +104,21 @@ const Control = (props) => {
   return CONTROLS[control]({..._props, disabled})
 }
 
-const FinalField = ({name, ...props}) => (
-  <Field
-    name={name}
-    component={Control}
-    {...props}
-  />
-)
+const FinalField = ({name, ...props}) => {
+  return (
+    <Field
+      name={name}
+      component={Control}
+      {...props}
+    />
+  )
+}
 // FinalField.contextType = SectionContext
 
 export default connect(
   ({ editorRdr }) => {
-    const props = ({ addingItem: editorRdr.addingItem, showRequired: editorRdr.showRequired, backendError: editorRdr.backendError })
+    const { addingItem, showRequired, backendError } = editorRdr
+    const props = ({ addingItem, showRequired, backendError })
     // bind validation errors (required) for all sections
     times(11).forEach((i) => {
       const sectionKey = `section${i + 1}`
@@ -125,4 +128,3 @@ export default connect(
   })(
   React.memo(FinalField, (prevProps, nextProps) => isEqual(prevProps, nextProps))
 )
-// export default FinalField

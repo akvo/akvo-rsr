@@ -15,7 +15,7 @@ import SectionContext from '../../section-context'
 
 const { Item } = Form
 
-const Sectors = ({ validations, formPush, primaryOrganisation }) => {
+const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, errors }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -24,7 +24,12 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
   return (
     <div>
       <SectionContext.Provider value="section8">
-      <h3>{t('Sectors')}</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('Sectors')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'sectors') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <ItemArray
         setName="sectors"
         sectionIndex={8}
