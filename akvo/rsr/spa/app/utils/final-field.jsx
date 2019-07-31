@@ -29,12 +29,16 @@ const inputNumberAmountFormatting = (currencySymbol) => {
   })
 }
 
+const validateNumber = (string) => {
+  const regex = /[0-9]|\./
+  return String(string).split('').map(char => regex.test(char)).reduce((val, acc) => val && acc)
+}
 const CONTROLS = {
   input: ({ input, meta, control, ...props }) => {
-    return <Input {...{...input, ...props}} />
+    return <Input {...{ ...input, ...props}} />
   },
   'input-number': ({ input, meta, control, currencySymbol, ...props}) => {
-    return <InputNumber {...{...input, ...inputNumberAmountFormatting(currencySymbol), ...props}} />
+    return <InputNumber {...{ value: input.value, onChange: (val) => { if (validateNumber(val)) input.onChange(val) }, ...inputNumberAmountFormatting(currencySymbol), min: 1, max: 99999999, ...props}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
   select: ({options, input, meta, control, withEmptyOption, withValuePrefix, ...props}) => {
@@ -58,11 +62,16 @@ const CONTROLS = {
 const Control = (props) => {
   const section = useContext(SectionContext)
   const { t } = useTranslation()
-  const { control, withLabel, dict, withoutTooltip, optional, fieldExists, label, addingItem, showRequired, ..._props } = props
+  const { control, withLabel, dict, withoutTooltip, optional, fieldExists, label, addingItem, showRequired, backendError, ..._props } = props
   const disabled = props.disabled || addingItem
   let validateStatus = ''
+  let help = ''
   if (showRequired && props[section].errors.findIndex(it => it.path === props.input.name) !== -1) {
     validateStatus = 'error'
+  }
+  if (backendError && `section${backendError.sectionIndex}` === section && props.input.name === `${backendError.setName}.${Object.keys(backendError.response)[0]}`){
+    validateStatus = 'error'
+    help = backendError.response[Object.keys(backendError.response)[0]]
   }
   if(!control){
     if(!props.render){
@@ -75,12 +84,10 @@ const Control = (props) => {
     if(fieldExists && fieldExists(name) === false){
       return null
     }
-    if(dict){
-      console.log(name, dict.tooltip)
-    }
     return (
     <Item
       validateStatus={validateStatus}
+      help={help}
       label={
       label ? label :
       <InputLabel
@@ -94,7 +101,7 @@ const Control = (props) => {
     </Item>
     )
   }
-  return CONTROLS[control](_props)
+  return CONTROLS[control]({..._props, disabled})
 }
 
 const FinalField = ({name, ...props}) => (
@@ -108,7 +115,7 @@ const FinalField = ({name, ...props}) => (
 
 export default connect(
   ({ editorRdr }) => {
-    const props = ({ addingItem: editorRdr.addingItem, showRequired: editorRdr.showRequired })
+    const props = ({ addingItem: editorRdr.addingItem, showRequired: editorRdr.showRequired, backendError: editorRdr.backendError })
     // bind validation errors (required) for all sections
     times(11).forEach((i) => {
       const sectionKey = `section${i + 1}`

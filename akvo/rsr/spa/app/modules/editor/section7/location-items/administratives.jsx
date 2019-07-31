@@ -97,12 +97,15 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
                 </Item>
               </Col>
               <Col span={12}>
-                <Item label={<InputLabel optional>{t('administrative level')}</InputLabel>}>
                 <FinalField
                   name={`${name}.level`}
                   control="input-number"
+                  withLabel
+                  optional
+                  dict={{
+                    label: t('administrative level')
+                  }}
                 />
-                </Item>
               </Col>
             </Row>
           </div>

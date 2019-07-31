@@ -165,7 +165,7 @@ export default (state = initialState, action) => {
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}
     case actionTypes.BACKEND_ERROR:
-      return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response} }
+      return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response, setName: action.setName, sectionIndex: action.sectionIndex} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
     case actionTypes.SET_NEW_PROJECT:
