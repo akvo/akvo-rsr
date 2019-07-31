@@ -7,7 +7,7 @@
 from .indicator_period_data import IndicatorPeriodData
 
 from akvo.rsr.fields import ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
+from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE, QUALITATIVE
 
 from django.db import models
@@ -16,7 +16,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 
-class Disaggregation(TimestampsMixin, models.Model):
+class Disaggregation(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     """Model for storing a disaggregated value along one axis of a dimension."""
 
     # TODO: rename to dimension_axis of simply axis?
@@ -31,27 +31,7 @@ class Disaggregation(TimestampsMixin, models.Model):
     # FIXME: Add a type to allow disaggregated values for target/baseline
     # type = models.CharField
 
-    # NOTE: corresponding value field on Update is still a CharField
-    value = models.DecimalField(
-        _(u'quantitative disaggregated value'),
-        max_digits=20,
-        decimal_places=2,
-        blank=True,
-        null=True
-    )
     narrative = ValidXMLTextField(_(u'qualitative narrative'), blank=True)
-    numerator = models.DecimalField(
-        _(u'numerator for indicator'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-        help_text=_(u'The numerator for a percentage value')
-    )
-    denominator = models.DecimalField(
-        _(u'denominator for indicator'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-        help_text=_(u'The denominator for a percentage value')
-    )
     incomplete_data = models.BooleanField(_(u'disaggregation data is incomplete'), default=False)
 
     class Meta:
