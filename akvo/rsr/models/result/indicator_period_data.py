@@ -18,10 +18,10 @@ from .utils import (calculate_percentage, file_path, image_path,
                     MultipleUpdateError, PERCENTAGE_MEASURE, QUALITATIVE,
                     QUANTITATIVE)
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
-from akvo.rsr.mixins import TimestampsMixin
+from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
 
 
-class IndicatorPeriodData(TimestampsMixin, models.Model):
+class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
     """
     Model for adding data to an indicator period.
     """
@@ -58,13 +58,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
         settings.AUTH_USER_MODEL, verbose_name=_(u'approved by'), db_index=True,
         related_name='approved_period_updates', blank=True, null=True,
     )
-    # TODO: migrate value field to DecimalField
-    # value = ValidXMLCharField(_(u'quantitative indicator value'), max_length=300, blank=True, null=True)
-    value = models.DecimalField(
-        _('quantitative indicator value'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-    )
     narrative = ValidXMLTextField(_(u'qualitative indicator narrative'), blank=True)
     period_actual_value = ValidXMLCharField(_(u'period actual value'), max_length=50, default='')
     status = ValidXMLCharField(_(u'status'), max_length=1, choices=STATUSES, db_index=True,
@@ -74,19 +67,6 @@ class IndicatorPeriodData(TimestampsMixin, models.Model):
     file = models.FileField(_(u'file'), blank=True, upload_to=file_path, max_length=255)
     update_method = ValidXMLCharField(_(u'update method'), blank=True, max_length=1,
                                       choices=UPDATE_METHODS, db_index=True, default='W')
-
-    numerator = models.DecimalField(
-        _(u'numerator for indicator'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-        help_text=_(u'The numerator for a calculated percentage')
-    )
-    denominator = models.DecimalField(
-        _(u'denominator for indicator'),
-        max_digits=20, decimal_places=2,
-        null=True, blank=True,
-        help_text=_(u'The denominator for a calculated percentage')
-    )
 
     class Meta:
         app_label = 'rsr'
