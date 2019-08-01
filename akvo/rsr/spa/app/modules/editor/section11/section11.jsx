@@ -16,6 +16,7 @@ import FlagsStack from './comp/flags-stack'
 import ForecastsStack from './comp/forecasts-stack'
 import LegaciesStack from './comp/legacies-stack'
 import './styles.scss'
+import SectionContext from '../section-context';
 
 const { Item } = Form
 const { Option } = Select
@@ -63,48 +64,65 @@ const LoanTerms = () => {
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('The CRS++ reported commitment date.')}>{t('Commitment date')}</InputLabel>}>
-            <FinalField
-              control="datepicker"
-              name="crs[0].commitmentDate"
-            />
-          </Item>
+          <FinalField
+            control="datepicker"
+            name="crs[0].commitmentDate"
+            withLabel optional
+            dict={{
+              label: t('Commitment date'),
+              tooltip: t('The CRS++ reported commitment date.')
+            }}
+          />
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('The CRS++ reported first repayment date.')}>{t('First repayment date')}</InputLabel>}>
-            <FinalField
-              name="crs[0].repaymentFirstDate"
-              control="datepicker"
-            />
-          </Item>
+          <FinalField
+            name="crs[0].repaymentFirstDate"
+            control="datepicker"
+            withLabel optional
+            dict={{
+              label: t('First repayment date'),
+              tooltip: t('The CRS++ reported first repayment date.')
+            }}
+          />
         </Col>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('The CRS++ reported final repayment date.')}>{t('Final repayment date')}</InputLabel>}>
-            <FinalField
-              name="crs[0].repaymentFinalDate"
-              control="datepicker"
-            />
-          </Item>
+          <FinalField
+            name="crs[0].repaymentFinalDate"
+            control="datepicker"
+            withLabel optional
+            dict={{
+              label: t('Final repayment date'),
+              tooltip: t('The CRS++ reported final repayment date.')
+            }}
+          />
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('Interest Rate. If an ODA loan with variable interest rate, report the variable rate here and the reference fixed rate as rate 2.')}>{t('Rate')} 1</InputLabel>}>
-            <FinalField
-              name="crs[0].loanTermsRate1"
-              suffix={<span>%</span>}
-            />
-          </Item>
+          <FinalField
+            name="crs[0].loanTermsRate1"
+            control="input"
+            suffix={<span>%</span>}
+            withLabel optional
+            dict={{
+              label: `${t('Rate')} 1`,
+              tooltip: t('Interest Rate. If an ODA loan with variable interest rate, report the variable rate here and the reference fixed rate as rate 2.')
+            }}
+          />
         </Col>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('Second Interest Rate. If an ODA loan with variable interest rate, report the variable rate as rate 1 and the reference fixed rate here.')}>{t('Rate')} 2</InputLabel>}>
-            <FinalField
-              name="crs[0].loanTermsRate2"
-              suffix={<span>%</span>}
-            />
-          </Item>
+          <FinalField
+            name="crs[0].loanTermsRate2"
+            control="input"
+            suffix={<span>%</span>}
+            withLabel optional
+            dict={{
+              label: `${t('Rate')} 2`,
+              tooltip: t('Second Interest Rate. If an ODA loan with variable interest rate, report the variable rate as rate 1 and the reference fixed rate here.')
+            }}
+          />
         </Col>
       </Row>
     </section>
@@ -121,11 +139,15 @@ const LoanStatus = ({ currency }) => {
       </div>
       <Row gutter={16}>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('CRS reporting year (CRS++ Column 1).')}>{t('Year')}</InputLabel>}>
           <FinalField
             name="crs[0].loanStatusYear"
+            control="input"
+            withLabel optional
+            dict={{
+              label: t('Year'),
+              tooltip: t('CRS reporting year (CRS++ Column 1).')
+            }}
           />
-          </Item>
         </Col>
         <Col span={12}>
           <Item label={<InputLabel optional>{t('Currency')}</InputLabel>}>
@@ -141,52 +163,67 @@ const LoanStatus = ({ currency }) => {
       </Row>
       <Row>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('Enter the specific date (DD/MM/YYYY) for the loan status values.')}>{t('value date')}</InputLabel>}>
           <FinalField
             name="crs[0].loanStatusValueDate"
             control="datepicker"
+            withLabel optional
+            dict={{
+              label: t('value date'),
+              tooltip: t('Enter the specific date (DD/MM/YYYY) for the loan status values.')
+            }}
           />
-          </Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('Interest received during the reporting year.')}>{t('Interest received')}</InputLabel>}>
           <FinalField
             name="crs[0].interestReceived"
             control="input-number"
             currencySymbol={currencySymbol}
+            withLabel optional
+            dict={{
+              label: t('Interest received'),
+              tooltip: t('Interest received during the reporting year.')
+            }}
           />
-          </Item>
         </Col>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('The amount of principal owed on the loan at the end of the reporting year.')}>{t('Principal outstanding')}</InputLabel>}>
           <FinalField
             name="crs[0].principalOutstanding"
             control="input-number"
             currencySymbol={currencySymbol}
+            withLabel optional
+            dict={{
+              label: t('Principal outstanding'),
+              tooltip: t('The amount of principal owed on the loan at the end of the reporting year.')
+            }}
           />
-          </Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('Arrears of principal at the end of the year. Included in principal outstanding.')}>{t('Principal arrears')}</InputLabel>}>
           <FinalField
             name="crs[0].principalArrears"
             control="input-number"
             currencySymbol={currencySymbol}
-          />
-          </Item>
+            withLabel optional
+            dict={{
+              label: t('Principal arrears'),
+              tooltip: t('Arrears of principal at the end of the year. Included in principal outstanding.')
+          }}
+        />
         </Col>
         <Col span={12}>
-          <Item label={<InputLabel optional tooltip={t('Arrears of interest at the end of the year.')}>{t('Interest arrears')}</InputLabel>}>
           <FinalField
             name="crs[0].interestArrears"
             control="input-number"
             currencySymbol={currencySymbol}
+            withLabel optional
+            dict={{
+              label: t('Interest arrears'),
+              tooltip: t('Arrears of interest at the end of the year.')
+            }}
           />
-          </Item>
         </Col>
       </Row>
     </section>
@@ -199,6 +236,7 @@ const Reporting = ({ fields, projectId }) => {
   const initialValues = { ...fields }
   return (
     <div className="reporting view">
+      <SectionContext.Provider value="section11">
       <h3>CRS++</h3>
       <Form layout="vertical">
         <FinalForm
@@ -245,13 +283,16 @@ const Reporting = ({ fields, projectId }) => {
                     control="datepicker"
                   />
                 </Item>
-                <Item label={<InputLabel optional tooltip={t('If there are plans to phase out operations from the partner country, this shows the projected year of last disbursements.')}>{t('phaseout year')}</InputLabel>}>
-                  <FinalField
-                    name="fss[0].phaseoutYear"
-                    control="input-number"
-                    className="phaseout-year-input"
-                  />
-                </Item>
+                <FinalField
+                  name="fss[0].phaseoutYear"
+                  control="input"
+                  className="phaseout-year-input"
+                  withLabel optional
+                  dict={{
+                    label: t('phaseout year'),
+                    tooltip: t('If there are plans to phase out operations from the partner country, this shows the projected year of last disbursements.')
+                  }}
+                />
                 <Item label={<InputLabel optional tooltip={t('True if the partner country is a priority partner country.')}>{t('priority')}</InputLabel>}>
                   <FinalField
                     name="fss[0].priority"
@@ -269,6 +310,7 @@ const Reporting = ({ fields, projectId }) => {
           }}
         />
       </Form>
+      </SectionContext.Provider>
     </div>
   )
 }
