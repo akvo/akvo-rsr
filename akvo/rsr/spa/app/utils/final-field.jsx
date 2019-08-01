@@ -45,7 +45,7 @@ const CONTROLS = {
     return (
       <Select {...{...input, ...props}}>
         {withEmptyOption && <Select.Option value="">&nbsp;</Select.Option>}
-        {options.map(({ label, value }) => <Select.Option key={value} value={value}>{withValuePrefix && `${value} - `}{label}</Select.Option>)}
+        {options.map(({ label, value, small }) => <Select.Option key={value} value={value}>{withValuePrefix && `${value} - `}{label}{small && <small>&nbsp;{small}</small>}</Select.Option>)}
       </Select>
     )
   },

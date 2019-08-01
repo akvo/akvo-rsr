@@ -9,7 +9,7 @@ import InputLabel from '../../../../utils/input-label'
 import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 import LANGUAGE_OPTIONS from './languages.json'
-import FORMAT_OPTIONS from './formats.json'
+import MIME_LIST from './mime-list.json'
 import CATEGORY_OPTIONS from './categories.json'
 import Uploader from './uploader'
 import actionTypes from '../../action-types'
@@ -131,7 +131,13 @@ const Docs = ({ formPush, validations, dispatch }) => {
             {fieldExists('format') && (
             <Col span={12}>
               <Item label={<InputLabel optional={isOptional('format')}>{t('document format')}</InputLabel>}>
-                <FinalField name={`${name}.format`} control="select" options={FORMAT_OPTIONS} showSearch />
+                <FinalField
+                  name={`${name}.format`}
+                  control="select"
+                  options={MIME_LIST.map(({ title, mime }) => ({ value: mime, label: title, small: mime }))}
+                  showSearch optionFilterProp="children"
+                  dropdownMatchSelectWidth={false}
+                />
               </Item>
             </Col>
             )}

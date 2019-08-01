@@ -1,0 +1,347 @@
+[
+  {
+    "ext": ".aac",
+    "title": "AAC audio",
+    "mime": "audio/aac"
+  },
+  {
+    "ext": ".abw",
+    "title": "AbiWord document",
+    "mime": "application/x-abiword"
+  },
+  {
+    "ext": ".arc",
+    "title": "Archive document (multiple files embedded)",
+    "mime": "application/x-freearc"
+  },
+  {
+    "ext": ".avi",
+    "title": "AVI: Audio Video Interleave",
+    "mime": "video/x-msvideo"
+  },
+  {
+    "ext": ".azw",
+    "title": "Amazon Kindle eBook format",
+    "mime": "application/vnd.amazon.ebook"
+  },
+  {
+    "ext": ".bin",
+    "title": "Any kind of binary data",
+    "mime": "application/octet-stream"
+  },
+  {
+    "ext": ".bmp",
+    "title": "Windows OS/2 Bitmap Graphics",
+    "mime": "image/bmp"
+  },
+  {
+    "ext": ".bz",
+    "title": "BZip archive",
+    "mime": "application/x-bzip"
+  },
+  {
+    "ext": ".bz2",
+    "title": "BZip2 archive",
+    "mime": "application/x-bzip2"
+  },
+  {
+    "ext": ".csh",
+    "title": "C-Shell script",
+    "mime": "application/x-csh"
+  },
+  {
+    "ext": ".css",
+    "title": "Cascading Style Sheets (CSS)",
+    "mime": "text/css"
+  },
+  {
+    "ext": ".csv",
+    "title": "Comma-separated values (CSV)",
+    "mime": "text/csv"
+  },
+  {
+    "ext": ".doc",
+    "title": "Microsoft Word",
+    "mime": "application/msword"
+  },
+  {
+    "ext": ".docx",
+    "title": "Microsoft Word (OpenXML)",
+    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  },
+  {
+    "ext": ".eot",
+    "title": "MS Embedded OpenType fonts",
+    "mime": "application/vnd.ms-fontobject"
+  },
+  {
+    "ext": ".epub",
+    "title": "Electronic publication (EPUB)",
+    "mime": "application/epub+zip"
+  },
+  {
+    "ext": ".gif",
+    "title": "Graphics Interchange Format (GIF)",
+    "mime": "image/gif"
+  },
+  {
+    "ext": ".htm\n.html",
+    "title": "HyperText Markup Language (HTML)",
+    "mime": "text/html"
+  },
+  {
+    "ext": ".ico",
+    "title": "Icon format",
+    "mime": "image/vnd.microsoft.icon"
+  },
+  {
+    "ext": ".ics",
+    "title": "iCalendar format",
+    "mime": "text/calendar"
+  },
+  {
+    "ext": ".jar",
+    "title": "Java Archive (JAR)",
+    "mime": "application/java-archive"
+  },
+  {
+    "ext": ".jpeg\n.jpg",
+    "title": "JPEG images",
+    "mime": "image/jpeg"
+  },
+  {
+    "ext": ".js",
+    "title": "JavaScript",
+    "mime": "text/javascript"
+  },
+  {
+    "ext": ".json",
+    "title": "JSON format",
+    "mime": "application/json"
+  },
+  {
+    "ext": ".jsonld",
+    "title": "JSON-LD format",
+    "mime": "application/ld+json"
+  },
+  {
+    "ext": ".mid\n.midi",
+    "title": "Musical Instrument Digital Interface (MIDI)",
+    "mime": "audio/midi audio/x-midi"
+  },
+  {
+    "ext": ".mp3",
+    "title": "MP3 audio",
+    "mime": "audio/mpeg"
+  },
+  {
+    "ext": ".mpeg",
+    "title": "MPEG Video",
+    "mime": "video/mpeg"
+  },
+  {
+    "ext": ".mpkg",
+    "title": "Apple Installer Package",
+    "mime": "application/vnd.apple.installer+xml"
+  },
+  {
+    "ext": ".odp",
+    "title": "OpenDocument presentation document",
+    "mime": "application/vnd.oasis.opendocument.presentation"
+  },
+  {
+    "ext": ".ods",
+    "title": "OpenDocument spreadsheet document",
+    "mime": "application/vnd.oasis.opendocument.spreadsheet"
+  },
+  {
+    "ext": ".odt",
+    "title": "OpenDocument text document",
+    "mime": "application/vnd.oasis.opendocument.text"
+  },
+  {
+    "ext": ".oga",
+    "title": "OGG audio",
+    "mime": "audio/ogg"
+  },
+  {
+    "ext": ".ogv",
+    "title": "OGG video",
+    "mime": "video/ogg"
+  },
+  {
+    "ext": ".ogx",
+    "title": "OGG",
+    "mime": "application/ogg"
+  },
+  {
+    "ext": ".otf",
+    "title": "OpenType font",
+    "mime": "font/otf"
+  },
+  {
+    "ext": ".png",
+    "title": "Portable Network Graphics",
+    "mime": "image/png"
+  },
+  {
+    "ext": ".pdf",
+    "title": "Adobe Portable Document Format (PDF)",
+    "mime": "application/pdf"
+  },
+  {
+    "ext": ".ppt",
+    "title": "Microsoft PowerPoint",
+    "mime": "application/vnd.ms-powerpoint"
+  },
+  {
+    "ext": ".pptx",
+    "title": "Microsoft PowerPoint (OpenXML)",
+    "mime": "application/vnd.openxmlformats-\nofficedocument.presentationml.presentation"
+  },
+  {
+    "ext": ".rar",
+    "title": "RAR archive",
+    "mime": "application/x-rar-compressed"
+  },
+  {
+    "ext": ".rtf",
+    "title": "Rich Text Format (RTF)",
+    "mime": "application/rtf"
+  },
+  {
+    "ext": ".sh",
+    "title": "Bourne shell script",
+    "mime": "application/x-sh"
+  },
+  {
+    "ext": ".svg",
+    "title": "Scalable Vector Graphics (SVG)",
+    "mime": "image/svg+xml"
+  },
+  {
+    "ext": ".swf",
+    "title": "Small web format (SWF) or Adobe Flash document",
+    "mime": "application/x-shockwave-flash"
+  },
+  {
+    "ext": ".tar",
+    "title": "Tape Archive (TAR)",
+    "mime": "application/x-tar"
+  },
+  {
+    "ext": ".tif\n.tiff",
+    "title": "Tagged Image File Format (TIFF)",
+    "mime": "image/tiff"
+  },
+  {
+    "ext": ".ts",
+    "title": "MPEG transport stream",
+    "mime": "video/mp2t"
+  },
+  {
+    "ext": ".ttf",
+    "title": "TrueType Font",
+    "mime": "font/ttf"
+  },
+  {
+    "ext": ".txt",
+    "title": "Text, (generally ASCII or ISO 8859-n)",
+    "mime": "text/plain"
+  },
+  {
+    "ext": ".vsd",
+    "title": "Microsoft Visio",
+    "mime": "application/vnd.visio"
+  },
+  {
+    "ext": ".wav",
+    "title": "Waveform Audio Format",
+    "mime": "audio/wav"
+  },
+  {
+    "ext": ".weba",
+    "title": "WEBM audio",
+    "mime": "audio/webm"
+  },
+  {
+    "ext": ".webm",
+    "title": "WEBM video",
+    "mime": "video/webm"
+  },
+  {
+    "ext": ".webp",
+    "title": "WEBP image",
+    "mime": "image/webp"
+  },
+  {
+    "ext": ".woff",
+    "title": "Web Open Font Format (WOFF)",
+    "mime": "font/woff"
+  },
+  {
+    "ext": ".woff2",
+    "title": "Web Open Font Format (WOFF)",
+    "mime": "font/woff2"
+  },
+  {
+    "ext": ".xhtml",
+    "title": "XHTML",
+    "mime": "application/xhtml+xml"
+  },
+  {
+    "ext": ".xls",
+    "title": "Microsoft Excel",
+    "mime": "application/vnd.ms-excel"
+  },
+  {
+    "ext": ".xlsx",
+    "title": "Microsoft Excel (OpenXML)",
+    "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  },
+  {
+    "ext": ".xml",
+    "title": "XML",
+    "mime": "application/xml"
+  },
+  {
+    "ext": ".xml",
+    "title": "XML",
+    "mime": "text/xml"
+  },
+  {
+    "ext": ".xul",
+    "title": "XUL",
+    "mime": "application/vnd.mozilla.xul+xml"
+  },
+  {
+    "ext": ".zip",
+    "title": "ZIP archive",
+    "mime": "application/zip"
+  },
+  {
+    "ext": ".3gp",
+    "title": "3GPP video container",
+    "mime": "video/3gpp"
+  },
+  {
+    "ext": ".3gp",
+    "title": "3GPP audio container",
+    "mime": "audio/3gpp"
+  },
+  {
+    "ext": ".3g2",
+    "title": "3GPP2 video container",
+    "mime": "video/3gpp2"
+  },
+  {
+    "ext": ".3g2",
+    "title": "3GPP2 audio container",
+    "mime": "audio/3gpp2"
+  },
+  {
+    "ext": ".7z",
+    "title": "7-zip archive",
+    "mime": "application/x-7z-compressed"
+  }
+]
