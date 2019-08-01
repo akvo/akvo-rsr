@@ -63,7 +63,7 @@ class ProjectPhoto extends React.Component {
 
   beforeUpload = (file) => {
     const isImage = file.type === 'image/jpeg' || file.type === 'image/png'
-    const isLt2M = file.size / 1000000 < 1.9
+    const isLt2M = file.size / 1000000 < 2
     if (!isImage) {
       this.setState({
         error: 'Please upload an image',
