@@ -160,7 +160,7 @@ export default (state = initialState, action) => {
         action.setName,
         get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
       )
-      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      if(!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}

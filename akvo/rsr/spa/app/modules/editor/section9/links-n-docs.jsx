@@ -8,9 +8,11 @@ import {diff} from 'deep-object-diff'
 import Links from './links/links'
 import Docs from './docs/docs'
 import './styles.scss'
+import SectionContext from '../section-context'
 
 const LinksDocs = ({ fields, validations, dispatch }) => (
   <div className="links view">
+    <SectionContext.Provider value="section9">
     <FinalForm
       onSubmit={() => {}}
       subscription={{}}
@@ -27,6 +29,7 @@ const LinksDocs = ({ fields, validations, dispatch }) => (
         </Form>
       )}
     />
+    </SectionContext.Provider>
   </div>
 )
 
