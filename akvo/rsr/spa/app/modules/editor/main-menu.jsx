@@ -42,16 +42,23 @@ const MenuItem = (props) => {
   )
 }
 
+export const findIfReportingOrgIsEUTF = partners => {
+  return partners.findIndex(partner => {
+    return partner.iatiOrganisationRole === 101 && partner.organisation === 3394
+  }) !== -1
+}
+
 const MainMenu = ({ rdr, params }) => {
   const { t } = useTranslation()
   const isNewProject = params.id === 'new'
+  const isReportingOrgEUTF = findIfReportingOrgIsEUTF(rdr.section3.fields.partners)
   return (
     <aside className="main-menu">
       <ul>
         <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('menu::settings')}</MenuItem>
         {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
         <MenuItem
-          disabled={isNewProject}
+          disabled={isNewProject || (isReportingOrgEUTF && index === 1)}
           key={section.key}
           to={`/projects/${params.id}/${section.key}`}
           checked={rdr[`section${index + 1}`].errors.length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
