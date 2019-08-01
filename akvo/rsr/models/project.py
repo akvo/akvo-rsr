@@ -1387,9 +1387,6 @@ class Project(TimestampsMixin, models.Model):
         for reference in source_indicator.references.all():
             self.add_reference(indicator, reference)
 
-        for dimension in source_indicator.dimensions.all():
-            self.copy_dimension(indicator, dimension, set_parent=set_parent)
-
         IndicatorDimensionName = apps.get_model('rsr', 'IndicatorDimensionName')
         for source_dimension_name in source_indicator.dimension_names.all():
             dimension_name = IndicatorDimensionName.objects.filter(
@@ -1456,39 +1453,6 @@ class Project(TimestampsMixin, models.Model):
         child_period.period_start = parent_period.period_start
         child_period.period_end = parent_period.period_end
         child_period.save()
-
-    def copy_dimension(self, indicator, source_dimension, set_parent=True):
-        IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
-        data = dict(
-            name=source_dimension.name,
-            value=source_dimension.value
-        )
-        qs = IndicatorDimension.objects.select_related('indicator', 'indicator__result')
-        if set_parent:
-            qs.update_or_create(
-                indicator=indicator, parent_dimension=source_dimension, defaults=data
-            )
-        else:
-            qs.create(indicator=indicator, **data)
-
-    def update_dimension(self, indicator, parent_dimension):
-        """Update a dimension based on the parent dimension attributes."""
-
-        IndicatorDimension = apps.get_model('rsr', 'IndicatorDimension')
-        try:
-            child_dimension = IndicatorDimension.objects.select_related(
-                'indicator',
-                'indicator__result'
-            ).get(
-                indicator=indicator,
-                parent_dimension=parent_dimension,
-            )
-        except IndicatorDimension.DoesNotExist:
-            return
-
-        child_dimension.name = parent_dimension.name
-        child_dimension.value = parent_dimension.value
-        child_dimension.save()
 
     def update_dimension_value(self, dimension_name, parent_dimension_value):
         """Update dimension value base on the parent dimension value attribute."""

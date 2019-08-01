@@ -37,7 +37,7 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .result import (Disaggregation, Indicator, IndicatorDimension,
+from .result import (Disaggregation, Indicator,
                      IndicatorDimensionName, IndicatorDimensionValue,
                      IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
                      IndicatorPeriodDataComment, IndicatorReference,
@@ -115,7 +115,6 @@ __all__ = [
     'CordaidZipIatiImportJob',
     'IatiImportLog',
     'Indicator',
-    'IndicatorDimension',
     'IndicatorDimensionName',
     'IndicatorDimensionValue',
     'IndicatorLabel',
@@ -213,11 +212,6 @@ rules.add_perm('rsr.add_indicator', is_rsr_admin | is_org_admin | is_org_me_mana
 rules.add_perm('rsr.change_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_indicator', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.view_indicator', is_org_enumerator)
-
-rules.add_perm('rsr.add_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.change_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.delete_indicatordimension', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
-rules.add_perm('rsr.view_indicatordimension', is_org_enumerator)
 
 rules.add_perm('rsr.add_indicatorlabel', is_rsr_admin | is_org_admin |is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_indicatorlabel', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

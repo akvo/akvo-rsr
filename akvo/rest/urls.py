@@ -36,7 +36,6 @@ router.register(r'(?P<version>(v1))/iati_activity_export', views.IatiActivityExp
 router.register(r'(?P<version>(v1))/iati_check', views.IatiCheckViewSet)
 router.register(r'(?P<version>(v1))/iati_export', views.IatiExportViewSet)
 router.register(r'(?P<version>(v1))/indicator', views.IndicatorViewSet)
-router.register(r'(?P<version>(v1))/indicator_dimension', views.IndicatorDimensionViewSet)
 router.register(r'(?P<version>(v1))/dimension_name', views.IndicatorDimensionNameViewSet)
 router.register(r'(?P<version>(v1))/dimension_value', views.IndicatorDimensionValueViewSet)
 router.register(r'(?P<version>(v1))/indicator_framework', views.IndicatorFrameworkViewSet)
