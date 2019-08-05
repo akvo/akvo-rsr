@@ -32,7 +32,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
       {({ fields }) => (
         <Aux>
         <div className="ant-col ant-form-item-label">
-          <InputLabel tooltip="...">Periods</InputLabel>
+          <InputLabel>{t('Periods')}</InputLabel>
         </div>
         {fields.length > 0 &&
         <Accordion
@@ -43,7 +43,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
             <Panel
               header={(
                 <span>
-                  Period {index + 1}:&nbsp;
+                  {t('Period')} {index + 1}:&nbsp;
                   <Field
                     name={`${name}.periodStart`}
                     render={({input}) => input.value}
@@ -93,17 +93,17 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                   </Item>
                 </Col>
               </Row>
-              <Item label={<InputLabel optional>Target value</InputLabel>}>
+              <Item label={<InputLabel optional>{t('Target value')}</InputLabel>}>
                 <FinalField name={`${name}.targetValue`} />
               </Item>
-              <Item label={<InputLabel optional>Comment</InputLabel>}>
+              <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
                 <FinalField name={`${name}.targetComment`} render={({input}) => <RTE {...input} />} />
               </Item>
             </Panel>
           )}
         />
         }
-        <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>Add period</Button>
+        <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>{t('Add period')}</Button>
         </Aux>
       )}
     </FieldArray>

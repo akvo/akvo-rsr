@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Switch, Tooltip, Icon, Button, Divider } from 'antd'
 import { withRouter, Link } from 'react-router-dom'
 import { debounce} from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import './styles.scss'
 import * as actions from '../actions'
@@ -22,8 +23,17 @@ export const sets = [
 
 
 const Settings = ({ isPublic, validations, match: { params }, history, ...props }) => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [newlyCreated, setNewlyCreated] = useState(false)
+  sets[0].tooltip = t('The default RSR validation set which indicates the mandatory fields to publish a project in RSR and hides all advanced IATI fields.')
+  sets[1].tooltip = t('A validation set with specific requirements for the Netherlands Leprosy Relief.')
+  sets[2].tooltip = t('To be used by all Gietrenk projects')
+  sets[3].tooltip = t('The validation set for publishing to IATI v2.02. The mandatory fields in this validation set are the minimum requirements to publish a valid IATI v2.02 file.')
+  sets[4].tooltip = ''
+  sets[5].tooltip = t('Validation set for The EU Emergency Trust Fund for Africa.')
+  sets[6].tooltip = t('The validation set for publishing to IATI according to the guidelines of the Dutch Ministry of Foreign Affairs. These guidelines can be found <a href="https://www.government.nl/binaries/government/documents/publications/2015/12/01/open-data-and-development-cooperation/how-to-use-the-iati-standard-1.pdf" target="_blank" rel="noopener">here</a>.')
+  sets[7].tooltip = t('DFID minimum IATI requirements based on <a href="https://www.gov.uk/government/publications/2010-to-2015-government-policy-overseas-aid-transparency/2010-to-2015-government-policy-overseas-aid-transparency" target="_blank" rel="noopener">the following government policy</a>. Please note that contact and document are also mandatory.')
   const createProject = () => {
     setLoading(true)
     api.post('/project/', { validations }).then(response => {
@@ -51,28 +61,26 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
     <div className="settings view">
       <p>
         <Switch checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
-        <span className="switch-label">Private project</span>
-        <Tooltip title="Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project."><Icon type="info-circle" /></Tooltip>
+        <span className="switch-label">{t('Private project')}</span>
+        <Tooltip title={t('Indicate whether this is a private project. Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project.')}><Icon type="info-circle" /></Tooltip>
       </p>
       <Divider />
-      <strong>Validation sets</strong>
+      <strong>{t('Validation sets')}</strong>
       <br />
       <small>
-        It is possible to add or remove validation sets to your project.
-        This determines which fields will be mandatory and which fields will be hidden.
-        Only admins or partners with an RSR contract are able to edit this.
+        {t('It is possible to add or remove validation sets to your project. This determines which fields will be mandatory and which fields will be hidden. Only admins of partners with an RSR contract are able to edit this.')}
       </small>
       <ul>
-        {sets.map(({ value, label }, index) =>
+        {sets.map(({ value, label, tooltip }, index) =>
         <li key={value}>
           <Switch disabled={index === 0} checked={validations.indexOf(value) !== -1} onChange={checked => checkValidation(value, checked)} />
           <span className="switch-label">{label}</span>
-          <Tooltip title="What does this mean?"><Icon type="info-circle" /></Tooltip>
+          <Tooltip title={<span dangerouslySetInnerHTML={{ __html: tooltip }} />}><Icon type="info-circle" /></Tooltip>
         </li>
         )}
       </ul>
-      {params.id === 'new' && <Button type="primary" onClick={createProject} loading={loading}>Create New Project</Button>}
-      {newlyCreated && <div><Divider /><Link to={`/projects/${params.id}/info`}><Button>Next: Edit Project Info<Icon type="right" /></Button></Link></div>}
+      {params.id === 'new' && <Button type="primary" onClick={createProject} loading={loading}>{t('Create New Project')}</Button>}
+      {newlyCreated && <div><Divider /><Link to={`/projects/${params.id}/info`}><Button>{t('Next: Edit Project Info')}<Icon type="right" /></Button></Link></div>}
     </div>
   )
 }
