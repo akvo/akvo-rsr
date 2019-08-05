@@ -1,10 +1,17 @@
+/* global window */
 import React, { useReducer, useEffect } from 'react'
-import { Button, Divider, Table } from 'antd'
+import { Button, Divider, Table, Input, Icon } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import api from '../../utils/api'
+import './styles.scss'
+
+let tmid
+const pageSize = 15
 
 const Projects = () => {
+  const { t } = useTranslation()
   const columns = [
     {
       title: 'Projects',
@@ -38,12 +45,19 @@ const Projects = () => {
     }
   ]
   const [state, setState] = useReducer(
-    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
-    { data: {}, loading: false, pagination: { pageSize: 30 } }
+    (state, newState) => { console.log({ ...state, ...newState }); return ({ ...state, ...newState })}, // eslint-disable-line
+    { data: {}, loading: false, pagination: { pageSize }, searchStr: '' }
   )
   const fetch = (params = {}) => {
     setState({ loading: true })
-    api.get('/editable_project/', params)
+    if(state.searchStr !== ''){
+      params = {
+        ...params,
+        q_filter1: `{ 'title__icontains': '${state.searchStr}' }`,
+        q_filter2: `{ 'subtitle__icontains': '${state.searchStr}' }`
+      }
+    }
+    api.get('/editable_project/', {...params, limit: pageSize})
       .then(({data}) => {
         const pagination = { ...state.pagination }
         pagination.total = data.count
@@ -62,11 +76,30 @@ const Projects = () => {
       pagination: pager
     })
     fetch({ page: pagination.current })
+    window.scroll({ top: 150, left: 0, behavior: 'smooth' })
+  }
+  const handleSearch = ({ target: {value}}) => {
+    clearTimeout(tmid)
+    setState({ searchStr: value })
+    tmid = setTimeout(() => {
+      setState({
+        loading: true,
+        pagination: {...state.pagination, current: 1}
+      })
+      fetch({ page: 1 })
+    }, 200)
+  }
+  const clearSearch = () => {
+    setState({ searchStr: '', pagination: {...state.pagination, current: 1 }})
+    fetch({ page: 1 })
   }
   return (
     <div>
-      <h1>My projects</h1>
-      <Link to="/projects/new"><Button type="primary" icon="plus">Create new project</Button></Link>
+      <div style={{ display: 'flex'}}>
+        <h1>{t('My projects')}</h1>
+        <Input value={state.searchStr} suffix={state.searchStr === '' ? <Icon type="search" /> : <Icon onClick={clearSearch} type="close" />} placeholder={t('Find a project...')} onChange={handleSearch} />
+        <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
+      </div>
       <Divider />
       <Table
         dataSource={state.results}
