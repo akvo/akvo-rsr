@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from .disaggregation import Disaggregation
+from .disaggregation_target import DisaggregationTarget
 from .indicator import Indicator
 from .indicator_dimension import IndicatorDimensionName, IndicatorDimensionValue
 from .indicator_label import IndicatorLabel
@@ -23,6 +24,7 @@ from .result import Result
 
 __all__ = [
     'Disaggregation',
+    'DisaggregationTarget',
     'Indicator',
     'IndicatorDimensionName',
     'IndicatorDimensionValue',
