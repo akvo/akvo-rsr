@@ -288,5 +288,28 @@
     margin-left: auto;
   }
 }
+.disaggregation-targets{
+  margin-bottom: 20px;
+}
+.disaggregation-target{
+  margin-bottom: 8px;
+  .target-name{
+    border-bottom: 1px solid #e8e8e8;
+    display: inline-block;
+    margin-bottom: 3px;
+  }
+  .value-row{
+    display: flex;
+    margin-top: 5px;
+    .ant-form-item-label{
+      margin-top: 2px;
+      margin-left: 10px;
+    }
+    .ant-input{
+      width: 140px;
+      margin-left: auto;
+    }
+  }
+}
 .taxonomy-modal{
 }

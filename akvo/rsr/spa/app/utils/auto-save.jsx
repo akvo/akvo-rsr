@@ -82,6 +82,7 @@ class AutoSave extends React.Component {
       }
       const item = get(values, setName)[itemIndex]
       const difference = customDiff(this.lastSavedValues[itemIndex], item)
+      delete difference.targets
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if(
         !isEmpty(difference)

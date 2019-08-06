@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Collapse, Col, Row, Popconfirm } from 'antd'
+import { Form, Button, Collapse, Col, Row, Popconfirm, Divider, Input } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
+import { isEqual } from 'lodash'
 
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
@@ -16,7 +17,47 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, primaryOrganisation }) => { // eslint-disable-line
+class _DimensionTargets extends React.Component{
+  shouldComponentUpdate(prevProps){
+    const { resultIndex, indicatorIndex } = this.props
+    return !isEqual(prevProps.results[resultIndex].indicators[indicatorIndex].dimensionNames, this.props.results[resultIndex].indicators[indicatorIndex].dimensionNames)
+  }
+  render(){
+    const { resultIndex, indicatorIndex, periodIndex, periodId, fieldName, formPush } = this.props
+    const { dimensionNames } = this.props.results[resultIndex].indicators[indicatorIndex]
+    const period = this.props.results[resultIndex].indicators[indicatorIndex].periods[periodIndex]
+    if(!period.targets) period.targets = []
+    if (dimensionNames.length === 0) return null
+    let newIndex = period.targets.length - 1
+    return (
+      <div className="disaggregation-targets">
+        {dimensionNames.map(dimension => (
+          <div className="disaggregation-target">
+            <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
+            {dimension.values.map(value => {
+              let targetIndex = period.targets.findIndex(it => it.dimensionValue === value.id)
+              if(targetIndex === -1) {
+                newIndex += 1
+                targetIndex = newIndex
+                formPush(`${fieldName}.targets`, { period: periodId, dimensionValue: value.id })
+              }
+              return (
+                <div className="value-row">
+                  <AutoSave sectionIndex={5} setName={`${fieldName}.targets`} itemIndex={targetIndex} />
+                  <div className="ant-col ant-form-item-label">{value.value}</div>
+                  <FinalField name={`${fieldName}.targets[${targetIndex}].value`} />
+                </div>
+              )
+            })}
+          </div>
+        ))}
+      </div>
+    )
+  }
+}
+const DimensionTargets = connect(({ editorRdr: { section5: { fields: {results} } } }) => ({ results }))(_DimensionTargets)
+
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId }
@@ -96,6 +137,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
               <Item label={<InputLabel optional>{t('Target value')}</InputLabel>}>
                 <FinalField name={`${name}.targetValue`} />
               </Item>
+              <Field name={`${name}.id`} render={({ input }) => <DimensionTargets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
               <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
                 <FinalField name={`${name}.targetComment`} render={({input}) => <RTE {...input} />} />
               </Item>

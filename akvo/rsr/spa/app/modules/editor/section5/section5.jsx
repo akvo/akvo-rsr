@@ -241,7 +241,7 @@ const Section5 = (props) => {
                             </div>
                             <Field
                               name={`${name}.id`}
-                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} primaryOrganisation={props.primaryOrganisation} />}
+                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} resultIndex={index} primaryOrganisation={props.primaryOrganisation} />}
                             />
                           </Panel>
                         )}
