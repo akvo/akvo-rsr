@@ -96,7 +96,7 @@ class Projects extends React.Component{
       }
     ]
     return (
-      <div>
+      <div id="projects-view">
         <div style={{ display: 'flex' }}>
           <h1>{t('My projects')}</h1>
           <Input value={this.state.searchStr} suffix={this.state.searchStr === '' ? <Icon type="search" /> : <Icon onClick={this.clearSearch} type="close" />} placeholder={t('Find a project...')} onChange={this.handleSearch} />
