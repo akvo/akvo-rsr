@@ -30,6 +30,7 @@ from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkVi
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .disaggregation import DisaggregationViewSet
+from .disaggregation_target import DisaggregationTargetViewSet
 from .indicator_period_dimension import (IndicatorPeriodActualDimensionViewSet,
                                          IndicatorPeriodTargetDimensionViewSet)
 from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
@@ -144,6 +145,7 @@ __all__ = [
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataFrameworkViewSet',
     'DisaggregationViewSet',
+    'DisaggregationTargetViewSet',
     'IndicatorPeriodDataCommentViewSet',
     'IndicatorPeriodTargetDimensionViewSet',
     'IndicatorPeriodTargetLocationViewSet',
