@@ -21,14 +21,8 @@ def serialize_disaggregation_targets(period):
         {
             'id': t.id,
             'value': t.value,
-            'dimension_value': {
-                'id': t.dimension_value.id,
-                'value': t.dimension_value.value
-            },
-            'dimension_name': {
-                'id': t.dimension_value.name.id,
-                'name': t.dimension_value.name.name
-            },
+            'dimension_value': t.dimension_value.id,
+            'period': period.id,
         }
         for t in targets
     ]
