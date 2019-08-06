@@ -26,26 +26,26 @@ class _DimensionTargets extends React.Component{
     const { resultIndex, indicatorIndex, periodIndex, periodId, fieldName, formPush } = this.props
     const { dimensionNames } = this.props.results[resultIndex].indicators[indicatorIndex]
     const period = this.props.results[resultIndex].indicators[indicatorIndex].periods[periodIndex]
-    if(!period.targets) period.targets = []
+    if(!period.disaggregationTargets) period.disaggregationTargets = []
     if (dimensionNames.length === 0) return null
-    let newIndex = period.targets.length - 1
+    let newIndex = period.disaggregationTargets.length - 1
     return (
       <div className="disaggregation-targets">
         {dimensionNames.map(dimension => (
           <div className="disaggregation-target">
             <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
             {dimension.values.map(value => {
-              let targetIndex = period.targets.findIndex(it => it.dimensionValue === value.id)
+              let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
               if(targetIndex === -1) {
                 newIndex += 1
                 targetIndex = newIndex
-                formPush(`${fieldName}.targets`, { period: periodId, dimensionValue: value.id })
+                formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
               }
               return (
                 <div className="value-row">
-                  <AutoSave sectionIndex={5} setName={`${fieldName}.targets`} itemIndex={targetIndex} />
+                  <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
                   <div className="ant-col ant-form-item-label">{value.value}</div>
-                  <FinalField name={`${fieldName}.targets[${targetIndex}].value`} />
+                  <FinalField name={`${fieldName}.disaggregationTargets[${targetIndex}].value`} />
                 </div>
               )
             })}

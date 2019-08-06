@@ -304,9 +304,11 @@
     .ant-form-item-label{
       margin-top: 2px;
       margin-left: 10px;
+      flex: 1;
     }
     .ant-input{
-      width: 140px;
+      // width: 140px;
+      flex: 1;
       margin-left: auto;
     }
   }
