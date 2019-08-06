@@ -28,7 +28,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, primaryOrganisation }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
@@ -153,7 +153,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} primaryOrganisation={primaryOrganisation} />} />
+              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} indicatorIndex={index} primaryOrganisation={primaryOrganisation} />} />
             </Panel>
           )}
         />

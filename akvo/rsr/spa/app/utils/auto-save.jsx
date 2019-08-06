@@ -70,18 +70,20 @@ class AutoSave extends React.Component {
     const { values, setName, itemIndex, sectionIndex } = this.props
 
     if(setName !== undefined && itemIndex !== undefined){
+      const thisValues = get(values, setName)
       // if new item added do nothing
-      if(this.lastSavedValues.length < get(values, setName).length){
+      if(this.lastSavedValues.length < thisValues.length){
         this.lastSavedValues = [...this.lastSavedValues, {}]
         return
       }
       // if item removed: TODO this is unreachable !?
-      if(this.lastSavedValues.length > get(values, setName).length){
+      if(this.lastSavedValues.length > thisValues.length){
         console.log('removed', itemIndex)
         return
       }
-      const item = get(values, setName)[itemIndex]
+      const item = thisValues[itemIndex]
       const difference = customDiff(this.lastSavedValues[itemIndex], item)
+      delete difference.disaggregationTargets
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if(
         !isEmpty(difference)

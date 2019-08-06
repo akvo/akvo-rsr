@@ -28,8 +28,9 @@ export const fetchSetItems = (sectionIndex, setName, items) => ({ type: actionTy
 export const addSetItem = (sectionIndex, setName, item) => (dispatch, getState) => {
   dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex, setName, item})
   const setItems = get(getState().editorRdr[`section${sectionIndex}`].fields, setName)
+  const itemIndex = setItems.length - 1
   api.post(getEndpoint(sectionIndex, setName), item, getTransform(sectionIndex, setName, 'request'))
-    .then(({ data: {id}}) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id }) })
+    .then(({ data: {id}}) => { dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex, setName, id, itemIndex }) })
     .catch((error) => {
       dispatch({ type: actionTypes.BACKEND_ERROR, error, sectionIndex, setName: `${setName}[${setItems.length - 1}]`, response: error.response ? error.response.data : error })
       dispatch({ type: actionTypes.REMOVE_SET_ITEM, sectionIndex, setName, itemIndex: setItems.length - 1, skipValidation: true })
