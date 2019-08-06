@@ -40,7 +40,10 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors }) => 
                 name={`${name}.country`}
                 optionFilterProp="children"
                 showSearch
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option) => {
+                  const { children } = option.props
+                  return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }}
                 control="select"
                 options={COUNTRY_OPTIONS}
               />
