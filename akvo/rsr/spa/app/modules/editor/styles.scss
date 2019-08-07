@@ -27,7 +27,7 @@
     aside.saving-status{
       background: #e6e6e6;
       height: 50px;
-      padding: 0 20px;
+      padding: 0 10px 0 20px;
       .anticon{
         margin-right: 10px;
         color: green;
@@ -41,6 +41,13 @@
           color: red;
         }
       }
+      position: relative;
+      overflow: hidden;
+      .last-updated{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
     .content{
       display: flex;
@@ -48,8 +55,12 @@
       i{
         opacity: 0.5;
       }
-      .ant-btn{
+      .ant-btn-primary{
         margin-top: 9px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      .ant-btn-group{
         margin-left: 10px;
         margin-right: 10px;
       }
@@ -63,6 +74,15 @@
         }
         .ant-switch-checked{
           background-color: #f74848;
+        }
+        .all-done{
+          color: #52a83a;
+          font-weight: 600;
+        }
+        .all-done-toggle{
+          .ant-switch-checked{
+            background-color: #63c14a;
+          }
         }
         .show-required{
           margin-left: 30px;
@@ -166,15 +186,24 @@
   // .view.section5{
   //   margin-right: 200px;
   // }
-  .alerts{
-    width: 300px;
+  .right-sidebar{
+    width: 190px;
     position: absolute;
     right: 0;
-    // padding-left: 30px;
-    padding-top: 20px;
-    @media screen and (max-width: 1200px){
-      width: 200px;
+    padding: 7px 10px 10px;
+    font-size: 12px;
+    top: 66px;
+    // background: #f7f7f7;
+    text-align: right;
+    span{
+      opacity: 0.6;
     }
+    b{
+      font-weight: normal;
+    }
+    // @media screen and (max-width: 1200px){
+    //   width: 200px;
+    // }
   }
 
   h3{

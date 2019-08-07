@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
-import { Icon, Button, Spin, Tabs, Tooltip, Skeleton } from 'antd'
+import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -37,11 +38,18 @@ const Section = connect(({ editorRdr }) => ({ editorRdr }), actions)(_Section)
 
 
 const SavingStatus = connect(
-  ({ editorRdr: { saving, lastSaved, backendError } }) => ({ saving, lastSaved, backendError })
-)(({ saving, lastSaved, backendError }) => {
+  ({ editorRdr: { saving, lastSaved, backendError, section1: { fields: { lastModifiedAt, lastModifiedBy } } } }) => ({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy })
+)(({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy }) => {
   const { t } = useTranslation()
+  // normalize UTC + 1 time
+  const lastModifiedNormalized = new Date(moment(lastModifiedAt).add(1, 'hours').format())
   return (
     <aside className="saving-status">
+      {(lastSaved === null && !saving && lastModifiedAt) && (
+        <div className="last-updated">
+          {t('Updated')} <TimeAgo date={lastModifiedNormalized} formatter={{ unit: 'minute' }} /> {t('by')} <Tooltip title={lastModifiedBy}>{lastModifiedBy}</Tooltip>
+        </div>
+      )}
       {saving && (
         <div>
           <Spin />
@@ -75,6 +83,7 @@ const Aux = node => node.children
 const ContentBar = connect(
   ({ editorRdr }) => {
     const ret = {}
+    ret.absoluteUrl = editorRdr.section1.fields.absoluteUrl
     ret.publishingStatus = editorRdr.section1.fields.publishingStatus
     ret.allValid = true
     let sectionLength = 10
@@ -87,7 +96,7 @@ const ContentBar = connect(
     return ret
   },
   actions
-)(({ publishingStatus, allValid, setStatus }) => {
+)(({ publishingStatus, allValid, setStatus, absoluteUrl }) => {
   const { t } = useTranslation()
   return (
     <div className="content">
@@ -99,7 +108,19 @@ const ContentBar = connect(
       )}
       {publishingStatus !== 'unpublished' && (
         <Aux>
-          <Button type="danger" onClick={() => setStatus('unpublished')}>{t('Unpublish')}</Button>
+          <Dropdown.Button
+            // onClick={() => {}}
+            href={absoluteUrl}
+            target="_blank"
+            trigger="click"
+            overlay={
+              <Menu>
+                <Menu.Item onClick={() => setStatus('unpublished')}><Icon type="stop" />{t('Unpublish')}</Menu.Item>
+              </Menu>
+            }
+          >
+            {t('View Project Page')}
+          </Dropdown.Button>
           <i>{t('The project is published')}</i>
         </Aux>
       )}
@@ -125,6 +146,14 @@ const _Header = ({title}) => {
 }
 const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
 
+const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } } } }) => ({ createdAt }))(({ createdAt }) => {
+  const { t } = useTranslation()
+  return (
+    <div className="right-sidebar">
+      <span>{t('Date created')}</span><br /><b>{moment(createdAt).add(1, 'hours').format('DD MMM YYYY, HH:mm')}</b>
+    </div>
+  )
+})
 
 const Editor = ({ match: { params } }) => (
   <div>
@@ -150,7 +179,7 @@ const Editor = ({ match: { params } }) => (
           />)
         }
       </div>
-      <div className="alerts" />
+      <RightSidebar />
     </div>
   </div>
 )
