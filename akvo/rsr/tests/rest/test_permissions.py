@@ -184,6 +184,10 @@ class PermissionFilteringTestCase(TestCase):
                 # Per-project per-user objects
                 for user in organisation.all_users():
                     title = '{}: {}'.format(user.username, project.title)
+                    # disaggregation target
+                    M.DisaggregationTarget.objects.create(period=period,
+                                                          dimension_value=dimension_value,
+                                                          value=0)
                     # updates
                     update = M.ProjectUpdate.objects.create(project=project,
                                                             user=user,
@@ -516,6 +520,11 @@ class PermissionFilteringTestCase(TestCase):
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodTargetLocation] = {
             'group_count': group_count(8, 2, 4, 4),
+            'project_relation': 'period__indicator__result__project__'
+        }
+
+        model_map[M.DisaggregationTarget] = {
+            'group_count': group_count(64, 16, 48, 32),
             'project_relation': 'period__indicator__result__project__'
         }
 

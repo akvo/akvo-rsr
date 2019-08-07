@@ -134,16 +134,17 @@ export default (state = initialState, action) => {
       newState.addingItem = false
       newState.lastSaved = new Date()
       newState.backendError = null
-      const itemIndex = get(newState[sectionKey].fields, `${action.setName}`).length - 1
+      const { itemIndex, setName } = action
+      // const itemIndex = get(newState[sectionKey].fields, `${action.setName}`).length - 1
       const updatedItem = {
-        ...get(newState[sectionKey].fields, `${action.setName}[${itemIndex}]`)
+        ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
       }
       if(action.id){
         updatedItem.id = action.id
       } else if(action.item) {
         Object.keys(action.item).forEach(prop => { updatedItem[prop] = action.item[prop] })
       }
-      set(newState[sectionKey].fields, `${action.setName}[${itemIndex}]`, updatedItem)
+      set(newState[sectionKey].fields, `${setName}[${itemIndex}]`, updatedItem)
       return newState
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true

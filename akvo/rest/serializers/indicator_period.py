@@ -7,9 +7,25 @@
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataFrameworkSerializer
 from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
-from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
+from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData, DisaggregationTarget
 
 from rest_framework import serializers
+
+
+def serialize_disaggregation_targets(period):
+    targets = DisaggregationTarget.objects.filter(period=period).prefetch_related(
+        'dimension_value',
+        'dimension_value__name',
+    )
+    return [
+        {
+            'id': t.id,
+            'value': t.value,
+            'dimension_value': t.dimension_value.id,
+            'period': period.id,
+        }
+        for t in targets
+    ]
 
 
 class IndicatorPeriodSerializer(BaseRSRSerializer):
@@ -18,6 +34,10 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
     percent_accomplishment = serializers.ReadOnlyField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
     disaggregations = IndicatorPeriodDisaggregationSerializer(many=True, required=False)
+    disaggregation_targets = serializers.SerializerMethodField()
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
 
     class Meta:
         model = IndicatorPeriod
@@ -31,10 +51,14 @@ class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
     data = serializers.SerializerMethodField('get_updates')
     parent_period = serializers.ReadOnlyField(source='parent_period_id')
     percent_accomplishment = serializers.ReadOnlyField()
+    disaggregation_targets = serializers.SerializerMethodField()
 
     class Meta:
         model = IndicatorPeriod
         fields = '__all__'
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
 
     def get_updates(self, obj):
         user = self.context['request'].user
