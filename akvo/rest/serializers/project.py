@@ -48,6 +48,7 @@ class ProjectSerializer(BaseRSRSerializer):
     sync_owner_secondary_reporter = serializers.ReadOnlyField(source='reporting_partner.is_secondary_reporter')
     status_label = serializers.ReadOnlyField(source='show_plain_status')
     keyword_labels = serializers.ReadOnlyField()
+    last_modified_by = serializers.ReadOnlyField(source='last_modified_by.user.get_full_name')
 
     class Meta:
         model = Project
