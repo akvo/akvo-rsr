@@ -134,8 +134,8 @@ export default (state = initialState, action) => {
       newState.addingItem = false
       newState.lastSaved = new Date()
       newState.backendError = null
-      const { itemIndex, setName } = action
-      // const itemIndex = get(newState[sectionKey].fields, `${action.setName}`).length - 1
+      const { setName } = action
+      const itemIndex = action.itemIndex ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
       const updatedItem = {
         ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
       }

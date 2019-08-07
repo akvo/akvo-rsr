@@ -48,18 +48,11 @@ class AutoSave extends React.Component {
     const { setName, sectionIndex, itemIndex } = this.props
     if(setName !== undefined){
       this.lastSavedValues = cloneDeep(get(this.props.values, setName))
-      console.log(`mounting ${setName}[${itemIndex}]`)
     } else {
       this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
     }
   }
-  componentWillReceiveProps(nextProps) {
-    // TODO: This has been used to udpate lastSavedValues only on project.id update
-    // if(!this.props.values.id && nextProps.values.id){
-    //   const { setName, sectionIndex } = this.props
-    //   this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
-    //   return
-    // }
+  componentWillReceiveProps() {
     if (this.timeout) {
       clearTimeout(this.timeout)
     }
@@ -85,9 +78,13 @@ class AutoSave extends React.Component {
       const difference = customDiff(this.lastSavedValues[itemIndex], item)
       delete difference.disaggregationTargets
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
+      if (!isEmpty(difference)) {
+        this.lastSavedValues[itemIndex] = {
+          ...this.lastSavedValues[itemIndex],
+          ...difference
+        }
       if(
-        !isEmpty(difference)
-        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')
+        !(Object.keys(difference).indexOf('id') !== -1)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
       ){
         if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item], true).length === 0){
@@ -97,10 +94,7 @@ class AutoSave extends React.Component {
             this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
           }
         }
-        this.lastSavedValues[itemIndex] = {
-          ...this.lastSavedValues[itemIndex],
-          ...difference
-        }
+      }
       }
     } else {
       const rootValues = getRootValues(values, `section${sectionIndex}`)

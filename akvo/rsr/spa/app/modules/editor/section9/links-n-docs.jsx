@@ -25,7 +25,7 @@ const LinksDocs = ({ fields, validations, dispatch }) => (
       }) => (
         <Form layout="vertical">
           <Links formPush={push} />
-          <Docs formPush={push} validations={validations} dispatch={dispatch} />
+          <Docs formPush={push} validations={validations} dispatch={dispatch} initialValues={fields} />
         </Form>
       )}
     />
@@ -36,17 +36,6 @@ const LinksDocs = ({ fields, validations, dispatch }) => (
 export default connect(
   ({ editorRdr: { section9: { fields }, validations }}) => ({ fields, validations })
 )(React.memo(LinksDocs, (prevProps, nextProps) => {
-  // let _isEqual = isEqual(prevProps.fields, nextProps.fields)
-  // if(!_isEqual){
-  //   // prevent update on added empty item
-  //   const _diff = diff(prevProps.fields, nextProps.fields)
-  //   if(_diff.docs){
-  //     if(isEqual(_diff.docs[Object.keys(_diff.docs)[0]], {document: true, categories: []})){
-  //       _isEqual = true
-  //     }
-  //   }
-  // }
-  // return isEqual(_isEqual)
   const difference = diff(prevProps.fields, nextProps.fields)
   const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
   return !shouldUpdate

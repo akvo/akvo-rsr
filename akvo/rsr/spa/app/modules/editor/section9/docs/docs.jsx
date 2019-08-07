@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Button, Radio, Row, Col, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 
@@ -16,22 +16,20 @@ import actionTypes from '../../action-types'
 
 const { Item } = Form
 
-const handleRadioSwitch = (event, input) => {
-  if(event.target.value === 'upload' && !input.value){
-    input.onChange(true)
-  }
-  else if(event.target.value === 'url' && input.value){
-    input.onChange('')
-  }
-}
-
-const Docs = ({ formPush, validations, dispatch }) => {
+const Docs = ({ formPush, validations, dispatch, initialValues }) => {
   const { t } = useTranslation()
+  const initialState = {}
+  initialValues.docs.forEach((doc, index) => {
+    if(doc.document !== '' && doc.document !== null){
+      initialState[index] = true
+    }
+  })
+  const [uploadOn, setUploadOn] = useState(initialState)
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isOptional = isFieldOptional(validationSets)
   const handleNewDocumentUploading = () => {
-    dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {document: true, categories: []} })
+    dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {categories: []} })
   }
   const handleNewDocumentUploaded = (id, document) => {
     dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document} })
@@ -40,6 +38,19 @@ const Docs = ({ formPush, validations, dispatch }) => {
     dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
+  const handleRadioSwitch = ({target: {value}}, index) => {
+    if (value === 'upload') {
+      const val = {}
+      val[index] = true
+      setUploadOn({...uploadOn, ...val})
+    }
+    else if (value === 'url') {
+      const val = {}
+      val[index] = false
+      setUploadOn({ ...uploadOn, ...val })
+    }
+  }
+  console.log(uploadOn)
   return (
     <div>
       <h3>{t('Documents')}</h3>
@@ -63,26 +74,20 @@ const Docs = ({ formPush, validations, dispatch }) => {
         panel={(name, index) => (
         <div>
           <Item>
-            <FinalField
-              name={`${name}.document`}
-              render={({ input }) => {
-                if(input.value !== true && input.value !== '') return null
-                return(
-                  <Radio.Group value={input.value ? 'upload' : 'url'} onChange={ev => handleRadioSwitch(ev, input)}>
-                    <Radio.Button value="url">URL</Radio.Button>
-                    <Radio.Button value="upload">{t('Upload')}</Radio.Button>
-                  </Radio.Group>
-                )
-              }}
-            />
             <Condition when={`${name}.document`} is="">
+            <Radio.Group value={uploadOn[index] ? 'upload' : 'url'} onChange={ev => handleRadioSwitch(ev, index)}>
+              <Radio.Button value="url">URL</Radio.Button>
+              <Radio.Button value="upload">{t('Upload')}</Radio.Button>
+            </Radio.Group>
+            </Condition>
+            {!uploadOn[index] &&
               <FinalField
                 name={`${name}.url`}
                 control="input"
                 placeholder="https://..."
               />
-            </Condition>
-            <Condition when={`${name}.document`} isNot="">
+            }
+            {uploadOn[index] &&
               <FinalField
                 name={`${name}.id`}
                 render={({ input }) => (
@@ -101,7 +106,7 @@ const Docs = ({ formPush, validations, dispatch }) => {
                   />
                 )}
               />
-            </Condition>
+            }
           </Item>
           <Item label={<InputLabel tooltip={t('Enter the title of your document.')}>{t('title')}</InputLabel>}>
             <FinalField name={`${name}.title`} control="input" />
