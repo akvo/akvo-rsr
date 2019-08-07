@@ -1,3 +1,4 @@
+/* global window */
 import React, { Component } from 'react'
 import { Collapse } from 'antd'
 import { FormSpy } from 'react-final-form'
@@ -38,6 +39,8 @@ class Accordion extends Component {
       this.setState({
         activeKey
       })
+      const child = this.ref.children[0].children[activeKey]
+      window.scroll({ top: child.offsetParent.offsetTop + (61 * Number(activeKey)) + 413, left: 0, behavior: 'smooth' })
     }
   }
   handleLengthChange = (lastIndex) => {

@@ -155,6 +155,16 @@
         overflow: visible;
         .ant-collapse-content-box>.accordion-container>.ant-collapse{
           position: relative;
+          &>.ant-collapse-item{
+            &>.ant-collapse-header{
+              height: 70px;
+            }
+            .ant-collapse-content{
+              .ant-collapse-content-box>.accordion-container>.ant-collapse>.ant-collapse-item>.ant-collapse-header{
+                height: 60px;
+              }
+            }
+          }
           &>.ant-collapse-item-active{
             &>.ant-collapse-header{
               top: 186px;
