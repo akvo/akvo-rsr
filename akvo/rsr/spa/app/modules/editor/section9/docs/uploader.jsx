@@ -1,5 +1,5 @@
-import React from 'react'
-import { Upload, Icon } from 'antd'
+import React, { useState } from 'react'
+import { Upload, Icon, Alert } from 'antd'
 import { Route } from 'react-router-dom'
 import {isEqual} from 'lodash'
 import { diff } from 'deep-object-diff'
@@ -8,6 +8,16 @@ import { config } from '../../../../utils/api'
 
 const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentUploaded, onDocumentUpdated }) => {
   const { t } = useTranslation()
+  const [error, setError] = useState('')
+  const beforeUpload = (file) => {
+    const isLt10M = file.size / 1000000 < 10
+    if (!isLt10M) {
+      setError(t('The uploaded file is too big'))
+    } else {
+      setError('')
+    }
+    return isLt10M
+  }
   return (
     <Route
     path="/projects/:id"
@@ -17,6 +27,8 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
           ? {field_id: `rsr_projectdocument.document.${documentId}`}
           : {field_id: `rsr_projectdocument.document.${params.id}_new-0`}
         return (
+          <div>
+          {error && <Alert type="error" message={error} style={{ marginBottom: 15 }} />}
           <Upload.Dragger
             name="file"
             listType="picture"
@@ -25,6 +37,7 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
             headers={config.headers}
             data={data}
             defaultFileList={(document && document !== true) ? [{ uid: '-1', thumbUrl: document, url: document, status: 'done', name: document.split('/').reduce((acc, value) => value) }] : []}
+            beforeUpload={beforeUpload}
             onChange={({ file }) => {
               if(file.status === 'uploading' && !documentId && !uploadStarted){
                 uploadStarted = true
@@ -48,8 +61,9 @@ const Uploader = ({ document, documentId, onNewDocumentUploading, onNewDocumentU
             </p>
             <p className="ant-upload-text">{t('Drag file here')}</p>
             <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
-            <p><small>{t('Max: 5MB')}</small></p>
+            <p><small>Max: 10MB</small></p>
           </Upload.Dragger>
+          </div>
         )
       }
     }

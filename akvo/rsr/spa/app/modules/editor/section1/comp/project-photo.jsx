@@ -28,7 +28,6 @@ class ProjectPhoto extends React.Component {
     }
   }
   handleChange = (info) => {
-    console.log(info)
     if(info.hasOwnProperty('event')){
       this.setState({
         percent: info.event.percent
@@ -44,7 +43,6 @@ class ProjectPhoto extends React.Component {
       return
     }
     if(info.file.status === 'error'){
-      console.log(info)
       this.setState({
         uploadingError: true,
         loading: false
@@ -62,16 +60,17 @@ class ProjectPhoto extends React.Component {
   }
 
   beforeUpload = (file) => {
+    const { t } = this.props
     const isImage = file.type === 'image/jpeg' || file.type === 'image/png'
-    const isLt2M = file.size / 1000000 < 2
+    const isLt10M = file.size / 1000000 < 10
     if (!isImage) {
       this.setState({
-        error: 'Please upload an image',
+        error: t('Please upload an image'),
         loading: false
       })
-    } else if(!isLt2M) {
+    } else if(!isLt10M) {
       this.setState({
-        error: 'The uploaded image is too big',
+        error: t('The uploaded file is too big'),
         loading: false
       })
     } else {
@@ -79,7 +78,7 @@ class ProjectPhoto extends React.Component {
         error: ''
       })
     }
-    return isImage && isLt2M
+    return isImage && isLt10M
   }
 
   resetImage = () => {
