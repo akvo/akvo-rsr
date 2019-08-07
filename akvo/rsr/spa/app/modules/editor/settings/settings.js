@@ -30,7 +30,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
   sets[1].tooltip = t('A validation set with specific requirements for the Netherlands Leprosy Relief.')
   sets[2].tooltip = t('To be used by all Gietrenk projects')
   sets[3].tooltip = t('The validation set for publishing to IATI v2.02. The mandatory fields in this validation set are the minimum requirements to publish a valid IATI v2.02 file.')
-  sets[4].tooltip = ''
+  sets[4].tooltip = t('Only the the mandatory fields, i.e. the minimum requirements, to publish a valid IATI v2.02 file.')
   sets[5].tooltip = t('Validation set for The EU Emergency Trust Fund for Africa.')
   sets[6].tooltip = t('The validation set for publishing to IATI according to the guidelines of the Dutch Ministry of Foreign Affairs. These guidelines can be found <a href="https://www.government.nl/binaries/government/documents/publications/2015/12/01/open-data-and-development-cooperation/how-to-use-the-iati-standard-1.pdf" target="_blank" rel="noopener">here</a>.')
   sets[7].tooltip = t('DFID minimum IATI requirements based on <a href="https://www.gov.uk/government/publications/2010-to-2015-government-policy-overseas-aid-transparency/2010-to-2015-government-policy-overseas-aid-transparency" target="_blank" rel="noopener">the following government policy</a>. Please note that contact and document are also mandatory.')

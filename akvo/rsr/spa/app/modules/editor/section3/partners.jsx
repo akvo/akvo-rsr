@@ -8,6 +8,7 @@ import { withTranslation, useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import Condition from '../../../utils/condition'
+import { doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
 import ItemArray, { PanelHeaderMore } from '../../../utils/item-array'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import InputLabel from '../../../utils/input-label'
@@ -15,13 +16,16 @@ import './styles.scss'
 import OrganizationSelect from '../../../utils/organization-select'
 import { removeSetItem } from '../actions'
 import SectionContext from '../section-context'
-import { useFetch } from '../../../utils/hooks';
+import { useFetch } from '../../../utils/hooks'
+import validationDefs from './partners/validations'
 
 const { Item } = Form
 
-const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField, primaryOrganisation }) => { // eslint-disable-line
+const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField, primaryOrganisation, validations }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
   const { t } = useTranslation()
+  const validationSets = getValidationSets(validations, validationDefs)
+  const fieldExists = doesFieldExist(validationSets)
   const removeItem = (index, fields) => { // eslint-disable-line
     removeSetItem(3, 'partners', index)
     fields.remove(index)
@@ -145,6 +149,7 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
                                 disabled={disabled}
                                 withLabel
                                 optional
+                                fieldExists={fieldExists}
                                 control="input"
                               />
                             </div>
