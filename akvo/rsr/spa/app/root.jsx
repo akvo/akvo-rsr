@@ -1,3 +1,4 @@
+/* global window */
 import React from 'react'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
@@ -16,7 +17,8 @@ const basePath = process.env.DETACHED_FE ? '/' : '/my-rsr'
 const Root = ({ dispatch }) => {
   const [data, loading] = useFetch('/me')
   if (!loading && data) {
-    dispatch({ type: 'SET_USER', user: data })
+    if(data !== 403) dispatch({ type: 'SET_USER', user: data })
+    else window.location.href = '/en/sign_in/'
   }
   return (
     <Router basename={basePath}>
