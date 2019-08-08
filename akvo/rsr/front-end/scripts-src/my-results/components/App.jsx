@@ -333,11 +333,11 @@ class App extends React.Component {
                             {id: 81, value: "Female", name: 45}
                         ],
                         disaggregations: [
-                            {update: "new-1", dimension_value: 80, id: "new-80", value: "", É},
-                            {update: "new-1", dimension_value: 81, id: "new-81", value: "", É}
+                            {update: "new-1", dimension_value: 80, id: "new-80", value: "", ï¿½},
+                            {update: "new-1", dimension_value: 81, id: "new-81", value: "", ï¿½}
                         ]
                     },
-                    É,
+                    ï¿½,
                 ]
             */
             let dimensionsAndDisaggs = [];
@@ -401,7 +401,7 @@ class App extends React.Component {
             resultsTab
         ) : (
             <section className="results">
-                <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
+                <a className="pull-right editBtn" href={`/my-rsr/projects/${projectId}/`}>
                     {_("edit_project")}
                 </a>
                 <Tabs onSelect={this.onSelectTab}>

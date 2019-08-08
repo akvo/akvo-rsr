@@ -12,19 +12,10 @@ const flags = {}
 langs.forEach(lang => {
   flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
 })
-const menu = () => {
-  const { t } = useTranslation()
-  return (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="/en/myrsr/details/">{t('My details')}</a>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <a href="/en/sign_out">{t('Sign out')}</a>
-      </Menu.Item>
-    </Menu>
-  )
-}
+// const menu = () => {
+//   return (
+//   )
+// }
 const langMenu = ({ userRdr, dispatch }) => {
   const { i18n } = useTranslation()
   useEffect(() => {
@@ -48,13 +39,27 @@ const TopBar = ({ userRdr, dispatch }) => {
   return (
     <div className="top-bar">
       <div className="ui container">
+        <a href={`/${userRdr.lang}/projects`}>
         <SVGInline svg={rsrSvg} />
+        </a>
         <div className="right-side">
           <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
             <span className="lang"><img src={flags[userRdr.lang]} /></span>
           </Dropdown>
           {userRdr.firstName &&
-          <Dropdown overlay={menu} trigger={['click']}>
+          <Dropdown
+            trigger={['click']}
+            overlay={
+              <Menu>
+                <Menu.Item key="0">
+                  <a href="/en/myrsr/details/">{t('My details')}</a>
+                </Menu.Item>
+                <Menu.Item key="1">
+                  <a href="/en/sign_out">{t('Sign out')}</a>
+                </Menu.Item>
+              </Menu>
+            }
+          >
             <span className="user ant-dropdown-link">
               {userRdr.firstName} {userRdr.lastName} <Icon type="caret-down" />
             </span>

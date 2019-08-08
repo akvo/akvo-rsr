@@ -154,22 +154,23 @@ const ContentBar = connect(
   )
 })
 
-const _Header = ({title}) => {
+const _Header = ({ title, projectId, publishingStatus}) => {
   const { t } = useTranslation()
   return (
     <header className="main-header">
       <Link to="/projects"><Icon type="left" /></Link>
       <h1>{title ? title : t('Untitled project')}</h1>
       <Tabs size="large" defaultActiveKey="4">
-        <TabPane tab="Results" key="1" />
-        <TabPane tab="Updates" key="2" />
-        <TabPane tab="Reports" key="3" />
+        {(publishingStatus !== 'published') && <TabPane disabled tab={t('Results')} key="1" />}
+        {(publishingStatus === 'published') && <TabPane tab={<a href={`/en/myrsr/my_project/${projectId}/`}>{t('Results')}</a>} key="1" />}
+        <TabPane tab="Updates" disabled key="2" />
+        <TabPane tab="Reports" disabled key="3" />
         <TabPane tab="Editor" key="4" />
       </Tabs>
     </header>
   )
 }
-const Header = connect(({ editorRdr: { section1: { fields: { title } }} }) => ({ title }))(_Header)
+const Header = connect(({ editorRdr: { projectId, section1: { fields: { title, publishingStatus } } } }) => ({ title, projectId, publishingStatus }))(_Header)
 
 const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } } } }) => ({ createdAt }))(({ createdAt }) => {
   const { t } = useTranslation()

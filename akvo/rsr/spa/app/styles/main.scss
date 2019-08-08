@@ -90,6 +90,12 @@ header.main-header{
       margin-bottom: 1px;
       border: none;
     }
+    a{
+      color: rgba(0, 0, 0, 0.65);
+      &:hover{
+        color: #3f90f7;
+      }
+    }
   }
   .anticon{
     font-size: 26px;
