@@ -36,6 +36,31 @@ class _Section extends React.Component{
 }
 const Section = connect(({ editorRdr }) => ({ editorRdr }), actions)(_Section)
 
+const calconfig = {
+  sameDay: 'h:mm a',
+  lastDay: '[yesterday] h:mm a',
+  lastWeek: '[last] dddd',
+  sameElse: 'D MMM YYYY'
+}
+
+const LastUpdateTime = ({ date, firstLoad }) => {
+  const { t } = useTranslation()
+  const now = new Date()
+  const minutesAgo = (now.getTime() - date.getTime()) / (1000 * 60)
+  const time = minutesAgo < 70
+    ? <TimeAgo date={date} formatter={{ unit: 'minute' }} />
+    : (
+    <span>{moment(date).calendar(null, {
+      sameDay: '[at] h:mma',
+      lastDay: '[yesterday at] h:mma',
+      lastWeek: '[last] dddd',
+      sameElse: `[on] D MMM${now.getFullYear() !== date.getFullYear() ? ' YYYY' : ''}`
+    })}
+    </span>)
+  return (
+    <span>{t('Updated')} {time}</span>
+  )
+}
 
 const SavingStatus = connect(
   ({ editorRdr: { saving, lastSaved, backendError, section1: { fields: { lastModifiedAt, lastModifiedBy } } } }) => ({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy })
@@ -47,7 +72,7 @@ const SavingStatus = connect(
     <aside className="saving-status">
       {(lastSaved === null && !saving && lastModifiedAt) && (
         <div className="last-updated">
-          {t('Updated')} <TimeAgo date={lastModifiedNormalized} formatter={{ unit: 'minute' }} /> {t('by')} <Tooltip title={lastModifiedBy}>{lastModifiedBy}</Tooltip>
+          <LastUpdateTime date={lastModifiedNormalized} firstLoad /> {t('by')} <Tooltip title={lastModifiedBy}>{lastModifiedBy}</Tooltip>
         </div>
       )}
       {saving && (
@@ -59,7 +84,7 @@ const SavingStatus = connect(
       {(!saving && lastSaved !== null && backendError === null) && (
         <div>
           <Icon type="check" />
-          <span>{t('Saved')} <TimeAgo date={lastSaved} formatter={{ unit: 'minute' }} /></span>
+          <LastUpdateTime date={lastSaved} />
         </div>
       )}
       {(!saving && backendError !== null) && (
