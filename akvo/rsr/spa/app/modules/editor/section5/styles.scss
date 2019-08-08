@@ -1,8 +1,11 @@
 .section5.view{
   .summary{
     display: flex;
-    margin-top: 10px;
+    padding-top: 10px;
     margin-bottom: 20px;
+    position: relative;
+    background-color: #fff;
+    z-index: 100;
     ul{
       display: flex;
       flex: 1;
