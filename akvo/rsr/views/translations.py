@@ -447,6 +447,8 @@ JSON_TEXT = {
     u"more to fill": _(u"more to fill"),
     u"All done": _(u"All done"),
     u"Show required": _(u"Show required"),
+    u"My details": _(u"My details"),
+    u"Sign out": _(u"Sign out"),
     "menu": {
       "settings": _("Project settings"),
       "info": _("General information"),

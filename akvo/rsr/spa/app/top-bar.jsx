@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import SVGInline from 'react-svg-inline'
@@ -12,18 +12,24 @@ const flags = {}
 langs.forEach(lang => {
   flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
 })
-const menu = () => (
-  <Menu>
-    <Menu.Item key="0">
-      <a href="/en/myrsr/details/">My details</a>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <a href="/en/sign_out">Sign out</a>
-    </Menu.Item>
-  </Menu>
-)
+const menu = () => {
+  const { t } = useTranslation()
+  return (
+    <Menu>
+      <Menu.Item key="0">
+        <a href="/en/myrsr/details/">{t('My details')}</a>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <a href="/en/sign_out">{t('Sign out')}</a>
+      </Menu.Item>
+    </Menu>
+  )
+}
 const langMenu = ({ userRdr, dispatch }) => {
   const { i18n } = useTranslation()
+  useEffect(() => {
+    i18n.changeLanguage(userRdr.lang)
+  }, [])
   const setLang = (lang) => {
     dispatch({ type: 'SET_LANG', lang })
     i18n.changeLanguage(lang)
@@ -38,6 +44,7 @@ const langMenu = ({ userRdr, dispatch }) => {
 }
 
 const TopBar = ({ userRdr, dispatch }) => {
+  const { t } = useTranslation()
   return (
     <div className="top-bar">
       <div className="ui container">
@@ -53,7 +60,7 @@ const TopBar = ({ userRdr, dispatch }) => {
             </span>
           </Dropdown>
           }
-          <Link to="/projects"><Button type="primary" ghost>My Projects</Button></Link>
+          <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link>
         </div>
       </div>
     </div>
