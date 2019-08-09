@@ -16,7 +16,7 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 from lxml import html
 
-from akvo.rsr.models import Employment, Organisation, Project, User, Partnership, UserProjects
+from akvo.rsr.models import Employment, Organisation, User
 from akvo.rsr.views.my_rsr import manageable_objects
 from akvo.utils import check_auth_groups
 
@@ -62,43 +62,6 @@ class MyRSRTestCase(TestCase):
                           (self.user1.id, u'Admins'),
                           (self.user1.id, u'Users')])
 
-    def test_search_with_long_query_strings_works(self):
-        """Test that search works with long query strings.
-
-        *NOTE*: This test was written to ensure that the search works correctly
-        when refactoring the code to make searches with long query strings
-        faster.  The test doesn't actually test that the new code is faster and
-        doesn't timeout, because there's no good way to do this (especially on
-        a small test database). If ever we start using something like
-        django_perf_rec, this may be feasible to test.
-
-        """
-        # Given
-        title = 'This is a super long project title that will be used as a search query'
-        Project.objects.create(title=title)
-        url = '/myrsr/projects?q={}'.format(title.replace(' ', '+'))
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        self.assertIn(title, response.content)
-
-    def test_search_filters_projects(self):
-        # Given
-        title = 'Project Title'
-        query = 'search query'
-        Project.objects.create(title=title)
-        url = '/myrsr/projects?q={}'.format(query.replace(' ', '+'))
-
-        # When
-        response = self.c.get(url, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        self.assertNotIn(title, response.content)
-
     def _create_user(self, email, password, is_active=True, is_admin=False):
         """Create a user with the given email and password."""
 
@@ -112,33 +75,6 @@ class MyRSRTestCase(TestCase):
         user.save()
 
         return user
-
-    def test_projects_access_restrictions(self):
-        # Given an org with two projects
-        project1 = Project.objects.create(title='Project 1')
-        project1.publish()
-        project2 = Project.objects.create(title='Project 2')
-        project2.publish()
-        Partnership.objects.create(organisation=self.org, project=project1)
-        Partnership.objects.create(organisation=self.org, project=project2)
-        Employment.objects.create(
-            user=self.user3, organisation=self.org, group=self.user_group, is_approved=True
-        )
-
-        # When project1 is added to user1's project white list
-        white_list = UserProjects.objects.create(user=self.user3, is_restricted=True,)
-        white_list.projects.add(project1)
-
-        # Then user1's project list should include only project1
-        self.c.login(username=self.user3.username, password=self.password)
-        url = '/myrsr/projects'
-        response = self.c.get(url, follow=True)
-        from BeautifulSoup import BeautifulSoup
-        soup = BeautifulSoup(response.content)
-
-        self.assertEqual(len(soup.findAll('table')), 1)
-        # There should be two table rows: one header and one for project1
-        self.assertEqual(len(soup.findAll('table')[0].findChildren('tr')), 2)
 
     def test_manageable_objects_employments_is_admin_can_manage_all(self):
         # Given a user that is_admin
