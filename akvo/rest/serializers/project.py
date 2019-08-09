@@ -180,8 +180,9 @@ class ProjectUpSerializer(ProjectSerializer):
 class ProjectMetadataSerializer(BaseRSRSerializer):
 
     locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
+    status = serializers.ReadOnlyField(source='publishingstatus.status')
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations')
+                  'date_start_actual', 'date_start_planned', 'locations', 'status')
