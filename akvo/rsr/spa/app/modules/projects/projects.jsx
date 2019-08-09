@@ -98,7 +98,7 @@ class Projects extends React.Component{
     return (
       <div id="projects-view">
         <div style={{ display: 'flex' }}>
-          <h1>{t('My projects')}</h1>
+          <h2>{t('My projects')}</h2>
           <Input value={this.state.searchStr} suffix={this.state.searchStr === '' ? <Icon type="search" /> : <Icon onClick={this.clearSearch} type="close" />} placeholder={t('Find a project...')} onChange={this.handleSearch} />
           <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
         </div>
