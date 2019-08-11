@@ -61,6 +61,21 @@ class IndicatorPeriodModelTestCase(BaseTestCase):
         period = IndicatorPeriod.objects.get(id=period.id)
         self.assertIn(data.text, period.actual_comment)
 
+    def test_approved_period_data_with_empty_text_does_not_update_actual_comment(self):
+        # Given
+        period = self.period
+        user = self.user
+
+        # When
+        IndicatorPeriodData.objects.create(text=' ',
+                                           period=period,
+                                           user=user,
+                                           status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+
+        # Then
+        period = IndicatorPeriod.objects.get(id=period.id)
+        self.assertEqual('', period.actual_comment)
+
     def test_period_data_non_ascii_updates_actual_comment(self):
         """Test that adding IndicatorPeriodData with unicode text works."""
 
