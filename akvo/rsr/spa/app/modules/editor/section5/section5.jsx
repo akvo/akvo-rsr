@@ -127,7 +127,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
                   <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
                     <ul>
                       {result.indicators.map((indicator, index) =>
-                        <li>Indicator <b>{index + 1}</b>: {indicator.title}</li>
+                        <li>{t('Indicator')} <b>{index + 1}</b>: {indicator.title}</li>
                       )}
                     </ul>
                   </Panel>
@@ -218,7 +218,7 @@ const Section5 = (props) => {
                           >
                             <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
                             <div className="main-form">
-                              <Item label={<InputLabel optional tooltip={t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}>{t('Title')}</InputLabel>} style={{ flex: 1 }}>
+                              <Item label={<InputLabel tooltip={t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}>{t('Title')}</InputLabel>} style={{ flex: 1 }}>
                                 <FinalField
                                   name={`${name}.title`}
                                   control="textarea"

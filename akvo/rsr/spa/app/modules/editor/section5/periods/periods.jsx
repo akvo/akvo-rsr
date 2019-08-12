@@ -20,12 +20,15 @@ const Aux = node => node.children
 class _DimensionTargets extends React.Component{
   shouldComponentUpdate(prevProps){
     const { resultIndex, indicatorIndex } = this.props
-    return !isEqual(prevProps.results[resultIndex].indicators[indicatorIndex].dimensionNames, this.props.results[resultIndex].indicators[indicatorIndex].dimensionNames)
+    return !isEqual(prevProps.results[resultIndex].indicators[indicatorIndex].dimensionNames, this.props.results[resultIndex].indicators[indicatorIndex].dimensionNames) || prevProps.periodId !== this.props.periodId
   }
   render(){
-    const { resultIndex, indicatorIndex, periodIndex, periodId, fieldName, formPush } = this.props
+    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, formPush } = this.props
     const { dimensionNames } = this.props.results[resultIndex].indicators[indicatorIndex]
-    const period = this.props.results[resultIndex].indicators[indicatorIndex].periods[periodIndex]
+    let period = this.props.results[resultIndex].indicators[indicatorIndex].periods[periodIndex]
+    if(period === undefined){
+      period = { indicator: indicatorId }
+    }
     if(!period.disaggregationTargets) period.disaggregationTargets = []
     if (dimensionNames.length === 0) return null
     let newIndex = period.disaggregationTargets.length - 1
@@ -36,7 +39,7 @@ class _DimensionTargets extends React.Component{
             <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
             {dimension.values.map(value => {
               let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-              if(targetIndex === -1) {
+              if (targetIndex === -1 && periodId) {
                 newIndex += 1
                 targetIndex = newIndex
                 formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
@@ -45,7 +48,7 @@ class _DimensionTargets extends React.Component{
                 <div className="value-row">
                   <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
                   <div className="ant-col ant-form-item-label">{value.value}</div>
-                  <FinalField name={`${fieldName}.disaggregationTargets[${targetIndex}].value`} />
+                  <FinalField disabled={!periodId} name={`${fieldName}.disaggregationTargets[${targetIndex}].value`} />
                 </div>
               )
             })}
@@ -60,7 +63,7 @@ const DimensionTargets = connect(({ editorRdr: { section5: { fields: {results} }
 const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = () => {
-    const newItem = { indicator: indicatorId }
+    const newItem = { indicator: indicatorId, disaggregationTargets: [] }
     formPush(`${fieldName}.periods`, newItem)
   }
   const remove = (index, fields) => {

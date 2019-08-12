@@ -125,13 +125,13 @@ const ContentBar = connect(
   const { t } = useTranslation()
   return (
     <div className="content">
-      {publishingStatus === 'unpublished' && (
+      {publishingStatus !== 'published' && (
         <Aux>
           <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>{t('Publish')}</Button>
           <i>{t('The project is unpublished')}</i>
         </Aux>
       )}
-      {publishingStatus !== 'unpublished' && (
+      {publishingStatus === 'published' && (
         <Aux>
           <Dropdown.Button
             // onClick={() => {}}
