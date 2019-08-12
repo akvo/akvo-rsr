@@ -31,6 +31,7 @@ for(let i = 0; i < sectionLength; i += 1){
     errors: [true],
     isTouched: false,
     isFetched: false,
+    isExplicitlyEnabled: false,
     fields: {}
   }
 }
@@ -171,7 +172,7 @@ export default (state = initialState, action) => {
       return {...initialState, projectId: action.projectId}
     case actionTypes.SET_NEW_PROJECT:
       for(let i = 1; i <= 11; i += 1){
-        newState[`section${i}`].isFetched = true
+        newState[`section${i}`].isExplicitlyEnabled = true
       }
       newState.projectId = action.projectId
       return newState

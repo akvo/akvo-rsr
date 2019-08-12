@@ -25,11 +25,11 @@ class _Section extends React.Component{
   shouldComponentUpdate(nextProps){
     if(this.props.params.id === 'new') return false
     const sectionKey = `section${this.props.sectionIndex}`
-    return nextProps.editorRdr[sectionKey].isFetched !== this.props.editorRdr[sectionKey].isFetched
+    return (nextProps.editorRdr[sectionKey].isFetched !== this.props.editorRdr[sectionKey].isFetched || nextProps.editorRdr[sectionKey].isExplicitylEnabled !== this.props.editorRdr[sectionKey].isExplicitylEnabled)
   }
   render(){
     const sectionKey = `section${this.props.sectionIndex}`
-    if(this.props.params.id !== 'new' && this.props.editorRdr[sectionKey].isFetched === false){
+    if (this.props.params.id !== 'new' && this.props.editorRdr[sectionKey].isFetched === false && this.props.editorRdr[sectionKey].isExplicitylEnabled === false){
       return <div className="view"><Skeleton active paragraph={{ rows: 7 }} /></div>
     }
     return this.props.children

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Switch, Tooltip, Icon, Button, Divider } from 'antd'
 import { withRouter, Link } from 'react-router-dom'
@@ -43,6 +43,11 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       props.setNewProject(response.data.id)
     })
   }
+  useEffect(() => {
+    if(params.id === 'new'){
+      createProject()
+    }
+  }, [])
   const checkValidation = (value, checked) => {
     props.checkValidation(value, checked)
     if(params.id !== 'new'){
@@ -60,7 +65,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
   return (
     <div className="settings view">
       <p>
-        <Switch checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
+        <Switch disabled={loading} checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
         <span className="switch-label">{t('Private project')}</span>
         <Tooltip title={t('Indicate whether this is a private project. Private projects do not appear in any public lists. These projects can only be viewed in the My Projects portfolio a user that has the permission rights to edit the project.')}><Icon type="info-circle" /></Tooltip>
       </p>
@@ -73,14 +78,14 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
       <ul>
         {sets.map(({ value, label, tooltip }, index) =>
         <li key={value}>
-          <Switch disabled={index === 0} checked={validations.indexOf(value) !== -1} onChange={checked => checkValidation(value, checked)} />
+          <Switch disabled={index === 0 || loading} checked={validations.indexOf(value) !== -1} onChange={checked => checkValidation(value, checked)} />
           <span className="switch-label">{label}</span>
           <Tooltip title={<span dangerouslySetInnerHTML={{ __html: tooltip }} />}><Icon type="info-circle" /></Tooltip>
         </li>
         )}
       </ul>
-      {params.id === 'new' && <Button type="primary" onClick={createProject} loading={loading}>{t('Create New Project')}</Button>}
-      {newlyCreated && <div><Divider /><Link to={`/projects/${params.id}/info`}><Button>{t('Next: Edit Project Info')}<Icon type="right" /></Button></Link></div>}
+      {/* {params.id === 'new' && <Button type="primary" onClick={createProject} loading={loading}>{t('Create New Project')}</Button>} */}
+      {/* {newlyCreated && <div><Divider /><Link to={`/projects/${params.id}/info`}><Button>{t('Next: Edit Project Info')}<Icon type="right" /></Button></Link></div>} */}
     </div>
   )
 }
