@@ -83,18 +83,18 @@ class AutoSave extends React.Component {
           ...this.lastSavedValues[itemIndex],
           ...difference
         }
-      if(
-        !(Object.keys(difference).indexOf('id') !== -1)
-        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
-      ){
-        if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item], true).length === 0){
-          if(!item.id){
-            this.props.addSetItem(sectionIndex, setName, item)
-          } else {
-            this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
+        if(
+          !(Object.keys(difference).indexOf('id') !== -1)
+          && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
+        ){
+          if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item], true).length === 0){
+            if(!item.id){
+              this.props.addSetItem(sectionIndex, setName, item)
+            } else {
+              this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
+            }
           }
         }
-      }
       }
     } else {
       const rootValues = getRootValues(values, `section${sectionIndex}`)
