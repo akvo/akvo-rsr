@@ -21,7 +21,7 @@ import validationDefs from './partners/validations'
 
 const { Item } = Form
 
-const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField, primaryOrganisation, validations }) => { // eslint-disable-line
+const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField, primaryOrganisation, validations, showRequired, errors }) => { // eslint-disable-line
   const [{ results }, loading] = useFetch('/typeaheads/organisations')
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
@@ -42,6 +42,12 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
   ]
   return (
     <div className="partners view">
+      <div className="min-required-wrapper">
+        <h3>{t('Project contacts')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'partners') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <SectionContext.Provider value="section3">
         <Form layout="vertical">
           <FinalForm
@@ -171,7 +177,7 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
 }
 
 export default connect(
-  ({ editorRdr: { validations, section3: { fields }, section1: { fields: { currency, primaryOrganisation } }} }) => ({ validations, currency, fields, primaryOrganisation }),
+  ({ editorRdr: { validations, showRequired, section3: { fields, errors }, section1: { fields: { currency, primaryOrganisation } } } }) => ({ validations, currency, fields, primaryOrganisation, showRequired, errors }),
   { removeSetItem }
 )(withTranslation()(React.memo(Partners, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)

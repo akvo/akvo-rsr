@@ -17,7 +17,7 @@ import './styles.scss'
 
 const { Item } = Form
 
-const Contacts = ({ validations, fields }) => {
+const Contacts = ({ validations, fields, showRequired, errors }) => {
   const { t } = useTranslation()
   const CONTACT_TYPE_OPTIONS = [
     { value: '1', label: t('General Inquiries') },
@@ -28,8 +28,15 @@ const Contacts = ({ validations, fields }) => {
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const isValid = isFieldValid(validationSets)
+  console.log(showRequired, errors)
   return (
     <div className="contacts view">
+      <div className="min-required-wrapper">
+        <h3>{t('Project contacts')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'contacts') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <SectionContext.Provider value="section2">
       <Form layout="vertical">
       <FinalForm
@@ -94,31 +101,23 @@ const Contacts = ({ validations, fields }) => {
                 </Row>
                 <FinalField
                   name={`${name}.email`}
-                  render={({ input }) => (
-                    <Item
-                      hasFeedback
-                      validateStatus={isValid('email', input.value) && input.value ? 'success' : ''}
-                      label={(
-                      <InputLabel optional={isOptional('email')}>
-                        {t('section2::email::label')}
-                      </InputLabel>
-                      )}
-                    >
-                      <Input {...input} />
-                    </Item>
-                  )}
+                  withLabel
+                  withoutTooltip
+                  dict={{
+                    label: t('section2::email::label')
+                  }}
+                  optional={isOptional}
+                  control="input"
                 />
                 <FinalField
                   name={`${name}.mailingAddress`}
-                  render={({ input }) => (
-                    <Item
-                      hasFeedback
-                      validateStatus={isValid('mailingAddress', input.value) && input.value ? 'success' : ''}
-                      label={<InputLabel tooltip={t('section2::address::tooltip')} optional={isOptional('mailingAddress')}>{t('section2::address::label')}</InputLabel>}
-                    >
-                      <Input {...input} />
-                    </Item>
-                  )}
+                  withLabel
+                  dict={{
+                    label: t('section2::address::label'),
+                    tooltip: t('section2::address::tooltip')
+                  }}
+                  optional={isOptional}
+                  control="input"
                 />
                 <FinalField
                   name={`${name}.telephone`}
@@ -145,9 +144,9 @@ const Contacts = ({ validations, fields }) => {
 }
 
 export default connect(
-  ({ editorRdr: { section2: { fields }, validations}}) => ({ fields, validations}),
+  ({ editorRdr: { showRequired, section2: { fields, errors }, validations } }) => ({ fields, validations, showRequired, errors}),
 )(React.memo(Contacts, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || prevProps.showRequired !== nextProps.showRequired
   return !shouldUpdate
 }))

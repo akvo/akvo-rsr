@@ -83,6 +83,9 @@ header.main-header{
   background: #fff;
   &>h1{
     transform: translateY(10px);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .ant-tabs{
     margin-left: auto;
