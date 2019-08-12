@@ -66,8 +66,8 @@ const SavingStatus = connect(
   ({ editorRdr: { saving, lastSaved, backendError, section1: { fields: { lastModifiedAt, lastModifiedBy } } } }) => ({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy })
 )(({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy }) => {
   const { t } = useTranslation()
-  // normalize UTC + 1 time
-  const lastModifiedNormalized = new Date(moment(lastModifiedAt).add(1, 'hours').format())
+  // normalize Europe/Helsinki time
+  const lastModifiedNormalized = new Date(moment(`${lastModifiedAt}+02:00`).format())
   return (
     <aside className="saving-status">
       {(lastSaved === null && !saving && lastModifiedAt) && (
