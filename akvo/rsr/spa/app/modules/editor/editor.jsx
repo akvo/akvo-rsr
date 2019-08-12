@@ -5,6 +5,7 @@ import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'ant
 import TimeAgo from 'react-time-ago'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import momentTz from 'moment-timezone' // eslint-disable-line
 
 import sections from './sections'
 import MainMenu from './main-menu'
@@ -67,7 +68,7 @@ const SavingStatus = connect(
 )(({ saving, lastSaved, backendError, lastModifiedAt, lastModifiedBy }) => {
   const { t } = useTranslation()
   // normalize Europe/Helsinki time
-  const lastModifiedNormalized = new Date(moment(`${lastModifiedAt}+02:00`).format())
+  const lastModifiedNormalized = new Date(moment.tz(lastModifiedAt, 'Europe/Stockholm').format())
   return (
     <aside className="saving-status">
       {(lastSaved === null && !saving && lastModifiedAt) && (
