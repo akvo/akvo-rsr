@@ -1,5 +1,6 @@
 /* global window */
 import React from 'react'
+import { connect } from 'react-redux'
 import { Button, Divider, Table, Input, Icon } from 'antd'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -9,6 +10,19 @@ import './styles.scss'
 
 let tmid
 const pageSize = 15
+
+const ConditionalLink = connect(({ userRdr: {lang}}) => ({ lang }))(({ record, children, lang }) => {
+  if(record.status === 'unpublished'){
+    return(
+      <Link to={`/projects/${record.id}`}>
+      {children}
+      </Link>
+    )
+  }
+  return (
+    <a href={`/${lang}/myrsr/my_project/${record.id}/`}>{children}</a>
+  )
+})
 
 class Projects extends React.Component{
   state = {
@@ -69,10 +83,10 @@ class Projects extends React.Component{
         dataIndex: 'title',
         key: 'title',
         render: (text, record) => (
-          <Link to={`/projects/${record.id}`}>
+          <ConditionalLink record={record}>
             {text !== '' ? text : t('Untitled project')}
             {record.subtitle !== '' && <small><br />{record.subtitle}</small>}
-          </Link>
+          </ConditionalLink>
         )
       },
       {
