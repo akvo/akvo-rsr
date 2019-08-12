@@ -17,6 +17,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
+from django.views.generic import RedirectView
 
 from akvo.rsr import views
 from akvo.rsr.views import account
@@ -134,7 +135,7 @@ urlpatterns = i18n_patterns(
         my_rsr.my_updates, name='my_updates'),
 
     url(r'^myrsr/projects/$',
-        my_rsr.my_projects, name='my_projects'),
+        RedirectView.as_view(url='/my-rsr/projects/'), name='my_projects'),
 
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
         my_rsr.project_editor, name='project_editor'),
