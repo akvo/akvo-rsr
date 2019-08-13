@@ -7,6 +7,7 @@ import { FieldArray } from 'react-final-form-arrays'
 import { diff } from 'deep-object-diff'
 import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { isEqual } from 'lodash'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -140,7 +141,8 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
     </div>
   )
 }, (prevProps, nextProps) => {
-  return nextProps.values.results.length === prevProps.values.results.length
+  return isEqual(nextProps.values.results, prevProps.values.results)
+  // return nextProps.values.results.length === prevProps.values.results.length
 })
 
 class UpdateIfLengthChanged extends React.Component{
