@@ -4,7 +4,7 @@ import { Form, Button, Collapse, Col, Row, Popconfirm, Divider, Input } from 'an
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
-import { isEqual } from 'lodash'
+import { isEqual, get } from 'lodash'
 
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
@@ -20,12 +20,18 @@ const Aux = node => node.children
 class _DimensionTargets extends React.Component{
   shouldComponentUpdate(prevProps){
     const { resultIndex, indicatorIndex } = this.props
-    return !isEqual(prevProps.results[resultIndex].indicators[indicatorIndex].dimensionNames, this.props.results[resultIndex].indicators[indicatorIndex].dimensionNames) || prevProps.periodId !== this.props.periodId
+    const path = `results[${resultIndex}].indicators[${indicatorIndex}].dimensionNames`
+    return !isEqual(get(prevProps, path), get(this.props, path)) || prevProps.periodId !== this.props.periodId
   }
   render(){
     const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, formPush } = this.props
-    const { dimensionNames } = this.props.results[resultIndex].indicators[indicatorIndex]
-    let period = this.props.results[resultIndex].indicators[indicatorIndex].periods[periodIndex]
+    const path = `results[${resultIndex}].indicators[${indicatorIndex}]`
+    const indicator = get(this.props, path)
+    if(!indicator){
+      return null
+    }
+    const { dimensionNames } = indicator
+    let period = indicator.periods[periodIndex]
     if(period === undefined){
       period = { indicator: indicatorId }
     }
@@ -82,6 +88,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
         <Accordion
           className="periods-list"
           finalFormFields={fields}
+          autoScrollToActive
           setName={`${fieldName}.periods`}
           renderPanel={(name, index) => (
             <Panel
