@@ -21,7 +21,7 @@ import REGION_OPTIONS from './options/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
 import OrganizationSelect from '../../../../utils/organization-select';
-import { useFetch } from '../../../../utils/hooks';
+import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
@@ -44,15 +44,38 @@ const TypeField = ({ name }) => {
   )
 }
 
-const Transactions = ({ validations, formPush, orgs, loadingOrgs }) => {
+const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EUR' }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
+  const currencySymbol = getSymbolFromCurrency(currency)
   return (
     <ItemArray
       setName="transactions"
       sectionIndex={6}
-      header={`${t('Transaction item')} $index`}
+      header={(index, receiverOrganisation) => {
+        return (
+          <Field name={`transactions[${index}].transactionType`} subscription={{ value: true }}>
+            {({ input }) =>
+            <span>
+              {!input.value && `${t('Transaction')} ${index + 1}: `}
+              {input.value && TYPE_OPTIONS.find(it => it.value === input.value).label}
+              {input.value === '3' && (receiverOrganisation && orgs) && `: ${orgs.find(it => it.id === receiverOrganisation).name}`}
+            </span>
+            }
+          </Field>
+        )
+      }}
+      headerField="receiverOrganisation"
+      headerMore={(index, amount) => {
+        if (!fieldExists('currency')) {
+          return <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
+        }
+        return (
+          <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
+        )
+      }}
+      headerMoreField="value"
       formPush={formPush}
       newItem={{ sectors: [{}]}}
       panel={name => (
@@ -325,7 +348,7 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs }) => {
         </div>
       )}
       addButton={({onClick}) => (
-        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add transaction')}</Button>
+        <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another transaction')}</Button>
       )}
     />
   )

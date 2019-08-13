@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import { validationType } from '../../../../utils/validation-utils'
+import { validationType, getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
 import OrganizationSelect from '../../../../utils/organization-select';
+import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
+import validationDefs from './validations'
 
 const { Item } = Form
 const isEmpty = value => value === null || value === '' || value === undefined
@@ -29,14 +31,29 @@ const ValueDateField = ({ name }) => {
   )
 }
 
-const PlannedDisbursements = ({ formPush, validations, orgs, loadingOrgs }) => {
+const PlannedDisbursements = ({ formPush, validations, orgs, loadingOrgs, currency = 'EUR' }) => {
   const { t } = useTranslation()
   const isIATI = validations.indexOf(validationType.IATI) !== -1
+  const validationSets = getValidationSets(validations, validationDefs)
+  const fieldExists = doesFieldExist(validationSets)
+  const currencySymbol = getSymbolFromCurrency(currency)
   return (
     <ItemArray
       setName="plannedDisbursements"
       sectionIndex={6}
-      header={`${t('Planned disbursement')} $index`}
+      header={(index, receiverOrganisation) => {
+        return <span>{t('Disbursement')} {index + 1}{(receiverOrganisation && orgs) && `: ${orgs.find(it => it.id === receiverOrganisation).name}`}</span>
+      }}
+      headerField="receiverOrganisation"
+      headerMore={(index, amount) => {
+        if (!fieldExists('currency')) {
+          return <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
+        }
+        return (
+          <span className="amount">{currencySymbol}{amount ? String(amount).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0}</span>
+        )
+      }}
+      headerMoreField="value"
       formPush={formPush}
       panel={name => (
         <div>

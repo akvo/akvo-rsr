@@ -22,7 +22,7 @@ import { useFetch } from '../../../utils/hooks';
 
 const { Item } = Form
 
-const Finance = ({ validations, fields }) => {
+const Finance = ({ validations, fields, currency }) => {
   const [{ results }, loadingOrgs] = useFetch('/typeaheads/organisations')
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
@@ -86,13 +86,13 @@ const Finance = ({ validations, fields }) => {
           {fieldExists('transactions') && (
             <Aux>
               <h3>{t('Transactions')}</h3>
-              <Transactions formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} />
+              <Transactions formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} currency={currency} />
             </Aux>
           )}
           {fieldExists('plannedDisbursements') && (
             <Aux>
               <h3>{t('Planned disbursements')}</h3>
-              <PlannedDisbursements formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} />
+                  <PlannedDisbursements formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} currency={currency} />
             </Aux>
           )}
           <AutoSave sectionIndex={6} />
@@ -106,7 +106,7 @@ const Finance = ({ validations, fields }) => {
 }
 
 export default connect(
-  ({ editorRdr: { section6: { fields }, validations}}) => ({ fields, validations}),
+  ({ editorRdr: { section1: { fields: { currency }}, section6: { fields }, validations}}) => ({ fields, validations, currency}),
 )(React.memo(Finance, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
