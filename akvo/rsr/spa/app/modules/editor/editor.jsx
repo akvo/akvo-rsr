@@ -37,14 +37,7 @@ class _Section extends React.Component{
 }
 const Section = connect(({ editorRdr }) => ({ editorRdr }), actions)(_Section)
 
-const calconfig = {
-  sameDay: 'h:mm a',
-  lastDay: '[yesterday] h:mm a',
-  lastWeek: '[last] dddd',
-  sameElse: 'D MMM YYYY'
-}
-
-const LastUpdateTime = ({ date, firstLoad }) => {
+const LastUpdateTime = ({ date }) => {
   const { t } = useTranslation()
   const now = new Date()
   const minutesAgo = (now.getTime() - date.getTime()) / (1000 * 60)
@@ -73,7 +66,7 @@ const SavingStatus = connect(
     <aside className="saving-status">
       {(lastSaved === null && !saving && lastModifiedAt) && (
         <div className="last-updated">
-          <LastUpdateTime date={lastModifiedNormalized} firstLoad /> {t('by')} <Tooltip title={lastModifiedBy}>{lastModifiedBy}</Tooltip>
+          <LastUpdateTime date={lastModifiedNormalized} /> {t('by')} <Tooltip title={lastModifiedBy}>{lastModifiedBy}</Tooltip>
         </div>
       )}
       {saving && (

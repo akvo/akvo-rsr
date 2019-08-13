@@ -23,7 +23,7 @@ const inputNumberAmountFormatting = (currencySymbol) => {
     })
   }
   return ({
-    formatter: value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    formatter: value => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     parser: value => value.replace(/(,*)/g, ''),
     step
   })
