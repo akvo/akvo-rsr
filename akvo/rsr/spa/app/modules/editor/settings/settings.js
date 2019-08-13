@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Switch, Tooltip, Icon, Button, Divider } from 'antd'
-import { withRouter, Link } from 'react-router-dom'
+import { Switch, Tooltip, Icon, Divider } from 'antd'
+import { withRouter } from 'react-router-dom'
 import { debounce} from 'lodash'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
+import momentTz from 'moment-timezone' // eslint-disable-line
 
 import './styles.scss'
 import * as actions from '../actions'
@@ -21,11 +23,18 @@ export const sets = [
   { value: 6, label: 'DFID'},
 ]
 
+const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } } } }) => ({ createdAt }))(({ createdAt }) => {
+  const { t } = useTranslation()
+  return (
+    <div className="right-sidebar">
+      <span>{t('Date created')}</span><br /><b>{moment.tz(createdAt, 'Europe/Stockholm').format('DD MMM YYYY, HH:mm')}</b>
+    </div>
+  )
+})
 
 const Settings = ({ isPublic, validations, match: { params }, history, ...props }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
-  const [newlyCreated, setNewlyCreated] = useState(false)
   sets[0].tooltip = t('The default RSR validation set which indicates the mandatory fields to publish a project in RSR and hides all advanced IATI fields.')
   sets[1].tooltip = t('A validation set with specific requirements for the Netherlands Leprosy Relief.')
   sets[2].tooltip = t('To be used by all Gietrenk projects')
@@ -38,7 +47,6 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
     setLoading(true)
     api.post('/project/', { validations }).then(response => {
       setLoading(false)
-      setNewlyCreated(true)
       history.push(`/projects/${response.data.id}/settings`)
       props.setNewProject(response.data.id)
     })
@@ -63,6 +71,7 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
     }
   }
   return (
+    <div>
     <div className="settings view">
       <p>
         <Switch disabled={loading} checked={!isPublic} onChange={checked => props.saveFields({ isPublic: !checked }, 1)} />
@@ -84,8 +93,8 @@ const Settings = ({ isPublic, validations, match: { params }, history, ...props 
         </li>
         )}
       </ul>
-      {/* {params.id === 'new' && <Button type="primary" onClick={createProject} loading={loading}>{t('Create New Project')}</Button>} */}
-      {/* {newlyCreated && <div><Divider /><Link to={`/projects/${params.id}/info`}><Button>{t('Next: Edit Project Info')}<Icon type="right" /></Button></Link></div>} */}
+    </div>
+    <RightSidebar />
     </div>
   )
 }

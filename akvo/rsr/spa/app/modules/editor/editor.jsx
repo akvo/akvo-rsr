@@ -166,15 +166,6 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
 }
 const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus } } } }) => ({ lang, title, projectId, publishingStatus }))(_Header)
 
-const RightSidebar = connect(({ editorRdr: { section1: { fields: { createdAt } } } }) => ({ createdAt }))(({ createdAt }) => {
-  const { t } = useTranslation()
-  return (
-    <div className="right-sidebar">
-      <span>{t('Date created')}</span><br /><b>{moment(createdAt).add(1, 'hours').format('DD MMM YYYY, HH:mm')}</b>
-    </div>
-  )
-})
-
 const Editor = ({ match: { params } }) => (
   <div>
     <Header />
@@ -199,7 +190,7 @@ const Editor = ({ match: { params } }) => (
           />)
         }
       </div>
-      <RightSidebar />
+      {/* <RightSidebar /> */}
     </div>
   </div>
 )
