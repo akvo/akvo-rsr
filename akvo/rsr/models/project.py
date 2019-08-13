@@ -1208,6 +1208,10 @@ class Project(TimestampsMixin, models.Model):
     def keyword_labels(self):
         return [keyword.label for keyword in self.keywords.all()]
 
+    def has_imported_results(self):
+        Result = apps.get_model('rsr', 'Result')
+        return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
+
     ###################################
     # RSR Impact projects #############
     ###################################
@@ -1216,6 +1220,9 @@ class Project(TimestampsMixin, models.Model):
         """Import results from the parent project."""
         import_failed = 0
         import_success = 1
+
+        if self.has_imported_results():
+            return import_failed, 'Project has already imported results'
 
         if self.parents_all().count() == 1:
             parent_project = self.parents_all()[0]
