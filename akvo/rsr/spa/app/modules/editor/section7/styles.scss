@@ -19,4 +19,11 @@
       transform: translate(3px, 3px);
     }
   }
+  .ant-collapse-item .ant-collapse-extra .amount {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid #ccc;
+  }
 }

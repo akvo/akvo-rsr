@@ -32,6 +32,15 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors }) => 
           <span>{t('recipient country')} {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
         )}
         headerField="country"
+        headerMore={(index, percentage) => {
+          if (!fieldExists('percentage')){
+            return null
+          }
+          return (
+            <span className="amount">{percentage}%</span>
+          )
+        }}
+        headerMoreField="percentage"
         formPush={formPush}
         panel={name => (
           <div>

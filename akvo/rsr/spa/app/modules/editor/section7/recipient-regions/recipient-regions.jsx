@@ -30,6 +30,15 @@ const RecipientRegions = ({ formPush, validations, showRequired, errors }) => {
           <span>{t('recipient region')}: {region && REGION_OPTIONS.find(it => it.value === region).label}</span>
         )}
         headerField="region"
+        headerMore={(index, percentage) => {
+          if (!fieldExists('percentage')) {
+            return null
+          }
+          return (
+            <span className="amount">{percentage}%</span>
+          )
+        }}
+        headerMoreField="percentage"
         formPush={formPush}
         panel={name => (
           <div>
@@ -100,7 +109,7 @@ const RecipientRegions = ({ formPush, validations, showRequired, errors }) => {
           </div>
         )}
         addButton={({onClick}) => (
-          <Button onClick={onClick} icon="plus" type="dashed" block>
+          <Button onClick={onClick} icon="plus" type="dashed" block className="bottom-btn">
             {t('Add recipient region')}
           </Button>
         )}
