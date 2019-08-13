@@ -38,7 +38,9 @@ class Projects extends React.Component{
         ...params,
         q_filter1: { title__icontains: this.state.searchStr },
         q_filter2: { subtitle__icontains: this.state.searchStr },
-        q_filter3: { id: this.state.searchStr }
+      }
+      if(!Number.isNaN(Number(this.state.searchStr))){
+        params.q_filter3 = { id: this.state.searchStr }
       }
     }
     api.get('/editable_project/', { ...params, limit: pageSize })
