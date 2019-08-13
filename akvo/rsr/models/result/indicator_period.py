@@ -272,6 +272,7 @@ class IndicatorPeriod(models.Model):
         update_texts = [
             u'{}: {}'.format(update.last_modified_at.strftime('%d-%m-%Y'), update.text)
             for update in self.approved_updates.order_by('-created_at')
+            if update.text.strip()
         ]
         actual_comment = u' | '.join(update_texts)
         if len(actual_comment) >= 2000:  # max_size

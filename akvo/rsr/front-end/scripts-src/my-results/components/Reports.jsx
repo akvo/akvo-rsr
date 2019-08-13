@@ -168,11 +168,19 @@ class Report extends React.Component {
             <div className="reportDate">
                 <div className="startDate">
                     <div>{_("start_date")}</div>
-                    <DatePicker onChange={this.setStartDate} selected={start_date} />
+                    <DatePicker
+                        onChange={this.setStartDate}
+                        selected={start_date}
+                        dateFormat="DD/MM/YYYY"
+                    />
                 </div>
                 <div className="endDate">
                     <div>{_("end_date")}</div>
-                    <DatePicker onChange={this.setEndDate} selected={end_date} />
+                    <DatePicker
+                        onChange={this.setEndDate}
+                        selected={end_date}
+                        dateFormat="DD/MM/YYYY"
+                    />
                 </div>
             </div>
         );
