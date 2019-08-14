@@ -29,7 +29,9 @@ class IndicatorFrameworkViewSet(PublicProjectViewSet):
         'result',
         'result__project',
     ).prefetch_related(
-        'child_indicators'
+        'child_indicators',
+        'periods',
+        'periods__disaggregation_targets',
     )
     serializer_class = IndicatorFrameworkSerializer
     project_relation = 'result__project__'

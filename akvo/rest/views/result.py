@@ -24,7 +24,14 @@ class ResultsViewSet(PublicProjectViewSet):
 class ResultsFrameworkViewSet(PublicProjectViewSet):
     """Results framework resource."""
 
-    queryset = Result.objects.select_related('project').prefetch_related('indicators')
+    queryset = Result.objects.select_related('project').prefetch_related(
+        'indicators',
+        'indicators__dimension_names',
+        'indicators__periods',
+        'indicators__periods__data',
+        'indicators__periods__data__comments',
+        'indicators__periods__disaggregation_targets',
+    )
     serializer_class = ResultsFrameworkSerializer
 
 
@@ -35,5 +42,6 @@ class ResultsFrameworkLiteViewSet(PublicProjectViewSet):
         'indicators',
         'indicators__dimension_names',
         'indicators__periods',
+        'indicators__periods__disaggregation_targets',
     )
     serializer_class = ResultsFrameworkLiteSerializer
