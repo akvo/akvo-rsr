@@ -34,15 +34,15 @@ class Accordion extends Component {
       activeKey: props.multiple ? ['0'] : '0'
     }
   }
-  handleChange = (activeKey, lengthChange) => {
+  handleChange = (activeKey) => {
     if(activeKey !== this.state.activeKey){
       this.setState({
         activeKey
       })
-      if (this.props.autoScrollToActive && lengthChange) {
+      if (this.props.autoScrollToActive) {
         if (!this.ref.children) return
         const child = this.ref.children[0].children[activeKey]
-        window.scroll({ top: child.offsetParent.offsetTop + (61 * Number(activeKey)) + 413, left: 0, behavior: 'smooth' })
+        window.scroll({ top: child.offsetParent.offsetTop + (61 * Number(activeKey)) + child.offsetParent.offsetParent.offsetTop + 42, left: 0, behavior: 'smooth' })
       }
     }
   }
