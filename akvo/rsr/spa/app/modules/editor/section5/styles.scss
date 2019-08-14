@@ -34,21 +34,6 @@
             background-size: contain;
           }
         }
-        // &:nth-of-type(1) strong{
-        //   color: #fa8c16;
-        // }
-        // &:nth-of-type(2) strong{
-        //   color: #1890ff;
-        // }
-        // &:nth-of-type(3) strong{
-        //   color: #52c41a;
-        // }
-        // &:nth-of-type(4) strong{
-        //   color: #13c2c2;
-        // }
-        // &:nth-of-type(5) strong{
-        //   color: #eb2f96;
-        // }
       }
     }
     .ant-btn{
@@ -271,6 +256,12 @@
       margin-left: 30px;
       margin-bottom: 0;
       line-height: 2.3em;
+      color: rgba(0, 0, 0, 0.85);
+      .inset{
+        display: inline-block;
+        padding-left: 15px;
+        line-height: 1.6em;
+      }
     }
   }
 }

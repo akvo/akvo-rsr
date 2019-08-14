@@ -128,7 +128,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
                   <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
                     <ul>
                       {result.indicators.map((indicator, index) =>
-                        <li>{t('Indicator')} <b>{index + 1}</b>: {indicator.title}</li>
+                        <li>{t('Indicator')} <b>{index + 1}</b>:<br /><span className="inset">{indicator.title}</span></li>
                       )}
                     </ul>
                   </Panel>
