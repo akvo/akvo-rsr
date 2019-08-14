@@ -73,3 +73,17 @@ class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
         updates = IndicatorPeriodData.get_user_viewable_updates(updates, user)
         serializer = IndicatorPeriodDataFrameworkSerializer(updates, many=True)
         return serializer.data
+
+
+class IndicatorPeriodFrameworkLiteSerializer(BaseRSRSerializer):
+
+    parent_period = serializers.ReadOnlyField(source='parent_period_id')
+    percent_accomplishment = serializers.ReadOnlyField()
+    disaggregation_targets = serializers.SerializerMethodField()
+
+    class Meta:
+        model = IndicatorPeriod
+        fields = '__all__'
+
+    def get_disaggregation_targets(self, obj):
+        return serialize_disaggregation_targets(obj)
