@@ -50,6 +50,22 @@ ol{
     &>.SVGInline{
       margin-top: -3px;
     }
+    ul{
+      display: flex;
+      margin-left: 20px;
+      margin-top: 10px;
+      font-size: 14px;
+      li{
+        border-left: 1px solid #efefef;
+        padding: 0 20px;
+        a{
+          color: #72bfe4;
+          &:hover{
+            color: #2c1c42;
+          }
+        }
+      }
+    }
     .right-side{
       .lang{
         margin-right: 10px;

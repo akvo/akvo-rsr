@@ -12,10 +12,7 @@ const flags = {}
 langs.forEach(lang => {
   flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
 })
-// const menu = () => {
-//   return (
-//   )
-// }
+
 const langMenu = ({ userRdr, dispatch }) => {
   const { i18n } = useTranslation()
   useEffect(() => {
@@ -42,6 +39,11 @@ const TopBar = ({ userRdr, dispatch }) => {
         <a href={`/${userRdr.lang}/projects`}>
         <SVGInline svg={rsrSvg} />
         </a>
+        <ul>
+          <li><a href={`/${userRdr.lang}/myrsr/user-management`}>{t('Users')}</a></li>
+          <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
+          <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
+        </ul>
         <div className="right-side">
           <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
             <span className="lang"><img src={flags[userRdr.lang]} /></span>

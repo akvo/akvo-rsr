@@ -402,14 +402,14 @@ class App extends React.Component {
         ) : (
             <section className="results">
                 <a className="pull-right editBtn" href={`/my-rsr/projects/${projectId}/`}>
-                    {_("edit_project")}
+                  {_('Editor')}
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
                         {showReports ? <Tab>{_("narrative_summaries")}</Tab> : null}
-                        <Tab>{_("project_updates")}</Tab>
-                        <Tab>{_("project_reports")}</Tab>
+                        <Tab>{_('Updates')}</Tab>
+                        <Tab>{_('Reports')}</Tab>
                     </TabList>
                     {showResults && hasResults ? <TabPanel>{resultsTab}</TabPanel> : null}
                     {showReports ? (
