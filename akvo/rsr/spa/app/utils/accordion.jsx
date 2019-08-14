@@ -40,6 +40,7 @@ class Accordion extends Component {
         activeKey
       })
       if (this.props.autoScrollToActive) {
+        if (!this.ref) return
         if (!this.ref.children) return
         const child = this.ref.children[0].children[activeKey]
         window.scroll({ top: child.offsetParent.offsetTop + (61 * Number(activeKey)) + child.offsetParent.offsetParent.offsetTop + 42, left: 0, behavior: 'smooth' })

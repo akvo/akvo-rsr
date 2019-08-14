@@ -64,13 +64,16 @@ class AutoSave extends React.Component {
 
     if(setName !== undefined && itemIndex !== undefined){
       const thisValues = get(values, setName)
+      if(!thisValues){
+        return
+      }
       // if new item added do nothing
-      if(this.lastSavedValues.length < thisValues.length){
+      if (this.lastSavedValues.length < thisValues.length){
         this.lastSavedValues = [...this.lastSavedValues, {}]
         return
       }
       // if item removed: TODO this is unreachable !?
-      if(this.lastSavedValues.length > thisValues.length){
+      if (thisValues && this.lastSavedValues.length > thisValues.length){
         console.log('removed', itemIndex)
         return
       }

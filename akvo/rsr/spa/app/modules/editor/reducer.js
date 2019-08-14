@@ -140,7 +140,7 @@ export default (state = initialState, action) => {
       newState.lastSaved = new Date()
       newState.backendError = null
       const { setName } = action
-      const itemIndex = action.itemIndex ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
+      const itemIndex = action.itemIndex !== undefined ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
       const updatedItem = {
         ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
       }
