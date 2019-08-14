@@ -361,6 +361,24 @@ class ResultsFrameworkTestCase(BaseTestCase):
         child_dimension_name = self.child_project.dimension_names.first()
         self.assertEqual(child_dimension_name.name, parent_dimension_name.name)
 
+    def test_new_dimension_name_cloned_to_child(self):
+        """Test that new results are cloned in children that have imported results."""
+        # Given
+        self.assertEqual(self.import_status, 1)
+        self.assertEqual(self.import_message, "Results imported")
+
+        # When
+        name = IndicatorDimensionName.objects.create(project=self.parent_project)
+
+        # Then
+        self.assertEqual(
+            self.parent_project.dimension_names.count(),
+            self.child_project.dimension_names.count(),
+        )
+        child_name = IndicatorDimensionName.objects.get(project=self.child_project,
+                                                        parent_dimension_name=name)
+        self.assertEqual(name.name, child_name.name)
+
     def test_new_dimension_value_cloned_to_child(self):
         """Test that new dimension values are cloned in children that have imported results."""
         # Given
