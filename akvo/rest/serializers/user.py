@@ -47,6 +47,7 @@ class UserSerializer(BaseRSRSerializer):
     # Legacy fields to support Tastypie API emulation
     legacy_org = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
+    can_manage_users = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
@@ -61,6 +62,7 @@ class UserSerializer(BaseRSRSerializer):
             'is_admin',
             'is_support',
             'is_superuser',
+            'can_manage_users',
             'organisation',
             'organisations',
             'approved_employments',
@@ -92,6 +94,9 @@ class UserSerializer(BaseRSRSerializer):
 
     def get_username(self, obj):
         return obj.email
+
+    def get_can_manage_users(self, obj):
+        return obj.has_perm('rsr.user_management')
 
 
 class UserPasswordSerializer(serializers.Serializer):
