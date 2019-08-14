@@ -100,6 +100,26 @@ class ResultsFrameworkTestCase(BaseTestCase):
             self.indicator.dimension_names.count()
         )
 
+    def test_new_result_cloned_to_child(self):
+        """Test that new results are cloned in children that have imported results."""
+        # Given
+        self.assertEqual(self.import_status, 1)
+        self.assertEqual(self.import_message, "Results imported")
+
+        # When
+        result = Result.objects.create(project=self.parent_project)
+
+        # Then
+        self.assertEqual(
+            self.parent_project.results.count(),
+            self.child_project.results.count(),
+        )
+        child_result = Result.objects.get(project=self.child_project, parent_result=result)
+        self.assertEqual(child_result.title, result.title)
+        self.assertEqual(child_result.type, result.type)
+        self.assertEqual(child_result.aggregation_status, result.aggregation_status)
+        self.assertEqual(child_result.description, result.description)
+
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
         # Given

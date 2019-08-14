@@ -1336,6 +1336,14 @@ class Project(TimestampsMixin, models.Model):
             dimension_value.parent_dimension_value = source_dimension_value
             dimension_value.save(update_fields=['parent_dimension_value'])
 
+    def copy_result_to_children(self, result):
+        """Copy result to all children that imported results from this project."""
+
+        for child in self.children_all():
+            if not child.has_imported_results():
+                continue
+            child.copy_result(result, set_parent=True)
+
     def copy_result(self, source_result, set_parent=True):
         """Copy the source_result to this project, setting it as parent if specified."""
         data = dict(
