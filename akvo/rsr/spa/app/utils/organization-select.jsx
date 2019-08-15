@@ -50,7 +50,7 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
               <Item validateStatus={validateStatus} label={<InputLabel tooltip={dict.tooltip}>{dict.label}</InputLabel>}>
               <Select
                 {...input}
-                onChange={(val) => { setState({ searchStr: '', options: [] }); input.onChange(val); input.onBlur() }}
+                onChange={(val) => { setState({ searchStr: '', options: [] }); input.onChange(val); nameProps.input.onChange($options.find(it => it.value === val).label); input.onBlur() }}
                 disabled={disabled}
                 showSearch
                 loading={loading}
