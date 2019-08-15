@@ -38,6 +38,7 @@ class _DimensionTargets extends React.Component{
     if(!period.disaggregationTargets) period.disaggregationTargets = []
     if (dimensionNames.length === 0) return null
     let newIndex = period.disaggregationTargets.length - 1
+    console.log('render', new Date())
     return (
       <div className="disaggregation-targets">
         {dimensionNames.map(dimension => (
@@ -48,8 +49,14 @@ class _DimensionTargets extends React.Component{
               if (targetIndex === -1 && periodId) {
                 newIndex += 1
                 targetIndex = newIndex
-                formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
               }
+              // reducer updates values and overrides FinalForm's values. Next few lines prevent this
+              setTimeout(() => {
+                const targetIndex1 = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+                if (targetIndex1 === -1 && periodId) {
+                  formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
+                }
+              }, 100)
               return (
                 <div className="value-row">
                   <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />

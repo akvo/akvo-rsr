@@ -69,7 +69,10 @@ class AutoSave extends React.Component {
       }
       // if new item added do nothing
       if (this.lastSavedValues.length < thisValues.length){
-        this.lastSavedValues = [...this.lastSavedValues, {}]
+        const length = thisValues.length - this.lastSavedValues.length
+        for (let i = 0; i < length; i += 1){
+          this.lastSavedValues = [...this.lastSavedValues, {}]
+        }
         return
       }
       // if item removed: TODO this is unreachable !?
