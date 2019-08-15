@@ -23,7 +23,7 @@ export const initialState = {
   lastSaved: null,
   backendError: null,
   validations: [1],
-  showRequired: false,
+  showRequired: true,
   projectId: null
 }
 for(let i = 0; i < sectionLength; i += 1){
