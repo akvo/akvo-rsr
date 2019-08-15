@@ -112,6 +112,7 @@ router.register(r'(?P<version>(v1))/related_project', views.RelatedProjectViewSe
 router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, base_name='reports_api')
 router.register(r'(?P<version>(v1|v2))/result', views.ResultsViewSet)
 router.register(r'(?P<version>(v1))/results_framework', views.ResultsFrameworkViewSet)
+router.register(r'(?P<version>(v1))/results_framework_lite', views.ResultsFrameworkLiteViewSet)
 router.register(r'(?P<version>(v1))/sector', views.SectorViewSet)
 router.register(r'(?P<version>(v1))/transaction', views.TransactionViewSet)
 router.register(r'(?P<version>(v1))/transaction_sector', views.TransactionSectorViewSet)

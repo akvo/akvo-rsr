@@ -14,7 +14,8 @@ from ..viewsets import PublicProjectViewSet
 class IndicatorPeriodViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriod.objects.all().select_related('parent_period')
+    queryset = IndicatorPeriod.objects.all().select_related('parent_period').prefetch_related(
+        'disaggregation_targets')
     serializer_class = IndicatorPeriodSerializer
     project_relation = 'indicator__result__project__'
 
@@ -22,6 +23,7 @@ class IndicatorPeriodViewSet(PublicProjectViewSet):
 class IndicatorPeriodFrameworkViewSet(PublicProjectViewSet):
     """
     """
-    queryset = IndicatorPeriod.objects.all()
+    queryset = IndicatorPeriod.objects.prefetch_related(
+        'disaggregation_targets')
     serializer_class = IndicatorPeriodFrameworkSerializer
     project_relation = 'indicator__result__project__'
