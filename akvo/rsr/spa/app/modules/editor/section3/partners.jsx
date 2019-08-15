@@ -43,7 +43,7 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
   return (
     <div className="partners view">
       <div className="min-required-wrapper">
-        <h3>{t('Project contacts')}</h3>
+        <h3>{t('Project partners')}</h3>
         {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'partners') !== -1 && (
           <span className="min-required">{t('Minimum one required')}</span>
         )}
