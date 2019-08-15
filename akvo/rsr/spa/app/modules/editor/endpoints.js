@@ -11,7 +11,7 @@ export const endpoints = {
     partners: '/partnership/'
   },
   section5: {
-    results: '/results_framework/',
+    results: '/results_framework_lite/',
     'results.indicators': '/indicator_framework/',
     'results.indicators.periods': '/indicator_period/',
     'results.indicators.periods.disaggregationTargets': '/disaggregation_target/'
