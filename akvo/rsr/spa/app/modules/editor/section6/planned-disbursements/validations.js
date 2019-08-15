@@ -15,9 +15,9 @@ const DGIS = yup.object().shape({
     is: value => value !== null && value !== '',
     then: yup.string().required()
   }),
-  providerOrganisation: yup.string(),
+  providerOrganisation: yup.string().nullable(),
   providerOrganisationActivity: yup.string(),
-  receiverOrganisation: yup.string(),
+  receiverOrganisation: yup.string().nullable(),
   receiverOrganisationActivity: yup.string()
 })
 

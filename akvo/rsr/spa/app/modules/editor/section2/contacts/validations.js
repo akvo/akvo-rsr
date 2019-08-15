@@ -3,7 +3,7 @@ import { transformUndefined } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
   name: yup.string().default(''),
-  type: yup.number(),
+  type: yup.mixed(),
   organisation: yup.string().default(''),
   department: yup.string().default(''),
   email: yup.string().min(1).email().transform(transformUndefined),
