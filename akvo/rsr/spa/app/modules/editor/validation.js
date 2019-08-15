@@ -35,24 +35,16 @@ export const validate = (module, validationSetIds, fields, abortEarly = false) =
     return []
   }
   const validationSets = getValidationSets(validationSetIds, validationDef)
-  // let isValid = true
-  // console.log(`validate ${module}`, fields)
   let errors = []
   const setName = module.indexOf('/') !== -1 ? kebabToCamel(module.substr(module.indexOf('/') + 1)) : ''
   validationSets.forEach((validationSet) => {
     try{
       validationSet.validateSync(fields, { abortEarly })
     } catch(error){
-      // console.log(module, 'validation error', error)
-      // if(!abortEarly){
-        const newErrors = error.inner.map(({ type, path }) => ({ type, path: path ? `${setName}${path}` : setName })).filter(it => errors.findIndex(existing => isEqual(it, existing)) === -1)
+        const newErrors = (error.inner && error.inner.length > 0 ? error.inner : [error]).map(({ type, path }) => ({ type, path: path ? `${setName}${path}` : setName }))
+          .filter((it) => errors.findIndex(existing => isEqual(it, existing)) === -1)
         errors = [...errors, ...newErrors]
-        // console.log(module, newErrors)
-        // console.log(error.inner)
-      // }
-      // isValid = false
     }
   })
-  // console.log('validated', module, isValid)
   return errors
 }

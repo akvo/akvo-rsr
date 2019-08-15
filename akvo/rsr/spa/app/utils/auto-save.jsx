@@ -2,12 +2,10 @@ import React from 'react'
 import { FormSpy } from 'react-final-form'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { cloneDeep, isEmpty, get } from 'lodash'
+import { isEmpty, get } from 'lodash'
 import {diff} from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
-import { validate } from '../modules/editor/validation'
-import { camelToKebab } from './misc'
 
 const debounce = 2000
 
@@ -47,12 +45,15 @@ class AutoSave extends React.Component {
   componentWillMount(){
     const { setName, sectionIndex, itemIndex } = this.props
     if(setName !== undefined){
-      this.lastSavedValues = cloneDeep(get(this.props.values, setName))
+      this.save()
     } else {
       this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
     }
   }
-  componentWillReceiveProps() {
+  componentWillReceiveProps(prevProps) {
+    if(prevProps.values === this.props.values){
+      return
+    }
     if (this.timeout) {
       clearTimeout(this.timeout)
     }
@@ -63,42 +64,22 @@ class AutoSave extends React.Component {
     const { values, setName, itemIndex, sectionIndex } = this.props
 
     if(setName !== undefined && itemIndex !== undefined){
-      const thisValues = get(values, setName)
-      if(!thisValues){
-        return
-      }
-      // if new item added do nothing
-      if (this.lastSavedValues.length < thisValues.length){
-        const length = thisValues.length - this.lastSavedValues.length
-        for (let i = 0; i < length; i += 1){
-          this.lastSavedValues = [...this.lastSavedValues, {}]
-        }
-        return
-      }
-      // if item removed: TODO this is unreachable !?
-      if (thisValues && this.lastSavedValues.length > thisValues.length){
-        console.log('removed', itemIndex)
-        return
-      }
-      const item = thisValues[itemIndex]
-      const difference = customDiff(this.lastSavedValues[itemIndex], item)
+      const thisValues = get(values, `${setName}[${itemIndex}]`)
+      if(!thisValues) return
+      const savedValues = get(this.props.editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
+      const item = thisValues
+      const difference = customDiff(savedValues, item)
       delete difference.disaggregationTargets
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if (!isEmpty(difference)) {
-        this.lastSavedValues[itemIndex] = {
-          ...this.lastSavedValues[itemIndex],
-          ...difference
-        }
         if(
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
         ){
-          if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item], true).length === 0){
-            if(!item.id){
-              this.props.addSetItem(sectionIndex, setName, item)
-            } else {
-              this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
-            }
+          if(!item.id){
+            this.props.addSetItem(sectionIndex, setName, item)
+          } else {
+            this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
           }
         }
       }
@@ -130,5 +111,5 @@ AutoSave.propTypes = {
 }
 
 export default props => (
-  <FormSpy {...props} subscription={{ values: true }} component={connect(null, actions)(AutoSave)} />
+  <FormSpy {...props} subscription={{ values: true }} component={connect(({ editorRdr }) => ({ editorRdr }), actions)(AutoSave)} />
 )
