@@ -55,9 +55,9 @@ const ProjectPicker = ({ fieldName, loading, projects }) => {
                 name={`${fieldName}.relatedProject`}
                 render={({ input }) => {
                   const $options =
-                    projects && projects.length > 0
-                      ? state.options
-                      : [{ value: input.value, label: nameProps.input.value }]
+                  projects && projects.length > 0
+                  ? ((input.value && state.searchStr.length === 0) ? [projects.find(it => it.id === input.value)].map(({ id, title }) => ({ value: id, label: title })) : state.options)
+                  : [{ value: input.value, label: nameProps.input.value }]
                   return (
                     <Select
                       {...input}
