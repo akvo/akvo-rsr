@@ -1,3 +1,4 @@
+/* global window */
 import React from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
@@ -32,6 +33,9 @@ class _Section extends React.Component{
     if (this.props.editorRdr[sectionKey].isFetched === false && this.props.editorRdr[sectionKey].isExplicitlyEnabled === false){
       return <div className="view"><Skeleton active paragraph={{ rows: 7 }} /></div>
     }
+    setTimeout(() => {
+      window.scroll({ top: 0, behavior: 'smooth' })
+    }, 100)
     return this.props.children
   }
 }
