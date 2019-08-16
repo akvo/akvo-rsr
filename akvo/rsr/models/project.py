@@ -1208,6 +1208,10 @@ class Project(TimestampsMixin, models.Model):
     def keyword_labels(self):
         return [keyword.label for keyword in self.keywords.all()]
 
+    def has_imported_results(self):
+        Result = apps.get_model('rsr', 'Result')
+        return Result.objects.filter(project=self).exclude(parent_result=None).count() > 0
+
     ###################################
     # RSR Impact projects #############
     ###################################
@@ -1216,6 +1220,9 @@ class Project(TimestampsMixin, models.Model):
         """Import results from the parent project."""
         import_failed = 0
         import_success = 1
+
+        if self.has_imported_results():
+            return import_failed, 'Project has already imported results'
 
         if self.parents_all().count() == 1:
             parent_project = self.parents_all()[0]
@@ -1298,6 +1305,14 @@ class Project(TimestampsMixin, models.Model):
         for result in source_project.results.all():
             self.copy_result(result, set_parent=False)
 
+    def copy_dimension_name_to_children(self, dimension_name):
+        """Copy dimension_name to all children that imported from this project."""
+
+        for child in self.children_all():
+            if not child.has_imported_results():
+                continue
+            child.copy_dimension_name(dimension_name, set_parent=True)
+
     def copy_dimension_name(self, source_dimension_name, set_parent=True):
         defaults = dict(parent_dimension_name=source_dimension_name)
         data = dict(project=self, name=source_dimension_name.name, defaults=defaults)
@@ -1328,6 +1343,14 @@ class Project(TimestampsMixin, models.Model):
         if not created and set_parent:
             dimension_value.parent_dimension_value = source_dimension_value
             dimension_value.save(update_fields=['parent_dimension_value'])
+
+    def copy_result_to_children(self, result):
+        """Copy result to all children that imported results from this project."""
+
+        for child in self.children_all():
+            if not child.has_imported_results():
+                continue
+            child.copy_result(result, set_parent=True)
 
     def copy_result(self, source_result, set_parent=True):
         """Copy the source_result to this project, setting it as parent if specified."""
