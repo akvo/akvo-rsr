@@ -126,9 +126,14 @@
           line-height: 40px;
           font-weight: 400;
           padding: 0 20px;
+          transition: all .2s ease-out;
           &:hover{
+            background-color: #e6e6e6;
             span{
               opacity: 1;
+            }
+            .check .anticon:not(.checked){
+              color: #bbb;
             }
           }
         }
@@ -139,6 +144,7 @@
           .anticon{
             font-size: 20px;
             color: #e0e0e0;
+            transition: color .2s ease-out;
             &.checked{
               color: #31c531;
               animation: bounceCheck .4s;
@@ -148,7 +154,9 @@
         &.active{
           a{
             font-weight: 400;
-            background-color: #e6e6e6;
+            // background-color: #e6e6e6;
+            background-color: #828282;
+            color: #fff;
             span{
               opacity: 1;
             }
