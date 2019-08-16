@@ -23,10 +23,29 @@ const totalBudgetReducer = (acc, budgetItem) => {
   return acc
 }
 
+const BudgetType = ({ name, t }) => {
+  return (
+    <Col span={12}>
+      <Item label={<InputLabel optional>{t('budget type')}</InputLabel>}>
+        <FinalField
+          name={`${name}.type`}
+          render={({ input }) => (
+            <Radio.Group {...input}>
+              <Radio.Button value={1}>{t('Original')}</Radio.Button>
+              <Radio.Button value={2}>{t('Revised')}</Radio.Button>
+            </Radio.Group>
+          )}
+        />
+      </Item>
+    </Col>
+  )
+}
+
 const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, errors }) => {
   const { t } = useTranslation()
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
+  const isDGIS = validations.indexOf(validationType.DGIS) !== -1
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
@@ -115,6 +134,9 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
                     fieldExists={fieldExists}
                   />
                 </Col>
+                {isDGIS && fieldExists('budgetType') &&
+                  <BudgetType name={name} t={t} />
+                }
               </Row>
               <Condition when={`${name}.label`} is="38">
               <FinalField
@@ -128,20 +150,8 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
               </Condition>
 
               <Row gutter={16}>
-                {fieldExists('budgetType') &&
-                <Col span={12}>
-                  <Item label={<InputLabel optional>{t('budget type')}</InputLabel>}>
-                  <FinalField
-                    name={`${name}.type`}
-                    render={({ input }) => (
-                        <Radio.Group {...input}>
-                          <Radio.Button value={1}>{t('Original')}</Radio.Button>
-                          <Radio.Button value={2}>{t('Revised')}</Radio.Button>
-                        </Radio.Group>
-                    )}
-                  />
-                  </Item>
-                </Col>
+                {!isDGIS && fieldExists('budgetType') &&
+                <BudgetType name={name} t={t} />
                 }
                 {fieldExists('status') &&
                 <Col span={12}>
