@@ -9,7 +9,7 @@ const sector = yup.object().shape({
 })
 
 const base = yup.object().shape({
-  value: yup.mixed(),
+  value: yup.mixed().default(null),
   transactionType: yup.string().nullable().when('value', {
     is: value => value !== null && value !== '',
     then: yup.string().required()
