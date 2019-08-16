@@ -22,7 +22,7 @@
             </div>
 
             <div class="form">
-                {% if project.parents_all.count == 1 and project.is_impact_project and user|can_import_results:project %}
+                {% if project.parents_all.count == 1 and project.is_impact_project and user|can_import_results:project and not project.has_imported_results %}
                     <div class="row">
                         <div class="col-md-3">
                             <button class="btn btn-primary" id="import-results"><i class="glyphicon glyphicon-import"></i> {% trans 'Import results' %}</button>

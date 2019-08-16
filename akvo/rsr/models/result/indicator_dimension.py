@@ -40,7 +40,12 @@ class IndicatorDimensionName(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        is_new_dimension_name = not self.pk
         super(IndicatorDimensionName, self).save(*args, **kwargs)
+
+        if is_new_dimension_name:
+            self.project.copy_dimension_name_to_children(self)
+
         for child_dimension_name in self.child_dimension_names.all():
             child_dimension_name.name = self.name
             child_dimension_name.save()
