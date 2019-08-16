@@ -46,12 +46,12 @@ const PolicyMarker = ({ validations, formPush }) => {
               withLabel
               dict={{
                 label: t('Significance'),
-                tooltip: t('Each reported marker must contain the significance of the policy marker for this activity. Choices are:\
-0 - Not targeted\
-1 - Significant objective: the policy objectives are important, but were not the prime motivation for undertaking the activity.\
-          2 - Principal objective: the policy objective was the primary reason to undertake this activity.\
-          3 - Principal objective AND in support of an action programme: valid for the markers dealing with Desertification only.\
-          4 - Explicit primary objective: only to be used in combination with policy marker.\
+                tooltip: t('Each reported marker must contain the significance of the policy marker for this activity. Choices are:<br />\
+0 - Not targeted<br />\
+1 - Significant objective: the policy objectives are important, but were not the prime motivation for undertaking the activity.<br />\
+2 - Principal objective: the policy objective was the primary reason to undertake this activity.<br />\
+3 - Principal objective AND in support of an action programme: valid for the markers dealing with Desertification only.<br />\
+4 - Explicit primary objective: only to be used in combination with policy marker.<br />\
 9 - reproductive, maternal, newborn and child health.')
               }}
             />
