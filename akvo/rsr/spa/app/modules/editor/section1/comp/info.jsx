@@ -20,11 +20,11 @@ import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
 import FLOW_TYPES from '../options/flow-types.json'
 import FINANCE_TYPES from '../options/finance-types.json'
 import tiedStatusOptions from '../options/tied-statuses.json'
-import RelatedProjects from './related-projects'
 import SectionContext from '../../section-context'
 import '../styles.scss'
 import InputLabel from '../../../../utils/input-label'
 import { useFetch } from '../../../../utils/hooks'
+import ProjectPicker from './project-picker';
 
 const { Item } = Form
 const { Option } = Select
@@ -32,7 +32,7 @@ const Aux = node => node.children
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields }) => {
+const Info = ({ validations, fields, projectId }) => {
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
@@ -64,10 +64,10 @@ const Info = ({ validations, fields }) => {
         initialValues={fields}
         subscription={{}}
         mutators={{ ...arrayMutators }}
-        render={({
-          form: {
-            mutators: { push }
-          }
+            render={({
+              form: {
+                mutators: { push }
+              }
         }) => (
           <div>
           <AutoSave sectionIndex={1} />
@@ -121,7 +121,7 @@ const Info = ({ validations, fields }) => {
               </Aux>
             )}
           />
-          <RelatedProjects formPush={push} projects={results} loading={loading} />
+          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} fieldName="relatedProjects[0]" projects={results} loading={loading} projectId={projectId} />
           <FinalField
             name="hierarchy"
             control="select"
@@ -282,7 +282,7 @@ const Info = ({ validations, fields }) => {
 }
 
 export default connect(
-  ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
+  ({ editorRdr: { projectId, section1: { fields }, validations}}) => ({ fields, validations, projectId, }),
 )(React.memo(Info, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
   const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
