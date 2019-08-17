@@ -26,7 +26,7 @@ const MenuItem = (props) => {
       path={to}
       exact
       children={({ match }) => (
-        <li className={classNames({active: match, disabled })}>
+        <li className={classNames({active: match, disabled, checked })}>
           <Link to={to} disabled={disabled}>
             <span>{props.children}</span>
             {(!hideCheck && !loading) &&

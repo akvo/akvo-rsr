@@ -165,6 +165,14 @@
           .check .anticon:not(.checked){
             color: #bbb;
           }
+          &.checked{
+            a{
+              background-color: #63c14a;
+            }
+            .check .anticon{
+              color: #fff;
+            }
+          }
         }
         .loading{
           position: absolute;
@@ -189,7 +197,8 @@
     padding-left: 30px;
   }
   .view:not(.section5){
-    margin-right: 230px;
+    margin-right: 300px;
+    max-width: 620px;
     @media screen and (max-width: 1200px){
       margin-right: 100px;
     }
