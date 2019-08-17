@@ -460,7 +460,7 @@ JSON_TEXT = {
     u"Users": _(u"Users"),
     u"Reports": _(u"Reports"),
     "menu": {
-      "settings": _("Project settings"),
+      "settings": _("Validation set"),
       "info": _("General information"),
       "contacts": _("Project contacts"),
       "partners": _("Partners"),

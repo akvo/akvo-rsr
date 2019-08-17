@@ -13,7 +13,7 @@ import api from '../../../utils/api'
 
 
 export const sets = [
-  { value: 1, label: 'RSR' },
+  { value: 1, label: 'Standard (RSR)' },
   { value: 4, label: 'NLR'},
   { value: 7, label: 'Gietrenk SPC'},
   { value: 2, label: 'IATI'},
