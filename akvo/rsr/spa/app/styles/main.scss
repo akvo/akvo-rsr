@@ -158,4 +158,12 @@ header.main-header{
   }
 }
 
-@import "./container.scss"
+@import "./container.scss";
+
+@media only screen and (min-width: 1200px) {
+  .ui.container{
+    margin-left: 50px!important;
+    margin-right: 50px!important;
+    width: auto;
+  }
+}
