@@ -51,20 +51,37 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
+  const [copying, setCopying] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [copyId, setCopyId] = useState('')
 
-  const doImport = (projectId) => {
+  const doImport = () => {
     setImporting(true)
     api.post(`/project/${projectId}/import_results/`)
       .then(() => {
-        setImporting(false)
         api.get('/results_framework/', { project: projectId })
-          .then(({ data }) => {
+        .then(({ data }) => {
+            setImporting(false)
             fetchSetItems(5, 'results', data.results)
           })
+      })
+  }
+  const doCopy = () => {
+    setCopying(true)
+    api.post(`/project/${projectId}/copy_results/${copyId}/`)
+      .then(() => {
+        api.get('/results_framework/', { project: projectId })
+        .then(({ data }) => {
+            setCopying(false)
+            fetchSetItems(5, 'results', data.results)
+          })
+      })
+      .catch(() => {
+        setCopyId('')
+        setCopying(false)
       })
   }
   if (results.length === 0) {
@@ -79,21 +96,21 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
                 {t('Import the results framework from parent project')}
               </span>
               <div>
-                <Route path="/projects/:id" component={({ match: { params } }) => <Button type="primary" loading={importing} onClick={() => doImport(params.id)}>{t('Import results set')}</Button>} />
+                <Button type="primary" loading={importing} onClick={doImport} disabled={copying || importing}>{t('Import results set')}</Button>
               </div>
             </li>
           }
           <li className="copy-framework">
             <span>{t('Copy the results framework from an existing project')}</span>
             <div>
-              <Input placeholder="Project ID" />
-              <Button type="primary">{t('Copy results')}</Button>
+              <Input placeholder="Project ID" value={copyId} onChange={(ev) => setCopyId(ev.target.value)} />
+              <Button type="primary" loading={copying} onClick={doCopy} disabled={copying || importing || (copyId.length === 0 || Number.isNaN(Number(copyId)))}>{t('Copy results')}</Button>
             </div>
           </li>
           <li>
             <span>{t('Create a new results framework')}</span>
             <div className="button-container">
-              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} size="default" type="primary" {...params} />} />
+              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} />} />
             </div>
           </li>
         </ul>
@@ -177,7 +194,7 @@ const Section5 = (props) => {
           }) => (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} />}
+                  {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
@@ -232,7 +249,6 @@ const Section5 = (props) => {
                                   <RTE />
                                 </Item>
                                 <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
-                                  {/* <Switch /> */}
                                   <Radio.Group value>
                                     <Radio.Button value>{t('Yes')}</Radio.Button>
                                     <Radio.Button>{t('No')}</Radio.Button>
@@ -267,7 +283,7 @@ const Section5 = (props) => {
   )
 }
 export default connect(
-  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } } } }) => ({ fields, relatedProjects, primaryOrganisation }),
+  ({ editorRdr: { projectId, section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId }),
   { removeSetItem, fetchSetItems }
 )(React.memo(Section5, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
