@@ -22,6 +22,7 @@ const Links = ({ formPush }) => {
               name={`${name}.url`}
               control="input"
               withLabel
+              placeholder="https://..."
               dict={{
                 label: t('link url'),
                 tooltip: t('Enter the link to an external website you wish to redirect to from your project page. The URL should start with \'http://\' or \'https://\'.')
