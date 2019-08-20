@@ -29,7 +29,7 @@ const ProjectPicker = ({ fieldName, loading, projects, savedData, formPush, proj
       })
       intid = setTimeout(() => {
         const options = projects
-          .filter(it => it.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.subtitle.toLowerCase().indexOf(value.toLowerCase()) !== -1)
+          .filter(it => it.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.subtitle.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.id === Number(value))
           .map(({ id, title }) => ({ value: id, label: title }))
         setState({
           options,
