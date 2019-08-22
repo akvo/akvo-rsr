@@ -134,7 +134,8 @@ def typeahead_impact_projects(request):
 
 @api_view(['GET'])
 def typeahead_projectupdate(request):
-    updates = ProjectUpdate.objects.all()
+    page = request.rsr_page
+    updates = page.updates() if page else ProjectUpdate.objects.all()
     return Response(
         rejig(updates, TypeaheadProjectUpdateSerializer(updates, many=True))
     )
