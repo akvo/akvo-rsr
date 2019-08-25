@@ -401,8 +401,8 @@ class App extends React.Component {
             resultsTab
         ) : (
             <section className="results">
-                <a className="pull-right editBtn" href={`/my-rsr/projects/${projectId}/`}>
-                  {_('Editor')}
+                <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
+                    {_("Editor")}
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>

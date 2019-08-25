@@ -92,7 +92,7 @@
                 {% include 'navigation/user-details-dropdown.html' %}
                 <li>
                     <a class="btn areaToggle"
-                       href="/my-rsr/projects">{% trans 'My projects' %}
+                       href="{% url 'my_rsr' %}">{% trans 'My projects' %}
                     </a>
                 </li>
             {% endif %}
