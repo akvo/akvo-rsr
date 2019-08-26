@@ -46,6 +46,9 @@
       background-color: #fff;
       padding: 0 5px;
       margin-left: -5px;
+      &::first-letter {
+        text-transform: uppercase;
+      }
     }
     .ant-row:last-child{
       .ant-col-12{

@@ -61,6 +61,9 @@ class Result(models.Model):
 
     def save(self, *args, **kwargs):
         """Update the values of child results, if a parent result is updated."""
+
+        is_new_result = not self.pk
+
         for child_result in self.child_results.all():
             # Always copy title, type and aggregation status. They should be the same as the parent.
             child_result.title = self.title
@@ -73,12 +76,15 @@ class Result(models.Model):
 
             child_result.save()
 
-        if not self.pk and Result.objects.filter(project_id=self.project.id).exists():
+        if is_new_result and Result.objects.filter(project_id=self.project.id).exists():
             prev_result = Result.objects.filter(project_id=self.project.id).reverse()[0]
             if prev_result.order:
                 self.order = prev_result.order + 1
 
         super(Result, self).save(*args, **kwargs)
+
+        if is_new_result:
+            self.project.copy_result_to_children(self)
 
     def clean(self):
         validation_errors = {}

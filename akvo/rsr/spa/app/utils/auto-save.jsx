@@ -2,12 +2,10 @@ import React from 'react'
 import { FormSpy } from 'react-final-form'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { cloneDeep, isEmpty, get } from 'lodash'
+import { isEmpty, get } from 'lodash'
 import {diff} from 'deep-object-diff'
 import * as actions from '../modules/editor/actions'
 import fieldSets from '../modules/editor/field-sets'
-import { validate } from '../modules/editor/validation'
-import { camelToKebab } from './misc'
 
 const debounce = 2000
 
@@ -47,19 +45,15 @@ class AutoSave extends React.Component {
   componentWillMount(){
     const { setName, sectionIndex, itemIndex } = this.props
     if(setName !== undefined){
-      this.lastSavedValues = cloneDeep(get(this.props.values, setName))
-      console.log(`mounting ${setName}[${itemIndex}]`)
+      this.save()
     } else {
       this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
     }
   }
-  componentWillReceiveProps(nextProps) {
-    // TODO: This has been used to udpate lastSavedValues only on project.id update
-    // if(!this.props.values.id && nextProps.values.id){
-    //   const { setName, sectionIndex } = this.props
-    //   this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
-    //   return
-    // }
+  componentWillReceiveProps(prevProps) {
+    if(prevProps.values === this.props.values){
+      return
+    }
     if (this.timeout) {
       clearTimeout(this.timeout)
     }
@@ -70,34 +64,26 @@ class AutoSave extends React.Component {
     const { values, setName, itemIndex, sectionIndex } = this.props
 
     if(setName !== undefined && itemIndex !== undefined){
-      // if new item added do nothing
-      if(this.lastSavedValues.length < get(values, setName).length){
-        this.lastSavedValues = [...this.lastSavedValues, {}]
-        return
+      const thisValues = get(values, `${setName}[${itemIndex}]`)
+      if(!thisValues) return
+      const savedValues = get(this.props.editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
+      const item = thisValues
+      const difference = customDiff(savedValues, item)
+      delete difference.disaggregationTargets
+      if(setName === 'relatedProjects'){
+        if (Object.keys(item).indexOf('relatedProject') === -1 && Object.keys(item).indexOf('relatedIatiId') === -1) return
       }
-      // if item removed: TODO this is unreachable !?
-      if(this.lastSavedValues.length > get(values, setName).length){
-        console.log('removed', itemIndex)
-        return
-      }
-      const item = get(values, setName)[itemIndex]
-      const difference = customDiff(this.lastSavedValues[itemIndex], item)
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
-      if(
-        !isEmpty(difference)
-        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'id')
-        && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
-      ){
-        if(validate(`section${sectionIndex}/${camelToKebab(setName.replace(/\[([^\]]+)]/g, ''))}`, [1], [item], true).length === 0){
+      if (!isEmpty(difference)) {
+        if(
+          !(Object.keys(difference).indexOf('id') !== -1)
+          && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
+        ){
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
           } else {
             this.props.editSetItem(sectionIndex, setName, itemIndex, item.id, difference)
           }
-        }
-        this.lastSavedValues[itemIndex] = {
-          ...this.lastSavedValues[itemIndex],
-          ...difference
         }
       }
     } else {
@@ -128,5 +114,5 @@ AutoSave.propTypes = {
 }
 
 export default props => (
-  <FormSpy {...props} subscription={{ values: true }} component={connect(null, actions)(AutoSave)} />
+  <FormSpy {...props} subscription={{ values: true }} component={connect(({ editorRdr }) => ({ editorRdr }), actions)(AutoSave)} />
 )

@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
-import { isEqual } from 'lodash'
+import { diff } from 'deep-object-diff'
 import { Route } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { isEqual } from 'lodash'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -15,6 +17,7 @@ import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
 import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
 import api from '../../../utils/api'
+import InputLabel from '../../../utils/input-label';
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -28,6 +31,7 @@ const resultTypes = [
 ]
 
 const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
+  const { t } = useTranslation()
   const addResult = ({ key }) => {
     const newItem = { type: key, indicators: [], project: projectId }
     push('results', newItem)
@@ -37,114 +41,126 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
     <Dropdown overlay={
       <Menu onClick={addResult}>
         {resultTypes.map(type =>
-        <Menu.Item key={type.value}><Icon type="plus" />{type.label}</Menu.Item>
+          <Menu.Item key={type.value}><Icon type="plus" />{t(type.label)}</Menu.Item>
         )}
       </Menu>
     }
     trigger={['click']}>
-      <Button icon="plus" className="add-result" size="large" {...props}>Add result</Button>
+      <Button icon="plus" className="add-result" size="large" {...props}>{t('Add result')}</Button>
     </Dropdown>
   )
 })
 
-class Summary extends React.Component{
-  state = {
-    showModal: false,
-    importing: false
-  }
-  shouldComponentUpdate(nextProps, nextState){
-    return nextProps.values.results.length !== this.props.values.results.length || nextState !== this.state
-  }
-  import = (projectId) => {
-    this.setState({ importing: true })
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId }) => { // eslint-disable-line
+  const { t } = useTranslation()
+  const [importing, setImporting] = useState(false)
+  const [copying, setCopying] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [copyId, setCopyId] = useState('')
+
+  const doImport = () => {
+    setImporting(true)
     api.post(`/project/${projectId}/import_results/`)
       .then(() => {
-        this.setState({
-          importing: false
-        })
         api.get('/results_framework/', { project: projectId })
-          .then(({ data: {results}}) => {
-            this.props.fetchSetItems(5, 'results', results)
+        .then(({ data }) => {
+            setImporting(false)
+            fetchSetItems(5, 'results', data.results)
           })
       })
   }
-  render(){
-    const { values: {results}} = this.props
-    if(results.length === 0){
-      return (
-        <div className="no-results">
-          <h3>No results</h3>
-          <Divider />
-          <ul>
-            {this.props.hasParent &&
+  const doCopy = () => {
+    setCopying(true)
+    api.post(`/project/${projectId}/copy_results/${copyId}/`)
+      .then(() => {
+        api.get('/results_framework/', { project: projectId })
+        .then(({ data }) => {
+            setCopying(false)
+            fetchSetItems(5, 'results', data.results)
+          })
+      })
+      .catch(() => {
+        setCopyId('')
+        setCopying(false)
+      })
+  }
+  if (results.length === 0) {
+    return (
+      <div className="no-results">
+        <h3>{t('No results')}</h3>
+        <Divider />
+        <ul>
+          {hasParent &&
             <li>
               <span>
-                Import the results framework from parent project
+                {t('Import the results framework from parent project')}
               </span>
               <div>
-              <Route path="/projects/:id" component={({ match: {params} }) => <Button type="primary" loading={this.state.importing} onClick={() => this.import(params.id)}>Import results set</Button>} />
+                <Button type="primary" loading={importing} onClick={doImport} disabled={copying || importing}>{t('Import results set')}</Button>
               </div>
             </li>
-            }
-            <li className="copy-framework">
-              <span>Copy the results framework from an existing project</span>
-              <div>
-                <Input placeholder="Project ID" />
-                <Button type="primary">Copy results</Button>
-              </div>
-            </li>
-            <li>
-              <span>Create a new results framework</span>
-              <div className="button-container">
-                <Route path="/projects/:projectId" component={({ match: {params}}) => <AddResultButton push={this.props.push} size="default" type="primary" {...params} />} />
-              </div>
-            </li>
-          </ul>
-        </div>
-      )
-    }
-    const groupedResults = {}
-    resultTypes.forEach(type => {
-      groupedResults[type.value] = results.filter(it => it.type === type.value)
-    })
-    return (
-      <div className="summary">
-        <ul>
-          {resultTypes.map(type =>
-          <li>{type.label}<strong>{groupedResults[type.value].length}</strong></li>
-          )}
+          }
+          <li className="copy-framework">
+            <span>{t('Copy the results framework from an existing project')}</span>
+            <div>
+              <Input placeholder="Project ID" value={copyId} onChange={(ev) => setCopyId(ev.target.value)} />
+              <Button type="primary" loading={copying} onClick={doCopy} disabled={copying || importing || (copyId.length === 0 || Number.isNaN(Number(copyId)))}>{t('Copy results')}</Button>
+            </div>
+          </li>
+          <li>
+            <span>{t('Create a new results framework')}</span>
+            <div className="button-container">
+              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton disabled={copying || importing} push={push} size="default" type="primary" {...params} />} />
+            </div>
+          </li>
         </ul>
-        <Button type="link" icon="eye" onClick={() => this.setState({ showModal: true })}>Full preview</Button>
-        <Modal
-          title="Results framework preview"
-          visible={this.state.showModal}
-          onCancel={() => this.setState({ showModal: false })}
-          footer={null}
-          className="full-preview-modal"
-          width={640}
-        >
-          <Collapse bordered={false}>
-            {Object.keys(groupedResults).map(groupKey =>
-            <Panel header={<span className="group-title">{resultTypes.find(it => it.value === groupKey).label}<b> ({groupedResults[groupKey].length})</b></span>}>
-              <Collapse bordered={false}>
-                {groupedResults[groupKey].map((result, resultIndex) =>
-                <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
-                  <ul>
-                    {result.indicators.map((indicator, index) =>
-                    <li>Indicator <b>{index + 1}</b>: {indicator.title}</li>
-                    )}
-                  </ul>
-                </Panel>
-                )}
-              </Collapse>
-            </Panel>
-            )}
-          </Collapse>
-        </Modal>
       </div>
     )
   }
-}
+  const groupedResults = {}
+  resultTypes.forEach(type => {
+    groupedResults[type.value] = results.filter(it => it.type === type.value)
+  })
+  return (
+    <div className="summary">
+      <ul>
+        {resultTypes.map(type =>
+          <li>{t(type.label)}<strong>{groupedResults[type.value].length}</strong></li>
+        )}
+      </ul>
+      <Button type="link" icon="eye" onClick={() => setShowModal(true)}>{t('Full preview')}</Button>
+      <Modal
+        title={t('Results framework preview')}
+        visible={showModal}
+        onCancel={() => setShowModal(false)}
+        footer={null}
+        className="full-preview-modal"
+        width={640}
+      >
+        <Collapse bordered={false}>
+          {Object.keys(groupedResults).map(groupKey =>
+            <Panel header={<span className="group-title">{t(resultTypes.find(it => it.value === groupKey).label)}<b> ({groupedResults[groupKey].length})</b></span>}>
+              <Collapse bordered={false}>
+                {groupedResults[groupKey].map((result, resultIndex) =>
+                  <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
+                    <ul>
+                      {result.indicators.map((indicator, index) =>
+                        <li>{t('Indicator')} <b>{index + 1}</b>:<br /><span className="inset">{indicator.title}</span></li>
+                      )}
+                    </ul>
+                  </Panel>
+                )}
+              </Collapse>
+            </Panel>
+          )}
+        </Collapse>
+      </Modal>
+    </div>
+  )
+}, (prevProps, nextProps) => {
+  return isEqual(nextProps.values.results, prevProps.values.results)
+  // return nextProps.values.results.length === prevProps.values.results.length
+})
 
 class UpdateIfLengthChanged extends React.Component{
   shouldComponentUpdate(nextProps){
@@ -155,22 +171,20 @@ class UpdateIfLengthChanged extends React.Component{
   }
 }
 
-class Section5 extends React.Component{
-  shouldComponentUpdate(nextProps){
-    return !isEqual(nextProps, this.props)
-  }
-  removeSection = (fields, index) => {
+
+const Section5 = (props) => {
+  const { t } = useTranslation()
+  const removeSection = (fields, index) => {
     fields.remove(index)
-    this.props.removeSetItem(5, 'results', index)
+    props.removeSetItem(5, 'results', index)
   }
-  render(){
-    const hasParent = this.props.relatedProjects && this.props.relatedProjects.filter(it => it.relation === '1').length > 0
-    return (
-      <div className="view section5">
-        <Form layout="vertical">
+  const hasParent = props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0
+  return (
+    <div className="view section5">
+      <Form layout="vertical">
         <FinalForm
-          onSubmit={() => {}}
-          initialValues={this.props.fields}
+          onSubmit={() => { }}
+          initialValues={props.fields}
           subscription={{}}
           mutators={{ ...arrayMutators }}
           render={({
@@ -178,100 +192,105 @@ class Section5 extends React.Component{
               mutators: { push }
             }
           }) => (
-            <Aux>
-            <FormSpy subscription={{ values: true }}>
-              {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={this.props.fetchSetItems} />}
-            </FormSpy>
-            <FieldArray name="results" subscription={{}}>
-            {({ fields }) => (
               <Aux>
-                <Accordion
-                  className="results-list"
-                  finalFormFields={fields}
-                  setName="results"
-                  multiple
-                  renderPanel={(name, index) => (
-                    <Panel
-                      key={`${index}`}
-                      header={
-                        <span>
-                          <Field
-                            name={`${name}.type`}
-                            render={({input}) => <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>}
-                          />
-                          &nbsp;Result {index + 1}
-                          <Field
-                            name={`${name}.title`}
-                            render={({input}) => input.value ? `: ${input.value}` : ''}
-                          />
-                        </span>}
-                      extra={
-                        // eslint-disable-next-line
-                        <div onClick={e => e.stopPropagation()}>
-                          <div className="delete-btn-holder">
-                            <Popconfirm
-                              title="Are you sure to delete this result?"
-                              onConfirm={() => this.removeSection(fields, index)}
-                              okText="Yes"
-                              cancelText="No"
-                            >
-                              <Button size="small" icon="delete" className="delete-panel" />
-                            </Popconfirm>
-                          </div>
-                        </div>
-                      }
-                    >
-                      <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
-                      <div className="main-form">
-                        <Item label="Title" optional style={{ flex: 1 }}>
-                          <FinalField
-                            name={`${name}.title`}
-                            control="textarea"
-                            autosize
-                          />
-                        </Item>
-                        <div style={{ display: 'flex' }}>
-                        <Item label="Description" optional style={{ flex: 1 }}>
-                          <RTE />
-                        </Item>
-                        <Item label="Enable aggregation" style={{ marginLeft: 16 }}>
-                          {/* <Switch /> */}
-                          <Radio.Group value>
-                            <Radio.Button value>Yes</Radio.Button>
-                            <Radio.Button>No</Radio.Button>
-                          </Radio.Group>
-                        </Item>
-                        </div>
-                        <div className="ant-form-item-label">Indicators:</div>
-                      </div>
-                      <Field
-                        name={`${name}.id`}
-                        render={({input}) => <Indicators fieldName={name} formPush={push} resultId={input.value} primaryOrganisation={this.props.primaryOrganisation} />}
-                      />
-                    </Panel>
-                  )}
-                />
                 <FormSpy subscription={{ values: true }}>
-                  {({ values: { results } }) =>
-                  <UpdateIfLengthChanged items={results}>
-                    {results.length > 0 &&
-                    <Route path="/projects/:projectId" component={({ match: {params}}) => <AddResultButton push={push} {...params} />} />
-                    }
-                  </UpdateIfLengthChanged>}
+                  {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
                 </FormSpy>
+                <FieldArray name="results" subscription={{}}>
+                  {({ fields }) => (
+                    <Aux>
+                      <Accordion
+                        className="results-list"
+                        finalFormFields={fields}
+                        setName="results"
+                        multiple
+                        renderPanel={(name, index) => (
+                          <Panel
+                            key={`${index}`}
+                            header={
+                              <span>
+                                <Field
+                                  name={`${name}.type`}
+                                  render={({ input }) => <span className="capitalized">{input.value && resultTypes.find(it => it.value === input.value).label}</span>}
+                                />
+                                &nbsp;Result {index + 1}
+                                <Field
+                                  name={`${name}.title`}
+                                  render={({ input }) => input.value ? `: ${input.value}` : ''}
+                                />
+                              </span>}
+                            extra={
+                              // eslint-disable-next-line
+                              <div onClick={e => e.stopPropagation()}>
+                                <div className="delete-btn-holder">
+                                  <Popconfirm
+                                    title={t('Are you sure to delete this result?')}
+                                    onConfirm={() => removeSection(fields, index)}
+                                    okText={t('Yes')}
+                                    cancelText={t('No')}
+                                  >
+                                    <Button size="small" icon="delete" className="delete-panel" />
+                                  </Popconfirm>
+                                </div>
+                              </div>
+                            }
+                          >
+                            <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
+                            <div className="main-form">
+                              <Item label={<InputLabel tooltip={t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}>{t('Title')}</InputLabel>} style={{ flex: 1 }}>
+                                <FinalField
+                                  name={`${name}.title`}
+                                  control="textarea"
+                                  autosize
+                                />
+                              </Item>
+                              <div style={{ display: 'flex' }}>
+                                <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
+                                  <RTE />
+                                </Item>
+                                <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
+                                  <Radio.Group value>
+                                    <Radio.Button value>{t('Yes')}</Radio.Button>
+                                    <Radio.Button>{t('No')}</Radio.Button>
+                                  </Radio.Group>
+                                </Item>
+                              </div>
+                              <div className="ant-form-item-label">{t('Indicators')}:</div>
+                            </div>
+                            <Field
+                              name={`${name}.id`}
+                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} resultIndex={index} primaryOrganisation={props.primaryOrganisation} />}
+                            />
+                          </Panel>
+                        )}
+                      />
+                      <FormSpy subscription={{ values: true }}>
+                        {({ values: { results } }) =>
+                          <UpdateIfLengthChanged items={results}>
+                            {results.length > 0 &&
+                              <Route path="/projects/:projectId" component={({ match: { params } }) => <AddResultButton push={push} {...params} />} />
+                            }
+                          </UpdateIfLengthChanged>}
+                      </FormSpy>
+                    </Aux>
+                  )}
+                </FieldArray>
               </Aux>
             )}
-            </FieldArray>
-            </Aux>
-          )}
         />
-        </Form>
-      </div>
-    )
-  }
+      </Form>
+    </div>
+  )
 }
-
 export default connect(
-  ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } }}}) => ({ fields, relatedProjects, primaryOrganisation }),
+  ({ editorRdr: { projectId, section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId }),
   { removeSetItem, fetchSetItems }
-)(Section5)
+)(React.memo(Section5, (prevProps, nextProps) => {
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
+}))
+// export default connect(
+//   ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } }}}) => ({ fields, relatedProjects, primaryOrganisation }),
+//   { removeSetItem, fetchSetItems }
+// )(Section5)

@@ -13,7 +13,7 @@ import unittest
 from django.core.exceptions import PermissionDenied
 
 from akvo.rsr.models import (
-    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference, IndicatorDimension,
+    Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
     RelatedProject, IndicatorDimensionName, IndicatorDimensionValue)
 from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
@@ -59,11 +59,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
             reference='ABC',
             vocabulary='1',
         )
-        self.dimension = IndicatorDimension.objects.create(
-            indicator=self.indicator,
-            name='Foo',
-            value='Bar',
-        )
         self.dimension_name = IndicatorDimensionName.objects.create(
             project=self.parent_project,
             name='Foo',
@@ -94,10 +89,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_reference.vocabulary, self.reference.vocabulary)
         self.assertEqual(child_reference.vocabulary_uri, self.reference.vocabulary_uri)
 
-        child_dimension = child_period.indicator.dimensions.first()
-        self.assertEqual(child_dimension.name, self.dimension.name)
-        self.assertEqual(child_dimension.value, self.dimension.value)
-
         child_dimension_name = IndicatorDimensionName.objects.filter(
             project=self.child_project).first()
         self.assertEqual(child_dimension_name.name, self.dimension_name.name)
@@ -108,6 +99,26 @@ class ResultsFrameworkTestCase(BaseTestCase):
             child_period.indicator.dimension_names.count(),
             self.indicator.dimension_names.count()
         )
+
+    def test_new_result_cloned_to_child(self):
+        """Test that new results are cloned in children that have imported results."""
+        # Given
+        self.assertEqual(self.import_status, 1)
+        self.assertEqual(self.import_message, "Results imported")
+
+        # When
+        result = Result.objects.create(project=self.parent_project)
+
+        # Then
+        self.assertEqual(
+            self.parent_project.results.count(),
+            self.child_project.results.count(),
+        )
+        child_result = Result.objects.get(project=self.child_project, parent_result=result)
+        self.assertEqual(child_result.title, result.title)
+        self.assertEqual(child_result.type, result.type)
+        self.assertEqual(child_result.aggregation_status, result.aggregation_status)
+        self.assertEqual(child_result.description, result.description)
 
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
@@ -276,29 +287,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_period.target_comment, comment)
         self.assertEqual(child_period.actual_comment, comment)
 
-    def test_import_does_not_create_deleted_indicators(self):
-        """Test that import does not create indicators that have been deleted from child."""
-        # Given
-        title = 'Indicator #2'
-        result = self.parent_project.results.first()
-        child_result = result.child_results.first()
-        # New indicator created (also cloned to child)
-        Indicator.objects.create(result=result, title=title, measure='1')
-
-        # When
-        # Import results framework into child
-        child_result.indicators.get(title=title).delete()
-        import_status, import_message = self.child_project.import_results()
-
-        # Then
-        self.assertEqual(import_status, 1)
-        self.assertEqual(import_message, "Results imported")
-
-        self.assertEqual(
-            1,
-            Indicator.objects.filter(result__project=self.child_project).count()
-        )
-
     def test_indicator_update_does_not_create_deleted_indicators(self):
         """Test that indicator update doesn't create indicators deleted from child."""
         # Given
@@ -320,24 +308,6 @@ class ResultsFrameworkTestCase(BaseTestCase):
         # Then
         self.assertEqual(0, indicator.child_indicators.count())
 
-    def test_import_does_not_create_deleted_periods(self):
-        """Test that import does not create periods deleted from child."""
-        # Given
-        indicator = self.indicator
-        child_indicator = indicator.child_indicators.first()
-        # New indicator period created (also cloned to child)
-        IndicatorPeriod.objects.create(indicator=indicator)
-
-        # When
-        # Import results framework into child
-        child_indicator.periods.last().delete()
-        import_status, import_message = self.child_project.import_results()
-
-        # Then
-        self.assertEqual(import_status, 1)
-        self.assertEqual(import_message, "Results imported")
-        self.assertEqual(1, child_indicator.periods.count())
-
     def test_period_update_does_not_create_deleted_periods(self):
         """Test that period update does not create periods deleted from child."""
         # Given
@@ -358,82 +328,9 @@ class ResultsFrameworkTestCase(BaseTestCase):
         # Then
         self.assertEqual(1, child_indicator.periods.count())
 
-    def test_new_dimension_cloned_to_child(self):
-        """Test that new dimensions are cloned in children that have imported results."""
-        # Given
-        # # Child project has already imported results from parent.
-        indicator = self.indicator
-
-        # When
-        dimension = IndicatorDimension.objects.create(
-            indicator=indicator,
-            name='Baz',
-            value='Quux',
-        )
-
-        # Then
-        self.assertEqual(
-            IndicatorDimension.objects.filter(indicator=indicator).count(),
-            IndicatorDimension.objects.filter(indicator__in=indicator.child_indicators.all()).count(),
-        )
-        self.assertEqual(indicator.child_indicators.count(), dimension.child_dimensions.count())
-
-    def test_child_dimension_state_updates_after_change(self):
-        """Test that updating dimension propagates to children."""
-        # Given
-        self.dimension.name = 'Baz'
-        self.dimension.value = 'Quux'
-
-        # When
-        self.dimension.save()
-
-        # Then
-        parent_dimension = IndicatorDimension.objects.get(id=self.dimension.pk)
-        child_period = IndicatorPeriod.objects.filter(
-            indicator__result__project=self.child_project).first()
-        child_dimension = child_period.indicator.dimensions.first()
-        self.assertEqual(child_dimension.name, parent_dimension.name)
-        self.assertEqual(child_dimension.value, parent_dimension.value)
-
-    def test_import_does_not_create_deleted_dimensions(self):
-        """Test that import does not create dimensions deleted from child."""
-        # Given
-        indicator = self.indicator
-        child_indicator = indicator.child_indicators.first()
-        # New dimension created (also cloned to child)
-        IndicatorDimension.objects.create(indicator=indicator)
-
-        # When
-        # Import results framework into child
-        child_indicator.dimensions.last().delete()
-        import_status, import_message = self.child_project.import_results()
-
-        # Then
-        self.assertEqual(import_status, 1)
-        self.assertEqual(import_message, "Results imported")
-        self.assertEqual(1, child_indicator.dimensions.count())
-
-    def test_dimension_update_does_not_create_deleted_dimension(self):
-        """Test that dimension update does not create dimension deleted from child."""
-        # Given
-        indicator = self.indicator
-        child_indicator = self.indicator.child_indicators.first()
-        # New dimension created (also cloned to child)
-        dimension = IndicatorDimension.objects.create(indicator=indicator)
-
-        # When
-        # Import results framework into child
-        child_indicator.dimensions.last().delete()
-        # Update dimension
-        dimension.name = 'Baz'
-        dimension.value = 'Quux'
-        dimension.save()
-
-        # Then
-        self.assertEqual(1, child_indicator.dimensions.count())
-
     def test_manually_created_dimension_names_should_not_break_import(self):
         # Given
+        self.child_project.results.all().delete()
         parent_dimension_name = IndicatorDimensionName.objects.create(
             name='Colour', project=self.parent_project)
         child_dimension_name = IndicatorDimensionName.objects.create(
@@ -463,6 +360,24 @@ class ResultsFrameworkTestCase(BaseTestCase):
         parent_dimension_name = IndicatorDimensionName.objects.get(id=self.dimension_name.pk)
         child_dimension_name = self.child_project.dimension_names.first()
         self.assertEqual(child_dimension_name.name, parent_dimension_name.name)
+
+    def test_new_dimension_name_cloned_to_child(self):
+        """Test that new results are cloned in children that have imported results."""
+        # Given
+        self.assertEqual(self.import_status, 1)
+        self.assertEqual(self.import_message, "Results imported")
+
+        # When
+        name = IndicatorDimensionName.objects.create(project=self.parent_project)
+
+        # Then
+        self.assertEqual(
+            self.parent_project.dimension_names.count(),
+            self.child_project.dimension_names.count(),
+        )
+        child_name = IndicatorDimensionName.objects.get(project=self.child_project,
+                                                        parent_dimension_name=name)
+        self.assertEqual(name.name, child_name.name)
 
     def test_new_dimension_value_cloned_to_child(self):
         """Test that new dimension values are cloned in children that have imported results."""

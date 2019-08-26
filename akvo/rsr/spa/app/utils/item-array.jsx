@@ -4,6 +4,7 @@ import { Collapse, Button, Modal, Popconfirm } from 'antd'
 import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import {Route} from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
 import AutoSave from './auto-save'
 import * as actions from '../modules/editor/actions'
 
@@ -87,7 +88,6 @@ class ItemArray extends React.Component{
     if(this.props.formPush) this.props.formPush(this.props.setName, newItem)
   }
   removeItem = (index, fields) => {
-    // event.stopPropagation()
     const { sectionIndex, setName } = this.props
     this.props.removeSetItem(sectionIndex, setName, index)
     fields.remove(index)
@@ -99,7 +99,7 @@ class ItemArray extends React.Component{
     })
   }
   render(){
-    console.log('rendered item array')
+    const { t } = this.props
     return (
       <div>
       <Route path="/projects/:id" component={({ match: {params} }) => { this.projectId = params.id; return null }} />
@@ -116,10 +116,10 @@ class ItemArray extends React.Component{
                       {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}
                       {/* <Icon type="delete" onClick={event => this.removeItem(event, index, fields)} /> */}
                       <Popconfirm
-                        title="Are you sure to delete this?"
+                        title={t('Are you sure to delete this?')}
                         onConfirm={() => this.removeItem(index, fields)}
-                        okText="Yes"
-                        cancelText="No"
+                        okText={t('Yes')}
+                        cancelText={(t('No'))}
                       >
                         <Button size="small" icon="delete" className="delete-panel" />
                       </Popconfirm>
@@ -163,4 +163,4 @@ class ItemArray extends React.Component{
   }
 }
 
-export default connect(null, actions)(ItemArray)
+export default connect(null, actions)(withTranslation()(ItemArray))

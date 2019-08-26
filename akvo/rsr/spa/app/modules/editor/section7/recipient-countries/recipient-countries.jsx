@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -12,45 +13,66 @@ const { Item } = Form
 
 const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
-const RecipientCountries = ({ validations, formPush }) => {
+const RecipientCountries = ({ validations, formPush, showRequired, errors }) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>Recipient country</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('recipient country')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'recipientCountries') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <ItemArray
         setName="recipientCountries"
         sectionIndex={7}
         header={(index, countryCode) => (
-          <span>Recipient country {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
+          <span>{t('recipient country')} {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
         )}
         headerField="country"
+        headerMore={(index, percentage) => {
+          if (!fieldExists('percentage')){
+            return null
+          }
+          return (
+            <span className="amount">{percentage}%</span>
+          )
+        }}
+        headerMoreField="percentage"
         formPush={formPush}
         panel={name => (
           <div>
-            <Item label={<InputLabel tooltip="...">Country</InputLabel>}>
+            <Item label={<InputLabel tooltip={t('The country that benefits from the project.')}>{t('country')}</InputLabel>}>
               <FinalField
                 name={`${name}.country`}
                 optionFilterProp="children"
                 showSearch
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option) => {
+                  const { children } = option.props
+                  return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }}
                 control="select"
                 options={COUNTRY_OPTIONS}
               />
             </Item>
             <span className="percentage-row">
               {fieldExists('percentage') && (
-                <Item label="Percentage">
                 <FinalField
                   name={`${name}.percentage`}
                   control="input"
                   suffix={<span>%</span>}
                   className="percentage-input"
+                  withLabel
+                  dict={{
+                    label: t('Percentage'),
+                    tooltip: t('The percentage of total commitments or total activity budget allocated to this country. Content must be a positive decimal number between 0 and 100, with no percentage sign. Percentages for all reported countries and regions MUST add up to 100%. Use a period to denote decimals.')
+                  }}
                 />
-                </Item>
               )}
               {fieldExists('text') && (
-                <Item label={<InputLabel optional>Description</InputLabel>}>
+                <Item label={<InputLabel optional tooltip={t('Enter additional information about the recipient country, if necessary.')}>{t('description')}</InputLabel>}>
                 <FinalField
                   name={`${name}.text`}
                   control="textarea"
@@ -63,7 +85,7 @@ const RecipientCountries = ({ validations, formPush }) => {
         )}
         addButton={({ onClick }) => (
           <Button onClick={onClick} icon="plus" type="dashed" block>
-            Add recipient country
+            {t('Add recipient country')}
           </Button>
         )}
       />

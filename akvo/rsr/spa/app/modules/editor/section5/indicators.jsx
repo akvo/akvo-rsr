@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
+import { useTranslation } from 'react-i18next'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -26,10 +27,12 @@ const indicatorTypes = [
   { value: 2, label: 'qualitative'}
 ]
 
-const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, formPush, addSetItem, removeSetItem, resultId, primaryOrganisation }) => { // eslint-disable-line
+const Indicators = connect(null, {addSetItem, removeSetItem})(
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation }) => { // eslint-disable-line
+  const { t } = useTranslation()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
-    if(key === 1) newItem.disaggregations = []
+    if(key === 1) newItem.dimensionNames = []
     if(resultId) newItem.result = resultId
     formPush(`${fieldName}.indicators`, newItem)
     addSetItem(5, `${fieldName}.indicators`, newItem)
@@ -56,7 +59,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                   name={`${name}.type`}
                   render={({input}) => {
                     const type = indicatorTypes.find(it => it.value === input.value)
-                    return <span><span className="capitalized">{type && type.label}</span>&nbsp;Indicator {index + 1}</span>
+                    return <span><span className="capitalized">{type && type.label}</span>&nbsp;{t('Indicator')} {index + 1}</span>
                   }}
                 />
               </span>)}
@@ -66,10 +69,10 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                 <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} />
                 <div className="delete-btn-holder">
                 <Popconfirm
-                  title="Are you sure to delete this indicator?"
+                  title={t('Are you sure to delete this indicator?')}
                   onConfirm={() => remove(index, fields)}
-                  okText="Yes"
-                  cancelText="No"
+                  okText={t('Yes')}
+                  cancelText={t('No')}
                 >
                   <Button size="small" icon="delete" className="delete-panel" />
                 </Popconfirm>
@@ -79,7 +82,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
             >
               <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
               <div id={`${fieldNameToId(name)}-info`} />
-              <Item label={<InputLabel optional>Title</InputLabel>}>
+              <Item label={<InputLabel optional tooltip={t('Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.')}>{t('Title')}</InputLabel>}>
                 <FinalField
                   name={`${name}.title`}
                   control="textarea"
@@ -89,26 +92,31 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <Condition when={`${name}.type`} is={1}>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Item label="Measure">
+                    <Item label={<InputLabel tooltip={t('Choose how the indicator will be measured (in percentage or units).')}>{t('Measure')}</InputLabel>}>
                       <FinalField
                         name={`${name}.measure`}
                         render={({input}) => (
                           <Radio.Group {...input}>
-                            <Radio.Button value="1">Unit</Radio.Button>
-                            <Radio.Button value="2">Percentage</Radio.Button>
+                            <Radio.Button value="1">{t('Unit')}</Radio.Button>
+                            <Radio.Button value="2">{t('Percentage')}</Radio.Button>
                           </Radio.Group>
                         )}
                       />
                     </Item>
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel>Order</InputLabel>}>
+                    <Item
+                      label={
+                      <InputLabel tooltip={t('Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).')}>
+                      {t('Order')}
+                      </InputLabel>
+                    }>
                       <FinalField
                         name={`${name}.ascending`}
                         render={({input}) => (
                           <Radio.Group {...input}>
-                            <Radio.Button value>Ascending</Radio.Button>
-                            <Radio.Button value={false}>Descending</Radio.Button>
+                            <Radio.Button value>{t('Ascending')}</Radio.Button>
+                            <Radio.Button value={false}>{t('Descending')}</Radio.Button>
                           </Radio.Group>
                         )}
                       />
@@ -116,7 +124,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
                   </Col>
                 </Row>
               </Condition>
-              <Item label={<InputLabel optional>Description</InputLabel>}>
+              <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>}>
                 <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
               </Item>
               <Divider />
@@ -124,29 +132,28 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
               <Condition when={`${name}.type`} is={1}>
                 <Aux>
                   <Field name={`${name}.id`} render={({ input: {value} }) => <Disaggregations formPush={formPush} fieldName={name} indicatorId={value} />} />
-                  {/* <Disaggregations formPush={formPush} fieldName={name} /> */}
                   <Divider />
                 </Aux>
               </Condition>
               <div id={`${fieldNameToId(name)}-baseline`} />
               <Row gutter={15}>
                 <Col span={12}>
-                  <Item label={<InputLabel optional>Baseline year</InputLabel>}>
+                  <Item label={<InputLabel optional>{t('Baseline year')}</InputLabel>}>
                     <FinalField name={`${name}.baselineYear`} />
                   </Item>
                 </Col>
                 <Col span={12}>
-                  <Item label={<InputLabel optional>Baseline value</InputLabel>}>
+                  <Item label={<InputLabel optional>{t('Baseline value')}</InputLabel>}>
                   <FinalField name={`${name}.baselineValue`} />
                   </Item>
                 </Col>
               </Row>
-              <Item label={<InputLabel optional>Baseline comment</InputLabel>}>
+              <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>
                 <FinalField name={`${name}.baselineComment`} render={({input}) => <RTE {...input} />} />
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <FinalField name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} primaryOrganisation={primaryOrganisation} />} />
+              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} indicatorIndex={index} primaryOrganisation={primaryOrganisation} />} />
             </Panel>
           )}
         />
@@ -154,16 +161,16 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(({ fieldName, form
           overlay={(
             <Menu style={{ textAlign: 'center' }} onClick={(e) => add(Number(e.key))}>
               <Menu.Item key={1}>
-                Quantitative
+                {t('Quantitative')}
               </Menu.Item>
               <Menu.Item key={2}>
-                Qualitative
+                {t('Qualitative')}
               </Menu.Item>
             </Menu>
           )}
           trigger={['click']}
         >
-          <Button icon="plus" block type="dashed">Add indicator</Button>
+          <Button icon="plus" block type="dashed">{t('Add indicator')}</Button>
         </Dropdown>
       </Aux>
     )}

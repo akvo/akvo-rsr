@@ -23,25 +23,29 @@ const inputNumberAmountFormatting = (currencySymbol) => {
     })
   }
   return ({
-    formatter: value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    formatter: value => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     parser: value => value.replace(/(,*)/g, ''),
     step
   })
 }
 
+const validateNumber = (string) => {
+  const regex = /[0-9]|\./
+  return String(string).split('').map(char => regex.test(char)).reduce((val, acc) => val && acc)
+}
 const CONTROLS = {
   input: ({ input, meta, control, ...props }) => {
-    return <Input {...{...input, ...props}} />
+    return <Input {...{ ...input, ...props}} />
   },
   'input-number': ({ input, meta, control, currencySymbol, ...props}) => {
-    return <InputNumber {...{...input, ...inputNumberAmountFormatting(currencySymbol), ...props}} />
+    return <InputNumber {...{ value: input.value, onChange: (val) => { if (validateNumber(val)) input.onChange(val) }, ...inputNumberAmountFormatting(currencySymbol), min: 1, max: 99999999, ...props}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
   select: ({options, input, meta, control, withEmptyOption, withValuePrefix, ...props}) => {
     return (
       <Select {...{...input, ...props}}>
         {withEmptyOption && <Select.Option value="">&nbsp;</Select.Option>}
-        {options.map(({ label, value }) => <Select.Option key={value} value={value}>{withValuePrefix && `${value} - `}{label}</Select.Option>)}
+        {options.map(({ label, value, small }) => <Select.Option key={value} value={value}>{withValuePrefix && `${value} - `}{label}{small && <small>&nbsp;{small}</small>}</Select.Option>)}
       </Select>
     )
   },
@@ -56,13 +60,18 @@ const CONTROLS = {
 }
 
 const Control = (props) => {
-  const { t } = useTranslation()
   const section = useContext(SectionContext)
-  const { control, withLabel, optional, fieldExists, label, addingItem, showRequired, ..._props } = props
+  const { t } = useTranslation()
+  const { control, withLabel, dict, withoutTooltip, optional, fieldExists, label, addingItem, showRequired, backendError, ..._props } = props
   const disabled = props.disabled || addingItem
   let validateStatus = ''
+  let help = ''
   if (showRequired && props[section].errors.findIndex(it => it.path === props.input.name) !== -1) {
     validateStatus = 'error'
+  }
+  if (backendError && `section${backendError.sectionIndex}` === section && props.input.name === `${backendError.setName}.${Object.keys(backendError.response)[0]}`){
+    validateStatus = 'error'
+    help = backendError.response[Object.keys(backendError.response)[0]]
   }
   if(!control){
     if(!props.render){
@@ -78,34 +87,38 @@ const Control = (props) => {
     return (
     <Item
       validateStatus={validateStatus}
+      help={help}
       label={
       label ? label :
       <InputLabel
         optional={typeof optional === 'function' ? optional(name) : optional}
-        tooltip={<span dangerouslySetInnerHTML={{__html: t(`${section}:${name}.tooltip`)}} />}
+        tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
       >
-      {t(`${section}:${name}.label`)}
+      {dict ? dict.label : t(`${section}::${name}::label`)}
       </InputLabel>}
     >
       {CONTROLS[control]({..._props, disabled})}
     </Item>
     )
   }
-  return CONTROLS[control](_props)
+  return CONTROLS[control]({..._props, disabled})
 }
 
-const FinalField = ({name, ...props}) => (
-  <Field
-    name={name}
-    component={Control}
-    {...props}
-  />
-)
+const FinalField = ({name, ...props}) => {
+  return (
+    <Field
+      name={name}
+      component={Control}
+      {...props}
+    />
+  )
+}
 // FinalField.contextType = SectionContext
 
 export default connect(
   ({ editorRdr }) => {
-    const props = ({ addingItem: editorRdr.addingItem, showRequired: editorRdr.showRequired })
+    const { addingItem, showRequired, backendError } = editorRdr
+    const props = ({ addingItem, showRequired, backendError })
     // bind validation errors (required) for all sections
     times(11).forEach((i) => {
       const sectionKey = `section${i + 1}`
@@ -115,4 +128,3 @@ export default connect(
   })(
   React.memo(FinalField, (prevProps, nextProps) => isEqual(prevProps, nextProps))
 )
-// export default FinalField

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Radio, Form } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -15,39 +16,40 @@ const FLAG_CODES = [
 ]
 
 const FlagsStack = ({ formPush, crsParent }) => {
+  const { t } = useTranslation()
   return (
     <ItemArray
       setName="flags"
       sectionIndex={11}
       header={(index, code) => {
-        return <span>CRS++ other flag: {code && FLAG_CODES.find(it => it.value === code).label}</span>
+        return <span>{t('CRS++ other flag')}: {code && FLAG_CODES.find(it => it.value === code).label}</span>
       }}
       headerField="code"
       newItem={{ crs: crsParent ? crsParent.id : null }}
       formPush={formPush}
       panel={name => (
         <div className="channel-code-inputs">
-          <Item label={<InputLabel tooltip="...">Code</InputLabel>}>
+          <Item label={<InputLabel tooltip={t('An IATI code describing the equivalent CRS++ columns. See the <a href="http://iatistandard.org/202/codelists/CRSAddOtherFlags/" target="_blank">IATI codelist</a>.')}>{t('Code')}</InputLabel>}>
             <FinalField
               name={`${name}.code`}
               control="select"
               options={FLAG_CODES}
             />
           </Item>
-          <Item label={<InputLabel tooltip="...">Significance</InputLabel>}>
+          <Item label={<InputLabel tooltip={t('Indicate whether the flag applies or not.')}>{t('significance')}</InputLabel>}>
             <FinalField
               name={`${name}.significance`}
               render={({input}) => (
                 <Radio.Group {...input}>
-                  <Radio.Button value>Yes</Radio.Button>
-                  <Radio.Button value={false}>No</Radio.Button>
+                  <Radio.Button value>{t('Yes')}</Radio.Button>
+                  <Radio.Button value={false}>{t('No')}</Radio.Button>
                 </Radio.Group>
               )}
             />
           </Item>
         </div>
       )}
-      addButton={({ onClick }) => <Button onClick={onClick} className="bottom-btn" block icon="plus" type="dashed" disabled={!crsParent}>Add CRS++ other flag</Button>}
+      addButton={({ onClick }) => <Button onClick={onClick} className="bottom-btn" block icon="plus" type="dashed" disabled={!crsParent}>{t('Add CRS++ other flag')}</Button>}
     />
   )
 }

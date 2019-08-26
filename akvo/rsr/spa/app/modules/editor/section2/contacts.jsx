@@ -3,31 +3,41 @@ import { connect } from 'react-redux'
 import { Form, Input, Button, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { isEqual } from 'lodash'
+import { diff } from 'deep-object-diff'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import ItemArray from '../../../utils/item-array'
 import InputLabel from '../../../utils/input-label'
 import { isFieldOptional, isFieldValid, getValidationSets } from '../../../utils/validation-utils'
 import validationDefs from './contacts/validations'
+import SectionContext from '../section-context'
 
 import './styles.scss'
 
 const { Item } = Form
 
-const CONTACT_TYPE_OPTIONS = [
-  { value: '1', label: 'General Inquiries'},
-  { value: '2', label: 'Project Management'},
-  { value: '3', label: 'Financial Management'},
-  { value: '4', label: 'Communications'}
-]
-
-const Contacts = ({ validations, fields }) => {
+const Contacts = ({ validations, fields, showRequired, errors }) => {
+  const { t } = useTranslation()
+  const CONTACT_TYPE_OPTIONS = [
+    { value: '1', label: t('General Inquiries') },
+    { value: '2', label: t('Project Management') },
+    { value: '3', label: t('Financial Management') },
+    { value: '4', label: t('Communications') }
+  ]
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const isValid = isFieldValid(validationSets)
+  console.log(showRequired, errors)
   return (
     <div className="contacts view">
+      <div className="min-required-wrapper">
+        <h3>{t('Project contacts')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'contacts') !== -1 && (
+          <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
+      <SectionContext.Provider value="section2">
       <Form layout="vertical">
       <FinalForm
         onSubmit={() => {}}
@@ -42,44 +52,47 @@ const Contacts = ({ validations, fields }) => {
           <ItemArray
             setName="contacts"
             sectionIndex={2}
-            header="Contact $index: $personName"
+            header={`${t('Contact')} $index: $personName`}
             formPush={push}
             panel={name => (
               <div>
                 <Row gutter={16}>
                   <Col span={12}>
-                  <Item label={<InputLabel optional tooltip="What types of enquiries this contact person is best-placed to handle.">Type</InputLabel>}>
                     <FinalField
                       name={`${name}.type`}
                       control="select"
                       options={CONTACT_TYPE_OPTIONS}
                       withEmptyOption
+                      withLabel
+                      optional
                     />
-                  </Item>
                   </Col>
                   <Col span={12}>
-                  <Item label={<InputLabel optional>Job title</InputLabel>}>
                     <FinalField
                       name={`${name}.jobTitle`}
+                      withLabel
+                      optional
+                      control="input"
                     />
-                  </Item>
                   </Col>
                 </Row>
-                <Item label={<InputLabel optional tooltip="Please enter the name of the contact person for this project.">Name</InputLabel>}>
-                  <FinalField
-                    name={`${name}.personName`}
-                  />
-                </Item>
+                <FinalField
+                  name={`${name}.personName`}
+                  withLabel
+                  optional
+                  control="input"
+                />
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Item label={<InputLabel optional tooltip="The organisation that the contact person works for.">Organisation</InputLabel>}>
                     <FinalField
                       name={`${name}.organisation`}
+                      withLabel
+                      optional
+                      control="input"
                     />
-                    </Item>
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel optional>Department</InputLabel>}>
+                    <Item label={<InputLabel optional>{t('section2::department::label')}</InputLabel>}>
                     <FinalField
                       name={`${name}.department`}
                     />
@@ -88,55 +101,52 @@ const Contacts = ({ validations, fields }) => {
                 </Row>
                 <FinalField
                   name={`${name}.email`}
-                  render={({ input }) => (
-                    <Item
-                      hasFeedback
-                      validateStatus={isValid('email', input.value) && input.value ? 'success' : ''}
-                      label={(
-                      <InputLabel optional={isOptional('email')}>
-                        Email
-                      </InputLabel>
-                      )}
-                    >
-                      <Input {...input} />
-                    </Item>
-                  )}
+                  withLabel
+                  withoutTooltip
+                  dict={{
+                    label: t('section2::email::label')
+                  }}
+                  optional={isOptional}
+                  control="input"
                 />
                 <FinalField
                   name={`${name}.mailingAddress`}
-                  render={({ input }) => (
-                    <Item
-                      hasFeedback
-                      validateStatus={isValid('mailingAddress', input.value) && input.value ? 'success' : ''}
-                      label={<InputLabel optional={isOptional('mailingAddress')}>Address</InputLabel>}
-                    >
-                      <Input {...input} />
-                    </Item>
-                  )}
+                  withLabel
+                  dict={{
+                    label: t('section2::address::label'),
+                    tooltip: t('section2::address::tooltip')
+                  }}
+                  optional={isOptional}
+                  control="input"
                 />
-                <Item label={<InputLabel optional>Phone</InputLabel>}>
                 <FinalField
                   name={`${name}.telephone`}
+                  control="input"
+                  withLabel
+                  optional
                 />
-                </Item>
-                <Item label={<InputLabel optional>Website</InputLabel>}>
                 <FinalField
                   name={`${name}.website`}
+                  control="input"
+                  withLabel
+                  optional
                 />
-                </Item>
               </div>
             )}
-            addButton={({onClick}) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>Add a contact</Button>}
+            addButton={({ onClick }) => <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another contact')}</Button>}
           />
         )}
       />
       </Form>
+      </SectionContext.Provider>
     </div>
   )
 }
 
 export default connect(
-  ({ editorRdr: { section2: { fields }, validations}}) => ({ fields, validations}),
+  ({ editorRdr: { showRequired, section2: { fields, errors }, validations } }) => ({ fields, validations, showRequired, errors}),
 )(React.memo(Contacts, (prevProps, nextProps) => {
-  return isEqual(prevProps.fields, nextProps.fields)
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || prevProps.showRequired !== nextProps.showRequired
+  return !shouldUpdate
 }))

@@ -23,7 +23,6 @@ from .humanitarian_scope import HumanitarianScopeViewSet
 from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
 from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
-from .indicator_dimension import IndicatorDimensionViewSet
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
 from .indicator_label import IndicatorLabelViewSet
@@ -31,6 +30,7 @@ from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkVi
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
 from .disaggregation import DisaggregationViewSet
+from .disaggregation_target import DisaggregationTargetViewSet
 from .indicator_period_dimension import (IndicatorPeriodActualDimensionViewSet,
                                          IndicatorPeriodTargetDimensionViewSet)
 from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
@@ -92,7 +92,7 @@ from .recipient_country import RecipientCountryViewSet
 from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import report_formats, ReportViewSet, project_reports
-from .result import ResultsViewSet, ResultsFrameworkViewSet
+from .result import ResultsViewSet, ResultsFrameworkViewSet, ResultsFrameworkLiteViewSet
 from .right_now_in_akvo import right_now_in_akvo_view
 from .sector import SectorViewSet
 from .server_info import server_info
@@ -134,7 +134,6 @@ __all__ = [
     'IatiCheckViewSet',
     'IatiExportViewSet',
     'IndicatorViewSet',
-    'IndicatorDimensionViewSet',
     'IndicatorDimensionNameViewSet',
     'IndicatorDimensionValueViewSet',
     'IndicatorFrameworkViewSet',
@@ -146,6 +145,7 @@ __all__ = [
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataFrameworkViewSet',
     'DisaggregationViewSet',
+    'DisaggregationTargetViewSet',
     'IndicatorPeriodDataCommentViewSet',
     'IndicatorPeriodTargetDimensionViewSet',
     'IndicatorPeriodTargetLocationViewSet',
@@ -218,6 +218,7 @@ __all__ = [
     'request_organisation',
     'ResultsViewSet',
     'ResultsFrameworkViewSet',
+    'ResultsFrameworkLiteViewSet',
     'right_now_in_akvo_view',
     'SectorViewSet',
     'server_info',

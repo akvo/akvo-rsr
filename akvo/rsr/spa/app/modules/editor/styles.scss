@@ -27,7 +27,7 @@
     aside.saving-status{
       background: #e6e6e6;
       height: 50px;
-      padding: 0 20px;
+      padding: 0 10px 0 20px;
       .anticon{
         margin-right: 10px;
         color: green;
@@ -41,6 +41,13 @@
           color: red;
         }
       }
+      position: relative;
+      overflow: hidden;
+      .last-updated{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
     .content{
       display: flex;
@@ -48,8 +55,12 @@
       i{
         opacity: 0.5;
       }
-      .ant-btn{
+      .ant-btn-primary{
         margin-top: 9px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      .ant-btn-group{
         margin-left: 10px;
         margin-right: 10px;
       }
@@ -58,6 +69,24 @@
         margin-left: 30px;
         color: #555;
         font-size: 14px;
+        b{
+          color: #e55650;
+        }
+        .ant-switch{
+          transform: translateY(-2px);
+        }
+        .ant-switch-checked{
+          background-color: #f74848;
+        }
+        .all-done{
+          color: #52a83a;
+          font-weight: 600;
+        }
+        .all-done-toggle{
+          .ant-switch-checked{
+            background-color: #63c14a;
+          }
+        }
         .show-required{
           margin-left: 30px;
           font-size: 12px;
@@ -71,7 +100,7 @@
     }
   }
   aside{
-    width: 280px!important;
+    width: 300px!important;
   }
   aside.main-menu{
     position: absolute;
@@ -97,9 +126,14 @@
           line-height: 40px;
           font-weight: 400;
           padding: 0 20px;
+          transition: all .2s ease-out;
           &:hover{
+            background-color: #e6e6e6;
             span{
               opacity: 1;
+            }
+            .check .anticon:not(.checked){
+              color: #bbb;
             }
           }
         }
@@ -110,6 +144,7 @@
           .anticon{
             font-size: 20px;
             color: #e0e0e0;
+            transition: color .2s ease-out;
             &.checked{
               color: #31c531;
               animation: bounceCheck .4s;
@@ -119,7 +154,9 @@
         &.active{
           a{
             font-weight: 400;
-            background-color: #e6e6e6;
+            // background-color: #e6e6e6;
+            background-color: #828282;
+            color: #fff;
             span{
               opacity: 1;
             }
@@ -127,6 +164,14 @@
           }
           .check .anticon:not(.checked){
             color: #bbb;
+          }
+          &.checked{
+            a{
+              background-color: #63c14a;
+            }
+            .check .anticon{
+              color: #fff;
+            }
           }
         }
         .loading{
@@ -148,11 +193,12 @@
     flex: 1;
   }
   .main-content{
-    margin-left: 280px;
+    margin-left: 300px;
     padding-left: 30px;
   }
   .view:not(.section5){
-    margin-right: 230px;
+    margin-right: 300px;
+    max-width: 620px;
     @media screen and (max-width: 1200px){
       margin-right: 100px;
     }
@@ -160,14 +206,37 @@
   // .view.section5{
   //   margin-right: 200px;
   // }
-  .alerts{
-    width: 280px;
+  .right-sidebar{
+    width: 190px;
     position: absolute;
     right: 0;
-    // padding-left: 30px;
-    padding-top: 20px;
-    @media screen and (max-width: 1200px){
-      width: 200px;
+    padding: 7px 10px 10px;
+    font-size: 12px;
+    top: 66px;
+    // background: #f7f7f7;
+    text-align: right;
+    span{
+      opacity: 0.6;
+    }
+    b{
+      font-weight: normal;
+    }
+    // @media screen and (max-width: 1200px){
+    //   width: 200px;
+    // }
+  }
+
+  h3{
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+  .ant-collapse-header{
+    span{
+      display: inline-block;
+    }
+    span::first-letter {
+      text-transform: uppercase;
     }
   }
 
@@ -178,6 +247,9 @@
     }
     .input-label{
       display: flex;
+      &>div::first-letter {
+        text-transform: uppercase;
+      }
       .optional{
         opacity: 0.3;
         font-style: italic;
@@ -229,6 +301,20 @@ hr{
   background-color: #ccc;
   height: 1px;
   margin: 30px 0;
+}
+
+.min-required{
+  color: #f74848;
+  margin-bottom: 10px;
+  display: inline-block;
+  font-style: italic;
+}
+.min-required-wrapper{
+  display: flex;
+  .min-required{
+    margin-top: 6px;
+    margin-left: 10px;
+  }
 }
 
 .view {

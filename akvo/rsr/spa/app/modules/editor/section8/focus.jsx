@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Form, Radio, Divider } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
+import { diff } from 'deep-object-diff'
+import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
 
 import Sectors from './sectors/sectors'
@@ -14,16 +16,20 @@ import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
 import validationDefs from './validations'
 import './styles.scss'
+import SectionContext from '../section-context'
 
 const { Item } = Form
 const { Group, Button } = Radio
 const Aux = node => node.children
 
-const Focus = ({ validations, fields, primaryOrganisation}) => {
+const Focus = ({ validations, fields, primaryOrganisation, showRequired, errors}) => {
+  const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
+  const passProps = {showRequired, errors}
   return (
     <div className="focus view">
+    <SectionContext.Provider value="section8">
       <FinalForm
         onSubmit={() => {}}
         initialValues={fields}
@@ -35,7 +41,7 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
           }
         }) => (
         <Form layout="vertical">
-          <Sectors validations={validations} formPush={push} primaryOrganisation={primaryOrganisation} />
+          <Sectors validations={validations} {...passProps} formPush={push} primaryOrganisation={primaryOrganisation} />
           {fieldExists('policyMarkers') && (
             <Aux>
               <Divider />
@@ -45,13 +51,13 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
           {fieldExists('humanitarian') &&
           <Aux>
             <Divider />
-            <Item label={<InputLabel optional>Humanitarian project</InputLabel>}>
+            <Item label={<InputLabel optional tooltip={t('Determines whether this project relates entirely or partially to humanitarian aid.')}>{t('humanitarian project')}</InputLabel>}>
               <FinalField
                 name="humanitarian"
                 render={({ input }) => (
                   <Group {...input}>
-                    <Button value>Yes</Button>
-                    <Button value={false}>No</Button>
+                    <Button value>{t('Yes')}</Button>
+                    <Button value={false}>{t('No')}</Button>
                   </Group>
                 )}
               />
@@ -63,10 +69,15 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
         </Form>
         )}
       />
+    </SectionContext.Provider>
     </div>
   )
 }
 
 export default connect(
-  ({ editorRdr: { validations }, editorRdr: { section8: { fields }, section1: { fields: { primaryOrganisation }}} }) => ({ validations, fields, primaryOrganisation })
-)(React.memo(Focus, (prevProps, nextProps) => isEqual(prevProps.fields, nextProps.fields)))
+  ({ editorRdr: { validations }, editorRdr: { showRequired, section8: { fields, errors }, section1: { fields: { primaryOrganisation }}} }) => ({ validations, fields, primaryOrganisation, showRequired, errors })
+)(React.memo(Focus, (prevProps, nextProps) => {
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || (prevProps.showRequired !== nextProps.showRequired || !isEqual(prevProps.errors, nextProps.errors))
+  return !shouldUpdate
+}))

@@ -70,7 +70,7 @@ class ProjectViewSet(PublicProjectViewSet):
 
 class EditableProjectViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().select_related('publishingstatus').prefetch_related('locations')
     serializer_class = ProjectMetadataSerializer
     project_relation = ''
 

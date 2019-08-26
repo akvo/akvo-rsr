@@ -36,6 +36,12 @@ ol{
   }
 }
 
+.lang-menu{
+  margin-left: -12px;
+  img{
+    height: 14px;
+  }
+}
 .top-bar{
   padding: 20px 0;
   height: 70px;
@@ -44,7 +50,29 @@ ol{
     &>.SVGInline{
       margin-top: -3px;
     }
+    ul{
+      display: flex;
+      margin-left: 20px;
+      margin-top: 10px;
+      font-size: 14px;
+      li{
+        border-left: 1px solid #efefef;
+        padding: 0 20px;
+        a{
+          color: #72bfe4;
+          &:hover{
+            color: #2c1c42;
+          }
+        }
+      }
+    }
     .right-side{
+      .lang{
+        margin-right: 10px;
+        img{
+          height: 14px;
+        }
+      }
       .user{
         cursor: pointer;
         margin-right: 15px;
@@ -71,12 +99,21 @@ header.main-header{
   background: #fff;
   &>h1{
     transform: translateY(10px);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .ant-tabs{
     margin-left: auto;
     .ant-tabs-bar{
       margin-bottom: 1px;
       border: none;
+    }
+    a{
+      color: rgba(0, 0, 0, 0.65);
+      &:hover{
+        color: #3f90f7;
+      }
     }
   }
   .anticon{
@@ -121,4 +158,12 @@ header.main-header{
   }
 }
 
-@import "./container.scss"
+@import "./container.scss";
+
+@media only screen and (min-width: 1200px) {
+  .ui.container{
+    margin-left: 50px!important;
+    margin-right: 50px!important;
+    width: auto;
+  }
+}

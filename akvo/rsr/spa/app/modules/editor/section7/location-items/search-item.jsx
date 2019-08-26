@@ -2,6 +2,7 @@
 import React from 'react'
 import querystring from 'querystring'
 import { Form, Select, Spin } from 'antd'
+import { withTranslation } from 'react-i18next'
 
 import InputLabel from '../../../../utils/input-label'
 import { opencagedataKey } from '../../../../utils/constants'
@@ -11,6 +12,8 @@ const { Option } = Select
 
 let timeout
 let currentValue
+
+const locationTypes = ['city', 'village', 'neighbourhood']
 
 function $fetch(value, callback) {
   if (timeout) {
@@ -29,9 +32,10 @@ function $fetch(value, callback) {
       .then(response => response.json())
       .then((d) => {
         if (currentValue === value) {
-          const data = d.results.filter(it => it.components._type === 'city').map(r => ({
+          const data = d.results.filter(it => locationTypes.indexOf(it.components._type) !== -1).map(r => ({
             coordinates: r.geometry,
-            text: `${r.components.city}, ${r.components.country}`,
+            text: r.formatted
+            // text: `${r.components.city}, ${r.components.country}`,
             // name: r.components.city
           }))
           callback(data)
@@ -57,9 +61,10 @@ class SearchItem extends React.Component{
     this.props.onChange(this.state.data[index])
   }
   render(){
+    const { t } = this.props
     const options = this.state.data.map((d, index) => <Option value={index}>{d.text}</Option>)
     return (
-      <Item label={<InputLabel tooltip="...">City</InputLabel>}>
+      <Item label={<InputLabel>{t('city')}</InputLabel>}>
         <Select
           value={this.props.value.text}
           showSearch
@@ -69,7 +74,7 @@ class SearchItem extends React.Component{
           onSearch={this.handleSearch}
           onChange={this.handleChange}
           notFoundContent={this.state.fetching ? <Spin size="small" /> : null}
-          placeholder="Type to search..."
+          placeholder={t('Type to search...')}
         >
           {options}
         </Select>
@@ -78,4 +83,4 @@ class SearchItem extends React.Component{
   }
 }
 
-export default SearchItem
+export default withTranslation()(SearchItem)

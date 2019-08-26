@@ -6,6 +6,7 @@
 
 from django.contrib import admin
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class TimestampsMixin(models.Model):
@@ -42,3 +43,36 @@ class TimestampsAdminDisplayMixin(admin.ModelAdmin):
         fieldsets[0][1]['fields'] = add_or_remove(obj, fieldsets[0][1]['fields'], 'created_at')
         fieldsets[0][1]['fields'] = add_or_remove(obj, fieldsets[0][1]['fields'], 'last_modified_at')
         return fieldsets
+
+
+class IndicatorUpdateMixin(models.Model):
+    """
+    Mixin used to add indicator update unit & percentage values
+    """
+
+    value = models.DecimalField(
+        _(u'quantitative update value'),
+        max_digits=20,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+    numerator = models.DecimalField(
+        _(u'numerator for indicator'),
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text=_(u'The numerator for a percentage value')
+    )
+    denominator = models.DecimalField(
+        _(u'denominator for indicator'),
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text=_(u'The denominator for a percentage value')
+    )
+
+    class Meta:
+        abstract = True

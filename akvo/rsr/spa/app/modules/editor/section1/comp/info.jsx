@@ -6,8 +6,9 @@ import {
 import currencies from 'currency-codes/data'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { isEqual } from 'lodash'
 import { Route } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { diff } from 'deep-object-diff'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -19,41 +20,41 @@ import AID_TYPE_VOCABULARY from '../options/aid-type-vocabulary.json'
 import FLOW_TYPES from '../options/flow-types.json'
 import FINANCE_TYPES from '../options/finance-types.json'
 import tiedStatusOptions from '../options/tied-statuses.json'
-import RelatedProjects from './related-projects'
 import SectionContext from '../../section-context'
 import '../styles.scss'
 import InputLabel from '../../../../utils/input-label'
 import { useFetch } from '../../../../utils/hooks'
+import ProjectPicker from './project-picker';
 
 const { Item } = Form
 const { Option } = Select
 const Aux = node => node.children
 
-const STATUS_OPTIONS = [
-  { value: '1', label: 'Identification'},
-  { value: '2', label: 'Implementation'},
-  { value: '3', label: 'Completion'},
-  { value: '4', label: 'Post-completion'},
-  { value: '5', label: 'Canceled'},
-  { value: '6', label: 'Suspended'}
-]
-const COLLABORATION_TYPES = [
-  {value: '1', label: 'Bilateral'},
-  {value: '2', label: 'Multilateral (inflows)'},
-  {value: '3', label: 'Bilateral, core contributions to NGOs and other private bodies / PPPs'},
-  {value: '4', label: 'Multilateral outflows'},
-  {value: '6', label: 'Private sector outflows'},
-  {value: '7', label: 'Bilateral, ex-post reporting on NGOs’ activities funded through core contributions'},
-  {value: '8', label: 'bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'}
-]
-
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields }) => {
+const Info = ({ validations, fields, projectId }) => {
+  const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
   const fieldExists = doesFieldExist(validationSets)
+  const STATUS_OPTIONS = [
+    { value: '1', label: t('Identification') },
+    { value: '2', label: t('Implementation') },
+    { value: '3', label: t('Completion') },
+    { value: '4', label: t('Post-completion') },
+    { value: '5', label: t('Canceled') },
+    { value: '6', label: t('Suspended') }
+  ]
+  const COLLABORATION_TYPES = [
+    { value: '1', label: t('Bilateral') },
+    { value: '2', label: t('Multilateral (inflows)') },
+    { value: '3', label: t('Bilateral, core contributions to NGOs and other private bodies / PPPs') },
+    { value: '4', label: t('Multilateral outflows') },
+    { value: '6', label: t('Private sector outflows') },
+    { value: '7', label: t('Bilateral, ex-post reporting on NGOs\' activities funded through core contributions') },
+    { value: '8', label: t('bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'), }
+  ]
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -63,22 +64,24 @@ const Info = ({ validations, fields }) => {
         initialValues={fields}
         subscription={{}}
         mutators={{ ...arrayMutators }}
-        render={({
-          form: {
-            mutators: { push }
-          }
+            render={({
+              form: {
+                mutators: { push }
+              }
         }) => (
           <div>
           <AutoSave sectionIndex={1} />
           <FinalField
             name="title"
             withLabel
+            withoutTooltip
             control="textarea"
             autosize
           />
           <FinalField
             name="subtitle"
             withLabel
+            withoutTooltip
             control="textarea"
             autosize
           />
@@ -102,7 +105,7 @@ const Info = ({ validations, fields }) => {
                     </Item>
                   </Col>
                   <Col span={12}>
-                    <Item label={<InputLabel>IATI identifier (prefix)</InputLabel>}>
+                    <Item label={<InputLabel>IATI identifier (suffix)</InputLabel>}>
                       <Input disabled value="T05-EUTF-SAH-REG-08" />
                     </Item>
                   </Col>
@@ -118,16 +121,16 @@ const Info = ({ validations, fields }) => {
               </Aux>
             )}
           />
-          <RelatedProjects formPush={push} projects={results} loading={loading} />
+          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} fieldName="relatedProjects[0]" projects={results} loading={loading} projectId={projectId} />
           <FinalField
             name="hierarchy"
             control="select"
             withLabel
             fieldExists={fieldExists}
             options={[
-              {value: 1, label: 'Core Activity'},
-              {value: 2, label: 'Sub Activity'},
-              {value: 3, label: 'Lower Sub Activity'}
+              {value: 1, label: t('Core Activity') },
+              {value: 2, label: t('Sub Activity') },
+              {value: 3, label: t('Lower Sub Activity') },
             ]}
             withEmptyOption
           />
@@ -188,7 +191,7 @@ const Info = ({ validations, fields }) => {
             optional={isOptional}
           />
           <hr />
-          <h3>Project photo</h3>
+          <h3>{t('Project photo')}</h3>
           <Route
             path="/projects/:id"
             component={({ match: {params} }) => (
@@ -279,7 +282,9 @@ const Info = ({ validations, fields }) => {
 }
 
 export default connect(
-  ({ editorRdr: { section1: { fields }, validations}}) => ({ fields, validations}),
+  ({ editorRdr: { projectId, section1: { fields }, validations}}) => ({ fields, validations, projectId, }),
 )(React.memo(Info, (prevProps, nextProps) => {
-  return isEqual(prevProps.fields, nextProps.fields)
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
 }))

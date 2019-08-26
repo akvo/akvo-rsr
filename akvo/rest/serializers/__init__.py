@@ -16,6 +16,7 @@ from .country import CountrySerializer
 from .crs_add import CrsAddSerializer, CrsAddOtherFlagSerializer
 from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
 from .disaggregation import DisaggregationSerializer
+from .disaggregation_target import DisaggregationTargetSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
 from .fss import FssSerializer, FssForecastSerializer
@@ -23,7 +24,7 @@ from .goal import GoalSerializer
 from .humanitarian_scope import HumanitarianScopeSerializer
 from .iati_check import IatiCheckSerializer
 from .iati_export import IatiActivityExportSerializer, IatiExportSerializer
-from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer)
+from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer, IndicatorFrameworkLiteSerializer)
 from .indicator_label import IndicatorLabelSerializer
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
@@ -33,7 +34,6 @@ from .indicator_period_dimension import (IndicatorPeriodActualDimensionSerialize
                                          IndicatorPeriodTargetDimensionSerializer)
 from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
                                         IndicatorPeriodTargetLocationSerializer)
-from .indicator_dimension import IndicatorDimensionSerializer
 from indicator_dimension_name import IndicatorDimensionNameSerializer
 from indicator_dimension_value import IndicatorDimensionValueSerializer
 from .indicator_reference import IndicatorReferenceSerializer
@@ -94,7 +94,7 @@ from .region import RecipientRegionSerializer, RecipientRegionRawSerializer
 from .report import ReportSerializer, ReportFormatSerializer
 from .related_project import RelatedProjectSerializer, RelatedProjectRawSerializer
 from .result import (ResultSerializer, ResultsFrameworkSerializer, ResultRawSerializer,
-                     ResultSerializerV2)
+                     ResultSerializerV2, ResultsFrameworkLiteSerializer)
 from .sector import SectorSerializer, SectorRawSerializer
 from .transaction import (TransactionSerializer, TransactionSectorSerializer,
                           TransactionRawSerializer, TransactionRawDeepSerializer)
@@ -120,6 +120,7 @@ __all__ = [
     'CrsAddSerializer',
     'CrsAddOtherFlagSerializer',
     'DisaggregationSerializer',
+    'DisaggregationTargetSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
     'FssSerializer',
@@ -130,7 +131,6 @@ __all__ = [
     'IatiCheckSerializer',
     'IatiExportSerializer',
     'IndicatorSerializer',
-    'IndicatorDimensionSerializer',
     'IndicatorFrameworkSerializer',
     'IndicatorLabelSerializer',
     'IndicatorPeriodActualDimensionSerializer',

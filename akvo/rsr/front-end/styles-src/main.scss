@@ -3906,6 +3906,7 @@ main.results-page {
             margin-top: 0px;
             margin-bottom: 10px;
             padding: 10px 0;
+            max-width: 50%;
             a.liveView {
                 margin-left: 50px;
             }
@@ -4036,7 +4037,7 @@ main.results-page {
 }
 
 .results {
-    background: white;
+    background: transparent;
     box-sizing: border-box;
     position: relative;
     * {
@@ -4050,25 +4051,48 @@ main.results-page {
         background: rgba(240, 240, 240, 0.5);
     }
     .editBtn {
-        border: 1px solid rgba($anchorLink, 0.1) !important;
-        background: $anchorLink;
-        color: white!important;
-        border-bottom: 1px solid transparent !important;
-        padding: 7px 8px;
+        border: none;
+        // border: 1px solid #e8e8e9 !important;
+        // background: $anchorLink;
+        color: #333!important;
+        // padding: 6px 8px;
+        padding: 16px;
         border-radius: 5px 5px 0 0;
+        font-size: 16px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #e8e8e9;
+        margin-top: 1px;
         &:hover {
-            background: #3071a9;
-            color: white!important;
-            border: 1px solid rgba($anchorLink, 0.1) !important;
+          color: #3f90f7!important;
+            // background: #3071a9;
+            // color: white!important;
+            // border: 1px solid rgba($anchorLink, 0.1) !important;
         }
     }
     .react-tabs {
         ul.react-tabs__tab-list {
             border-bottom: 1px solid rgba($akvoBlack, 0.1) !important;
+            display: flex;
+            margin-top: -50px;
             li {
+                &:first-of-type{
+                  margin-left: auto;
+                }
+                margin-right: 32px;
+                font-size: 16px;
                 border-radius: 5px 5px 0 0;
-                border: 1px solid rgba($akvoBlack, 0.1) !important;
-                border-bottom: 1px solid rgba($akvoBlack, 0) !important;
+                // border: 1px solid rgba($akvoBlack, 0.1) !important;
+                border: none;
+                border-bottom: 3px solid transparent;
+                // border-bottom: 1px solid rgba($akvoBlack, 0) !important;
+                padding: 16px;
+                &:hover{
+                  color: #3f90f7;
+                }
+                &.react-tabs__tab--selected{
+                  color: #3f90f7!important;
+                  border-bottom: 3px solid #3f90f7;
+                }
             }
         }
     }

@@ -3,11 +3,11 @@ import { transformUndefined } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
   name: yup.string().default(''),
-  type: yup.number(),
+  type: yup.mixed(),
   organisation: yup.string().default(''),
   department: yup.string().default(''),
   email: yup.string().min(1).email().transform(transformUndefined),
-  address: yup.string().min(5).transform(transformUndefined),
+  mailingAddress: yup.string().min(5).transform(transformUndefined),
   jobTitle: yup.string().default(''),
   phone: yup.string().default(''),
   website: yup.string().url().default('')
@@ -15,7 +15,7 @@ const RSR = yup.object().shape({
 
 const DGIS = RSR.clone().shape({
   email: RSR.fields.email.required(),
-  address: RSR.fields.address.required()
+  mailingAddress: RSR.fields.mailingAddress.required()
 })
 
 const defs = {

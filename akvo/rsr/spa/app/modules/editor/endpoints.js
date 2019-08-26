@@ -11,9 +11,10 @@ export const endpoints = {
     partners: '/partnership/'
   },
   section5: {
-    results: '/results_framework/',
+    results: '/results_framework_lite/',
     'results.indicators': '/indicator_framework/',
-    'results.indicators.periods': '/indicator_period/'
+    'results.indicators.periods': '/indicator_period/',
+    'results.indicators.periods.disaggregationTargets': '/disaggregation_target/'
   },
   section6: {
     budgetItems: '/budget_item/',
@@ -56,15 +57,19 @@ export const transforms = {
         if(!data) return null
         const transformed = {
           ...data,
-          latitude: data.location.coordinates.lat,
-          longitude: data.location.coordinates.lng,
-          city: data.location.text,
-          location_target: data.project,
           address_1: data.address1,
           address_2: data.address2
         }
-        delete transformed.location
-        delete transformed.project
+        if(data.location){
+          transformed.latitude = data.location.coordinates.lat
+          transformed.longitude = data.location.coordinates.lng
+          transformed.city = data.location.text
+          delete transformed.location
+        }
+        if(data.project){
+          transformed.location_target = data.project
+          delete transformed.project
+        }
         delete transformed.address1
         delete transformed.address2
         return transformed

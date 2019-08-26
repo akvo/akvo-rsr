@@ -1,3 +1,4 @@
+/* global window */
 import React, { Component } from 'react'
 import { Collapse } from 'antd'
 import { FormSpy } from 'react-final-form'
@@ -38,11 +39,17 @@ class Accordion extends Component {
       this.setState({
         activeKey
       })
+      if (this.props.autoScrollToActive) {
+        if (!this.ref) return
+        if (!this.ref.children) return
+        const child = this.ref.children[0].children[activeKey]
+        window.scroll({ top: child.offsetParent.offsetTop + (61 * Number(activeKey)) + child.offsetParent.offsetParent.offsetTop + 42, left: 0, behavior: 'smooth' })
+      }
     }
   }
   handleLengthChange = (lastIndex) => {
     if(this.props.multiple !== true){
-      this.handleChange(lastIndex)
+      this.handleChange(lastIndex, true)
     } else {
       const activeKey = []
       this.state.activeKey.forEach(key => {

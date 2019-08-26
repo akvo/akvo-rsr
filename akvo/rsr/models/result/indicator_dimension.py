@@ -4,8 +4,6 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from indicator import Indicator
-
 from akvo.rsr.fields import ValidXMLCharField
 
 from django.core.exceptions import PermissionDenied
@@ -42,7 +40,12 @@ class IndicatorDimensionName(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        is_new_dimension_name = not self.pk
         super(IndicatorDimensionName, self).save(*args, **kwargs)
+
+        if is_new_dimension_name:
+            self.project.copy_dimension_name_to_children(self)
+
         for child_dimension_name in self.child_dimension_names.all():
             child_dimension_name.name = self.name
             child_dimension_name.save()
@@ -92,42 +95,3 @@ class IndicatorDimensionValue(models.Model):
         if self.parent_dimension_value is not None:
             raise PermissionDenied
         super(IndicatorDimensionValue, self).delete(*args, **kwargs)
-
-
-class IndicatorDimension(models.Model):
-    project_relation = 'results__indicators__dimensions__in'
-
-    indicator = models.ForeignKey(Indicator, verbose_name=_(u'indicator'),
-                                  related_name='dimensions')
-    # This parent relation is needed primarily to handle updates
-    parent_dimension = models.ForeignKey('self', blank=True, null=True, default=None,
-                                         verbose_name=_(u'parent dimension'),
-                                         related_name='child_dimensions')
-    name = ValidXMLCharField(
-        _(u'disaggregation name'), blank=True, max_length=100,
-        help_text=_(u'The name of a category to be used when disaggregating (e.g "Age")'))
-    value = ValidXMLCharField(
-        _(u'disaggregation value'), blank=True, max_length=100,
-        help_text=_(u'A value in the category being disaggregated (e.g. "Older than 60 years").'))
-
-    class Meta:
-        app_label = 'rsr'
-        verbose_name = _(u'indicator disaggregation')
-        verbose_name_plural = _(u'indicator disaggregations')
-        ordering = ['id']
-
-    def __unicode__(self):
-        return self.name + ': ' + self.value if self.name and self.value else ''
-
-    def save(self, *args, **kwargs):
-        new_dimension = not self.pk
-        super(IndicatorDimension, self).save(*args, **kwargs)
-        child_indicators = self.indicator.child_indicators.select_related(
-            'result',
-            'result__project',
-        )
-        for child_indicator in child_indicators.all():
-            if new_dimension:
-                child_indicator.result.project.copy_dimension(child_indicator, self)
-            else:
-                child_indicator.result.project.update_dimension(child_indicator, self)

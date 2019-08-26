@@ -4,6 +4,7 @@ import { Form, Button, Modal, Divider } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import arrayMutators from 'final-form-arrays'
+import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
@@ -22,19 +23,20 @@ const handleSubmit = () => {
 
 
 const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions, fetchDimensions }) => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   return (
     <Modal
-      title="Add New Disaggregation"
+      title={t('Add New Disaggregation')}
       visible={visible}
       onCancel={handleCancel}
       className="taxonomy-modal"
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          {t('Cancel')}
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={handleSubmit}>
-          Add
+          {t('Add')}
         </Button>,
       ]}
     >
@@ -67,24 +69,24 @@ const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions
                       <DimensionBox dimension={dimension} handleAdd={handleAdd} fetchDimensions={fetchDimensions} />
                     ))}
                     <Divider />
-                    <h4>Create new</h4>
+                    <h4>{t('Create new')}</h4>
                   </Aux>
                 )}
-                <Item label={<InputLabel>Disaggregation name</InputLabel>}>
-                  <FinalField name="name" placeholder="Ex: Age" />
+                <Item label={<InputLabel>{t('Disaggregation category')}</InputLabel>}>
+                  <FinalField name="name" placeholder={t('Ex: Age')} />
                 </Item>
                 <FieldArray name="values" subscription={{}}>
                   {({ fields }) => (
                     <div>
                       {fields.map((name, index) => (
-                        <Item label={<InputLabel>Label {index + 1}</InputLabel>}>
-                          <FinalField name={`${name}.value`} placeholder={index === 0 ? 'Ex: Under 18' : (index === 1 ? 'Ex: Above 18' : '')} />
+                        <Item label={<InputLabel>{t('Label')} {index + 1}</InputLabel>}>
+                          <FinalField name={`${name}.value`} placeholder={index === 0 ? t('Ex: Under 18') : (index === 1 ? t('Ex: Above 18') : '')} />
                         </Item>
                       ))}
                       <div>
-                        <Button type="link" icon="plus" onClick={() => push('values', {})}>Add label</Button>
+                        <Button type="link" icon="plus" onClick={() => push('values', {})}>{t('Add label')}</Button>
                         {fields.length > 2 && (
-                          <Button type="link" icon="minus" onClick={() => pop('values')}>Remove label</Button>
+                          <Button type="link" icon="minus" onClick={() => pop('values')}>{t('Remove label')}</Button>
                         )}
                       </div>
                     </div>

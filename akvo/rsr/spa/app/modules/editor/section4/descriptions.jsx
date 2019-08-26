@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Modal, Icon } from 'antd'
+import { Form, Button, Modal, Icon, Tooltip } from 'antd'
 import { Form as FinalForm, FormSpy } from 'react-final-form'
+import { withTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
@@ -12,25 +13,6 @@ import SectionContext from '../section-context'
 import './styles.scss'
 
 const { Item } = Form
-
-const dict = {
-  projectPlanSummary: 'Project summary',
-  goalsOverview: 'Goals overview',
-  background: 'Background',
-  currentStatus: 'Baseline situation',
-  targetGroup: 'Target group',
-  projectPlan: 'Project plan',
-  sustainability: 'Sustainability'
-}
-const infoDict = {
-  projectPlanSummary: 'Enter a brief summary, try to restrict the number of characters to 400 in order to display the summary nicely on the project page.',
-  goalsOverview: 'Provide a brief description of the overall project goals.',
-  background: 'This should describe the geographical, political, environmental, social and/or cultural context of the project, and any related activities that have already taken place or are underway.',
-  currentStatus: 'Describe the situation at the start of the project.',
-  targetGroup: 'This should include information about the people, organisations or resources that are being impacted by this project.',
-  projectPlan: 'Detailed information about the implementation of the project: the what, how, who and when.',
-  sustainability: 'Describe how you aim to guarantee sustainability of the project until 10 years after project implementation. Think about the institutional setting, capacity-building, a cost recovery plan, products used, feasible arrangements for operation and maintenance, anticipation of environmental impact and social integration.'
-}
 
 const isEmpty = val => val === '' || val === undefined
 
@@ -67,6 +49,7 @@ class Descriptions extends React.Component {
     }, 100)
   }
   render(){
+    const { t } = this.props
     const isOptional = isFieldOptional(getValidationSets([1], validationDefs)) // validation id is irrelevant here
     return (
       <div className="descriptions view">
@@ -88,7 +71,7 @@ class Descriptions extends React.Component {
                       validateStatus={validateStatus}
                       label={(
                         <div className="desc-label">
-                          <span>{dict[descKey]}</span>
+                          <span>{t(`section4::${descKey}::label`)}&nbsp;&nbsp;<Tooltip trigger="click" title={<span dangerouslySetInnerHTML={{ __html: t(`section4::${descKey}::info`) }} />}><Icon type="info-circle" /></Tooltip></span>
                           {isOptional(descKey) && <Icon type="delete" onClick={() => this.removeDesc(descKey, input)} />}
                         </div>
                       )}
@@ -101,11 +84,11 @@ class Descriptions extends React.Component {
             })}
             {this.state.added.length < 6 &&
               <Button onClick={() => this.setState({ modalVisible: true })} className="bottom-btn" icon="plus" type="dashed" block>
-                Add description
+                {t('Add description')}
               </Button>
             }
             <Modal
-              title="Add Description"
+              title={t('Add description')}
               visible={this.state.modalVisible}
               footer={null}
               onCancel={() => this.setState({ modalVisible: false })}
@@ -118,8 +101,8 @@ class Descriptions extends React.Component {
                     return !(!isOptional(descKey) || !isEmpty(values[descKey]) || this.state.added.indexOf(descKey) !== -1)
                   }).map(descKey => (
                     <div className="desc-block">
-                      <Button block icon="plus" onClick={() => this.addDesc(descKey)}>{dict[descKey]}</Button>
-                      <p>{infoDict[descKey]}</p>
+                      <Button block icon="plus" onClick={() => this.addDesc(descKey)}>{t(`section4::${descKey}::label`)}</Button>
+                      <p>{t(`section4::${descKey}::info`)}</p>
                     </div>
                   ))}
                   </div>
@@ -139,4 +122,4 @@ class Descriptions extends React.Component {
 
 export default connect(
   ({ editorRdr: { section4: { fields }}}) => ({ fields })
-)(Descriptions)
+)(withTranslation()(Descriptions))

@@ -23,8 +23,7 @@ export const initialState = {
   lastSaved: null,
   backendError: null,
   validations: [1],
-  isPublic: true,
-  showRequired: false,
+  showRequired: true,
   projectId: null
 }
 for(let i = 0; i < sectionLength; i += 1){
@@ -32,6 +31,7 @@ for(let i = 0; i < sectionLength; i += 1){
     errors: [true],
     isTouched: false,
     isFetched: false,
+    isExplicitlyEnabled: false,
     fields: {}
   }
 }
@@ -43,7 +43,12 @@ Object.keys(fieldSets).forEach((section) => {
 })
 
 initialState.section1.fields.currency = 'EUR'
+initialState.section1.fields.isPublic = true
 initialState.section10.fields.keywords = []
+initialState.section11.fields = {
+  crs: [],
+  fss: []
+}
 
 const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 
@@ -134,16 +139,17 @@ export default (state = initialState, action) => {
       newState.addingItem = false
       newState.lastSaved = new Date()
       newState.backendError = null
-      const itemIndex = get(newState[sectionKey].fields, `${action.setName}`).length - 1
+      const { setName } = action
+      const itemIndex = action.itemIndex !== undefined ? action.itemIndex : get(newState[sectionKey].fields, `${action.setName}`).length - 1
       const updatedItem = {
-        ...get(newState[sectionKey].fields, `${action.setName}[${itemIndex}]`)
+        ...get(newState[sectionKey].fields, `${setName}[${itemIndex}]`)
       }
       if(action.id){
         updatedItem.id = action.id
       } else if(action.item) {
         Object.keys(action.item).forEach(prop => { updatedItem[prop] = action.item[prop] })
       }
-      set(newState[sectionKey].fields, `${action.setName}[${itemIndex}]`, updatedItem)
+      set(newState[sectionKey].fields, `${setName}[${itemIndex}]`, updatedItem)
       return newState
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true
@@ -160,17 +166,17 @@ export default (state = initialState, action) => {
         action.setName,
         get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
       )
-      newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      if(!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
     case actionTypes.BACKEND_SYNC:
       return {...state, saving: false, addingItem: false, lastSaved: new Date(), backendError: null}
     case actionTypes.BACKEND_ERROR:
-      return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response} }
+      return {...state, saving: false, addingItem: false, backendError: {...action.error, response: action.response, setName: action.setName, sectionIndex: action.sectionIndex} }
     case actionTypes.SET_PROJECT_ID:
       return {...initialState, projectId: action.projectId}
     case actionTypes.SET_NEW_PROJECT:
       for(let i = 1; i <= 11; i += 1){
-        newState[`section${i}`].isFetched = true
+        newState[`section${i}`].isExplicitlyEnabled = true
       }
       newState.projectId = action.projectId
       return newState

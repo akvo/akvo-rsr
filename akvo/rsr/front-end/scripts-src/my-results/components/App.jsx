@@ -333,11 +333,11 @@ class App extends React.Component {
                             {id: 81, value: "Female", name: 45}
                         ],
                         disaggregations: [
-                            {update: "new-1", dimension_value: 80, id: "new-80", value: "", É},
-                            {update: "new-1", dimension_value: 81, id: "new-81", value: "", É}
+                            {update: "new-1", dimension_value: 80, id: "new-80", value: "", ï¿½},
+                            {update: "new-1", dimension_value: 81, id: "new-81", value: "", ï¿½}
                         ]
                     },
-                    É,
+                    ï¿½,
                 ]
             */
             let dimensionsAndDisaggs = [];
@@ -402,14 +402,14 @@ class App extends React.Component {
         ) : (
             <section className="results">
                 <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
-                    {_("edit_project")}
+                    {_("Editor")}
                 </a>
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
                         {showReports ? <Tab>{_("narrative_summaries")}</Tab> : null}
-                        <Tab>{_("project_updates")}</Tab>
-                        <Tab>{_("project_reports")}</Tab>
+                        <Tab>{_('Updates')}</Tab>
+                        <Tab>{_('Reports')}</Tab>
                     </TabList>
                     {showResults && hasResults ? <TabPanel>{resultsTab}</TabPanel> : null}
                     {showReports ? (
