@@ -1254,7 +1254,7 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
 
     list_display = ('title', 'project', 'user', 'text', 'language', 'event_date', 'created_at', 'img',)
     list_filter = ('created_at', 'project', )
-    search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
+    search_fields = ('title', 'id', 'project__id', 'project__title', 'user__first_name', 'user__last_name',)
     inlines = (ProjectUpdateLocationInline,)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
     readonly_fields = ('created_at', 'last_modified_at')
