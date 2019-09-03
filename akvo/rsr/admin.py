@@ -1249,6 +1249,14 @@ class ProjectCommentAdmin(admin.ModelAdmin):
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
     readonly_fields = ('created_at', 'last_modified_at')
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(ProjectCommentAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers', 'Project Editors'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(project__in=projects)
+
 admin.site.register(apps.get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
 
