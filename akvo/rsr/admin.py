@@ -1297,6 +1297,11 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(ProjectUpdateAdmin, self).get_queryset(request)
+        return self.model.objects.none()
+
 
 admin.site.register(apps.get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
 
