@@ -1232,6 +1232,14 @@ admin.site.register(get_user_model(), UserAdmin)
 class NarrativeReportAdmin(admin.ModelAdmin):
     list_display = (u'project', u'category', u'published',)
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(NarrativeReportAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(project__in=projects)
+
 admin.site.register(apps.get_model('rsr', 'narrativereport'), NarrativeReportAdmin)
 
 
