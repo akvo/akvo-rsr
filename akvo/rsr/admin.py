@@ -1506,6 +1506,13 @@ class IatiExportAdmin(admin.ModelAdmin):
     exclude = ('projects', )
     inlines = (IatiActivityExportInline, )
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(IatiExportAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'Project Editors'])
+        return self.model.objects.filter(reporting_organisation_id__in=employments.organisations())
+
 admin.site.register(apps.get_model('rsr', 'IatiExport'), IatiExportAdmin)
 
 
