@@ -1553,6 +1553,15 @@ class IndicatorPeriodDataAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'last_modified_at')
     inlines = (IndicatorPeriodDataCommentInline, )
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(IndicatorPeriodDataAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(period__indicator__result__project__in=projects)
+
+
 admin.site.register(apps.get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodDataAdmin)
 
 
