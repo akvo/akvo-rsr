@@ -1550,6 +1550,11 @@ class ValidationSetAdmin(admin.ModelAdmin):
     fields = ('name', 'description')
     inlines = (ValidationInline, )
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(ValidationSetAdmin, self).get_queryset(request)
+        return self.model.objects.none()
+
 admin.site.register(apps.get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
 
 
