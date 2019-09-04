@@ -54,5 +54,11 @@ def set_eutf_as_reporting_organisation(project):
         defaults=dict(organisation=eutf)
     )
     if not created and partnership.organisation != eutf:
+        old_reporting_organisation = partnership.organisation
         partnership.organisation = eutf
         partnership.save(update_fields=['organisation'])
+        Partnership.objects.create(
+            project=project,
+            organisation=old_reporting_organisation,
+            iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER,
+        )

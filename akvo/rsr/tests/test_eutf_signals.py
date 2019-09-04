@@ -14,6 +14,7 @@ class EUTFSignalsTestCase(BaseTestCase):
     def setUp(self):
         super(EUTFSignalsTestCase, self).setUp()
         self.eutf = self.create_organisation('EUTF')
+        self.delegation = self.create_organisation('EUTF Delegation')
         self.root_project = self.create_project('Root Project')
         ProjectHierarchy.objects.create(
             root_project=self.root_project, organisation=self.eutf, max_depth=2)
@@ -31,6 +32,27 @@ class EUTFSignalsTestCase(BaseTestCase):
         self.assertEqual(
             project.reporting_partner.iati_organisation_role,
             Partnership.IATI_REPORTING_ORGANISATION)
+
+    def test_existing_reporting_org_made_implementing_partner(self):
+        # Given
+        project = self.create_project('New Project')
+        Partnership.objects.create(
+            project=project,
+            organisation=self.delegation,
+            iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION,
+        )
+
+        # When
+        with self.settings(EUTF_ROOT_PROJECT=self.root_project.id, EUTF_ORG_ID=self.eutf.id):
+            self.make_parent(self.root_project, project)
+
+        # Then
+        self.assertEqual(project.reporting_partner.organisation, self.eutf)
+        self.assertEqual(
+            project.reporting_partner.iati_organisation_role,
+            Partnership.IATI_REPORTING_ORGANISATION)
+        implementing_partnership = project.partnerships.get(organisation=self.delegation)
+        self.assertEqual(implementing_partnership.iati_organisation_role, Partnership.IATI_IMPLEMENTING_PARTNER)
 
     def test_adding_project_outside_hierarchy_does_not_set_reporting_org(self):
         # Given
