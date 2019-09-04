@@ -1232,6 +1232,14 @@ admin.site.register(get_user_model(), UserAdmin)
 class NarrativeReportAdmin(admin.ModelAdmin):
     list_display = (u'project', u'category', u'published',)
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(NarrativeReportAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(project__in=projects)
+
 admin.site.register(apps.get_model('rsr', 'narrativereport'), NarrativeReportAdmin)
 
 
@@ -1240,6 +1248,14 @@ class ProjectCommentAdmin(admin.ModelAdmin):
     list_filter = ('project', 'created_at', )
     search_fields = ('project__id', 'project__title', 'user__first_name', 'user__last_name',)
     readonly_fields = ('created_at', 'last_modified_at')
+
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(ProjectCommentAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers', 'Project Editors'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(project__in=projects)
 
 admin.site.register(apps.get_model('rsr', 'projectcomment'), ProjectCommentAdmin)
 
@@ -1280,6 +1296,11 @@ class ProjectUpdateAdmin(TimestampsAdminDisplayMixin, AdminVideoMixin, admin.Mod
         """
         self.formfield_overrides = {ImageField: {'widget': widgets.AdminFileWidget}, }
         super(ProjectUpdateAdmin, self).__init__(model, admin_site)
+
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(ProjectUpdateAdmin, self).get_queryset(request)
+        return self.model.objects.none()
 
 
 admin.site.register(apps.get_model('rsr', 'projectupdate'), ProjectUpdateAdmin)
@@ -1506,6 +1527,13 @@ class IatiExportAdmin(admin.ModelAdmin):
     exclude = ('projects', )
     inlines = (IatiActivityExportInline, )
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(IatiExportAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'Project Editors'])
+        return self.model.objects.filter(reporting_organisation_id__in=employments.organisations())
+
 admin.site.register(apps.get_model('rsr', 'IatiExport'), IatiExportAdmin)
 
 
@@ -1527,6 +1555,11 @@ class ValidationSetAdmin(admin.ModelAdmin):
     fields = ('name', 'description')
     inlines = (ValidationInline, )
 
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(ValidationSetAdmin, self).get_queryset(request)
+        return self.model.objects.none()
+
 admin.site.register(apps.get_model('rsr', 'ProjectEditorValidationSet'), ValidationSetAdmin)
 
 
@@ -1545,6 +1578,15 @@ class IndicatorPeriodDataAdmin(admin.ModelAdmin):
     list_display = ('period', 'user', 'value', 'status')
     readonly_fields = ('created_at', 'last_modified_at')
     inlines = (IndicatorPeriodDataCommentInline, )
+
+    def get_queryset(self, request):
+        if request.user.is_admin or request.user.is_superuser:
+            return super(IndicatorPeriodDataAdmin, self).get_queryset(request)
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(period__indicator__result__project__in=projects)
+
 
 admin.site.register(apps.get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodDataAdmin)
 
