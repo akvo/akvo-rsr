@@ -6,6 +6,7 @@ RUN set -ex; apt-get update && \
     libgeos-dev curl git postgresql-client runit cron \
     libjpeg-dev libfreetype6-dev \
     libffi-dev libssl-dev \
+    fontconfig libx11-6 libxcb1 libxext6 libxrender1 xfonts-75dpi xfonts-base \
     libxml2-dev libxslt1-dev zlib1g-dev python-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -16,6 +17,10 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
 RUN pip install pip==10.0.0
 # Install a proper sslcontext so pip doesn't complain
 RUN pip install pyopenssl==18.0.0
+
+RUN curl -fsSLO https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb \
+  && dpkg -i wkhtmltox_0.12.5-1.trusty_amd64.deb \
+  && rm wkhtmltox_0.12.5-1.trusty_amd64.deb
 
 WORKDIR /var/akvo/rsr/code
 
