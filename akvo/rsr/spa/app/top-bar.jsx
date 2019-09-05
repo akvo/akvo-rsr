@@ -40,7 +40,7 @@ const TopBar = ({ userRdr, dispatch }) => {
         <SVGInline svg={rsrSvg} />
         </a>
         <ul>
-          {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user-management`}>{t('Users')}</a></li>}
+          {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
         </ul>
