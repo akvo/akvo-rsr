@@ -67,6 +67,52 @@ data:
         log Deleting tmp files
         rm /tmp/cleaned.dump
         rm $DUMP_FILE
+
+        log Creating ReportServer read-only user
+        REPORTSERVER_DB_USER=${REPORTSERVER_DB_USER}
+        REPORTSERVER_USER_PASSWORD=${REPORTSERVER_USER_PASSWORD}
+        REPORTSERVER_DB_NAME=${REPORTSERVER_DB_NAME}
+
+        psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--set" "ON_ERROR_STOP=on")
+        psql "${psql_settings[@]}" --command="CREATE USER ${REPORTSERVER_DB_USER} WITH ENCRYPTED PASSWORD '${REPORTSERVER_USER_PASSWORD}';"
+        log Assinging read-only permissions to ReportServer user
+        psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
+        psql "${psql_settings[@]}" --command="GRANT USAGE ON SCHEMA public TO ${REPORTSERVER_DB_USER};"
+        psql "${psql_settings[@]}" --command="GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${REPORTSERVER_DB_USER};"
+        psql "${psql_settings[@]}" --command="ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ${REPORTSERVER_DB_USER};"
+
+        log Creating ReportServer DB
+        psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--set" "ON_ERROR_STOP=on")
+        psql "${psql_settings[@]}" --command="CREATE DATABASE ${REPORTSERVER_DB_NAME} OWNER ${REPORTSERVER_DB_USER};"
+        log Assign perms to ReportServer user in ReportServer DB
+        psql "${psql_settings[@]}" --dbname="${REPORTSERVER_DB_NAME}" --command="ALTER SCHEMA public OWNER TO ${REPORTSERVER_DB_USER};"
+
+        log Downloading latest production ReportServer backup
+        curl -u :${ELEPHANTSQL_API_KEY}  https://api.elephantsql.com/api/backup?db=reportserver | jq .[0].url | xargs curl --output "${DUMP_FILE}"
+        log Preparing ReportServer DB dump
+        dump_owner=reportserver
+        lzop -cd "${DUMP_FILE}" | \
+          sed -e '/COPY public.rs_audit_log_property/,/^--/d' | \
+          sed -e "s/${dump_owner};\$/${REPORTSERVER_DB_USER};/" | \
+          sed -e "/^GRANT/d" | sed -e "/ALTER DEFAULT PRIVILEGES/d" | \
+          sed -e '/spatial_ref_sys/,+1 d' | \
+          sed -e '/NOT EXISTS plv8/d' | sed -e '/ON EXTENSION plv8/d' | \
+          sed -e '/NOT EXISTS "uuid-ossp/d' | sed -e '/ON EXTENSION "uuid-ossp/d' | \
+          sed -e '/NOT EXISTS postgis/d' | sed -e '/ON EXTENSION postgis/d' \
+          > /tmp/cleaned.dump
+
+        log Seeding ReportServer DB
+        psql_settings=("--username=${SUPER_USER}" "--host=${DB_HOST}" "--dbname=${REPORTSERVER_DB_NAME}" "--set" "ON_ERROR_STOP=on")
+        cat /tmp/cleaned.dump | psql "${psql_settings[@]}"
+        log Deleting ReportServer tmp files
+        rm /tmp/cleaned.dump
+        rm $DUMP_FILE
+
+        log Changing credentials of ReportServer datasource
+        ## Removing the internal datasource so that it doesnt point to production
+        db_external_host=$(echo $HOSTNAME | cut -f1-2 -d\-)
+        psql "${psql_settings[@]}" --command="UPDATE rs_database_datasource SET username='none', password='none' WHERE username='$dump_owner'"
+        psql "${psql_settings[@]}" --command="UPDATE rs_database_datasource SET username='${REPORTSERVER_DB_USER}', password='${ENCRYPTED_RSR_PASSWORD}', url='jdbc:postgresql://${db_external_host}:5432/${RSR_DB_NAME}' WHERE username='reportserver_user'"
       fi
 
       log Done
