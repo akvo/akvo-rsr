@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -u
 
 function log {
    echo "$(date +"%T") - INFO - $*"
@@ -10,6 +10,10 @@ release_name=$1
 disk_name=rsr-${release_name}-1
 
 gcloud container clusters get-credentials test --zone europe-west1-d --project akvo-lumen
+
+log "Maybe deleting dangling snapshot"
+snapshot_name=rsr-${release_name}-1
+gcloud compute snapshots delete ${snapshot_name} --quiet
 
 log "Deleting helm chart..."
 helm delete --purge ${release_name}
