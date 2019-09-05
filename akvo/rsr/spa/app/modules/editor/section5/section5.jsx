@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -57,6 +57,10 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
   const [copying, setCopying] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [copyId, setCopyId] = useState('')
+  const [importError, setImportError] = useState(false)
+  const [copyError, setCopyError] = useState(false)
+  const importPermissionError = t('You have insufficient permissions to import results from the selected parent project. Please choose a different parent project.')
+  const copyPermissionError = t('You have insufficient permissions to copy results from the selected project. Please choose a different project.')
 
   const doImport = () => {
     setImporting(true)
@@ -68,6 +72,13 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
             fetchSetItems(5, 'results', data.results)
           })
       })
+      .catch((error) => {
+        if (error.request.status === 403) {
+          setImporting(false)
+          setImportError(true)
+        }
+      })
+
   }
   const doCopy = () => {
     setCopying(true)
@@ -82,6 +93,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
       .catch(() => {
         setCopyId('')
         setCopying(false)
+        setCopyError(true)
       })
   }
   if (results.length === 0) {
@@ -96,7 +108,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
                 {t('Import the results framework from parent project')}
               </span>
               <div>
-                <Button type="primary" loading={importing} onClick={doImport} disabled={copying || importing}>{t('Import results set')}</Button>
+                <Button type="primary" loading={importing} onClick={doImport} disabled={copying || importing || importError}>{t('Import results set')}</Button>
               </div>
             </li>
           }
@@ -114,6 +126,8 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
             </div>
           </li>
         </ul>
+        {importError && <Alert type="error" message={importPermissionError} style={{ marginTop: 15 }} />}
+        {copyError && <Alert type="error" message={copyPermissionError} style={{ marginTop: 15 }} />}
       </div>
     )
   }
