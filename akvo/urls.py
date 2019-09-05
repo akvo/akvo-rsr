@@ -26,6 +26,7 @@ from akvo.rsr.views import organisation
 from akvo.rsr.views import project
 from akvo.rsr.views import project_update
 from akvo.rsr.views import translations
+from akvo.rsr.views import py_reports
 
 admin.autodiscover()
 
@@ -160,6 +161,10 @@ urlpatterns = i18n_patterns(
 ################################################################################
 
 urlpatterns += (
+
+    # Python generated reports
+    url(r'^py-reports/project/(?P<project_id>\d+)/$',
+        py_reports.render_pdf, name='py-reports-project'),
 
     # IATI file
     url(r'^project/(?P<project_id>\d+)/iati/$',

@@ -1,0 +1,87 @@
+
+{% include 'reports/grids.css' %}
+
+.page-break {
+  display: block;
+  page-break-before: always;
+}
+
+body {
+  font-size: 14pt;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+h1 {
+  font-size: 75pt;
+  padding: 1in 0 0.2in;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+th,
+td {
+  padding: 5pt 7px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.with-subtext {
+  margin-bottom: 0;
+}
+
+.first-section {
+  margin-top: 0.2in;
+}
+.first-section h2 {
+  margin-bottom: 0.7in;
+}
+.first-section .summary p {
+  padding-right: 0.5in;
+  padding-bottom: 0.2in;
+}
+.first-section .partners {
+  margin-bottom: 1in;
+}
+
+.related-project h2 {
+  padding-top: 0.7in;
+}
+.related-project h2+i {
+  font-size: 11pt;
+}
+
+.results h2 {
+  font-size: 30pt;
+}
+.results .result-item {
+  margin-bottom: 1in;
+}
+.results .result-item .pre-title {
+  font-size: 18pt;
+  font-weight: bold;
+  color: #666666;
+}
+.results .result-item h3 {
+  margin-top: 0;
+  font-size: 20pt;
+  font-weight: normal;
+}
+.results table {
+  margin-bottom: 0.5in;
+  border: 5pt solid #EEEEEE;
+}
+.results table tr.indicator-info {
+  text-align: left;
+}
+.results table tr.indicator-info {
+  background-color: #EEEEEE;
+}
+.results table tr th:first-child,
+.results table tr td:first-child {
+  width: 2.2in;
+}
+
+.project-updates img {
+  max-width: 5in;
+}
