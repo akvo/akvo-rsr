@@ -790,3 +790,23 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.assertFalse(project.is_published())
         self.assertNotIn(project, projects)
         self.assertIn(self.project, projects)
+
+
+class ContentOwnedOrganisationsPermissionsTestCase(BaseTestCase):
+
+    def setUp(self):
+        super(ContentOwnedOrganisationsPermissionsTestCase, self).setUp()
+        self.user = self.create_user('foo@example.com', 'password')
+        self.org = self.create_organisation('EUTF')
+        self.org1 = self.create_organisation('EUTF Delegation 1')
+        self.project = self.create_project('EUTF Project')
+
+    def test_can_access_content_owned_org_projects(self):
+        # Given
+        self.make_employment(self.user, self.org, 'Admins')
+        self.org1.content_owner = self.org
+        self.org1.save()
+        self.make_partner(self.project, self.org1)
+
+        # When/Then
+        self.assertTrue(self.user.has_perm('rsr.change_project', self.project))
