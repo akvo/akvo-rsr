@@ -200,7 +200,7 @@ def user_has_perm(user, employments, project_id):
     # hierarchy, and restrict access based on whether the owner has enabled
     # restrictions or not.
     if hierarchy_org is None or not hierarchy_org.enable_restrictions:
-        all_projects = organisations.all_projects()
+        all_projects = organisations.content_owned_organisations().all_projects()
 
     else:
         collaborator_ids = get_organisation_collaborator_org_ids(hierarchy_org.id)
