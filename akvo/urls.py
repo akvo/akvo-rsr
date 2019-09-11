@@ -134,11 +134,19 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/updates/$',
         my_rsr.my_updates, name='my_updates'),
 
+    url(r'^myrsr/projects_old/$',
+        my_rsr.my_projects, name='my_projects_old'),
+
     url(r'^myrsr/projects/$',
-        my_rsr.my_projects, name='my_projects'),
+        RedirectView.as_view(url='/my-rsr/projects/'),
+        name='my_projects'),
+
+    url(r'^myrsr/project_editor_old/(?P<project_id>\d+)/$',
+        my_rsr.project_editor, name='project_editor_old'),
 
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
-        my_rsr.project_editor, name='project_editor'),
+        RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/'),
+        name='project_editor'),
 
     url(r'^myrsr/iati/$',
         my_rsr.my_iati, name='my_iati'),
@@ -249,18 +257,3 @@ if settings.DEBUG:
 
 if settings.REQUIRED_AUTH_GROUPS:
     check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-
-# Enable new project editor
-if settings.RSR_DOMAIN != 'rsr.akvo.org':
-    urlpatterns = i18n_patterns(
-        url(r'^myrsr/projects/$',
-            RedirectView.as_view(url='/my-rsr/projects/'),
-            name='my_projects'),
-        url(r'^myrsr/projects_old/$',
-            my_rsr.my_projects, name='my_projects_old'),
-        url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
-            RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/'),
-            name='project_editor'),
-        url(r'^myrsr/project_editor_old/(?P<project_id>\d+)/$',
-            my_rsr.project_editor, name='project_editor_old'),
-    ) + urlpatterns
