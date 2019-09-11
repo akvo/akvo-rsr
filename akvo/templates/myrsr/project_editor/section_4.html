@@ -15,12 +15,12 @@
             <p class="help-block hidden" id="step-4-helptext">{% trans 'Here you can complete the in-depth descriptive details regarding your project, its history and plans for the future.' %}</p>
             <form role="form">
                 {% include textarea_input with obj=project field='project_plan_summary' %}
-                {% include textarea_input with obj=project field='goals_overview' %}
                 {% include textarea_input with obj=project field='background' %}
                 {% include textarea_input with obj=project field='current_status' %}
-                {% include textarea_input with obj=project field='target_group' %}
                 {% include textarea_input with obj=project field='project_plan' %}
+                {% include textarea_input with obj=project field='target_group' %}
                 {% include textarea_input with obj=project field='sustainability' %}
+                {% include textarea_input with obj=project field='goals_overview' %}
 
                 {% if custom_fields_section_4 %}
                     <div class="row">
