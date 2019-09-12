@@ -108,7 +108,7 @@ class Projects extends React.Component{
         key: 'dateEndPlanned',
         width: 160,
         render: (text) => {
-          return (<span>{text ? moment(text, 'YYYY-MM-DD').format('DD MMM YYYY') : '-'}</span>)
+          return (<span>{text ? moment(text, 'DD/MM/YYYY').format('DD MMM YYYY') : '-'}</span>)
         }
       }
     ]
