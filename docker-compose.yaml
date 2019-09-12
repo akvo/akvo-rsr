@@ -18,7 +18,6 @@ services:
   rsrdbhost:
     build:
       context: postgres
-    restart: always
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
     expose:
