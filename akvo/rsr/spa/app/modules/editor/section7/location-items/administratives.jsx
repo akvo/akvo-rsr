@@ -85,7 +85,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
                         if(primaryOrganisation === 3394 && vocabProps.input.value === 'A4'){
                           return (
                             <Select {...input}>
-                              {EUTF_ADMIN_CODES_OPTIONS.map(option => <Option value={option.value}>{option.label}</Option>)}
+                              {EUTF_ADMIN_CODES_OPTIONS.map(option => <Option value={option.value}><span dangerouslySetInnerHTML={{ __html: option.label}} /></Option>)}
                             </Select>
                           )
                         }

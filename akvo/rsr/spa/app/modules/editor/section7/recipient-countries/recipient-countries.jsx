@@ -28,9 +28,16 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors }) => 
       <ItemArray
         setName="recipientCountries"
         sectionIndex={7}
-        header={(index, countryCode) => (
-          <span>{t('recipient country')} {index + 1}: {countryCode && countries.find(it => it.code === countryCode).name}</span>
-        )}
+        header={(index, countryCode) => {
+          let country
+          if (countryCode) country = countries.find(it => it.code === countryCode)
+          return (
+            <span>{
+              t('recipient country')} {index + 1}:&nbsp;
+              {country && country.name}
+            </span>
+          )
+        }}
         headerField="country"
         headerMore={(index, percentage) => {
           if (!fieldExists('percentage')){

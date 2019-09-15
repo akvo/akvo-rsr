@@ -78,7 +78,6 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
           setImportError(true)
         }
       })
-
   }
   const doCopy = () => {
     setCopying(true)
