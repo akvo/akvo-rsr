@@ -1737,7 +1737,7 @@ h4.detailedInfo {
 
 .main-list {
     .col-sm-5 {
-        margin-top: -10px;
+        // margin-top: -10px;
     }
     li {
         img {
@@ -1798,16 +1798,16 @@ h4.detailedInfo {
         @include noWrapBlockTxt;
     }
     &.projects {
-        margin-top: 10px;
+        // margin-top: 10px;
         #map {
             position: relative;
-            height: calc(100vh - 230px);
+            height: calc(100vh - 200px);
             @include responsive(small-max-screens) {
                 display: none;
             }
 
             &.updateMap {
-                height: calc(100vh - 240px);
+                height: calc(100vh - 200px);
             }
             .rsr_map {
                 position: absolute;
@@ -1821,7 +1821,7 @@ h4.detailedInfo {
         }
         .projectListUlcontain {
             @media screen and (min-width: 768px){
-              max-height: calc(100vh - 240px);
+              max-height: calc(100vh - 200px);
               overflow-y: scroll;
             }
             @media screen and (min-width: 768px) and (max-width: 1024px){
@@ -1830,6 +1830,15 @@ h4.detailedInfo {
             p.listMsg {
                 font-size: 1.2em;
                 text-align: center;
+                margin-top: 1em;
+            }
+            p.submenu-footer-stead{
+              display: none; // this is shown only for some partners (MCF)
+              text-align: center;
+              margin-bottom: 15px;
+              a{
+                margin: 0 10px;
+              }
             }
             &.filtered {
                 p.listMsg {
