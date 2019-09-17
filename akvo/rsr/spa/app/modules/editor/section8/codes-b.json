@@ -1,0 +1,1142 @@
+[
+  {
+    "value": "11110",
+    "label": "Education policy and administrative management"
+  },
+  {
+    "value": "11120",
+    "label": "Education facilities and training"
+  },
+  {
+    "value": "11130",
+    "label": "Teacher training"
+  },
+  {
+    "value": "11182",
+    "label": "Educational research"
+  },
+  {
+    "value": "11220",
+    "label": "Primary education"
+  },
+  {
+    "value": "11230",
+    "label": "Basic life skills for youth and adults"
+  },
+  {
+    "value": "11231",
+    "label": "Basic life skills for youth"
+  },
+  {
+    "value": "11232",
+    "label": "Primary education equivalent for adults"
+  },
+  {
+    "value": "11240",
+    "label": "Early childhood education"
+  },
+  {
+    "value": "11320",
+    "label": "Secondary education"
+  },
+  {
+    "value": "11321",
+    "label": "Lower secondary education"
+  },
+  {
+    "value": "11322",
+    "label": "Upper secondary education"
+  },
+  {
+    "value": "11330",
+    "label": "Vocational training"
+  },
+  {
+    "value": "11420",
+    "label": "Higher education"
+  },
+  {
+    "value": "11430",
+    "label": "Advanced technical and managerial training"
+  },
+  {
+    "value": "12110",
+    "label": "Health policy and administrative management"
+  },
+  {
+    "value": "12181",
+    "label": "Medical education/training"
+  },
+  {
+    "value": "12182",
+    "label": "Medical research"
+  },
+  {
+    "value": "12191",
+    "label": "Medical services"
+  },
+  {
+    "value": "12220",
+    "label": "Basic health care"
+  },
+  {
+    "value": "12230",
+    "label": "Basic health infrastructure"
+  },
+  {
+    "value": "12240",
+    "label": "Basic nutrition"
+  },
+  {
+    "value": "12250",
+    "label": "Infectious disease control"
+  },
+  {
+    "value": "12261",
+    "label": "Health education"
+  },
+  {
+    "value": "12262",
+    "label": "Malaria control"
+  },
+  {
+    "value": "12263",
+    "label": "Tuberculosis control"
+  },
+  {
+    "value": "12281",
+    "label": "Health personnel development"
+  },
+  {
+    "value": "13010",
+    "label": "Population policy and administrative management"
+  },
+  {
+    "value": "13020",
+    "label": "Reproductive health care"
+  },
+  {
+    "value": "13030",
+    "label": "Family planning"
+  },
+  {
+    "value": "13040",
+    "label": "STD control including HIV/AIDS"
+  },
+  {
+    "value": "13081",
+    "label": "Personnel development for population and reproductive health"
+  },
+  {
+    "value": "14010",
+    "label": "Water sector policy and administrative management"
+  },
+  {
+    "value": "14015",
+    "label": "Water resources conservation (including data collection)"
+  },
+  {
+    "value": "14020",
+    "label": "Water supply and sanitation"
+  },
+  {
+    "value": "14021",
+    "label": "Water supply"
+  },
+  {
+    "value": "14022",
+    "label": "Sanitation"
+  },
+  {
+    "value": "14030",
+    "label": "Basic drinking water supply and basic sanitation"
+  },
+  {
+    "value": "14031",
+    "label": "Basic drinking water supply"
+  },
+  {
+    "value": "14032",
+    "label": "Basic sanitation"
+  },
+  {
+    "value": "14040",
+    "label": "River basins’ development"
+  },
+  {
+    "value": "14050",
+    "label": "Waste management / disposal"
+  },
+  {
+    "value": "14081",
+    "label": "Education and training in water supply and sanitation"
+  },
+  {
+    "value": "15110",
+    "label": "Public sector policy and administrative management"
+  },
+  {
+    "value": "15111",
+    "label": "Public Finance Management (PFM)"
+  },
+  {
+    "value": "15112",
+    "label": "Decentralisation and support to subnational government"
+  },
+  {
+    "value": "15113",
+    "label": "Anti-corruption organisations and institutions"
+  },
+  {
+    "value": "15114",
+    "label": "Domestic Revenue Mobilisation"
+  },
+  {
+    "value": "15116",
+    "label": "Tax collection"
+  },
+  {
+    "value": "15117",
+    "label": "Budget planning"
+  },
+  {
+    "value": "15118",
+    "label": "National audit"
+  },
+  {
+    "value": "15119",
+    "label": "Debt and aid management"
+  },
+  {
+    "value": "15120",
+    "label": "Public sector financial management"
+  },
+  {
+    "value": "15121",
+    "label": "Foreign affairs"
+  },
+  {
+    "value": "15122",
+    "label": "Diplomatic missions"
+  },
+  {
+    "value": "15123",
+    "label": "Administration of developing countries' foreign aid"
+  },
+  {
+    "value": "15124",
+    "label": "General personnel services"
+  },
+  {
+    "value": "15125",
+    "label": "Central procurement"
+  },
+  {
+    "value": "15126",
+    "label": "Other general public services"
+  },
+  {
+    "value": "15127",
+    "label": "National monitoring and evaluation"
+  },
+  {
+    "value": "15128",
+    "label": "Local government finance"
+  },
+  {
+    "value": "15129",
+    "label": "Other central transfers to institutions"
+  },
+  {
+    "value": "15130",
+    "label": "Legal and judicial development"
+  },
+  {
+    "value": "15131",
+    "label": "Justice, law and order policy, planning and administration"
+  },
+  {
+    "value": "15132",
+    "label": "Police"
+  },
+  {
+    "value": "15133",
+    "label": "Fire and rescue services"
+  },
+  {
+    "value": "15134",
+    "label": "Judicial affairs"
+  },
+  {
+    "value": "15135",
+    "label": "Ombudsman"
+  },
+  {
+    "value": "15136",
+    "label": "Immigration"
+  },
+  {
+    "value": "15137",
+    "label": "Prisons"
+  },
+  {
+    "value": "15140",
+    "label": "Government administration"
+  },
+  {
+    "value": "15142",
+    "label": "Macroeconomic policy"
+  },
+  {
+    "value": "15143",
+    "label": "Meteorological services"
+  },
+  {
+    "value": "15144",
+    "label": "National standards development"
+  },
+  {
+    "value": "15150",
+    "label": "Democratic participation and civil society"
+  },
+  {
+    "value": "15151",
+    "label": "Elections"
+  },
+  {
+    "value": "15152",
+    "label": "Legislatures and political parties"
+  },
+  {
+    "value": "15153",
+    "label": "Media and free flow of information"
+  },
+  {
+    "value": "15154",
+    "label": "Executive office"
+  },
+  {
+    "value": "15155",
+    "label": "Tax policy and administration support"
+  },
+  {
+    "value": "15156",
+    "label": "Other non-tax revenue mobilisation"
+  },
+  {
+    "value": "15160",
+    "label": "Human rights"
+  },
+  {
+    "value": "15161",
+    "label": "Elections"
+  },
+  {
+    "value": "15162",
+    "label": "Human rights"
+  },
+  {
+    "value": "15163",
+    "label": "Free flow of information"
+  },
+  {
+    "value": "15164",
+    "label": "Women's equality organisations and institutions"
+  },
+  {
+    "value": "15170",
+    "label": "Women’s equality organisations and institutions"
+  },
+  {
+    "value": "15180",
+    "label": "Ending violence against women and girls"
+  },
+  {
+    "value": "15185",
+    "label": "Local government administration"
+  },
+  {
+    "value": "15210",
+    "label": "Security system management and reform"
+  },
+  {
+    "value": "15220",
+    "label": "Civilian peace-building, conflict prevention and resolution"
+  },
+  {
+    "value": "15230",
+    "label": "Participation in international peacekeeping operations"
+  },
+  {
+    "value": "15240",
+    "label": "Reintegration and SALW control"
+  },
+  {
+    "value": "15250",
+    "label": "Removal of land mines and explosive remnants of war"
+  },
+  {
+    "value": "15261",
+    "label": "Child soldiers (Prevention and demobilisation)"
+  },
+  {
+    "value": "16010",
+    "label": "Social/ welfare services"
+  },
+  {
+    "value": "16011",
+    "label": "Social protection and welfare services policy, planning and administration"
+  },
+  {
+    "value": "16012",
+    "label": "Social security (excl pensions)"
+  },
+  {
+    "value": "16013",
+    "label": "General pensions"
+  },
+  {
+    "value": "16014",
+    "label": "Civil service pensions"
+  },
+  {
+    "value": "16015",
+    "label": "Social services (incl youth development and women+ children)"
+  },
+  {
+    "value": "16020",
+    "label": "Employment policy and administrative management"
+  },
+  {
+    "value": "16030",
+    "label": "Housing policy and administrative management"
+  },
+  {
+    "value": "16040",
+    "label": "Low-cost housing"
+  },
+  {
+    "value": "16050",
+    "label": "Multisector aid for basic social services"
+  },
+  {
+    "value": "16061",
+    "label": "Culture and recreation"
+  },
+  {
+    "value": "16062",
+    "label": "Statistical capacity building"
+  },
+  {
+    "value": "16063",
+    "label": "Narcotics control"
+  },
+  {
+    "value": "16064",
+    "label": "Social mitigation of HIV/AIDS"
+  },
+  {
+    "value": "16065",
+    "label": "Recreation and sport"
+  },
+  {
+    "value": "16066",
+    "label": "Culture"
+  },
+  {
+    "value": "21010",
+    "label": "Transport policy and administrative management"
+  },
+  {
+    "value": "21011",
+    "label": "Transport policy, planning and administration"
+  },
+  {
+    "value": "21012",
+    "label": "Public transport services"
+  },
+  {
+    "value": "21013",
+    "label": "Transport regulation"
+  },
+  {
+    "value": "21020",
+    "label": "Road transport"
+  },
+  {
+    "value": "21021",
+    "label": "Feeder road construction"
+  },
+  {
+    "value": "21022",
+    "label": "Feeder road maintenance"
+  },
+  {
+    "value": "21023",
+    "label": "National road construction"
+  },
+  {
+    "value": "21024",
+    "label": "National road maintenance"
+  },
+  {
+    "value": "21030",
+    "label": "Rail transport"
+  },
+  {
+    "value": "21040",
+    "label": "Water transport"
+  },
+  {
+    "value": "21050",
+    "label": "Air transport"
+  },
+  {
+    "value": "21061",
+    "label": "Storage"
+  },
+  {
+    "value": "21081",
+    "label": "Education and training in transport and storage"
+  },
+  {
+    "value": "22010",
+    "label": "Communications policy and administrative management"
+  },
+  {
+    "value": "22011",
+    "label": "Communications policy, planning and administration"
+  },
+  {
+    "value": "22012",
+    "label": "Postal services"
+  },
+  {
+    "value": "22013",
+    "label": "Information services"
+  },
+  {
+    "value": "22020",
+    "label": "Telecommunications"
+  },
+  {
+    "value": "22030",
+    "label": "Radio/television/print media"
+  },
+  {
+    "value": "22040",
+    "label": "Information and communication technology (ICT)"
+  },
+  {
+    "value": "23010",
+    "label": "Energy policy and administrative management"
+  },
+  {
+    "value": "23020",
+    "label": "Power generation/non-renewable sources"
+  },
+  {
+    "value": "23030",
+    "label": "Power generation/renewable sources"
+  },
+  {
+    "value": "23040",
+    "label": "Electrical transmission/ distribution"
+  },
+  {
+    "value": "23050",
+    "label": "Gas distribution"
+  },
+  {
+    "value": "23061",
+    "label": "Oil-fired power plants"
+  },
+  {
+    "value": "23062",
+    "label": "Gas-fired power plants"
+  },
+  {
+    "value": "23063",
+    "label": "Coal-fired power plants"
+  },
+  {
+    "value": "23064",
+    "label": "Nuclear power plants"
+  },
+  {
+    "value": "23065",
+    "label": "Hydro-electric power plants"
+  },
+  {
+    "value": "23066",
+    "label": "Geothermal energy"
+  },
+  {
+    "value": "23067",
+    "label": "Solar energy"
+  },
+  {
+    "value": "23068",
+    "label": "Wind power"
+  },
+  {
+    "value": "23069",
+    "label": "Ocean power"
+  },
+  {
+    "value": "23070",
+    "label": "Biomass"
+  },
+  {
+    "value": "23081",
+    "label": "Energy education/training"
+  },
+  {
+    "value": "23082",
+    "label": "Energy research"
+  },
+  {
+    "value": "23110",
+    "label": "Energy policy and administrative management"
+  },
+  {
+    "value": "23111",
+    "label": "Energy sector policy, planning and administration"
+  },
+  {
+    "value": "23112",
+    "label": "Energy regulation"
+  },
+  {
+    "value": "23181",
+    "label": "Energy education/training"
+  },
+  {
+    "value": "23182",
+    "label": "Energy research"
+  },
+  {
+    "value": "23183",
+    "label": "Energy conservation and demand-side efficiency"
+  },
+  {
+    "value": "23210",
+    "label": "Energy generation, renewable sources – multiple technologies"
+  },
+  {
+    "value": "23220",
+    "label": "Hydro-electric power plants"
+  },
+  {
+    "value": "23230",
+    "label": "Solar energy"
+  },
+  {
+    "value": "23240",
+    "label": "Wind energy"
+  },
+  {
+    "value": "23250",
+    "label": "Marine energy"
+  },
+  {
+    "value": "23260",
+    "label": "Geothermal energy"
+  },
+  {
+    "value": "23270",
+    "label": "Biofuel-fired power plants"
+  },
+  {
+    "value": "23310",
+    "label": "Energy generation, non-renewable sources – unspecified"
+  },
+  {
+    "value": "23320",
+    "label": "Coal-fired electric power plants"
+  },
+  {
+    "value": "23330",
+    "label": "Oil-fired electric power plants"
+  },
+  {
+    "value": "23340",
+    "label": "Natural gas-fired electric power plants"
+  },
+  {
+    "value": "23350",
+    "label": "Fossil fuel electric power plants with carbon capture and storage (CCS)"
+  },
+  {
+    "value": "23360",
+    "label": "Non-renewable waste-fired electric power plants"
+  },
+  {
+    "value": "23410",
+    "label": "Hybrid energy electric power plants"
+  },
+  {
+    "value": "23510",
+    "label": "Nuclear energy electric power plants"
+  },
+  {
+    "value": "23610",
+    "label": "Heat plants"
+  },
+  {
+    "value": "23620",
+    "label": "District heating and cooling"
+  },
+  {
+    "value": "23630",
+    "label": "Electric power transmission and distribution"
+  },
+  {
+    "value": "23640",
+    "label": "Gas distribution"
+  },
+  {
+    "value": "24010",
+    "label": "Financial policy and administrative management"
+  },
+  {
+    "value": "24020",
+    "label": "Monetary institutions"
+  },
+  {
+    "value": "24030",
+    "label": "Formal sector financial intermediaries"
+  },
+  {
+    "value": "24040",
+    "label": "Informal/semi-formal financial intermediaries"
+  },
+  {
+    "value": "24081",
+    "label": "Education/training in banking and financial services"
+  },
+  {
+    "value": "25010",
+    "label": "Business support services and institutions"
+  },
+  {
+    "value": "25020",
+    "label": "Privatisation"
+  },
+  {
+    "value": "31110",
+    "label": "Agricultural policy and administrative management"
+  },
+  {
+    "value": "31120",
+    "label": "Agricultural development"
+  },
+  {
+    "value": "31130",
+    "label": "Agricultural land resources"
+  },
+  {
+    "value": "31140",
+    "label": "Agricultural water resources"
+  },
+  {
+    "value": "31150",
+    "label": "Agricultural inputs"
+  },
+  {
+    "value": "31161",
+    "label": "Food crop production"
+  },
+  {
+    "value": "31162",
+    "label": "Industrial crops/export crops"
+  },
+  {
+    "value": "31163",
+    "label": "Livestock"
+  },
+  {
+    "value": "31164",
+    "label": "Agrarian reform"
+  },
+  {
+    "value": "31165",
+    "label": "Agricultural alternative development"
+  },
+  {
+    "value": "31166",
+    "label": "Agricultural extension"
+  },
+  {
+    "value": "31181",
+    "label": "Agricultural education/training"
+  },
+  {
+    "value": "31182",
+    "label": "Agricultural research"
+  },
+  {
+    "value": "31191",
+    "label": "Agricultural services"
+  },
+  {
+    "value": "31192",
+    "label": "Plant and post-harvest protection and pest control"
+  },
+  {
+    "value": "31193",
+    "label": "Agricultural financial services"
+  },
+  {
+    "value": "31194",
+    "label": "Agricultural co-operatives"
+  },
+  {
+    "value": "31195",
+    "label": "Livestock/veterinary services"
+  },
+  {
+    "value": "31210",
+    "label": "Forestry policy and administrative management"
+  },
+  {
+    "value": "31220",
+    "label": "Forestry development"
+  },
+  {
+    "value": "31261",
+    "label": "Fuelwood/charcoal"
+  },
+  {
+    "value": "31281",
+    "label": "Forestry education/training"
+  },
+  {
+    "value": "31282",
+    "label": "Forestry research"
+  },
+  {
+    "value": "31291",
+    "label": "Forestry services"
+  },
+  {
+    "value": "31310",
+    "label": "Fishing policy and administrative management"
+  },
+  {
+    "value": "31320",
+    "label": "Fishery development"
+  },
+  {
+    "value": "31381",
+    "label": "Fishery education/training"
+  },
+  {
+    "value": "31382",
+    "label": "Fishery research"
+  },
+  {
+    "value": "31391",
+    "label": "Fishery services"
+  },
+  {
+    "value": "32110",
+    "label": "Industrial policy and administrative management"
+  },
+  {
+    "value": "32120",
+    "label": "Industrial development"
+  },
+  {
+    "value": "32130",
+    "label": "Small and medium-sized enterprises (SME) development"
+  },
+  {
+    "value": "32140",
+    "label": "Cottage industries and handicraft"
+  },
+  {
+    "value": "32161",
+    "label": "Agro-industries"
+  },
+  {
+    "value": "32162",
+    "label": "Forest industries"
+  },
+  {
+    "value": "32163",
+    "label": "Textiles, leather and substitutes"
+  },
+  {
+    "value": "32164",
+    "label": "Chemicals"
+  },
+  {
+    "value": "32165",
+    "label": "Fertilizer plants"
+  },
+  {
+    "value": "32166",
+    "label": "Cement/lime/plaster"
+  },
+  {
+    "value": "32167",
+    "label": "Energy manufacturing"
+  },
+  {
+    "value": "32168",
+    "label": "Pharmaceutical production"
+  },
+  {
+    "value": "32169",
+    "label": "Basic metal industries"
+  },
+  {
+    "value": "32170",
+    "label": "Non-ferrous metal industries"
+  },
+  {
+    "value": "32171",
+    "label": "Engineering"
+  },
+  {
+    "value": "32172",
+    "label": "Transport equipment industry"
+  },
+  {
+    "value": "32182",
+    "label": "Technological research and development"
+  },
+  {
+    "value": "32210",
+    "label": "Mineral/mining policy and administrative management"
+  },
+  {
+    "value": "32220",
+    "label": "Mineral prospection and exploration"
+  },
+  {
+    "value": "32261",
+    "label": "Coal"
+  },
+  {
+    "value": "32262",
+    "label": "Oil and gas"
+  },
+  {
+    "value": "32263",
+    "label": "Ferrous metals"
+  },
+  {
+    "value": "32264",
+    "label": "Nonferrous metals"
+  },
+  {
+    "value": "32265",
+    "label": "Precious metals/materials"
+  },
+  {
+    "value": "32266",
+    "label": "Industrial minerals"
+  },
+  {
+    "value": "32267",
+    "label": "Fertilizer minerals"
+  },
+  {
+    "value": "32268",
+    "label": "Offshore minerals"
+  },
+  {
+    "value": "32310",
+    "label": "Construction policy and administrative management"
+  },
+  {
+    "value": "33110",
+    "label": "Trade policy and administrative Management"
+  },
+  {
+    "value": "33120",
+    "label": "Trade facilitation"
+  },
+  {
+    "value": "33130",
+    "label": "Regional trade agreements (RTAs)"
+  },
+  {
+    "value": "33140",
+    "label": "Multilateral trade negotiations"
+  },
+  {
+    "value": "33150",
+    "label": "Trade-related adjustment"
+  },
+  {
+    "value": "33181",
+    "label": "Trade education/training"
+  },
+  {
+    "value": "33210",
+    "label": "Tourism policy and administrative management"
+  },
+  {
+    "value": "41010",
+    "label": "Environmental policy and administrative management"
+  },
+  {
+    "value": "41020",
+    "label": "Biosphere protection"
+  },
+  {
+    "value": "41030",
+    "label": "Bio-diversity"
+  },
+  {
+    "value": "41040",
+    "label": "Site preservation"
+  },
+  {
+    "value": "41050",
+    "label": "Flood prevention/control"
+  },
+  {
+    "value": "41081",
+    "label": "Environmental education/ training"
+  },
+  {
+    "value": "41082",
+    "label": "Environmental research"
+  },
+  {
+    "value": "43010",
+    "label": "Multisector aid"
+  },
+  {
+    "value": "43030",
+    "label": "Urban development and management"
+  },
+  {
+    "value": "43031",
+    "label": "Urban land policy and management"
+  },
+  {
+    "value": "43032",
+    "label": "Urban development"
+  },
+  {
+    "value": "43040",
+    "label": "Rural development"
+  },
+  {
+    "value": "43041",
+    "label": "Rural land policy and management"
+  },
+  {
+    "value": "43042",
+    "label": "Rural development"
+  },
+  {
+    "value": "43050",
+    "label": "Non-agricultural alternative development"
+  },
+  {
+    "value": "43081",
+    "label": "Multisector education/training"
+  },
+  {
+    "value": "43082",
+    "label": "Research/scientific institutions"
+  },
+  {
+    "value": "51010",
+    "label": "General budget support-related aid"
+  },
+  {
+    "value": "52010",
+    "label": "Food aid/Food security programmes"
+  },
+  {
+    "value": "53030",
+    "label": "Import support (capital goods)"
+  },
+  {
+    "value": "53040",
+    "label": "Import support (commodities)"
+  },
+  {
+    "value": "60010",
+    "label": "Action relating to debt"
+  },
+  {
+    "value": "60020",
+    "label": "Debt forgiveness"
+  },
+  {
+    "value": "60030",
+    "label": "Relief of multilateral debt"
+  },
+  {
+    "value": "60040",
+    "label": "Rescheduling and refinancing"
+  },
+  {
+    "value": "60061",
+    "label": "Debt for development swap"
+  },
+  {
+    "value": "60062",
+    "label": "Other debt swap"
+  },
+  {
+    "value": "60063",
+    "label": "Debt buy-back"
+  },
+  {
+    "value": "72010",
+    "label": "Material relief assistance and services"
+  },
+  {
+    "value": "72040",
+    "label": "Emergency food aid"
+  },
+  {
+    "value": "72050",
+    "label": "Relief co-ordination; protection and support services"
+  },
+  {
+    "value": "73010",
+    "label": "Reconstruction relief and rehabilitation"
+  },
+  {
+    "value": "74010",
+    "label": "Disaster prevention and preparedness"
+  },
+  {
+    "value": "91010",
+    "label": "Administrative costs (non-sector allocable)"
+  },
+  {
+    "value": "92010",
+    "label": "Support to national NGOs"
+  },
+  {
+    "value": "92020",
+    "label": "Support to international NGOs"
+  },
+  {
+    "value": "92030",
+    "label": "Support to local and regional NGOs"
+  },
+  {
+    "value": "93010",
+    "label": "Refugees in donor countries (non-sector allocable)"
+  },
+  {
+    "value": "99810",
+    "label": "Sectors not specified"
+  },
+  {
+    "value": "99820",
+    "label": "Promotion of development awareness (non-sector allocable)"
+  }
+]

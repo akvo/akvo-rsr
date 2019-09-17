@@ -217,7 +217,10 @@ var ProjectDirectory = React.createClass({
                     : this.props.i18n.loading_text,
             filtered = this.props.filtered ? " filtered" : "",
             listWidth = this.props.hide_map ? "col-sm-12" : "col-sm-7",
-            listMsg = this.props.i18n.list_message_text;
+            listMsg = this.props.i18n.list_message_text,
+            allProjects = this.props.i18n.all_projects_text,
+            allUpdates = this.props.i18n.all_updates_text;
+
 
         return (
             <section className="main-list projects">
@@ -249,6 +252,10 @@ var ProjectDirectory = React.createClass({
                             id="projList"
                         >
                             <p className="text-center listMsg">{listMsg}</p>
+                            <p className="submenu-footer-stead">
+                              <a href="/en/projects">{allProjects}</a>
+                              <a href="/en/updates">{allUpdates}</a>
+                            </p>
                             <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
                                     if (this.props.type == "projects") {

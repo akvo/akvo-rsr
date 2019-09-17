@@ -203,6 +203,7 @@ export default [
   {name: 'South Georgia and the South Sandwich Islands', code: 'GS'},
   {name: 'Spain', code: 'ES'},
   {name: 'Sri Lanka', code: 'LK'},
+  { name: 'South Sudan', code: 'SS' },
   {name: 'Sudan', code: 'SD'},
   {name: 'Suriname', code: 'SR'},
   {name: 'Svalbard and Jan Mayen', code: 'SJ'},

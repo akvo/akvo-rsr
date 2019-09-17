@@ -61,7 +61,7 @@ const LocationsView = ({ validations, fields, primaryOrganisation, showRequired,
           {!isEUTF &&
           <Aux>
             <hr />
-            <RecipientCountries formPush={push} {...passProps} />
+            <RecipientCountries formPush={push} {...passProps} isLast={!fieldExists('recipientRegions')} />
           </Aux>
           }
           {(fieldExists('recipientRegions')) && (

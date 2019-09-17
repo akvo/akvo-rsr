@@ -1120,8 +1120,7 @@ class Project(TimestampsMixin, models.Model):
         First, removes the current IATI checks, then adds new IATI checks.
         """
         # Remove old IATI checks
-        for old_iati_check in self.iati_checks.all():
-            old_iati_check.delete()
+        self.iati_checks.all().delete()
 
         # Perform new checks and save to database
         status_codes = {

@@ -32,6 +32,7 @@ akvo/rsr/front-end/node_modules/
 akvo/rsr/front-end/static/rsr/dist/
 vagrant/vagrant-ssh-conf.*
 webpack-stats.json
+node_modules/
 
 # PG migration
 pg_migrate_conf.yml

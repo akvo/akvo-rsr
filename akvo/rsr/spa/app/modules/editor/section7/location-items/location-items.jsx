@@ -30,9 +30,16 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, showRequire
       <ItemArray
         setName="locationItems"
         sectionIndex={7}
-        header={(index, location) => (
-          <span>{t('Location')} {index + 1}: {location && location.text.split(',')[0]}</span>
-        )}
+        header={(index, location) => {
+          let text
+          if(location){
+            if (location.text.split(',')[0] !== '(Unspecified city)') text = location.text.split(',')[0]
+            else text = location.text.split(',')[1]
+          }
+          return (
+            <span>{t('Location')} {index + 1}: {text}</span>
+          )
+        }}
         headerField="location"
         formPush={formPush}
         newItem={{ administratives: []}}
