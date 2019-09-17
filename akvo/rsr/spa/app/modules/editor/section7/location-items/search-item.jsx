@@ -13,7 +13,7 @@ const { Option } = Select
 let timeout
 let currentValue
 
-const locationTypes = ['city', 'village', 'neighbourhood']
+const locationTypes = ['city', 'village', 'neighbourhood', 'state_district']
 
 function $fetch(value, callback) {
   if (timeout) {

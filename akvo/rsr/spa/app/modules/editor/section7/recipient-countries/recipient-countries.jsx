@@ -13,7 +13,7 @@ const { Item } = Form
 
 const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
-const RecipientCountries = ({ validations, formPush, showRequired, errors }) => {
+const RecipientCountries = ({ validations, formPush, showRequired, errors, isLast }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -91,7 +91,7 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors }) => 
           </div>
         )}
         addButton={({ onClick }) => (
-          <Button onClick={onClick} icon="plus" type="dashed" block>
+          <Button onClick={onClick} icon="plus" type="dashed" block className={isLast ? 'bottom-btn' : null}>
             {t('Add recipient country')}
           </Button>
         )}
