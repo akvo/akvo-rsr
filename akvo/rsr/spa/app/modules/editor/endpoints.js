@@ -84,7 +84,7 @@ export const transforms = {
                 lat: result.latitude,
                 lng: result.longitude
               },
-              text: result.city ? `${result.city}, ${result.countryLabel}` : result.countryLabel
+              text: result.city ? `${result.city}, ${result.countryLabel}` : `(Unspecified city), ${result.countryLabel}`
             }
           }))
         }
