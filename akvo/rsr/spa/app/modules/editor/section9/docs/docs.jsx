@@ -32,7 +32,7 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
     dispatch({ type: actionTypes.ADD_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {categories: []} })
   }
   const handleNewDocumentUploaded = (id, document) => {
-    dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document} })
+    dispatch({ type: actionTypes.ADDED_SET_ITEM, sectionIndex: 9, setName: 'docs', item: {id, document}, validate: true })
   }
   const handleDocumentUpdated = (itemIndex, itemId) => (document) => {
     dispatch({ type: actionTypes.EDIT_SET_ITEM, sectionIndex: 9, setName: 'docs', itemIndex, itemId, fields: { document }})
@@ -50,7 +50,6 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
       setUploadOn({ ...uploadOn, ...val })
     }
   }
-  console.log(uploadOn)
   return (
     <div>
       <h3>{t('Documents')}</h3>
@@ -80,13 +79,17 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
               <Radio.Button value="upload">{t('Upload')}</Radio.Button>
             </Radio.Group>
             </Condition>
+            <div className="url-input-wrapper">
             {!uploadOn[index] &&
               <FinalField
                 name={`${name}.url`}
                 control="input"
                 placeholder="https://..."
+                withLabel
+                label={<span />}
               />
             }
+            </div>
             {uploadOn[index] &&
               <FinalField
                 name={`${name}.id`}
@@ -108,22 +111,49 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
               />
             }
           </Item>
-          <Item label={<InputLabel tooltip={t('Enter the title of your document.')}>{t('title')}</InputLabel>}>
-            <FinalField name={`${name}.title`} control="input" />
-          </Item>
+          <FinalField
+            name={`${name}.title`}
+            control="input"
+            withLabel
+            optional={isOptional}
+            dict={{
+              label: t('title'),
+              tooltip: t('Enter the title of your document.')
+            }}
+          />
           <Row gutter={16}>
             {fieldExists('titleLanguage') &&
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip={t('Select the language of the document title.')}>{t('title language')}</InputLabel>}>
-                <FinalField name={`${name}.titleLanguage`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
-              </Item>
+              <FinalField
+                name={`${name}.titleLanguage`}
+                control="select"
+                options={LANGUAGE_OPTIONS}
+                showSearch
+                optionFilterProp="children"
+                withLabel
+                optional={isOptional}
+                dict={{
+                  tooltip: 'Select the language of the document title.',
+                  label: 'title language'
+                }}
+              />
             </Col>
             }
             {fieldExists('language') &&
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip={t('Select the language that the document is written in.')}>{t('document language')}</InputLabel>}>
-                <FinalField name={`${name}.language`} control="select" options={LANGUAGE_OPTIONS} showSearch optionFilterProp="children" />
-              </Item>
+              <FinalField
+                name={`${name}.language`}
+                control="select"
+                options={LANGUAGE_OPTIONS}
+                showSearch
+                optionFilterProp="children"
+                withLabel
+                optional={isOptional}
+                dict={{
+                  label: t('document language'),
+                  tooltip: t('Select the language that the document is written in.')
+                }}
+              />
             </Col>
             }
             {fieldExists('documentDate') && (
@@ -135,15 +165,18 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
             )}
             {fieldExists('format') && (
             <Col span={12}>
-              <Item label={<InputLabel optional={isOptional('format')}>{t('document format')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.format`}
-                  control="select"
-                  options={MIME_LIST.map(({ title, mime }) => ({ value: mime, label: title, small: mime }))}
-                  showSearch optionFilterProp="children"
-                  dropdownMatchSelectWidth={false}
-                />
-              </Item>
+              <FinalField
+                name={`${name}.format`}
+                control="select"
+                options={MIME_LIST.map(({ title, mime }) => ({ value: mime, label: title, small: mime }))}
+                showSearch optionFilterProp="children"
+                dropdownMatchSelectWidth={false}
+                withLabel
+                optional={isOptional}
+                dict={{
+                  label: 'document format'
+                }}
+              />
             </Col>
             )}
           </Row>

@@ -18,4 +18,13 @@
       margin-right: 2px;
     }
   }
+  .url-input-wrapper{
+    .ant-form-item-label{
+      padding: 0;
+    }
+    .ant-form-item{
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+  }
 }

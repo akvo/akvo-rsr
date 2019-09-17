@@ -3,7 +3,7 @@ import { validationType, transformUndefined } from '../../../../utils/validation
 
 const RSR = yup.object().shape({
   url: yup.string().transform(transformUndefined).when('document', {
-    is: value => value === null,
+    is: value => value === null || value === undefined || value === '',
     then: yup.string().required()
   }),
   title: yup.string().transform(transformUndefined).required(),
