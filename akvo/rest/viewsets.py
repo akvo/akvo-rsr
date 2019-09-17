@@ -20,6 +20,7 @@ from .pagination import TastypieOffsetPagination
 
 logger = logging.getLogger(__name__)
 
+
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
     """
     Base class to allow any safe methods ('GET', 'OPTIONS' and 'HEAD') without needing to
