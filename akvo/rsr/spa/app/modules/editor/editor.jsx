@@ -132,9 +132,7 @@ const ContentBar = connect(
       {publishingStatus === 'published' && (
         <Aux>
           <Dropdown.Button
-            // onClick={() => {}}
-            href={absoluteUrl}
-            target="_blank"
+            onClick={() => window.open(absoluteUrl)}
             trigger="click"
             overlay={
               <Menu>
