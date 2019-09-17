@@ -32,7 +32,7 @@ const Aux = node => node.children
 
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
-const Info = ({ validations, fields, projectId }) => {
+const Info = ({ validations, fields, projectId, errors, showRequired }) => {
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
@@ -55,6 +55,10 @@ const Info = ({ validations, fields, projectId }) => {
     { value: '7', label: t('Bilateral, ex-post reporting on NGOs\' activities funded through core contributions') },
     { value: '8', label: t('bilateral, triangular co-operation: activities where one or more bilateral providers of development co-operation or international organisations support South-South co-operation, joining forces with developing countries to facilitate a sharing of knowledge and experience among all partners involved.'), }
   ]
+  let subtitleValidateStatus = ''
+  if (showRequired && errors.findIndex(it => it.path === 'subtitle') !== -1) {
+    subtitleValidateStatus = 'error'
+  }
   return (
     <div className="info view">
       <SectionContext.Provider value="section1">
@@ -78,13 +82,6 @@ const Info = ({ validations, fields, projectId }) => {
             control="textarea"
             autosize
           />
-          {/* <FinalField
-            name="subtitle"
-            withLabel
-            withoutTooltip
-            control="textarea"
-            autosize
-          /> */}
           <Field
             name="subtitle"
             render={(subProps) => (
@@ -95,12 +92,12 @@ const Info = ({ validations, fields, projectId }) => {
                   name="iatiActivityId"
                   render={({ input }) => (
                 <Aux>
-                <Item label={<InputLabel optional={isOptional('subtitle')}>{t('section1::subtitle::label')}</InputLabel>}>
+                <Item validateStatus={subtitleValidateStatus} label={<InputLabel optional={isOptional('subtitle')}>{t('section1::subtitle::label')}</InputLabel>}>
                 {poProps.input.value !== 3394 && (
                   <Input.TextArea {...{ ...subProps.input, ...{ autosize: true } }} />
                 )}
                 {poProps.input.value === 3394 && (
-                  <Input.TextArea autosize value={subProps.input.value} onChange={({ target: { value } }) => { subProps.input.onChange(value); input.onChange(`${input.value.substr(0, input.value.indexOf('_', 11) + 1)}${subProps.input.value}`) }} />
+                  <Input.TextArea autosize value={subProps.input.value} onChange={({ target: { value } }) => { subProps.input.onChange(value); input.onChange(`${input.value.substr(0, input.value.indexOf('_', 11) + 1)}${value}`) }} />
                 )}
                 </Item>
                 {poProps.input.value === 3394 && (
@@ -295,9 +292,9 @@ const Info = ({ validations, fields, projectId }) => {
 }
 
 export default connect(
-  ({ editorRdr: { projectId, section1: { fields }, validations}}) => ({ fields, validations, projectId, }),
+  ({ editorRdr: { projectId, showRequired, section1: { fields, errors }, validations } }) => ({ fields, validations, projectId, errors, showRequired }),
 )(React.memo(Info, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || (prevProps.showRequired !== nextProps.showRequired) || (prevProps.errors.length !== nextProps.errors.length)
   return !shouldUpdate
 }))
