@@ -100,7 +100,7 @@ const Info = ({ validations, fields, projectId }) => {
                   <Input.TextArea {...{ ...subProps.input, ...{ autosize: true } }} />
                 )}
                 {poProps.input.value === 3394 && (
-                  <Input.TextArea autosize input={subProps.input} onChange={({ target: { value } }) => { subProps.input.onChange(value); input.onChange(`${input.value.substr(0, input.value.indexOf('_', 11) + 1)}${subProps.input.value}`) }} />
+                  <Input.TextArea autosize value={subProps.input.value} onChange={({ target: { value } }) => { subProps.input.onChange(value); input.onChange(`${input.value.substr(0, input.value.indexOf('_', 11) + 1)}${subProps.input.value}`) }} />
                 )}
                 </Item>
                 {poProps.input.value === 3394 && (
