@@ -8,7 +8,7 @@ from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
 
-from akvo.rsr.models import PublishingStatus
+from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
 
 from rest_framework import authentication, filters, permissions, viewsets
@@ -139,6 +139,38 @@ class PublicProjectViewSet(BaseRSRViewSet):
             )
 
         return queryset.distinct()
+
+    def create(self, request, *args, **kwargs):
+        response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
+        obj = self.queryset.model.objects.get(id=response.data['id'])
+        project = self.get_project(obj)
+        project.update_iati_checks()
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        project = self.get_project(self.get_object())
+        response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
+        project.update_iati_checks()
+        return response
+
+    def update(self, request, *args, **kwargs):
+        response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
+        project = self.get_project(self.get_object())
+        project.update_iati_checks()
+        return response
+
+    @staticmethod
+    def get_project(obj):
+        obj_model = obj._meta.model
+        model_project_relation = getattr(obj_model, 'project_relation', None)
+        if model_project_relation:
+            query = {model_project_relation: [obj.id]}
+            project = Project.objects.get(**query)
+        elif obj_model == Project:
+            project = obj
+        else:
+            project = obj.project
+        return project
 
     @staticmethod
     def projects_filter_for_non_privileged_users(user, queryset, project_relation, action='create'):

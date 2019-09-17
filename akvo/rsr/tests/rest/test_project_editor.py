@@ -7,6 +7,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 import datetime
+import json
 from tempfile import NamedTemporaryFile
 from urllib import urlencode
 
@@ -1050,3 +1051,156 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         self.assertIn('id', response.data)
         for key in data:
             self.assertEqual(response.data[key], data[key])
+
+
+class ProjectUpdateTestCase(BaseTestCase):
+    """Test that project related methods are called when Project Editor saves"""
+
+    def setUp(self):
+        super(ProjectUpdateTestCase, self).setUp()
+        self.username = 'example@akvo.org'
+        self.password = 'password'
+        self.user = self.create_user(self.username, self.password)
+        self.org = self.create_organisation('Akvo')
+        self.make_org_admin(self.user, self.org)
+        self.project = self.create_project('')
+        self.make_partner(self.project, self.org)
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        self.c.login(username=self.username, password=self.password)
+        self.project.update_iati_checks()
+
+    def test_update_project_attributes_runs_iati_checks(self):
+        # Given
+        success_checks = self.project.iati_checks.filter(status=1).count()
+        error_checks = self.project.iati_checks.filter(status=3).count()
+        url = '/rest/v1/project/{}/?format=json'.format(self.project.id)
+        data = {"title": "DEMONSTRATION!", "date_start_planned": "2009-06-10"}
+
+        # When
+        response = self.c.patch(
+            url, data=json.dumps(data), follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(2, new_success_checks)
+        self.assertEqual(2 + new_error_checks, error_checks)
+
+    def test_create_delete_update_direct_related_object_runs_iati_checks(self):
+        # #### Create
+        # Given
+        success_checks = self.project.iati_checks.filter(status=1).count()
+        error_checks = self.project.iati_checks.filter(status=3).count()
+        url = '/rest/v1/results_framework_lite/?format=json'
+        data = {"type": "1", "indicators": [], "project": self.project.id}
+
+        # When
+        response = self.c.post(
+            url, data=json.dumps(data), follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(0, new_success_checks)
+        self.assertEqual(new_error_checks, 2 + error_checks)
+        result_id = response.data['id']
+
+        # #### Update
+        # Given
+        url = '/rest/v1/results_framework_lite/{}/?format=json'.format(result_id)
+        data = {"title": "Demo Result"}
+
+        # When
+        response = self.c.patch(
+            url, data=json.dumps(data), follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(0, new_success_checks)
+        self.assertEqual(new_error_checks, 1 + error_checks)
+
+        # #### Delete
+        # Given
+        url = '/rest/v1/results_framework_lite/{}/?format=json'.format(result_id)
+
+        # When
+        response = self.c.delete(url, follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 204)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(0, new_success_checks)
+        self.assertEqual(new_error_checks, error_checks)
+
+    def test_create_delete_update_indirect_related_object_runs_iati_checks(self):
+        result = Result.objects.create(project=self.project, type=1, title='Result')
+        self.project.update_iati_checks()
+
+        # #### Create
+        # Given
+        success_checks = self.project.iati_checks.filter(status=1).count()
+        error_checks = self.project.iati_checks.filter(status=3).count()
+        url = '/rest/v1/indicator_framework/?format=json'
+        data = {"type": 1, "periods": [], "dimension_names": [], "result": result.id}
+
+        # When
+        response = self.c.post(
+            url, data=json.dumps(data), follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 201)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(0, new_success_checks)
+        self.assertEqual(new_error_checks, 1 + error_checks)
+
+        indicator_id = response.data['id']
+
+        # #### Update
+        # Given
+        url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator_id)
+        data = {"title": "Demo Indicator"}
+
+        # When
+        response = self.c.patch(
+            url, data=json.dumps(data), follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(0, new_success_checks)
+        self.assertEqual(new_error_checks, error_checks)
+
+        # #### Delete
+        # Given
+        url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator_id)
+
+        # When
+        response = self.c.delete(url, follow=True, content_type='application/json')
+
+        # Then
+        self.assertEqual(response.status_code, 204)
+        self.project.refresh_from_db()
+        new_success_checks = self.project.iati_checks.filter(status=1).count()
+        new_error_checks = self.project.iati_checks.filter(status=3).count()
+        self.assertEqual(0, success_checks)
+        self.assertEqual(0, new_success_checks)
+        self.assertEqual(new_error_checks, error_checks)
