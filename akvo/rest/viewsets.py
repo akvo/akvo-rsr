@@ -4,6 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+import logging
+
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
@@ -15,6 +17,8 @@ from rest_framework import authentication, filters, permissions, viewsets
 
 from .filters import RSRGenericFilterBackend
 from .pagination import TastypieOffsetPagination
+
+logger = logging.getLogger(__name__)
 
 
 class SafeMethodsPermissions(permissions.DjangoObjectPermissions):
@@ -144,19 +148,22 @@ class PublicProjectViewSet(BaseRSRViewSet):
         response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
         obj = self.queryset.model.objects.get(id=response.data['id'])
         project = self.get_project(obj)
-        project.update_iati_checks()
+        if project is not None:
+            project.update_iati_checks()
         return response
 
     def destroy(self, request, *args, **kwargs):
         project = self.get_project(self.get_object())
         response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
-        project.update_iati_checks()
+        if project is not None:
+            project.update_iati_checks()
         return response
 
     def update(self, request, *args, **kwargs):
         response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
         project = self.get_project(self.get_object())
-        project.update_iati_checks()
+        if project is not None:
+            project.update_iati_checks()
         return response
 
     @staticmethod
@@ -168,8 +175,11 @@ class PublicProjectViewSet(BaseRSRViewSet):
             project = Project.objects.get(**query)
         elif obj_model == Project:
             project = obj
-        else:
+        elif hasattr(obj, 'project'):
             project = obj.project
+        else:
+            logger.error('%s does not define a relation to a project', obj_model)
+            project = None
         return project
 
     @staticmethod
