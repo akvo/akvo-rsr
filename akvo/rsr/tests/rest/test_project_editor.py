@@ -1046,7 +1046,7 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         response = self.c.post(url, data=urlencode(data), content_type=content_type)
 
         # Then
-        self.assertTrue(response.status_code, 201)
+        self.assertEqual(response.status_code, 201)
         self.assertIn('id', response.data)
         for key in data:
             self.assertEqual(response.data[key], data[key])
