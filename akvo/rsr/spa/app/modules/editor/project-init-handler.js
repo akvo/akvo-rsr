@@ -10,6 +10,8 @@ const insertRouteParams = (route, params) => {
   })
   return route
 }
+let prevParams
+
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
     if(sectionIndex === 4 || sectionIndex === 6 || sectionIndex === 7 || sectionIndex === 8 || sectionIndex === 10){
@@ -57,7 +59,15 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
     })
   }
   useEffect(() => {
-    if(params.id !== 'new'){
+    if (prevParams && prevParams.id !== params.id && params.id !== 'new'){
+      fetchSection(3)
+    }
+  }, [params.id])
+  useEffect(() => {
+    prevParams = params
+  })
+  useEffect(() => {
+    if (params.id !== 'new') {
       props.setProjectId(params.id)
       fetchNextSection()
     } else {
