@@ -59,7 +59,18 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   name={`${name}.type`}
                   render={({input}) => {
                     const type = indicatorTypes.find(it => it.value === input.value)
-                    return <span><span className="capitalized">{type && type.label}</span>&nbsp;{t('Indicator')} {index + 1}</span>
+                    return (
+                      <span className="collapse-header-content">
+                        {/* <span className="capitalized">{type && type.label}</span> */}
+                        &nbsp;{t('Indicator')} {index + 1}
+                        {activeKey.indexOf(String(index)) === -1 && (
+                          <Field
+                            name={`${name}.title`}
+                            render={(titleProp) => <span>&nbsp;- {titleProp.input.value}</span>}
+                          />
+                        )}
+                      </span>
+                    )
                   }}
                 />
               </span>)}

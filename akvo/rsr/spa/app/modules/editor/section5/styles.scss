@@ -204,6 +204,8 @@
     .ant-collapse-item{
       .ant-collapse-header .ant-collapse-extra{
         margin-left: auto;
+        position: absolute;
+        right: 10px;
         .menu-container{
           overflow: hidden;
           display: inline-block;
@@ -318,4 +320,8 @@
   }
 }
 .taxonomy-modal{
+}
+.collapse-header-content{
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
