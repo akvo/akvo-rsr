@@ -34,7 +34,8 @@ function $fetch(value, callback) {
         if (currentValue === value) {
           const data = d.results.filter(it => locationTypes.indexOf(it.components._type) !== -1).map(r => ({
             coordinates: r.geometry,
-            text: r.formatted
+            text: r.formatted,
+            countryCode: r.components.country_code
             // text: `${r.components.city}, ${r.components.country}`,
             // name: r.components.city
           }))
@@ -61,10 +62,10 @@ class SearchItem extends React.Component{
     this.props.onChange(this.state.data[index])
   }
   render(){
-    const { t } = this.props
+    const { t, validateStatus } = this.props
     const options = this.state.data.map((d, index) => <Option value={index}>{d.text}</Option>)
     return (
-      <Item label={<InputLabel>{t('city')}</InputLabel>}>
+      <Item validateStatus={validateStatus} label={<InputLabel>{t('city')}</InputLabel>}>
         <Select
           value={this.props.value.text}
           showSearch
