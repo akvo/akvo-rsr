@@ -1,5 +1,5 @@
 /* global document */
-import React, { useReducer, useState } from 'react'
+import React, { useReducer, useState, useRef } from 'react'
 import { Field, Form as FinalForm } from 'react-final-form'
 import { Select, Form, Spin, Divider, Icon, Modal, Button } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -18,6 +18,8 @@ let intid
 
 const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, disabled, dict }) => {
   const { t } = useTranslation()
+  const inputRef = useRef()
+  const nameInputRef = useRef()
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
     { options: [], loading: false, searchStr: '', showAddOrgModal: false }
@@ -49,6 +51,11 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
     </div>
     </div>
   )
+  const handleAddedOrg = (org) => {
+    setState({ showAddOrgModal: false })
+    orgs.push(org)
+    inputRef.current.onChange(org.id)
+  }
   return (
     <Aux>
     <Field
@@ -57,6 +64,8 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
         <FinalField
           name={`${name}.${fieldName}`}
           render={({input, validateStatus, meta}) => {
+            inputRef.current = input
+            nameInputRef.current = nameProps.input
             const $options =
               orgs && orgs.length > 0
                 ? ((!meta.active && state.searchStr.length === 0 && input.value !== '') ? [{ value: input.value, label: orgs.find(it => it.id === input.value).name }] : state.options)
@@ -65,7 +74,13 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
               <Item validateStatus={validateStatus} label={<InputLabel tooltip={dict.tooltip}>{dict.label}</InputLabel>}>
               <Select
                 {...input}
-                onChange={(val) => { setState({ searchStr: '', options: [] }); input.onChange(val); nameProps.input.onChange($options.find(it => it.value === val).label); input.onBlur() }}
+                onChange={(val) => {
+                  console.log(val)
+                  setState({ searchStr: '', options: [] })
+                  input.onChange(val)
+                  nameProps.input.onChange($options.find(it => it.value === val).label)
+                  input.onBlur()
+                }}
                 disabled={disabled}
                 showSearch
                 loading={loading}
@@ -84,6 +99,7 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
     <AddOrganizationModal
       visible={state.showAddOrgModal}
       onHide={() => setState({ showAddOrgModal: false })}
+      onAddedOrg={handleAddedOrg}
     />
     </Aux>
   )
@@ -104,7 +120,7 @@ const validation = yup.object().shape({
   location: yup.object().required()
 })
 
-const AddOrganizationModal = ({ visible, onHide }) => {
+const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [validationErrors, setValidationErrors] = useState([])
@@ -118,12 +134,14 @@ const AddOrganizationModal = ({ visible, onHide }) => {
     try {
       validation.validateSync(values, { abortEarly: false })
       setValidationErrors([])
-      const { lat, lng } = values.location.coordinates
-      const data = { ...values, lat, lng, iatiCountry: values.location.countryCode }
+      const { location } = values
+      const { lat, lng } = location.coordinates
+      const data = { ...values, latitude: lat, longitude: lng, iatiCountry: values.location.countryCode.toUpperCase(), city: location.text.split(',')[0] }
       delete data.location
       api.post('/organisation/', data)
-        .then(() => {
+        .then((res) => {
           setLoading(false)
+          onAddedOrg(res.data)
         })
         .catch((err) => {
           setLoading(false)
@@ -141,9 +159,11 @@ const AddOrganizationModal = ({ visible, onHide }) => {
       console.log(errors)
       setValidationErrors(errors.inner)
       setLoading(false)
+      document.getElementsByClassName('ant-modal-wrap')[0].scroll({ top: 0, behavior: 'smooth' })
     }
   }
   const getValidateStatus = (fieldName) => {
+    if (!validationErrors) return {}
     const err = validationErrors.find(it => it.path === fieldName)
     const ret = {}
     if(err){
