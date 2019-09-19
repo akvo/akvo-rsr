@@ -1041,7 +1041,14 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         self.c.login(username=self.username, password=self.password)
         url = '/rest/v1/organisation/?format=json'
         content_type = 'application/x-www-form-urlencoded'
-        data = {'name': 'Test Org', 'long_name': 'Test Organisation'}
+        data = {'name': 'Test Org',
+                'long_name': 'Test Organisation',
+                'new_organisation_type': 10,
+                'url': 'http://example.com',
+                'latitude': 12.9,
+                'longitude': 77.5,
+                'city': 'Bangalore',
+                'iati_country': 'IN'}
 
         # When
         response = self.c.post(url, data=urlencode(data), content_type=content_type)
@@ -1049,8 +1056,12 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.assertIn('id', response.data)
-        for key in data:
+        for key in {'name', 'long_name', 'url', 'new_organisation_type', 'url'}:
             self.assertEqual(response.data[key], data[key])
+        org = Organisation.objects.get(id=response.data['id'])
+        self.assertEqual(org.primary_location.latitude, data['latitude'])
+        self.assertEqual(org.primary_location.longitude, data['longitude'])
+        self.assertEqual(org.primary_location.city, data['city'])
 
 
 class ProjectUpdateTestCase(BaseTestCase):
