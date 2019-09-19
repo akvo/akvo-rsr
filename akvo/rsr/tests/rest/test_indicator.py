@@ -9,7 +9,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
-from akvo.rsr.models import Partnership, Result, Indicator, IndicatorPeriod, IndicatorDimensionName
+from akvo.rsr.models import (
+    Partnership, Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
+    OrganisationIndicatorLabel)
 from akvo.rsr.tests.base import BaseTestCase
 
 
@@ -150,6 +152,33 @@ class RestIndicatorTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(data['dimension_names'], response.data['dimension_names'])
+
+    def test_indicator_labels_patch(self):
+        # Given
+        org_label = OrganisationIndicatorLabel.objects.create(
+            organisation=self.reporting_org, label='Label')
+        result = Result.objects.create(project=self.project)
+        indicator = Indicator.objects.create(result=result)
+        self.c.login(username=self.user.username, password="password")
+        url = '/rest/v1/indicator/{}/?format=json'.format(indicator.id)
+        content_type = 'application/json'
+        response = self.c.get(url)
+        data = {'labels': [org_label.id]}
+
+        # When
+        response = self.c.patch(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(data['labels'], response.data['labels'])
+
+        # ### Removing labels
+        data = {'labels': []}
+
+        # When
+        response = self.c.patch(url, data=json.dumps(data), content_type=content_type)
+
+        # Then
+        self.assertEqual(data['labels'], response.data['labels'])
 
     def get_indicator_periods(self, project_id):
         periods = []

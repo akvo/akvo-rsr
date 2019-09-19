@@ -12,6 +12,7 @@ from django.core.exceptions import FieldError
 
 from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
+from akvo.utils import log_project_changes
 
 from rest_framework import authentication, filters, permissions, viewsets
 
@@ -150,20 +151,25 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project = self.get_project(obj)
         if project is not None:
             project.update_iati_checks()
+            log_project_changes(request.user, project, obj, {}, 'added')
         return response
 
     def destroy(self, request, *args, **kwargs):
-        project = self.get_project(self.get_object())
+        obj = self.get_object()
+        project = self.get_project(obj)
         response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
         if project is not None:
             project.update_iati_checks()
+            log_project_changes(request.user, project, obj, {}, 'deleted')
         return response
 
     def update(self, request, *args, **kwargs):
         response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
-        project = self.get_project(self.get_object())
+        obj = self.get_object()
+        project = self.get_project(obj)
         if project is not None:
             project.update_iati_checks()
+            log_project_changes(request.user, project, obj, request.data, 'changed')
         return response
 
     @staticmethod
