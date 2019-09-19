@@ -1204,3 +1204,21 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.assertEqual(0, success_checks)
         self.assertEqual(0, new_success_checks)
         self.assertEqual(new_error_checks, error_checks)
+
+    def test_project_change_updates_last_modified(self):
+        # When/Then
+        self.assertIsNone(self.project.last_modified_by)
+        self.test_update_project_attributes_runs_iati_checks()
+        self.assertEqual(self.project.last_modified_by['user'], self.user)
+
+    def test_project_direct_related_obj_change_updates_last_modified(self):
+        # When/Then
+        self.assertIsNone(self.project.last_modified_by)
+        self.test_create_delete_update_direct_related_object_runs_iati_checks()
+        self.assertEqual(self.project.last_modified_by['user'], self.user)
+
+    def test_project_indirect_related_obj_change_updates_last_modified(self):
+        # When/Then
+        self.assertIsNone(self.project.last_modified_by)
+        self.test_create_delete_update_indirect_related_object_runs_iati_checks()
+        self.assertEqual(self.project.last_modified_by['user'], self.user)
