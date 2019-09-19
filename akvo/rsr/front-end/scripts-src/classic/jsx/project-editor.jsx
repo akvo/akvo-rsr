@@ -4028,7 +4028,7 @@ function addOrgModal() {
                     // Get organisation ID
                     response = JSON.parse(request.responseText);
                     var organisation_id = response.id;
-                    submitOrgLocation(organisation_id, form, form_data);
+                    submitOrgLogo(organisation_id);
 
                     updateThisOrganisationTypeahead(organisation_id);
                     updateOrganisationTypeaheads(true);
@@ -4067,36 +4067,6 @@ function addOrgModal() {
         } else {
             document.querySelector(".orgModal").scrollTop = 0;
         }
-    }
-
-    /* Submits the organisation location, and also calls the submitOrgLogo
-    method at the appropriate time - immediately, if there is no location update
-    to be made, or after the request finishes if a location update request has
-    been sent.
-
-    NOTE: The two requests cannot be made asynchronously since the server method
-    doesn't handle updates correctly. It seems to be losing the logo data, or
-    the location data, based on the order in which it is handling these
-    requests.
-     */
-    function submitOrgLocation(organisation_id, form, form_data) {
-        var latitude = form.querySelector("#latitude").value,
-            longitude = form.querySelector("#longitude").value;
-
-        if (latitude !== "" && longitude !== "") {
-            var api_url = "/rest/v1/organisation_location/?format=json",
-                request_loc = new XMLHttpRequest();
-
-            // Making a synchronous request, since org!
-            request_loc.open("POST", api_url, false);
-            request_loc.setRequestHeader("X-CSRFToken", csrftoken);
-            request_loc.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            request_loc.send(form_data + "&location_target=" + organisation_id);
-        }
-
-        // Call sendOrgLogo after updating location is done. The update location
-        // request is synchronous
-        submitOrgLogo(organisation_id);
     }
 
     function submitOrgLogo(organisation_id) {
