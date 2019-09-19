@@ -407,6 +407,7 @@ class RSRUpdateForm extends React.Component {
                         {formPhoto}
                         <label className="control-label" htmlFor="id_photo">
                             {_("photo")}
+                            <small className="max-upload-size-label">Max: 10MB</small>
                         </label>
                         <input
                             className="input"

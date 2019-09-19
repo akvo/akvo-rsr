@@ -49,6 +49,8 @@ class ProjectSerializer(BaseRSRSerializer):
     status_label = serializers.ReadOnlyField(source='show_plain_status')
     keyword_labels = serializers.ReadOnlyField()
     last_modified_by = serializers.ReadOnlyField(source='last_modified_by.user.get_full_name')
+    allow_indicator_labels = serializers.ReadOnlyField(source='has_indicator_labels')
+    last_modified_at = serializers.ReadOnlyField(source='last_modified_by.last_modified_at')
 
     class Meta:
         model = Project

@@ -145,6 +145,7 @@ class ProjectPhoto extends React.Component {
             </p>
             <p className="ant-upload-text">{t('Drag file here')}</p>
             <p className="ant-upload-hint">{t('or click to browse from computer')}</p>
+            <p><small>Max: 10MB</small></p>
           </div>
           )}
         </Upload.Dragger>
