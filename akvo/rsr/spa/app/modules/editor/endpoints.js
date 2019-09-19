@@ -91,6 +91,18 @@ export const transforms = {
         return transformed
       }
     }
+  },
+  section9: {
+    docs: {
+      request: data => {
+        if(!data) return null
+        const transformed = { ...data }
+        if(transformed.document === ''){
+          delete transformed.document
+        }
+        return transformed
+      }
+    }
   }
 }
 export const getEndpoint = (sectionIndex, setName) => {

@@ -15,7 +15,9 @@ from os.path import abspath, dirname, exists, join, splitext
 import zipfile
 
 from django.conf import settings
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -497,3 +499,51 @@ def get_organisation_collaborator_org_ids(org_id):
     org_ids = set(collaborators.values_list('id', flat=True))
     org_ids.add(org_id)
     return org_ids
+
+
+def log_project_changes(user, project, related_obj, data, action):
+    """Logs all changes to Django's LogEntry model."""
+
+    Project = apps.get_model('rsr', 'Project')
+
+    if action == 'changed':
+        action_flag = CHANGE
+        change = {action: {'fields': list(data.keys())}, "source": "API"}
+
+    elif action == 'added':
+        action_flag = ADDITION
+        change = {action: {}, "source": "API"}
+
+    elif action == 'deleted':
+        action_flag = DELETION
+        change = {action: '', "source": "API"}
+
+    LogEntry.objects.log_action(
+        user_id=user.pk,
+        content_type_id=ContentType.objects.get_for_model(related_obj).pk,
+        object_id=related_obj.pk,
+        object_repr=unicode(related_obj),
+        action_flag=action_flag,
+        change_message=json.dumps([change])
+    )
+
+    if not isinstance(related_obj, Project):
+        obj_name = related_obj._meta.model_name
+        if action_flag in {ADDITION, DELETION}:
+            project_fields = {'name': obj_name, 'object': related_obj.id}
+        else:
+            project_fields = {
+                'fields': ['{}_{}'.format(obj_name, key) for key in data.keys()]
+            }
+        project_change = dict(change)
+        project_change[action] = project_fields
+        LogEntry.objects.log_action(
+            user_id=user.pk,
+            content_type_id=ContentType.objects.get_for_model(project).pk,
+            object_id=project.pk,
+            object_repr=unicode(project),
+            action_flag=CHANGE,
+            change_message=json.dumps([project_change])
+        )
+
+    return

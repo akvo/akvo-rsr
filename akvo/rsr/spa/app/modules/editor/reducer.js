@@ -150,6 +150,9 @@ export default (state = initialState, action) => {
         Object.keys(action.item).forEach(prop => { updatedItem[prop] = action.item[prop] })
       }
       set(newState[sectionKey].fields, `${setName}[${itemIndex}]`, updatedItem)
+      if(action.validate){
+        newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
+      }
       return newState
     case actionTypes.EDIT_SET_ITEM:
       newState.saving = true

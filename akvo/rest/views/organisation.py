@@ -17,7 +17,7 @@ from rest_framework_xml.compat import etree
 from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Organisation, Country
-from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
+from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer, OrganisationLocationSerializer
 from ..viewsets import BaseRSRViewSet
 
 
@@ -74,6 +74,23 @@ class OrganisationViewSet(BaseRSRViewSet):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
     parser_classes = [AkvoOrganisationParser] + api_settings.DEFAULT_PARSER_CLASSES
+
+    def create(self, request, *args, **kwargs):
+        response = super(OrganisationViewSet, self).create(request, *args, **kwargs)
+        if 'latitude' in request.data and 'longitude' in request.data:
+            data = request.data.copy()
+            organisation_id = response.data['id']
+            data['location_target'] = organisation_id
+            serializer = OrganisationLocationSerializer(data=data)
+            try:
+                serializer.is_valid(raise_exception=True)
+            except Exception:
+                # Delete organisation if location could not be created
+                Organisation.objects.get(id=organisation_id).delete()
+                raise
+            else:
+                self.perform_create(serializer)
+        return response
 
 
 @api_view(['GET'])

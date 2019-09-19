@@ -3,7 +3,7 @@ import { validationType, transformUndefined } from '../../../../utils/validation
 
 const RSR = yup.object().shape({
   url: yup.string().transform(transformUndefined).when('document', {
-    is: value => value === null,
+    is: value => value === null || value === undefined || value === '',
     then: yup.string().required()
   }),
   title: yup.string().transform(transformUndefined).required(),
@@ -11,11 +11,11 @@ const RSR = yup.object().shape({
 })
 
 const DGIS = RSR.clone().shape({
-  categories: yup.array().of(yup.string())
+  categories: yup.array().of(yup.string()),
+  format: yup.string().required()
 })
 
 const IATI = DGIS.clone().shape({
-  format: yup.string().required(),
   titleLanguage: yup.string(),
   language: yup.string(),
   documentDate: yup.string().nullable()
