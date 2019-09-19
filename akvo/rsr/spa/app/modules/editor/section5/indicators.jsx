@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm } from 'antd'
+import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +16,8 @@ import { addSetItem, removeSetItem } from '../actions'
 import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
+// import THEMATIC_LABELS_OPTIONS from './thematic-labels.json'
+import api from '../../../utils/api'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -28,7 +30,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, allowIndicatorLabels, indicatorLabelOptions }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
@@ -138,6 +140,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>}>
                 <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
               </Item>
+              <Condition when={`${name}.type`} isNot={1}>
+                {allowIndicatorLabels && <Field name={`${name}.id`} render={({ input: { value } }) => <ThematicLabels indicatorId={value} indicatorLabelOptions={indicatorLabelOptions} />} />}
+              </Condition>
               <Divider />
               <div id={`${fieldNameToId(name)}-disaggregations`} />
               <Condition when={`${name}.type`} is={1}>
@@ -188,5 +193,44 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     </FieldArray>
   )
 })
+
+const ThematicLabels = ({ indicatorId, indicatorLabelOptions }) => {
+  const { t } = useTranslation()
+  const [values, setValues] = useState([])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    if(!indicatorId) return
+    api.get(`/indicator_label/?indicator=${indicatorId}`)
+    .then(({ data: {results} }) => {
+      setLoading(false)
+      console.log('fetched', results)
+      setValues(results.map(it => String(it.label)))
+    })
+  }, [])
+  const handleChange = (val) => {
+    console.log(val)
+    // const deleted = diff(values, val)
+    // console.log(deleted)
+    setValues(val)
+  }
+  // const [] = useFetch(`/indicator_label/?indicator=${indicatorId}`)
+  return (
+    <Aux>
+      <Divider />
+      <Item label={<InputLabel>{t('Thematic labels for indicators')}</InputLabel>}>
+        <Select
+          mode="multiple"
+          optionFilterProp="children"
+          placeholder={t('Please select...')}
+          value={values}
+          onChange={handleChange}
+          loading={loading}
+        >
+          {indicatorLabelOptions.map(option => <Select.Option value={option.value}>{option.label}</Select.Option>)}
+        </Select>
+      </Item>
+    </Aux>
+  )
+}
 
 export default Indicators

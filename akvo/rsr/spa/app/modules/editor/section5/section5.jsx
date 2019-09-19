@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
@@ -191,6 +191,15 @@ const Section5 = (props) => {
     fields.remove(index)
     props.removeSetItem(5, 'results', index)
   }
+  const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
+  useEffect(() => {
+    if (props.allowIndicatorLabels) {
+      api.get(`/organisation_indicator_label/?filter={'organisation__projects__in':[${props.projectId}]}&limit=100`)
+        .then(({ data: {results} }) => {
+          setIndicatorLabelOptions(results)
+        })
+    }
+  }, [])
   const hasParent = props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0
   return (
     <div className="view section5">
@@ -272,7 +281,7 @@ const Section5 = (props) => {
                             </div>
                             <Field
                               name={`${name}.id`}
-                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} resultIndex={index} primaryOrganisation={props.primaryOrganisation} />}
+                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} resultIndex={index} primaryOrganisation={props.primaryOrganisation} allowIndicatorLabels={props.allowIndicatorLabels} indicatorLabelOptions={indicatorLabelOptions} />}
                             />
                           </Panel>
                         )}
@@ -296,7 +305,7 @@ const Section5 = (props) => {
   )
 }
 export default connect(
-  ({ editorRdr: { projectId, section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId }),
+  ({ editorRdr: { projectId, section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels }),
   { removeSetItem, fetchSetItems }
 )(React.memo(Section5, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
