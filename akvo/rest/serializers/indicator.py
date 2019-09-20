@@ -8,9 +8,27 @@ from akvo.rest.serializers.indicator_period import (
     IndicatorPeriodFrameworkSerializer, IndicatorPeriodFrameworkLiteSerializer)
 from akvo.rest.serializers.indicator_dimension_name import IndicatorDimensionNameSerializer
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rsr.models import Indicator, IndicatorDimensionName
+from akvo.rsr.models import Indicator, IndicatorDimensionName, IndicatorLabel
 
 from rest_framework import serializers
+
+
+class LabelListingField(serializers.RelatedField):
+
+    def to_representation(self, labels):
+        return list(labels.values_list('label_id', flat=True))
+
+    def to_internal_value(self, org_label_ids):
+        indicator = self.root.instance
+        existing_labels = set(indicator.labels.values_list('label_id', flat=True))
+        new_labels = set(org_label_ids) - existing_labels
+        deleted_labels = existing_labels - set(org_label_ids)
+        labels = [IndicatorLabel(indicator=indicator, label_id=org_label_id) for org_label_id in new_labels]
+        IndicatorLabel.objects.bulk_create(labels)
+        if deleted_labels:
+            IndicatorLabel.objects.filter(label_id__in=deleted_labels).delete()
+
+        return indicator.labels.all()
 
 
 class IndicatorSerializer(BaseRSRSerializer):
@@ -34,6 +52,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
+    labels = LabelListingField(queryset=IndicatorLabel.objects.all(), required=False)
 
     class Meta:
         model = Indicator
@@ -46,6 +65,7 @@ class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
+    labels = LabelListingField(read_only=True)
 
     class Meta:
         model = Indicator
