@@ -1045,8 +1045,8 @@ class CreateNewOrganisationTestCase(BaseTestCase):
                 'long_name': 'Test Organisation',
                 'new_organisation_type': 10,
                 'url': 'http://example.com',
-                'latitude': 12.9,
-                'longitude': 77.5,
+                'latitude': '12.9',
+                'longitude': '77.5',
                 'city': 'Bangalore',
                 'iati_country': 'IN'}
 
@@ -1056,12 +1056,12 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.assertIn('id', response.data)
-        for key in {'name', 'long_name', 'url', 'new_organisation_type', 'url'}:
+        for key in set(data.keys()) - {'iati_country'}:
             self.assertEqual(response.data[key], data[key])
-        org = Organisation.objects.get(id=response.data['id'])
-        self.assertEqual(org.primary_location.latitude, data['latitude'])
-        self.assertEqual(org.primary_location.longitude, data['longitude'])
-        self.assertEqual(org.primary_location.city, data['city'])
+        self.assertEqual(1, len(response.data['locations']))
+        location = response.data['locations'][0]
+        for key in {'latitude', 'longitude', 'city'}:
+            self.assertEqual(str(location[key]), str(data[key]))
 
     def test_create_new_organisation_without_primary_location(self):
         # Given
@@ -1080,7 +1080,7 @@ class CreateNewOrganisationTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 201)
         self.assertIn('id', response.data)
-        for key in {'name', 'long_name', 'url', 'new_organisation_type', 'url'}:
+        for key in set(data.keys()) - {'iati_country'}:
             self.assertEqual(response.data[key], data[key])
         org = Organisation.objects.get(id=response.data['id'])
         self.assertIsNone(org.primary_location)
