@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Tooltip } from 'antd'
+import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -29,7 +29,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
@@ -156,6 +156,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>}>
                 <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
               </Item>
+              <Condition when={`${name}.type`} isNot={1}>
+                {allowIndicatorLabels && <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />}
+              </Condition>
               <Divider />
               <div id={`${fieldNameToId(name)}-disaggregations`} />
               <Condition when={`${name}.type`} is={1}>
@@ -206,5 +209,29 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     </FieldArray>
   )
 })
+
+const ThematicLabels = ({ fieldName, indicatorLabelOptions }) => {
+  const { t } = useTranslation()
+  return (
+    <Aux>
+      <Divider />
+      <Item label={<InputLabel>{t('Thematic labels for indicators')}</InputLabel>}>
+        <FinalField
+          name={`${fieldName}.labels`}
+          render={({ input }) => (
+            <Select
+              mode="multiple"
+              optionFilterProp="children"
+              placeholder={t('Please select...')}
+              {...input}
+            >
+              {indicatorLabelOptions.map(option => <Select.Option value={option.id}>{option.label}</Select.Option>)}
+            </Select>
+          )}
+        />
+      </Item>
+    </Aux>
+  )
+}
 
 export default Indicators

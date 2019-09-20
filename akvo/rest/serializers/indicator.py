@@ -38,6 +38,7 @@ class IndicatorSerializer(BaseRSRSerializer):
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = serializers.PrimaryKeyRelatedField(
         many=True, queryset=IndicatorDimensionName.objects.all())
+    labels = LabelListingField(queryset=IndicatorLabel.objects.all())
 
     class Meta:
         model = Indicator
