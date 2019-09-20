@@ -1,7 +1,8 @@
 /* global document */
 import React from 'react'
-import { Radio } from 'antd'
+import { Radio, Button, Tooltip } from 'antd'
 import jump from 'jump.js'
+import { withTranslation } from 'react-i18next'
 
 import Condition from '../../../utils/condition'
 import { getBestAnchorGivenScrollLocation } from '../../../utils/scroll'
@@ -50,8 +51,10 @@ class IndicatorNavMenu extends React.Component{
     }
   }
   render(){
+    const { t } = this.props
     return (
       <div className="menu-container">
+        <div className="menu-contents">
         <Radio.Group
           size="small"
           buttonStyle="solid"
@@ -60,16 +63,17 @@ class IndicatorNavMenu extends React.Component{
             jump(this.sections[e.target.value], { duration: 400, offset: -270 })
           }}
         >
-          <Radio.Button value="info">Info</Radio.Button>
+          <Radio.Button value="info">{t('Info')}</Radio.Button>
           <Condition when={`${this.props.fieldName}.type`} is={1}>
-            <Radio.Button value="disaggregations">Disaggregations</Radio.Button>
+            <Radio.Button value="disaggregations">{t('Disaggregations')}</Radio.Button>
           </Condition>
-          <Radio.Button value="baseline">Baseline</Radio.Button>
-          <Radio.Button value="periods">Periods</Radio.Button>
+          <Radio.Button value="baseline">{t('Baseline')}</Radio.Button>
+          <Radio.Button value="periods">{t('Periods')}</Radio.Button>
         </Radio.Group>
+        </div>
       </div>
     )
   }
 }
 
-export default IndicatorNavMenu
+export default withTranslation()(IndicatorNavMenu)

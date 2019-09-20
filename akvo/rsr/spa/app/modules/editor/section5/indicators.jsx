@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm } from 'antd'
+import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Tooltip } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +16,7 @@ import { addSetItem, removeSetItem } from '../actions'
 import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
+import api from '../../../utils/api'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -28,7 +29,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
@@ -40,6 +41,10 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
   const remove = (index, fields) => {
     fields.remove(index)
     removeSetItem(5, `${fieldName}.indicators`, index)
+  }
+  const moveIndicator = (from, to, fields, itemId) => {
+    fields.move(from, to)
+    api.post(`/project/${projectId}/reorder_items/`, `item_type=indicator&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
   }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
@@ -61,7 +66,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     const type = indicatorTypes.find(it => it.value === input.value)
                     return (
                       <span className="collapse-header-content">
-                        {/* <span className="capitalized">{type && type.label}</span> */}
+                        <span className="capitalized">{type && type.label}</span>
                         &nbsp;{t('Indicator')} {index + 1}
                         {activeKey.indexOf(String(index)) === -1 && (
                           <Field
@@ -76,18 +81,31 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </span>)}
               extra={(
                 /* eslint-disable-next-line */
-                <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-                <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} />
-                <div className="delete-btn-holder">
-                <Popconfirm
-                  title={t('Are you sure to delete this indicator?')}
-                  onConfirm={() => remove(index, fields)}
-                  okText={t('Yes')}
-                  cancelText={t('No')}
-                >
-                  <Button size="small" icon="delete" className="delete-panel" />
-                </Popconfirm>
-                </div>
+                <div onClick={(e) => { activeKey.indexOf(String(index)) !== -1 && e.stopPropagation() }} style={{ display: 'flex' }}>
+                  <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} index={index} itemsLength={fields.length} />
+                  <div className="delete-btn-holder" onClick={(e) => e.stopPropagation()}>{/* eslint-disable-line */}
+                    <Field
+                      name={`${name}.id`}
+                      render={({input}) => (
+                        <Button.Group>
+                          <Tooltip title={t('Move up')}>
+                            <Button icon="up" size="small" onClick={() => moveIndicator(index, index - 1, fields, input.value)} />
+                          </Tooltip>
+                          <Tooltip title={t('Move down')}>
+                            <Button icon="down" size="small" onClick={() => moveIndicator(index, index + 1, fields, input.value)} />
+                          </Tooltip>
+                          <Popconfirm
+                            title={t('Are you sure to delete this indicator?')}
+                            onConfirm={() => remove(index, fields)}
+                            okText={t('Yes')}
+                            cancelText={t('No')}
+                          >
+                            <Button size="small" icon="delete" className="delete-panel" />
+                          </Popconfirm>
+                        </Button.Group>
+                      )}
+                    />
+                  </div>
                 </div>
               )}
             >
