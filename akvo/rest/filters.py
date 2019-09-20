@@ -84,4 +84,4 @@ class RSRGenericFilterBackend(filters.BaseFilterBackend):
 
             queryset = queryset.filter(q_expr)
 
-        return queryset
+        return queryset.distinct()
