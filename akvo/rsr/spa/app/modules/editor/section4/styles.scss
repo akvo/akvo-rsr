@@ -1,6 +1,9 @@
 .descriptions.view{
   .desc-label{
     display: flex;
+    span::first-letter {
+      text-transform: uppercase;
+    }
     .anticon{
       margin-left: auto;
       margin-right: 5px;

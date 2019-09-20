@@ -53,6 +53,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
+    labels = LabelListingField(queryset=IndicatorLabel.objects.all(), required=False)
 
     class Meta:
         model = Indicator
@@ -65,6 +66,7 @@ class IndicatorFrameworkLiteSerializer(BaseRSRSerializer):
     parent_indicator = serializers.ReadOnlyField(source='parent_indicator_id')
     children_aggregate_percentage = serializers.ReadOnlyField()
     dimension_names = IndicatorDimensionNameSerializer(many=True, required=False, read_only=True)
+    labels = LabelListingField(read_only=True)
 
     class Meta:
         model = Indicator

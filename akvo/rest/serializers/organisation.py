@@ -46,9 +46,36 @@ class OrganisationSerializer(BaseRSRSerializer):
     locations = OrganisationLocationSerializer(read_only=True, many=True, required=False)
     logo = Base64ImageField(read_only=True, required=False, allow_empty_file=True, allow_null=True)
 
+    latitude = serializers.CharField(source='primary_location.latitude', required=False)
+    longitude = serializers.CharField(source='primary_location.longitude', required=False)
+    city = serializers.CharField(source='primary_location.city', required=False)
+
     class Meta:
         model = Organisation
         fields = '__all__'
+
+    def create(self, validated_data):
+        if 'primary_location' in validated_data and isinstance(validated_data['primary_location'], dict):
+            location = validated_data.pop('primary_location', {})
+        else:
+            location = None
+
+        instance = super(OrganisationSerializer, self).create(validated_data)
+
+        if location is not None:
+            location['location_target'] = instance.pk
+            serializer = OrganisationLocationSerializer(data=location)
+            try:
+                serializer.is_valid(raise_exception=True)
+            except Exception:
+                # Delete organisation if location could not be created
+                instance.delete()
+                raise
+            else:
+                serializer.save()
+                instance.refresh_from_db()
+
+        return instance
 
 
 class OrganisationExtraSerializer(OrganisationSerializer):

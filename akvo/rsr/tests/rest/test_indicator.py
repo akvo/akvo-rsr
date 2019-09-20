@@ -92,6 +92,7 @@ class RestIndicatorTestCase(BaseTestCase):
         response = self.c.post(url, data=json.dumps(data), content_type=content_type)
 
         # Then
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['result'], result.id)
         self.assertEqual(response.data['measure'], '1')
         self.assertEqual(response.data['type'], 1)
@@ -110,6 +111,7 @@ class RestIndicatorTestCase(BaseTestCase):
         response = self.c.get(url)
 
         # Then
+        self.assertEqual(response.status_code, 200)
         self.assertIn(dimension.id, response.data['dimension_names'])
 
     def test_indicator_framework_dimension_names_patch(self):
@@ -131,6 +133,7 @@ class RestIndicatorTestCase(BaseTestCase):
         response = self.c.patch(url, data=json.dumps(data), content_type=content_type)
 
         # Then
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(data['dimension_names'], response.data['dimension_names'])
 
     def test_indicator_framework_dimension_names_empty_patch(self):
@@ -160,7 +163,7 @@ class RestIndicatorTestCase(BaseTestCase):
         result = Result.objects.create(project=self.project)
         indicator = Indicator.objects.create(result=result)
         self.c.login(username=self.user.username, password="password")
-        url = '/rest/v1/indicator/{}/?format=json'.format(indicator.id)
+        url = '/rest/v1/indicator_framework/{}/?format=json'.format(indicator.id)
         content_type = 'application/json'
         response = self.c.get(url)
         data = {'labels': [org_label.id]}
@@ -170,6 +173,23 @@ class RestIndicatorTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(data['labels'], response.data['labels'])
+
+        # ### Verify Get
+        # When
+        response = self.c.get(url)
+
+        # Then
+        self.assertEqual(data['labels'], response.data['labels'])
+
+        # ### Verify GET on results_framework_lite
+        # Given
+        rf_url = '/rest/v1/results_framework_lite/{}/?format=json'.format(result.id)
+
+        # When
+        response = self.c.get(rf_url)
+
+        # Then
+        self.assertEqual(data['labels'], response.data['indicators'][0]['labels'])
 
         # ### Removing labels
         data = {'labels': []}
