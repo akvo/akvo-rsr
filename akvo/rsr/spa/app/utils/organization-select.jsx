@@ -1,14 +1,15 @@
 /* global document */
 import React, { useReducer, useState, useRef } from 'react'
 import { Field, Form as FinalForm } from 'react-final-form'
-import { Select, Form, Spin, Divider, Icon, Modal, Button } from 'antd'
+import { Select, Form, Spin, Divider, Icon, Modal, Button, Upload } from 'antd'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
+import axios from 'axios'
 import FinalField from './final-field'
 import InputLabel from './input-label'
 import ORG_TYPES from './org-types.json'
 import SearchItem from '../modules/editor/section7/location-items/search-item'
-import api from './api'
+import api, { config } from './api'
 
 const { Option } = Select
 const { Item } = Form
@@ -124,13 +125,12 @@ const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [validationErrors, setValidationErrors] = useState([])
+  const [fileList, setFileList] = useState([])
   const handleAddOrg = () => {
-    // onHide()
     handleSubmit()
   }
   const submit = (values) => {
     setLoading(true)
-    // console.log(values)
     try {
       validation.validateSync(values, { abortEarly: false })
       setValidationErrors([])
@@ -140,8 +140,21 @@ const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
       delete data.location
       api.post('/organisation/', data)
         .then((res) => {
-          setLoading(false)
           onAddedOrg(res.data)
+          // handle file upload
+          if(fileList.length > 0){
+            const formData = new FormData() // eslint-disable-line
+            formData.append('logo', fileList[0])
+            axios.post(`${config.baseURL}/organisation/${res.data.id}/add_logo/`, formData, { headers: { ...config.headers, 'Content-Type': 'multipart/form-data' }})
+            .then(() => {
+              setLoading(false)
+            })
+            .catch(() => {
+              setLoading(false)
+            })
+          } else {
+            setLoading(false)
+          }
         })
         .catch((err) => {
           setLoading(false)
@@ -234,6 +247,21 @@ const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
               </Item>
               <Item label={<InputLabel optional>{t('Description')}</InputLabel>}>
                 <FinalField name="description" control="textarea" autosize />
+              </Item>
+              <Item label={<InputLabel optional>{t('Organisation logo')}</InputLabel>}>
+                <Upload
+                  {...{
+                    fileList,
+                    beforeUpload: (file) => {
+                      setFileList([file])
+                      return false
+                    }
+                  }}
+                >
+                  <Button>
+                    <Icon type="upload" /> {t('Select Image')}
+                  </Button>
+                </Upload>
               </Item>
             </div>
           )}
