@@ -50,12 +50,7 @@ const transformUndefinedToEmptyString = (difference, lastSavedValues) => {
 
 class AutoSave extends React.Component {
   componentWillMount(){
-    const { setName, sectionIndex, itemIndex } = this.props
-    if(setName !== undefined){
-      this.save()
-    } else {
-      this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
-    }
+    this.save()
   }
   componentWillReceiveProps(prevProps) {
     if(prevProps.values === this.props.values){
@@ -95,19 +90,16 @@ class AutoSave extends React.Component {
         }
       }
     } else {
-      const rootValues = getRootValues(values, `section${sectionIndex}`)
-      const difference = customDiff(this.lastSavedValues, rootValues)
+      const thisValues = getRootValues(values, `section${sectionIndex}`)
+      const savedValues = getRootValues(this.props.editorRdr[`section${sectionIndex}`].fields, `section${sectionIndex}`)
+      const difference = customDiff(savedValues, thisValues)
       if(
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'publishingStatus')
       ){
-        transformUndefinedToEmptyString(difference, this.lastSavedValues)
+        transformUndefinedToEmptyString(difference, savedValues)
         const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
         this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
-        this.lastSavedValues = {
-          ...this.lastSavedValues,
-          ...difference
-        }
       }
     }
   }

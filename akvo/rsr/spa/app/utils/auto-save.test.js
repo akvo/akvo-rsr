@@ -12,23 +12,30 @@ describe('AutoSave', () => {
     subtitle: ''
   }
   const mockSaveFields = jest.fn(props => {})
+  const reducer = {
+    editorRdr: {
+      section1: {
+        fields: initialValues
+      }
+    }
+  }
 
   it('should call saveFields', () => {
     const root = renderer.create(
-      <AutoSave values={initialValues} saveFields={mockSaveFields} />
+      <AutoSave values={initialValues} sectionIndex={1} {...reducer} saveFields={mockSaveFields} />
     )
     jest.runAllTimers()
-    root.update(<AutoSave values={{ title: 'something', subtitle: '' }} saveFields={mockSaveFields} />)
+    root.update(<AutoSave values={{ title: 'something', subtitle: '' }} sectionIndex={1} {...reducer} saveFields={mockSaveFields} />)
     jest.runAllTimers()
     expect(mockSaveFields).toHaveBeenCalled()
   })
   it('should pass empty strings for deleted values', () => {
     const root = renderer.create(
-      <AutoSave values={{ title: 'something', subtitle: '' }} saveFields={mockSaveFields} />
+      <AutoSave values={{ title: 'something', subtitle: '' }} sectionIndex={1} {...reducer} saveFields={mockSaveFields} />
     )
     jest.runAllTimers()
-    root.update(<AutoSave values={{ subtitle: '' }} saveFields={mockSaveFields} />)
+    root.update(<AutoSave values={{ subtitle: '' }} sectionIndex={1} {...reducer} saveFields={mockSaveFields} />)
     jest.runAllTimers()
-    expect(mockSaveFields).toHaveBeenCalledWith({ title: '' }, undefined, false)
+    expect(mockSaveFields).toHaveBeenCalledWith({ title: '' }, 1, false)
   })
 })
