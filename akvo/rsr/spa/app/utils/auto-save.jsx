@@ -40,6 +40,13 @@ const getRootValues = (values, sectionKey) => {
   return ret
 }
 
+const transformUndefinedToEmptyString = (difference, lastSavedValues) => {
+  Object.keys(difference).forEach(key => {
+    if (difference[key] === undefined && typeof lastSavedValues[key] === 'string') {
+      difference[key] = ''
+    }
+  })
+}
 
 class AutoSave extends React.Component {
   componentWillMount(){
@@ -79,6 +86,7 @@ class AutoSave extends React.Component {
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
         ){
+          transformUndefinedToEmptyString(difference, savedValues)
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
           } else {
@@ -93,6 +101,7 @@ class AutoSave extends React.Component {
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'publishingStatus')
       ){
+        transformUndefinedToEmptyString(difference, this.lastSavedValues)
         const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
         this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
         this.lastSavedValues = {
@@ -111,6 +120,10 @@ AutoSave.propTypes = {
   itemIndex: PropTypes.number,
   setName: PropTypes.string,
   sectionIndex: PropTypes.number
+}
+
+export {
+  AutoSave
 }
 
 export default props => (
