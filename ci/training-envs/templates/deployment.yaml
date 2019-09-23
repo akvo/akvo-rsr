@@ -23,12 +23,12 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
-        - containerPort: 8080
+        - containerPort: 8081
           protocol: TCP
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 8081
           initialDelaySeconds: 5
           timeoutSeconds: 1
         readinessProbe:
@@ -48,11 +48,14 @@ spec:
               mountPath: "/var/akvo/rsr/mediaroot"
         env:
         - name: REPORT_SERVER_API_KEY
-          value: "none useful"
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-common"
+              key: report-server-api-key
         - name: ENVIRONMENT
           value: "test"
         - name: REPORT_SERVER_URL
-          value: "http://localhost"
+          value: "http://localhost:8080"
       - name: rsr-backend
         image: "eu.gcr.io/akvo-lumen/rsr-backend:{{ .Values.rsrVersion }}"
         imagePullPolicy: Always
@@ -123,6 +126,55 @@ spec:
             - "echo stats | nc 127.0.0.1 11211 | grep version"
           initialDelaySeconds: 10
           periodSeconds: 5
+      - name: reportserver
+        image: akvo/akvo-reportserver:{{ .Values.reportServerVersion }}
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 360
+        env:
+        - name: RS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_db_user
+        - name: RS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_db_password
+        - name: RS_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_db_name
+        - name: RS_DB_HOST
+          value: "{{ include "rsrchart.dbname" . }}"
+        - name: DISABLE_SSL_DB_CONNECTION
+          value: "yes"
+        - name: RS_PBE_SALT
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_pbe_salt
+        - name: RS_PBE_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_pbe_passphrase
+        - name: RS_HMAC_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_hmac_passphrase
+        - name: RS_EXTRA_FONT_URL
+          valueFrom:
+            secretKeyRef:
+              name: rsr-reportserver-training
+              key: rs_extra_font_url
       initContainers:
       - name: copy-assets-to-backend-container
         image: "eu.gcr.io/akvo-lumen/rsr-nginx:{{ .Values.rsrVersion }}"
