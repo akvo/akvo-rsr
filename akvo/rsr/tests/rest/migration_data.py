@@ -57,8 +57,6 @@ GET_URLS = [
     '/rest/v1/indicator/?format=json&result__project=4',
     '/rest/v1/indicator_reference/?format=json&indicator__result__project=4',
     '/rest/v1/indicator_period/?format=json&indicator__result__project=4',
-    '/rest/v1/indicator_period_actual_dimension/?format=json&period__indicator__result__project=4',
-    '/rest/v1/indicator_period_target_dimension/?format=json&period__indicator__result__project=4',
     '/rest/v1/indicator_period_actual_location/?format=json&period__indicator__result__project=4',
     '/rest/v1/indicator_period_target_location/?format=json&period__indicator__result__project=4',
     '/rest/v1/transaction_sector/?format=json&transaction__project=4',

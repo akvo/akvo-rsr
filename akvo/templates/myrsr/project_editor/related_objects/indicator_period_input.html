@@ -29,46 +29,6 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorperiodtargetdimension" }}">
-                    <h5>{% trans 'Indicator period target dimensions' %}</h5>
-                    <div class="indicator-period-target-dimension-container" id="indicator-period-target-dimension-container">
-                        {% for dimension in period.target_dimensions.all %}
-                            {% include "myrsr/project_editor/related_objects/indicator_period_target_dimension_input.html" %}
-                        {% empty %}
-                            {% with result_id_string=result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" period_id_string=period.pk|default:"new-0"|stringformat:"s" %}
-                                {% include "myrsr/project_editor/related_objects/indicator_period_target_dimension_input.html" with dimension='IndicatorPeriodTargetDimension.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string|add:'_'|add:period_id_string %}
-                            {% endwith %}
-                        {% endfor %}
-                        <div class="row form-group">
-                            <div class="col-md-12 text-center add-object-link">
-                                <a href="#" class="add-indicator-period-target-dimension"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator period target dimension' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorperiodactualdimension" }}">
-                    <h5>{% trans 'Indicator period actual dimensions' %}</h5>
-                    <div class="indicator-period-actual-dimension-container" id="indicator-period-actual-dimension-container">
-                        {% for dimension in period.actual_dimensions.all %}
-                            {% include "myrsr/project_editor/related_objects/indicator_period_actual_dimension_input.html" %}
-                        {% empty %}
-                            {% with result_id_string=result.pk|default:"new-0"|stringformat:"s" indicator_id_string=indicator.pk|default:"new-0"|stringformat:"s" period_id_string=period.pk|default:"new-0"|stringformat:"s" %}
-                                {% include "myrsr/project_editor/related_objects/indicator_period_actual_dimension_input.html" with dimension='IndicatorPeriodActualDimension.'|add:project_id_string|add:'_'|add:result_id_string|add:'_'|add:indicator_id_string|add:'_'|add:period_id_string %}
-                            {% endwith %}
-                        {% endfor %}
-                        <div class="row form-group">
-                            <div class="col-md-12 text-center add-object-link">
-                                <a href="#" class="add-indicator-period-actual-dimension"><span class="glyphicon glyphicon-plus"></span> {% trans 'Add indicator period actual dimension' %}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
                 <div class="related-object-container {{ validations|mandatory_or_hidden:"rsr_indicatorperiodtargetlocation" }}">
                     <h5>{% trans 'Indicator period target locations' %}</h5>
                     <div class="indicator-period-target-location-container" id="indicator-period-target-location-container">
