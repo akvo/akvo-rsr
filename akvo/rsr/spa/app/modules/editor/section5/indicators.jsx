@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip } from 'antd'
 import { Field } from 'react-final-form'
@@ -31,6 +31,7 @@ const indicatorTypes = [
 const Indicators = connect(null, {addSetItem, removeSetItem})(
   ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions }) => { // eslint-disable-line
   const { t } = useTranslation()
+  const accordionCompRef = useRef()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
     if(key === 1) newItem.dimensionNames = []
@@ -43,8 +44,16 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     removeSetItem(5, `${fieldName}.indicators`, index)
   }
   const moveIndicator = (from, to, fields, itemId) => {
-    fields.move(from, to)
-    api.post(`/project/${projectId}/reorder_items/`, `item_type=indicator&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+    const doMove = () => {
+      fields.move(from, to)
+      api.post(`/project/${projectId}/reorder_items/`, `item_type=indicator&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+    }
+    if (accordionCompRef.current.state.activeKey.length === 0){
+      doMove()
+    } else {
+      accordionCompRef.current.handleChange([])
+      setTimeout(doMove, 500)
+    }
   }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
@@ -55,6 +64,8 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
           className="indicators-list"
           finalFormFields={fields}
           setName={`${fieldName}.indicators`}
+          destroyInactivePanel
+          ref={ref => { accordionCompRef.current = ref }}
           renderPanel={(name, index, activeKey) => (
             <Panel
               key={index}
@@ -88,12 +99,16 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       name={`${name}.id`}
                       render={({input}) => (
                         <Button.Group>
+                          {index > 0 &&
                           <Tooltip title={t('Move up')}>
                             <Button icon="up" size="small" onClick={() => moveIndicator(index, index - 1, fields, input.value)} />
                           </Tooltip>
+                          }
+                          {index < fields.length - 1 &&
                           <Tooltip title={t('Move down')}>
                             <Button icon="down" size="small" onClick={() => moveIndicator(index, index + 1, fields, input.value)} />
                           </Tooltip>
+                          }
                           <Popconfirm
                             title={t('Are you sure to delete this indicator?')}
                             onConfirm={() => remove(index, fields)}
