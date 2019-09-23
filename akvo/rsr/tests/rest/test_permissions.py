@@ -167,12 +167,8 @@ class PermissionFilteringTestCase(TestCase):
                 M.IndicatorReference.objects.create(indicator=indicator)
                 # indicator period
                 period = M.IndicatorPeriod.objects.create(indicator=indicator)
-                # indicator period actual dimension
-                M.IndicatorPeriodActualDimension.objects.create(period=period)
                 # indicator period actual location
                 M.IndicatorPeriodActualLocation.objects.create(period=period)
-                # indicator period target dimension
-                M.IndicatorPeriodTargetDimension.objects.create(period=period)
                 # indicator period target location
                 M.IndicatorPeriodTargetLocation.objects.create(period=period)
                 # narrative report
@@ -495,23 +491,9 @@ class PermissionFilteringTestCase(TestCase):
             'project_relation': 'indicator__result__project__'
         }
 
-        # one indicator period actual dimension per period
-        # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorPeriodActualDimension] = {
-            'group_count': group_count(8, 2, 4, 4),
-            'project_relation': 'period__indicator__result__project__'
-        }
-
         # one indicator period actual location per period
         # FIXME: change_* permissions weirdness
         model_map[M.IndicatorPeriodActualLocation] = {
-            'group_count': group_count(8, 2, 4, 4),
-            'project_relation': 'period__indicator__result__project__'
-        }
-
-        # one indicator period target dimension per period
-        # FIXME: change_* permissions weirdness
-        model_map[M.IndicatorPeriodTargetDimension] = {
             'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
         }

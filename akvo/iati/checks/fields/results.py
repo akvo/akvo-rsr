@@ -107,12 +107,11 @@ def results(project):
                         checks.append((u'warning', u'indicator period (id: %s) has no target value '
                                                    u'specified. The value "N/A" has been set for '
                                                    u'the target value attribute' % str(period.pk)))
-                    elif (period.target_comment or period.target_locations.all() or
-                          period.target_dimensions.all()):
+                    elif (period.target_comment or period.target_locations.all()):
                         all_checks_passed = False
                         checks.append((u'error', u'indicator period (id: %s) has no target value, '
-                                                 u'but does have a target comment, target '
-                                                 u'location(s) or target dimension(s)' %
+                                                 u'but does have a target comment or target '
+                                                 u'location(s)' %
                                        str(period.pk)))
 
                 if indicator.type == QUANTITATIVE and not period.actual_value:
@@ -121,12 +120,11 @@ def results(project):
                         checks.append((u'warning', u'indicator period (id: %s) has no actual value '
                                                    u'specified. The value "N/A" has been set for '
                                                    u'the actual value attribute' % str(period.pk)))
-                    elif (period.actual_comment or period.actual_locations.all() or
-                          period.actual_dimensions.all()):
+                    elif (period.actual_comment or period.actual_locations.all()):
                         all_checks_passed = False
                         checks.append((u'error', u'indicator period (id: %s) has no actual value, '
-                                                 u'but does have a actual comment, actual '
-                                                 u'location(s) or actual dimension(s)' %
+                                                 u'but does have a actual comment or actual '
+                                                 u'location(s)' %
                                        str(period.pk)))
 
     if project.results.all() and all_checks_passed:

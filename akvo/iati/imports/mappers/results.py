@@ -6,9 +6,7 @@
 
 from .. import ImportMapper
 from akvo.rsr.models.result import (Indicator, IndicatorPeriod,
-                                    IndicatorPeriodActualDimension,
                                     IndicatorPeriodActualLocation,
-                                    IndicatorPeriodTargetDimension,
                                     IndicatorPeriodTargetLocation,
                                     IndicatorReference, Result)
 
@@ -238,28 +236,16 @@ class IndicatorPeriods(ImportMapper):
                                                                                  period_obj))
                 imported_periods.append(period_obj)
 
-                # Process target dimensions and locations
+                # Process target locations
                 if target_element is not None:
-                    target_dimensions = PeriodTargetDimensions(self.iati_import_job, target_element,
-                                                               self.project, self.globals,
-                                                               related_obj=period_obj)
-                    for dimension_change in target_dimensions.do_import():
-                        changes.append(dimension_change)
-
                     target_locations = PeriodTargetLocations(self.iati_import_job, target_element,
                                                              self.project, self.globals,
                                                              related_obj=period_obj)
                     for location_change in target_locations.do_import():
                         changes.append(location_change)
 
-                # Process actual dimensions and locations
+                # Process actual locations
                 if actual_element is not None:
-                    actual_dimensions = PeriodActualDimensions(self.iati_import_job, actual_element,
-                                                               self.project, self.globals,
-                                                               related_obj=period_obj)
-                    for dimension_change in actual_dimensions.do_import():
-                        changes.append(dimension_change)
-
                     actual_locations = PeriodActualLocations(self.iati_import_job, actual_element,
                                                              self.project, self.globals,
                                                              related_obj=period_obj)
@@ -338,78 +324,4 @@ class PeriodTargetLocations(ImportMapper):
 
         changes += self.delete_objects(self.related_obj.target_locations, imported_locations,
                                        'indicator period target location')
-        return changes
-
-
-class PeriodActualDimensions(ImportMapper):
-
-    def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
-        super(PeriodActualDimensions, self).__init__(iati_import_job, parent_elem, project, globals,
-                                                     related_obj)
-        self.model = IndicatorPeriodActualDimension
-
-    def do_import(self):
-        """
-        Retrieve and store the dimension information of an indicator period actual value.
-        The dimensions will be extracted from the 'dimension' elements of the 'actual' element.
-
-        :return: List; contains fields that have changed
-        """
-        imported_dimensions = []
-        changes = []
-
-        for dimension in self.parent_elem.findall('dimension'):
-
-            name = self.get_attrib(dimension, 'name', 'name')
-            value = self.get_attrib(dimension, 'value', 'value')
-
-            dimension_obj, created = IndicatorPeriodActualDimension.objects.get_or_create(
-                period=self.related_obj,
-                name=name,
-                value=value,
-            )
-            if created:
-                changes.append(u'added indicator period actual dimension (id: {}): {}'.format(
-                    dimension_obj.pk, dimension_obj))
-            imported_dimensions.append(dimension_obj)
-
-        changes += self.delete_objects(self.related_obj.actual_dimensions, imported_dimensions,
-                                       'indicator period actual dimension')
-        return changes
-
-
-class PeriodTargetDimensions(ImportMapper):
-
-    def __init__(self, iati_import_job, parent_elem, project, globals, related_obj=None):
-        super(PeriodTargetDimensions, self).__init__(iati_import_job, parent_elem, project, globals,
-                                                     related_obj)
-        self.model = IndicatorPeriodTargetDimension
-
-    def do_import(self):
-        """
-        Retrieve and store the dimension information of an indicator period target value.
-        The dimensions will be extracted from the 'dimension' elements of the 'target' element.
-
-        :return: List; contains fields that have changed
-        """
-        imported_dimensions = []
-        changes = []
-
-        for dimension in self.parent_elem.findall('dimension'):
-
-            name = self.get_attrib(dimension, 'name', 'name')
-            value = self.get_attrib(dimension, 'value', 'value')
-
-            dimension_obj, created = IndicatorPeriodTargetDimension.objects.get_or_create(
-                period=self.related_obj,
-                name=name,
-                value=value,
-            )
-            if created:
-                changes.append(u'added indicator period target dimension (id: {}): {}'.format(
-                    dimension_obj.pk, dimension_obj))
-            imported_dimensions.append(dimension_obj)
-
-        changes += self.delete_objects(self.related_obj.target_dimensions, imported_dimensions,
-                                       'indicator period target dimension')
         return changes
