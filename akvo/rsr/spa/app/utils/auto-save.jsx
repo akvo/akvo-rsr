@@ -40,15 +40,17 @@ const getRootValues = (values, sectionKey) => {
   return ret
 }
 
+const transformUndefinedToEmptyString = (difference, lastSavedValues) => {
+  Object.keys(difference).forEach(key => {
+    if (difference[key] === undefined && typeof lastSavedValues[key] === 'string') {
+      difference[key] = ''
+    }
+  })
+}
 
 class AutoSave extends React.Component {
   componentWillMount(){
-    const { setName, sectionIndex, itemIndex } = this.props
-    if(setName !== undefined){
-      this.save()
-    } else {
-      this.lastSavedValues = getRootValues(this.props.values, `section${sectionIndex}`)
-    }
+    this.save()
   }
   componentWillReceiveProps(prevProps) {
     if(prevProps.values === this.props.values){
@@ -79,6 +81,7 @@ class AutoSave extends React.Component {
           !(Object.keys(difference).indexOf('id') !== -1)
           && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'dimensionNames')
         ){
+          transformUndefinedToEmptyString(difference, savedValues)
           if(!item.id){
             this.props.addSetItem(sectionIndex, setName, item)
           } else {
@@ -87,18 +90,16 @@ class AutoSave extends React.Component {
         }
       }
     } else {
-      const rootValues = getRootValues(values, `section${sectionIndex}`)
-      const difference = customDiff(this.lastSavedValues, rootValues)
+      const thisValues = getRootValues(values, `section${sectionIndex}`)
+      const savedValues = getRootValues(this.props.editorRdr[`section${sectionIndex}`].fields, `section${sectionIndex}`)
+      const difference = customDiff(savedValues, thisValues)
       if(
         !isEmpty(difference)
         && !(Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'publishingStatus')
       ){
+        transformUndefinedToEmptyString(difference, savedValues)
         const isDiffOnlyCurrentImage = Object.keys(difference).length === 1 && Object.keys(difference)[0] === 'currentImage'
         this.props.saveFields(difference, sectionIndex, isDiffOnlyCurrentImage)
-        this.lastSavedValues = {
-          ...this.lastSavedValues,
-          ...difference
-        }
       }
     }
   }
@@ -111,6 +112,10 @@ AutoSave.propTypes = {
   itemIndex: PropTypes.number,
   setName: PropTypes.string,
   sectionIndex: PropTypes.number
+}
+
+export {
+  AutoSave
 }
 
 export default props => (

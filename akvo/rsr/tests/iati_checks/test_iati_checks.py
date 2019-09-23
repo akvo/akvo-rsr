@@ -18,8 +18,7 @@ from akvo.rsr.models import (Partnership, Project, ProjectCondition, LegacyData,
                              ProjectDocument, ProjectDocumentCategory, ProjectUpdate,
                              ProjectLocation, AdministrativeLocation, CrsAdd, CrsAddOtherFlag,
                              Transaction, TransactionSector, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodActualDimension, IndicatorPeriodActualLocation,
-                             IndicatorPeriodTargetDimension, IndicatorPeriodTargetLocation,
+                             IndicatorPeriodActualLocation, IndicatorPeriodTargetLocation,
                              IndicatorReference, Organisation, User)
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -430,16 +429,6 @@ class IatiChecksTestCase(TestCase):
         IndicatorPeriodActualLocation.objects.create(
             period=period,
             location="loc",
-        )
-        IndicatorPeriodTargetDimension.objects.create(
-            period=period,
-            name="Name",
-            value="Value",
-        )
-        IndicatorPeriodActualDimension.objects.create(
-            period=period,
-            name="Name",
-            value="Value",
         )
 
         # Create IATI checks

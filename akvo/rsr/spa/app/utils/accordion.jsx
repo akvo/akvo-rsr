@@ -65,7 +65,7 @@ class Accordion extends Component {
     return (
       <div className="accordion-container" ref={(ref) => { this.ref = ref }}>
       {this.props.finalFormFields.length > 0 &&
-      <Collapse accordion={this.props.multiple !== true} className={this.props.className} onChange={this.handleChange} activeKey={this.state.activeKey}>
+      <Collapse accordion={this.props.multiple !== true} className={this.props.className} onChange={this.handleChange} activeKey={this.state.activeKey} destroyInactivePanel={this.props.destroyInactivePanel}>
         {this.props.finalFormFields.map((name, index) => this.props.renderPanel(name, index, this.state.activeKey))}
       </Collapse>
       }

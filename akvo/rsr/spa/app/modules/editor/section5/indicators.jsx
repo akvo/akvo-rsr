@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm } from 'antd'
+import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +16,7 @@ import { addSetItem, removeSetItem } from '../actions'
 import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
+import api from '../../../utils/api'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -28,8 +29,9 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions }) => { // eslint-disable-line
   const { t } = useTranslation()
+  const accordionCompRef = useRef()
   const add = (key) => {
     const newItem = { type: key, periods: [] }
     if(key === 1) newItem.dimensionNames = []
@@ -41,6 +43,18 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     fields.remove(index)
     removeSetItem(5, `${fieldName}.indicators`, index)
   }
+  const moveIndicator = (from, to, fields, itemId) => {
+    const doMove = () => {
+      fields.move(from, to)
+      api.post(`/project/${projectId}/reorder_items/`, `item_type=indicator&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+    }
+    if (accordionCompRef.current.state.activeKey.length === 0){
+      doMove()
+    } else {
+      accordionCompRef.current.handleChange([])
+      setTimeout(doMove, 500)
+    }
+  }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -50,6 +64,8 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
           className="indicators-list"
           finalFormFields={fields}
           setName={`${fieldName}.indicators`}
+          destroyInactivePanel
+          ref={ref => { accordionCompRef.current = ref }}
           renderPanel={(name, index, activeKey) => (
             <Panel
               key={index}
@@ -61,7 +77,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     const type = indicatorTypes.find(it => it.value === input.value)
                     return (
                       <span className="collapse-header-content">
-                        {/* <span className="capitalized">{type && type.label}</span> */}
+                        <span className="capitalized">{type && type.label}</span>
                         &nbsp;{t('Indicator')} {index + 1}
                         {activeKey.indexOf(String(index)) === -1 && (
                           <Field
@@ -76,18 +92,35 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </span>)}
               extra={(
                 /* eslint-disable-next-line */
-                <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-                <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} />
-                <div className="delete-btn-holder">
-                <Popconfirm
-                  title={t('Are you sure to delete this indicator?')}
-                  onConfirm={() => remove(index, fields)}
-                  okText={t('Yes')}
-                  cancelText={t('No')}
-                >
-                  <Button size="small" icon="delete" className="delete-panel" />
-                </Popconfirm>
-                </div>
+                <div onClick={(e) => { activeKey.indexOf(String(index)) !== -1 && e.stopPropagation() }} style={{ display: 'flex' }}>
+                  <IndicatorNavMenu fieldName={name} isActive={activeKey.indexOf(String(index)) !== -1} index={index} itemsLength={fields.length} />
+                  <div className="delete-btn-holder" onClick={(e) => e.stopPropagation()}>{/* eslint-disable-line */}
+                    <Field
+                      name={`${name}.id`}
+                      render={({input}) => (
+                        <Button.Group>
+                          {index > 0 &&
+                          <Tooltip title={t('Move up')}>
+                            <Button icon="up" size="small" onClick={() => moveIndicator(index, index - 1, fields, input.value)} />
+                          </Tooltip>
+                          }
+                          {index < fields.length - 1 &&
+                          <Tooltip title={t('Move down')}>
+                            <Button icon="down" size="small" onClick={() => moveIndicator(index, index + 1, fields, input.value)} />
+                          </Tooltip>
+                          }
+                          <Popconfirm
+                            title={t('Are you sure to delete this indicator?')}
+                            onConfirm={() => remove(index, fields)}
+                            okText={t('Yes')}
+                            cancelText={t('No')}
+                          >
+                            <Button size="small" icon="delete" className="delete-panel" />
+                          </Popconfirm>
+                        </Button.Group>
+                      )}
+                    />
+                  </div>
                 </div>
               )}
             >
@@ -138,6 +171,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>}>
                 <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
               </Item>
+              <Condition when={`${name}.type`} isNot={1}>
+                {allowIndicatorLabels && <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />}
+              </Condition>
               <Divider />
               <div id={`${fieldNameToId(name)}-disaggregations`} />
               <Condition when={`${name}.type`} is={1}>
@@ -188,5 +224,29 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     </FieldArray>
   )
 })
+
+const ThematicLabels = ({ fieldName, indicatorLabelOptions }) => {
+  const { t } = useTranslation()
+  return (
+    <Aux>
+      <Divider />
+      <Item label={<InputLabel>{t('Thematic labels for indicators')}</InputLabel>}>
+        <FinalField
+          name={`${fieldName}.labels`}
+          render={({ input }) => (
+            <Select
+              mode="multiple"
+              optionFilterProp="children"
+              placeholder={t('Please select...')}
+              {...input}
+            >
+              {indicatorLabelOptions.map(option => <Select.Option value={option.id}>{option.label}</Select.Option>)}
+            </Select>
+          )}
+        />
+      </Item>
+    </Aux>
+  )
+}
 
 export default Indicators

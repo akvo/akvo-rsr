@@ -1,0 +1,42 @@
+[
+  {
+    "value": "10",
+    "label": "Government"
+  },
+  {
+    "value": "15",
+    "label": "Other Public Sector"
+  },
+  {
+    "value": "21",
+    "label": "International NGO"
+  },
+  {
+    "value": "22",
+    "label": "National NGO"
+  },
+  {
+    "value": "23",
+    "label": "Regional NGO"
+  },
+  {
+    "value": "30",
+    "label": "Public Private Partnership"
+  },
+  {
+    "value": "40",
+    "label": "Multilateral"
+  },
+  {
+    "value": "60",
+    "label": "Foundation"
+  },
+  {
+    "value": "70",
+    "label": "Private Sector"
+  },
+  {
+    "value": "80",
+    "label": "Academic, Training and Research"
+  }
+]

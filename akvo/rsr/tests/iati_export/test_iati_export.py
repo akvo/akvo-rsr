@@ -16,8 +16,7 @@ from akvo.rsr.models import (IatiExport, Organisation, Partnership, Project, Use
                              Link, ProjectDocument, ProjectDocumentCategory, ProjectUpdate,
                              ProjectLocation, AdministrativeLocation, CrsAdd, CrsAddOtherFlag,
                              Transaction, TransactionSector, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodActualDimension, IndicatorPeriodActualLocation,
-                             IndicatorPeriodData, IndicatorPeriodTargetDimension,
+                             IndicatorPeriodActualLocation, IndicatorPeriodData,
                              IndicatorPeriodTargetLocation, IndicatorReference,
                              ProjectEditorValidationSet)
 
@@ -477,16 +476,6 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
             period=period,
             location="loc",
         )
-        IndicatorPeriodTargetDimension.objects.create(
-            period=period,
-            name="Name",
-            value="Value",
-        )
-        IndicatorPeriodActualDimension.objects.create(
-            period=period,
-            name="Name",
-            value="Value",
-        )
 
         # Create IATI export
         iati_export = IatiExport.objects.create(
@@ -611,16 +600,6 @@ class IatiExportTestCase(TestCase, XmlTestMixin):
         IndicatorPeriodActualLocation.objects.create(
             period=period,
             location="loc",
-        )
-        IndicatorPeriodTargetDimension.objects.create(
-            period=period,
-            name="Name",
-            value="Value",
-        )
-        IndicatorPeriodActualDimension.objects.create(
-            period=period,
-            name="Name",
-            value="Value",
         )
 
         # Create IATI export

@@ -240,33 +240,6 @@
     }
   }
 
-  .ant-form-item-label{
-    .anticon{
-      margin-left: 6px;
-      margin-right: 6px;
-    }
-    .input-label{
-      display: flex;
-      &>div::first-letter {
-        text-transform: uppercase;
-      }
-      .optional{
-        opacity: 0.3;
-        font-style: italic;
-      }
-      .more-switches{
-        margin-left: auto;
-        font-size: 11px;
-        .ant-switch{
-          margin-left: 5px;
-          margin-right: 5px;
-        }
-        span{
-          opacity: 0.65;
-        }
-      }
-    }
-  }
   
   
   .ant-col-12{
@@ -293,6 +266,34 @@
   }
   .percentage-input{
     max-width: 82px;
+  }
+}
+
+.ant-form-item-label{
+  .anticon{
+    margin-left: 6px;
+    margin-right: 6px;
+  }
+  .input-label{
+    display: flex;
+    &>div::first-letter {
+      text-transform: uppercase;
+    }
+    .optional{
+      opacity: 0.3;
+      font-style: italic;
+    }
+    .more-switches{
+      margin-left: auto;
+      font-size: 11px;
+      .ant-switch{
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+      span{
+        opacity: 0.65;
+      }
+    }
   }
 }
 

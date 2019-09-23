@@ -111,12 +111,32 @@
       }
       .delete-btn-holder{
         overflow: hidden;
+        margin-top: 3px;
         .ant-btn{
-          margin-right: -37px;
+          margin-right: -32px;
         }
       }
       &:hover{
         .delete-btn-holder .ant-btn{
+          margin-right: 0;
+        }
+      }
+    }
+    .indicators-list>.ant-collapse-item>.ant-collapse-header{
+      .delete-btn-holder{
+        .ant-btn-group{
+          margin-right: -96px;
+          transition: all .3s ease-out;
+          .ant-btn{
+            margin-right: 0;
+            &.delete-panel{
+              margin-left: -1px;
+            }
+          }
+        }
+      }
+      &:hover{
+        .delete-btn-holder .ant-btn-group{
           margin-right: 0;
         }
       }
@@ -197,7 +217,8 @@
   }
   .ant-collapse-header{
     .delete-panel{
-      margin-left: 5px;
+      // margin-left: -1px;
+      margin-left: 0;
     }
   }
   .indicators-list{
@@ -205,22 +226,31 @@
       .ant-collapse-header .ant-collapse-extra{
         margin-left: auto;
         position: absolute;
-        right: 10px;
+        right: 15px;
+        .extra-container{
+          display: inline-block;
+        }
         .menu-container{
           overflow: hidden;
           display: inline-block;
-          .ant-radio-group{
+          margin-top: 3px;
+          .menu-contents{
             transition: transform .3s ease-out;
             transition-delay: .3s;
           }
+        }
+        .ant-btn-group{
+          margin-right: 0;
+          margin-left: 5px;
+          // transform: translateY(-7px);
         }
       }
     }
     .ant-collapse-item:not(.ant-collapse-item-active){
       .ant-collapse-header{
         .ant-collapse-extra{
-          .ant-radio-group{
-            transform: translateX(300px);
+          .menu-contents{
+            transform: translateX(340px);
           }
         }
       }
