@@ -43,7 +43,8 @@ from .result import (Disaggregation, Indicator,
                      IndicatorPeriodDataComment, IndicatorReference,
                      IndicatorPeriodActualLocation,
                      IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue,
-                     PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget)
+                     PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget,
+                     DisaggregationContribution)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -121,6 +122,7 @@ __all__ = [
     'IndicatorPeriodData',
     'Disaggregation',
     'DisaggregationTarget',
+    'DisaggregationContribution',
     'IndicatorPeriodDataComment',
     'IndicatorPeriodTargetLocation',
     'IndicatorReference',
