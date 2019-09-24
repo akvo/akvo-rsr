@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import RelatedProject
+from akvo.rsr.models import RelatedProject, Project
 
 from .rsr_serializer import BaseRSRSerializer
 
@@ -13,6 +13,9 @@ from rest_framework import serializers
 
 
 class RelatedProjectRawSerializer(BaseRSRSerializer):
+
+    related_project = serializers.PrimaryKeyRelatedField(
+        allow_null=True, queryset=Project.objects.all(), required=False, default=None)
 
     class Meta:
         model = RelatedProject
