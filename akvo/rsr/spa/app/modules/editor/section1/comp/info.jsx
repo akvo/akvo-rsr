@@ -155,6 +155,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
               <FinalField
                 name="dateStartPlanned"
                 control="datepicker"
+                    optional={isOptional}
                 withLabel
               />
             </Col>
@@ -162,6 +163,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
               <FinalField
                 name="dateEndPlanned"
                 control="datepicker"
+                  optional={isOptional}
                 withLabel
               />
             </Col>

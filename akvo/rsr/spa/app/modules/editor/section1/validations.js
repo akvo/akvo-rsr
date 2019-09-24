@@ -6,8 +6,11 @@ const RSR = yup.object().shape({
   title: yup.string().default('').required().min(3),
   subtitle: yup.string().default('').required().min(3),
   iatiStatus: yup.string().required(),
-  dateStartPlanned: yup.string().nullable().required(),
-  dateEndPlanned: yup.string().nullable().required(),
+  dateStartPlanned: yup.string().nullable().when('dateStartActual', {
+    is: value => value === null || value === '' || value === undefined,
+    then: yup.string().nullable().required()
+  }),
+  dateEndPlanned: yup.string().nullable(),
   dateStartActual: yup.string().nullable(),
   dateEndActual: yup.string().nullable(),
   currency: yup.string().default('EUR'),
@@ -37,8 +40,11 @@ const IATI = IATI_BASIC.clone().shape({
 })
 
 const DGIS = RSR.clone().shape({
-  dateStartActual: RSR.fields.dateStartActual.required(),
-  dateEndActual: RSR.fields.dateEndActual.required(),
+  // dateStartActual: RSR.fields.dateStartActual.required(),
+  dateEndPlanned: yup.string().nullable().when('dateEndActual', {
+    is: value => value === null || value === '' || value === undefined,
+    then: yup.string().nullable().required()
+  }),
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string().required(),
   defaultFlowType: yup.string().required(),
