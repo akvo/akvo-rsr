@@ -73,6 +73,7 @@ const ProjectPicker = ({ fieldName, loading, projects, savedData, formPush, proj
                       onSearch={filterOptions}
                       notFoundContent={state.loading ? <Spin size="small" /> : (state.searchStr.length === 0 ? <span>{t('Start typing...')}</span> : <span>{t('No results')}</span>)}
                       filterOption={false}
+                      allowClear
                     >
                       {$options.map(option => <Option value={option.value} key={option.value}>{option.label}</Option>)}
                     </Select>

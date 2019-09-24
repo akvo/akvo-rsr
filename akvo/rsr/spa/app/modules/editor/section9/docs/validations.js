@@ -18,7 +18,8 @@ const DGIS = RSR.clone().shape({
 const IATI = DGIS.clone().shape({
   titleLanguage: yup.string(),
   language: yup.string(),
-  documentDate: yup.string().nullable()
+  documentDate: yup.string().nullable(),
+  categories: yup.array().of(yup.string()).min(1).required()
 })
 
 const EUTF = IATI.clone()

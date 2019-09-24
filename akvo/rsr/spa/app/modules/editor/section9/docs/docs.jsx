@@ -181,7 +181,6 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
             )}
           </Row>
           {fieldExists('categories') &&
-          <Item label={<InputLabel optional tooltip={t('The description of the type of content contained within the document.')}>{t('Document categories')}</InputLabel>}>
           <FinalField
             name={`${name}.categories`}
             control="select"
@@ -189,8 +188,13 @@ const Docs = ({ formPush, validations, dispatch, initialValues }) => {
             optionFilterProp="children"
             options={CATEGORY_OPTIONS}
             placeholder={t('Please select...')}
+            withLabel
+            optional={isOptional}
+            dict={{
+              tooltip: t('The description of the type of content contained within the document.'),
+              label: t('Document categories')
+            }}
           />
-          </Item>
           }
         </div>
         )}
