@@ -265,7 +265,7 @@ class RSRUpdateForm extends React.Component {
         var files = e.target.files,
             size = (files.length > 0 && files[0].size) || 0;
         const megabyte = 1048576,
-            max_size = 2;
+            max_size = 10;
 
         // Disable/Enable submit, add/remove error class
         if (size > max_size * megabyte) {
