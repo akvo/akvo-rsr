@@ -1537,23 +1537,10 @@ class IatiExportAdmin(admin.ModelAdmin):
 admin.site.register(apps.get_model('rsr', 'IatiExport'), IatiExportAdmin)
 
 
-class ValidationInline(admin.TabularInline):
-    model = apps.get_model('rsr', 'ProjectEditorValidation')
-    fields = ('validation', 'action', )
-    ordering = ('validation',)
-
-    def get_extra(self, request, obj=None, **kwargs):
-        if obj:
-            return 1 if obj.validations.count() == 0 else 0
-        else:
-            return 1
-
-
 class ValidationSetAdmin(admin.ModelAdmin):
     model = apps.get_model('rsr', 'ProjectEditorValidationSet')
     list_display = ('name', 'description')
     fields = ('name', 'description')
-    inlines = (ValidationInline, )
 
     def get_queryset(self, request):
         if request.user.is_admin or request.user.is_superuser:
