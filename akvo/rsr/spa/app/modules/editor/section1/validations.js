@@ -40,7 +40,7 @@ const IATI = IATI_BASIC.clone().shape({
 })
 
 const DGIS = RSR.clone().shape({
-  // dateStartActual: RSR.fields.dateStartActual.required(),
+  iatiActivityId: yup.string().nullable(),
   dateEndPlanned: yup.string().nullable().when('dateEndActual', {
     is: value => value === null || value === '' || value === undefined,
     then: yup.string().nullable().required()
