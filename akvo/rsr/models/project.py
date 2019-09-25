@@ -23,6 +23,7 @@ from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
+from django.contrib.postgres.fields import JSONField
 
 from sorl.thumbnail.fields import ImageField
 
@@ -47,6 +48,11 @@ from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
 from .related_project import RelatedProject
 from .budget_item import BudgetItem
+
+
+DESCRIPTIONS_ORDER = [
+    'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
+    'project_plan', 'sustainability']
 
 
 def image_path(instance, file_name):
@@ -223,6 +229,7 @@ class Project(TimestampsMixin, models.Model):
                     u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
                     u'target="_blank">Markdown</a> is supported.')
     )
+    descriptions_order = JSONField(default=DESCRIPTIONS_ORDER)
 
     # Result aggregation
     aggregate_children = models.BooleanField(
