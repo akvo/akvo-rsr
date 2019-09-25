@@ -125,7 +125,10 @@ const ContentBar = connect(
     <div className="content">
       {publishingStatus !== 'published' && (
         <Aux>
-          <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>{t('Publish')}</Button>
+          <div>
+            <Button type="primary" disabled={!allValid} onClick={() => setStatus('published')}>{t('Publish')}</Button>
+            <Button className="preview-btn" href={absoluteUrl} target="_blank">{t('Preview')}</Button>
+          </div>
           <i>{t('The project is unpublished')}</i>
         </Aux>
       )}
