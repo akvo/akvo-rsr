@@ -1,7 +1,7 @@
-/* global window, document */
+/* global window, document, navigator */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -255,6 +255,15 @@ const Section5 = (props) => {
       window.scroll({ top: ypos, left: 0, behavior: 'smooth' })
     }, 200)
   }, [])
+
+  const getLink = (resultId) => {
+    window.location.hash = `#/result/${resultId}`
+    navigator.clipboard.writeText(window.location.href)
+    notification.open({
+      message: t('Link copied!'),
+      icon: <Icon type="link" style={{ color: '#108ee9' }} />,
+    })
+  }
   return (
     <div className="view section5">
       <Form layout="vertical">
@@ -300,14 +309,21 @@ const Section5 = (props) => {
                               // eslint-disable-next-line
                               <div onClick={e => e.stopPropagation()}>
                                 <div className="delete-btn-holder">
-                                  <Popconfirm
-                                    title={t('Are you sure to delete this result?')}
-                                    onConfirm={() => removeSection(fields, index)}
-                                    okText={t('Yes')}
-                                    cancelText={t('No')}
-                                  >
-                                    <Button size="small" icon="delete" className="delete-panel" />
-                                  </Popconfirm>
+                                  <Button.Group>
+                                    <Field name={`${name}.id`} render={({ input }) =>
+                                    <Tooltip title={t('Get a link to this result')}>
+                                      <Button size="small" icon="link" onClick={() => getLink(input.value)} />
+                                    </Tooltip>
+                                    } />
+                                    <Popconfirm
+                                      title={t('Are you sure to delete this result?')}
+                                      onConfirm={() => removeSection(fields, index)}
+                                      okText={t('Yes')}
+                                      cancelText={t('No')}
+                                    >
+                                      <Button size="small" icon="delete" className="delete-panel" />
+                                    </Popconfirm>
+                                  </Button.Group>
                                 </div>
                               </div>
                             }

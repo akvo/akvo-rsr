@@ -1,7 +1,7 @@
-/* global window */
+/* global window, navigator */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip } from 'antd'
+import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -86,6 +86,11 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
   }
   const getLink = (periodId) => {
     window.location.hash = `#/result/${resultId}/indicator/${indicatorId}/period/${periodId}`
+    navigator.clipboard.writeText(window.location.href)
+    notification.open({
+      message: t('Link copied!'),
+      icon: <Icon type="link" style={{ color: '#108ee9' }} />,
+    })
   }
   return (
     <Aux>
@@ -102,69 +107,78 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
           autoScrollToActive
           activeKey={selectedPeriodIndex}
           setName={`${fieldName}.periods`}
-          renderPanel={(name, index) => (
-            <Panel
-              header={(
-                <span>
-                  {t('Period')} {index + 1}:&nbsp;
-                  <Field
-                    name={`${name}.periodStart`}
-                    render={({input}) => input.value}
-                  />
-                  &nbsp;-&nbsp;
-                  <Field
-                    name={`${name}.periodEnd`}
-                    render={({input}) => input.value}
-                  />
-                </span>
-              )}
-              key={index}
-              extra={(
-                /* eslint-disable-next-line */
-                <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
-                <div className="delete-btn-holder">
-                <Popconfirm
-                  title={t('Are you sure to delete this period?')}
-                  onConfirm={() => remove(index, fields)}
-                  okText={t('Yes')}
-                  cancelText={t('No')}
-                >
-                  <Button size="small" icon="delete" className="delete-panel" />
-                </Popconfirm>
-                </div>
-                </div>
-              )}
-            >
-              <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Item label="Start">
-                    <FinalField
+          renderPanel={(name, index) => {
+            return (
+              <Panel
+                header={(
+                  <span>
+                    {t('Period')} {index + 1}:&nbsp;
+                    <Field
                       name={`${name}.periodStart`}
-                      control="datepicker"
-                      disabled={primaryOrganisation === 3394}
+                      render={({ input }) => input.value}
                     />
-                  </Item>
-                </Col>
-                <Col span={12}>
-                  <Item label="End">
-                    <FinalField
+                    &nbsp;-&nbsp;
+                    <Field
                       name={`${name}.periodEnd`}
-                      control="datepicker"
-                      disabled={primaryOrganisation === 3394}
+                      render={({ input }) => input.value}
                     />
-                  </Item>
-                </Col>
-              </Row>
-              <Item label={<InputLabel optional>{t('Target value')}</InputLabel>}>
-                <FinalField name={`${name}.targetValue`} />
-              </Item>
-              <Field name={`${name}.id`} render={({ input }) => <DimensionTargets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
-              <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
-                <FinalField name={`${name}.targetComment`} render={({input}) => <RTE {...input} />} />
-              </Item>
-            </Panel>
-          )}
+                  </span>
+                )}
+                key={index}
+                extra={(
+                  /* eslint-disable-next-line */
+                  <div onClick={(e) => { e.stopPropagation() }} style={{ display: 'flex' }}>
+                    <div className="delete-btn-holder">
+                      <Button.Group>
+                        <Field name={`${name}.id`} render={({ input }) =>
+                        <Tooltip title={t('Get a link to this period')}>
+                          <Button size="small" icon="link" onClick={() => getLink(input.value)} />
+                        </Tooltip>
+                        } />
+                        <Popconfirm
+                          title={t('Are you sure to delete this period?')}
+                          onConfirm={() => remove(index, fields)}
+                          okText={t('Yes')}
+                          cancelText={t('No')}
+                        >
+                          <Button size="small" icon="delete" className="delete-panel" />
+                        </Popconfirm>
+                      </Button.Group>
+                    </div>
+                  </div>
+                )}
+              >
+                <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Item label="Start">
+                      <FinalField
+                        name={`${name}.periodStart`}
+                        control="datepicker"
+                        disabled={primaryOrganisation === 3394}
+                      />
+                    </Item>
+                  </Col>
+                  <Col span={12}>
+                    <Item label="End">
+                      <FinalField
+                        name={`${name}.periodEnd`}
+                        control="datepicker"
+                        disabled={primaryOrganisation === 3394}
+                      />
+                    </Item>
+                  </Col>
+                </Row>
+                <Item label={<InputLabel optional>{t('Target value')}</InputLabel>}>
+                  <FinalField name={`${name}.targetValue`} />
+                </Item>
+                <Field name={`${name}.id`} render={({ input }) => <DimensionTargets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
+                <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
+                  <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
+                </Item>
+              </Panel>
+            )
+          }}
         />
         }
         <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>{t('Add period')}</Button>
