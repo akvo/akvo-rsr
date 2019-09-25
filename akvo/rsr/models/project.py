@@ -409,6 +409,11 @@ class Project(TimestampsMixin, models.Model):
         'ProjectEditorValidationSet', verbose_name=_('validations'), related_name='projects'
     )
 
+    use_project_roles = models.BooleanField(
+        verbose_name=_(u"use project roles"),
+        default=False,
+        help_text=_(u'Toggle between using project roles and employment based permissions'))
+
     # denormalized data
     budget = models.DecimalField(
         _('project budget'), max_digits=14, decimal_places=2, blank=True, null=True,

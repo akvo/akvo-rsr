@@ -394,7 +394,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.parse_permission_expression(permission_expression, permissions, operators)
 
     @staticmethod
-    def parse_permission_expression(permission_expression, permissions, operators):
+    def parse_permission_expression(permission_expression, permissions, operators, ignored=None):
         """Convert permission expression to a queryset filter using permissions mapping
 
         NOTE: This function does no error checking and assumes that all the
@@ -404,6 +404,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         this function.
 
         """
+        if ignored is None:
+            ignored = {}
+
         # FIXME: This whole thing seems like a horrible hack, and should go
         # away if the permissions system is reworked!
         expression = re.sub('([()|&])', ' \\1 ', permission_expression).split()
@@ -418,10 +421,19 @@ class User(AbstractBaseUser, PermissionsMixin):
             elif item == ')':
                 first, op, second = expression_stack[-3:]
                 expression_stack = expression_stack[:-3]
-                expression_stack.append(first._combine(second, op))
+                if first is None:
+                    result = second
+                elif second is None:
+                    result = first
+                else:
+                    result = first._combine(second, op)
+                expression_stack.append(result)
 
             elif item == '(':
                 continue
+
+            elif item in ignored:
+                expression_stack.append(None)
 
             else:
                 raise RuntimeError('{} permission not supported'.format(item))

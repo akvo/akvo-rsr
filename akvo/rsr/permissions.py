@@ -19,6 +19,15 @@ GROUP_NAME_USERS = 'Users'
 GROUP_NAME_ENUMERATORS = 'Enumerators'
 GROUP_NAME_USER_MANAGERS = 'User Managers'
 
+PERM_NAME_GROUP_MAP = {
+    'is_org_admin': [GROUP_NAME_ADMINS],
+    'is_org_user_manager': [GROUP_NAME_USER_MANAGERS],
+    'is_org_me_manager_or_project_editor': [GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ME_MANAGERS],
+    'is_org_me_manager': [GROUP_NAME_ME_MANAGERS],
+    'is_org_user': [GROUP_NAME_USERS],
+    'is_org_enumerator': [GROUP_NAME_ENUMERATORS],
+}
+
 
 @rules.predicate
 def is_rsr_admin(user):
@@ -115,37 +124,37 @@ def _user_has_group_permissions(user, obj, group_names):
 
 @rules.predicate
 def is_org_admin(user, obj):
-    group_names = [GROUP_NAME_ADMINS]
+    group_names = PERM_NAME_GROUP_MAP['is_org_admin']
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_user_manager(user, obj):
-    group_names = [GROUP_NAME_USER_MANAGERS]
+    group_names = PERM_NAME_GROUP_MAP['is_org_user_manager']
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_me_manager_or_project_editor(user, obj):
-    group_names = [GROUP_NAME_PROJECT_EDITORS, GROUP_NAME_ME_MANAGERS]
+    group_names = PERM_NAME_GROUP_MAP['is_org_me_manager_or_project_editor']
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_me_manager(user, obj):
-    group_names = [GROUP_NAME_ME_MANAGERS]
+    group_names = PERM_NAME_GROUP_MAP['is_org_me_manager']
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_user(user, obj):
-    group_names = [GROUP_NAME_USERS]
+    group_names = PERM_NAME_GROUP_MAP['is_org_user']
     return _user_has_group_permissions(user, obj, group_names)
 
 
 @rules.predicate
 def is_org_enumerator(user, obj):
-    group_names = [GROUP_NAME_ENUMERATORS]
+    group_names = PERM_NAME_GROUP_MAP['is_org_enumerator']
     return _user_has_group_permissions(user, obj, group_names)
 
 
