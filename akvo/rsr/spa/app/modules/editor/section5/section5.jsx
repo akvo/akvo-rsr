@@ -30,6 +30,25 @@ const resultTypes = [
   {label: 'other', value: '9'}
 ]
 
+export const parseHashComponents = (hash) => {
+  const ret = { resultId: null, indicatorId: null, periodId: null}
+  const comps = hash.substr(2).split('/')
+  if(comps.length > 1){
+    if (comps[0] === 'result' && !Number.isNaN(Number(comps[1]))){
+      ret.resultId = comps[1]
+    }
+    if(comps.length > 3){
+      if (comps[2] === 'indicator' && !Number.isNaN(Number(comps[3]))){
+        ret.indicatorId = comps[3]
+      }
+      if (comps.length > 5 && comps[4] === 'period' && !Number.isNaN(Number(comps[5]))){
+        ret.periodId = comps[5]
+      }
+    }
+  }
+  return ret
+}
+
 const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
   const { t } = useTranslation()
   const addResult = ({ key }) => {
