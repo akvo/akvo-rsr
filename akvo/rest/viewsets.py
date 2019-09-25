@@ -205,7 +205,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
     @staticmethod
     def get_project(obj):
-        obj_model = obj._meta.model
+        obj_model = obj._meta.model if obj is not None else None
         model_project_relation = getattr(obj_model, 'project_relation', None)
         if model_project_relation:
             query = {model_project_relation: [obj.id]}
