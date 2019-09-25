@@ -30,8 +30,9 @@ class ActiveKeyUpdater extends React.Component{
 class Accordion extends Component {
   constructor(props){
     super(props)
+    const defaultSelected = props.activeKey !== -1 ? String(props.activeKey) : '0'
     this.state = {
-      activeKey: props.multiple ? ['0'] : '0'
+      activeKey: props.multiple ? [defaultSelected] : defaultSelected
     }
   }
   handleChange = (activeKey) => {

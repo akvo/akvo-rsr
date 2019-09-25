@@ -1,3 +1,4 @@
+/* global window, document */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert } from 'antd'
@@ -220,6 +221,40 @@ const Section5 = (props) => {
     }
   }, [])
   const hasParent = props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0
+  const hashComps = parseHashComponents(window.location.hash)
+  let selectedResultIndex = -1
+  let selectedIndicatorIndex = -1
+  let selectedPeriodIndex = -1
+  if(hashComps.resultId){
+    selectedResultIndex = props.fields.results.findIndex(it => it.id === Number(hashComps.resultId))
+    if (hashComps.indicatorId) {
+      selectedIndicatorIndex = props.fields.results[selectedResultIndex].indicators.findIndex(it => it.id === Number(hashComps.indicatorId))
+      if (hashComps.periodId) {
+        selectedPeriodIndex = props.fields.results[selectedResultIndex].indicators[selectedIndicatorIndex].periods.findIndex(it => it.id === Number(hashComps.periodId))
+      }
+    }
+  }
+  let ypos = 0
+  const headerOffset = 127 /* header */ - 105 /* sticky header */
+  useEffect(() => {
+    setTimeout(() => {
+      if (hashComps.resultId) {
+        const $resultList = document.getElementsByClassName('results-list')[0]
+        const $result = $resultList.children[selectedResultIndex]
+        const resultListOffset = $resultList.offsetTop
+        ypos = $result.parentElement.parentElement.offsetTop + selectedResultIndex * 81 + headerOffset
+        if (hashComps.indicatorId) {
+          const $indicator = $result.getElementsByClassName('indicators-list')[0].children[selectedIndicatorIndex]
+          ypos = $indicator.parentNode.offsetTop + selectedIndicatorIndex * 71 + resultListOffset + headerOffset - 81 /* sticky header of result */
+          if (hashComps.periodId) {
+            const $period = $indicator.getElementsByClassName('periods-list')[0].children[selectedPeriodIndex]
+            ypos = $period.parentNode.offsetTop + selectedPeriodIndex * 62 + $indicator.parentNode.offsetTop + resultListOffset + headerOffset + 3 - 81 /* sticky header of result */ - 72 /* sticky header of indicator */
+          }
+        }
+      }
+      window.scroll({ top: ypos, left: 0, behavior: 'smooth' })
+    }, 200)
+  }, [])
   return (
     <div className="view section5">
       <Form layout="vertical">
@@ -243,6 +278,7 @@ const Section5 = (props) => {
                       <Accordion
                         className="results-list"
                         finalFormFields={fields}
+                        activeKey={selectedResultIndex}
                         setName="results"
                         multiple
                         renderPanel={(name, index) => (
@@ -300,7 +336,20 @@ const Section5 = (props) => {
                             </div>
                             <Field
                               name={`${name}.id`}
-                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} resultIndex={index} primaryOrganisation={props.primaryOrganisation} projectId={props.projectId} allowIndicatorLabels={props.allowIndicatorLabels} indicatorLabelOptions={indicatorLabelOptions} />}
+                              render={({ input }) => (
+                                <Indicators
+                                  fieldName={name}
+                                  formPush={push}
+                                  resultId={input.value}
+                                  resultIndex={index}
+                                  primaryOrganisation={props.primaryOrganisation}
+                                  projectId={props.projectId}
+                                  allowIndicatorLabels={props.allowIndicatorLabels}
+                                  indicatorLabelOptions={indicatorLabelOptions}
+                                  selectedIndicatorIndex={selectedIndicatorIndex}
+                                  selectedPeriodIndex={selectedPeriodIndex}
+                                />
+                              )}
                             />
                           </Panel>
                         )}

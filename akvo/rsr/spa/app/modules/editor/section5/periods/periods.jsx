@@ -1,6 +1,7 @@
+/* global window */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Collapse, Col, Row, Popconfirm, Divider, Input } from 'antd'
+import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -36,7 +37,7 @@ class _DimensionTargets extends React.Component{
       period = { indicator: indicatorId }
     }
     if(!period.disaggregationTargets) period.disaggregationTargets = []
-    if (dimensionNames.length === 0) return null
+    if (!dimensionNames || dimensionNames.length === 0) return null
     let newIndex = period.disaggregationTargets.length - 1
     console.log('render', new Date())
     return (
@@ -73,7 +74,7 @@ class _DimensionTargets extends React.Component{
 }
 const DimensionTargets = connect(({ editorRdr: { section5: { fields: {results} } } }) => ({ results }))(_DimensionTargets)
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId, disaggregationTargets: [] }
@@ -82,6 +83,9 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
   const remove = (index, fields) => {
     fields.remove(index)
     removeSetItem(5, `${fieldName}.periods`, index)
+  }
+  const getLink = (periodId) => {
+    window.location.hash = `#/result/${resultId}/indicator/${indicatorId}/period/${periodId}`
   }
   return (
     <Aux>
@@ -96,6 +100,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
           className="periods-list"
           finalFormFields={fields}
           autoScrollToActive
+          activeKey={selectedPeriodIndex}
           setName={`${fieldName}.periods`}
           renderPanel={(name, index) => (
             <Panel

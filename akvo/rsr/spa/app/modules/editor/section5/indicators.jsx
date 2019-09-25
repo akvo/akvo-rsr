@@ -29,7 +29,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex }) => { // eslint-disable-line
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const add = (key) => {
@@ -64,6 +64,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
           className="indicators-list"
           finalFormFields={fields}
           setName={`${fieldName}.indicators`}
+          activeKey={selectedIndicatorIndex}
           destroyInactivePanel
           ref={ref => { accordionCompRef.current = ref }}
           renderPanel={(name, index, activeKey) => (
@@ -200,7 +201,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} indicatorIndex={index} primaryOrganisation={primaryOrganisation} />} />
+              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} />} />
             </Panel>
           )}
         />
