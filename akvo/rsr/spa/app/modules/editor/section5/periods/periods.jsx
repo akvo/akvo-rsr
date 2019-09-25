@@ -5,6 +5,7 @@ import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import { isEqual, get } from 'lodash'
+import moment from 'moment'
 
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
@@ -134,19 +135,39 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
               <Row gutter={16}>
                 <Col span={12}>
                   <Item label="Start">
-                    <FinalField
-                      name={`${name}.periodStart`}
-                      control="datepicker"
-                      disabled={primaryOrganisation === 3394}
+                    <Field
+                      name={`${name}.periodEnd`}
+                      render={({ input }) => (
+                      <FinalField
+                        name={`${name}.periodStart`}
+                        control="datepicker"
+                        disabled={primaryOrganisation === 3394}
+                        disabledDate={(date) => {
+                          const endDate = moment(input.value, 'DD/MM/YYYY')
+                          if (!endDate.isValid()) return false
+                          return date.valueOf() > endDate.valueOf()
+                        }}
+                      />
+                      )}
                     />
                   </Item>
                 </Col>
                 <Col span={12}>
                   <Item label="End">
-                    <FinalField
-                      name={`${name}.periodEnd`}
-                      control="datepicker"
-                      disabled={primaryOrganisation === 3394}
+                    <Field
+                      name={`${name}.periodStart`}
+                      render={({ input }) => (
+                      <FinalField
+                        name={`${name}.periodEnd`}
+                        control="datepicker"
+                        disabled={primaryOrganisation === 3394}
+                        disabledDate={(date) => {
+                          const startDate = moment(input.value, 'DD/MM/YYYY')
+                          if (!startDate.isValid()) return false
+                          return date.valueOf() < startDate.valueOf()
+                        }}
+                      />
+                      )}
                     />
                   </Item>
                 </Col>
