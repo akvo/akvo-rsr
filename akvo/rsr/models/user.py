@@ -452,29 +452,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         editor_group = Group.objects.get(name='Project Editors')
         return self.has_role_in_org(org, editor_group)
 
-    def get_me_manager_employment_orgs(self):
-        """Return all organizations where user is a m&e manager."""
-
-        employments = Employment.objects.filter(
-            user=self, is_approved=True, group__name__in=['M&E Managers']
-        )
-        return employments.organisations()
-
-    def get_project_editor_me_manager_employment_orgs(self):
-        """Return all organisations where user is a project editor or m&e manager."""
-
-        employments = Employment.objects.filter(
-            user=self, is_approved=True, group__name__in=['Project Editors', 'M&E Managers']
-        )
-        return employments.organisations()
-
-    def get_user_manager_employment_orgs(self):
-        """Return all organisations where user is a user manager."""
-        employments = Employment.objects.filter(
-            user=self, is_approved=True, group__name='User Managers'
-        )
-        return employments.organisations()
-
     def admin_projects(self):
         """Return all projects of orgs where user is an admin."""
 
@@ -484,19 +461,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     def me_manager_projects(self):
         """Return all projects of orgs where user is m&e manager."""
 
-        orgs = self.get_me_manager_employment_orgs()
+        orgs = self.approved_employments(group_names=['M&E Managers']).organisations()
         return Project.objects.of_partners(orgs).distinct()
 
     def project_editor_me_manager_projects(self):
         """Return all projects of orgs where user is project editor or m&e manager."""
 
-        orgs = self.get_project_editor_me_manager_employment_orgs()
+        group_names = ['Project Editors', 'M&E Managers']
+        orgs = self.approved_employments(group_names=group_names).organisations()
         return Project.objects.of_partners(orgs).distinct()
 
     def user_manager_projects(self):
         """Return all projects where user is a user manager."""
 
-        orgs = self.get_user_manager_employment_orgs()
+        orgs = self.approved_employments(group_names=['User Managers']).organisations()
         return Project.objects.of_partners(orgs).distinct()
 
     def enumerator_projects(self):
