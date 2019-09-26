@@ -147,10 +147,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return "\n".join([o.name for o in self.organisations.all()])
     get_organisation_names.short_description = _('organisations')
 
-    def approved_organisations(self):
-        """Return all approved organisations of the user."""
-        return self.approved_employments().organisations()
-
     def updates(self):
         """
         return all updates created by the user or by organisation users if requesting user is admin
@@ -184,9 +180,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_owned_org_users(self):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
-
-    def my_projects(self):
-        return self.approved_organisations().all_projects()
 
     def first_organisation(self):
         all_orgs = self.approved_organisations()
@@ -242,6 +235,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         if group_names is not None:
             employments = employments.filter(group__name__in=group_names)
         return employments.select_related('organisation', 'group', 'user')
+
+    def approved_organisations(self, group_names=None):
+        """Return all approved organisations of the user."""
+        return self.approved_employments(group_names=group_names).organisations()
+
+    def my_projects(self, group_names=None):
+        return self.approved_organisations(group_names=group_names).all_projects()
 
     def can_create_project(self):
         """Check to see if the user can create a project."""
@@ -331,34 +331,23 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def admin_projects(self):
         """Return all projects of orgs where user is an admin."""
-
-        orgs = self.get_admin_employment_orgs()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['Admins'])
 
     def me_manager_projects(self):
         """Return all projects of orgs where user is m&e manager."""
-
-        orgs = self.approved_employments(group_names=['M&E Managers']).organisations()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['M&E Managers'])
 
     def project_editor_me_manager_projects(self):
         """Return all projects of orgs where user is project editor or m&e manager."""
-
-        group_names = ['Project Editors', 'M&E Managers']
-        orgs = self.approved_employments(group_names=group_names).organisations()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['Project Editors', 'M&E Managers'])
 
     def user_manager_projects(self):
         """Return all projects where user is a user manager."""
-
-        orgs = self.approved_employments(group_names=['User Managers']).organisations()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['User Managers'])
 
     def enumerator_projects(self):
         """Return all projects where user is an enumerator."""
-
-        orgs = self.approved_employments(group_names=['Enumerators']).organisations()
-        return Project.objects.of_partners(orgs).distinct()
+        return self.my_projects(group_names=['Enumerators'])
 
     def get_permission_filter(self, permission, project_relation, include_user_owned=True):
         """Convert a rules permission predicate into a queryset filter using Q objects.
