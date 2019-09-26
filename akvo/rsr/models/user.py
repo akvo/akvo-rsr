@@ -53,13 +53,6 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, username, email, password, **extra_fields):
         return self._create_user(username, email, password, True, True, True, **extra_fields)
 
-    # def __getattr__(self, attr, *args):
-    #     try:
-    #         return getattr(self.__class__, attr, *args)
-    #     except AttributeError:
-    #         print(self.get_queryset(), attr)
-    #         return getattr(self.get_queryset(), attr, *args)
-
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
