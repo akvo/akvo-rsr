@@ -6,7 +6,7 @@
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rest.serializers.indicator_period_data import IndicatorPeriodDataFrameworkSerializer
-from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
+from akvo.rest.serializers.indicator_period_disaggregation import IndicatorPeriodDisaggregationLiteSerializer
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 
 from rest_framework import serializers
@@ -29,7 +29,7 @@ class IndicatorPeriodSerializer(BaseRSRSerializer):
     indicator_unicode = serializers.ReadOnlyField(source='indicator.__unicode__')
     percent_accomplishment = serializers.ReadOnlyField()
     can_add_update = serializers.ReadOnlyField(source='can_save_update')
-    disaggregations = IndicatorPeriodDisaggregationSerializer(many=True, required=False)
+    disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
 
     def get_disaggregation_targets(self, obj):
@@ -47,6 +47,7 @@ class IndicatorPeriodFrameworkSerializer(BaseRSRSerializer):
     data = serializers.SerializerMethodField('get_updates')
     parent_period = serializers.ReadOnlyField(source='parent_period_id')
     percent_accomplishment = serializers.ReadOnlyField()
+    disaggregations = IndicatorPeriodDisaggregationLiteSerializer(many=True, required=False, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
 
     class Meta:

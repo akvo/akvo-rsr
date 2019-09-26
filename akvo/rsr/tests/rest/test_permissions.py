@@ -184,6 +184,7 @@ class PermissionFilteringTestCase(TestCase):
                     M.DisaggregationTarget.objects.create(period=period,
                                                           dimension_value=dimension_value,
                                                           value=0)
+
                     # updates
                     update = M.ProjectUpdate.objects.create(project=project,
                                                             user=user,
@@ -507,6 +508,11 @@ class PermissionFilteringTestCase(TestCase):
 
         model_map[M.DisaggregationTarget] = {
             'group_count': group_count(64, 16, 48, 32),
+            'project_relation': 'period__indicator__result__project__'
+        }
+
+        model_map[M.IndicatorPeriodDisaggregation] = {
+            'group_count': group_count(8, 2, 4, 4),
             'project_relation': 'period__indicator__result__project__'
         }
 

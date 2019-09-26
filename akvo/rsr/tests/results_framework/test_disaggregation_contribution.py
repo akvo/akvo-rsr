@@ -46,7 +46,6 @@ class DisaggregationContributionTestCase(BaseTestCase):
 
         self.assertEqual(period_disaggregation.contributors.count(), 0)
 
-
     def test_disaggregation_contribution_from_child_to_parent(self):
         # Given
         child1 = self.create_project("Child 1")
