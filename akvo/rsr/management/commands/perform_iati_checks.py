@@ -14,6 +14,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for project in Project.objects.all():
-            self.stdout.write(
-                'Performing IATI checks for project {0}...'.format(str(project.pk)))
+            self.stdout.write('Performing IATI checks for project {0}...'.format(project.pk))
             project.update_iati_checks()
