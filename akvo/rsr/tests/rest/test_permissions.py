@@ -16,7 +16,7 @@ from django.contrib.auth.models import AnonymousUser, Group
 from django.core import management
 from django.test import TestCase
 
-from akvo.rest.viewsets import PublicProjectViewSet
+from akvo.rest.viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 from akvo.rsr import models as M
 from akvo.utils import check_auth_groups
 
@@ -218,7 +218,7 @@ class PermissionFilteringTestCase(TestCase):
         from akvo.rest import views
         view_sets = [
             obj for obj in views.__dict__.values()
-            if isinstance(obj, type) and issubclass(obj, PublicProjectViewSet)
+            if isinstance(obj, type) and issubclass(obj, (PublicProjectViewSet, ReadOnlyPublicProjectViewSet))
         ]
         view_set_models = {view_set.queryset.model for view_set in view_sets}
         missing_models = view_set_models - set(model_map.keys())

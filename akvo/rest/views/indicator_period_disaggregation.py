@@ -6,10 +6,10 @@
 
 from akvo.rsr.models import IndicatorPeriodDisaggregation
 from ..serializers import IndicatorPeriodDisaggregationSerializer
-from ..viewsets import PublicProjectViewSet
+from ..viewsets import ReadOnlyPublicProjectViewSet
 
 
-class IndicatorPeriodDisaggregationViewSet(PublicProjectViewSet):
+class IndicatorPeriodDisaggregationViewSet(ReadOnlyPublicProjectViewSet):
     queryset = IndicatorPeriodDisaggregation.objects.all()
     serializer_class = IndicatorPeriodDisaggregationSerializer
     project_relation = 'period__indicator__result__project__'
