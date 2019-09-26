@@ -20,8 +20,10 @@ from tastypie.models import ApiKey
 from akvo.utils import rsr_image_path
 
 from .employment import Employment
+from .partnership import Partnership
 from .project_update import ProjectUpdate
 from .project import Project
+from .project_role import ProjectRole
 
 from ..fields import ValidXMLCharField, ValidXMLTextField
 
@@ -241,13 +243,29 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.approved_employments(group_names=group_names).organisations()
 
     def my_projects(self, group_names=None):
+        # Projects where user is employed with specified role
         organisations = self.approved_organisations(group_names=group_names)
         employment_projects = organisations.all_projects()
+        # Projects of explicitly content owned organisations
         directly_content_owned_orgs = organisations.content_owned_organisations().filter(
             content_owner__in=organisations)
         content_owned_projects = directly_content_owned_orgs.all_projects()
+        # Projects where user has the required role
+        roles = ProjectRole.objects.filter(user=self)
+        if group_names is not None:
+            roles = roles.filter(group__name__in=group_names)
+        role_project_ids = roles.values_list('project_id', flat=True)
+        # Projects where user is admin of reporting org
+        admin_organisations = self.approved_organisations(group_names=['Admins'])
+        admin_projects = admin_organisations.all_projects()
+        admin_reporting_projects = admin_projects.filter(
+            partnerships__iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION)
         projects = Project.objects.filter(
-            Q(pk__in=content_owned_projects) | Q(pk__in=employment_projects)).distinct()
+            Q(pk__in=content_owned_projects, use_project_roles=False)
+            | Q(pk__in=employment_projects, use_project_roles=False)
+            | Q(pk__in=role_project_ids, use_project_roles=True)
+            | Q(pk__in=admin_reporting_projects, use_project_roles=True)
+        ).distinct()
         return projects
 
     def can_create_project(self):
