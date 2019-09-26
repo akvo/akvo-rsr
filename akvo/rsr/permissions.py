@@ -22,7 +22,7 @@ GROUP_NAME_USER_MANAGERS = 'User Managers'
 
 @rules.predicate
 def is_rsr_admin(user):
-    if user.is_authenticated() and user.get_is_admin():
+    if user.is_authenticated() and user.is_admin:
         return True
     return False
 

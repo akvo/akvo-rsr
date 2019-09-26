@@ -172,60 +172,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
 
     # methods that interact with the User model
-    def get_is_active(self):
-        return self.is_active
-    get_is_active.boolean = True  # make pretty icons in the admin list view
-    get_is_active.short_description = _('active')
-
-    def set_is_active(self, set_it):
-        self.is_active = set_it
-        self.save()
-
-    def get_is_staff(self):
-        return self.is_staff
-    get_is_staff.boolean = True  # make pretty icons in the admin list view
-
-    def set_is_staff(self, set_it):
-        self.is_staff = set_it
-        self.save()
-
-    def get_is_admin(self):
-        return self.is_admin
-    get_is_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_admin.short_description = _('rsr admin')
-
-    def get_is_support(self):
-        return self.is_support
-    get_is_support.boolean = True  # make pretty icons in the admin list view
-    get_is_support.short_description = _('support user')
-
-    def set_is_admin(self, set_it):
-        self.is_admin = set_it
-        self.save()
-
-    def get_is_org_admin(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='Admins') if \
-            employment.is_approved else False
-    get_is_org_admin.boolean = True  # make pretty icons in the admin list view
-    get_is_org_admin.short_description = _('organisation admin')
-
-    def set_is_org_admin(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='Admins')
-            employment.save()
-        else:
-            employment.group.delete()
-
     def get_admin_employment_orgs(self):
         """Return all organisations of the user where they are Admins"""
         return self.approved_employments(['Admins']).organisations().distinct()
@@ -238,75 +184,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_owned_org_users(self):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
-
-    def get_is_user_manager(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='User manager') \
-            if employment.is_approved else False
-    get_is_user_manager.boolean = True  # make pretty icons in the admin list view
-    get_is_user_manager.short_description = _('organisation admin')
-
-    def set_is_user_manager(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='User manager')
-            employment.save()
-        else:
-            employment.group.delete()
-
-    def get_is_project_editor(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='Project Editors') \
-            if employment.is_approved else False
-    get_is_project_editor.boolean = True  # make pretty icons in the admin list view
-    get_is_project_editor.short_description = _('organisation admin')
-
-    def set_is_project_editor(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='Project Editors')
-            employment.save()
-        else:
-            employment.group.delete()
-
-    def get_is_user(self, org):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            return False
-        return employment.group == Group.objects.get(name='Users') if \
-            employment.is_approved else False
-    get_is_user.boolean = True  # make pretty icons in the admin list view
-    get_is_user.short_description = _('organisation admin')
-
-    def set_is_user(self, org, set_it):
-        from .employment import Employment
-        try:
-            employment = Employment.objects.get(user=self, organisation=org)
-        except Employment.DoesNotExist:
-            pass
-        if set_it:
-            employment.group = Group.objects.get(name='Users')
-            employment.save()
-        else:
-            employment.group.delete()
 
     def my_projects(self):
         return self.approved_organisations().all_projects()
