@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Form, Button, Modal, Icon, Tooltip } from 'antd'
 import { Form as FinalForm, FormSpy } from 'react-final-form'
 import { withTranslation } from 'react-i18next'
+import arrayMove from 'array-move'
 
 import FinalField from '../../../utils/final-field'
 import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
@@ -48,6 +49,11 @@ class Descriptions extends React.Component {
       })
     }, 100)
   }
+  move = (from, to) => {
+    this.setState({
+      added: arrayMove(this.state.added, from, to)
+    })
+  }
   render(){
     const { t } = this.props
     const isOptional = isFieldOptional(getValidationSets([1], validationDefs)) // validation id is irrelevant here
@@ -61,7 +67,7 @@ class Descriptions extends React.Component {
           subscription={{}}
           render={() => (
           <div>
-            {this.state.added.map((descKey) => {
+            {this.state.added.map((descKey, index) => {
               return (
                 <FinalField
                   name={descKey}
@@ -72,7 +78,19 @@ class Descriptions extends React.Component {
                       label={(
                         <div className="desc-label">
                           <span>{t(`section4::${descKey}::label`)}&nbsp;&nbsp;<Tooltip trigger="click" title={<span dangerouslySetInnerHTML={{ __html: t(`section4::${descKey}::info`) }} />}><Icon type="info-circle" /></Tooltip></span>
-                          {isOptional(descKey) && <Icon type="delete" onClick={() => this.removeDesc(descKey, input)} />}
+                          <Button.Group>
+                            {index > 0 &&
+                            <Tooltip title={t('Move up')}>
+                              <Button size="small" icon="up" onClick={() => this.move(index, index - 1)} />
+                            </Tooltip>
+                            }
+                            {index < this.state.added.length - 1 &&
+                            <Tooltip title={t('Move down')}>
+                              <Button size="small" icon="down" onClick={() => this.move(index, index + 1)} />
+                            </Tooltip>
+                            }
+                            {isOptional(descKey) && <Button size="small" icon="delete" onClick={() => this.removeDesc(descKey, input)} />}
+                          </Button.Group>
                         </div>
                       )}
                     >
