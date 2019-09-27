@@ -219,87 +219,21 @@ function renderReactComponents() {
         },
 
         render: function() {
-            var background = this.props.source.background || null,
-                current_status = this.props.source.current_status || null,
-                goals_overview = this.props.source.goals_overview || null,
-                project_plan = this.props.source.project_plan || null,
-                sustainability = this.props.source.sustainability || null,
-                target_group = this.props.source.target_group || null,
-                results = this.props.source.results || null;
-
-            if (background !== null) {
-                background = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: background,
-                    panelClass: "background"
-                });
-            }
-
-            if (current_status !== null) {
-                current_status = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: current_status,
-                    panelClass: "current_status"
-                });
-            }
-
-            if (goals_overview !== null) {
-                goals_overview = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: goals_overview,
-                    panelClass: "goals_overview"
-                });
-            }
-
-            if (project_plan !== null) {
-                project_plan = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: project_plan,
-                    panelClass: "project_plan"
-                });
-            }
-
-            if (sustainability !== null) {
-                sustainability = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: sustainability,
-                    panelClass: "sustainability"
-                });
-            }
-
-            if (target_group !== null) {
-                target_group = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: target_group,
-                    panelClass: "target_group"
-                });
-            }
-
-            if (results !== null) {
-                var resultsContent = React.createElement(ResultList, { results: results });
-                results = React.createElement(AccordionPanel, {
-                    opened: this.state.opened,
-                    changeOpened: this.changeOpened,
-                    content: resultsContent,
-                    panelClass: "result"
-                });
-            }
+            var panels = []
+            this.props.source.order.filter(it => it !== 'project_plan_summary').forEach(key => {
+              if(this.props.source[key]){
+                panels.push(React.createElement(AccordionPanel, {
+                  opened: this.state.opened,
+                  changeOpened: this.changeOpened,
+                  content: this.props.source[key],
+                  panelClass: key
+                }))
+              }
+            })
 
             return (
                 <div className="panel-group">
-                    {background}
-                    {current_status}
-                    {project_plan}
-                    {target_group}
-                    {sustainability}
-                    {goals_overview}
-                    {results}
+                    {panels}
                 </div>
             );
         }
