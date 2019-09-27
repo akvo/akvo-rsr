@@ -85,12 +85,12 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
                         <div className="desc-label">
                           <span>{t(`section4::${descKey}::label`)}&nbsp;&nbsp;<Tooltip trigger="click" title={<span dangerouslySetInnerHTML={{ __html: t(`section4::${descKey}::info`) }} />}><Icon type="info-circle" /></Tooltip></span>
                           <Button.Group>
-                            {index > 0 &&
+                            {index > 1 &&
                               <Tooltip title={t('Move up')}>
                                 <Button size="small" icon="up" onClick={() => move(index, index - 1)} />
                               </Tooltip>
                             }
-                            {index < added.length - 1 &&
+                            {(index > 0 && index < added.length - 1) &&
                               <Tooltip title={t('Move down')}>
                                 <Button size="small" icon="down" onClick={() => move(index, index + 1)} />
                               </Tooltip>
