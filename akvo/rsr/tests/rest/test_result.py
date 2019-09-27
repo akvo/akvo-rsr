@@ -9,11 +9,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
+from akvo.codelists.models import ResultType, Version
 from akvo.rsr.tests.base import BaseTestCase
 
 
 class RestResultTestCase(BaseTestCase):
     """Test the result REST endpoints."""
+
+    def setUp(self):
+        super(RestResultTestCase, self).setUp()
+        iati_version, _ = Version.objects.get_or_create(code='2.02')
+        ResultType.objects.get_or_create(code="1", name="Output", version=iati_version)
 
     def test_result_post(self):
         user = self.create_user("user@akvo.org", "password", is_admin=True)
