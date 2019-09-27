@@ -82,3 +82,10 @@ export const dateTransform = {
     return transformItem(data)
   }
 }
+
+export const arrayMove = (arr, from, to) => {
+  const ret = arr.slice(0, arr.length)
+  ret[from] = arr[to]
+  ret[to] = arr[from]
+  return ret
+}

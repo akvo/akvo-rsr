@@ -3,13 +3,11 @@ import { connect } from 'react-redux'
 import { Form, Button, Modal, Icon, Tooltip } from 'antd'
 import { Form as FinalForm, FormSpy, Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
-import arrayMove from 'array-move'
-// import { FieldArray } from 'react-final-form-arrays'
 
 import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
 import RTE from '../../../utils/rte'
 import api from '../../../utils/api'
-import { snakeToCamel, camelToSnake } from '../../../utils/misc'
+import { snakeToCamel, camelToSnake, arrayMove } from '../../../utils/misc'
 import AutoSave from '../../../utils/auto-save'
 import validationDefs, { RSR } from './validations'
 import SectionContext from '../section-context'
@@ -149,7 +147,3 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
 export default connect(
   ({ editorRdr: { projectId, section4: { fields }, section1: { fields: { descriptionsOrder } } } }) => ({ projectId, fields, descriptionsOrder: descriptionsOrder.map(it => snakeToCamel(it)) })
 )(Desc)
-
-// export default connect(
-//   ({ editorRdr: { section4: { fields }}}) => ({ fields })
-// )(withTranslation()(Descriptions))
