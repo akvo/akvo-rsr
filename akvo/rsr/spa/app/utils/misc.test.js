@@ -1,6 +1,6 @@
 /* global describe, it */
 import expect from 'expect'
-import { dateTransform } from './misc'
+import { dateTransform, arrayMove } from './misc'
 
 describe('dateTransform', () => {
   it('dateTransform should return null', () => {
@@ -69,5 +69,13 @@ describe('dateTransform', () => {
       validations: [1, 2]
     }
     expect(dateTransform.request(data)).toEqual(data)
+  })
+})
+
+describe('arrayMove', () => {
+  it('should swap items', () => {
+    const arr = [1, 2, 3, 4]
+    expect(arrayMove(arr, 0, 1)).toEqual([2, 1, 3, 4])
+    expect(arrayMove(arr, 1, 3)).toEqual([1, 4, 3, 2])
   })
 })

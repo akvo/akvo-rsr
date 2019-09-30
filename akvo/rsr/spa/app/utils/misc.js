@@ -5,6 +5,8 @@ export const datePickerConfig = {
 
 export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
 export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
+export const snakeToCamel = (s) => s.replace(/(_\w)/g, m => m[1].toUpperCase())
+export const camelToSnake = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}_${m[1]}`).toLowerCase()
 
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false
@@ -79,4 +81,11 @@ export const dateTransform = {
     }
     return transformItem(data)
   }
+}
+
+export const arrayMove = (arr, from, to) => {
+  const ret = arr.slice(0, arr.length)
+  ret[from] = arr[to]
+  ret[to] = arr[from]
+  return ret
 }

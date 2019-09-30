@@ -7,8 +7,8 @@ Akvo RSR module. For additional details on the GNU license please see
 < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import json
 from datetime import datetime
+import json
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -128,17 +128,12 @@ def main(request, project_id, template="project_main.html"):
 
     # JSON data
     carousel_data = json.dumps(_get_carousel_data(project, first_9_updates))
-    accordion_data = json.dumps({
-        'background': project.background,
-        'current_status': project.current_status,
-        'project_plan': project.project_plan,
-        'target_group': project.target_group,
-        'sustainability': project.sustainability,
-        'goals_overview': project.goals_overview
-    })
-
+    accordion_data = {
+        key: getattr(project, key) for key in project.descriptions_order
+    }
+    accordion_data['order'] = project.descriptions_order
     context = {
-        'accordion_data': accordion_data,
+        'accordion_data': json.dumps(accordion_data),
         'carousel_data': carousel_data,
         'current_datetime': datetime.now(),
         'page': page,
