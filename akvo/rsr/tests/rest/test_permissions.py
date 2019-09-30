@@ -512,7 +512,7 @@ class PermissionFilteringTestCase(TestCase):
         }
 
         model_map[M.IndicatorPeriodDisaggregation] = {
-            'group_count': group_count(8, 2, 4, 4),
+            'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'period__indicator__result__project__'
         }
 

@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-class DisaggregationContributionHandler:
+class DisaggregationContributionHandler(object):
 
     def __init__(self, period_disaggregations, disaggregation_contributions):
         self.period_disaggregations = period_disaggregations

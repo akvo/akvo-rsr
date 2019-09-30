@@ -37,7 +37,7 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, IndicatorUpdateMixin, model
 
 
 @receiver(signals.post_save, sender=IndicatorPeriodDisaggregation)
-def hadle_disaggregation_contribution_up_to_parent_hierarchy(sender, **kwargs):
+def handle_disaggregation_contribution_up_to_parent_hierarchy(sender, **kwargs):
 
     from .disaggregation_contribution_handler import DisaggregationContributionHandler
     from .disaggregation_contribution import DisaggregationContribution
