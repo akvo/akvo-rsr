@@ -10,7 +10,7 @@ from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
     AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects,
-    ProjectHierarchy, IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget
+    IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget
 )
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -673,7 +673,7 @@ class ProjectHierarchyPermissionsTestCase(BaseTestCase):
         self.user = self.create_user('foo@example.com', 'password')
         self.par_owner = self.create_organisation('EUTF', enable_restrictions=True)
         self.project = self.create_project('EUTF Project')
-        ProjectHierarchy.objects.create(
+        self.create_project_hierarchy(
             root_project=self.project, organisation=self.par_owner, max_depth=2
         )
 

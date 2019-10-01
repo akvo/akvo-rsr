@@ -9,7 +9,7 @@ from django.test import TestCase, Client
 
 from akvo.rsr.models import (
     User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus,
-    Report, ProjectUpdate
+    Report, ProjectUpdate, ProjectHierarchy
 )
 from akvo.utils import check_auth_groups
 
@@ -76,6 +76,11 @@ class BaseTestCase(TestCase):
         if organisation is not None:
             report.organisations.add(organisation)
         return report
+
+    @staticmethod
+    def create_project_hierarchy(organisation, root_project, max_depth):
+        return ProjectHierarchy.objects.create(
+            organisation=organisation, root_project=root_project, max_depth=max_depth)
 
     @staticmethod
     def make_parent(parent, project):
