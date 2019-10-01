@@ -34,17 +34,52 @@ class Accordion extends Component {
     this.state = {
       activeKey: props.multiple ? [defaultSelected] : defaultSelected
     }
+    if(props.setName.indexOf('.periods') !== -1){
+      this.isPeriods = true
+    } else if(props.setName.indexOf('.indicators') !== -1){
+      this.isIndicators = true
+    } else if(props.setName.indexOf('results') !== -1){
+      this.isResults = true
+    }
   }
   handleChange = (activeKey) => {
-    if(activeKey !== this.state.activeKey){
+    if (activeKey !== this.state.activeKey) {
+      // when closing, scroll to closed item
+      let indexToScrollTo = -1
+      if (this.props.multiple && this.state.activeKey.length > activeKey.length) {
+        indexToScrollTo = this.state.activeKey.find(it => activeKey.indexOf(it) === -1)
+      } else if(!this.props.multiple){
+        if (activeKey) {
+          indexToScrollTo = activeKey
+        } else {
+          indexToScrollTo = this.state.activeKey
+        }
+      }
       this.setState({
         activeKey
       })
-      if (this.props.autoScrollToActive) {
-        if (!this.ref) return
-        if (!this.ref.children) return
-        const child = this.ref.children[0].children[activeKey]
-        window.scroll({ top: child.offsetParent.offsetTop + (61 * Number(activeKey)) + child.offsetParent.offsetParent.offsetTop + 42, left: 0, behavior: 'smooth' })
+      if(indexToScrollTo !== -1){
+        if (!this.ref || !this.ref.children) return
+        const child = this.ref.children[0].children[indexToScrollTo]
+        if (this.isPeriods) {
+          const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetParent.offsetTop - /* sticky header */ 252
+          const top = topAccordionOffsetTop + child.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetTop + (61 * Number(indexToScrollTo))
+          window.scroll({ top, behavior: 'smooth' })
+        }
+        else if(this.isIndicators){
+          const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetTop - /* sticky header */ 182
+          const top = topAccordionOffsetTop + child.offsetParent.offsetTop + child.offsetTop
+          if(top < window.scrollY){
+            window.scroll({ top, behavior: 'smooth' })
+          }
+        }
+        else if(this.isResults){
+          const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetTop - /* sticky header */ 101
+          const top = topAccordionOffsetTop + child.offsetTop
+          if (top < window.scrollY) {
+            window.scroll({ top, behavior: 'smooth' })
+          }
+        }
       }
     }
   }
