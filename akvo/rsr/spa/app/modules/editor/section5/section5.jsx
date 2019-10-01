@@ -1,5 +1,5 @@
 /* global window, document, navigator */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
@@ -207,6 +207,7 @@ class UpdateIfLengthChanged extends React.Component{
 
 const Section5 = (props) => {
   const { t } = useTranslation()
+  const accordionCompRef = useRef()
   const removeSection = (fields, index) => {
     fields.remove(index)
     props.removeSetItem(5, 'results', index)
@@ -264,6 +265,19 @@ const Section5 = (props) => {
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,
     })
   }
+
+  const moveResult = (from, to, fields, itemId) => {
+    const doMove = () => {
+      fields.move(from, to)
+      api.post(`/project/${props.projectId}/reorder_items/`, `item_type=result&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+    }
+    if (accordionCompRef.current.state.activeKey.length === 0) {
+      doMove()
+    } else {
+      accordionCompRef.current.handleChange([])
+      setTimeout(doMove, 500)
+    }
+  }
   return (
     <div className="view section5">
       <Form layout="vertical">
@@ -288,8 +302,10 @@ const Section5 = (props) => {
                         className="results-list"
                         finalFormFields={fields}
                         activeKey={selectedResultIndex}
+                        ref={ref => { accordionCompRef.current = ref }}
                         setName="results"
                         multiple
+                        destroyInactivePanel
                         renderPanel={(name, index) => (
                           <Panel
                             key={`${index}`}
@@ -311,9 +327,21 @@ const Section5 = (props) => {
                                 <div className="delete-btn-holder">
                                   <Button.Group>
                                     <Field name={`${name}.id`} render={({ input }) =>
+                                    <Aux>
                                     <Tooltip title={t('Get a link to this result')}>
                                       <Button size="small" icon="link" onClick={() => getLink(input.value)} />
                                     </Tooltip>
+                                    {index > 0 &&
+                                    <Tooltip title={t('Move up')}>
+                                      <Button icon="up" size="small" onClick={() => moveResult(index, index - 1, fields, input.value)} />
+                                    </Tooltip>
+                                    }
+                                    {index < fields.length - 1 &&
+                                    <Tooltip title={t('Move down')}>
+                                      <Button icon="down" size="small" onClick={() => moveResult(index, index + 1, fields, input.value)} />
+                                    </Tooltip>
+                                    }
+                                    </Aux>
                                     } />
                                     <Popconfirm
                                       title={t('Are you sure to delete this result?')}
