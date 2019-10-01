@@ -5,6 +5,8 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
 from django.utils.translation import ugettext_lazy as _
 
@@ -32,3 +34,18 @@ class IndicatorPeriodDisaggregation(TimestampsMixin, IndicatorUpdateMixin, model
         verbose_name = _(u'period disaggregation')
         verbose_name_plural = _(u'period disaggregations')
         ordering = ('id',)
+
+
+@receiver(signals.post_save, sender=IndicatorPeriodDisaggregation)
+def handle_disaggregation_contribution_up_to_parent_hierarchy(sender, **kwargs):
+
+    from .disaggregation_contribution_handler import DisaggregationContributionHandler
+    from .disaggregation_contribution import DisaggregationContribution
+
+    disaggregation = kwargs['instance']
+    handler = DisaggregationContributionHandler(
+        IndicatorPeriodDisaggregation.objects,
+        DisaggregationContribution.objects
+    )
+
+    handler.handle(disaggregation)

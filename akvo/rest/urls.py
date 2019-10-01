@@ -46,6 +46,7 @@ router.register(r'(?P<version>(v1))/indicator_period_actual_location', views.Ind
 router.register(r'(?P<version>(v1))/indicator_period_data', views.IndicatorPeriodDataViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data_framework', views.IndicatorPeriodDataFrameworkViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
+router.register(r'(?P<version>(v1))/indicator_period_disaggregation', views.IndicatorPeriodDisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation', views.DisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation_target', views.DisaggregationTargetViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_target_location', views.IndicatorPeriodTargetLocationViewSet)

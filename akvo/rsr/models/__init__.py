@@ -43,7 +43,8 @@ from .result import (Disaggregation, Indicator,
                      IndicatorPeriodDataComment, IndicatorReference,
                      IndicatorPeriodActualLocation,
                      IndicatorPeriodTargetLocation, NarrativeReport, PeriodActualValue,
-                     PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget)
+                     PeriodDisaggregation, IndicatorPeriodDisaggregation, DisaggregationTarget,
+                     DisaggregationContribution)
 from .internal_organisation_id import InternalOrganisationID
 from .keyword import Keyword
 from .legacy_data import LegacyData
@@ -121,6 +122,7 @@ __all__ = [
     'IndicatorPeriodData',
     'Disaggregation',
     'DisaggregationTarget',
+    'DisaggregationContribution',
     'IndicatorPeriodDataComment',
     'IndicatorPeriodTargetLocation',
     'IndicatorReference',
@@ -224,6 +226,9 @@ rules.add_perm('rsr.add_disaggregationtarget', is_rsr_admin | is_org_admin | is_
 rules.add_perm('rsr.change_disaggregationtarget', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.delete_disaggregationtarget', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.view_disaggregationtarget', is_org_enumerator)
+
+rules.add_perm('rsr.change_indicatorperioddisaggregation', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.view_indicatorperioddisaggregation', is_org_enumerator)
 
 rules.add_perm('rsr.view_indicatorperioddata', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm(
