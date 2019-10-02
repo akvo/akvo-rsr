@@ -1,7 +1,7 @@
 /* global window, navigator */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon } from 'antd'
+import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon, Alert } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +13,7 @@ import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
 import Accordion from '../../../../utils/accordion'
 import AutoSave from '../../../../utils/auto-save'
+import Fields from '../../../../utils/fields'
 import { addSetItem, removeSetItem } from '../../actions'
 
 const { Item } = Form
@@ -40,35 +41,80 @@ class _DimensionTargets extends React.Component{
     if(!period.disaggregationTargets) period.disaggregationTargets = []
     if (!dimensionNames || dimensionNames.length === 0) return null
     let newIndex = period.disaggregationTargets.length - 1
-    console.log('render', new Date())
     return (
       <div className="disaggregation-targets">
-        {dimensionNames.map(dimension => (
-          <div className="disaggregation-target">
-            <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
-            {dimension.values.map(value => {
-              let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-              if (targetIndex === -1 && periodId) {
-                newIndex += 1
-                targetIndex = newIndex
-              }
-              // reducer updates values and overrides FinalForm's values. Next few lines prevent this
-              setTimeout(() => {
-                const targetIndex1 = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-                if (targetIndex1 === -1 && periodId) {
-                  formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
+        {dimensionNames.map(dimension => {
+          const fieldNamesList = dimension.values.map((value) => {
+            let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+            if (targetIndex === -1 && periodId) {
+              newIndex += 1
+              targetIndex = newIndex
+            }
+            return `${fieldName}.disaggregationTargets[${targetIndex}].value`
+          })
+          console.log(fieldNamesList)
+          return (
+            <div className="disaggregation-target" key={dimension.id}>
+              <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
+              {dimension.values.map((value) => {
+                let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+                if (targetIndex === -1 && periodId) {
+                  newIndex += 1
+                  targetIndex = newIndex
                 }
-              }, 100)
-              return (
-                <div className="value-row">
-                  <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
-                  <div className="ant-col ant-form-item-label">{value.value}</div>
-                  <FinalField disabled={!periodId} name={`${fieldName}.disaggregationTargets[${targetIndex}].value`} />
-                </div>
-              )
-            })}
-          </div>
-        ))}
+                // reducer updates values and overrides FinalForm's values. Next few lines prevent this
+                setTimeout(() => {
+                  const targetIndex1 = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
+                  if (targetIndex1 === -1 && periodId) {
+                    formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
+                  }
+                }, 100)
+                const placeholderProp = { placeholder: '' }
+                // const valueIds = dimension.values.map(it => it.id)
+                // const emptyVals = period.disaggregationTargets.filter(it => valueIds.indexOf(it.dimensionValue) !== -1 && !it.value)
+                // if (emptyVals.length === 1 && emptyVals[0].dimensionValue === value.id){
+                //   const diff = Number(period.targetValue) - period.disaggregationTargets.filter(it => valueIds.indexOf(it.dimensionValue) !== -1 && it.value).reduce((acc, val) => acc + Number(val.value), 0)
+                //   placeholderProp.placeholder = `${diff}?`
+                // }
+                return (
+                  <Aux>
+                    <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
+                    <Fields names={[`${fieldName}.targetValue`, ...fieldNamesList]} subscription={{ value: true }}>
+                      {fieldsState => {
+                        const targetValue = fieldsState[`${fieldName}.targetValue`].input.value
+                        const emptyValKeys = Object.keys(fieldsState).slice(1).filter(key => !fieldsState[key].input.value)
+                        if (targetValue > 0 && emptyValKeys.length === 1 && emptyValKeys[0] === `${fieldName}.disaggregationTargets[${targetIndex}].value`){
+                          const total = Object.keys(fieldsState).slice(1).filter(key => fieldsState[key].input.value).reduce((acc, key) => acc + Number(fieldsState[key].input.value), 0)
+                          placeholderProp.placeholder = `${targetValue - total}?`
+                        }
+                        return (
+                          <div className="value-row" key={value.id}>
+                            <div className="ant-col ant-form-item-label">{value.value}</div>
+                            <FinalField
+                              {...placeholderProp}
+                              disabled={!periodId}
+                              name={`${fieldName}.disaggregationTargets[${targetIndex}].value`}
+                            />
+                          </div>
+                        )
+                      }}
+                    </Fields>
+                  </Aux>
+                )
+              })}
+              <Fields names={[`${fieldName}.targetValue`, ...fieldNamesList]} subscription={{ value: true }}>
+                {fieldsState => {
+                  const targetValue = fieldsState[`${fieldName}.targetValue`].input.value
+                  const total = Object.keys(fieldsState).slice(1).filter(key => fieldsState[key].input.value).reduce((acc, key) => acc + Number(fieldsState[key].input.value), 0)
+                  if (targetValue - total < 0) {
+                    return <Alert type="error" message="Total sum greater than target value" style={{ marginTop: 10 }} />
+                  }
+                  return null
+                }}
+              </Fields>
+            </div>
+            )
+        })}
       </div>
     )
   }

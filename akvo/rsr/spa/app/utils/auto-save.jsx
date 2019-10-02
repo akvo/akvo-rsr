@@ -53,7 +53,7 @@ const transformUndefinedToEmptyStringOrNull = (difference, lastSavedValues) => {
 
 class AutoSave extends React.Component {
   componentWillMount(){
-    this.save()
+    if (!this.props.noInitialSave) this.save()
   }
   componentWillReceiveProps(prevProps) {
     if(prevProps.values === this.props.values){
