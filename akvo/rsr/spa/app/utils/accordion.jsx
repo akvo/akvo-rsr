@@ -42,6 +42,14 @@ class Accordion extends Component {
       this.isResults = true
     }
   }
+  componentWillReceiveProps(nextProps){
+    if(nextProps.activeKey !== this.props.activeKey){
+      setTimeout(() => {
+        const defaultSelected = nextProps.activeKey !== -1 ? String(nextProps.activeKey) : '0'
+        this.handleChange(this.props.multiple ? [defaultSelected] : defaultSelected)
+      })
+    }
+  }
   handleChange = (activeKey) => {
     if (activeKey !== this.state.activeKey) {
       // when closing, scroll to closed item

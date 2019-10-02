@@ -260,6 +260,9 @@
     }
   }
   .indicators-list{
+    &>.ant-collapse-item{
+      position: relative;
+    }
     .ant-collapse-item{
       .ant-collapse-header .ant-collapse-extra{
         margin-left: auto;

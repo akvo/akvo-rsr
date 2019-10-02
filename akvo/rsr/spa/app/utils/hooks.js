@@ -22,4 +22,10 @@ function useFetch(url) {
   }, [])
   return [data, loading]
 }
-export { useFetch }
+
+function useForceUpdate() {
+  const [value, set] = useState(true) // boolean state
+  return () => set(_value => !_value) // toggle the state to force render
+}
+
+export { useFetch, useForceUpdate }
