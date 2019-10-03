@@ -31,7 +31,7 @@ from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
 from .related_project import RelatedProjectRawSerializer
 from .result import ResultRawSerializer
-from .sector import SectorRawSerializer
+from .sector import SectorRawSerializer, SectorSerializer
 from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
 from .rsr_serializer import BaseRSRSerializer
 
@@ -183,8 +183,15 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
 
     locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
     status = serializers.ReadOnlyField(source='publishingstatus.status')
+    sectors = SectorSerializer(many=True, read_only=True)
+    parent = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        p = obj.parents_all().first()
+        return {'id': p.id, 'title': p.title} if p is not None else None
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status')
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent')
