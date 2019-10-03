@@ -3,6 +3,7 @@ import { Form, Button } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
+import CalcTotalChecker from '../../../../utils/calc-total-checker'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import CODE_OPTIONS from './options.json'
@@ -12,6 +13,7 @@ const { Item } = Form
 const CountryBudgetItems = ({ formPush }) => {
   const { t } = useTranslation()
   return (
+    <div>
     <ItemArray
       setName="countryBudgetItems"
       sectionIndex={6}
@@ -58,6 +60,8 @@ const CountryBudgetItems = ({ formPush }) => {
         <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add country budget item')}</Button>
       )}
     />
+      <CalcTotalChecker section="6" path="countryBudgetItems" prop="percentage" />
+    </div>
   )
 }
 

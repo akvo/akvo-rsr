@@ -8,7 +8,7 @@ const CalculateTotalChecker = ({ section, path, rdr, prop }) => {
   const diff = 100 - total
   if(diff !== 0 && total !== 0) {
     const msg = diff > 0 ? `${diff}% more to add` : `${-diff}% too much`
-    return <Alert type="warning" message={msg} showIcon style={{ marginTop: 15 }} />
+    return <Alert className="calc-total-checker" type="warning" message={msg} showIcon style={{ marginTop: 15 }} />
   }
   return null
 }
