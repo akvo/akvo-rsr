@@ -8,6 +8,7 @@ import InputLabel from '../../../../utils/input-label'
 import countries from '../../../../utils/countries'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
+import CalcTotalChecker from '../../../../utils/calc-total-checker'
 
 const { Item } = Form
 
@@ -51,19 +52,22 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors, isLas
         formPush={formPush}
         panel={name => (
           <div>
-            <Item label={<InputLabel tooltip={t('The country that benefits from the project.')}>{t('country')}</InputLabel>}>
-              <FinalField
-                name={`${name}.country`}
-                optionFilterProp="children"
-                showSearch
-                filterOption={(input, option) => {
-                  const { children } = option.props
-                  return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }}
-                control="select"
-                options={COUNTRY_OPTIONS}
-              />
-            </Item>
+            <FinalField
+              name={`${name}.country`}
+              optionFilterProp="children"
+              showSearch
+              filterOption={(input, option) => {
+                const { children } = option.props
+                return (typeof children === 'string' ? children : children.join('')).toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }}
+              control="select"
+              options={COUNTRY_OPTIONS}
+              withLabel
+              dict={{
+                tooltip: t('The country that benefits from the project.'),
+                label: t('country')
+              }}
+            />
             <span className="percentage-row">
               {fieldExists('percentage') && (
                 <FinalField
@@ -96,6 +100,7 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors, isLas
           </Button>
         )}
       />
+      <CalcTotalChecker section="7" path="recipientCountries" prop="percentage" />
     </div>
   )
 }
