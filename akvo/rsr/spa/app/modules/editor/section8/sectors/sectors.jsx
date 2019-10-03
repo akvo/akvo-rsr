@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
+import CalcTotalChecker from '../../../../utils/calc-total-checker'
 import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 import CODE_OPTIONS from '../codes.json'
@@ -147,6 +148,7 @@ const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, err
         }}
       />
       </SectionContext.Provider>
+      <CalcTotalChecker section="8" path="sectors" prop="percentage" />
     </div>
   )
 }
