@@ -12,5 +12,5 @@ fi
 request_id="$1"
 remote=${2:-"origin"}
 git fetch "$remote" "pull/$request_id/head"
-git checkout -B "review-original-${request_id}"
+git checkout -B "pull-request-${request_id}"
 git reset --hard FETCH_HEAD
