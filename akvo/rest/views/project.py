@@ -68,7 +68,7 @@ class ProjectViewSet(PublicProjectViewSet):
         return response
 
 
-class EditableProjectViewSet(PublicProjectViewSet):
+class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
     queryset = Project.objects.all().select_related('publishingstatus')\
         .prefetch_related('locations', 'categories', 'related_projects')

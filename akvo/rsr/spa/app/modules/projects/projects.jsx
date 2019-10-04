@@ -43,7 +43,7 @@ class Projects extends React.Component{
         params.q_filter3 = { id: this.state.searchStr }
       }
     }
-    api.get('/editable_project/', { ...params, limit: pageSize })
+    api.get('/my_projects/', { ...params, limit: pageSize })
       .then(({ data }) => {
         const pagination = { ...this.state.pagination }
         pagination.total = data.count
