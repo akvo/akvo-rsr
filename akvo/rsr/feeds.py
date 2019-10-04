@@ -54,6 +54,8 @@ class RSRSimplerXMLGenerator(XMLGenerator):
     """
 
     def characters(self, content):
+        if not isinstance(content, unicode):
+            content = unicode(content, self._encoding)
         self._write(escape(content))
 
     def addQuickElement(self, name, contents=None, attrs=None):
