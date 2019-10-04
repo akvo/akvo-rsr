@@ -12,7 +12,7 @@ let tmid
 const pageSize = 15
 
 const ConditionalLink = connect(({ userRdr: {lang}}) => ({ lang }))(({ record, children, lang }) => {
-  if(record.status === 'unpublished'){
+  if(record.status === 'unpublished' && record.editable){
     return(
       <Link to={`/projects/${record.id}`}>
       {children}

@@ -185,13 +185,19 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     status = serializers.ReadOnlyField(source='publishingstatus.status')
     sectors = SectorSerializer(many=True, read_only=True)
     parent = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
 
     def get_parent(self, obj):
         p = obj.parents_all().first()
         return {'id': p.id, 'title': p.title} if p is not None else None
 
+    def get_editable(self, obj):
+        """Method used by the editable SerializerMethodField"""
+        user = self.context['request'].user
+        return user.has_perm('rsr.change_project', obj)
+
     class Meta:
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent')
+                  'is_public', 'sectors', 'parent', 'editable')
