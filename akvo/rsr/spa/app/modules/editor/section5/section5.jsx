@@ -16,6 +16,7 @@ import './styles.scss'
 import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
+import { useForceUpdate } from '../../../utils/hooks'
 import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
@@ -71,7 +72,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
   const [copying, setCopying] = useState(false)
@@ -154,6 +155,11 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
   resultTypes.forEach(type => {
     groupedResults[type.value] = results.filter(it => it.type === type.value)
   })
+  const jumpTo = (hash) => {
+    window.location.hash = hash
+    setShowModal(false)
+    setTimeout(onJumpToItem, 300)
+  }
   return (
     <div className="summary">
       <ul>
@@ -175,10 +181,10 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
             <Panel header={<span className="group-title">{t(resultTypes.find(it => it.value === groupKey).label)}<b> ({groupedResults[groupKey].length})</b></span>}>
               <Collapse bordered={false}>
                 {groupedResults[groupKey].map((result, resultIndex) =>
-                  <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
+                  <Panel header={<span><b>{resultIndex + 1}. </b>{result.title} <Button size="small" type="link" onClick={(e) => { e.stopPropagation(); jumpTo(`#/result/${result.id}/`) }}>{t('Open')}</Button></span>}>
                     <ul>
                       {result.indicators.map((indicator, index) =>
-                        <li>{t('Indicator')} <b>{index + 1}</b>:<br /><span className="inset">{indicator.title}</span></li>
+                        <li>{t('Indicator')} <b>{index + 1}</b>:<br /><span className="inset">{indicator.title}</span> <Button size="small" type="link" onClick={() => jumpTo(`#/result/${result.id}/indicator/${indicator.id}/`)}>{t('Open')}</Button></li>
                       )}
                     </ul>
                   </Panel>
@@ -204,9 +210,11 @@ class UpdateIfLengthChanged extends React.Component{
   }
 }
 
+const headerOffset = 127 /* header */ - 105 /* sticky header */
 
 const Section5 = (props) => {
   const { t } = useTranslation()
+  const forceUpdate = useForceUpdate()
   const accordionCompRef = useRef()
   const removeSection = (fields, index) => {
     fields.remove(index)
@@ -222,39 +230,43 @@ const Section5 = (props) => {
     }
   }, [])
   const hasParent = props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0
-  const hashComps = parseHashComponents(window.location.hash)
   let selectedResultIndex = -1
   let selectedIndicatorIndex = -1
   let selectedPeriodIndex = -1
-  if(hashComps.resultId){
-    selectedResultIndex = props.fields.results.findIndex(it => it.id === Number(hashComps.resultId))
-    if (hashComps.indicatorId) {
-      selectedIndicatorIndex = props.fields.results[selectedResultIndex].indicators.findIndex(it => it.id === Number(hashComps.indicatorId))
-      if (hashComps.periodId) {
-        selectedPeriodIndex = props.fields.results[selectedResultIndex].indicators[selectedIndicatorIndex].periods.findIndex(it => it.id === Number(hashComps.periodId))
+  let hashComps
+  const handleHash = () => {
+    hashComps = parseHashComponents(window.location.hash)
+    if (hashComps.resultId) {
+      selectedResultIndex = props.fields.results.findIndex(it => it.id === Number(hashComps.resultId))
+      if (hashComps.indicatorId) {
+        selectedIndicatorIndex = props.fields.results[selectedResultIndex].indicators.findIndex(it => it.id === Number(hashComps.indicatorId))
+        if (hashComps.periodId) {
+          selectedPeriodIndex = props.fields.results[selectedResultIndex].indicators[selectedIndicatorIndex].periods.findIndex(it => it.id === Number(hashComps.periodId))
+        }
       }
     }
   }
-  let ypos = 0
-  const headerOffset = 127 /* header */ - 105 /* sticky header */
-  useEffect(() => {
-    setTimeout(() => {
-      if (hashComps.resultId) {
-        const $resultList = document.getElementsByClassName('results-list')[0]
-        const $result = $resultList.children[selectedResultIndex]
-        const resultListOffset = $resultList.offsetTop
-        ypos = $result.parentElement.parentElement.offsetTop + selectedResultIndex * 81 + headerOffset
-        if (hashComps.indicatorId) {
-          const $indicator = $result.getElementsByClassName('indicators-list')[0].children[selectedIndicatorIndex]
-          ypos = $indicator.parentNode.offsetTop + selectedIndicatorIndex * 71 + resultListOffset + headerOffset - 81 /* sticky header of result */
-          if (hashComps.periodId) {
-            const $period = $indicator.getElementsByClassName('periods-list')[0].children[selectedPeriodIndex]
-            ypos = $period.parentNode.offsetTop + selectedPeriodIndex * 62 + $indicator.parentNode.offsetTop + resultListOffset + headerOffset + 3 - 81 /* sticky header of result */ - 72 /* sticky header of indicator */
-          }
+  const handleHashScroll = () => {
+    let ypos = 0
+    if (hashComps.resultId) {
+      const $resultList = document.getElementsByClassName('results-list')[0]
+      const $result = $resultList.children[selectedResultIndex]
+      const resultListOffset = $resultList.offsetTop
+      ypos = $result.offsetParent.offsetTop + selectedResultIndex * 81 + headerOffset
+      if (hashComps.indicatorId) {
+        const $indicator = $result.getElementsByClassName('indicators-list')[0].children[selectedIndicatorIndex]
+        ypos = $indicator.offsetParent.offsetTop + selectedIndicatorIndex * 71 + resultListOffset + headerOffset - 81 /* sticky header of result */
+        if (hashComps.periodId) {
+          const $period = $indicator.getElementsByClassName('periods-list')[0].children[selectedPeriodIndex]
+          ypos = $period.offsetParent.offsetTop + selectedPeriodIndex * 62 + $indicator.offsetParent.offsetTop + resultListOffset + headerOffset + 3 - 81 /* sticky header of result */ - 72 /* sticky header of indicator */
         }
       }
-      window.scroll({ top: ypos, left: 0, behavior: 'smooth' })
-    }, 200)
+    }
+    window.scroll({ top: ypos, left: 0, behavior: 'smooth' })
+  }
+  handleHash()
+  useEffect(() => {
+    setTimeout(handleHashScroll, 200)
   }, [])
 
   const getLink = (resultId) => {
@@ -293,7 +305,7 @@ const Section5 = (props) => {
           }) => (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
+                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
