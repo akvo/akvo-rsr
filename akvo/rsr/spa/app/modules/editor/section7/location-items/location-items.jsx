@@ -33,8 +33,8 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, showRequire
         header={(index, location) => {
           let text
           if(location){
-            if (location.text.split(',')[0] !== '(Unspecified city)') text = location.text.split(',')[0]
-            else text = location.text.split(',')[1]
+            if (location.description.split(',')[0] !== '(Unspecified city)') text = location.description.split(',')[0]
+            else text = location.description.split(',')[1]
           }
           return (
             <span>{t('Location')} {index + 1}: {text}</span>

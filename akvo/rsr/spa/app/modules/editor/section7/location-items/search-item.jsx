@@ -1,47 +1,30 @@
-/* global fetch */
 import React from 'react'
-import querystring from 'querystring'
 import { Form, Select, Spin } from 'antd'
 import { withTranslation } from 'react-i18next'
+import loadGoogleMapsApi from 'load-google-maps-api'
 
 import InputLabel from '../../../../utils/input-label'
-import { opencagedataKey } from '../../../../utils/constants'
+import { googleApiKey } from '../../../../utils/constants'
 
 const { Item } = Form
 const { Option } = Select
 
 let timeout
-let currentValue
 
-const locationTypes = ['city', 'village', 'neighbourhood', 'state_district', 'state', 'county']
-
-function $fetch(value, callback) {
+function $fetch(input, callback, gservice) {
   if (timeout) {
     clearTimeout(timeout)
     timeout = null
   }
-  currentValue = value
 
   function req() {
-    const str = querystring.encode({
-      key: opencagedataKey,
-      q: value,
-      pretty: 1
+    gservice.getPlacePredictions({ input, types: ['(cities)'] }, (results, status) => {
+      if (status !== 'OK') {
+        console.log('error', status)
+        return
+      }
+      callback(results)
     })
-    fetch(`https://api.opencagedata.com/geocode/v1/json?${str}`)
-      .then(response => response.json())
-      .then((d) => {
-        if (currentValue === value) {
-          const data = d.results.filter(it => locationTypes.indexOf(it.components._type) !== -1).map(r => ({
-            coordinates: r.geometry,
-            text: r.formatted,
-            countryCode: r.components.country_code
-            // text: `${r.components.city}, ${r.components.country}`,
-            // name: r.components.city
-          }))
-          callback(data)
-        }
-      })
   }
 
   timeout = setTimeout(req, 300)
@@ -52,22 +35,38 @@ class SearchItem extends React.Component{
     data: [],
     fetching: false
   }
+  componentWillMount(){
+    loadGoogleMapsApi({ libraries: ['places'], key: googleApiKey })
+      .then((googleMaps) => {
+        this.gservice = new googleMaps.places.AutocompleteService()
+        this.geocoder = new googleMaps.Geocoder()
+      }).catch((error) => {
+        console.error(error)
+      })
+  }
   handleSearch = (value) => {
     this.setState({
       fetching: true
     })
-    $fetch(value, data => this.setState({ data, fetching: false }))
+    $fetch(value, data => this.setState({ data, fetching: false }), this.gservice)
   }
   handleChange = (index) => {
-    this.props.onChange(this.state.data[index])
+    this.geocoder.geocode({ placeId: this.state.data[index].place_id }, (d) => {
+      if(d.length < 1) return
+      const coordinates = {
+        lat: d[0].geometry.location.lat(),
+        lng: d[0].geometry.location.lng()
+      }
+      this.props.onChange({ ...this.state.data[index], coordinates})
+    })
   }
   render(){
     const { t, validateStatus } = this.props
-    const options = this.state.data.map((d, index) => <Option value={index}>{d.text}</Option>)
+    const options = this.state.data.map((d, index) => <Option value={index}>{d.description}</Option>)
     return (
       <Item validateStatus={validateStatus} label={<InputLabel>{t('city')}</InputLabel>}>
         <Select
-          value={this.props.value.text}
+          value={this.props.value.description}
           showSearch
           defaultActiveFirstOption={false}
           showArrow={false}

@@ -19,4 +19,4 @@ export const budgetItemTypes = [
   {value: '42', label: 'Water resource management'}
 ]
 
-export const opencagedataKey = '3c7aa8de944d4ecd8706e09fcd8e8962'
+export const googleApiKey = 'AIzaSyARjGtFp0IV0wANJOjMpQ8jumgbquLR0h8'
