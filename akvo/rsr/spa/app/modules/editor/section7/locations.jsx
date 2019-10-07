@@ -18,6 +18,7 @@ import FinalField from '../../../utils/final-field'
 import AutoSave from '../../../utils/auto-save'
 import SectionContext from '../section-context'
 import validationDefs from './validations'
+import CalcTotalChecker from '../../../utils/calc-total-checker'
 
 const { Item } = Form
 
@@ -70,6 +71,7 @@ const LocationsView = ({ validations, fields, primaryOrganisation, showRequired,
               <RecipientRegions formPush={push} {...passProps} />
             </Aux>
           )}
+          <CalcTotalChecker section="7" paths={['recipientCountries', 'recipientRegions']} prop="percentage" />
         </Form>
       )}
     />

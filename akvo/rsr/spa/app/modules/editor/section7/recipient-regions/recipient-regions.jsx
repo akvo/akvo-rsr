@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
-import CalcTotalChecker from '../../../../utils/calc-total-checker'
 import InputLabel from '../../../../utils/input-label'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
@@ -115,7 +114,6 @@ const RecipientRegions = ({ formPush, validations, showRequired, errors }) => {
           </Button>
         )}
       />
-      <CalcTotalChecker section="7" path="recipientRegions" prop="percentage" />
     </div>
   )
 }

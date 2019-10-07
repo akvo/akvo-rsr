@@ -8,7 +8,6 @@ import InputLabel from '../../../../utils/input-label'
 import countries from '../../../../utils/countries'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
-import CalcTotalChecker from '../../../../utils/calc-total-checker'
 
 const { Item } = Form
 
@@ -100,7 +99,6 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors, isLas
           </Button>
         )}
       />
-      <CalcTotalChecker section="7" path="recipientCountries" prop="percentage" />
     </div>
   )
 }
