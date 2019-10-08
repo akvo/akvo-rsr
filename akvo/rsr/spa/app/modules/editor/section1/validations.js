@@ -18,7 +18,7 @@ const RSR = yup.object().shape({
   currentImage: yup.string().nullable().required(),
   currentImageCaption: yup.string(),
   currentImageCredit: yup.string(),
-  defaultAidType: yup.string()
+  defaultAidTypeVocabulary: yup.string()
 })
 
 const EUTF = RSR.clone().shape({
@@ -31,24 +31,26 @@ const IATI_BASIC = RSR.clone().shape({
 
 const IATI = IATI_BASIC.clone().shape({
   hierarchy: yup.string().nullable(),
-  defaultAidTypeVocabulary: yup.string(),
-  // defaultAidType: yup.string(),
+  defaultAidType: yup.string(),
   defaultFlowType: yup.string(),
   defaultTiedStatus: yup.string(),
   collaborationType: yup.string(),
   defaultFinanceType: yup.string(),
+  language: yup.string().default('en').required()
 })
 
 const DGIS = RSR.clone().shape({
-  iatiActivityId: yup.string().nullable(),
+  iatiActivityId: yup.string().nullable().required(),
   dateEndPlanned: yup.string().nullable().when('dateEndActual', {
     is: value => value === null || value === '' || value === undefined,
     then: yup.string().nullable().required()
   }),
   defaultAidTypeVocabulary: yup.string(),
   defaultAidType: yup.string().required(),
+  defaultFinanceType: yup.string().required(),
   defaultFlowType: yup.string().required(),
   defaultTiedStatus: yup.string().required(),
+  language: yup.string().default('en').required()
 })
 
 const DFID = IATI.clone()
