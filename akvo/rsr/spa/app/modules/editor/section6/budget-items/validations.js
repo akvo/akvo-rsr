@@ -19,9 +19,8 @@ const IATI = IATI_BASIC.clone().shape({
   budgetType: yup.string()
 })
 
-const DGIS = IATI_BASIC.clone().shape({
-  budgetType: yup.string()
-})
+const DGIS = IATI_BASIC.clone()
+
 const EUTF = RSR.clone()
 
 const DFID = IATI.clone().shape({
@@ -33,7 +32,8 @@ const NLR = RSR.clone().shape({
   budgetType: yup.string()
 })
 
-const Gietrenk = NLR.clone().shape({
+const Gietrenk = RSR.clone().shape({
+  currency: yup.string().default('EUR'),
   periodStart: yup.string(),
   periodEnd: yup.string(),
   valueDate: yup.string()
