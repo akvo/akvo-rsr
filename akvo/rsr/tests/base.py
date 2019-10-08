@@ -8,7 +8,8 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
 from akvo.rsr.models import (
-    User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus, Report
+    User, Employment, Organisation, Project, RelatedProject, Partnership, PublishingStatus,
+    Report, ProjectUpdate
 )
 from akvo.utils import check_auth_groups
 
@@ -59,6 +60,12 @@ class BaseTestCase(TestCase):
         project.publishingstatus.status = status
         project.publishingstatus.save(update_fields=['status'])
         return project
+
+    @staticmethod
+    def create_project_update(project, user, title, text):
+        """Create a project update for the specified project by the given user."""
+        return ProjectUpdate.objects.create(
+            title=title, text=text, user=user, project=project)
 
     @staticmethod
     def create_report(report_name, organisation=None, is_org_report=False, url=None):
