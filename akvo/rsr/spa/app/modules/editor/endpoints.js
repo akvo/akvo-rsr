@@ -63,7 +63,7 @@ export const transforms = {
         if(data.location){
           transformed.latitude = data.location.coordinates.lat
           transformed.longitude = data.location.coordinates.lng
-          transformed.city = data.location.text
+          transformed.city = data.location.description
           delete transformed.location
         }
         if(data.project){
@@ -84,7 +84,7 @@ export const transforms = {
                 lat: result.latitude,
                 lng: result.longitude
               },
-              text: result.city ? `${result.city}, ${result.countryLabel}` : `(Unspecified city), ${result.countryLabel}`
+              description: result.city ? result.city : `(Unspecified city), ${result.countryLabel}`
             }
           }))
         }
