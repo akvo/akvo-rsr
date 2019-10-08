@@ -1,9 +1,8 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin')
 
 const config = {
   stats: {
@@ -44,24 +43,13 @@ const config = {
       disable: false,
       allChunks: true
     }),
-    // new CopyWebpackPlugin([{ from: './vendors', to: 'vendors' }]),
   ],
 
   optimization: {
     runtimeChunk: false,
-    // splitChunks: {
-    //   cacheGroups: {
-    //     commons: {
-    //       test: /[\\/]node_modules[\\/]/,
-    //       name: 'vendors',
-    //       chunks: 'all',
-    //     },
-    //   },
-    // },
+    minimize: true,
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
+      new TerserPlugin({
         sourceMap: true
       })
     ]
