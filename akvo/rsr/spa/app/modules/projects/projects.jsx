@@ -1,10 +1,11 @@
 /* global window */
 import React from 'react'
 import { connect } from 'react-redux'
-import { Button, Divider, Table, Input, Icon } from 'antd'
+import { Button, Divider, Table, Input, Icon, Tag } from 'antd'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
+import VOCAB_1_CODES from '../editor/section8/vocab-1-codes.json'
+import VOCAB_2_CODES from '../editor/section8/vocab-2-codes.json'
 import api from '../../utils/api'
 import './styles.scss'
 
@@ -82,15 +83,43 @@ class Projects extends React.Component{
     const { t } = this.props
     const columns = [
       {
-        title: t('Projects'),
+        title: t('Privacy'),
+        dataIndex: 'isPublic',
+        key: 'isPublic',
+        width: 75,
+        render: (value) => {
+          return <Icon type={value ? 'eye' : 'eye-invisible'} />
+        }
+      },
+      {
+        title: t('Status'),
+        dataIndex: 'status',
+        key: 'status',
+        width: 100,
+        render: (value) => (<span>{value}</span>)
+      },
+      {
+        title: t('Project'),
         dataIndex: 'title',
         key: 'title',
+        className: 'project-title',
         render: (text, record) => (
-          <ConditionalLink record={record}>
-            {text !== '' ? text : t('Untitled project')}
-            {record.subtitle !== '' && <small><br />{record.subtitle}</small>}
-          </ConditionalLink>
+          <div>
+            <ConditionalLink record={record}>
+              {text !== '' ? text : t('Untitled project')}
+            </ConditionalLink>
+            {record.parent !== null && (<span className="parent-tag">Part of: <a href="#">{record.parent.title}</a></span>)/* eslint-disable-line */} 
+            { record.subtitle !== '' && <small><br />{record.subtitle}</small> }
+          </div>
         )
+      },
+      {
+        title: t('Sector'),
+        dataIndex: 'sectors',
+        key: 'sectors',
+        render: (sectors) => {
+          return (<small>{sectors.map(sector => sector.codeLabel).join(', ')}</small>)
+        }
       },
       {
         title: t('Location'),
@@ -100,15 +129,6 @@ class Projects extends React.Component{
         render: (text, record) => {
           const listOfUniqueCountries = record.locations.map(it => it.country).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
           return (<span>{listOfUniqueCountries}</span>)
-        }
-      },
-      {
-        title: t('Date End (Planned)'),
-        dataIndex: 'dateEndPlanned',
-        key: 'dateEndPlanned',
-        width: 160,
-        render: (text) => {
-          return (<span>{text ? moment(text, 'DD/MM/YYYY').format('DD MMM YYYY') : '-'}</span>)
         }
       }
     ]

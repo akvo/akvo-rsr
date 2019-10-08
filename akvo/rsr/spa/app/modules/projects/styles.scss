@@ -12,4 +12,46 @@
     margin-left: auto;
     margin-top: 9px;
   }
+  .ant-table{
+    .ant-table-thead tr th{
+      color: #888;
+      font-size: 14px;
+    }
+    tbody{
+      tr td:first-of-type{
+        text-align: center;
+        vertical-align: middle;
+        i{
+          font-size: 1.5em;
+          transform: translateY(2px);
+          color: #c4c4c4;
+        }
+      }
+      tr td:nth-of-type(2){
+        vertical-align: middle;
+        text-transform: capitalize;
+        color: #c4c4c4;
+        font-size: 12px;
+      }
+      td.project-title{
+        a{
+          margin-right: 10px;
+        }
+        .parent-tag{
+          max-width: 200px;
+          display: inline-block;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          font-size: 11px;
+          color: #777;
+          transform: translateY(4px);
+        }
+      }
+      .ant-tag{
+        // display: inline-block;
+        // margin-left: 10px;
+      }
+    }
+  }
 }
