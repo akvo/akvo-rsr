@@ -68,16 +68,24 @@ class ProjectViewSet(PublicProjectViewSet):
         return response
 
 
-class EditableProjectViewSet(PublicProjectViewSet):
+class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
-    queryset = Project.objects.all().select_related('publishingstatus').prefetch_related('locations')
+    queryset = Project.objects.all().select_related('publishingstatus')\
+        .prefetch_related('locations', 'categories', 'related_projects')
     serializer_class = ProjectMetadataSerializer
     project_relation = ''
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return Project.objects.none()
-        return user_editable_projects(self.request.user)
+        queryset = user_editable_projects(self.request.user)
+        country = self.request.query_params.get('country', None)
+        if country is not None:
+            queryset = queryset.filter(locations__country__iso_code=country)
+        sector = self.request.query_params.get('sector', None)
+        if sector is not None:
+            queryset = queryset.filter(sectors__sector_code=sector)
+        return queryset
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):

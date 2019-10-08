@@ -31,7 +31,7 @@ from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
 from .related_project import RelatedProjectRawSerializer
 from .result import ResultRawSerializer
-from .sector import SectorRawSerializer
+from .sector import SectorRawSerializer, SectorSerializer
 from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
 from .rsr_serializer import BaseRSRSerializer
 
@@ -51,10 +51,16 @@ class ProjectSerializer(BaseRSRSerializer):
     last_modified_by = serializers.ReadOnlyField(source='last_modified_by.user.get_full_name')
     allow_indicator_labels = serializers.ReadOnlyField(source='has_indicator_labels')
     last_modified_at = serializers.ReadOnlyField(source='last_modified_by.last_modified_at')
+    editable = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         fields = '__all__'
+
+    def get_editable(self, obj):
+        """Method used by the editable SerializerMethodField"""
+        user = self.context['request'].user
+        return user.has_perm('rsr.change_project', obj)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
@@ -183,8 +189,21 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
 
     locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
     status = serializers.ReadOnlyField(source='publishingstatus.status')
+    sectors = SectorSerializer(many=True, read_only=True)
+    parent = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        p = obj.parents_all().first()
+        return {'id': p.id, 'title': p.title} if p is not None else None
+
+    def get_editable(self, obj):
+        """Method used by the editable SerializerMethodField"""
+        user = self.context['request'].user
+        return user.has_perm('rsr.change_project', obj)
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status')
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'editable')

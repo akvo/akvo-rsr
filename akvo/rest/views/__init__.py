@@ -59,7 +59,7 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_directory,
-                      EditableProjectViewSet)
+                      MyProjectsViewSet)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -194,7 +194,7 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
-    'EditableProjectViewSet',
+    'MyProjectsViewSet',
     'project_directory',
     'project_editor',
     'log_project_addition',
