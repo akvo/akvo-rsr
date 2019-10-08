@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 import contacts from './contacts/validations'
 
-const validationSetIds = [1, 2]
+const validationSetIds = [1, 3, 6]
 
 const setDef = {}
 validationSetIds.forEach(id => {
