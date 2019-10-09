@@ -17,30 +17,29 @@ const IATI = DGIS.clone().shape({
   text: yup.string()
 })
 
-const EUTF = yup.object().shape({
+const NLR = yup.object().shape({
   vocabulary: yup.string(),
   sectorCode: yup.string(),
   percentage: yup.mixed().nullable(),
-  vocabularyUri: yup.string(),
   text: yup.string()
 })
 
+const EUTF = NLR.clone().shape({
+  vocabularyUri: yup.string()
+})
+
 const DFID = EUTF.clone().shape({
-  sectorCode: yup.string().transform(transformUndefined).when('vocabulary', {
-    is: value => value !== null && value !== undefined,
-    then: yup.string().required()
-  })
+  vocabulary: yup.string().required(),
+  sectorCode: yup.string().required()
 })
 
 
 const output = {}
 output[validationType.RSR] = yup.array().of(RSR)
-// output[validationType.IATI_BASIC] = yup.array().of(IATI_BASIC).min(1)
 output[validationType.IATI] = yup.array().of(IATI).min(1)
 output[validationType.DGIS] = yup.array().of(DGIS).min(1)
 output[validationType.EUTF] = yup.array().of(EUTF)
-output[validationType.DFID] = yup.array().of(DFID).min(1)
-// output[validationType.NLR] = yup.array().of(NLR).min(1)
-// output[validationType.Gietrenk] = yup.array().of(Gietrenk).min(1)
+output[validationType.DFID] = yup.array().of(DFID)
+output[validationType.NLR] = yup.array().of(NLR)
 
 export default output
