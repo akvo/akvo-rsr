@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Icon, Tag } from 'antd'
+import { Table, Icon, Tag, Tooltip } from 'antd'
 import { useTranslation } from 'react-i18next'
 import ConditionalLink from './conditional-link'
 
@@ -43,13 +43,19 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       key: 'sectors',
       className: 'sectors',
       render: (sectors) => {
-        return (<small>{sectors.map(sector => sector.codeLabel).join(', ')}</small>)
+        // return (<small>{sectors.map(sector => sector.codeLabel).join(', ')}</small>)
+        if(sectors.length < 3) return sectors.map(sector => <Tag size="small">{sector.codeLabel}</Tag>)
+        return sectors.map(sector => {
+          const Wrapper = sector.codeLabel.split(' - ')[1] ? () => <Tooltip title={sector.codeLabel.split(' - ')[1]}><Tag size="small">{sector.codeLabel.split(' - ')[0]}...</Tag></Tooltip> : ({ children }) => children
+          return <Wrapper><Tag size="small">{sector.codeLabel.split(' - ')[0]}</Tag></Wrapper>
+        })
       }
     },
     {
       title: t('Location'),
       dataIndex: 'primaryLocation.countryLabel',
       key: 'location',
+      className: 'location',
       width: 170,
       render: (text, record) => {
         const listOfUniqueCountries = record.locations.map(it => it.country).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')

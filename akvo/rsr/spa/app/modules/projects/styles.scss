@@ -53,10 +53,17 @@
       }
       td.sectors{
         line-height: 1em;
+        vertical-align: middle;
+        .ant-tag{
+          margin-right: 5px;
+          margin-bottom: 5px;
+          max-width: 240px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
-      .ant-tag{
-        // display: inline-block;
-        // margin-left: 10px;
+      td.location{
+        vertical-align: middle;
       }
     }
   }
@@ -67,6 +74,14 @@
     justify-content: flex-start;
     align-items: center;
     align-content: flex-start;
+    padding-bottom: 60px;
+    .loading{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      width: 100%;
+    }
     li{
       display: flex;
       padding: 10px;
@@ -81,8 +96,18 @@
       // width: 300px;
       height: 270px;
       width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      .ant-card-body{
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
       .top{
         display: flex;
+        transform: translateY(-5px);
+        margin-top: -5px;
         .anticon{
           font-size: 1.5em;
           transform: translateY(1px);
@@ -91,10 +116,78 @@
         .status{
           margin-left: 10px;
           text-transform: capitalize;
+          font-size: 12px;
+          color: #999;
+          transform: translateY(3px);
         }
       }
       h3{
         color: inherit;
+        font-size: 17px;
+        line-height: 25px;
+        max-height: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+      }
+      small{
+        line-height: 17px;
+        display: inline-block;
+        max-height: 51px;
+        overflow: hidden;
+      }
+      .sectors{
+        font-size: 12px;
+        margin-top: 5px;
+        margin-bottom: -5px;
+        display: flex;
+        .label{
+          padding-right: 10px;
+          opacity: 0.6;
+          margin-top: 2px;
+        }
+        .list{
+          flex: 1;
+          overflow: hidden;
+          max-height: 54px;
+          .ant-tag{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            margin-right: 5px;
+          }
+        }
+      }
+      .parent{
+        font-size: 12px;
+        margin-top: 5px;
+        display: flex;
+        .label{
+          padding-right: 10px;
+          opacity: 0.6;
+        }
+        .list{
+          flex: 1;
+          overflow: hidden;
+          a{
+            white-space: nowrap;
+            max-width: 100%;
+            display: inline-block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
+      }
+      .bottom{
+        margin-top: auto;
+        margin-bottom: -10px;
+        color: #777;
+        font-size: 12px;
+        .anticon{
+          font-size: 1.5em;
+          color: #c4c4c4;
+          transform: translateY(2px);
+        }
       }
     }
   }
