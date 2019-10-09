@@ -6,7 +6,7 @@
 
 import re
 
-from xml.sax.saxutils import XMLGenerator
+from xml.sax.saxutils import XMLGenerator, escape as __escape
 
 from django.contrib.syndication.views import FeedDoesNotExist, Feed
 from django.core.urlresolvers import reverse
@@ -15,23 +15,6 @@ from django.utils.feedgenerator import Rss201rev2Feed
 from django.utils.translation import ugettext_lazy as _
 
 from akvo.rsr.models import Project, ProjectUpdate, Organisation
-
-
-def __dict_replace(s, d):
-    """Replace substrings of a string using a dictionary."""
-    for key, value in d.items():
-        s = s.replace(key, value)
-    return s
-
-
-def __escape(data, entities):
-    # must do ampersand first
-    data = data.replace("&", "&amp;")
-    data = data.replace(">", "&gt;")
-    data = data.replace("<", "&lt;")
-    if entities:
-        data = __dict_replace(data, entities)
-    return data
 
 
 def escape(data, entities={}):
@@ -71,6 +54,8 @@ class RSRSimplerXMLGenerator(XMLGenerator):
     """
 
     def characters(self, content):
+        if not isinstance(content, unicode):
+            content = unicode(content, self._encoding)
         self._write(escape(content))
 
     def addQuickElement(self, name, contents=None, attrs=None):

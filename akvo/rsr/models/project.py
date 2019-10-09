@@ -435,6 +435,13 @@ class Project(TimestampsMixin, models.Model):
             ('post_updates', u'Can post updates'),
         )
 
+    def delete(self, using=None, keep_parents=False):
+        # Delete results on the project, before trying to delete the project,
+        # since the RelatedProject object on the project refuses to get deleted
+        # if there are existing results, causing the delete to raise 500s
+        self.results.all().delete()
+        return super(Project, self).delete(using=using, keep_parents=keep_parents)
+
     def save(self, *args, **kwargs):
         # Strip title of any trailing or leading spaces
         if self.title:
