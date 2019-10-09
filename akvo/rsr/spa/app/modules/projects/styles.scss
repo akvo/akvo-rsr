@@ -2,15 +2,17 @@
   h2{
     margin-top: 5px;
   }
+  .topbar-row{
+    margin-top: 9px;
+    display: flex;
+  }
   .ant-input-affix-wrapper{
     width: auto;
     height: 32px;
     margin-left: 20px;
-    margin-top: 9px;
   }
   .add-project-btn{
     margin-left: auto;
-    margin-top: 9px;
   }
   .ant-table{
     .ant-table-thead tr th{
@@ -36,6 +38,7 @@
       td.project-title{
         a{
           margin-right: 10px;
+          display: inline;
         }
         .parent-tag{
           max-width: 200px;
@@ -45,12 +48,53 @@
           text-overflow: ellipsis;
           font-size: 11px;
           color: #777;
-          transform: translateY(4px);
+          // transform: translateY(7px);
         }
+      }
+      td.sectors{
+        line-height: 1em;
       }
       .ant-tag{
         // display: inline-block;
         // margin-left: 10px;
+      }
+    }
+  }
+  .cards-view{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: flex-start;
+    li{
+      display: flex;
+      padding: 10px;
+      @media(min-width: 40rem) {
+        width: 33.3333%;
+      }
+      @media(min-width: 56rem) {
+        width: 25%;
+      }
+    }
+    .ant-card{
+      // width: 300px;
+      height: 270px;
+      width: 100%;
+      .top{
+        display: flex;
+        .anticon{
+          font-size: 1.5em;
+          transform: translateY(1px);
+          color: #c4c4c4;
+        }
+        .status{
+          margin-left: 10px;
+          text-transform: capitalize;
+        }
+      }
+      h3{
+        color: inherit;
       }
     }
   }

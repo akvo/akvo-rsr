@@ -1,33 +1,20 @@
 /* global window */
 import React from 'react'
-import { connect } from 'react-redux'
-import { Button, Divider, Table, Input, Icon, Tag } from 'antd'
+import { Button, Divider, Input, Icon, Radio } from 'antd'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import VOCAB_1_CODES from '../editor/section8/vocab-1-codes.json'
-import VOCAB_2_CODES from '../editor/section8/vocab-2-codes.json'
 import api from '../../utils/api'
 import './styles.scss'
+import TableView from './table-view'
+import CardsView from './cards-view'
+// import CardsView from './cards-view'
 
 let tmid
-const pageSize = 15
-
-const ConditionalLink = connect(({ userRdr: {lang}}) => ({ lang }))(({ record, children, lang }) => {
-  if(record.status === 'unpublished' && record.editable){
-    return(
-      <Link to={`/projects/${record.id}`}>
-      {children}
-      </Link>
-    )
-  }
-  return (
-    <a href={`/${lang}/myrsr/my_project/${record.id}/`}>{children}</a>
-  )
-})
+const pageSize = 16
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, searchStr: ''
+    results: [], loading: false, pagination: { pageSize }, searchStr: '', viewMode: 'table'
   }
   componentDidMount(){
     this.fetch()
@@ -81,72 +68,32 @@ class Projects extends React.Component{
   }
   render(){
     const { t } = this.props
-    const columns = [
-      {
-        title: t('Privacy'),
-        dataIndex: 'isPublic',
-        key: 'isPublic',
-        width: 75,
-        render: (value) => {
-          return <Icon type={value ? 'eye' : 'eye-invisible'} />
-        }
-      },
-      {
-        title: t('Status'),
-        dataIndex: 'status',
-        key: 'status',
-        width: 100,
-        render: (value) => (<span>{value}</span>)
-      },
-      {
-        title: t('Project'),
-        dataIndex: 'title',
-        key: 'title',
-        className: 'project-title',
-        render: (text, record) => (
-          <div>
-            <ConditionalLink record={record}>
-              {text !== '' ? text : t('Untitled project')}
-            </ConditionalLink>
-            {record.parent !== null && (<span className="parent-tag">Part of: <a href="#">{record.parent.title}</a></span>)/* eslint-disable-line */} 
-            { record.subtitle !== '' && <small><br />{record.subtitle}</small> }
-          </div>
-        )
-      },
-      {
-        title: t('Sector'),
-        dataIndex: 'sectors',
-        key: 'sectors',
-        render: (sectors) => {
-          return (<small>{sectors.map(sector => sector.codeLabel).join(', ')}</small>)
-        }
-      },
-      {
-        title: t('Location'),
-        dataIndex: 'primaryLocation.countryLabel',
-        key: 'location',
-        width: 170,
-        render: (text, record) => {
-          const listOfUniqueCountries = record.locations.map(it => it.country).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
-          return (<span>{listOfUniqueCountries}</span>)
-        }
-      }
-    ]
     return (
       <div id="projects-view">
-        <div style={{ display: 'flex' }}>
-          <h2>{t('My projects')}</h2>
+        <div className="topbar-row">
+          {/* <h2>{t('My projects')}</h2> */}
+          <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.setState({ viewMode: value })}>
+            <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
+            <Radio.Button value="cards"><Icon type="appstore" /></Radio.Button>
+          </Radio.Group>
           <Input value={this.state.searchStr} suffix={this.state.searchStr === '' ? <Icon type="search" /> : <Icon onClick={this.clearSearch} type="close" />} placeholder={t('Find a project...')} onChange={this.handleSearch} />
           <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
         </div>
         <Divider />
-        <Table
+        {this.state.viewMode === 'table' &&
+        <TableView
           dataSource={this.state.results}
-          columns={columns}
           loading={this.state.loading}
           pagination={this.state.pagination}
           onChange={this.handleTableChange}
         />
+        }
+        {this.state.viewMode === 'cards' &&
+        <CardsView
+          dataSource={this.state.results}
+          loading={this.state.loading}
+        />
+        }
       </div>
     )
   }
