@@ -32,7 +32,7 @@ output[validationType.RSR] = yup.array().of(RSR)
 output[validationType.IATI] = yup.array().of(IATI).min(1)
 output[validationType.DGIS] = yup.array().of(DGIS)
 output[validationType.EUTF] = yup.array().of(EUTF)
-output[validationType.DFID] = yup.array().of(DFID)
+output[validationType.DFID] = yup.array().of(DFID).min(1)
 output[validationType.NLR] = yup.array().of(NLR)
 output[validationType.Gietrenk] = yup.array().of(Gietrenk)
 
