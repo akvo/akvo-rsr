@@ -172,7 +172,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
     def create(self, request, *args, **kwargs):
         response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
-        obj = self.queryset.model.objects.get(id=response.data['id'])
+        obj = self.queryset.model.objects.get(pk=response.data['id'])
         project = self.get_project(obj)
         if project is not None:
             project.update_iati_checks()
