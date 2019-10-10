@@ -16,7 +16,11 @@ from rest_framework import serializers
 class LabelListingField(serializers.RelatedField):
 
     def to_representation(self, labels):
-        return list(labels.values_list('label_id', flat=True))
+        if isinstance(labels, IndicatorLabel):
+            value = labels.label_id
+        else:
+            value = list(labels.values_list('label_id', flat=True))
+        return value
 
     def to_internal_value(self, org_label_ids):
         indicator = self.root.instance
