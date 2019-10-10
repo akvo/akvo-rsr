@@ -5,6 +5,16 @@
   .topbar-row{
     margin-top: 9px;
     display: flex;
+    .right-side{
+      margin-left: auto;
+      .label{
+        margin-right: 10px;
+      }
+      .ant-select{
+        margin-right: 10px;
+        min-width: 170px;
+      }
+    }
   }
   .ant-input-affix-wrapper{
     width: auto;
@@ -54,6 +64,14 @@
       td.sectors{
         line-height: 1em;
         vertical-align: middle;
+        .sectors-wrapper{
+          @media(max-width: 56rem){
+            max-width: 360px;
+          }
+          @media(max-width: 92rem){
+            max-width: 460px;
+          }
+        }
         .ant-tag{
           margin-right: 5px;
           margin-bottom: 5px;

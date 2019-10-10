@@ -44,11 +44,15 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       className: 'sectors',
       render: (sectors) => {
         // return (<small>{sectors.map(sector => sector.codeLabel).join(', ')}</small>)
-        if(sectors.length < 3) return sectors.map(sector => <Tag size="small">{sector.codeLabel}</Tag>)
-        return sectors.map(sector => {
-          const Wrapper = sector.codeLabel.split(' - ')[1] ? () => <Tooltip title={sector.codeLabel.split(' - ')[1]}><Tag size="small">{sector.codeLabel.split(' - ')[0]}...</Tag></Tooltip> : ({ children }) => children
-          return <Wrapper><Tag size="small">{sector.codeLabel.split(' - ')[0]}</Tag></Wrapper>
-        })
+        if (sectors.length < 3) return sectors.filter(it => it.codeLabel !== '').map(sector => <Tag size="small">{sector.codeLabel}</Tag>)
+        return (
+          <div className="sectors-wrapper">
+            {sectors.filter(it => it.codeLabel !== '').map(sector => {
+              const Wrapper = sector.codeLabel.split(' - ')[1] ? () => <Tooltip title={sector.codeLabel.split(' - ')[1]}><Tag size="small">{sector.codeLabel.split(' - ')[0]}...</Tag></Tooltip> : ({ children }) => children
+              return <Wrapper><Tag size="small">{sector.codeLabel.split(' - ')[0]}</Tag></Wrapper>
+            })}
+          </div>
+        )
       }
     },
     {

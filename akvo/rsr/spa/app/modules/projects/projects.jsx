@@ -8,20 +8,22 @@ import './styles.scss'
 import TableView from './table-view'
 import CardsView from './cards-view'
 import Search from './search'
+import FilterSector from './filter-sector'
 
 const pageSize = 16
 const pageSizeCards = 32
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'cards', hasMore: true
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}
   }
   componentDidMount(){
     this.fetch()
   }
-  fetch = (params = {}, mode = 'paginate') => {
+  fetch = (mode = 'paginate', page = 1) => {
     this.setState({ loading: true })
     const { viewMode } = this.state
+    let params = {...this.state.params}
     if (params.src) {
       params = {
         ...params,
@@ -33,6 +35,8 @@ class Projects extends React.Component{
       }
       delete params.src
     }
+    if(params.hasOwnProperty('sector') && params.sector === '') delete params.sector
+    params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
     api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards })
       .then(({ data }) => {
         const pagination = { ...this.state.pagination }
@@ -51,23 +55,33 @@ class Projects extends React.Component{
     this.setState({
       pagination: pager
     })
-    this.fetch({ page: pagination.current })
+    setTimeout(this.fetch)
     window.scroll({ top: 150, left: 0, behavior: 'smooth' })
   }
   showMore = (page) => {
-    this.fetch({ page }, 'showmore')
+    this.fetch('loadMore', page)
   }
   handleSearch = (src) => {
     this.setState({
       loading: true,
-      pagination: { ...this.state.pagination, current: 1 }
+      pagination: { ...this.state.pagination, current: 1 },
+      params: {...this.state.params, src}
     })
-    this.fetch({ page: 1, src })
+    setTimeout(this.fetch)
     if (this.cardsViewRef) this.cardsViewRef.resetPage()
   }
   clearSearch = () => {
-    this.setState({ pagination: { ...this.state.pagination, current: 1 } })
-    setTimeout(() => this.fetch({ page: 1 }), 100)
+    this.setState({ pagination: { ...this.state.pagination, current: 1 }, params: {...this.state.params, src: ''} })
+    setTimeout(this.fetch, 100)
+  }
+  handleSectorFilter = (sector) => {
+    this.setState({
+      loading: true,
+      pagination: { ...this.state.pagination, current: 1 },
+      params: { ...this.state.params, sector }
+    })
+    setTimeout(this.fetch)
+    if (this.cardsViewRef) this.cardsViewRef.resetPage()
   }
   render(){
     const { t } = this.props
@@ -83,7 +97,11 @@ class Projects extends React.Component{
             onClear={this.clearSearch}
             loading={this.state.loading}
           />
-          <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
+          <div className="right-side">
+            <span className="label">{t('Filter:')}</span>
+            <FilterSector onChange={this.handleSectorFilter} />
+            <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
+          </div>
         </div>
         <Divider />
         {this.state.viewMode === 'table' &&
