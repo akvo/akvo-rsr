@@ -142,3 +142,20 @@ class ProjectTypeaheadTest(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 2)
+
+
+class UserOrganisationTypeaheadTest(BaseTestCase):
+
+    def setUp(self):
+        super(UserOrganisationTypeaheadTest, self).setUp()
+
+    def test_anonymous_user_organisations_typeahead(self):
+        # Given
+        url = '/rest/v1/typeaheads/user_organisations?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 0)
