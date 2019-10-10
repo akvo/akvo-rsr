@@ -143,10 +143,32 @@
         color: inherit;
         font-size: 17px;
         line-height: 25px;
-        max-height: 100px;
         overflow: hidden;
-        text-overflow: ellipsis;
         margin-bottom: 5px;
+        &.compact{
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          &.n2-rows{
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            max-height: 50px;
+          }
+          &.n3-rows{
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            max-height: 75px;
+          }
+          &.n4-rows{
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            max-height: 100px;
+          }
+          &.n5-rows{
+            -webkit-line-clamp: 5;
+            line-clamp: 5;
+            max-height: 125px;
+          }
+        }
       }
       small{
         line-height: 17px;
@@ -201,6 +223,8 @@
         margin-bottom: -10px;
         color: #777;
         font-size: 12px;
+        max-height: 38px;
+        overflow: hidden;
         .anticon{
           font-size: 1.5em;
           color: #c4c4c4;
