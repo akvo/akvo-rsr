@@ -38,7 +38,7 @@ const CONTROLS = {
     return <Input {...{ ...input, ...props}} />
   },
   'input-number': ({ input, meta, control, currencySymbol, ...props}) => {
-    return <InputNumber {...{ value: input.value, onChange: (val) => { if (validateNumber(val)) input.onChange(val) }, ...inputNumberAmountFormatting(currencySymbol), min: 1, max: 99999999, ...props}} />
+    return <InputNumber {...{ value: input.value, onChange: (val) => { if (validateNumber(val)) input.onChange(val) }, ...inputNumberAmountFormatting(currencySymbol), min: 1, ...props}} />
   },
   textarea: ({ input, meta, control, ...props }) => <Input.TextArea {...{...input, ...props}} />,
   select: ({options, input, meta, control, withEmptyOption, withValuePrefix, ...props}) => {
