@@ -24,7 +24,7 @@ const IATI = DGIS.clone().shape({
 const EUTF = IATI.clone()
 
 const DFID = IATI.clone().shape({
-  categories: yup.array().of(yup.string()).notRequired()
+  categories: yup.array().of(yup.string()).min(0).notRequired()
 })
 
 const NLR = RSR.clone().shape({

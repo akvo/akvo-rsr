@@ -163,6 +163,10 @@ header.main-header{
   font-weight: 500;
 }
 
+.ant-radio-group.required .ant-radio-button-wrapper{
+  border-color: red;
+}
+
 @import "./container.scss";
 
 @media only screen and (min-width: 1200px) {

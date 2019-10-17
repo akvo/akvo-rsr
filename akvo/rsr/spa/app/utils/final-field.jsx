@@ -77,7 +77,7 @@ const Control = (props) => {
     if(!props.render){
       return CONTROLS.input({..._props, disabled, validateStatus})
     }
-    return props.render({..._props, disabled, validateStatus})
+    return props.render({ ..._props, disabled, validateStatus, showRequired})
   }
   if(withLabel){
     const name = props.input.name.split('.').reduce((acc, curr) => curr)
