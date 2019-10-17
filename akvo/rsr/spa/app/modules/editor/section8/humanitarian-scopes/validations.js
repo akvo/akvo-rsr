@@ -1,15 +1,9 @@
 import * as yup from 'yup'
 
 const IATI = yup.object().shape({
-  type: yup.string(),
-  code: yup.string().when('type', {
-    is: value => value !== undefined && value !== '',
-    then: yup.string().required()
-  }),
-  vocabulary: yup.string().when('type', {
-    is: value => value !== undefined && value !== '',
-    then: yup.string().required()
-  }),
+  type: yup.string().required(),
+  code: yup.string().required(),
+  vocabulary: yup.string().required(),
   vocabularyUri: yup.string(),
   text: yup.string()
 })

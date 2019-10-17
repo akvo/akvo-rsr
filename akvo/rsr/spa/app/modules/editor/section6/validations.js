@@ -2,8 +2,7 @@ import * as yup from 'yup'
 import { validationType } from '../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
-  donateURL: yup.string(),
-  budgetItems: yup.array()
+  donateURL: yup.string()
 })
 
 const IATI_BASIC = RSR.clone()
@@ -22,7 +21,7 @@ const DGIS = RSR.clone().shape({
 })
 
 const EUTF = RSR.clone().shape({
-  transactions: yup.array(),
+  transactions: yup.array().min(1),
 })
 
 const DFID = IATI.clone()
@@ -30,7 +29,7 @@ const DFID = IATI.clone()
 const NLR = RSR.clone()
 
 const Gietrenk = RSR.clone().shape({
-  capitalSpendPercentage: yup.mixed(),
+  capitalSpendPercentage: yup.mixed().required(),
   transactions: yup.array(),
 })
 
