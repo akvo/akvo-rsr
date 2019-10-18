@@ -30,7 +30,6 @@ from prettyjson import PrettyJSONWidget
 from sorl.thumbnail.fields import ImageField
 from embed_video.admin import AdminVideoMixin
 
-from admin_actions import set_project_status_complete
 from akvo.rsr.mixins import TimestampsAdminDisplayMixin
 from akvo.utils import custom_get_or_create_country
 
@@ -445,10 +444,7 @@ class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, Nes
     search_fields = ('id', 'title', 'subtitle')
     list_filter = ('currency', 'status', 'keywords',)
     # created_at and last_modified_at MUST be readonly since they have the auto_now/_add attributes
-    readonly_fields = ('budget', 'funds', 'funds_needed', 'created_at', 'last_modified_at',
-                       'last_update')
-
-    actions = [set_project_status_complete]
+    readonly_fields = ('title', 'subtitle', 'iati_activity_id', 'iati_status', 'currency', 'is_public', 'created_at', 'last_modified_at',)
 
     def __init__(self, model, admin_site):
         """To support ImageField override to add self.formfield_overrides."""
