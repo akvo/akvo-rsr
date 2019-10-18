@@ -45,7 +45,7 @@ const Focus = ({ validations, fields, primaryOrganisation, showRequired, errors}
           {fieldExists('policyMarkers') && (
             <Aux>
               <Divider />
-              <PolicyMarkers validations={validations} formPush={push} />
+              <PolicyMarkers validations={validations} {...passProps} formPush={push} />
             </Aux>
           )}
           {fieldExists('humanitarian') &&

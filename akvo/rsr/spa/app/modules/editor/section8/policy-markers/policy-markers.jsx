@@ -10,13 +10,18 @@ import MARKER_OPTIONS from './markers.json'
 import SIGNIFICANCE_OPTIONS from './significances.json'
 
 
-const PolicyMarker = ({ validations, formPush }) => {
+const PolicyMarker = ({ validations, formPush, showRequired, errors }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   return (
     <div>
-      <h3>{t('Policy markers')}</h3>
+      <div className="min-required-wrapper">
+        <h3>{t('Policy markers')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'policyMarkers') !== -1 && (
+            <span className="min-required">{t('Minimum one required')}</span>
+        )}
+      </div>
       <ItemArray
         setName="policyMarkers"
         sectionIndex={8}
