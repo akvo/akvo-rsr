@@ -429,26 +429,6 @@ class BudgetItemLabelAdmin(admin.ModelAdmin):
 admin.site.register(apps.get_model('rsr', 'budgetitemlabel'), BudgetItemLabelAdmin)
 
 
-class PublishingStatusAdmin(admin.ModelAdmin):
-    list_display = (u'project', u'status', )
-    search_fields = ('project__title', 'status', )
-    list_filter = ('status', )
-
-    def get_queryset(self, request):
-        if request.user.is_admin or request.user.is_superuser:
-            return super(PublishingStatusAdmin, self).get_queryset(request)
-
-        from .models import PublishingStatus
-        qs = PublishingStatus.objects.none()
-        for employment in request.user.employers.approved():
-            if employment.group in Group.objects.filter(name__in=['Admins', 'Project Editors']):
-                project_pks = (project.pk for project in employment.organisation.all_projects())
-                qs = qs | PublishingStatus.objects.filter(project__pk__in=project_pks)
-        return qs.distinct()
-
-admin.site.register(apps.get_model('rsr', 'publishingstatus'), PublishingStatusAdmin)
-
-
 class ProjectAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin, NestedModelAdmin):
     model = apps.get_model('rsr', 'project')
     fieldsets = (
