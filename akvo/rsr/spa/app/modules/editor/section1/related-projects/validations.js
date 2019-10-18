@@ -1,8 +1,8 @@
 import * as yup from 'yup'
 
 const RSR = yup.object().shape({
-  relation: yup.mixed().required(),
-  relatedProject: yup.mixed().required()
+  relation: yup.mixed(),
+  relatedProject: yup.mixed()
 })
 
 const defs = {

@@ -19,6 +19,6 @@ const DFID = IATI.clone()
 const output = {}
 output[validationType.IATI] = yup.array().of(IATI)
 output[validationType.DGIS] = yup.array().of(DGIS)
-output[validationType.DFID] = yup.array().of(DFID).min(1)
+output[validationType.DFID] = yup.array().of(DFID)
 
 export default output

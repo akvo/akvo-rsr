@@ -23,11 +23,11 @@ const HumanitarianScopes = ({ formPush }) => {
           <div>
             <Row gutter={16}>
               <Col span={12}>
-                <Item label={<InputLabel optional tooltip={t('The type of event or action being classified. See the <a href="http://iatistandard.org/202/codelists/HumanitarianScopeType/" target="_blank">IATI codelist</a>.')}>{t('Type')}</InputLabel>}>
+                <Item label={<InputLabel tooltip={t('The type of event or action being classified. See the <a href="http://iatistandard.org/202/codelists/HumanitarianScopeType/" target="_blank">IATI codelist</a>.')}>{t('Type')}</InputLabel>}>
                   <FinalField
                     name={`${name}.type`}
-                    render={({ input }) => (
-                      <Radio.Group {...input}>
+                    render={({ input, showRequired }) => (
+                      <Radio.Group {...input} className={(showRequired && !input.value) ? 'required' : null}>
                         <Radio.Button value="1">{t('Emergency')}</Radio.Button>
                         <Radio.Button value="2">{t('Appeal')}</Radio.Button>
                       </Radio.Group>
