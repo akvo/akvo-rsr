@@ -18,7 +18,7 @@ function $fetch(input, callback, gservice) {
   }
 
   function req() {
-    gservice.getPlacePredictions({ input, types: ['(cities)'] }, (results, status) => {
+    gservice.getPlacePredictions({ input, types: ['(regions)'] }, (results, status) => {
       if (status !== 'OK') {
         console.log('error', status)
         return
