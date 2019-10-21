@@ -640,6 +640,7 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
         'user_is_me_manager': json.dumps(user_is_me_manager),
         'show_narrative_reports': json.dumps(show_narrative_reports),
         'show_results': json.dumps(show_results),
+        'can_edit_project': json.dumps(user.can_edit_project(project)),
     }
 
     context = project.project_hierarchy_context(context)

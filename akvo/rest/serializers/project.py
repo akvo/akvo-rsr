@@ -56,6 +56,12 @@ class ProjectSerializer(BaseRSRSerializer):
         model = Project
         fields = '__all__'
 
+    def get_editable(self, obj):
+        """Method used by the editable SerializerMethodField"""
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_project(obj)
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
 
@@ -183,6 +189,20 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
 
     locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
     status = serializers.ReadOnlyField(source='publishingstatus.status')
+    sectors = SectorSerializer(many=True, read_only=True)
+    parent = serializers.SerializerMethodField()
+    editable = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        p = obj.parents_all().first()
+        return {'id': p.id, 'title': p.title} if p is not None else None
+
+    def get_editable(self, obj):
+        """Method used by the editable SerializerMethodField"""
+        user = self.context['request'].user
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_project(obj)
 
     class Meta:
         model = Project

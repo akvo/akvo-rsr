@@ -401,9 +401,13 @@ class App extends React.Component {
             resultsTab
         ) : (
             <section className="results">
-                <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
-                    {_("Editor")}
-                </a>
+                {page.mode && page.mode.can_edit_project ? (
+                    <a className="pull-right editBtn" href={`../../project_editor/${projectId}/`}>
+                        {_("Editor")}
+                    </a>
+                ) : (
+                    undefined
+                )}
                 <Tabs onSelect={this.onSelectTab}>
                     <TabList>
                         {showResults && hasResults ? <Tab>{_("results")}</Tab> : null}
