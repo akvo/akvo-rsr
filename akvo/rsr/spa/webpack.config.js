@@ -13,7 +13,7 @@ const config = env => ({
 
   entry: [
     'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8080',
+    'webpack-dev-server/client?http://0.0.0.0:8080',
     'webpack/hot/only-dev-server',
     './main.js',
     './styles/main.scss',
@@ -29,6 +29,7 @@ const config = env => ({
 
   devServer: {
     host: '0.0.0.0',
+    disableHostCheck: true,
     hot: true,
     contentBase: resolve(__dirname, 'build'),
     historyApiFallback: true,
