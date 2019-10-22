@@ -21,13 +21,13 @@
 
 {% block js %}
     {{ block.super }}
-
     <script type="application/json" id="mode">
-        {
-            "public": false,
-            "show_narrative_reports": {{ show_narrative_reports }},
-            "show_results": {{ show_results }}
-        }
+     {
+         "public": false,
+         "show_narrative_reports": {{ show_narrative_reports }},
+         "show_results": {{ show_results }},
+         "can_edit_project": {{ can_edit_project }}
+     }
     </script>
     {% include "results_base.html" %}
 {% endblock js %}

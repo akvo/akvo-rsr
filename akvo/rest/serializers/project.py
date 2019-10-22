@@ -60,7 +60,9 @@ class ProjectSerializer(BaseRSRSerializer):
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
         user = self.context['request'].user
-        return user.has_perm('rsr.change_project', obj)
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_project(obj)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
@@ -200,7 +202,9 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
         user = self.context['request'].user
-        return user.has_perm('rsr.change_project', obj)
+        if not user.is_authenticated():
+            return False
+        return user.can_edit_project(obj)
 
     class Meta:
         model = Project
