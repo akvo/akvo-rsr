@@ -22,7 +22,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
@@ -253,6 +253,8 @@ def project_directory(request):
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
+    projects = _filter_by_custom_fields(request, projects)
+
     # NOTE: The text filter is handled differently/separately from the other filters.
     # The text filter allows users to enter free form text, which could result in no
     # projects being found for the given text. Other fields only allow selecting from
@@ -356,3 +358,21 @@ def _create_filters_query(request):
     ]
     filters = filter(None, all_filters)
     return reduce(lambda x, y: x & y, filters) if filters else None, title_or_subtitle_filter
+
+
+def _filter_by_custom_fields(request, projects):
+    for custom_field_query in request.GET:
+        if not custom_field_query.startswith('custom_field__'):
+            continue
+
+        value = request.GET.get(custom_field_query)
+        try:
+            org_custom_field_id = int(custom_field_query.split('__', 1)[-1])
+            name = OrganisationCustomField.objects.get(pk=org_custom_field_id).name
+        except (OrganisationCustomField.DoesNotExist, ValueError):
+            continue
+
+        filter_ = Q(custom_fields__name=name, custom_fields__value=value)
+        projects = projects.filter(filter_)
+
+    return projects
