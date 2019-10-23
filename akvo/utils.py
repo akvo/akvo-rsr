@@ -530,7 +530,7 @@ def log_project_changes(user, project, related_obj, data, action):
     if not isinstance(related_obj, Project):
         obj_name = related_obj._meta.model_name
         if action_flag in {ADDITION, DELETION}:
-            project_fields = {'name': obj_name, 'object': related_obj.id}
+            project_fields = {'name': obj_name, 'object': related_obj.pk}
         else:
             project_fields = {
                 'fields': ['{}_{}'.format(obj_name, key) for key in data.keys()]
