@@ -208,4 +208,5 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     class Meta:
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-                  'date_start_actual', 'date_start_planned', 'locations', 'status')
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'editable')
