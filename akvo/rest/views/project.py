@@ -18,7 +18,8 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectDirectorySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadSectorSerializer,
-                                   ProjectMetadataSerializer,)
+                                   ProjectMetadataSerializer,
+                                   OrganisationCustomFieldSerializer,)
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
@@ -315,13 +316,19 @@ def project_directory(request):
     cached_organisations, _ = get_cached_data(
         request, 'organisations', organisations, TypeaheadOrganisationSerializer
     )
-
+    custom_fields = (
+        OrganisationCustomField.objects.filter(type='dropdown',
+                                               organisation=page.organisation,
+                                               show_in_searchbar=True)
+        if page else []
+    )
     response = {
         'project_count': count,
         'projects': cached_projects,
         'showing_cached_projects': showing_cached_projects,
         'organisation': cached_organisations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
+        'custom_fields': OrganisationCustomFieldSerializer(custom_fields, many=True).data,
         'location': cached_locations,
         'page_size_default': settings.PROJECT_DIRECTORY_PAGE_SIZES[0],
     }
