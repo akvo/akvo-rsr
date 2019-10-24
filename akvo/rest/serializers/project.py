@@ -31,7 +31,7 @@ from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
 from .related_project import RelatedProjectRawSerializer
 from .result import ResultRawSerializer
-from .sector import SectorRawSerializer
+from .sector import SectorRawSerializer, SectorSerializer
 from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
 from .rsr_serializer import BaseRSRSerializer
 
@@ -62,6 +62,7 @@ class ProjectSerializer(BaseRSRSerializer):
         if not user.is_authenticated():
             return False
         return user.can_edit_project(obj)
+
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
 
