@@ -375,11 +375,31 @@ def _filter_by_custom_fields(request, projects):
         value = request.GET.get(custom_field_query)
         try:
             org_custom_field_id = int(custom_field_query.split('__', 1)[-1])
-            name = OrganisationCustomField.objects.get(pk=org_custom_field_id).name
+            org_custom_field = OrganisationCustomField.objects.get(pk=org_custom_field_id)
         except (OrganisationCustomField.DoesNotExist, ValueError):
             continue
 
-        filter_ = Q(custom_fields__name=name, custom_fields__value=value)
+        if org_custom_field.type != 'dropdown':
+            filter_ = Q(custom_fields__name=org_custom_field.name, custom_fields__value=value)
+        else:
+            dropdown_options = org_custom_field.dropdown_options['options']
+            selection = _get_selection(dropdown_options, value)
+            filter_ = Q(custom_fields__name=org_custom_field.name,
+                        custom_fields__dropdown_selection__contains=selection)
         projects = projects.filter(filter_)
 
     return projects
+
+
+def _get_selection(options, value):
+    if isinstance(value, basestring):
+        print(value)
+        indexes = map(int, value.split('__'))
+    else:
+        indexes = value
+
+    selection = options[indexes[0]]
+    sub_options = selection.pop('options', [])
+    if sub_options and indexes[1:]:
+        selection['options'] = _get_selection(sub_options, indexes[1:])
+    return [selection]
