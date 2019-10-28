@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {Select} from 'antd'
 import VOCAB_1_CODES from '../editor/section8/vocab-1-codes.json'
 import VOCAB_2_CODES from '../editor/section8/vocab-2-codes.json'
@@ -6,6 +7,7 @@ import VOCAB_2_CODES from '../editor/section8/vocab-2-codes.json'
 const { Option } = Select
 
 const FilterSector = ({onChange}) => {
+  const { t } = useTranslation()
   const [customOpt, setCustomOpt] = useState('')
   return (
     <Select
@@ -24,7 +26,7 @@ const FilterSector = ({onChange}) => {
         onChange(value)
       }}
     >
-      <Option value="" data="">All sectors</Option>
+      <Option value="" data="">{t('All sectors')}</Option>
       {VOCAB_2_CODES.map(item => <Option value={item.value} data={`${item.value} - ${item.label}`}>{item.value} - {item.label}</Option>)}
       {VOCAB_1_CODES.map(item => <Option value={item.value} data={`${item.value} - ${item.label}`}>{item.value} - {item.label}</Option>)}
       {customOpt !== '' &&

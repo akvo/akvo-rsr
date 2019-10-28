@@ -9,8 +9,9 @@ import TableView from './table-view'
 import CardsView from './cards-view'
 import Search from './search'
 import FilterSector from './filter-sector'
+import FilterCountry from './filter-country'
 
-const pageSize = 16
+const pageSize = 32
 const pageSizeCards = 32
 
 class Projects extends React.Component{
@@ -35,7 +36,9 @@ class Projects extends React.Component{
       }
       delete params.src
     }
-    if(params.hasOwnProperty('sector') && params.sector === '') delete params.sector
+    Object.keys(params).forEach(key => {
+      if(params[key] === '') delete params[key]
+    })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
     api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards })
       .then(({ data }) => {
@@ -74,11 +77,11 @@ class Projects extends React.Component{
     this.setState({ pagination: { ...this.state.pagination, current: 1 }, params: {...this.state.params, src: ''} })
     setTimeout(this.fetch, 100)
   }
-  handleSectorFilter = (sector) => {
+  handleFilter = (param) => {
     this.setState({
       loading: true,
       pagination: { ...this.state.pagination, current: 1 },
-      params: { ...this.state.params, sector }
+      params: { ...this.state.params, ...param }
     })
     setTimeout(this.fetch)
     if (this.cardsViewRef) this.cardsViewRef.resetPage()
@@ -99,7 +102,8 @@ class Projects extends React.Component{
           />
           <div className="right-side">
             <span className="label">{t('Filter:')}</span>
-            <FilterSector onChange={this.handleSectorFilter} />
+            <FilterSector onChange={sector => this.handleFilter({ sector })} />
+            <FilterCountry onChange={country => this.handleFilter({ country })} />
             <Link className="add-project-btn" to="/projects/new"><Button type="primary" icon="plus">{t('Create new project')}</Button></Link>
           </div>
         </div>
