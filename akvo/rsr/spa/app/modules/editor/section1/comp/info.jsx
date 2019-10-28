@@ -132,7 +132,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             />
             )}
           />
-          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} fieldName="relatedProjects[0]" projects={results} loading={loading} projectId={projectId} />
+          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />
           <FinalField
             name="hierarchy"
             control="select"
@@ -275,7 +275,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             control="select"
             options={AID_TYPE_VOCABULARY}
             withEmptyOption
-            optional
+            optional={isOptional}
             withLabel
             fieldExists={fieldExists}
           />
@@ -312,7 +312,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             control="select"
             options={COLLABORATION_TYPES}
             withLabel
-            optional
+            optional={isOptional}
             fieldExists={fieldExists}
           />
           <FinalField
@@ -321,7 +321,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             options={FINANCE_TYPES}
             withEmptyOption
             withLabel
-            optional
+            optional={isOptional}
             fieldExists={fieldExists}
           />
 
