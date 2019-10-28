@@ -2,7 +2,7 @@
 export const endpoints = {
   section1: {
     root: '/project/:projectId',
-    relatedProjects: '/related_project/'
+    relatedProjects: '/related_project/?relation=1'
   },
   section2: {
     contacts: '/project_contact/'
