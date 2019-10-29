@@ -11,7 +11,7 @@ const { Item } = Form
 const { Option } = Select
 let intid
 
-const ProjectPicker = ({ fieldName, loading, projects, savedData, formPush, projectId }) => {
+const ProjectPicker = ({ loading, projects, savedData, formPush, projectId }) => {
   const { t } = useTranslation()
   const defaultIsExternal = savedData && savedData.relatedIatiId
   const [isExternal, setExternal] = useState(defaultIsExternal)
@@ -49,17 +49,17 @@ const ProjectPicker = ({ fieldName, loading, projects, savedData, formPush, proj
       {isExternal && (
         <FinalField
           placeholder={t('IATI Identifier')}
-          name={`${fieldName}.relatedIatiId`}
+          name="relatedProjects[0].relatedIatiId"
           control="input"
         />
       )}
       {!isExternal && (
         <Field
-          name={`${fieldName}.relatedProjectName`}
+          name="relatedProjects[0].relatedProjectName"
           render={(nameProps) => {
             return (
               <FinalField
-                name={`${fieldName}.relatedProject`}
+                name="relatedProjects[0].relatedProject"
                 render={({ input }) => {
                   const $options =
                     projects && projects.length > 0
@@ -84,7 +84,7 @@ const ProjectPicker = ({ fieldName, loading, projects, savedData, formPush, proj
           }}
         />
       )}
-      <Checkbox checked={isExternal} onChange={(ev) => { console.log(ev.target.checked); setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Related project is not present in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
+      <Checkbox checked={isExternal} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Related project is not present in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
     </Item>
   )
 }

@@ -8,16 +8,17 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from django.conf import settings
-from django.test import Client, TestCase
+from django.test import Client
 
-from akvo.rsr.models import Organisation, Partnership, PartnerSite, Project, PublishingStatus
+from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.models import Partnership, PartnerSite
 
 
-class ProjectTypeaheadTest(TestCase):
+class ProjectTypeaheadTest(BaseTestCase):
 
     def setUp(self):
         super(ProjectTypeaheadTest, self).setUp()
-        self.organisation = self._create_organisation('Akvo')
+        self.organisation = self.create_organisation('Akvo')
         self.partner_site = PartnerSite.objects.create(
             organisation=self.organisation,
             piwik_id=1,
@@ -25,33 +26,22 @@ class ProjectTypeaheadTest(TestCase):
         )
 
         for i in range(1, 6):
-            project = Project.objects.create(title='Project - {}'.format(i))
-
-            if i < 4:
-                publishing_status = project.publishingstatus
-                publishing_status.status = PublishingStatus.STATUS_PUBLISHED
-                publishing_status.save()
+            published = i < 4
+            project = self.create_project(title='Project - {}'.format(i), published=published)
 
             # Add a partnership for a couple of projects
             if i in {1, 4}:
-                Partnership.objects.create(
-                    organisation=self.organisation,
-                    project=project,
-                    iati_organisation_role=Partnership.IATI_REPORTING_ORGANISATION
-                )
+                self.make_partner(
+                    project, self.organisation, Partnership.IATI_REPORTING_ORGANISATION)
 
         # Additional organisation for typeahead/organisations end-point
-        self._create_organisation('UNICEF')
+        self.create_organisation('UNICEF')
 
     def _create_client(self, host=None):
         """ Create and return a client with the given host."""
         if not host:
             host = settings.RSR_DOMAIN
         return Client(HTTP_HOST=host)
-
-    def _create_organisation(self, name):
-        long_name = '{} organisation'.format(name)
-        return Organisation.objects.create(name=name, long_name=long_name)
 
     def test_published_projects_on_rsr_host(self):
         # Given
@@ -152,3 +142,20 @@ class ProjectTypeaheadTest(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['results']), 2)
+
+
+class UserOrganisationTypeaheadTest(BaseTestCase):
+
+    def setUp(self):
+        super(UserOrganisationTypeaheadTest, self).setUp()
+
+    def test_anonymous_user_organisations_typeahead(self):
+        # Given
+        url = '/rest/v1/typeaheads/user_organisations?format=json'
+
+        # When
+        response = self.c.get(url, follow=True)
+
+        # Then
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 0)

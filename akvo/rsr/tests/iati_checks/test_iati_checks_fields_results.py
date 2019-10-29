@@ -8,6 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 import datetime
+import json
 
 from django.test import TestCase
 
@@ -130,9 +131,11 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         self.assertFalse(all_checks_passed)
         self.assertEquals(len(checks), 2)
         self.assertEquals(u'warning', checks[0][0])
-        self.assertIn(u'no value specified, however the value of "N/A"', checks[0][1])
+        self.assertIn(
+            u'no value specified, however the value of "N/A"', json.loads(checks[0][1])['message'])
         self.assertEquals(u'warning', checks[1][0])
-        self.assertIn(u'no year specified, however the value of "1"', checks[1][1])
+        self.assertIn(
+            u'no year specified, however the value of "1"', json.loads(checks[1][1])['message'])
 
     def test_iati_checks_fields_results_period_pass(self):
         # Given
@@ -322,5 +325,7 @@ class IatiChecksFieldsReultsTestCase(TestCase):
         # Then
         self.assertFalse(all_checks_passed)
         self.assertEquals(len(checks), 2)
-        self.assertIn(u'no target value specified. The value "N/A"', checks[0][1])
-        self.assertIn(u'no actual value specified. The value "N/A"', checks[1][1])
+        self.assertIn(
+            u'no target value specified. The value "N/A"', json.loads(checks[0][1])['message'])
+        self.assertIn(
+            u'no actual value specified. The value "N/A"', json.loads(checks[1][1])['message'])

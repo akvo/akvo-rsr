@@ -7,7 +7,7 @@
 from django.db.models import Sum
 
 
-class DisaggregationAggregation:
+class DisaggregationAggregation(object):
 
     def __init__(self, disaggregations, period_disaggregations):
         self.disaggregations = disaggregations

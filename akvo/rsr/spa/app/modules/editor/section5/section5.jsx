@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+/* global window, document, navigator */
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert } from 'antd'
+import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -15,6 +16,7 @@ import './styles.scss'
 import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
 import AutoSave from '../../../utils/auto-save'
+import { useForceUpdate } from '../../../utils/hooks'
 import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
@@ -29,6 +31,25 @@ const resultTypes = [
   {label: 'impact', value: '3'},
   {label: 'other', value: '9'}
 ]
+
+export const parseHashComponents = (hash) => {
+  const ret = { resultId: null, indicatorId: null, periodId: null}
+  const comps = hash.substr(2).split('/')
+  if(comps.length > 1){
+    if (comps[0] === 'result' && !Number.isNaN(Number(comps[1]))){
+      ret.resultId = comps[1]
+    }
+    if(comps.length > 3){
+      if (comps[2] === 'indicator' && !Number.isNaN(Number(comps[3]))){
+        ret.indicatorId = comps[3]
+      }
+      if (comps.length > 5 && comps[4] === 'period' && !Number.isNaN(Number(comps[5]))){
+        ret.periodId = comps[5]
+      }
+    }
+  }
+  return ret
+}
 
 const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, projectId, ...props }) => { // eslint-disable-line
   const { t } = useTranslation()
@@ -51,7 +72,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
   const [copying, setCopying] = useState(false)
@@ -134,6 +155,11 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
   resultTypes.forEach(type => {
     groupedResults[type.value] = results.filter(it => it.type === type.value)
   })
+  const jumpTo = (hash) => {
+    window.location.hash = hash
+    setShowModal(false)
+    setTimeout(onJumpToItem, 300)
+  }
   return (
     <div className="summary">
       <ul>
@@ -155,10 +181,10 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
             <Panel header={<span className="group-title">{t(resultTypes.find(it => it.value === groupKey).label)}<b> ({groupedResults[groupKey].length})</b></span>}>
               <Collapse bordered={false}>
                 {groupedResults[groupKey].map((result, resultIndex) =>
-                  <Panel header={<span><b>{resultIndex + 1}. </b>{result.title}</span>}>
+                  <Panel header={<span><b>{resultIndex + 1}. </b>{result.title} <Button size="small" type="link" onClick={(e) => { e.stopPropagation(); jumpTo(`#/result/${result.id}/`) }}>{t('Open')}</Button></span>}>
                     <ul>
                       {result.indicators.map((indicator, index) =>
-                        <li>{t('Indicator')} <b>{index + 1}</b>:<br /><span className="inset">{indicator.title}</span></li>
+                        <li>{t('Indicator')} <b>{index + 1}</b>:<br /><span className="inset">{indicator.title}</span> <Button size="small" type="link" onClick={() => jumpTo(`#/result/${result.id}/indicator/${indicator.id}/`)}>{t('Open')}</Button></li>
                       )}
                     </ul>
                   </Panel>
@@ -184,9 +210,12 @@ class UpdateIfLengthChanged extends React.Component{
   }
 }
 
+const headerOffset = 127 /* header */ - 105 /* sticky header */
 
 const Section5 = (props) => {
   const { t } = useTranslation()
+  const forceUpdate = useForceUpdate()
+  const accordionCompRef = useRef()
   const removeSection = (fields, index) => {
     fields.remove(index)
     props.removeSetItem(5, 'results', index)
@@ -201,6 +230,66 @@ const Section5 = (props) => {
     }
   }, [])
   const hasParent = props.relatedProjects && props.relatedProjects.filter(it => it.relation === '1').length > 0
+  let selectedResultIndex = -1
+  let selectedIndicatorIndex = -1
+  let selectedPeriodIndex = -1
+  let hashComps
+  const handleHash = () => {
+    hashComps = parseHashComponents(window.location.hash)
+    if (hashComps.resultId) {
+      selectedResultIndex = props.fields.results.findIndex(it => it.id === Number(hashComps.resultId))
+      if (hashComps.indicatorId) {
+        selectedIndicatorIndex = props.fields.results[selectedResultIndex].indicators.findIndex(it => it.id === Number(hashComps.indicatorId))
+        if (hashComps.periodId) {
+          selectedPeriodIndex = props.fields.results[selectedResultIndex].indicators[selectedIndicatorIndex].periods.findIndex(it => it.id === Number(hashComps.periodId))
+        }
+      }
+    }
+  }
+  const handleHashScroll = () => {
+    let ypos = 0
+    if (hashComps.resultId) {
+      const $resultList = document.getElementsByClassName('results-list')[0]
+      const $result = $resultList.children[selectedResultIndex]
+      const resultListOffset = $resultList.offsetTop
+      ypos = $result.offsetParent.offsetTop + selectedResultIndex * 81 + headerOffset
+      if (hashComps.indicatorId) {
+        const $indicator = $result.getElementsByClassName('indicators-list')[0].children[selectedIndicatorIndex]
+        ypos = $indicator.offsetParent.offsetTop + selectedIndicatorIndex * 71 + resultListOffset + headerOffset - 81 /* sticky header of result */
+        if (hashComps.periodId) {
+          const $period = $indicator.getElementsByClassName('periods-list')[0].children[selectedPeriodIndex]
+          ypos = $period.offsetParent.offsetTop + selectedPeriodIndex * 62 + $indicator.offsetParent.offsetTop + resultListOffset + headerOffset + 3 - 81 /* sticky header of result */ - 72 /* sticky header of indicator */
+        }
+      }
+    }
+    window.scroll({ top: ypos, left: 0, behavior: 'smooth' })
+  }
+  handleHash()
+  useEffect(() => {
+    setTimeout(handleHashScroll, 200)
+  }, [])
+
+  const getLink = (resultId) => {
+    window.location.hash = `#/result/${resultId}`
+    navigator.clipboard.writeText(window.location.href)
+    notification.open({
+      message: t('Link copied!'),
+      icon: <Icon type="link" style={{ color: '#108ee9' }} />,
+    })
+  }
+
+  const moveResult = (from, to, fields, itemId) => {
+    const doMove = () => {
+      fields.move(from, to)
+      api.post(`/project/${props.projectId}/reorder_items/`, `item_type=result&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
+    }
+    if (accordionCompRef.current.state.activeKey.length === 0) {
+      doMove()
+    } else {
+      accordionCompRef.current.handleChange([])
+      setTimeout(doMove, 500)
+    }
+  }
   return (
     <div className="view section5">
       <Form layout="vertical">
@@ -216,7 +305,7 @@ const Section5 = (props) => {
           }) => (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
+                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
@@ -224,8 +313,11 @@ const Section5 = (props) => {
                       <Accordion
                         className="results-list"
                         finalFormFields={fields}
+                        activeKey={selectedResultIndex}
+                        ref={ref => { accordionCompRef.current = ref }}
                         setName="results"
                         multiple
+                        destroyInactivePanel
                         renderPanel={(name, index) => (
                           <Panel
                             key={`${index}`}
@@ -245,14 +337,33 @@ const Section5 = (props) => {
                               // eslint-disable-next-line
                               <div onClick={e => e.stopPropagation()}>
                                 <div className="delete-btn-holder">
-                                  <Popconfirm
-                                    title={t('Are you sure to delete this result?')}
-                                    onConfirm={() => removeSection(fields, index)}
-                                    okText={t('Yes')}
-                                    cancelText={t('No')}
-                                  >
-                                    <Button size="small" icon="delete" className="delete-panel" />
-                                  </Popconfirm>
+                                  <Button.Group>
+                                    <Field name={`${name}.id`} render={({ input }) =>
+                                    <Aux>
+                                    <Tooltip title={t('Get a link to this result')}>
+                                      <Button size="small" icon="link" onClick={() => getLink(input.value)} />
+                                    </Tooltip>
+                                    {index > 0 &&
+                                    <Tooltip title={t('Move up')}>
+                                      <Button icon="up" size="small" onClick={() => moveResult(index, index - 1, fields, input.value)} />
+                                    </Tooltip>
+                                    }
+                                    {index < fields.length - 1 &&
+                                    <Tooltip title={t('Move down')}>
+                                      <Button icon="down" size="small" onClick={() => moveResult(index, index + 1, fields, input.value)} />
+                                    </Tooltip>
+                                    }
+                                    </Aux>
+                                    } />
+                                    <Popconfirm
+                                      title={t('Are you sure to delete this result?')}
+                                      onConfirm={() => removeSection(fields, index)}
+                                      okText={t('Yes')}
+                                      cancelText={t('No')}
+                                    >
+                                      <Button size="small" icon="delete" className="delete-panel" />
+                                    </Popconfirm>
+                                  </Button.Group>
                                 </div>
                               </div>
                             }
@@ -281,7 +392,20 @@ const Section5 = (props) => {
                             </div>
                             <Field
                               name={`${name}.id`}
-                              render={({ input }) => <Indicators fieldName={name} formPush={push} resultId={input.value} resultIndex={index} primaryOrganisation={props.primaryOrganisation} projectId={props.projectId} allowIndicatorLabels={props.allowIndicatorLabels} indicatorLabelOptions={indicatorLabelOptions} />}
+                              render={({ input }) => (
+                                <Indicators
+                                  fieldName={name}
+                                  formPush={push}
+                                  resultId={input.value}
+                                  resultIndex={index}
+                                  primaryOrganisation={props.primaryOrganisation}
+                                  projectId={props.projectId}
+                                  allowIndicatorLabels={props.allowIndicatorLabels}
+                                  indicatorLabelOptions={indicatorLabelOptions}
+                                  selectedIndicatorIndex={selectedIndicatorIndex}
+                                  selectedPeriodIndex={selectedPeriodIndex}
+                                />
+                              )}
                             />
                           </Panel>
                         )}

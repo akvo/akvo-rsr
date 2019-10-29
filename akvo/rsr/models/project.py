@@ -23,6 +23,7 @@ from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
+from django.contrib.postgres.fields import JSONField
 
 from sorl.thumbnail.fields import ImageField
 
@@ -47,6 +48,11 @@ from .project_editor_validation import ProjectEditorValidationSet
 from .publishing_status import PublishingStatus
 from .related_project import RelatedProject
 from .budget_item import BudgetItem
+
+
+DESCRIPTIONS_ORDER = [
+    'project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group',
+    'project_plan', 'sustainability']
 
 
 def image_path(instance, file_name):
@@ -223,6 +229,7 @@ class Project(TimestampsMixin, models.Model):
                     u'<a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" '
                     u'target="_blank">Markdown</a> is supported.')
     )
+    descriptions_order = JSONField(default=DESCRIPTIONS_ORDER)
 
     # Result aggregation
     aggregate_children = models.BooleanField(
@@ -427,6 +434,13 @@ class Project(TimestampsMixin, models.Model):
         permissions = (
             ('post_updates', u'Can post updates'),
         )
+
+    def delete(self, using=None, keep_parents=False):
+        # Delete results on the project, before trying to delete the project,
+        # since the RelatedProject object on the project refuses to get deleted
+        # if there are existing results, causing the delete to raise 500s
+        self.results.all().delete()
+        return super(Project, self).delete(using=using, keep_parents=keep_parents)
 
     def save(self, *args, **kwargs):
         # Strip title of any trailing or leading spaces
@@ -683,52 +697,6 @@ class Project(TimestampsMixin, models.Model):
         """ProjectUpdate list for self, newest first."""
         return self.project_updates.select_related('user')
 
-    def latest_update(self):
-        """
-        for use in the admin
-        lists data useful when looking for projects that haven't been updated in a while
-        (or not at all)
-        note: it would have been useful to make this column sortable via the
-        admin_order_field attribute, but this results in multiple rows shown for the project
-        in the admin change list view and there's no easy way to distinct() them
-        """
-        # TODO: probably this can be solved by customizing ModelAdmin.queryset
-        updates = self.updates_desc()
-        if updates:
-            update = updates[0]
-            # date of update shown as link poiting to the update page
-            update_info = '<a href="%s">%s</a><br/>' % (update.get_absolute_url(),
-                                                        update.created_at,)
-            # if we have an email of the user doing the update, add that as a mailto link
-            if update.user.email:
-                update_info = '%s<a href="mailto:%s">%s</a><br/><br/>' % (
-                    update_info, update.user.email, update.user.email,
-                )
-            else:
-                update_info = '%s<br/>' % update_info
-        else:
-            update_info = u'%s<br/><br/>' % (_(u'No update yet'),)
-        # links to the project's support partners
-        update_info = "%sSP: %s" % (
-            update_info, ", ".join(
-                [u'<a href="%s">%s</a>' % (
-                    partner.get_absolute_url(), partner.name
-                ) for partner in self.support_partners()]
-            )
-        )
-        # links to the project's field partners
-        return "%s<br/>FP: %s" % (
-            update_info, ", ".join(
-                [u'<a href="%s">%s</a>' % (
-                    partner.get_absolute_url(), partner.name
-                ) for partner in self.field_partners()]
-            )
-        )
-
-    latest_update.allow_tags = True
-    # no go, results in duplicate projects entries in the admin change list
-    # latest_update.admin_order_field = 'project_updates__time'
-
     def show_status(self):
         "Show the current project status"
         if not self.iati_status == '0':
@@ -746,25 +714,11 @@ class Project(TimestampsMixin, models.Model):
         else:
             return ''
 
-    def show_current_image(self):
-        try:
-            return self.current_image.thumbnail_tag
-        except:
-            return ''
-    show_current_image.allow_tags = True
-
     def show_keywords(self):
         return rsr_show_keywords(self)
     show_keywords.short_description = 'Keywords'
     show_keywords.allow_tags = True
     show_keywords.admin_order_field = 'keywords'
-
-    def show_map(self):
-        try:
-            return '<img src="%s" />' % (self.map.url,)
-        except:
-            return ''
-    show_map.allow_tags = True
 
     def is_published(self):
         if self.publishingstatus:

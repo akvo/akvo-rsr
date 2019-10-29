@@ -49,12 +49,15 @@ const CONTROLS = {
       </Select>
     )
   },
-  datepicker: ({ input, disabled }) => {
+  datepicker: ({ input, disabled, dispatch, ...props }) => {
     // transform value to be stored to formatted string
     let value = (input.value && typeof input.value === 'string') ? moment(input.value, datePickerConfig.format) : input.value
     if(!value) value = null
+    const _props = {...props}
+    for(let i = 1; i <= 11; i += 1) delete _props[`section${i}`]
+    // console.log(_props)
     const onChange = val => input.onChange(val !== null ? val.format(datePickerConfig.format) : null)
-    return <DatePicker {...{value, onChange, disabled, ...datePickerConfig}} />
+    return <DatePicker {...{value, onChange, disabled, ...datePickerConfig, ..._props}} />
   },
   rte: ({ input }) => <RTE {...input} />
 }
@@ -66,8 +69,13 @@ const Control = (props) => {
   const disabled = props.disabled || addingItem
   let validateStatus = ''
   let help = ''
-  if (showRequired && props[section].errors.findIndex(it => it.path === props.input.name) !== -1) {
+  let requiredValidationError = false
+  const err = props[section].errors.find(it => it.path === props.input.name)
+  if (showRequired && err) {
     validateStatus = 'error'
+  }
+  if(err && err.type === 'required'){
+    requiredValidationError = true
   }
   if (backendError && `section${backendError.sectionIndex}` === section && props.input.name === `${backendError.setName}.${Object.keys(backendError.response)[0]}`){
     validateStatus = 'error'
@@ -91,7 +99,7 @@ const Control = (props) => {
       label={
       label ? label :
       <InputLabel
-        optional={typeof optional === 'function' ? optional(name) : optional}
+        optional={requiredValidationError ? false : typeof optional === 'function' ? optional(name) : optional}
         tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
       >
       {dict ? dict.label : t(`${section}::${name}::label`)}

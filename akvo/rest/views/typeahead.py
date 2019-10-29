@@ -58,7 +58,12 @@ def typeahead_organisation(request):
 def typeahead_user_organisations(request):
     user = request.user
     is_admin = user.is_active and (user.is_superuser or user.is_admin)
-    organisations = user.approved_organisations() if not is_admin else Organisation.objects.all()
+    if user.is_anonymous():
+        organisations = Organisation.objects.none()
+    elif is_admin:
+        organisations = Organisation.objects.all()
+    else:
+        organisations = user.approved_organisations()
     return Response(
         rejig(organisations, TypeaheadOrganisationSerializer(organisations,
                                                              many=True))

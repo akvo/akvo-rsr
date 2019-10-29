@@ -92,13 +92,13 @@ class Sector(models.Model):
             return self.sector_code
 
     def iati_sector_unicode(self):
-        return str(self.iati_sector())
+        return unicode(self.iati_sector())
 
     def iati_vocabulary(self):
         return codelist_value(codelist_models.SectorVocabulary, self, 'vocabulary')
 
     def iati_vocabulary_unicode(self):
-        return str(self.iati_vocabulary())
+        return unicode(self.iati_vocabulary())
 
     class Meta:
         app_label = 'rsr'

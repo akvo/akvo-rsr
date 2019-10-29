@@ -23,25 +23,33 @@ function getCookie(name) {
 csrftoken = getCookie("csrftoken");
 
 /* Capitalize the first character of a string */
-function cap(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+function cap(msg) {
+    return msg.charAt(0).toUpperCase() + msg.slice(1);
 }
 
 function make_link(message, project_id) {
-    var id = message.match(/id: (\d+)/),
-        obj = message.match(/(result|indicator|indicator period) \(id:/);
-    if (id === null || obj === null) {
+    var parsedMessage;
+    try {
+        parsedMessage = JSON.parse(message);
+    } catch (e) {
         return cap(message);
     }
-    id = id[1];
-    obj = obj[1];
-    if (obj === "indicator period") {
-        obj = "indicator_period";
+    var path = "results-n-indicators#/";
+    if (parsedMessage.model == "result") {
+        path += `result/${parsedMessage.id}`;
+    } else if (parsedMessage.model == "indicator") {
+        path += `result/${parsedMessage.result_id}/indicator/${parsedMessage.id}`;
+    } else if (parsedMessage.model == "indicator_period") {
+        path +=
+            `result/${parsedMessage.result_id}/indicator/` +
+            `${parsedMessage.indicator_id}/period/${parsedMessage.id}`;
+    } else {
+        return cap(parsedMessage.message);
     }
-    var url = "../project_editor/" + project_id + "/#" + obj + "." + id;
+    var url = `/my-rsr/projects/${project_id}/${path}`;
     return (
         <a href={url} target="_blank">
-            {cap(message)}
+            {cap(parsedMessage.message)}
         </a>
     );
 }

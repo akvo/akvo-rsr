@@ -4,6 +4,7 @@ import { Form, Button, Radio, Col, Row } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -173,25 +174,45 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
               {fieldExists('periodStart') &&
               <Row gutter={16}>
                 <Col span={8}>
-                  <FinalField
-                    name={`${name}.periodStart`}
-                    control="datepicker"
-                    withLabel
-                    dict={{
-                      label: t('period start'), tooltip: t('Enter the start date (DD/MM/YYYY) for the budget period.')
-                    }}
-                    optional={isOptional}
+                  <Field
+                    name={`${name}.periodEnd`}
+                    render={({ input }) => (
+                    <FinalField
+                      name={`${name}.periodStart`}
+                      control="datepicker"
+                      withLabel
+                      dict={{
+                        label: t('period start'), tooltip: t('Enter the start date (DD/MM/YYYY) for the budget period.')
+                      }}
+                      optional={isOptional}
+                      disabledDate={(date) => {
+                        const endDate = moment(input.value, 'DD/MM/YYYY')
+                        if (!endDate.isValid()) return false
+                        return date.valueOf() > endDate.valueOf()
+                      }}
+                    />
+                    )}
                   />
                 </Col>
                 <Col span={8}>
-                  <FinalField
-                    name={`${name}.periodEnd`}
-                    control="datepicker"
-                    withLabel
-                    dict={{
-                      label: t('period end'), tooltip: t('Enter the end date (DD/MM/YYYY) for the budget period.')
-                    }}
-                    optional={isOptional}
+                  <Field
+                    name={`${name}.periodStart`}
+                    render={({ input }) => (
+                    <FinalField
+                      name={`${name}.periodEnd`}
+                      control="datepicker"
+                      withLabel
+                      dict={{
+                        label: t('period end'), tooltip: t('Enter the end date (DD/MM/YYYY) for the budget period.')
+                      }}
+                      optional={isOptional}
+                      disabledDate={(date) => {
+                        const startDate = moment(input.value, 'DD/MM/YYYY')
+                        if (!startDate.isValid()) return false
+                        return date.valueOf() < startDate.valueOf()
+                      }}
+                    />
+                    )}
                   />
                 </Col>
                 <Col span={8}>

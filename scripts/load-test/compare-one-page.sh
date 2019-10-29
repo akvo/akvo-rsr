@@ -1,10 +1,19 @@
 ## Checks that the output of two RSR servers is the same, and not a lot slower (1 sec max)
 
-## WARN: k8s and k9s domains hardcoded
+## WARN: rsr1 and rsr domains hardcoded
 ## WARN: using gdate, which is MacOS specific (replace with "date" for Linux)
 
 clean () {
-cat $1 | sed -e 's/k9s/k8s/g' -e "/getElementById('akvo_map/d" -e '/csrfmiddlewaretoken/d' -e '/div class= "akvo_map"/d' -e '/styles\/rsr.min/d' -e '/^[[:space:]]*$/d' > $1.clean
+cat $1 | sed -e 's/rsr1.akvotest/rsr.akvo/g' \
+             -e "/getElementById('akvo_map/d" \
+             -e '/csrfmiddlewaretoken/d' \
+             -e '/robots/d' \
+             -e '/sentry_dsn/d' \
+             -e '/\/static\/rsr\/dist/d' \
+             -e '/div class= "akvo_map"/d' \
+             -e '/styles\/rsr.min/d' \
+             -e '/^[[:space:]]*$/d' \
+             > $1.clean
 }
 
 do_get () {
@@ -14,20 +23,23 @@ do_get () {
  dt=$(echo "$res2 - $res1" | bc)
 }
 
-do_get https://rsr-k9s.akvo.org/$1 k9s
-k9s_time=$dt
-do_get https://rsr-k8s.akvo.org/$1 k8s
-k8s_time=$dt
-clean k8s
-clean k9s
+do_get https://rsr1.akvotest.org/$1 test.html
+test_version_time=$dt
+do_get https://rsr.akvo.org/$1 prod.html
+production_version_time=$dt
+clean prod.html
+clean test.html
 
-echo "$k9s_time $k8s_time $(($k8s_time - $k9s_time)) $1"
-if [[ $(diff k8s.clean k9s.clean) ]]; then
+echo "$test_version_time $production_version_time $(($production_version_time - $test_version_time)) $1"
+if [[ $(diff prod.html.clean test.html.clean) ]]; then
 	echo "not equal"
+	if [[ "$2" -eq "diff" ]]; then
+	  diff prod.html.clean test.html.clean
+	fi
 	exit 1
 fi
 
-if [[ $(($k8s_time - $k9s_time)) -lt -1000 ]]; then
+if [[ $(($production_version_time - $test_version_time)) -lt -1000 ]]; then
         echo "slower!"
 	exit 1	
 fi

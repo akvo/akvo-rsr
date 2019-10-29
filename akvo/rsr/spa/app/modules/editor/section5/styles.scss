@@ -92,7 +92,6 @@
       border-left: 3px solid #2593fc!important;
     }
   }
-  
   .results-list{
     margin-right: 200px;
     .ant-collapse-header{
@@ -113,32 +112,71 @@
         overflow: hidden;
         margin-top: 3px;
         .ant-btn{
-          margin-right: -32px;
+          // margin-right: -32px;
         }
       }
-      &:hover{
-        .delete-btn-holder .ant-btn{
-          margin-right: 0;
-        }
-      }
+      // &:hover{
+      //   .delete-btn-holder .ant-btn{
+      //     margin-right: 0;
+      //   }
+      // }
     }
-    .indicators-list>.ant-collapse-item>.ant-collapse-header{
-      .delete-btn-holder{
-        .ant-btn-group{
-          margin-right: -96px;
-          transition: all .3s ease-out;
-          .ant-btn{
-            margin-right: 0;
-            &.delete-panel{
-              margin-left: -1px;
-            }
+    
+  }
+  .results-list .indicators-list>.ant-collapse-item>.ant-collapse-header{
+    .delete-btn-holder{
+      .ant-btn-group{
+        margin-right: -125px;
+        transition: all .3s ease-out;
+        .ant-btn{
+          margin-right: 0;
+          &.delete-panel{
+            margin-left: -1px;
           }
         }
       }
-      &:hover{
-        .delete-btn-holder .ant-btn-group{
+    }
+    &:hover{
+      .delete-btn-holder .ant-btn-group{
+        margin-right: 0;
+      }
+    }
+  }
+  .results-list .periods-list>.ant-collapse-item>.ant-collapse-header{
+    .delete-btn-holder{
+      .ant-btn-group{
+        margin-right: -63px;
+        transition: all .3s ease-out;
+        .ant-btn{
           margin-right: 0;
+          &.delete-panel{
+            margin-left: -1px;
+          }
         }
+      }
+    }
+    &:hover{
+      .delete-btn-holder .ant-btn-group{
+        margin-right: 0;
+      }
+    }
+  }
+  .results-list>.ant-collapse-item>.ant-collapse-header{
+    .delete-btn-holder{
+      .ant-btn-group{
+        margin-right: -125px;
+        transition: all .3s ease-out;
+        .ant-btn{
+          margin-right: 0;
+          &.delete-panel{
+            margin-left: -1px;
+          }
+        }
+      }
+    }
+    &:hover{
+      .delete-btn-holder .ant-btn-group{
+        margin-right: 0;
       }
     }
   }
@@ -222,6 +260,9 @@
     }
   }
   .indicators-list{
+    &>.ant-collapse-item{
+      position: relative;
+    }
     .ant-collapse-item{
       .ant-collapse-header .ant-collapse-extra{
         margin-left: auto;

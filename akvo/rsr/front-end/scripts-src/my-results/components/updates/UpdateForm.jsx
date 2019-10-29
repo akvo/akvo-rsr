@@ -403,7 +403,7 @@ class ImageUpload extends React.Component {
     }
 }
 
-const Attachments = ({ update, onChange, removeAttachment }) => {
+const Attachments = ({ update, onChange, removeAttachment, largeFile }) => {
     return (
         <div className="row">
             <div className="col-xs-3">
@@ -420,6 +420,11 @@ const Attachments = ({ update, onChange, removeAttachment }) => {
                     removeAttachment={removeAttachment}
                 />
             </div>
+            {largeFile ? (
+                <div className="col-xs-3 results-alert update-alert">{_("photo_help_text")}</div>
+            ) : (
+                undefined
+            )}
         </div>
     );
 };
@@ -515,7 +520,14 @@ UpdateFormButtons.propTypes = {
     updateActions: PropTypes.func.isRequired
 };
 
-const QuantitativeUpdateForm = ({ period, update, measure, self, dimensionsAndDisaggs }) => {
+const QuantitativeUpdateForm = ({
+    period,
+    update,
+    measure,
+    self,
+    dimensionsAndDisaggs,
+    largeFile
+}) => {
     const percentageUpdate = measure === c.MEASURE_PERCENTAGE;
 
     return (
@@ -534,6 +546,7 @@ const QuantitativeUpdateForm = ({ period, update, measure, self, dimensionsAndDi
                 {<self.state.UpdateAlert />}
                 <ActualValueDescription update={update} onChange={self.onChange} />
                 <Attachments
+                    largeFile={largeFile}
                     update={update}
                     onChange={self.attachmentsChange}
                     removeAttachment={self.removeAttachment}
@@ -569,7 +582,8 @@ const QualitativeUpdateForm = ({
     measure,
     self,
     dimensionsAndDisaggs,
-    hideTarget
+    hideTarget,
+    largeFile
 }) => {
     return (
         <div className="update-container qualitativeUpdate">
@@ -587,6 +601,7 @@ const QualitativeUpdateForm = ({
                 />
                 {<self.state.UpdateAlert />}
                 <Attachments
+                    largeFile={largeFile}
                     update={update}
                     onChange={self.attachmentsChange}
                     removeAttachment={self.removeAttachment}
@@ -806,7 +821,8 @@ class UpdateForm extends React.Component {
         const alertName = "UpdateAlert-" + this.props.update.id;
         this.state = {
             updateAlertName: alertName,
-            UpdateAlert: AlertFactory({ alertName: alertName })(UpdateAlert)
+            UpdateAlert: AlertFactory({ alertName: alertName })(UpdateAlert),
+            largeFile: false
         };
         this.saveUpdate = this.saveUpdate.bind(this);
         this.deleteUpdate = this.deleteUpdate.bind(this);
@@ -821,6 +837,13 @@ class UpdateForm extends React.Component {
         let changedUpdate;
         const file = results[0][1];
         const event = results[0][0];
+        const max_size = 10 * 1048576; // 10 MB
+        if (file.size > max_size) {
+            this.setState({ largeFile: true });
+            return;
+        } else {
+            this.setState({ largeFile: false });
+        }
         if (file.type.startsWith("image/")) {
             changedUpdate = update(this.props.update, {
                 $merge: { _photo: { file, img: event.target.result } }
@@ -1232,6 +1255,7 @@ class UpdateForm extends React.Component {
             update,
             primaryOrganisationId
         } = this.props;
+        const { largeFile } = this.state;
         const hideTarget = primaryOrganisationId === c.IUCN_ORG_ID;
         switch (indicator.type) {
             case c.INDICATOR_QUANTATIVE: {
@@ -1242,6 +1266,7 @@ class UpdateForm extends React.Component {
                         dimensionsAndDisaggs={dimensionsAndDisaggs}
                         self={this}
                         measure={indicator.measure || c.MEASURE_UNIT}
+                        largeFile={largeFile}
                     />
                 );
             }
@@ -1254,6 +1279,7 @@ class UpdateForm extends React.Component {
                         self={this}
                         measure={c.MEASURE_QUALITATIVE}
                         hideTarget={hideTarget}
+                        largeFile={largeFile}
                     />
                 );
             }

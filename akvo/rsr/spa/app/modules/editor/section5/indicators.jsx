@@ -1,6 +1,7 @@
+/* global window, navigator */
 import React, { useRef } from 'react'
 import { connect } from 'react-redux'
-import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip } from 'antd'
+import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip, notification, Icon } from 'antd'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
@@ -29,7 +30,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex }) => { // eslint-disable-line
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const add = (key) => {
@@ -55,6 +56,14 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
       setTimeout(doMove, 500)
     }
   }
+  const getLink = (indicatorId) => {
+    window.location.hash = `#/result/${resultId}/indicator/${indicatorId}`
+    navigator.clipboard.writeText(window.location.href)
+    notification.open({
+      message: t('Link copied!'),
+      icon: <Icon type="link" style={{ color: '#108ee9' }} />,
+    })
+  }
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -64,6 +73,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
           className="indicators-list"
           finalFormFields={fields}
           setName={`${fieldName}.indicators`}
+          activeKey={selectedIndicatorIndex}
           destroyInactivePanel
           ref={ref => { accordionCompRef.current = ref }}
           renderPanel={(name, index, activeKey) => (
@@ -99,6 +109,9 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                       name={`${name}.id`}
                       render={({input}) => (
                         <Button.Group>
+                          <Tooltip title={t('Get a link to this indicator')}>
+                            <Button size="small" icon="link" onClick={() => getLink(input.value)} />
+                          </Tooltip>
                           {index > 0 &&
                           <Tooltip title={t('Move up')}>
                             <Button icon="up" size="small" onClick={() => moveIndicator(index, index - 1, fields, input.value)} />
@@ -200,7 +213,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} indicatorIndex={index} primaryOrganisation={primaryOrganisation} />} />
+              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} />} />
             </Panel>
           )}
         />

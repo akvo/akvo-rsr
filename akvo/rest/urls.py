@@ -46,6 +46,7 @@ router.register(r'(?P<version>(v1))/indicator_period_actual_location', views.Ind
 router.register(r'(?P<version>(v1))/indicator_period_data', views.IndicatorPeriodDataViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data_framework', views.IndicatorPeriodDataFrameworkViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
+router.register(r'(?P<version>(v1))/indicator_period_disaggregation', views.IndicatorPeriodDisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation', views.DisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation_target', views.DisaggregationTargetViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_target_location', views.IndicatorPeriodTargetLocationViewSet)
@@ -75,7 +76,7 @@ router.register(r'(?P<version>(v1))/partnership_more_link', views.PartnershipMor
 router.register(r'(?P<version>(v1))/planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'(?P<version>(v1))/policy_marker', views.PolicyMarkerViewSet)
 router.register(r'(?P<version>(v1))/project', views.ProjectViewSet)
-router.register(r'(?P<version>(v1))/editable_project', views.EditableProjectViewSet)
+router.register(r'(?P<version>(v1))/my_projects', views.MyProjectsViewSet)
 router.register(r'(?P<version>(v1))/project_iati_export', views.ProjectIatiExportViewSet,
                 base_name='project_iati_export')
 router.register(r'(?P<version>(v1))/project_extra', views.ProjectExtraViewSet,

@@ -9,6 +9,7 @@ import arrayMutators from 'final-form-arrays'
 import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { diff } from 'deep-object-diff'
+import moment from 'moment'
 
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
@@ -131,7 +132,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             />
             )}
           />
-          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} fieldName="relatedProjects[0]" projects={results} loading={loading} projectId={projectId} />
+          <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />
           <FinalField
             name="hierarchy"
             control="select"
@@ -152,37 +153,77 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
           />
           <Row gutter={16}>
             <Col span={12}>
-              <FinalField
-                name="dateStartPlanned"
-                control="datepicker"
+              <Field
+                name="dateEndPlanned"
+                render={({input}) => (
+                  <FinalField
+                    name="dateStartPlanned"
+                    control="datepicker"
                     optional={isOptional}
-                withLabel
+                    withLabel
+                    disabledDate={(date) => {
+                      const endDate = moment(input.value, 'DD/MM/YYYY')
+                      if(!endDate.isValid()) return false
+                      return date.valueOf() > endDate.valueOf()
+                    }}
+                  />
+                )}
               />
             </Col>
             <Col span={12}>
-              <FinalField
-                name="dateEndPlanned"
-                control="datepicker"
+              <Field
+                name="dateStartPlanned"
+                render={({ input }) => (
+                <FinalField
+                  name="dateEndPlanned"
+                  control="datepicker"
                   optional={isOptional}
-                withLabel
+                  withLabel
+                  disabledDate={(date) => {
+                    const startDate = moment(input.value, 'DD/MM/YYYY')
+                    if (!startDate.isValid()) return false
+                    return date.valueOf() < startDate.valueOf()
+                  }}
+                />
+                )}
               />
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <FinalField
-                name="dateStartActual"
-                control="datepicker"
-                optional={isOptional}
-                withLabel
+              <Field
+                name="dateEndActual"
+                render={({ input }) => (
+                <FinalField
+                  name="dateStartActual"
+                  control="datepicker"
+                  optional={isOptional}
+                  withLabel
+                  disabledDate={(date) => {
+                    const endDate = moment(input.value, 'DD/MM/YYYY')
+                    if (!endDate.isValid()) return false
+                    return date.valueOf() > endDate.valueOf()
+                  }}
+                />
+                )}
               />
             </Col>
             <Col span={12}>
-              <FinalField
-                name="dateEndActual"
-                control="datepicker"
-                withLabel
-                optional={isOptional}
+              <Field
+                name="dateStartActual"
+                render={({ input }) => (
+                <FinalField
+                  name="dateEndActual"
+                  control="datepicker"
+                  withLabel
+                  optional={isOptional}
+                  disabledDate={(date) => {
+                    const startDate = moment(input.value, 'DD/MM/YYYY')
+                    if (!startDate.isValid()) return false
+                    return date.valueOf() < startDate.valueOf()
+                  }}
+                />
+                )}
               />
             </Col>
           </Row>
@@ -234,7 +275,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             control="select"
             options={AID_TYPE_VOCABULARY}
             withEmptyOption
-            optional
+            optional={isOptional}
             withLabel
             fieldExists={fieldExists}
           />
@@ -271,7 +312,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             control="select"
             options={COLLABORATION_TYPES}
             withLabel
-            optional
+            optional={isOptional}
             fieldExists={fieldExists}
           />
           <FinalField
@@ -280,7 +321,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             options={FINANCE_TYPES}
             withEmptyOption
             withLabel
-            optional
+            optional={isOptional}
             fieldExists={fieldExists}
           />
 

@@ -29,6 +29,7 @@ from .indicator_label import IndicatorLabelViewSet
 from .indicator_period import IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file)
+from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
 from .disaggregation import DisaggregationViewSet
 from .disaggregation_target import DisaggregationTargetViewSet
 from .indicator_period_location import (IndicatorPeriodActualLocationViewSet,
@@ -58,7 +59,7 @@ from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
 from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_directory,
-                      EditableProjectViewSet)
+                      MyProjectsViewSet)
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
@@ -141,6 +142,7 @@ __all__ = [
     'IndicatorPeriodFrameworkViewSet',
     'IndicatorPeriodDataViewSet',
     'IndicatorPeriodDataFrameworkViewSet',
+    'IndicatorPeriodDisaggregationViewSet',
     'DisaggregationViewSet',
     'DisaggregationTargetViewSet',
     'IndicatorPeriodDataCommentViewSet',
@@ -192,7 +194,7 @@ __all__ = [
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
     'ProjectViewSet',
-    'EditableProjectViewSet',
+    'MyProjectsViewSet',
     'project_directory',
     'project_editor',
     'log_project_addition',
