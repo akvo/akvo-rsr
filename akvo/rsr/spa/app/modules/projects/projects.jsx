@@ -13,6 +13,7 @@ import FilterCountry from './filter-country'
 
 const pageSize = 32
 const pageSizeCards = 32
+let tmid
 
 class Projects extends React.Component{
   state = {
@@ -70,7 +71,8 @@ class Projects extends React.Component{
       pagination: { ...this.state.pagination, current: 1 },
       params: {...this.state.params, src}
     })
-    setTimeout(this.fetch)
+    clearTimeout(tmid)
+    tmid = setTimeout(this.fetch, 500)
     if (this.cardsViewRef) this.cardsViewRef.resetPage()
   }
   clearSearch = () => {
