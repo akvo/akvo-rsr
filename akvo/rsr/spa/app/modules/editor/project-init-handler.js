@@ -36,6 +36,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
       const fetchSet = (index) => {
         const { endpoint, setName } = setEndpoints[index]
         const _params = endpoint === '/project_location/' ? {location_target: params.id} : {project: params.id}
+        _params.limit = 300
         api.get(endpoint, _params, getTransform(sectionIndex, setName, 'response'))
           .then(({ data: { results } }) => {
             props.fetchSetItems(sectionIndex, setName, results)
