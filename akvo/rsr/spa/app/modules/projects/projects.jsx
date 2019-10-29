@@ -11,7 +11,7 @@ import Search from './search'
 import FilterSector from './filter-sector'
 import FilterCountry from './filter-country'
 
-const pageSize = 32
+const pageSize = 16
 const pageSizeCards = 32
 let tmid
 
@@ -83,17 +83,22 @@ class Projects extends React.Component{
     this.setState({
       loading: true,
       pagination: { ...this.state.pagination, current: 1 },
-      params: { ...this.state.params, ...param }
+      params: { ...this.state.params, ...param },
+      results: []
     })
     setTimeout(this.fetch)
     if (this.cardsViewRef) this.cardsViewRef.resetPage()
+  }
+  handleModeChange = viewMode => {
+    this.setState({ viewMode, results: [], loading: true })
+    setTimeout(this.fetch)
   }
   render(){
     const { t } = this.props
     return (
       <div id="projects-view">
         <div className="topbar-row">
-          <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.setState({ viewMode: value })}>
+          <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
             <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
             <Radio.Button value="cards"><Icon type="appstore" /></Radio.Button>
           </Radio.Group>

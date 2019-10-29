@@ -1,6 +1,6 @@
 /* global window, document */
 import React, { useEffect, useRef, useState } from 'react'
-import { Card, Icon, Tag, Tooltip, Spin, BackTop } from 'antd'
+import { Card, Icon, Tag, Tooltip, Spin, BackTop, Empty } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import ConditionalLink from './conditional-link'
@@ -93,21 +93,23 @@ class CardsView extends React.Component{
     window.onscroll = null
   }
   resetPage = () => {
+    console.log('reset page')
     this.setState({ page: 1 })
   }
   render() {
     const { dataSource, loading } = this.props
     return (
       <div>
-      <ul className="cards-view">
-        {dataSource.map(project => <ProjectCard project={project} />)}
-        {loading &&
-        <div className="loading">
-          <Spin size="large" />
-        </div>
-        }
-      </ul>
-      <BackTop />
+        {(dataSource.length === 0 && !loading) && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+        <ul className="cards-view">
+          {dataSource.map(project => <ProjectCard project={project} />)}
+          {loading &&
+          <div className="loading">
+            <Spin size="large" />
+          </div>
+          }
+        </ul>
+        <BackTop />
       </div>
     )
   }
