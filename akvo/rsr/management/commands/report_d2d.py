@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 import datetime
-import sys
 
 from django.contrib.admin.models import LogEntry
 from django.core.management.base import BaseCommand
@@ -84,13 +83,22 @@ class Command(BaseCommand):
     <script> <new_date:%Y-%m-%d> <old_date:%Y-%m-%d>
     """
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'date_start',
+            type=lambda date: datetime.datetime.strptime(date, '%Y-%m-%d').date(),
+            help='Start date for the period',
+        )
+        parser.add_argument(
+            'date_end',
+            type=lambda date: datetime.datetime.strptime(date, '%Y-%m-%d').date(),
+            help='End date for the period',
+        )
+
     def handle(self, *args, **options):
 
-        if len(args) != 2:
-            sys.exit(self.help)
-
-        date_new = datetime.datetime.strptime(args[0], '%Y-%m-%d').date()
-        date_old = datetime.datetime.strptime(args[1], '%Y-%m-%d').date()
+        date_new = options['date_end']
+        date_old = options['date_start']
 
         print('Metric parameter,{:%Y-%m-%d},{:%Y-%m-%d}'.format(date_new, date_old))
 
