@@ -3,6 +3,7 @@ import React from 'react'
 import { Button, Divider, Icon, Radio } from 'antd'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { CancelToken } from 'axios'
 import api from '../../utils/api'
 import './styles.scss'
 import TableView from './table-view'
@@ -14,6 +15,7 @@ import FilterCountry from './filter-country'
 const pageSize = 16
 const pageSizeCards = 32
 let tmid
+let source
 
 class Projects extends React.Component{
   state = {
@@ -41,7 +43,8 @@ class Projects extends React.Component{
       if(params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
-    api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards })
+    source = CancelToken.source()
+    api.get('/my_projects/', { ...params, limit: viewMode === 'table' ? pageSize : pageSizeCards }, undefined, source.token)
       .then(({ data }) => {
         const pagination = { ...this.state.pagination }
         pagination.total = data.count
@@ -52,6 +55,7 @@ class Projects extends React.Component{
           hasMore: data.count > (this.state.results.length + data.results.length)
         })
       })
+    // console.log(req, Object.keys(req))
   }
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination }
@@ -73,6 +77,7 @@ class Projects extends React.Component{
     })
     clearTimeout(tmid)
     tmid = setTimeout(this.fetch, 500)
+    source.cancel('Canceled by typing')
     if (this.cardsViewRef) this.cardsViewRef.resetPage()
   }
   clearSearch = () => {
