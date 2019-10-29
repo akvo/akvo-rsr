@@ -1,8 +1,8 @@
 import * as yup from 'yup'
 
 const RSR = yup.object().shape({
-  organisation: yup.string().required().default(''),
-  iatiOrganisationRole: yup.number().required().default(1),
+  organisation: yup.string().nullable().required().default(''),
+  iatiOrganisationRole: yup.number().nullable().required(),
   isSecondaryReporter: yup.boolean().nullable(),
   fundingAmount: yup.mixed().when('iatiOrganisationRole', {
     is: 1,
