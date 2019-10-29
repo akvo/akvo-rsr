@@ -8,8 +8,8 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import { doesFieldExist, isFieldOptional, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
-import CODE_OPTIONS from '../codes.json'
-import CODE_OPTIONS_B from '../codes-b.json'
+import VOCAB_1_CODES from '../vocab-1-codes.json'
+import VOCAB_2_CODES from '../vocab-2-codes.json'
 import VOCABULARY_OPTIONS from '../vocab.json'
 import EUTF_SECTOR_OPTIONS from './eutf-sector-options.json'
 import SectionContext from '../../section-context'
@@ -73,10 +73,10 @@ const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, err
                 let options
                 // (primaryOrganisation === 3394 && input.value === '99') ? EUTF_SECTOR_OPTIONS : CODE_OPTIONS
                 if(input.value === '1') {
-                  options = CODE_OPTIONS_B
+                  options = VOCAB_1_CODES
                 }
                 else if(input.value === '2'){
-                  options = CODE_OPTIONS
+                  options = VOCAB_2_CODES
                 }
                 else if (input.value === '99' && primaryOrganisation === 3394){
                   options = EUTF_SECTOR_OPTIONS
