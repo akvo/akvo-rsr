@@ -384,6 +384,12 @@
       margin-left: 10px;
       flex: 1;
     }
+    .ant-row.ant-form-item{
+      margin-bottom: 0;
+      .ant-form-item-label{
+        display: none;
+      }
+    }
     .ant-input{
       // width: 140px;
       flex: 1;

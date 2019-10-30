@@ -73,6 +73,7 @@ const Control = (props) => {
   const err = props[section].errors.find(it => it.path === props.input.name)
   if (showRequired && err) {
     validateStatus = 'error'
+    if(err.type === 'typeError' && err.message) help = err.message
   }
   if(err && err.type === 'required'){
     requiredValidationError = true
@@ -130,7 +131,7 @@ export default connect(
     // bind validation errors (required) for all sections
     times(11).forEach((i) => {
       const sectionKey = `section${i + 1}`
-      props[sectionKey] = { errors: editorRdr[sectionKey].errors.filter(it => it.type === 'required' || (it.type === 'min' && it.path !== undefined))}
+      props[sectionKey] = { errors: editorRdr[sectionKey].errors.filter(it => it.type === 'required' || it.type === 'typeError' || (it.type === 'min' && it.path !== undefined))}
     })
     return props
   })(

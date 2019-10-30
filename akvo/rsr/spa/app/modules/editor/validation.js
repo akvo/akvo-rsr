@@ -32,7 +32,6 @@ const validationDefs = modules.reduce((acc, key) => ({
 
 export const validate = (module, validationSetIds, fields, abortEarly = false) => {
   const validationDef = validationDefs[module]
-  console.log(module, validationSetIds, fields)
   if(!validationDef){
     return []
   }
@@ -46,9 +45,9 @@ export const validate = (module, validationSetIds, fields, abortEarly = false) =
     try{
       validationSet.validateSync(fields, { abortEarly })
     } catch(error){
-        const newErrors = (error.inner && error.inner.length > 0 ? error.inner : [error]).map(({ type, path }) => ({ type, path: path ? `${setName}${path}` : setName }))
-          .filter((it) => errors.findIndex(existing => isEqual(it, existing)) === -1)
-        errors = [...errors, ...newErrors]
+      const newErrors = (error.inner && error.inner.length > 0 ? error.inner : [error]).map(({ type, path, message }) => ({ type, message, path: path ? `${setName}${path}` : setName }))
+        .filter((it) => errors.findIndex(existing => isEqual(it, existing)) === -1)
+      errors = [...errors, ...newErrors]
     }
   })
   return errors
