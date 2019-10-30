@@ -19,7 +19,10 @@ const modules = [
   'section8/policy-markers',
   'section8/humanitarian-scopes',
   'section9/links',
-  'section9/docs'
+  'section9/docs',
+  'section11',
+  'section11/flags',
+  'section11/forecasts'
 ]
 
 const validationDefs = modules.reduce((acc, key) => ({
@@ -29,6 +32,7 @@ const validationDefs = modules.reduce((acc, key) => ({
 
 export const validate = (module, validationSetIds, fields, abortEarly = false) => {
   const validationDef = validationDefs[module]
+  console.log(module, validationSetIds, fields)
   if(!validationDef){
     return []
   }
