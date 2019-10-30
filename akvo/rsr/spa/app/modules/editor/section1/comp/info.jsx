@@ -26,6 +26,7 @@ import '../styles.scss'
 import InputLabel from '../../../../utils/input-label'
 import { useFetch } from '../../../../utils/hooks'
 import ProjectPicker from './project-picker';
+import ExternalProjects from './external-projects'
 
 const { Item } = Form
 const { Option } = Select
@@ -133,6 +134,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
             )}
           />
           <ProjectPicker formPush={push} savedData={fields.relatedProjects[0]} projects={results} loading={loading} projectId={projectId} />
+          <ExternalProjects projectId={projectId} />
           <FinalField
             name="hierarchy"
             control="select"

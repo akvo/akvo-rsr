@@ -7,6 +7,20 @@ import { useTranslation } from 'react-i18next'
 import { validationType } from '../../utils/validation-utils'
 import sections from './sections'
 
+const keyDict = {
+  settings: 'Validation set',
+  info: 'General information',
+  contacts: 'Project contacts',
+  partners: 'Partners',
+  descriptions: 'Descriptions',
+  'results-n-indicators': 'Results and indicators',
+  finance: 'Finance',
+  locations: 'Locations',
+  focus: 'Project focus',
+  'links-n-docs': 'Links and documents',
+  'comments-n-keywords': 'Comments and keywords',
+  reporting: 'CRS++ and FSS reporting'
+}
 
 const filterSection11 = validations => (item) => {
   if(item.key === 'reporting' && (validations.indexOf(validationType.IATI) === -1 && validations.indexOf(validationType.DFID) === -1)) return false
@@ -55,7 +69,7 @@ const MainMenu = ({ rdr, params }) => {
   return (
     <aside className="main-menu">
       <ul>
-        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('menu::settings')}</MenuItem>
+        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('settings')}</MenuItem>
         {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
         <MenuItem
           disabled={isNewProject || (isReportingOrgEUTF && index === 1)}
@@ -64,7 +78,7 @@ const MainMenu = ({ rdr, params }) => {
           checked={rdr[`section${index + 1}`].errors.length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
           loading={!isNewProject && !rdr[`section${index + 1}`].isFetched && !rdr[`section${index + 1}`].isExplicitlyEnabled}
         >
-            {index + 1}. {t(`menu::${section.key}`)}
+            {index + 1}. {t(keyDict[section.key])}
         </MenuItem>
         )}
       </ul>

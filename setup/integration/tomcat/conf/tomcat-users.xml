@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<tomcat-users>
-  <role rolename="manager-gui"/>
-  <role rolename="manager-script"/>
-  <role rolename="admin-gui"/>
-  <role rolename="admin-script"/>
-  <user username="akvodev" password="[your_pw_here]" roles="manager-gui,manager-script,admin-gui,admin-script"/>
-</tomcat-users>

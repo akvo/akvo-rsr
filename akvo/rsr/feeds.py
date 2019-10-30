@@ -45,7 +45,7 @@ def escape(data, entities={}):
     bit = data[start:]
     bit = __escape(bit, entities)
     bits.extend(bit)
-    data = ''.join(bits)
+    data = u''.join(bits)
     return data
 
 

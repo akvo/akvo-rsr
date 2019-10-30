@@ -44,6 +44,29 @@
       }
     }
   }
+  .external-projects{
+    margin-top: -20px;
+    margin-bottom: 20px;
+    .ant-btn.add-btn{
+      padding-left: 0;
+    }
+    .projects-list{
+      margin-bottom: 0;
+      .ant-form-item-label{
+        margin-top: 10px;
+        padding-bottom: 5px;
+      }
+    }
+    .project-row{
+      border-bottom: 1px solid #d9d9d9;
+      padding: 7px 5px 0;
+      display: flex;
+      justify-content: space-between;
+      .ant-btn{
+        transform: translateY(-4px)
+      }
+    }
+  }
 }
 
 .has-error .ant-upload.ant-upload-drag{
