@@ -181,9 +181,22 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   </Col>
                 </Row>
               </Condition>
-              <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>}>
-                <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
-              </Item>
+              <div style={{ display: 'flex' }}>
+                <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
+                  <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
+                </Item>
+                <Item label={t('Include in IATI export')} style={{ marginLeft: 16 }}>
+                  <FinalField
+                    name={`${name}.exportToIati`}
+                    render={({input}) => (
+                      <Radio.Group {...input}>
+                        <Radio.Button value={true}>{t('Yes')}</Radio.Button>
+                        <Radio.Button value={false}>{t('No')}</Radio.Button>
+                      </Radio.Group>
+                    )}
+                  />
+                </Item>
+              </div>
               <Condition when={`${name}.type`} isNot={1}>
                 {allowIndicatorLabels && <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />}
               </Condition>
