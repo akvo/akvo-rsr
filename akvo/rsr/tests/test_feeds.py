@@ -17,6 +17,8 @@ class FeedsTestCase(BaseTestCase):
         title = u'Update de développement'
         text = 'What an amazing update!'
         self.create_project_update(project, user, title, text)
+        empty_title = ''
+        self.create_project_update(project, user, empty_title, text)
 
         response = self.c.get('/rss/updates/{}'.format(project.pk), follow=True)
 
