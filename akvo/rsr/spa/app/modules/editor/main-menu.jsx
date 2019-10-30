@@ -69,7 +69,7 @@ const MainMenu = ({ rdr, params }) => {
   return (
     <aside className="main-menu">
       <ul>
-        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('menu::settings')}</MenuItem>
+        <MenuItem hideCheck to={`/projects/${params.id}/settings`}>{t('settings')}</MenuItem>
         {sections.filter(filterSection11(rdr.validations)).map((section, index) =>
         <MenuItem
           disabled={isNewProject || (isReportingOrgEUTF && index === 1)}
