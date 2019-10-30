@@ -84,10 +84,7 @@ const Finance = ({ validations, fields, currency }) => {
             </Aux>
           )}
           {fieldExists('transactions') && (
-            <Aux>
-              <h3>{t('Transactions')}</h3>
-              <Transactions formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} currency={currency} />
-            </Aux>
+            <Transactions formPush={push} validations={validations} orgs={results} loadingOrgs={loadingOrgs} currency={currency} />
           )}
           {fieldExists('plannedDisbursements') && (
             <Aux>
