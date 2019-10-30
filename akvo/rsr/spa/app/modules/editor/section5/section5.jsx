@@ -20,6 +20,7 @@ import { useForceUpdate } from '../../../utils/hooks'
 import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
+import SectionContext from '../section-context'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -291,6 +292,7 @@ const Section5 = (props) => {
     }
   }
   return (
+    <SectionContext.Provider value="section5">
     <div className="view section5">
       <Form layout="vertical">
         <FinalForm
@@ -370,13 +372,13 @@ const Section5 = (props) => {
                           >
                             <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
                             <div className="main-form">
-                              <Item label={<InputLabel tooltip={t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}>{t('Title')}</InputLabel>} style={{ flex: 1 }}>
-                                <FinalField
-                                  name={`${name}.title`}
-                                  control="textarea"
-                                  autosize
-                                />
-                              </Item>
+                              <FinalField
+                                name={`${name}.title`}
+                                control="textarea"
+                                autosize
+                                withLabel
+                                dict={{ label: t('Title'), tooltip: t('The aim of the project in one sentence. This doesn’t need to be something that can be directly counted, but it should describe an overall goal of the project. There can be multiple results for one project.')}}
+                              />
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
                                   <RTE />
@@ -426,6 +428,7 @@ const Section5 = (props) => {
         />
       </Form>
     </div>
+    </SectionContext.Provider>
   )
 }
 export default connect(

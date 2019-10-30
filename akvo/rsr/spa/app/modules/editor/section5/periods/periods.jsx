@@ -152,42 +152,42 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                 <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Item label={t('Start')}>
-                      <Field
-                        name={`${name}.periodEnd`}
-                        render={({ input }) => (
-                          <FinalField
-                            name={`${name}.periodStart`}
-                            control="datepicker"
-                            disabled={primaryOrganisation === 3394}
-                            disabledDate={(date) => {
-                              const endDate = moment(input.value, 'DD/MM/YYYY')
-                              if (!endDate.isValid()) return false
-                              return date.valueOf() > endDate.valueOf()
-                            }}
-                          />
-                        )}
-                      />
-                    </Item>
+                    <Field
+                      name={`${name}.periodEnd`}
+                      render={({ input }) => (
+                        <FinalField
+                          name={`${name}.periodStart`}
+                          control="datepicker"
+                          disabled={primaryOrganisation === 3394}
+                          disabledDate={(date) => {
+                            const endDate = moment(input.value, 'DD/MM/YYYY')
+                            if (!endDate.isValid()) return false
+                            return date.valueOf() > endDate.valueOf()
+                          }}
+                          withLabel
+                          dict={{ label: t('Start') }}
+                        />
+                      )}
+                    />
                   </Col>
                   <Col span={12}>
-                    <Item label={t('End')}>
-                      <Field
-                        name={`${name}.periodStart`}
-                        render={({ input }) => (
-                          <FinalField
-                            name={`${name}.periodEnd`}
-                            control="datepicker"
-                            disabled={primaryOrganisation === 3394}
-                            disabledDate={(date) => {
-                              const startDate = moment(input.value, 'DD/MM/YYYY')
-                              if (!startDate.isValid()) return false
-                              return date.valueOf() < startDate.valueOf()
-                            }}
-                          />
-                        )}
-                      />
-                    </Item>
+                    <Field
+                      name={`${name}.periodStart`}
+                      render={({ input }) => (
+                        <FinalField
+                          name={`${name}.periodEnd`}
+                          control="datepicker"
+                          disabled={primaryOrganisation === 3394}
+                          disabledDate={(date) => {
+                            const startDate = moment(input.value, 'DD/MM/YYYY')
+                            if (!startDate.isValid()) return false
+                            return date.valueOf() < startDate.valueOf()
+                          }}
+                          withLabel
+                          dict={{ label: t('End')}}
+                        />
+                      )}
+                    />
                   </Col>
                 </Row>
                 <Item label={<InputLabel optional>{t('Target value')}</InputLabel>}>

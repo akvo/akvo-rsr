@@ -166,6 +166,7 @@
       .ant-btn-group{
         margin-right: -125px;
         transition: all .3s ease-out;
+        display: flex;
         .ant-btn{
           margin-right: 0;
           &.delete-panel{

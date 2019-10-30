@@ -8,6 +8,7 @@ const modules = [
   'section2/contacts',
   'section3/partners',
   'section4',
+  'section5/results',
   'section6/budget-items',
   'section6/planned-disbursements',
   'section6/transactions',
