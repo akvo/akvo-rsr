@@ -12,6 +12,7 @@ import AutoSave from '../../../utils/auto-save'
 import validationDefs, { RSR } from './validations'
 import SectionContext from '../section-context'
 import './styles.scss'
+import CustomFields from '../custom-fields'
 
 const { Item } = Form
 

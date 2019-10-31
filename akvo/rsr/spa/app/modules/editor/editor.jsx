@@ -1,5 +1,5 @@
 /* global window */
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import {Route, Link, Redirect} from 'react-router-dom'
 import { Icon, Button, Spin, Tabs, Tooltip, Skeleton, Dropdown, Menu } from 'antd'
@@ -16,6 +16,9 @@ import './styles.scss'
 import ProjectInitHandler from './project-init-handler'
 import ValidationBar from './validation-bar'
 import { validationType } from '../../utils/validation-utils'
+import CustomFields from './custom-fields'
+import { useFetch } from '../../utils/hooks'
+import api from '../../utils/api'
 
 const { TabPane } = Tabs
 
@@ -171,33 +174,52 @@ const _Header = ({ title, projectId, publishingStatus, lang }) => {
 }
 const Header = connect(({ userRdr: { lang }, editorRdr: { projectId, section1: { fields: { title, publishingStatus } } } }) => ({ lang, title, projectId, publishingStatus }))(_Header)
 
-const Editor = ({ match: { params } }) => (
-  <div>
-    <Header />
-    <div className="editor">
-      <div className="status-bar">
-        <SavingStatus />
-        <MainMenu params={params} />
-        <ContentBar />
+const Editor = ({ match: { params } }) => {
+  const [customFields, setCustomFields] = useState(null)
+  const triggerRef = useRef()
+  useEffect(() => {
+    if(params.id !== 'new' && !triggerRef.current){
+      triggerRef.current = true
+      api.get(`/project_custom_field/?project=${params.id}`)
+        .then(({ data: {results}}) => {
+          console.log(results)
+          setCustomFields(results)
+        })
+    }
+  })
+  const CustomFieldsCond = ({ sectionIndex }) => {
+    if(customFields === null) return null
+    const sectionCustomFields = customFields.filter(it => it.section === sectionIndex)
+    if(sectionCustomFields.length === 0) return null
+    return <CustomFields fields={sectionCustomFields} />
+  }
+  return (
+    <div>
+      <Header />
+      <div className="editor">
+        <div className="status-bar">
+          <SavingStatus />
+          <MainMenu params={params} />
+          <ContentBar />
+        </div>
+        <div className="main-content">
+          <Route path="/projects/:id" component={ProjectInitHandler} />
+          <Route path="/projects/:id" exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
+          <Route path="/projects/:id/settings" exact component={Settings} />
+          {sections.map((section, index) =>
+            <Route
+              path={`/projects/:id/${section.key}`}
+              exact
+              render={(props) => {
+                const Comp = section.component
+                return <Section {...props} params={params} sectionIndex={index + 1}><Comp /><CustomFieldsCond sectionIndex={index + 1} /></Section>
+              }}
+            />)
+          }
+        </div>
       </div>
-      <div className="main-content">
-        <Route path="/projects/:id" component={ProjectInitHandler} />
-        <Route path="/projects/:id" exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
-        <Route path="/projects/:id/settings" exact component={Settings} />
-        {sections.map((section, index) =>
-          <Route
-            path={`/projects/:id/${section.key}`}
-            exact
-            render={(props) => {
-              const Comp = section.component
-              return <Section {...props} params={params} sectionIndex={index + 1}><Comp /></Section>
-            }}
-          />)
-        }
-      </div>
-      {/* <RightSidebar /> */}
     </div>
-  </div>
-)
+  )
+}
 
 export default Editor
