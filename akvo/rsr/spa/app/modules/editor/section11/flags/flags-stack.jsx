@@ -40,7 +40,6 @@ const FlagsStack = ({ formPush, crsParent }) => {
             <FinalField
               name={`${name}.significance`}
               render={({ input, validateStatus}) => {
-                console.log(validateStatus)
                 return (
                   <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : null}>
                     <Radio.Button value>{t('Yes')}</Radio.Button>

@@ -87,10 +87,8 @@ export default (state = initialState, action) => {
       // validate all sections
       if(state.projectId){
         for(let i = 1; i <= sectionLength; i += 1){
-          if(i !== 5){
             const _sectionKey = `section${i}`
             newState[_sectionKey].errors = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
-          }
         }
       }
       return newState

@@ -73,7 +73,7 @@ const AddResultButton = connect(null, {addSetItem})(({ push, addSetItem, project
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem, showRequired, errors }) => { // eslint-disable-line
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
   const [copying, setCopying] = useState(false)
@@ -121,6 +121,9 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
     return (
       <div className="no-results">
         <h3>{t('No results')}</h3>
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'results') !== -1 && (
+          <span className="min-required results-min-required">{t('Minimum one required')}</span>
+        )}
         <Divider />
         <ul>
           {hasParent &&
@@ -307,7 +310,7 @@ const Section5 = (props) => {
           }) => (
               <Aux>
                 <FormSpy subscription={{ values: true }}>
-                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} />}
+                  {({ values }) => <Summary onJumpToItem={() => { handleHash(); forceUpdate(); setTimeout(handleHashScroll, 600) }} values={values} push={push} hasParent={hasParent} fetchSetItems={props.fetchSetItems} projectId={props.projectId} showRequired={props.showRequired} errors={props.errors} />}
                 </FormSpy>
                 <FieldArray name="results" subscription={{}}>
                   {({ fields }) => (
@@ -384,13 +387,23 @@ const Section5 = (props) => {
                                   <RTE />
                                 </Item>
                                 <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
-                                  <Radio.Group value>
-                                    <Radio.Button value>{t('Yes')}</Radio.Button>
-                                    <Radio.Button>{t('No')}</Radio.Button>
-                                  </Radio.Group>
+                                  <Field
+                                    name={`${name}.aggregationStatus`}
+                                    render={({input}) => (
+                                      <Radio.Group {...input}>
+                                        <Radio.Button value={true}>{t('Yes')}</Radio.Button>
+                                        <Radio.Button value={false}>{t('No')}</Radio.Button>
+                                      </Radio.Group>
+                                    )}
+                                  />
                                 </Item>
                               </div>
-                              <div className="ant-form-item-label">{t('Indicators')}:</div>
+                              <div className="ant-form-item-label">
+                                {t('Indicators')}:
+                                {props.showRequired && props.errors.findIndex(it => it.type === 'min' && it.path === `results[${index}].indicators`) !== -1 && (
+                                  <span className="min-required indicator-min-required">{t('Minimum one required')}</span>
+                                )}
+                              </div>
                             </div>
                             <Field
                               name={`${name}.id`}
@@ -406,6 +419,7 @@ const Section5 = (props) => {
                                   indicatorLabelOptions={indicatorLabelOptions}
                                   selectedIndicatorIndex={selectedIndicatorIndex}
                                   selectedPeriodIndex={selectedPeriodIndex}
+                                  validations={props.validations}
                                 />
                               )}
                             />
@@ -432,7 +446,7 @@ const Section5 = (props) => {
   )
 }
 export default connect(
-  ({ editorRdr: { projectId, section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels }),
+  ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired }),
   { removeSetItem, fetchSetItems }
 )(React.memo(Section5, (prevProps, nextProps) => {
   const difference = diff(prevProps.fields, nextProps.fields)
