@@ -10,7 +10,7 @@ import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import countries from '../../../../utils/countries'
 import { Aux } from '../../../../utils/misc'
-import { getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
+import { getValidationSets, doesFieldExist, isFieldOptional } from '../../../../utils/validation-utils'
 import TYPE_OPTIONS from './options/type-options.json'
 import CHANNEL_OPTIONS from './options/channels.json'
 import FINANCE_TYPE_OPTIONS from '../../section1/options/finance-types.json'
@@ -25,9 +25,8 @@ import OrganizationSelect from '../../../../utils/organization-select';
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 
 const { Item } = Form
-const isEmpty = value => value === null || value === '' || value === undefined
 
-const TypeField = ({ name }) => {
+const TypeField = ({ name, isOptional }) => {
   const { t } = useTranslation()
   return (
     <FinalField
@@ -36,11 +35,8 @@ const TypeField = ({ name }) => {
       options={TYPE_OPTIONS}
       withEmptyOption
       withLabel
-      label={(
-        <Field name={`${name}.value`}>
-          {({ input }) => <InputLabel optional={isEmpty(input.value)} tooltip={t('Select the type of the transaction (e.g. commitment, disbursement, expenditure).')}>{t('type')}</InputLabel>}
-        </Field>
-      )}
+      optional={isOptional}
+      dict={{ label: t('type'), tooltip: t('Select the type of the transaction (e.g. commitment, disbursement, expenditure).') }}
     />
   )
 }
@@ -50,6 +46,7 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const currencySymbol = getSymbolFromCurrency(currency)
+  const isOptional = isFieldOptional(validationSets)
   return (
     <div>
       <div className="min-required-wrapper">
@@ -104,22 +101,23 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
               }
               {(!fieldExists('humanitarian') && fieldExists('transactionType')) &&
               <Col span={12}>
-                <TypeField name={name} />
+                <TypeField name={name} isOptional={isOptional} />
               </Col>
               }
               <Col span={12}>
-                <Item label={<InputLabel tooltip={t('Enter the transaction amount. Use a period to denote decimals.')} optional>{t('value')}</InputLabel>}>
                 <FinalField
                   name={`${name}.value`}
                   control="input-number"
+                  withLabel
+                  optional={isOptional}
+                  dict={{ label: t('value'), tooltip: t('Enter the transaction amount. Use a period to denote decimals.') }}
                 />
-                </Item>
               </Col>
             </Row>
             {fieldExists('humanitarian') && (
             <Row gutter={16}>
               <Col span={12}>
-                <TypeField name={name} />
+                <TypeField name={name} isOptional={isOptional} />
               </Col>
               <Col span={12}>
                 <Item label={<InputLabel optional tooltip={t('Determines whether this transaction relates entirely or partially to humanitarian aid.')}>{t('humanitarian transaction')}</InputLabel>}>
@@ -143,11 +141,8 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
                   name={`${name}.transactionDate`}
                   control="datepicker"
                   withLabel
-                  label={(
-                    <Field name={`${name}.value`}>
-                      {({ input }) => <InputLabel optional={isEmpty(input.value)} tooltip={t('Enter the financial reporting date that the transaction was/will be undertaken.')}>{t('date')}</InputLabel>}
-                    </Field>
-                  )}
+                  optional={isOptional}
+                  dict={{ label: t('date'), tooltip: t('Enter the financial reporting date that the transaction was/will be undertaken.') }}
                 />
               </Col>
               <Col span={12}>
@@ -155,11 +150,8 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
                   name={`${name}.valueDate`}
                   control="datepicker"
                   withLabel
-                  label={(
-                    <Field name={`${name}.value`}>
-                      {({ input }) => <InputLabel optional={isEmpty(input.value)} tooltip={t('The date to be used for determining the exchange rate for currency conversions of the transaction.')}>{t('value date')}</InputLabel>}
-                    </Field>
-                  )}
+                  optional={isOptional}
+                  dict={{ label: t('value date'), tooltip: t('The date to be used for determining the exchange rate for currency conversions of the transaction.') }}
                 />
               </Col>
             </Row>
@@ -179,6 +171,7 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
                     }}
                     orgs={orgs}
                     loading={loadingOrgs}
+                    optional
                   />
                 </Col>
                 <Col span={12}>
@@ -206,6 +199,7 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
                     }}
                     orgs={orgs}
                     loading={loadingOrgs}
+                    optional
                   />
                 </Col>
                 <Col span={12}>
