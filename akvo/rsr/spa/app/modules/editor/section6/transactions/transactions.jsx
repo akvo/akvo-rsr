@@ -54,7 +54,7 @@ const Transactions = ({ validations, formPush, orgs, loadingOrgs, currency = 'EU
     <div>
       <div className="min-required-wrapper">
         <h3>{t('Transactions')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'budgetItems') !== -1 && (
+        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'transactions') !== -1 && (
           <span className="min-required">{t('Minimum one required')}</span>
         )}
       </div>
