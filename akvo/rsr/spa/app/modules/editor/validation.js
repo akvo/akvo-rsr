@@ -8,6 +8,7 @@ const modules = [
   'section2/contacts',
   'section3/partners',
   'section4',
+  'section5/results',
   'section6/budget-items',
   'section6/planned-disbursements',
   'section6/transactions',
@@ -18,7 +19,10 @@ const modules = [
   'section8/policy-markers',
   'section8/humanitarian-scopes',
   'section9/links',
-  'section9/docs'
+  'section9/docs',
+  'section11',
+  'section11/flags',
+  'section11/forecasts'
 ]
 
 const validationDefs = modules.reduce((acc, key) => ({
@@ -41,9 +45,9 @@ export const validate = (module, validationSetIds, fields, abortEarly = false) =
     try{
       validationSet.validateSync(fields, { abortEarly })
     } catch(error){
-        const newErrors = (error.inner && error.inner.length > 0 ? error.inner : [error]).map(({ type, path }) => ({ type, path: path ? `${setName}${path}` : setName }))
-          .filter((it) => errors.findIndex(existing => isEqual(it, existing)) === -1)
-        errors = [...errors, ...newErrors]
+      const newErrors = (error.inner && error.inner.length > 0 ? error.inner : [error]).map(({ type, path, message }) => ({ type, message, path: path ? `${setName}${path}` : setName }))
+        .filter((it) => errors.findIndex(existing => isEqual(it, existing)) === -1)
+      errors = [...errors, ...newErrors]
     }
   })
   return errors

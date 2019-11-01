@@ -3,6 +3,7 @@ import { Form, Button, Radio, Col, Row } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -12,7 +13,6 @@ import OrganizationSelect from '../../../../utils/organization-select';
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 
 const { Item } = Form
-const isEmpty = value => value === null || value === '' || value === undefined
 
 const ValueDateField = ({ name }) => {
   const { t } = useTranslation()
@@ -21,11 +21,7 @@ const ValueDateField = ({ name }) => {
       name={`${name}.valueDate`}
       control="datepicker"
       withLabel
-      label={(
-        <Field name={`${name}.value`}>
-          {({ input }) => <InputLabel optional={isEmpty(input.value)} tooltip={t('Enter the specific date (DD/MM/YYYY) for the planned disbursement value.')}>{t('value date')}</InputLabel>}
-        </Field>
-      )}
+      dict={{ label: t('value date'), tooltip: t('Enter the specific date (DD/MM/YYYY) for the planned disbursement value.')}}
     />
   )
 }
@@ -62,12 +58,12 @@ const PlannedDisbursements = ({ formPush, validations, orgs, loadingOrgs, curren
               </Col>
             )}
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip={t('This should only be used to report specific planned cash transfers. Use a period to denote decimals.')}>{t('value')}</InputLabel>}>
               <FinalField
                 name={`${name}.value`}
                 control="input-number"
+                withLabel
+                dict={{ label: t('value'), tooltip: t('This should only be used to report specific planned cash transfers. Use a period to denote decimals.') }}
               />
-              </Item>
             </Col>
             {!isIATI && (
               <Col span={12}>
@@ -97,26 +93,38 @@ const PlannedDisbursements = ({ formPush, validations, orgs, loadingOrgs, curren
           }
           <Row gutter={16}>
             <Col span={12}>
-              <FinalField
-                name={`${name}.periodStart`}
-                control="datepicker"
-                withLabel
-                label={(
-                  <Field name={`${name}.value`}>
-                    {({ input }) => <InputLabel optional={isEmpty(input.value)} tooltip={t('The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY).')}>{t('period start')}</InputLabel>}
-                  </Field>
+              <Field
+                name={`${name}.periodEnd`}
+                render={({input}) => (
+                  <FinalField
+                    name={`${name}.periodStart`}
+                    control="datepicker"
+                    withLabel
+                    dict={{ label: t('period start'), tooltip: t('The exact date of the planned disbursement OR the starting date for the disbursement period (DD/MM/YYYY).')}}
+                    disabledDate={(date) => {
+                      const endDate = moment(input.value, 'DD/MM/YYYY')
+                      if (!endDate.isValid()) return false
+                      return date.valueOf() > endDate.valueOf()
+                    }}
+                  />
                 )}
               />
             </Col>
             <Col span={12}>
-              <FinalField
-                name={`${name}.periodEnd`}
-                control="datepicker"
-                withLabel
-                label={(
-                  <Field name={`${name}.value`}>
-                    {({ input }) => <InputLabel optional={isEmpty(input.value)} tooltip={t('Enter the end date (DD/MM/YYYY) for the disbursement period.')}>{t('period end')}</InputLabel>}
-                  </Field>
+              <Field
+                name={`${name}.periodStart`}
+                render={({ input }) => (
+                  <FinalField
+                    name={`${name}.periodEnd`}
+                    control="datepicker"
+                    withLabel
+                    dict={{ label: t('period end'), tooltip: t('Enter the end date (DD/MM/YYYY) for the disbursement period.') }}
+                    disabledDate={(date) => {
+                      const startDate = moment(input.value, 'DD/MM/YYYY')
+                      if (!startDate.isValid()) return false
+                      return date.valueOf() < startDate.valueOf()
+                    }}
+                  />
                 )}
               />
             </Col>

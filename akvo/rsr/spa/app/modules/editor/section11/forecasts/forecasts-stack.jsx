@@ -36,41 +36,44 @@ const ForecastsStack = ({ formPush, fssParent }) => {
         <div>
           <Row gutter={16}>
             <Col span={12}>
-              <Item label={<InputLabel>{t('currency')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.currency`}
-                  showSearch
-                  optionFilterProp="children"
-                  control="select"
-                  options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
-                />
-              </Item>
+              <FinalField
+                name={`${name}.currency`}
+                showSearch
+                optionFilterProp="children"
+                control="select"
+                options={currencies.map(item => ({ value: item.code, label: `${item.code} - ${item.currency}`}))}
+                withLabel
+                optional
+                dict={{ label: t('currency') }}
+              />
             </Col>
             <Col span={12}>
-              <Item label={<InputLabel tooltip={t('The forecast value for each year.')} optional>{t('value')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.value`}
-                  control="input-number"
-                />
-              </Item>
+              <FinalField
+                name={`${name}.value`}
+                control="input-number"
+                optional
+                withLabel
+                dict={{ label: t('value'), tooltip: t('The forecast value for each year.') }}
+              />
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip={t('The calendar year that the forward spend covers.')}>{t('year')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.year`}
-                  control="input-number"
-                />
-              </Item>
+              <FinalField
+                name={`${name}.year`}
+                control="input"
+                withLabel
+                dict={{ label: t('year'), tooltip: t('The calendar year that the forward spend covers.') }}
+              />
             </Col>
             <Col span={12}>
-              <Item label={<InputLabel optional tooltip={t('Enter the specific date (DD/MM/YYYY) for the forecast value.')}>{t('value date')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.date`}
-                  control="datepicker"
-                />
-              </Item>
+              <FinalField
+                name={`${name}.date`}
+                control="datepicker"
+                withLabel
+                optional
+                dict={{ label: t('value date'), tooltip: t('Enter the specific date (DD/MM/YYYY) for the forecast value.') }}
+              />
             </Col>
           </Row>
         </div>
