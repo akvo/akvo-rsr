@@ -194,6 +194,16 @@ export default (state = initialState, action) => {
       return {...state, saving: true}
     case actionTypes.UPDATE_LAST_SAVED:
       return {...state, lastSaved: new Date(), saving: false }
+    case actionTypes.SET_FIELD_REQUIRED_ERROR:
+      const {errors} = newState[sectionKey]
+      const errorIndex = errors.findIndex(it => it.path === action.fieldName && it.type === 'required')
+      if (!action.hasError && errorIndex > -1){
+        newState[sectionKey].errors = errors.filter(it => it.path !== action.fieldName)
+      }
+      if (action.hasError && errorIndex === -1){
+        newState[sectionKey].errors = [...errors, { path: action.fieldName, type: 'required'}]
+      }
+      return newState
     default: return state
   }
 }
