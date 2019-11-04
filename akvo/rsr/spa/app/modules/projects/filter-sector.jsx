@@ -11,7 +11,6 @@ const FilterSector = ({onChange}) => {
   const [customOpt, setCustomOpt] = useState('')
   return (
     <Select
-      defaultValue=""
       dropdownMatchSelectWidth={false}
       filterOption={(input, option) => {
         const { props: { data } } = option
@@ -25,8 +24,9 @@ const FilterSector = ({onChange}) => {
         setCustomOpt('')
         onChange(value)
       }}
+      allowClear
+      placeholder={t('All sectors')}
     >
-      <Option value="" data="">{t('All sectors')}</Option>
       {VOCAB_2_CODES.map(item => <Option value={item.value} data={`${item.value} - ${item.label}`}>{item.value} - {item.label}</Option>)}
       {VOCAB_1_CODES.map(item => <Option value={item.value} data={`${item.value} - ${item.label}`}>{item.value} - {item.label}</Option>)}
       {customOpt !== '' &&
