@@ -192,6 +192,10 @@ export default (state = initialState, action) => {
     case actionTypes.SHOW_REQUIRED:
       const showRequired = action.hasOwnProperty('checked') ? action.checked : !state.showRequired
       return {...state, showRequired}
+    case actionTypes.SAVING:
+      return {...state, saving: true}
+    case actionTypes.UPDATE_LAST_SAVED:
+      return {...state, lastSaved: new Date(), saving: false }
     default: return state
   }
 }
