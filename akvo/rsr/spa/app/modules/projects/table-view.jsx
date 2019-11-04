@@ -12,15 +12,8 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       key: 'isPublic',
       width: 75,
       render: (value) => {
-        return <Icon type={value ? 'eye' : 'eye-invisible'} />
+        return <Tooltip title={value ? t('public') : t('private')}><Icon type={value ? 'eye' : 'eye-invisible'} /></Tooltip>
       }
-    },
-    {
-      title: t('Status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: (value) => (<span>{value}</span>)
     },
     {
       title: t('Project'),
@@ -65,6 +58,14 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
         const listOfUniqueCountries = record.locations.map(it => it.country).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
         return (<span>{listOfUniqueCountries}</span>)
       }
+    },
+    {
+      title: t('Status'),
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      className: 'status',
+      render: (value) => (<span className={value}>{t(value)}</span>)
     }
   ]
   return (
