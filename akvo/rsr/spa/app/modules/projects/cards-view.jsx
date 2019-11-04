@@ -79,7 +79,7 @@ class CardsView extends React.Component{
       // Checks that the page has scrolled to the bottom
       if (
         window.innerHeight + document.documentElement.scrollTop
-        === document.documentElement.scrollHeight
+        >= document.documentElement.scrollHeight
       ) {
         onShowMore(this.state.page + 1)
         this.setState({ page: this.state.page + 1})
