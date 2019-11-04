@@ -59,3 +59,4 @@ export const setSectionFetched = sectionIndex => ({ type: actionTypes.SET_SECTIO
 export const resetProject = () => ({ type: actionTypes.RESET_PROJECT })
 export const saving = () => ({ type: actionTypes.SAVING })
 export const updateLastSaved = () => ({ type: actionTypes.UPDATE_LAST_SAVED })
+export const setFieldRequiredError = (sectionIndex, fieldName, hasError) => ({ type: actionTypes.SET_FIELD_REQUIRED_ERROR, sectionIndex, fieldName, hasError })

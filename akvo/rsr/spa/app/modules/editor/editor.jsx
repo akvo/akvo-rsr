@@ -182,7 +182,6 @@ const Editor = ({ match: { params } }) => {
       triggerRef.current = true
       api.get(`/project_custom_field/?project=${params.id}`)
         .then(({ data: {results}}) => {
-          console.log(results)
           setCustomFields(results)
         })
     }

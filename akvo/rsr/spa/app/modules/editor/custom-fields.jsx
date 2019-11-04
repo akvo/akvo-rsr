@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import InputLabel from '../../utils/input-label'
 import api from '../../utils/api'
-import { updateLastSaved, saving } from './actions'
+import { updateLastSaved, saving, setFieldRequiredError } from './actions'
 
 const {Item} = Form
 
-const CustomField = connect(null, { updateLastSaved, saving })(({ field, updateLastSaved, saving }) => { // eslint-disable-line
+const CustomField = connect(({ editorRdr: { showRequired } }) => ({ showRequired }), { updateLastSaved, saving, setFieldRequiredError })(({ field, updateLastSaved, saving, showRequired, setFieldRequiredError }) => { // eslint-disable-line
   const { t } = useTranslation()
   const tmidRef = useRef()
   const [value, setValue] = useState(field.value)
@@ -19,11 +19,14 @@ const CustomField = connect(null, { updateLastSaved, saving })(({ field, updateL
       saving()
       api.patch(`/project_custom_field/${field.id}/`, { value }).then(() => {
         updateLastSaved()
+        if(field.mandatory){
+          setFieldRequiredError(field.section, `custom-field-${field.id}`, !value)
+        }
       })
     }, timeout)
   }
   return (
-    <Item label={<InputLabel optional={!field.mandatory} tooltip={field.helpText}>{field.name}</InputLabel>}>
+    <Item validateStatus={(showRequired && field.mandatory && (value === '' || !value)) ? 'error' : ''} label={<InputLabel optional={!field.mandatory} tooltip={field.helpText}>{field.name}</InputLabel>}>
       {field.type === 'text' && <Input.TextArea autosize value={value} onChange={({target}) => updateValue(target.value)} />}
       {field.type === 'boolean' && <Radio.Group value={value} onChange={({target}) => updateValue(target.value, 0)}><Radio.Button value="True">{t('Yes')}</Radio.Button><Radio.Button value="False">{t('No')}</Radio.Button></Radio.Group>}
     </Item>
