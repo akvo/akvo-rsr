@@ -57,3 +57,5 @@ export const setNewProject = projectId => ({ type: actionTypes.SET_NEW_PROJECT, 
 export const fetchSectionRoot = sectionIndex => ({ type: actionTypes.FETCH_SECTION_ROOT, sectionIndex })
 export const setSectionFetched = sectionIndex => ({ type: actionTypes.SET_SECTION_FETCHED, sectionIndex })
 export const resetProject = () => ({ type: actionTypes.RESET_PROJECT })
+export const saving = () => ({ type: actionTypes.SAVING })
+export const updateLastSaved = () => ({ type: actionTypes.UPDATE_LAST_SAVED })
