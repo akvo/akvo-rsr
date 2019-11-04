@@ -55,6 +55,17 @@
           margin-right: 10px;
           display: inline;
         }
+        .parent-caption{
+          font-size: 9px;
+          text-transform: uppercase;
+          margin-bottom: 3px;
+          span{
+            opacity: 0.6;
+          }
+          a{
+            opacity: 0.9;
+          }
+        }
         .parent-tag{
           max-width: 200px;
           display: inline-block;
