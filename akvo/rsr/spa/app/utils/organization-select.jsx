@@ -135,7 +135,9 @@ const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
       setValidationErrors([])
       const { location } = values
       const { lat, lng } = location.coordinates
-      const data = { ...values, latitude: lat, longitude: lng, iatiCountry: values.location.countryCode.toUpperCase(), city: location.text.split(',')[0] }
+      let iatiCountry
+      if(location.countryComp) iatiCountry = location.countryComp.short_name
+      const data = { ...values, latitude: lat, longitude: lng, iatiCountry, city: location.description.split(',')[0] }
       delete data.location
       api.post('/organisation/', data)
         .then((res) => {

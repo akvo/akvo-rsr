@@ -57,7 +57,8 @@ class SearchItem extends React.Component{
         lat: d[0].geometry.location.lat(),
         lng: d[0].geometry.location.lng()
       }
-      this.props.onChange({ ...this.state.data[index], coordinates})
+      const countryComp = d[0].address_components.find(comp => comp.types.indexOf('country') !== -1)
+      this.props.onChange({ ...this.state.data[index], coordinates, countryComp })
     })
   }
   render(){
