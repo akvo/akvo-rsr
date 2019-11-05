@@ -141,3 +141,13 @@ class OrganisationCustomField(models.Model):
         help_text=_(u'Select the type of custom field. Text will show a text area in the project '
                     u'editor, and checkbox will show a checkbox.')
     )
+
+    def new_project_custom_field(self, project_id):
+        copy_fields = (
+            'name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text'
+        )
+        project_custom_field = ProjectCustomField(
+            project_id=project_id,
+            **{field: getattr(self, field) for field in copy_fields}
+        )
+        return project_custom_field
