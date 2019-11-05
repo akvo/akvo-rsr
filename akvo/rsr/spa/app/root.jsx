@@ -8,6 +8,7 @@ import 'antd/dist/antd.css'
 
 import Editor from './modules/editor/editor'
 import Projects from './modules/projects/projects'
+import Hierarchy from './modules/hierarchy/hierarchy'
 import TopBar from './top-bar'
 import { useFetch } from './utils/hooks'
 
@@ -26,6 +27,7 @@ const Root = ({ dispatch }) => {
         <TopBar />
         <div className="ui container">
           <Route path="/projects" exact component={Projects} />
+          <Route path="/hierarchy" exact component={Hierarchy} />
           <Route path="/projects/:id" component={Editor} />
         </div>
       </div>

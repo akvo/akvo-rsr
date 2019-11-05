@@ -1,0 +1,129 @@
+$blue: #4593f4;
+$dashedStyle: 2px dotted #dedede;
+
+.hierarchy{
+  margin-left: -50px;
+  margin-right: -50px;
+  h2{
+    margin-top: 20px;
+    margin-left: 50px;
+  }
+  .board{
+    display: flex;
+    overflow-x: scroll;
+    padding-left: 35px;
+    .col{
+      width: 370px;
+      min-width: 370px;
+      h3{
+        margin-left: 15px;
+      }
+      .scrollview{
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: calc(100vh - 180px);
+        &::-webkit-scrollbar
+        {
+          width: 0px;
+        }
+        ul{
+          padding-left: 15px;
+          padding-right: 15px;
+        }
+        margin-bottom: 0;
+      }
+      .card{
+        height: 140px;
+        border-radius: 3px;
+        border: 1px solid #dedede;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        position: relative;
+        &.selected{
+          border-color: $blue;
+          &:after{
+            content: " ";
+            width: 15px;
+            border-top: $dashedStyle;
+            // border-color: $blue;
+            position: absolute;
+            right: -15px;
+            top: 70px;
+          }
+        }
+      }
+      &:not(:nth-of-type(1)){
+        position: relative;
+        .scrollview{
+          position: relative;
+          background: #fff;
+          ul{
+            border-left: $dashedStyle;
+            position: relative;
+            &:after, &:before{
+              content: ' ';
+              width: 5px;
+              height: 70px;
+              position: absolute;
+              left: -2px;
+              background-color: #fff;
+              z-index: 99;
+              bottom: -3px;
+            }
+            &:before{
+              left: auto;
+              right: -2px;
+            }
+          }
+          &:before{
+            content: ' ';
+            width: 5px;
+            height: 71px;
+            position: absolute;
+            left: -2px;
+            background-color: #fff;
+            z-index: 9;
+            top: 0;
+          }
+        }
+        &.rightBorder{
+          margin-right: -2px;
+          .scrollview ul{
+            border-right: $dashedStyle;
+            padding-right: 17px;
+          }
+          &:before{
+            content: ' ';
+            width: 5px;
+            height: 71px;
+            position: absolute;
+            right: -2px;
+            background-color: #fff;
+            z-index: 9;
+            top: 42px;
+          }
+        }
+        .card{
+          &:before{
+            content: " ";
+            width: 15px;
+            border-top: $dashedStyle;
+            position: absolute;
+            left: -15px;
+            top: 70px;
+          }
+          &.selected:before{
+            // border-color: $blue;
+          }
+        }
+      }
+      .bg{
+        background-color: #fcf9f9;
+        margin-left: 15px;
+        height: calc(100vh - 200px);
+        text-align: center;
+        padding-top: 50px;
+      }
+    }
+  }
+}
