@@ -10,7 +10,7 @@ from akvo.rsr.models import (
     Project, Organisation, Employment, Partnership, ProjectUpdate, PartnerSite, IatiExport,
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorPeriodDataComment,
     AdministrativeLocation, ProjectLocation, OrganisationLocation, UserProjects,
-    ProjectHierarchy, IndicatorDimensionName, IndicatorDimensionValue
+    ProjectHierarchy, IndicatorDimensionName, IndicatorDimensionValue, DisaggregationTarget
 )
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -82,6 +82,11 @@ class PermissionsTestCase(BaseTestCase):
         # Indicator periods
         self.indicator_periods = [
             IndicatorPeriod.objects.create(indicator=indicator) for indicator in self.indicators
+        ]
+
+        # disaggregation targets
+        self.disaggregation_targets = [
+            DisaggregationTarget.objects.create(period=period) for period in self.indicator_periods
         ]
 
         # Indicator updates
@@ -187,6 +192,11 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_indicatorperiod', period))
 
+        # Disaggregation Target permissions
+        for i, target in enumerate(self.disaggregation_targets):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_disaggregationtarget', target))
+
         # IndicatorPeriodData permissions
         for i, update in enumerate(self.indicator_updates):
             test = self.assertTrue if i == 0 else self.assertFalse
@@ -283,6 +293,11 @@ class PermissionsTestCase(BaseTestCase):
         for i, period in enumerate(self.indicator_periods):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_indicatorperiod', period))
+
+        # Disaggregation Target permissions
+        for i, target in enumerate(self.disaggregation_targets):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_disaggregationtarget', target))
 
         # IndicatorPeriodData permissions
         for i, update in enumerate(self.indicator_updates):
@@ -381,6 +396,11 @@ class PermissionsTestCase(BaseTestCase):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.change_indicatorperiod', period))
 
+        # Disaggregation Target permissions
+        for i, target in enumerate(self.disaggregation_targets):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.change_disaggregationtarget', target))
+
         # IndicatorPeriodData permissions
         for i, update in enumerate(self.indicator_updates):
             test = self.assertTrue if i == 0 else self.assertFalse
@@ -471,6 +491,10 @@ class PermissionsTestCase(BaseTestCase):
         for i, period in enumerate(self.indicator_periods):
             self.assertFalse(user.has_perm('rsr.change_indicatorperiod', period))
 
+        # Disaggregation Target permissions
+        for i, target in enumerate(self.disaggregation_targets):
+            self.assertFalse(user.has_perm('rsr.change_disaggregationtarget', target))
+
         # IndicatorPeriodData permissions
         for i, update in enumerate(self.indicator_updates):
             self.assertFalse(user.has_perm('rsr.change_indicatorperioddata', update))
@@ -553,6 +577,11 @@ class PermissionsTestCase(BaseTestCase):
         for i, dimension_value in enumerate(self.dimension_values):
             test = self.assertTrue if i == 0 else self.assertFalse
             test(user.has_perm('rsr.view_indicatordimensionvalue', dimension_value))
+
+        # Disaggregation Target permissions
+        for i, target in enumerate(self.disaggregation_targets):
+            test = self.assertTrue if i == 0 else self.assertFalse
+            test(user.has_perm('rsr.view_disaggregationtarget', target))
 
 
 class UserPermissionedProjectsTestCase(BaseTestCase):
