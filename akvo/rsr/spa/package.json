@@ -54,6 +54,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "reset-css": "^4.0.1",
+    "smoothscroll-polyfill": "^0.4.4",
     "yup": "^0.27.0"
   },
   "devDependencies": {
