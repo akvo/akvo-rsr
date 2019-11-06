@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class DisaggregationTarget(models.Model):
-    project_relation = 'results__indicators__periods__in'
+    project_relation = 'results__indicators__periods__disaggregation_targets__in'
 
     period = models.ForeignKey(
         'IndicatorPeriod', verbose_name=_(u'indicator'), related_name='disaggregation_targets'
