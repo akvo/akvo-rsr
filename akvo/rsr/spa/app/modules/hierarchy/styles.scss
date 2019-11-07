@@ -59,6 +59,12 @@ $dashedStyle: 2px dotted #dedede;
           padding-right: 15px;
         }
         margin-bottom: 0;
+        .connector{
+          position: absolute;
+          right: 0;
+          width: 1px;
+          border-right: $dashedStyle;
+        }
       }
       .card{
         height: 140px;
@@ -132,9 +138,9 @@ $dashedStyle: 2px dotted #dedede;
           position: relative;
           background: #fff;
           ul{
-            border-left: $dashedStyle;
+            // border-left: $dashedStyle;
             position: relative;
-            &:after, &:before{
+            &:after{
               content: ' ';
               width: 5px;
               height: 70px;
@@ -144,10 +150,10 @@ $dashedStyle: 2px dotted #dedede;
               z-index: 99;
               bottom: -3px;
             }
-            &:before{
-              left: auto;
-              right: -2px;
-            }
+            // &:before{
+            //   left: auto;
+            //   right: -2px;
+            // }
           }
           &:before{
             content: ' ';
@@ -157,7 +163,7 @@ $dashedStyle: 2px dotted #dedede;
             left: -2px;
             background-color: #fff;
             z-index: 9;
-            top: 0;
+            top: 5px;
           }
         }
         &.rightBorder{
@@ -171,14 +177,14 @@ $dashedStyle: 2px dotted #dedede;
             // padding-right: 17px;
           }
           &:before{
-            content: ' ';
-            width: 5px;
-            height: 71px;
-            position: absolute;
-            right: -2px;
-            background-color: #fff;
-            z-index: 9;
-            top: 42px;
+            // content: ' ';
+            // width: 5px;
+            // height: 71px;
+            // position: absolute;
+            // right: -2px;
+            // background-color: #fff;
+            // z-index: 9;
+            // top: 42px;
           }
         }
         .card{

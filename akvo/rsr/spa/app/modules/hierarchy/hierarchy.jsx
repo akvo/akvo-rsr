@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import { Icon } from 'antd'
 
@@ -20,6 +20,10 @@ const data = [
       {
         title: 'some title',
         id: 4
+      },
+      {
+        title: 'some title',
+        id: 412
       },
       {
         title: 'blah',
@@ -68,8 +72,30 @@ const data = [
             title: 'Project title',
             subtitle: 'project subtitle',
             countries: ['Netherlands'],
+          },
+          {
+            id: 32,
+            title: 'Project title 2',
+            subtitle: 'project subtitle',
+            countries: ['Netherlands'],
+          },
+          {
+            id: 33,
+            title: 'Project title 3',
+            subtitle: 'project subtitle',
+            countries: ['Netherlands'],
+          },
+          {
+            id: 34,
+            title: 'Project title 3',
+            subtitle: 'project subtitle',
+            countries: ['Netherlands'],
           }
         ]
+      },
+      {
+        title: 'svetih 2',
+        id: 712
       }
     ]
   }
@@ -87,21 +113,55 @@ const Card = ({ project, selected, onClick }) => {
   )
 }
 
+const Column = ({ children, index, isLast }) => {
+  const connectorRef = useRef(null)
+  const ulRef = useRef(null)
+  const handleScroll = ({ target }) => {
+    if (target.scrollTop > 10 && !target.previousSibling.previousSibling.classList.contains('on')) {
+      target.previousSibling.previousSibling.classList.add('on')
+    } else if (target.scrollTop < 10 && target.previousSibling.previousSibling.classList.contains('on')) {
+      target.previousSibling.previousSibling.classList.remove('on')
+    }
+  }
+  useEffect(() => {
+    console.log('col', index, isLast)
+    if(isLast === false){
+      if(connectorRef.current){
+        // console.log(ulRef.current)
+        const $selected = ulRef.current.getElementsByClassName('selected')
+        // console.log($selected)
+        if($selected.length > 0){
+          const height = 100
+          const offsetTop = $selected[0].offsetTop + 70 + 5
+          connectorRef.current.style.height = `${height}px`
+          connectorRef.current.style.top = `${offsetTop - height}px`
+        }
+        // connectorRef.current.style.top =
+      }
+    }
+  }, [isLast])
+  return (
+    <div className="col" style={{ zIndex: 999 - index }}>
+      <div className="shade" />
+      <h3>Level {index + 1} projects</h3>
+      <div className="scrollview" onScroll={handleScroll}>
+        <ul ref={ulRef}>
+        {children}
+        </ul>
+        <div className="connector" ref={connectorRef} />
+      </div>
+    </div>
+  )
+}
+
 const Hierarchy = () => {
-  const [selected, setSelected] = useState([data[0], data[0].children[4]])
+  const [selected, setSelected] = useState([data[0], data[0].children[5]])
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
     } else if(item.children) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
-    }
-  }
-  const handleScroll = ({ target }) => {
-    if (target.scrollTop > 10 && !target.previousSibling.previousSibling.classList.contains('on')) {
-      target.previousSibling.previousSibling.classList.add('on')
-    } else if (target.scrollTop < 10 && target.previousSibling.previousSibling.classList.contains('on')){
-      target.previousSibling.previousSibling.classList.remove('on')
     }
   }
   return (
@@ -118,17 +178,11 @@ const Hierarchy = () => {
         </div>
         {selected.map((col, index) => {
           return (
-            <div className={classNames('col', {rightBorder: index < selected.length - 1})} style={{ zIndex: 999 - index }}>
-              <div className="shade" />
-              <h3>Level {index + 1} projects</h3>
-              <div className="scrollview" onScroll={handleScroll}>
-                <ul>
-                  {col.children.map(item =>
-                    <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} />
-                  )}
-                </ul>
-              </div>
-            </div>
+            <Column isLast={index === selected.length - 1} index={index}>
+              {col.children.map(item =>
+                <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} />
+              )}
+            </Column>
           )
         })}
         <div className="col">
