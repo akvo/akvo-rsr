@@ -40,20 +40,45 @@
         vertical-align: middle;
         i{
           font-size: 1.5em;
-          transform: translateY(2px);
+          transform: translateY(1px);
           color: #c4c4c4;
         }
       }
-      tr td:nth-of-type(2){
+      .status-combined{
+        display: flex;
+        .status{
+          white-space: nowrap;
+          color: #c4c4c4;
+          font-size: 10px;
+          text-align: left;
+          margin-left: 10px;
+          text-transform: uppercase;
+        }
+      }
+      tr td.status{
         vertical-align: middle;
         text-transform: capitalize;
         color: #c4c4c4;
         font-size: 12px;
+        .published{
+          color: #4cbf1c;
+        }
       }
       td.project-title{
         a{
           margin-right: 10px;
           display: inline;
+        }
+        .parent-caption{
+          font-size: 9px;
+          text-transform: uppercase;
+          margin-bottom: 3px;
+          span{
+            opacity: 0.6;
+          }
+          a{
+            opacity: 0.9;
+          }
         }
         .parent-tag{
           max-width: 200px;
@@ -183,7 +208,7 @@
       }
       .sectors{
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 8px;
         margin-bottom: -5px;
         display: flex;
         .label{
@@ -205,7 +230,7 @@
       }
       .parent{
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 8px;
         display: flex;
         .label{
           padding-right: 10px;

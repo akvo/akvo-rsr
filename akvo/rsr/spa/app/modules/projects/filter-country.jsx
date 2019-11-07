@@ -10,7 +10,6 @@ const FilterCountry = ({ onChange }) => {
   const { t } = useTranslation()
   return (
     <Select
-      defaultValue=""
       dropdownMatchSelectWidth={false}
       filterOption={(input, option) => {
         const { props: { data } } = option
@@ -18,8 +17,9 @@ const FilterCountry = ({ onChange }) => {
       }}
       showSearch
       onChange={onChange}
+      allowClear
+      placeholder={t('All countries')}
     >
-      <Option value="" data="">{t('All countries')}</Option>
       {COUNTRY_OPTIONS.map(({value, label}) => <Option value={value} data={label}>{label}</Option>)}
     </Select>
   )

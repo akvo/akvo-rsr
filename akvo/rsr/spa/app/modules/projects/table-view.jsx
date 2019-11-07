@@ -12,15 +12,8 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       key: 'isPublic',
       width: 75,
       render: (value) => {
-        return <Icon type={value ? 'eye' : 'eye-invisible'} />
+        return <Tooltip title={value ? t('public') : t('private')}><Icon type={value ? 'eye' : 'eye-invisible'} /></Tooltip>
       }
-    },
-    {
-      title: t('Status'),
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: (value) => (<span>{value}</span>)
     },
     {
       title: t('Project'),
@@ -29,7 +22,7 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       className: 'project-title',
       render: (text, record) => (
         <div>
-          {record.parent !== null && (<div><Tag className="parent-tag" color="blue">Part of: <a href="#">{record.parent.title}</a></Tag><br /></div>)/* eslint-disable-line */}
+          {record.parent !== null && (<div className="parent-caption"><span>Parent:</span> <ConditionalLink record={record.parent}>{record.parent.title}</ConditionalLink><br /></div>)/* eslint-disable-line */}
           <ConditionalLink record={record}>
             {text !== '' ? text : t('Untitled project')}
           </ConditionalLink>
@@ -65,6 +58,14 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
         const listOfUniqueCountries = record.locations.map(it => it.country).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
         return (<span>{listOfUniqueCountries}</span>)
       }
+    },
+    {
+      title: t('Status'),
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      className: 'status',
+      render: (value) => (<span className={value}>{t(value)}</span>)
     }
   ]
   return (
