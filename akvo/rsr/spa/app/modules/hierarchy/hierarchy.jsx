@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
+import { Icon } from 'antd'
 
 import './styles.scss'
 
 const parents = [
   {
     title: 'Parent program',
-    id: 12
+    subtitle: 'Something long for a subtitle goes here and on two lines at least maybe three',
+    id: 12,
+    childrenCount: 5
   }
 ]
 const data = [
@@ -32,6 +35,11 @@ const data = [
                 title: 'Knight\'s tale'
               }
             ]
+          },
+          {
+            id: 102,
+            title: 'Something',
+            countries: ['UK']
           }
         ]
       },
@@ -67,16 +75,33 @@ const data = [
   }
 ]
 
+const Card = ({ project, selected, onClick }) => {
+  const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.length : -1)
+  return (
+    <li className={classNames('card', { selected })} onClick={onClick}>{/* eslint-disable-line */}
+      <h4>{project.title}</h4>
+      {project.subtitle && <p>{project.subtitle}</p>}
+      {project.countries && <div className="countries"><Icon type="environment" /><span>{project.countries.join(', ')}</span></div>}
+      {childrenCount !== -1 && <div className="children"><b>{childrenCount}</b> <span>child projects</span></div>}
+    </li>
+  )
+}
+
 const Hierarchy = () => {
   const [selected, setSelected] = useState([data[0], data[0].children[4]])
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-      // setSelected([...selected.slice(0, colIndex), selected[colIndex].filter((it, index) => index !== itemIndex), ...selected.slice(colIndex + 1)])
     } else if(item.children) {
-      // if(selected[colIndex]) _selected = selected.slice(0, colIndex + 1)
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
+    }
+  }
+  const handleScroll = ({ target }) => {
+    if (target.scrollTop > 10 && !target.previousSibling.previousSibling.classList.contains('on')) {
+      target.previousSibling.previousSibling.classList.add('on')
+    } else if (target.scrollTop < 10 && target.previousSibling.previousSibling.classList.contains('on')){
+      target.previousSibling.previousSibling.classList.remove('on')
     }
   }
   return (
@@ -87,26 +112,19 @@ const Hierarchy = () => {
           <h3>Programs</h3>
           <div className="scrollview">
             <ul>
-              {parents.map(parent =>
-              <li className={classNames('card', {selected: selected[0].id === parent.id})}>
-                <h4>{parent.title}</h4>
-                <div className="children">{data.length} child projects</div>
-              </li>
-              )}
+              {parents.map(parent => <Card project={parent} selected={selected[0].id === parent.id} />)}
             </ul>
           </div>
         </div>
         {selected.map((col, index) => {
           return (
             <div className={classNames('col', {rightBorder: index < selected.length - 1})} style={{ zIndex: 999 - index }}>
+              <div className="shade" />
               <h3>Level {index + 1} projects</h3>
-              <div className="scrollview">
+              <div className="scrollview" onScroll={handleScroll}>
                 <ul>
                   {col.children.map(item =>
-                    <li onClick={() => toggleSelect(item, index)} className={classNames('card', { selected: selected[index + 1] === item })}>{/* eslint-disable-line */}
-                      <h4>{item.title}</h4>
-                      <div className="countries">Guinea</div>
-                    </li>
+                    <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} />
                   )}
                 </ul>
               </div>
