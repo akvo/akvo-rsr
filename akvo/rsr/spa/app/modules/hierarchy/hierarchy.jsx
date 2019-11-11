@@ -1,3 +1,4 @@
+/* global window */
 import React, { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
@@ -20,41 +21,62 @@ const Card = ({ project, selected, onClick }) => {
   )
 }
 
-const Column = ({ children, index, isLast }) => {
+const topMargin = 6
+
+const Column = ({ children, index, isLast, selected }) => {
   const connectorRef = useRef(null)
   const ulRef = useRef(null)
-  const handleScroll = ({ target }) => {
-    if (target.scrollTop > 10 && !target.previousSibling.previousSibling.classList.contains('on')) {
-      target.previousSibling.previousSibling.classList.add('on')
-    } else if (target.scrollTop < 10 && target.previousSibling.previousSibling.classList.contains('on')) {
-      target.previousSibling.previousSibling.classList.remove('on')
-    }
-  }
-  useEffect(() => {
-    console.log('col', index, isLast)
-    if(isLast === false){
-      if(connectorRef.current){
-        // console.log(ulRef.current)
-        const $selected = ulRef.current.getElementsByClassName('selected')
-        // console.log($selected)
-        if($selected.length > 0){
-          const height = 100
-          const offsetTop = $selected[0].offsetTop + 70 + 5
-          connectorRef.current.style.height = `${height}px`
-          connectorRef.current.style.top = `${offsetTop - height}px`
-        }
-        // connectorRef.current.style.top =
+  const selectedCardRef = useRef(null)
+  const nextScrollviewRef = useRef(null)
+  const nextColCardsRef = useRef(null)
+  const drawConnector = () => {
+    if (isLast === false) {
+      if (connectorRef.current) {
+        const y1 = selectedCardRef.current.offsetTop + selectedCardRef.current.clientHeight / 2 - ulRef.current.parentNode.scrollTop
+        const y2a = - nextScrollviewRef.current.scrollTop + nextColCardsRef.current[0].clientHeight / 2
+        const y2b = - nextScrollviewRef.current.scrollTop + nextColCardsRef.current[nextColCardsRef.current.length - 1].offsetTop + nextColCardsRef.current[nextColCardsRef.current.length - 1].clientHeight / 2
+        const A = (y1 < y2a ? y1 : y2a) + topMargin
+        const B = (y1 > y2b ? y1 : y2b) + topMargin
+        const colHeight = window.innerHeight - 177
+        const top = A < 0 ? 0 : A
+        const height = B - top > colHeight ? colHeight : B - top
+        connectorRef.current.style.top = `${top}px`
+        connectorRef.current.style.height = `${height}px`
       }
     }
-  }, [isLast])
+  }
+  const handleScroll = ({ target }) => {
+    if (target.scrollTop > 10 && !target.parentNode.previousSibling.previousSibling.classList.contains('on')) {
+      target.parentNode.previousSibling.previousSibling.classList.add('on')
+    } else if (target.scrollTop < 10 && target.parentNode.previousSibling.previousSibling.classList.contains('on')) {
+      target.parentNode.previousSibling.previousSibling.classList.remove('on')
+    }
+    if(!isLast) drawConnector()
+  }
+  useEffect(() => {
+    if(isLast === false){
+      if(connectorRef.current){
+        selectedCardRef.current = ulRef.current.getElementsByClassName('selected')[0]
+        if (ulRef.current.parentNode.parentNode.parentNode.nextSibling){
+          nextScrollviewRef.current = ulRef.current.parentNode.parentNode.parentNode.nextSibling.getElementsByClassName('scrollview')[0]
+          nextColCardsRef.current = nextScrollviewRef.current.getElementsByClassName('card')
+          drawConnector()
+          nextScrollviewRef.current.removeEventListener('scroll', drawConnector)
+          nextScrollviewRef.current.addEventListener('scroll', drawConnector)
+        }
+      }
+    }
+  }, [isLast, selected])
   return (
     <div className="col" style={{ zIndex: 999 - index }}>
       <div className="shade" />
       <h3>Level {index + 1} projects</h3>
-      <div className="scrollview" onScroll={handleScroll}>
-        <ul ref={ulRef}>
-        {children}
-        </ul>
+      <div className="inner">
+        <div className="scrollview" onScroll={handleScroll}>
+          <ul ref={ulRef}>
+          {children}
+          </ul>
+        </div>
         <div className="connector" ref={connectorRef} />
       </div>
     </div>
@@ -92,7 +114,7 @@ const Hierarchy = ({ match: { params } }) => {
       <h2>Projects hierarchy</h2>
       <div className="board">
         {programs.length === 0 && <Spin size="large" />}
-        {programs.length > 0 &&
+        {/* {programs.length > 0 &&
         <div className="col">
           <h3>Programs</h3>
           <div className="scrollview">
@@ -101,10 +123,15 @@ const Hierarchy = ({ match: { params } }) => {
             </ul>
           </div>
         </div>
+        } */}
+        {programs.length > 0 &&
+        <Column isLast={selected.length === 0} selected={selected} index={-1}>
+          {programs.map(parent => <Card project={parent} selected={selected[0] && selected[0].id === parent.id} />)}
+        </Column>
         }
         {selected.map((col, index) => {
           return (
-            <Column isLast={index === selected.length - 1} index={index}>
+            <Column isLast={index === selected.length - 1} selected={selected} index={index}>
               {col.children.map(item =>
                 <Card project={item} onClick={() => toggleSelect(item, index)} selected={selected[index + 1] === item} />
               )}

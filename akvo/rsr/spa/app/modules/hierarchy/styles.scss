@@ -28,6 +28,9 @@ $dashedStyle: 2px dotted #dedede;
       width: 370px;
       min-width: 370px;
       position: relative;
+      .inner{
+        position: relative;
+      }
       .shade{
         position: absolute;
         z-index: 2;
@@ -71,12 +74,12 @@ $dashedStyle: 2px dotted #dedede;
           padding-right: 15px;
         }
         margin-bottom: 0;
-        .connector{
-          position: absolute;
-          right: 0;
-          width: 1px;
-          border-right: $dashedStyle;
-        }
+      }
+      .connector{
+        position: absolute;
+        right: 0;
+        width: 1px;
+        border-right: $dashedStyle;
       }
       .card{
         min-height: 140px;
@@ -151,7 +154,7 @@ $dashedStyle: 2px dotted #dedede;
             // border-color: $blue;
             position: absolute;
             right: -15px;
-            top: 70px;
+            top: 50%;
           }
           h4:after{
             // content: " ";
@@ -173,14 +176,14 @@ $dashedStyle: 2px dotted #dedede;
             // border-left: $dashedStyle;
             position: relative;
             &:after{
-              content: ' ';
-              width: 5px;
-              height: 70px;
-              position: absolute;
-              left: -2px;
-              background-color: #fff;
-              z-index: 99;
-              bottom: -3px;
+              // content: ' ';
+              // width: 5px;
+              // height: 70px;
+              // position: absolute;
+              // left: -2px;
+              // background-color: #fff;
+              // z-index: 99;
+              // bottom: -3px;
             }
             // &:before{
             //   left: auto;
@@ -188,14 +191,14 @@ $dashedStyle: 2px dotted #dedede;
             // }
           }
           &:before{
-            content: ' ';
-            width: 5px;
-            height: 71px;
-            position: absolute;
-            left: -2px;
-            background-color: #fff;
-            z-index: 9;
-            top: 5px;
+            // content: ' ';
+            // width: 5px;
+            // height: 71px;
+            // position: absolute;
+            // left: -2px;
+            // background-color: #fff;
+            // z-index: 9;
+            // top: 5px;
           }
         }
         &.rightBorder{
@@ -226,7 +229,7 @@ $dashedStyle: 2px dotted #dedede;
             border-top: $dashedStyle;
             position: absolute;
             left: -15px;
-            top: 70px;
+            top: 50%;
           }
           &.selected:before{
             // border-color: $blue;
