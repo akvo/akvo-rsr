@@ -27,7 +27,7 @@ const Root = ({ dispatch }) => {
         <TopBar />
         <div className="ui container">
           <Route path="/projects" exact component={Projects} />
-          <Route path="/hierarchy" exact component={Hierarchy} />
+          <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" component={Editor} />
         </div>
       </div>

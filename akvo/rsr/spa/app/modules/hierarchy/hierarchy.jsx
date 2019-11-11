@@ -1,114 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
-import { Icon } from 'antd'
+import { Icon, Spin } from 'antd'
 
 import './styles.scss'
-
-const parents = [
-  {
-    title: 'Parent program',
-    subtitle: 'Something long for a subtitle goes here and on two lines at least maybe three',
-    id: 12,
-    childrenCount: 5
-  }
-]
-const data = [
-  {
-    title: 'parent program',
-    id: 12,
-    children: [
-      {
-        title: 'some title',
-        id: 4
-      },
-      {
-        title: 'some title',
-        id: 412
-      },
-      {
-        title: 'blah',
-        id: 5,
-        children: [
-          {
-            id: 101,
-            title: 'Something',
-            countries: ['UK'],
-            children: [
-              {
-                id: 111,
-                title: 'Knight\'s tale'
-              }
-            ]
-          },
-          {
-            id: 102,
-            title: 'Something',
-            countries: ['UK']
-          }
-        ]
-      },
-      {
-        title: 'trih',
-        id: 6
-      },
-      {
-        title: 'svetih',
-        id: 7
-      },
-      {
-        id: 2,
-        title: 'Project title',
-        subtitle: 'project subtitle',
-        countries: ['India', 'Indonesia'],
-        children: [
-          {
-            id: 3,
-            title: 'Project title',
-            subtitle: 'project subtitle',
-            countries: ['Netherlands'],
-          },
-          {
-            id: 31,
-            title: 'Project title',
-            subtitle: 'project subtitle',
-            countries: ['Netherlands'],
-          },
-          {
-            id: 32,
-            title: 'Project title 2',
-            subtitle: 'project subtitle',
-            countries: ['Netherlands'],
-          },
-          {
-            id: 33,
-            title: 'Project title 3',
-            subtitle: 'project subtitle',
-            countries: ['Netherlands'],
-          },
-          {
-            id: 34,
-            title: 'Project title 3',
-            subtitle: 'project subtitle',
-            countries: ['Netherlands'],
-          }
-        ]
-      },
-      {
-        title: 'svetih 2',
-        id: 712
-      }
-    ]
-  }
-]
+import api from '../../utils/api'
 
 const Card = ({ project, selected, onClick }) => {
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.length : -1)
+  const { locations, title, subtitle } = project
   return (
     <li className={classNames('card', { selected })} onClick={onClick}>{/* eslint-disable-line */}
-      <h4>{project.title}</h4>
-      {project.subtitle && <p>{project.subtitle}</p>}
-      {project.countries && <div className="countries"><Icon type="environment" /><span>{project.countries.join(', ')}</span></div>}
-      {childrenCount !== -1 && <div className="children"><b>{childrenCount}</b> <span>child projects</span></div>}
+      <h4>{title ? title : 'Untitled project'}</h4>
+      {subtitle && <p>{subtitle}</p>}
+      <div className="footer">
+        {locations && <div className="countries"><div className="inner"><Icon type="environment" /><span>{locations.filter((item, index) => locations.findIndex(it => it.country === item.country) === index && item).map(it => it.country).join(', ')}</span></div></div>}
+        {childrenCount > 0 && <div className="children"><div className="inner"><b>{childrenCount}</b> <span>child projects</span></div></div>}
+      </div>
     </li>
   )
 }
@@ -154,28 +61,47 @@ const Column = ({ children, index, isLast }) => {
   )
 }
 
-const Hierarchy = () => {
-  const [selected, setSelected] = useState([data[0], data[0].children[5]])
+const Hierarchy = ({ match: { params } }) => {
+  const [selected, setSelected] = useState([])
   const toggleSelect = (item, colIndex) => {
     const itemIndex = selected.findIndex(it => it === item)
     if(itemIndex !== -1){
       setSelected(selected.slice(0, colIndex + 1))
-    } else if(item.children) {
+    } else if(item.children && item.children.length > 0) {
       setSelected([...(selected[colIndex] ? selected.slice(0, colIndex + 1) : selected), item])
     }
   }
+  const [programs, setPrograms] = useState([])
+  useEffect(() => {
+    if (params.projectId) {
+      api.get(`/project_hierarchy/${params.projectId}`)
+        .then(({ data }) => {
+          setSelected([data])
+          const { status, title, subtitle, id, isPublic, absoluteUrl } = data
+          const rootProgram = { status, title, subtitle, id, isPublic, absoluteUrl }
+          setPrograms([rootProgram])
+          api.get('/project_hierarchy/?limit=50')
+            .then(({ data: { results } }) => {
+              setPrograms([rootProgram, ...results])
+            })
+        })
+    }
+  }, [])
   return (
     <div className="hierarchy">
       <h2>Projects hierarchy</h2>
       <div className="board">
+        {programs.length === 0 && <Spin size="large" />}
+        {programs.length > 0 &&
         <div className="col">
           <h3>Programs</h3>
           <div className="scrollview">
             <ul>
-              {parents.map(parent => <Card project={parent} selected={selected[0].id === parent.id} />)}
+              {programs.map(parent => <Card project={parent} selected={selected[0] && selected[0].id === parent.id} />)}
             </ul>
           </div>
         </div>
+        }
         {selected.map((col, index) => {
           return (
             <Column isLast={index === selected.length - 1} index={index}>
@@ -185,12 +111,14 @@ const Hierarchy = () => {
             </Column>
           )
         })}
+        {programs.length > 0 &&
         <div className="col">
           <h3>Level {selected.length + 1} projects</h3>
           <div className="bg">
             Select a level {selected.length} project with children
           </div>
         </div>
+        }
       </div>
     </div>
   )

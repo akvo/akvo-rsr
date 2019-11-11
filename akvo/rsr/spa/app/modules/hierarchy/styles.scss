@@ -4,14 +4,26 @@ $dashedStyle: 2px dotted #dedede;
 .hierarchy{
   margin-left: -50px;
   margin-right: -50px;
+  height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
   h2{
     margin-top: 20px;
     margin-left: 50px;
   }
   .board{
+    flex: 1;
     display: flex;
     overflow-x: scroll;
     padding-left: 35px;
+    align-items: center;
+    .ant-spin{
+      position: absolute;
+      left: 50%;
+      margin-left: -25px;
+    }
+    // text-align: center;
+    // .spin
     .col{
       width: 370px;
       min-width: 370px;
@@ -67,10 +79,10 @@ $dashedStyle: 2px dotted #dedede;
         }
       }
       .card{
-        height: 140px;
+        min-height: 140px;
         border-radius: 4px;
         border: 1px solid #dedede;
-        padding: 10px 15px;
+        padding: 7px 10px 10px;
         margin-bottom: 15px;
         position: relative;
         display: flex;
@@ -81,10 +93,22 @@ $dashedStyle: 2px dotted #dedede;
         p{
           font-size: 12px;
         }
-        .countries{
+        .footer{
           margin-top: auto;
+          display: flex;
+        }
+        .countries{
           font-size: 12px;
           opacity: 0.5;
+          display: flex;
+          align-items: flex-end;
+          // justify-content: flex-end;
+          .inner{
+            display: flex;
+          }
+          .anticon{
+            transform: translateY(1px);
+          }
           span{
             transform: translateY(-1px);
             display: inline-block;
@@ -92,16 +116,24 @@ $dashedStyle: 2px dotted #dedede;
           }
         }
         .children{
+          display: flex;
+          flex-direction: column;
+          .inner{
+            margin-top: auto;
+            height: 23px;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background-color: $blue;
+            vertical-align: middle;
+          }
           text-transform: uppercase;
-          position: absolute;
-          right: 10px;
-          bottom: 10px;
+          // position: absolute;
+          // right: 10px;
+          // bottom: 10px;
+          margin-left: auto;
           font-size: 10px;
-          color: #fff;
-          padding: 2px 6px;
-          border-radius: 3px;
-          background-color: $blue;
-          vertical-align: middle;
+          white-space: nowrap;
           b{
             font-size: 12px;
           }
