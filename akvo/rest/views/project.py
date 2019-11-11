@@ -22,7 +22,8 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    TypeaheadSectorSerializer,
                                    ProjectMetadataSerializer,
                                    OrganisationCustomFieldSerializer,
-                                   ProjectHierarchySerializer,)
+                                   ProjectHierarchyRootSerializer,
+                                   ProjectHierarchyNodeSerializer,)
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
@@ -94,7 +95,7 @@ class MyProjectsViewSet(PublicProjectViewSet):
 
 class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
     queryset = Project.objects.none()
-    serializer_class = ProjectMetadataSerializer
+    serializer_class = ProjectHierarchyRootSerializer
     project_relation = ''
 
     def get_queryset(self):
@@ -114,7 +115,7 @@ class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
         if not self.request.user.has_perm('rsr.view_project', root):
             raise Http404
 
-        serializer = ProjectHierarchySerializer(root, context=self.get_serializer_context())
+        serializer = ProjectHierarchyNodeSerializer(root, context=self.get_serializer_context())
 
         return Response(serializer.data)
 

@@ -213,7 +213,21 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
                   'is_public', 'sectors', 'parent', 'editable')
 
 
-class ProjectHierarchySerializer(ProjectMetadataSerializer):
+class ProjectHierarchyRootSerializer(ProjectMetadataSerializer):
+
+    children_count = serializers.SerializerMethodField()
+
+    def get_children_count(self, obj):
+        return obj.children_all().count()
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'children_count', 'editable')
+
+
+class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     children = serializers.SerializerMethodField()
 
