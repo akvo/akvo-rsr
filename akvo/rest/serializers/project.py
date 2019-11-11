@@ -211,3 +211,47 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable')
+
+
+class ProjectHierarchySerializer(ProjectMetadataSerializer):
+
+    children = serializers.SerializerMethodField()
+
+    def get_children(self, obj):
+        serializer = ProjectMetadataSerializer(obj.descendants(), many=True, context=self.context)
+        descendants = serializer.data
+        return make_descendants_tree(descendants, obj)
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'children', 'editable')
+
+
+def make_descendants_tree(descendants, root):
+    tree = []
+    lookup = {}
+
+    for item in descendants:
+        if not item['parent']:
+            continue
+
+        item_id = item['id']
+        parent_id = item['parent']['id']
+
+        if item_id not in lookup:
+            lookup[item_id] = {'children': []}
+
+        lookup[item_id].update(item)
+        node = lookup[item_id]
+
+        if parent_id == root.id:
+            tree.append(node)
+        else:
+            if parent_id not in lookup:
+                lookup[parent_id] = {'children': []}
+
+            lookup[parent_id]['children'].append(node)
+
+    return tree

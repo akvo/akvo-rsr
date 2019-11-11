@@ -101,6 +101,8 @@ router.register(r'(?P<version>(v1))/project_update', views.ProjectUpdateViewSet,
 router.register(r'(?P<version>(v1))/project_update_location', views.ProjectUpdateLocationViewSet)
 router.register(r'(?P<version>(v1))/project_update_map_location', views.MapProjectUpdateLocationViewSet)
 
+router.register(r'(?P<version>(v1))/project_hierarchy', views.ProjectHierarchyViewSet)
+
 router.register(r'(?P<version>(v1))/publishing_status', views.PublishingStatusViewSet)
 router.register(r'(?P<version>(v1))/recipient_country', views.RecipientCountryViewSet)
 router.register(r'(?P<version>(v1))/recipient_organisation_budget', views.OrganisationRecipientOrgBudgetViewSet)
