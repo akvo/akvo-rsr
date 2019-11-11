@@ -242,9 +242,13 @@ def project_directory(request):
     page = request.rsr_page
     projects = page.projects() if page else Project.objects.all().public().published()
 
-    # Exclude projects which don't have an image or a title
-    # FIXME: This happens silently and may be confusing?
-    projects = projects.exclude(Q(title='') | Q(current_image=''))
+    if not page:
+        # Exclude projects which don't have an image or a title for RSR site
+        projects = projects.exclude(Q(title='') | Q(current_image=''))
+    else:
+        # On partner sites, all projects show up. Partners are expected to fix
+        # their data to fix their pages!
+        pass
 
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
