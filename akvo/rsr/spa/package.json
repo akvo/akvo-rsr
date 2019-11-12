@@ -46,7 +46,7 @@
     "react-hot-loader": "4.6.3",
     "react-i18next": "^10.10.0",
     "react-redux": "^6.0.1",
-    "react-router-dom": "^5.0.0",
+    "react-router-dom": "^5.1.2",
     "react-rte": "^0.16.1",
     "react-svg-inline": "^2.1.1",
     "react-time-ago": "^5.0.4",
