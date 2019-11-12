@@ -982,26 +982,23 @@ class Project(TimestampsMixin, models.Model):
         :param dephth: How "deep" we recurse. If None, drill all the way down
         :return:
         """
-        family = Project.objects.filter(pk=self.pk)
-        family_count = 1
-        while True:
-            family = Project.objects.filter(
-                related_projects__related_project__in=family,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            ) | Project.objects.filter(
-                related_to_projects__project__in=family,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            ) | family
-            if depth is None:
-                if family.distinct().count() > family_count:
-                    family_count = family.distinct().count()
-                else:
-                    return family.distinct()
-            else:
-                if family_count < depth:
-                    family_count += 1
-                else:
-                    return family.distinct()
+        family = set([self.pk])
+        search_depth = 0
+        while depth is None or search_depth < depth:
+
+            children = Project.objects.filter(
+                Q(related_projects__related_project__in=family,
+                  related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT) |
+                Q(related_to_projects__project__in=family,
+                  related_to_projects__relation=RelatedProject.PROJECT_RELATION_CHILD)
+            ).values_list('pk', flat=True)
+            if family.union(children) == family:
+                break
+
+            family = family.union(children)
+            search_depth += 1
+
+        return Project.objects.filter(pk__in=family)
 
     def ancestor(self):
         "Find a project's ancestor, i.e. the parent or the parent's parent etc..."
