@@ -9,6 +9,7 @@ const Column = ({ children, index, isLast, selected, loading }) => {
   const selectedCardRef = useRef(null)
   const nextScrollviewRef = useRef(null)
   const nextColCardsRef = useRef(null)
+  const gotoRef = useRef(null)
   const drawConnector = () => {
     if (isLast === false) {
       if (connectorRef.current && nextColCardsRef.current.length > 0) {
@@ -31,6 +32,20 @@ const Column = ({ children, index, isLast, selected, loading }) => {
     } else if (target.scrollTop < 10 && target.parentNode.previousSibling.previousSibling.classList.contains('on')) {
       target.parentNode.previousSibling.previousSibling.classList.remove('on')
     }
+    if(selectedCardRef.current){
+      if ((ulRef.current.parentNode.scrollTop + ulRef.current.parentNode.clientHeight > selectedCardRef.current.offsetTop) && (ulRef.current.parentNode.scrollTop < selectedCardRef.current.offsetTop + selectedCardRef.current.clientHeight)){
+        // inside: DO NOT SHOW
+        if (gotoRef.current.classList.contains('show')){
+          gotoRef.current.classList.remove('show')
+        }
+      }
+      else {
+        // outside: SHOW
+        if (!gotoRef.current.classList.contains('show')) {
+          gotoRef.current.classList.add('show')
+        }
+      }
+    }
     if (!isLast) drawConnector()
   }
   useEffect(() => {
@@ -47,8 +62,12 @@ const Column = ({ children, index, isLast, selected, loading }) => {
       }
     }
   }, [isLast, loading, selected])
+  const gotoSelected = () => {
+    ulRef.current.parentNode.scroll({ top: selectedCardRef.current.offsetTop - 50, behavior: 'smooth' })
+  }
   return (
     <div className="col" style={{ zIndex: 999 - index }}>
+      <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>Go to selected</div>
       <div className="shade" />
       {index > -1 && <h3>Level {index + 1} projects</h3>}
       {index === -1 && <h3>Programs</h3>}

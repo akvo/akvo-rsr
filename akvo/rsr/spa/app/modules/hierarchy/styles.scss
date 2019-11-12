@@ -60,6 +60,22 @@ $dashedStyle: 2px dotted #dedede;
         text-transform: uppercase;
         font-size: 18px;
       }
+      .go-to{
+        position: absolute;
+        right: 10px;
+        top: 6px;
+        color: $blue;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: 500;
+        cursor: pointer;
+        z-index: 2;
+        transform: translateY(-30px);
+        transition: transform .3s ease-out;
+        &.show{
+          transform: translateY(0px);
+        }
+      }
       .scrollview{
         padding-top: 5px;
         overflow-y: scroll;
