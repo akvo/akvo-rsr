@@ -1,6 +1,6 @@
+/* global window */
 import React, { useState, useEffect } from 'react'
-import classNames from 'classnames'
-import { Icon, Spin } from 'antd'
+import { Spin } from 'antd'
 import { useHistory } from 'react-router-dom'
 import PrintTemplate from 'react-print'
 
@@ -8,21 +8,8 @@ import './styles.scss'
 import api from '../../utils/api'
 import Column from './column'
 import Branch from './branch'
-
-const Card = ({ project, selected, onClick }) => {
-  const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.length : -1)
-  const { locations, title, subtitle } = project
-  return (
-    <li className={classNames('card', { selected })} onClick={onClick}>{/* eslint-disable-line */}
-      <h4>{title ? title : 'Untitled project'}</h4>
-      {subtitle && <p>{subtitle}</p>}
-      <div className="footer">
-        {locations && <div className="countries"><div className="inner"><Icon type="environment" /><span>{locations.filter((item, index) => locations.findIndex(it => it.country === item.country) === index && item).map(it => it.country).join(', ')}</span></div></div>}
-        {childrenCount > 0 && <div className="children"><div className="inner"><b>{childrenCount}</b> <span>child projects</span></div></div>}
-      </div>
-    </li>
-  )
-}
+import Card from './card'
+import FilterCountry from '../projects/filter-country'
 
 const Hierarchy = ({ match: { params } }) => {
   const [selected, setSelected] = useState([])
@@ -64,9 +51,18 @@ const Hierarchy = ({ match: { params } }) => {
         })
     }
   }, [params.projectId])
+  const handleFilter = (country) => {
+    console.log(country)
+  }
   return (
     <div className="hierarchy">
-      <h2>Projects hierarchy</h2>
+      <div className="topbar-row">
+        <h2>Projects hierarchy</h2>
+        <div className="filters">
+          <span>Filter:</span>
+          <FilterCountry onChange={handleFilter} />
+        </div>
+      </div>
       <div id="react-no-print">
       <div className="board">
         {loading && <Spin size="large" />}
@@ -95,9 +91,11 @@ const Hierarchy = ({ match: { params } }) => {
       </div>
       </div>
       <div id="print-mount">
+        {selected[0] &&
         <PrintTemplate>
           <Branch item={selected[0]} level={0} />
         </PrintTemplate>
+        }
       </div>
     </div>
   )

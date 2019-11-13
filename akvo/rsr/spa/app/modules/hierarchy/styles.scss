@@ -7,14 +7,11 @@ $dashedStyle: 2px dotted #dedede;
   height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
-  h2{
-    margin-top: 20px;
-    margin-left: 50px;
-  }
   .board{
     flex: 1;
     display: flex;
     overflow-x: scroll;
+    overflow-y: hidden;
     padding-left: 35px;
     align-items: center;
     .ant-spin{
@@ -80,7 +77,7 @@ $dashedStyle: 2px dotted #dedede;
         padding-top: 5px;
         overflow-y: scroll;
         overflow-x: hidden;
-        height: calc(100vh - 180px);
+        height: calc(100vh - 175px);
         &::-webkit-scrollbar
         {
           width: 0px;
@@ -172,15 +169,6 @@ $dashedStyle: 2px dotted #dedede;
             right: -15px;
             top: 50%;
           }
-          h4:after{
-            // content: " ";
-            // position: absolute;
-            // right: -16px;
-            // width: 1px;
-            // height: 280px;
-            // border-right: 2px dotted #dedede;
-            // bottom: 67px;
-          }
         }
       }
       &:not(:nth-of-type(1)){
@@ -189,53 +177,13 @@ $dashedStyle: 2px dotted #dedede;
           position: relative;
           background: #fff;
           ul{
-            // border-left: $dashedStyle;
             position: relative;
-            &:after{
-              // content: ' ';
-              // width: 5px;
-              // height: 70px;
-              // position: absolute;
-              // left: -2px;
-              // background-color: #fff;
-              // z-index: 99;
-              // bottom: -3px;
-            }
-            // &:before{
-            //   left: auto;
-            //   right: -2px;
-            // }
-          }
-          &:before{
-            // content: ' ';
-            // width: 5px;
-            // height: 71px;
-            // position: absolute;
-            // left: -2px;
-            // background-color: #fff;
-            // z-index: 9;
-            // top: 5px;
           }
         }
         &.rightBorder{
-          // margin-right: -2px;
           .scrollview{
             margin-right: -2px;
             background: transparent!important;
-          }
-          .scrollview ul{
-            // border-right: $dashedStyle;
-            // padding-right: 17px;
-          }
-          &:before{
-            // content: ' ';
-            // width: 5px;
-            // height: 71px;
-            // position: absolute;
-            // right: -2px;
-            // background-color: #fff;
-            // z-index: 9;
-            // top: 42px;
           }
         }
         .card{
@@ -247,9 +195,6 @@ $dashedStyle: 2px dotted #dedede;
             left: -15px;
             top: 50%;
           }
-          &.selected:before{
-            // border-color: $blue;
-          }
         }
       }
       .bg{
@@ -258,6 +203,24 @@ $dashedStyle: 2px dotted #dedede;
         height: calc(100vh - 200px);
         text-align: center;
         padding-top: 50px;
+      }
+    }
+  }
+  .topbar-row{
+    display: flex;
+    margin-top: 5px;
+    margin-right: 50px;
+    margin-left: 50px;
+    border-bottom: 1px solid #dedede;
+    margin-bottom: 14px;
+    @media print{
+      display: none;
+    }
+    .filters{
+      margin-left: auto;
+      .ant-select{
+        margin-left: 10px;
+        min-width: 150px;
       }
     }
   }
@@ -286,30 +249,27 @@ $dashedStyle: 2px dotted #dedede;
         margin-bottom: 3px;
       }
       .countries{
+        position: absolute;
+        right: 0px;
+        bottom: 5px;
+        opacity: 0.5;
         .anticon{
           margin-right: 5px;
         }
-        opacity: 0.5;
         span{
           font-size: 12px;
-          // text-transform: uppercase;
         }
       }
       &:not(.level-0){
         padding-left: 30px;
       }
       .content{
+        page-break-inside: avoid;
         border-bottom: 1px solid #dedede;
         line-height: 30px;
         padding: 0 10px;
         margin-bottom: -1px;
         position: relative;
-        // display: flex;
-      }
-      .countries{
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
       }
     }
   }

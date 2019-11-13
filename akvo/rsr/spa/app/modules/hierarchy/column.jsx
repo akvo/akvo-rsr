@@ -33,7 +33,7 @@ const Column = ({ children, index, isLast, selected, loading }) => {
       target.parentNode.previousSibling.previousSibling.classList.remove('on')
     }
     if(selectedCardRef.current){
-      if ((ulRef.current.parentNode.scrollTop + ulRef.current.parentNode.clientHeight > selectedCardRef.current.offsetTop) && (ulRef.current.parentNode.scrollTop < selectedCardRef.current.offsetTop + selectedCardRef.current.clientHeight)){
+      if ((ulRef.current.parentNode.scrollTop + ulRef.current.parentNode.clientHeight >= selectedCardRef.current.offsetTop) && (ulRef.current.parentNode.scrollTop <= selectedCardRef.current.offsetTop + selectedCardRef.current.clientHeight)){
         // inside: DO NOT SHOW
         if (gotoRef.current.classList.contains('show')){
           gotoRef.current.classList.remove('show')
