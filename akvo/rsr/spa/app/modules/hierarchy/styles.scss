@@ -103,11 +103,34 @@ $dashedStyle: 2px dotted #dedede;
         position: relative;
         display: flex;
         flex-direction: column;
+        // overflow: hidden;
         h4{
           font-size: 16px;
         }
         p{
           font-size: 12px;
+        }
+        .link-holder{
+          position: absolute;
+          right: 0px;
+          top: 0px;
+          z-index: 2;
+          width: 50px;
+          height: 50px;
+          overflow: hidden;
+        }
+        .ant-btn{
+          margin-top: 10px;
+          margin-right: 10px;
+          transform: translateX(50px);
+          transition: transform .2s ease-out;
+          width: 40px;
+          font-size: 20px;
+        }
+        &:hover{
+          .ant-btn{
+            transform: translateX(0);
+          }
         }
         .footer{
           margin-top: auto;
@@ -215,6 +238,10 @@ $dashedStyle: 2px dotted #dedede;
     margin-bottom: 14px;
     @media print{
       display: none;
+    }
+    .ant-spin{
+      margin-left: 20px;
+      margin-top: 7px;
     }
     .filters{
       margin-left: auto;

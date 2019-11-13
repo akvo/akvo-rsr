@@ -60,6 +60,9 @@ const Column = ({ children, index, isLast, selected, loading }) => {
           nextScrollviewRef.current.addEventListener('scroll', drawConnector)
         }
       }
+    } else {
+      connectorRef.current.style.height = '0px'
+      selectedCardRef.current = null
     }
   }, [isLast, loading, selected])
   const gotoSelected = () => {

@@ -1,12 +1,14 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { Icon, Button } from 'antd'
 import classNames from 'classnames'
+import ConditionalLink from '../projects/conditional-link'
 
 const Card = ({ project, selected, onClick }) => {
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.length : -1)
   const { locations, title, subtitle } = project
   return (
     <li className={classNames('card', { selected })} onClick={onClick}>{/* eslint-disable-line */}
+      <div className="link-holder"><ConditionalLink record={project}><Button size="large" type="primary" icon="export" onClick={e => e.stopPropagation()} /></ConditionalLink></div>
       <h4>{title ? title : 'Untitled project'}</h4>
       {subtitle && <p>{subtitle}</p>}
       <div className="footer">

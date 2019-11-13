@@ -1,6 +1,5 @@
-/* global window */
 import React, { useState, useEffect } from 'react'
-import { Spin } from 'antd'
+import { Spin, Icon } from 'antd'
 import { useHistory } from 'react-router-dom'
 import PrintTemplate from 'react-print'
 
@@ -35,9 +34,19 @@ const Hierarchy = ({ match: { params } }) => {
     if (params.projectId) {
       api.get(`/project_hierarchy/${params.projectId}`)
         .then(({ data }) => {
-          setSelected([data])
+          const _selected = [data]
+          if(params.projectId !== data.id){
+            // find and select the child project
+            console.log(data)
+            // data.children.forEach(child => {
+            //   if(child.id === params.projectId){
+            //   }
+            // })
+          }
+          setSelected(_selected)
           const { status, title, subtitle, id, isPublic, absoluteUrl } = data
           const rootProgram = { status, title, subtitle, id, isPublic, absoluteUrl }
+          rootProgram.childrenCount = data.children ? data.children.length : 0
           if(programs.length === 0){
             setPrograms([rootProgram])
             api.get('/project_hierarchy/?limit=50')
@@ -58,6 +67,7 @@ const Hierarchy = ({ match: { params } }) => {
     <div className="hierarchy">
       <div className="topbar-row">
         <h2>Projects hierarchy</h2>
+        {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
         <div className="filters">
           <span>Filter:</span>
           <FilterCountry onChange={handleFilter} />
@@ -65,13 +75,12 @@ const Hierarchy = ({ match: { params } }) => {
       </div>
       <div id="react-no-print">
       <div className="board">
-        {loading && <Spin size="large" />}
         {programs.length > 0 &&
         <Column isLast={selected.length === 0} loading={loading} selected={selected} index={-1}>
           {programs.map(parent => <Card onClick={() => selectProgram(parent)} project={parent} selected={selected[0] && selected[0].id === parent.id} />)}
         </Column>
         }
-        {!loading && selected.map((col, index) => {
+        {selected.map((col, index) => {
           return (
             <Column isLast={index === selected.length - 1} loading={loading} selected={selected} index={index}>
               {col.children.map(item =>
@@ -80,7 +89,7 @@ const Hierarchy = ({ match: { params } }) => {
             </Column>
           )
         })}
-        {(programs.length && !loading) > 0 &&
+        {programs.length > 0 &&
         <div className="col">
           <h3>Level {selected.length + 1} projects</h3>
           <div className="bg">
