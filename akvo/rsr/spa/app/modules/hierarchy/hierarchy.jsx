@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { Icon, Spin } from 'antd'
 import { useHistory } from 'react-router-dom'
+import PrintTemplate from 'react-print'
 
 import './styles.scss'
 import api from '../../utils/api'
 import Column from './column'
+import Branch from './branch'
 
 const Card = ({ project, selected, onClick }) => {
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.length : -1)
@@ -65,6 +67,7 @@ const Hierarchy = ({ match: { params } }) => {
   return (
     <div className="hierarchy">
       <h2>Projects hierarchy</h2>
+      <div id="react-no-print">
       <div className="board">
         {loading && <Spin size="large" />}
         {programs.length > 0 &&
@@ -89,6 +92,12 @@ const Hierarchy = ({ match: { params } }) => {
           </div>
         </div>
         }
+      </div>
+      </div>
+      <div id="print-mount">
+        <PrintTemplate>
+          <Branch item={selected[0]} level={0} />
+        </PrintTemplate>
       </div>
     </div>
   )
