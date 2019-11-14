@@ -1,4 +1,4 @@
-$blue: #4593f4;
+$blue: #3f90f7;
 $dashedStyle: 2px dotted #dedede;
 
 .hierarchy{
@@ -114,21 +114,24 @@ $dashedStyle: 2px dotted #dedede;
         }
         .link-holder{
           position: absolute;
-          right: 0px;
-          top: 0px;
+          right: -1px;
+          top: -1px;
           z-index: 2;
-          width: 50px;
-          height: 50px;
+          width: 36px;
+          height: 40px;
           overflow: hidden;
         }
         .ant-btn{
-          margin-top: 10px;
-          margin-right: 10px;
+          margin-top: 0px;
+          margin-right: 0px;
           transform: translateX(50px);
           transition: transform .2s ease-out;
-          width: 40px;
-          font-size: 20px;
-          opacity: 0.75;
+          // width: 40px;
+          font-size: 18px;
+          // opacity: 0.75;
+          border-top-left-radius: 0px;
+          border-bottom-right-radius: 0px;
+          border-top-right-radius: 3px;
           &:hover{
             opacity: 1;
           }
@@ -165,24 +168,25 @@ $dashedStyle: 2px dotted #dedede;
           flex-direction: column;
           .inner{
             margin-top: auto;
-            height: 23px;
-            color: #fff;
+            height: 24px;
+            color: $blue;
             padding: 2px 6px;
-            border-radius: 3px;
-            background-color: $blue;
+            border-radius: 4px;
+            border: 1px solid $blue;
             vertical-align: middle;
             display: flex;
           }
           .filtered{
-            background-color: #717171;
+            background-color: $blue;
+            color: #fff;
             margin-left: -6px;
-            line-height: 24px;
+            line-height: 22px;
             border-top-left-radius: 3px;
             border-bottom-left-radius: 3px;
             margin-top: -2px;
             padding: 0 7px;
             height: 23px;
-            font-size: 11px;
+            font-size: 13px;
             margin-right: 5px;
           }
           text-transform: uppercase;
@@ -195,6 +199,10 @@ $dashedStyle: 2px dotted #dedede;
           span span{
             opacity: 0.75;
           }
+        }
+        &.referenced{
+          border-color: $blue;
+          box-shadow: 0 0 3px $blue;
         }
         &.selected{
           border-color: $blue;
@@ -252,14 +260,14 @@ $dashedStyle: 2px dotted #dedede;
     margin-left: 50px;
     border-bottom: 1px solid #dedede;
     margin-bottom: 14px;
-    @media print{
-      display: none;
-    }
     .ant-spin{
       margin-left: 20px;
       margin-top: 7px;
     }
     .filters{
+      @media print{
+        display: none;
+      }
       margin-left: auto;
       .ant-select{
         margin-left: 10px;
@@ -268,6 +276,13 @@ $dashedStyle: 2px dotted #dedede;
     }
   }
   @media print{
+    .topbar-row{
+      margin-left: 0;
+      margin-right: 0;
+      border: none;
+      margin: 0;
+      justify-content: flex-end;
+    }
     margin-left: 0px;
     margin-right: 0px;
     margin-bottom: 30px;

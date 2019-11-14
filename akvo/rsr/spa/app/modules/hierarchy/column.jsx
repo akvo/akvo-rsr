@@ -61,6 +61,12 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter }) =
       selectedCardRef.current = null
     }
   }, [isLast, loading, selected, countryFilter])
+  useEffect(() => {
+    const referenced = ulRef.current.getElementsByClassName('referenced')
+    if(referenced.length > 0){
+      ulRef.current.parentNode.scroll({ top: referenced[0].offsetTop - 50, behavior: 'smooth' })
+    }
+  }, [])
   const gotoSelected = () => {
     ulRef.current.parentNode.scroll({ top: selectedCardRef.current.offsetTop - 50, behavior: 'smooth' })
   }

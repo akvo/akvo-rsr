@@ -38,16 +38,21 @@ const Hierarchy = ({ match: { params } }) => {
           const _selected = [data]
           if(params.projectId !== data.id){
             // find and select the child project
-            console.log(data)
-            // data.children.forEach(child => {
-            //   if(child.id === params.projectId){
-            //   }
-            // })
+            data.children.forEach(child => {
+              if(child.id === Number(params.projectId)){
+                child.referenced = true
+              } else if(child.children) {
+                child.children.forEach(grandchild => {
+                  if(grandchild.id === Number(params.projectId)){
+                    _selected.push(child)
+                    child.referenced = true
+                    grandchild.referenced = true
+                  }
+                })
+              }
+            })
           }
           setSelected(_selected)
-          // const { status, title, subtitle, id, isPublic, absoluteUrl } = data
-          // const rootProgram = { status, title, subtitle, id, isPublic, absoluteUrl }
-          // rootProgram.childrenCount = data.children ? data.children.length : 0
           if(programs.length === 0){
             setPrograms([data])
             api.get('/project_hierarchy/?limit=50')
@@ -105,7 +110,7 @@ const Hierarchy = ({ match: { params } }) => {
             </Column>
           )
         })}
-        {programs.length > 0 &&
+        {(programs.length > 0 && selected.length < 2) &&
         <div className="col">
           <h3>Level {selected.length + 1} projects</h3>
           <div className="bg">
