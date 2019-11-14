@@ -14,66 +14,11 @@ import InputLabel from '../../../../utils/input-label'
 import Accordion from '../../../../utils/accordion'
 import AutoSave from '../../../../utils/auto-save'
 import { addSetItem, removeSetItem } from '../../actions'
+import Targets from './targets'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
-
-class _DimensionTargets extends React.Component{
-  shouldComponentUpdate(prevProps){
-    const { resultIndex, indicatorIndex } = this.props
-    const path = `results[${resultIndex}].indicators[${indicatorIndex}].dimensionNames`
-    return !isEqual(get(prevProps, path), get(this.props, path)) || prevProps.periodId !== this.props.periodId
-  }
-  render(){
-    const { resultIndex, indicatorIndex, indicatorId, periodIndex, periodId, fieldName, formPush } = this.props
-    const path = `results[${resultIndex}].indicators[${indicatorIndex}]`
-    const indicator = get(this.props, path)
-    if(!indicator){
-      return null
-    }
-    const { dimensionNames } = indicator
-    let period = indicator.periods[periodIndex]
-    if(period === undefined){
-      period = { indicator: indicatorId }
-    }
-    if(!period.disaggregationTargets) period.disaggregationTargets = []
-    if (!dimensionNames || dimensionNames.length === 0) return null
-    let newIndex = period.disaggregationTargets.length - 1
-    console.log('render', new Date())
-    return (
-      <div className="disaggregation-targets">
-        {dimensionNames.map(dimension => (
-          <div className="disaggregation-target">
-            <div className="ant-col ant-form-item-label target-name">Target value: <b>{dimension.name}</b></div>
-            {dimension.values.map(value => {
-              let targetIndex = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-              if (targetIndex === -1 && periodId) {
-                newIndex += 1
-                targetIndex = newIndex
-              }
-              // reducer updates values and overrides FinalForm's values. Next few lines prevent this
-              setTimeout(() => {
-                const targetIndex1 = period.disaggregationTargets.findIndex(it => it.dimensionValue === value.id)
-                if (targetIndex1 === -1 && periodId) {
-                  formPush(`${fieldName}.disaggregationTargets`, { period: periodId, dimensionValue: value.id })
-                }
-              }, 100)
-              return (
-                <div className="value-row">
-                  <AutoSave sectionIndex={5} setName={`${fieldName}.disaggregationTargets`} itemIndex={targetIndex} />
-                  <div className="ant-col ant-form-item-label">{value.value}</div>
-                  <FinalField disabled={!periodId} name={`${fieldName}.disaggregationTargets[${targetIndex}].value`} />
-                </div>
-              )
-            })}
-          </div>
-        ))}
-      </div>
-    )
-  }
-}
-const DimensionTargets = connect(({ editorRdr: { section5: { fields: {results} } } }) => ({ results }))(_DimensionTargets)
 
 const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex }) => { // eslint-disable-line
   const { t } = useTranslation()
@@ -152,48 +97,52 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                 <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Item label={t('Start')}>
-                      <Field
-                        name={`${name}.periodEnd`}
-                        render={({ input }) => (
-                          <FinalField
-                            name={`${name}.periodStart`}
-                            control="datepicker"
-                            disabled={primaryOrganisation === 3394}
-                            disabledDate={(date) => {
-                              const endDate = moment(input.value, 'DD/MM/YYYY')
-                              if (!endDate.isValid()) return false
-                              return date.valueOf() > endDate.valueOf()
-                            }}
-                          />
-                        )}
-                      />
-                    </Item>
+                    <Field
+                      name={`${name}.periodEnd`}
+                      render={({ input }) => (
+                        <FinalField
+                          name={`${name}.periodStart`}
+                          control="datepicker"
+                          disabled={primaryOrganisation === 3394}
+                          disabledDate={(date) => {
+                            const endDate = moment(input.value, 'DD/MM/YYYY')
+                            if (!endDate.isValid()) return false
+                            return date.valueOf() > endDate.valueOf()
+                          }}
+                          withLabel
+                          dict={{ label: t('Start') }}
+                        />
+                      )}
+                    />
                   </Col>
                   <Col span={12}>
-                    <Item label={t('End')}>
-                      <Field
-                        name={`${name}.periodStart`}
-                        render={({ input }) => (
-                          <FinalField
-                            name={`${name}.periodEnd`}
-                            control="datepicker"
-                            disabled={primaryOrganisation === 3394}
-                            disabledDate={(date) => {
-                              const startDate = moment(input.value, 'DD/MM/YYYY')
-                              if (!startDate.isValid()) return false
-                              return date.valueOf() < startDate.valueOf()
-                            }}
-                          />
-                        )}
-                      />
-                    </Item>
+                    <Field
+                      name={`${name}.periodStart`}
+                      render={({ input }) => (
+                        <FinalField
+                          name={`${name}.periodEnd`}
+                          control="datepicker"
+                          disabled={primaryOrganisation === 3394}
+                          disabledDate={(date) => {
+                            const startDate = moment(input.value, 'DD/MM/YYYY')
+                            if (!startDate.isValid()) return false
+                            return date.valueOf() < startDate.valueOf()
+                          }}
+                          withLabel
+                          dict={{ label: t('End')}}
+                        />
+                      )}
+                    />
                   </Col>
                 </Row>
-                <Item label={<InputLabel optional>{t('Target value')}</InputLabel>}>
-                  <FinalField name={`${name}.targetValue`} />
-                </Item>
-                <Field name={`${name}.id`} render={({ input }) => <DimensionTargets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
+                <FinalField
+                  name={`${name}.targetValue`}
+                  control="input"
+                  withLabel
+                  optional
+                  dict={{ label: t('Target value') }}
+                />
+                <Field name={`${name}.id`} render={({ input }) => <Targets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
                 <Item label={<InputLabel optional>{t('Comment')}</InputLabel>}>
                   <FinalField name={`${name}.targetComment`} render={({ input }) => <RTE {...input} />} />
                 </Item>

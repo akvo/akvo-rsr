@@ -166,6 +166,7 @@
       .ant-btn-group{
         margin-right: -125px;
         transition: all .3s ease-out;
+        display: flex;
         .ant-btn{
           margin-right: 0;
           &.delete-panel{
@@ -383,6 +384,12 @@
       margin-left: 10px;
       flex: 1;
     }
+    .ant-row.ant-form-item{
+      margin-bottom: 0;
+      .ant-form-item-label{
+        display: none;
+      }
+    }
     .ant-input{
       // width: 140px;
       flex: 1;
@@ -390,9 +397,13 @@
     }
   }
 }
-.taxonomy-modal{
-}
 .collapse-header-content{
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.indicator-min-required{
+  margin-left: 15px;
+}
+.results-min-required{
+  margin-bottom: 0;
 }

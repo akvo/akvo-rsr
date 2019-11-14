@@ -18,6 +18,8 @@ import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
 import api from '../../../utils/api'
+import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
+import validationDefs from './results/validations'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -30,11 +32,11 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, {addSetItem, removeSetItem})(
-  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex }) => { // eslint-disable-line
+  ({ fieldName, formPush, addSetItem, removeSetItem, resultId, resultIndex, primaryOrganisation, projectId, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations }) => { // eslint-disable-line
   const { t } = useTranslation()
   const accordionCompRef = useRef()
   const add = (key) => {
-    const newItem = { type: key, periods: [] }
+    const newItem = { type: key, periods: [], measure: '1', ascending: true, exportToIati: true }
     if(key === 1) newItem.dimensionNames = []
     if(resultId) newItem.result = resultId
     formPush(`${fieldName}.indicators`, newItem)
@@ -64,6 +66,8 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,
     })
   }
+  const validationSets = getValidationSets(validations, validationDefs)
+  const isOptional = isFieldOptional(validationSets)
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -139,21 +143,22 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
             >
               <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
               <div id={`${fieldNameToId(name)}-info`} />
-              <Item label={<InputLabel optional tooltip={t('Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.')}>{t('Title')}</InputLabel>}>
-                <FinalField
-                  name={`${name}.title`}
-                  control="textarea"
-                  autosize
-                />
-              </Item>
+              <FinalField
+                name={`${name}.title`}
+                control="textarea"
+                autosize
+                withLabel
+                optional={isOptional}
+                dict={{ label: t('Title'), tooltip: t('Within each result indicators can be defined. Indicators should be items that can be counted and evaluated as the project continues and is completed.') }}
+              />
               <Condition when={`${name}.type`} is={1}>
                 <Row gutter={16}>
                   <Col span={12}>
                     <Item label={<InputLabel tooltip={t('Choose how the indicator will be measured (in percentage or units).')}>{t('Measure')}</InputLabel>}>
                       <FinalField
                         name={`${name}.measure`}
-                        render={({input}) => (
-                          <Radio.Group {...input}>
+                        render={({ input, validateStatus }) => (
+                          <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : null}>
                             <Radio.Button value="1">{t('Unit')}</Radio.Button>
                             <Radio.Button value="2">{t('Percentage')}</Radio.Button>
                           </Radio.Group>
@@ -181,9 +186,22 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                   </Col>
                 </Row>
               </Condition>
-              <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>}>
-                <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
-              </Item>
+              <div style={{ display: 'flex' }}>
+                <Item label={<InputLabel optional tooltip={t('You can provide further information of the indicator here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
+                  <FinalField name={`${name}.description`} render={({input}) => <RTE {...input} />} />
+                </Item>
+                <Item label={t('Include in IATI export')} style={{ marginLeft: 16 }}>
+                  <FinalField
+                    name={`${name}.exportToIati`}
+                    render={({input}) => (
+                      <Radio.Group {...input}>
+                        <Radio.Button value={true}>{t('Yes')}</Radio.Button>
+                        <Radio.Button value={false}>{t('No')}</Radio.Button>
+                      </Radio.Group>
+                    )}
+                  />
+                </Item>
+              </div>
               <Condition when={`${name}.type`} isNot={1}>
                 {allowIndicatorLabels && <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />}
               </Condition>
@@ -198,14 +216,22 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               <div id={`${fieldNameToId(name)}-baseline`} />
               <Row gutter={15}>
                 <Col span={12}>
-                  <Item label={<InputLabel optional>{t('Baseline year')}</InputLabel>}>
-                    <FinalField name={`${name}.baselineYear`} />
-                  </Item>
+                  <FinalField
+                    name={`${name}.baselineYear`}
+                    control="input"
+                    withLabel
+                    optional={isOptional}
+                    dict={{ label: t('Baseline year') }}
+                  />
                 </Col>
                 <Col span={12}>
-                  <Item label={<InputLabel optional>{t('Baseline value')}</InputLabel>}>
-                  <FinalField name={`${name}.baselineValue`} />
-                  </Item>
+                  <FinalField
+                    name={`${name}.baselineValue`}
+                    control="input"
+                    withLabel
+                    optional={isOptional}
+                    dict={{ label: t('Baseline value') }}
+                  />
                 </Col>
               </Row>
               <Item label={<InputLabel optional>{t('Baseline comment')}</InputLabel>}>

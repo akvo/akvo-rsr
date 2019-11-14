@@ -12,8 +12,8 @@ import AutoSave from '../../../utils/auto-save'
 import InputLabel from '../../../utils/input-label'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import CHANNEL_CODES from './channel-codes.json'
-import FlagsStack from './comp/flags-stack'
-import ForecastsStack from './comp/forecasts-stack'
+import FlagsStack from './flags/flags-stack'
+import ForecastsStack from './forecasts/forecasts-stack'
 import LegaciesStack from './comp/legacies-stack'
 import './styles.scss'
 import SectionContext from '../section-context';
@@ -276,13 +276,13 @@ const Reporting = ({ fields, projectId }) => {
                 <FlagsStack formPush={push} crsParent={fields.crs[0]} />
                 <Divider />
                 <h3>FSS</h3>
-                <Item label={<InputLabel tooltip={t('The exact date when the information was collected or extracted from donors\' aid management systems.')}>{t('extraction date')}</InputLabel>}>
-                  <FinalField
-                    name="fss[0].extractionDate"
-                    style={{ display: 'block' }}
-                    control="datepicker"
-                  />
-                </Item>
+                <FinalField
+                  name="fss[0].extractionDate"
+                  style={{ display: 'block' }}
+                  control="datepicker"
+                  withLabel
+                  dict={{ label: t('extraction date'), tooltip: t('The exact date when the information was collected or extracted from donors\' aid management systems.') }}
+                />
                 <FinalField
                   name="fss[0].phaseoutYear"
                   control="input"

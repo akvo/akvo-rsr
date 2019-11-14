@@ -221,7 +221,6 @@ var ProjectDirectory = React.createClass({
             allProjects = this.props.i18n.all_projects_text,
             allUpdates = this.props.i18n.all_updates_text;
 
-
         return (
             <section className="main-list projects">
                 <div className="container-fluid">
@@ -253,8 +252,8 @@ var ProjectDirectory = React.createClass({
                         >
                             <p className="text-center listMsg">{listMsg}</p>
                             <p className="submenu-footer-stead">
-                              <a href="/en/projects">{allProjects}</a>
-                              <a href="/en/updates">{allUpdates}</a>
+                                <a href="/en/projects">{allProjects}</a>
+                                <a href="/en/updates">{allUpdates}</a>
                             </p>
                             <ul className="projectListUl group">
                                 {this.props.projects.map(function(project) {
@@ -468,6 +467,52 @@ var SearchBar = React.createClass({
                 />
             );
         };
+        var create_custom_filter_options = function(custom_filter) {
+            let options = [];
+            const create_item = (option, id, parent_item) => {
+                const level = parent_item === undefined ? 0 : parent_item.level + 1;
+                const item = {
+                    label: option.name,
+                    filterBy:
+                        parent_item === undefined
+                            ? option.name
+                            : `${parent_item.filterBy} {option.name}`,
+                    id: parent_item === undefined ? id : `${parent_item.id}__${id}`,
+                    level: level,
+                    indent: level * 4
+                };
+                options.push(item);
+                if (option.options) {
+                    option.options.map((sub_option, sub_id) => {
+                        create_item(sub_option, sub_id, item);
+                    });
+                }
+                return item;
+            };
+
+            custom_filter.dropdown_options.options.forEach((option, index) => {
+                create_item(option, index);
+            });
+            return options;
+        };
+        var create_custom_filter = function(custom_filter) {
+            const display_name = custom_filter.name;
+            const filter_name = `custom_field__${custom_filter.id}`;
+            const options = create_custom_filter_options(custom_filter);
+            console.log(options);
+            return (
+                <Filter
+                    ref={filter_name}
+                    key={filter_name}
+                    options={options}
+                    name={filter_name}
+                    display_name={display_name}
+                    selected={[]}
+                    onChange={this.props.onChange}
+                    disabled={this.props.disabled}
+                />
+            );
+        };
         var reset_button = _.isEmpty(
             _.pick(this.props.selected, "location", "organisation", "sector", "title_or_subtitle")
         ) ? (
@@ -494,6 +539,7 @@ var SearchBar = React.createClass({
                     <div id="filter-wrapper col-sm-12 col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2">
                         <div>
                             {this.props.filters.map(create_filter, this)}
+                            {this.props.options.custom_fields.map(create_custom_filter, this)}
                             {reset_button}
                         </div>
                     </div>
@@ -510,7 +556,8 @@ var App = React.createClass({
             keyword: [],
             location: [],
             organisation: [],
-            sector: []
+            sector: [],
+            custom_fields: []
         };
         var urlState = this.getStateFromUrl();
         var state = {

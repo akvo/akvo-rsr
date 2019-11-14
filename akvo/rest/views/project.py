@@ -18,11 +18,12 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    ProjectDirectorySerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadSectorSerializer,
-                                   ProjectMetadataSerializer,)
+                                   ProjectMetadataSerializer,
+                                   OrganisationCustomFieldSerializer,)
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
@@ -242,13 +243,19 @@ def project_directory(request):
     page = request.rsr_page
     projects = page.projects() if page else Project.objects.all().public().published()
 
-    # Exclude projects which don't have an image or a title
-    # FIXME: This happens silently and may be confusing?
-    projects = projects.exclude(Q(title='') | Q(current_image=''))
+    if not page:
+        # Exclude projects which don't have an image or a title for RSR site
+        projects = projects.exclude(Q(title='') | Q(current_image=''))
+    else:
+        # On partner sites, all projects show up. Partners are expected to fix
+        # their data to fix their pages!
+        pass
 
     # Filter projects based on query parameters
     filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
+    projects = _filter_by_custom_fields(request, projects)
+
     # NOTE: The text filter is handled differently/separately from the other filters.
     # The text filter allows users to enter free form text, which could result in no
     # projects being found for the given text. Other fields only allow selecting from
@@ -309,13 +316,19 @@ def project_directory(request):
     cached_organisations, _ = get_cached_data(
         request, 'organisations', organisations, TypeaheadOrganisationSerializer
     )
-
+    custom_fields = (
+        OrganisationCustomField.objects.filter(type='dropdown',
+                                               organisation=page.organisation,
+                                               show_in_searchbar=True)
+        if page else []
+    )
     response = {
         'project_count': count,
         'projects': cached_projects,
         'showing_cached_projects': showing_cached_projects,
         'organisation': cached_organisations,
         'sector': TypeaheadSectorSerializer(sectors, many=True).data,
+        'custom_fields': OrganisationCustomFieldSerializer(custom_fields, many=True).data,
         'location': cached_locations,
         'page_size_default': settings.PROJECT_DIRECTORY_PAGE_SIZES[0],
     }
@@ -352,3 +365,41 @@ def _create_filters_query(request):
     ]
     filters = filter(None, all_filters)
     return reduce(lambda x, y: x & y, filters) if filters else None, title_or_subtitle_filter
+
+
+def _filter_by_custom_fields(request, projects):
+    for custom_field_query in request.GET:
+        if not custom_field_query.startswith('custom_field__'):
+            continue
+
+        value = request.GET.get(custom_field_query)
+        try:
+            org_custom_field_id = int(custom_field_query.split('__', 1)[-1])
+            org_custom_field = OrganisationCustomField.objects.get(pk=org_custom_field_id)
+        except (OrganisationCustomField.DoesNotExist, ValueError):
+            continue
+
+        if org_custom_field.type != 'dropdown':
+            filter_ = Q(custom_fields__name=org_custom_field.name, custom_fields__value=value)
+        else:
+            dropdown_options = org_custom_field.dropdown_options['options']
+            selection = _get_selection(dropdown_options, value)
+            filter_ = Q(custom_fields__name=org_custom_field.name,
+                        custom_fields__dropdown_selection__contains=selection)
+        projects = projects.filter(filter_)
+
+    return projects
+
+
+def _get_selection(options, value):
+    if isinstance(value, basestring):
+        print(value)
+        indexes = map(int, value.split('__'))
+    else:
+        indexes = value
+
+    selection = options[indexes[0]]
+    sub_options = selection.pop('options', [])
+    if sub_options and indexes[1:]:
+        selection['options'] = _get_selection(sub_options, indexes[1:])
+    return [selection]

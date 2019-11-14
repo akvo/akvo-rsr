@@ -17,7 +17,7 @@ const Aux = node => node.children
 
 let intid
 
-const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, disabled, dict }) => {
+const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, disabled, dict, optional }) => {
   const { t } = useTranslation()
   const inputRef = useRef()
   const nameInputRef = useRef()
@@ -72,11 +72,10 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
                 ? ((!meta.active && state.searchStr.length === 0 && input.value !== '') ? [{ value: input.value, label: orgs.find(it => it.id === input.value).name }] : state.options)
                 : [{ value: input.value, label: nameProps.input.value }]
             return (
-              <Item validateStatus={validateStatus} label={<InputLabel tooltip={dict.tooltip}>{dict.label}</InputLabel>}>
+              <Item validateStatus={validateStatus} label={<InputLabel tooltip={dict.tooltip} optional={optional}>{dict.label}</InputLabel>}>
               <Select
                 {...input}
                 onChange={(val) => {
-                  console.log(val)
                   setState({ searchStr: '', options: [] })
                   input.onChange(val)
                   nameProps.input.onChange($options.find(it => it.value === val).label)

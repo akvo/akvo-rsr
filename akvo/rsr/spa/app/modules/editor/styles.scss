@@ -324,6 +324,9 @@ hr{
 
 .view {
   padding-top: 20px;
+  &.custom-fields{
+    padding-top: 0;
+  }
 
   .ant-btn.bottom-btn{
     margin-bottom: 30px;

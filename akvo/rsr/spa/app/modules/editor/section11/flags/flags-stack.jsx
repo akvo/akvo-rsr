@@ -29,22 +29,24 @@ const FlagsStack = ({ formPush, crsParent }) => {
       formPush={formPush}
       panel={name => (
         <div className="channel-code-inputs">
-          <Item label={<InputLabel tooltip={t('An IATI code describing the equivalent CRS++ columns. See the <a href="http://iatistandard.org/202/codelists/CRSAddOtherFlags/" target="_blank">IATI codelist</a>.')}>{t('Code')}</InputLabel>}>
-            <FinalField
-              name={`${name}.code`}
-              control="select"
-              options={FLAG_CODES}
-            />
-          </Item>
+          <FinalField
+            name={`${name}.code`}
+            control="select"
+            options={FLAG_CODES}
+            withLabel
+            dict={{ label: t('Code'), tooltip: t('An IATI code describing the equivalent CRS++ columns. See the <a href="http://iatistandard.org/202/codelists/CRSAddOtherFlags/" target="_blank">IATI codelist</a>.') }}
+          />
           <Item label={<InputLabel tooltip={t('Indicate whether the flag applies or not.')}>{t('significance')}</InputLabel>}>
             <FinalField
               name={`${name}.significance`}
-              render={({input}) => (
-                <Radio.Group {...input}>
-                  <Radio.Button value>{t('Yes')}</Radio.Button>
-                  <Radio.Button value={false}>{t('No')}</Radio.Button>
-                </Radio.Group>
-              )}
+              render={({ input, validateStatus}) => {
+                return (
+                  <Radio.Group {...input} className={validateStatus === 'error' ? 'required' : null}>
+                    <Radio.Button value>{t('Yes')}</Radio.Button>
+                    <Radio.Button value={false}>{t('No')}</Radio.Button>
+                  </Radio.Group>
+                )
+              }}
             />
           </Item>
         </div>

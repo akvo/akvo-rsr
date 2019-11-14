@@ -9,19 +9,10 @@ const sector = yup.object().shape({
 })
 
 const base = yup.object().shape({
-  value: yup.mixed().default(null),
-  transactionType: yup.string().nullable().when('value', {
-    is: value => value !== null && value !== '',
-    then: yup.string().required()
-  }),
-  transactionDate: yup.string().nullable().when('value', {
-    is: value => value !== null && value !== '',
-    then: yup.string().required()
-  }),
-  valueDate: yup.string().nullable().when('value', {
-    is: value => value !== null && value !== '',
-    then: yup.string().required()
-  }),
+  value: yup.mixed().default(null).required(),
+  transactionType: yup.string().nullable().required(),
+  transactionDate: yup.string().nullable().required(),
+  valueDate: yup.string().nullable().required(),
   providerOrganisation: yup.string().nullable(),
   receiverOrganisation: yup.string().nullable(),
   providerOrganisationActivity: yup.string(),
@@ -51,22 +42,28 @@ const IATI = DGIS.clone().shape({
 })
 
 const EUTF = yup.object().shape({
+  value: yup.mixed().default(null).required(),
   currency: yup.string().default('EUR'),
-  transactionType: yup.string().nullable().when('value', {
-    is: value => value !== null && value !== '',
-    then: yup.string().required()
-  }),
+  transactionType: yup.string().nullable().required(),
   providerOrganisation: yup.string().nullable(),
   providerOrganisationActivityId: yup.string(),
   aidTypeVocabulary: yup.string()
 })
 
 const DFID = DGIS.clone().shape({
+  value: yup.mixed().default(null),
+  transactionType: yup.string().nullable(),
+  transactionDate: yup.string().nullable(),
+  valueDate: yup.string().nullable(),
   currency: yup.string().default('EUR'),
   reference: yup.string()
 })
 
 const Gietrenk = base.clone().shape({
+  value: yup.mixed().default(null),
+  transactionType: yup.string().nullable(),
+  transactionDate: yup.string().nullable(),
+  valueDate: yup.string().nullable(),
   currency: yup.string().default('EUR'),
   reference: yup.string()
 })
@@ -76,8 +73,8 @@ const output = {}
 // output[validationType.RSR] = yup.array.of(RSR)
 // output[validationType.IATI_BASIC] = yup.array.of(IATI_BASIC)
 output[validationType.IATI] = yup.array().of(IATI)
-output[validationType.DGIS] = yup.array().of(DGIS)
-output[validationType.EUTF] = yup.array().of(EUTF)
+output[validationType.DGIS] = yup.array().of(DGIS).min(1)
+output[validationType.EUTF] = yup.array().of(EUTF).min(1)
 output[validationType.DFID] = yup.array().of(DFID)
 // output[validationType.NLR] = yup.array().of(NLR)
 output[validationType.Gietrenk] = yup.array().of(Gietrenk)

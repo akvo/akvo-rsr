@@ -87,10 +87,8 @@ export default (state = initialState, action) => {
       // validate all sections
       if(state.projectId){
         for(let i = 1; i <= sectionLength; i += 1){
-          if(i !== 5){
             const _sectionKey = `section${i}`
             newState[_sectionKey].errors = validateSection(_sectionKey, validations, newState[_sectionKey].fields)
-          }
         }
       }
       return newState
@@ -192,6 +190,20 @@ export default (state = initialState, action) => {
     case actionTypes.SHOW_REQUIRED:
       const showRequired = action.hasOwnProperty('checked') ? action.checked : !state.showRequired
       return {...state, showRequired}
+    case actionTypes.SAVING:
+      return {...state, saving: true}
+    case actionTypes.UPDATE_LAST_SAVED:
+      return {...state, lastSaved: new Date(), saving: false }
+    case actionTypes.SET_FIELD_REQUIRED_ERROR:
+      const {errors} = newState[sectionKey]
+      const errorIndex = errors.findIndex(it => it.path === action.fieldName && it.type === 'required')
+      if (!action.hasError && errorIndex > -1){
+        newState[sectionKey].errors = errors.filter(it => it.path !== action.fieldName)
+      }
+      if (action.hasError && errorIndex === -1){
+        newState[sectionKey].errors = [...errors, { path: action.fieldName, type: 'required'}]
+      }
+      return newState
     default: return state
   }
 }
