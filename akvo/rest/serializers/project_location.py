@@ -5,7 +5,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from rest_framework import serializers
-from akvo.rsr.models import ProjectLocation, AdministrativeLocation
+from akvo.rsr.models import ProjectLocation, AdministrativeLocation, Country
 from ..fields import Base64ImageField
 from .country import CountrySerializer
 from .rsr_serializer import BaseRSRSerializer
@@ -37,6 +37,31 @@ class ProjectLocationSerializer(ProjectLocationRawSerializer):
     class_label = serializers.ReadOnlyField(source='iati_class_unicode')
     feature_designation_label = serializers.ReadOnlyField(source='iati_designation_unicode')
     administratives = AdministrativeLocationSerializer(many=True, read_only=True)
+    country_iso_code = serializers.CharField(source='country.iso_code', default=None)
+
+    def create(self, validated_data):
+        iso_code = validated_data.pop('country', {}).pop('iso_code', '')
+        location = super(ProjectLocationSerializer, self).create(validated_data)
+        if iso_code:
+            try:
+                country = Country.objects.get(iso_code__iexact=iso_code)
+            except Country.DoesNotExist:
+                pass
+            else:
+                location.country = country
+                location.save(update_fields=['country'])
+        return location
+
+    def update(self, instance, validated_data):
+        iso_code = validated_data.pop('country', {}).pop('iso_code', '')
+        if iso_code:
+            try:
+                country = Country.objects.get(iso_code__iexact=iso_code)
+            except Country.DoesNotExist:
+                pass
+            else:
+                instance.country = country
+        return super(ProjectLocationSerializer, self).update(instance, validated_data)
 
 
 class ProjectLocationExtraSerializer(ProjectLocationRawSerializer):
