@@ -212,8 +212,12 @@ class OrganisationDocumentInline(NestedStackedInline):
 
 class OrganisationCustomFieldInline(NestedTabularInline):
     model = apps.get_model('rsr', 'organisationcustomfield')
-    fields = ('name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text')
+    fields = ('name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text',
+              'dropdown_options', 'show_in_searchbar')
     fk_name = 'organisation'
+    formfield_overrides = {
+        JSONField: {'widget': PrettyJSONWidget}
+    }
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj:

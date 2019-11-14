@@ -1545,15 +1545,8 @@ class Project(TimestampsMixin, models.Model):
         custom_fields = OrganisationCustomField.objects.filter(
             organisation__in=organisations
         )
-        copy_fields = (
-            'name', 'type', 'section', 'order', 'max_characters', 'mandatory', 'help_text'
-        )
         project_custom_fields = [
-            ProjectCustomField(
-                project_id=project_id,
-                **{field: getattr(custom_field, field) for field in copy_fields}
-            )
-            for custom_field in custom_fields
+            custom_field.new_project_custom_field(project_id) for custom_field in custom_fields
         ]
         ProjectCustomField.objects.bulk_create(project_custom_fields)
 
