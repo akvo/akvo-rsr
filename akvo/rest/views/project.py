@@ -27,7 +27,7 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
-from akvo.rsr.models import Project, RelatedProject, OrganisationCustomField
+from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
@@ -102,11 +102,7 @@ class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
         if self.request.user.is_anonymous:
             return Project.objects.none()
         queryset = user_editable_projects(self.request.user)\
-            .filter(
-                (~Q(related_projects__relation=RelatedProject.PROJECT_RELATION_PARENT) & Q(related_to_projects__relation__isnull=True)) |
-                (Q(related_to_projects__relation=1) & Q(related_projects__relation__isnull=True)) |
-                (Q(related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD) & Q(related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT)))\
-            .distinct()
+            .filter(projecthierarchy__isnull=False)
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
