@@ -213,7 +213,20 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
                   'is_public', 'sectors', 'parent', 'editable')
 
 
-class ProjectHierarchyRootSerializer(ProjectMetadataSerializer):
+class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
+
+    locations = serializers.SerializerMethodField()
+
+    def get_locations(self, obj):
+        return [
+            {'country': l.country.name, 'iso_code': l.country.iso_code}
+            for l
+            in obj.locations.all()
+            if l.country
+        ]
+
+
+class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
 
     children_count = serializers.SerializerMethodField()
 
@@ -227,12 +240,12 @@ class ProjectHierarchyRootSerializer(ProjectMetadataSerializer):
                   'is_public', 'sectors', 'parent', 'children_count', 'editable')
 
 
-class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
+class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
 
     children = serializers.SerializerMethodField()
 
     def get_children(self, obj):
-        serializer = ProjectMetadataSerializer(obj.descendants(), many=True, context=self.context)
+        serializer = ProjectHierarchyNodeSerializer(obj.descendants(), many=True, context=self.context)
         descendants = serializer.data
         return make_descendants_tree(descendants, obj)
 
