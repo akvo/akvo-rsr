@@ -19,10 +19,9 @@ from mock import patch
 from akvo.rest.views.project_editor_utils import (
     add_error, create_or_update_objects_from_data, split_key
 )
-from akvo.rsr.iso3166 import ISO_3166_COUNTRIES
 from akvo.rsr.models import (
-    BudgetItem, BudgetItemLabel, Country, Employment, Indicator, IndicatorLabel, Organisation,
-    OrganisationIndicatorLabel, Partnership, Project, ProjectLocation, Result, User,
+    BudgetItem, BudgetItemLabel, Employment, Indicator, IndicatorLabel, Organisation,
+    OrganisationIndicatorLabel, Partnership, Project, Result, User,
     RelatedProject, IndicatorPeriod, Keyword
 )
 from akvo.rsr.tests.base import BaseTestCase
@@ -498,71 +497,6 @@ class ChoicesTestCase(TestCase):
             ids,
             [label1.pk, label2.pk]
         )
-
-
-class ProjectLocationTestCase(TestCase):
-    """Test that creating and updating project locations works correctly."""
-
-    def setUp(self):
-        self.project = Project.objects.create(title='New Project')
-        self.create_countries()
-        self.user, self.username, self.password = create_user()
-
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-        self.c.login(username=self.username, password=self.password)
-
-    def test_correct_country_new_location(self):
-        # Given
-        latitude, longitude = ('8.98075182', '38.797958')  # Ethiopia
-        id_ = self.project.id
-        url = '/rest/v1/project/{}/project_editor/?format=json'.format(self.project.id)
-        data = {
-            'rsr_projectlocation.latitude.{}_new-1'.format(id_): latitude,
-            'rsr_projectlocation.longitude.{}_new-1'.format(id_): longitude
-        }
-
-        # When
-        response = self.c.post(url, data=data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        location = ProjectLocation.objects.get(location_target=id_)
-        self.assertEqual(location.latitude, float(latitude))
-        self.assertEqual(location.longitude, float(longitude))
-        self.assertEqual(location.country.iso_code, u'et')
-
-    def test_updated_lat_lng_change_country(self):
-        # Given
-        latitude, longitude = ('8.98075182', '38.797958')  # Ethiopia
-        location = ProjectLocation.objects.create(location_target=self.project,
-                                                  latitude=latitude,
-                                                  longitude=longitude)
-        id_ = self.project.id
-        url = '/rest/v1/project/{}/project_editor/?format=json'.format(id_)
-        # Move the location to Ghana
-        new_longitude = '0'
-        data = {
-            'rsr_projectlocation.longitude.{}'.format(location.id): new_longitude
-        }
-
-        # When
-        response = self.c.post(url, data=data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        location = ProjectLocation.objects.get(location_target=id_)
-        self.assertEqual(location.latitude, float(latitude))
-        self.assertEqual(location.longitude, float(new_longitude))
-        self.assertEqual(location.country.iso_code, u'gh')
-
-    @staticmethod
-    def create_countries():
-        """Populate the DB with countries."""
-        for iso_code, _ in ISO_3166_COUNTRIES:
-            Country.objects.get_or_create(
-                iso_code=iso_code,
-                defaults=Country.fields_from_iso_code(iso_code)
-            )
 
 
 class UploadFileTestCase(TestCase):

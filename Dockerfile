@@ -2,7 +2,7 @@ FROM python:2.7.16-buster
 
 RUN set -ex; apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-    libgeos-dev curl git postgresql-client runit cron \
+    curl git postgresql-client runit cron \
     libjpeg-dev libfreetype6-dev \
     libffi-dev libssl-dev \
     libxml2-dev libxslt1-dev zlib1g-dev python-dev && \

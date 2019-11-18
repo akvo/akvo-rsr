@@ -5,7 +5,6 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from django.apps import apps
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,7 +15,7 @@ from akvo.codelists.store.default_codelists import (
     COUNTRY, GEOGRAPHIC_EXACTNESS, GEOGRAPHIC_LOCATION_CLASS, GEOGRAPHIC_LOCATION_REACH,
     GEOGRAPHIC_VOCABULARY, LOCATION_TYPE
 )
-from akvo.utils import codelist_choices, codelist_value, get_country
+from akvo.utils import codelist_choices, codelist_value
 
 
 class BaseLocation(models.Model):
@@ -64,21 +63,6 @@ class BaseLocation(models.Model):
         location_target.save()
 
     def save(self, *args, **kwargs):
-        get_country = False
-        if not self.pk:
-            get_country = True
-
-        else:
-            original = self._meta.model.objects.get(id=self.pk)
-            if original.latitude != self.latitude or original.longitude != self.longitude:
-                get_country = True
-
-        # Set a country based on the latitude and longitude if possible
-        if get_country and self.latitude is not None and self.longitude is not None:
-            self.country = self.get_country_from_lat_lon()
-            if 'update_fields' in kwargs and 'country' not in kwargs['update_fields']:
-                kwargs['update_fields'].append('country')
-
         super(BaseLocation, self).save(*args, **kwargs)
 
         # Set location as primary location if it is the first location
@@ -86,22 +70,6 @@ class BaseLocation(models.Model):
         if location_target.primary_location is None or location_target.primary_location.pk > self.pk:
             location_target.primary_location = self
             location_target.save()
-
-    def get_country_from_lat_lon(self):
-        """Get the country based on the location's latitude and longitude."""
-
-        if self.latitude is None or self.longitude is None:
-            return None
-
-        try:
-            country, iso_code = get_country(float(self.latitude), float(self.longitude))
-        except ValueError:
-            iso_code = None
-
-        if iso_code is not None:
-            # FIXME: We have one too many country models!
-            Country = apps.get_model('rsr', 'Country')
-            return Country.objects.filter(iso_code=iso_code).first()
 
     class Meta:
         app_label = 'rsr'

@@ -306,18 +306,20 @@ class ProjectDirectoryTestCase(TestCase):
         url = '/rest/v1/project_directory?format=json&location=262'
         latitude, longitude = ('11.8948112', '42.5807153')
         country_code = 'DJ'
-        custom_get_or_create_country(iso_code=country_code.lower())
+        country = custom_get_or_create_country(iso_code=country_code.lower())
 
         # Add a Recipient Country - DJ
         RecipientCountry.objects.create(project=self.projects[2], country=country_code)
         # Published project - ProjectLocation in DJ
         project_location = ProjectLocation.objects.create(location_target=self.projects[1],
                                                           latitude=latitude,
-                                                          longitude=longitude)
+                                                          longitude=longitude,
+                                                          country=country)
         # Unpublished project
         ProjectLocation.objects.create(location_target=self.projects[3],
                                        latitude=latitude,
-                                       longitude=longitude)
+                                       longitude=longitude,
+                                       country=country)
 
         # ProjectLocation with no country
         ProjectLocation.objects.create(location_target=self.projects[0],
