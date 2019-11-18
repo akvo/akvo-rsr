@@ -190,17 +190,21 @@ var ProjectDirectory = React.createClass({
     },
     getLocations: function() {
         var projects = this.props.projects;
-        return projects.map(function(project) {
-            return {
-                latitude: project.latitude,
-                longitude: project.longitude,
-                url: project.url,
-                text: project.title,
-                icon: this.props.mapMarker,
-                image: project.image,
-                highlightId: "#project-" + project.id
-            };
-        }, this);
+        return projects
+            .filter(function(project) {
+                return project.latitude !== null && project.longitude !== null;
+            })
+            .map(function(project) {
+                return {
+                    latitude: project.latitude,
+                    longitude: project.longitude,
+                    url: project.url,
+                    text: project.title,
+                    icon: this.props.mapMarker,
+                    image: project.image,
+                    highlightId: "#project-" + project.id
+                };
+            }, this);
     },
     getMapConfig: function() {
         return {
