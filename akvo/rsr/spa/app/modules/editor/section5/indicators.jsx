@@ -239,7 +239,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} />} />
+              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} validations={validations} />} />
             </Panel>
           )}
         />
