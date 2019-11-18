@@ -543,7 +543,9 @@ var SearchBar = React.createClass({
                     <div id="filter-wrapper col-sm-12 col-lg-6 col-md-6 col-lg-offset-2 col-md-offset-2">
                         <div>
                             {this.props.filters.map(create_filter, this)}
-                            {this.props.options.custom_fields.map(create_custom_filter, this)}
+                            {this.props.options.custom_fields !== undefined
+                                ? this.props.options.custom_fields.map(create_custom_filter, this)
+                                : undefined}
                             {reset_button}
                         </div>
                     </div>
