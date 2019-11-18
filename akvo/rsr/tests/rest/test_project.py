@@ -336,6 +336,78 @@ class ProjectDirectoryTestCase(TestCase):
         self.assertIn(titles[3], response_titles)
         self.assertEqual(project_location.country.iso_code, country_code.lower())
 
+    def test_filter_by_custom_fields(self):
+        # Setup
+        process_custom_fields = (('Process', 'design'), ('Process', 'production'), ('Process', 'use'))
+        type_custom_fields = (('Type', 'industrial'), ('Type', 'domestic'))
+
+        process = OrganisationCustomField.objects.create(
+            section='1', order='1', name='Process', organisation=self.organisation)
+        type_ = OrganisationCustomField.objects.create(
+            section='1', order='1', name='Type', organisation=self.organisation)
+
+        for i, project in enumerate(self.projects):
+            project.publish()
+            name, value = process_custom_fields[i % 3]
+            ProjectCustomField.objects.create(
+                section='1', order='1', name=name, value=value, project=project)
+            name, value = type_custom_fields[i % 2]
+            ProjectCustomField.objects.create(
+                section='1', order='2', name=name, value=value, project=project)
+        client = self._create_client()
+
+        # Single projects with single custom field
+        # Given
+        url = '/rest/v1/project_directory?format=json&custom_field__{}=use'.format(process.id)
+
+        # When
+        response = client.get(url, follow=True)
+
+        # Then
+        projects = response.data['projects']
+        self.assertEqual(len(projects), 1)
+        self.assertEqual(projects[0]['id'], self.projects[2].pk)
+
+        # Multiple projects with single custom field
+        # Given
+        url = '/rest/v1/project_directory?format=json&custom_field__{}=production'.format(process.id)
+
+        # When
+        response = client.get(url, follow=True)
+
+        # Then
+        projects = sorted(response.data['projects'], key=lambda x: x['id'])
+        self.assertEqual(len(projects), 2)
+        self.assertEqual(projects[0]['id'], self.projects[1].pk)
+        self.assertEqual(projects[1]['id'], self.projects[4].pk)
+
+        # Single projects with multiple custom fields
+        # Given
+        url = ('/rest/v1/project_directory?format=json'
+               '&custom_field__{0}=production'
+               '&custom_field__{1}=domestic'.format(process.id, type_.id))
+
+        # When
+        response = client.get(url, follow=True)
+
+        # Then
+        projects = response.data['projects']
+        self.assertEqual(len(projects), 1)
+        self.assertEqual(projects[0]['id'], self.projects[1].pk)
+
+        # No projects with multiple custom fields
+        # Given
+        url = ('/rest/v1/project_directory?format=json'
+               '&custom_field__{0}=use'
+               '&custom_field__{1}=domestic'.format(process.id, type_.id))
+
+        # When
+        response = client.get(url, follow=True)
+
+        # Then
+        projects = response.data['projects']
+        self.assertEqual(len(projects), 0)
+
 
 class ProjectPostTestCase(TestCase):
     """Test the creation of projects."""

@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -41,6 +42,7 @@ class ProjectCustomField(models.Model):
     TYPES = (
         ('text', _(u'Text')),
         ('boolean', _(u'Checkbox')),
+        ('dropdown', _(u'Dropdown')),
     )
 
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='custom_fields')
@@ -72,6 +74,9 @@ class ProjectCustomField(models.Model):
         help_text=_(u'Select the type of custom field. Text will show a text area in the project '
                     u'editor, and checkbox will show a checkbox.')
     )
+    dropdown_options = JSONField(_(u'dropdown options'), null=True, blank=True)
+
+    dropdown_selection = JSONField(_(u'dropdown selection'), null=True, blank=True)
 
     def __unicode__(self):
         return u'%s' % self.value
@@ -109,6 +114,7 @@ class OrganisationCustomField(models.Model):
     TYPES = (
         ('text', _(u'Text')),
         ('boolean', _(u'Checkbox')),
+        ('dropdown', _(u'Dropdown')),
     )
 
     organisation = models.ForeignKey(
@@ -141,3 +147,24 @@ class OrganisationCustomField(models.Model):
         help_text=_(u'Select the type of custom field. Text will show a text area in the project '
                     u'editor, and checkbox will show a checkbox.')
     )
+
+    dropdown_options = JSONField(_(u'dropdown options'),
+                                 help_text=_(u'List of options for the dropdown fields. '
+                                             u'Leave empty if field is not a dropdown'),
+                                 null=True,
+                                 blank=True)
+
+    show_in_searchbar = models.BooleanField(
+        _(u'show in searchbar'), default=False,
+        help_text=_(u'Indicate whether this field is show in the partner site search bar'))
+
+    def new_project_custom_field(self, project_id):
+        copy_fields = (
+            'name', 'type', 'section', 'order', 'max_characters', 'mandatory',
+            'help_text', 'dropdown_options',
+        )
+        project_custom_field = ProjectCustomField(
+            project_id=project_id,
+            **{field: getattr(self, field) for field in copy_fields}
+        )
+        return project_custom_field
