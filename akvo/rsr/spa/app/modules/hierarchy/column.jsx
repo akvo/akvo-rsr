@@ -1,5 +1,6 @@
 /* global window */
 import React, { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const topMargin = 6
 
@@ -10,6 +11,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter }) =
   const nextScrollviewRef = useRef(null)
   const nextColCardsRef = useRef(null)
   const gotoRef = useRef(null)
+  const { t } = useTranslation()
   const drawConnector = () => {
     if (isLast === false) {
       if (connectorRef.current && nextColCardsRef.current.length > 0 && selectedCardRef.current) {
@@ -72,10 +74,10 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter }) =
   }
   return (
     <div className="col" style={{ zIndex: 999 - index }}>
-      <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>Go to selected</div>
+      <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>{t('Go to selected')}</div>
       <div className="shade" />
-      {index > -1 && <h3>Level {index + 1} projects</h3>}
-      {index === -1 && <h3>Programs</h3>}
+      {index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
+      {index === -1 && <h3>{t('Programs')}</h3>}
       <div className="inner">
         <div className="scrollview" onScroll={handleScroll}>
           <ul ref={ulRef}>

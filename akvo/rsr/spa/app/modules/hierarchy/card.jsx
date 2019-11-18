@@ -1,9 +1,11 @@
 import React from 'react'
 import { Icon, Button, Tooltip } from 'antd'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import ConditionalLink from '../projects/conditional-link'
 
 const Card = ({ project, selected, onClick, filterCountry, countryFilter }) => {
+  const { t } = useTranslation()
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.filter(filterCountry).length : -1)
   const { locations, title, subtitle, referenced } = project
   return (
@@ -17,7 +19,7 @@ const Card = ({ project, selected, onClick, filterCountry, countryFilter }) => {
           <div className="children">
             <div className="inner">
               {(countryFilter && project.children) && <Tooltip title="Within location filter"><div className="filtered"><Icon type="filter" /></div></Tooltip>}
-              <span><b>{childrenCount}</b> <span>child projects</span></span>
+              <span><b>{childrenCount}</b> <span>{t('(1){child project};(2-inf){child projects};', { count: childrenCount, postProcess: 'interval' })}</span></span>
             </div>
           </div>)}
       </div>

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { Spin, Icon } from 'antd'
 import { useHistory } from 'react-router-dom'
-import PrintTemplate from 'react-print'
+// import PrintTemplate from 'react-print'
+import { useTranslation } from 'react-i18next'
 
 import './styles.scss'
 import api from '../../utils/api'
 import Column from './column'
-import Branch from './branch'
+// import Branch from './branch'
 import Card from './card'
 import FilterCountry from '../projects/filter-country'
 
 const Hierarchy = ({ match: { params } }) => {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(true)
   const [countryFilter, setCountryFilter] = useState(null)
@@ -87,10 +89,10 @@ const Hierarchy = ({ match: { params } }) => {
   return (
     <div className="hierarchy">
       <div className="topbar-row">
-        <h2>Projects hierarchy</h2>
+        <h2>{t('Projects hierarchy')}</h2>
         {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
         <div className="filters">
-          <span>Filter:</span>
+          <span>{t('Filter')}:</span>
           <FilterCountry onChange={handleFilter} />
         </div>
       </div>
@@ -112,21 +114,21 @@ const Hierarchy = ({ match: { params } }) => {
         })}
         {(programs.length > 0 && selected.length < 2) &&
         <div className="col">
-          <h3>Level {selected.length + 1} projects</h3>
+          <h3>{t('Level {{level}} projects', { level: selected.length + 1})}</h3>
           <div className="bg">
-            Select a level {selected.length} project with children
+            {t('Select a level {{level}} project with children', { level: selected.length})}
           </div>
         </div>
         }
       </div>
       </div>
-      <div id="print-mount">
+      {/* <div id="print-mount">
         {selected[0] &&
         <PrintTemplate>
           <Branch item={selected[0]} level={0} />
         </PrintTemplate>
         }
-      </div>
+      </div> */}
     </div>
   )
 }
