@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
-import countries from '../../../../utils/countries'
+import countries from '../../../../utils/countries.json'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 
