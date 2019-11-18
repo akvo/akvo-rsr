@@ -5,7 +5,6 @@ import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Ic
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
-import { isEqual, get } from 'lodash'
 import moment from 'moment'
 
 import RTE from '../../../../utils/rte'
@@ -15,12 +14,13 @@ import Accordion from '../../../../utils/accordion'
 import AutoSave from '../../../../utils/auto-save'
 import { addSetItem, removeSetItem } from '../../actions'
 import Targets from './targets'
+import { getValidations } from '../../../../utils/validation-utils'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations }) => { // eslint-disable-line
   const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId, disaggregationTargets: [] }
@@ -38,6 +38,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,
     })
   }
+  const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
   return (
     <Aux>
     <FieldArray name={`${fieldName}.periods`} subscription={{}}>
@@ -139,7 +140,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                   name={`${name}.targetValue`}
                   control="input"
                   withLabel
-                  optional
+                  optional={!isDGIS}
                   dict={{ label: t('Target value') }}
                 />
                 <Field name={`${name}.id`} render={({ input }) => <Targets formPush={formPush} fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} indicatorId={indicatorId} indicatorIndex={indicatorIndex} resultId={resultId} resultIndex={resultIndex} />} />
