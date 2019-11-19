@@ -70,10 +70,10 @@ const Info = ({ validations, fields, projectId, errors, showRequired }) => {
         initialValues={fields}
         subscription={{}}
         mutators={{ ...arrayMutators }}
-            render={({
-              form: {
-                mutators: { push }
-              }
+        render={({
+          form: {
+            mutators: { push }
+          }
         }) => (
           <div>
           <AutoSave sectionIndex={1} />
