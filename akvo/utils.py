@@ -11,7 +11,7 @@ import hashlib
 import inspect
 import json
 import logging
-from os.path import abspath, dirname, exists, join, splitext
+from os.path import splitext
 import zipfile
 
 from django.conf import settings
@@ -26,23 +26,13 @@ from django.http import HttpResponse
 from django.template import loader
 from django.utils.text import slugify
 import pytz
-import requests
-from shapely.geometry import shape, Point
 from sorl.thumbnail import get_thumbnail as get_sorl_thumbnail
 from sorl.thumbnail.parsers import parse_geometry
 
+from akvo.rsr.iso3166 import COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES
 
-from akvo.rsr.iso3166 import (COUNTRY_CONTINENTS, CONTINENTS, ISO_3166_COUNTRIES,
-                              ISO_ALPHA3_ALPHA2_MAP)
 
 logger = logging.getLogger('akvo.rsr')
-
-RSR_LIMITED_CHANGE = u'rsr_limited_change'
-DATA_DIR = join(dirname(abspath(__file__)), '..', 'data')
-GEOJSON_FILE = join(DATA_DIR, 'countries.geojson')
-# http://data.okfn.org/data/core/geo-countries#readme
-GEOJSON_URL = 'https://raw.githubusercontent.com/datasets/geo-countries/201d65b217af0bf6b01b865375de70f8a6c4cce6/data/countries.geojson'
-COUNTRY_SHAPES = None
 
 
 class HttpResponseNoContent(HttpResponse):
@@ -393,70 +383,6 @@ def get_sha1_hash(s):
     return hash.hexdigest()
 
 
-def download_file(url, path):
-    """Download the content at URL to the given PATH."""
-    r = requests.get(url, stream=True)
-    with open(path, 'wb') as f:
-        for chunk in r.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
-    return path
-
-
-def get_country(latitude, longitude):
-    """Return (country_name, iso_code) given a latitude and longitude.
-
-    NOTE: The GEOJSON_FILE is downloaded if it's not present.
-
-    """
-
-    global COUNTRY_SHAPES
-    if COUNTRY_SHAPES is None:
-
-        # Download country geojson if not present
-        if not exists(GEOJSON_FILE):
-            download_file(GEOJSON_URL, GEOJSON_FILE)
-
-        # Create country shape objects
-        with open(GEOJSON_FILE) as f:
-            data = fix_country_codes(json.load(f)['features'])
-            COUNTRY_SHAPES = [
-                (shape(country_json['geometry']), country_json['name'], country_json['iso_code'])
-                for country_json in data
-            ]
-
-    p = Point(longitude, latitude)
-    for country_shape, name, iso_code in COUNTRY_SHAPES:
-        if country_shape.contains(p):
-            return name, iso_code
-
-    return (None, None)
-
-
-def fix_country_codes(data):
-    """Fixes country codes in the geojson data to match the codelist."""
-
-    code_name_map = {code: u'{}'.format(name) for code, name in ISO_3166_COUNTRIES}
-    fixed_data = []
-
-    for country_json in data:
-        properties, geometry = country_json['properties'], country_json['geometry']
-        country_name, iso_a3 = properties['ADMIN'], properties['ISO_A3']
-        if iso_a3 == '-99':
-            continue
-
-        iso_code = ISO_ALPHA3_ALPHA2_MAP[iso_a3].lower()
-        country_json = {
-            'geometry': geometry,
-            'iso_code': iso_code,
-            'name': code_name_map.get(iso_code, country_name),
-        }
-
-        fixed_data.append(country_json)
-
-    return fixed_data
-
-
 def single_period_dates(name):
     try:
         config = settings.SINGLE_PERIOD_INDICATORS[name]
@@ -547,3 +473,7 @@ def log_project_changes(user, project, related_obj, data, action):
         )
 
     return
+
+
+def get_country(*args, **kwargs):
+    """Stub function since one of the migrations imports this function"""

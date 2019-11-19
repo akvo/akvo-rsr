@@ -86,9 +86,6 @@ django-crontab==0.7.1
 coveralls
 xmlunittest==0.3.2
 
-# Country detection
-Shapely==1.5.7
-
 # Password requirements
 bcrypt==3.1.4
 
