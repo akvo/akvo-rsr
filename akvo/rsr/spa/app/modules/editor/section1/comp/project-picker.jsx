@@ -2,16 +2,19 @@ import React, { useReducer, useEffect, useState } from 'react'
 import { Form, Checkbox, Icon, Select, Tooltip, Spin } from 'antd'
 import { Field } from 'react-final-form';
 import { useTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
+import { FieldArray } from 'react-final-form-arrays';
 
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import AutoSave from '../../../../utils/auto-save'
+import { removeSetItem } from '../../actions'
 
 const { Item } = Form
 const { Option } = Select
 let intid
 
-const ProjectPicker = ({ loading, projects, savedData, formPush, projectId }) => {
+const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projectId, removeSetItem }) => { // eslint-disable-line
   const { t } = useTranslation()
   const defaultIsExternal = savedData && savedData.relatedIatiId
   const [isExternal, setExternal] = useState(defaultIsExternal)
@@ -38,12 +41,19 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, projectId }) =>
       }, 300)
     }
   }
+  const removeItem = (input, fields) => {
+    removeSetItem(1, 'relatedProjects', 0)
+    fields.remove(0)
+    formPush('relatedProjects', { relation: '1', project: projectId })
+  }
   useEffect(() => {
     if(!savedData){
       formPush('relatedProjects', { relation: '1', project: projectId })
     }
   }, [])
   return (
+    <FieldArray name="relatedProjects" subscription={{}}>
+      {({ fields }) => (
     <Item label={(<InputLabel optional>{t('Parent project')}</InputLabel>)}>
       <AutoSave sectionIndex={1} setName="relatedProjects" itemIndex={0} />
       {isExternal && (
@@ -68,6 +78,8 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, projectId }) =>
                   return (
                     <Select
                       {...input}
+                      value={input.value}
+                      onChange={(value) => { if(value != null) input.onChange(value); else removeItem(input, fields) }}
                       loading={loading}
                       showSearch
                       onSearch={filterOptions}
@@ -86,7 +98,9 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, projectId }) =>
       )}
       <Checkbox checked={isExternal} onChange={(ev) => { setExternal(ev.target.checked) }} className="related-project-checkbox"><span>{t('Parent project not in RSR')} <Tooltip trigger="click" title={t('Related project tooltip')}><Icon type="info-circle" /></Tooltip></span></Checkbox>
     </Item>
+    )}
+    </FieldArray>
   )
 }
 
-export default ProjectPicker
+export default connect(null, { removeSetItem })(ProjectPicker)
