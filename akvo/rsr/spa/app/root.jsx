@@ -13,7 +13,7 @@ import { useFetch } from './utils/hooks'
 
 Sentry.init({
   dsn: 'https://5ca590f001844d1493e459a38e3d75f3@sentry.io/218288',
-  release: 'test-release'
+  release: 'rsr-live@test-release'
 })
 
 const Root = ({ dispatch }) => {
