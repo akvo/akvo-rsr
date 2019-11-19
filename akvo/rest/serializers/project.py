@@ -211,3 +211,74 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable')
+
+
+class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
+
+    locations = serializers.SerializerMethodField()
+
+    def get_locations(self, obj):
+        return [
+            {'country': l.country.name, 'iso_code': l.country.iso_code}
+            for l
+            in obj.locations.all()
+            if l.country
+        ]
+
+
+class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
+
+    children_count = serializers.SerializerMethodField()
+
+    def get_children_count(self, obj):
+        return obj.children_all().count()
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'children_count', 'editable')
+
+
+class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
+
+    children = serializers.SerializerMethodField()
+
+    def get_children(self, obj):
+        serializer = ProjectHierarchyNodeSerializer(obj.descendants(), many=True, context=self.context)
+        descendants = serializer.data
+        return make_descendants_tree(descendants, obj)
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'children', 'editable')
+
+
+def make_descendants_tree(descendants, root):
+    tree = []
+    lookup = {}
+
+    for item in descendants:
+        if not item['parent']:
+            continue
+
+        item_id = item['id']
+        parent_id = item['parent']['id']
+
+        if item_id not in lookup:
+            lookup[item_id] = {'children': []}
+
+        lookup[item_id].update(item)
+        node = lookup[item_id]
+
+        if parent_id == root.id:
+            tree.append(node)
+        else:
+            if parent_id not in lookup:
+                lookup[parent_id] = {'children': []}
+
+            lookup[parent_id]['children'].append(node)
+
+    return tree

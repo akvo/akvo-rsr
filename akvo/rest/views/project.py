@@ -7,6 +7,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.conf import settings
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -19,7 +21,9 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadSectorSerializer,
                                    ProjectMetadataSerializer,
-                                   OrganisationCustomFieldSerializer,)
+                                   OrganisationCustomFieldSerializer,
+                                   ProjectHierarchyRootSerializer,
+                                   ProjectHierarchyTreeSerializer,)
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
@@ -27,7 +31,7 @@ from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
-from ..viewsets import PublicProjectViewSet
+from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -87,6 +91,29 @@ class MyProjectsViewSet(PublicProjectViewSet):
         if sector is not None:
             queryset = queryset.filter(sectors__sector_code=sector)
         return queryset
+
+
+class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
+    queryset = Project.objects.none()
+    serializer_class = ProjectHierarchyRootSerializer
+    project_relation = ''
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return Project.objects.none()
+        queryset = user_editable_projects(self.request.user)\
+            .filter(projecthierarchy__isnull=False)
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        root = project.ancestor()
+        if not self.request.user.has_perm('rsr.view_project', root):
+            raise Http404
+
+        serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
+
+        return Response(serializer.data)
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):
