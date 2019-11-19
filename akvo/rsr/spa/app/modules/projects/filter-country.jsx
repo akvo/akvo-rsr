@@ -1,7 +1,7 @@
 import React from 'react'
 import { Select } from 'antd'
 import { useTranslation } from 'react-i18next'
-import COUNTRIES from '../../utils/countries'
+import COUNTRIES from '../../utils/countries.json'
 
 const { Option } = Select
 const COUNTRY_OPTIONS = COUNTRIES.map(({ code, name }) => ({ value: code.toLowerCase(), label: name }))
