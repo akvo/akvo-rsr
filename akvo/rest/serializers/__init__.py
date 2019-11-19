@@ -69,7 +69,8 @@ from .planned_disbursement import (PlannedDisbursementSerializer,
 from .policy_marker import PolicyMarkerSerializer, PolicyMarkerRawSerializer
 from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectExtraDeepSerializer,
                       ProjectIatiExportSerializer, ProjectDirectorySerializer, ProjectUpSerializer,
-                      ProjectMetadataSerializer)
+                      ProjectMetadataSerializer, ProjectHierarchyRootSerializer,
+                      ProjectHierarchyTreeSerializer)
 from .project_comment import ProjectCommentSerializer
 from .project_condition import ProjectConditionSerializer, ProjectConditionRawSerializer
 from .project_contact import (ProjectContactSerializer,
@@ -202,6 +203,8 @@ __all__ = [
     'ProjectUpdateSerializer',
     'ProjectUpdateDeepSerializer',
     'ProjectUpSerializer',
+    'ProjectHierarchyRootSerializer',
+    'ProjectHierarchyTreeSerializer',
     'PublishingStatusSerializer',
     'RecipientCountrySerializer',
     'RecipientCountryRawSerializer',
