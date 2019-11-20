@@ -67,9 +67,6 @@ const TopBar = ({ userRdr, dispatch }) => {
             </span>
           </Dropdown>
           }
-          {userRdr.id === 44965 && (
-            <Button type="text" onClick={() => userRdr.blah()}>Break it</Button>
-          )}
           <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link>
         </div>
       </div>
