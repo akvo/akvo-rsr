@@ -4,6 +4,8 @@ from django.utils.cache import get_cache_key, _generate_cache_header_key
 
 def get_cached_data(request, key_prefix, data, serializer):
     """Function to get serialized data from the cache based on the request."""
+
+    # Set the cache_header_key, if it hasn't already been set
     cache_header_key = _generate_cache_header_key(key_prefix, request)
     if cache.get(cache_header_key) is None:
         cache.set(cache_header_key, [], None)
@@ -20,11 +22,12 @@ def get_cached_data(request, key_prefix, data, serializer):
 
 
 def set_cached_data(request, key_prefix, data):
-    """Function to save data to the cache based on the request."""
+    """Function to save data to the cache based on the request.
 
-    cache_header_key = _generate_cache_header_key(key_prefix, request)
-    if cache.get(cache_header_key) is None:
-        cache.set(cache_header_key, [], None)
+    NOTE: The function should always be called after calling get_cached_data.
+    Currently, the function is only used once.
+
+    """
 
     cache_key = get_cache_key(request, key_prefix)
     cache.set(cache_key, data)
