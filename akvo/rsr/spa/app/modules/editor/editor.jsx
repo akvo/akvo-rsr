@@ -202,7 +202,7 @@ const Editor = ({ match: { params } }) => {
           <ContentBar />
         </div>
         <div className="main-content">
-          <Route path="/projects/:id" component={ProjectInitHandler} />
+          <Route path="/projects/:id/:section?" component={ProjectInitHandler} />
           <Route path="/projects/:id" exact render={() => <Redirect to={`/projects/${params.id}/settings`} />} />
           <Route path="/projects/:id/settings" exact component={Settings} />
           {sections.map((section, index) =>

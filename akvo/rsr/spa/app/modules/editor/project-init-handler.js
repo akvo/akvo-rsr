@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import api from '../../utils/api'
 import { endpoints, getTransform } from './endpoints'
 import * as actions from './actions'
+import sections from './sections'
 
 const insertRouteParams = (route, params) => {
   Object.keys(params).forEach(param => {
@@ -11,6 +12,7 @@ const insertRouteParams = (route, params) => {
   return route
 }
 let prevParams
+let sectionIndexPipeline = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props}) => {
   const fetchSection = (sectionIndex) => new Promise(async (resolve, reject) => {
@@ -51,11 +53,11 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
   })
   let nextSectionIndex = 0
   const fetchNextSection = () => {
-    nextSectionIndex += 1
-    fetchSection(nextSectionIndex)
+    fetchSection(sectionIndexPipeline[nextSectionIndex])
     .then(() => {
-      props.setSectionFetched(nextSectionIndex)
-      if(nextSectionIndex < 11){
+      props.setSectionFetched(sectionIndexPipeline[nextSectionIndex])
+      if (nextSectionIndex < 10) {
+        nextSectionIndex += 1
         fetchNextSection()
       }
     })
@@ -71,6 +73,12 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
   useEffect(() => {
     if (params.id !== 'new') {
       props.setProjectId(params.id)
+      if(params.section != null){
+        const index = sections.findIndex(it => it.key === params.section)
+        if(index > 0){
+          sectionIndexPipeline = [sectionIndexPipeline[index], ...sectionIndexPipeline.filter((it, itIndex) => index !== itIndex)]
+        }
+      }
       fetchNextSection()
     } else {
       props.resetProject()
