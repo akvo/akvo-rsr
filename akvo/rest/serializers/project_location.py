@@ -71,6 +71,7 @@ class MapProjectLocationSerializer(serializers.Serializer):
 class ProjectLocationCountryNameSerializer(serializers.Serializer):
 
     country = serializers.StringRelatedField(read_only=True)
+    iso_code = serializers.StringRelatedField(source='country.iso_code', read_only=True)
 
     class Meta:
-        fields = ('country',)
+        fields = ('country', 'iso_code')
