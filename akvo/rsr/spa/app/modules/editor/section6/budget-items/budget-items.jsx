@@ -88,7 +88,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
         sectionIndex={6}
         header={(index, label) => {
           if(!label) return null
-          return <span>{t('Budget item')} {index + 1}: {budgetItemTypes.find(it => it.value === String(label)).label}</span>
+          return <span>{t('Budget item')} {index + 1}: {budgetItemTypes.find(it => it.value === label).label}</span>
         }}
         headerField="label"
         headerMore={(index, amount) => {
@@ -139,7 +139,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
                   <BudgetType name={name} t={t} />
                 }
               </Row>
-              <Condition when={`${name}.label`} is="38">
+              <Condition when={`${name}.label`} is={38}>
               <FinalField
                 name={`${name}.otherExtra`}
                 control="input"
