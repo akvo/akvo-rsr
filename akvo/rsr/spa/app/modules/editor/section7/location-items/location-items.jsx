@@ -12,10 +12,11 @@ import Administratives from './administratives'
 import FEATURE_OPTIONS from './feature-options.json'
 import validationDefs from './validations'
 import '../styles.scss'
+import MinRequired from '../../../../utils/min-required'
 
 const { Item } = Form
 
-const LocationItems = ({ validations, formPush, primaryOrganisation, showRequired, errors }) => {
+const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -23,9 +24,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, showRequire
     <div>
       <div className="min-required-wrapper">
         <h3>{t('Locations')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'locationItems') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section7" setName="locationItems" />
       </div>
       <ItemArray
         setName="locationItems"

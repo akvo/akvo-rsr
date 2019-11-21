@@ -4,9 +4,8 @@ import { Form, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { useTranslation } from 'react-i18next'
-import { diff } from 'deep-object-diff'
 
-import { Aux } from '../../../utils/misc'
+import { Aux, shouldUpdateSectionRoot } from '../../../utils/misc'
 import InputLabel from '../../../utils/input-label'
 import { getValidationSets, doesFieldExist } from '../../../utils/validation-utils'
 import BudgetItems from './budget-items/budget-items'
@@ -104,8 +103,4 @@ const Finance = ({ validations, fields, currency }) => {
 
 export default connect(
   ({ editorRdr: { section1: { fields: { currency }}, section6: { fields }, validations}}) => ({ fields, validations, currency}),
-)(React.memo(Finance, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
-  return !shouldUpdate
-}))
+)(React.memo(Finance, shouldUpdateSectionRoot))

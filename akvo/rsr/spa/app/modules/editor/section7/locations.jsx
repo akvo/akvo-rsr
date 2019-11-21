@@ -11,7 +11,7 @@ import LocationsItems from './location-items/location-items'
 import RecipientCountries from './recipient-countries/recipient-countries'
 import InputLabel from '../../../utils/input-label'
 import RecipientRegions from './recipient-regions/recipient-regions'
-import { Aux } from '../../../utils/misc'
+import { Aux, shouldUpdateSectionRoot } from '../../../utils/misc'
 import { getValidationSets, doesFieldExist } from '../../../utils/validation-utils'
 import SCOPE_OPTIONS from './scope-options.json'
 import FinalField from '../../../utils/final-field'
@@ -21,12 +21,12 @@ import validationDefs from './validations'
 
 const { Item } = Form
 
-const LocationsView = ({ validations, fields, primaryOrganisation, showRequired, errors }) => {
+const LocationsView = ({ validations, fields, primaryOrganisation }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
   const isEUTF = validations.indexOf(5) !== -1
-  const passProps = { validations, showRequired, errors }
+  const passProps = { validations }
   return (
     <div className="locations view">
     <SectionContext.Provider value="section7">
@@ -54,9 +54,9 @@ const LocationsView = ({ validations, fields, primaryOrganisation, showRequired,
               control="select"
               options={SCOPE_OPTIONS}
             />
-            <AutoSave sectionIndex={7} />
           </Item>
           }
+          <AutoSave sectionIndex={7} />
           <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
           {!isEUTF &&
           <Aux>
@@ -80,8 +80,4 @@ const LocationsView = ({ validations, fields, primaryOrganisation, showRequired,
 
 export default connect(
   ({ editorRdr: { validations, showRequired, section7: { fields, errors }, section1: { fields: {primaryOrganisation}} } }) => ({ validations, fields, primaryOrganisation, showRequired, errors })
-)(React.memo(LocationsView, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || (prevProps.showRequired !== nextProps.showRequired || !isEqual(prevProps.errors, nextProps.errors))
-  return !shouldUpdate
-}))
+)(React.memo(LocationsView, shouldUpdateSectionRoot))

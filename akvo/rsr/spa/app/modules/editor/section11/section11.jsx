@@ -4,7 +4,6 @@ import { Form, Select, Row, Col, Divider } from 'antd'
 import { Field, Form as FinalForm } from 'react-final-form'
 import currencies from 'currency-codes/data'
 import arrayMutators from 'final-form-arrays'
-import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
@@ -17,6 +16,7 @@ import ForecastsStack from './forecasts/forecasts-stack'
 import LegaciesStack from './comp/legacies-stack'
 import './styles.scss'
 import SectionContext from '../section-context';
+import { shouldUpdateSectionRoot } from '../../../utils/misc'
 
 const { Item } = Form
 const { Option } = Select
@@ -318,9 +318,4 @@ const Reporting = ({ fields, projectId }) => {
 
 export default connect(
   ({ editorRdr: { projectId, section11: { fields }, validations } }) => ({ fields, validations, projectId }),
-)(React.memo(Reporting, (prevProps, nextProps) => {
-  // return isEqual(prevProps.fields, nextProps.fields)
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
-  return !shouldUpdate
-}))
+)(React.memo(Reporting, shouldUpdateSectionRoot))

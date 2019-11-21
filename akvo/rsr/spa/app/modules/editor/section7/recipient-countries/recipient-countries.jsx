@@ -6,6 +6,7 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import countries from '../../../../utils/countries.json'
+import MinRequired from '../../../../utils/min-required'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 
@@ -13,7 +14,7 @@ const { Item } = Form
 
 const COUNTRY_OPTIONS = countries.map(({ code, name }) => ({ value: code, label: name }))
 
-const RecipientCountries = ({ validations, formPush, showRequired, errors, isLast }) => {
+const RecipientCountries = ({ validations, formPush, isLast }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -21,9 +22,7 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors, isLas
     <div>
       <div className="min-required-wrapper">
         <h3>{t('recipient country')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'recipientCountries') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section7" setName="recipientCountries" />
       </div>
       <ItemArray
         setName="recipientCountries"
@@ -90,8 +89,8 @@ const RecipientCountries = ({ validations, formPush, showRequired, errors, isLas
             </span>
           </div>
         )}
-        addButton={({ onClick }) => (
-          <Button onClick={onClick} icon="plus" type="dashed" block className={isLast ? 'bottom-btn' : null}>
+        addButton={(props) => (
+          <Button {...props} icon="plus" type="dashed" block className={isLast ? 'bottom-btn' : null}>
             {t('Add recipient country')}
           </Button>
         )}
