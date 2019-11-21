@@ -76,7 +76,7 @@ const ProjectInitHandler = connect(null, actions)(({ match: {params}, ...props})
       if(params.section != null){
         const index = sections.findIndex(it => it.key === params.section)
         if(index > 0){
-          sectionIndexPipeline = [sectionIndexPipeline[index], ...sectionIndexPipeline.filter((it, itIndex) => index !== itIndex)]
+          sectionIndexPipeline = [1, sectionIndexPipeline[index], ...sectionIndexPipeline.slice(1).filter((it, itIndex) => index !== itIndex)]
         }
       }
       fetchNextSection()
