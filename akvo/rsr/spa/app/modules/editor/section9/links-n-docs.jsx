@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import { Form } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import {diff} from 'deep-object-diff'
 
 import Links from './links/links'
 import Docs from './docs/docs'
 import './styles.scss'
 import SectionContext from '../section-context'
+import { shouldUpdateSectionRoot } from '../../../utils/misc'
 
 const LinksDocs = ({ fields, validations, dispatch }) => (
   <div className="links view">
@@ -35,8 +35,4 @@ const LinksDocs = ({ fields, validations, dispatch }) => (
 
 export default connect(
   ({ editorRdr: { section9: { fields }, validations }}) => ({ fields, validations })
-)(React.memo(LinksDocs, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
-  return !shouldUpdate
-}))
+)(React.memo(LinksDocs, shouldUpdateSectionRoot))

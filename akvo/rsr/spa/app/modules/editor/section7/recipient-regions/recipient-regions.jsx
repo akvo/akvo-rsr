@@ -8,10 +8,11 @@ import InputLabel from '../../../../utils/input-label'
 import { doesFieldExist, getValidationSets } from '../../../../utils/validation-utils'
 import validationDefs from './validations'
 import REGION_OPTIONS from './regions.json'
+import MinRequired from '../../../../utils/min-required'
 
 const { Item } = Form
 
-const RecipientRegions = ({ formPush, validations, showRequired, errors }) => {
+const RecipientRegions = ({ formPush, validations }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -19,9 +20,7 @@ const RecipientRegions = ({ formPush, validations, showRequired, errors }) => {
     <div>
       <div className="min-required-wrapper">
         <h3>{t('Recipient region')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'recipientRegions') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section7" setName="recipientRegions" />
       </div>
       <ItemArray
         setName="recipientRegions"

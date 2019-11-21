@@ -6,9 +6,9 @@ const RSR = yup.object().shape({
   address2: yup.string(),
   postcode: yup.string(),
   location: yup.object().shape({
-    description: yup.string().required(),
+    description: yup.string(),
     coordinates: yup.object().shape({
-      lat: yup.number().required(),
+      lat: yup.number(),
       lng: yup.number().required()
     })
   })

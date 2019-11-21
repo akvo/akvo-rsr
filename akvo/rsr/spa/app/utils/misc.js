@@ -1,3 +1,5 @@
+import { diff } from 'deep-object-diff'
+
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
   placeholder: 'DD/MM/YYYY'
@@ -88,4 +90,10 @@ export const arrayMove = (arr, from, to) => {
   ret[from] = arr[to]
   ret[to] = arr[from]
   return ret
+}
+
+export const shouldUpdateSectionRoot = (prevProps, nextProps) => {
+  const difference = diff(prevProps.fields, nextProps.fields)
+  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
+  return !shouldUpdate
 }
