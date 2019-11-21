@@ -18,7 +18,7 @@ import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
 import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
 import api from '../../../utils/api'
-import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
+import { isFieldOptional, getValidationSets, getValidations } from '../../../utils/validation-utils'
 import validationDefs from './results/validations'
 
 const { Item } = Form
@@ -68,6 +68,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
   }
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
+    const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
   return (
     <FieldArray name={`${fieldName}.indicators`} subscription={{}}>
     {({ fields }) => (
@@ -220,7 +221,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     name={`${name}.baselineYear`}
                     control="input"
                     withLabel
-                    optional={isOptional}
+                    optional={!isDGIS}
                     dict={{ label: t('Baseline year') }}
                   />
                 </Col>
@@ -229,7 +230,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     name={`${name}.baselineValue`}
                     control="input"
                     withLabel
-                    optional={isOptional}
+                    optional={!isDGIS}
                     dict={{ label: t('Baseline value') }}
                   />
                 </Col>
