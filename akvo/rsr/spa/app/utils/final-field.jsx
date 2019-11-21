@@ -30,6 +30,7 @@ const inputNumberAmountFormatting = (currencySymbol) => {
 }
 
 const validateNumber = (string) => {
+  if(string === '') return false
   const regex = /[0-9]|\./
   return String(string).split('').map(char => regex.test(char)).reduce((val, acc) => val && acc)
 }

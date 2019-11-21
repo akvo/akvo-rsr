@@ -2,6 +2,10 @@ import React from 'react'
 import { Table, Icon, Tag, Tooltip } from 'antd'
 import { useTranslation } from 'react-i18next'
 import ConditionalLink from './conditional-link'
+import COUNTRIES from '../../utils/countries.json'
+
+const countryDict = {}
+COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
 const TableView = ({ dataSource, loading, pagination, onChange }) => {
   const { t } = useTranslation()
@@ -55,7 +59,7 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       className: 'location',
       width: 170,
       render: (text, record) => {
-        const listOfUniqueCountries = record.locations.map(it => it.country).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
+        const listOfUniqueCountries = record.locations.map(it => countryDict[it.isoCode]).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
         return (<span>{listOfUniqueCountries}</span>)
       }
     },

@@ -44,6 +44,7 @@ Object.keys(fieldSets).forEach((section) => {
 
 initialState.section1.fields.currency = 'EUR'
 initialState.section1.fields.isPublic = true
+initialState.section1.fields.descriptionsOrder = ['project_plan_summary', 'goals_overview', 'background', 'current_status', 'target_group', 'project_plan', 'sustainability']
 initialState.section10.fields.keywords = []
 initialState.section11.fields = {
   crs: [],

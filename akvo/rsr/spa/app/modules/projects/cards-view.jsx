@@ -4,6 +4,10 @@ import { Card, Icon, Tag, Tooltip, Spin, BackTop, Empty } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import ConditionalLink from './conditional-link'
+import COUNTRIES from '../../utils/countries.json'
+
+const countryDict = {}
+COUNTRIES.forEach(({ name, code }) => { countryDict[code.toLowerCase()] = name })
 
 const ProjectCard = ({ project }) => {
   const { t } = useTranslation()
@@ -12,7 +16,7 @@ const ProjectCard = ({ project }) => {
   const [isCompact, setIsCompact] = useState(false)
   const [titleRows, setTitleRows] = useState(-1)
   const sectors = project.sectors.filter(it => it.codeLabel)
-  const countries = project.locations.map(it => it.country)
+  const countries = project.locations.map(it => countryDict[it.isoCode])
   const countriesFiltered = countries.filter((item, index) => countries.indexOf(item) === index && item)
   useEffect(() => {
     if(cardBody.current){
