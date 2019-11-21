@@ -64,15 +64,15 @@ export const transforms = {
           transformed.latitude = data.location.coordinates.lat
           transformed.longitude = data.location.coordinates.lng
           transformed.city = data.location.description
-          transformed.country_iso_code = data.location.countryComp.short_name
+          if (data.location.countryComp){
+            transformed.country_iso_code = data.location.countryComp.short_name
+          }
           delete transformed.location
         }
         if(data.project){
           transformed.location_target = data.project
           delete transformed.project
         }
-        delete transformed.address1
-        delete transformed.address2
         return transformed
       },
       response: data => {
