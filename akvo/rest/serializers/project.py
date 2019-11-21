@@ -4,11 +4,12 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from itertools import chain
 import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, RelatedProject
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -217,6 +218,22 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     locations = serializers.SerializerMethodField()
 
+    def get_parent(self, obj):
+
+        parent_relations = [
+            r for r in chain(obj.related_projects.all(), obj.related_to_projects.all())
+            if
+            (r.project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_PARENT) or
+            (r.related_project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_CHILD)
+        ]
+        if parent_relations:
+            r = parent_relations[0]
+            p = (r.related_project if r.relation == RelatedProject.PROJECT_RELATION_PARENT
+                 else r.project)
+        else:
+            p = None
+        return {'id': p.id, 'title': p.title} if p is not None else None
+
     def get_locations(self, obj):
         return [
             {'country': l.country.name, 'iso_code': l.country.iso_code}
@@ -245,7 +262,12 @@ class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
     children = serializers.SerializerMethodField()
 
     def get_children(self, obj):
-        serializer = ProjectHierarchyNodeSerializer(obj.descendants(), many=True, context=self.context)
+        descendants = obj.descendants().prefetch_related(
+            'locations', 'locations__country', 'sectors', 'publishingstatus',
+            'related_projects', 'related_projects__related_project',
+            'related_to_projects', 'related_to_projects__project',
+        )
+        serializer = ProjectHierarchyNodeSerializer(descendants, many=True, context=self.context)
         descendants = serializer.data
         return make_descendants_tree(descendants, obj)
 
