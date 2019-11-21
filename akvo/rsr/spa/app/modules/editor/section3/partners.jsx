@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Form, Button, Radio, Popconfirm } from 'antd'
 import { Form as FinalForm, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { diff } from 'deep-object-diff'
 import { withTranslation, useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
@@ -18,6 +17,7 @@ import { removeSetItem } from '../actions'
 import SectionContext from '../section-context'
 import { useFetch } from '../../../utils/hooks'
 import validationDefs from './partners/validations'
+import { shouldUpdateSectionRoot } from '../../../utils/misc'
 
 const { Item } = Form
 
@@ -179,8 +179,4 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
 export default connect(
   ({ editorRdr: { validations, showRequired, section3: { fields, errors }, section1: { fields: { currency, primaryOrganisation } } } }) => ({ validations, currency, fields, primaryOrganisation, showRequired, errors }),
   { removeSetItem }
-)(withTranslation()(React.memo(Partners, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
-  return !shouldUpdate
-})))
+)(withTranslation()(React.memo(Partners, shouldUpdateSectionRoot)))

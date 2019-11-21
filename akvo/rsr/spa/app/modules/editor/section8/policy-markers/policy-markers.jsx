@@ -8,9 +8,10 @@ import { doesFieldExist, getValidationSets } from '../../../../utils/validation-
 import validationDefs from './validations'
 import MARKER_OPTIONS from './markers.json'
 import SIGNIFICANCE_OPTIONS from './significances.json'
+import MinRequired from '../../../../utils/min-required'
 
 
-const PolicyMarker = ({ validations, formPush, showRequired, errors }) => {
+const PolicyMarker = ({ validations, formPush }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -18,9 +19,7 @@ const PolicyMarker = ({ validations, formPush, showRequired, errors }) => {
     <div>
       <div className="min-required-wrapper">
         <h3>{t('Policy markers')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'policyMarkers') !== -1 && (
-            <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section8" setName="policyMarkers" />
       </div>
       <ItemArray
         setName="policyMarkers"
