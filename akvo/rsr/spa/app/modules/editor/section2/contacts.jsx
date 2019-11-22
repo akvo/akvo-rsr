@@ -1,23 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Form, Input, Button, Col, Row } from 'antd'
+import { Form, Button, Col, Row } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import ItemArray from '../../../utils/item-array'
 import InputLabel from '../../../utils/input-label'
-import { isFieldOptional, isFieldValid, getValidationSets } from '../../../utils/validation-utils'
+import { isFieldOptional, getValidationSets } from '../../../utils/validation-utils'
 import validationDefs from './contacts/validations'
 import SectionContext from '../section-context'
 
 import './styles.scss'
+import MinRequired from '../../../utils/min-required'
+import { shouldUpdateSectionRoot } from '../../../utils/misc'
 
 const { Item } = Form
 
-const Contacts = ({ validations, fields, showRequired, errors }) => {
+const Contacts = ({ validations, fields }) => {
   const { t } = useTranslation()
   const CONTACT_TYPE_OPTIONS = [
     { value: '1', label: t('General Inquiries') },
@@ -27,15 +28,11 @@ const Contacts = ({ validations, fields, showRequired, errors }) => {
   ]
   const validationSets = getValidationSets(validations, validationDefs)
   const isOptional = isFieldOptional(validationSets)
-  const isValid = isFieldValid(validationSets)
-  console.log(showRequired, errors)
   return (
     <div className="contacts view">
       <div className="min-required-wrapper">
         <h3>{t('Project contacts')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'contacts') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section2" setName="contacts" />
       </div>
       <SectionContext.Provider value="section2">
       <Form layout="vertical">
@@ -145,8 +142,4 @@ const Contacts = ({ validations, fields, showRequired, errors }) => {
 
 export default connect(
   ({ editorRdr: { showRequired, section2: { fields, errors }, validations } }) => ({ fields, validations, showRequired, errors}),
-)(React.memo(Contacts, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1 || prevProps.showRequired !== nextProps.showRequired
-  return !shouldUpdate
-}))
+)(React.memo(Contacts, shouldUpdateSectionRoot))
