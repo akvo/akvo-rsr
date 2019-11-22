@@ -384,7 +384,7 @@ const Section5 = (props) => {
                               />
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
-                                  <RTE />
+                                  <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} />} />
                                 </Item>
                                 <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
                                   <Field
