@@ -3,9 +3,7 @@ import { connect } from 'react-redux'
 import { Form } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
-import { diff } from 'deep-object-diff'
 import { useTranslation } from 'react-i18next'
-import { isEqual } from 'lodash'
 
 import LocationsItems from './location-items/location-items'
 import RecipientCountries from './recipient-countries/recipient-countries'
@@ -54,9 +52,9 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
               control="select"
               options={SCOPE_OPTIONS}
             />
+            <AutoSave sectionIndex={7} />
           </Item>
           }
-          <AutoSave sectionIndex={7} />
           <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
           {!isEUTF &&
           <Aux>
