@@ -15,6 +15,14 @@ services:
     network_mode: service:mainnetwork
     environment:
       - DJANGO_SECRET_KEY=secretkey
+  reports:
+    volumes:
+      - .:/var/akvo/rsr/code:delegated
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
+      - /var/akvo/rsr/code/src/
+    network_mode: service:mainnetwork
+    environment:
+      - DJANGO_SECRET_KEY=secretkey
   rsrdbhost:
     build:
       context: postgres
