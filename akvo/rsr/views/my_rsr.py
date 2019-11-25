@@ -18,7 +18,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.templatetags.static import static
 
 from tastypie.models import ApiKey
 
@@ -645,3 +646,11 @@ def my_project(request, project_id, template='myrsr/my_project.html'):
 
     context = project.project_hierarchy_context(context)
     return render(request, template, context)
+
+
+def logo(request):
+    logo = static('rsr/images/rsrLogo.svg')
+    site = request.rsr_page
+    if site is not None and site.logo is not None:
+        logo = site.logo.url
+    return redirect(logo)

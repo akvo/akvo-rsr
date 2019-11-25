@@ -45,6 +45,9 @@ ol{
 .top-bar{
   padding: 20px 0;
   height: 70px;
+  img.logo{
+    max-height: 42px;
+  }
   .ui.container{
     display: flex;
     &>.SVGInline{

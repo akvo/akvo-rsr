@@ -121,6 +121,10 @@ urlpatterns = i18n_patterns(
     url(r'^reset_password/complete/$',
         auth_views.password_reset_complete, name='password_reset_complete'),
 
+    # Partner site logo
+    url(r'^logo/$',
+        my_rsr.logo, name='logo'),
+
     # MyRSR
     url(r'^myrsr/$',
         my_rsr.my_rsr, name='my_rsr'),
