@@ -17,7 +17,7 @@ const Aux = node => node.children
 
 let intid
 
-const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, disabled, dict, optional }) => {
+const OrganizationSelect = ({ name, fieldName = 'organisation', orgs = [], loading, disabled, dict, optional }) => {
   const { t } = useTranslation()
   const inputRef = useRef()
   const nameInputRef = useRef()
