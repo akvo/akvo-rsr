@@ -4,8 +4,10 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = () => {
-  const env = {}
-  Object.keys(process.env).forEach(key => { env[key] = JSON.stringify(process.env[key]) })
+  const env = {
+    LOCALDEV: true
+  }
+  // Object.keys(process.env).forEach(key => { env[key] = JSON.stringify(process.env[key]) })
   return {
     stats: {
       maxModules: 0
@@ -148,7 +150,7 @@ const config = () => {
       // new webpack.optimize.ModuleConcatenationPlugin(),
       new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.DefinePlugin({ env }),
+      new webpack.DefinePlugin({env}),
     ]
   }
 }
