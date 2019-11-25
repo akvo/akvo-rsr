@@ -1,11 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import SVGInline from 'react-svg-inline'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
-
-import rsrSvg from './images/akvorsr.svg'
 
 const langs = ['en', 'es', 'fr']
 const flags = {}
@@ -37,7 +34,7 @@ const TopBar = ({ userRdr, dispatch }) => {
     <div className="top-bar">
       <div className="ui container">
         <a href={`/${userRdr.lang}/projects`}>
-        <SVGInline svg={rsrSvg} />
+        <img className="logo" src="/logo" />
         </a>
         <ul>
           {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
