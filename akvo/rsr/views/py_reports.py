@@ -10,6 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import os
 from django.http import HttpResponse
 
+
 def check(request):
     env = int(os.getenv('RSR_REPORTS', '0'))
     return HttpResponse('OK' if bool(env) else '')
