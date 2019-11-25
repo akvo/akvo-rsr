@@ -9,7 +9,7 @@ import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import Project, RelatedProject
+from akvo.rsr.models import Project, RelatedProject, Country
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -23,8 +23,7 @@ from .planned_disbursement import (PlannedDisbursementRawSerializer,
 from .policy_marker import PolicyMarkerRawSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_document import ProjectDocumentRawSerializer
-from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer,
-                               ProjectLocationCountryNameSerializer)
+from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer)
 from .project_condition import ProjectConditionRawSerializer
 from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
@@ -190,11 +189,20 @@ class ProjectUpSerializer(ProjectSerializer):
 
 class ProjectMetadataSerializer(BaseRSRSerializer):
 
-    locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
+    locations = serializers.SerializerMethodField()
+    recipient_countries = RecipientCountryRawSerializer(many=True, required=False)
     status = serializers.ReadOnlyField(source='publishingstatus.status')
     sectors = SectorSerializer(many=True, read_only=True)
     parent = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
+
+    def get_locations(self, obj):
+        countries = Country.objects.filter(projectlocation__location_target=obj).distinct()
+        return [
+            {'country': c.name, 'iso_code': c.iso_code}
+            for c
+            in countries
+        ]
 
     def get_parent(self, obj):
         p = obj.parents_all().first()
@@ -211,12 +219,10 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'editable')
+                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
 
 
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
-
-    locations = serializers.SerializerMethodField()
 
     def get_parent(self, obj):
 
@@ -233,14 +239,6 @@ class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
         else:
             p = None
         return {'id': p.id, 'title': p.title} if p is not None else None
-
-    def get_locations(self, obj):
-        return [
-            {'country': l.country.name, 'iso_code': l.country.iso_code}
-            for l
-            in obj.locations.all()
-            if l.country
-        ]
 
 
 class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):

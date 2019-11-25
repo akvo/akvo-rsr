@@ -76,7 +76,7 @@ class ProjectViewSet(PublicProjectViewSet):
 class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
     queryset = Project.objects.all().select_related('publishingstatus')\
-        .prefetch_related('locations', 'categories', 'related_projects')
+        .prefetch_related('locations', 'categories', 'related_projects', 'recipient_countries')
     serializer_class = ProjectMetadataSerializer
     project_relation = ''
 
