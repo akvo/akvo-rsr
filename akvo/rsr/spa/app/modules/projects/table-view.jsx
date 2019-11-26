@@ -59,7 +59,12 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       className: 'location',
       width: 170,
       render: (text, record) => {
-        const listOfUniqueCountries = record.locations.map(it => countryDict[it.isoCode]).reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
+        const listOfUniqueCountries =
+          [
+            ...record.locations.map(it => countryDict[it.isoCode]),
+            ...record.recipientCountries.map(it => countryDict[it.country.toLowerCase()])
+          ]
+          .reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, []).join(', ')
         return (<span>{listOfUniqueCountries}</span>)
       }
     },
