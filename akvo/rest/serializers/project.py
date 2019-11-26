@@ -8,7 +8,7 @@ import logging
 
 from rest_framework import serializers
 
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, RelatedProject, Country
 from akvo.utils import get_thumbnail
 
 from ..fields import Base64ImageField
@@ -22,8 +22,7 @@ from .planned_disbursement import (PlannedDisbursementRawSerializer,
 from .policy_marker import PolicyMarkerRawSerializer
 from .project_comment import ProjectCommentSerializer
 from .project_document import ProjectDocumentRawSerializer
-from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer,
-                               ProjectLocationCountryNameSerializer)
+from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer)
 from .project_condition import ProjectConditionRawSerializer
 from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
 from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
@@ -189,11 +188,20 @@ class ProjectUpSerializer(ProjectSerializer):
 
 class ProjectMetadataSerializer(BaseRSRSerializer):
 
-    locations = ProjectLocationCountryNameSerializer(many=True, read_only=True)
+    locations = serializers.SerializerMethodField()
+    recipient_countries = RecipientCountryRawSerializer(many=True, required=False)
     status = serializers.ReadOnlyField(source='publishingstatus.status')
     sectors = SectorSerializer(many=True, read_only=True)
     parent = serializers.SerializerMethodField()
     editable = serializers.SerializerMethodField()
+
+    def get_locations(self, obj):
+        countries = Country.objects.filter(projectlocation__location_target=obj).distinct()
+        return [
+            {'country': c.name, 'iso_code': c.iso_code}
+            for c
+            in countries
+        ]
 
     def get_parent(self, obj):
         p = obj.parents_all().first()
@@ -210,4 +218,86 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         model = Project
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
-                  'is_public', 'sectors', 'parent', 'editable')
+                  'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
+
+
+class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
+
+    def get_parent(self, obj):
+
+        parent_relations = [
+            r for r in chain(obj.related_projects.all(), obj.related_to_projects.all())
+            if
+            (r.project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_PARENT) or
+            (r.related_project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_CHILD)
+        ]
+        if parent_relations:
+            r = parent_relations[0]
+            p = (r.related_project if r.relation == RelatedProject.PROJECT_RELATION_PARENT
+                 else r.project)
+        else:
+            p = None
+        return {'id': p.id, 'title': p.title} if p is not None else None
+
+
+class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
+
+    children_count = serializers.SerializerMethodField()
+
+    def get_children_count(self, obj):
+        return obj.children_all().count()
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'children_count', 'editable')
+
+
+class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
+
+    children = serializers.SerializerMethodField()
+
+    def get_children(self, obj):
+        descendants = obj.descendants().prefetch_related(
+            'locations', 'locations__country', 'sectors', 'publishingstatus',
+            'related_projects', 'related_projects__related_project',
+            'related_to_projects', 'related_to_projects__project',
+        )
+        serializer = ProjectHierarchyNodeSerializer(descendants, many=True, context=self.context)
+        descendants = serializer.data
+        return make_descendants_tree(descendants, obj)
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
+                  'date_start_actual', 'date_start_planned', 'locations', 'status',
+                  'is_public', 'sectors', 'parent', 'children', 'editable')
+
+
+def make_descendants_tree(descendants, root):
+    tree = []
+    lookup = {}
+
+    for item in descendants:
+        if not item['parent']:
+            continue
+
+        item_id = item['id']
+        parent_id = item['parent']['id']
+
+        if item_id not in lookup:
+            lookup[item_id] = {'children': []}
+
+        lookup[item_id].update(item)
+        node = lookup[item_id]
+
+        if parent_id == root.id:
+            tree.append(node)
+        else:
+            if parent_id not in lookup:
+                lookup[parent_id] = {'children': []}
+
+            lookup[parent_id]['children'].append(node)
+
+    return tree

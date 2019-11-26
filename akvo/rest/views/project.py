@@ -72,7 +72,7 @@ class ProjectViewSet(PublicProjectViewSet):
 class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
     queryset = Project.objects.all().select_related('publishingstatus')\
-        .prefetch_related('locations', 'categories', 'related_projects')
+        .prefetch_related('locations', 'categories', 'related_projects', 'recipient_countries')
     serializer_class = ProjectMetadataSerializer
     project_relation = ''
 
@@ -80,12 +80,13 @@ class MyProjectsViewSet(PublicProjectViewSet):
         if self.request.user.is_anonymous:
             return Project.objects.none()
         queryset = user_editable_projects(self.request.user)
-        country = self.request.query_params.get('country', None)
-        if country is not None:
-            queryset = queryset.filter(locations__country__iso_code=country)
         sector = self.request.query_params.get('sector', None)
-        if sector is not None:
+        if sector:
             queryset = queryset.filter(sectors__sector_code=sector)
+        country = self.request.query_params.get('country', None)
+        if country:
+            queryset = queryset.filter(locations__country__iso_code=country)\
+                .union(queryset.filter(recipient_countries__country__iexact=country))
         return queryset
 
 
