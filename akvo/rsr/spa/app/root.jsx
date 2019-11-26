@@ -12,7 +12,7 @@ import Hierarchy from './modules/hierarchy/hierarchy'
 import TopBar from './top-bar'
 import { useFetch } from './utils/hooks'
 
-if(!(env && env.LOCALDEV)){
+if (!(env && env.LOCALDEV)) {
   Sentry.init({
     dsn: 'https://5ca590f001844d1493e459a38e3d75f3@sentry.io/218288',
     release: 'rsr-live@test-release'
@@ -25,7 +25,7 @@ const Root = ({ dispatch }) => {
     if(data !== 403) {
       dispatch({ type: 'SET_USER', user: data })
       if (!(env && env.LOCALDEV)) {
-        const {id, email} = data
+        const { id, email } = data
         Sentry.configureScope(scope => {
           scope.setUser({ id, email })
         })

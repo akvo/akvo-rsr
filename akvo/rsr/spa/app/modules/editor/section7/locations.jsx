@@ -52,9 +52,9 @@ const LocationsView = ({ validations, fields, primaryOrganisation }) => {
               control="select"
               options={SCOPE_OPTIONS}
             />
-            <AutoSave sectionIndex={7} />
           </Item>
           }
+          <AutoSave sectionIndex={7} />
           <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
           {!isEUTF &&
           <Aux>

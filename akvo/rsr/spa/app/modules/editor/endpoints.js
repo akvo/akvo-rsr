@@ -64,7 +64,7 @@ export const transforms = {
           transformed.latitude = data.location.coordinates.lat
           transformed.longitude = data.location.coordinates.lng
           transformed.city = data.location.description
-          if (data.location.countryComp){
+          if (data.location.countryComp) {
             transformed.country_iso_code = data.location.countryComp.short_name
           }
           delete transformed.location
