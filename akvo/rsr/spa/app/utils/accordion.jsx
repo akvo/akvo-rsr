@@ -69,25 +69,27 @@ class Accordion extends Component {
       if(indexToScrollTo !== -1){
         if (!this.ref || !this.ref.children) return
         const child = this.ref.children[0].children[indexToScrollTo]
-        if (this.isPeriods) {
-          const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetParent.offsetTop - /* sticky header */ 252
-          const top = topAccordionOffsetTop + child.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetTop + (61 * Number(indexToScrollTo))
-          window.scroll({ top, behavior: 'smooth' })
-        }
-        else if(this.isIndicators){
-          const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetTop - /* sticky header */ 182
-          const top = topAccordionOffsetTop + child.offsetParent.offsetTop + child.offsetTop
-          if(top < window.scrollY){
+        try{
+          if (this.isPeriods) {
+            const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetParent.offsetTop - /* sticky header */ 252
+            const top = topAccordionOffsetTop + child.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetTop + (61 * Number(indexToScrollTo))
             window.scroll({ top, behavior: 'smooth' })
           }
-        }
-        else if(this.isResults){
-          const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetTop - /* sticky header */ 101
-          const top = topAccordionOffsetTop + child.offsetTop
-          if (top < window.scrollY) {
-            window.scroll({ top, behavior: 'smooth' })
+          else if(this.isIndicators){
+            const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetParent.offsetTop - /* sticky header */ 182
+            const top = topAccordionOffsetTop + child.offsetParent.offsetTop + child.offsetTop
+            if(top < window.scrollY){
+              window.scroll({ top, behavior: 'smooth' })
+            }
           }
-        }
+          else if(this.isResults){
+            const topAccordionOffsetTop = child.offsetParent.offsetParent.offsetTop + child.offsetParent.offsetTop - /* sticky header */ 101
+            const top = topAccordionOffsetTop + child.offsetTop
+            if (top < window.scrollY) {
+              window.scroll({ top, behavior: 'smooth' })
+            }
+          }
+        } catch(e){ } // eslint-disable-line
       }
     }
   }

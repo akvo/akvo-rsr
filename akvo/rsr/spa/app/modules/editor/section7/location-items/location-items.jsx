@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Form, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
@@ -12,10 +13,31 @@ import Administratives from './administratives'
 import FEATURE_OPTIONS from './feature-options.json'
 import validationDefs from './validations'
 import '../styles.scss'
+import MinRequired from '../../../../utils/min-required'
 
 const { Item } = Form
 
-const LocationItems = ({ validations, formPush, primaryOrganisation, showRequired, errors }) => {
+const LocationInput = connect(
+  ({ editorRdr: { section7: { errors }, showRequired } }) => ({ errors: errors.filter(it => it.type === 'required' || it.type === 'typeError' || (it.type === 'min' && it.path !== undefined)), showRequired })
+)(({ name, errors, showRequired }) => {
+  const errorIndex = errors.findIndex(it => it.path.indexOf(`${name}.location`) !== -1)
+  const props = {
+    validateStatus: showRequired && (errorIndex !== -1) ? 'error' : ''
+  }
+  return (
+    <FinalField
+      name={`${name}.location`}
+      render={({ input }) => (
+        <SearchItem
+          {...input}
+          {...props}
+        />
+      )}
+    />
+  )
+})
+
+const LocationItems = ({ validations, formPush, primaryOrganisation }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -23,9 +45,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, showRequire
     <div>
       <div className="min-required-wrapper">
         <h3>{t('Locations')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'locationItems') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section7" setName="locationItems" />
       </div>
       <ItemArray
         setName="locationItems"
@@ -45,14 +65,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, showRequire
         newItem={{ administratives: []}}
         panel={name => (
           <Aux>
-            <FinalField
-              name={`${name}.location`}
-              render={({ input }) => (
-                <SearchItem
-                  {...input}
-                />
-              )}
-            />
+            <LocationInput name={name} />
             <Item label={<InputLabel optional>{t('address 1')}</InputLabel>}>
             <FinalField
               name={`${name}.address1`}

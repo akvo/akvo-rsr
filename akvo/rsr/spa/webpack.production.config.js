@@ -4,16 +4,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin')
 
-const config = () => {
-  const env = {}
-  Object.keys(process.env).forEach(key => { env[key] = JSON.stringify(process.env[key]) })
-  return {
-    stats: {
-      maxModules: 0
-    },
-    mode: 'production',
-    devtool: 'source-map',
 
+const config = {
+  stats: {
+    maxModules: 0
+  },
+  mode: 'production',
+  devtool: 'source-map',
     entry: [
       './main.js',
       './styles/main.scss',
@@ -40,7 +37,7 @@ const config = () => {
         minimize: true,
         debug: false,
       }),
-      new webpack.DefinePlugin({ env, 'process.env': { NODE_ENV: JSON.stringify('production') } }),
+      new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
       new ExtractTextPlugin({
         filename: 'styles/style.[chunkhash].css',
         disable: false,
@@ -141,6 +138,5 @@ const config = () => {
       ]
     },
   }
-}
 
-module.exports = config;
+module.exports = config

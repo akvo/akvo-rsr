@@ -5,7 +5,6 @@ import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input,
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
-import { diff } from 'deep-object-diff'
 import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
@@ -21,6 +20,7 @@ import {addSetItem, removeSetItem, fetchSetItems} from '../actions'
 import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
+import { shouldUpdateSectionRoot } from '../../../utils/misc'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -384,7 +384,7 @@ const Section5 = (props) => {
                               />
                               <div style={{ display: 'flex' }}>
                                 <Item label={<InputLabel optional tooltip={t('You can provide further information of the result here.')}>{t('Description')}</InputLabel>} style={{ flex: 1 }}>
-                                  <RTE />
+                                  <FinalField name={`${name}.description`} render={({ input }) => <RTE {...input} />} />
                                 </Item>
                                 <Item label={t('Enable aggregation')} style={{ marginLeft: 16 }}>
                                   <Field
@@ -448,12 +448,4 @@ const Section5 = (props) => {
 export default connect(
   ({ editorRdr: { projectId, validations, showRequired, section5: { fields, errors }, section1: { fields: { relatedProjects, primaryOrganisation, allowIndicatorLabels } } } }) => ({ fields, relatedProjects, primaryOrganisation, projectId, allowIndicatorLabels, validations, errors, showRequired }),
   { removeSetItem, fetchSetItems }
-)(React.memo(Section5, (prevProps, nextProps) => {
-  const difference = diff(prevProps.fields, nextProps.fields)
-  const shouldUpdate = JSON.stringify(difference).indexOf('"id"') !== -1
-  return !shouldUpdate
-}))
-// export default connect(
-//   ({ editorRdr: { section5: { fields }, section1: { fields: { relatedProjects, primaryOrganisation } }}}) => ({ fields, relatedProjects, primaryOrganisation }),
-//   { removeSetItem, fetchSetItems }
-// )(Section5)
+)(React.memo(Section5, shouldUpdateSectionRoot))

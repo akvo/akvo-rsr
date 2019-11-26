@@ -13,9 +13,10 @@ import VOCAB_2_CODES from '../vocab-2-codes.json'
 import VOCABULARY_OPTIONS from '../vocab.json'
 import EUTF_SECTOR_OPTIONS from './eutf-sector-options.json'
 import SectionContext from '../../section-context'
+import MinRequired from '../../../../utils/min-required'
 
 
-const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, errors }) => {
+const Sectors = ({ validations, formPush, primaryOrganisation }) => {
   const { t } = useTranslation()
   const validationSets = getValidationSets(validations, validationDefs)
   const fieldExists = doesFieldExist(validationSets)
@@ -26,9 +27,7 @@ const Sectors = ({ validations, formPush, primaryOrganisation, showRequired, err
       <SectionContext.Provider value="section8">
       <div className="min-required-wrapper">
         <h3>{t('Sectors')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'sectors') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section8" setName="sectors" />
       </div>
       <ItemArray
         setName="sectors"
