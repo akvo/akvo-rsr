@@ -55,8 +55,9 @@ class AutoSave extends React.Component {
   componentWillMount(){
     this.save()
   }
-  componentWillReceiveProps(prevProps) {
-    if(prevProps.values === this.props.values){
+  componentWillReceiveProps(nextProps) {
+    const difference = diff(nextProps.values, this.props.values)
+    if(isEmpty(difference)){
       return
     }
     if (this.timeout) {

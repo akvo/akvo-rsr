@@ -36,8 +36,6 @@ const Aux = node => node.children
 const languages = [{ label: 'English', code: 'en'}, { label: 'German', code: 'de' }, { label: 'Spanish', code: 'es' }, { label: 'French', code: 'fr' }, { label: 'Dutch', code: 'nl' }, { label: 'Russian', code: 'ru' }]
 
 const Info = ({ validations, fields, projectId, errors, showRequired }) => {
-  console.log(env)
-  console.log('SENTRY_DSN', env.SENTRY_DSN)
   const { t } = useTranslation()
   const [{results}, loading] = useFetch('/typeaheads/projects')
   const validationSets = getValidationSets(validations, validationDefs)
