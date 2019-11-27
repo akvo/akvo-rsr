@@ -20,6 +20,7 @@ import IndicatorNavMenu, { fieldNameToId } from './indicator-nav-menu'
 import api from '../../../utils/api'
 import { isFieldOptional, getValidationSets, getValidations } from '../../../utils/validation-utils'
 import validationDefs from './results/validations'
+import RequiredHint from '../../../utils/required-hint'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -104,6 +105,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
                     )
                   }}
                 />
+                <RequiredHint section="section5" name={name} />
               </span>)}
               extra={(
                 /* eslint-disable-next-line */
