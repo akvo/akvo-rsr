@@ -322,6 +322,25 @@ hr{
   }
 }
 
+.mandatory-hint{
+  font-style: italic;
+  margin-left: 5px;
+  display: inline-block;
+  // opacity: 0.5;
+  font-size: 12px;
+  // font-weight: 600;
+  color: #777;
+  &:before{
+    content: '• ';
+    color: #e55650;
+    font-size: 18px;
+  }
+  b{
+    color: #e55650;
+    font-size: 14px;
+  }
+}
+
 .view {
   padding-top: 20px;
   &.custom-fields{
