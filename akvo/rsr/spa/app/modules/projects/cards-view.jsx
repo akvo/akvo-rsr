@@ -16,8 +16,12 @@ const ProjectCard = ({ project }) => {
   const [isCompact, setIsCompact] = useState(false)
   const [titleRows, setTitleRows] = useState(-1)
   const sectors = project.sectors.filter(it => it.codeLabel)
-  const countries = project.locations.map(it => countryDict[it.isoCode])
-  const countriesFiltered = countries.filter((item, index) => countries.indexOf(item) === index && item)
+  const listOfUniqueCountries =
+    [
+      ...project.locations.map(it => countryDict[it.isoCode]),
+      ...project.recipientCountries.map(it => countryDict[it.country.toLowerCase()])
+    ]
+      .reduce((acc, val) => { if (acc.indexOf(val) === -1) return [...acc, val]; return acc }, [])
   useEffect(() => {
     if(cardBody.current){
       const restHeight = cardBody.current.clientHeight - h3.current.clientHeight - 40 /* top */
@@ -62,9 +66,9 @@ const ProjectCard = ({ project }) => {
             </div>
           </div>
         )}
-        {countriesFiltered.length > 0 &&
+        {listOfUniqueCountries.length > 0 &&
           <div className="bottom">
-            <Icon type="environment" /> <span>{countriesFiltered.join(', ')}</span>
+            <Icon type="environment" /> <span>{listOfUniqueCountries.join(', ')}</span>
           </div>
         }
       </Card>

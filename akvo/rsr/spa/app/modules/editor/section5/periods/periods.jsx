@@ -16,6 +16,7 @@ import AutoSave from '../../../../utils/auto-save'
 import { addSetItem, removeSetItem } from '../../actions'
 import Targets from './targets'
 import { getValidations } from '../../../../utils/validation-utils'
+import RequiredHint from '../../../../utils/required-hint'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -70,6 +71,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
                       name={`${name}.periodEnd`}
                       render={({ input }) => input.value}
                     />
+                    <RequiredHint section="section5" name={name} />
                   </span>
                 )}
                 key={index}

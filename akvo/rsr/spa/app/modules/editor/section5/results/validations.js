@@ -3,6 +3,8 @@ import { validationType } from '../../../../utils/validation-utils'
 
 const validNumberError = 'A valid number is required.'
 
+const transform = (value, originalValue) => originalValue ? (originalValue.trim() === '' ? null : value) : null
+
 const RSR = yup.object().shape({
   title: yup.string().nullable().required(),
   indicators: yup.array().of(yup.object().shape({
@@ -16,14 +18,14 @@ const RSR = yup.object().shape({
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
-        .transform((value, originalValue) => originalValue.trim() === '' ? null : value),
+        .transform(transform),
       disaggregationTargets: yup.array().of(yup.object().shape({
         value: yup
           .number()
           .integer(validNumberError)
           .typeError(validNumberError)
           .nullable()
-          .transform((value, originalValue) => originalValue.trim() === '' ? null : value)
+          .transform(transform)
       }))
     }))
   }))
@@ -44,7 +46,7 @@ const DGIS = yup.object().shape({
         .integer(validNumberError)
         .typeError(validNumberError)
         .nullable()
-        .transform((value, originalValue) => originalValue.trim() === '' ? null : value)
+        .transform(transform)
         .required(),
       disaggregationTargets: yup.array().of(yup.object().shape({
         value: yup
@@ -52,7 +54,7 @@ const DGIS = yup.object().shape({
           .integer(validNumberError)
           .typeError(validNumberError)
           .nullable()
-          .transform((value, originalValue) => originalValue.trim() === '' ? null : value)
+          .transform(transform)
       }))
     }))
   })).min(1)

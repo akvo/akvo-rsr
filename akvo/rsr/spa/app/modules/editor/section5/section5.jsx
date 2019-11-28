@@ -22,6 +22,7 @@ import api from '../../../utils/api'
 import InputLabel from '../../../utils/input-label';
 import SectionContext from '../section-context'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
+import RequiredHint from '../../../utils/required-hint'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -338,6 +339,7 @@ const Section5 = (props) => {
                                   name={`${name}.title`}
                                   render={({ input }) => input.value ? `: ${input.value}` : ''}
                                 />
+                                <RequiredHint section="section5" name={name} />
                               </span>}
                             extra={
                               // eslint-disable-next-line
