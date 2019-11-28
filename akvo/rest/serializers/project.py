@@ -221,6 +221,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries')
 
+
 class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
 
     locations = serializers.SerializerMethodField()
