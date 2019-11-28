@@ -112,10 +112,10 @@ class ItemArray extends React.Component{
               {fields.map((name, index) => (
                 <Panel
                   header={
-                    <Aux>
+                    <span>
                     <PanelHeader template={this.props.header} field={this.props.headerField} name={name} index={index} />
                     <RequiredHint section={`section${this.props.sectionIndex}`} name={name} />
-                    </Aux>}
+                    </span>}
                   extra={this.props.renderExtra ? this.props.renderExtra(name, index, fields) : (
                     <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
                       {this.props.headerMore && <PanelHeaderMore render={this.props.headerMore} field={this.props.headerMoreField} name={name} index={index} />}

@@ -300,6 +300,13 @@
     }
   }
 }
+.ant-collapse-item .ant-collapse-header.contains-mandatory{
+  border: 1px solid red;
+  border-color: red!important;
+}
+.ant-collapse > .ant-collapse-item.ant-collapse-item-active:last-child > .ant-collapse-header{
+  border-radius: 0;
+}
 
 hr{
   border: none;
