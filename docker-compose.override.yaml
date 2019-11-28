@@ -12,14 +12,12 @@ services:
   reports:
     build:
       context: .
-      dockerfile: ./reports/Dockerfile-dev
+      dockerfile: Dockerfile-dev
     volumes:
       - .:/var/akvo/rsr/code:delegated
       - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
       - /var/akvo/rsr/code/src/
     network_mode: service:mainnetwork
-    environment:
-      - DJANGO_SECRET_KEY=secretkey
   nginx:
     image: nginx:1.13.8-alpine
     network_mode: service:mainnetwork

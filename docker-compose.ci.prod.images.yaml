@@ -15,7 +15,7 @@ services:
       - WAIT_FOR_DEPENDENCIES=yes
       - DJANGO_SECRET_KEY=secretkey
   reports:
-    image: eu.gcr.io/${PROJECT_NAME}/rsr-reports:${TRAVIS_COMMIT}
+    image: eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT}
     network_mode: service:nginx
     volumes:
       - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
@@ -23,7 +23,6 @@ services:
       - media-disk:/var/akvo/rsr/staticroot/
     environment:
       - WAIT_FOR_DEPENDENCIES=yes
-      - DJANGO_SECRET_KEY=secretkey
   nginx:
     image: eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
     volumes:

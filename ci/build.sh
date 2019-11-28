@@ -31,9 +31,6 @@ echo "DEPLOY_TAG = '$TRAVIS_TAG'" >> ._66_deploy_info.conf
 log Creating Production Backend image
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-backend:${TRAVIS_COMMIT} -t rsr-backend:prod .
 
-log Creating Production Reports image
-docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-reports:${TRAVIS_COMMIT} -t rsr-reports:prod -f reports/Dockerfile .
-
 log Creating Production Nginx image
 docker build --rm=false nginx/ -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
 

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <h1>{{ text }}</h1>
+    {% if is_reports_container %}
+    <h1>OK!</h1>
+    {% else %}
+    <p><strong>Whoops!</strong> Something went wrong.</p>
+    {% endif %}
   </body>
 </html>
