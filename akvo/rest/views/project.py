@@ -330,9 +330,8 @@ def project_directory(request):
 
     # NOTE: We use projects_text_filtered for displaying projects
     count = projects_text_filtered.count()
-    display_projects = get_qs_elements_for_page(projects_text_filtered, request).select_related(
-        'primary_organisation'
-    )
+    display_projects = get_qs_elements_for_page(projects_text_filtered, request, count)\
+        .select_related('primary_organisation')
 
     # NOTE: We use the _get_cached_data function to individually cache small
     # bits of data to avoid the response from never getting saved in the cache,

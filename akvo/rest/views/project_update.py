@@ -194,8 +194,8 @@ def update_directory(request):
         vocabulary='2', sector_code__in=valid_sectors
     ).values('sector_code').distinct()
 
-    display_updates = get_qs_elements_for_page(updates_text_filtered, request)
     count = updates_text_filtered.count()
+    display_updates = get_qs_elements_for_page(updates_text_filtered, request, count)
     display_updates = display_updates.select_related(
         'project',
         'project__primary_location',
