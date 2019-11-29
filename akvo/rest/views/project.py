@@ -5,10 +5,13 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from datetime import timedelta
+
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Count, F, Q
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from django.utils.timezone import now
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -283,6 +286,21 @@ def project_directory(request):
     filter_, text_filter = _create_filters_query(request)
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
     projects = _filter_by_custom_fields(request, projects)
+
+    # Rank projects by number of updates and indicator updates in last 9 months
+    nine_months = now() - timedelta(days=9 * 30)
+    projects = projects.annotate(
+        update_count=Count('project_updates', filter=Q(created_at__gt=nine_months))
+    ).annotate(
+        indicator_update_count=Count('results__indicators__periods__data',
+                                     filter=Q(created_at__gt=nine_months))
+    ).annotate(score=F('update_count') + F('indicator_update_count')).order_by(
+        '-score', '-pk'
+    ).only('id', 'title', 'subtitle',
+           'primary_location__id',
+           'primary_organisation__id',
+           'primary_organisation__name',
+           'primary_organisation__long_name')
 
     # NOTE: The text filter is handled differently/separately from the other filters.
     # The text filter allows users to enter free form text, which could result in no
