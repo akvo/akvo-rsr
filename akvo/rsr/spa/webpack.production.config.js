@@ -37,7 +37,7 @@ const config = {
       minimize: true,
       debug: false,
     }),
-    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
+    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') }, env: {} }),
     new ExtractTextPlugin({
       filename: 'styles/style.[chunkhash].css',
       disable: false,
