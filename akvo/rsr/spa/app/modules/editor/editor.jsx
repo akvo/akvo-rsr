@@ -117,7 +117,7 @@ const ContentBar = connect(
       sectionLength = 11
     }
     for(let i = 1; i <= sectionLength; i += 1){
-      if (editorRdr[`section${i}`].errors.length > 0) ret.allValid = false
+      if (editorRdr[`section${i}`].errors.filter(it => it.type === 'required' || it.type === 'min').length > 0) ret.allValid = false
     }
     return ret
   },
