@@ -5,8 +5,5 @@ services:
   web:
     image: rsr-backend:dev
     command: "true"
-  reports:
-    image: rsr-backend:dev
-    command: "true"
   rsrdbhost:
   memcached:

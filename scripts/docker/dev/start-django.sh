@@ -11,7 +11,7 @@ trap _term SIGTERM
 
 ./scripts/docker/dev/wait-for-dependencies.sh
 
-if [ -z "${SKIP_FRONTEND_BUILD:-}" ]; then
+if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   pushd akvo/rsr/front-end
   if [[ ! -d "node_modules" ]]; then
     npm install
@@ -30,7 +30,7 @@ if [ -z "${SKIP_FRONTEND_BUILD:-}" ]; then
   popd
 fi
 
-if [ -z "${SKIP_MIGRATION:-}" ]; then
+if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 fi
 #python manage.py collectstatic

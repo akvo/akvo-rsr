@@ -23,6 +23,9 @@ services:
       - media-disk:/var/akvo/rsr/staticroot/
     environment:
       - WAIT_FOR_DEPENDENCIES=yes
+      - DJANGO_SECRET_KEY=secretkey
+      - IS_REPORTS_CONTAINER=yes
+      - DJANGO_PORT=9000
   nginx:
     image: eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
     volumes:

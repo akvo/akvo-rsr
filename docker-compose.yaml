@@ -15,13 +15,6 @@ services:
     network_mode: service:mainnetwork
     environment:
       - DJANGO_SECRET_KEY=secretkey
-  reports:
-    environment:
-      - DJANGO_SECRET_KEY=secretkey
-      - SKIP_FRONTEND_BUILD=yes
-      - SKIP_MIGRATION=yes
-      - SKIP_CRON=yes
-      - DJANGO_PORT=9000
   rsrdbhost:
     build:
       context: postgres

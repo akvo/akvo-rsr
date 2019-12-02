@@ -14,7 +14,7 @@ from django.template.loader import render_to_string
 
 
 def check(request):
-    is_reports_container = os.getenv('DJANGO_PORT', None) == '9000'
+    is_reports_container = os.getenv('IS_REPORTS_CONTAINER', '').strip()
     is_requesting_pdf = request.GET.get('pdf', None)
 
     if not is_requesting_pdf:
