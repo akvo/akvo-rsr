@@ -3,7 +3,7 @@ import { validationType } from '../../../../utils/validation-utils'
 
 const validNumberError = 'A valid number is required.'
 
-const transform = (value, originalValue) => originalValue ? (originalValue.trim() === '' ? null : value) : null
+const transform = (value, originalValue) => originalValue ? (String(originalValue).trim() === '' ? null : value) : null
 
 const RSR = yup.object().shape({
   title: yup.string().nullable().required(),
