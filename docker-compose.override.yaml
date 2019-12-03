@@ -9,6 +9,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-dev
+  reports:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    volumes:
+      - .:/var/akvo/rsr/code:delegated
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
+      - /var/akvo/rsr/code/src/
+    network_mode: service:mainnetwork
+    environment:
+      - DJANGO_SECRET_KEY=secretkey
+      - IS_REPORTS_CONTAINER=yes
+      - DJANGO_PORT=9000
   nginx:
     image: nginx:1.13.8-alpine
     network_mode: service:mainnetwork

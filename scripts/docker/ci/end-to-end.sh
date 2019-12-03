@@ -19,6 +19,15 @@ function test_http_status {
   printf "."
 }
 
+function test_content {
+  local content=$(curl --location --silent "$2")
+  if [[ "$content" != "$1" ]]; then
+    log Failed to assert "$2" with expected content "$1" got "$content".
+    exit 1
+  fi
+  printf "."
+}
+
 BASE_URL=http://rsr.localdev.akvo.org
 HTTP_OK=200
 HTTP_ERRORS_START=400
@@ -66,6 +75,11 @@ while read -r path; do
   # test sourcemap
   test_http_status "${HTTP_OK}" "$BASE_URL$path.map"
 done <<< "$SPA_ASSETS"
+
+echo ""
+
+log Testing python generated report endpoint
+test_content "OK" "$BASE_URL/py-reports/checkz/"
 
 echo ""
 

@@ -4,7 +4,7 @@ RUN set -ex; apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
     curl git postgresql-client runit cron \
     libjpeg-dev libfreetype6-dev \
-    libffi-dev libssl-dev \
+    libffi-dev libssl-dev wkhtmltopdf \
     libxml2-dev libxslt1-dev zlib1g-dev python-dev gosu && \
     rm -rf /var/lib/apt/lists/*
 
