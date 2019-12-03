@@ -101,7 +101,8 @@ def organisation_directory(request):
         for choice in location_choices(organisations)
     ]
 
-    display_organisations = get_qs_elements_for_page(organisations_text_filtered, request)
+    count = organisations_text_filtered.count()
+    display_organisations = get_qs_elements_for_page(organisations_text_filtered, request, count)
 
     # Get related objects of page at once
     response = {
