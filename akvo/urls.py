@@ -174,6 +174,14 @@ urlpatterns += (
     url(r'^py-reports/checkz/$',
         py_reports.check, name='py-reports-check'),
 
+    url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-map-overview/$',
+        py_reports.render_project_results_indicators_map_overview,
+        name='py-reports-project-results-indicators-map-overview'),
+
+    url(r'^py-reports/organisation/(?P<org_id>\d+)/projects-results-indicators-map-overview/$',
+        py_reports.render_organisation_projects_results_indicators_map_overview,
+        name='py-reports-organisation-projects-results-indicators-map-overview'),
+
     # IATI file
     url(r'^project/(?P<project_id>\d+)/iati/$',
         project.iati, name='project-iati'),
