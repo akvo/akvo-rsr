@@ -56,7 +56,8 @@ spec:
           value: "test"
         - name: REPORT_SERVER_URL
           value: "http://localhost:8080"
-      - name: rsr-backend
+      - &backend
+        name: rsr-backend
         image: "eu.gcr.io/akvo-lumen/rsr-backend:{{ .Values.rsrVersion }}"
         imagePullPolicy: Always
         resources:
@@ -67,7 +68,7 @@ spec:
         ports:
         - containerPort: 8000
           protocol: TCP
-        livenessProbe:
+        livenessProbe: &liveness
           httpGet:
             path: /healthz
             port: 8000
@@ -75,7 +76,7 @@ spec:
           timeoutSeconds: 1
           failureThreshold: 12
           periodSeconds: 10
-        readinessProbe:
+        readinessProbe: &readiness
           httpGet:
             path: /healthz
             port: 8000
@@ -92,84 +93,57 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
-        - name: SMTP_PASSWORD
+        - &smtp-password
+          name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: "rsr-common"
               key: smtp-password
-        - name: DJANGO_SECRET_KEY
+        - &django-secret-key
+          name: DJANGO_SECRET_KEY
           value: "something random"
-        - name: GUNICORN_DEBUG_ARGS
+        - &gunicorn-debug-args
+          name: GUNICORN_DEBUG_ARGS
           value: "--workers 4"
-        - name: DB_PASSWORD
+        - &db-password
+          name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: "{{ .Release.Name }}-postgresql"
               key: postgresql-password
-        - name: DB_HOST
+        - &db-host
+          name: DB_HOST
           value: "{{ include "rsrchart.dbname" . }}"
-        - name: RSR_DOMAIN_NAME
+        - &rsr-domain-name
+          name: RSR_DOMAIN_NAME
 #          value: "{{ .Release.Name }}.rsrdemo.akvotest.org" ;; to change once LetsEncrypt is working
           value: "{{ .Release.Name }}.akvotest.org"
-      - name: rsr-reports
-        image: "eu.gcr.io/akvo-lumen/rsr-backend:{{ .Values.rsrVersion }}"
-        imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: "50m"
-          limits:
-            cpu: "4000m"
+      - <<: *backend
+        name: rsr-reports
         ports:
         - containerPort: 9000
           protocol: TCP
         livenessProbe:
+          <<: *liveness
           httpGet:
             path: /healthz
             port: 9000
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
-          failureThreshold: 12
-          periodSeconds: 10
         readinessProbe:
+          <<: *readiness
           httpGet:
             path: /healthz
             port: 9000
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
-          failureThreshold: 12
-          periodSeconds: 10
-        volumeMounts:
-            - name: "secret-config"
-              mountPath: "/var/akvo/rsr/code/akvo/settings/42_django.conf"
-              subPath: "django.conf"
-            - name: "rsr-media-disk"
-              mountPath: "/var/akvo/rsr/mediaroot"
-            - name: "rsr-staticroot-disk"
-              mountPath: "/var/akvo/rsr/staticroot"
         env:
         - name: IS_REPORTS_CONTAINER
           value: "yes"
         - name: DJANGO_PORT
           value: "9000"
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "rsr-common"
-              key: smtp-password
-        - name: DJANGO_SECRET_KEY
-          value: "something random"
-        - name: GUNICORN_DEBUG_ARGS
-          value: "--workers 4"
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "{{ .Release.Name }}-postgresql"
-              key: postgresql-password
-        - name: DB_HOST
-          value: "{{ include "rsrchart.dbname" . }}"
-        - name: RSR_DOMAIN_NAME
-#          value: "{{ .Release.Name }}.rsrdemo.akvotest.org" ;; to change once LetsEncrypt is working
-          value: "{{ .Release.Name }}.akvotest.org"
+        - <<: *smtp-password
+        - <<: *gunicorn-debug-args
+        - <<: *django-secret-key
+        - <<: *db-password
+        - <<: *db-host
+        - <<: *rsr-domain-name
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:
