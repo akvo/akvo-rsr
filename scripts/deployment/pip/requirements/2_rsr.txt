@@ -11,7 +11,7 @@ django-bootstrap3==11.0
 
 # API framework
 mimeparse==0.1.3
-python-dateutil==2.2
+python-dateutil==2.8.1
 requests==2.22.0
 djangorestframework==3.9.1
 djangorestframework-xml==1.3.0
