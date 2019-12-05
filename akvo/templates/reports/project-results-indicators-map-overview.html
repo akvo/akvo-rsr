@@ -94,7 +94,7 @@
                 <th>Period</th>
                 <th>Actual</th>
                 <th>Target</th>
-                <th>Comment</th>
+                {% if show_comment %}<th>Comment</th>{% endif %}
                 <th>&nbsp;</th>
                 <th>Total</th>
               </tr>
@@ -109,7 +109,7 @@
                 </td>
                 <td>{{ period.actual_value }}</td>
                 <td>{{ period.target_value }}</td>
-                <td>{{ period.actual_comment }}</td>
+                {% if show_comment %}<td>{{ period.actual_comment }}</td>{% endif %}
                 <td class="grade-circle"><div class="{{ period.grade }}"></div></td>
                 <td><span class="grade {{ period.grade }}">{{ period.total }}</span></td>
               </tr>
