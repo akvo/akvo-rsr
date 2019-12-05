@@ -28,11 +28,14 @@ Usage:
 from __future__ import print_function
 
 import re
+import os
 import subprocess
 
 import requests
 
-OAUTH_TOKEN = subprocess.check_output(['git', 'config', '--global', 'github.oauth-token']).strip()
+OAUTH_TOKEN = os.getenv('GITHUB_TOKEN', '').strip()
+if not OAUTH_TOKEN:
+    OAUTH_TOKEN = subprocess.check_output(['git', 'config', '--global', 'github.oauth-token']).strip()
 HEADERS = {"Authorization": "token {}".format(OAUTH_TOKEN)}
 RELEASE_NOTES = u"""
 ## New and noteworthy
