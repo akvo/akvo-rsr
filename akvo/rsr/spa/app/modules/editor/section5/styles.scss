@@ -87,16 +87,12 @@
       border-radius: 0!important;
       background-color: #fff!important;
       border-color: #efefef!important;
-      &.contains-mandatory{
-        border-color: red!important;
-      }
     }
-    // &:not(.ant-collapse-item)
     &.ant-collapse-item-active>.ant-collapse-header{
       border-left: 3px solid #2593fc!important;
       margin-top: 0;
       &.contains-mandatory{
-        border-color: red!important;
+        border-left: 3px solid red!important;
         margin-bottom: -2px;
       }
     }
@@ -104,8 +100,6 @@
   .results-list{
     margin-right: 200px;
     .ant-collapse-header{
-      // padding-top: 18px;
-      // padding-bottom: 18px;
       height: 81px;
       display: flex;
       align-items: center;

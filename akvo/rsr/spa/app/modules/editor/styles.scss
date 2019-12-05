@@ -300,7 +300,7 @@
     }
   }
 }
-.ant-collapse-item .ant-collapse-header.contains-mandatory{
+.ant-collapse-item:not(.ant-collapse-item-active)>.ant-collapse-header.contains-mandatory, .ant-collapse-item .ant-collapse-item:not(.ant-collapse-item-active)>.ant-collapse-header.contains-mandatory{
   border: 1px solid red;
   border-color: red!important;
 }
