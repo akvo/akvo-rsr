@@ -56,8 +56,7 @@ spec:
           value: "test"
         - name: REPORT_SERVER_URL
           value: "http://localhost:8080"
-      - &backend
-        name: rsr-backend
+      - name: rsr-backend
         image: "eu.gcr.io/akvo-lumen/rsr-backend:{{ .Values.rsrVersion }}"
         imagePullPolicy: Always
         resources:
@@ -68,7 +67,7 @@ spec:
         ports:
         - containerPort: 8000
           protocol: TCP
-        livenessProbe: &liveness
+        livenessProbe:
           httpGet:
             path: /healthz
             port: 8000
@@ -76,7 +75,7 @@ spec:
           timeoutSeconds: 1
           failureThreshold: 12
           periodSeconds: 10
-        readinessProbe: &readiness
+        readinessProbe:
           httpGet:
             path: /healthz
             port: 8000
@@ -93,57 +92,25 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
-        - &smtp-password
-          name: SMTP_PASSWORD
+        - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: "rsr-common"
               key: smtp-password
-        - &django-secret-key
-          name: DJANGO_SECRET_KEY
+        - name: DJANGO_SECRET_KEY
           value: "something random"
-        - &gunicorn-debug-args
-          name: GUNICORN_DEBUG_ARGS
+        - name: GUNICORN_DEBUG_ARGS
           value: "--workers 4"
-        - &db-password
-          name: DB_PASSWORD
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: "{{ .Release.Name }}-postgresql"
               key: postgresql-password
-        - &db-host
-          name: DB_HOST
+        - name: DB_HOST
           value: "{{ include "rsrchart.dbname" . }}"
-        - &rsr-domain-name
-          name: RSR_DOMAIN_NAME
+        - name: RSR_DOMAIN_NAME
 #          value: "{{ .Release.Name }}.rsrdemo.akvotest.org" ;; to change once LetsEncrypt is working
           value: "{{ .Release.Name }}.akvotest.org"
-      - <<: *backend
-        name: rsr-reports
-        ports:
-        - containerPort: 9000
-          protocol: TCP
-        livenessProbe:
-          <<: *liveness
-          httpGet:
-            path: /healthz
-            port: 9000
-        readinessProbe:
-          <<: *readiness
-          httpGet:
-            path: /healthz
-            port: 9000
-        env:
-        - name: IS_REPORTS_CONTAINER
-          value: "yes"
-        - name: DJANGO_PORT
-          value: "9000"
-        - <<: *smtp-password
-        - <<: *gunicorn-debug-args
-        - <<: *django-secret-key
-        - <<: *db-password
-        - <<: *db-host
-        - <<: *rsr-domain-name
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:

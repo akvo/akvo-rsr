@@ -62,8 +62,7 @@ spec:
             secretKeyRef:
               name: "rsr-secret"
               key: report-server-url
-      - &backend
-        name: rsr-backend
+      - name: rsr-backend
         image: eu.gcr.io/akvo-lumen/rsr-backend:${TRAVIS_COMMIT}
         imagePullPolicy: Always
         resources:
@@ -74,7 +73,7 @@ spec:
         ports:
         - containerPort: 8000
           protocol: TCP
-        livenessProbe: &liveness
+        livenessProbe:
           httpGet:
             path: /healthz
             port: 8000
@@ -82,7 +81,7 @@ spec:
           timeoutSeconds: 1
           failureThreshold: 12
           periodSeconds: 10
-        readinessProbe: &readiness
+        readinessProbe:
           httpGet:
             path: /healthz
             port: 8000
@@ -105,51 +104,23 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
-        - &sentry-dsn
-          name: SENTRY_DSN
+        - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
               name: "rsr-secret"
               key: sentry-dsn
-        - &gunicorn-debug-args
-          name: GUNICORN_DEBUG_ARGS
+        - name: GUNICORN_DEBUG_ARGS
           valueFrom:
             secretKeyRef:
               name: "rsr-secret"
               key: gunicorn-debug
-        - &django-secret-key
-          name: DJANGO_SECRET_KEY
+        - name: DJANGO_SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: "rsr-secret"
               key: django-secret-key
-        - &enable-stats
-          name: ENABLE_STATS
+        - name: ENABLE_STATS
           value: "yes please"
-      - <<: *backend
-        name: rsr-reports
-        ports:
-        - containerPort: 9000
-          protocol: TCP
-        livenessProbe:
-          <<: *liveness
-          httpGet:
-            path: /healthz
-            port: 9000
-        readinessProbe:
-          <<: *readiness
-          httpGet:
-            path: /healthz
-            port: 9000
-        env:
-        - name: IS_REPORTS_CONTAINER
-          value: "yes"
-        - name: DJANGO_PORT
-          value: "9000"
-        - <<: *sentry-dsn
-        - <<: *gunicorn-debug-args
-        - <<: *django-secret-key
-        - <<: *enable-stats
       - name: rsr-memcached
         image: memcached:1.5.9-alpine
         resources:
