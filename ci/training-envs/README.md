@@ -25,8 +25,9 @@ After that you can run:
 1. `./new-env.sh $environment $db_to_use [$rsr_version]` to create a new environment. The parameters must be:
    1. environment: one of rsr1, rsr2, rsr3 or rsr4. 
    1. db_to_use: one of:
-       1. empty: start with a completely empty DB, to prepare a training dataset.
        1. prod: start with a copy of the production DB and media.
+       1. empty: start with a completely empty DB, to prepare a training dataset.
+          **NOTE**: This option may be broken because we are waiting for the DB to be up, and the `wait-for-dependencies.sh` script doesn't correctly check if an empty DB is up and running.
        1. XXXX: start with training DB with this name.
    1. rsr_version: RSR version to run. If not provided, it will the current production version. 
    Note that the containers for this version must already exists (right now this means that it must be at least deployed to test).

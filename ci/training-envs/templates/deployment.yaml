@@ -118,6 +118,9 @@ spec:
           name: RSR_DOMAIN_NAME
 #          value: "{{ .Release.Name }}.rsrdemo.akvotest.org" ;; to change once LetsEncrypt is working
           value: "{{ .Release.Name }}.akvotest.org"
+        - &wait-for-dependencies
+          name: WAIT_FOR_DEPENDENCIES
+          value: "yes"
       - <<: *backend
         name: rsr-reports
         ports:
@@ -138,6 +141,7 @@ spec:
           value: "yes"
         - name: DJANGO_PORT
           value: "9000"
+        - <<: *wait-for-dependencies
         - <<: *smtp-password
         - <<: *gunicorn-debug-args
         - <<: *django-secret-key
