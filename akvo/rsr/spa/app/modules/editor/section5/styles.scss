@@ -101,6 +101,18 @@
       }
     }
   }
+  .periods-label{
+    display: flex;
+    &>.defaults{
+      margin-top: -5px;
+      margin-left: auto;
+      .ant-btn{
+        margin-right: 0;
+        padding-right: 5px;
+        padding-left: 5px;
+      }
+    }
+  }
   .results-list{
     margin-right: 200px;
     .ant-collapse-header{

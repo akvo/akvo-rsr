@@ -1,4 +1,4 @@
-/* global window, navigator */
+/* global window, localStorage */
 import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip, notification, Icon } from 'antd'
@@ -41,6 +41,8 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
     const newItem = { type: key, periods: [], measure: '1', ascending: true, exportToIati: true }
     if(key === 1) newItem.dimensionNames = []
     if(resultId) newItem.result = resultId
+    const _defaultPeriods = localStorage.getItem(`rsr-default-periods-p${projectId}`)
+    if (_defaultPeriods) newItem.periods = JSON.parse(_defaultPeriods)
     formPush(`${fieldName}.indicators`, newItem)
     addSetItem(5, `${fieldName}.indicators`, newItem)
   }
@@ -243,7 +245,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
               </Item>
               <Divider />
               <div id={`${fieldNameToId(name)}-periods`} />
-              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} validations={validations} />} />
+              <Field name={`${name}.id`} render={({ input }) => <Periods formPush={formPush} fieldName={name} indicatorId={input.value} resultIndex={resultIndex} resultId={resultId} indicatorIndex={index} primaryOrganisation={primaryOrganisation} selectedPeriodIndex={selectedPeriodIndex} validations={validations} projectId={projectId} />} />
             </Panel>
           )}
         />
