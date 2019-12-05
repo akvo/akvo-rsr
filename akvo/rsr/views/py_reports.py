@@ -10,11 +10,13 @@ see < http://www.gnu.org/licenses/agpl.html >.
 import os
 import pdfkit
 
-from decimal import Decimal, InvalidOperation, DivisionByZero
 from akvo.rsr.models import Project, Country, Organisation
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
-from datetime import date
+from datetime import datetime
+from dateutil.parser import parse, ParserError
+from decimal import Decimal, InvalidOperation, DivisionByZero
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -49,6 +51,10 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
     if not country:
         return HttpResponseBadRequest('Please provide the country code!')
 
+    show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
+    start_date = _parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
+    end_date = _parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
+
     country = get_object_or_404(Country, iso_code=country)
     organisation = get_object_or_404(
         Organisation.objects.prefetch_related(
@@ -72,17 +78,18 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
             'title': 'Results and indicators overview for projects in {}'.format(country.name),
             'staticmap': get_staticmap_url(coordinates, Size(900, 600)),
             'projects': [
-                {'title': p.title, 'results': _transform_project_results(p)}
+                {'title': p.title, 'results': _transform_project_results(p, start_date, end_date)}
                 for p
                 in projects
-            ]
+            ],
+            'show_comment': show_comment,
         }
     )
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    now = date.today()
+    now = datetime.today()
 
     return _make_pdf_response(
         html,
@@ -101,6 +108,10 @@ def render_organisation_projects_results_indicators_map_overview(request, org_id
 
 @login_required
 def render_project_results_indicators_map_overview(request, project_id):
+    show_comment = True if request.GET.get('comment', '').strip() == 'true' else False
+    start_date = _parse_date(request.GET.get('start_date', '').strip(), datetime(1900, 1, 1))
+    end_date = _parse_date(request.GET.get('end_date', '').strip(), datetime(2999, 12, 31))
+
     project = get_object_or_404(
         Project.objects.prefetch_related(
             'partners',
@@ -120,14 +131,17 @@ def render_project_results_indicators_map_overview(request, project_id):
             'project': project,
             'location': ", ".join(filter(None, [location.city, getattr(location.country, 'name', None)])),
             'staticmap': get_staticmap_url([Coordinate(location.latitude, location.longitude)], Size(900, 600), zoom=8),
-            'results': _transform_project_results(project)
+            'results': _transform_project_results(project, start_date, end_date),
+            'show_comment': show_comment,
         }
     )
+
+    print(request.GET, show_comment, start_date, end_date)
 
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 
-    now = date.today()
+    now = datetime.today()
 
     return _make_pdf_response(
         html,
@@ -153,7 +167,7 @@ def _make_pdf_response(html, options={}, filename='reports.pdf'):
     return response
 
 
-def _transform_project_results(project):
+def _transform_project_results(project, start_date, end_date):
     is_eutf_descendant = project.in_eutf_hierarchy
     return [
         {
@@ -175,7 +189,10 @@ def _transform_project_results(project):
             ]
         }
         for r
-        in project.results.all()
+        in project.results.filter(
+            Q(indicators__periods__period_start__isnull=True) | Q(indicators__periods__period_start__gte=start_date),
+            Q(indicators__periods__period_end__isnull=True) | Q(indicators__periods__period_end__lte=end_date)
+        ).all()
     ]
 
 
@@ -228,3 +245,10 @@ def _force_decimal(value):
         return Decimal(value)
     except (InvalidOperation, TypeError):
         return Decimal(0)
+
+
+def _parse_date(string, default=None):
+    try:
+        return parse(string)
+    except ParserError:
+        return default
