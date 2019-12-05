@@ -6,6 +6,7 @@ import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import * as clipboard from 'clipboard-polyfill'
 
 import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
@@ -33,7 +34,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
   }
   const getLink = (periodId) => {
     window.location.hash = `#/result/${resultId}/indicator/${indicatorId}/period/${periodId}`
-    navigator.clipboard.writeText(window.location.href)
+    clipboard.writeText(window.location.href)
     notification.open({
       message: t('Link copied!'),
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,

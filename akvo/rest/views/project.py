@@ -5,8 +5,13 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
+from datetime import timedelta
+
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Count, F, Q
+from django.shortcuts import get_object_or_404
+from django.http import Http404
+from django.utils.timezone import now
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -19,7 +24,9 @@ from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
                                    TypeaheadOrganisationSerializer,
                                    TypeaheadSectorSerializer,
                                    ProjectMetadataSerializer,
-                                   OrganisationCustomFieldSerializer,)
+                                   OrganisationCustomFieldSerializer,
+                                   ProjectHierarchyRootSerializer,
+                                   ProjectHierarchyTreeSerializer,)
 from akvo.rest.views.utils import (
     int_or_none, get_cached_data, get_qs_elements_for_page, set_cached_data
 )
@@ -27,7 +34,7 @@ from akvo.rsr.models import Project, OrganisationCustomField
 from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.views.my_rsr import user_editable_projects
 from akvo.utils import codelist_choices
-from ..viewsets import PublicProjectViewSet
+from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -88,6 +95,29 @@ class MyProjectsViewSet(PublicProjectViewSet):
             queryset = queryset.filter(locations__country__iso_code=country)\
                 .union(queryset.filter(recipient_countries__country__iexact=country))
         return queryset
+
+
+class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
+    queryset = Project.objects.none()
+    serializer_class = ProjectHierarchyRootSerializer
+    project_relation = ''
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return Project.objects.none()
+        queryset = user_editable_projects(self.request.user)\
+            .filter(projecthierarchy__isnull=False)
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        root = project.ancestor()
+        if not self.request.user.has_perm('rsr.view_project', root):
+            raise Http404
+
+        serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
+
+        return Response(serializer.data)
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):
@@ -257,6 +287,21 @@ def project_directory(request):
     projects = projects.filter(filter_).distinct() if filter_ is not None else projects
     projects = _filter_by_custom_fields(request, projects)
 
+    # Rank projects by number of updates and indicator updates in last 9 months
+    nine_months = now() - timedelta(days=9 * 30)
+    projects = projects.annotate(
+        update_count=Count('project_updates', filter=Q(created_at__gt=nine_months))
+    ).annotate(
+        indicator_update_count=Count('results__indicators__periods__data',
+                                     filter=Q(created_at__gt=nine_months))
+    ).annotate(score=F('update_count') + F('indicator_update_count')).order_by(
+        '-score', '-pk'
+    ).only('id', 'title', 'subtitle',
+           'primary_location__id',
+           'primary_organisation__id',
+           'primary_organisation__name',
+           'primary_organisation__long_name')
+
     # NOTE: The text filter is handled differently/separately from the other filters.
     # The text filter allows users to enter free form text, which could result in no
     # projects being found for the given text. Other fields only allow selecting from
@@ -303,9 +348,8 @@ def project_directory(request):
 
     # NOTE: We use projects_text_filtered for displaying projects
     count = projects_text_filtered.count()
-    display_projects = get_qs_elements_for_page(projects_text_filtered, request).select_related(
-        'primary_organisation'
-    )
+    display_projects = get_qs_elements_for_page(projects_text_filtered, request, count)\
+        .select_related('primary_organisation')
 
     # NOTE: We use the _get_cached_data function to individually cache small
     # bits of data to avoid the response from never getting saved in the cache,

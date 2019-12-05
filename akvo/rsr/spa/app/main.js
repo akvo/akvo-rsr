@@ -5,11 +5,13 @@ import { Provider } from 'react-redux'
 import { AppContainer } from 'react-hot-loader'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import axios from 'axios'
 import 'babel-polyfill'
 import smoothscroll from 'smoothscroll-polyfill'
 import './i18n'
 import Root from './root'
 import configureStore from './store/config'
+import ErrorOverlay from './error-overlay'
 
 smoothscroll.polyfill()
 JavascriptTimeAgo.locale(en)
@@ -35,3 +37,10 @@ if (module.hot) {
     render(newApp)
   })
 }
+
+axios.interceptors.response.use(resp => resp, (error) => {
+  if (error.response.status === 502) {
+    ReactDOM.render(<ErrorOverlay />, document.getElementById('root'))
+  }
+  return Promise.reject(error)
+})

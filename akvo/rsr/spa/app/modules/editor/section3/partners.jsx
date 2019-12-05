@@ -55,11 +55,16 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
             initialValues={fields}
             subscription={{}}
             mutators={{ ...arrayMutators }}
-            render={({
-              form: {
-                mutators: { push }
-              }
-            }) => (
+            render={(renderProps) => {
+              const {
+                form: {
+                  mutators: { push }
+                }
+              } = renderProps
+              const { values } = renderProps.form.getState()
+              const reportingOrgs = values.partners.filter(it => it.iatiOrganisationRole === 101)
+              const reportingOrgIndex = values.partners.findIndex(it => it.iatiOrganisationRole === 101)
+              return (
                 <ItemArray
                   setName="partners"
                   sectionIndex={3}
@@ -79,7 +84,7 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
                       <Field
                         name={`${name}.iatiOrganisationRole`}
                         render={(roleProps) => {
-                          const disabled = roleProps.input.value === 101 && primaryOrganisation === 3394
+                          const disabled = (roleProps.input.value === 101 && primaryOrganisation === 3394) || (reportingOrgs.length === 1 && index === reportingOrgIndex)
                           if (!disabled) {
                             return (
                               <span onClick={event => event.stopPropagation()}>{/* eslint-disable-line */}
@@ -102,7 +107,7 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
                   }}
                   headerField="iatiOrganisationRole"
                   formPush={push}
-                  panel={name => (
+                  panel={(name, index) => (
                     <div>
                       <Field
                         name={`${name}.iatiOrganisationRole`}
@@ -114,7 +119,7 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
                                 name={`${name}.iatiOrganisationRole`}
                                 control="select"
                                 options={ROLE_OPTIONS}
-                                disabled={disabled}
+                                disabled={disabled || (reportingOrgs.length === 1 && index === reportingOrgIndex)}
                                 withLabel
                               />
                               <OrganizationSelect
@@ -168,7 +173,8 @@ const Partners = ({ removeSetItem, fields, headerMore, currency, headerMoreField
                     <Button className="bottom-btn" icon="plus" type="dashed" block onClick={onClick}>{t('Add another participating organisation')}</Button>
                   )}
                 />
-              )}
+              )
+            }}
           />
         </Form>
       </SectionContext.Provider>

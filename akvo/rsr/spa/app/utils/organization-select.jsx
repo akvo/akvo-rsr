@@ -17,7 +17,7 @@ const Aux = node => node.children
 
 let intid
 
-const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, disabled, dict, optional }) => {
+const OrganizationSelect = ({ name, fieldName = 'organisation', orgs = [], loading, disabled, dict, optional }) => {
   const { t } = useTranslation()
   const inputRef = useRef()
   const nameInputRef = useRef()
@@ -64,7 +64,8 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
       render={(nameProps) => (
         <FinalField
           name={`${name}.${fieldName}`}
-          render={({input, validateStatus, meta}) => {
+          render={({input, validateStatus, meta, ..._props}) => {
+            const _disabled = disabled || _props.disabled
             inputRef.current = input
             nameInputRef.current = nameProps.input
             const $options =
@@ -81,7 +82,7 @@ const OrganizationSelect = ({ name, fieldName = 'organisation', orgs, loading, d
                   nameProps.input.onChange($options.find(it => it.value === val).label)
                   input.onBlur()
                 }}
-                disabled={disabled}
+                disabled={_disabled}
                 showSearch
                 loading={loading}
                 onSearch={filterOptions}

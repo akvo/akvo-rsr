@@ -8,6 +8,7 @@ import { FieldArray } from 'react-final-form-arrays'
 import { Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
+import * as clipboard from 'clipboard-polyfill'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -276,7 +277,7 @@ const Section5 = (props) => {
 
   const getLink = (resultId) => {
     window.location.hash = `#/result/${resultId}`
-    navigator.clipboard.writeText(window.location.href)
+    clipboard.writeText(window.location.href)
     notification.open({
       message: t('Link copied!'),
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,

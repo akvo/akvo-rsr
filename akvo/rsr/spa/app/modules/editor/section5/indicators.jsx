@@ -5,6 +5,7 @@ import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popco
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
+import * as clipboard from 'clipboard-polyfill'
 
 import RTE from '../../../utils/rte'
 import FinalField from '../../../utils/final-field'
@@ -61,7 +62,7 @@ const Indicators = connect(null, {addSetItem, removeSetItem})(
   }
   const getLink = (indicatorId) => {
     window.location.hash = `#/result/${resultId}/indicator/${indicatorId}`
-    navigator.clipboard.writeText(window.location.href)
+    clipboard.writeText(window.location.href)
     notification.open({
       message: t('Link copied!'),
       icon: <Icon type="link" style={{ color: '#108ee9' }} />,

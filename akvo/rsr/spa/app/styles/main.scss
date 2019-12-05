@@ -58,6 +58,9 @@ ol{
       margin-left: 20px;
       margin-top: 10px;
       font-size: 14px;
+      @media print{
+        display: none;
+      }
       li{
         border-left: 1px solid #efefef;
         padding: 0 20px;
@@ -70,6 +73,9 @@ ol{
       }
     }
     .right-side{
+      @media print{
+        display: none;
+      }
       .lang{
         margin-right: 10px;
         img{
@@ -150,6 +156,24 @@ header.main-header{
 .has-error .rte{
   border-color: red;
 }
+.error-overlay{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  .content{
+    display: flex;
+    .text{
+      min-width: 300px;
+      margin-right: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      h1{
+        color: #21481c;
+      }
+    }
+  }
+}
 
 .public-DraftEditor-content{
   word-break: break-all;
@@ -172,7 +196,7 @@ header.main-header{
 
 @import "./container.scss";
 
-@media only screen and (min-width: 1200px) {
+@media (min-width: 1200px) {
   .ui.container{
     margin-left: 50px!important;
     margin-right: 50px!important;

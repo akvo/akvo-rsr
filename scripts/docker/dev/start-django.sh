@@ -11,24 +11,28 @@ trap _term SIGTERM
 
 ./scripts/docker/dev/wait-for-dependencies.sh
 
-pushd akvo/rsr/front-end
-if [[ ! -d "node_modules" ]]; then
+if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+  pushd akvo/rsr/front-end
+  if [[ ! -d "node_modules" ]]; then
+    npm install
+  fi
+  if [[ ! -f "static/rsr/dist/vendors.js" ]]; then
+    npm run dev
+  fi
+  npm run devw&
+  popd
+
+  pushd akvo/rsr/spa
+  (
   npm install
+  npm start
+  ) &
+  popd
 fi
-if [[ ! -f "static/rsr/dist/vendors.js" ]]; then
-  npm run dev
+
+if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+  SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 fi
-npm run devw&
-popd
-
-pushd akvo/rsr/spa
-(
-npm install
-npm start
-) &
-popd
-
-SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 #python manage.py collectstatic
 
 ## Not running cron jobs in dev
@@ -36,7 +40,7 @@ SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 #env >> /etc/environment
 #/usr/sbin/cron
 
-python manage.py runserver 0.0.0.0:8000 &
+python manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000} &
 
 child=$!
 wait "$child"

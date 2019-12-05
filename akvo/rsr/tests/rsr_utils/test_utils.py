@@ -12,7 +12,7 @@ from akvo.codelists.models import Sector as CodelistSector
 from akvo.utils import (rsr_send_mail_to_users, model_and_instance_based_filename,
                         who_am_i, who_is_parent, to_gmt, rsr_show_keywords,
                         custom_get_or_create_country, right_now_in_akvo,
-                        pagination, filter_query_string, codelist_name, get_country,
+                        pagination, filter_query_string, codelist_name,
                         codelist_choices, single_period_dates, get_placeholder_thumbnail)
 
 from django.core import mail
@@ -234,23 +234,6 @@ class GeneralUtilsTestCase(TestCase):
         self.assertEqual(choices_2, generated_choices_2)
         generated_choices_with_code_3 = codelist_choices(codelist_3)
         self.assertEqual(choices_with_code_3, generated_choices_with_code_3)
-
-    def test_countries(self):
-        LOCATIONS = [
-            ((0.313611, 32.581111), 'ug'),
-            ((15.184898, 75.060385), 'in'),
-            ((10.54, 14.36), 'cm'),
-            ((6.167031, 8.660059), 'ng'),
-            ((7.116944, -9.400053), 'lr'),
-            ((-1.292066, 36.821946), 'ke'),
-            ((27.305846, 85.404534), 'np'),
-            ((10.314919, 1.680908), 'bj'),
-            ((-1.292066, 36.821946), 'ke'),
-            ((7.346927, 2.06652), 'bj'),
-        ]
-
-        for (lat, lon), iso_code in LOCATIONS:
-            self.assertEqual(iso_code, get_country(lat, lon)[1])
 
     def test_single_period_dates(self):
         timeout, start, end = single_period_dates('EUTF')

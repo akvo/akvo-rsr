@@ -14,6 +14,7 @@ import { validationType, isFieldOptional, getValidationSets, doesFieldExist } fr
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import validationDefs from './validations'
 import Condition from '../../../../utils/condition';
+import MinRequired from '../../../../utils/min-required'
 
 const { Item } = Form
 
@@ -42,7 +43,7 @@ const BudgetType = ({ name, t }) => {
   )
 }
 
-const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, errors }) => {
+const BudgetItems = ({ formPush, validations, currency = 'EUR' }) => {
   const { t } = useTranslation()
   const currencySymbol = getSymbolFromCurrency(currency)
   const isIATI = validations.indexOf(validationType.IATI) !== -1
@@ -54,9 +55,7 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
     <div>
       <div className="min-required-wrapper">
         <h3>{t('Budget items')}</h3>
-        {showRequired && errors.findIndex(it => it.type === 'min' && it.path === 'budgetItems') !== -1 && (
-          <span className="min-required">{t('Minimum one required')}</span>
-        )}
+        <MinRequired section="section6" setName="budgetItems" />
       </div>
       <div className="total">
         {t('Total budget')}:
@@ -252,5 +251,5 @@ const BudgetItems = ({ formPush, validations, currency = 'EUR', showRequired, er
 
 
 export default connect(
-  ({ editorRdr: { section1: { fields: { currency } }, showRequired, section6: {errors} } }) => ({ currency, showRequired, errors }),
-)(BudgetItems)
+  ({ editorRdr: { section1: { fields: { currency } } } }) => ({ currency }),
+)(React.memo(BudgetItems, (prevProps, nextProps) => prevProps.currency === nextProps.currency))

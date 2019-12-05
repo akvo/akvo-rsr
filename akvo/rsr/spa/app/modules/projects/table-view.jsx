@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table, Icon, Tag, Tooltip } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import ConditionalLink from './conditional-link'
 import COUNTRIES from '../../utils/countries.json'
 
@@ -26,7 +27,7 @@ const TableView = ({ dataSource, loading, pagination, onChange }) => {
       className: 'project-title',
       render: (text, record) => (
         <div>
-          {record.parent !== null && (<div className="parent-caption"><span>Parent:</span> <ConditionalLink record={record.parent}>{record.parent.title}</ConditionalLink><br /></div>)/* eslint-disable-line */}
+          {record.parent !== null && (<div className="parent-caption"><span>Parent:</span> <Link to={`/hierarchy/${record.id}`}>{record.parent.title}</Link><br /></div>)/* eslint-disable-line */}
           <ConditionalLink record={record}>
             {text !== '' ? text : t('Untitled project')}
           </ConditionalLink>

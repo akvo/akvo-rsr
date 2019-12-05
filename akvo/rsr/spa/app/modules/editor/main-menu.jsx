@@ -75,7 +75,7 @@ const MainMenu = ({ rdr, params }) => {
           disabled={isNewProject || (isReportingOrgEUTF && index === 1)}
           key={section.key}
           to={`/projects/${params.id}/${section.key}`}
-          checked={rdr[`section${index + 1}`].errors.length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
+          checked={rdr[`section${index + 1}`].errors.filter(it => it.type === 'required' || it.type === 'min').length === 0 && (rdr[`section${index + 1}`].isTouched || rdr[`section${index + 1}`].isFetched)}
           loading={!isNewProject && !rdr[`section${index + 1}`].isFetched && !rdr[`section${index + 1}`].isExplicitlyEnabled}
         >
             {index + 1}. {t(keyDict[section.key])}
