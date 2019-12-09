@@ -13,7 +13,7 @@ import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Q
 from django.forms.models import model_to_dict
@@ -37,7 +37,7 @@ from ..forms import (ProfileForm, UserOrganisationForm, UserAvatarForm, SelectOr
 from ..filters import remove_empty_querydict_items
 from ...utils import codelist_name, codelist_choices, pagination, filter_query_string
 from ..models import (Employment, Organisation, Project, ProjectEditorValidation,
-                      ProjectEditorValidationSet, Result, Indicator)
+                      ProjectEditorValidationSet)
 
 
 def manageable_objects(user):
@@ -374,12 +374,9 @@ def project_editor(request, project_id):
                 request.user.project_editor_of(approved_org):
             org_permissions.append(approved_org.pk)
 
-    # Check for default indicator
-    results = Result.objects.filter(project_id=project)
-    try:
-        default_indicator = Indicator.objects.get(result_id__in=results, default_periods=True).pk
-    except ObjectDoesNotExist:
-        default_indicator = '-1'
+    # NOTE: The API for setting default indicator is changed, and the old
+    # project editor won't be able to do this any more.
+    default_indicator = '-1'
 
     context = {
         'id': project_id,

@@ -636,66 +636,6 @@ class DefaultPeriodsTestCase(TestCase):
         Project.objects.all().delete()
         User.objects.all().delete()
 
-    def test_set_default_periods(self):
-        # Given
-        project_id = self.parent_project.pk
-        indicator_id = self.indicator1.pk
-        url = '/rest/v1/project/{}/default_periods/?format=json'.format(project_id)
-
-        # When
-        # Set first indicator's periods as default
-        data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'true'}
-        response = self.c.post(url, data=data, follow=True)
-        # Remove first indicator's periods as default
-        data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'false'}
-        response = self.c.post(url, data=data, follow=True)
-        # Set first indicator's periods as default, and copy the periods to other eligible
-        # indicators
-        data = {'indicator_id': indicator_id, 'copy': 'true', 'set_default': 'true'}
-        response = self.c.post(url, data=data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        parent_periods1 = IndicatorPeriod.objects.filter(indicator__result__project=self.parent_project)
-        self.assertEqual(parent_periods1.count(), 4)
-        child_periods1 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project1)
-        self.assertEqual(child_periods1.count(), 4)
-        child_periods2 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project2)
-        self.assertEqual(child_periods2.count(), 4)
-
-    def test_set_default_periods_when_periods_exist(self):
-        # Given
-        # Adding a period to indicator2 prevents copying of default periods to it
-        IndicatorPeriod.objects.create(
-            indicator=self.indicator2,
-            period_start=self.today + datetime.timedelta(days=3),
-            period_end=self.today + datetime.timedelta(days=4), target_value="300"
-        )
-        project_id = self.parent_project.pk
-        indicator_id = self.indicator1.pk
-        url = '/rest/v1/project/{}/default_periods/?format=json'.format(project_id)
-
-        # When
-        # Set first indicator's periods as default
-        data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'true'}
-        self.c.post(url, data=data, follow=True)
-        # Remove first indicator's periods as default
-        data = {'indicator_id': indicator_id, 'copy': 'false', 'set_default': 'false'}
-        self.c.post(url, data=data, follow=True)
-        # Set first indicator's periods as default, and copy the periods to other eligible
-        # indicators
-        data = {'indicator_id': indicator_id, 'copy': 'true', 'set_default': 'true'}
-        response = self.c.post(url, data=data, follow=True)
-
-        # Then
-        self.assertEqual(200, response.status_code)
-        parent_periods1 = IndicatorPeriod.objects.filter(indicator__result__project=self.parent_project)
-        self.assertEqual(parent_periods1.count(), 3)
-        child_periods1 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project1)
-        self.assertEqual(child_periods1.count(), 3)
-        child_periods2 = IndicatorPeriod.objects.filter(indicator__result__project=self.child_project2)
-        self.assertEqual(child_periods2.count(), 3)
-
 
 class CreateOrUpdateTestCase(TestCase):
 

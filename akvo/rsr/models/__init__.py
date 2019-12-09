@@ -37,7 +37,7 @@ from .iati_export import IatiExport
 from .iati_import import IatiImport
 from .iati_import_job import IatiImportJob, CordaidZipIatiImportJob
 from .iati_import_log import IatiImportLog
-from .result import (Disaggregation, Indicator,
+from .result import (DefaultPeriod, Disaggregation, Indicator,
                      IndicatorDimensionName, IndicatorDimensionValue,
                      IndicatorLabel, IndicatorPeriod, IndicatorPeriodData,
                      IndicatorPeriodDataComment, IndicatorReference,
@@ -221,6 +221,10 @@ rules.add_perm('rsr.change_indicatorperiod', is_rsr_admin | is_org_admin | is_or
 rules.add_perm('rsr.delete_indicatorperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.do_me_manager_actions', is_rsr_admin | is_org_admin | is_org_me_manager)
 rules.add_perm('rsr.view_indicatorperiod', is_org_enumerator)
+
+rules.add_perm('rsr.add_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.change_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
+rules.add_perm('rsr.delete_defaultperiod', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 
 rules.add_perm('rsr.add_disaggregationtarget', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)
 rules.add_perm('rsr.change_disaggregationtarget', is_rsr_admin | is_org_admin | is_org_me_manager_or_project_editor)

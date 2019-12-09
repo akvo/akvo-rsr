@@ -158,6 +158,11 @@ class PermissionFilteringTestCase(TestCase):
                 result = M.Result.objects.create(project=project)
                 # indicator
                 indicator = M.Indicator.objects.create(result=result)
+                # default period
+                # NOTE: Create default periods after indicators to prevent new
+                # indicator periods from being created.
+                M.DefaultPeriod.objects.create(project=project, period_start='2019-12-01',
+                                               period_end='2020-12-01')
                 # indicator dimension name and value
                 dimension_name = M.IndicatorDimensionName.objects.create(project=project)
                 dimension_value = M.IndicatorDimensionValue.objects.create(name=dimension_name)
@@ -451,6 +456,12 @@ class PermissionFilteringTestCase(TestCase):
 
         # one result per project
         model_map[M.Result] = {
+            'group_count': group_count(8, 2, 6, 4),
+            'project_relation': 'project__'
+        }
+
+        # one default period per project
+        model_map[M.DefaultPeriod] = {
             'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'project__'
         }
