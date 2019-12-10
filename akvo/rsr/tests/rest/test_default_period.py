@@ -24,16 +24,18 @@ class DefaultPeriodTestCase(BaseTestCase):
         DefaultPeriod.objects.create(
             project=project, period_start="2018-01-01", period_end="2018-12-31")
         response = self.c.post("/rest/v1/project/{}/default_periods/?format=json".format(project.pk),
-                               data=json.dumps({"periods": [["2018-01-01", "2018-12-31"],
-                                                            ["2019-01-01", "2019-12-31"]],
+                               data=json.dumps({"periods": [{'period_start': "2018-01-01",
+                                                             'period_end': "2018-12-31"},
+                                                            {'period_start': "2019-01-01",
+                                                             'period_end': "2019-12-31"}],
                                                 "project": project.id}),
                                content_type="application/json")
 
         self.assertEqual(response.status_code, 201)
         data = response.data
-        self.assertNotIn(['2017-01-01', '2017-12-31'], data['periods'])
-        self.assertIn(['2018-01-01', '2018-12-31'], data['periods'])
-        self.assertIn(['2019-01-01', '2019-12-31'], data['periods'])
+        self.assertNotIn({'period_start': '2017-01-01', 'period_end': '2017-12-31'}, data['periods'])
+        self.assertIn({'period_start': '2018-01-01', 'period_end': '2018-12-31'}, data['periods'])
+        self.assertIn({'period_start': '2019-01-01', 'period_end': '2019-12-31'}, data['periods'])
         self.assertEqual(data['project'], str(project.pk))
 
     def test_default_period_post(self):

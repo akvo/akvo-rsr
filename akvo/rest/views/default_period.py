@@ -35,7 +35,10 @@ def project_default_periods(request, project_pk):
     periods = project.default_periods.values_list(*fields)
     if request.method == 'POST':
         existing_periods = set(map(tuple, periods))
-        new_periods = set(map(tuple, request.data.get('periods', [])))
+        new_periods = {
+            (period['period_start'], period['period_end'])
+            for period in request.data.get('periods', [])
+        }
         with transaction.atomic():
             # Delete periods
             for period_start, period_end in (existing_periods - new_periods):
@@ -51,7 +54,9 @@ def project_default_periods(request, project_pk):
 
     response = {
         'periods': [
-            [start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d')] for (start, end) in periods],
+            {'period_start': start.strftime('%Y-%m-%d'), 'period_end': end.strftime('%Y-%m-%d')}
+            for (start, end) in periods
+        ],
         'project': project_pk
     }
     return Response(response, status=201)
