@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
-    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue)
+    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod)
 from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
@@ -47,6 +47,11 @@ class ResultsFrameworkTestCase(BaseTestCase):
             title="Indicator #1",
             measure="1",
             description='This is the best indicator',
+        )
+        self.default_period = DefaultPeriod.objects.create(
+            project=self.parent_project,
+            period_start=datetime.date.today() - datetime.timedelta(days=10),
+            period_end=datetime.date.today(),
         )
         self.period = IndicatorPeriod.objects.create(
             indicator=self.indicator,
@@ -666,8 +671,8 @@ class ResultsFrameworkTestCase(BaseTestCase):
         period.save()
 
         # Then
-        self.assertEqual(indicator.periods.count(), 1)
-        period = IndicatorPeriod.objects.get(indicator=indicator)
+        self.assertEqual(indicator.periods.count(), 2)
+        period = IndicatorPeriod.objects.filter(indicator=indicator).last()
         self.assertEqual(period.period_start, period_start)
         self.assertEqual(period.period_end, period_end)
 

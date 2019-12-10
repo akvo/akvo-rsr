@@ -1191,6 +1191,12 @@ class Project(TimestampsMixin, models.Model):
             if not self.results.filter(parent_result=result).exists():
                 self.copy_result(result)
 
+        # Copy the default periods after copying the results to not create new
+        # periods, from the parent, which may already be present from the parent!
+        for parent_default_period in parent_project.default_periods.all():
+            if not self.default_periods.filter(parent=parent_default_period).exists():
+                self.copy_default_period(parent_default_period)
+
         return import_success, 'Results imported'
 
     def import_indicator(self, parent_indicator_id):
@@ -1255,6 +1261,9 @@ class Project(TimestampsMixin, models.Model):
         for result in source_project.results.all():
             self.copy_result(result, set_parent=False)
 
+        for default_period in source_project.default_periods.all():
+            self.copy_default_period(default_period, set_parent=False)
+
     def copy_dimension_name_to_children(self, dimension_name):
         """Copy dimension_name to all children that imported from this project."""
 
@@ -1262,6 +1271,18 @@ class Project(TimestampsMixin, models.Model):
             if not child.has_imported_results():
                 continue
             child.copy_dimension_name(dimension_name, set_parent=True)
+
+    def copy_default_period(self, parent, set_parent=True):
+        DefaultPeriod = apps.get_model('rsr', 'DefaultPeriod')
+        defaults = dict(parent=parent)
+        data = dict(
+            project=self, period_start=parent.period_start, period_end=parent.period_end,
+            defaults=defaults)
+
+        if not set_parent:
+            defaults.pop('parent')
+
+        DefaultPeriod.objects.get_or_create(**data)
 
     def copy_dimension_name(self, source_dimension_name, set_parent=True):
         defaults = dict(parent_dimension_name=source_dimension_name)
