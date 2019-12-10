@@ -15,7 +15,7 @@ from .category import CategoryViewSet
 from .country import CountryViewSet
 from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
-from .default_period import DefaultPeriodViewSet
+from .default_period import DefaultPeriodViewSet, project_default_periods
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
