@@ -1,24 +1,28 @@
-/* globals localStorage */
 import React, { useEffect } from 'react'
 import { Modal, Form, Button, Row, Col } from 'antd'
-import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
+import { Form as FinalForm, FormSpy } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import arrayMutators from 'final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
+import api from '../../../../utils/api'
 
 const { Item } = Form
+let tmid
 
 const handleUpdate = (props) => {
   useEffect(() => {
-    localStorage.setItem(`rsr-default-periods-p${props.projectId}`, JSON.stringify(props.values.periods))
-    props.setDefaultPeriods(props.values.periods)
+    clearTimeout(tmid)
+    const { periods } = props.values
+    if (periods.filter(it => (it.periodStart == null || it.periodEnd == null)).length === 0){
+      tmid = setTimeout(() => api.post(`/project/${props.projectId}/default_periods/`, { periods }), 500)
+    }
+    props.setDefaultPeriods(periods)
   }, [props.values.periods])
   return null
 }
 
-// class UpdateHandler = () =>
 
 const DefaultsModal = ({ visible, setVisible, projectId, setDefaultPeriods, defaultPeriods }) => {
   const { t } = useTranslation()

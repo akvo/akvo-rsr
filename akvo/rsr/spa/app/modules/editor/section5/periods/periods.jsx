@@ -1,5 +1,5 @@
-/* global window, localStorage */
-import React, { useState, useEffect } from 'react'
+/* global window */
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon } from 'antd'
 import { Field } from 'react-final-form'
@@ -23,9 +23,9 @@ const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods }) => { // eslint-disable-line
   const [modalVisible, setModalVisible] = useState(false)
-  const [defaultPeriods, setDefaultPeriods] = useState(null)
+  // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId, disaggregationTargets: [] }
@@ -44,10 +44,6 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
     })
   }
   const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
-  useEffect(() => {
-    const _defaultPeriods = localStorage.getItem(`rsr-default-periods-p${projectId}`)
-    if (_defaultPeriods) setDefaultPeriods(JSON.parse(_defaultPeriods))
-  }, [])
   const copyDefaults = () => {
     defaultPeriods.forEach((period, index) => {
       setTimeout(() => {
