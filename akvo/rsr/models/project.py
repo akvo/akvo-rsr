@@ -1272,6 +1272,12 @@ class Project(TimestampsMixin, models.Model):
                 continue
             child.copy_dimension_name(dimension_name, set_parent=True)
 
+    def copy_default_period_to_children(self, default_period):
+        """Copy default period to all children that imported results from this project."""
+
+        for child in self.children_all():
+            child.copy_default_period(default_period, set_parent=True)
+
     def copy_default_period(self, parent, set_parent=True):
         DefaultPeriod = apps.get_model('rsr', 'DefaultPeriod')
         defaults = dict(parent=parent)

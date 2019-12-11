@@ -25,6 +25,21 @@ class DefaultPeriod(models.Model):
         help_text=_(u'The end date of the reporting period.')
     )
 
+    def save(self, *args, **kwargs):
+        """Update the values of child results, if a parent result is updated."""
+
+        is_new_default_period = not self.pk
+
+        for child_period in self.child_periods.all():
+            child_period.period_start = self.period_start
+            child_period.period_end = self.period_end
+            child_period.save()
+
+        super(DefaultPeriod, self).save(*args, **kwargs)
+
+        if is_new_default_period:
+            self.project.copy_default_period_to_children(self)
+
     class Meta:
         app_label = 'rsr'
         verbose_name = _(u'default period')
