@@ -143,11 +143,6 @@ POST_URLS = [
      {'item_type': 'indicator', 'item_id': 1, 'item_direction': 'down', 'content_type': None},
      ('Indicator.objects.count()',),),
 
-    ('/rest/v1/project/4/default_periods/?format=json',
-     {'indicator_id': '1', 'copy': 'true', 'set_default': 'true', 'content_type': None},
-     ('Indicator.objects.count()',
-      'IndicatorPeriod.objects.count()'),),
-
     ('/rest/v1/project/4/import_results/?format=json',
      {}, (),),
 

@@ -26,6 +26,7 @@ router.register(r'(?P<version>(v1))/country', views.CountryViewSet)
 router.register(r'(?P<version>(v1))/country_budget_item', views.CountryBudgetItemViewSet)
 router.register(r'(?P<version>(v1))/crs_add', views.CrsAddViewSet)
 router.register(r'(?P<version>(v1))/crs_add_other_flag', views.CrsAddOtherFlagViewSet)
+router.register(r'(?P<version>(v1))/default_period', views.DefaultPeriodViewSet)
 router.register(r'(?P<version>(v1))/employment', views.EmploymentViewSet)
 router.register(r'(?P<version>(v1))/focus_area', views.FocusAreaViewSet)
 router.register(r'(?P<version>(v1))/fss', views.FssViewSet)
@@ -184,9 +185,6 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/reorder_items/$',
         views.project_editor_reorder_items,
         name='project_editor_reorder_items'),
-    url(r'v1/project/(?P<project_pk>[0-9]+)/default_periods/$',
-        views.project_editor_default_periods,
-        name='project_editor_default_periods'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/add_validation/(?P<validation_pk>[0-9]+)/$',
         views.project_editor_add_validation,
         name='project_editor_add_validation'),
@@ -196,6 +194,9 @@ urlpatterns += (
     url(r'v1/project/(?P<project_pk>[0-9]+)/remove_keyword/(?P<keyword_pk>[0-9]+)/$',
         views.project_editor_remove_keyword,
         name='project_editor_remove_keyword'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/default_periods/$',
+        views.project_default_periods,
+        name='project_default_periods'),
     url(r'v1/project/(?P<project_pk>[0-9]+)/log_project_addition/$',
         views.log_project_addition,
         name='project_editor_log_add'),

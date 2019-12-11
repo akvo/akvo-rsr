@@ -14,7 +14,7 @@ from django.core.exceptions import PermissionDenied
 
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorPeriodData, IndicatorReference,
-    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue)
+    RelatedProject, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod)
 from akvo.rsr.models.related_project import MultipleParentsDisallowed, ParentChangeDisallowed
 from akvo.rsr.models.result.utils import QUALITATIVE
 from akvo.rsr.tests.base import BaseTestCase
@@ -119,6 +119,61 @@ class ResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(child_result.type, result.type)
         self.assertEqual(child_result.aggregation_status, result.aggregation_status)
         self.assertEqual(child_result.description, result.description)
+
+    def test_new_default_period_cloned_to_child(self):
+        # Given
+        self.assertEqual(self.import_status, 1)
+        self.assertEqual(self.import_message, "Results imported")
+
+        # When
+        default_period = DefaultPeriod.objects.create(
+            project=self.parent_project, period_start='2019-01-01', period_end='2019-12-31')
+
+        # Then
+        self.assertEqual(
+            self.parent_project.default_periods.count(),
+            self.child_project.default_periods.count(),
+        )
+        child_period = DefaultPeriod.objects.get(
+            project=self.child_project, parent=default_period)
+        default_period.refresh_from_db()
+        self.assertEqual(child_period.period_start, default_period.period_start)
+        self.assertEqual(child_period.period_end, default_period.period_end)
+
+    def test_default_periods_in_child(self):
+        # Given
+        default_period = DefaultPeriod.objects.create(
+            project=self.parent_project,
+            period_start=datetime.date.today() - datetime.timedelta(days=10),
+            period_end=datetime.date.today(),
+        )
+        child = self.create_project('Child')
+        self.make_parent(self.parent_project, child)
+
+        # When
+        child.import_results()
+        result = child.results.first()
+
+        # Then
+        self.assertEqual(child.default_periods.count(), 1)
+        child_period = child.default_periods.first()
+        self.assertEqual(child_period.parent, default_period)
+        self.assertEqual(child_period.period_start, default_period.period_start)
+        self.assertEqual(child_period.period_end, default_period.period_end)
+
+        # Assert Creating new indicator creates new periods
+        indicator = Indicator.objects.create(result=result)
+        self.assertEqual(1, indicator.periods.count())
+        period = indicator.periods.first()
+        self.assertEqual(period.period_start, child_period.period_start)
+        self.assertEqual(period.period_end, child_period.period_end)
+
+        # Updating parent updates, child?
+        default_period.period_start = '2018-01-01'
+        default_period.save(update_fields=['period_start'])
+        default_period.refresh_from_db()
+        child_period.refresh_from_db()
+        self.assertEqual(child_period.period_start, default_period.period_start)
 
     def test_new_indicator_cloned_to_child(self):
         """Test that new indicators are cloned in children that have imported results."""
@@ -667,7 +722,7 @@ class ResultsFrameworkTestCase(BaseTestCase):
 
         # Then
         self.assertEqual(indicator.periods.count(), 1)
-        period = IndicatorPeriod.objects.get(indicator=indicator)
+        period = IndicatorPeriod.objects.filter(indicator=indicator).last()
         self.assertEqual(period.period_start, period_start)
         self.assertEqual(period.period_end, period_end)
 

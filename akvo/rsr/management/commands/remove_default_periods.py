@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand
 
 from akvo import settings
 
-from ...models import Project, Indicator
+from ...models import Project, DefaultPeriod
 
 
 class Command(BaseCommand):
@@ -34,11 +34,9 @@ class Command(BaseCommand):
         root = Project.objects.get(pk=hierarchy['pk'])
         projects = root.descendants()
 
-        default_indicators = Indicator.objects.filter(result__project__in=projects,
-                                                      default_periods=True)
+        default_periods = DefaultPeriod.objects.filter(project_id__in=projects)
+        print 'Found {} default periods'.format(default_periods.count())
 
-        print 'Found {} indicators with default periods set to True'.format(default_indicators.count())
-
-        if default_indicators.count() > 0:
-            print 'Setting them all to False'
-            default_indicators.update(default_periods=False)
+        if default_periods.count() > 0:
+            print 'Deleting them all'
+            default_periods.delete()
