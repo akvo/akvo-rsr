@@ -37,9 +37,15 @@ ol{
 }
 
 .lang-menu{
-  margin-left: -12px;
+  li{
+    display: flex;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
   img{
     height: 14px;
+    margin-left: auto;
+    margin-top: 3px;
   }
 }
 .top-bar{
@@ -224,7 +230,7 @@ header.main-header{
   }
   .side-menu{
     width: 270px;
-    background-color: #fff;
+    background-color: #f0f0f0;
     height: 100%;
     position: relative;
     z-index: 1;
@@ -235,7 +241,7 @@ header.main-header{
       color: #fff;
       padding: 10px 15px;
       display: flex;
-      margin-bottom: 10px;
+      // margin-bottom: 10px;
       .SVGInline{
         svg{
           width: 27px;
@@ -261,12 +267,63 @@ header.main-header{
       }
     }
     ul{
+      background-color: #fff;
+      padding: 5px 0;
       li>*{
-        display: block;
-        padding: 0 20px;
+        display: flex;
+        padding: 0 30px;
         text-transform: uppercase;
-        line-height: 36px;
+        line-height: 42px;
+        align-items: center;
+        color: #000;
+        transition: all .3s ease-out;
+        // cursor: pointer;
+        &.active{
+          opacity: 0.5;
+          cursor: default;
+          .anticon{
+            transform: translateX(7px)
+          }
+        }
+        &:not(.active):not(.change-lang):hover{
+          color: #72bfe4;
+          &>*{
+            color: #72bfe4;
+          }
+          .anticon{
+            transform: translateX(7px)
+          }
+        }
+        .anticon{
+          margin-left: auto;
+          transition: all .25s ease-out;
+        }
       }
+    }
+    .change-lang{
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      width: 100%;
+      display: flex;
+      padding: 0 20px 0 30px;
+      text-transform: uppercase;
+      line-height: 42px;
+      align-items: center;
+      cursor: pointer;
+      .lang{
+        margin-left: auto;
+        img{
+          height: 14px;
+        }
+      }
+    }
+    .div{
+      padding: 0 30px 15px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 11px;
+      opacity: 0.5;
     }
   }
 }

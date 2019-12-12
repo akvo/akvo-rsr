@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useSpring, animated, useTransition } from 'react-spring'
@@ -8,16 +8,13 @@ import SVGInline from 'react-svg-inline'
 import userIconSvg from './images/user-icn.svg'
 
 const langs = ['en', 'es', 'fr']
+const langNames = { en: 'English', fr: 'Français', es: 'Español'}
 const flags = {}
 langs.forEach(lang => {
   flags[lang] = require(`./images/${lang}.png`) // eslint-disable-line
 })
 
-const langMenu = ({ userRdr, dispatch }) => {
-  const { i18n } = useTranslation()
-  useEffect(() => {
-    i18n.changeLanguage(userRdr.lang)
-  }, [])
+const langMenu = ({ userRdr, dispatch, i18n }) => {
   const setLang = (lang) => {
     dispatch({ type: 'SET_LANG', lang })
     i18n.changeLanguage(lang)
@@ -25,7 +22,10 @@ const langMenu = ({ userRdr, dispatch }) => {
   return (
     <Menu className="lang-menu">
       {['en', 'es', 'fr'].filter(it => it !== userRdr.lang).map((lang, index) => (
-        <Menu.Item key={index} onClick={() => setLang(lang)}><img src={flags[lang]} /></Menu.Item>
+        <Menu.Item key={index} onClick={() => setLang(lang)}>
+          <span>{langNames[lang]}</span>
+          <img src={flags[lang]} />
+        </Menu.Item>
       ))}
     </Menu>
   )
@@ -52,7 +52,10 @@ const TopBar = ({ userRdr, dispatch }) => {
     leave: { opacity: 0 },
     config: { duration: 350 }
   })
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  useEffect(() => {
+    i18n.changeLanguage(userRdr.lang)
+  }, [])
   return (
     <div className="top-bar">
       <div className="ui container">
@@ -97,26 +100,27 @@ const TopBar = ({ userRdr, dispatch }) => {
               <header>
                 <SVGInline svg={userIconSvg} />
                 <span className="text">Hi {userRdr.firstName}</span>
-                <Button icon="close" type="ghost" />
+                <Button icon="close" type="ghost" onClick={() => _setMenuVisible(false)} />
               </header>
               <ul>
-                <li><Link to="/projects">Projects</Link></li>
-                <li><a href="#1">Programs</a></li>
-                {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
-                <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
-                <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
+                <li>
+                  <Route path="/projects" exact children={({ match }) => (
+                    <Link to="/projects" className={match ? 'active' : null}>Projects<Icon type="right" /></Link>
+                  )} />
+                </li>
+                <li><a href="#1">Programs<Icon type="right" /></a></li>
+                {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}<Icon type="right" /></a></li>}
+                <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI<Icon type="right" /></a></li>
+                <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}<Icon type="right" /></a></li>
               </ul>
               <div className="div">settings</div>
               <ul>
-                <li><a href="/en/myrsr/details/">{t('My details')}</a></li>
-                <li><a href="/en/sign_out">{t('Sign out')}</a></li>
-                <li>
-                  <div>Change language</div>
-                  {/* <Dropdown overlay={langMenu({ userRdr, dispatch })} trigger={['click']}>
-                    <span className="lang"><img src={flags[userRdr.lang]} /></span>
-                  </Dropdown> */}
-                </li>
+                <li><a href="/en/myrsr/details/">{t('My details')}<Icon type="right" /></a></li>
+                <li><a href="/en/sign_out">{t('Sign out')}<Icon type="right" /></a></li>
               </ul>
+              <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999}}>
+                <div className="change-lang">Change language<span className="lang"><img src={flags[userRdr.lang]} /></span></div>
+              </Dropdown>
             </animated.div>
             <animated.div className="bg" style={props} onClick={() => _setMenuVisible(false)} role="button" tabIndex="-2" />
           </div>
