@@ -1551,6 +1551,22 @@ class Project(TimestampsMixin, models.Model):
         except (InvalidOperation, TypeError):
             pass
 
+    def update_use_project_roles(self):
+        if not self.reporting_org:
+            return
+
+        if self.reporting_org.use_project_roles == self.use_project_roles:
+            return
+
+        # We only wish to turn on the project roles flag on the project, if the
+        # reporting organisation has that flag turned on. If the project
+        # already has the flag turned on, we don't want to turn it off
+        # implicitly, based on the reporting organisation. There has to be a
+        # more explicit way of turning this off, for the user.
+        if self.reporting_org.use_project_roles and not self.use_project_roles:
+            self.use_project_roles = True
+            self.save(update_fields=['use_project_roles'])
+
     @classmethod
     def log_project_addition(cls, project_id, user):
         project = cls.objects.get(id=project_id)
