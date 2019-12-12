@@ -215,7 +215,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         elif hasattr(obj, 'project'):
             project = obj.project
         else:
-            logger.error('%s does not define a relation to a project', obj_model)
+            logger.info('%s does not define a relation to a project', obj_model)
             project = None
         return project
 
