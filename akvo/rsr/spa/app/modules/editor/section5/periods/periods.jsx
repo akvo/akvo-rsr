@@ -177,10 +177,10 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
         />
         }
         <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>{t('Add period')}</Button>
+            <DefaultsModal visible={modalVisible} setVisible={setModalVisible} projectId={projectId} setDefaultPeriods={setDefaultPeriods} defaultPeriods={defaultPeriods} periodFields={fields} copyDefaults={copyDefaults} />
         </Aux>
       )}
     </FieldArray>
-    <DefaultsModal visible={modalVisible} setVisible={setModalVisible} projectId={projectId} setDefaultPeriods={setDefaultPeriods} defaultPeriods={defaultPeriods} />
     </Aux>
   )
 })

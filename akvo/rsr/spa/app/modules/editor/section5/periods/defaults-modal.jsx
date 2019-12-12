@@ -24,8 +24,12 @@ const handleUpdate = (props) => {
 }
 
 
-const DefaultsModal = ({ visible, setVisible, projectId, setDefaultPeriods, defaultPeriods }) => {
+const DefaultsModal = ({ visible, setVisible, projectId, setDefaultPeriods, defaultPeriods, periodFields, copyDefaults }) => {
   const { t } = useTranslation()
+  const addToIndicator = () => {
+    copyDefaults()
+    setVisible(false)
+  }
   return (
     <Modal visible={visible} onCancel={() => setVisible(false)} footer={null}>
       <Form layout="vertical">
@@ -63,10 +67,13 @@ const DefaultsModal = ({ visible, setVisible, projectId, setDefaultPeriods, defa
                       </Col>
                     </Row>
                   ))}
-                  <div>
+                  <div style={{ display: 'flex' }}>
                     <Button type="link" icon="plus" onClick={() => push('periods', {})}>{t('Add period')}</Button>
                     {fields.length > 0 && (
                       <Button type="link" icon="minus" onClick={() => pop('periods')}>{t('Remove period')}</Button>
+                    )}
+                    {(periodFields.length === 0 && fields.length > 0) && (
+                      <Button type="primary" style={{ marginLeft: 'auto' }} icon="check" onClick={addToIndicator}>Add to indicator</Button>
                     )}
                   </div>
                 </div>
