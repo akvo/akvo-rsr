@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
 import { Modal, Form, Button, Row, Col } from 'antd'
-import { Form as FinalForm, FormSpy } from 'react-final-form'
+import { Form as FinalForm, FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import arrayMutators from 'final-form-arrays'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import api from '../../../../utils/api'
@@ -57,12 +58,38 @@ const DefaultsModal = ({ visible, setVisible, projectId, setDefaultPeriods, defa
                     <Row gutter={16}>
                       <Col span={12}>
                         <Item label={<InputLabel>{t('Period')} {index + 1} {t('from')}</InputLabel>}>
-                          <FinalField name={`${name}.periodStart`} control="datepicker" />
+                          <Field
+                            name={`${name}.periodEnd`}
+                            render={({ input }) => (
+                              <FinalField
+                                name={`${name}.periodStart`}
+                                control="datepicker"
+                                disabledDate={(date) => {
+                                  const endDate = moment(input.value, 'DD/MM/YYYY')
+                                  if (!endDate.isValid()) return false
+                                  return date.valueOf() > endDate.valueOf()
+                                }}
+                              />
+                            )}
+                          />
                         </Item>
                       </Col>
                       <Col span={12}>
                         <Item label={<InputLabel>{t('to')}</InputLabel>}>
-                          <FinalField name={`${name}.periodEnd`} control="datepicker" />
+                          <Field
+                            name={`${name}.periodStart`}
+                            render={({ input }) => (
+                              <FinalField
+                                name={`${name}.periodEnd`}
+                                control="datepicker"
+                                disabledDate={(date) => {
+                                  const startDate = moment(input.value, 'DD/MM/YYYY')
+                                  if (!startDate.isValid()) return false
+                                  return date.valueOf() < startDate.valueOf()
+                                }}
+                              />
+                            )}
+                          />
                         </Item>
                       </Col>
                     </Row>
