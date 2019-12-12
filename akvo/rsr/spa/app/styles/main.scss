@@ -48,6 +48,12 @@ ol{
   img.logo{
     max-height: 42px;
   }
+  .hamburger{
+    font-size: 26px;
+    margin-right: 13px;
+    color: #000;
+    cursor: pointer;
+  }
   .ui.container{
     display: flex;
     &>.SVGInline{
@@ -201,5 +207,66 @@ header.main-header{
     margin-left: 50px!important;
     margin-right: 50px!important;
     width: auto;
+  }
+}
+
+.side-menu-container{
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 99999;
+  .bg{
+    position: absolute;
+    z-index: 0;
+    left: 0;top: 0;
+    width: 100%;height: 100%;
+    background-color: rgba(0,0,0,0.75);
+  }
+  .side-menu{
+    width: 270px;
+    background-color: #fff;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.4);
+    header{
+      height: 52px;
+      background-color: #8d8d8d;
+      color: #fff;
+      padding: 10px 15px;
+      display: flex;
+      margin-bottom: 10px;
+      .SVGInline{
+        svg{
+          width: 27px;
+          margin-right: 10px;
+          margin-top: 1px;
+        }
+        path{
+          fill: #fff;
+        }
+      }
+      span.text{
+        margin-top: 4px;
+      }
+      .ant-btn{
+        margin-left: auto;
+        border-color: white;
+        margin-right: -5px;
+        svg{
+          path{
+            fill: #fff;
+          }
+        }
+      }
+    }
+    ul{
+      li>*{
+        display: block;
+        padding: 0 20px;
+        text-transform: uppercase;
+        line-height: 36px;
+      }
+    }
   }
 }

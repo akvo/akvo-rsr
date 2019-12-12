@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useSpring, animated, useTransition } from 'react-spring'
+import SVGInline from 'react-svg-inline'
+import userIconSvg from './images/user-icn.svg'
 
 const langs = ['en', 'es', 'fr']
 const flags = {}
@@ -28,23 +31,43 @@ const langMenu = ({ userRdr, dispatch }) => {
   )
 }
 
+const config = {
+  mass: 1, tension: 160, friction: 27
+}
+
 const TopBar = ({ userRdr, dispatch }) => {
+  const [menuVisible, setMenuVisible] = useState(false)
+  const [xprops, xset, xstop] = useSpring(() => ({ transform: 'translateX(-270px)' }))
+  const _setMenuVisible = (value) => {
+    setMenuVisible(value)
+    if(value){
+      setTimeout(() => xset({ transform: 'translateX(0px)', config}), 100)
+    } else {
+      xset({ transform: 'translateX(-270px)', config: { tension: 200, friction: 25 } })
+    }
+  }
+  const transitions = useTransition(menuVisible ? [true] : [], item => item.key, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: { duration: 350 }
+  })
   const { t } = useTranslation()
   return (
     <div className="top-bar">
       <div className="ui container">
+        <div className="hamburger" onClick={() => _setMenuVisible(true)} role="button" tabIndex="-1">
+          <Icon type="menu" />
+        </div>
         <a href={`/${userRdr.lang}/projects`}>
-        <img className="logo" src="/logo" />
+          <img className="logo" src="/logo" />
         </a>
-        <ul>
+        {/* <ul>
           {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
           <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
           <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
-        </ul>
+        </ul> */}
         <div className="right-side">
-          <Dropdown overlay={langMenu({userRdr, dispatch})} trigger={['click']}>
-            <span className="lang"><img src={flags[userRdr.lang]} /></span>
-          </Dropdown>
           {userRdr.firstName &&
           <Dropdown
             trigger={['click']}
@@ -64,9 +87,41 @@ const TopBar = ({ userRdr, dispatch }) => {
             </span>
           </Dropdown>
           }
-          <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link>
+          {/* <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link> */}
         </div>
       </div>
+      {transitions.map(({item, props}) => {
+        return (
+          <div className="side-menu-container">
+            <animated.div style={xprops} className="side-menu">
+              <header>
+                <SVGInline svg={userIconSvg} />
+                <span className="text">Hi {userRdr.firstName}</span>
+                <Button icon="close" type="ghost" />
+              </header>
+              <ul>
+                <li><Link to="/projects">Projects</Link></li>
+                <li><a href="#1">Programs</a></li>
+                {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+                <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
+                <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
+              </ul>
+              <div className="div">settings</div>
+              <ul>
+                <li><a href="/en/myrsr/details/">{t('My details')}</a></li>
+                <li><a href="/en/sign_out">{t('Sign out')}</a></li>
+                <li>
+                  <div>Change language</div>
+                  {/* <Dropdown overlay={langMenu({ userRdr, dispatch })} trigger={['click']}>
+                    <span className="lang"><img src={flags[userRdr.lang]} /></span>
+                  </Dropdown> */}
+                </li>
+              </ul>
+            </animated.div>
+            <animated.div className="bg" style={props} onClick={() => _setMenuVisible(false)} role="button" tabIndex="-2" />
+          </div>
+        )
+      })}
     </div>
   )
 }
