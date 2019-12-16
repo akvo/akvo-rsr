@@ -40,10 +40,10 @@ if (module.hot) {
 }
 
 axios.interceptors.response.use(resp => resp, (error) => {
-  if (error.response.status === 502) {
+  if (error && error.response && error.response.status === 502) {
     ReactDOM.render(<ErrorOverlay />, document.getElementById('root'))
   }
-  else if(error.response.status === 403){
+  else if (error && error.response && error.response.status === 403){
     notification.open({
       message: 'Access denied',
       description: 'You are not allowed to perform this request',

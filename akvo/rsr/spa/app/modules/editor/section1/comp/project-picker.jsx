@@ -31,7 +31,7 @@ const ProjectPicker = ({ loading, projects, savedData, formPush, formPop, projec
         searchStr: value
       })
       intid = setTimeout(() => {
-        const options = projects
+        const options = projects && projects
           .filter(it => it.title.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.subtitle.toLowerCase().indexOf(value.toLowerCase()) !== -1 || it.id === Number(value))
           .map(({ id, title }) => ({ value: id, label: title }))
         setState({
