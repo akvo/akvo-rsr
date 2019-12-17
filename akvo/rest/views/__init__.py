@@ -15,6 +15,7 @@ from .category import CategoryViewSet
 from .country import CountryViewSet
 from .crs_add import CrsAddViewSet, CrsAddOtherFlagViewSet
 from .custom_field import OrganisationCustomFieldViewSet, ProjectCustomFieldViewSet
+from .default_period import DefaultPeriodViewSet, project_default_periods
 from .employment import EmploymentViewSet, approve_employment, set_group
 from .focus_area import FocusAreaViewSet
 from .fss import FssViewSet, FssForecastViewSet
@@ -63,7 +64,6 @@ from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewS
 from .project_editor import (project_editor,
                              log_project_addition,
                              project_editor_reorder_items,
-                             project_editor_default_periods,
                              project_editor_upload_file,
                              project_editor_copy_results,
                              project_editor_import_results,
@@ -123,6 +123,7 @@ __all__ = [
     'CountryBudgetItemViewSet',
     'CrsAddViewSet',
     'CrsAddOtherFlagViewSet',
+    'DefaultPeriodViewSet',
     'EmploymentViewSet',
     'FocusAreaViewSet',
     'FssViewSet',

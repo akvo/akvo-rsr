@@ -10,7 +10,9 @@ const Card = ({ project, selected, onClick, filterCountry, countryFilter }) => {
   const { locations, title, subtitle, referenced } = project
   return (
     <li className={classNames('card', { selected, clickable: childrenCount > 0, referenced })} onClick={onClick}>{/* eslint-disable-line */}
+      {project.editable &&
       <div className="link-holder"><ConditionalLink record={project}><Button type="primary" icon="export" onClick={e => e.stopPropagation()} /></ConditionalLink></div>
+      }
       <h4>{title ? title : 'Untitled project'}</h4>
       {subtitle && <p>{subtitle}</p>}
       <div className="footer">

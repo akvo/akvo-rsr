@@ -1,4 +1,4 @@
-/* global window, document, navigator */
+/* global window, document */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Dropdown, Menu, Icon, Collapse, Radio, Popconfirm, Input, Modal, Divider, Alert, notification, Tooltip } from 'antd'
@@ -227,7 +227,12 @@ const Section5 = (props) => {
     props.removeSetItem(5, 'results', index)
   }
   const [indicatorLabelOptions, setIndicatorLabelOptions] = useState([])
+  const [defaultPeriods, setDefaultPeriods] = useState()
   useEffect(() => {
+    api.get(`/project/${props.projectId}/default_periods/`)
+      .then(({data: {periods}}) => {
+        setDefaultPeriods(periods)
+      })
     if (props.allowIndicatorLabels) {
       api.get(`/organisation_indicator_label/?filter={'organisation__projects__in':[${props.projectId}]}&limit=100`)
         .then(({ data: {results} }) => {
@@ -423,6 +428,8 @@ const Section5 = (props) => {
                                   selectedIndicatorIndex={selectedIndicatorIndex}
                                   selectedPeriodIndex={selectedPeriodIndex}
                                   validations={props.validations}
+                                  defaultPeriods={defaultPeriods}
+                                  setDefaultPeriods={setDefaultPeriods}
                                 />
                               )}
                             />

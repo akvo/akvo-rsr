@@ -15,9 +15,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 
+from .default_period import DefaultPeriod
 from .indicator_period import IndicatorPeriod
 from .indicator_label import IndicatorLabel
-from .result import Result
 from .utils import PERCENTAGE_MEASURE, QUALITATIVE, QUANTITATIVE
 
 # Currently we support only Unit, Percentage measures. Qualitative is
@@ -78,10 +78,6 @@ class Indicator(models.Model):
         help_text=_(u'Here you can provide extra information on the baseline value, if needed.')
     )
     order = models.PositiveSmallIntegerField(_(u'indicator order'), null=True, blank=True)
-    default_periods = models.NullBooleanField(
-        _(u'default indicator periods'), default=False, blank=True,
-        help_text=_(u'Determines whether periods of indicator are used by default.')
-    )
     export_to_iati = models.BooleanField(
         _(u'Include indicator in IATI exports'), default=True,
         help_text=_(u'Choose whether this indicator will be included in IATI exports. '
@@ -209,24 +205,13 @@ class Indicator(models.Model):
 def add_default_periods(sender, instance, created, **kwargs):
     if created:
         project = instance.result.project
-        results = Result.objects.filter(project_id=project)
-        default_indicator = Indicator.objects.filter(result_id__in=results,
-                                                     default_periods=True).first()
-
-        if default_indicator:
-            default_periods = IndicatorPeriod.objects.filter(indicator_id=default_indicator)
-
-            for period in default_periods:
-                period.pk = None
-
-                # Blank all values except id and locked status
-                period.target_value = ''
-                period.target_comment = ''
-                period.actual_value = ''
-                period.actual_comment = ''
-
-                period.indicator_id = instance.id
-                period.save()
+        default_periods = DefaultPeriod.objects.filter(project=project)
+        periods = [
+            IndicatorPeriod(
+                indicator=instance, period_start=period.period_start, period_end=period.period_end)
+            for period in default_periods
+        ]
+        IndicatorPeriod.objects.bulk_create(periods)
 
 
 @receiver(m2m_changed, sender=Indicator.dimension_names.through)

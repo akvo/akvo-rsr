@@ -5,9 +5,6 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from collections import namedtuple
-import json
-
 from django.apps import apps
 from django.contrib.admin.models import LogEntry, CHANGE
 from akvo.rsr.models.result.indicator_dimension import IndicatorDimensionName
@@ -15,7 +12,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
-from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status as http_status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -26,7 +22,7 @@ from sorl.thumbnail import get_thumbnail
 
 from akvo.rest.models import TastyTokenAuthentication
 from akvo.rsr.models import (
-    Indicator, IndicatorPeriod, Keyword, Organisation, Project, ProjectEditorValidationSet, Result
+    Indicator, Keyword, Organisation, Project, ProjectEditorValidationSet, Result
 )
 from .project_editor_utils import (
     convert_related_objects, create_object, create_or_update_objects_from_data, log_changes,
@@ -136,68 +132,6 @@ def project_editor_reorder_items(request, project_pk=None):
             'swap_id': swap_id,
         }
     )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated,))
-def project_editor_default_periods(request, project_pk=None):
-    """API call to set default indicator periods"""
-
-    PeriodDates = namedtuple('PeriodDates', 'period_start period_end')
-    errors = []
-
-    def do_return(error=None):
-        if error:
-            errors.append(error)
-        return Response({
-            'default_periods': default_indicator.default_periods if default_indicator else False,
-            'errors': errors
-        })
-
-    indicator_id = request.POST.get('indicator_id')
-    try:
-        default_indicator = Indicator.objects.get(id=indicator_id)
-    except Indicator.DoesNotExist:
-        return do_return(_(u'Indicator with ID {} does not exist.').format(indicator_id))
-
-    copy = json.loads(request.POST.get('copy', 'false'))
-    set_default = json.loads(request.POST.get('set_default', 'false'))
-
-    if set_default and copy:
-        try:
-            project = Project.objects.get(pk=project_pk)
-        except Project.DoesNotExist:
-            return do_return(_(u'Project with ID {} does not exist.'))
-
-        default_periods_dates = [
-            PeriodDates(period.period_start, period.period_end)
-            for period in IndicatorPeriod.objects.filter(indicator_id=default_indicator)
-        ]
-        for date_pair in default_periods_dates:
-            if not (date_pair.period_start and date_pair.period_end):
-                return do_return(
-                    _(u'All default periods must have both a start and an end date')
-                )
-
-        indicators = Indicator.objects.filter(result__project=project).exclude(
-            pk=default_indicator.pk).prefetch_related('periods')
-
-        for indicator in indicators:
-            if indicator.periods.exists():
-                errors.append(smart_unicode(_(u'Periods already exist for indicator {0}: {1}. '
-                                              u'default periods will not be created.'
-                                              ).format(indicator.pk, indicator.title)))
-            else:
-                for date_pair in default_periods_dates:
-                    IndicatorPeriod.objects.create(
-                        indicator=indicator,
-                        period_start=date_pair.period_start,
-                        period_end=date_pair.period_end,
-                    )
-
-    default_indicator.default_periods = set_default
-    default_indicator.save()
-    return do_return()
 
 
 @api_view(['POST'])

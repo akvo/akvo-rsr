@@ -1,5 +1,5 @@
-/* global window, navigator */
-import React from 'react'
+/* global window */
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Collapse, Col, Row, Popconfirm, Tooltip, notification, Icon } from 'antd'
 import { Field } from 'react-final-form'
@@ -17,12 +17,15 @@ import { addSetItem, removeSetItem } from '../../actions'
 import Targets from './targets'
 import { getValidations } from '../../../../utils/validation-utils'
 import RequiredHint from '../../../../utils/required-hint'
+import DefaultsModal from './defaults-modal'
 
 const { Item } = Form
 const { Panel } = Collapse
 const Aux = node => node.children
 
-const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations }) => { // eslint-disable-line
+const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formPush, addSetItem, removeSetItem, indicatorId, resultId, projectId, primaryOrganisation, resultIndex, indicatorIndex, selectedPeriodIndex, validations, defaultPeriods, setDefaultPeriods }) => { // eslint-disable-line
+  const [modalVisible, setModalVisible] = useState(false)
+  // const [defaultPeriods, setDefaultPeriods] = useState(null)
   const { t } = useTranslation()
   const add = () => {
     const newItem = { indicator: indicatorId, disaggregationTargets: [] }
@@ -41,13 +44,31 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
     })
   }
   const { isDGIS } = getValidations(validations) // going around complicated yup check for deep structure
+  const copyDefaults = () => {
+    defaultPeriods.forEach((period, index) => {
+      setTimeout(() => {
+        formPush(`${fieldName}.periods`, { ...period, indicator: indicatorId, disaggregationTargets: [] })
+      }, index * 100)
+    })
+  }
   return (
     <Aux>
     <FieldArray name={`${fieldName}.periods`} subscription={{}}>
       {({ fields }) => (
         <Aux>
-        <div className="ant-col ant-form-item-label">
+        <div className="ant-col ant-form-item-label periods-label">
           <InputLabel>{t('Periods')}</InputLabel>
+          <div className="defaults">
+            {(!defaultPeriods || (Array.isArray(defaultPeriods) && defaultPeriods.length === 0)) && ([
+              <Button type="link" onClick={() => setModalVisible(true)}>{t('Setup defaults')}</Button>,
+              <Tooltip title="If you setup default periods, they will automatically be added to new indicators"><Icon type="info-circle" /></Tooltip>
+            ])
+            }
+            {!(!defaultPeriods || (Array.isArray(defaultPeriods) && defaultPeriods.length === 0)) && ([
+              <Button type="link" onClick={() => setModalVisible(true)}>View defaults</Button>,
+              fields.length === 0 ? [<span> | </span>, <Button type="link" onClick={copyDefaults}>Copy defaults</Button>] : null
+            ])}
+          </div>
         </div>
         {fields.length > 0 &&
         <Accordion
@@ -156,6 +177,7 @@ const Periods = connect(null, { addSetItem, removeSetItem })(({ fieldName, formP
         />
         }
         <Button icon="plus" block type="dashed" disabled={!indicatorId} onClick={add}>{t('Add period')}</Button>
+            <DefaultsModal visible={modalVisible} setVisible={setModalVisible} projectId={projectId} setDefaultPeriods={setDefaultPeriods} defaultPeriods={defaultPeriods} periodFields={fields} copyDefaults={copyDefaults} />
         </Aux>
       )}
     </FieldArray>
