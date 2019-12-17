@@ -477,3 +477,20 @@ def log_project_changes(user, project, related_obj, data, action):
 
 def get_country(*args, **kwargs):
     """Stub function since one of the migrations imports this function"""
+
+
+def get_project_for_object(Project, obj):
+    """Return the Project to which an object is associated."""
+    obj_model = obj._meta.model if obj is not None else None
+    model_project_relation = getattr(obj_model, 'project_relation', None)
+    if model_project_relation:
+        query = {model_project_relation: [obj.id]}
+        project = Project.objects.get(**query)
+    elif obj_model == Project:
+        project = obj
+    elif hasattr(obj, 'project'):
+        project = obj.project
+    else:
+        logger.info('%s does not define a relation to a project', obj_model)
+        project = None
+    return project

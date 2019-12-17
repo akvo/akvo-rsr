@@ -12,7 +12,7 @@ from django.core.exceptions import FieldError
 
 from akvo.rsr.models import PublishingStatus, Project
 from akvo.rest.models import TastyTokenAuthentication
-from akvo.utils import log_project_changes
+from akvo.utils import log_project_changes, get_project_for_object
 
 from rest_framework import authentication, exceptions, filters, permissions, viewsets
 
@@ -174,7 +174,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project_editor_change = is_project_editor_change(request)
         response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
         obj = self.queryset.model.objects.get(pk=response.data['id'])
-        project = self.get_project(obj)
+        project = get_project_for_object(Project, obj)
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'added')
             if project_editor_change:
@@ -184,7 +184,7 @@ class PublicProjectViewSet(BaseRSRViewSet):
     def destroy(self, request, *args, **kwargs):
         project_editor_change = is_project_editor_change(request)
         obj = self.get_object()
-        project = self.get_project(obj)
+        project = get_project_for_object(Project, obj)
         response = super(PublicProjectViewSet, self).destroy(request, *args, **kwargs)
         if project is not None:
             log_project_changes(request.user, project, obj, {}, 'deleted')
@@ -196,28 +196,12 @@ class PublicProjectViewSet(BaseRSRViewSet):
         project_editor_change = is_project_editor_change(request)
         response = super(PublicProjectViewSet, self).update(request, *args, **kwargs)
         obj = self.get_object()
-        project = self.get_project(obj)
+        project = get_project_for_object(Project, obj)
         if project is not None:
             log_project_changes(request.user, project, obj, request.data, 'changed')
             if project_editor_change:
                 project.update_iati_checks()
         return response
-
-    @staticmethod
-    def get_project(obj):
-        obj_model = obj._meta.model if obj is not None else None
-        model_project_relation = getattr(obj_model, 'project_relation', None)
-        if model_project_relation:
-            query = {model_project_relation: [obj.id]}
-            project = Project.objects.get(**query)
-        elif obj_model == Project:
-            project = obj
-        elif hasattr(obj, 'project'):
-            project = obj.project
-        else:
-            logger.info('%s does not define a relation to a project', obj_model)
-            project = None
-        return project
 
     @staticmethod
     def projects_filter_for_non_privileged_users(user, queryset, project_relation, action='create'):
