@@ -6,6 +6,7 @@
 
 import logging
 
+from django.db import transaction
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObject
 from django.core.exceptions import FieldError
@@ -172,10 +173,26 @@ class PublicProjectViewSet(BaseRSRViewSet):
 
     def create(self, request, *args, **kwargs):
         project_editor_change = is_project_editor_change(request)
-        response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
-        obj = self.queryset.model.objects.get(pk=response.data['id'])
-        project = get_project_for_object(Project, obj)
-        if project is not None:
+        model_name = self.queryset.model._meta.model_name
+        app_name = self.queryset.model._meta.app_label
+        perm = '{}.add_{}'.format(app_name, model_name)
+        with transaction.atomic():
+            response = super(PublicProjectViewSet, self).create(request, *args, **kwargs)
+            user = request.user
+            obj = self.queryset.model.objects.get(pk=response.data['id'])
+            project = get_project_for_object(Project, obj)
+            # Delete the object if the user doesn't have the right permissions
+            # to create this. The object may get created without checking for
+            # permissions, since the viewset returns True if the user just has
+            # the required role in any organisation. If the newly created
+            # object is not a project, and the user doesn't have permissions to
+            # create it, we delete the object.
+            if obj != project and not (user.has_perm('rsr.view_project', project) and user.has_perm(perm, obj)):
+                obj.delete()
+        if obj.pk is None:
+            raise exceptions.PermissionDenied
+        elif project is not None:
+            project.update_iati_checks()
             log_project_changes(request.user, project, obj, {}, 'added')
             if project_editor_change:
                 project.update_iati_checks()

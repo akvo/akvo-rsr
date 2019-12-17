@@ -10,9 +10,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import Client
 
-from akvo.rsr.models import UserProjects, Project, Organisation, Partnership, Employment
+from akvo.rsr.models import (
+    UserProjects, Project, Organisation, Partnership, Employment, Result)
 from akvo.rsr.models.user_projects import restrict_projects
-
+from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.test_project_access import RestrictedUserProjects
 
 User = get_user_model()
@@ -494,3 +495,25 @@ class RestrictedUserProjectsEndpoint(RestrictedUserProjects):
         self.assertFalse(may_unrestrict_m)
         projects = response.data['user_projects']['projects']
         self.assertEqual(projects, [W.id])
+
+
+class ProjectAccessTestCase(BaseTestCase):
+
+    def test_prevent_creation_through_api_without_access(self):
+        project = self.create_project('Project')
+        email = 'test@example.org'
+        password = 'password'
+        user = self.create_user(email, password)
+        org = self.create_organisation('Test Organisation')
+        self.make_employment(user, org, 'Project Editors')
+        self.c.login(username=user.email, password=password)
+        url = '/rest/v1/project/{}/?format=json'.format(project.id)
+
+        # POST and create indicator on project without access
+        url = '/rest/v1/indicator/?format=json'
+        result = Result.objects.create(project=project)
+        data = {'result': result.id, 'dimension_names': []}
+        response = self.c.post(url,
+                               data=json.dumps(data),
+                               content_type="application/json")
+        self.assertEqual(response.status_code, 403)

@@ -279,10 +279,10 @@ rules.add_perm('rsr.change_partnersite', is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.change_organisationaccount', is_rsr_admin)
 
-rules.add_perm('rsr.add_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager
-               | is_org_me_manager_or_project_editor | is_org_enumerator | is_org_user)
-rules.add_perm('rsr.change_projectupdate', is_own | is_rsr_admin | is_org_admin | is_org_user_manager
-               | is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
+rules.add_perm('rsr.add_projectupdate', is_rsr_admin | is_org_admin | is_org_user_manager |
+               is_org_me_manager_or_project_editor | is_org_enumerator | is_org_user | is_own)
+rules.add_perm('rsr.change_projectupdate', is_own | is_rsr_admin | is_org_admin | is_org_user_manager |
+               is_org_me_manager_or_project_editor | is_org_user | is_org_enumerator)
 rules.add_perm('rsr.delete_projectupdate', is_own | is_rsr_admin | is_org_admin)
 
 rules.add_perm('rsr.add_projectupdatelocation', is_rsr_admin)

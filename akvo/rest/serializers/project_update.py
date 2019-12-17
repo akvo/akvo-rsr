@@ -8,7 +8,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import logging
 
 from rest_framework import serializers
-from rest_framework.exceptions import PermissionDenied
 
 from akvo.rsr.models import ProjectUpdate
 from akvo.rsr.models import ProjectUpdateLocation
@@ -50,10 +49,6 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
         for key in ('photo_credit', 'photo_caption', 'video_credit', 'video_caption'):
             if key in validated_data and validated_data[key] is None:
                 validated_data.pop(key)
-
-        user, project = validated_data['user'], validated_data['project']
-        if not user.has_perm('rsr.add_projectupdate', project):
-            raise PermissionDenied()
 
         update = ProjectUpdate.objects.create(**validated_data)
 
