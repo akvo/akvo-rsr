@@ -39,7 +39,7 @@ ol{
 .lang-menu{
   li{
     display: flex;
-    padding-left: 20px;
+    padding-left: 30px;
     padding-right: 20px;
   }
   img{
@@ -229,7 +229,7 @@ header.main-header{
     background-color: rgba(0,0,0,0.75);
   }
   .side-menu{
-    width: 270px;
+    width: 250px;
     background-color: #f0f0f0;
     height: 100%;
     position: relative;
@@ -239,26 +239,15 @@ header.main-header{
       height: 52px;
       background-color: #8d8d8d;
       color: #fff;
-      padding: 10px 15px;
+      padding: 10px 30px;
       display: flex;
-      // margin-bottom: 10px;
-      .SVGInline{
-        svg{
-          width: 27px;
-          margin-right: 10px;
-          margin-top: 1px;
-        }
-        path{
-          fill: #fff;
-        }
-      }
-      span.text{
+      .text{
         margin-top: 4px;
       }
       .ant-btn{
         margin-left: auto;
         border-color: white;
-        margin-right: -5px;
+        margin-right: -20px;
         svg{
           path{
             fill: #fff;
@@ -268,7 +257,7 @@ header.main-header{
     }
     ul{
       background-color: #fff;
-      padding: 5px 0;
+      padding: 10px 0;
       li>*{
         display: flex;
         padding: 0 30px;
@@ -277,7 +266,7 @@ header.main-header{
         align-items: center;
         color: #000;
         transition: all .3s ease-out;
-        // cursor: pointer;
+        font-weight: 500;
         &.active{
           opacity: 0.5;
           cursor: default;

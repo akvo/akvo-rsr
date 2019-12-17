@@ -4,8 +4,6 @@ import { Link, Route } from 'react-router-dom'
 import { Icon, Button, Dropdown, Menu } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useSpring, animated, useTransition } from 'react-spring'
-import SVGInline from 'react-svg-inline'
-import userIconSvg from './images/user-icn.svg'
 
 const langs = ['en', 'es', 'fr']
 const langNames = { en: 'English', fr: 'Français', es: 'Español'}
@@ -37,7 +35,7 @@ const config = {
 
 const TopBar = ({ userRdr, dispatch }) => {
   const [menuVisible, setMenuVisible] = useState(false)
-  const [xprops, xset, xstop] = useSpring(() => ({ transform: 'translateX(-270px)' }))
+  const [xprops, xset] = useSpring(() => ({ transform: 'translateX(-270px)' }))
   const _setMenuVisible = (value) => {
     setMenuVisible(value)
     if(value){
@@ -65,11 +63,6 @@ const TopBar = ({ userRdr, dispatch }) => {
         <a href={`/${userRdr.lang}/projects`}>
           <img className="logo" src="/logo" />
         </a>
-        {/* <ul>
-          {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
-          <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
-          <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
-        </ul> */}
         <div className="right-side">
           {userRdr.firstName &&
           <Dropdown
@@ -93,30 +86,29 @@ const TopBar = ({ userRdr, dispatch }) => {
           {/* <Link to="/projects"><Button type="primary" ghost>{t('My projects')}</Button></Link> */}
         </div>
       </div>
-      {transitions.map(({item, props}) => {
+      {transitions.map(({props}) => {
         return (
           <div className="side-menu-container">
             <animated.div style={xprops} className="side-menu">
               <header>
-                <SVGInline svg={userIconSvg} />
                 <span className="text">Hi {userRdr.firstName}</span>
                 <Button icon="close" type="ghost" onClick={() => _setMenuVisible(false)} />
               </header>
               <ul>
                 <li>
                   <Route path="/projects" exact children={({ match }) => (
-                    <Link to="/projects" className={match ? 'active' : null}>Projects<Icon type="right" /></Link>
+                    <Link to="/projects" className={match ? 'active' : null}>Projects</Link>
                   )} />
                 </li>
-                <li><a href="#1">Programs<Icon type="right" /></a></li>
-                {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}<Icon type="right" /></a></li>}
-                <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI<Icon type="right" /></a></li>
-                <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}<Icon type="right" /></a></li>
+                <li><a href="#1">Programs</a></li>
+                {userRdr.canManageUsers && <li><a href={`/${userRdr.lang}/myrsr/user_management`}>{t('Users')}</a></li>}
+                <li><a href={`/${userRdr.lang}/myrsr/iati`}>IATI</a></li>
+                <li><a href={`/${userRdr.lang}/myrsr/reports`}>{t('Reports')}</a></li>
               </ul>
               <div className="div">settings</div>
               <ul>
-                <li><a href="/en/myrsr/details/">{t('My details')}<Icon type="right" /></a></li>
-                <li><a href="/en/sign_out">{t('Sign out')}<Icon type="right" /></a></li>
+                <li><a href="/en/myrsr/details/">{t('My details')}</a></li>
+                <li><a href="/en/sign_out">{t('Sign out')}</a></li>
               </ul>
               <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999}}>
                 <div className="change-lang">Change language<span className="lang"><img src={flags[userRdr.lang]} /></span></div>
