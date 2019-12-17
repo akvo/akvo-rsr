@@ -81,6 +81,7 @@ from .project_iati_checks import ProjectIatiCheckView
 from .project_location import (ProjectLocationViewSet,
                                AdministrativeLocationViewSet,
                                MapProjectLocationViewSet)
+from .project_role import project_roles
 from .project_update import (ProjectUpdateViewSet,
                              ProjectUpdateExtraViewSet,
                              upload_indicator_update_photo,

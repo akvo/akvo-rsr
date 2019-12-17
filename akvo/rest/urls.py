@@ -209,6 +209,9 @@ urlpatterns += (
     url(r'v1/indicator/(?P<indicator_pk>[0-9]+)/remove_dimension/(?P<dimension_pk>[0-9]+)/$',
         views.project_editor_remove_indicator_dimension,
         name='project_editor_remove_indicator_dimension'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/project_roles/$',
+        views.project_roles,
+        name='project_roles'),
 )
 
 # Directory views
