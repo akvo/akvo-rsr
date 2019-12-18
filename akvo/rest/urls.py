@@ -224,6 +224,16 @@ urlpatterns += (
         name='organisation_directory'),
 )
 
+# Programs
+urlpatterns += (
+    url(r'v1/program/(?P<pk>[0-9]+)/results/$',
+        views.program_results,
+        name='program_results'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/$',
+        views.program_indicator_periods,
+        name='program_indicator_periods'),
+)
+
 # Typeahead
 urlpatterns += (
     url(r'v1/typeaheads/countries$',
