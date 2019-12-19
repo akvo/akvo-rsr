@@ -3,31 +3,9 @@ import { Collapse, Icon } from 'antd'
 import classNames from 'classnames'
 import './styles.scss'
 import Indicator from './indicator'
+import {useFetch} from '../../utils/hooks'
 
 const { Panel } = Collapse
-
-const results = [
-  {
-    id: 1,
-    title: 'EUTF result 01',
-    indicators: [
-      {
-        id: 12,
-        title: 'Number of migrants in transit forcibly...',
-        description: '...',
-        periodCount: 2,
-        type: 'quantitative'
-      },
-      {
-        id: 13,
-        title: 'Number of people participating in conflict prevention and peace building',
-        description: '...',
-        periodCount: 1,
-        type: 'quantitative'
-      }
-    ]
-  }
-]
 
 const ExpandIcon = ({ isActive }) => (
   <div className={classNames('expander', { isActive })}>
@@ -35,7 +13,8 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Program = () => {
+const Program = ({ match: {params} }) => {
+  const [results, loading] = useFetch(`/program/${params.id}/results`)
   return (
     <div className="program-view">
       <Collapse defaultActiveKey={['0']} bordered={false} expandIcon={({isActive}) => <ExpandIcon isActive={isActive} />}>
@@ -51,7 +30,7 @@ const Program = () => {
             </div>}
             destroyInactivePanel
           >
-            <Indicator id={indicator.id} />
+            <Indicator id={indicator.id} programId={params.id} />
           </Panel>
           )}
           </Collapse>

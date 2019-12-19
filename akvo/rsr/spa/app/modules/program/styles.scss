@@ -19,6 +19,10 @@
   }
   &>.ant-collapse{
     &>.ant-collapse-item{
+      border-bottom: none;
+      &.ant-collapse-item-active{
+        margin-bottom: 50px;
+      }
       &>.ant-collapse-header {
         display: flex;
         padding: 12px 0;

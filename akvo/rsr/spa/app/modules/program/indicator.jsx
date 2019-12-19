@@ -4,6 +4,7 @@ import moment from 'moment'
 import classNames from 'classnames'
 // import { Doughnut } from 'react-chartjs-2'
 import Chart from 'react-apexcharts'
+import { useFetch } from '../../utils/hooks'
 
 const { Panel } = Collapse
 const ExpandIcon = ({ isActive }) => (
@@ -11,30 +12,6 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
-const periods = [
-  {
-    periodStart: '2019-12-01T08:39:36.055Z',
-    periodEnd: '2019-12-30T08:39:36.055Z',
-    aggregatedValue: 62023,
-    aggregatedTarget: 200000,
-    disaggregations: [
-      { value: 120, title: 'women' }, { value: 201, title: 'children' }, { value: 419, title: 'men' }
-    ],
-    countries: [{ isoCode: 'ID' }, { isoCode: 'IN' }],
-    projects: [
-      {
-        title: 'sample',
-        countries: [{ isoCode: 'ID' }],
-        value: 43
-      },
-      {
-        title: 'sample 2',
-        countries: [{ isoCode: 'IN' }],
-        value: 59
-      }
-    ]
-  }
-]
 
 const donutChartConfig = {
   chart: {
@@ -135,7 +112,8 @@ const barChartConfig = {
   }
 }
 
-const Indicator = () => {
+const Indicator = ({ programId, id }) => {
+  const [periods, loading] = useFetch(`/program/${programId}/indicator/${id}/`)
   return (
     <div className="indicator">
       <Collapse destroyInactivePanel defaultActiveKey={['0']} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
@@ -144,7 +122,7 @@ const Indicator = () => {
           key={index}
           header={(
             <div>
-              <h5>{moment(period.periodStart).format('DD MMM YYYY')} - {moment(period.periodEnd).format('DD MMM YYYY')}</h5>
+              <h5>{moment(period.periodStart, 'YYYY-MM-DD').format('DD MMM YYYY')} - {moment(period.periodEnd, 'YYYY-MM-DD').format('DD MMM YYYY')}</h5>
             </div>
           )}
         >
