@@ -21,9 +21,10 @@
     &>.ant-collapse-item{
       &>.ant-collapse-header {
         display: flex;
+        padding: 12px 0;
         .expander{
-          margin-left: -5px;
-          transform: translateX(-20px);
+          margin-left: 0;
+          margin-right: 15px;
         }
         .expander+div{
           display: flex;
@@ -38,6 +39,9 @@
             opacity: 0.65;
           }
         }
+      }
+      &>.ant-collapse-content > .ant-collapse-content-box{
+        padding: 0;
       }
       &>.ant-collapse-content>.ant-collapse-content-box>.ant-collapse{
         background: transparent;
@@ -91,6 +95,89 @@
                     h5{
                       margin-top: 6px;
                       font-weight: normal;
+                    }
+                  }
+                  .ant-collapse-content-box{
+                    display: flex;
+                  }
+                  .chart{
+                    width: 220px;
+                    height: 200px;
+                    position: relative;
+                    .overlay{
+                      width: 129px;
+                      height: 129px;
+                      border: 2px solid #c6e4e2;
+                      border-radius: 100%;
+                      position: absolute;
+                      left: 47px;
+                      top: 34px;
+                      z-index: 2;
+                      header{
+                        text-align: center;
+                        padding-top: 15px;
+                        color: #43998f;
+                        div{
+                          font-weight: bold;
+                          font-size: 18px;
+                        }
+                        small{
+                          font-size: 9px;
+                          text-transform: uppercase;
+                        }
+                        &:after{
+                          content: " ";
+                          position: absolute;
+                          width: 114px;
+                          height: 1px;
+                          background-color: #c6e4e2;
+                          left: 6px;
+                          top: 42px;
+                        }
+                      }
+                      .disaggregations{
+                        width: 90px;
+                        height: 100px;
+                        // background-color: #777;
+                        // width: 130px;
+                        // height: 120px;
+                        margin-left: 17px;
+                        margin-top: -27px;
+                      }
+                    }
+                  }
+                  .stats{
+                    margin-left: 20px;
+                    margin-top: 10px;
+                    .stat{
+                      margin-bottom: 15px;
+                      &.value{
+                        color: #43998f;
+                      }
+                      .label{
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        font-weight: 300;
+                      }
+                      b{
+                        font-size: 18px;
+                      }
+                    }
+                  }
+                  .disaggregations{
+                    display: flex;
+                    li{
+                      &:not(:last-child){
+                        margin-right: 10px;
+                      }
+                      .label{
+                        font-size: 9px;
+                        text-transform: uppercase;
+                        font-weight: 400;
+                      }
+                      b{
+                        font-size: 12px;
+                      }
                     }
                   }
                 }
