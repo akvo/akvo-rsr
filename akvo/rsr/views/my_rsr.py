@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.db.models import Max, Q
+from django.db.models import Max
 from django.forms.models import model_to_dict
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, redirect
@@ -199,57 +199,6 @@ def user_editable_projects(user):
         )
         projects = projects.distinct()
     return projects
-
-
-@login_required
-def my_projects(request):
-    """
-    If the user is logged in, he/she can view a list of projects linked to the user account.
-
-    :param request; A Django request.
-    """
-
-    # Get user organisation information
-    employments = request.user.approved_employments()
-    organisations = employments.organisations()
-    creator_organisations = organisations.filter(can_create_projects=True).\
-        values_list('id', flat=True)
-
-    projects = user_editable_projects(request.user)
-
-    # Custom filter on project id or (sub)title
-    q = request.GET.get('q')
-    if q:
-        try:
-            project_pk = int(q)
-            projects = projects.filter(pk=project_pk)
-        except Project.DoesNotExist:
-            Project.objects.none()
-        except ValueError:
-            filter_expressions = [
-                Q(title__icontains=q_item) | Q(subtitle__icontains=q_item)
-                for q_item in q.split()
-            ]
-            projects = projects.filter(reduce(lambda x, y: x & y, filter_expressions))
-
-    # Pagination
-    qs = remove_empty_querydict_items(request.GET)
-    page = request.GET.get('page')
-    page, paginator, page_range = pagination(page, projects, 10)
-
-    # Get related objects of page at once
-    page.object_list = page.object_list.prefetch_related('publishingstatus')
-
-    context = {
-        'organisations': organisations,
-        'page': page,
-        'paginator': paginator,
-        'page_range': page_range,
-        'q': filter_query_string(qs),
-        'q_search': q,
-        'reportable_organisations': list(creator_organisations)
-    }
-    return render(request, 'myrsr/my_projects.html', context)
 
 
 @login_required

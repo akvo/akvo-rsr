@@ -139,9 +139,6 @@ urlpatterns = i18n_patterns(
     url(r'^myrsr/updates/$',
         my_rsr.my_updates, name='my_updates'),
 
-    url(r'^myrsr/projects_old/$',
-        my_rsr.my_projects, name='my_projects_old'),
-
     url(r'^myrsr/projects/$',
         RedirectView.as_view(url='/my-rsr/projects/'),
         name='my_projects'),
