@@ -241,7 +241,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.approved_employments(group_names=group_names).organisations()
 
     def my_projects(self, group_names=None):
-        return self.approved_organisations(group_names=group_names).all_projects()
+        organisations = self.approved_organisations(group_names=group_names)
+        employment_projects = organisations.all_projects()
+        directly_content_owned_orgs = organisations.content_owned_organisations().filter(
+            content_owner__in=organisations)
+        content_owned_projects = directly_content_owned_orgs.all_projects()
+        projects = Project.objects.filter(
+            Q(pk__in=content_owned_projects) | Q(pk__in=employment_projects)).distinct()
+        return projects
 
     def can_create_project(self):
         """Check to see if the user can create a project."""
