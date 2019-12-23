@@ -1360,6 +1360,7 @@ class Project(TimestampsMixin, models.Model):
         Indicator = apps.get_model('rsr', 'Indicator')
         data = dict(
             title=source_indicator.title,
+            description=source_indicator.description,
             measure=source_indicator.measure,
             ascending=source_indicator.ascending,
             type=source_indicator.type,
@@ -1375,7 +1376,7 @@ class Project(TimestampsMixin, models.Model):
             indicator = Indicator.objects.create(result=result, **data)
             created = True
 
-        fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        fields = ['baseline_year', 'baseline_value', 'baseline_comment']
         self._update_fields_if_not_child_updated(source_indicator, indicator, fields)
 
         if not created:
@@ -1408,12 +1409,12 @@ class Project(TimestampsMixin, models.Model):
         except Indicator.DoesNotExist:
             return
 
-        update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati']
+        update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati', 'description', 'order']
         for field in update_fields:
             setattr(child_indicator, field, getattr(parent_indicator, field))
         child_indicator.save(update_fields=update_fields)
 
-        fields = ['description', 'baseline_year', 'baseline_value', 'baseline_comment']
+        fields = ['baseline_year', 'baseline_value', 'baseline_comment']
         self._update_fields_if_not_child_updated(parent_indicator, child_indicator, fields)
 
     def copy_period(self, indicator, source_period, set_parent=True):
