@@ -16,7 +16,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
-from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
@@ -73,7 +72,7 @@ class Employment(models.Model):
                 user_id=approved_by.pk,
                 content_type_id=ContentType.objects.get_for_model(self).pk,
                 object_id=self.pk,
-                object_repr=force_unicode(self),
+                object_repr=str(self),
                 action_flag=CHANGE,
                 change_message=u'Changed is_approved, outside of admin.'
             )
