@@ -1,4 +1,4 @@
-FROM python:2.7.16-buster
+FROM python:3.8.1-buster
 
 RUN set -ex; apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
@@ -6,7 +6,7 @@ RUN set -ex; apt-get update && \
     libjpeg-dev libfreetype6-dev \
     libffi-dev libssl-dev \
     libfontenc1 xfonts-encodings xfonts-utils xfonts-75dpi xfonts-base \
-    libxml2-dev libxslt1-dev zlib1g-dev python-dev && \
+    libxml2-dev libxslt1-dev zlib1g-dev python3-dev && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSLO https://downloads.wkhtmltopdf.org/0.12/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb \
