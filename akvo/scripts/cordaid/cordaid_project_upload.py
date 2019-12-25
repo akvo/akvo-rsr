@@ -24,7 +24,7 @@ from akvo.scripts.cordaid import (
     ERROR_UPLOAD_ACTIVITY, ERROR_CREATE_ACTIVITY, ERROR_UPDATE_ACTIVITY, ACTION_UPDATE_PROJECT,
     print_log, init_log, ERROR_MULTIPLE_OBJECTS, ERROR_NO_ORGS, AKVO_NS
 )
-from requester import Requester
+from .requester import Requester
 
 XML_LANG = "{http://www.w3.org/XML/1998/namespace}lang"
 
