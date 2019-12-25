@@ -9,10 +9,10 @@ function log {
 # We don't care about migrations; __init__.py can have unused imports
 # wsgi.py and scripts/ are handled below
 log Checking styles
-flake8 --ignore=E501 --exclude=wsgi.py,scripts,migrations,__init__.py,node_modules,akvo/rsr/views/translations.py akvo/
+flake8 --ignore=E501,W503 --exclude=wsgi.py,scripts,migrations,__init__.py,node_modules,akvo/rsr/views/translations.py akvo/
 # Need environ to be set before other imports, etc. So, ignore E402
-flake8 --ignore=E501,E402 akvo/scripts/
-flake8 --ignore=E501,E402 akvo/wsgi.py
+flake8 --ignore=E501,E402,W503 akvo/scripts/
+flake8 --ignore=E501,E402,W503 akvo/wsgi.py
 
 ./scripts/docker/dev/wait-for-dependencies.sh
 
