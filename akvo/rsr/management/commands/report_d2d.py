@@ -42,15 +42,15 @@ def projects_using_results_framework(before_date):
 
     indicators = [
         id_ for _, id_ in
-        filter(lambda (m, _): m == 'indicator', log_entries)
+        filter(lambda x: x[0] == 'indicator', log_entries)
     ]
     periods = [
         id_ for _, id_ in
-        filter(lambda (m, _): m == 'indicatorperiod', log_entries)
+        filter(lambda x: x[0] == 'indicatorperiod', log_entries)
     ]
     results = [
         id_ for _, id_ in
-        filter(lambda (m, _): m == 'result', log_entries)
+        filter(lambda x: x[0] == 'result', log_entries)
     ]
 
     projects_from_periods = set(

@@ -124,7 +124,7 @@ def location_choices(qs):
     # Add World to locations
     location_ids.add("")
 
-    return list(filter(lambda (id_, name): id_ in location_ids, M49_CODES))
+    return [code for code in M49_CODES if code[0] in location_ids]
 
 
 def get_country_ids(qs):
