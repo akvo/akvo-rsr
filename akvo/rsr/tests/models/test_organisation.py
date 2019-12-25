@@ -142,7 +142,7 @@ class OrganisationModelTestCase(BaseTestCase):
         for i, first_org in enumerate(org_names):
             for second_org in org_names[i + 1:]:
                 # Given
-                names = set([first_org, second_org])
+                names = {first_org, second_org}
                 orgs = Organisation.objects.filter(name__in=names)
 
                 # When/Then

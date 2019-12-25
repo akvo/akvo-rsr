@@ -57,7 +57,7 @@ def get_validations():
             indication += ' {0}-{1} '.format(action, validation_set)
 
             if action == 'mandatory' and len(names) > 1:
-                other_names = set(names) - set([name])
+                other_names = set(names) - {name}
                 for or_name in other_names:
                     indication += 'mandatory-{0}-or-{1} '.format(
                         validation_set, or_name.split('.')[1]

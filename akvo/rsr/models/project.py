@@ -681,7 +681,7 @@ class Project(TimestampsMixin, models.Model):
     def countries(self):
         """Return a list of countries for the project."""
 
-        country_codes = set([c.country.lower() for c in self.recipient_countries.all()])
+        country_codes = {c.country.lower() for c in self.recipient_countries.all()}
         return (
             [country for country in self.recipient_countries.all()] +
             [
@@ -768,7 +768,7 @@ class Project(TimestampsMixin, models.Model):
 
     def budget_currency_totals(self):
         budget_items = BudgetItem.objects.filter(project__id=self.pk)
-        unique_currencies = set([c.currency if c.currency else self.currency for c in budget_items])
+        unique_currencies = {c.currency if c.currency else self.currency for c in budget_items}
 
         totals = {}
         for c in unique_currencies:
@@ -982,7 +982,7 @@ class Project(TimestampsMixin, models.Model):
         :param dephth: How "deep" we recurse. If None, drill all the way down
         :return:
         """
-        family = set([self.pk])
+        family = {self.pk}
         search_depth = 0
         while depth is None or search_depth < depth:
 
