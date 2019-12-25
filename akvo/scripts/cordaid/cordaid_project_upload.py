@@ -50,13 +50,13 @@ def check_activity_language(activity_element):
 
         # Return False if the number of shared attributes is different
         shared_keys = set(dict1.keys()) & set(dict2.keys())
-        if not (len(shared_keys) == len(dict1.keys()) - dict1_extra and
-                len(shared_keys) == len(dict2.keys()) - dict2_extra):
+        if not (len(shared_keys) == len(dict1) - dict1_extra and
+                len(shared_keys) == len(dict2) - dict2_extra):
             return False
 
         # Return True if all attributes are similar
         dicts_are_equal = True
-        for key in dict1.keys():
+        for key in dict1:
             if key != XML_LANG:
                 dicts_are_equal = dicts_are_equal and (dict1[key] == dict2[key])
 

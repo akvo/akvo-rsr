@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         # setup a dict with all keyword objects
         keyword_objects = {}
-        for key in mergers.keys():
+        for key in mergers:
             keyword_objects[key], _ = Keyword.objects.get_or_create(label=key)
             if mergers[key]:
                 keyword_objects[mergers[key]], _ = Keyword.objects.get_or_create(label=mergers[key])
@@ -45,6 +45,6 @@ class Command(BaseCommand):
                     ))
                     project.keywords.remove(keyword)
 
-        for key in mergers.keys():
+        for key in mergers:
             self.stdout.write(u"Deleting keyword {}".format(key))
             Keyword.objects.get(label=key).delete()

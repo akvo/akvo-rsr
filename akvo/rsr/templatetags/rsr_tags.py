@@ -31,7 +31,7 @@ def more_link(context, project, project_page=False):
             label = _(u'No partner role')
 
         if organisation != project.primary_organisation:
-            if organisation in partners_dict.keys():
+            if organisation in partners_dict:
                 partners_dict[organisation].append(label)
             else:
                 partners_dict[organisation] = [label]
@@ -265,7 +265,7 @@ class QSHiddenInputNode(template.Node):
         get_values = context['request'].GET
         html = ''
         for ident in self.identifiers:
-            if ident in get_values.keys():
+            if ident in get_values:
                 html += '<input type="hidden" name="%s" value="%s"/>' % (ident, get_values[ident])
         return html
 
@@ -345,7 +345,7 @@ class SortAnchorNode(template.Node):
                 getvars['dir'] = self.sortdir
             icon = ''
 
-        if len(getvars.keys()) > 0:
+        if len(getvars) > 0:
             urlappend = "&%s" % getvars.urlencode()
         else:
             urlappend = ''

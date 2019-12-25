@@ -154,7 +154,7 @@ def upload_indicator_update_photo(request, pk=None):
     # TODO: permissions
 
     data = request.data
-    if 'photo' in data.keys():
+    if 'photo' in data:
         update.photo = data['photo']
         update.save(update_fields=['photo'])
 

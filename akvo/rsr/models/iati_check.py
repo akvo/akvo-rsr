@@ -34,7 +34,7 @@ class IatiCheck(models.Model):
             return u'%s' % _(u'IATI check for unknown project')
 
     def show_status(self):
-        if self.status not in STATUS_CODE.keys():
+        if self.status not in STATUS_CODE:
             return _(u'unknown status')
         else:
             return STATUS_CODE[int(self.status)].title()

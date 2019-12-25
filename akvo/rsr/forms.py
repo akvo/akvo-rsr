@@ -74,7 +74,7 @@ class PasswordValidationMixin():
     def clean(self):
         if self.errors:
             raise forms.ValidationError(
-                self.errors[self.errors.keys()[0]]
+                self.errors[list(self.errors.keys())[0]]
             )
 
         if 'password1' in self.cleaned_data:

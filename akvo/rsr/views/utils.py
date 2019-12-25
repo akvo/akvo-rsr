@@ -95,7 +95,7 @@ def org_projects(organisation):
 
 def show_filter_class(qs, filters):
     """To simplify template, instead of bool adhere to bootstrap class name."""
-    return "" if frozenset(qs.keys()).isdisjoint(filters) else "in"
+    return "" if frozenset(qs).isdisjoint(filters) else "in"
 
 
 def _get_hierarchy_row(max_rows, projects):

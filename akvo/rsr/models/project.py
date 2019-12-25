@@ -560,8 +560,8 @@ class Project(TimestampsMixin, models.Model):
             return 0
 
     def get_budget_project_currency(self):
-        budget_project_currency = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='')\
-            .aggregate(Sum('amount')).values()[0]
+        qs = BudgetItem.objects.filter(project__id=self.pk).filter(currency__exact='').aggregate(Sum('amount'))
+        budget_project_currency = list(qs.values())[0]
         return budget_project_currency if budget_project_currency >= 1 else 0.0
 
     def update_budget(self):
@@ -773,9 +773,9 @@ class Project(TimestampsMixin, models.Model):
         totals = {}
         for c in unique_currencies:
             if c == self.currency:
-                totals[c] = budget_items.filter(Q(currency='') | Q(currency=c)).aggregate(Sum('amount')).values()[0]
+                totals[c] = list(budget_items.filter(Q(currency='') | Q(currency=c)).aggregate(Sum('amount')).values())[0]
             else:
-                totals[c] = budget_items.filter(currency=c).aggregate(Sum('amount')).values()[0]
+                totals[c] = list(budget_items.filter(currency=c).aggregate(Sum('amount')).values())[0]
 
         return totals
 
@@ -868,7 +868,7 @@ class Project(TimestampsMixin, models.Model):
         partners_info = {}
         for partnership in Partnership.objects.filter(project=self):
             funding_amount = partnership.funding_amount if partnership.funding_amount else None
-            if partnership.organisation not in partners_info.keys():
+            if partnership.organisation not in partners_info:
                 partners_info[partnership.organisation] = [[partnership], funding_amount]
             else:
                 partners_info[partnership.organisation][0].append(partnership)
@@ -1012,10 +1012,9 @@ class Project(TimestampsMixin, models.Model):
         "Return the settings name of the hierarchy if there is one"
         ancestor = self.ancestor()
         if ancestor:
-            pk = ancestor.pk
             root_projects = settings.SINGLE_PERIOD_INDICATORS['root_projects']
-            root_ids = root_projects.keys()
-            if pk in root_ids:
+            pk = ancestor.pk
+            if pk in root_projects:
                 return root_projects[pk]
 
     def in_eutf_hierarchy(self):

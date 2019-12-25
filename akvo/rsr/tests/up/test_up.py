@@ -85,9 +85,10 @@ class RsrUpTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         contents = json.loads(response.content)
-        self.assertItemsEqual(contents.keys(), ['username', 'user_id', 'organisations',
-                                                'allow_edit_projects', 'api_key',
-                                                'published_projects'])
+        self.assertEqual(sorted(contents),
+                         sorted(['username', 'user_id', 'organisations',
+                                 'allow_edit_projects', 'api_key',
+                                 'published_projects']))
         self.assertGreater(len(contents['published_projects']), 0)
 
     def test_get_project_information(self):

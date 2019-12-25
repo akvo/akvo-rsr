@@ -34,7 +34,7 @@ def sectors(project):
                 except KeyError:
                     sectors_dict[sector.vocabulary or '1'] = [sector.percentage]
 
-            for voc_key in sectors_dict.keys():
+            for voc_key in sectors_dict:
                 if len(sectors_dict[voc_key]) > 1:
                     voc_percentage = 0
 

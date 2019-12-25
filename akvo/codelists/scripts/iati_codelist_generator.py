@@ -316,9 +316,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Version has to be one of the allowed versions
-    if args.version not in VERSIONS.keys():
+    if args.version not in VERSIONS:
         print "Error; Version should be one of the following:"
-        for version in VERSIONS.keys():
+        for version in VERSIONS:
             print "- %s" % version
         sys.exit(0)
 

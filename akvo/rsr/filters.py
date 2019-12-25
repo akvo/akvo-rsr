@@ -37,7 +37,7 @@ def get_orgs():
 def remove_empty_querydict_items(request_get):
     # querydicts are immutable
     getvars = request_get.copy()
-    for k, v in getvars.items():
+    for k, v in list(getvars.items()):
         if not v:
             getvars.pop(k, None)
     return getvars
@@ -93,7 +93,7 @@ def get_id_for_iso(i):
     NOTE: If i is already an id, the parent id of the given id is returned!
 
     """
-    i = [k for k, v in M49_HIERARCHY.iteritems() if i in v]
+    i = [k for k, v in M49_HIERARCHY.items() if i in v]
     return None if not i else i.pop()
 
 

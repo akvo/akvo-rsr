@@ -70,7 +70,7 @@ class Command(BaseCommand):
 
             problem_periods = []
             duplicate_periods = []
-            for key in dupe_groups.keys():
+            for key in dupe_groups:
                 periods_with_same_dates = dupe_groups[key]
                 if len(periods_with_same_dates) > 1:
                     periods_to_keep_and_to_delete = separate(periods_with_same_dates)

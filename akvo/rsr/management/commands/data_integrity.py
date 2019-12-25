@@ -39,7 +39,7 @@ def projects_with_multiple_parents():
         ]
         children_with_parents = [
             [kid, ", ".join([str(p) for p in list(parents_of[kid])])] for
-            kid in parents_of.keys() if len(parents_of[kid]) > 1
+            kid in parents_of if len(parents_of[kid]) > 1
         ]
         ordered = sorted(children_with_parents, key=lambda bit: bit[0])
         for data in ordered:

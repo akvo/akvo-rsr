@@ -56,7 +56,7 @@ class Transactions(ImportMapper):
 
             transaction_type = self.get_child_elem_attrib(
                 transaction, 'transaction-type', 'code', 'transaction_type')
-            if transaction_type in TYPE_TO_CODE.keys():
+            if transaction_type in TYPE_TO_CODE:
                     transaction_type = TYPE_TO_CODE[transaction_type]
 
             transaction_date = self.get_child_as_date(

@@ -39,7 +39,7 @@ class IatiActivityExport(TimestampsMixin):
             return u'%s' % _(u'IATI export for project with no title')
 
     def show_status(self):
-        if self.status not in STATUS_CODE.keys():
+        if self.status not in STATUS_CODE:
             return _(u'unknown status')
         else:
             return STATUS_CODE[int(self.status)].title()
