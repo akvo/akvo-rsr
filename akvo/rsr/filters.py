@@ -46,7 +46,7 @@ def remove_empty_querydict_items(request_get):
 def walk(node):
     """Walks the m49 tree and return countries"""
 
-    if isinstance(node, basestring):
+    if isinstance(node, str):
         return [node, ]
     elif isinstance(node, int):
         return walk(deepcopy(M49_HIERARCHY)[node])
@@ -103,7 +103,7 @@ def get_location_hierarchy(location, locations=None):
         locations = [location]
     # FIXME: Actually returns parent id, when location is already an id!
     loc = get_id_for_iso(location)
-    if isinstance(loc, basestring) or loc == 1 or loc is None:
+    if isinstance(loc, str) or loc == 1 or loc is None:
         return locations
     else:
         locations.append(loc)
