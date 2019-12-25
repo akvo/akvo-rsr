@@ -146,7 +146,7 @@ class IatiImportLog(models.Model):
             return self.field
 
     def show_message_type(self):
-        return dict(map(lambda x: x, self.MESSAGE_TYPE_CODES))[self.message_type]
+        return dict([x for x in self.MESSAGE_TYPE_CODES])[self.message_type]
 
     def activity_admin_url(self):
         """ Returns a link to the admin change view of the IatiActivityImport object associated with

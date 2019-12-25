@@ -139,7 +139,7 @@ class IatiImportJob(models.Model):
     admin_url.allow_tags = True
 
     def show_status(self):
-        return dict(map(lambda x: x, self.STATUS_CODES))[self.status]
+        return dict([x for x in self.STATUS_CODES])[self.status]
 
     def started_at(self):
         return self.iati_import_logs.first().created_at

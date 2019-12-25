@@ -23,9 +23,7 @@ class Command(BaseCommand):
             print(self.help)
             sys.exit(1)
 
-        org_ids = map(int, args)
-
-        for org_id in org_ids:
+        for org_id in map(int, args):
             org_fields = OrganisationCustomField.objects.filter(organisation__id=org_id)
             for project in Project.objects.filter(primary_organisation=org_id).order_by('pk'):
                 print "Updating custom fields for project ID: {}".format(project.pk)

@@ -26,9 +26,7 @@ class Command(BaseCommand):
             print(__doc__)
             sys.exit(1)
 
-        project_ids = map(int, args)
-
-        for id_ in project_ids:
+        for id_ in map(int, args):
             results = Result.objects.filter(project__id=id_).exclude(parent_result=None)
             print "Deleting {} results for project {}".format(results.count(), id_)
             results.delete()

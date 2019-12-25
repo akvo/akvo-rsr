@@ -29,9 +29,7 @@ class Command(BaseCommand):
             print(__doc__)
             sys.exit(1)
 
-        user_ids = map(int, args)
-
-        for user_id in user_ids:
+        for user_id in map(int, args):
             user = User.objects.get(id=user_id)
             user.is_active = False
             user.set_unusable_password()

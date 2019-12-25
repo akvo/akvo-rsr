@@ -438,8 +438,7 @@ def _filter_by_custom_fields(request, projects):
 
 def _get_selection(options, value):
     if isinstance(value, basestring):
-        print(value)
-        indexes = map(int, value.split('__'))
+        indexes = list(map(int, value.split('__')))
     else:
         indexes = value
 
