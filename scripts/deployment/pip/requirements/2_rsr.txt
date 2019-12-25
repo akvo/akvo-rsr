@@ -1,9 +1,14 @@
 # Django
 Django==1.11.23
 
-# Django apps
+# Django filter
 django-filter==1.1
-django-markup==0.4
+
+# Django markup
+django-markup==1.4.1
+bleach-whitelist==0.0.10
+bleach==3.1.0
+webencodings==0.5.1
 
 # Bootstrap
 django-bootstrap3==11.0
