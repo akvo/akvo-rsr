@@ -33,7 +33,7 @@ class Partnership(models.Model):
         _(u'Accountable partner'),
         _(u'Extending partner'),
     ]
-    PARTNER_TYPES = zip(PARTNER_TYPE_LIST, PARTNER_LABELS)
+    PARTNER_TYPES = list(zip(PARTNER_TYPE_LIST, PARTNER_LABELS))
 
     # the new way
     IATI_FUNDING_PARTNER = 1
@@ -56,7 +56,7 @@ class Partnership(models.Model):
         _(u'Sponsor partner'),
         _(u'Reporting organisation'),
     ]
-    IATI_ROLES = zip(IATI_ROLE_LIST, IATI_ROLE_LABELS)
+    IATI_ROLES = list(zip(IATI_ROLE_LIST, IATI_ROLE_LABELS))
 
     # used when migrating
     PARTNER_TYPES_TO_ROLES_MAP = {
@@ -88,7 +88,7 @@ class Partnership(models.Model):
         _(u'Network')
     )
 
-    PARTNER_TYPE_EXTRAS = zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS)
+    PARTNER_TYPE_EXTRAS = list(zip(PARTNER_TYPE_EXTRAS_LIST, PARTNER_TYPE_EXTRA_LABELS))
 
     organisation = models.ForeignKey(
         'Organisation', verbose_name=_(u'organisation'), related_name='partnerships', null=True,

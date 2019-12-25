@@ -42,7 +42,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
                          STATUS_REVISION_CODE, STATUS_APPROVED_CODE]
     STATUSES_LABELS_LIST = [STATUS_DRAFT, STATUS_PENDING, STATUS_REVISION,
                             STATUS_APPROVED]
-    STATUSES = zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST)
+    STATUSES = list(zip(STATUS_CODES_LIST, STATUSES_LABELS_LIST))
 
     UPDATE_METHODS = (
         ('W', _(u'web')),
