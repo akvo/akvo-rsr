@@ -264,7 +264,7 @@ def filter_query_string(qs):
     links. Since pagination is handled outside of this function we pop the page
     item.
     """
-    q = dict(qs.iterlists())  # to Python dict
+    q = dict(qs.lists())  # to Python dict
     q.pop('page', None)
 
     if not bool(q):
