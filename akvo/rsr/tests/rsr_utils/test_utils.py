@@ -238,7 +238,7 @@ class GeneralUtilsTestCase(TestCase):
     def test_single_period_dates(self):
         timeout, start, end = single_period_dates('EUTF')
         self.assertEqual(timeout, 90)
-        self.assertEqual(start, datetime.date(2015, 01, 01))
+        self.assertEqual(start, datetime.date(2015, 1, 1))
         self.assertEqual(end, datetime.date(2025, 12, 31))
         timeout, start, end = single_period_dates('Wrong name')
         self.assertEqual(timeout, None)
