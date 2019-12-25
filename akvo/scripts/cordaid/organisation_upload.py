@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import os
 import django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
@@ -58,7 +59,7 @@ def user_org(user_cred):
         # non-intuitively split() returns an empty string first and last, thus [-2]
         return profile.response.json()['objects'][0]['organisation'].split('/')[-2]
     except Exception as e:
-        print "{message}".format(message=e.message)
+        print("{message}".format(message=e.message))
         return False, None
 
 
@@ -83,7 +84,7 @@ def find_org(user_cred, reporting_org_id, internal_org_id):
         # TODO: check that we only get one object back
         org_id = ioi.response.json()[0]['referenced_org']
     except Exception as e:
-        print "{message}".format(message=e.message)
+        print("{message}".format(message=e.message))
         return False, None
     return True, org_id
 
@@ -255,7 +256,7 @@ def credentials_from_args(argv):
         user = api_user(domain, username, **kwargs)
         return user
     except Exception as e:
-        print "{message}".format(message=e.message)
+        print("{message}".format(message=e.message))
         usage(argv[0])
         return None
 
@@ -270,24 +271,24 @@ def upload_organisations(argv):
             for i in range(len(organisations)):
                 internal_org_id = organisations[i].find('org_id').text
                 name = organisations[i].find('name').text
-                print "Processing organisation {name}".format(name=name),
+                print("Processing organisation {name}".format(name=name), end=' ')
                 if internal_org_id:
-                    print " ID: {org_id}".format(org_id=internal_org_id),
+                    print(" ID: {org_id}".format(org_id=internal_org_id), end=' ')
                     import pdb
                     pdb.set_trace()
                     ok, pk = find_org(user_cred, reporting_org_id, internal_org_id)
                     if pk:
                         ok, message, data = put_an_org(organisations[i], user_cred, pk)
                         log(message, data)
-                        print message.format(**data)
+                        print(message.format(**data))
                     else:
                         ok, message, data = post_an_org(organisations[i], user_cred)
                         log(message, data)
-                        print message.format(**data)
+                        print(message.format(**data))
                         if ok:
                             post_an_internal_id(user_cred, reporting_org_id, internal_org_id, data['pk'])
                 else:
-                    print "No internal org ID"
+                    print("No internal org ID")
 
 
 if __name__ == '__main__':

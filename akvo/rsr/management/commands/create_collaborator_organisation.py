@@ -11,6 +11,7 @@ Usage:
     python manage.py create_collaborator_organisation <org-id>
 
 """
+from __future__ import print_function
 
 import sys
 

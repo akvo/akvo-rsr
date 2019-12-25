@@ -136,8 +136,6 @@ def render_project_results_indicators_map_overview(request, project_id):
         }
     )
 
-    print(request.GET, show_comment, start_date, end_date)
-
     if request.GET.get('show-html', ''):
         return HttpResponse(html)
 

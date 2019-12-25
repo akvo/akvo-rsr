@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 import sys
 
 from django.core.management.base import BaseCommand
@@ -22,21 +23,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         if len(args) != 1:
-            print 'Usage: {} {} {}'.format(sys.argv[0], sys.argv[1], self.args)
+            print('Usage: {} {} {}'.format(sys.argv[0], sys.argv[1], self.args))
             sys.exit(1)
 
         hierarchy = settings.SINGLE_PERIOD_INDICATORS.get(args[0], None)
 
         if hierarchy is None:
-            print 'ERROR: No hierarchy with name {}'.format(args[0])
+            print('ERROR: No hierarchy with name {}'.format(args[0]))
             sys.exit(1)
 
         root = Project.objects.get(pk=hierarchy['pk'])
         projects = root.descendants()
 
         default_periods = DefaultPeriod.objects.filter(project_id__in=projects)
-        print 'Found {} default periods'.format(default_periods.count())
+        print('Found {} default periods'.format(default_periods.count()))
 
         if default_periods.count() > 0:
-            print 'Deleting them all'
+            print('Deleting them all')
             default_periods.delete()

@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import tablib
 
 from django.core.management.base import BaseCommand
@@ -120,13 +121,13 @@ class Command(BaseCommand):
             duplicate_periods.extend(new_dupes)
 
         if problem_periods:
-            print "Duplicate periods with data"
-            print table_of(problem_periods).export('csv')
+            print("Duplicate periods with data")
+            print(table_of(problem_periods).export('csv'))
         else:
-            print "No duplicate periods with data"
+            print("No duplicate periods with data")
 
         if duplicate_periods:
-            print "Deleted duplicate periods with no data"
-            print table_of(duplicate_periods, options['delete']).export('csv')
+            print("Deleted duplicate periods with no data")
+            print(table_of(duplicate_periods, options['delete']).export('csv'))
         else:
-            print "No duplicate periods"
+            print("No duplicate periods")

@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import sys
 
 from django.core.management.base import BaseCommand
@@ -26,7 +27,7 @@ class Command(BaseCommand):
         for org_id in map(int, args):
             org_fields = OrganisationCustomField.objects.filter(organisation__id=org_id)
             for project in Project.objects.filter(primary_organisation=org_id).order_by('pk'):
-                print "Updating custom fields for project ID: {}".format(project.pk)
+                print("Updating custom fields for project ID: {}".format(project.pk))
                 for org_field in org_fields:
                     ProjectCustomField.objects.filter(
                         project=project, name=org_field.name, section=org_field.section

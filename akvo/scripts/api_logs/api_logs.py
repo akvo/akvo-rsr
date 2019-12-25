@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import re
 
 from datetime import datetime
@@ -52,8 +53,8 @@ def analyze_log(filename):
     # sort on latest date, change s[2] to s[0 or 1] to sort on count or path
     sorted_stats = sorted(stats, key=lambda s: s[2])
     for stat in sorted_stats:
-        print "{:>6} {} {}".format(stat[0], stat[1], str(stat[2]))
-    print 'Number of "unique" endpoints:', len(sorted_stats)
+        print("{:>6} {} {}".format(stat[0], stat[1], str(stat[2])))
+    print('Number of "unique" endpoints:', len(sorted_stats))
 
 if __name__ == '__main__':
     print("\n***** List of /api/... calls *****")

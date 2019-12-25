@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 import tablib
 
 from django.conf import settings
@@ -186,5 +187,5 @@ class Command(BaseCommand):
                     except IntegrityError:
                         pass
 
-        print u'\nShadow orgs created and employments added to the shadows:\n'
-        print shadows_and_employments.export('tsv').decode('utf-8').encode('utf-8')
+        print(u'\nShadow orgs created and employments added to the shadows:\n')
+        print(shadows_and_employments.export('tsv').decode('utf-8').encode('utf-8'))

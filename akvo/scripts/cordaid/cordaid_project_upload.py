@@ -4,6 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
+from __future__ import print_function
 import collections
 import getopt
 import itertools
@@ -253,7 +254,7 @@ def credentials_from_args(argv):
         user = api_user(domain, username, **kwargs)
         return user
     except Exception as e:
-        print "{message}".format(message=e.message)
+        print("{message}".format(message=e.message))
         usage(argv[0])
         return None
 
@@ -275,7 +276,7 @@ def get_project_count(user, **q_args):
             url_args=url_args
         )
     except Exception as e:
-        print "{message}".format(message=e.message)
+        print("{message}".format(message=e.message))
         return False, None
     return True, project
 
@@ -292,7 +293,7 @@ def upload_activities(argv):
             for i in range(activity_count):
                 internal_id = activities[i].get(AKVO_NS + 'internal-project-id')
                 iati_id = activities[i].findall('iati-identifier')[0].text
-                print "({current} of {activity_count}) Processing activity {iati_id}".format(current=i + 1, activity_count=activity_count, iati_id=iati_id),
+                print("({current} of {activity_count}) Processing activity {iati_id}".format(current=i + 1, activity_count=activity_count, iati_id=iati_id), end=' ')
                 if len(activities[i].findall('participating-org')) > 0:
                     if internal_id:
                         ok, project = get_project_count(user, **dict(partnerships__internal_id=internal_id))
@@ -304,12 +305,12 @@ def upload_activities(argv):
                     if project_count == 0:
                         ok, message, data = post_an_activity(activities[i], user)
                         log(message, data)
-                        print message.format(**data)
+                        print(message.format(**data))
                     elif project_count == 1:
                         pk = project.response.json()['objects'][0]['id']
                         ok, message, data = put_an_activity(activities[i], pk, user)
                         log(message, data)
-                        print message.format(**data)
+                        print(message.format(**data))
                     elif project_count > 1:
                         data = dict(iati_id=iati_id, event=ERROR_MULTIPLE_OBJECTS, extra=internal_id)
                         log(None, data)

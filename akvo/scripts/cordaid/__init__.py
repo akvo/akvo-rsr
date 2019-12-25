@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 import datetime
 import os
 import sys
@@ -100,7 +101,7 @@ def print_log(log_file, column_names, to_console=False):
         if do_append:
             dataset.append(row)
         elif to_console:
-            print bit['text'].format(**bit['data'])
+            print(bit['text'].format(**bit['data']))
 
     log_to_file(dataset.csv, log_file)
 

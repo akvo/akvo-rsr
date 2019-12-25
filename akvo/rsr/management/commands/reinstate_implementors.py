@@ -5,6 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 from django.core.management.base import BaseCommand
 from django.utils.encoding import smart_str
 
@@ -145,8 +146,8 @@ IMPLEMENTING_PARTNERS = (
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        print u"Setting upthe following implementing partners:"
-        print u"Project ID\tProject title\tOrganisation ID\tOrganistaion name"
+        print(u"Setting upthe following implementing partners:")
+        print(u"Project ID\tProject title\tOrganisation ID\tOrganistaion name")
         for project_id, org_id in IMPLEMENTING_PARTNERS:
             project = Project.objects.get(pk=project_id)
             assert project.title[:3] == u"DEC", u"Not a DEC project"
@@ -156,9 +157,9 @@ class Command(BaseCommand):
                 organisation=organisation,
                 iati_organisation_role=Partnership.IATI_IMPLEMENTING_PARTNER
             )
-            print smart_str(u"{}\t{}\t{}\t{}".format(
+            print(smart_str(u"{}\t{}\t{}\t{}".format(
                 project.pk,
                 project.title,
                 organisation.pk,
                 organisation.name
-            ))
+            )))

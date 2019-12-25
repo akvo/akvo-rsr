@@ -11,6 +11,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+from __future__ import print_function
 import tablib
 
 from django.conf import settings
@@ -62,5 +63,5 @@ class Command(BaseCommand):
                 employment.delete()
             organisation_id, user_id = employment.organisation.pk, employment.user.pk
 
-        print u'The following users have had their employment(s) changed to Enumerator:\n'
-        print users.export('tsv')
+        print(u'The following users have had their employment(s) changed to Enumerator:\n')
+        print(users.export('tsv'))

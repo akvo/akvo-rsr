@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 
 from django.db import models, migrations
 from django.contrib.admin.models import LogEntry, DELETION
@@ -93,9 +94,9 @@ def create_update_from_actual_value_and_comment(apps, schema_editor):
         value, comment = values[4:]
         create_update(period_id, value, comment, user_id, timestamp)
 
-    print 'Actual user not identified for the following periods (using RSR System user as proxy):'
+    print('Actual user not identified for the following periods (using RSR System user as proxy):')
     for ids in user_not_found:
-        print 'Period: {}, Indicator: {}, Result: {}, Project: {}'.format(*ids)
+        print('Period: {}, Indicator: {}, Result: {}, Project: {}'.format(*ids))
 
 
 def get_last_modified_user_id(ids):

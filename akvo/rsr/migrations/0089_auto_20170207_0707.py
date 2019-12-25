@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 
 from django.db import models, migrations
 
@@ -30,7 +31,7 @@ def fix_broken_child_indicator_periods(apps, schema_editor):
             parent_indicator = Indicator.objects.filter(result=result, title=title).first()
             period = IndicatorPeriod.objects.get(id=period_id)
             if parent_indicator is None:
-                print 'Orphaned Indicator'
+                print('Orphaned Indicator')
                 pprint_period_lineage(period)
 
             elif parent_indicator.periods.count() == 0:
@@ -43,14 +44,14 @@ def fix_broken_child_indicator_periods(apps, schema_editor):
                 period.save()
                 # Fix additional missing data by saving the parent
                 parent_period.save()
-                print 'Fixed period'
+                print('Fixed period')
                 pprint_period_lineage(period)
                 if period.indicator.periods.count() != parent_period.indicator.periods.count():
-                    print 'No. of periods mismatch with parent :: '
+                    print('No. of periods mismatch with parent :: ')
                     pprint_period_lineage(parent_period)
 
             else:
-                print 'Orphaned Period'
+                print('Orphaned Period')
                 pprint_period_lineage(period)
 
         elif parent_count > 1:
@@ -64,11 +65,11 @@ def pprint_period_lineage(period):
     indicator = period.indicator
     result = indicator.result
     project = result.project
-    print u'{} > {} > {} > {}--{}'.format(
+    print(u'{} > {} > {} > {}--{}'.format(
         project.title, result.title, indicator.title, period.period_start, period.period_end
-    ).encode('utf8')
-    print '{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id)
-    print '#' * 20
+    ).encode('utf8'))
+    print('{} > {} > {} > {}'.format(project.id, result.id, indicator.id, period.id))
+    print('#' * 20)
 
 
 class Migration(migrations.Migration):

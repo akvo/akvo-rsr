@@ -11,6 +11,7 @@ Usage:
     python manage.py undo_results_import <project-id1> [<project-id2> ...]
 
 """
+from __future__ import print_function
 
 import sys
 
@@ -28,5 +29,5 @@ class Command(BaseCommand):
 
         for id_ in map(int, args):
             results = Result.objects.filter(project__id=id_).exclude(parent_result=None)
-            print "Deleting {} results for project {}".format(results.count(), id_)
+            print("Deleting {} results for project {}".format(results.count(), id_))
             results.delete()

@@ -10,6 +10,7 @@ Generate a python file, codelists_vXXX.py, in the codelists folder that contains
 IATI codelists, based on the IATI version.
 See http://iatistandard.org/codelists/ and http://iatistandard.org/codelists/code-list-api/
 """
+from __future__ import print_function
 
 import argparse
 import re
@@ -182,7 +183,7 @@ def get_codelists(version, url):
                 if not codelist.attrib['ref'] in codelists:
                     codelists.append(codelist.attrib['ref'])
     else:
-        print "ERROR: Could not retrieve codelists from {}".format(codelists_url)
+        print("ERROR: Could not retrieve codelists from {}".format(codelists_url))
 
     return codelist_url_template, codelists
 
@@ -206,7 +207,7 @@ def generate_codelists_data(version):
             # Couldn't fetch the result from the IATI site
             continue
 
-        print "Gathering data for {}...".format(name)
+        print("Gathering data for {}...".format(name))
         if name == "Country":
             codelist_dict = codelist_data(
                 result, version, {'field': 'name', 'func': prettify_country_name})
@@ -301,12 +302,12 @@ def get_translation_pairs(version, lang):
 
 
 def get_translation_csv(version, lang='fr'):
-    print 'Getting translations for {}'.format(lang)
+    print('Getting translations for {}'.format(lang))
     translations = get_translation_pairs(version, lang=lang)
     with open(tempfile.mktemp('.csv'), 'w')  as f:
         for translation_pair in translations:
             f.write( u'"{}","{}"\n'.format(*translation_pair).encode('utf8'))
-    print 'Translations csv written to {}'.format(f.name)
+    print('Translations csv written to {}'.format(f.name))
 
 
 if __name__ == '__main__':
@@ -317,9 +318,9 @@ if __name__ == '__main__':
 
     # Version has to be one of the allowed versions
     if args.version not in VERSIONS:
-        print "Error; Version should be one of the following:"
+        print("Error; Version should be one of the following:")
         for version in VERSIONS:
-            print "- %s" % version
+            print("- %s" % version)
         sys.exit(0)
 
     if args.translate:

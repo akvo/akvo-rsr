@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 
 from django.db import models, migrations, transaction
 
@@ -46,9 +47,9 @@ def assign_piwik_ids(apps, schema_editor):
                 pass
             else:
                 if not partner_site.hostname == hostname:
-                    print "{0}'s host name is '{1}', expected '{2}'. Skipping!".format(
+                    print("{0}'s host name is '{1}', expected '{2}'. Skipping!".format(
                         partner_site_id, partner_site.hostname, hostname
-                    )
+                    ))
                     continue
 
                 partner_site.piwik_id = piwik_id

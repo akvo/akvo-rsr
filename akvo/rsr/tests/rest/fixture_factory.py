@@ -6,6 +6,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 """
+from __future__ import print_function
 
 import datetime
 import random
@@ -501,4 +502,4 @@ def verify_model_instances(enforce=False):
             assert False, msg
 
         else:
-            print msg
+            print(msg)
