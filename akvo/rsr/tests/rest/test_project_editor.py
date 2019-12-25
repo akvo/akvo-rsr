@@ -9,7 +9,10 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 import datetime
 import json
 from tempfile import NamedTemporaryFile
-from urllib import urlencode
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import Group
