@@ -43,12 +43,12 @@ class Command(BaseCommand):
         csv_file = options["UNEP_CSV"]
         delete_data = options["delete_data"]
         data = csv.reader(csv_file)
-        headers = data.next()
+        headers = next(data)
 
         # Ignore lines until the specified start
         start = options["start_line"]
         for i in range(1, start):
-            data.next()
+            next(data)
 
         unep = self.setup_unep()
         self.setup_partnersite(unep)
