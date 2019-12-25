@@ -313,7 +313,7 @@ class ErrorHandlerTestCase(TestCase):
         add_error(errors, message, field_name)
 
         # Then
-        self.assertEquals(1, len(errors))
+        self.assertEqual(1, len(errors))
 
     def test_should_handle_str_errors(self):
         # Given
@@ -325,7 +325,7 @@ class ErrorHandlerTestCase(TestCase):
         add_error(errors, message, field_name)
 
         # Then
-        self.assertEquals(1, len(errors))
+        self.assertEqual(1, len(errors))
 
     def test_should_handle_error_object_errors(self):
         # Given
@@ -338,7 +338,7 @@ class ErrorHandlerTestCase(TestCase):
             add_error(errors, e, field_name)
 
         # Then
-        self.assertEquals(1, len(errors))
+        self.assertEqual(1, len(errors))
 
 
 class SplitKeyTestCase(TestCase):
@@ -351,11 +351,11 @@ class SplitKeyTestCase(TestCase):
         key_info = split_key(key)
 
         # Then
-        self.assertEquals(
+        self.assertEqual(
             key_info.model, DjangoModel._make((u'rsr_relatedproject', u'rsr', u'relatedproject'))
         )
-        self.assertEquals(key_info.field, u'relation')
-        self.assertEquals(key_info.ids, [u'1234', u'new-0'])
+        self.assertEqual(key_info.field, u'relation')
+        self.assertEqual(key_info.ids, [u'1234', u'new-0'])
 
 
 class ChoicesTestCase(TestCase):

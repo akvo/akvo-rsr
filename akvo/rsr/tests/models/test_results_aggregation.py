@@ -52,7 +52,7 @@ class PeriodActualValueTestCase(TestCase):
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
-        self.assertEquals(actual_value.value, Decimal("4728.3"))
+        self.assertEqual(actual_value.value, Decimal("4728.3"))
 
     def test_actual_value_with_one_approved_update(self):
         # Given
@@ -67,7 +67,7 @@ class PeriodActualValueTestCase(TestCase):
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
-        self.assertEquals(actual_value.value, 17)
+        self.assertEqual(actual_value.value, 17)
 
     def test_actual_value_percentages_with_two_updates(self):
         # Given
@@ -83,8 +83,8 @@ class PeriodActualValueTestCase(TestCase):
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
-        self.assertEquals(actual_value.numerator, 50.25)
-        self.assertEquals(actual_value.denominator, 4728)
+        self.assertEqual(actual_value.numerator, 50.25)
+        self.assertEqual(actual_value.denominator, 4728)
 
     def test_actual_value_percentages_with_one_approved_updates(self):
         # Given
@@ -101,8 +101,8 @@ class PeriodActualValueTestCase(TestCase):
 
         # Then
         actual_value = PeriodActualValue.objects.get(period=period)
-        self.assertEquals(actual_value.numerator, Decimal("3.14"))
-        self.assertEquals(actual_value.denominator, 17)
+        self.assertEqual(actual_value.numerator, Decimal("3.14"))
+        self.assertEqual(actual_value.denominator, 17)
 
 
 class PeriodDisaggregationTestCase(TestCase):
@@ -201,9 +201,9 @@ class PeriodDisaggregationTestCase(TestCase):
         vanilla = period_disaggregations.get(dimension_name="Flavor", dimension_value="Vanilla")
         chocolate = period_disaggregations.get(dimension_name="Flavor", dimension_value="Chocolate")
         red = period_disaggregations.get(dimension_name="Color", dimension_value="Red")
-        self.assertEquals(vanilla.value, Decimal("42.67"))
-        self.assertEquals(chocolate.value, Decimal("22.33"))
-        self.assertEquals(red.value, Decimal("23.45"))
+        self.assertEqual(vanilla.value, Decimal("42.67"))
+        self.assertEqual(chocolate.value, Decimal("22.33"))
+        self.assertEqual(red.value, Decimal("23.45"))
 
     def test_disaggregated_percentages_aggregated_over_period(self):
         # Given
@@ -233,10 +233,10 @@ class PeriodDisaggregationTestCase(TestCase):
         # Then
         vanilla = period_disaggregations.get(dimension_name="Flavor", dimension_value="Vanilla")
         chocolate = period_disaggregations.get(dimension_name="Flavor", dimension_value="Chocolate")
-        self.assertEquals(vanilla.numerator, Decimal("5.86"))
-        self.assertEquals(vanilla.denominator, Decimal("51"))
-        self.assertEquals(chocolate.numerator, Decimal("4.76"))
-        self.assertEquals(chocolate.denominator, Decimal("68"))
+        self.assertEqual(vanilla.numerator, Decimal("5.86"))
+        self.assertEqual(vanilla.denominator, Decimal("51"))
+        self.assertEqual(chocolate.numerator, Decimal("4.76"))
+        self.assertEqual(chocolate.denominator, Decimal("68"))
 
     def test_incomplete_disaggregations_marked_on_save(self):
         # Given
