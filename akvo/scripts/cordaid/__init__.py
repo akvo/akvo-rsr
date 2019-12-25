@@ -14,7 +14,7 @@ import tablib
 os.environ['DJANGO_SETTINGS_MODULE'] = 'akvo.settings'
 from akvo import settings
 
-from django.utils.encoding import smart_str, smart_unicode
+from django.utils.encoding import smart_str
 
 API_VERSION = 'v1'
 
@@ -81,10 +81,10 @@ def init_log(log_file=CORDAID_LOG_FILE):
 
 
 def log_to_file(text, log_file):
-    out = u"{text}\n".format(text=smart_unicode(text))
+    out = "{text}\n".format(text=smart_str(text))
     with open(log_file, "a") as f:
-        f.write(smart_str(out))
-    sys.stdout.write(smart_str(out))
+        f.write(out)
+    sys.stdout.write(out)
 
 
 def print_log(log_file, column_names, to_console=False):
