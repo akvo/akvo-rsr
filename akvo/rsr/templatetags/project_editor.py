@@ -342,7 +342,7 @@ def mandatory_or_hidden(validations, field):
     # cased, but this code just retains the behavior of the older code.
     if field == 'rsr_project.current_image':
         indication = ' '.join(
-            filter(lambda x: not x.startswith('mandatory'), indication.split())
+            [x for x in indication.split() if not x.startswith('mandatory')]
         )
 
     return indication

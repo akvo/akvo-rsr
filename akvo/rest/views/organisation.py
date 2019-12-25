@@ -129,5 +129,5 @@ def _create_filters_query(request):
     all_filters = [
         location_filter,
     ]
-    filters = filter(None, all_filters)
+    filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_filter

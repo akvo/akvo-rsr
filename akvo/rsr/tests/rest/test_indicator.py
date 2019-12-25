@@ -51,7 +51,7 @@ class RestIndicatorTestCase(BaseTestCase):
         indicator_periods = self.get_indicator_periods(self.project.id)
         self.assertEqual(len(indicator_periods), total)
         for indicator_id in Indicator.objects.values_list('id', flat=True):
-            periods = filter(lambda x: x['indicator'] == indicator_id, indicator_periods)
+            periods = [x for x in indicator_periods if x['indicator'] == indicator_id]
             self.assertEqual(len(periods), n_periods)
 
     def test_indicator_framework(self):

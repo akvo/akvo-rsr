@@ -408,7 +408,7 @@ def _create_filters_query(request):
         organisation_filter,
         sector_filter,
     ]
-    filters = filter(None, all_filters)
+    filters = [_f for _f in all_filters if _f]
     return reduce(lambda x, y: x & y, filters) if filters else None, title_or_subtitle_filter
 
 
